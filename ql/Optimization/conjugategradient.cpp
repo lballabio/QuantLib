@@ -40,84 +40,55 @@ namespace QuantLib {
 
             // function and squared norm of gradient values;
             double f, fold, g2, gold2;
-// is it needed?
-//            double sd2;
-// is it needed?
-//          double sdold2;
-// is it needed?
-//          double c = 0.0;
             double c;
-// is it needed?
-//          double normdiff = 0.0;
             double normdiff;
             // classical initial value for line-search step
-            double t = 1.;
+            double t = 1.0;
 
             // reference X as the optimization problem variable
-            Array & X = x ();
-            Array & SearchDirection = searchDirection ();
+            Array& X = x();
+            Array& SearchDirection = searchDirection();
             // Set g at the size of the optimization problem search direction
-            int sz = searchDirection ().size ();
-            Array g (sz), d (sz), sddiff (sz);
+            int sz = searchDirection().size();
+            Array g(sz), d(sz), sddiff(sz);
 
-            f = P.valueAndFirstDerivative (g, X);
+            f = P.valueAndGradient(g, X);
             SearchDirection = -g;
             g2 = DotProduct (g, g);
-// is it needed?
-//            sd2 = g2;
-// is it needed?
-//            normdiff = sqrt (sd2);
-
 
             do {
+                // Linesearch
+                t = (*lineSearch_)(P, t, f, g2);
 
-              P.Save (iterationNumber (), f, sqrt (g2), t, *this);
+                if (lineSearch_->succeed ()) {
+                    // Updates
+                    d = SearchDirection;
+                    // New point
+                    X = lineSearch_->lastX ();
+                    // New function value
+                    fold = f;
+                    f = lineSearch_->lastFunctionValue ();
+                    // New gradient and search direction vectors
+                    g = lineSearch_->lastGradient ();
+                    // orthogonalization coef
+                    gold2 = g2;
+                    g2 = lineSearch_->lastGradientNorm2 ();
+                    c = g2 / gold2;
+                    // conjugate gradient search direction
+                    sddiff = (-g + c * d) - SearchDirection;
+                    normdiff = QL_SQRT (DotProduct (sddiff, sddiff));
+                    SearchDirection = -g + c * d;
+                    // End criteria
+                    EndCriteria = endCriteria()(iterationNumber_, 
+                        fold, QL_SQRT (gold2), f, QL_SQRT(g2), normdiff);
 
-              // Linesearch
-              t = (*lineSearch_) (P, t, f, g2);
-
-              if (lineSearch_->succeed ())
-                {
-                // Updates
-                d = SearchDirection;
-                // New point
-                X = lineSearch_->lastX ();
-                // New function value
-                fold = f;
-                f = lineSearch_->lastFunctionValue ();
-                // New gradient and search direction vectors
-                g = lineSearch_->lastGradient ();
-                // orthogonalization coef
-                gold2 = g2;
-                g2 = lineSearch_->lastGradientNorm2 ();
-                c = g2 / gold2;
-                // conjugate gradient search direction
-                sddiff = (-g + c * d) - SearchDirection;
-                normdiff = sqrt (DotProduct (sddiff, sddiff));
-                SearchDirection = -g + c * d;
-                // New gradient squared norm
-// is it needed?
-//                sdold2 = sd2;
-// is it needed?
-//                sd2 = DotProduct (SearchDirection, SearchDirection);
-
-                // End criteria
-                EndCriteria =
-                    endCriteria ()(iterationNumber_, fold, sqrt (gold2), f,
-                           sqrt (g2), normdiff);
-
-                // Increase interation number
-                iterationNumber ()++;
+                    // Increase interation number
+                    iterationNumber()++;
                 }
-              }
-            while ((EndCriteria == false) && (lineSearch_->succeed ()));
+            } while ((EndCriteria == false) && (lineSearch_->succeed()));
 
-            P.Save (iterationNumber (), f, sqrt (g2), t, *this);
-
-            if (!lineSearch_->succeed ())
-            throw
-                Error
-                ("ConjugateGradient::Minimize(...), line-search failed!");
+            if (!lineSearch_->succeed())
+                throw Error("ConjugateGradient::Minimize(), line-search failed!");
         }
 
     }

@@ -35,64 +35,57 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        void SteepestDescent::Minimize (OptimizationProblem& P) {
+        void SteepestDescent::Minimize(OptimizationProblem& P) {
             bool EndCriteria = false;
 
             // function and squared norm of gradient values;
             double fold, gold2, normdiff;
             // classical initial value for line-search step
-            double t = 1.;
+            double t = 1.0;
 
             // reference X as the optimization problem variable
-            Array & X = x ();
+            Array& X = x();
             // Set gold at the size of the optimization problem search direction
-            Array gold (searchDirection ().size ()), gdiff (searchDirection ().size ());
+            Array gold(searchDirection().size());
+            Array gdiff(searchDirection().size());
 
-            fold = P.valueAndFirstDerivative (gold, X);
-            searchDirection () = -gold;
-            gold2 = DotProduct (gold, gold);
-            normdiff = sqrt (gold2);
+            fold = P.valueAndGradient(gold, X);
+            searchDirection() = -gold;
+            gold2 = DotProduct(gold, gold);
+            normdiff = QL_SQRT(gold2);
 
-            do
-              {
-              P.Save (iterationNumber (), fold, sqrt (gold2), t, *this);
+            do {
+                // Linesearch
+                t = (*lineSearch_)(P, t, fold, gold2);
 
-              // Linesearch
-              t = (*lineSearch_) (P, t, fold, gold2);
+                if (lineSearch_->succeed()) {
+                    // End criteria
+                    EndCriteria =
+                        endCriteria()(iterationNumber_, fold, QL_SQRT(gold2),
+                             lineSearch_->lastFunctionValue(),
+                             QL_SQRT(lineSearch_->lastGradientNorm2()),
+                             normdiff);
 
-              if (lineSearch_->succeed ())
-                {
-                // End criteria
-                EndCriteria =
-                    endCriteria ()(iterationNumber_, fold, sqrt (gold2),
-                           lineSearch_->lastFunctionValue (),
-                           sqrt (lineSearch_->lastGradientNorm2 ()),
-                           normdiff);
+                    // Updates
+                    // New point
+                    X = lineSearch_->lastX();
+                    // New function value
+                    fold = lineSearch_->lastFunctionValue();
+                    // New gradient and search direction vectors
+                    gdiff = gold - lineSearch_->lastGradient();
+                    normdiff = QL_SQRT(DotProduct (gdiff, gdiff));
+                    gold = lineSearch_->lastGradient();
+                    searchDirection() = -gold;
+                    // New gradient squared norm
+                    gold2 = lineSearch_->lastGradientNorm2();
 
-                // Updates
-                // New point
-                X = lineSearch_->lastX ();
-                // New function value
-                fold = lineSearch_->lastFunctionValue ();
-                // New gradient and search direction vectors
-                gdiff = gold - lineSearch_->lastGradient ();
-                normdiff = sqrt (DotProduct (gdiff, gdiff));
-                gold = lineSearch_->lastGradient ();
-                searchDirection () = -gold;
-                // New gradient squared norm
-                gold2 = lineSearch_->lastGradientNorm2 ();
-
-                // Increase interation number
-                iterationNumber ()++;
+                    // Increase interation number
+                    iterationNumber()++;
                 }
-              }
-            while ((EndCriteria == false) && (lineSearch_->succeed ()));
+            } while ((EndCriteria == false) && (lineSearch_->succeed()));
 
-            P.Save (iterationNumber (), fold, sqrt (gold2), t, *this);
-
-            if (!lineSearch_->succeed ())
-            throw
-                Error ("SteepestDescent::Minimize(...), line-search failed!");
+            if (!lineSearch_->succeed())
+                throw Error("SteepestDescent::Minimize(), line-search failed!");
         }
 
     }

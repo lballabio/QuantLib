@@ -32,24 +32,19 @@
 #ifndef quantlib_optimization_steepest_descent_h
 #define quantlib_optimization_steepest_descent_h
 
-#include <cmath>
-
 #include "ql/Optimization/armijo.hpp"
 
 namespace QuantLib {
 
     namespace Optimization {
 
-        /*!
-          Multi-dimensionnal Steepest Descend class
-          User has to provide line-search method and
-          optimization end criteria
+        //! Multi-dimensionnal Steepest Descend class
+        /*! User has to provide line-search method and
+            optimization end criteria
 
-          search direction = - f'(x)
+            search direction \f$ = - f'(x) \f$
         */
         class SteepestDescent:public OptimizationMethod {
-            //! line search
-            Handle<LineSearch> lineSearch_;
           public:
             //! default default constructor (msvc bug)
             SteepestDescent()
@@ -57,13 +52,16 @@ namespace QuantLib {
               lineSearch_(Handle<LineSearch>(new ArmijoLineSearch ())) {}
 
             //! default constructor
-            SteepestDescent(Handle<LineSearch>& lineSearch)	// Reference to a line search method
+            SteepestDescent(const Handle<LineSearch>& lineSearch)
             : OptimizationMethod(), lineSearch_(lineSearch) {}
             //! destructor
             virtual ~SteepestDescent() {}
 
             //! minimize the optimization problem P
             virtual void Minimize(OptimizationProblem& P);
+          private:
+            //! line search
+            Handle<LineSearch> lineSearch_;
         };
 
     }

@@ -29,8 +29,8 @@
     ql/Optimization/%leastsquare.hpp
 */
 
-#ifndef quantlib_optimization_leastsquare_h__
-#define quantlib_optimization_leastsquare_h__
+#ifndef quantlib_optimization_least_square_h
+#define quantlib_optimization_least_square_h
 
 #include "ql/Math/matrix.hpp"
 #include "ql/Optimization/conjugategradient.hpp"
@@ -51,7 +51,7 @@ namespace QuantLib {
             virtual void targetAndValue (const Array& x, Array& target,
                          Array & fct2fit) = 0;
             //! compute the target vector, the values of the fonction to fit and the matrix of derivatives
-            virtual void targetValueAndfirstDerivative (const Array& x,
+            virtual void targetValueAndGradient (const Array& x,
                 Math::Matrix& grad_fct2fit, Array& target, Array& fct2fit) = 0;
         };
 
@@ -63,13 +63,7 @@ namespace QuantLib {
            M matrix class requires function transpose() that computes transpose
            and * operator with vector class
          */
-        class LeastSquareFunction:public CostFunction {
-          public:
-            //! value type of the vector
-            typedef double value_type;
-          protected:
-            //! least square problem
-              LeastSquareProblem &lsp_;
+        class LeastSquareFunction : public CostFunction {
           public:
             //! Default constructor
 
@@ -79,17 +73,15 @@ namespace QuantLib {
             virtual ~LeastSquareFunction () {}
 
             //! compute value of the least square function
-            virtual value_type value (const Array& x);
+            virtual double value (const Array& x);
             //! compute vector of derivatives of the least square function
-            virtual void firstDerivative (Array& grad_f, const Array& x);
+            virtual void gradient (Array& grad_f, const Array& x);
             //! compute value and vector of derivatives of the least square function
-            virtual value_type valueAndFirstDerivative (Array& grad_f,
+            virtual double valueAndGradient (Array& grad_f,
                                 const Array& x);
-
-            //! to improve
-            virtual void Update () {}
-            //! to improve
-            virtual void Save(OptimizationMethod&) {}
+          protected:
+            //! least square problem
+              LeastSquareProblem &lsp_;
         };
 
 
@@ -104,34 +96,33 @@ namespace QuantLib {
             return DotProduct (diff, diff);
         }
 
-        inline void LeastSquareFunction::firstDerivative (Array& grad_f,
+        inline void LeastSquareFunction::gradient (Array& grad_f,
            const Array& x) {
             // size of target and function to fit vectors
             Array target (lsp_.size ()), fct2fit (lsp_.size ());
             // size of gradient matrix
             Math::Matrix grad_fct2fit (lsp_.size (), x.size ());
             // compute its values
-              lsp_.targetValueAndfirstDerivative (x, grad_fct2fit, target, fct2fit);
+            lsp_.targetValueAndGradient(x, grad_fct2fit, target, fct2fit);
             // do the difference
             Array diff = target - fct2fit;
             // compute derivative
-            grad_f = -2. * (Math::transpose(grad_fct2fit) * diff);
+            grad_f = -2.0*(Math::transpose(grad_fct2fit)*diff);
         }
 
-        inline double LeastSquareFunction::valueAndFirstDerivative(Array& grad_f,
-                                       const Array& x)
-        {
+        inline double LeastSquareFunction::valueAndGradient(
+            Array& grad_f, const Array& x) {
             // size of target and function to fit vectors
-            Array target (lsp_.size ()), fct2fit (lsp_.size ());
+            Array target(lsp_.size ()), fct2fit (lsp_.size ());
             // size of gradient matrix
             Math::Matrix grad_fct2fit (lsp_.size (), x.size ());
             // compute its values
-            lsp_.targetValueAndfirstDerivative (x, grad_fct2fit, target,
+            lsp_.targetValueAndGradient (x, grad_fct2fit, target,
                             fct2fit);
             // do the difference
             Array diff = target - fct2fit;
             // compute derivative
-            grad_f = -2. * (Math::transpose (grad_fct2fit) * diff);
+            grad_f = -2.0*(Math::transpose(grad_fct2fit)*diff);
             // and compute the scalar product (square of the norm)
             return DotProduct (diff, diff);
         }
@@ -156,6 +147,69 @@ namespace QuantLib {
            Handle class is need to manage pointer to optimization method
          */
         class NonLinearLeastSquare {
+          public:
+            //! Default constructor
+            inline NonLinearLeastSquare (double accuracy = 1e-4,
+                                         int maxiter = 100);
+            //! Default constructor
+            inline NonLinearLeastSquare (double accuracy,
+                                         int maxiter,
+                                         Handle<OptimizationMethod> om);
+            //! Destructor
+            inline ~NonLinearLeastSquare () {}
+
+            //! Solve least square problem using numerix solver
+            inline Array& perform(LeastSquareProblem& lsProblem) {
+                double eps = accuracy_;
+
+                // set initial value of the optimization method
+                om_->setInitialValue (initialValue_);
+                // set end criteria with a given maximum number of iteration 
+                // and a given error eps
+                om_->setEndCriteria(
+                    OptimizationEndCriteria(maxIterations_, eps));
+                om_->endCriteria().setPositiveOptimization();
+
+                // wrap the least square problem in an optimization function
+                LeastSquareFunction lsf(lsProblem);
+
+                // define optimization problem
+                OptimizationProblem P(lsf, *om_);
+
+                // minimize
+                P.Minimize();
+
+                // summarize results of minimization
+                exitFlag_ = om_->endCriteria ().criteria();
+                nbIterations_ = om_->iterationNumber();
+
+                results_ = om_->x();
+                resnorm_ = om_->functionValue();
+                bestAccuracy_ = om_->functionValue();
+
+                return results_;
+            }
+
+            inline void setInitialValue(const Array& initialValue) {
+                initialValue_ = initialValue;
+            }
+
+            //! return the results
+            inline Array& results () { return results_; }
+
+            //! return the least square residual norm
+            inline double residualNorm() { return resnorm_; }
+
+            //! return last function value
+            inline double lastValue() { return bestAccuracy_; }
+
+            //! return exit flag
+            inline int exitFlag() { return exitFlag_; }
+
+            //! return the performed number of iterations
+            inline int iterationsNumber() { return nbIterations_; }
+
+          private:
             //! solution vector
             Array results_, initialValue_;
             //! least square residual norm
@@ -168,75 +222,7 @@ namespace QuantLib {
             Size maxIterations_, nbIterations_;
             //! Optimization method
             Handle<OptimizationMethod> om_;
-          public:
-            //! Default constructor
-            inline NonLinearLeastSquare (double accuracy = 1e-4,
-                         int maxiter = 100);
-            //! Default constructor
-            inline NonLinearLeastSquare (double accuracy,
-                         int maxiter,
-                         Handle<OptimizationMethod> om);
-            //! Destructor
-            inline ~NonLinearLeastSquare () {}
 
-            //! Solve least square problem using numerix solver
-            inline Array& Perform (LeastSquareProblem& lsProblem) {
-                double eps = accuracy_;
-
-                // set initial value of the optimization method
-                om_->setInitialValue (initialValue_);
-                // set end criteria with a given maximum number of iteration and a given error eps
-                om_->
-                    setEndCriteria (OptimizationEndCriteria
-                            (maxIterations_, eps));
-                om_->endCriteria ().setPositiveOptimization ();
-
-                // wrap the least square problem in an optimization function
-                LeastSquareFunction lsf(lsProblem);
-
-                // define optimization problem
-                OptimizationProblem P(lsf, *om_);
-
-                // minimize
-                P.Minimize();
-
-                // summarize results of minimization
-                exitFlag_ = om_->endCriteria ().criteria ();
-                nbIterations_ = om_->iterationNumber ();
-
-                results_ = om_->x ();
-                resnorm_ = om_->functionValue();
-                bestAccuracy_ = om_->functionValue();
-
-                return results_;
-            }
-
-            inline void setInitialValue (const Array & initialValue) {
-                initialValue_ = initialValue;
-            }
-
-            //! return the results
-            inline Array& results () { return results_; }
-            //! return the least square residual norm
-            inline double residualNorm ()
-            {
-            return resnorm_;
-            }
-            //! return last function value
-            inline double lastValue ()
-            {
-            return bestAccuracy_;
-            }
-            //! return exit flag
-            inline int exitFlag ()
-            {
-            return exitFlag_;
-            }
-            //! return the performed number of iterations
-            inline int iterationsNumber ()
-            {
-            return nbIterations_;
-            }
         };
 
 

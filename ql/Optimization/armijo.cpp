@@ -36,17 +36,15 @@ namespace QuantLib {
     namespace Optimization {
 
         double ArmijoLineSearch::operator()(
-            OptimizationProblem &P,	// Optimization problem
-            value_type t_ini,	// initial value of line-search step
-            value_type q0,	// function value
-            value_type qp0)	// squared norm of gradient vector
+            OptimizationProblem &P, // Optimization problem
+            double t_ini,           // initial value of line-search step
+            double q0,              // function value
+            double qp0)             // squared norm of gradient vector
         {
             bool maxIter = false;
             qt_ = q0;
             qpt_ = qp0;
             double qtold, t = t_ini;
-// is it needed?
-//          double qptnew;
             int loopNumber = 0;
 
             OptimizationMethod &method = P.optimisationMethod ();
@@ -61,14 +59,6 @@ namespace QuantLib {
             qt_ = P.value (xtd_);
 
             // Enter in the loop if the criterion is not satisfied
-#ifdef DEBUG_ARMIJO
-
-
-                std::cout << "qt_ - q0 = " << (qt_ -
-                               q0) << ", - alpha_ * t * qpt_ = "
-                << (-alpha_ * t * qpt_) << std::endl;
-#endif
-
             if ((qt_ - q0) > -alpha_ * t * qpt_) {
                 do {
                     loopNumber++;
@@ -80,46 +70,27 @@ namespace QuantLib {
                     xtd_ = x + t * d;
                     // Compute function value at the new point
                     qt_ = P.value (xtd_);
-                    P.firstDerivative (gradient_, xtd_);
+                    P.gradient (gradient_, xtd_);
                     // and it squared norm
-// is it needed?
-//                  qptnew = DotProduct (gradient_, gradient_);
-#ifdef DEBUG_ARMIJO
-                    std::cout << loopNumber << ", qt_ - q0 = " << (qt_ -
-                                           q0) <<
-                    ", - alpha_ * t * qpt_ = " << (-alpha_ * t *
-                                       qpt_) << std::endl;
-                    std::cout << "qtold - q0 = " << (qtold -
-                                     q0) <<
-                    ", - alpha_ * t * qpt_ / beta_ = " << (-alpha_ * t *
-                                           qpt_ /
-                                           beta_) << std::
-                    endl;
-#endif
-                    maxIter =
-                    P.optimisationMethod ().endCriteria ().
-                    checkIterationNumber (loopNumber);
-                }		// Armijo criteria
-                  while (
-                     (((qt_ - q0) > (-alpha_ * t * qpt_))
-                      || ((qtold - q0) <= (-alpha_ * t * qpt_ / beta_)))
-                     && (!maxIter));
-              }
+                    maxIter = P.optimisationMethod ().endCriteria ().
+                        checkIterationNumber (loopNumber);
+                } while (
+                    (((qt_ - q0) > (-alpha_ * t * qpt_)) || 
+                    ((qtold - q0) <= (-alpha_ * t * qpt_ / beta_))) && 
+                    (!maxIter));
+            }
 
             if (maxIter)
-              {
-                  succeed_ = false;
-              }
+                succeed_ = false;
 
             // Compute new gradient
-            P.firstDerivative (gradient_, xtd_);
+            P.gradient(gradient_, xtd_);
             // and it squared norm
-            qpt_ = DotProduct (gradient_, gradient_);
+            qpt_ = DotProduct(gradient_, gradient_);
 
             // Return new step value
             return t;
-            }
-
+        }
 
     }
 
