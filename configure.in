@@ -14,13 +14,18 @@ AM_INIT_AUTOMAKE(QuantLib, 0.2.0)
 
 dnl Check for programs
 
-CXXFLAGS=
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_PROG_CC
 AC_PROG_CXX
 AC_LANG_CPLUSPLUS
 AM_PROG_LIBTOOL
+
+if test "$GXX" = yes; then
+    CXXFLAGS="-g -Wall -O2"
+else
+    CXXFLAGS=""
+fi
 
 AC_PATH_PROG(SED, sed, notfound)
 AM_CONDITIONAL(SED_FOUND, test x$SED != xnotfound)
