@@ -38,7 +38,7 @@
 
     <tr>
     <td><em>Mario Aleppo</em></td>
-    <td>mario.aleppo@riskmap.net</td>
+    <td>&#109;&#97;&#114;&#105;&#111;&#46;&#97;&#108;&#101;&#112;&#112;&#111;&#64;&#114;&#105;&#115;&#107;&#109;&#97;&#112;&#46;&#110;&#101;&#116;</td>
     <td> </td>
     <td><a href="http://sourceforge.net/users/aleppo/">aleppo</a></td>
     </tr>
@@ -46,7 +46,7 @@
     <tr>
     <td><em><a href="http://www.ametrano.net/">Ferdinando
     Ametrano</a></em></td>
-    <td>ferdinando@ametrano.net</td>
+    <td>&#102;&#101;&#114;&#100;&#105;&#110;&#97;&#110;&#100;&#111;&#64;&#97;&#109;&#101;&#116;&#114;&#97;&#110;&#111;&#46;&#110;&#101;&#116;</td>
     <td>project manager</td>
     <td><a href="http://sourceforge.net/users/nando/">nando</a></td>
     </tr>
@@ -54,7 +54,7 @@
     <tr>
     <td><em><a href="http://homepage.mac.com/ballabio/">Luigi
     Ballabio</a></em></td>
-    <td>luigi.ballabio@riskmap.net</td>
+    <td>&#98;&#97;&#108;&#108;&#97;&#98;&#105;&#111;&#64;&#109;&#97;&#99;&#46;&#99;&#111;&#109;</td>
     <td>library designer</td>
     <td><a href=
     "http://sourceforge.net/users/lballabio/">lballabio</a></td>
@@ -62,7 +62,7 @@
 
     <tr>
     <td><em>Adolfo Benin</em></td>
-    <td>adolfo.benin@riskmap.net</td>
+    <td>&#97;&#100;&#111;&#108;&#102;&#111;&#46;&#98;&#101;&#110;&#105;&#110;&#64;&#108;&#105;&#98;&#101;&#114;&#111;&#46;&#105;&#116;</td>
     <td> </td>
     <td><a href="http://sourceforge.net/users/benin/">benin</a></td>
     </tr>
@@ -70,20 +70,20 @@
     <tr>
     <td><em>Nicolas Di C&eacute;sar&eacute;</em></td>
     <td> </td>
-    <td> spline, optimization</td>
+    <td>spline, optimizer</td>
     <td><a href="http://sourceforge.net/users/dicesare/">dicesare</a></td>
     </tr>
 
     <tr>
     <td><em>Marco Marchioro</em></td>
-    <td>marco.marchioro@riskmap.net</td>
+    <td>&#109;&#97;&#114;&#99;&#111;&#46;&#109;&#97;&#114;&#99;&#104;&#105;&#111;&#114;&#111;&#64;&#114;&#105;&#115;&#107;&#109;&#97;&#112;&#46;&#110;&#101;&#116;&#32;</td>
     <td> </td>
     <td><a href="http://sourceforge.net/users/marmar/">marmar</a></td>
     </tr>
 
     <tr>
     <td><em>Sadruddin Rejeb</em></td>
-    <td>sad.rejeb@riskmap.it</td>
+    <td>&#115;&#97;&#100;&#46;&#114;&#101;&#106;&#101;&#98;&#64;&#114;&#105;&#115;&#107;&#109;&#97;&#112;&#46;&#105;&#116;</td>
     <td>single factor interest rate models</td>
     <td><a href=
     "http://sourceforge.net/users/sadrejeb/">sadrejeb</a></td>
@@ -91,7 +91,7 @@
 
     <tr>
     <td><em>Enrico Sirola</em></td>
-    <td>enrico.sirola@riskmap.net</td>
+    <td>&#101;&#110;&#114;&#105;&#99;&#111;&#46;&#115;&#105;&#114;&#111;&#108;&#97;&#64;&#114;&#105;&#115;&#107;&#109;&#97;&#112;&#46;&#110;&#101;&#116;</td>
     <td> </td>
     <td><a href="http://sourceforge.net/users/enri/">enri</a></td>
     </tr>
@@ -106,9 +106,10 @@
               project manager
         \item Luigi Ballabio (luigi.ballabio@riskmap.net), library designer
         \item Adolfo Benin (adolfo.benin@libero.it)
-        \item Nicolas Di C\'esar\'e
+        \item Nicolas Di C\'esar\'e, spline and optimizer
         \item Marco Marchioro (marco.marchioro@riskmap.net)
-        \item Sadruddin Rejeb (sad.rejeb@riskmap.it)
+        \item Sadruddin Rejeb (sad.rejeb@riskmap.it), single factor interest 
+              rate models
         \item Enrico Sirola (enrico.sirola@riskmap.net)
     \end{itemize}
     \endlatexonly
@@ -163,7 +164,7 @@
 
     <tr>
     <td><em>Matteo Gallivanoni</em></td>
-    <td>matteo.gallivanoni@riskmap.net</td>
+    <td>&#109;&#97;&#116;&#116;&#101;&#111;&#46;&#103;&#97;&#108;&#108;&#105;&#118;&#97;&#110;&#111;&#110;&#105;&#64;&#114;&#105;&#115;&#107;&#109;&#97;&#112;&#46;&#110;&#101;&#116;&#32;</td>
     <td> </td>
     <td><a href="http://sourceforge.net/users/sigmud/">sigmud</a></td>
     </tr>
@@ -178,14 +179,14 @@
 
     <tr>
     <td><em>Peter Schmitteckert</em></td>
-    <td>quantlib@schmitteckert.com</td>
+    <td>&#113;&#117;&#97;&#110;&#116;&#108;&#105;&#98;&#64;&#115;&#99;&#104;&#109;&#105;&#116;&#116;&#101;&#99;&#107;&#101;&#114;&#116;&#46;&#99;&#111;&#109;&#32;&#32;&#32;</td>
     <td> </td>
     <td> </td>
     </tr>
 
     <tr>
     <td><em>Maxim Sokolov</em></td>
-    <td>maxim_sokolov@rambler.ru</td>
+    <td>&#109;&#97;&#120;&#105;&#109;&#95;&#115;&#111;&#107;&#111;&#108;&#111;&#118;&#64;&#114;&#97;&#109;&#98;&#108;&#101;&#114;&#46;&#114;&#117;</td>
     <td>examples</td>
     <td><a href="http://sourceforge.net/users/dzuki/">dzuki</a></td>
     </tr>
