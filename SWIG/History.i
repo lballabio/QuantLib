@@ -51,33 +51,145 @@
 
 %{
 using QuantLib::History;
+typedef QuantLib::History::const_iterator HistoryIterator;
+typedef QuantLib::History::const_valid_iterator HistoryValidIterator;
+typedef QuantLib::History::const_data_iterator HistoryDataIterator;
+typedef QuantLib::History::const_valid_data_iterator HistoryValidDataIterator;
+using QuantLib::DateFormatter;
+using QuantLib::DoubleFormatter;
 %}
+
+class HistoryIterator {
+  public:
+    ~HistoryIterator();
+};
+
+class HistoryValidIterator {
+  public:
+    ~HistoryValidIterator();
+};
+
+class HistoryDataIterator {
+  public:
+    ~HistoryDataIterator();
+};
+
+class HistoryValidDataIterator {
+  public:
+    ~HistoryValidDataIterator();
+};
 
 class History {
   public:
-	History(DateVector dates, DoubleVector values);
-	~History();
-	Date firstDate() const;
-	Date lastDate() const;
-	int size() const;
+    History(DateVector dates, DoubleVector values);
+    ~History();
+    Date firstDate() const;
+    Date lastDate() const;
+    int size() const;
+    HistoryIterator begin() const;
+    HistoryIterator end() const;
+    HistoryIterator iterator(Date d) const;
+    HistoryValidIterator vbegin() const;
+    HistoryValidIterator vend() const;
+    HistoryValidIterator valid_iterator(Date d) const;
+    HistoryDataIterator dbegin() const;
+    HistoryDataIterator dend() const;
+    HistoryDataIterator data_iterator(Date d) const;
+    HistoryValidDataIterator vdbegin() const;
+    HistoryValidDataIterator vdend() const;
+    HistoryValidDataIterator valid_data_iterator(Date d) const;
 };
+
 
 #if defined(SWIGPYTHON)
 
 %addmethods History {
-	String __str__() {
-		return "Historical data from " + 
-		    DateFormatter::toString(self->firstDate()) +
-			" to " + DateFormatter::toString(self->lastDate());
-	}
-	String __repr__() {
-		return "<History: historical data from " + 
-		    DateFormatter::toString(self->firstDate()) + 
-			" to " + DateFormatter::toString(self->lastDate())+">";
-	}
-	double __getitem__(Date d) {
-		return (*self)[d];
-	}
+    // element access
+    double __getitem__(Date d) {
+        return (*self)[d];
+    }
+    String __str__() {
+        return "Historical data from " + 
+            DateFormatter::toString(self->firstDate()) +
+            " to " + DateFormatter::toString(self->lastDate());
+    }
+    String __repr__() {
+        return "<History: historical data from " + 
+            DateFormatter::toString(self->firstDate()) + 
+            " to " + DateFormatter::toString(self->lastDate())+">";
+    }
+}
+
+%addmethods HistoryIterator {
+    Date date() {
+        return (*self)->date();
+    }
+    double value() {
+        return (*self)->value();
+    }
+    void advance() {
+        (*self)++;
+    }
+    bool __cmp__(const HistoryIterator& other) {
+        return (*self == other ? 0 : -1);
+    }
+    String __str__() {
+        return DateFormatter::toString((*self)->date()) + 
+        "\t" + (IsNull((*self)->value()) ? String("Null") : 
+        DoubleFormatter::toString((*self)->value()));
+    }
+}
+
+%addmethods HistoryValidIterator {
+    Date date() {
+        return (*self)->date();
+    }
+    double value() {
+        return (*self)->value();
+    }
+    void advance() {
+        (*self)++;
+    }
+    bool __cmp__(const HistoryValidIterator& other) {
+        return (*self == other ? 0 : -1);
+    }
+    String __str__() {
+        return DateFormatter::toString((*self)->date()) + 
+        "\t" + (IsNull((*self)->value()) ? String("Null") : 
+        DoubleFormatter::toString((*self)->value()));
+    }
+}
+
+%addmethods HistoryDataIterator {
+    double __float__() {
+        return **self;
+    }
+    void advance() {
+        (*self)++;
+    }
+    bool __cmp__(const HistoryDataIterator& other) {
+        return (*self == other ? 0 : -1);
+    }
+    String __str__() {
+        return (IsNull(**self) ? String("Null") : 
+        DoubleFormatter::toString(**self));
+    }
+}
+    
+%addmethods HistoryValidDataIterator {
+    double __float__() {
+        return **self;
+    }
+    void advance() {
+        (*self)++;
+    }
+    bool __cmp__(const HistoryValidDataIterator& other) {
+        return (*self == other ? 0 : -1);
+    }
+    String __str__() {
+        return (IsNull(**self) ? String("Null") : 
+        DoubleFormatter::toString(**self));
+    }
 }
 
 #endif
