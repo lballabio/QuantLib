@@ -26,6 +26,7 @@
     \section faq_generic Generic questions
 
     <strong>
+    \anchor faq_generic_email
     Is it OK to email a QuantLib developer to ask questions, or seek
     help, or report a bug?
     </strong>
@@ -52,6 +53,7 @@
 
 
     <strong>
+    \anchor faq_generic_thanks
     Thanks for this project. How can I give back to it?
     </strong>
 
@@ -72,6 +74,7 @@
     \section faq_contributing Contributing to the project
 
     <strong>
+    \anchor faq_contributing_involved
     I'm interested in getting involved with the project. What should
     I do?
     </strong>
@@ -86,6 +89,7 @@
     otherwise discourage you from completing it.
 
     <strong>
+    \anchor faq_contributing_code
     How do I contribute code to the project?
     </strong>
 
@@ -116,6 +120,7 @@
     \section faq_using Using QuantLib
 
     <strong>
+    \anchor faq_using_vclink
     When linking QuantLib to my project under Visual C++, I encounter
     the following linking error:
     \code
@@ -133,6 +138,7 @@
     \section faq_features QuantLib features
 
     <strong>
+    \anchor faq_features_missing
     Why is feature X missing from QuantLib? It would be a very useful one.
     </strong>
 
