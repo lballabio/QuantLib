@@ -26,6 +26,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libFiniteDifferences_la_SOURCES = \
+    boundarycondition.cpp \
     bsmoperator.cpp \
     onefactoroperator.cpp \
     tridiagonaloperator.cpp \
