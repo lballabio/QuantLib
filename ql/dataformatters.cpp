@@ -29,11 +29,11 @@
 
 namespace QuantLib {
 
-    std::string IntegerFormatter::toString(int i, int digits) {
-        if (i == Null<int>())
+    std::string IntegerFormatter::toString(long l, int digits) {
+        if (l == long(Null<int>()))
         return std::string("null");
         char s[64];
-        QL_SPRINTF(s,"%*d",(digits>64?64:digits),i);
+        QL_SPRINTF(s,"%*ld",(digits>64?64:digits),l);
         return std::string(s);
     }
 

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file dataformatters.hpp
     \brief Classes used to format data for output
 
@@ -36,21 +36,22 @@ namespace QuantLib {
     //! Formats integers for output
     class IntegerFormatter {
       public:
-        static std::string toString(int i, int digits = 0);
+        static std::string toString(long l, int digits = 0);
     };
 
     //! Formats doubles for output
     class DoubleFormatter {
       public:
         static std::string toString(double x, int precision = 6,
-            int digits = 0);
+                                    int digits = 0);
     };
 
     //! Formats arrays for output
     class ArrayFormatter {
       public:
         static std::string toString(const Array& x, int precision = 6,
-            int digits = 0, Size elementsPerRow = QL_MAX_INT);
+                                    int digits = 0, 
+                                    Size elementsPerRow = QL_MAX_INT);
     };
 
     /*! \relates Array */
