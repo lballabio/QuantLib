@@ -216,7 +216,7 @@ namespace {
             "    calculated " + greekName + ": "
             + DoubleFormatter::toString(calculated) + "\n"
             "    error:            "
-            + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
+            + DoubleFormatter::toString(error) + "\n"
             + (tolerance==Null<double>() ? std::string("") :
             "    tolerance:        " + DoubleFormatter::toString(tolerance)));
     }

@@ -608,7 +608,7 @@ void JumpDiffusionTest::testGreeks() {
           Handle<Exercise> exercise(new EuropeanExercise(exDate));
           Date exDateP = exDate.plusDays(1),
                exDateM = exDate.plusDays(-1);
-          Time dT = (exDateP-exDateM)/360.0;
+          // Time dT = (exDateP-exDateM)/360.0;
           for (Size kk=0; kk<1; kk++) {
               // option to check
               if (kk==0) {
@@ -689,9 +689,9 @@ void JumpDiffusionTest::testGreeks() {
                           // perturb volatility and get vega
                           double dv = v*1.0e-4;
                           vol->setValue(v+dv);
-                          value_p = option->NPV();
+                          // value_p = option->NPV();
                           vol->setValue(v-dv);
-                          value_m = option->NPV();
+                          // value_m = option->NPV();
                           vol->setValue(v);
                           // expected["vega"] = (value_p - value_m)/(2*dv);
 
