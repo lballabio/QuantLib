@@ -26,6 +26,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/03/05 11:42:25  lballabio
+    Inlined methods that were supposed to be
+
     Revision 1.2  2001/03/02 13:49:42  marmar
     Purely virtual method initializeStepCondition()
     introduced in the design of StepConditionOption
@@ -68,19 +71,18 @@ namespace QuantLib {
             }
         };
 
-       ShoutOption::ShoutOption(Type type, double underlying, double strike, 
-                                Rate dividendYield, Rate riskFreeRate, 
-                                Time residualTime, double volatility, 
-                                int timeSteps, int gridPoints)
-       : StepConditionOption(type, underlying, strike, dividendYield, 
+        inline ShoutOption::ShoutOption(Type type, double underlying, 
+            double strike, Rate dividendYield, Rate riskFreeRate,
+            Time residualTime, double volatility, int timeSteps,
+            int gridPoints)
+        : StepConditionOption(type, underlying, strike, dividendYield, 
                              riskFreeRate, residualTime, volatility, 
                              timeSteps, gridPoints){}
 
-        void ShoutOption::initializeStepCondition() const{
-        
+        inline void ShoutOption::initializeStepCondition() const {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
-                        new ShoutCondition(initialPrices_,
-                                           residualTime_, riskFreeRate_));   
+                new ShoutCondition(initialPrices_, residualTime_,
+                    riskFreeRate_));   
         }
 
     }
@@ -89,3 +91,4 @@ namespace QuantLib {
 
 
 #endif
+

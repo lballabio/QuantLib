@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/03/05 11:42:25  lballabio
+    Inlined methods that were supposed to be
+
     Revision 1.2  2001/03/02 13:49:42  marmar
     Purely virtual method initializeStepCondition()
     introduced in the design of StepConditionOption
@@ -51,7 +54,9 @@
 #include "americancondition.h"
 
 namespace QuantLib {
+
     namespace Pricers {
+
         class AmericanOption : public StepConditionOption {
         public:
             // constructor
@@ -67,20 +72,20 @@ namespace QuantLib {
             }
         };
         
-        AmericanOption::AmericanOption(Type type, double underlying, 
-                double strike, Rate dividendYield, Rate riskFreeRate, 
-                Time residualTime, double volatility, int timeSteps, 
-                int gridPoints)
+        inline AmericanOption::AmericanOption(Type type, double underlying, 
+            double strike, Rate dividendYield, Rate riskFreeRate, 
+            Time residualTime, double volatility, int timeSteps, 
+            int gridPoints)
         : StepConditionOption(type, underlying, strike, dividendYield, 
-                              riskFreeRate, residualTime, volatility, 
-                              timeSteps, gridPoints){}
+            riskFreeRate, residualTime, volatility, timeSteps, 
+            gridPoints) {}
 
-        void AmericanOption::initializeStepCondition() const{
-        
-            stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>
-                                        (new AmericanCondition(initialPrices_));
+        inline void AmericanOption::initializeStepCondition() const {
+            stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
+                new AmericanCondition(initialPrices_));
         }
     }
 }
 
 #endif
+
