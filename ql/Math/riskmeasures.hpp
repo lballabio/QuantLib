@@ -138,7 +138,8 @@ namespace QuantLib {
                            DoubleFormatter::toString(percentile) +
                            ") must be < 1.0");
 
-                double result = this->percentile(1.0-y, begin, end);
+                double result = this->percentile(1.0-percentile, 
+                                                 begin, end);
 
                 // VAR must be a loss
                 // this means that it has to be MIN(dist(1.0-percentile), 0.0)
