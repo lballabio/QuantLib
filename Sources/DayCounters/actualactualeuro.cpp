@@ -40,7 +40,7 @@ namespace QuantLib {
         Time ActualActualEuro::yearFraction(const Date& d1, const Date& d2,
             const Date& refPeriodStart, const Date& refPeriodEnd) const {
 
-            QL_REQUIRE(d1<d2,
+            QL_REQUIRE(d1<=d2,
                 "Invalid reference period");
 
             Date newD2=d2;

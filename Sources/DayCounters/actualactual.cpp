@@ -23,24 +23,13 @@
 */
 
 /*! \file actualactual.cpp
-    \fullpath Sources/DayCounters/%actualactual.cpp
     \brief act/act day counter
 
+    \fullpath
+    Sources/DayCounters/%actualactual.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.30  2001/08/30 13:27:23  nando
-// daycounters works with Python test suite
-// step 2: no reference dates were they are not needed
-//
-// Revision 1.29  2001/08/30 12:32:24  nando
-// daycounters works with Python test suite
-// step 1
-//
-// Revision 1.28  2001/08/29 15:18:04  nando
-// _DEBUG instead of QL_DEBUG to select which lib is to link under MS VC++
-//
 
 #include "ql/DayCounters/actualactual.hpp"
 
@@ -50,19 +39,38 @@ namespace QuantLib {
 
         Time ActualActual::yearFraction(const Date& d1, const Date& d2,
           const Date& refPeriodStart, const Date& refPeriodEnd) const {
+
+            QL_REQUIRE(d1<=d2, "invalid dates");
+
             QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() &&
                 refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
                 "Invalid reference period");
+
+            
+            
             // estimate roughly the length in months of a period
             int months = int(0.5+12*double(refPeriodEnd-refPeriodStart)/365);
             QL_REQUIRE(months != 0,
                 "number of months does not divide 12 exactly");
             double period = double(months)/12.0;
+
             if (d2 <= refPeriodEnd) {
+                // here refPeriodEnd is a future (maybe notional) payment date 
                 if (d1 >= refPeriodStart)
+                    // here refPeriodStart is the last (maybe notional) payment date.
+                    // refPeriodStart <= d1 <= d2 <= refPeriodEnd
+                    // [maybe the equality should be enforced, since
+                    // refPeriodStart < d1 <= d2 < refPeriodEnd
+                    // could give wrong results] ???
                     return period*double(dayCount(d1,d2)) /
                         dayCount(refPeriodStart,refPeriodEnd);
                 else {
+                    // here refPeriodStart is the next (maybe notional) payment date.
+                    // and so refPeriodEnd is the next-next (maybe notional) payment date.
+                    // d1 < refPeriodStart < refPeriodEnd AND d2 <= refPeriodEnd
+                    // this case is long first coupon
+
+                    // the the last notional payment date
                     Date previousRef = refPeriodStart.plusMonths(-months);
                     return yearFraction(
                                 d1,refPeriodStart,previousRef,refPeriodStart) +
@@ -70,8 +78,19 @@ namespace QuantLib {
                                 refPeriodStart,d2,refPeriodStart,refPeriodEnd);
                 }
             } else {
+                // here refPeriodEnd is the last (maybe notional) payment date 
+                // d1 < refPeriodEnd < d2 AND refPeriodStart < refPeriodEnd
+                QL_REQUIRE(refPeriodStart<=d1,
+                    "invalid dates: cannot be d1 < refPeriodStart < refPeriodEnd < d2");
+                // now it is: refPeriodStart <= d1 < refPeriodEnd < d2
+
+                // the part from d1 to refPeriodEnd
                 double sum =
                     yearFraction(d1,refPeriodEnd,refPeriodStart,refPeriodEnd);
+
+                // the part from refPeriodEnd to d2
+                // count how many regular periods are in [refPeriodEnd, d2],
+                // then add the remaining time
                 int i=0;
                 Date newRefStart, newRefEnd;
                 do {
