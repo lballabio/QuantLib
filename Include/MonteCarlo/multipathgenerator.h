@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/02/06 17:07:31  marmar
+    New constructor added
+
     Revision 1.3  2001/02/05 13:52:47  lballabio
     Makefiles fixed
 
@@ -65,13 +68,19 @@ namespace QuantLib {
         // typedef MultiPath SampleType;
         // this typedef would make MultiPathGenerator into a sample generator
             MultiPathGenerator();
-            MultiPathGenerator(int timeDimension, const Array &average,
-                            const Math::Matrix &covariance, long seed=0);
+            MultiPathGenerator(int timeDimension, 
+                const Array &average, const Math::Matrix &covariance, 
+                long seed=0);
+            MultiPathGenerator(const std::vector<Time> &timeDelays, 
+                const Array &average, const Math::Matrix &covariance, 
+                long seed=0);
             MultiPath next() const;
             double weight() const{return weight_;}
         private:
             int numAssets_, timeDimension_;
+            std::vector<Time> timeDelays_;
             mutable double weight_;
+            Array average_;
             RAG rndArray_;
         };
 
@@ -84,8 +93,10 @@ namespace QuantLib {
             int timeDimension, const Array &average,
             const Math::Matrix &covariance, long seed):
             timeDimension_(timeDimension),
+            timeDelays_(timeDimension, 1.0),
             numAssets_(average.size()),
-            rndArray_(average, covariance, seed){
+            average_(average),
+            rndArray_(covariance, seed){
 
             QL_REQUIRE(timeDimension_ > 0,
                 "Time dimension("+
@@ -94,14 +105,38 @@ namespace QuantLib {
         }
 
         template <class RAG>
+        inline MultiPathGenerator<RAG >::MultiPathGenerator(
+            const std::vector<Time> &timeDelays, const Array &average,
+            const Math::Matrix &covariance, long seed):
+            timeDimension_(timeDelays.size()),
+            timeDelays_(timeDelays),
+            numAssets_(average.size()),
+            average_(average),
+            rndArray_(covariance, seed){
+
+            QL_REQUIRE(timeDimension_ > 0,
+                "Time dimension("+
+                DoubleFormatter::toString(timeDimension_)+
+                ") too small");
+                
+            for(int i = 0; i < timeDelays_.size(); i++)
+                QL_REQUIRE(timeDelays_[i] > 0,
+                    "MultiPathGenerator: "
+                    "time delay(" + IntegerFormatter::toString(i)+                    
+                    ") not positive");
+        }
+
+        template <class RAG>
         inline MultiPath MultiPathGenerator<RAG >::next() const{
 
+            QL_REQUIRE(numAssets_ > 0,
+                "MultiPathGenerator: object declared but not initialized");
             MultiPath multiPath(numAssets_, timeDimension_);
             Array nextArray(numAssets_);
-
             weight_ = 1.0;
             for(int i = 0; i < timeDimension_; i++){
-                nextArray = rndArray_.next();
+                nextArray = average_ * timeDelays_[i] 
+                                + rndArray_.next()* QL_SQRT(timeDelays_[i]);
                 weight_ *= rndArray_.weight();
                 std::copy(nextArray.begin(), nextArray.end(),     
                                             multiPath.column_begin(i));

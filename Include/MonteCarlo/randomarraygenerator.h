@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/02/06 17:07:17  marmar
+    New constructor added
+
     Revision 1.2  2001/02/05 13:52:47  lballabio
     Makefiles fixed
 
@@ -48,8 +51,8 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-    /*!    
-    RandomArrayGenerator<RP> is a template class which returns a random array 
+    /*!
+    RandomArrayGenerator<RP> is a template class which returns a random array
     from a random number generator class RP.
     */
         template <class RP>
@@ -57,10 +60,11 @@ namespace QuantLib {
         public:
         // typedef Array SampleType;
         // this typedef would make RandomArrayGenerator into a sample generator
-            RandomArrayGenerator(); 
+            RandomArrayGenerator();
             RandomArrayGenerator(int dimension, double average = 0.0,
                           double stddev = 1.0, long seed=0);
-            RandomArrayGenerator(const Array &average, 
+            RandomArrayGenerator(const Math::Matrix &covariance, long seed=0);
+            RandomArrayGenerator(const Array &average,
                          const Math::Matrix &covariance, long seed=0);
             Array next() const;
             double weight() const{return weight_;}
@@ -74,19 +78,39 @@ namespace QuantLib {
         };
 
         template <class RP>
-        inline RandomArrayGenerator<RP >::RandomArrayGenerator():   
+        inline RandomArrayGenerator<RP >::RandomArrayGenerator():
                 size_(0), weight_(0) {}
 
         template <class RP>
-        inline RandomArrayGenerator<RP >::RandomArrayGenerator(int dimension, 
-                double average, double variance, long seed): 
-                size_(dimension), average_(average), rndPoint_(seed), 
+        inline RandomArrayGenerator<RP >::RandomArrayGenerator(int dimension,
+                double average, double variance, long seed):
+                size_(dimension), average_(average), rndPoint_(seed),
                 averageArray_(0),sqrtCovariance_(0,0){
             QL_REQUIRE(variance >= 0,
                     "RandomArrayGenerator: variance is negative!");
             sqrtVariance_ = QL_SQRT(variance);
         }
-                
+
+        template <class RP>
+        inline RandomArrayGenerator<RP >::RandomArrayGenerator(
+            const Math::Matrix &covariance, long seed):
+            size_(covariance.rows()), averageArray_(covariance.rows(),0),
+            sqrtCovariance_(covariance.rows(),covariance.rows()),
+            rndPoint_(seed){
+
+            QL_REQUIRE(covariance.rows() == covariance.columns(),
+                "Covariance matrix must be square ("+
+                DoubleFormatter::toString(covariance.rows())+ ", "+
+                DoubleFormatter::toString(covariance.columns())+ ")");
+
+            QL_REQUIRE(size_ > 0,
+                "Number of indepente variables("+
+                DoubleFormatter::toString(size_)+
+                ") too small");
+
+            sqrtCovariance_ = sqrt(covariance);
+        }
+
         template <class RP>
         inline RandomArrayGenerator<RP >::RandomArrayGenerator(
             const Array &average, const Math::Matrix &covariance, long seed):
@@ -103,7 +127,7 @@ namespace QuantLib {
                 "Number of indepente variables("+
                 DoubleFormatter::toString(size_)+
                 ") too small");
-                
+
             QL_REQUIRE(averageArray_.size() == size_,
                 "average-vector size ("+
                 DoubleFormatter::toString(averageArray_.size())+ ") "+
@@ -117,18 +141,18 @@ namespace QuantLib {
         inline Array RandomArrayGenerator<RP >::next() const{
 
             Array nextArray(size_);
-            
+
             weight_ = 1.0;
             for(int j = 0; j < size_; j++){
                 nextArray[j] = rndPoint_.next();
                 weight_ *= rndPoint_.weight();
             }
-            
+
             if(averageArray_.size() == 0)
-                nextArray = average_ + sqrtVariance_ * nextArray;                
-            else            
-                nextArray = averageArray_ + sqrtCovariance_ * nextArray;                
-            
+                nextArray = average_ + sqrtVariance_ * nextArray;
+            else
+                nextArray = averageArray_ + sqrtCovariance_ * nextArray;
+
             return nextArray;
         }
 
