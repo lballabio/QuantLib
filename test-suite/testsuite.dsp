@@ -157,10 +157,6 @@ SOURCE=.\basketoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\binarybarrieroption.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\calendars.cpp
 # End Source File
 # Begin Source File
@@ -294,10 +290,6 @@ SOURCE=.\barrieroption.hpp
 # Begin Source File
 
 SOURCE=.\basketoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\binarybarrieroption.hpp
 # End Source File
 # Begin Source File
 

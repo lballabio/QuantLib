@@ -25,7 +25,6 @@ QL_TESTS = \
     asianoptions.obj$(_D) \
     barrieroption.obj$(_D) \
     basketoption.obj$(_D) \
-    binarybarrieroption.obj$(_D) \
     calendars.obj$(_D) \
     capfloor.obj$(_D) \
     compoundforward.obj$(_D) \
