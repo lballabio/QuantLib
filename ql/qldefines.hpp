@@ -62,6 +62,14 @@
     #error Unsupported compiler - please contact the QuantLib team
 #endif
 
+
+#if defined(HAVE_BOOST)
+    #include <boost/version.hpp>
+    #if BOOST_VERSION < 103002
+        #error using an old version of boost, please update to BOOST_VERSION
+    #endif
+#endif
+
 /*! \def QL_DUMMY_RETURN
     \brief Is a dummy return statement required?
 
@@ -190,6 +198,13 @@
     #error Neither <limits> nor <float.h> found
 #endif
 /*! @} */
+
+#if defined(_MSC_VER)         // Microsoft Visual C++ 6.0
+    namespace {
+        // 4 old-style pricer tests fails if the following line is uncommented
+        //unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM);
+    }
+#endif
 
 
 /*! \defgroup timeMacros Time functions
