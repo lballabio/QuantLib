@@ -502,11 +502,12 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_Date swig_types[12] 
 #define  SWIGTYPE_p_BoundaryCondition swig_types[13] 
 #define  SWIGTYPE_p_FalsePosition swig_types[14] 
-#define  SWIGTYPE_p_BSMEuropeanOption swig_types[15] 
-#define  SWIGTYPE_p_Brent swig_types[16] 
-#define  SWIGTYPE_p_NewtonSafe swig_types[17] 
-#define  SWIGTYPE_p_TridiagonalOperator swig_types[18] 
-static swig_type_info *swig_types[20];
+#define  SWIGTYPE_p_BSMAmericanOption swig_types[15] 
+#define  SWIGTYPE_p_BSMEuropeanOption swig_types[16] 
+#define  SWIGTYPE_p_Brent swig_types[17] 
+#define  SWIGTYPE_p_NewtonSafe swig_types[18] 
+#define  SWIGTYPE_p_TridiagonalOperator swig_types[19] 
+static swig_type_info *swig_types[21];
 
 /* -------- TYPES TABLE (END) -------- */
 
@@ -518,507 +519,258 @@ static swig_type_info *swig_types[20];
 
 #define SWIG_name    "QuantLibc"
 
-
 #include "qldefines.h"
 
-
-
 #include <cstdlib>
-
 #include <string>
-
 #include "date.h"
-
 QL_USING(QuantLib,Date)
 
-
-
 QL_USING(QuantLib,Day)
-
 QL_USING(QuantLib,Year)
-
 QL_USING(QuantLib,Time)
 
-
-
 QL_USING(QuantLib,Weekday)
-
 QL_USING(QuantLib,Sunday)
-
 QL_USING(QuantLib,Monday)
-
 QL_USING(QuantLib,Tuesday)
-
 QL_USING(QuantLib,Wednesday)
-
 QL_USING(QuantLib,Thursday)
-
 QL_USING(QuantLib,Friday)
-
 QL_USING(QuantLib,Saturday)
 
-
-
 #include "stringconverters.h"
-
 QL_USING(QuantLib,ConvertToLowercase)
 
-
-
 QL_USING(QuantLib,Month)
-
 QL_USING(QuantLib,January)
-
 QL_USING(QuantLib,February)
-
 QL_USING(QuantLib,March)
-
 QL_USING(QuantLib,April)
-
 QL_USING(QuantLib,May)
-
 QL_USING(QuantLib,June)
-
 QL_USING(QuantLib,July)
-
 QL_USING(QuantLib,August)
-
 QL_USING(QuantLib,September)
-
 QL_USING(QuantLib,October)
-
 QL_USING(QuantLib,November)
-
 QL_USING(QuantLib,December)
 
-
-
 	QL_USING(QuantLib,TimeUnit)
-
 	QL_USING(QuantLib,Days)
-
 	QL_USING(QuantLib,Weeks)
-
 	QL_USING(QuantLib,Months)
-
 	QL_USING(QuantLib,Years)
 
-
-
 #include "formats.h"
-
 QL_USING(QuantLib,DateFormat)
 
-
-
 	Date DateFromSerialNumber(int serialNumber) {
-
 		return Date(serialNumber);
-
 	}
-
-
 
 #include "calendar.h"
 
-
-
 QL_USING(QuantLib,Handle)
-
 QL_USING(QuantLib,Calendar)
-
 typedef Handle<Calendar> CalendarHandle;
 
-
-
 QL_USING(QuantLib,Following)
-
 QL_USING(QuantLib,ModifiedFollowing)
-
 QL_USING(QuantLib,IsNull)
 
-
-
 #include "target.h"
-
 #include "newyork.h"
-
 #include "london.h"
-
 #include "frankfurt.h"
-
 #include "milan.h"
 
-
-
 QL_USING(QuantLib::Calendars,TARGET)
-
 QL_USING(QuantLib::Calendars,NewYork)
-
 QL_USING(QuantLib::Calendars,London)
-
 QL_USING(QuantLib::Calendars,Milan)
-
 QL_USING(QuantLib::Calendars,Frankfurt)
 
-
-
 CalendarHandle NewTARGET()    { return CalendarHandle(new TARGET); }
-
 CalendarHandle NewNewYork()   { return CalendarHandle(new NewYork); }
-
 CalendarHandle NewLondon()    { return CalendarHandle(new London); }
-
 CalendarHandle NewFrankfurt() { return CalendarHandle(new Frankfurt); }
-
 CalendarHandle NewMilan()     { return CalendarHandle(new Milan); }
 
-
-
 #include "daycounter.h"
-
 #include "actual360.h"
-
 #include "actual365.h"
-
 #include "actualactual.h"
-
 #include "thirty360.h"
-
 #include "thirty360european.h"
-
 #include "thirty360italian.h"
 
-
-
 QL_USING(QuantLib,Handle)
-
 QL_USING(QuantLib,DayCounter)
-
 typedef Handle<DayCounter> DayCounterHandle;
 
-
-
 QL_USING(QuantLib::DayCounters,Actual360)
-
 QL_USING(QuantLib::DayCounters,Actual365)
-
 QL_USING(QuantLib::DayCounters,Thirty360)
-
 QL_USING(QuantLib::DayCounters,Thirty360European)
-
 QL_USING(QuantLib::DayCounters,Thirty360Italian)
 
-
-
 DayCounterHandle NewActual360()			{ return DayCounterHandle(new Actual360); }
-
 DayCounterHandle NewActual365()			{ return DayCounterHandle(new Actual365); }
-
 DayCounterHandle NewThirty360()			{ return DayCounterHandle(new Thirty360); }
-
 DayCounterHandle NewThirty360European()	{ return DayCounterHandle(new Thirty360European); }
-
 DayCounterHandle NewThirty360Italian()	{ return DayCounterHandle(new Thirty360Italian); }
 
-
-
 #include "currency.h"
-
 #include "eur.h"
-
 #include "usd.h"
-
 #include "gbp.h"
-
 #include "dem.h"
-
 #include "itl.h"
 
-
-
 QL_USING(QuantLib,Currency)
-
 QL_USING(QuantLib,Handle)
-
 typedef Handle<Currency> CurrencyHandle;
 
-
-
 QL_USING(QuantLib::Currencies,EUR)
-
 QL_USING(QuantLib::Currencies,USD)
-
 QL_USING(QuantLib::Currencies,GBP)
-
 QL_USING(QuantLib::Currencies,DEM)
-
 QL_USING(QuantLib::Currencies,ITL)
 
-
-
 CurrencyHandle NewEUR()		{ return CurrencyHandle(new EUR); }
-
 CurrencyHandle NewUSD()		{ return CurrencyHandle(new USD); }
-
 CurrencyHandle NewGBP()		{ return CurrencyHandle(new GBP); }
-
 CurrencyHandle NewDEM()		{ return CurrencyHandle(new DEM); }
-
 CurrencyHandle NewITL()		{ return CurrencyHandle(new ITL); }
 
-
-
 #include "yield.h"
-
 #include "spread.h"
-
 #include "discountfactor.h"
 
-
-
 QL_USING(QuantLib,Yield)
-
 QL_USING(QuantLib,Spread)
-
 QL_USING(QuantLib,DiscountFactor)
 
-
-
 #include "options.h"
-
 #include "stringconverters.h"
 
-
-
 	QL_USING(QuantLib,Option)
-
 	QL_USING(QuantLib,ConvertToLowercase)
-
-
 
 	typedef Option::Type OptionType;
 
-
-
 #include "termstructure.h"
-
 #include "handle.h"
 
-
-
 QL_USING(QuantLib,TermStructure)
-
 QL_USING(QuantLib,Handle)
-
 typedef Handle<TermStructure> TermStructureHandle;
-
-
 
 #include "piecewiseconstantforwards.h"
 
-
-
 QL_USING(QuantLib::TermStructures,PiecewiseConstantForwards)
-
 QL_USING(QuantLib,Deposit)
-
-
 
 	typedef std::vector<Deposit> DepositList;
 
-
-
 TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency, DayCounterHandle dayCounter, 
-
   Date today, DepositList deposits) {
-
 	return Handle<TermStructure>(new PiecewiseConstantForwards(currency,dayCounter,today,deposits));
-
 }
 
-
-
 	#include "instrument.h"
-
 	#include <cstdlib>
 
-
-
 	QL_USING(QuantLib,Instrument)
-
 	QL_USING(QuantLib,Handle)
-
-
 
 	typedef Handle<Instrument> InstrumentHandle;
 
-
-
 std::string Representation(const Handle<Instrument>& i) {
-
 	std::string isin = i->isinCode();
-
 	if (isin == "")
-
 		isin = "unknown";
-
 	std::string desc = i->description();
-
 	if (desc == "")
-
 		desc = "no description available";
-
 	return (isin+" ("+desc+")");
-
 }
-
-
 
 #include "stock.h"
-
 QL_USING(QuantLib::Instruments,Stock)
 
-
-
 InstrumentHandle NewStock(char* isinCode, char* description) {
-
 	return InstrumentHandle(new Stock(isinCode,description));
-
 }
 
-
-
 // std::vector specializations
-
 #include <vector>
-
 typedef std::vector<int> IntVector;
-
 typedef std::vector<double> DoubleVector;
 
-
-
 // array
-
 #include "array.h"
-
 QL_USING(QuantLib,Array)
 
-
-
 #include "boundarycondition.h"
-
 QL_USING(QuantLib::PDE,BoundaryCondition)
-
 typedef BoundaryCondition::Type BoundaryConditionType;
 
-
-
 #include "stringconverters.h"
-
 QL_USING(QuantLib,ConvertToLowercase)
 
-
-
 #include "tridiagonaloperator.h"
-
 QL_USING(QuantLib::Operators,TridiagonalOperator)
 
-
-
 #include "bsmeuropeanoption.h"
-
+#include "bsmamericanoption.h"
 QL_USING(QuantLib::Pricers,BSMEuropeanOption)
-
-
+QL_USING(QuantLib::Pricers,BSMAmericanOption)
 
 #include "bisection.h"
-
 #include "brent.h"
-
 #include "falseposition.h"
-
 #include "newton.h"
-
 #include "newtonsafe.h"
-
 #include "ridder.h"
-
 #include "secant.h"
-
-
 
 QL_USING(QuantLib,Function)
 
-
-
 QL_USING(QuantLib,Ensure)
 
-
-
 // its C++ container
-
 class PyFunction : public Function {
-
   public:
-
 	PyFunction(PyObject *pyFunction) : thePyFunction(pyFunction) {}
-
 	double value(double x) const {
-
 		PyObject* pyResult = PyObject_CallMethod(thePyFunction,"value","d",x);
-
 		Ensure(pyResult != NULL, "failed to call value() on Python object");
-
 		double result = PyFloat_AsDouble(pyResult);
-
 		Py_XDECREF(pyResult);
-
 		return result;
-
 	}
-
 	double derivative(double x) const {
-
 		PyObject* pyResult = PyObject_CallMethod(thePyFunction,"derivative","d",x);
-
 		Ensure(pyResult != NULL, "failed to call derivative() on Python object");
-
 		double result = PyFloat_AsDouble(pyResult);
-
 		Py_XDECREF(pyResult);
-
 		return result;
-
 	}
-
   private:
-
 	PyObject* thePyFunction;
-
 };
-
-
 
 QL_USING(QuantLib,Solver1D)
 
-
-
 QL_USING(QuantLib::Solvers1D,Bisection)
-
 QL_USING(QuantLib::Solvers1D,Brent)
-
 QL_USING(QuantLib::Solvers1D,FalsePosition)
-
 QL_USING(QuantLib::Solvers1D,Newton)
-
 QL_USING(QuantLib::Solvers1D,NewtonSafe)
-
 QL_USING(QuantLib::Solvers1D,Ridder)
-
 QL_USING(QuantLib::Solvers1D,Secant)
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1034,17 +786,12 @@ static PyObject *_wrap_DateFromSerialNumber(PyObject *self, PyObject *args, PyOb
     {
         try {
             result = new Date (DateFromSerialNumber(arg0));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -1062,17 +809,12 @@ static PyObject *_wrap_TARGET(PyObject *self, PyObject *args, PyObject *kwargs) 
     {
         try {
             result = new CalendarHandle (NewTARGET());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CalendarHandle);
     return resultobj;
@@ -1090,17 +832,12 @@ static PyObject *_wrap_NewYork(PyObject *self, PyObject *args, PyObject *kwargs)
     {
         try {
             result = new CalendarHandle (NewNewYork());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CalendarHandle);
     return resultobj;
@@ -1118,17 +855,12 @@ static PyObject *_wrap_London(PyObject *self, PyObject *args, PyObject *kwargs) 
     {
         try {
             result = new CalendarHandle (NewLondon());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CalendarHandle);
     return resultobj;
@@ -1146,17 +878,12 @@ static PyObject *_wrap_Frankfurt(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new CalendarHandle (NewFrankfurt());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CalendarHandle);
     return resultobj;
@@ -1174,17 +901,12 @@ static PyObject *_wrap_Milan(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CalendarHandle (NewMilan());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CalendarHandle);
     return resultobj;
@@ -1202,17 +924,12 @@ static PyObject *_wrap_Actual360(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new DayCounterHandle (NewActual360());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_DayCounterHandle);
     return resultobj;
@@ -1230,17 +947,12 @@ static PyObject *_wrap_Actual365(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new DayCounterHandle (NewActual365());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_DayCounterHandle);
     return resultobj;
@@ -1258,17 +970,12 @@ static PyObject *_wrap_Thirty360(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new DayCounterHandle (NewThirty360());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_DayCounterHandle);
     return resultobj;
@@ -1286,17 +993,12 @@ static PyObject *_wrap_Thirty360European(PyObject *self, PyObject *args, PyObjec
     {
         try {
             result = new DayCounterHandle (NewThirty360European());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_DayCounterHandle);
     return resultobj;
@@ -1314,17 +1016,12 @@ static PyObject *_wrap_Thirty360Italian(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new DayCounterHandle (NewThirty360Italian());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_DayCounterHandle);
     return resultobj;
@@ -1342,17 +1039,12 @@ static PyObject *_wrap_EUR(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewEUR());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CurrencyHandle);
     return resultobj;
@@ -1370,17 +1062,12 @@ static PyObject *_wrap_USD(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewUSD());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CurrencyHandle);
     return resultobj;
@@ -1398,17 +1085,12 @@ static PyObject *_wrap_GBP(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewGBP());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CurrencyHandle);
     return resultobj;
@@ -1426,17 +1108,12 @@ static PyObject *_wrap_DEM(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewDEM());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CurrencyHandle);
     return resultobj;
@@ -1454,17 +1131,12 @@ static PyObject *_wrap_ITL(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewITL());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CurrencyHandle);
     return resultobj;
@@ -1493,74 +1165,50 @@ static PyObject *_wrap_PiecewiseConstantForwards(PyObject *self, PyObject *args,
     {
         if (PyTuple_Check(obj3)) {
             int size = PyTuple_Size(obj3);
-
             arg3 = new std::vector<Deposit>(size);
-
             for (int i=0; i<size; i++) {
                 Deposit* d;
-
                 PyObject* o = PyTuple_GetItem(obj3,i);
-
                 if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
                     (*arg3)[i] = *d;
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"tuple must contain deposits");
-
                     delete arg3;
-
                     return NULL;
-
                 }
             }
         }else if (PyList_Check(obj3)) {
             int size = PyList_Size(obj3);
-
             arg3 = new std::vector<Deposit>(size);
-
             for (int i=0; i<size; i++) {
                 Deposit* d;
-
                 PyObject* o = PyList_GetItem(obj3,i);
-
                 if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
                     (*arg3)[i] = *d;
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"tuple must contain deposits");
-
                     delete arg3;
-
                     return NULL;
-
                 }
             }
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
-
             return NULL;
-
         }
     }
     {
         try {
             result = new TermStructureHandle (NewPiecewiseConstantForwards(*arg0,*arg1,*arg2,*arg3));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_TermStructureHandle);
     {
         delete arg3;
-
     }
     return resultobj;
 }
@@ -1579,17 +1227,12 @@ static PyObject *_wrap_Stock(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new InstrumentHandle (NewStock(arg0,arg1));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_InstrumentHandle);
     return resultobj;
@@ -1611,57 +1254,34 @@ static PyObject *_wrap_new_Date(PyObject *self, PyObject *args, PyObject *kwargs
     {
         if (PyString_Check(obj1)) {
             std::string s(PyString_AsString(obj1));
-
             ConvertToLowercase(s);
-
             if (s == "jan" || s == "january")			arg1 = new Month(January);
-
             else if (s == "feb" || s == "february")		arg1 = new Month(February);
-
             else if (s == "mar" || s == "march")		arg1 = new Month(March);
-
             else if (s == "apr" || s == "april")		arg1 = new Month(April);
-
             else if (s == "may")						arg1 = new Month(May);
-
             else if (s == "jun" || s == "june")			arg1 = new Month(June);
-
             else if (s == "jul" || s == "july")			arg1 = new Month(July);
-
             else if (s == "aug" || s == "august")		arg1 = new Month(August);
-
             else if (s == "sep" || s == "september")	arg1 = new Month(September);
-
             else if (s == "oct" || s == "october")		arg1 = new Month(October);
-
             else if (s == "nov" || s == "november")		arg1 = new Month(November);
-
             else if (s == "dec" || s == "december")		arg1 = new Month(December);
-
             else {
                 PyErr_SetString(PyExc_TypeError,"not a month");
-
                 return NULL;
-
             }
         }else if (PyInt_Check(obj1)) {
             int i = int(PyInt_AsLong(obj1));
-
             if (i>=1 && i<=12)
-
             arg1 = new Month(Month(i-1));
-
             else {
                 PyErr_SetString(PyExc_TypeError,"not a month");
-
                 return NULL;
-
             }
         }else {
             PyErr_SetString(PyExc_TypeError,"not a weekday");
-
             return NULL;
-
         }
     }
     {
@@ -1670,19 +1290,14 @@ static PyObject *_wrap_new_Date(PyObject *self, PyObject *args, PyObject *kwargs
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Date);
     {
         delete arg1;
-
     }
     return resultobj;
 }
@@ -1704,14 +1319,10 @@ static PyObject *_wrap_delete_Date(PyObject *self, PyObject *args, PyObject *kwa
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -1733,39 +1344,26 @@ static PyObject *_wrap_Date_dayOfWeek(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Weekday (arg0->dayOfWeek());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }{
         switch (*result) {
             case Sunday:		resultobj = PyString_FromString("Sunday");	break;
-
             case Monday:		resultobj = PyString_FromString("Monday");	break;
-
             case Tuesday:		resultobj = PyString_FromString("Tuesday");	break;
-
             case Wednesday:	resultobj = PyString_FromString("Wednesday");	break;
-
             case Thursday:	resultobj = PyString_FromString("Thursday");	break;
-
             case Friday:		resultobj = PyString_FromString("Friday");	break;
-
             case Saturday:	resultobj = PyString_FromString("Saturday");	break;
-
         }
     }
     {
         delete result;
-
     }
     return resultobj;
 }
@@ -1788,14 +1386,10 @@ static PyObject *_wrap_Date_dayOfMonth(PyObject *self, PyObject *args, PyObject 
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -1819,14 +1413,10 @@ static PyObject *_wrap_Date_dayOfYear(PyObject *self, PyObject *args, PyObject *
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -1847,49 +1437,31 @@ static PyObject *_wrap_Date_month(PyObject *self, PyObject *args, PyObject *kwar
     {
         try {
             result = new Month (arg0->month());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }{
         switch (*result) {
             case January:		resultobj = PyString_FromString("January");	break;
-
             case February:	resultobj = PyString_FromString("February");	break;
-
             case March:		resultobj = PyString_FromString("March");		break;
-
             case April:		resultobj = PyString_FromString("April");		break;
-
             case May:			resultobj = PyString_FromString("May");		break;
-
             case June:		resultobj = PyString_FromString("June");		break;
-
             case July:		resultobj = PyString_FromString("July");		break;
-
             case August:		resultobj = PyString_FromString("August");	break;
-
             case September:	resultobj = PyString_FromString("September");	break;
-
             case October:		resultobj = PyString_FromString("October");	break;
-
             case November:	resultobj = PyString_FromString("November");	break;
-
             case December:	resultobj = PyString_FromString("December");	break;
-
         }
     }
     {
         delete result;
-
     }
     return resultobj;
 }
@@ -1912,14 +1484,10 @@ static PyObject *_wrap_Date_year(PyObject *self, PyObject *args, PyObject *kwarg
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -1943,14 +1511,10 @@ static PyObject *_wrap_Date_serialNumber(PyObject *self, PyObject *args, PyObjec
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -1972,17 +1536,12 @@ static PyObject *_wrap_Date_plusDays(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new Date (arg0->plusDays(arg1));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -2004,17 +1563,12 @@ static PyObject *_wrap_Date_plusWeeks(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Date (arg0->plusWeeks(arg1));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -2036,17 +1590,12 @@ static PyObject *_wrap_Date_plusMonths(PyObject *self, PyObject *args, PyObject 
     {
         try {
             result = new Date (arg0->plusMonths(arg1));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -2068,17 +1617,12 @@ static PyObject *_wrap_Date_plusYears(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Date (arg0->plusYears(arg1));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -2102,49 +1646,33 @@ static PyObject *_wrap_Date_plus(PyObject *self, PyObject *args, PyObject *kwarg
     {
         if (PyString_Check(obj2)) {
             std::string s(PyString_AsString(obj2));
-
             ConvertToLowercase(s);
-
             if (s == "d" || s == "day" || s == "days")			arg2 = new TimeUnit(Days);
-
             else if (s == "w" || s == "week" || s == "weeks")	arg2 = new TimeUnit(Weeks);
-
             else if (s == "m" || s == "month" || s == "months")	arg2 = new TimeUnit(Months);
-
             else if (s == "y" || s == "year" || s == "years")	arg2 = new TimeUnit(Years);
-
             else {
                 PyErr_SetString(PyExc_TypeError,"unknown time unit");
-
                 return NULL;
-
             }
         }else {
             PyErr_SetString(PyExc_TypeError,"not a time unit");
-
             return NULL;
-
         }
     }
     {
         try {
             result = new Date (arg0->plus(arg1,*arg2));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     {
         delete arg2;
-
     }
     return resultobj;
 }
@@ -2165,14 +1693,10 @@ static PyObject *_wrap_Date_isLeap(PyObject *self, PyObject *args, PyObject *kwa
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -2190,17 +1714,12 @@ static PyObject *_wrap_Date_minDate(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date::minDate());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -2218,17 +1737,12 @@ static PyObject *_wrap_Date_maxDate(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date::maxDate());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -2238,7 +1752,6 @@ static PyObject *_wrap_Date_maxDate(PyObject *self, PyObject *args, PyObject *kw
 Date  Date___add__(Date *self,int days) {
     {
         return self->plusDays(days);
-
     }
 }
 
@@ -2258,17 +1771,12 @@ static PyObject *_wrap_Date___add__(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date___add__(arg0,arg1));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -2278,7 +1786,6 @@ static PyObject *_wrap_Date___add__(PyObject *self, PyObject *args, PyObject *kw
 Date  Date___sub__(Date *self,int days) {
     {
         return self->plusDays(-days);
-
     }
 }
 
@@ -2298,17 +1805,12 @@ static PyObject *_wrap_Date___sub__(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date___sub__(arg0,arg1));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -2318,11 +1820,8 @@ static PyObject *_wrap_Date___sub__(PyObject *self, PyObject *args, PyObject *kw
 char * Date___str__(Date *self) {
     {
         static char temp[256];
-
         strcpy(temp,DateFormat(*self).c_str());
-
         return temp;
-
     }
 }
 
@@ -2344,14 +1843,10 @@ static PyObject *_wrap_Date___str__(PyObject *self, PyObject *args, PyObject *kw
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -2361,13 +1856,9 @@ static PyObject *_wrap_Date___str__(PyObject *self, PyObject *args, PyObject *kw
 char * Date___repr__(Date *self) {
     {
         static char temp[256];
-
         std::string s = "<Date: "+DateFormat(*self)+">";
-
         strcpy(temp,s.c_str());
-
         return temp;
-
     }
 }
 
@@ -2389,14 +1880,10 @@ static PyObject *_wrap_Date___repr__(PyObject *self, PyObject *args, PyObject *k
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -2419,14 +1906,10 @@ static PyObject *_wrap_delete_Calendar(PyObject *self, PyObject *args, PyObject 
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -2437,7 +1920,6 @@ static PyObject *_wrap_delete_Calendar(PyObject *self, PyObject *args, PyObject 
 bool  CalendarHandle_isBusinessDay(CalendarHandle *self,Date const &d) {
     {
         return (*self)->isBusinessDay(d);
-
     }
 }
 
@@ -2462,14 +1944,10 @@ static PyObject *_wrap_Calendar_isBusinessDay(PyObject *self, PyObject *args, Py
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -2479,7 +1957,6 @@ static PyObject *_wrap_Calendar_isBusinessDay(PyObject *self, PyObject *args, Py
 bool  CalendarHandle_isHoliday(CalendarHandle *self,Date const &d) {
     {
         return (*self)->isHoliday(d);
-
     }
 }
 
@@ -2504,14 +1981,10 @@ static PyObject *_wrap_Calendar_isHoliday(PyObject *self, PyObject *args, PyObje
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -2521,7 +1994,6 @@ static PyObject *_wrap_Calendar_isHoliday(PyObject *self, PyObject *args, PyObje
 Date  CalendarHandle_roll(CalendarHandle *self,Date const &d,bool modified) {
     {
         return (*self)->roll(modified ? ModifiedFollowing : Following, d);
-
     }
 }
 
@@ -2546,17 +2018,12 @@ static PyObject *_wrap_Calendar_roll(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new Date (CalendarHandle_roll(arg0,(Date const &)*arg1,arg2));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -2566,7 +2033,6 @@ static PyObject *_wrap_Calendar_roll(PyObject *self, PyObject *args, PyObject *k
 Date  CalendarHandle_advance(CalendarHandle *self,Date const &d,int businessDays) {
     {
         return (*self)->advance(d,businessDays);
-
     }
 }
 
@@ -2589,17 +2055,12 @@ static PyObject *_wrap_Calendar_advance(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new Date (CalendarHandle_advance(arg0,(Date const &)*arg1,arg2));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -2609,11 +2070,8 @@ static PyObject *_wrap_Calendar_advance(PyObject *self, PyObject *args, PyObject
 char * CalendarHandle___str__(CalendarHandle *self) {
     {
         static char temp[256];
-
         sprintf(temp,"%s calendar",(*self)->name().c_str());
-
         return temp;
-
     }
 }
 
@@ -2635,14 +2093,10 @@ static PyObject *_wrap_Calendar___str__(PyObject *self, PyObject *args, PyObject
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -2652,11 +2106,8 @@ static PyObject *_wrap_Calendar___str__(PyObject *self, PyObject *args, PyObject
 char * CalendarHandle___repr__(CalendarHandle *self) {
     {
         static char temp[256];
-
         sprintf(temp,"<%s calendar>",(*self)->name().c_str());
-
         return temp;
-
     }
 }
 
@@ -2678,14 +2129,10 @@ static PyObject *_wrap_Calendar___repr__(PyObject *self, PyObject *args, PyObjec
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -2695,7 +2142,6 @@ static PyObject *_wrap_Calendar___repr__(PyObject *self, PyObject *args, PyObjec
 int  CalendarHandle___cmp__(CalendarHandle *self,CalendarHandle const &other) {
     {
         return ((*self) == other ? 0 : 1);
-
     }
 }
 
@@ -2720,14 +2166,10 @@ static PyObject *_wrap_Calendar___cmp__(PyObject *self, PyObject *args, PyObject
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -2737,7 +2179,6 @@ static PyObject *_wrap_Calendar___cmp__(PyObject *self, PyObject *args, PyObject
 int  CalendarHandle___nonzero__(CalendarHandle *self) {
     {
         return (IsNull(*self) ? 0 : 1);
-
     }
 }
 
@@ -2759,14 +2200,10 @@ static PyObject *_wrap_Calendar___nonzero__(PyObject *self, PyObject *args, PyOb
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -2789,14 +2226,10 @@ static PyObject *_wrap_delete_DayCounter(PyObject *self, PyObject *args, PyObjec
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -2807,7 +2240,6 @@ static PyObject *_wrap_delete_DayCounter(PyObject *self, PyObject *args, PyObjec
 int  DayCounterHandle_dayCount(DayCounterHandle *self,Date const &d1,Date const &d2) {
     {
         return (*self)->dayCount(d1,d2);
-
     }
 }
 
@@ -2835,14 +2267,10 @@ static PyObject *_wrap_DayCounter_dayCount(PyObject *self, PyObject *args, PyObj
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -2852,7 +2280,6 @@ static PyObject *_wrap_DayCounter_dayCount(PyObject *self, PyObject *args, PyObj
 Time  DayCounterHandle_yearFraction(DayCounterHandle *self,Date const &d1,Date const &d2) {
     {
         return (*self)->yearFraction(d1,d2);
-
     }
 }
 
@@ -2880,14 +2307,10 @@ static PyObject *_wrap_DayCounter_yearFraction(PyObject *self, PyObject *args, P
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -2897,11 +2320,8 @@ static PyObject *_wrap_DayCounter_yearFraction(PyObject *self, PyObject *args, P
 char * DayCounterHandle___str__(DayCounterHandle *self) {
     {
         static char temp[256];
-
         sprintf(temp,"%s day counter",(*self)->name().c_str());
-
         return temp;
-
     }
 }
 
@@ -2923,14 +2343,10 @@ static PyObject *_wrap_DayCounter___str__(PyObject *self, PyObject *args, PyObje
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -2940,11 +2356,8 @@ static PyObject *_wrap_DayCounter___str__(PyObject *self, PyObject *args, PyObje
 char * DayCounterHandle___repr__(DayCounterHandle *self) {
     {
         static char temp[256];
-
         sprintf(temp,"<%s day counter>",(*self)->name().c_str());
-
         return temp;
-
     }
 }
 
@@ -2966,14 +2379,10 @@ static PyObject *_wrap_DayCounter___repr__(PyObject *self, PyObject *args, PyObj
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -2983,7 +2392,6 @@ static PyObject *_wrap_DayCounter___repr__(PyObject *self, PyObject *args, PyObj
 int  DayCounterHandle___cmp__(DayCounterHandle *self,DayCounterHandle const &other) {
     {
         return ((*self) == other ? 0 : 1);
-
     }
 }
 
@@ -3008,14 +2416,10 @@ static PyObject *_wrap_DayCounter___cmp__(PyObject *self, PyObject *args, PyObje
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -3025,7 +2429,6 @@ static PyObject *_wrap_DayCounter___cmp__(PyObject *self, PyObject *args, PyObje
 int  DayCounterHandle___nonzero__(DayCounterHandle *self) {
     {
         return (IsNull(*self) ? 0 : 1);
-
     }
 }
 
@@ -3047,14 +2450,10 @@ static PyObject *_wrap_DayCounter___nonzero__(PyObject *self, PyObject *args, Py
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -3077,14 +2476,10 @@ static PyObject *_wrap_delete_Currency(PyObject *self, PyObject *args, PyObject 
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -3095,7 +2490,6 @@ static PyObject *_wrap_delete_Currency(PyObject *self, PyObject *args, PyObject 
 CalendarHandle  CurrencyHandle_settlementCalendar(CurrencyHandle *self) {
     {
         return (*self)->settlementCalendar();
-
     }
 }
 
@@ -3114,17 +2508,12 @@ static PyObject *_wrap_Currency_settlementCalendar(PyObject *self, PyObject *arg
     {
         try {
             result = new CalendarHandle (CurrencyHandle_settlementCalendar(arg0));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CalendarHandle);
     return resultobj;
@@ -3134,7 +2523,6 @@ static PyObject *_wrap_Currency_settlementCalendar(PyObject *self, PyObject *arg
 int  CurrencyHandle_settlementDays(CurrencyHandle *self) {
     {
         return (*self)->settlementDays();
-
     }
 }
 
@@ -3156,14 +2544,10 @@ static PyObject *_wrap_Currency_settlementDays(PyObject *self, PyObject *args, P
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -3173,7 +2557,6 @@ static PyObject *_wrap_Currency_settlementDays(PyObject *self, PyObject *args, P
 Date  CurrencyHandle_settlementDate(CurrencyHandle *self,Date const &d) {
     {
         return (*self)->settlementDate(d);
-
     }
 }
 
@@ -3195,17 +2578,12 @@ static PyObject *_wrap_Currency_settlementDate(PyObject *self, PyObject *args, P
     {
         try {
             result = new Date (CurrencyHandle_settlementDate(arg0,(Date const &)*arg1));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -3215,11 +2593,8 @@ static PyObject *_wrap_Currency_settlementDate(PyObject *self, PyObject *args, P
 char * CurrencyHandle___str__(CurrencyHandle *self) {
     {
         static char temp[256];
-
         sprintf(temp,"%s currency",(*self)->name().c_str());
-
         return temp;
-
     }
 }
 
@@ -3241,14 +2616,10 @@ static PyObject *_wrap_Currency___str__(PyObject *self, PyObject *args, PyObject
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -3258,11 +2629,8 @@ static PyObject *_wrap_Currency___str__(PyObject *self, PyObject *args, PyObject
 char * CurrencyHandle___repr__(CurrencyHandle *self) {
     {
         static char temp[256];
-
         sprintf(temp,"<%s currency>",(*self)->name().c_str());
-
         return temp;
-
     }
 }
 
@@ -3284,14 +2652,10 @@ static PyObject *_wrap_Currency___repr__(PyObject *self, PyObject *args, PyObjec
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -3301,7 +2665,6 @@ static PyObject *_wrap_Currency___repr__(PyObject *self, PyObject *args, PyObjec
 int  CurrencyHandle___cmp__(CurrencyHandle *self,CurrencyHandle const &other) {
     {
         return ((*self) == other ? 0 : 1);
-
     }
 }
 
@@ -3326,14 +2689,10 @@ static PyObject *_wrap_Currency___cmp__(PyObject *self, PyObject *args, PyObject
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -3343,7 +2702,6 @@ static PyObject *_wrap_Currency___cmp__(PyObject *self, PyObject *args, PyObject
 int  CurrencyHandle___nonzero__(CurrencyHandle *self) {
     {
         return (IsNull(*self) ? 0 : 1);
-
     }
 }
 
@@ -3365,14 +2723,10 @@ static PyObject *_wrap_Currency___nonzero__(PyObject *self, PyObject *args, PyOb
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -3395,14 +2749,10 @@ static PyObject *_wrap_delete_TermStructure(PyObject *self, PyObject *args, PyOb
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -3413,7 +2763,6 @@ static PyObject *_wrap_delete_TermStructure(PyObject *self, PyObject *args, PyOb
 TermStructureHandle  TermStructureHandle_clone(TermStructureHandle *self) {
     {
         return (*self)->clone();
-
     }
 }
 
@@ -3432,17 +2781,12 @@ static PyObject *_wrap_TermStructure_clone(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new TermStructureHandle (TermStructureHandle_clone(arg0));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_TermStructureHandle);
     return resultobj;
@@ -3452,7 +2796,6 @@ static PyObject *_wrap_TermStructure_clone(PyObject *self, PyObject *args, PyObj
 CurrencyHandle  TermStructureHandle_currency(TermStructureHandle *self) {
     {
         return (*self)->currency();
-
     }
 }
 
@@ -3471,17 +2814,12 @@ static PyObject *_wrap_TermStructure_currency(PyObject *self, PyObject *args, Py
     {
         try {
             result = new CurrencyHandle (TermStructureHandle_currency(arg0));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CurrencyHandle);
     return resultobj;
@@ -3491,7 +2829,6 @@ static PyObject *_wrap_TermStructure_currency(PyObject *self, PyObject *args, Py
 Date  TermStructureHandle_todaysDate(TermStructureHandle *self) {
     {
         return (*self)->todaysDate();
-
     }
 }
 
@@ -3510,17 +2847,12 @@ static PyObject *_wrap_TermStructure_todaysDate(PyObject *self, PyObject *args, 
     {
         try {
             result = new Date (TermStructureHandle_todaysDate(arg0));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -3530,7 +2862,6 @@ static PyObject *_wrap_TermStructure_todaysDate(PyObject *self, PyObject *args, 
 Date  TermStructureHandle_settlementDate(TermStructureHandle *self) {
     {
         return (*self)->settlementDate();
-
     }
 }
 
@@ -3549,17 +2880,12 @@ static PyObject *_wrap_TermStructure_settlementDate(PyObject *self, PyObject *ar
     {
         try {
             result = new Date (TermStructureHandle_settlementDate(arg0));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -3569,7 +2895,6 @@ static PyObject *_wrap_TermStructure_settlementDate(PyObject *self, PyObject *ar
 CalendarHandle  TermStructureHandle_calendar(TermStructureHandle *self) {
     {
         return (*self)->calendar();
-
     }
 }
 
@@ -3588,17 +2913,12 @@ static PyObject *_wrap_TermStructure_calendar(PyObject *self, PyObject *args, Py
     {
         try {
             result = new CalendarHandle (TermStructureHandle_calendar(arg0));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CalendarHandle);
     return resultobj;
@@ -3608,7 +2928,6 @@ static PyObject *_wrap_TermStructure_calendar(PyObject *self, PyObject *args, Py
 Date  TermStructureHandle_maxDate(TermStructureHandle *self) {
     {
         return (*self)->maxDate();
-
     }
 }
 
@@ -3627,17 +2946,12 @@ static PyObject *_wrap_TermStructure_maxDate(PyObject *self, PyObject *args, PyO
     {
         try {
             result = new Date (TermStructureHandle_maxDate(arg0));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -3647,7 +2961,6 @@ static PyObject *_wrap_TermStructure_maxDate(PyObject *self, PyObject *args, PyO
 Date  TermStructureHandle_minDate(TermStructureHandle *self) {
     {
         return (*self)->minDate();
-
     }
 }
 
@@ -3666,17 +2979,12 @@ static PyObject *_wrap_TermStructure_minDate(PyObject *self, PyObject *args, PyO
     {
         try {
             result = new Date (TermStructureHandle_minDate(arg0));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -3686,7 +2994,6 @@ static PyObject *_wrap_TermStructure_minDate(PyObject *self, PyObject *args, PyO
 Yield  TermStructureHandle_zeroYield(TermStructureHandle *self,Date const &d) {
     {
         return (*self)->zeroYield(d);
-
     }
 }
 
@@ -3711,14 +3018,10 @@ static PyObject *_wrap_TermStructure_zeroYield(PyObject *self, PyObject *args, P
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -3728,7 +3031,6 @@ static PyObject *_wrap_TermStructure_zeroYield(PyObject *self, PyObject *args, P
 DiscountFactor  TermStructureHandle_discount(TermStructureHandle *self,Date const &d) {
     {
         return (*self)->discount(d);
-
     }
 }
 
@@ -3753,14 +3055,10 @@ static PyObject *_wrap_TermStructure_discount(PyObject *self, PyObject *args, Py
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -3770,7 +3068,6 @@ static PyObject *_wrap_TermStructure_discount(PyObject *self, PyObject *args, Py
 Yield  TermStructureHandle_forward(TermStructureHandle *self,Date const &d) {
     {
         return (*self)->forward(d);
-
     }
 }
 
@@ -3795,14 +3092,10 @@ static PyObject *_wrap_TermStructure_forward(PyObject *self, PyObject *args, PyO
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -3812,11 +3105,8 @@ static PyObject *_wrap_TermStructure_forward(PyObject *self, PyObject *args, PyO
 char * TermStructureHandle___str__(TermStructureHandle *self) {
     {
         static char temp[256];
-
         sprintf(temp,"Term structure");
-
         return temp;
-
     }
 }
 
@@ -3838,14 +3128,10 @@ static PyObject *_wrap_TermStructure___str__(PyObject *self, PyObject *args, PyO
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -3855,11 +3141,8 @@ static PyObject *_wrap_TermStructure___str__(PyObject *self, PyObject *args, PyO
 char * TermStructureHandle___repr__(TermStructureHandle *self) {
     {
         static char temp[256];
-
         sprintf(temp,"<Term structure>");
-
         return temp;
-
     }
 }
 
@@ -3881,14 +3164,10 @@ static PyObject *_wrap_TermStructure___repr__(PyObject *self, PyObject *args, Py
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -3898,7 +3177,6 @@ static PyObject *_wrap_TermStructure___repr__(PyObject *self, PyObject *args, Py
 int  TermStructureHandle___nonzero__(TermStructureHandle *self) {
     {
         return (IsNull(*self) ? 0 : 1);
-
     }
 }
 
@@ -3920,14 +3198,10 @@ static PyObject *_wrap_TermStructure___nonzero__(PyObject *self, PyObject *args,
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -3955,14 +3229,10 @@ static PyObject *_wrap_new_Deposit(PyObject *self, PyObject *args, PyObject *kwa
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Deposit);
     return resultobj;
@@ -3985,14 +3255,10 @@ static PyObject *_wrap_delete_Deposit(PyObject *self, PyObject *args, PyObject *
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -4014,17 +3280,12 @@ static PyObject *_wrap_Deposit_maturity(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new Date (arg0->maturity());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
     return resultobj;
@@ -4048,14 +3309,10 @@ static PyObject *_wrap_Deposit_rate(PyObject *self, PyObject *args, PyObject *kw
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -4076,17 +3333,12 @@ static PyObject *_wrap_Deposit_dayCounter(PyObject *self, PyObject *args, PyObje
     {
         try {
             result = new DayCounterHandle (arg0->dayCounter());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_DayCounterHandle);
     return resultobj;
@@ -4109,14 +3361,10 @@ static PyObject *_wrap_delete_Instrument(PyObject *self, PyObject *args, PyObjec
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -4127,7 +3375,6 @@ static PyObject *_wrap_delete_Instrument(PyObject *self, PyObject *args, PyObjec
 void  InstrumentHandle_setPrice(InstrumentHandle *self,double price) {
     {
         (*self)->setPrice(price);
-
     }
 }
 
@@ -4149,14 +3396,10 @@ static PyObject *_wrap_Instrument_setPrice(PyObject *self, PyObject *args, PyObj
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -4167,7 +3410,6 @@ static PyObject *_wrap_Instrument_setPrice(PyObject *self, PyObject *args, PyObj
 void  InstrumentHandle_setTermStructure(InstrumentHandle *self,TermStructureHandle h) {
     {
         (*self)->setTermStructure(h);
-
     }
 }
 
@@ -4191,14 +3433,10 @@ static PyObject *_wrap_Instrument_setTermStructure(PyObject *self, PyObject *arg
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -4209,11 +3447,8 @@ static PyObject *_wrap_Instrument_setTermStructure(PyObject *self, PyObject *arg
 char * InstrumentHandle_isinCode(InstrumentHandle *self) {
     {
         static char temp[256];
-
         strcpy(temp,(*self)->isinCode().c_str());
-
         return temp;
-
     }
 }
 
@@ -4235,14 +3470,10 @@ static PyObject *_wrap_Instrument_isinCode(PyObject *self, PyObject *args, PyObj
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -4252,11 +3483,8 @@ static PyObject *_wrap_Instrument_isinCode(PyObject *self, PyObject *args, PyObj
 char * InstrumentHandle_description(InstrumentHandle *self) {
     {
         static char temp[256];
-
         strcpy(temp,(*self)->description().c_str());
-
         return temp;
-
     }
 }
 
@@ -4278,14 +3506,10 @@ static PyObject *_wrap_Instrument_description(PyObject *self, PyObject *args, Py
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -4295,7 +3519,6 @@ static PyObject *_wrap_Instrument_description(PyObject *self, PyObject *args, Py
 TermStructureHandle  InstrumentHandle_termStructure(InstrumentHandle *self) {
     {
         return (*self)->termStructure();
-
     }
 }
 
@@ -4314,17 +3537,12 @@ static PyObject *_wrap_Instrument_termStructure(PyObject *self, PyObject *args, 
     {
         try {
             result = new TermStructureHandle (InstrumentHandle_termStructure(arg0));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_TermStructureHandle);
     return resultobj;
@@ -4334,7 +3552,6 @@ static PyObject *_wrap_Instrument_termStructure(PyObject *self, PyObject *args, 
 double  InstrumentHandle_NPV(InstrumentHandle *self) {
     {
         return (*self)->NPV();
-
     }
 }
 
@@ -4356,14 +3573,10 @@ static PyObject *_wrap_Instrument_NPV(PyObject *self, PyObject *args, PyObject *
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -4373,7 +3586,6 @@ static PyObject *_wrap_Instrument_NPV(PyObject *self, PyObject *args, PyObject *
 double  InstrumentHandle_price(InstrumentHandle *self) {
     {
         return (*self)->price();
-
     }
 }
 
@@ -4395,14 +3607,10 @@ static PyObject *_wrap_Instrument_price(PyObject *self, PyObject *args, PyObject
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -4412,11 +3620,8 @@ static PyObject *_wrap_Instrument_price(PyObject *self, PyObject *args, PyObject
 char * InstrumentHandle___str__(InstrumentHandle *self) {
     {
         static char temp[256];
-
         strcpy(temp,Representation(*self).c_str());
-
         return temp;
-
     }
 }
 
@@ -4438,14 +3643,10 @@ static PyObject *_wrap_Instrument___str__(PyObject *self, PyObject *args, PyObje
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -4455,13 +3656,9 @@ static PyObject *_wrap_Instrument___str__(PyObject *self, PyObject *args, PyObje
 char * InstrumentHandle___repr__(InstrumentHandle *self) {
     {
         static char temp[256];
-
         std::string s = "<Handle<Instrument>: "+Representation(*self)+">";
-
         strcpy(temp,s.c_str());
-
         return temp;
-
     }
 }
 
@@ -4483,14 +3680,10 @@ static PyObject *_wrap_Instrument___repr__(PyObject *self, PyObject *args, PyObj
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyString_FromString(result);
     return resultobj;
@@ -4500,7 +3693,6 @@ static PyObject *_wrap_Instrument___repr__(PyObject *self, PyObject *args, PyObj
 int  InstrumentHandle___cmp__(InstrumentHandle *self,InstrumentHandle const &other) {
     {
         return ((*self) == other ? 0 : 1);
-
     }
 }
 
@@ -4525,14 +3717,10 @@ static PyObject *_wrap_Instrument___cmp__(PyObject *self, PyObject *args, PyObje
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -4542,7 +3730,6 @@ static PyObject *_wrap_Instrument___cmp__(PyObject *self, PyObject *args, PyObje
 int  InstrumentHandle___nonzero__(InstrumentHandle *self) {
     {
         return (IsNull(*self) ? 0 : 1);
-
     }
 }
 
@@ -4564,14 +3751,10 @@ static PyObject *_wrap_Instrument___nonzero__(PyObject *self, PyObject *args, Py
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -4592,26 +3775,17 @@ static PyObject *_wrap_new_BoundaryCondition(PyObject *self, PyObject *args, PyO
     {
         if (PyString_Check(obj0)) {
             std::string s(PyString_AsString(obj0));
-
             ConvertToLowercase(s);
-
             if (s == "" || s == "none")	arg0 = new BoundaryConditionType(BoundaryCondition::None);
-
             else if (s == "neumann")	arg0 = new BoundaryConditionType(BoundaryCondition::Neumann);
-
             else if (s == "dirichlet")	arg0 = new BoundaryConditionType(BoundaryCondition::Dirichlet);
-
             else {
                 PyErr_SetString(PyExc_TypeError,"not a boundary condition type");
-
                 return NULL;
-
             }
         }else {
             PyErr_SetString(PyExc_TypeError,"not a boundary condition type");
-
             return NULL;
-
         }
     }
     {
@@ -4620,19 +3794,14 @@ static PyObject *_wrap_new_BoundaryCondition(PyObject *self, PyObject *args, PyO
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_BoundaryCondition);
     {
         delete arg0;
-
     }
     return resultobj;
 }
@@ -4652,31 +3821,22 @@ static PyObject *_wrap_BoundaryCondition_type(PyObject *self, PyObject *args, Py
     {
         try {
             result = new BoundaryConditionType (arg0->type());
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }{
         switch (*result) {
             case BoundaryCondition::None:			resultobj = PyString_FromString("None");		break;
-
             case BoundaryCondition::Neumann:		resultobj = PyString_FromString("Neumann");	break;
-
             case BoundaryCondition::Dirichlet:	resultobj = PyString_FromString("Dirichlet");	break;
-
         }
     }
     {
         delete result;
-
     }
     return resultobj;
 }
@@ -4699,14 +3859,10 @@ static PyObject *_wrap_BoundaryCondition_value(PyObject *self, PyObject *args, P
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -4730,163 +3886,109 @@ static PyObject *_wrap_new_TridiagonalOperator(PyObject *self, PyObject *args, P
     {
         if (PyTuple_Check(obj0)) {
             int size = PyTuple_Size(obj0);
-
             arg0 = new Array(size);
-
             for (int i=0; i<size; i++) {
                 PyObject* o = PyTuple_GetItem(obj0,i);
-
                 if (PyFloat_Check(o)) {
                     (*arg0)[i] = PyFloat_AsDouble(o);
-
                 }else if (PyInt_Check(o)) {
                     (*arg0)[i] = double(PyInt_AsLong(o));
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-
                     delete arg0;
-
                     return NULL;
-
                 }
             }
         }else if (PyList_Check(obj0)) {
             int size = PyList_Size(obj0);
-
             arg0 = new Array(size);
-
             for (int i=0; i<size; i++) {
                 PyObject* o = PyList_GetItem(obj0,i);
-
                 if (PyFloat_Check(o)) {
                     (*arg0)[i] = PyFloat_AsDouble(o);
-
                 }else if (PyInt_Check(o)) {
                     (*arg0)[i] = double(PyInt_AsLong(o));
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-
                     delete arg0;
-
                     return NULL;
-
                 }
             }
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
-
             return NULL;
-
         }
     }
     {
         if (PyTuple_Check(obj1)) {
             int size = PyTuple_Size(obj1);
-
             arg1 = new Array(size);
-
             for (int i=0; i<size; i++) {
                 PyObject* o = PyTuple_GetItem(obj1,i);
-
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
-
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-
                     delete arg1;
-
                     return NULL;
-
                 }
             }
         }else if (PyList_Check(obj1)) {
             int size = PyList_Size(obj1);
-
             arg1 = new Array(size);
-
             for (int i=0; i<size; i++) {
                 PyObject* o = PyList_GetItem(obj1,i);
-
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
-
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-
                     delete arg1;
-
                     return NULL;
-
                 }
             }
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
-
             return NULL;
-
         }
     }
     {
         if (PyTuple_Check(obj2)) {
             int size = PyTuple_Size(obj2);
-
             arg2 = new Array(size);
-
             for (int i=0; i<size; i++) {
                 PyObject* o = PyTuple_GetItem(obj2,i);
-
                 if (PyFloat_Check(o)) {
                     (*arg2)[i] = PyFloat_AsDouble(o);
-
                 }else if (PyInt_Check(o)) {
                     (*arg2)[i] = double(PyInt_AsLong(o));
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-
                     delete arg2;
-
                     return NULL;
-
                 }
             }
         }else if (PyList_Check(obj2)) {
             int size = PyList_Size(obj2);
-
             arg2 = new Array(size);
-
             for (int i=0; i<size; i++) {
                 PyObject* o = PyList_GetItem(obj2,i);
-
                 if (PyFloat_Check(o)) {
                     (*arg2)[i] = PyFloat_AsDouble(o);
-
                 }else if (PyInt_Check(o)) {
                     (*arg2)[i] = double(PyInt_AsLong(o));
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-
                     delete arg2;
-
                     return NULL;
-
                 }
             }
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
-
             return NULL;
-
         }
     }
     {
@@ -4895,27 +3997,20 @@ static PyObject *_wrap_new_TridiagonalOperator(PyObject *self, PyObject *args, P
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_TridiagonalOperator);
     {
         delete arg0;
-
     }
     {
         delete arg1;
-
     }
     {
         delete arg2;
-
     }
     return resultobj;
 }
@@ -4937,87 +4032,59 @@ static PyObject *_wrap_TridiagonalOperator_solveFor(PyObject *self, PyObject *ar
     {
         if (PyTuple_Check(obj1)) {
             int size = PyTuple_Size(obj1);
-
             arg1 = new Array(size);
-
             for (int i=0; i<size; i++) {
                 PyObject* o = PyTuple_GetItem(obj1,i);
-
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
-
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-
                     delete arg1;
-
                     return NULL;
-
                 }
             }
         }else if (PyList_Check(obj1)) {
             int size = PyList_Size(obj1);
-
             arg1 = new Array(size);
-
             for (int i=0; i<size; i++) {
                 PyObject* o = PyList_GetItem(obj1,i);
-
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
-
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-
                     delete arg1;
-
                     return NULL;
-
                 }
             }
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
-
             return NULL;
-
         }
     }
     {
         try {
             result = new Array (arg0->solveFor(*arg1));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }{
         resultobj = PyTuple_New(result->size());
-
         for (int i=0; i<result->size(); i++)
-
         PyTuple_SetItem(resultobj,i,PyFloat_FromDouble((*result)[i]));
-
     }
     {
         delete arg1;
-
     }
     {
         delete result;
-
     }
     return resultobj;
 }
@@ -5039,87 +4106,59 @@ static PyObject *_wrap_TridiagonalOperator_applyTo(PyObject *self, PyObject *arg
     {
         if (PyTuple_Check(obj1)) {
             int size = PyTuple_Size(obj1);
-
             arg1 = new Array(size);
-
             for (int i=0; i<size; i++) {
                 PyObject* o = PyTuple_GetItem(obj1,i);
-
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
-
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-
                     delete arg1;
-
                     return NULL;
-
                 }
             }
         }else if (PyList_Check(obj1)) {
             int size = PyList_Size(obj1);
-
             arg1 = new Array(size);
-
             for (int i=0; i<size; i++) {
                 PyObject* o = PyList_GetItem(obj1,i);
-
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
-
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-
                 }else {
                     PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-
                     delete arg1;
-
                     return NULL;
-
                 }
             }
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
-
             return NULL;
-
         }
     }
     {
         try {
             result = new Array (arg0->applyTo(*arg1));
-
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }{
         resultobj = PyTuple_New(result->size());
-
         for (int i=0; i<result->size(); i++)
-
         PyTuple_SetItem(resultobj,i,PyFloat_FromDouble((*result)[i]));
-
     }
     {
         delete arg1;
-
     }
     {
         delete result;
-
     }
     return resultobj;
 }
@@ -5142,14 +4181,10 @@ static PyObject *_wrap_TridiagonalOperator_size(PyObject *self, PyObject *args, 
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyInt_FromLong((long)result);
     return resultobj;
@@ -5175,14 +4210,10 @@ static PyObject *_wrap_TridiagonalOperator_setLowerBC(PyObject *self, PyObject *
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5209,14 +4240,10 @@ static PyObject *_wrap_TridiagonalOperator_setHigherBC(PyObject *self, PyObject 
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5242,14 +4269,10 @@ static PyObject *_wrap_TridiagonalOperator_setFirstRow(PyObject *self, PyObject 
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5277,14 +4300,10 @@ static PyObject *_wrap_TridiagonalOperator_setMidRow(PyObject *self, PyObject *a
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5311,14 +4330,10 @@ static PyObject *_wrap_TridiagonalOperator_setMidRows(PyObject *self, PyObject *
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5344,14 +4359,10 @@ static PyObject *_wrap_TridiagonalOperator_setLastRow(PyObject *self, PyObject *
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5380,30 +4391,19 @@ static PyObject *_wrap_new_BSMEuropeanOption(PyObject *self, PyObject *args, PyO
     {
         if (PyString_Check(obj0)) {
             arg0 = new OptionType;
-
             std::string s(PyString_AsString(obj0));
-
             ConvertToLowercase(s);
-
             if (s == "call")				*(arg0) = Option::Call;
-
             else if (s == "put")			*(arg0) = Option::Put;
-
             else if (s == "straddle")		*(arg0) = Option::Straddle;
-
             else {
                 PyErr_SetString(PyExc_TypeError,"unknown option type");
-
                 delete arg0;
-
                 return NULL;
-
             }
         }else {
             PyErr_SetString(PyExc_TypeError,"not an option type");
-
             return NULL;
-
         }
     }
     {
@@ -5412,19 +4412,14 @@ static PyObject *_wrap_new_BSMEuropeanOption(PyObject *self, PyObject *args, PyO
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_BSMEuropeanOption);
     {
         delete arg0;
-
     }
     return resultobj;
 }
@@ -5447,14 +4442,92 @@ static PyObject *_wrap_BSMEuropeanOption_value(PyObject *self, PyObject *args, P
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
 
+
+static PyObject *_wrap_new_BSMAmericanOption(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    OptionType *arg0 ;
+    double arg1 ;
+    double arg2 ;
+    Yield arg3 ;
+    Yield arg4 ;
+    Time arg5 ;
+    double arg6 ;
+    int arg7 ;
+    int arg8 ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "type","underlying","strike","underlyingGrowthRate","riskFreeRate","residualTime","volatility","timeSteps","gridPoints", NULL 
+    };
+    BSMAmericanOption *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oddddddii:new_BSMAmericanOption",kwnames,&obj0,&arg1,&arg2,&arg3,&arg4,&arg5,&arg6,&arg7,&arg8)) return NULL;
+    {
+        if (PyString_Check(obj0)) {
+            arg0 = new OptionType;
+            std::string s(PyString_AsString(obj0));
+            ConvertToLowercase(s);
+            if (s == "call")				*(arg0) = Option::Call;
+            else if (s == "put")			*(arg0) = Option::Put;
+            else if (s == "straddle")		*(arg0) = Option::Straddle;
+            else {
+                PyErr_SetString(PyExc_TypeError,"unknown option type");
+                delete arg0;
+                return NULL;
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not an option type");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (BSMAmericanOption *)new BSMAmericanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_BSMAmericanOption);
+    {
+        delete arg0;
+    }
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMAmericanOption_value(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMAmericanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMAmericanOption_value",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMAmericanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->value();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -5479,14 +4552,10 @@ static PyObject *_wrap_Function_value(PyObject *self, PyObject *args, PyObject *
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -5511,14 +4580,10 @@ static PyObject *_wrap_Function_derivative(PyObject *self, PyObject *args, PyObj
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -5548,14 +4613,10 @@ static PyObject *_wrap_Solver1D_solve(PyObject *self, PyObject *args, PyObject *
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -5586,14 +4647,10 @@ static PyObject *_wrap_Solver1D_bracketedSolve(PyObject *self, PyObject *args, P
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -5617,14 +4674,10 @@ static PyObject *_wrap_Solver1D_setMaxEvaluations(PyObject *self, PyObject *args
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5635,9 +4688,7 @@ static PyObject *_wrap_Solver1D_setMaxEvaluations(PyObject *self, PyObject *args
 double  Solver1D_pySolve(Solver1D *self,PyObject *pyFunction,double xAccuracy,double guess,double step) {
     {
         PyFunction f(pyFunction);
-
         return self->solve(f, xAccuracy, guess, step);
-
     }
 }
 
@@ -5660,7 +4711,6 @@ static PyObject *_wrap_Solver1D_pySolve(PyObject *self, PyObject *args, PyObject
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Solver1D,1)) == -1) return NULL;
     {
         arg1 = obj1;
-
     }
     {
         try {
@@ -5668,14 +4718,10 @@ static PyObject *_wrap_Solver1D_pySolve(PyObject *self, PyObject *args, PyObject
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -5685,9 +4731,7 @@ static PyObject *_wrap_Solver1D_pySolve(PyObject *self, PyObject *args, PyObject
 double  Solver1D_pyBracketedSolve(Solver1D *self,PyObject *pyFunction,double xAccuracy,double guess,double xMin,double xMax) {
     {
         PyFunction f(pyFunction);
-
         return self->solve(f, xAccuracy, guess, xMin, xMax);
-
     }
 }
 
@@ -5711,7 +4755,6 @@ static PyObject *_wrap_Solver1D_pyBracketedSolve(PyObject *self, PyObject *args,
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Solver1D,1)) == -1) return NULL;
     {
         arg1 = obj1;
-
     }
     {
         try {
@@ -5719,14 +4762,10 @@ static PyObject *_wrap_Solver1D_pyBracketedSolve(PyObject *self, PyObject *args,
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = PyFloat_FromDouble(result);
     return resultobj;
@@ -5747,14 +4786,10 @@ static PyObject *_wrap_new_Bisection(PyObject *self, PyObject *args, PyObject *k
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Bisection);
     return resultobj;
@@ -5777,14 +4812,10 @@ static PyObject *_wrap_delete_Bisection(PyObject *self, PyObject *args, PyObject
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5806,14 +4837,10 @@ static PyObject *_wrap_new_Brent(PyObject *self, PyObject *args, PyObject *kwarg
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Brent);
     return resultobj;
@@ -5836,14 +4863,10 @@ static PyObject *_wrap_delete_Brent(PyObject *self, PyObject *args, PyObject *kw
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5865,14 +4888,10 @@ static PyObject *_wrap_new_FalsePosition(PyObject *self, PyObject *args, PyObjec
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_FalsePosition);
     return resultobj;
@@ -5895,14 +4914,10 @@ static PyObject *_wrap_delete_FalsePosition(PyObject *self, PyObject *args, PyOb
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5924,14 +4939,10 @@ static PyObject *_wrap_new_Newton(PyObject *self, PyObject *args, PyObject *kwar
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Newton);
     return resultobj;
@@ -5954,14 +4965,10 @@ static PyObject *_wrap_delete_Newton(PyObject *self, PyObject *args, PyObject *k
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -5983,14 +4990,10 @@ static PyObject *_wrap_new_NewtonSafe(PyObject *self, PyObject *args, PyObject *
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_NewtonSafe);
     return resultobj;
@@ -6013,14 +5016,10 @@ static PyObject *_wrap_delete_NewtonSafe(PyObject *self, PyObject *args, PyObjec
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -6042,14 +5041,10 @@ static PyObject *_wrap_new_Ridder(PyObject *self, PyObject *args, PyObject *kwar
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Ridder);
     return resultobj;
@@ -6072,14 +5067,10 @@ static PyObject *_wrap_delete_Ridder(PyObject *self, PyObject *args, PyObject *k
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -6101,14 +5092,10 @@ static PyObject *_wrap_new_Secant(PyObject *self, PyObject *args, PyObject *kwar
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Secant);
     return resultobj;
@@ -6131,14 +5118,10 @@ static PyObject *_wrap_delete_Secant(PyObject *self, PyObject *args, PyObject *k
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
-
             return NULL;
-
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
-
             return NULL;
-
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
@@ -6255,6 +5238,8 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "TridiagonalOperator_setLastRow", (PyCFunction) _wrap_TridiagonalOperator_setLastRow, METH_VARARGS | METH_KEYWORDS },
 	 { "new_BSMEuropeanOption", (PyCFunction) _wrap_new_BSMEuropeanOption, METH_VARARGS | METH_KEYWORDS },
 	 { "BSMEuropeanOption_value", (PyCFunction) _wrap_BSMEuropeanOption_value, METH_VARARGS | METH_KEYWORDS },
+	 { "new_BSMAmericanOption", (PyCFunction) _wrap_new_BSMAmericanOption, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMAmericanOption_value", (PyCFunction) _wrap_BSMAmericanOption_value, METH_VARARGS | METH_KEYWORDS },
 	 { "Function_value", (PyCFunction) _wrap_Function_value, METH_VARARGS | METH_KEYWORDS },
 	 { "Function_derivative", (PyCFunction) _wrap_Function_derivative, METH_VARARGS | METH_KEYWORDS },
 	 { "Solver1D_solve", (PyCFunction) _wrap_Solver1D_solve, METH_VARARGS | METH_KEYWORDS },
@@ -6321,6 +5306,7 @@ static swig_type_info _swigt__p_Function[] = {{"_p_Function", 0, "Function *"},{
 static swig_type_info _swigt__p_Date[] = {{"_p_Date", 0, "Date *"},{"_p_Date"},{0}};
 static swig_type_info _swigt__p_BoundaryCondition[] = {{"_p_BoundaryCondition", 0, "BoundaryCondition *"},{"_p_BoundaryCondition"},{0}};
 static swig_type_info _swigt__p_FalsePosition[] = {{"_p_FalsePosition", 0, "FalsePosition *"},{"_p_FalsePosition"},{0}};
+static swig_type_info _swigt__p_BSMAmericanOption[] = {{"_p_BSMAmericanOption", 0, "BSMAmericanOption *"},{"_p_BSMAmericanOption"},{0}};
 static swig_type_info _swigt__p_BSMEuropeanOption[] = {{"_p_BSMEuropeanOption", 0, "BSMEuropeanOption *"},{"_p_BSMEuropeanOption"},{0}};
 static swig_type_info _swigt__p_Brent[] = {{"_p_Brent", 0, "Brent *"},{"_p_Brent"},{0}};
 static swig_type_info _swigt__p_NewtonSafe[] = {{"_p_NewtonSafe", 0, "NewtonSafe *"},{"_p_NewtonSafe"},{0}};
@@ -6342,6 +5328,7 @@ _swigt__p_Function,
 _swigt__p_Date, 
 _swigt__p_BoundaryCondition, 
 _swigt__p_FalsePosition, 
+_swigt__p_BSMAmericanOption, 
 _swigt__p_BSMEuropeanOption, 
 _swigt__p_Brent, 
 _swigt__p_NewtonSafe, 

@@ -293,6 +293,22 @@ class BSMEuropeanOptionPtr(BSMEuropeanOption):
 
 BSMEuropeanOption.value = new.instancemethod(QuantLibc.BSMEuropeanOption_value, None, BSMEuropeanOption)
 
+class BSMAmericanOption:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_BSMAmericanOption,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C BSMAmericanOption instance at %s>" % (self.this,)
+class BSMAmericanOptionPtr(BSMAmericanOption):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = BSMAmericanOption
+
+
+BSMAmericanOption.value = new.instancemethod(QuantLibc.BSMAmericanOption_value, None, BSMAmericanOption)
+
 class Function:
     def __init__(self,this):
         self.this = this
