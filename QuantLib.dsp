@@ -909,6 +909,10 @@ SOURCE=.\ql\Math\sequencestatistics.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\simpsonintegral.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\statistics.hpp
 # End Source File
 # Begin Source File
@@ -930,6 +934,10 @@ SOURCE=.\ql\Math\symmetricschurdecomposition.cpp
 # Begin Source File
 
 SOURCE=.\ql\Math\symmetricschurdecomposition.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\trapezoidintegral.hpp
 # End Source File
 # End Group
 # Begin Group "MonteCarlo"
