@@ -7,12 +7,12 @@ If you want to branch out from trunk's tip, refresh to trunk's tip
 
 Check that everything runs properly, compiles, passes tests, ecc.
 
-tag your check-out version (NOT rtag, as this would tag the trunk's tip.
+tag your checked-out version (NOT rtag, as this would tag the trunk's tip.
 If you use wincvs try to select your module with the right button and select
 'Create a tag on selection'). From command line it should look like
     cvs tag Root-Of-R000201a2 (in directory E:\Projects\moduleName)
 
-now branch-tag your check-out version
+now branch-tag your checked-out version
     cvs tag -b R000201a2-branch (in directory E:\Projects\moduleName)
 
 Switch to your "branches" folder and check out the newly created branch
