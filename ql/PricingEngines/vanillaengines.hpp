@@ -16,6 +16,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file vanillaengines.hpp
     \brief Vanilla option engines
 
@@ -108,8 +109,8 @@ namespace QuantLib {
         class VanillaEngine : public GenericEngine<VanillaOptionArguments,
                                                    VanillaOptionResults> {};
 
-        //! Pricing engine for Vanilla options using analytical formulae
-        class AnalyticalVanillaEngine : public VanillaEngine {
+        //! Pricing engine for European options using analytical formulae
+        class AnalyticEuropeanEngine : public VanillaEngine {
           public:
             void calculate() const;
           private:

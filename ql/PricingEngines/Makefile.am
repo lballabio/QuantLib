@@ -16,7 +16,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libPricingEngines_la_SOURCES = \
-    analyticalvanillaengine.cpp \
+    analyticeuropeanengine.cpp \
     binomialvanillaengine.cpp \
     discretizedvanillaoption.cpp \
     fdvanillaengine.cpp

@@ -14,11 +14,12 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file analyticalvanillaengine.cpp
-    \brief Vanilla option engine using analytic formulas
+
+/*! \file analyticeuropeanengine.cpp
+    \brief European option engine using analytic formulas
 
     \fullpath
-    ql/Pricers/%analyticalvanillaengine.cpp
+    ql/PricingEngines/%analyticeuropeanengine.cpp
 */
 
 // $Id$
@@ -31,13 +32,13 @@ namespace QuantLib {
     namespace PricingEngines {
 
         #if !defined(QL_PATCH_SOLARIS)
-        const Math::CumulativeNormalDistribution AnalyticalVanillaEngine::f_;
+        const Math::CumulativeNormalDistribution AnalyticEuropeanEngine::f_;
         #endif
 
-        void AnalyticalVanillaEngine::calculate() const {
+        void AnalyticEuropeanEngine::calculate() const {
 
             QL_REQUIRE(arguments_.exerciseType == Exercise::European,
-                "AnalyticalVanillaEngine::calculate() : "
+                "AnalyticEuropeanEngine::calculate() : "
                 "not an European Option");
 
             double variance = arguments_.volTS->blackVariance(
@@ -97,7 +98,7 @@ namespace QuantLib {
                 break;
               default:
                 throw IllegalArgumentError(
-                    "EuropeanAnalyticalEngine::calculate() : "
+                    "AnalyticEuropeanEngine::calculate() : "
                     "invalid option type");
             }
 

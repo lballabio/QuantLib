@@ -286,14 +286,13 @@ int main(int argc, char* argv[])
             exercise,
 //            flatVolTS,
             blackSurface,
-            Handle<PricingEngine>(
-                new AnalyticalVanillaEngine()));
+            Handle<PricingEngine>(new AnalyticEuropeanEngine()));
 
 
         // method: Black Scholes Engine
         method = "Black Scholes";
         option.setPricingEngine(Handle<PricingEngine>(
-            new AnalyticalVanillaEngine()));
+            new AnalyticEuropeanEngine()));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -409,26 +408,27 @@ int main(int argc, char* argv[])
         GaussianRandomSequenceGenerator grsg(rsg);
         GaussianLowDiscrepancySequenceGenerator gldsg(ldsg);
 
-        MCEuropeanVanillaEngine<
-            Statistics,
-            GaussianRandomSequenceGenerator,
-            GaussianPathGenerator2,
-            PathPricer<Path> >(false, false, timeSteps, grsg);
-
+        option.setPricingEngine(Handle<PricingEngine>(
+            new MCEuropeanVanillaEngine<
+                Statistics,
+                GaussianRandomSequenceGenerator,
+                GaussianPathGenerator2,
+                PathPricer<Path> >(false, false, timeSteps, grsg)));
         value = option.NPV();
+        double errorEstimate = option.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
-             << "N/A\t\t"
+             << DoubleFormatter::toString(errorEstimate, 4) << "\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
 
 
-        Handle<AnalyticalVanillaEngine> baseEngine(new
-            AnalyticalVanillaEngine);
+        Handle<AnalyticEuropeanEngine> baseEngine(new
+            AnalyticEuropeanEngine);
 
         Handle<QuantoEngine<VanillaOptionArguments,
                             VanillaOptionResults> >

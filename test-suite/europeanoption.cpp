@@ -26,7 +26,7 @@
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
-using QuantLib::PricingEngines::AnalyticalVanillaEngine;
+using QuantLib::PricingEngines::AnalyticEuropeanEngine;
 using QuantLib::PricingEngines::BinomialVanillaEngine;
 using QuantLib::Instruments::VanillaOption;
 using QuantLib::TermStructures::FlatForward;
@@ -54,7 +54,7 @@ Handle<Instrument> EuropeanOptionTest::makeEuropeanOption(
     Handle<PricingEngine> engine;
     switch (engineType) {
       case Analytic:
-        engine = Handle<PricingEngine>(new AnalyticalVanillaEngine);
+        engine = Handle<PricingEngine>(new AnalyticEuropeanEngine);
         break;
       case JR:
         engine = Handle<PricingEngine>(

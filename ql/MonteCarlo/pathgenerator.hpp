@@ -233,7 +233,7 @@ namespace QuantLib {
         inline const typename PathGenerator2<SG>::sample_type&
         PathGenerator2<SG>::next() const {
 
-            sequence_ = generator_.next();
+            sequence_ = generator_.nextSequence();
 
             next_.weight = sequence_.weight;
 
