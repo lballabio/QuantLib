@@ -44,9 +44,7 @@ namespace QuantLib {
     double Lattice::presentValue(
                            const boost::shared_ptr<DiscretizedAsset>& asset) {
         Size i = t_.findIndex(asset->time());
-        if (i>statePricesLimit_)
-            computeStatePrices(i);
-        return DotProduct(asset->values(), statePrices_[i]);
+        return DotProduct(asset->values(), statePrices(i));
     }
 
     void Lattice::initialize(const boost::shared_ptr<DiscretizedAsset>& asset,
