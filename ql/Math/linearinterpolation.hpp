@@ -36,7 +36,6 @@ namespace QuantLib {
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
               primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {
                 primitiveConst_[0] = 0.0;
-                // what about checking that xBegin<xEnd ?
                 for (Size i=1; i<Size(xEnd-xBegin); i++) {
                     Real dx = xBegin_[i]-xBegin_[i-1];
                     s_[i-1] = (yBegin_[i]-yBegin_[i-1])/dx;
