@@ -386,7 +386,7 @@ void JumpDiffusionTest::testMerton76() {
     Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
     Handle<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> baseEngine(new AnalyticEuropeanEngine);
+    Handle<VanillaEngine> baseEngine(new AnalyticEuropeanEngine);
     Handle<PricingEngine> engine(new JumpDiffusionEngine(baseEngine));
 
     Date today = Date::todaysDate();
@@ -396,7 +396,7 @@ void JumpDiffusionTest::testMerton76() {
         Handle<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(values[i].t*360);
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
