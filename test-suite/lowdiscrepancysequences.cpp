@@ -98,20 +98,6 @@ void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
 
 void LowDiscrepancyTest::testSobol() {
 
-
-    RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(5);
-    rldsg.nextSequence();
-    rldsg.nextRandomizer();
-
-    MersenneTwisterUniformRng t0;
-    SobolRsg t1(5);
-    RandomSequenceGenerator<MersenneTwisterUniformRng> t2(5);
-    RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg2(t1, t2);
-    rldsg2.nextSequence();
-    rldsg2.lastSequence();
-    rldsg2.nextRandomizer();
-
-
     BOOST_MESSAGE("Testing Sobol sequences up to dimension " +
                   IntegerFormatter::toString(PPMT_MAX_DIM) + "...");
 
@@ -961,15 +947,14 @@ void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
 test_suite* LowDiscrepancyTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
 
-    suite->add(BOOST_TEST_CASE(
-           &LowDiscrepancyTest::testRandomizedLowDiscrepancySequence));
+    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testPolynomialsModuloTwo));
+
+    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testSobol));
+    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testHalton));
+    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testFaure));
 
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testMersenneTwisterDiscrepancy));
-
-    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testFaure));
-
-    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testHalton));
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testPlainHaltonDiscrepancy));
     suite->add(BOOST_TEST_CASE(
@@ -978,11 +963,6 @@ test_suite* LowDiscrepancyTest::suite() {
            &LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy));
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy));
-
-    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testPolynomialsModuloTwo));
-
-    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testSobol));
-
     suite->add(BOOST_TEST_CASE(
         &LowDiscrepancyTest::testUnitSobolDiscrepancy));
     suite->add(BOOST_TEST_CASE(
@@ -991,6 +971,9 @@ test_suite* LowDiscrepancyTest::suite() {
            &LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy));
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy));
+
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testRandomizedLowDiscrepancySequence));
 
     return suite;
 }

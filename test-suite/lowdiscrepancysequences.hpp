@@ -48,9 +48,11 @@
 class LowDiscrepancyTest {
   public:
     static void testPolynomialsModuloTwo();
+
     static void testSobol();
     static void testHalton();
     static void testFaure();
+
     static void testMersenneTwisterDiscrepancy();
     static void testPlainHaltonDiscrepancy();
     static void testRandomStartHaltonDiscrepancy();
@@ -60,6 +62,7 @@ class LowDiscrepancyTest {
     static void testSobolLevitanSobolDiscrepancy();
     static void testSobolLevitanLemieuxSobolDiscrepancy();
     static void testUnitSobolDiscrepancy();
+
     static void testRandomizedLowDiscrepancySequence();
 
     static boost::unit_test_framework::test_suite* suite();
