@@ -447,8 +447,7 @@ int main(int argc, char* argv[])
             new MCEuropeanEngine<
                 Statistics,
                 GaussianRandomSequenceGenerator,
-                GaussianPathGenerator,
-                PathPricer<Path> >(false, false, timeGrid, grsg)));
+                GaussianPathGenerator>(false, false, timeSteps, grsg)));
         value = option.NPV();
         double errorEstimate = option.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
