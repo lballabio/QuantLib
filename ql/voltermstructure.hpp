@@ -96,10 +96,12 @@ namespace QuantLib {
         //@}
       protected:
         //! implements the actual Black variance calculation in derived classes
-        virtual double blackVarianceImpl(Time t, double strike,
+        virtual double blackVarianceImpl(Time t,
+                                         double strike,
                                          bool extrapolate = false) const = 0;
         //! implements the actual Black vol calculation in derived classes
-        virtual double blackVolImpl(Time t, double strike,
+        virtual double blackVolImpl(Time t,
+                                    double strike,
                                     bool extrapolate = false) const = 0;
 	  private:
         static const double dT;
@@ -124,7 +126,8 @@ namespace QuantLib {
         /*! Returns the variance for the given strike and date calculating it
             from the volatility.
         */
-        double blackVarianceImpl(Time maturity, double strike,
+        double blackVarianceImpl(Time maturity,
+                                 double strike,
                                  bool extrapolate = false) const;
     };
 
@@ -147,7 +150,8 @@ namespace QuantLib {
         /*! Returns the volatility for the given strike and date calculating it
             from the variance.
         */
-        double blackVolImpl(Time maturity, double strike,
+        double blackVolImpl(Time maturity,
+                            double strike,
                             bool extrapolate = false) const;
     };
 
@@ -163,9 +167,11 @@ namespace QuantLib {
         virtual ~LocalVolTermStructure() {}
         //! \name Local Volatility
         //@{
-        double localVol(const Date& d, double underlyingLevel,
+        double localVol(const Date& d,
+                        double underlyingLevel,
                         bool extrapolate = false) const;
-        double localVol(Time t, double underlyingLevel,
+        double localVol(Time t,
+                        double underlyingLevel,
                         bool extrapolate = false) const;
         //@}
         //! \name Dates
@@ -185,7 +191,8 @@ namespace QuantLib {
         //@}
       protected:
         //! implements the actual local vol calculation in derived classes
-        virtual double localVolImpl(Time t, double strike,
+        virtual double localVolImpl(Time t,
+                                    double strike,
                                     bool extrapolate = false) const = 0;
     };
 

@@ -59,6 +59,10 @@ namespace QuantLib {
             LocalVolTermStructure::accept(v);
     }
 
+    /*! see "Lecture 1: Stochastic Volatility and Local Volatility"
+        in "Case studies in Financial Modelling Course Notes",
+        by J. Gatheral
+    */
     double LocalVolSurface::localVolImpl(Time t, double underlyingLevel, 
                                          bool extrapolate) const {
 

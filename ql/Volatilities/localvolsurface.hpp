@@ -62,6 +62,10 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
+        /*! see "Lecture 1: Stochastic Volatility and Local Volatility"
+            in "Case studies in Financial Modelling Course Notes",
+            by J. Gatheral
+        */
         double localVolImpl(Time, double, bool extrapolate) const;
       private:
         RelinkableHandle<BlackVolTermStructure> blackTS_;
