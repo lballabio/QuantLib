@@ -1,4 +1,4 @@
-# Doxyfile 1.3.7
+# Doxyfile 1.3.9
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -55,6 +55,7 @@ GENERATE_DEPRECATEDLIST= YES
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 30
 SHOW_USED_FILES        = NO
+SHOW_DIRECTORIES       = NO
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
@@ -87,6 +88,7 @@ EXAMPLE_PATTERNS       = *.cpp
 EXAMPLE_RECURSIVE      = YES
 IMAGE_PATH             = 
 INPUT_FILTER           = 
+FILTER_PATTERNS        = 
 FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
 # configuration options related to source browsing
