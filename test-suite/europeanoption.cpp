@@ -121,29 +121,13 @@ namespace {
                 new BinomialVanillaEngine<LeisenReimer>(binomialSteps));
             break;
           case PseudoMonteCarlo:
-            #if defined(QL_PATCH_MICROSOFT)
-            engine = boost::shared_ptr<PricingEngine>(new
-                MCEuropeanEngine<PseudoRandom>(1,
-                                               false, false,
-                                               Null<Size>(), 0.05,
-                                               Null<Size>(), 42));
-            #else
             engine = MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(1)
                                                          .withTolerance(0.05)
                                                          .withSeed(42);
-            #endif
             break;
           case QuasiMonteCarlo:
-            #if defined(QL_PATCH_MICROSOFT)
-            engine = boost::shared_ptr<PricingEngine>(new
-                MCEuropeanEngine<LowDiscrepancy>(1,
-                                                 false, false,
-                                                 1023, Null<Real>(),
-                                                 Null<Size>()));
-            #else
             engine = MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(1)
                                                            .withSamples(1023);
-            #endif
             break;
           default:
             QL_FAIL("unknown engine type");

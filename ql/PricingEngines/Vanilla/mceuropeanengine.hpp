@@ -53,8 +53,6 @@ namespace QuantLib {
         boost::shared_ptr<path_pricer_type> pathPricer() const;
     };
 
-    #if !defined(QL_PATCH_MICROSOFT)
-    // Visual cannot cope with the conversion operator to boost::shared_ptr
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEuropeanEngine {
       public:
@@ -75,7 +73,6 @@ namespace QuantLib {
         Real tolerance_;
         BigNatural seed_;
     };
-    #endif
 
     class EuropeanPathPricer : public PathPricer<Path> {
       public:
@@ -173,7 +170,6 @@ namespace QuantLib {
     }
 
 
-    #if !defined(QL_PATCH_MICROSOFT)
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>::MakeMCEuropeanEngine()
@@ -250,7 +246,6 @@ namespace QuantLib {
                                                          maxSamples_, seed_));
     }
 
-    #endif
 
 
     inline EuropeanPathPricer::EuropeanPathPricer(

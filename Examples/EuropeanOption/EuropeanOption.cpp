@@ -343,17 +343,11 @@ int main(int, char* [])
         method = "MC (crude)";
         Size mcSeed = 42;
 
-        #if defined(QL_PATCH_MICROSOFT)
-        boost::shared_ptr<PricingEngine> mcengine1(
-            new MCEuropeanEngine<PseudoRandom>(timeSteps, false, false,
-                                               Null<Size>(), 0.02,
-                                               Null<Size>(), mcSeed));
-        #else
-        boost::shared_ptr<PricingEngine> mcengine1 =
+        boost::shared_ptr<PricingEngine> mcengine1;
+        mcengine1 =
             MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(timeSteps)
                                                 .withTolerance(0.02)
                                                 .withSeed(mcSeed);
-        #endif
         option.setPricingEngine(mcengine1);
 
         value = option.NPV();
@@ -371,16 +365,10 @@ int main(int, char* [])
         timeSteps = 1;
         Size nSamples = 32768;  // 2^15
 
-        #if defined(QL_PATCH_MICROSOFT)
-        boost::shared_ptr<PricingEngine> mcengine2(
-            new MCEuropeanEngine<LowDiscrepancy>(timeSteps, false, false,
-                                                 nSamples, Null<Real>(),
-                                                 Null<Size>()));
-        #else
-        boost::shared_ptr<PricingEngine> mcengine2 =
+        boost::shared_ptr<PricingEngine> mcengine2;
+        mcengine2 =
             MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(timeSteps)
                                                   .withSamples(nSamples);
-        #endif
         option.setPricingEngine(mcengine2);
 
         value = option.NPV();
