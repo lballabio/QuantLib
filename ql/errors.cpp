@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,7 +16,6 @@
 */
 
 #include <ql/errors.hpp>
-#include <sstream>
 #include <stdexcept>
 
 namespace {
@@ -70,7 +69,7 @@ namespace boost {
     void assertion_failed(char const * expr, char const * function,
                           char const * file, long line) {
         throw std::runtime_error(format(file, line, function,
-                                        "assertion failed: " +
+                                        "Boost assertion failed: " +
                                         std::string(expr)));
     }
 
@@ -80,17 +79,13 @@ namespace QuantLib {
 
     Error::Error(const std::string& file, long line,
                  const std::string& function,
-                 const std::string& message)
-    : file_(boost::shared_ptr<std::string>(new std::string(file))),
-      line_(line),
-      function_(boost::shared_ptr<std::string>(new std::string(function))),
-      message_(boost::shared_ptr<std::string>(new std::string(message))) {
-        longMessage_ = boost::shared_ptr<std::string>(new std::string(
+                 const std::string& message) {
+        message_ = boost::shared_ptr<std::string>(new std::string(
                                       format(file, line, function, message)));
     }
 
     const char* Error::what() const throw () {
-        return longMessage_->c_str();
+        return message_->c_str();
     }
 
 }

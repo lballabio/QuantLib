@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,7 +27,7 @@
 #include <boost/current_function.hpp>
 #include <boost/shared_ptr.hpp>
 #include <exception>
-#include <string>
+#include <sstream>
 
 namespace QuantLib {
 
@@ -47,11 +47,7 @@ namespace QuantLib {
         //! returns the error message.
         const char* what() const throw ();
       private:
-        boost::shared_ptr<std::string> file_;
-        long line_;
-        boost::shared_ptr<std::string> function_;
         boost::shared_ptr<std::string> message_;
-        boost::shared_ptr<std::string> longMessage_;
     };
 
 }
@@ -60,34 +56,48 @@ namespace QuantLib {
     \brief throw an error (possibly with file and line information)
 */
 #define QL_FAIL(message) \
-throw QuantLib::Error(__FILE__,__LINE__,BOOST_CURRENT_FUNCTION,message)
+do { \
+    std::ostringstream _ql_msg_stream; \
+    _ql_msg_stream << message; \
+    throw QuantLib::Error(__FILE__,__LINE__, \
+                          BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
+} while (false)
 
 
 /*! \def QL_ASSERT
     \brief throw an error if the given condition is not verified
 */
 #define QL_ASSERT(condition,message) \
-if (!(condition)) \
-    throw QuantLib::Error(__FILE__,__LINE__,BOOST_CURRENT_FUNCTION,message); \
-else
+if (!(condition)) { \
+    std::ostringstream _ql_msg_stream; \
+    _ql_msg_stream << message; \
+    throw QuantLib::Error(__FILE__,__LINE__, \
+                          BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
+} else
 
 
 /*! \def QL_REQUIRE
     \brief throw an error if the given pre-condition is not verified
 */
 #define QL_REQUIRE(condition,message) \
-if (!(condition)) \
-    throw QuantLib::Error(__FILE__,__LINE__,BOOST_CURRENT_FUNCTION,message); \
-else
+if (!(condition)) { \
+    std::ostringstream _ql_msg_stream; \
+    _ql_msg_stream << message; \
+    throw QuantLib::Error(__FILE__,__LINE__, \
+                          BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
+} else
 
 
 /*! \def QL_ENSURE
     \brief throw an error if the given post-condition is not verified
 */
 #define QL_ENSURE(condition,message) \
-if (!(condition)) \
-    throw QuantLib::Error(__FILE__,__LINE__,BOOST_CURRENT_FUNCTION,message); \
-else
+if (!(condition)) { \
+    std::ostringstream _ql_msg_stream; \
+    _ql_msg_stream << message; \
+    throw QuantLib::Error(__FILE__,__LINE__, \
+                          BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
+} else
 
 
 #endif
