@@ -19,6 +19,12 @@ quantlib::
     $(MAKE)
     cd ..
 
+# check
+check: tests
+    cd test-suite
+    test-suite
+    cd ..
+
 # test
 test: tests
 
