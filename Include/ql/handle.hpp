@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/05/28 13:21:45  lballabio
+// Trying to get g++ to compile
+//
 // Revision 1.7  2001/05/28 12:52:58  lballabio
 // Simplified Instrument interface
 //
@@ -109,7 +112,9 @@ namespace QuantLib {
         //@{
         template <class Type2>
         Handle<Type2> downcast() const {
-            return HandleConverter().cast<Type2>(*this);
+            Handle<Type2> to;
+            HandleConverter().cast(*this,to);
+            return to;
         }
         //@}
         
@@ -128,17 +133,19 @@ namespace QuantLib {
         class HandleConverter {
           public:
             template <class ToType, class FromType> 
-            Handle<ToType> cast(Handle<FromType> from) const {
-                Handle<ToType> to;
-                delete to.n_;
+            void cast(Handle<FromType> from, Handle<ToType>& to) const {
+                if (--(*to.n_) == 0) {
+                    if (to.ptr_ != 0)
+                        delete to.ptr_;
+                    delete to.n_;
+                }
                 to.ptr_ = dynamic_cast<ToType*>(from.ptr_);
                 if (to.ptr_ == 0) {
-                    to.prt_ = new int(1);
+                    to.n_ = new int(1);
                 } else {
                     to.n_    = from.n_;
                     (*(to.n_))++;
                 }
-                return to;
             }
         };
     };
