@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/02/14 10:57:57  marmar
+    BSMOption has  a cleaner constructor
+
     Revision 1.6  2001/02/13 10:02:17  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -61,20 +64,7 @@ namespace QuantLib {
           public:
             BSMOption(Type type, double underlying, double strike, 
                 Rate dividendYield, Rate riskFreeRate, Time residualTime, 
-                double volatility)
-            : theType(type), theUnderlying(underlying), theStrike(strike), 
-                dividendYield_(dividendYield),
-              theRiskFreeRate(riskFreeRate), theResidualTime(residualTime), 
-                theVolatility(volatility), hasBeenCalculated(false) {
-                QL_REQUIRE(strike > 0.0, 
-                    "BSMOption::BSMOption : strike must be positive");
-                QL_REQUIRE(underlying > 0.0, 
-                    "BSMOption::BSMOption : underlying must be positive");
-                QL_REQUIRE(residualTime > 0.0, 
-                    "BSMOption::BSMOption : residual time must be positive");
-                QL_REQUIRE(volatility > 0.0, 
-                    "BSMOption::BSMOption : volatility must be positive");
-            }
+                double volatility);
             virtual ~BSMOption() {}    // just in case
             // modifiers
             void setVolatility(double newVolatility) ;

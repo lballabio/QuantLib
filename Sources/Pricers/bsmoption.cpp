@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.18  2001/02/14 10:57:41  marmar
+    BSMOption has  a cleaner constructor
+
     Revision 1.17  2001/01/17 14:37:57  nando
     tabs removed
 
@@ -48,26 +51,54 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        double BSMOption::impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const {
+        BSMOption::BSMOption(Type type, double underlying, double strike, 
+            Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+            double volatility)
+        : theType(type), theUnderlying(underlying), theStrike(strike), 
+            dividendYield_(dividendYield),
+          theRiskFreeRate(riskFreeRate), theResidualTime(residualTime), 
+            theVolatility(volatility), hasBeenCalculated(false) {
+            QL_REQUIRE(strike > 0.0, 
+                "BSMOption::BSMOption : strike must be positive");
+            QL_REQUIRE(underlying > 0.0, 
+                "BSMOption::BSMOption : underlying must be positive");
+            QL_REQUIRE(residualTime > 0.0, 
+                "BSMOption::BSMOption : residual time must be positive");
+            QL_REQUIRE(volatility > 0.0, 
+                "BSMOption::BSMOption : volatility must be positive");
+        }
+
+        double BSMOption::impliedVolatility(double targetValue, double accuracy, 
+                    int maxEvaluations) const {
             // check option targetValue boundary condition
-            QL_REQUIRE(targetValue>=0.0, "BSMOption::impliedVol : negative option targetValue not allowed");
+            QL_REQUIRE(targetValue >= 0.0, 
+             "BSMOption::impliedVol : negative option targetValue not allowed");
+            if(targetValue == 0.0)
+                return 0.0;
             // the following checks may be improved
              switch (theType) {
               case Call:
                 QL_REQUIRE(targetValue <= theUnderlying,
-                  "BSMOption::impliedVol : call option targetValue (" + DoubleFormatter::toString(targetValue) +
-                  ") > underlying value (" + DoubleFormatter::toString(theUnderlying) + ") not allowed");
+                  "BSMOption::impliedVol : call option targetValue (" + 
+                  DoubleFormatter::toString(targetValue) +
+                  ") > underlying value (" + 
+                  DoubleFormatter::toString(theUnderlying) + ") not allowed");
                 break;
               case Put:
                 QL_REQUIRE(targetValue <= theStrike,
-                  "BSMOption::impliedVol : put option targetValue (" + DoubleFormatter::toString(targetValue) +
-                  ") > strike value (" + DoubleFormatter::toString(theStrike) + ") not allowed");
+                  "BSMOption::impliedVol : put option targetValue (" + 
+                  DoubleFormatter::toString(targetValue) +
+                  ") > strike value (" + DoubleFormatter::toString(theStrike) + 
+                  ") not allowed");
                 break;
               case Straddle:
                 // to be verified
                 QL_REQUIRE(targetValue < theUnderlying+theStrike,
-                  "BSMOption::impliedFlatVol : straddle option targetValue (" + DoubleFormatter::toString(targetValue) +
-                  ") >= (underlying+strike) value (" + DoubleFormatter::toString(theUnderlying+theStrike) + ") not allowed");
+                  "BSMOption::impliedFlatVol : straddle option targetValue (" + 
+                  DoubleFormatter::toString(targetValue) +
+                  ") >= (underlying+strike) value (" + 
+                  DoubleFormatter::toString(theUnderlying+theStrike) + 
+                  ") not allowed");
                 break;
               default:
                 throw IllegalArgumentError("BSMOption: invalid option type");
