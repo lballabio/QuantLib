@@ -1,5 +1,6 @@
-Copyright (c) 2000, 2001, 2002 Nicolas Di Césaré
-Copyright (c) 2000, 2001, 2002 Sadruddin Rejeb
+Copyright (c) 2002 Ferdinando Ametrano
+Copyright (c) 2001, 2002 Nicolas Di Césaré
+Copyright (c) 2001, 2002 Sadruddin Rejeb
 Copyright (c) 2000, 2001, 2002 RiskMap srl
 All rights reserved.
 

@@ -9,7 +9,7 @@ The basic requirement to produce html documentation are:
 1) DoxyGen (latest release at
    http://www.stack.nl/~dimitri/doxygen/download.html#latestsrc)
 2) Graphviz (http://www.research.att.com/sw/tools/graphviz/)
-3) Aladdin Ghostscript (http://www.cs.wisc.edu/~ghost/)
+3) Aladdin Ghostscript (http://www.ghostscript.com/)
 
 If you want to produce PDF and/or PS documentation you will need also:
 4) TeX/LaTeX
