@@ -1,9 +1,10 @@
 
 # to be used with NSIS 1.44 and up
 #
-# usage: makensis /DLIGHT QuantLib.nsi
+# usage:
+#       makensis /DLIGHT QuantLib.nsi
 # OR
-# usage: makensis QuantLib.nsi
+#       makensis QuantLib.nsi
 
 
 # $Id$

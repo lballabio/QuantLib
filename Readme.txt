@@ -22,7 +22,9 @@ You can also use the mailing list <quantlib-users@lists.sourceforge.net> for
 feedback, questions, etc.
 
 If you are interested in participating in QuantLib development, please send
-mail to Ferdinando Ametrano -- ferdinando@ametrano.net
+mail to Ferdinando Ametrano -- ferdinando@ametrano.net -- describing your
+experience and interests.
+
 
 
 ============= UNIX USERS =================
