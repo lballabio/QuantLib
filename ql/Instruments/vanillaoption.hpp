@@ -79,7 +79,7 @@ namespace QuantLib {
         void setupExpired() const;
         void performCalculations() const;
         // results
-        mutable double delta_, gamma_, theta_, 
+        mutable double delta_, gamma_, theta_,
                        vega_, rho_, dividendRho_, strikeSensitivity_;
         // arguments
         Option::Type type_;
@@ -109,7 +109,7 @@ namespace QuantLib {
         arguments() : underlying(Null<double>()),
                       maturity(Null<Time>()) {}
         void validate() const;
-        Handle<Payoff> payoff;
+        Handle<PlainVanillaPayoff> payoff;
         double underlying;
         RelinkableHandle<TermStructure> riskFreeTS, dividendTS;
         RelinkableHandle<BlackVolTermStructure> volTS;

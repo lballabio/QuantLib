@@ -85,7 +85,8 @@ namespace QuantLib {
       public:
         JarrowRudd(const Handle<DiffusionProcess>& process,
                    Time end,
-                   Size steps);
+                   Size steps,
+                   double strike);
     };
 
     //! Cox-Ross-Rubinstein (multiplicative) equal jumps binomial tree
@@ -93,7 +94,8 @@ namespace QuantLib {
       public:
         CoxRossRubinstein(const Handle<DiffusionProcess>& process,
                           Time end,
-                          Size steps);
+                          Size steps,
+                          double strike);
     };
 
 
@@ -102,7 +104,8 @@ namespace QuantLib {
       public:
         AdditiveEQPBinomialTree(const Handle<DiffusionProcess>& process,
                                 Time end,
-                                Size steps);
+                                Size steps,
+                                double strike);
     };
 
     //! Trigeorgis (additive equal jumps) binomial tree
@@ -110,7 +113,8 @@ namespace QuantLib {
       public:
         Trigeorgis(const Handle<DiffusionProcess>& process,
                    Time end,
-                   Size steps);
+                   Size steps,
+                   double strike);
     };
 
 
@@ -119,12 +123,25 @@ namespace QuantLib {
       public:
         Tian(const Handle<DiffusionProcess>& process,
              Time end,
-             Size steps);
+             Size steps,
+             double strike);
         double underlying(Size i, Size index) const;
         double probability(Size, Size, Size) const;
       protected:
         double up_, down_, pu_, pd_;
-        // double treeCentering_;
+    };
+
+    //! Leisen & Reimer tree: multiplicative approach
+    class LeisenReimer : public BinomialTree {
+      public:
+        LeisenReimer(const Handle<DiffusionProcess>& process,
+                     Time end,
+                     Size steps,
+                     double strike);
+        double underlying(Size i, Size index) const;
+        double probability(Size, Size, Size) const;
+      protected:
+        double up_, down_, pu_, pd_;
     };
 
 }

@@ -317,7 +317,7 @@ int main(int argc, char* argv[])
              << std::endl;
         
 */
-        Size timeSteps = 800;
+        Size timeSteps = 801;
 
         // Binomial Method (JR)
         method = "Binomial (JR)";
@@ -380,6 +380,20 @@ int main(int argc, char* argv[])
         method = "Binomial Tian";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine<Tian>(timeSteps)));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+        // Leisen-Reimer Binomial Tree
+        method = "Binomial LR";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new BinomialVanillaEngine<LeisenReimer>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;

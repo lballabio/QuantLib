@@ -45,7 +45,9 @@ namespace QuantLib {
         //! returns the drift part of the equation, i.e. \f$ \mu(t, x_t) \f$
         virtual double drift(Time t, double x) const = 0;
 
-        //! returns the diffusion part of the equation, i.e. \f$\sigma(t, x_t)\f$
+        /*! returns the diffusion part of the equation, i.e.
+            \f$\sigma(t, x_t)\f$
+        */
         virtual double diffusion(Time t, double x) const = 0;
 
         //! returns the expectation of the process after a time interval
@@ -73,7 +75,7 @@ namespace QuantLib {
     //! Black-Scholes diffusion process class
     /*! This class describes the stochastic process governed by
         \f[
-            dS(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
+            dS(t, S)= (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
         \f]
     */
     class BlackScholesProcess : public DiffusionProcess {

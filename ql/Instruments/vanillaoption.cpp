@@ -35,11 +35,11 @@ namespace QuantLib {
                          const Exercise& exercise,
                          const RelinkableHandle<BlackVolTermStructure>& volTS,
                          const Handle<PricingEngine>& engine,
-                         const std::string& isinCode, 
+                         const std::string& isinCode,
                          const std::string& description)
     : Option(engine, isinCode, description),
       type_(type), underlying_(underlying),
-      strike_(strike), exercise_(exercise), 
+      strike_(strike), exercise_(exercise),
       riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
       volTS_(volTS) {
         registerWith(underlying_);
@@ -102,9 +102,9 @@ namespace QuantLib {
     }
 
     double VanillaOption::impliedVolatility(double targetValue,
-                                            double accuracy, 
+                                            double accuracy,
                                             Size maxEvaluations,
-                                            double minVol, 
+                                            double minVol,
                                             double maxVol) const {
         calculate();
         QL_REQUIRE(!isExpired(),
@@ -132,7 +132,7 @@ namespace QuantLib {
                    "VanillaOption::setupArguments : "
                    "wrong argument type");
 
-        arguments->payoff = Handle<Payoff>(
+        arguments->payoff = Handle<PlainVanillaPayoff>(
                                        new PlainVanillaPayoff(type_,strike_));
 
         QL_REQUIRE(!IsNull(underlying_),
@@ -147,10 +147,10 @@ namespace QuantLib {
         arguments->maturity = riskFreeTS_->dayCounter().yearFraction(
                           riskFreeTS_->referenceDate(), exercise_.lastDate());
         arguments->exerciseType = exercise_.type();
-        arguments->stoppingTimes = 
+        arguments->stoppingTimes =
             std::vector<Time>(exercise_.dates().size());
         for (Size i=0; i<exercise_.dates().size(); i++) {
-            arguments->stoppingTimes[i] = 
+            arguments->stoppingTimes[i] =
                 riskFreeTS_->dayCounter().yearFraction(
                              riskFreeTS_->referenceDate(), exercise_.date(i));
         }
@@ -167,7 +167,7 @@ namespace QuantLib {
                   "no greeks returned from pricing engine");
         /* no check on null values - just copy.
            this allows:
-           a) to decide in derived options what to do when null 
+           a) to decide in derived options what to do when null
            results are returned (throw? numerical calculation?)
            b) to implement slim engines which only calculate the
            value---of course care must be taken not to call
@@ -216,10 +216,10 @@ namespace QuantLib {
 
 
     VanillaOption::ImpliedVolHelper::ImpliedVolHelper(
-                                         const Handle<PricingEngine>& engine, 
+                                         const Handle<PricingEngine>& engine,
                                          double targetValue)
     : engine_(engine), targetValue_(targetValue) {
-        VanillaOption::arguments* arguments_ = 
+        VanillaOption::arguments* arguments_ =
             dynamic_cast<VanillaOption::arguments*>(engine_->arguments());
         QL_REQUIRE(arguments_ != 0,
                    "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "
@@ -227,7 +227,7 @@ namespace QuantLib {
         vol_ = Handle<SimpleQuote>(new SimpleQuote(0.0));
         arguments_->volTS = RelinkableHandle<BlackVolTermStructure>(
             Handle<BlackVolTermStructure>(
-                new BlackConstantVol(arguments_->volTS->referenceDate(), 
+                new BlackConstantVol(arguments_->volTS->referenceDate(),
                                      RelinkableHandle<Quote>(vol_))));
         results_ = dynamic_cast<const Value*>(engine_->results());
         QL_REQUIRE(results_ != 0,

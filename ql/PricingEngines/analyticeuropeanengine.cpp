@@ -30,7 +30,7 @@ namespace QuantLib {
                    "not an European Option");
 
         #if defined(HAVE_BOOST)
-        Handle<PlainVanillaPayoff> payoff = 
+        Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticEuropeanEngine: non-plain payoff given");
@@ -39,7 +39,7 @@ namespace QuantLib {
         #endif
 
         double strike = payoff->strike();
-        double variance = arguments_.volTS->blackVariance(arguments_.maturity, 
+        double variance = arguments_.volTS->blackVariance(arguments_.maturity,
                                                           strike);
         double stdDev = QL_SQRT(variance);
         double vol = arguments_.volTS->blackVol(arguments_.maturity, strike);
@@ -66,7 +66,6 @@ namespace QuantLib {
             fD2 = f(D2);
             fderD1 = f.derivative(D1);
         } else {
-            stdDev = QL_EPSILON;
             fderD1 = 0.0;
             if (forwardPrice>strike) {
                 fD1 = 1.0;
@@ -104,12 +103,12 @@ namespace QuantLib {
             (forwardPrice * alpha - strike *  beta);
         results_.delta = dividendDiscount * alpha;
         // results_.deltaForward = riskFreeDiscount * alpha;
-        results_.gamma = NID1 * dividendDiscount /
-            (arguments_.underlying * stdDev);
+        results_.gamma = (NID1==0.0 ? 0.0 : NID1* dividendDiscount /
+            (arguments_.underlying * stdDev));
         results_.theta = riskFreeRate * results_.value
-            -(riskFreeRate - dividendRate) 
+            -(riskFreeRate - dividendRate)
             * arguments_.underlying * results_.delta
-            - 0.5 * vol * vol * arguments_.underlying 
+            - 0.5 * vol * vol * arguments_.underlying
             * arguments_.underlying * results_.gamma;
         results_.rho = arguments_.maturity * riskFreeDiscount *
             strike * beta;

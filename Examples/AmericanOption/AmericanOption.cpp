@@ -137,8 +137,8 @@ int main(int argc, char* argv[])
         std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DoubleFormatter::toString(discrepancy, 4) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 4)
              << std::endl;
 
         // American option
@@ -151,7 +151,7 @@ int main(int argc, char* argv[])
             amExercise,
             flatVolTS);
 
-        Size timeSteps = 800;
+        Size timeSteps = 801;
 
         // Binomial Method (JR)
         method = "Binomial (JR)";
@@ -163,8 +163,8 @@ int main(int argc, char* argv[])
         std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DoubleFormatter::toString(discrepancy, 4) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 4)
              << std::endl;
 
 
@@ -178,8 +178,8 @@ int main(int argc, char* argv[])
         std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DoubleFormatter::toString(discrepancy, 4) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 4)
              << std::endl;
 
         // Equal Probability Additive Binomial Tree (EQP)
@@ -192,8 +192,8 @@ int main(int argc, char* argv[])
         std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DoubleFormatter::toString(discrepancy, 4) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 4)
              << std::endl;
 
         // Equal Jumps Additive Binomial Tree (Trigeorgis)
@@ -206,8 +206,8 @@ int main(int argc, char* argv[])
         std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DoubleFormatter::toString(discrepancy, 4) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 4)
              << std::endl;
 
         // Tian Binomial Tree (third moment matching)
@@ -220,8 +220,22 @@ int main(int argc, char* argv[])
         std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DoubleFormatter::toString(discrepancy, 4) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 4)
+             << std::endl;
+
+        // Leisen-Reimer Binomial Tree
+        method = "Binomial LR";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new BinomialVanillaEngine<LeisenReimer>(timeSteps)));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 4) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 4)
              << std::endl;
 
         // Least Squares Monte Carlo: Longstaff Schwartz
@@ -237,8 +251,8 @@ int main(int argc, char* argv[])
         std::cout << method << "\t"
             << DoubleFormatter::toString(value, 4) << "\t"
             << "N/A\t\t"
-            << DoubleFormatter::toString(discrepancy, 6) << "\t"
-            << DoubleFormatter::toString(relativeDiscrepancy, 6)
+            << DoubleFormatter::toString(discrepancy, 4) << "\t"
+            << DoubleFormatter::toString(relativeDiscrepancy, 4)
             << std::endl;
 
         return 0;

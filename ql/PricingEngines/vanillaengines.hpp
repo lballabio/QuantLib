@@ -89,7 +89,8 @@ namespace QuantLib {
 
         Handle<DiffusionProcess> bs(
             new BlackScholesProcess(flatRiskFree, flatDividends, flatVol,s0));
-        Handle<Tree> tree(new T(bs, arguments_.maturity, timeSteps_));
+        Handle<Tree> tree(new T(bs, arguments_.maturity, timeSteps_,
+                                                arguments_.payoff->strike()));
 
         Handle<Lattice> lattice(
             new BlackScholesLattice(tree, r, arguments_.maturity, timeSteps_));

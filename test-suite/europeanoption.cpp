@@ -35,7 +35,7 @@ namespace {
     // utilities
 
     enum EngineType { Analytic, 
-                      JR, CRR, EQP, TGEO, TIAN, 
+                      JR, CRR, EQP, TGEO, TIAN, LR,
                       PseudoMonteCarlo, QuasiMonteCarlo };
 
     double relativeError(double x1, double x2, double reference) {
@@ -77,6 +77,10 @@ namespace {
           case TIAN:
             engine = Handle<PricingEngine>(
                 new BinomialVanillaEngine<Tian>(800));
+            break;
+          case LR:
+            engine = Handle<PricingEngine>(
+                new BinomialVanillaEngine<LeisenReimer>(800));
             break;
           case PseudoMonteCarlo:
             #if defined(QL_PATCH_MICROSOFT)
@@ -163,6 +167,8 @@ namespace {
             return "Trigeorgis";
           case TIAN:
             return "Tian";
+          case LR:
+            return "LeisenReimer";
           case PseudoMonteCarlo:
             return "MonteCarlo";
           case QuasiMonteCarlo:
@@ -537,7 +543,7 @@ namespace {
 }
 
 void EuropeanOptionTest::testBinomialEngines() {
-    EngineType engines[] = { JR, CRR, EQP, TGEO, TIAN };
+    EngineType engines[] = { JR, CRR, EQP, TGEO, TIAN, LR };
     testEngines(engines,LENGTH(engines));
 }
 

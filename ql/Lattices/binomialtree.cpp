@@ -21,6 +21,7 @@
 */
 
 #include <ql/Lattices/binomialtree.hpp>
+#include <ql/Math/binomialdistribution.hpp>
 
 namespace QuantLib {
 
@@ -34,7 +35,7 @@ namespace QuantLib {
     }
 
 
-    double EqualJumpsBinomialTree::probability(Size, Size, 
+    double EqualJumpsBinomialTree::probability(Size, Size,
                                                Size branch) const {
         if (branch == 1)
             return pu_;
@@ -58,7 +59,7 @@ namespace QuantLib {
 
 
     JarrowRudd::JarrowRudd(const Handle<DiffusionProcess>& process,
-                           Time end, Size steps)
+        Time end, Size steps, double)
     : EqualProbabilitiesBinomialTree(process, end, steps) {
 
         // drift removed
@@ -66,8 +67,7 @@ namespace QuantLib {
     }
 
     AdditiveEQPBinomialTree::AdditiveEQPBinomialTree(
-                                     const Handle<DiffusionProcess>& process, 
-                                     Time end, Size steps)
+    const Handle<DiffusionProcess>& process, Time end, Size steps, double)
     : EqualProbabilitiesBinomialTree(process, end, steps) {
 
         up_ = - 0.5 * driftPerStep_ + 0.5 *
@@ -79,8 +79,7 @@ namespace QuantLib {
 
 
     CoxRossRubinstein::CoxRossRubinstein(
-                                     const Handle<DiffusionProcess>& process, 
-                                     Time end, Size steps)
+        const Handle<DiffusionProcess>& process, Time end, Size steps, double)
     : EqualJumpsBinomialTree(process, end, steps) {
 
         dx_ = QL_SQRT(process->variance(0.0, x0_, dt_));
@@ -96,8 +95,8 @@ namespace QuantLib {
     }
 
 
-    Trigeorgis::Trigeorgis(const Handle<DiffusionProcess>& process,
-                           Time end, Size steps)
+    Trigeorgis::Trigeorgis(const Handle<DiffusionProcess>& process, Time end,
+        Size steps, double)
     : EqualJumpsBinomialTree(process, end, steps) {
 
         dx_ = QL_SQRT(process->variance(0.0, x0_, dt_)+
@@ -112,7 +111,8 @@ namespace QuantLib {
     }
 
 
-    Tian::Tian(const Handle<DiffusionProcess>& process, Time end, Size steps)
+    Tian::Tian(const Handle<DiffusionProcess>& process, Time end, Size steps,
+        double)
     : BinomialTree(process, end, steps) {
 
         double q = QL_EXP(process->variance(0.0, x0_, dt_));
@@ -136,11 +136,6 @@ namespace QuantLib {
 
     double Tian::underlying(Size i, Size index) const {
         return x0_*QL_POW(down_, int(i-index)) * QL_POW(up_, int(index));
-
-        // doesn't work
-        //     int j = (2*index - i);
-        // exploiting the tree centering
-        //     return x0_*QL_POW(treeCentering_, i) * QL_POW(up_, j);
     }
 
     double Tian::probability(Size, Size, Size branch) const {
@@ -149,6 +144,38 @@ namespace QuantLib {
         else
             return pd_;
     }
+
+
+    LeisenReimer::LeisenReimer(const Handle<DiffusionProcess>& process,
+        Time end, Size steps, double strike)
+    : BinomialTree(process, end, (steps%2 ? steps : steps+1)) {
+
+        Size oddSteps = (steps%2 ? steps : steps+1);
+        double variance = process->variance(0.0, x0_, end);
+        double ermqdt = QL_EXP(driftPerStep_ + 0.5*variance/oddSteps);
+        double d2 = (QL_LOG(x0_/strike) + driftPerStep_*oddSteps ) /
+                                                            QL_SQRT(variance);
+        double d1 = (QL_LOG(x0_/strike) + driftPerStep_*oddSteps + variance) /
+                                                            QL_SQRT(variance);
+        pu_ = PeizerPrattMethod2Inversion(d2, oddSteps);
+        pd_ = 1.0 - pu_;
+        double pdash = PeizerPrattMethod2Inversion(d1, oddSteps);
+        up_ = ermqdt * pdash / pu_;
+        down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
+
+    }
+
+    double LeisenReimer::underlying(Size i, Size index) const {
+        return x0_*QL_POW(down_, int(i-index)) * QL_POW(up_, int(index));
+    }
+
+    double LeisenReimer::probability(Size, Size, Size branch) const {
+        if (branch == 1)
+            return pu_;
+        else
+            return pd_;
+    }
+
 
 }
 
