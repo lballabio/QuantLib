@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.8  2000/12/22 15:13:45  aleppo
+	Included spread.h
+
 	Revision 1.7  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_swaption_volatility_surface_h
@@ -38,6 +41,7 @@
 #include "qldefines.h"
 #include "date.h"
 #include "rate.h"
+#include "spread.h"
 #include "handle.h"
 #include "observable.h"
 
