@@ -23,6 +23,7 @@
 #include <ql/Instruments/basketoption.hpp>
 #include <ql/PricingEngines/Basket/stulzengine.hpp>
 #include <ql/PricingEngines/Basket/mcbasketengine.hpp>
+#include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <cppunit/TestSuite.h>
@@ -284,7 +285,7 @@ void BasketOptionTest::testValues() {
 
     double mcRelativeErrorTolerance = 0.01;
     Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics> 
-        (1, false, false, Null<int>(), 0.005, Null<int>(), 42));
+        (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
 
     Date today = Date::todaysDate();
 
@@ -399,11 +400,11 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 2.97},
         {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 10.04},
         {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 6.64},
-        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.61}/*,
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.61},/*
 
         // Table 3
         // not working yet...
-        //{BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.00},
+        {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.00},
         {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.13},
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 2.26},
         {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 0.01},
@@ -431,8 +432,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 4.49},
         {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 0.41},
         {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 1.87},
-        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.70} 
-        */
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.70} */
+        
     };
 
     DayCounter dc = Actual360();
@@ -455,7 +456,13 @@ void BasketOptionTest::testBarraquandThreeValues() {
 
     double mcRelativeErrorTolerance = 0.01;
     Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
-        (1, false, false, Null<int>(), 0.005, Null<int>(), 42));
+        (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
+
+    // use a 3D sobol sequence...
+    // Think long and hard before moving to more than 1 timestep....
+    Handle<PricingEngine> mcQuasiEngine(new MCBasketEngine<LowDiscrepancy, Statistics>
+        (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
+
 
     Date today = Date::todaysDate();
 
@@ -507,11 +514,12 @@ void BasketOptionTest::testBarraquandThreeValues() {
             correlation[j][j] = 1.0;
         }
 
-        BasketOption basketOption(values[i].basketType, procs, payoff, 
-                                  exercise, correlation, mcEngine);
+        //BasketOption basketOption(values[i].basketType, procs, payoff, 
+          //                        exercise, correlation, mcEngine);
 
+        
         // mc engine
-        double calculated = basketOption.NPV();
+        /*double calculated = basketOption.NPV();
         double expected = values[i].result;
         double relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcRelativeErrorTolerance ) {
@@ -521,21 +529,257 @@ void BasketOptionTest::testBarraquandThreeValues() {
                 today, dc, values[i].v1, values[i].v2, values[i].v3, values[i].rho,
                 values[i].result, calculated, relError, mcRelativeErrorTolerance);
         }
+*/
+        BasketOption basketOption(values[i].basketType, procs, payoff, 
+                                  exercise, correlation, mcQuasiEngine);
+
+
+        double expected = values[i].result;
+        basketOption.setPricingEngine(mcQuasiEngine);
+        double calculated = basketOption.NPV();
+        double relError = relativeError(calculated, expected, values[i].s1);
+        if (relError > mcRelativeErrorTolerance ) {
+            basketOptionThreeTestFailed("MC Quasi value",
+                values[i].basketType, payoff, exercise, 
+                values[i].s1, values[i].s2, values[i].s3, values[i].r,
+                today, dc, values[i].v1, values[i].v2, values[i].v3, values[i].rho,
+                values[i].result, calculated, relError, mcRelativeErrorTolerance);
+        }
+    }
+}
+
+void BasketOptionTest::testTavellaValues() {
+
+    /*
+        Data from:
+        "Quantitative Methods in Derivatives Pricing"
+        Tavella, D. A.   -   Wiley (2002)  
+    */
+    BasketOptionBarraquandThreeData  values[] = {
+        // time in months is with 30 days to the month..
+        // basketType, optionType,       strike,    s1,    s2,   s3,    r,    t,   v1,   v2,  v3,  rho, result, 
+        {BasketOption::Max, Option::Call,  100,    100,   100, 100,  0.05, 3.00, 0.20, 0.20, 0.20, 0.0, 18.082}
+    };
+
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot1(new SimpleQuote(0.0));
+    Handle<SimpleQuote> spot2(new SimpleQuote(0.0));
+    Handle<SimpleQuote> spot3(new SimpleQuote(0.0));
+
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.1));    
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.05));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+
+    Handle<SimpleQuote> vol1(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(vol1, dc);
+    Handle<SimpleQuote> vol2(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS2 = makeFlatVolatility(vol2, dc);
+    Handle<SimpleQuote> vol3(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS3 = makeFlatVolatility(vol3, dc);
+
+    double mcRelativeErrorTolerance = 0.01;    
+    Size requiredSamples = 10000;
+    Size timeSteps = 10;
+    long seed = 0;
+    Handle<PricingEngine> mcLSMCEngine(new MCAmericanBasketEngine(requiredSamples,
+                                timeSteps, seed));
+    
+    Handle<PlainVanillaPayoff> payoff(new
+        PlainVanillaPayoff(values[0].type, values[0].strike));
+
+    Date today = Date::todaysDate();
+    Date exDate = today.plusDays(int(values[0].t*360+0.5));
+    Handle<Exercise> exercise(new AmericanExercise(today, exDate));
+
+    spot1 ->setValue(values[0].s1);
+    spot2 ->setValue(values[0].s2);
+    spot3 ->setValue(values[0].s3);        
+    vol1  ->setValue(values[0].v1);
+    vol2  ->setValue(values[0].v2);
+    vol3  ->setValue(values[0].v3);
+
+    Handle<BlackScholesStochasticProcess> stochProcess1(new
+        BlackScholesStochasticProcess(
+            RelinkableHandle<Quote>(spot1),
+            RelinkableHandle<TermStructure>(qTS),
+            RelinkableHandle<TermStructure>(rTS),
+            RelinkableHandle<BlackVolTermStructure>(volTS1)));
+
+    Handle<BlackScholesStochasticProcess> stochProcess2(new
+        BlackScholesStochasticProcess(
+            RelinkableHandle<Quote>(spot2),
+            RelinkableHandle<TermStructure>(qTS),
+            RelinkableHandle<TermStructure>(rTS),
+            RelinkableHandle<BlackVolTermStructure>(volTS2)));
+
+    Handle<BlackScholesStochasticProcess> stochProcess3(new
+        BlackScholesStochasticProcess(
+            RelinkableHandle<Quote>(spot3),
+            RelinkableHandle<TermStructure>(qTS),
+            RelinkableHandle<TermStructure>(rTS),
+            RelinkableHandle<BlackVolTermStructure>(volTS3)));
+
+    std::vector<Handle<BlackScholesStochasticProcess> > procs =
+        std::vector<Handle<BlackScholesStochasticProcess> >();
+    procs.push_back(stochProcess1);
+    procs.push_back(stochProcess2);
+    procs.push_back(stochProcess3);
+
+    Matrix correlation(3,3, 0.0);
+    for (int j=0; j < 3; j++) {
+        correlation[j][j] = 1.0;
+    }    
+    correlation[1][0] = -0.25;
+    correlation[0][1] = -0.25;
+    correlation[2][0] = 0.25;
+    correlation[0][2] = 0.25;
+    correlation[2][1] = 0.3;
+    correlation[1][2] = 0.3;
+
+    Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
+        (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
+
+
+    //BasketOption basketOption(values[0].basketType, procs, payoff, 
+//                                exercise, correlation, mcEngine);
+    BasketOption basketOption(values[0].basketType, procs, payoff, 
+                                exercise, correlation, mcLSMCEngine);
+                                
+    double calculated = basketOption.NPV();
+
+    //std::cout << "Euro value " << calculated << std::endl;
+
+    //basketOption.setPricingEngine(mcLSMCEngine);
+    double expected = values[0].result;    
+    calculated = basketOption.NPV();
+    double errorEstimate = basketOption.errorEstimate();
+    double relError = relativeError(calculated, expected, values[0].s1);
+    if (relError > mcRelativeErrorTolerance ) {
+        basketOptionThreeTestFailed("MC LSMC value",
+            values[0].basketType, payoff, exercise, 
+            values[0].s1, values[0].s2, values[0].s3, values[0].r,
+            today, dc, values[0].v1, values[0].v2, values[0].v3, values[0].rho,
+            values[0].result, calculated, errorEstimate, mcRelativeErrorTolerance);
+    }
+}
+
+void BasketOptionTest::testOneDAmericanValues() {
+
+    /*
+    */
+    VanillaOptionData values[] = {
+        //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
+        { Option::Put, 100.00,  80.00,   0.0, 0.06,   0.5, 0.4,  21.6059, 1e-2 },
+        { Option::Put, 100.00,  85.00,   0.0, 0.06,   0.5, 0.4,  18.0374, 1e-2 },
+        { Option::Put, 100.00,  90.00,   0.0, 0.06,   0.5, 0.4,  14.9187, 1e-2 },
+        { Option::Put, 100.00,  95.00,   0.0, 0.06,   0.5, 0.4,  12.2314, 1e-2 },        
+        { Option::Put, 100.00, 100.00,   0.0, 0.06,   0.5, 0.4,  9.9458, 1e-2 },
+        { Option::Put, 100.00, 105.00,   0.0, 0.06,   0.5, 0.4,  8.0281, 1e-2 },
+        { Option::Put, 100.00, 110.00,   0.0, 0.06,   0.5, 0.4,  6.4352, 1e-2 },
+        { Option::Put, 100.00, 115.00,   0.0, 0.06,   0.5, 0.4,  5.1265, 1e-2 },
+        { Option::Put, 100.00, 120.00,   0.0, 0.06,   0.5, 0.4,  4.0611, 1e-2 }
+    };
+
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot1(new SimpleQuote(0.0));
+    
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));    
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.05));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+
+    Handle<SimpleQuote> vol1(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(vol1, dc);
+    
+    double mcRelativeErrorTolerance = 0.01;    
+    Size requiredSamples = 1000;
+    Size timeSteps = 20;
+    long seed = 0;
+    Handle<PricingEngine> mcLSMCEngine(new MCAmericanBasketEngine(requiredSamples,
+                                timeSteps, seed));
+    
+    Date today = Date::todaysDate();
+    
+    Handle<BlackScholesStochasticProcess> stochProcess1(new
+        BlackScholesStochasticProcess(
+            RelinkableHandle<Quote>(spot1),
+            RelinkableHandle<TermStructure>(qTS),
+            RelinkableHandle<TermStructure>(rTS),
+            RelinkableHandle<BlackVolTermStructure>(volTS1)));
+
+    
+    std::vector<Handle<BlackScholesStochasticProcess> > procs =
+        std::vector<Handle<BlackScholesStochasticProcess> >();
+    procs.push_back(stochProcess1);
+    
+    Matrix correlation(1, 1, 1.0);
+    
+    Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
+        (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
+
+    for (Size i=0; i<LENGTH(values); i++) {
+        Handle<PlainVanillaPayoff> payoff(new
+            PlainVanillaPayoff(values[i].type, values[i].strike));
+
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+            Handle<Exercise> exercise(new AmericanExercise(today, exDate));
+    
+        spot1 ->setValue(values[i].s);
+        vol1  ->setValue(values[i].v);
+        rRate ->setValue(values[i].r);
+        qRate ->setValue(values[i].q);
+    
+        //BasketOption basketOption(values[0].basketType, procs, payoff, 
+        //                                exercise, correlation, mcEngine);
+        BasketOption basketOption(BasketOption::Max, procs, payoff, 
+                                    exercise, correlation, mcLSMCEngine);
+                                    
+        double calculated = basketOption.NPV();
+
+        //std::cout << "Euro value " << calculated << std::endl;
+
+        //basketOption.setPricingEngine(mcLSMCEngine);
+        double expected = values[i].result;    
+        calculated = basketOption.NPV();
+        double errorEstimate = basketOption.errorEstimate();
+        double relError = relativeError(calculated, expected, values[i].s);
+        double error = QL_FABS(calculated-expected);
+            
+        if (error > values[i].tol) {
+            std::cout << "TEST FAILED" << "\n MC LSMC value " 
+                << calculated << " not " << values[i].result <<
+                " error " << errorEstimate
+                << std::endl;
+        }                
 
     }
 }
 
-
 CppUnit::Test* BasketOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Basket option tests");
+    
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
                    ("Testing basket options against correct values",
                     &BasketOptionTest::testValues));
+
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
                    ("Testing basket options against Barraquand values",
                     &BasketOptionTest::testBarraquandThreeValues));
 
+/*
+    tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
+                   ("Testing basket Bermudan options against Tavella values",
+                    &BasketOptionTest::testTavellaValues));
+
+    tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
+                   ("Testing basket Bermudan options against 1D case",
+                    &BasketOptionTest::testOneDAmericanValues));
+    
+*/
     return tests;
 }
 
