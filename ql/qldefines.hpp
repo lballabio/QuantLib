@@ -309,34 +309,6 @@
     techniques and a less efficient one which is compatible with all compilers.
     @{
 */
-/*! \def QL_DECLARE_TEMPLATE_SPECIALIZATIONS
-    \brief Blame Microsoft for this one...
-
-    They decided that a declaration and a definition of a specialized template
-    function amount to a redefinition and should issue a linker error.
-    For the code to be portable, template specializations should be declared (as
-    opposed to defined) only if this macro is defined.
-*/
-#if !defined(BROKEN_TEMPLATE_SPECIALIZATION)
-    #define QL_DECLARE_TEMPLATE_SPECIALIZATIONS
-#endif
-
-/*! \def QL_ALLOW_TEMPLATE_METHOD_CALLS
-    \brief Blame Microsoft for this one...
-
-    Their compiler cannot cope with method calls such as
-    \code
-    x = foo.bar<Type>();
-    \endcode
-
-    For compatibility, a workaround should be implemented (which of course will
-    be less solid or more comples - as I said, blame Microsoft...)
-*/
-#if !defined(BROKEN_TEMPLATE_METHOD_CALLS)
-    #define QL_ALLOW_TEMPLATE_METHOD_CALLS   1
-#else
-    #define QL_ALLOW_TEMPLATE_METHOD_CALLS   0
-#endif
 
 /*! \def QL_TYPENAME
     \brief Blame Microsoft for this one...
@@ -348,20 +320,6 @@
     #define QL_TYPENAME
 #else
     #define QL_TYPENAME typename
-#endif
-
-
-/*! \def QL_TEMPLATE_METAPROGRAMMING_WORKS
-    Template metaprogramming techniques (see T. L. Veldhuizen, <i>Using C++
-    Template Metaprograms</i>, C++ Report, Vol 7 No. 4, May 1995, available at
-    http://extreme.indiana.edu/~tveldhui/papers) are sometimes too advanced for
-    the template implementation of current compilers.
-*/
-#if defined(HAVE_TEMPLATE_METAPROGRAMMING)
-    #define QL_TEMPLATE_METAPROGRAMMING_WORKS   1
-#else
-    // Play it safe
-    #define QL_TEMPLATE_METAPROGRAMMING_WORKS   0
 #endif
 /*! @} */
 
