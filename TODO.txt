@@ -1,41 +1,39 @@
 FINITE DIFFERENCE FRAMEWORK
+-*use DicretisedAsset instead of array
+-*use TimeGrid
 -*allow for time dependant parameters
 -*boundary conditions as in Wilmott
 -*Douglas scheme (QuEP)
 -*Richardson extrapolation (QuEP)
 -*SOR rollback for free boundary condition
--*have time scheme as input
 - clean up FDMultiPeriodOption
 - check american with discrete dividends
 - merge rollback scheme with tree rollback scheme
--*use DicretisedAsset instead of array
--*use TimeGrid
 
 MONTE CARLO FRAMEWORK
+-*revise multidimensional MonteCarlo
+-*revise extrapolation in diffusion process
+-*quasi-random number generator
+-*replace all instance of seed with a random generator
 - add example of Martingale control variate
 - add examples of Montecarlo internal and Montecarlo convergence
--*replace all instance of seed with a random generator
--*have statistics class as input
 - add Milstein Scheme
--*revise multidimensional MonteCarlo
--*time-dependant parameter in path generator
--*asset-dependant parameters in path generator
--*revise extrapolation in diffusion process
 
 VOLATILITY
 -*local volatility
-- add bispline interpolation or the local vol will be useless
 - investigate extrapolation effect, consider one side differences,
   instead of central, when on the border
+- visitor pattern
 
 PRICING ENGINE FRAMEWORK
-- create Arguments class not including strike and use it in forward options
 -*create vanilla FD example
 -*create vanilla MC example
 -*add new engines to test-suite
-- deprecate old pricers
 -*fix quantotermstructure/drifttermstructure problem
--*MC with both tolerance and/or fixed number of samples
+-*MC with tolerance in the constructor
+- add integral engine
+- create Arguments class not including strike and use it in forward options
+- deprecate old pricers
 
 MISCELLANEA
 -*make unit test to work under Borland
@@ -96,7 +94,7 @@ YIELD CURVE
 TREES
 - check addDates
 - BS correction
-- merge rollback scheme with FD merge scheme
+- merge rollback scheme with FD rollback scheme
 - trinomial trees
 - implied trinomial trees
 
