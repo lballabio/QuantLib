@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/03/21 09:51:01  marmar
+    DividendAmericanOption is now derived from DividendOption
+
     Revision 1.11  2001/02/13 11:33:13  marmar
     Efficency improved. Also, dividends do not have to be positive
     to allow for negative cash flows
@@ -54,53 +57,24 @@
 #define shaft_dividend_american_option_pricer_h
 
 #include "qldefines.h"
-#include "bsmnumericaloption.h"
-#include "americancondition.h"
-#include <vector>
-
-/*
-#include "date.h"
-#include "dividendeuropeanoption.h"
-#include "finitedifferencemodel.h"
-#include "handle.h"
-
-#include "finitedifferences.h"
-#include "newcubicspline.h"
-#include "cranknicolson.h"
-#include "bsmnumericaloption.h"
-#include "americancondition.h"
-*/
+#include "dividendoption.h"
 namespace QuantLib {
+
     namespace Pricers {
 
-        class DividendAmericanOption : public BSMNumericalOption {
+        class DividendAmericanOption : public DividendOption {
           public:
             // constructor
             DividendAmericanOption(Type type, double underlying, 
                 double strike, Rate dividendYield, Rate riskFreeRate, 
                 Time residualTime, double volatility, 
-                const std::vector<double>& dividends, 
-                const std::vector<Time>& exdivdates, int timeSteps, 
-                int gridPoints);
-            // accessors
-            double value() const;
-            private:
-            mutable bool optionIsAmerican_;
-            int timeStepPerDiv;
-            std::vector<double> theDividends;
-            std::vector<Time> theExDivDates;
-            unsigned int  theNumberOfDivs;
-            void movePricesBeforeExDiv(double Div, const Array& newGrid, 
-                Array& prices, const Array& oldGrid) const;
-            Handle<BSMOption> clone() const { 
-                return Handle<BSMOption>(new DividendAmericanOption(*this));
-            }
-            double addElements(const std::vector<double>& A) const{
-                return std::accumulate(A.begin(),A.end(), 0.0);   
-            }
+                const std::vector<double>& dividends = std::vector<double>(), 
+                const std::vector<Time>& exdivdates = std::vector<Time>(), 
+                int timeSteps = 100, int gridPoints = 100);
+            Handle<BSMOption> clone() const;
         };
-
     }
+
 }
 
 
