@@ -37,7 +37,6 @@ SimpleSwapTest::SimpleSwapTest()
 
 void SimpleSwapTest::setUp() {
     payFixed_ = true;
-    today_ = Date::todaysDate();
     settlementDays_ = 2;
     fixingDays_ = 2;
     nominal_ = 100.0;
@@ -49,6 +48,7 @@ void SimpleSwapTest::setUp() {
     index_ = Handle<Xibor>(new Euribor(12/floatingFrequency_,Months,
                                        termStructure_));
     calendar_ = index_->calendar();
+    today_ = calendar_.roll(Date::todaysDate());
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
     termStructure_.linkTo(
         Handle<TermStructure>(new FlatForward(today_,settlement_,0.05,
