@@ -1,6 +1,8 @@
 includedir = $(prefix)/include/QuantLib/Math
 include_HEADERS = \
-	location.h \
-	newcubicspline.h \
 	normaldistribution.h \
-	statistics.h 
+	statistics.h \
+	cubicspline.h \
+	interpolation.h \
+	linearinterpolation.h \
+	lexicographicalview.h

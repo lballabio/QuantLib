@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.13  2001/01/15 13:40:32  lballabio
+	Added new files
+
 	Revision 1.12  2001/01/11 11:51:58  lballabio
 	Added QLUTL alias for QuantLib::Utilities::
-
+	
 	Revision 1.11  2001/01/04 11:58:10  lballabio
 	Differential operators added
 	
@@ -138,8 +141,10 @@
 // math tools
 #include "normaldistribution.h"
 #include "statistics.h"
-#include "newcubicspline.h"
-#include "location.h"		
+#include "interpolation.h"
+#include "linearinterpolation.h"
+#include "cubicspline.h"
+#include "lexicographicalview.h"
 
 
 // Monte Carlo tools
