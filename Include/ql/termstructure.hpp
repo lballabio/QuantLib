@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/03 10:25:31  lballabio
+    Fixed today and settlement in implied term structure
+
     Revision 1.1  2001/04/09 14:03:54  nando
     all the *.hpp moved below the Include/ql level
 
@@ -159,8 +162,10 @@ namespace QuantLib {
     };
 
     //! Implied term structure at a given date in the future
-    /*! This term structure will remain linked to the original structure, i.e.,
-        any changes in the latter will be reflected in this structure as well.
+    /*! The given date will be the implied today's date.
+        \note This term structure will remain linked to the original structure, 
+        i.e., any changes in the latter will be reflected in this structure as 
+        well.
     */
     class ImpliedTermStructure : public DiscountStructure {
       public:
@@ -185,6 +190,7 @@ namespace QuantLib {
       private:
         Handle<TermStructure> originalCurve_;
         Date evaluationDate_;
+        Date evaluationSettlement_;
     };
 
     //! Term structure with an added spread on the zero yield rate
@@ -312,10 +318,11 @@ namespace QuantLib {
     inline ImpliedTermStructure::ImpliedTermStructure(
         const Handle<TermStructure>& h, const Date& evaluationDate)
     : originalCurve_(h), evaluationDate_(evaluationDate) {
-
-        QL_REQUIRE(evaluationDate<=originalCurve_->maxDate(),
+        evaluationSettlement_ = 
+            originalCurve_->currency()->settlementDate(evaluationDate_);
+        QL_REQUIRE(evaluationSettlement_ <= originalCurve_->maxDate(),
             "ImpliedTermStructure::ImpliedTermStructure : "
-            "the evaluation date "
+            "the evaluation settlement date "
             "can't be greater than the original curve max date");
 
     }
@@ -329,7 +336,7 @@ namespace QuantLib {
     }
 
     inline Date ImpliedTermStructure::settlementDate() const {
-        return originalCurve_->currency()->settlementDate(evaluationDate_);
+        return evaluationSettlement_;
     }
 
     inline Handle<Calendar> ImpliedTermStructure::calendar() const {
@@ -341,15 +348,17 @@ namespace QuantLib {
     }
 
     inline Date ImpliedTermStructure::minDate() const {
-        return settlementDate();
+        return evaluationSettlement_;
     }
 
     inline DiscountFactor ImpliedTermStructure::discount(
                                                     const Date& d,
                                                     bool extrapolate) const {
         // evaluationDate cannot be an extrapolation
+        /* discount at evaluation date cannot be cached since the original curve 
+           could change between invocations of this method */
         return originalCurve_->discount(d, extrapolate) /
-            originalCurve_->discount(evaluationDate_, false);
+            originalCurve_->discount(evaluationSettlement_, false);
     }
 
     inline Handle<TermStructure> ImpliedTermStructure::clone() const {
