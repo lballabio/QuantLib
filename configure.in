@@ -126,7 +126,7 @@ elif test $ac_cv_header_stdio_h = yes ; then
 else
   AC_ERROR(Could not find cstdio nor stdio.h)
 fi
-QL_CHECK_FUNCTION([sprintf],[$ql_stdio],["foo"])
+QL_CHECK_FUNCTION([sprintf],[$ql_stdio],[s,"foo"])
 
 QL_CHECK_FUNCTION([max],[algorithm],[1,2])
 QL_CHECK_FUNCTION([min],[algorithm],[1,2])

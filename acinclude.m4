@@ -21,6 +21,7 @@ AC_DEFUN(
     [#include<$2>],
     [
     double x;
+    char s[10];
     std::$1($3);
     ],[
       result="found in std"
