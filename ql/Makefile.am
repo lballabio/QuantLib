@@ -42,7 +42,6 @@ include_HEADERS = \
 	date.hpp \
 	daycounter.hpp \
 	errors.hpp \
-    exercisetype.hpp \
 	expressiontemplates.hpp \
 	forwardvolsurface.hpp \
 	handle.hpp \
