@@ -37,40 +37,39 @@ void RiskStatisticsTest::runTest() {
             
     double averages[] = { -100.0, -1.0, 0.0, 1.0, 100.0 };
     double sigmas[] = { 0.1, 1.0, 100.0 };
-//    Size N = Size(QL_POW(2,18))-1;
-    Size N = Size(QL_POW(2.0,14)), numberOfSigma = 15;
+    Size numberOfSigma = 15, i, j, k, N;
+    N = Size(QL_POW(2.0,15));
+//    N = Size(QL_POW(2.0,14))-1;
+    double dataMin, dataMax, h;
+    std::vector<double> data(N), weights(N);
 
-    for (Size i=0; i<LENGTH(averages); i++) {
-        for (Size j=0; j<LENGTH(sigmas); j++) {
+    for (i=0; i<LENGTH(averages); i++) {
+        for (j=0; j<LENGTH(sigmas); j++) {
 
             
-            std::vector<double> data(N), weights(N);
             NormalDistribution               normal(averages[i],sigmas[j]);
             CumulativeNormalDistribution cumulative(averages[i],sigmas[j]);
             InverseCumulativeNormal      inverseCum(averages[i],sigmas[j]);
             SobolRsg rng(1);
 
-
-            double dataMin = averages[i] - numberOfSigma*sigmas[j],
-                   dataMax = averages[i] + numberOfSigma*sigmas[j];
-            double h = (dataMax-dataMin)/(N-1);
-
-            for (Size k=0; k<N; k++)
+            dataMin = averages[i] - numberOfSigma*sigmas[j];
+            dataMax = averages[i] + numberOfSigma*sigmas[j];
+            h = (dataMax-dataMin)/(N-1);
+            for (k=0; k<N; k++)
                 data[k] = dataMin + h*k;
             std::transform(data.begin(),data.end(),weights.begin(),normal);
 
-
-            /*
-            double dataMin = QL_MAX_DOUBLE;
-            double dataMax = QL_MIN_DOUBLE;
-            for (Size k=0; k<N; k++) {
+/*
+            dataMin = QL_MAX_DOUBLE;
+            dataMax = QL_MIN_DOUBLE;
+            for (k=0; k<N; k++) {
                 data[k] = inverseCum(rng.nextSequence().value[0]);
                 dataMin = QL_MIN(dataMin, data[k]);
                 dataMax = QL_MAX(dataMax, data[k]);
                 weights[k]=1.0;
 //                weights[k]=normal(data[k]);
             }
-            */
+*/
 
             s.addSequence(data.begin(),data.end(),weights.begin());
             hs.addSequence(data.begin(),data.end(),weights.begin());
@@ -79,6 +78,7 @@ void RiskStatisticsTest::runTest() {
             double calculated, expected;
             double tolerance;
 
+            // samples()
             expected = N;
             calculated = s.samples();
             if (calculated != expected)
@@ -86,24 +86,22 @@ void RiskStatisticsTest::runTest() {
                     "Statistics: "
                     "wrong number of samples\n"
                     "    calculated: "
-                    + IntegerFormatter::toString(calculated) + "\n"
+                    + IntegerFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + IntegerFormatter::toString(expected));
+                    + IntegerFormatter::toString(expected,16));
             calculated = hs.samples();
             if (calculated != expected)
                 CPPUNIT_FAIL(
                     "HStatistics: "
                     "wrong number of samples\n"
                     "    calculated: "
-                    + IntegerFormatter::toString(calculated) + "\n"
+                    + IntegerFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + IntegerFormatter::toString(expected));
+                    + IntegerFormatter::toString(expected,16));
 
 
 
-
-
-
+            // weightSum()
             expected = std::accumulate(weights.begin(),weights.end(),0.0);
             calculated = s.weightSum();
             if (calculated != expected)
@@ -111,20 +109,21 @@ void RiskStatisticsTest::runTest() {
                     "Statistics: "
                     "wrong sum of weights\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.weightSum();
             if (calculated != expected)
                 CPPUNIT_FAIL(
                     "HStatistics: "
                     "wrong sum of weights\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
 
 
+            // min()
             tolerance = 1e-12;
             expected = dataMin;
             calculated = s.min();
@@ -133,18 +132,18 @@ void RiskStatisticsTest::runTest() {
                     "Statistics: "
                     "wrong minimum value\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.min();
             if (QL_FABS(calculated-expected)>tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
                     "wrong minimum value\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
 
 
 
@@ -152,6 +151,8 @@ void RiskStatisticsTest::runTest() {
 
 
 
+
+            //max()
             expected = dataMax;
             calculated = s.max();
             if (QL_FABS(calculated-expected)>tolerance)
@@ -159,23 +160,24 @@ void RiskStatisticsTest::runTest() {
                     "Statistics: "
                     "wrong maximum value\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.max();
             if (QL_FABS(calculated-expected)>tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
                     "wrong maximum value\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
 
 
 
 
 
+            //mean()
             expected = averages[i];
             tolerance = (expected == 0.0 ? 1.0e-13 :
                                            QL_FABS(expected)*1.0e-13);
@@ -183,121 +185,162 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong mean value\n"
+                    "wrong mean value"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.mean();
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
-                    "wrong mean value\n"
+                    "wrong mean value"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
 
 
 
 
 
 
+            //variance()
             expected = sigmas[j]*sigmas[j];
             tolerance = expected*1.0e-4;
             calculated = s.variance();
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong variance\n"
+                    "wrong variance"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.variance();
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
-                    "wrong variance\n"
+                    "wrong variance"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
 
 
 
 
+            // missing downsideVariance() test
 
-
+            //standardDeviation()
             expected = sigmas[j];
             tolerance = expected*1.0e-4;
             calculated = s.standardDeviation();
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong standard deviation\n"
+                    "wrong standard deviation"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.standardDeviation();
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
-                    "wrong standard deviation\n"
+                    "wrong standard deviation"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
 
 
 
+            // missing downsideDeviation() test
 
+            // missing errorEstimate() test
 
+            //skewness()
             expected = 0.0;
             tolerance = 1.0e-4;
             calculated = s.skewness();
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong skewness\n"
+                    "wrong skewness"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.skewness();
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
-                    "wrong skewness\n"
+                    "wrong skewness"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
 
 
+            //kurtosis()
             expected = 0.0;
             tolerance = 1.0e-1;
             calculated = s.kurtosis();
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong kurtosis\n"
+                    "wrong kurtosis"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.kurtosis();
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
-                    "wrong kurtosis\n"
+                    "wrong kurtosis"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
 
 
+            // missing percentile() test
+
+
+
+            //gaussianPotentialUpside() and potentialUpside
             double upper_tail = averages[i]+2.0*sigmas[j],
                    lower_tail = averages[i]-2.0*sigmas[j];
             double twoSigma = cumulative(upper_tail);
@@ -307,47 +350,90 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong potential upside\n"
+                    "wrong gaussian potential upside"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.gaussianPotentialUpside(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
-                    "wrong potential upside\n"
+                    "wrong gaussian potential upside"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
+//            std::cout << "potentialUpside: gaussian " << calculated ;
+            calculated = hs.potentialUpside(twoSigma);
+//            std::cout << ", hist " << calculated << std::endl;
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL(
+                    "HStatistics: "
+                    "wrong potential upside"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    "    calculated: "
+                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    "    expected:   "
+                    + DoubleFormatter::toString(expected,16));
 
 
 
-
-
+            // gaussianValueAtRisk
             expected = -QL_MIN(lower_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 : expected*1.0e-3);
             calculated = s.gaussianValueAtRisk(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong value at risk\n"
+                    "wrong gaussian value-at-risk"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.gaussianValueAtRisk(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
-                    "wrong value at risk\n"
+                    "wrong gaussian value-at-risk"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
+//            std::cout << "valueAtRisk: gaussian " << calculated ;
+            calculated = hs.valueAtRisk(twoSigma);
+//            std::cout << ", hist " << calculated << std::endl;
 
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL(
+                    "HStatistics: "
+                    "wrong value-at-risk"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    "    calculated: "
+                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    "    expected:   "
+                    + DoubleFormatter::toString(expected,16));
 
+            // gaussianExpectedShortfall and expectedShorfall
             expected = -QL_MIN(averages[i]
                                - sigmas[j]*sigmas[j]
                                * normal(lower_tail)/(1.0-twoSigma),
@@ -358,22 +444,41 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong expected shortfall\n"
+                    "wrong gaussian expected shortfall"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.gaussianExpectedShortfall(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
-                    "wrong expected shortfall\n"
+                    "wrong gaussian expected shortfall"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
+            calculated = hs.expectedShortfall(twoSigma);
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL(
+                    "HStatistics: "
+                    "wrong expected shortfall"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    "    calculated: "
+                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    "    expected:   "
+                    + DoubleFormatter::toString(expected,16));
 
 
+            // gaussianShortfall and shortfall
             double target = averages[i];
             expected = 0.5;
             tolerance = 1.0e-8;
@@ -381,42 +486,81 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong shortfall\n"
+                    "wrong gaussian shortfall"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.gaussianShortfall(target);
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
-                    "wrong shortfall\n"
+                    "wrong gaussian shortfall"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
+            calculated = hs.shortfall(target);
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL(
+                    "HStatistics: "
+                    "wrong shortfall"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    "    calculated: "
+                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    "    expected:   "
+                    + DoubleFormatter::toString(expected,16));
 
 
+            // gaussianAverageShortfall and average shortfall
             expected = sigmas[j]/QL_SQRT(2.0*M_PI);
             tolerance = expected*1.0e-4;
             calculated = s.gaussianAverageShortfall(target);
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong average shortfall\n"
+                    "wrong gaussian average shortfall"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
             calculated = hs.gaussianAverageShortfall(target);
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
-                    "wrong average shortfall\n"
+                    "wrong gaussian average shortfall"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated) + "\n"
+                    + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected));
+                    + DoubleFormatter::toString(expected,16));
+            calculated = hs.averageShortfall(target);
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL(
+                    "HStatistics: "
+                    "wrong average shortfall"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    "    calculated: "
+                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    "    expected:   "
+                    + DoubleFormatter::toString(expected,16));
+
+
 
             s.reset();
             hs.reset();

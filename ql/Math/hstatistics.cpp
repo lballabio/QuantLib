@@ -174,14 +174,13 @@ namespace QuantLib {
                 hiIntegral      += kk->second;
             }
 
-            bool interpolate = false;
-            double result;
+            bool interpolate = true;
             // interpolating ... if possible and required
             if (k==samples_.begin() || (!interpolate))
-                result = k->first;
+                return k->first;
             else {
                 double lambda = (hiIntegral - perc) / (k->second);
-                result = (1.0-lambda) * (k->first) + lambda * ((k-1)->first);
+                return (1.0-lambda) * (k->first) + lambda * ((k-1)->first);
             }
 
            return result;
