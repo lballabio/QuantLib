@@ -34,7 +34,7 @@
 
 #include "ql/array.hpp"
 #include "ql/Math/matrix.hpp"
-#include "ql/Optimization/leastsquare.hpp"
+#include "ql/Optimization/conjugategradient.hpp"
 #include "ql/Optimization/optimizer.hpp"
 
 /*!
@@ -244,7 +244,7 @@ namespace QuantLib {
 
         inline NonLinearLeastSquare::NonLinearLeastSquare (double accuracy,
           int maxiter):					      
-        exitFlag_ (-1), accuracy_ (accuracy), maxIterations_ (maxiter),
+        exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
             om_ (Handle<OptimizationMethod>(new ConjugateGradient()))
         {}
 
