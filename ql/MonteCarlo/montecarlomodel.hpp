@@ -34,6 +34,8 @@
 #ifndef quantlib_montecarlo_model_h
 #define quantlib_montecarlo_model_h
 
+#include <ql/handle.hpp>
+
 namespace QuantLib {
 
     //! Monte Carlo framework
