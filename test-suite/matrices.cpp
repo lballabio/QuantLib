@@ -94,7 +94,7 @@ void MatricesTest::testEigenvectors() {
 
 void MatricesTest::testSqrt() {
 
-    Matrix m = pseudoSqrt(M1);
+    Matrix m = pseudoSqrt(M1, None);
     if (norm(m*m - M1) > 1.0e-20)
         CPPUNIT_FAIL("Matrix square root calculation failed");
 
