@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.17  2001/03/27 13:44:37  lballabio
+   Removed default string arguments (crashed the thing when used)
+
    Revision 1.16  2001/03/12 17:35:11  lballabio
    Removed global IsNull function - could have caused very vicious loops
 
@@ -106,13 +109,12 @@ typedef Handle<Instrument> InstrumentHandle;
 %{
 using QuantLib::Instruments::Stock;
 
-InstrumentHandle NewStock(String isinCode = "", String description = "") {
+InstrumentHandle NewStock(String isinCode, String description) {
 	return InstrumentHandle(new Stock(isinCode,description));
 }
 %}
 
-%name(Stock) InstrumentHandle NewStock(String isinCode = "", 
-    String description = "");
+%name(Stock) InstrumentHandle NewStock(String isinCode, String description);
 
 
 #endif
