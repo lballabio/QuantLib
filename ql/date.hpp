@@ -77,7 +77,7 @@ namespace QuantLib {
         : length_(0), units_(Days) {}
         Period(int n, TimeUnit units)
         : length_(n), units_(units) {}
-        Period(const std::string&);
+       explicit Period(const std::string& pstring);
         int length() const { return length_; }
         TimeUnit units() const { return units_; }
       private:
