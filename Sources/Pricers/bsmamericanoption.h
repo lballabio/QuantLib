@@ -11,6 +11,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "qldefines.h"
 #include "bsmnumericaloption.h"
 #include "stepcondition.h"
+#include "americancondition.h"
 #include <algorithm>
 #include <functional>
 
@@ -28,17 +29,6 @@ class BSMAmericanOption : public BSMNumericalOption {
 	// accessors
 	double value() const;
 	int  theTimeSteps;
-};
-
-class BMSAmericanCondition : public QL_ADD_NAMESPACE(PDE,StepCondition)<Array> {
-  public:
-	BMSAmericanCondition(const Array& initialPrices) : initialPrices(initialPrices) {}
-	void applyTo(Array& a, Time t) const {
-		for (int i=0; i<a.size(); i++)
-			a[i] = QL_MAX(a[i],initialPrices[i]);
-	}
-  private:
-	Array initialPrices;
 };
 
 
