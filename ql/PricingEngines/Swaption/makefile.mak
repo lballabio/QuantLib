@@ -25,7 +25,6 @@ INCLUDE_DIR    = ..\..\..
 OBJS = \
     "blackswaptionengine.obj$(_mt)$(_D)" \
     "discretizedswaption.obj$(_mt)$(_D)" \
-    "g2swaptionengine.obj$(_mt)$(_D)" \
     "jamshidianswaptionengine.obj$(_mt)$(_D)" \
     "treeswaptionengine.obj$(_mt)$(_D)"
 

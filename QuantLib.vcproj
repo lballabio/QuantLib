@@ -7765,9 +7765,6 @@
 					RelativePath=".\ql\PricingEngines\Swaption\discretizedswaption.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\g2swaptionengine.cpp">
-				</File>
-				<File
 					RelativePath=".\ql\PricingEngines\Swaption\g2swaptionengine.hpp">
 				</File>
 				<File
