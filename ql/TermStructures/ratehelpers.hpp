@@ -34,6 +34,8 @@
 #ifndef quantlib_ratehelper_h
 #define quantlib_ratehelper_h
 
+#include "ql/marketelement.hpp"
+#include "ql/relinkablehandle.hpp"
 #include "ql/Instruments/simpleswap.hpp"
 
 namespace QuantLib {
@@ -51,12 +53,18 @@ namespace QuantLib {
             Swap instrument for the time being. 
             
             \todo Futures rate helper should be implemented. */
-        class RateHelper {
+        class RateHelper : public Patterns::Observer, 
+                           public Patterns::Observable {
           public:
-            RateHelper() : termStructure_(0) {}
-            virtual ~RateHelper() {}
-            virtual double rateError() const = 0;
-            virtual double discountGuess() const { return Null<double>(); }
+            RateHelper(const RelinkableHandle<MarketElement>& rate);
+            virtual ~RateHelper();
+            //! \name RateHelper interface
+            //@{
+            Rate rateError() const;
+            virtual Rate impliedRate() const = 0;
+            virtual DiscountFactor discountGuess() const { 
+                return Null<double>(); 
+            }
             //! sets the term structure to be used for pricing
             /*! \warning Being a pointer and not a Handle, the term structure 
                 is not guaranteed to remain allocated for the whole life of 
@@ -69,7 +77,13 @@ namespace QuantLib {
             virtual void setTermStructure(TermStructure*);
             //! maturity date
             virtual Date maturity() const = 0;
+            //@}
+            //! \name Observer interface
+            //@{
+            void update() { notifyObservers(); }
+            //@}
           protected:
+            RelinkableHandle<MarketElement> rate_;
             TermStructure* termStructure_;
         };
 
@@ -80,16 +94,16 @@ namespace QuantLib {
         */
         class DepositRateHelper : public RateHelper {
           public:
-            DepositRateHelper(Rate rate, int settlementDays,
-                int n, TimeUnit units, const Handle<Calendar>& calendar,
+            DepositRateHelper(const RelinkableHandle<MarketElement>& rate, 
+                int settlementDays, int n, TimeUnit units, 
+                const Handle<Calendar>& calendar, 
                 RollingConvention convention, 
                 const Handle<DayCounter>& dayCounter);
-            double rateError() const;
-            double discountGuess() const;
+            Rate impliedRate() const;
+            DiscountFactor discountGuess() const;
             void setTermStructure(TermStructure*);
             Date maturity() const;
           private:
-            Rate rate_;
             int settlementDays_;
             int n_;
             TimeUnit units_;
@@ -107,17 +121,16 @@ namespace QuantLib {
         */
         class FraRateHelper : public RateHelper {
           public:
-            FraRateHelper(Rate rate, int settlementDays, 
-                int monthsToStart, int monthsToEnd, 
+            FraRateHelper(const RelinkableHandle<MarketElement>& rate, 
+                int settlementDays, int monthsToStart, int monthsToEnd, 
                 const Handle<Calendar>& calendar,
                 RollingConvention convention, 
                 const Handle<DayCounter>& dayCounter);
-            double rateError() const;
-            double discountGuess() const;
+            Rate impliedRate() const;
+            DiscountFactor discountGuess() const;
             void setTermStructure(TermStructure*);
             Date maturity() const;
           private:
-            Rate rate_;
             int settlementDays_;
             int monthsToStart_, monthsToEnd_;
             TimeUnit units_;
@@ -135,26 +148,25 @@ namespace QuantLib {
         */
         class SwapRateHelper : public RateHelper {
           public:
-            SwapRateHelper(Rate rate, 
+            SwapRateHelper(const RelinkableHandle<MarketElement>& rate, 
                 int settlementDays, int lengthInYears, 
                 const Handle<Calendar>& calendar, 
-                RollingConvention rollingConvention, 
+                RollingConvention convention, 
                 // fixed leg
                 int fixedFrequency, 
                 bool fixedIsAdjusted, 
                 const Handle<DayCounter>& fixedDayCount, 
                 // floating leg
                 int floatingFrequency);
-            double rateError() const;
+            Rate impliedRate() const;
             // double discountGuess() const; // null for the time being
             Date maturity() const;
             void setTermStructure(TermStructure*);
           private:
-            Rate rate_;
             int settlementDays_;
             int lengthInYears_;
             Handle<Calendar> calendar_;
-            RollingConvention rollingConvention_;
+            RollingConvention convention_;
             int fixedFrequency_, floatingFrequency_;
             bool fixedIsAdjusted_;
             Handle<DayCounter> fixedDayCount_;

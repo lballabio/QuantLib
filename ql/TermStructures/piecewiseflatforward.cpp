@@ -48,55 +48,77 @@ namespace QuantLib {
             const std::vector<Handle<RateHelper> >& instruments)
         : currency_(currency), dayCounter_(dayCounter),
           todaysDate_(todaysDate), calendar_(calendar), 
-          settlementDays_(settlementDays) {
-            QL_REQUIRE(instruments.size()>0, "No instrument given");
+          settlementDays_(settlementDays), instruments_(instruments),
+          needsBootstrap_(true) {
+            QL_REQUIRE(instruments_.size()>0, "No instrument given");
             settlementDate_ = calendar_->advance(
                 todaysDate_,settlementDays_,Days);
-            // values at settlement date
-            discounts_.push_back(1.0);
-            maxDate_ = settlementDate_;
-            times_.push_back(0.0);
-
-            // the choice of the solver determines whether the accuracy is on 
-            // the discount or the instrument rate
-            Brent solver;
             // sort risk helpers
-            std::vector<Handle<RateHelper> > sortedInstruments = instruments;
 			unsigned int i;
-            for (i=0; i<sortedInstruments.size(); i++)
-                sortedInstruments[i]->setTermStructure(this);
-            std::sort(sortedInstruments.begin(),sortedInstruments.end(),
+            for (i=0; i<instruments_.size(); i++)
+                instruments_[i]->setTermStructure(this);
+            std::sort(instruments_.begin(),instruments_.end(),
                 RateHelperSorter());
             // check that there is no instruments with the same maturity
-            for (i=1; i<sortedInstruments.size(); i++) {
-                Date m1 = sortedInstruments[i-1]->maturity(),
-                     m2 = sortedInstruments[i]->maturity();
+            for (i=1; i<instruments_.size(); i++) {
+                Date m1 = instruments_[i-1]->maturity(),
+                     m2 = instruments_[i]->maturity();
                 QL_REQUIRE(m1 != m2,
                     "Two instruments have the same maturity (" +
                     DateFormatter::toString(m1) + ")");
             }
+            for (i=0; i<instruments_.size(); i++)
+                instruments_[i]->registerObserver(this);
+        }
 
-            // bootstrapping loop
-            for (i=1; i<sortedInstruments.size()+1; i++) {
-                Handle<RateHelper> instrument = sortedInstruments[i-1];
-                double guess = instrument->discountGuess();
-                if (guess == Null<double>()) {
-                    if (i > 1) {    // we can extrapolate 
-                        guess = this->discount(
-                            instrument->maturity(),true);
-                    } else {        // any guess will do
-                        guess = 0.9;
+        PiecewiseFlatForward::~PiecewiseFlatForward() {
+            for (unsigned int i=0; i<instruments_.size(); i++)
+                instruments_[i]->unregisterObserver(this);
+        }
+
+        void PiecewiseFlatForward::bootstrap() const {
+            // prevent recursively calling bootstrap() when the 
+            // term structure methods are called by the rate helpers
+            needsBootstrap_ = false;
+            try {
+                // values at settlement date
+                maxDate_ = settlementDate_;
+                times_ = std::vector<Time>(1, 0.0);
+                discounts_ = std::vector<DiscountFactor>(1, 1.0);
+                forwards_ = zeroYields_ = std::vector<Rate>();
+    
+                // the choice of the solver determines whether the 
+                // accuracy is on the discount or the instrument rate
+                Brent solver;
+    
+                // bootstrapping loop
+                for (unsigned int i=1; i<instruments_.size()+1; i++) {
+                    Handle<RateHelper> instrument = instruments_[i-1];
+                    double guess = instrument->discountGuess();
+                    if (guess == Null<double>()) {
+                        if (i > 1) {    // we can extrapolate 
+                            guess = this->discount(
+                                instrument->maturity(),true);
+                        } else {        // any guess will do
+                            guess = 0.9;
+                        }
                     }
+                    // bracket
+                    double min = accuracy_, max = discounts_[i-1];
+                    solver.solve(FFObjFunction(this,instrument,i),
+                        accuracy_,guess,min,max);
                 }
-                // bracket
-                double min = accuracy_, max = discounts_[i-1];
-                solver.solve(FFObjFunction(this,instrument,i),
-                    accuracy_,guess,min,max);
+            } catch (...) {
+                // signal incomplete state
+                needsBootstrap_ = true;
+                // rethrow
+                throw;
             }
         }
 
         Rate PiecewiseFlatForward::zeroYieldImpl(Time t, 
             bool extrapolate) const {
+                if (needsBootstrap_) bootstrap();
                 if (t == 0.0) {
                     return zeroYields_[0];
                 } else {
@@ -113,6 +135,7 @@ namespace QuantLib {
 
         DiscountFactor PiecewiseFlatForward::discountImpl(
             Time t, bool extrapolate) const {
+                if (needsBootstrap_) bootstrap();
                 if (t == 0.0) {
                     return discounts_[0];
                 } else {
@@ -129,6 +152,7 @@ namespace QuantLib {
 
         Rate PiecewiseFlatForward::forwardImpl(Time t, 
             bool extrapolate) const {
+                if (needsBootstrap_) bootstrap();
                 if (t == 0.0) {
                     return forwards_[0];
                 } else {
@@ -160,7 +184,7 @@ namespace QuantLib {
         }
 
         PiecewiseFlatForward::FFObjFunction::FFObjFunction(
-            PiecewiseFlatForward* curve, 
+            const PiecewiseFlatForward* curve, 
             const Handle<RateHelper>& rateHelper,
             int segment)
         : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
@@ -195,8 +219,8 @@ namespace QuantLib {
         }
 
         bool PiecewiseFlatForward::RateHelperSorter::operator()(
-            const Handle<RateHelper>& h1, const Handle<RateHelper>& h2) const {
-                return (h1->maturity() < h2->maturity());
+          const Handle<RateHelper>& h1, const Handle<RateHelper>& h2) const {
+            return (h1->maturity() < h2->maturity());
         }
 
     }

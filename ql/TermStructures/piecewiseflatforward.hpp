@@ -60,7 +60,8 @@ namespace QuantLib {
         /* This class is derived directly from term structure since we are 
            rewriting all of forward, discount and zeroYield to take advantage 
            of its own internal structure. */
-        class PiecewiseFlatForward : public TermStructure {
+        class PiecewiseFlatForward : public TermStructure,
+                                     public Patterns::Observer {
           public:
             // constructor
             PiecewiseFlatForward(
@@ -70,7 +71,9 @@ namespace QuantLib {
                 const Handle<Calendar>& calendar,
                 int settlementDays,
                 const std::vector<Handle<RateHelper> >& instruments);
-            // inspectors
+            ~PiecewiseFlatForward();
+            //! \name TermStructure interface
+            //@{
             Currency currency() const;
             Handle<DayCounter> dayCounter() const;
             Date todaysDate() const;
@@ -81,6 +84,11 @@ namespace QuantLib {
             Date minDate() const;
             Time maxTime() const;
             Time minTime() const;
+            //@}
+            //! \name Observer interface
+            //@{
+            void update();
+            //@}
           protected:
             Rate zeroYieldImpl(Time, bool extrapolate = false) const;
             DiscountFactor discountImpl(Time, 
@@ -93,11 +101,11 @@ namespace QuantLib {
             friend class FFObjFunction;
             class FFObjFunction : public ObjectiveFunction {
               public:
-                FFObjFunction(PiecewiseFlatForward*,
+                FFObjFunction(const PiecewiseFlatForward*,
                     const Handle<RateHelper>&, int segment);
                 double operator()(double discountGuess) const;
               private:
-                PiecewiseFlatForward* curve_;
+                const PiecewiseFlatForward* curve_;
                 Handle<RateHelper> rateHelper_;
                 int segment_;
             };
@@ -109,6 +117,7 @@ namespace QuantLib {
             };
             // methods
             int referenceNode(Time t, bool extrapolate) const;
+            void bootstrap() const;
             // data members
             Currency currency_;
             Handle<DayCounter> dayCounter_;
@@ -116,10 +125,12 @@ namespace QuantLib {
             Handle<Calendar> calendar_;
             int settlementDays_;
             Date settlementDate_;
-            Date maxDate_;
-            std::vector<Time> times_;
-            std::vector<DiscountFactor> discounts_;
-            std::vector<Rate> forwards_, zeroYields_;
+            std::vector<Handle<RateHelper> > instruments_;
+            mutable bool needsBootstrap_;
+            mutable Date maxDate_;
+            mutable std::vector<Time> times_;
+            mutable std::vector<DiscountFactor> discounts_;
+            mutable std::vector<Rate> forwards_, zeroYields_;
             static const double accuracy_;
         };
 
@@ -150,6 +161,7 @@ namespace QuantLib {
         }
 
         inline Date PiecewiseFlatForward::maxDate() const {
+            if (needsBootstrap_) bootstrap();
             return maxDate_;
         }
 
@@ -158,11 +170,17 @@ namespace QuantLib {
         }
 
         inline Time PiecewiseFlatForward::maxTime() const {
+            if (needsBootstrap_) bootstrap();
             return times_.back();
         }
 
         inline Time PiecewiseFlatForward::minTime() const {
             return 0.0;
+        }
+
+        inline void PiecewiseFlatForward::update() {
+            needsBootstrap_ = true;
+            notifyObservers();
         }
 
     }

@@ -70,9 +70,9 @@ namespace QuantLib {
         //@}
 
         /*! \name Calculations
-            These methods do not modify the structure of the instrument and are
-            therefore declared as <tt>const</tt>. Temporary variables will be
-            declared as mutable.
+            These methods do not modify the structure of the instrument and 
+            are therefore declared as <tt>const</tt>. Temporary variables 
+            will be declared as mutable.
         */
         //@{
         /*! This method force the recalculation of the instrument value and 
@@ -101,8 +101,8 @@ namespace QuantLib {
             classes.
         */
         void calculate() const;
-        /*! This method must implement any calculations which must be (re)done
-            in order to calculate the NPV of the instrument.
+        /*! This method must implement any calculations which must be 
+            (re)done in order to calculate the NPV of the instrument.
         */
         virtual void performCalculations() const = 0;
         //@}
