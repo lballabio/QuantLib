@@ -1,7 +1,6 @@
 
 
 /*
- Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -17,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file cliquetoption.hpp
-    \brief Textbook example of european-style multi-period option.
+    \brief Cliquet option
 
     \fullpath
     ql/Pricers/%cliquetoption.hpp
@@ -37,23 +36,25 @@ namespace QuantLib {
 
         //! cliquet (Ratchet) option
         /*! A cliquet option, also known as Ratchet option, is a series
-            of forward-starting options where the strike for the next
-            exercize date is set to the spot price at the beginning of each
+            of forward-starting (a.k.a. deferred strike) options where
+            the strike for each forward start option is set equal to a
+            fixed percentage of the spot price at the beginning of each
             period.
+
             In the particular case in which only two dates are given the
-            price of the option is the same as that of a forward-starting
+            cliquet option is the same as a forward-starting
             option starting at the first date and expiring at the second
             date.
         */
-        class CliquetOption : public SingleAssetOption {
+        class CliquetOption {
           public:
             CliquetOption(Option::Type type,
                           double underlying,
                           double moneyness,
-                          Spread dividendYield,
-                          Rate riskFreeRate,
+                          const std::vector<Spread>& dividendYield,
+                          const std::vector<Rate>& riskFreeRate,
                           const std::vector<Time>& times,
-                          double volatility);
+                          const std::vector<double>& volatility);
             double value() const;
             double delta() const;
             double gamma() const;
@@ -61,14 +62,15 @@ namespace QuantLib {
             double vega() const;
             double rho() const;
             double dividendRho() const;
-            Handle<SingleAssetOption> clone() const;
+//            Handle<SingleAssetOption> clone() const;
           private:
             double moneyness_;
-            Rate riskFreeRate_;
             std::vector<Time> times_;
-            int numPeriods_;
+            std::vector<Spread> dividendYield_;
+            Size numOptions_;
             std::vector<Handle<EuropeanOption> > optionlet_;
             std::vector<double> weight_;
+            std::vector<DiscountFactor> forwardDiscounts_;
         };
 
     }
