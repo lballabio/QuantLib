@@ -45,9 +45,11 @@
 #define QL_GMTIME   std::gmtime
 
 #define HAVE_CCTYPE
-#define QL_STRLEN   std::strlen
 #define QL_TOLOWER  std::tolower
 #define QL_TOUPPER  std::toupper
+
+#define HAVE_CSTRING
+#define QL_STRLEN   std::strlen
 
 #define HAVE_CSTDIO
 #define QL_SPRINTF  std::sprintf

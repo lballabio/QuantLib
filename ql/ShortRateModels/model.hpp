@@ -141,7 +141,7 @@ namespace QuantLib {
             };
           public:
             PrivateConstraint(const std::vector<Parameter>& arguments)
-            : Optimization::Constraint(Handle<Constraint::Impl>(
+            : Optimization::Constraint(Handle<Optimization::Constraint::Impl>(
                 new PrivateConstraint::Impl(arguments))) {}
         };
 

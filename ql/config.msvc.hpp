@@ -85,9 +85,11 @@
 #define QL_GMTIME   gmtime
 
 #define HAVE_CCTYPE
-#define QL_STRLEN   strlen
 #define QL_TOLOWER  tolower
 #define QL_TOUPPER  toupper
+
+#define HAVE_CSTRING
+#define QL_STRLEN   strlen
 
 #define HAVE_CSTDIO
 #define QL_SPRINTF  sprintf
