@@ -32,6 +32,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.32  2001/02/16 15:18:23  lballabio
+    Added QL_ITERATOR_TRAITS and QL_DECLARE_TEMPLATE_SPECIFICATIONS macros
+
     Revision 1.31  2001/02/15 17:36:13  lballabio
     Added checks for iterator and iterator_traits
 
@@ -299,18 +302,16 @@
     techniques and a less efficient one which is compatible with all compilers.
     @{
 */
-/*! \def QL_TEMPLATE_SPECIALIZATION
+/*! \def QL_DECLARE_TEMPLATE_SPECIALIZATIONS
     \brief Blame Microsoft for this one...
 
     They decided that a declaration and a definition of a specialized template
     function amount to a redefinition and should issue a linker error.
-    For the code to be portable this macro should be used instead of
-    the actual syntax.
+    For the code to be portable, template specializations should be declared (as 
+    opposed to defined) only if this macro is defined. 
 */
-#if defined(BROKEN_TEMPLATE_SPECIALIZATION)
-    #define QL_TEMPLATE_SPECIALIZATION
-#else
-    #define QL_TEMPLATE_SPECIALIZATION  template<>
+#if !defined(BROKEN_TEMPLATE_SPECIALIZATION)
+    #define QL_DECLARE_TEMPLATE_SPECIALIZATIONS
 #endif
 
 /*! \def QL_EXPRESSION_TEMPLATES_WORK
@@ -342,14 +343,15 @@
 
 
 /*! \defgroup iteratorMacros Iterator support
-    Some compilers still define the iterator struct outside the std namespace or 
-    do not implement it at all. 
+    Some compilers still define the iterator struct outside the std namespace, 
+    only partially implement it, or do not implement it at all. 
     For the code to be portable these macros should be used instead of
     the actual functions.
     @{
 */
 /*! \def QL_ITERATOR 
-    \note custom iterators should be derived from this struct
+    Custom iterators should be derived from this struct for the code to be 
+    portable.
 */
 #include <iterator>
 #if !defined(QL_ITERATOR)
@@ -363,6 +365,61 @@
         typedef Category   iterator_category;
     };
     #define QL_ITERATOR     __quantlib_iterator
+#endif
+
+/*! \def QL_ITERATOR_TRAITS
+    For the code to be portable this macro should be used instead of the actual 
+    struct.
+*/
+#if !defined(QL_ITERATOR_TRAITS)
+    template <class Iterator>
+    struct __quantlib_iterator_traits {
+        typedef typename Iterator::value_type           value_type;
+        typedef typename Iterator::difference_type      difference_type;
+        typedef typename Iterator::pointer              pointer;
+        typedef typename Iterator::reference            reference;
+        typedef typename Iterator::iterator_category    iterator_category;
+    };
+    // generic specializations
+    #define QL_DECLARE_TRAITS_PTR_SPECIALIZATION(T) \
+    template<> \
+    struct __quantlib_iterator_traits<T*> { \
+        typedef T           value_type; \
+        typedef ptrdiff_t   difference_type; \
+        typedef T*          pointer; \
+        typedef T&          reference; \
+        typedef std::random_access_iterator_tag  iterator_category; \
+    };
+    #if !defined(__DOXYGEN__)
+    #define QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(T) \
+    template<> \
+    struct __quantlib_iterator_traits<const T*> { \
+        typedef T           value_type; \
+        typedef ptrdiff_t   difference_type; \
+        typedef const T*          pointer; \
+        typedef const T&          reference; \
+        typedef std::random_access_iterator_tag  iterator_category; \
+    };
+    // actual specializations
+    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(bool)
+    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(char)
+    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(short)
+    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(int)
+    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(long)
+    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(float)
+    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(double)
+    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(long double)
+
+    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(bool)
+    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(char)
+    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(short)
+    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(int)
+    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(long)
+    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(float)
+    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(double)
+    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(long double)
+    #endif
+    #define QL_ITERATOR_TRAITS  __quantlib_iterator_traits
 #endif
 
 /*! \def QL_REVERSE_ITERATOR
