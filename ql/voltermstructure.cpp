@@ -66,8 +66,7 @@ namespace QuantLib {
 
     double BlackVolTermStructure::blackForwardVariance(const Date& date1,
                                                        const Date& date2, 
-                                                       double strike, 
-                                                       bool extrapolate) 
+                                                       double strike) 
                                                                       const {
         QL_REQUIRE(date1 <= date2,
                    DateFormatter::toString(date1) +
@@ -75,13 +74,12 @@ namespace QuantLib {
                    DateFormatter::toString(date2));
         Time time1 = dayCounter().yearFraction(referenceDate(), date1);
         Time time2 = dayCounter().yearFraction(referenceDate(), date2);
-        return blackForwardVariance(time1, time2, strike, extrapolate);
+        return blackForwardVariance(time1, time2, strike);
     }
 
 
     double BlackVolTermStructure::blackForwardVariance(Time time1, Time time2, 
-                                                       double strike, 
-                                                       bool extrapolate) 
+                                                       double strike) 
                                                                       const {
         QL_REQUIRE(time1 <= time2,
                    DoubleFormatter::toString(time1) +

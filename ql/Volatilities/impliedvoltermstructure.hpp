@@ -119,7 +119,7 @@ namespace QuantLib {
            to the reference date of the original curve */
         return originalTS_->blackForwardVariance(timeShift,
                                                  timeShift+t, 
-                                                 strike, true);
+                                                 strike);
     }
 
 }
