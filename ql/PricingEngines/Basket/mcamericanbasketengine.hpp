@@ -36,9 +36,6 @@ namespace QuantLib {
     //typedef std::vector<std::vector<double> > PayoffGrid;
 
     //! least-square Monte Carlo engine
-    /*! \bug This engine is known not to work for deeply out-of-the-money 
-             options. More problems might surface.
-    */
     class MCAmericanBasketEngine : public BasketEngine {
       public:
         MCAmericanBasketEngine(Size requiredSamples,
