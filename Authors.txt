@@ -4,7 +4,7 @@ Nicolas Di Césaré
 Dirk Eddelbuettel
 Neil Firth
 Roman Gitlin
-Marco Marchioro (marco.marchioro@riskmap.net)
+Marco Marchioro (marco DOT marchioro AT riskmap DOT net)
 Sadruddin Rejeb (sad@quantlib.org)
 Niels Elken Sonderby
 Liguo Song (Liguo.Song AT vanderbilt.edu)
