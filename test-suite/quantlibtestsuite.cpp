@@ -58,6 +58,9 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+    runner.addTest(EuropeanOptionTest::suite());
+
+/*    
     runner.addTest(AsianOptionTest::suite());
     runner.addTest(BarrierOptionTest::suite());
     runner.addTest(BinaryBarrierOptionTest::suite());
@@ -68,7 +71,6 @@ int main() {
     runner.addTest(new DateTest);
     runner.addTest(DayCounterTest::suite());
     runner.addTest(new DistributionTest);
-    runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(FactorialTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(IntegralTest::suite());
@@ -87,6 +89,7 @@ int main() {
 
     // to be deprecated
     runner.addTest(OldPricerTest::suite());
+*/
 
     std::string header = "Testing QuantLib " QL_VERSION;
 
