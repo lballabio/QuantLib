@@ -117,22 +117,6 @@ SectionIn 1 2
                  "$INSTDIR\Docs\index.chm"
 SectionEnd
 
-Section "PDF documentation"
-SectionIn 1
-  SetOutPath "$INSTDIR\Docs"
-  File "Docs\latex\refman.pdf"
-  CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (PDF).lnk" \
-                 "$INSTDIR\Docs\refman.pdf"
-SectionEnd
-
-Section "PS documentation"
-SectionIn 1
-  SetOutPath "$INSTDIR\Docs"
-  File "Docs\latex\refman.ps"
-  CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (PS).lnk" \
-                 "$INSTDIR\Docs\refman.ps"
-SectionEnd
-
 Section "Start Menu Group"
 SectionIn 1 2 3
   SetOutPath $SMPROGRAMS\QuantLib
