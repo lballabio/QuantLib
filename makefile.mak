@@ -5,6 +5,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.15  2001/05/21 11:06:58  lballabio
+# Python extension removed
+#
 # Revision 1.14  2001/05/16 09:57:26  lballabio
 # Added indexes and piecewise flat forward curve
 #
@@ -47,24 +50,6 @@ install::
     if exist "$(QL_DIR)\lib\Win32\Borland" rmdir /S /Q "$(QL_DIR)\lib\Win32\Borland"
     xcopy lib\Win32\Borland\*.lib "$(QL_DIR)\lib\Win32\Borland" /S /I
 
-# Python module
-python::
-    cd Python
-    $(MAKE) Python
-    # python setup.py build --compiler
-    cd ..
-
-# Install Python module
-python-install::
-    cd Python
-    $(MAKE) install
-    cd ..
-
-# Test Python module
-python-test::
-    cd Python
-    $(MAKE) test
-    cd ..
 
 # Documentation
 docs-all:
@@ -92,10 +77,6 @@ docs-ps:
 clean::
     cd Sources
     $(MAKE) clean
-    cd ..
-    cd Python
-    $(MAKE) clean
-    cd ..
-    cd Docs
+    cd ..\Docs
     $(MAKE) clean
     cd ..

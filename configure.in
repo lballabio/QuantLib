@@ -18,12 +18,6 @@ AC_PROG_CXX
 AC_LANG_CPLUSPLUS
 AM_PROG_LIBTOOL
 AC_PATH_PROG(SED, sed)
-AC_PATH_PROG(SWIG, swig, notfound)
-AM_CONDITIONAL(SWIG_FOUND, test x$SWIG != xnotfound)
-AC_PATH_PROG(PYTHON, python, notfound)
-AM_CONDITIONAL(PYTHON_FOUND, test x$PYTHON != xnotfound)
-AC_PATH_PROG(RUBY, ruby, notfound)
-AM_CONDITIONAL(RUBY_FOUND, test x$RUBY != xnotfound)
 AC_PATH_PROG(DOXYGEN, doxygen, notfound)
 AM_CONDITIONAL(DOXYGEN_FOUND, test x$DOXYGEN != xnotfound)
 AC_PATH_PROG(LATEX, latex, notfound)
@@ -32,23 +26,6 @@ AC_PATH_PROG(PDFLATEX, pdflatex, notfound)
 AM_CONDITIONAL(PDFLATEX_FOUND, test x$PDFLATEX != xnotfound)
 AC_PATH_PROG(DVIPS, dvips, notfound)
 AM_CONDITIONAL(DVIPS_FOUND, test x$DVIPS != xnotfound)
-
-dnl Check for Libraries
-dnl Testing for Python 1.5
-AC_CHECK_LIB(python1.5,PyArg_Parse,
-				[PYLIB=-lpython1.5
-				 py15_found=yes]
-	)
-
-dnl Testing for Python 2.0
-AC_CHECK_LIB(python2.0,PyArg_Parse,
-				[PYLIB=-lpython2.0
-				 py20_found=yes]
-	)
-
-AM_CONDITIONAL(python_found,test "$py20_found" = yes)
-AM_CONDITIONAL(python_found,test "$py15_found" = yes)
-AC_SUBST(PYLIB)
 
 AC_MSG_CHECKING(if C++ compiler supports namespaces (required))
 AC_TRY_COMPILE(
@@ -163,9 +140,6 @@ AC_OUTPUT(Makefile \
     Sources/Pricers/Makefile \
     Sources/Solvers1D/Makefile \
     Sources/TermStructures/Makefile \
-    Python/Makefile \
-    Python/Tests/Makefile \
-    Python/COM/Makefile \
     Ruby/Makefile \
     Ruby/Tests/Makefile \
     SWIG/Makefile \

@@ -1,6 +1,0 @@
-LIBRARY
-	QuantLibc.dll
-DESCRIPTION
-	"QuantLib Python Module"
-EXPORTS
-	initQuantLibc =_initQuantLibc
