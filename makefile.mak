@@ -4,6 +4,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.22  2001/08/23 09:41:13  nando
+# improved Borland examples makefiles
+#
 # Revision 1.21  2001/08/22 17:57:40  nando
 # Examples compiles under borland
 # added borland makefile
@@ -31,10 +34,11 @@ quantlib::
     cd Sources
     $(MAKE)
     cd ..\Examples
-    $(MAKE)
+    $(MAKE) -DQL_DIR="..\.."
     cd ..
 
-# QuantLib library
+# the installation directive requires the QL_DIR environment variable to point
+# to the installed version of QuantLib
 install::
     if exist "$(QL_DIR)\Include\ql" rmdir /S /Q "$(QL_DIR)\Include\ql"
     xcopy Include\ql\*.hpp "$(QL_DIR)\Include\ql" /S /I
