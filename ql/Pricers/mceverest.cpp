@@ -77,10 +77,9 @@ namespace QuantLib {
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Statistics,
-                MonteCarlo::GaussianMultiPathGenerator,
-                MonteCarlo::PathPricer<MultiPath> > > (
-                new MonteCarlo::MonteCarloModel<Math::Statistics,
+            mcModel_ = Handle<MonteCarloModel<Statistics,
+                GaussianMultiPathGenerator, PathPricer<MultiPath> > > (
+                new MonteCarloModel<Statistics,
                 GaussianMultiPathGenerator, PathPricer<MultiPath> > (
                 pathGenerator, pathPricer, Statistics()));
 

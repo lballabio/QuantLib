@@ -44,6 +44,8 @@ namespace QuantLib {
         using MonteCarlo::GaussianMultiPathGenerator;
         using MonteCarlo::BasketPathPricer;
         using MonteCarlo::MultiFactorMonteCarloOption;
+        using MonteCarlo::MonteCarloModel;
+        using Math::Statistics;
 
         McBasket::McBasket(Option::Type type, const Array& underlying,
             double strike, const Array& dividendYield,
@@ -77,12 +79,12 @@ namespace QuantLib {
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics,
-                MonteCarlo::GaussianMultiPathGenerator,
-                MonteCarlo::PathPricer<MultiPath> > > (
-                new MonteCarlo::MonteCarloModel<Math::Statistics,
-                MonteCarlo::GaussianMultiPathGenerator,
-                MonteCarlo::PathPricer<MultiPath> > (pathGenerator,
+            mcModel_ = Handle<MonteCarloModel<Statistics,
+                GaussianMultiPathGenerator,
+                PathPricer<MultiPath> > > (
+                new MonteCarloModel<Math::Statistics,
+                GaussianMultiPathGenerator,
+                PathPricer<MultiPath> > (pathGenerator,
                 pathPricer, Math::Statistics()));
 
         }
