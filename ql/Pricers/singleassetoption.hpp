@@ -61,7 +61,7 @@ namespace QuantLib {
             virtual double value() const = 0;
             virtual double delta() const = 0;
             virtual double gamma() const = 0;
-            virtual double theta() const = 0;
+            virtual double theta() const;
             virtual double vega() const;
             virtual double rho() const;
             virtual double dividendRho() const;
@@ -89,8 +89,9 @@ namespace QuantLib {
             Time residualTime_;
             double volatility_;
             mutable bool hasBeenCalculated_;
-            mutable double rho_, dividendRho_, vega_;
-            mutable bool rhoComputed_, dividendRhoComputed_, vegaComputed_;
+            mutable double rho_, dividendRho_, vega_, theta_;
+            mutable bool rhoComputed_, dividendRhoComputed_, vegaComputed_,
+                thetaComputed_;
             const static double dVolMultiplier_;
             const static double dRMultiplier_;
           private:

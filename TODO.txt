@@ -1,4 +1,5 @@
 
+clean up FDMultiPeriodOption
 update freshmeat description
 get in touch with Gnumeric team
 

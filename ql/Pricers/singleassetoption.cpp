@@ -59,7 +59,7 @@ namespace QuantLib {
             strike_(strike), dividendYield_(dividendYield),
             residualTime_(residualTime), hasBeenCalculated_(false),
             rhoComputed_(false), dividendRhoComputed_(false),
-            vegaComputed_(false) {
+            vegaComputed_(false), thetaComputed_(false) {
             QL_REQUIRE(strike > 0.0,
                 "SingleAssetOption::SingleAssetOption : strike ("+
                  DoubleFormatter::toString(strike)+
@@ -91,6 +91,10 @@ namespace QuantLib {
 
             volatility_ = volatility;
             hasBeenCalculated_ = false;
+            vegaComputed_ = false;
+            rhoComputed_ = false;
+            dividendRhoComputed_ = false;
+            thetaComputed_ = false;
         }
 
         void SingleAssetOption::setRiskFreeRate(Rate newRiskFreeRate) {
@@ -103,9 +107,23 @@ namespace QuantLib {
             hasBeenCalculated_ = false;
         }
 
+        double SingleAssetOption::theta() const {
+
+            if(!thetaComputed_) {
+
+                // use Black-Scholes equation for theta computation
+                theta_ =  riskFreeRate_ * value()
+                        -(riskFreeRate_ - dividendYield_ ) * underlying_ * delta()
+                        - 0.5 * volatility_ * volatility_ *
+                                underlying_ * underlying_ * gamma();
+                thetaComputed_ = true;
+            }
+            return theta_;
+        }
+
         double SingleAssetOption::vega() const {
 
-            if(!vegaComputed_){
+            if(!vegaComputed_) {
 
                 double valuePlus = value();
 

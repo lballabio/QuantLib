@@ -87,12 +87,6 @@ namespace QuantLib {
                      - secondDerivativeAtCenter(europeanPrices, grid_)
                      + analyticEuro.gamma();
 
-            // 5) Use Black-Scholes equation for theta computation
-            theta_ =  riskFreeRate_ * value_
-                    -(riskFreeRate_ - dividendYield_ ) * underlying_ * delta_
-                    - 0.5 * volatility_ * volatility_ *
-                            underlying_ * underlying_ * gamma_;
-
             hasBeenCalculated_ = true;
         }
 

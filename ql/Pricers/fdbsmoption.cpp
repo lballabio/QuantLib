@@ -66,12 +66,6 @@ namespace QuantLib {
             return gamma_;
         }
 
-        double FdBsmOption::theta() const {
-            if(!hasBeenCalculated_)
-                calculate();
-            return theta_;
-        }
-
         void FdBsmOption::setGridLimits(double center,
                                                double timeDelay) const {
 

@@ -45,7 +45,6 @@ namespace QuantLib {
             double value() const;
             double delta() const;
             double gamma() const;
-            double theta() const;
             Array getGrid() const{return grid_;}
 
           protected:
@@ -58,7 +57,7 @@ namespace QuantLib {
             // input data
             Size gridPoints_;
             // results
-            mutable double value_, delta_, gamma_, theta_;
+            mutable double value_, delta_, gamma_;
 
             mutable Array grid_;
             mutable FiniteDifferences::BSMOperator finiteDifferenceOperator_;
