@@ -6,7 +6,7 @@
 .silent
 
 # Directories
-!ifdef $d(DEBUG)
+!ifdef DEBUG
 	OUTPUT_DIR	= .\Debug
 !else
 	OUTPUT_DIR	= .\Release
@@ -49,7 +49,7 @@ PDFLATEX	= pdflatex
 MAKEINDEX	= makeindex
 DVIPS		= dvips
 MAKEEXE		= make
-!ifdef $d(DEBUG)
+!ifdef DEBUG
 	MAKE	= $(MAKEEXE) -DDEBUG
 !else
 	MAKE	= $(MAKEEXE)
@@ -70,7 +70,7 @@ CC_BASE_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
 	-I$(INCLUDE_DIR)\TermStructures \
 	-I$(PYTHON_INCLUDE) \
 	-I$(BCC_INCLUDE)
-!ifdef $d(DEBUG)
+!ifdef DEBUG
 CC_OPTS = $(CC_BASE_OPTS) -v
 !else
 CC_OPTS = $(CC_BASE_OPTS)
@@ -96,9 +96,6 @@ $(PYTHON_DIR)\QuantLibc.dll:: $(OUTPUT_DIR) $(OUTPUT_DIR)\quantlib_wrap.obj $(OU
 	del $(PYTHON_DIR)\QuantLibc.ild
 	del $(PYTHON_DIR)\QuantLibc.ilf
 	del $(PYTHON_DIR)\QuantLibc.ils
-	!ifndef $d(DEBUG)
-		del $(PYTHON_DIR)\QuantLibc.tds
-	!endif
 	echo Build completed
 
 # make sure the output directory exists
