@@ -17,17 +17,17 @@
         Adapted from the TNT project
         http://math.nist.gov/tnt/download.html
 
-        This software was developed at the National Institute of Standards 
-        and Technology (NIST) by employees of the Federal Government in the 
-        course of their official duties. Pursuant to title 17 Section 105 
-        of the United States Code this software is not subject to copyright 
-        protection and is in the public domain. NIST assumes no responsibility 
-        whatsoever for its use by other parties, and makes no guarantees, 
-        expressed or implied, about its quality, reliability, or any other 
-        characteristic. 
+        This software was developed at the National Institute of Standards
+        and Technology (NIST) by employees of the Federal Government in the
+        course of their official duties. Pursuant to title 17 Section 105
+        of the United States Code this software is not subject to copyright
+        protection and is in the public domain. NIST assumes no responsibility
+        whatsoever for its use by other parties, and makes no guarantees,
+        expressed or implied, about its quality, reliability, or any other
+        characteristic.
 
-        We would appreciate acknowledgement if the software is incorporated in 
-        redistributable libraries or applications. 
+        We would appreciate acknowledgement if the software is incorporated in
+        redistributable libraries or applications.
 */
 
 
@@ -37,12 +37,12 @@ namespace QuantLib {
 
     namespace {
 
-        /*  returns hypotenuse of real (non-complex) scalars a and b by 
+        /*  returns hypotenuse of real (non-complex) scalars a and b by
             avoiding underflow/overflow
             using (a * sqrt( 1 + (b/a) * (b/a))), rather than
             sqrt(a*a + b*b).
         */
-        Real hypot(const Real &a, const Real &b) {	
+        Real hypot(const Real &a, const Real &b) {
             if (a == 0) {
                 return QL_FABS(b);
             } else {
@@ -85,9 +85,9 @@ namespace QuantLib {
         m_ = A.rows();
         n_ = A.columns();
 
-        // we're sure that m_ >= n_ 
+        // we're sure that m_ >= n_
 
-        s_ = Array(n_); 
+        s_ = Array(n_);
         U_ = Matrix(m_,n_, 0.0);
         V_ = Matrix(n_,n_);
         Array e(n_);
@@ -301,7 +301,7 @@ namespace QuantLib {
                     if (ks == k) {
                         break;
                     }
-                    Real t = (ks != p ? QL_FABS(e[ks]) : 0.) + 
+                    Real t = (ks != p ? QL_FABS(e[ks]) : 0.) +
                         (ks != k+1 ? QL_FABS(e[ks-1]) : 0.);
                     if (QL_FABS(s_[ks]) <= eps*t)  {
                         s_[ks] = 0.0;
@@ -377,7 +377,7 @@ namespace QuantLib {
                                          QL_MAX(
                                              QL_MAX(QL_FABS(s_[p-1]),
                                                     QL_FABS(s_[p-2])),
-                                             QL_FABS(e[p-2])), 
+                                             QL_FABS(e[p-2])),
                                          QL_FABS(s_[k])),
                                      QL_FABS(e[k]));
                   Real sp = s_[p-1]/scale;
@@ -491,8 +491,8 @@ namespace QuantLib {
 
     Disposable<Matrix> SVD::S() const {
         Matrix S(n_,n_);
-        for (Size i = 0; i < n_; i++) {
-            for (Size j = 0; j < n_; j++) {
+        for (Size i = 0; i < Size(n_); i++) {
+            for (Size j = 0; j < Size(n_); j++) {
                 S[i][j] = 0.0;
             }
             S[i][i] = s_[i];

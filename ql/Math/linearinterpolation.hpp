@@ -36,7 +36,8 @@ namespace QuantLib {
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
               primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {
                 primitiveConst_[0] = 0.0;
-                for (Size i=1; i<xEnd-xBegin; i++) {
+                // what about checking that xBegin<xEnd ?
+                for (Size i=1; i<Size(xEnd-xBegin); i++) {
                     Real dx = xBegin_[i]-xBegin_[i-1];
                     s_[i-1] = (yBegin_[i]-yBegin_[i-1])/dx;
                     primitiveConst_[i] = primitiveConst_[i-1]
@@ -66,7 +67,7 @@ namespace QuantLib {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
-        LinearInterpolation(const I1& xBegin, const I1& xEnd, 
+        LinearInterpolation(const I1& xBegin, const I1& xEnd,
                             const I2& yBegin) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(
                   new LinearInterpolation::Impl<I1,I2>(xBegin, xEnd, yBegin));
