@@ -715,11 +715,11 @@ SOURCE=.\ql\Math\gammadistribution.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\hstatistics.cpp
+SOURCE=.\ql\Math\gaussianstatistics.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\hstatistics.hpp
+SOURCE=.\ql\Math\gaussianstatistics.hpp
 # End Source File
 # Begin Source File
 

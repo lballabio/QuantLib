@@ -170,6 +170,8 @@ CLEAN :
 	-@erase "$(INTDIR)\g2.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
+	-@erase "$(INTDIR)\gaussianstatistics.obj"
+	-@erase "$(INTDIR)\gaussianstatistics.sbr"
 	-@erase "$(INTDIR)\geometricapopathpricer.obj"
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
@@ -184,8 +186,6 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
-	-@erase "$(INTDIR)\hstatistics.obj"
-	-@erase "$(INTDIR)\hstatistics.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
@@ -412,9 +412,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
-	"$(INTDIR)\hstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -520,7 +520,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\discrepancystatistics.sbr"
+	"$(INTDIR)\gaussianstatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -577,9 +577,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
-	"$(INTDIR)\hstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -685,7 +685,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\discrepancystatistics.obj"
+	"$(INTDIR)\gaussianstatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -832,6 +832,8 @@ CLEAN :
 	-@erase "$(INTDIR)\g2.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
+	-@erase "$(INTDIR)\gaussianstatistics.obj"
+	-@erase "$(INTDIR)\gaussianstatistics.sbr"
 	-@erase "$(INTDIR)\geometricapopathpricer.obj"
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
@@ -846,8 +848,6 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
-	-@erase "$(INTDIR)\hstatistics.obj"
-	-@erase "$(INTDIR)\hstatistics.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
@@ -1075,9 +1075,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
-	"$(INTDIR)\hstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -1183,7 +1183,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\discrepancystatistics.sbr"
+	"$(INTDIR)\gaussianstatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1240,9 +1240,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
-	"$(INTDIR)\hstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -1348,7 +1348,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\discrepancystatistics.obj"
+	"$(INTDIR)\gaussianstatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1495,6 +1495,8 @@ CLEAN :
 	-@erase "$(INTDIR)\g2.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
+	-@erase "$(INTDIR)\gaussianstatistics.obj"
+	-@erase "$(INTDIR)\gaussianstatistics.sbr"
 	-@erase "$(INTDIR)\geometricapopathpricer.obj"
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
@@ -1509,8 +1511,6 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
-	-@erase "$(INTDIR)\hstatistics.obj"
-	-@erase "$(INTDIR)\hstatistics.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
@@ -1737,9 +1737,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
-	"$(INTDIR)\hstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -1845,7 +1845,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\discrepancystatistics.sbr"
+	"$(INTDIR)\gaussianstatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1902,9 +1902,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
-	"$(INTDIR)\hstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -2010,7 +2010,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\discrepancystatistics.obj"
+	"$(INTDIR)\gaussianstatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2157,6 +2157,8 @@ CLEAN :
 	-@erase "$(INTDIR)\g2.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
+	-@erase "$(INTDIR)\gaussianstatistics.obj"
+	-@erase "$(INTDIR)\gaussianstatistics.sbr"
 	-@erase "$(INTDIR)\geometricapopathpricer.obj"
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
@@ -2171,8 +2173,6 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
-	-@erase "$(INTDIR)\hstatistics.obj"
-	-@erase "$(INTDIR)\hstatistics.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
@@ -2400,9 +2400,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
-	"$(INTDIR)\hstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -2508,7 +2508,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\discrepancystatistics.sbr"
+	"$(INTDIR)\gaussianstatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2565,9 +2565,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
-	"$(INTDIR)\hstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -2673,7 +2673,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\discrepancystatistics.obj"
+	"$(INTDIR)\gaussianstatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3023,9 +3023,9 @@ SOURCE=.\ql\Math\gammadistribution.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Math\hstatistics.cpp
+SOURCE=.\ql\Math\gaussianstatistics.cpp
 
-"$(INTDIR)\hstatistics.obj"	"$(INTDIR)\hstatistics.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\gaussianstatistics.obj"	"$(INTDIR)\gaussianstatistics.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

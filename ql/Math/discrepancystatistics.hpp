@@ -26,17 +26,16 @@
 #define quantlib_dicrepancy_statistics_hpp
 
 #include <ql/Math/sequencestatistics.hpp>
-#include <ql/Math/hstatistics.hpp>
 
 namespace QuantLib {
 
     namespace Math {
 
         //! Statistic tool for sequences with discrepancy calculation
-        /*! It inherit from SequenceStatistics<HStatistics> and adds
+        /*! It inherit from SequenceStatistics<Statistics> and adds
             \f$ L^2 \f$ discrepancy calculation
         */
-        class DiscrepancyStatistics : public SequenceStatistics<HStatistics> {
+        class DiscrepancyStatistics : public SequenceStatistics<Statistics> {
           public:
             // constructor
             DiscrepancyStatistics(Size dimension);
@@ -53,7 +52,7 @@ namespace QuantLib {
             void add(Iterator begin,
                      Iterator end,
                      double weight = 1.0) {
-                SequenceStatistics<HStatistics>::add(begin,end,weight);
+                SequenceStatistics<Statistics>::add(begin,end,weight);
 
                 Size k, m, N = samples();
 
@@ -104,12 +103,12 @@ namespace QuantLib {
         // inline definitions
 
         inline DiscrepancyStatistics::DiscrepancyStatistics(Size dimension)
-        : SequenceStatistics<HStatistics>(dimension) {
+        : SequenceStatistics<Statistics>(dimension) {
             reset(dimension); 
         }
 
         inline void DiscrepancyStatistics::reset(Size dimension) {
-            SequenceStatistics<HStatistics>::reset(dimension);
+            SequenceStatistics<Statistics>::reset(dimension);
             adiscr_ = 0.0;
             bdiscr_ = 1.0/QL_POW(2.0, int(dimension-1));
             cdiscr_ = 0.0;

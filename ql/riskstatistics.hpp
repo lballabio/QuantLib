@@ -24,7 +24,7 @@
 #ifndef quantlib_risk_statisticss_h
 #define quantlib_risk_statisticss_h
 
-#include <ql/Math/statistics.hpp>
+#include <ql/Math/gaussianstatistics.hpp>
 #include <ql/Math/riskmeasures.hpp>
 
 namespace QuantLib {
@@ -32,17 +32,17 @@ namespace QuantLib {
     //! Risk analysis tool
     /*! It can accumulate a set of data and return risk quantities
         as Value-At-Risk, Expected Shortfall,
-        Shortfall, Average Shortfall, plus statistics
+        Shortfall, Average Shortfall, plus gaussianstatistics
         quantitities as mean, variance, std. deviation, skewness, kurtosis.
 
-        \deprecated use Statistics instead (or even take a look at
+        \deprecated use GaussianStatistics instead (or even take a look at
                     HStatisticss)
     */
     class RiskStatistics {
       public:
         //! \name Inspectors
         //@{
-        // Statistics proxy methods
+        // GaussianStatistics proxy methods
         Size samples() const {return statistics_.samples(); }
         double weightSum() const {return statistics_.weightSum(); }
         double mean() const {return statistics_.mean(); }
@@ -59,27 +59,27 @@ namespace QuantLib {
         // RiskMeasures proxy methods
         //! returns the Potential-Upside at a given percentile
         double potentialUpside(double percentile) const {
-            return riskMeasures_.potentialUpside(percentile,
+            return riskMeasures_.gaussianPotentialUpside(percentile,
                 statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Value-At-Risk at a given percentile
         double valueAtRisk(double percentile) const {
-            return riskMeasures_.valueAtRisk(percentile,
+            return riskMeasures_.gaussianValueAtRisk(percentile,
                 statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Expected Shortfall at a given percentile
         double expectedShortfall(double percentile) const {
-            return riskMeasures_.expectedShortfall(percentile,
+            return riskMeasures_.gaussianExpectedShortfall(percentile,
                 statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Shortfall (observations below target)
         double shortfall(double target) const {
-            return riskMeasures_.shortfall(target,
+            return riskMeasures_.gaussianShortfall(target,
                 statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Average Shortfall (averaged shortfallness)
         double averageShortfall(double target) const  {
-            return riskMeasures_.averageShortfall(target,
+            return riskMeasures_.gaussianAverageShortfall(target,
                 statistics_.mean(), statistics_.standardDeviation());
         }
         //@}
@@ -102,7 +102,7 @@ namespace QuantLib {
 
         //@}
       private:
-        Math::Statistics statistics_;
+        Math::GaussianStatistics statistics_;
         Math::RiskMeasures riskMeasures_;
     };
 

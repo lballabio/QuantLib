@@ -39,7 +39,7 @@ namespace QuantLib {
             N periods the option pays the max between the strike and the
             average of the best performers.
         */
-        class McHimalaya : public McPricer<Math::Statistics,
+        class McHimalaya : public McPricer<Math::GaussianStatistics,
             MonteCarlo::GaussianMultiPathGenerator,
             MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
         public:

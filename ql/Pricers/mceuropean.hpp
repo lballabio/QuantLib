@@ -35,7 +35,7 @@ namespace QuantLib {
 
         //! simple example of Monte Carlo pricer
         /*! \deprecated use VanillaOption with McEuropeanEngine */
-        class McEuropean : public McPricer<Math::Statistics,
+        class McEuropean : public McPricer<Math::GaussianStatistics,
             MonteCarlo::GaussianPathGenerator_old,
             MonteCarlo::PathPricer_old<MonteCarlo::Path> > {
           public:

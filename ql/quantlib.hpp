@@ -165,7 +165,7 @@
 #include <ql/Math/riskmeasures.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/sequencestatistics.hpp>
-#include <ql/Math/statistics.hpp>
+#include <ql/Math/gaussianstatistics.hpp>
 #include <ql/Math/symmetriceigenvalues.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
 

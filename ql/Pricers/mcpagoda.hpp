@@ -26,7 +26,7 @@
 
 #include <ql/Pricers/mcpricer.hpp>
 #include <ql/Math/matrix.hpp>
-#include <ql/Math/statistics.hpp>
+#include <ql/Math/gaussianstatistics.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>
 
 namespace QuantLib {
@@ -40,7 +40,7 @@ namespace QuantLib {
             If the performance of the portfolio is below then the payoff
             is null.
         */
-        class McPagoda : public McPricer<Math::Statistics,
+        class McPagoda : public McPricer<Math::GaussianStatistics,
             MonteCarlo::GaussianMultiPathGenerator,
             MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
           public:

@@ -34,13 +34,13 @@ namespace QuantLib {
 
     namespace Math {
 
-        //! Statistics analysis of N-dimensional (sequence) data
-        /*! It provides 1-dimensional statistics quantities as discrepancy plus
-            N-dimensional (sequence) statistics quantities (e.g. mean,
+        //! GaussianStatistics analysis of N-dimensional (sequence) data
+        /*! It provides 1-dimensional gaussianstatistics quantities as discrepancy plus
+            N-dimensional (sequence) gaussianstatistics quantities (e.g. mean,
             variance, skewness, kurtosis, etc.) with one component for each
             dimension of the sample space.
 
-            For most of the statistics quantities this class relies on
+            For most of the gaussianstatistics quantities this class relies on
             the StatisticsType underlying class to provide 1-D methods that
             will be iterated for all the components of the N-D data. These
             lifted methods are the union of all the methods that might be
@@ -54,12 +54,12 @@ namespace QuantLib {
             typedef StatisticsType statistics_type;
             // constructor
             SequenceStatistics(Size dimension);
-            //! \name 1-D inspectors lifted from underlying statistics class
+            //! \name 1-D inspectors lifted from underlying gaussianstatistics class
             //@{
             Size samples() const;
             double weightSum() const;
             //@}
-            //! \name N-D inspectors lifted from underlying statistics class
+            //! \name N-D inspectors lifted from underlying gaussianstatistics class
             //@{
             // void argument list
             std::vector<double> mean() const;
@@ -75,15 +75,23 @@ namespace QuantLib {
 
             // single double argument list
             std::vector<double> gaussianPercentile(double y) const;
-            std::vector<double> gaussianPotentialUpside(double percentile) 
-                const;
-            std::vector<double> gaussianValueAtRisk(double percentile) const;
-            std::vector<double> gaussianExpectedShortfall(double percentile) 
-                const;
-            std::vector<double> gaussianShortfall(double target) const;
-            std::vector<double> gaussianAverageShortfall(double target) const;
-
             std::vector<double> percentile(double y) const;
+
+            std::vector<double> gaussianPotentialUpside(
+                double percentile) const;
+
+            std::vector<double> gaussianValueAtRisk(
+                double percentile) const;
+
+            std::vector<double> gaussianExpectedShortfall(
+                double percentile) const;
+
+            std::vector<double> gaussianShortfall(
+                double target) const;
+
+            std::vector<double> gaussianAverageShortfall(
+                double target) const;
+
             //@}
             //! \name Modifiers
             //@{
@@ -182,7 +190,7 @@ namespace QuantLib {
                 dimension = dimension_;   // keep the current one
             QL_REQUIRE(dimension > 0,
                 "SequenceStatistics::SequenceStatistics : "
-                "null dimension for sequence statistics");
+                "null dimension for sequence gaussianstatistics");
             if (dimension == dimension_) {
                 for (Size i=0; i<dimension_; i++)
                     stats_[i].reset();

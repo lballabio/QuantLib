@@ -17,7 +17,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 OBJS = chisquaredistribution.obj$(_D) \
        errorfunction.obj$(_D) \
        gammadistribution.obj$(_D) \
-       hstatistics.obj$(_D) \
+       gaussianstatistics.obj$(_D) \
        matrix.obj$(_D) \
        multivariateaccumulator.obj$(_D) \
        normaldistribution.obj$(_D) \

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,140 +16,139 @@
 */
 
 /*! \file statistics.cpp
-    \brief statistics tools
+    \brief statistics tool with risk measures
 */
 
 // $Id$
 
-#include <ql/Math/statistics.hpp>
+#include "ql/Math/statistics.hpp"
 
 namespace QuantLib {
 
     namespace Math {
 
-        Statistics::Statistics() {
-            reset();
-        }
+        double Statistics::weightSum() const {
 
-        void Statistics::reset() {
-            min_ = QL_MAX_DOUBLE;
-            max_ = QL_MIN_DOUBLE;
-            sampleNumber_ = 0;
-            sampleWeight_ = 0.0;
-            sum_ = 0.0;
-            quadraticSum_ = 0.0;
-            downsideQuadraticSum_ = 0.0;
-            cubicSum_ = 0.0;
-            fourthPowerSum_ = 0.0;
-        }
-
-        /*! \pre weights must be positive or null */
-        void Statistics::add(double value, double weight) {
-            QL_REQUIRE(weight>=0.0,
-                "Statistics::add : "
-                "negative weight (" +
-                DoubleFormatter::toString(weight) + ") not allowed");
-
-            Size oldSamples = sampleNumber_;
-            sampleNumber_++;
-            QL_ENSURE(sampleNumber_ > oldSamples,
-                      "Statistics::add : "
-                      "maximum number of samples reached");
-
-            sampleWeight_ += weight;
-
-            double temp = weight*value;
-            sum_ += temp;
-            temp *= value;
-            quadraticSum_ += temp;
-            downsideQuadraticSum_ += value < 0.0 ? temp : 0.0;
-            temp *= value;
-            cubicSum_ += temp;
-            temp *= value;
-            fourthPowerSum_ += temp;
-            min_=QL_MIN(value, min_);
-            max_=QL_MAX(value, max_);
-        }
-
-
-        double Statistics::variance() const {
-            QL_REQUIRE(sampleWeight_>0.0,
-                       "Statistics::variance() : "
-                       "sampleWeight_=0, unsufficient");
-            QL_REQUIRE(sampleNumber_>1,
-                       "Statistics::variance() : "
-                       "sample number <=1, unsufficient");
-
-            double m = mean();
-            double v = quadraticSum_/sampleWeight_;
-            v -= m*m;
-            v *= sampleNumber_/(sampleNumber_-1.0);
-
-//            if (QL_FABS(v) <= 1.0e-6)
-//                v = 0.0;
-
-            QL_ENSURE(v >= 0.0,
-                      "Statistics::variance :"
-                      "negative variance (" +
-                      DoubleFormatter::toString(v,20) + ")");
-
-            return v;
-        }
-
-        double Statistics::downsideVariance() const {
-            QL_REQUIRE(sampleWeight_>0.0,
-                       "Statistics::downsideVariance() : "
-                       "sampleWeight_=0, unsufficient");
-            QL_REQUIRE(sampleNumber_>1,
-                       "Statistics::downsideVariance() : "
-                       "sample number <=1, unsufficient");
-
-            return (sampleNumber_/(sampleNumber_-1.0))*
-                (downsideQuadraticSum_ /sampleWeight_);
-        }
-
-        double Statistics::skewness() const {
-            QL_REQUIRE(sampleNumber_>2,
-                       "Statistics::skewness() : "
-                       "sample number <=2, unsufficient");
-            double s = standardDeviation();
-
-            if (s==0.0) return 0.0;
-
-            double m = mean();
-            double result = cubicSum_/sampleWeight_;
-            result -= 3.0*m*(quadraticSum_/sampleWeight_);
-            result += 2.0*m*m*m;
-            result /= s*s*s;
-            result *= sampleNumber_/(sampleNumber_-1.0);
-            result *= sampleNumber_/(sampleNumber_-2.0);
+            double result = 0.0;
+            std::vector<std::pair<double,double> >::iterator it;
+            for (it=samples_.begin(); it!=samples_.end(); it++) {
+                result += it->second;
+            }
             return result;
         }
 
+        double Statistics::mean() const {
 
-        double Statistics::kurtosis() const {
-            QL_REQUIRE(sampleNumber_>3,
+            double result = 0.0, weightSum = 0.0;
+            std::vector<std::pair<double,double> >::iterator it;
+            for (it=samples_.begin(); it!=samples_.end(); it++) {
+                result += it->second*it->first;
+                weightSum += it->second;
+            }
+            QL_REQUIRE(weightSum>0.0,
+                       "Statistics::mean() : "
+                       "empty sample (zero weight sum)");
+            result /= weightSum;
+            return result;
+        }
+
+        double Statistics::variance() const {
+            double sampleWeight = weightSum();
+            QL_REQUIRE(sampleWeight>0.0,
+                       "Statistics::variance() : "
+                       "empty sample (zero weight sum)");
+
+            Size sampleNumber = samples_.size();
+            QL_REQUIRE(sampleNumber>1.0,
+                       "Statistics::variance() : "
+                       "sample number <=1, unsufficient");
+
+            double m = mean();
+            double result = 0.0;
+            std::vector<std::pair<double,double> >::iterator it;
+            for (it=samples_.begin(); it!=samples_.end(); it++) {
+                double temp = it->first;
+                temp = temp*temp;
+                result += it->second*temp;
+            }
+            result /= sampleWeight;
+            result -= m*m;
+            result *= sampleNumber/(sampleNumber-1.0);
+            return result;
+        }
+
+        double Statistics::downsideVariance() const {
+            double sampleWeight = weightSum();
+            QL_REQUIRE(sampleWeight>0.0,
+                       "Statistics::downsideVariance() : "
+                       "empty sample (zero weight sum)");
+
+            Size sampleNumber = samples_.size();
+            QL_REQUIRE(sampleNumber>1.0,
+                       "Statistics::downsideVariance() : "
+                       "sample number <=1, unsufficient");
+
+            double m = mean();
+            double result = 0.0;
+            std::vector<std::pair<double,double> >::iterator it;
+            for (it=samples_.begin(); it!=samples_.end(); it++) {
+                double temp = it->first;
+                // temp < 0.0 or temp<m ????
+                result += ( temp<0.0 ? it->second*temp*temp : 0);
+            }
+            result /= sampleWeight;
+//            result -= m*m;
+            result *= sampleNumber/(sampleNumber-1.0);
+            return result;
+        }
+
+        double Statistics::skewness() const{
+            Size sampleNumber = samples_.size();
+            QL_REQUIRE(sampleNumber>2,
+                       "Statistics::skewness() : "
+                       "sample number <=2, unsufficient");
+
+            double m = mean();
+            double s = standardDeviation();
+            double result = 0.0;
+            std::vector<std::pair<double,double> >::iterator it;
+            for (it=samples_.begin(); it!=samples_.end(); it++) {
+                double temp = (it->first-m)/s;
+                temp = temp*temp*temp;
+                result += it->second*temp;
+            }
+            result *= sampleNumber/weightSum();
+
+            result *= sampleNumber/(sampleNumber-2.0);
+            result /= (sampleNumber-1.0);
+
+            return result;
+        }
+
+        double Statistics::kurtosis() const{
+            Size sampleNumber = samples_.size();
+            QL_REQUIRE(sampleNumber>3,
                        "Statistics::kurtosis() : "
                        "sample number <=3, unsufficient");
 
-            double m = mean();
-            double v = variance();
-
-            double c = (sampleNumber_-1.0)/(sampleNumber_-2.0);
-            c *= (sampleNumber_-1.0)/(sampleNumber_-3.0);
+            double c = (sampleNumber-1.0)/(sampleNumber-2.0);
+            c *= (sampleNumber-1.0)/(sampleNumber-3.0);
             c *= 3.0;
 
-            if (v==0) return c;
+            double m = mean();
+            double s = standardDeviation();
+            double result = 0.0;
+            std::vector<std::pair<double,double> >::iterator it;
+            for (it=samples_.begin(); it!=samples_.end(); it++) {
+                double temp = (it->first-m)/s;
+                temp = temp*temp*temp*temp;
+                result += it->second*temp;
+            }
+            result *= sampleNumber/weightSum();
 
-            double result = fourthPowerSum_/sampleWeight_;
-            result -= 4.0*m*(cubicSum_/sampleWeight_);
-            result += 6.0*m*m*(quadraticSum_/sampleWeight_);
-            result -= 3.0*m*m*m*m;
-            result /= v*v;
-            result *= sampleNumber_/(sampleNumber_-1.0);
-            result *= sampleNumber_/(sampleNumber_-2.0);
-            result *= (sampleNumber_+1.0)/(sampleNumber_-3.0);
-
+            result *= (sampleNumber+1.0)/(sampleNumber-3.0);
+            result *= sampleNumber/(sampleNumber-2.0);
+            result /= (sampleNumber-1.0);
 
             return result-c;
         }

@@ -282,7 +282,7 @@ void LDSTest::testHalton() {
         }
     }
 
-    // reset generator and statistics
+    // reset generator and gaussianstatistics
     rsg  = HaltonRsg(dimensionality);
     stat.reset(dimensionality);
     k = 0;

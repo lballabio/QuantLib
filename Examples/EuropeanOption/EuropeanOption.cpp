@@ -496,7 +496,7 @@ int main(int argc, char* argv[])
 
         option.setPricingEngine(Handle<PricingEngine>(
             new MCEuropeanEngine<
-                Statistics,
+                GaussianStatistics,
                 GaussianRandomSequenceGenerator,
                 GaussianPathGenerator>(false, false, timeSteps, grsg)));
         value = option.NPV();

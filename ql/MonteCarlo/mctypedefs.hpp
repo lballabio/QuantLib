@@ -30,7 +30,7 @@
 #include <ql/MonteCarlo/multipathgenerator.hpp>
 #include <ql/MonteCarlo/pathpricer.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
-#include <ql/Math/statistics.hpp>
+#include <ql/Math/gaussianstatistics.hpp>
 
 namespace QuantLib {
 
@@ -50,13 +50,13 @@ namespace QuantLib {
             GaussianMultiPathGenerator;
 
         //! default choice for one-factor Monte Carlo model.
-        typedef MonteCarloModel<Math::Statistics,
+        typedef MonteCarloModel<Math::GaussianStatistics,
                                 GaussianPathGenerator_old,
                                 PathPricer_old<Path> >
                                     OneFactorMonteCarloOption_old;
 
         //! default choice for multi-factor Monte Carlo model.
-        typedef MonteCarloModel<Math::Statistics,
+        typedef MonteCarloModel<Math::GaussianStatistics,
                                 GaussianMultiPathGenerator,
                                 PathPricer_old<MultiPath> >
                                     MultiFactorMonteCarloOption;
