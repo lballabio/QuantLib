@@ -50,5 +50,4 @@ Date Calendar::advance(const Date& d, int businessDays) const {
 	return d1;
 }
 
-
 QL_END_NAMESPACE(QuantLib)
