@@ -68,7 +68,7 @@ namespace QuantLib {
         }
 
         void FdBsmOption::setGridLimits(double center,
-                                               double timeDelay) const {
+            double timeDelay) const {
 
             center_ = center;
             double volSqrtTime = volatility_*QL_SQRT(timeDelay);
@@ -102,22 +102,8 @@ namespace QuantLib {
 
         void FdBsmOption::initializeInitialCondition() const {
             Size j;
-            switch (type_) {
-              case Option::Call:
-                for(j = 0; j < gridPoints_; j++)
-                    initialPrices_[j] = QL_MAX(grid_[j]-strike_,0.0);
-                break;
-              case Option::Put:
-                for(j = 0; j < gridPoints_; j++)
-                    initialPrices_[j] = QL_MAX(strike_-grid_[j],0.0);
-                break;
-              case Option::Straddle:
-                for(j = 0; j < gridPoints_; j++)
-                    initialPrices_[j] = QL_FABS(strike_-grid_[j]);
-                break;
-              default:
-                throw Error("FdBsmOption: invalid option type");
-            }
+            for(j = 0; j < gridPoints_; j++)
+                initialPrices_[j] = ExercisePayoff(type_, grid_[j], strike_);
         }
 
         void FdBsmOption::initializeOperator() const {
