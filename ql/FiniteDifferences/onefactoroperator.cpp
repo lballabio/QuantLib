@@ -38,14 +38,14 @@ namespace QuantLib {
     namespace FiniteDifferences {
 
         OneFactorOperator::OneFactorOperator(const Array& grid,
-            const Handle<StochasticProcess>& process) 
+            const Handle<ShortRateProcess>& process) 
         : TridiagonalOperator(grid.size()) {
              timeSetter_ = Handle<TridiagonalOperator::TimeSetter>(
                new SpecificTimeSetter(grid[0], grid[1] - grid[0], process));
          }
 
         OneFactorOperator::SpecificTimeSetter::SpecificTimeSetter(double x0, 
-            double dx, const Handle<StochasticProcess>& process) 
+            double dx, const Handle<ShortRateProcess>& process) 
         : x0_(x0), dx_(dx), process_(process) {}
 
         void OneFactorOperator::SpecificTimeSetter::setTime(Time t, 
@@ -53,13 +53,11 @@ namespace QuantLib {
             unsigned length = op.size();
             for (unsigned i=0; i<length; i++) {
                 double x = x0_ + dx_*i;
-                Rate r;
-                if (process_->variable()==StochasticProcess::ShortRate)
-                    r = x;
-                else
-                    r = QL_EXP(x);
+
+                Rate r = process_->shortRate(x, t);
                 double mu = process_->drift(x, t);
                 double sigma = process_->diffusion(x, t);
+
                 double sigma2 = sigma*sigma;
                 double pdown = (- sigma2/(2.0*dx_*dx_) ) + mu/(2.0*dx_);
                 double pm    = (+ sigma2/(dx_*dx_) )     + r;

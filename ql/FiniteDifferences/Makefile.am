@@ -19,7 +19,6 @@ include_HEADERS = \
     onefactoroperator.hpp \
     shoutcondition.hpp \
 	stepcondition.hpp \
-    swaptioncondition.hpp \
 	tridiagonaloperator.hpp \
 	valueatcenter.hpp
 

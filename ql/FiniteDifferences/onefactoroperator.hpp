@@ -31,11 +31,11 @@
 
 // $Id$
 
-#ifndef quantlib_one_factor_operator_h
-#define quantlib_one_factor_operator_h
+#ifndef quantlib_finite_differences_one_factor_operator_h
+#define quantlib_finite_differences_one_factor_operator_h
 
-#include "ql/stochasticprocess.hpp"
-#include "ql/FiniteDifferences/tridiagonaloperator.hpp"
+#include <ql/FiniteDifferences/tridiagonaloperator.hpp>
+#include <ql/InterestRateModelling/shortrateprocess.hpp>
 
 namespace QuantLib {
 
@@ -46,19 +46,19 @@ namespace QuantLib {
           public:
             OneFactorOperator() {}
             OneFactorOperator(const Array& grid,
-                const Handle<StochasticProcess>& process);
+                const Handle<ShortRateProcess>& process);
             virtual ~OneFactorOperator() {}
 
             class SpecificTimeSetter : public TridiagonalOperator::TimeSetter{
               public:
                 SpecificTimeSetter(double x0, double dx,
-                    const Handle<StochasticProcess>& process);
+                    const Handle<ShortRateProcess>& process);
                 virtual ~SpecificTimeSetter() {}
                 virtual void setTime(Time t, TridiagonalOperator& L) const;
               private:
                 double x0_;
                 double dx_;
-                const Handle<StochasticProcess>& process_;
+                const Handle<ShortRateProcess>& process_;
             };
         };
 
