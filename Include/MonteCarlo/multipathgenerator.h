@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/03/28 13:39:47  marmar
+    MultiPathGenerator now has a default for mean
+
     Revision 1.5  2001/03/28 12:49:07  marmar
     Dates are now used for input instead of time delays
 
@@ -72,12 +75,12 @@ namespace QuantLib {
         // this typedef would make MultiPathGenerator into a sample generator
             MultiPathGenerator();
             MultiPathGenerator(int timeDimension, 
-                               const Array &average, 
                                const Math::Matrix &covariance, 
+                               const Array &average = Array(), 
                                long seed=0);
             MultiPathGenerator(const std::vector<Time> &dates, 
-                               const Array &average, 
                                const Math::Matrix &covariance, 
+                               const Array &average = Array(), 
                                long seed=0);
             MultiPath next() const;
             double weight() const{return weight_;}
@@ -95,29 +98,48 @@ namespace QuantLib {
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
-            int timeDimension, const Array &average,
-            const Math::Matrix &covariance, long seed):
+            int timeDimension,
+            const Math::Matrix &covariance, 
+            const Array &average,
+            long seed):
             timeDimension_(timeDimension),
             timeDelays_(timeDimension, 1.0),
-            numAssets_(average.size()),
-            average_(average),
+            numAssets_(covariance.rows()),
+            average_(covariance.rows(),0.0),
             rndArray_(covariance, seed){
 
             QL_REQUIRE(timeDimension_ > 0,
                 "Time dimension("+
                 DoubleFormatter::toString(timeDimension_)+
                 ") too small");
+                
+            if(average.size() != 0){
+                QL_REQUIRE(average.size() == average_.size(),
+                           "MultiPathGenerator covariance and average "
+                           "do not have the same size");
+                std::copy(average.begin(),average.end(),average_.begin());
+            }
+
         }
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
-            const std::vector<Time> &dates, const Array &average,
-            const Math::Matrix &covariance, long seed):
+            const std::vector<Time> &dates, 
+            const Math::Matrix &covariance, 
+            const Array &average, 
+            long seed):
             timeDimension_(dates.size()),
             timeDelays_(dates.size()),
-            numAssets_(average.size()),
-            average_(average),
+            numAssets_(covariance.rows()),
+            average_(covariance.rows(), 0.0),
             rndArray_(covariance, seed){
+
+            if(average.size() != 0){
+                QL_REQUIRE(average.size() == average_.size(),
+                           "MultiPathGenerator covariance and average "
+                           "do not have the same size");
+                std::copy(average.begin(),average.end(),average_.begin());
+            }
 
             QL_REQUIRE(timeDimension_ > 0,
                 "Time dimension("+

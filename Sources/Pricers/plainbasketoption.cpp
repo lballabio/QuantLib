@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/03/28 13:40:52  marmar
+    MultiPathGenerator now has a default for mean
+
     Revision 1.2  2001/02/13 10:02:57  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -73,8 +76,10 @@ namespace QuantLib {
                                     - 0.5 * covariance.diagonal()));
 
             Handle<StandardMultiPathGenerator> pathGenerator(
-                new StandardMultiPathGenerator(timesteps, mu, 
-                                        covariance*deltaT, seed));
+                new StandardMultiPathGenerator(timesteps, 
+                                               covariance*deltaT, 
+                                               mu, 
+                                               seed));
             
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(new BasketPathPricer(

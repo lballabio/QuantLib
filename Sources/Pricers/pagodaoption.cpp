@@ -25,6 +25,9 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/03/28 13:40:52  marmar
+    MultiPathGenerator now has a default for mean
+
     Revision 1.1  2001/03/22 12:12:25  marmar
     Introducing pagoda options
 
@@ -74,8 +77,10 @@ namespace QuantLib {
                                     - 0.5 * covariance.diagonal()));
 
             Handle<StandardMultiPathGenerator> pathGenerator(
-                new StandardMultiPathGenerator(timesteps, mu, 
-                                        covariance*deltaT, seed));
+                new StandardMultiPathGenerator(timesteps, 
+                                               covariance*deltaT, 
+                                               mu, 
+                                               seed));
             
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(

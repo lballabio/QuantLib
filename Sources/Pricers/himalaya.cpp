@@ -25,6 +25,9 @@
     
     $Source$
     $Log$
+    Revision 1.5  2001/03/28 13:40:52  marmar
+    MultiPathGenerator now has a default for mean
+
     Revision 1.4  2001/03/28 12:49:52  marmar
     Dates are now used for input instead of time delays
 
@@ -75,8 +78,10 @@ namespace QuantLib {
                                     - 0.5 * covariance.diagonal());
 
             Handle<StandardMultiPathGenerator> pathGenerator(
-                new StandardMultiPathGenerator(timeDelays, mu, 
-                                        covariance, seed));
+                new StandardMultiPathGenerator(timeDelays, 
+                                               covariance, 
+                                               mu,
+                                               seed));
             double residualTime = timeDelays[timeDelays.size()-1];
             
             //! Initialize the pricer on the path pricer

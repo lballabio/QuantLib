@@ -25,6 +25,9 @@
     
     $Source$
     $Log$
+    Revision 1.3  2001/03/28 13:40:52  marmar
+    MultiPathGenerator now has a default for mean
+
     Revision 1.2  2001/03/07 09:32:54  marmar
     Spot prices not necessary for evaluation of everest option
 
@@ -68,8 +71,10 @@ namespace QuantLib {
             std::vector<Time> timeDisp(1);
             timeDisp[0] = residualTime;
             Handle<StandardMultiPathGenerator> pathGenerator(
-                    new StandardMultiPathGenerator(timeDisp, mu, 
-                                                   covariance, seed));
+                    new StandardMultiPathGenerator(timeDisp, 
+                                                   covariance, 
+                                                   mu,
+                                                   seed));
             
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(

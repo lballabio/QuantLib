@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.7  2001/03/28 13:40:12  marmar
+   MultiPathGenerator now has a default for mean
+
    Revision 1.6  2001/03/15 13:50:26  marmar
    getCovariance function added
 
@@ -70,8 +73,8 @@ class StandardPathGenerator {
 class StandardMultiPathGenerator {
   public:
 	StandardMultiPathGenerator(const DoubleVector& timeDelays, 
-	                           const Array& average, 
                                const Matrix& covariance,
+	                           const Array& average, 
                                long seed=0);
     ~StandardMultiPathGenerator();                              
 	Matrix next() const;
