@@ -22,7 +22,6 @@ include_HEADERS = \
     europeanengine.hpp \
     europeanoption.hpp \
     finitedifferenceeuropean.hpp \
-    geometricasianoption.hpp \
     mcbasket.hpp \
     mcdiscretearithmeticapo.hpp \
     mcdiscretearithmeticaso.hpp \
