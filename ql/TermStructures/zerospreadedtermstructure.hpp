@@ -42,7 +42,6 @@ namespace QuantLib {
                 const RelinkableHandle<MarketElement>& spread);
             //! \name TermStructure interface
             //@{
-            Calendar calendar() const;
             DayCounter dayCounter() const;
             Date settlementDate() const;
             Date todaysDate() const;
