@@ -24,7 +24,6 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "discretegeometricapo.obj$(_mt)$(_D)" \
     "discretegeometricaso.obj$(_mt)$(_D)" \
     "fdbermudanoption.obj$(_mt)$(_D)" \
     "fdbsmoption.obj$(_mt)$(_D)" \
@@ -35,7 +34,6 @@ OBJS = \
     "fdmultiperiodoption.obj$(_mt)$(_D)" \
     "fdstepconditionoption.obj$(_mt)$(_D)" \
     "mccliquetoption.obj$(_mt)$(_D)" \
-    "mcdiscretearithmeticapo.obj$(_mt)$(_D)" \
     "mcdiscretearithmeticaso.obj$(_mt)$(_D)" \
     "mceverest.obj$(_mt)$(_D)" \
     "mchimalaya.obj$(_mt)$(_D)" \

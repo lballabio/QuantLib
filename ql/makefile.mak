@@ -27,7 +27,6 @@ CORE_OBJS = \
     "basicdataformatters.obj$(_mt)$(_D)" \
     "calendar.obj$(_mt)$(_D)" \
     "currency.obj$(_mt)$(_D)" \
-    "dataformatters.obj$(_mt)$(_D)" \
     "dataparsers.obj$(_mt)$(_D)" \
     "date.obj$(_mt)$(_D)" \
     "discretizedasset.obj$(_mt)$(_D)" \
