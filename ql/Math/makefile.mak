@@ -15,6 +15,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 # Object files
 OBJS = \
     beta.obj$(_D) \
+    bivariatenormaldistribution.obj$(_D) \
     chisquaredistribution.obj$(_D) \
     discrepancystatistics.obj$(_D) \
     errorfunction.obj$(_D) \

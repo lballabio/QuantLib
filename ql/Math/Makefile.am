@@ -10,6 +10,7 @@ include_HEADERS = \
 	bicubicsplineinterpolation.hpp \
 	bilinearinterpolation.hpp \
 	binomialdistribution.hpp \
+	bivariatenormaldistribution.hpp \
 	chisquaredistribution.hpp \
 	comparison.hpp \
 	cubicspline.hpp \
@@ -47,6 +48,7 @@ EXTRA_DIST=makefile.mak
 
 libMath_la_SOURCES = \
 	beta.cpp \
+	bivariatenormaldistribution.cpp \
 	chisquaredistribution.cpp \
 	discrepancystatistics.cpp \
 	errorfunction.cpp \
