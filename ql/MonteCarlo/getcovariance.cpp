@@ -32,10 +32,10 @@ namespace QuantLib {
         Size i, j;
         for (i=0; i<size; i++) {
             variances_[i]=cov[i][i];
-            standardDeviations_[i] = QL_SQRT(cov[i][i]);
+            standardDeviations_[i] = std::sqrt(cov[i][i]);
             correlationMatrix_[i][i] = 1.0;
             for (j=0; j<i; j++){
-                QL_REQUIRE(QL_FABS(cov[i][j]-cov[j][i]) <= tolerance,
+                QL_REQUIRE(std::fabs(cov[i][j]-cov[j][i]) <= tolerance,
                            "invalid covariance matrix:"
                            "\nc[" + SizeFormatter::toString(i) +
                            ", "   + SizeFormatter::toString(j) +

@@ -82,7 +82,7 @@ namespace QuantLib {
                 Size i;
                 // step by step using the discretization of the path
                 for (i=0; i<n; i++) {
-                    underlying *= QL_EXP(path[i]);
+                    underlying *= std::exp(path[i]);
                     // incorporate payoff
                     if (lastFixing != Null<Real>()) {
                         payoff =

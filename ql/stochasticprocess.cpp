@@ -122,7 +122,7 @@ namespace QuantLib {
     }
 
     Real BlackScholesProcess::evolve(Real change, Real currentValue) const {
-        return currentValue * QL_EXP(change);
+        return currentValue * std::exp(change);
     }
 
     void BlackScholesProcess::update() {
@@ -252,12 +252,12 @@ namespace QuantLib {
 
     Real OrnsteinUhlenbeckProcess::expectation(Time, Real x0,
                                                Time dt) const {
-        return x0*QL_EXP(-speed_*dt);
+        return x0*std::exp(-speed_*dt);
     }
 
     Real OrnsteinUhlenbeckProcess::variance(Time, Real, Time dt) const {
         return 0.5*volatility_*volatility_/speed_*
-            (1.0 - QL_EXP(-2.0*speed_*dt));
+            (1.0 - std::exp(-2.0*speed_*dt));
     }
 
 
@@ -278,7 +278,7 @@ namespace QuantLib {
     }
 
     Real SquareRootProcess::diffusion(Time, Real x) const {
-        return volatility_*QL_SQRT(x);
+        return volatility_*std::sqrt(x);
     }
 
 }

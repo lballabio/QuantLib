@@ -124,7 +124,7 @@ namespace QuantLib {
     }
 
     Real AnalyticBarrierEngine::stdDeviation() const {
-        return volatility() * QL_SQRT(residualTime());
+        return volatility() * std::sqrt(residualTime());
     }
 
     Real AnalyticBarrierEngine::barrier() const {
@@ -166,7 +166,7 @@ namespace QuantLib {
 
     Real AnalyticBarrierEngine::A(Real phi) const {
         Real x1 =
-            QL_LOG(underlying()/strike())/stdDeviation() + muSigma();
+            std::log(underlying()/strike())/stdDeviation() + muSigma();
         Real N1 = f_(phi*x1);
         Real N2 = f_(phi*(x1-stdDeviation()));
         return phi*(underlying() * dividendDiscount() * N1
@@ -175,7 +175,7 @@ namespace QuantLib {
 
     Real AnalyticBarrierEngine::B(Real phi) const {
         Real x2 =
-            QL_LOG(underlying()/barrier())/stdDeviation() + muSigma();
+            std::log(underlying()/barrier())/stdDeviation() + muSigma();
         Real N1 = f_(phi*x2);
         Real N2 = f_(phi*(x2-stdDeviation()));
         return phi*(underlying() * dividendDiscount() * N1
@@ -184,10 +184,9 @@ namespace QuantLib {
 
     Real AnalyticBarrierEngine::C(Real eta, Real phi) const {
         Real HS = barrier()/underlying();
-        Real powHS0 = QL_POW(HS, 2 * mu());
+        Real powHS0 = std::pow(HS, 2 * mu());
         Real powHS1 = powHS0 * HS * HS;
-        Real y1 =
-            QL_LOG(barrier()*HS/strike())/stdDeviation() + muSigma();
+        Real y1 = std::log(barrier()*HS/strike())/stdDeviation() + muSigma();
         Real N1 = f_(eta*y1);
         Real N2 = f_(eta*(y1-stdDeviation()));
         return phi*(underlying() * dividendDiscount() * powHS1 * N1
@@ -196,10 +195,9 @@ namespace QuantLib {
 
     Real AnalyticBarrierEngine::D(Real eta, Real phi) const {
         Real HS = barrier()/underlying();
-        Real powHS0 = QL_POW(HS, 2 * mu());
+        Real powHS0 = std::pow(HS, 2 * mu());
         Real powHS1 = powHS0 * HS * HS;
-        Real y2 =
-            QL_LOG(barrier()/underlying())/stdDeviation() + muSigma();
+        Real y2 = std::log(barrier()/underlying())/stdDeviation() + muSigma();
         Real N1 = f_(eta*y2);
         Real N2 = f_(eta*(y2-stdDeviation()));
         return phi*(underlying() * dividendDiscount() * powHS1 * N1
@@ -208,11 +206,11 @@ namespace QuantLib {
 
     Real AnalyticBarrierEngine::E(Real eta) const {
         if (rebate() > 0) {
-            Real powHS0 = QL_POW(barrier()/underlying(), 2 * mu());
+            Real powHS0 = std::pow(barrier()/underlying(), 2 * mu());
             Real x2 =
-                QL_LOG(underlying()/barrier())/stdDeviation() + muSigma();
+                std::log(underlying()/barrier())/stdDeviation() + muSigma();
             Real y2 =
-                QL_LOG(barrier()/underlying())/stdDeviation() + muSigma();
+                std::log(barrier()/underlying())/stdDeviation() + muSigma();
             Real N1 = f_(eta*(x2 - stdDeviation()));
             Real N2 = f_(eta*(y2 - stdDeviation()));
             return rebate() * riskFreeDiscount() * (N1 - powHS0 * N2);
@@ -225,13 +223,13 @@ namespace QuantLib {
         if (rebate() > 0) {
             Rate m = mu();
             Volatility vol = volatility();
-            Real lambda = QL_SQRT(m*m + 2.0*riskFreeRate()/(vol * vol));
+            Real lambda = std::sqrt(m*m + 2.0*riskFreeRate()/(vol * vol));
             Real HS = barrier()/underlying();
-            Real powHSplus = QL_POW(HS, m + lambda);
-            Real powHSminus = QL_POW(HS, m - lambda);
+            Real powHSplus = std::pow(HS, m + lambda);
+            Real powHSminus = std::pow(HS, m - lambda);
 
             Real sigmaSqrtT = stdDeviation();
-            Real z = QL_LOG(barrier()/underlying())/sigmaSqrtT
+            Real z = std::log(barrier()/underlying())/sigmaSqrtT
                 + lambda * sigmaSqrtT;
 
             Real N1 = f_(eta * z);

@@ -21,7 +21,7 @@
 namespace QuantLib {
 
     AmericanPayoffAtHit::AmericanPayoffAtHit(
-         Real spot, DiscountFactor discount, DiscountFactor dividendDiscount, 
+         Real spot, DiscountFactor discount, DiscountFactor dividendDiscount,
          Real variance, const boost::shared_ptr<StrikedTypePayoff>& payoff)
     : spot_(spot), discount_(discount), dividendDiscount_(dividendDiscount),
       variance_(variance) {
@@ -38,13 +38,13 @@ namespace QuantLib {
         QL_REQUIRE(variance_>=0.0,
                    "negative variance not allowed");
 
-        stdDev_ = QL_SQRT(variance_);
+        stdDev_ = std::sqrt(variance_);
 
         Option::Type type   = payoff->optionType();
         strike_ = payoff->strike();
 
 
-        log_H_S_ = QL_LOG (strike_/spot_);
+        log_H_S_ = std::log(strike_/spot_);
 
         Real n_d1, n_d2;
         Real cum_d1_, cum_d2_;
@@ -55,11 +55,11 @@ namespace QuantLib {
             } else if (discount_==0.0) {
                 QL_FAIL("null discount not handled yet");
             } else {
-                mu_ = QL_LOG(dividendDiscount_/discount_)/variance_ - 0.5;
-                lambda_ = QL_SQRT(mu_*mu_-2.0*QL_LOG(discount_)/variance_);
+                mu_ = std::log(dividendDiscount_/discount_)/variance_ - 0.5;
+                lambda_ = std::sqrt(mu_*mu_-2.0*std::log(discount_)/variance_);
             }
             D1_ = log_H_S_/stdDev_ + lambda_*stdDev_;
-            D2_ = D1_ - 2.0*lambda_*stdDev_; 
+            D2_ = D1_ - 2.0*lambda_*stdDev_;
             CumulativeNormalDistribution f;
             cum_d1_ = f(D1_);
             cum_d2_ = f(D2_);
@@ -67,8 +67,8 @@ namespace QuantLib {
             n_d2 = f.derivative(D2_);
         } else {
             // not tested yet
-            mu_ = QL_LOG(dividendDiscount_/discount_)/variance_ - 0.5;
-            lambda_ = QL_SQRT(mu_*mu_-2.0*QL_LOG(discount_)/variance_);
+            mu_ = std::log(dividendDiscount_/discount_)/variance_ - 0.5;
+            lambda_ = std::sqrt(mu_*mu_-2.0*std::log(discount_)/variance_);
             if (log_H_S_>0) {
                 cum_d1_= 1.0;
                 cum_d2_= 1.0;
@@ -127,8 +127,8 @@ namespace QuantLib {
             X_         = 1.0;
             DXDstrike_ = 0.0;
         } else {
-            forward_   = QL_POW(strike_/spot_, muPlusLambda_);
-            X_         = QL_POW(strike_/spot_, muMinusLambda_);
+            forward_   = std::pow(strike_/spot_, muPlusLambda_);
+            X_         = std::pow(strike_/spot_, muMinusLambda_);
 //            DXDstrike_ = ......;
         }
 
@@ -230,7 +230,7 @@ namespace QuantLib {
         return maturity * K_ * (
               DalphaDr * forward_
             + alpha_   * DforwardDr
-            + DbetaDr  * X_       
+            + DbetaDr  * X_
             + beta_    * DXDr
             );
     }

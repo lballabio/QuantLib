@@ -49,9 +49,9 @@ namespace QuantLib {
     Real ExtendedCoxIngersollRoss::A(Time t, Time s) const {
         Real pt = termStructure()->discount(t);
         Real ps = termStructure()->discount(s);
-        Real value = CoxIngersollRoss::A(t,s)*QL_EXP(B(t,s)*phi_(t))*
-            (ps*CoxIngersollRoss::A(0.0,t)*QL_EXP(-B(0.0,t)*x0()))/
-            (pt*CoxIngersollRoss::A(0.0,s)*QL_EXP(-B(0.0,s)*x0()));
+        Real value = CoxIngersollRoss::A(t,s)*std::exp(B(t,s)*phi_(t))*
+            (ps*CoxIngersollRoss::A(0.0,t)*std::exp(-B(0.0,t)*x0()))/
+            (pt*CoxIngersollRoss::A(0.0,s)*std::exp(-B(0.0,s)*x0()));
         return value;
     }
 
@@ -72,21 +72,22 @@ namespace QuantLib {
         }
 
         Real sigma2 = sigma()*sigma();
-        Real h = QL_SQRT(k()*k() + 2.0*sigma2);
-        Real r0 = termStructure()->forwardRate(0.0, 0.0, Continuous, NoFrequency);
+        Real h = std::sqrt(k()*k() + 2.0*sigma2);
+        Real r0 = termStructure()->forwardRate(0.0, 0.0,
+                                               Continuous, NoFrequency);
         Real b = B(t,s);
 
-        Real rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));
+        Real rho = 2.0*h/(sigma2*(std::exp(h*t) - 1.0));
         Real psi = (k() + h)/sigma2;
 
         Real df = 4.0*k()*theta()/sigma2;
-        Real ncps = 2.0*rho*rho*(r0-phi_(0.0))*QL_EXP(h*t)/(rho+psi+b);
-        Real ncpt = 2.0*rho*rho*(r0-phi_(0.0))*QL_EXP(h*t)/(rho+psi);
+        Real ncps = 2.0*rho*rho*(r0-phi_(0.0))*std::exp(h*t)/(rho+psi+b);
+        Real ncpt = 2.0*rho*rho*(r0-phi_(0.0))*std::exp(h*t)/(rho+psi);
 
         NonCentralChiSquareDistribution chis(df, ncps);
         NonCentralChiSquareDistribution chit(df, ncpt);
 
-        Real z = QL_LOG(CoxIngersollRoss::A(t,s)/strike)/b;
+        Real z = std::log(CoxIngersollRoss::A(t,s)/strike)/b;
         Real call = discountS*chis(2.0*z*(rho+psi+b)) -
             strike*discountT*chit(2.0*z*(rho+psi));
         if (type == Option::Call)

@@ -100,7 +100,7 @@ void InterestRateTest::testConversions() {
         // check that the compound factor is the inverse of the discount factor
         compoundf = ir.compoundFactor(d1, d2);
         disc = ir.discountFactor(d1, d2);
-        error = QL_FABS(disc-1.0/compoundf);
+        error = std::fabs(disc-1.0/compoundf);
         if (error>1e-15)
             BOOST_FAIL("\n  " + InterestRateFormatter::toString(ir) +
                        "\n  1.0/compound_factor: "
@@ -115,7 +115,7 @@ void InterestRateTest::testConversions() {
         ir2 = ir.equivalentRate(d1, d2, ir.dayCounter(),
                                 ir.compounding(),
                                 ir.frequency());
-        error = QL_FABS(ir.rate()-ir2.rate());
+        error = std::fabs(ir.rate()-ir2.rate());
         if (error>1e-15)
             BOOST_FAIL("\n    original interest rate: "
                        + InterestRateFormatter::toString(ir, 12) +
@@ -147,7 +147,7 @@ void InterestRateTest::testConversions() {
         r2 = ir.equivalentRate(d1, d2, ir.dayCounter(),
                                        ir.compounding(),
                                        ir.frequency());
-        error = QL_FABS(ir.rate()-r2);
+        error = std::fabs(ir.rate()-r2);
         if (error>1e-15)
             BOOST_FAIL("\n    original rate: "
                        + InterestRateFormatter::toString(ir, 12) +
@@ -163,7 +163,7 @@ void InterestRateTest::testConversions() {
         expectedIR = InterestRate(cases[i].expected, ir.dayCounter(),
                                   cases[i].comp2, cases[i].freq2);
         r3 = roundingPrecision(ir3.rate());
-        error = QL_FABS(r3-expectedIR.rate());
+        error = std::fabs(r3-expectedIR.rate());
         if (error>1.0e-17)
             BOOST_FAIL("\n               original interest rate: "
                        + InterestRateFormatter::toString(ir,
@@ -202,7 +202,7 @@ void InterestRateTest::testConversions() {
         r3 = ir.equivalentRate(d1, d2, ir.dayCounter(),
                                cases[i].comp2, cases[i].freq2);
         r3 = roundingPrecision(r3);
-        error = QL_FABS(r3-cases[i].expected);
+        error = std::fabs(r3-cases[i].expected);
         if (error>1.0e-17)
             BOOST_FAIL("\n  calculated equivalent rate: "
                        + RateFormatter::toString(r3,cases[i].precision-2) +

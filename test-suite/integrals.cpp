@@ -34,7 +34,7 @@ namespace {
     void testSingle(const T& I, const std::string& tag,
                     const F& f, Real xMin, Real xMax, Real expected) {
         Real calculated = I(f,xMin,xMax);
-        if (QL_FABS(calculated-expected) > tolerance) {
+        if (std::fabs(calculated-expected) > tolerance) {
             BOOST_FAIL(
                 "integrating " + tag +
                 "    calculated: " + DecimalFormatter::toString(calculated) +
@@ -48,13 +48,13 @@ namespace {
                    constant<Real,Real>(1.0), 0.0, 1.0, 1.0);
         testSingle(I, "f(x) = x",
                    identity<Real>(),           0.0, 1.0, 0.5);
-        testSingle(I, "f(x) = x^2", 
+        testSingle(I, "f(x) = x^2",
                    square<Real>(),             0.0, 1.0, 1.0/3.0);
-        testSingle(I, "f(x) = sin(x)", 
-                   std::ptr_fun<Real,Real>(QL_SIN), 0.0, M_PI, 2.0);
-        testSingle(I, "f(x) = cos(x)", 
-                   std::ptr_fun<Real,Real>(QL_COS), 0.0, M_PI, 0.0);
-        testSingle(I, "f(x) = Gaussian(x)", 
+        testSingle(I, "f(x) = sin(x)",
+                   std::ptr_fun<Real,Real>(std::sin), 0.0, M_PI, 2.0);
+        testSingle(I, "f(x) = cos(x)",
+                   std::ptr_fun<Real,Real>(std::cos), 0.0, M_PI, 0.0);
+        testSingle(I, "f(x) = Gaussian(x)",
                    NormalDistribution(), -10.0, 10.0, 1.0);
     }
 }

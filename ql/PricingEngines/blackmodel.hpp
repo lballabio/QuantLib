@@ -83,9 +83,9 @@ namespace QuantLib {
         \f]
     */
     inline Real BlackModel::formula(Real f, Real k, Real v, Real w) {
-        if (QL_FABS(v) < QL_EPSILON)
+        if (std::fabs(v) < QL_EPSILON)
             return QL_MAX(f*w - k*w, Real(0.0));
-        Real d1 = QL_LOG(f/k)/v + 0.5*v;
+        Real d1 = std::log(f/k)/v + 0.5*v;
         Real d2 = d1 - v;
         CumulativeNormalDistribution phi;
         Real result = w*(f*phi(w*d1) - k*phi(w*d2));
@@ -107,9 +107,9 @@ namespace QuantLib {
         \f]
     */
     inline Real BlackModel::itmProbability(Real f, Real k, Real v, Real w) {
-        if (QL_FABS(v) < QL_EPSILON)
+        if (std::fabs(v) < QL_EPSILON)
             return (f*w > k*w ? 1.0 : 0.0);
-        Real d1 = QL_LOG(f/k)/v + 0.5*v;
+        Real d1 = std::log(f/k)/v + 0.5*v;
         Real d2 = d1 - v;
         CumulativeNormalDistribution phi;
         return phi(w*d2);

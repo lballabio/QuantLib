@@ -252,7 +252,7 @@ void BarrierOptionTest::testHaugValues() {
                 exercise);
         Real calculated = barrierOption.NPV();
         Real expected = values[i].result;
-        Real error = QL_FABS(calculated-expected);
+        Real error = std::fabs(calculated-expected);
         if (error>values[i].tol) {
             REPORT_FAILURE("value", values[i].barrierType, values[i].barrier,
                            values[i].rebate, payoff, exercise, values[i].s,
@@ -334,7 +334,7 @@ void BarrierOptionTest::testBabsiriValues() {
                 engine);
         Real calculated = barrierCallOption.NPV();
         Real expected = values[i].callValue;
-        Real error = QL_FABS(calculated-expected);
+        Real error = std::fabs(calculated-expected);
         Real maxErrorAllowed = 1.0e-5;
         if (error>maxErrorAllowed) {
             REPORT_FAILURE("value", values[i].type, values[i].barrier,
@@ -362,12 +362,13 @@ void BarrierOptionTest::testBabsiriValues() {
 
         barrierCallOption.setPricingEngine(mcEngine);
         calculated = barrierCallOption.NPV();
-        error = QL_FABS(calculated-expected)/expected;
+        error = std::fabs(calculated-expected)/expected;
         if (error>maxMcRelativeErrorAllowed) {
             REPORT_FAILURE("value", values[i].type, values[i].barrier,
                            rebate, callPayoff, exercise, underlyingPrice,
                            q, r, today, values[i].volatility,
-                           expected, calculated, error, maxMcRelativeErrorAllowed);
+                           expected, calculated, error,
+                           maxMcRelativeErrorAllowed);
         }
 
     }
@@ -391,7 +392,7 @@ void BarrierOptionTest::testBeagleholeValues() {
 
     Real underlyingPrice = 50.0;
     Real rebate = 0.0;
-    Rate r = QL_LOG (1.1);
+    Rate r = std::log(1.1);
     Rate q = 0.00;
 
     DayCounter dc = Actual360();
@@ -440,7 +441,7 @@ void BarrierOptionTest::testBeagleholeValues() {
         Real calculated = barrierCallOption.NPV();
         Real expected = values[i].callValue;
         Real maxErrorAllowed = 1.0e-3;
-        Real error = QL_FABS(calculated-expected);
+        Real error = std::fabs(calculated-expected);
         if (error > maxErrorAllowed) {
             REPORT_FAILURE("value", values[i].type, values[i].barrier,
                            rebate, callPayoff, exercise, underlyingPrice,
@@ -466,12 +467,13 @@ void BarrierOptionTest::testBeagleholeValues() {
 
         barrierCallOption.setPricingEngine(mcEngine);
         calculated = barrierCallOption.NPV();
-        error = QL_FABS(calculated-expected)/expected;
+        error = std::fabs(calculated-expected)/expected;
         if (error>maxMcRelativeErrorAllowed) {
             REPORT_FAILURE("value", values[i].type, values[i].barrier,
                            rebate, callPayoff, exercise, underlyingPrice,
                            q, r, today, values[i].volatility,
-                           expected, calculated, error, maxMcRelativeErrorAllowed);
+                           expected, calculated, error,
+                           maxMcRelativeErrorAllowed);
         }
     }
 }

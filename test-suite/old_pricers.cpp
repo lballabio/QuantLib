@@ -64,8 +64,8 @@ void OldPricerTest::testFdEuropeanPricer() {
 
         for (Size j=0; j<LENGTH(types); j++) {
 
-            DiscountFactor rDiscount = QL_EXP(-rRate*resTime);
-            DiscountFactor qDiscount = QL_EXP(-qRate*resTime);
+            DiscountFactor rDiscount = std::exp(-rRate*resTime);
+            DiscountFactor qDiscount = std::exp(-qRate*resTime);
             Real forward = under*qDiscount/rDiscount;
             Real variance = vol*vol*resTime;
             boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -75,7 +75,7 @@ void OldPricerTest::testFdEuropeanPricer() {
             Real numValue = FdEuropean(types[j], under, strike,
                                        qRate, rRate, resTime,
                                        vol, 100, 400).value();
-            if (QL_FABS(anValue-numValue) > tolerance)
+            if (std::fabs(anValue-numValue) > tolerance)
                 BOOST_FAIL(
                     "Option details: \n"
                     "    type:           " +
@@ -356,7 +356,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                        cases5[l].controlVariate,
                                        seed);
         Real value = pricer.valueWithSamples(fixedSamples);
-        if (QL_FABS(value-cases5[l].result) > 2.0e-2)
+        if (std::fabs(value-cases5[l].result) > 2.0e-2)
             BOOST_FAIL(
                 "Batch 5, case " + SizeFormatter::toString(l+1) + ":\n"
                 "    calculated value: "
@@ -390,7 +390,7 @@ namespace {
         Real minimumTol = 1.0e-2;
 
         Real value = pricer.valueWithSamples(fixedSamples);
-        if (QL_FABS(value-storedValue) > tolerance)
+        if (std::fabs(value-storedValue) > tolerance)
             BOOST_FAIL(
                 name + ":\n"
                 "    calculated value: "

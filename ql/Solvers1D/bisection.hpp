@@ -59,7 +59,7 @@ namespace QuantLib {
                 evaluationNumber_++;
                 if (fMid <= 0.0)
                     root_=xMid;
-                if (QL_FABS(dx) < xAccuracy || fMid == 0.0) {
+                if (std::fabs(dx) < xAccuracy || fMid == 0.0) {
                     return root_;
                 }
             }

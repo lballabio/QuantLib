@@ -103,7 +103,7 @@ void CliquetOptionTest::testValues() {
 
     Real calculated = option.NPV();
     Real expected = 4.4064; // Haug, p.37
-    Real error = QL_FABS(calculated-expected);
+    Real error = std::fabs(calculated-expected);
     Real tolerance = 1e-4;
     if (error > tolerance) {
         REPORT_FAILURE("value", payoff, exercise, spot->value(),

@@ -214,7 +214,7 @@ void QuantoOptionTest::testValues() {
                                    stochProcess, payoff, exercise, engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
             QUANTO_REPORT_FAILURE("value", payoff, exercise, values[i].s,
@@ -507,7 +507,7 @@ void QuantoOptionTest::testForwardValues() {
                                           engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
             QUANTO_FORWARD_REPORT_FAILURE("value", payoff, values[i].moneyness,
@@ -812,7 +812,7 @@ void QuantoOptionTest::testForwardPerformanceValues() {
                                           engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
             QUANTO_FORWARD_REPORT_FAILURE("value", payoff, values[i].moneyness,

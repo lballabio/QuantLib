@@ -21,7 +21,7 @@
 namespace QuantLib {
 
     AmericanPayoffAtExpiry::AmericanPayoffAtExpiry(
-         Real spot, DiscountFactor discount, DiscountFactor dividendDiscount, 
+         Real spot, DiscountFactor discount, DiscountFactor dividendDiscount,
          Real variance, const boost::shared_ptr<StrikedTypePayoff>& payoff)
     : spot_(spot), discount_(discount), dividendDiscount_(dividendDiscount),
       variance_(variance) {
@@ -40,13 +40,13 @@ namespace QuantLib {
         QL_REQUIRE(variance_>=0.0,
                    "negative variance_ not allowed");
 
-        stdDev_ = QL_SQRT(variance_);
+        stdDev_ = std::sqrt(variance_);
 
         Option::Type type   = payoff->optionType();
         strike_ = payoff->strike();
 
 
-        mu_ = QL_LOG(dividendDiscount_/discount_)/variance_ - 0.5;
+        mu_ = std::log(dividendDiscount_/discount_)/variance_ - 0.5;
 
         // binary cash-or-nothing payoff?
         boost::shared_ptr<CashOrNothingPayoff> coo =
@@ -66,13 +66,13 @@ namespace QuantLib {
         }
 
 
-        log_H_S_ = QL_LOG (strike_/spot_);
+        log_H_S_ = std::log(strike_/spot_);
 
         Real n_d1, n_d2;
         Real cum_d1_, cum_d2_;
         if (variance_>=QL_EPSILON) {
             D1_ = log_H_S_/stdDev_ + mu_*stdDev_;
-            D2_ = D1_ - 2.0*mu_*stdDev_; 
+            D2_ = D1_ - 2.0*mu_*stdDev_;
             CumulativeNormalDistribution f;
             cum_d1_ = f(D1_);
             cum_d2_ = f(D2_);
@@ -136,7 +136,7 @@ namespace QuantLib {
             DXDstrike_ = 0.0;
         } else {
             Y_ = 1.0;
-            X_ = QL_POW(Real(strike_/spot_), Real(2.0*mu_));
+            X_ = std::pow(Real(strike_/spot_), Real(2.0*mu_));
 //            DXDstrike_ = ......;
         }
 

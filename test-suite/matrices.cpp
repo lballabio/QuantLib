@@ -31,7 +31,7 @@ namespace {
     Matrix M1, M2, M3, M4, I;
 
     Real norm(const Array& v) {
-        return QL_SQRT(DotProduct(v,v));
+        return std::sqrt(DotProduct(v,v));
     }
 
     Real norm(const Matrix& m) {
@@ -39,7 +39,7 @@ namespace {
         for (Size i=0; i<m.rows(); i++)
             for (Size j=0; j<m.columns(); j++)
                 sum += m[i][j]*m[i][j];
-        return QL_SQRT(sum);
+        return std::sqrt(sum);
     }
 
     void setup() {

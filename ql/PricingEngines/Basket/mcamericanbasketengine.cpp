@@ -89,7 +89,7 @@ namespace QuantLib {
             BasisPower(Size index, Real power, Real coeff) :
                         index_(index), power_(power), coeff_(coeff) {}
             Real calculate(const std::vector<Real>& x) const {
-                return coeff_*QL_POW(x[index_], power_);
+                return coeff_*std::pow(x[index_], power_);
             }
         };
 
@@ -505,7 +505,8 @@ namespace QuantLib {
                     Time to = grid[timeStep+2];
 
                     normalizedContinuationValue[i] =
-                        normalizedContinuationValue[i]*QL_EXP(-r * (to-from));
+                        normalizedContinuationValue[i] *
+                        std::exp(-r * (to-from));
                 }
             }
 
@@ -638,12 +639,12 @@ namespace QuantLib {
         Real log_drift, log_random;
         log_drift = path.drift()[0];
         log_random = path.diffusion()[0];
-        asset[0] = s0*QL_EXP(log_drift + log_random);
+        asset[0] = s0*std::exp(log_drift + log_random);
 
         for (Size i = 1; i < n; i++) {
             log_drift = path.drift()[i];
             log_random = path.diffusion()[i];
-            asset[i] = asset[i-1]*QL_EXP(log_drift + log_random);
+            asset[i] = asset[i-1]*std::exp(log_drift + log_random);
         }
 
         return asset;
@@ -661,12 +662,12 @@ namespace QuantLib {
         Real log_drift, log_random;
         log_drift = path.drift()[0];
         log_random = path.diffusion()[0];
-        asset[0] = s0*QL_EXP(log_drift - log_random);
+        asset[0] = s0*std::exp(log_drift - log_random);
 
         for (Size i = 1; i < n; i++) {
             log_drift = path.drift()[i];
             log_random = path.diffusion()[i];
-            asset[i] = asset[i-1]*QL_EXP(log_drift - log_random);
+            asset[i] = asset[i-1]*std::exp(log_drift - log_random);
         }
 
         return asset;

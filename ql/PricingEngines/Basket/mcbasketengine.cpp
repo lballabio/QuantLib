@@ -62,7 +62,7 @@ namespace QuantLib {
         Array finalPrice(numAssets, 0.0);
         for (j = 0; j < numAssets; j++) {
             finalPrice[j] = underlying_[j] *
-                            QL_EXP(log_drift[j]+log_random[j]);
+                            std::exp(log_drift[j]+log_random[j]);
         }
 
         // this should be a basket payoff

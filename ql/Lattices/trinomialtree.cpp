@@ -36,15 +36,15 @@ namespace QuantLib {
 
             //Variance must be independent of x
             Real v2 = process->variance(t, 0.0, dt);
-            Volatility v = QL_SQRT(v2);
-            dx_.push_back(v*QL_SQRT(3.0));
+            Volatility v = std::sqrt(v2);
+            dx_.push_back(v*std::sqrt(3.0));
 
             boost::shared_ptr<TrinomialBranching> branching(
                                                     new TrinomialBranching());
             for (Integer j=jMin; j<=jMax; j++) {
                 Real x = x0_ + j*dx_[i];
                 Real m = process->expectation(t, x, dt);
-                Integer temp = Integer(QL_FLOOR((m-x0_)/dx_[i+1] + 0.5));
+                Integer temp = Integer(std::floor((m-x0_)/dx_[i+1] + 0.5));
 
                 if (isPositive) {
                     while (x0_+(temp-1)*dx_[i+1]<=0) {
@@ -55,7 +55,7 @@ namespace QuantLib {
                 branching->k_.push_back(temp);
                 Real e = m - (x0_ + temp*dx_[i+1]);
                 Real e2 = e*e;
-                Real e3 = e*QL_SQRT(3.0);
+                Real e3 = e*std::sqrt(3.0);
 
                 branching->probs_[0].push_back((1.0 + e2/v2 - e3/v)/6.0);
                 branching->probs_[1].push_back((2.0 - e2/v2)/3.0);

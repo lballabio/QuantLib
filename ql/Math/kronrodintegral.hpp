@@ -127,7 +127,7 @@ namespace QuantLib {
             // error is <= k15 - g7
             // if error is larger than tolerance then split the interval
             // in two and integrate recursively
-            if (QL_FABS(k15 - g7) < tolerance) {
+            if (std::fabs(k15 - g7) < tolerance) {
                 return k15;
             } else {
                 QL_REQUIRE(functionEvaluations_+30 <=

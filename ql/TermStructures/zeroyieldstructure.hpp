@@ -73,7 +73,7 @@ namespace QuantLib {
 
     inline DiscountFactor ZeroYieldStructure::discountImpl(Time t) const {
         Rate r = zeroYieldImpl(t);
-        return DiscountFactor(QL_EXP(-r*t));
+        return DiscountFactor(std::exp(-r*t));
     }
 
 }

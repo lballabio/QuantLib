@@ -59,7 +59,7 @@ namespace QuantLib {
         arguments->fixedRate = swap_->fixedRate() + correction;
         arguments->fairRate = swap_->fairRate() + correction;
         // this is passed explicitly for precision
-        arguments->fixedBPS = QL_FABS(swap_->fixedLegBPS());
+        arguments->fixedBPS = std::fabs(swap_->fixedLegBPS());
 
         arguments->exercise = exercise_;
         arguments->stoppingTimes.clear();

@@ -47,7 +47,7 @@ namespace QuantLib {
                 }
                 Size i;
                 for (i=0; i<n; i++) {
-                    price1 *= QL_EXP(path[i]);
+                    price1 *= std::exp(path[i]);
                     averageStrike1 += price1;
                 }
                 averageStrike1 = averageStrike1/fixings;
@@ -90,11 +90,11 @@ namespace QuantLib {
                     fixings = n+1;
                 }
                 Real averageStrike1 = underlying_*
-                    QL_EXP(geoLogVariation/fixings);
+                    std::exp(geoLogVariation/fixings);
 
                 return discount_
                     * PlainVanillaPayoff(type_, averageStrike1)
-                    (underlying_ * QL_EXP(logVariation));
+                    (underlying_ * std::exp(logVariation));
             }
 
           private:

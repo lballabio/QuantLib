@@ -60,15 +60,15 @@ namespace QuantLib {
             ++ap;
             del *= x/ap;
             sum += del;
-            if (QL_FABS(del) < QL_FABS(sum)*accuracy) {
-                return sum*QL_EXP(-x+a*QL_LOG(x)-gln);
+            if (std::fabs(del) < std::fabs(sum)*accuracy) {
+                return sum*std::exp(-x+a*std::log(x)-gln);
             }
         }
         QL_FAIL("accuracy not reached");
     }
 
     Real incompleteGammaFunctionContinuedFractionRepr(Real a, Real x,
-                                                      Real accuracy, 
+                                                      Real accuracy,
                                                       Integer maxIteration) {
 
         Integer i;
@@ -82,14 +82,14 @@ namespace QuantLib {
             an = -i*(i-a);
             b += 2.0;
             d=an*d+b;
-            if (QL_FABS(d) < QL_EPSILON) d=QL_EPSILON;
+            if (std::fabs(d) < QL_EPSILON) d=QL_EPSILON;
             c=b+an/c;
-            if (QL_FABS(c) < QL_EPSILON) c=QL_EPSILON;
+            if (std::fabs(c) < QL_EPSILON) c=QL_EPSILON;
             d=1.0/d;
             del=d*c;
             h *= del;
-            if (QL_FABS(del-1.0) < accuracy) {
-                return QL_EXP(-x+a*QL_LOG(x)-gln)*h;
+            if (std::fabs(del-1.0) < accuracy) {
+                return std::exp(-x+a*std::log(x)-gln)*h;
             }
         }
 

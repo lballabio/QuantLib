@@ -145,7 +145,7 @@ void DayCounterTest::testActualActual() {
             rd2 = testCases[i].refEnd;
         Time calculated = dayCounter.yearFraction(d1,d2,rd1,rd2);
 
-        if (QL_FABS(calculated-testCases[i].result) > 1.0e-10) {
+        if (std::fabs(calculated-testCases[i].result) > 1.0e-10) {
             std::string period, refPeriod;
             period = "period: "
                 + DateFormatter::toString(d1) + " to "
@@ -181,7 +181,7 @@ void DayCounterTest::testSimple() {
         for (Size i=0; i<n; i++) {
             Date end = start + p[i];
             Time calculated = dayCounter.yearFraction(start,end);
-            if (QL_FABS(calculated-expected[i]) > 1.0e-12) {
+            if (std::fabs(calculated-expected[i]) > 1.0e-12) {
                 BOOST_FAIL("from " + DateFormatter::toString(start) +
                            " to " + DateFormatter::toString(end) + ":\n"
                            "    calculated: "
@@ -209,7 +209,7 @@ void DayCounterTest::testOne() {
         for (Size i=0; i<n; i++) {
             Date end = start + p[i];
             Time calculated = dayCounter.yearFraction(start,end);
-            if (QL_FABS(calculated-expected[i]) > 1.0e-12) {
+            if (std::fabs(calculated-expected[i]) > 1.0e-12) {
                 BOOST_FAIL("from " + DateFormatter::toString(start) +
                            " to " + DateFormatter::toString(end) + ":\n"
                            "    calculated: "

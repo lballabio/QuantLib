@@ -85,7 +85,7 @@ namespace QuantLib {
             fxMax_ = f(root_);
 
             // monotonically crescent bias, as in optionValue(volatility)
-            if (QL_FABS(fxMax_) <= accuracy)
+            if (std::fabs(fxMax_) <= accuracy)
                 return root_;
             else if (fxMax_ > 0.0) {
                 xMin_ = enforceBounds_(root_ - step);
@@ -106,12 +106,12 @@ namespace QuantLib {
                     root_ = (xMax_+xMin_)/2.0;
                     // check whether we really want to pass epsilon
                     return this->impl().solveImpl(
-                        f, QL_MAX(QL_FABS(accuracy), QL_EPSILON));
+                        f, QL_MAX(std::fabs(accuracy), QL_EPSILON));
                 }
-                if (QL_FABS(fxMin_) < QL_FABS(fxMax_)) {
+                if (std::fabs(fxMin_) < std::fabs(fxMax_)) {
                     xMin_ = enforceBounds_(xMin_+growthFactor*(xMin_ - xMax_));
                     fxMin_= f(xMin_);
-                } else if (QL_FABS(fxMin_) > QL_FABS(fxMax_)) {
+                } else if (std::fabs(fxMin_) > std::fabs(fxMax_)) {
                     xMax_ = enforceBounds_(xMax_+growthFactor*(xMax_ - xMin_));
                     fxMax_= f(xMax_);
                 } else if (flipflop == -1) {
@@ -170,11 +170,11 @@ namespace QuantLib {
                        DecimalFormatter::toString(upperBound_) + ")");
 
             fxMin_ = f(xMin_);
-            if (QL_FABS(fxMin_) < accuracy)
+            if (std::fabs(fxMin_) < accuracy)
                 return xMin_;
 
             fxMax_ = f(xMax_);
-            if (QL_FABS(fxMax_) < accuracy)
+            if (std::fabs(fxMax_) < accuracy)
                 return xMax_;
 
             evaluationNumber_ = 2;
@@ -198,7 +198,7 @@ namespace QuantLib {
             root_ = guess;
 
             return this->impl().solveImpl(
-                f, QL_MAX(QL_FABS(accuracy), QL_EPSILON));
+                f, QL_MAX(std::fabs(accuracy), QL_EPSILON));
         }
 
         /*! This method sets the maximum number of function

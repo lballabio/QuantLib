@@ -567,28 +567,28 @@ namespace QuantLib {
     inline const Disposable<Array> Abs(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
-                       std::ptr_fun<Real,Real>(QL_FABS));
+                       std::ptr_fun<Real,Real>(std::fabs));
         return result;
     }
 
     inline const Disposable<Array> Sqrt(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
-                       std::ptr_fun<Real,Real>(QL_SQRT));
+                       std::ptr_fun<Real,Real>(std::sqrt));
         return result;
     }
 
     inline const Disposable<Array> Log(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
-                       std::ptr_fun<Real,Real>(QL_LOG));
+                       std::ptr_fun<Real,Real>(std::log));
         return result;
     }
 
     inline const Disposable<Array> Exp(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
-                       std::ptr_fun<Real,Real>(QL_EXP));
+                       std::ptr_fun<Real,Real>(std::exp));
         return result;
     }
 

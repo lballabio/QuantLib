@@ -20,16 +20,16 @@
 namespace QuantLib {
 
     BlackScholesLattice::BlackScholesLattice(
-                                  const boost::shared_ptr<Tree>& tree, 
+                                  const boost::shared_ptr<Tree>& tree,
                                   Rate riskFreeRate,
                                   Time end, Size steps)
-    : Lattice(TimeGrid(end, steps), 2), 
-      tree_(tree), discount_(QL_EXP(-riskFreeRate*(end/steps))) {
+    : Lattice(TimeGrid(end, steps), 2),
+      tree_(tree), discount_(std::exp(-riskFreeRate*(end/steps))) {
         pd_ = tree->probability(0,0,0);
         pu_ = tree->probability(0,0,1);
     }
 
-    void BlackScholesLattice::stepback(Size i, const Array& values, 
+    void BlackScholesLattice::stepback(Size i, const Array& values,
                                        Array& newValues) const {
         for (Size j=0; j<size(i); j++)
             newValues[j] = (pd_*values[j] + pu_*values[j+1])*discount_;

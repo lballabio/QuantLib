@@ -85,7 +85,7 @@ namespace QuantLib {
                                                 dates_[i]);
             zeroYields_[i] = (forwards_[i]*(times_[i]-times_[i-1])+
                               zeroYields_[i-1]*times_[i-1])/times_[i];
-            discounts_[i] = QL_EXP(-zeroYields_[i]*times_[i]);
+            discounts_[i] = std::exp(-zeroYields_[i]*times_[i]);
         }
         // we don't want to launch the boostrapping process
         freeze();
@@ -180,7 +180,7 @@ namespace QuantLib {
                 if (n == 0)
                     return 1.0;
                 return discounts_[n-1] *
-                    QL_EXP(-forwards_[n] * (t-times_[n-1]));
+                    std::exp(-forwards_[n] * (t-times_[n-1]));
             }
         }
         QL_DUMMY_RETURN(DiscountFactor());
@@ -235,9 +235,9 @@ namespace QuantLib {
                                               DiscountFactor discount) const {
         curve_->discounts_[segment_] = discount;
         curve_->zeroYields_[segment_] =
-            -QL_LOG(discount) / curve_->times_[segment_];
+            -std::log(discount) / curve_->times_[segment_];
         curve_->forwards_[segment_] =
-            QL_LOG(curve_->discounts_[segment_-1]/discount) /
+            std::log(curve_->discounts_[segment_-1]/discount) /
             (curve_->times_[segment_]-curve_->times_[segment_-1]);
         if (segment_ == 1) {
             curve_->forwards_[0] = curve_->zeroYields_[0] =

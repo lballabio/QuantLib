@@ -258,7 +258,7 @@ namespace QuantLib {
         //  The global step is constructed from the first variate.
         bridgeIndex_[0] = dimension_-1;
         //  The variance of the global step
-        stdDev_[0] = QL_SQRT(v[dimension_-1]);
+        stdDev_[0] = std::sqrt(v[dimension_-1]);
         //  The global step to the last point in time is special.
         leftWeight_[0] = rightWeight_[0] = 0.;
         for (j=0, i=1; i<dimension_; ++i) {
@@ -277,11 +277,12 @@ namespace QuantLib {
             if (j) {
                 leftWeight_[i]  = (v[k]-v[l])  /(v[k]-v[j-1]);
                 rightWeight_[i] = (v[l]-v[j-1])/(v[k]-v[j-1]);
-                stdDev_[i] = QL_SQRT(((v[l]-v[j-1])*(v[k]-v[l]))/(v[k]-v[j-1]));
+                stdDev_[i] =
+                    std::sqrt(((v[l]-v[j-1])*(v[k]-v[l]))/(v[k]-v[j-1]));
             } else {
                 leftWeight_[i]  = (v[k]-v[l])  /v[k];
                 rightWeight_[i] =  v[l]        /v[k];
-                stdDev_[i] = QL_SQRT(v[l]*(v[k]-v[l])/v[k]);
+                stdDev_[i] = std::sqrt(v[l]*(v[k]-v[l])/v[k]);
             }
             j=k+1;
             if (j>=dimension_) j=0;	//	Wrap around.

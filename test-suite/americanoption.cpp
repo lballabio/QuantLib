@@ -164,7 +164,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
                              engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result,
@@ -224,7 +224,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
                              engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result,
@@ -347,7 +347,7 @@ void AmericanOptionTest::testJuValues() {
                              engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result,

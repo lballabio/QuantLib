@@ -22,8 +22,8 @@
 namespace QuantLib {
 
     FdStepConditionOption::FdStepConditionOption(
-                         Option::Type type, Real underlying, Real strike, 
-                         Spread dividendYield, Rate riskFreeRate, 
+                         Option::Type type, Real underlying, Real strike,
+                         Spread dividendYield, Rate riskFreeRate,
                          Time residualTime, Volatility volatility,
                          Size timeSteps, Size gridPoints)
     : FdBsmOption(type, underlying, strike, dividendYield,
@@ -45,8 +45,8 @@ namespace QuantLib {
 
         // Control-variate variance reduction:
         // 1) calculate value/greeks of the European option analytically
-        DiscountFactor discount = QL_EXP(-riskFreeRate_*residualTime_);
-        DiscountFactor qDiscount = QL_EXP(-dividendYield_*residualTime_);
+        DiscountFactor discount = std::exp(-riskFreeRate_*residualTime_);
+        DiscountFactor qDiscount = std::exp(-dividendYield_*residualTime_);
         Real forward = underlying_*qDiscount/discount;
         Real variance = volatility_*volatility_*residualTime_;
         boost::shared_ptr<StrikedTypePayoff> payoff(

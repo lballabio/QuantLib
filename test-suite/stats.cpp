@@ -81,7 +81,7 @@ namespace {
         expected = 4.3;
         tolerance = 1.0e-9;
         calculated = s.mean();
-        if (QL_FABS(calculated-expected) > tolerance)
+        if (std::fabs(calculated-expected) > tolerance)
             BOOST_FAIL(name + ": wrong mean value\n"
                        "    calculated: "
                        + DecimalFormatter::toString(calculated) + "\n"
@@ -90,7 +90,7 @@ namespace {
 
         expected = 2.23333333333;
         calculated = s.variance();
-        if (QL_FABS(calculated-expected) > tolerance)
+        if (std::fabs(calculated-expected) > tolerance)
             BOOST_FAIL(name + ": wrong variance\n"
                        "    calculated: "
                        + DecimalFormatter::toString(calculated) + "\n"
@@ -99,7 +99,7 @@ namespace {
 
         expected = 1.4944341181;
         calculated = s.standardDeviation();
-        if (QL_FABS(calculated-expected) > tolerance)
+        if (std::fabs(calculated-expected) > tolerance)
             BOOST_FAIL(name + ": wrong standard deviation\n"
                        "    calculated: "
                        + DecimalFormatter::toString(calculated) + "\n"
@@ -108,7 +108,7 @@ namespace {
 
         expected = 0.359543071407;
         calculated = s.skewness();
-        if (QL_FABS(calculated-expected) > tolerance)
+        if (std::fabs(calculated-expected) > tolerance)
             BOOST_FAIL(name + ": wrong skewness\n"
                        "    calculated: "
                        + DecimalFormatter::toString(calculated) + "\n"
@@ -117,7 +117,7 @@ namespace {
 
         expected = -0.151799637209;
         calculated = s.kurtosis();
-        if (QL_FABS(calculated-expected) > tolerance)
+        if (std::fabs(calculated-expected) > tolerance)
             BOOST_FAIL(name + ": wrong kurtosis\n"
                        "    calculated: "
                        + DecimalFormatter::toString(calculated) + "\n"
@@ -201,7 +201,7 @@ namespace {
         tolerance = 1.0e-9;
         calculated = ss.mean();
         for (i=0; i<dimension; i++) {
-            if (QL_FABS(calculated[i]-expected) > tolerance)
+            if (std::fabs(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong mean value\n"
@@ -214,7 +214,7 @@ namespace {
         expected = 2.23333333333;
         calculated = ss.variance();
         for (i=0; i<dimension; i++) {
-            if (QL_FABS(calculated[i]-expected) > tolerance)
+            if (std::fabs(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong variance\n"
@@ -227,7 +227,7 @@ namespace {
         expected = 1.4944341181;
         calculated = ss.standardDeviation();
         for (i=0; i<dimension; i++) {
-            if (QL_FABS(calculated[i]-expected) > tolerance)
+            if (std::fabs(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong standard deviation\n"
@@ -240,7 +240,7 @@ namespace {
         expected = 0.359543071407;
         calculated = ss.skewness();
         for (i=0; i<dimension; i++) {
-            if (QL_FABS(calculated[i]-expected) > tolerance)
+            if (std::fabs(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong skewness\n"
@@ -253,7 +253,7 @@ namespace {
         expected = -0.151799637209;
         calculated = ss.kurtosis();
         for (i=0; i<dimension; i++) {
-            if (QL_FABS(calculated[i]-expected) > tolerance)
+            if (std::fabs(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong kurtosis\n"

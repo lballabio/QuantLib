@@ -134,7 +134,7 @@ void LowDiscrepancyTest::testSobol() {
     std::vector<Real> mean;
     Size k = 0;
     for (Integer j=1; j<5; j++) { // five cycle
-        points = Size(QL_POW(2.0, j))-1; // base 2
+        points = Size(std::pow(2.0, j))-1; // base 2
         for (; k<points; k++) {
             point = rsg.nextSequence().value;
             stat.add(point);
@@ -170,7 +170,7 @@ void LowDiscrepancyTest::testSobol() {
 
     dimensionality = 1;
     rsg = SobolRsg(dimensionality);
-    points = Size(QL_POW(2.0, 5))-1; // five cycles
+    points = Size(std::pow(2.0, 5))-1; // five cycles
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
@@ -222,7 +222,7 @@ void LowDiscrepancyTest::testFaure() {
     };
     dimensionality = 1;
     rsg = FaureRsg(dimensionality);
-    points = Size(QL_POW(2.0, 5))-1; // five cycles
+    points = Size(std::pow(2.0, 5))-1; // five cycles
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
@@ -253,7 +253,7 @@ void LowDiscrepancyTest::testFaure() {
     };
     dimensionality = 2;
     rsg = FaureRsg(dimensionality);
-    points = Size(QL_POW(2.0, 5))-1; // five cycles
+    points = Size(std::pow(2.0, 5))-1; // five cycles
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         //std::cout << i+1 << ", " << ArrayFormatter::toString(point)
@@ -298,7 +298,7 @@ void LowDiscrepancyTest::testFaure() {
 
     dimensionality = 3;
     rsg = FaureRsg(dimensionality);
-    points = Size(QL_POW(3.0, 2))-1; // three cycles
+    points = Size(std::pow(3.0, 2))-1; // three cycles
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=FaureDimensionOneOfThree[i]) {
@@ -362,7 +362,7 @@ void LowDiscrepancyTest::testHalton() {
 
     dimensionality = 1;
     rsg = HaltonRsg(dimensionality, 0, false, false);
-    points = Size(QL_POW(2.0, 5))-1;  // five cycles
+    points = Size(std::pow(2.0, 5))-1;  // five cycles
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
@@ -390,7 +390,7 @@ void LowDiscrepancyTest::testHalton() {
 
     dimensionality = 2;
     rsg = HaltonRsg(dimensionality, 0, false, false);
-    points = Size(QL_POW(3.0, 3))-1;  // three cycles of the higher dimension
+    points = Size(std::pow(3.0, 3))-1;  // three cycles of the higher dimension
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
@@ -404,7 +404,7 @@ void LowDiscrepancyTest::testHalton() {
                        DecimalFormatter::toString(
                                            vanderCorputSequenceModuloTwo[i]));
         }
-        if (QL_FABS(point[1]-vanderCorputSequenceModuloThree[i])>1.0e-15) {
+        if (std::fabs(point[1]-vanderCorputSequenceModuloThree[i])>1.0e-15) {
             BOOST_FAIL("Second component of " +
                        SizeFormatter::toOrdinal(i+1) +
                        " draw (" +
@@ -425,7 +425,7 @@ void LowDiscrepancyTest::testHalton() {
     k = 0;
     Integer j;
     for (j=1; j<5; j++) { // five cycle
-        points = Size(QL_POW(2.0, j))-1; // base 2
+        points = Size(std::pow(2.0, j))-1; // base 2
         for (; k<points; k++) {
             point = rsg.nextSequence().value;
             stat.add(point);
@@ -446,13 +446,13 @@ void LowDiscrepancyTest::testHalton() {
     stat.reset(dimensionality);
     k = 0;
     for (j=1; j<3; j++) { // three cycle
-        points = Size(QL_POW(3.0, j))-1; // base 3
+        points = Size(std::pow(3.0, j))-1; // base 3
         for (; k<points; k++) {
             point = rsg.nextSequence().value;
             stat.add(point);
         }
         mean = stat.mean();
-        if (QL_FABS(mean[1]-0.5)>1e-16) {
+        if (std::fabs(mean[1]-0.5)>1e-16) {
             BOOST_FAIL("Second dimension mean (" +
                        DecimalFormatter::toString(mean[1]) +
                        ") at the end of the " +
@@ -774,7 +774,7 @@ namespace {
                       << arrayName << "[] = {" ;
             #endif
             for (j=jMin; j<jMin+sampleLoops; j++) {
-                Size points = Size(QL_POW(2.0, Integer(j)))-1;
+                Size points = Size(std::pow(2.0, Integer(j)))-1;
                 for (; k<points; k++) {
                     point = rsg.nextSequence().value;
                     stat.add(point);
@@ -787,7 +787,7 @@ namespace {
                     outStream << ", ";
                 outStream << DecimalFormatter::toExponential(discr, 2);
                 #else
-                if (QL_FABS(discr-discrepancy[i][j-jMin]) > tolerance*discr) {
+                if (std::fabs(discr-discrepancy[i][j-jMin])>tolerance*discr) {
                     BOOST_FAIL(generatorFactory.name() +
                                "discrepancy dimension " +
                                SizeFormatter::toString(dimensionality[i]) +

@@ -158,7 +158,7 @@ void PiecewiseFlatForwardTest::testConsistency() {
         Euribor index(depositData[i].n,depositData[i].units,euriborHandle);
         Rate expectedRate  = depositData[i].rate/100,
              estimatedRate = index.fixing(today);
-        if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
+        if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
                 IntegerFormatter::toString(depositData[i].n) + " "
                 + (depositData[i].units == Weeks ? std::string("week(s)") :
@@ -188,7 +188,7 @@ void PiecewiseFlatForwardTest::testConsistency() {
                         euriborHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
-        if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
+        if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
                 IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"
                 "    estimated rate: "

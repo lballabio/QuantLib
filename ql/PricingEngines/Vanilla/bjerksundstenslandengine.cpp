@@ -30,37 +30,37 @@ namespace QuantLib {
 
             Real lambda = (-rT + gamma * bT + 0.5 * gamma * (gamma - 1.0)
                 * variance);
-            Real d = -(QL_LOG(S / H) + (bT + (gamma - 0.5) * variance) )
-                / QL_SQRT(variance);
+            Real d = -(std::log(S / H) + (bT + (gamma - 0.5) * variance) )
+                / std::sqrt(variance);
             Real kappa = 2.0 * bT / variance + (2.0 * gamma - 1.0);
-            return QL_EXP(lambda) * QL_POW(S, gamma) * (cumNormalDist(d)
-                - QL_POW((I / S), kappa) *
-                cumNormalDist(d - 2.0 * QL_LOG(I / S) / QL_SQRT(variance)));
+            return std::exp(lambda) * std::pow(S, gamma) * (cumNormalDist(d)
+                - std::pow((I / S), kappa) *
+                cumNormalDist(d - 2.0 * std::log(I/S) / std::sqrt(variance)));
         }
 
 
         Real americanCallApproximation(Real S, Real X,
                                        Real rfD, Real dD, Real variance) {
 
-            Real bT = QL_LOG(dD/rfD);
-            Real rT = QL_LOG(1.0/rfD);
+            Real bT = std::log(dD/rfD);
+            Real rT = std::log(1.0/rfD);
 
             Real Beta = (0.5 - bT/variance) +
-                QL_SQRT(QL_POW((bT/variance - 0.5), Real(2.0))
-                        + 2.0 * rT/variance);
+                std::sqrt(std::pow((bT/variance - 0.5), Real(2.0))
+                          + 2.0 * rT/variance);
             Real BInfinity = Beta / (Beta - 1.0) * X;
-            // Real B0 = QL_MAX(X, QL_LOG(rfD) / QL_LOG(dD) * X);
+            // Real B0 = QL_MAX(X, std::log(rfD) / std::log(dD) * X);
             Real B0 = QL_MAX(X, rT / (rT - bT) * X);
-            Real ht = -(bT + 2.0 * QL_SQRT(variance)) * B0 / (BInfinity - B0);
+            Real ht = -(bT + 2.0*std::sqrt(variance)) * B0 / (BInfinity - B0);
 
             // investigate what happen to I for dD->0.0
-            Real I = B0 + (BInfinity - B0) * (1 - QL_EXP(ht));
+            Real I = B0 + (BInfinity - B0) * (1 - std::exp(ht));
             if (S >= I)
                 return S - X;
             else {
                 // investigate what happen to alpha for dD->0.0
-                Real alpha = (I - X) * QL_POW(I, (-Beta));
-                return alpha * QL_POW(S, Beta)
+                Real alpha = (I - X) * std::pow(I, (-Beta));
+                return alpha * std::pow(S, Beta)
                     - alpha * phi(S, Beta, I, I, rT, bT, variance)
                     +         phi(S,  1.0, I, I, rT, bT, variance)
                     -         phi(S,  1.0, X, I, rT, bT, variance)

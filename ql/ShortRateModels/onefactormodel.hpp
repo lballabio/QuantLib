@@ -89,7 +89,7 @@ namespace QuantLib {
         DiscountFactor discount(Size i, Size index) const {
             Real x = tree_->underlying(i, index);
             Rate r = dynamics_->shortRate(timeGrid()[i], x);
-            return QL_EXP(-r*timeGrid().dt(i));
+            return std::exp(-r*timeGrid().dt(i));
         }
       protected:
         Size descendant(Size i, Size index, Size branch) const {
@@ -106,7 +106,7 @@ namespace QuantLib {
 
     //! Single-factor affine base class
     /*! Single-factor models with an analytical formula for discount bonds
-        should inherit from this class. They must then implement the 
+        should inherit from this class. They must then implement the
         functions \f$ A(t,T) \f$ and \f$ B(t,T) \f$ such that
         \f[
             P(t, T, r_t) = A(t,T)e^{ -B(t,T) r_t}.
@@ -117,11 +117,11 @@ namespace QuantLib {
     class OneFactorAffineModel : public OneFactorModel,
                                  public AffineModel {
       public:
-        OneFactorAffineModel(Size nArguments) 
+        OneFactorAffineModel(Size nArguments)
         : OneFactorModel(nArguments) {}
 
         Real discountBond(Time now, Time maturity, Rate rate) const {
-            return A(now, maturity)*QL_EXP(-B(now, maturity)*rate);
+            return A(now, maturity)*std::exp(-B(now, maturity)*rate);
         }
         DiscountFactor discount(Time t) const {
             Real x0 = dynamics()->process()->x0();

@@ -31,7 +31,7 @@ namespace QuantLib {
             // Asymptotic expansion for very negative z following (26.2.12)
             // on page 408 in M. Abramowitz and A. Stegun,
             // Pocketbook of Mathematical Functions, ISBN 3-87144818-4.
-            Real sum=1, zsqr=z*z, i=1, g=1, x, y, 
+            Real sum=1, zsqr=z*z, i=1, g=1, x, y,
                  a=QL_MAX_REAL, lasta;
             do {
                 lasta=a;
@@ -41,8 +41,8 @@ namespace QuantLib {
                 sum -= a;
                 g *= y;
                 ++i;
-                a = QL_FABS(a);
-            } while (lasta>a && a>=QL_FABS(sum*QL_EPSILON));
+                a = std::fabs(a);
+            } while (lasta>a && a>=std::fabs(sum*QL_EPSILON));
             result = -gaussian_(z)/z*sum;
         }
         return result;
@@ -83,16 +83,16 @@ namespace QuantLib {
     const Real InverseCumulativeNormal::x_high_= 1.0 - x_low_;
 
     Real InverseCumulativeNormal::operator()(Real x) const {
-        QL_REQUIRE(x > 0.0 && x < 1.0, 
+        QL_REQUIRE(x > 0.0 && x < 1.0,
                    "InverseCumulativeNormal(" +
-                   DecimalFormatter::toString(x) + 
+                   DecimalFormatter::toString(x) +
                    ") undefined: must be 0 < x < 1");
 
         Real z, r;
 
         if (x < x_low_) {
             // Rational approximation for the lower region 0<x<u_low
-            z = QL_SQRT(-2.0*QL_LOG(x));
+            z = std::sqrt(-2.0*std::log(x));
             z = (((((c1_*z+c2_)*z+c3_)*z+c4_)*z+c5_)*z+c6_) /
                 ((((d1_*z+d2_)*z+d3_)*z+d4_)*z+1.0);
         } else if (x <= x_high_) {
@@ -103,7 +103,7 @@ namespace QuantLib {
                 (((((b1_*r+b2_)*r+b3_)*r+b4_)*r+b5_)*r+1.0);
         } else {
             // Rational approximation for the upper region u_high<x<1
-            z = QL_SQRT(-2.0*QL_LOG(1.0-x));
+            z = std::sqrt(-2.0*std::log(1.0-x));
             z = -(((((c1_*z+c2_)*z+c3_)*z+c4_)*z+c5_)*z+c6_) /
                 ((((d1_*z+d2_)*z+d3_)*z+d4_)*z+1.0);
         }
@@ -145,15 +145,15 @@ namespace QuantLib {
     const Real MoroInverseCumulativeNormal::c8_ = 0.0000003960315187;
 
     Real MoroInverseCumulativeNormal::operator()(Real x) const {
-        QL_REQUIRE(x > 0.0 && x < 1.0, 
+        QL_REQUIRE(x > 0.0 && x < 1.0,
                    "MoroInverseCumulativeNormal(" +
-                   DecimalFormatter::toString(x) + 
+                   DecimalFormatter::toString(x) +
                    ") undefined: must be 0<x<1");
 
         Real result;
         Real temp=x-0.5;
 
-        if (QL_FABS(temp) < 0.42) {
+        if (std::fabs(temp) < 0.42) {
             // Beasley and Springer, 1977
             result=temp*temp;
             result=temp*
@@ -165,7 +165,7 @@ namespace QuantLib {
                 result = x;
             else
                 result=1.0-x;
-            result = QL_LOG(-QL_LOG(result));
+            result = std::log(-std::log(result));
             result = c0_+result*(c1_+result*(c2_+result*(c3_+result*
                                    (c4_+result*(c5_+result*(c6_+result*
                                                        (c7_+result*c8_)))))));

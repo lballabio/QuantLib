@@ -46,7 +46,7 @@ namespace QuantLib {
             }
         }
         */
-        return QL_SQRT(adiscr_/(N*N)-bdiscr_/N*cdiscr_+ddiscr_);
+        return std::sqrt(adiscr_/(N*N)-bdiscr_/N*cdiscr_+ddiscr_);
     }
 
 }

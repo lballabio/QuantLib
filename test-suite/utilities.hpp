@@ -116,7 +116,7 @@ namespace QuantLib {
         // numeric integral of f^2
         Real I = h * (std::accumulate(f2.begin(),f2.end(),0.0)
                       - 0.5*f2.front() - 0.5*f2.back());
-        return QL_SQRT(I);
+        return std::sqrt(I);
     }
 
 }

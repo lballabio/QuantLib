@@ -60,12 +60,12 @@ namespace QuantLib {
             c = gradientNormValue() / gold2;
             // conjugate gradient search direction
             sddiff = (-g + c * d) - SearchDirection;
-            normdiff = QL_SQRT(DotProduct(sddiff, sddiff));
+            normdiff = std::sqrt(DotProduct(sddiff, sddiff));
             SearchDirection = -g + c * d;
             // End criteria
             end = endCriteria()(iterationNumber_,
-                                fold, QL_SQRT(gold2), functionValue(), 
-                                QL_SQRT(gradientNormValue()), normdiff);
+                                fold, std::sqrt(gold2), functionValue(),
+                                std::sqrt(gradientNormValue()), normdiff);
 
             // Increase interation number
             iterationNumber()++;

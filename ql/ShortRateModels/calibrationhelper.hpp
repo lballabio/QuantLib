@@ -52,7 +52,7 @@ namespace QuantLib {
 
         //! returns the error resulting from the model valuation
         virtual Real calibrationError() {
-            return QL_FABS(marketValue() - modelValue())/marketValue();
+            return std::fabs(marketValue() - modelValue())/marketValue();
         }
 
         virtual void addTimesTo(std::list<Time>& times) const = 0;

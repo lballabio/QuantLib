@@ -100,7 +100,7 @@ namespace QuantLib {
     }
 
     inline DiscountFactor FlatForward::discountImpl(Time t) const {
-        return DiscountFactor(QL_EXP(-forward_->value()*t));
+        return DiscountFactor(std::exp(-forward_->value()*t));
     }
 
     inline Rate FlatForward::forwardImpl(Time t) const {

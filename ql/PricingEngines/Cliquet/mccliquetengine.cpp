@@ -82,7 +82,7 @@ namespace QuantLib {
             Size k = 0;
             for (Size i=0; i<fixingTimes.size(); i++) {
                 while (pathTimes[k]<fixingTimes[i]) {
-                    underlying *= QL_EXP(path[k]);
+                    underlying *= std::exp(path[k]);
                     k++;
                 }
                 // incorporate payoff
@@ -109,7 +109,7 @@ namespace QuantLib {
             Size k = 0;
             for (Size i=0; i<fixingTimes.size(); i++) {
                 while (pathTimes[k]<fixingTimes[i]) {
-                    underlying *= QL_EXP(path[k]);
+                    underlying *= std::exp(path[k]);
                     k++;
                 }
                 // incorporate payoff

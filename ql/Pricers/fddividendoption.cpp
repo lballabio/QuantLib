@@ -52,10 +52,10 @@ namespace QuantLib {
     void FdDividendOption::initializeControlVariate() const{
         Real riskless = 0.0;
         for (Size i=0; i<dividends_.size(); i++)
-            riskless += dividends_[i]*QL_EXP(-riskFreeRate_*dates_[i]);
+            riskless += dividends_[i]*std::exp(-riskFreeRate_*dates_[i]);
         Real spot = underlying_ + addElements(dividends_) - riskless;
-        DiscountFactor discount = QL_EXP(-riskFreeRate_*residualTime_);
-        DiscountFactor qDiscount = QL_EXP(-dividendYield_*residualTime_);
+        DiscountFactor discount = std::exp(-riskFreeRate_*residualTime_);
+        DiscountFactor qDiscount = std::exp(-dividendYield_*residualTime_);
         Real forward = spot*qDiscount/discount;
         Real variance = volatility_*volatility_*residualTime_;
         boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -107,7 +107,7 @@ namespace QuantLib {
             Real p = prices[j];
             Real g = oldGrid[j];
             if (g > 0){
-                logOldGrid.push_back(QL_LOG(g));
+                logOldGrid.push_back(std::log(g));
                 tmpPrices.push_back(p);
             }
         }
@@ -115,7 +115,7 @@ namespace QuantLib {
         NaturalCubicSpline priceSpline(logOldGrid.begin(), logOldGrid.end(),
                                        tmpPrices.begin());
         for (j = 0; j < gridSize; j++)
-            prices[j] = priceSpline(QL_LOG(newGrid[j]), true);
+            prices[j] = priceSpline(std::log(newGrid[j]), true);
 
     }
 

@@ -22,8 +22,8 @@
 namespace QuantLib {
 
     FdMultiPeriodOption::FdMultiPeriodOption(
-                       Option::Type type, Real underlying, Real strike, 
-                       Spread dividendYield, Rate riskFreeRate, 
+                       Option::Type type, Real underlying, Real strike,
+                       Spread dividendYield, Rate riskFreeRate,
                        Time residualTime, Volatility volatility,
                        Size gridPoints, const std::vector<Time>& dates,
                        Size timeSteps)
@@ -54,7 +54,7 @@ namespace QuantLib {
                     firstNonZeroDate_ = dates_[1];
             }
 
-            if(QL_FABS(dates_[lastIndex_] - residualTime) < dateTolerance){
+            if (std::fabs(dates_[lastIndex_] - residualTime) < dateTolerance) {
                 lastDateIsResTime_ = true;
                 lastIndex_ = Integer(dateNumber_) - 2;
             }
@@ -148,8 +148,8 @@ namespace QuantLib {
     }
 
     void FdMultiPeriodOption::initializeControlVariate() const {
-        DiscountFactor discount = QL_EXP(-riskFreeRate_*residualTime_);
-        DiscountFactor qDiscount = QL_EXP(-dividendYield_*residualTime_);
+        DiscountFactor discount = std::exp(-riskFreeRate_*residualTime_);
+        DiscountFactor qDiscount = std::exp(-dividendYield_*residualTime_);
         Real forward = underlying_*qDiscount/discount;
         Real variance = volatility_*volatility_*residualTime_;
         boost::shared_ptr<StrikedTypePayoff> payoff(

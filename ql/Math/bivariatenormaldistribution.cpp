@@ -41,21 +41,21 @@ namespace QuantLib {
         if (MinCumNormDistAB<1e-15)
             return MinCumNormDistAB;
 
-        Real a1 = a / QL_SQRT(2.0 * (1.0 - rho_*rho_));
-        Real b1 = b / QL_SQRT(2.0 * (1.0 - rho_*rho_));
+        Real a1 = a / std::sqrt(2.0 * (1.0 - rho_*rho_));
+        Real b1 = b / std::sqrt(2.0 * (1.0 - rho_*rho_));
 
         Real result=-1.0;
 
         if (a<=0.0 && b<=0 && rho_<=0) {
             Real sum=0.0;
-            for (Size i=0; i<5; i++) { 
+            for (Size i=0; i<5; i++) {
                 for (Size j=0;j<5; j++) {
                     sum += x_[i]*x_[j]*
-                        QL_EXP(a1*(2.0*y_[i]-a1)+b1*(2.0*y_[j]-b1)
-                               +2.0*rho_*(y_[i]-a1)*(y_[j]-b1));
+                        std::exp(a1*(2.0*y_[i]-a1)+b1*(2.0*y_[j]-b1)
+                                 +2.0*rho_*(y_[i]-a1)*(y_[j]-b1));
                 }
             }
-            result= QL_SQRT(1.0 - rho_*rho_)/M_PI*sum;
+            result = std::sqrt(1.0 - rho_*rho_)/M_PI*sum;
         } else if (a<=0 && b>=0 && rho_>=0) {
             BivariateCumulativeNormalDistribution bivCumNormalDist(-rho_);
             result= CumNormDistA - bivCumNormalDist(a, -b);
@@ -66,11 +66,11 @@ namespace QuantLib {
             result= CumNormDistA + CumNormDistB -1.0 + (*this)(-a, -b);
         } else if (a*b*rho_>0.0) {
             Real rho1 = (rho_*a-b)*(a>0.0 ? 1.0: -1.0)/
-                QL_SQRT(a*a-2.0*rho_*a*b+b*b);
+                std::sqrt(a*a-2.0*rho_*a*b+b*b);
             BivariateCumulativeNormalDistribution bivCumNormalDist(rho1);
 
             Real rho2 = (rho_*b-a)*(b>0.0 ? 1.0: -1.0)/
-                QL_SQRT(a*a-2.0*rho_*a*b+b*b);
+                std::sqrt(a*a-2.0*rho_*a*b+b*b);
             BivariateCumulativeNormalDistribution CBND2(rho2);
 
             Real delta = (1.0-(a>0.0 ? 1.0: -1.0)*(b>0.0 ? 1.0: -1.0))/4.0;

@@ -151,17 +151,17 @@ namespace QuantLib {
     }
 
     inline Real IncrementalStatistics::standardDeviation() const {
-        return QL_SQRT(variance());
+        return std::sqrt(variance());
     }
 
     inline Real IncrementalStatistics::downsideDeviation() const {
-        return QL_SQRT(downsideVariance());
+        return std::sqrt(downsideVariance());
     }
 
     inline Real IncrementalStatistics::errorEstimate() const {
         Real var = variance();
         QL_REQUIRE(samples() > 0, "empty sample set");
-        return QL_SQRT(var/samples());
+        return std::sqrt(var/samples());
     }
 
     inline Real IncrementalStatistics::min() const {

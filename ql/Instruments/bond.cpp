@@ -70,7 +70,7 @@ namespace QuantLib {
                     t2 = t1;
                 }
 
-                discount /= QL_POW(1 + yield*t2, t1/t2);
+                discount /= std::pow(1 + yield*t2, t1/t2);
                 price += amount * discount;
                 lastDate = nextDate;
             }

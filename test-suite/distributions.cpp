@@ -31,15 +31,15 @@ namespace {
     Real average = 1.0, sigma = 2.0;
 
     Real gaussian(Real x) {
-        Real normFact = sigma*QL_SQRT(2*M_PI);
+        Real normFact = sigma*std::sqrt(2*M_PI);
         Real dx = x-average;
-        return QL_EXP(-dx*dx/(2.0*sigma*sigma))/normFact;
+        return std::exp(-dx*dx/(2.0*sigma*sigma))/normFact;
     }
 
     Real gaussianDerivative(Real x) {
-        Real normFact = sigma*sigma*sigma*QL_SQRT(2*M_PI);
+        Real normFact = sigma*sigma*sigma*std::sqrt(2*M_PI);
         Real dx = x-average;
-        return -dx*QL_EXP(-dx*dx/(2.0*sigma*sigma))/normFact;
+        return -dx*std::exp(-dx*dx/(2.0*sigma*sigma))/normFact;
     }
 
 }
@@ -171,7 +171,7 @@ void DistributionTest::testBivariate() {
         {  0.5,  0.5,  0.5, 0.546244 },
 
         // known analytical values
-        {  0.0, 0.0, QL_SQRT(1/2.0), 3.0/8},
+        {  0.0, 0.0, std::sqrt(1/2.0), 3.0/8},
 
 //      {  0.0,  big,  any, 0.500000 },
         {  0.0,   30, -1.0, 0.500000 },
@@ -201,7 +201,7 @@ void DistributionTest::testBivariate() {
         BivariateCumulativeNormalDistribution bcd(values[i].rho);
         Real value = bcd(values[i].a, values[i].b);
 
-        if (QL_FABS(value-values[i].result)>=1e-6) {
+        if (std::fabs(value-values[i].result)>=1e-6) {
           BOOST_FAIL("BivariateCumulativeDistribution \n"
               "case "
               + SizeFormatter::toString(i+1) + "\n"
@@ -230,8 +230,8 @@ void DistributionTest::testPoisson() {
         PoissonDistribution pdf(mean);
         Real calculated = pdf(i);
         Real logHelper = -mean;
-        Real expected = QL_EXP(logHelper);
-        Real error = QL_FABS(calculated-expected);
+        Real expected = std::exp(logHelper);
+        Real error = std::fabs(calculated-expected);
         if (error > 1.0e-16)
             BOOST_FAIL("Poisson pdf("
                        + DecimalFormatter::toString(mean) + ")("
@@ -248,10 +248,10 @@ void DistributionTest::testPoisson() {
             if (mean == 0.0) {
                 expected = 0.0;
             } else {
-                logHelper = logHelper+QL_LOG(mean)-QL_LOG(Real(i));
-                expected = QL_EXP(logHelper);
+                logHelper = logHelper+std::log(mean)-std::log(Real(i));
+                expected = std::exp(logHelper);
             }
-            error = QL_FABS(calculated-expected);
+            error = std::fabs(calculated-expected);
             if (error>1.0e-13)
                 BOOST_FAIL("Poisson pdf("
                            + DecimalFormatter::toString(mean) + ")("
@@ -275,8 +275,8 @@ void DistributionTest::testCumulativePoisson() {
         CumulativePoissonDistribution cdf(mean);
         Real cumCalculated = cdf(i);
         Real logHelper = -mean;
-        Real cumExpected = QL_EXP(logHelper);
-        Real error = QL_FABS(cumCalculated-cumExpected);
+        Real cumExpected = std::exp(logHelper);
+        Real error = std::fabs(cumCalculated-cumExpected);
         if (error>1.0e-13)
             BOOST_FAIL("Poisson cdf("
                        + DecimalFormatter::toString(mean) + ")("
@@ -292,10 +292,10 @@ void DistributionTest::testCumulativePoisson() {
             if (mean == 0.0) {
                 cumExpected = 1.0;
             } else {
-                logHelper = logHelper+QL_LOG(mean)-QL_LOG(Real(i));
-                cumExpected += QL_EXP(logHelper);
+                logHelper = logHelper+std::log(mean)-std::log(Real(i));
+                cumExpected += std::exp(logHelper);
             }
-            error = QL_FABS(cumCalculated-cumExpected);
+            error = std::fabs(cumCalculated-cumExpected);
             if (error>1.0e-12)
                 BOOST_FAIL("Poisson cdf("
                            + DecimalFormatter::toString(mean) + ")("

@@ -116,8 +116,8 @@ namespace QuantLib {
             if (f == 0)
                 return zy;
             if (t <= 1.0/f)
-                return (QL_EXP(zy*t)-1.0)/t;
-            return (QL_EXP(zy*(1.0/f))-1.0)*f;
+                return (std::exp(zy*t)-1.0)/t;
+            return (std::exp(zy*(1.0/f))-1.0)*f;
         }
         #ifdef QL_DISABLE_DEPRECATED
         return forwardCurve(f)->forwardRate(t, t,
@@ -133,10 +133,10 @@ namespace QuantLib {
         if (t==0.0) {
             Time dt = 0.001;
             df = discountImpl(dt);
-            return Rate(-QL_LOG(df)/dt);
+            return Rate(-std::log(df)/dt);
         } else {
             df = discountImpl(t);
-            return Rate(-QL_LOG(df)/t);
+            return Rate(-std::log(df)/t);
         }
     }
     #endif

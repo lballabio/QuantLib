@@ -65,7 +65,7 @@ namespace QuantLib {
 
     inline void ShoutCondition::applyTo(Array& a, Time t) const {
 
-        DiscountFactor disc = QL_EXP(-rate_ * (t - resTime_));
+        DiscountFactor disc = std::exp(-rate_ * (t - resTime_));
 
         if (intrinsicValues_.size()!=0) {
             QL_REQUIRE(intrinsicValues_.size() == a.size(),

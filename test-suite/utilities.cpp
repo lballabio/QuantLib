@@ -110,10 +110,10 @@ namespace QuantLib {
 
     Real relativeError(Real x1, Real x2, Real reference) {
         if (reference != 0.0)
-            return QL_FABS(x1-x2)/reference;
+            return std::fabs(x1-x2)/reference;
         else
             // fall back to absolute error
-            return QL_FABS(x1-x2);
+            return std::fabs(x1-x2);
     }
 
 }

@@ -227,7 +227,7 @@ void CapFloorTest::testConsistency() {
                             std::vector<Rate>(1,floor_rates[k]),
                             termStructure_,makeEngine(vols[l]));
 
-              if (QL_FABS((cap->NPV()-floor->NPV())-collar.NPV()) > 1.0e-10) {
+              if (std::fabs((cap->NPV()-floor->NPV())-collar.NPV()) > 1e-10) {
                   BOOST_FAIL(
                     "inconsistency between cap, floor and collar:\n"
                     "    length: " +
@@ -286,7 +286,7 @@ void CapFloorTest::testParity() {
                             schedule,strikes[j],index_->dayCounter(),
                             schedule,index_,fixingDays_,0.0,
                             termStructure_);
-            if (QL_FABS((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
+            if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
                 BOOST_FAIL(
                     "put/call parity violated:\n"
                     "    length: " +
@@ -368,11 +368,11 @@ void CapFloorTest::testImpliedVolatility() {
                                 + DecimalFormatter::toString(v) + "\n\n"
                                 + std::string(e.what()));
                         }
-                        if (QL_FABS(implVol-v) > tolerance) {
+                        if (std::fabs(implVol-v) > tolerance) {
                             // the difference might not matter
                             capfloor->setPricingEngine(makeEngine(implVol));
                             Real value2 = capfloor->NPV();
-                            if (QL_FABS(value-value2) > tolerance) {
+                            if (std::fabs(value-value2) > tolerance) {
                                 BOOST_FAIL(
                                     typeToString(types[i]) + ":\n"
                                     "    strike:           "
@@ -427,7 +427,7 @@ void CapFloorTest::testCachedValue() {
          cachedFloorNPV = 2.701133385568;
 #endif
 
-    if (QL_FABS(cap->NPV()-cachedCapNPV) > 1.0e-11)
+    if (std::fabs(cap->NPV()-cachedCapNPV) > 1.0e-11)
         BOOST_FAIL(
             "failed to reproduce cached cap value:\n"
             "    calculated: " +
@@ -435,7 +435,7 @@ void CapFloorTest::testCachedValue() {
             "    expected:   " +
             DecimalFormatter::toString(cachedCapNPV,12));
 
-    if (QL_FABS(floor->NPV()-cachedFloorNPV) > 1.0e-11)
+    if (std::fabs(floor->NPV()-cachedFloorNPV) > 1.0e-11)
         BOOST_FAIL(
             "failed to reproduce cached floor value:\n"
             "    calculated: " +

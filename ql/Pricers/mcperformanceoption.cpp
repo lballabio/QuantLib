@@ -50,13 +50,13 @@ namespace QuantLib {
                 std::vector<Real> result(n);
                 std::vector<Real> assetValue(n);
                 Real log_variation = path[0];
-                assetValue[0]  = underlying_ * QL_EXP(log_variation);
+                assetValue[0]  = underlying_ * std::exp(log_variation);
 
                 // removing first option
                 result[0] = 0.0;
                 for (Size i = 1 ; i < n; i++) {
                     log_variation  += path[i];
-                    assetValue[i]  = underlying_ * QL_EXP(log_variation);
+                    assetValue[i]  = underlying_ * std::exp(log_variation);
                     result[i] = discounts_[i] *
                         payoff_(assetValue[i]/assetValue[i-1]);
                 }

@@ -56,13 +56,13 @@ namespace QuantLib {
                 // First of two function evaluations per iteraton
                 fxMid=f(xMid);
                 evaluationNumber_++;
-                s=QL_SQRT(fxMid*fxMid-fxMin_*fxMax_);
+                s = std::sqrt(fxMid*fxMid-fxMin_*fxMax_);
                 if (s == 0.0)
                     return root_;
                 // Updating formula
                 nextRoot = xMid + (xMid - xMin_) *
                     ((fxMin_ >= fxMax_ ? 1.0 : -1.0) * fxMid / s);
-                if (QL_FABS(nextRoot-root_) <= xAccuracy)
+                if (std::fabs(nextRoot-root_) <= xAccuracy)
                     return root_;
 
                 root_=nextRoot;
@@ -88,7 +88,7 @@ namespace QuantLib {
                     QL_FAIL("never get here.");
                 }
 
-                if (QL_FABS(xMax_-xMin_) <= xAccuracy) return root_;
+                if (std::fabs(xMax_-xMin_) <= xAccuracy) return root_;
             }
 
             QL_FAIL("maximum number of function evaluations (" +
@@ -99,7 +99,7 @@ namespace QuantLib {
         }
       private:
         Real sign(Real a, Real b) const {
-            return b >= 0.0 ? QL_FABS(a) : -QL_FABS(a);
+            return b >= 0.0 ? std::fabs(a) : -std::fabs(a);
         }
     };
 

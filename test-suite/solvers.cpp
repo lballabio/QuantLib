@@ -42,10 +42,10 @@ namespace {
         Real expected = 1.0;
         for (Size i=0; i<LENGTH(accuracy); i++) {
             Real root = solver.solve(Foo(),accuracy[i],1.5,0.1);
-            if (QL_FABS(root-expected) > accuracy[i]) {
+            if (std::fabs(root-expected) > accuracy[i]) {
                 BOOST_FAIL(
                     name + " solver:\n"
-                    "    expected:   " 
+                    "    expected:   "
                     + DecimalFormatter::toString(expected) + "\n"
                     "    calculated: "
                     + DecimalFormatter::toString(root) + "\n"
@@ -53,10 +53,10 @@ namespace {
                     + DecimalFormatter::toString(accuracy[i]));
             }
             root = solver.solve(Foo(),accuracy[i],1.5,0.0,1.0);
-            if (QL_FABS(root-expected) > accuracy[i]) {
+            if (std::fabs(root-expected) > accuracy[i]) {
                 BOOST_FAIL(
                     name + " solver (bracketed):\n"
-                    "    expected:   " 
+                    "    expected:   "
                     + DecimalFormatter::toString(expected) + "\n"
                     "    calculated: "
                     + DecimalFormatter::toString(root) + "\n"

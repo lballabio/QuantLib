@@ -26,34 +26,36 @@ namespace QuantLib {
     namespace {
 
         // calculate the value of euro min basket call
-        Real euroTwoAssetMinBasketCall(Real forward1, Real forward2, 
+        Real euroTwoAssetMinBasketCall(Real forward1, Real forward2,
                                        Real strike,
-                                       DiscountFactor riskFreeDiscount, 
-                                       Real variance1, Real variance2, 
+                                       DiscountFactor riskFreeDiscount,
+                                       Real variance1, Real variance2,
                                        Real rho) {
 
-            Real stdDev1 = QL_SQRT(variance1);
-            Real stdDev2 = QL_SQRT(variance2);
+            Real stdDev1 = std::sqrt(variance1);
+            Real stdDev2 = std::sqrt(variance2);
 
-            Real variance = variance1 + variance2 - 2 * rho * stdDev1 * stdDev2;
-            Real stdDev = QL_SQRT(variance);
+            Real variance = variance1 + variance2 - 2*rho*stdDev1*stdDev2;
+            Real stdDev = std::sqrt(variance);
 
             Real modRho1 = (rho * stdDev2 - stdDev1) / stdDev;
             Real modRho2 = (rho * stdDev1 - stdDev2) / stdDev;
 
-            Real D1 = (QL_LOG(forward1 / forward2) + 0.5 * variance) / stdDev;
+            Real D1 = (std::log(forward1/forward2) + 0.5*variance) / stdDev;
 
             Real alfa, beta, gamma;
             if (strike != 0.0) {
-                BivariateCumulativeNormalDistribution bivCNorm = 
+                BivariateCumulativeNormalDistribution bivCNorm =
                     BivariateCumulativeNormalDistribution(rho);
-                BivariateCumulativeNormalDistribution bivCNormMod2 = 
+                BivariateCumulativeNormalDistribution bivCNormMod2 =
                     BivariateCumulativeNormalDistribution(modRho2);
-                BivariateCumulativeNormalDistribution bivCNormMod1 = 
+                BivariateCumulativeNormalDistribution bivCNormMod1 =
                     BivariateCumulativeNormalDistribution(modRho1);
 
-                Real D1_1 = (QL_LOG(forward1/strike) + 0.5 * variance1) / stdDev1;
-                Real D1_2 = (QL_LOG(forward2/strike) + 0.5 * variance2) / stdDev2;
+                Real D1_1 =
+                    (std::log(forward1/strike) + 0.5*variance1) / stdDev1;
+                Real D1_2 =
+                    (std::log(forward2/strike) + 0.5*variance2) / stdDev2;
                 alfa = bivCNormMod1(D1_1, -D1);
                 beta = bivCNormMod2(D1_2, D1 - stdDev);
                 gamma = bivCNorm(D1_1 - stdDev1, D1_2 - stdDev2);
@@ -70,21 +72,21 @@ namespace QuantLib {
         }
 
         // calculate the value of euro max basket call
-        Real euroTwoAssetMaxBasketCall(Real forward1, Real forward2, 
-                                       Real strike, 
+        Real euroTwoAssetMaxBasketCall(Real forward1, Real forward2,
+                                       Real strike,
                                        DiscountFactor riskFreeDiscount,
-                                       Real variance1, Real variance2, 
+                                       Real variance1, Real variance2,
                                        Real rho) {
 
             boost::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(Option::Call, strike));
 
-            BlackFormula black1(forward1, riskFreeDiscount, 
+            BlackFormula black1(forward1, riskFreeDiscount,
                                 variance1, payoff);
-            BlackFormula black2(forward2, riskFreeDiscount, 
+            BlackFormula black2(forward2, riskFreeDiscount,
                                 variance2, payoff);
 
-            return black1.value() + black2.value() - 
+            return black1.value() + black2.value() -
                 euroTwoAssetMinBasketCall(forward1, forward2, strike,
                                           riskFreeDiscount,
                                           variance1, variance2, rho);
@@ -93,7 +95,7 @@ namespace QuantLib {
 
     void StulzEngine::calculate() const {
 
-        std::vector<boost::shared_ptr<BlackScholesProcess> > procs = 
+        std::vector<boost::shared_ptr<BlackScholesProcess> > procs =
             arguments_.blackScholesProcesses;
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
@@ -102,7 +104,7 @@ namespace QuantLib {
         QL_REQUIRE(procs.size() == 2,
                    "not a basket of two stocks");
 
-        boost::shared_ptr<EuropeanExercise> exercise = 
+        boost::shared_ptr<EuropeanExercise> exercise =
             boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European Option");
 
@@ -130,30 +132,30 @@ namespace QuantLib {
 
         BasketOption::BasketType basketType = arguments_.basketType;
 
-        Real forward1 = procs[0]->stateVariable()->value() * 
+        Real forward1 = procs[0]->stateVariable()->value() *
             dividendDiscount1 / riskFreeDiscount;
-        Real forward2 = procs[1]->stateVariable()->value() * 
+        Real forward2 = procs[1]->stateVariable()->value() *
             dividendDiscount2 / riskFreeDiscount;
 
         switch (basketType) {
           case BasketOption::Max:
             switch (payoff->optionType()) {
-              // euro call on a two asset max basket 
+              // euro call on a two asset max basket
               case Option::Call:
-                results_.value = euroTwoAssetMaxBasketCall(forward1, forward2, strike, 
-                                                           riskFreeDiscount, 
-                                                           variance1, variance2, 
+                results_.value = euroTwoAssetMaxBasketCall(forward1, forward2, strike,
+                                                           riskFreeDiscount,
+                                                           variance1, variance2,
                                                            rho);
 
                 break;
-              // euro put on a two asset max basket 
+              // euro put on a two asset max basket
               case Option::Put:
                 results_.value = strike * riskFreeDiscount -
                     euroTwoAssetMaxBasketCall(forward1, forward2, 0.0,
-                                              riskFreeDiscount, 
-                                              variance1, variance2, rho) + 
-                    euroTwoAssetMaxBasketCall(forward1, forward2, strike, 
-                                              riskFreeDiscount, 
+                                              riskFreeDiscount,
+                                              variance1, variance2, rho) +
+                    euroTwoAssetMaxBasketCall(forward1, forward2, strike,
+                                              riskFreeDiscount,
                                               variance1, variance2, rho);
                 break;
               default:
@@ -162,21 +164,21 @@ namespace QuantLib {
             break;
           case BasketOption::Min:
             switch (payoff->optionType()) {
-              // euro call on a two asset min basket 
+              // euro call on a two asset min basket
               case Option::Call:
-                results_.value = euroTwoAssetMinBasketCall(forward1, forward2, strike, 
-                                                           riskFreeDiscount, 
-                                                           variance1, variance2,  
+                results_.value = euroTwoAssetMinBasketCall(forward1, forward2, strike,
+                                                           riskFreeDiscount,
+                                                           variance1, variance2,
                                                            rho);
                 break;
-              // euro put on a two asset min basket 
+              // euro put on a two asset min basket
               case Option::Put:
                 results_.value = strike * riskFreeDiscount -
-                    euroTwoAssetMinBasketCall(forward1, forward2, 0.0, 
-                                              riskFreeDiscount, 
+                    euroTwoAssetMinBasketCall(forward1, forward2, 0.0,
+                                              riskFreeDiscount,
                                               variance1, variance2, rho) +
-                    euroTwoAssetMinBasketCall(forward1, forward2, strike, 
-                                              riskFreeDiscount, 
+                    euroTwoAssetMinBasketCall(forward1, forward2, strike,
+                                              riskFreeDiscount,
                                               variance1, variance2, rho);
                 break;
               default:

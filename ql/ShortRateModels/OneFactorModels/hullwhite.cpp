@@ -56,10 +56,10 @@ namespace QuantLib {
             Real x = trinomial->underlying(i,0);
             Real value = 0.0;
             for (Size j=0; j<size; j++) {
-                value += statePrices[j]*QL_EXP(-x*dt);
+                value += statePrices[j]*std::exp(-x*dt);
                 x += dx;
             }
-            value = QL_LOG(value/discountBond)/dt;
+            value = std::log(value/discountBond)/dt;
             impl->set(grid[i], value);
         }
         return numericTree;
@@ -68,10 +68,11 @@ namespace QuantLib {
     Real HullWhite::A(Time t, Time T) const {
         DiscountFactor discount1 = termStructure()->discount(t);
         DiscountFactor discount2 = termStructure()->discount(T);
-        Rate forward = termStructure()->forwardRate(t, t, Continuous, NoFrequency);
+        Rate forward = termStructure()->forwardRate(t, t,
+                                                    Continuous, NoFrequency);
         Real temp = sigma()*B(t,T);
         Real value = B(t,T)*forward - 0.25*temp*temp*B(0.0,2.0*t);
-        return QL_EXP(value)*discount2/discount1;
+        return std::exp(value)*discount2/discount1;
     }
 
     void HullWhite::generateArguments() {
@@ -83,7 +84,7 @@ namespace QuantLib {
                                        Time bondMaturity) const {
 
         Real v = sigma()*B(maturity, bondMaturity)*
-            QL_SQRT(0.5*(1.0 - QL_EXP(-2.0*a()*maturity))/a());
+            std::sqrt(0.5*(1.0 - std::exp(-2.0*a()*maturity))/a());
         Real f = termStructure()->discount(bondMaturity);
         Real k = termStructure()->discount(maturity)*strike;
 

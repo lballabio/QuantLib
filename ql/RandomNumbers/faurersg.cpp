@@ -36,8 +36,8 @@ namespace QuantLib {
         }
 
 
-        mbit_=(Size)(QL_LOG((double)std::numeric_limits<long int>::max())/
-            QL_LOG((double)base_));
+        mbit_=(Size)(std::log((double)std::numeric_limits<long int>::max())/
+            std::log((double)base_));
         gray_ = std::vector<std::vector<long int> >(dimensionality_,
             std::vector<long int>(mbit_+1, 0));
         bary_ = std::vector<long int>(mbit_+1, 0);

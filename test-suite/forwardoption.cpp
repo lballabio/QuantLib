@@ -141,7 +141,7 @@ void ForwardOptionTest::testValues() {
                                     stochProcess, payoff, exercise, engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s,
@@ -165,8 +165,8 @@ void ForwardOptionTest::testPerformanceValues() {
     */
     ForwardOptionData values[] = {
         //  type, moneyness, spot,  div, rate,start, maturity,  vol,                       result, tol
-        { Option::Call, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 4.4064/60*QL_EXP(-0.04*0.25), 1.0e-4 },
-        {  Option::Put, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 8.2971/60*QL_EXP(-0.04*0.25), 1.0e-4 }
+        { Option::Call, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 4.4064/60*std::exp(-0.04*0.25), 1.0e-4 },
+        {  Option::Put, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 8.2971/60*std::exp(-0.04*0.25), 1.0e-4 }
     };
 
     DayCounter dc = Actual360();
@@ -209,7 +209,7 @@ void ForwardOptionTest::testPerformanceValues() {
                                     stochProcess, payoff, exercise, engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s,

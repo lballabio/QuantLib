@@ -52,7 +52,7 @@ void FactorialTest::testFactorial() {
     for (i=28; i<171; i++) {
         expected *= i;
         calculated   = Factorial::get(i);
-        if (QL_FABS(calculated-expected)/expected > 1.0e-9)
+        if (std::fabs(calculated-expected)/expected > 1.0e-9)
             BOOST_FAIL("Factorial("
                        + IntegerFormatter::toString(i) + ")"
                        "    calculated: "
@@ -61,7 +61,7 @@ void FactorialTest::testFactorial() {
                        + DecimalFormatter::toExponential(expected,16) + "\n"
                        "    rel error:   "
                        + DecimalFormatter::toExponential(
-                                   QL_FABS(calculated-expected)/expected,16));
+                                 std::fabs(calculated-expected)/expected,16));
     }
 }
 
@@ -71,7 +71,7 @@ void FactorialTest::testGammaFunction() {
 
     Real expected = 0.0;
     Real calculated = GammaFunction().logValue(1);
-    if (QL_FABS(calculated) > 1.0e-15)
+    if (std::fabs(calculated) > 1.0e-15)
         BOOST_FAIL("GammaFunction("
                    + IntegerFormatter::toString(1) + ")"
                    "    calculated: "
@@ -80,9 +80,9 @@ void FactorialTest::testGammaFunction() {
                    + DecimalFormatter::toExponential(expected,16));
 
     for (Size i=2; i<9000; i++) {
-        expected  += QL_LOG(Real(i));
+        expected  += std::log(Real(i));
         calculated = GammaFunction().logValue(i+1);
-        if (QL_FABS(calculated-expected)/expected > 1.0e-9)
+        if (std::fabs(calculated-expected)/expected > 1.0e-9)
             BOOST_FAIL("GammaFunction("
                        + SizeFormatter::toString(i) + ")"
                        "    calculated: "
@@ -91,7 +91,7 @@ void FactorialTest::testGammaFunction() {
                        + DecimalFormatter::toExponential(expected,16) + "\n"
                        "    rel error:   "
                        + DecimalFormatter::toExponential(
-                                   QL_FABS(calculated-expected)/expected,16));
+                                 std::fabs(calculated-expected)/expected,16));
     }
 }
 

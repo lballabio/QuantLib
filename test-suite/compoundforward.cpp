@@ -146,7 +146,7 @@ void CompoundForwardTest::testSuppliedRates() {
                         liborHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
-        if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
+        if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
                 IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"
                 "    estimated rate: "
@@ -196,7 +196,7 @@ void CompoundForwardTest::testConvertedRates() {
                                                            frequency);
         #endif
         Rate estimatedRate = swap.fairRate();
-        if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
+        if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
                 IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"
                 "    estimated rate: "

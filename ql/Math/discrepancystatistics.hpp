@@ -99,7 +99,7 @@ namespace QuantLib {
 
     inline DiscrepancyStatistics::DiscrepancyStatistics(Size dimension)
     : SequenceStatistics<Statistics>(dimension) {
-        reset(dimension); 
+        reset(dimension);
     }
 
     inline void DiscrepancyStatistics::reset(Size dimension) {
@@ -111,9 +111,9 @@ namespace QuantLib {
         SequenceStatistics<Statistics>::reset(dimension);
 
         adiscr_ = 0.0;
-        bdiscr_ = 1.0/QL_POW(2.0, Integer(dimension-1));
+        bdiscr_ = 1.0/std::pow(2.0, Integer(dimension-1));
         cdiscr_ = 0.0;
-        ddiscr_ = 1.0/QL_POW(3.0, Integer(dimension));
+        ddiscr_ = 1.0/std::pow(3.0, Integer(dimension));
     }
 
 }

@@ -88,7 +88,7 @@ namespace QuantLib {
         // Rate r = termStructure_->zeroCoupon(date,basis_);
         Rate r = termStructure_->zeroRate(date, dc,
             SimpleThenCompounded, Frequency(basis_));
-        return -QL_POW(1.0+r/basis_,-1.0-t*basis_)*t;
+        return -std::pow(1.0+r/basis_,-1.0-t*basis_)*t;
     }
 
     TimeBasket BasisPointSensitivityBasket(

@@ -39,7 +39,7 @@ namespace QuantLib {
                 "positive running product required: "
                 + DecimalFormatter::toString(arguments_.runningAccumulator) +
                 " not allowed");
-            runningLog = QL_LOG(arguments_.runningAccumulator);
+            runningLog = std::log(arguments_.runningAccumulator);
             pastFixings = arguments_.pastFixings;
         } else {  // it is being used as control variate
             runningLog = 1.0;
@@ -94,9 +94,9 @@ namespace QuantLib {
             zeroRate(exDate, rfdc, Continuous, NoFrequency);
         Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
         Real muG = pastWeight * runningLog +
-            futureWeight * QL_LOG(process->stateVariable()->value()) +
+            futureWeight * std::log(process->stateVariable()->value()) +
             nu*timeSum/N;
-        Real forwardPrice = QL_EXP(muG + variance / 2.0);
+        Real forwardPrice = std::exp(muG + variance / 2.0);
 
         DiscountFactor riskFreeDiscount = process->riskFreeRate()->discount(
                                              arguments_.exercise->lastDate());

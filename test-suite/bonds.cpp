@@ -89,10 +89,10 @@ void BondTest::testYield() {
               Rate calculated = bond.yield(price, Date(),
                                            tolerance, maxEvaluations);
 
-              if (QL_FABS(yields[m]-calculated) > tolerance) {
+              if (std::fabs(yields[m]-calculated) > tolerance) {
                   // the difference might not matter
                   Real price2 = bond.cleanPrice(calculated);
-                  if (QL_FABS(price-price2)/price > tolerance) {
+                  if (std::fabs(price-price2)/price > tolerance) {
                       BOOST_FAIL("yield recalculation failed:\n"
                                  "    issue:     "
                                  + DateFormatter::toString(issue) + "\n"
@@ -172,7 +172,7 @@ void BondTest::testCachedYield() {
     Real price, yield;
 
     price = bond1.cleanPrice(marketYield1);
-    if (QL_FABS(price-cachedPrice1) > tolerance) {
+    if (std::fabs(price-cachedPrice1) > tolerance) {
         BOOST_FAIL("failed to reproduce cached price:\n"
                    "    calculated: "
                    + DecimalFormatter::toString(price,6) + "\n"
@@ -183,7 +183,7 @@ void BondTest::testCachedYield() {
     }
 
     yield = bond1.yield(marketPrice1);
-    if (QL_FABS(yield-cachedYield1) > tolerance) {
+    if (std::fabs(yield-cachedYield1) > tolerance) {
         BOOST_FAIL("failed to reproduce cached yield:\n"
                    "    calculated: "
                    + RateFormatter::toString(yield,4) + "\n"
@@ -195,7 +195,7 @@ void BondTest::testCachedYield() {
 
 
     price = bond2.cleanPrice(marketYield2);
-    if (QL_FABS(price-cachedPrice2) > tolerance) {
+    if (std::fabs(price-cachedPrice2) > tolerance) {
         BOOST_FAIL("failed to reproduce cached price:\n"
                    "    calculated: "
                    + DecimalFormatter::toString(price,6) + "\n"
@@ -206,7 +206,7 @@ void BondTest::testCachedYield() {
     }
 
     yield = bond2.yield(marketPrice2);
-    if (QL_FABS(yield-cachedYield2) > tolerance) {
+    if (std::fabs(yield-cachedYield2) > tolerance) {
         BOOST_FAIL("failed to reproduce cached yield:\n"
                    "    calculated: "
                    + RateFormatter::toString(yield,4) + "\n"
@@ -233,7 +233,7 @@ void BondTest::testCachedYield() {
     Real cachedPrice3 = 99.764874;
 
     price = bond3.cleanPrice(marketYield3, settlementDate);
-    if (QL_FABS(price-cachedPrice3) > tolerance) {
+    if (std::fabs(price-cachedPrice3) > tolerance) {
         BOOST_FAIL("failed to reproduce cached price:\n"
                    "    calculated: "
                    + DecimalFormatter::toString(price,6) + "\n"
@@ -249,7 +249,7 @@ void BondTest::testCachedYield() {
     Settings::instance().setEvaluationDate(Date(22,November,2004));
 
     price = bond3.cleanPrice(marketYield3);
-    if (QL_FABS(price-cachedPrice3) > tolerance) {
+    if (std::fabs(price-cachedPrice3) > tolerance) {
         BOOST_FAIL("failed to reproduce cached price:\n"
                    "    calculated: "
                    + DecimalFormatter::toString(price,6) + "\n"

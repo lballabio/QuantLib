@@ -45,7 +45,7 @@ namespace QuantLib {
 
             // Pick the bound with the smaller function value
             // as the most recent guess
-            if (QL_FABS(fxMin_) < QL_FABS(fxMax_)) {
+            if (std::fabs(fxMin_) < std::fabs(fxMax_)) {
                 root_=xMin_;
                 froot=fxMin_;
                 xl=xMax_;
@@ -63,7 +63,7 @@ namespace QuantLib {
                 root_ += dx;
                 froot=f(root_);
                 evaluationNumber_++;
-                if (QL_FABS(dx) < xAccuracy || froot == 0.0)
+                if (std::fabs(dx) < xAccuracy || froot == 0.0)
                     return root_;
             }
             QL_FAIL("maximum number of function evaluations (" +

@@ -37,7 +37,7 @@ namespace QuantLib {
 
     inline Real binomialCoefficient(BigNatural n, BigNatural k) {
 
-        return QL_FLOOR(0.5+QL_EXP(binomialCoefficientLn(n, k)));
+        return std::floor(0.5+std::exp(binomialCoefficientLn(n, k)));
 
     }
 
@@ -79,7 +79,7 @@ namespace QuantLib {
     };
 
 
-    inline BinomialDistribution::BinomialDistribution(Real p, 
+    inline BinomialDistribution::BinomialDistribution(Real p,
                                                       BigNatural n)
     : n_(n) {
 
@@ -91,13 +91,13 @@ namespace QuantLib {
             QL_REQUIRE(p>0, "negative p not allowed");
             QL_REQUIRE(p<1.0, "p>1.0 not allowed");
 
-            logP_ = QL_LOG(p);
-            logOneMinusP_ = QL_LOG(1.0-p);
+            logP_ = std::log(p);
+            logOneMinusP_ = std::log(1.0-p);
         }
     }
 
 
-    inline 
+    inline
     CumulativeBinomialDistribution::CumulativeBinomialDistribution(
                                                        Real p, BigNatural n)
     : n_(n), p_(p) {
@@ -118,8 +118,8 @@ namespace QuantLib {
         else if (logOneMinusP_==0.0)
             return (k==0 ? 1.0 : 0.0);
         else
-            return QL_EXP(binomialCoefficientLn(n_, k) +
-            k * logP_ + (n_-k) * logOneMinusP_);
+            return std::exp(binomialCoefficientLn(n_, k) +
+                            k * logP_ + (n_-k) * logOneMinusP_);
     }
 
 
@@ -138,8 +138,8 @@ namespace QuantLib {
 
         Real result = (z/(n+1.0/3.0+0.1/(n+1.0)));
         result *= result;
-        result = QL_EXP(-result*(n+1.0/6.0));
-        result = 0.5 + (z>0 ? 1 : -1) * QL_SQRT((0.25 * (1.0-result)));
+        result = std::exp(-result*(n+1.0/6.0));
+        result = 0.5 + (z>0 ? 1 : -1) * std::sqrt((0.25 * (1.0-result)));
         return result;
     }
 

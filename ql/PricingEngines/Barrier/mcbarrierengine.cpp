@@ -66,14 +66,14 @@ namespace QuantLib {
             for (i = 0; i < n; i++) {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
-                new_asset_price = asset_price * QL_EXP(log_drift+log_random);
+                new_asset_price = asset_price * std::exp(log_drift+log_random);
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
 
-                x = QL_LOG (new_asset_price / asset_price);
-                y = 0.5*(x - QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG(u[i])));
-                y = asset_price * QL_EXP (y);
+                x = std::log(new_asset_price / asset_price);
+                y = 0.5*(x - std::sqrt (x*x - 2*vol*vol*dt*std::log(u[i])));
+                y = asset_price * std::exp(y);
                 if (y <= barrier_) {
                     isOptionActive = true;
                 }
@@ -85,14 +85,14 @@ namespace QuantLib {
             for (i = 0; i < n; i++) {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
-                new_asset_price = asset_price * QL_EXP(log_drift+log_random);
+                new_asset_price = asset_price * std::exp(log_drift+log_random);
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
 
-                x = QL_LOG (new_asset_price / asset_price);
-                y = 0.5*(x + QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG((1-u[i]))));
-                y = asset_price * QL_EXP (y);
+                x = std::log(new_asset_price / asset_price);
+                y = 0.5*(x + std::sqrt(x*x - 2*vol*vol*dt*std::log((1-u[i]))));
+                y = asset_price * std::exp(y);
                 if (y >= barrier_) {
                     isOptionActive = true;
                 }
@@ -104,14 +104,14 @@ namespace QuantLib {
             for (i = 0; i < n; i++) {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
-                new_asset_price = asset_price * QL_EXP(log_drift+log_random);
+                new_asset_price = asset_price * std::exp(log_drift+log_random);
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
 
-                x = QL_LOG (new_asset_price / asset_price);
-                y = 0.5*(x - QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG(u[i])));
-                y = asset_price * QL_EXP (y);
+                x = std::log(new_asset_price / asset_price);
+                y = 0.5*(x - std::sqrt(x*x - 2*vol*vol*dt*std::log(u[i])));
+                y = asset_price * std::exp(y);
                 if (y <= barrier_) {
                     isOptionActive = false;
                 }
@@ -123,14 +123,14 @@ namespace QuantLib {
             for (i = 0; i < n; i++) {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
-                new_asset_price = asset_price * QL_EXP(log_drift+log_random);
+                new_asset_price = asset_price * std::exp(log_drift+log_random);
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
 
-                x = QL_LOG (new_asset_price / asset_price);
-                y = 0.5*(x + QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG((1-u[i]))));
-                y = asset_price * QL_EXP (y);
+                x = std::log(new_asset_price / asset_price);
+                y = 0.5*(x + std::sqrt(x*x - 2*vol*vol*dt*std::log((1-u[i]))));
+                y = asset_price * std::exp(y);
                 if (y >= barrier_) {
                     isOptionActive = false;
                 }
@@ -184,7 +184,7 @@ namespace QuantLib {
             for (i = 0; i < n; i++) {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
-                asset_price = asset_price * QL_EXP(log_drift+log_random);
+                asset_price = asset_price * std::exp(log_drift+log_random);
                 if (asset_price <= barrier_) {
                     isOptionActive = true;
                 }
@@ -195,7 +195,7 @@ namespace QuantLib {
             for (i = 0; i < n; i++) {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
-                asset_price = asset_price * QL_EXP(log_drift+log_random);
+                asset_price = asset_price * std::exp(log_drift+log_random);
                 if (asset_price >= barrier_) {
                     isOptionActive = true;
                 }
@@ -206,7 +206,7 @@ namespace QuantLib {
             for (i = 0; i < n; i++) {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
-                asset_price = asset_price * QL_EXP(log_drift+log_random);
+                asset_price = asset_price * std::exp(log_drift+log_random);
                 if (asset_price <= barrier_) {
                     isOptionActive = false;
                 }
@@ -217,7 +217,7 @@ namespace QuantLib {
             for (i = 0; i < n; i++) {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
-                asset_price = asset_price * QL_EXP(log_drift+log_random);
+                asset_price = asset_price * std::exp(log_drift+log_random);
                 if (asset_price >= barrier_) {
                     isOptionActive = false;
                 }

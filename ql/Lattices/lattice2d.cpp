@@ -49,7 +49,7 @@ namespace QuantLib {
                          const boost::shared_ptr<TrinomialTree>& tree2,
                          Real correlation)
     : Lattice(tree1->timeGrid(), 9),
-      tree1_(tree1), tree2_(tree2), m_(3,3), rho_(QL_FABS(correlation)) {
+      tree1_(tree1), tree2_(tree2), m_(3,3), rho_(std::fabs(correlation)) {
 
         if (correlation < 0.0) {
             m_[0][0] = -1.0;

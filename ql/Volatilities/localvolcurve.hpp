@@ -92,7 +92,7 @@ namespace QuantLib {
         Real var1 = blackVarianceCurve_->blackVariance(t, dummy, true);
         Real var2 = blackVarianceCurve_->blackVariance(t+dt, dummy, true);
         Real derivative = (var2-var1)/dt;
-        return QL_SQRT(derivative);
+        return std::sqrt(derivative);
     }
 
 }

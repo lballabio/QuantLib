@@ -57,7 +57,7 @@ namespace QuantLib {
             // negative eigenvalues set to zero
             for (i=0; i<size; i++)
                 diagonal[i][i] =
-                    QL_SQRT(QL_MAX<Real>(jd.eigenvalues()[i], 0.0));
+                    std::sqrt(QL_MAX<Real>(jd.eigenvalues()[i], 0.0));
 
             result = jd.eigenvectors() * diagonal;
             // row normalization
@@ -65,7 +65,7 @@ namespace QuantLib {
                 Real norm = 0.0;
                 for (j = 0; j < size; j++)
                     norm += result[i][j]*result[i][j];
-                norm = QL_SQRT(matrix[i][i]/norm);
+                norm = std::sqrt(matrix[i][i]/norm);
                 for(j = 0; j < size; j++)
                     result[i][j] *= norm;
             }
@@ -134,7 +134,7 @@ namespace QuantLib {
         Real components = 0.0;
         for (i=0; i<QL_MIN(size, maxRank); i++) {
             diagonal[i][i] =
-                (components<enough ? QL_SQRT(jd.eigenvalues()[i]) : 0.0);
+                (components<enough ? std::sqrt(jd.eigenvalues()[i]) : 0.0);
             components += jd.eigenvalues()[i];
         }
 
@@ -145,7 +145,7 @@ namespace QuantLib {
             Real norm = 0.0;
             for (j = 0; j < size; j++)
                 norm += result[i][j]*result[i][j];
-            norm = QL_SQRT(norm);
+            norm = std::sqrt(norm);
             for(j = 0; j < size; j++)
                 result[i][j] /= norm;
         }

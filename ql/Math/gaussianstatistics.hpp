@@ -53,7 +53,7 @@ namespace QuantLib {
             square root of the downside variance.
         */
         Real gaussianDownsideDeviation() const {
-            return QL_SQRT(gaussianDownsideVariance());
+            return std::sqrt(gaussianDownsideVariance());
         }
 
         /*! returns the variance of observations below target

@@ -21,8 +21,8 @@
 namespace QuantLib {
 
     FdBsmOption::FdBsmOption(
-                         Option::Type type, Real underlying, Real strike, 
-                         Spread dividendYield, Rate riskFreeRate, 
+                         Option::Type type, Real underlying, Real strike,
+                         Spread dividendYield, Rate riskFreeRate,
                          Time residualTime, Volatility volatility,
                          Size gridPoints)
     : SingleAssetOption(type, underlying, strike, dividendYield,
@@ -57,10 +57,10 @@ namespace QuantLib {
                                     Real timeDelay) const {
 
         center_ = center;
-        Real volSqrtTime = volatility_*QL_SQRT(timeDelay);
+        Real volSqrtTime = volatility_*std::sqrt(timeDelay);
         // the prefactor fine tunes performance at small volatilities
         Real prefactor = 1.0 + 0.02/volSqrtTime;
-        Real minMaxFactor = QL_EXP(4.0 * prefactor * volSqrtTime);
+        Real minMaxFactor = std::exp(4.0 * prefactor * volSqrtTime);
         sMin_ = center_/minMaxFactor;  // underlying grid min value
         sMax_ = center_*minMaxFactor;  // underlying grid max value
         // insure strike is included in the grid
@@ -78,8 +78,8 @@ namespace QuantLib {
     }
 
     void FdBsmOption::initializeGrid() const {
-        gridLogSpacing_ = (QL_LOG(sMax_)-QL_LOG(sMin_))/(gridPoints_-1);
-        Real edx = QL_EXP(gridLogSpacing_);
+        gridLogSpacing_ = (std::log(sMax_)-std::log(sMin_))/(gridPoints_-1);
+        Real edx = std::exp(gridLogSpacing_);
         grid_[0] = sMin_;
         Size j;
         for (j=1; j<gridPoints_; j++)
@@ -93,8 +93,8 @@ namespace QuantLib {
     }
 
     void FdBsmOption::initializeOperator() const {
-        finiteDifferenceOperator_ = BSMOperator(gridPoints_, gridLogSpacing_, 
-                                                riskFreeRate_, dividendYield_, 
+        finiteDifferenceOperator_ = BSMOperator(gridPoints_, gridLogSpacing_,
+                                                riskFreeRate_, dividendYield_,
                                                 volatility_);
 
         BCs_[0] = boost::shared_ptr<BoundaryCondition>(new NeumannBC(

@@ -64,7 +64,7 @@ using namespace boost::unit_test_framework;
                "    calculated " + greekName + ": " \
                + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DecimalFormatter::toString(QL_FABS(expected-calculated)) \
+               + DecimalFormatter::toString(std::fabs(expected-calculated)) \
                + "\n" \
                + (tolerance==Null<Real>() ? std::string("") : \
                   "    tolerance:        " \
@@ -131,7 +131,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     Real calculated = option.NPV();
     Real expected = 4.6922;
     Real tolerance = 1.0e-4;
-    if (QL_FABS(calculated-expected) > tolerance) {
+    if (std::fabs(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, Null<Real>(), Null<Size>(),
                        std::vector<Date>(), payoff, exercise, spot->value(),
                        qRate->value(), rRate->value(), today,
@@ -155,7 +155,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
     calculated = option2.NPV();
     tolerance = 3.0e-3;
-    if (QL_FABS(calculated-expected) > tolerance) {
+    if (std::fabs(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
                        qRate->value(), rRate->value(), today,
@@ -375,7 +375,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     Real calculated = option.NPV();
     Real expected = 5.3425606635;
     Real tolerance = 1e-10;
-    if (QL_FABS(calculated-expected) > tolerance) {
+    if (std::fabs(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
                        qRate->value(), rRate->value(), today,
@@ -447,7 +447,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 
     Real calculated = option.NPV();
     Real expected = 5.3425606635;
-    if (QL_FABS(calculated-expected) > tolerance) {
+    if (std::fabs(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
                        qRate->value(), rRate->value(), today,
@@ -611,7 +611,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
         Real calculated = option.NPV();
         Real expected = cases4[l].result;
         Real tolerance = 2.0e-2;
-        if (QL_FABS(calculated-expected) > tolerance) {
+        if (std::fabs(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
                         fixingDates, payoff, exercise, spot->value(),
                         qRate->value(), rRate->value(), today,

@@ -34,7 +34,7 @@ namespace QuantLib {
 
         const BigNatural firstPrimes[] = {
             // the first two primes are mandatory for bootstrapping
-            2,  3, 
+            2,  3,
             // optional additional precomputed primes
             5,  7, 11, 13, 17, 19, 23, 29,
             31, 37, 41, 43, 47 };
@@ -58,7 +58,7 @@ namespace QuantLib {
         do {
             // skip the even numbers
             m += 2;
-            n = static_cast<BigNatural>(QL_SQRT(Real(m)));
+            n = static_cast<BigNatural>(std::sqrt(Real(m)));
             // i=1 since the even numbers have already been skipped
             Size i = 1;
             do {

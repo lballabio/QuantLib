@@ -154,7 +154,7 @@ void TermStructureTest::testImplied() {
     DiscountFactor baseDiscount = termStructure_->discount(newSettlement);
     DiscountFactor discount = termStructure_->discount(testDate);
     DiscountFactor impliedDiscount = implied->discount(testDate);
-    if (QL_FABS(discount - baseDiscount*impliedDiscount) > tolerance)
+    if (std::fabs(discount - baseDiscount*impliedDiscount) > tolerance)
         BOOST_FAIL(
             "unable to reproduce discount from implied curve\n"
             "    calculated: "
@@ -207,7 +207,7 @@ void TermStructureTest::testFSpreaded() {
                                                Continuous, NoFrequency);
     Rate spreadedForward = spreaded->forwardRate(testDate, testDate, sprdc,
                                                  Continuous, NoFrequency);
-    if (QL_FABS(forward - (spreadedForward-me->value())) > tolerance)
+    if (std::fabs(forward - (spreadedForward-me->value())) > tolerance)
         BOOST_FAIL(
             "unable to reproduce forward from spreaded curve\n"
             "    calculated: "
@@ -263,7 +263,7 @@ void TermStructureTest::testZSpreaded() {
                                          Continuous, NoFrequency);
     Rate spreadedZero = spreaded->zeroRate(testDate, rfdc,
                                            Continuous, NoFrequency);
-    if (QL_FABS(zero - (spreadedZero-me->value())) > tolerance)
+    if (std::fabs(zero - (spreadedZero-me->value())) > tolerance)
         BOOST_FAIL(
             "unable to reproduce zero yield from spreaded curve\n"
             "    calculated: "

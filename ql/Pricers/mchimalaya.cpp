@@ -71,7 +71,7 @@ namespace QuantLib {
                     removeAsset=0;
                     for (j = 0; j < numAssets; j++) {
                         if (remainingAssets[j]) {
-                            prices[j] *= QL_EXP(multiPath[j][i]);
+                            prices[j] *= std::exp(multiPath[j][i]);
                             if (prices[j] >= bestPrice) {
                                 bestPrice = prices[j];
                                 removeAsset = j;

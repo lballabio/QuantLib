@@ -448,9 +448,9 @@ int main(int, char* [])
 
 
         // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(QL_FABS(fairRate-s5yQuote)<1e-8,
+        QL_REQUIRE(std::fabs(fairRate-s5yQuote)<1e-8,
                    "5-years swap mispriced by "
-                   + RateFormatter::toString(QL_FABS(fairRate-s5yQuote)));
+                   + RateFormatter::toString(std::fabs(fairRate-s5yQuote)));
 
 
         forecastingTermStructure.linkTo(depoFutSwapTermStructure);
@@ -470,7 +470,7 @@ int main(int, char* [])
                   << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
-        QL_REQUIRE(QL_FABS(fairRate-s5yQuote)<1e-8,
+        QL_REQUIRE(std::fabs(fairRate-s5yQuote)<1e-8,
                    "5-years swap mispriced!");
 
 
@@ -491,7 +491,7 @@ int main(int, char* [])
                   << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
-        QL_REQUIRE(QL_FABS(fairRate-s5yQuote)<1e-8,
+        QL_REQUIRE(std::fabs(fairRate-s5yQuote)<1e-8,
                    "5-years swap mispriced!");
 
 
@@ -606,7 +606,7 @@ int main(int, char* [])
                   << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
-        QL_REQUIRE(QL_FABS(fairRate-s5yRate->value())<1e-8,
+        QL_REQUIRE(std::fabs(fairRate-s5yRate->value())<1e-8,
                    "5-years swap mispriced!");
 
 
@@ -627,7 +627,7 @@ int main(int, char* [])
                   << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
-        QL_REQUIRE(QL_FABS(fairRate-s5yRate->value())<1e-8,
+        QL_REQUIRE(std::fabs(fairRate-s5yRate->value())<1e-8,
                    "5-years swap mispriced!");
 
 
@@ -648,7 +648,7 @@ int main(int, char* [])
                   << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
-        QL_REQUIRE(QL_FABS(fairRate-s5yRate->value())<1e-8,
+        QL_REQUIRE(std::fabs(fairRate-s5yRate->value())<1e-8,
                    "5-years swap mispriced!");
 
         std::cout << rule << std::endl;

@@ -29,11 +29,11 @@ namespace QuantLib {
         if (type_ == None)
             return value;
 
-        Real mult = QL_POW(10.0,precision_);
+        Real mult = std::pow(10.0,precision_);
         bool neg = (value < 0.0);
-        Real lvalue = QL_FABS(value)*mult;
+        Real lvalue = std::fabs(value)*mult;
         Real integral = 0.0;
-        Real modVal = QL_MODF(lvalue,&integral);
+        Real modVal = std::modf(lvalue,&integral);
         lvalue -= modVal;
         switch (type_) {
           case Down:

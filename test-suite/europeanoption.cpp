@@ -273,7 +273,7 @@ void EuropeanOptionTest::testValues() {
         EuropeanOption option(stochProcess, payoff, exercise, engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s,
@@ -355,7 +355,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->delta();
-    Real error = QL_FABS(calculated-values[i].result);
+    Real error = std::fabs(calculated-values[i].result);
     Real tolerance = 1e-4;
     if (error>tolerance)
         REPORT_FAILURE("delta", payoff, exercise, values[i].s,
@@ -375,7 +375,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->delta();
-    error = QL_FABS(calculated-values[i].result);
+    error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("delta", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -394,7 +394,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->elasticity();
-    error = QL_FABS(calculated-values[i].result);
+    error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("elasticity", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -414,7 +414,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->gamma();
-    error = QL_FABS(calculated-values[i].result);
+    error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("gamma", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -433,7 +433,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->gamma();
-    error = QL_FABS(calculated-values[i].result);
+    error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("gamma", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -453,7 +453,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->vega();
-    error = QL_FABS(calculated-values[i].result);
+    error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("vega", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -473,7 +473,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->vega();
-    error = QL_FABS(calculated-values[i].result);
+    error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("vega", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -493,7 +493,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->theta();
-    error = QL_FABS(calculated-values[i].result);
+    error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("theta", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -513,7 +513,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->thetaPerDay();
-    error = QL_FABS(calculated-values[i].result);
+    error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("thetaPerDay", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -533,7 +533,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->rho();
-    error = QL_FABS(calculated-values[i].result);
+    error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("rho", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -553,7 +553,7 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->dividendRho();
-    error = QL_FABS(calculated-values[i].result);
+    error = std::fabs(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("dividendRho", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -804,7 +804,7 @@ void EuropeanOptionTest::testImpliedVol() {
                               + VolatilityFormatter::toString(v) + "\n\n"
                               + std::string(e.what()));
                       }
-                      if (QL_FABS(implVol-v) > tolerance) {
+                      if (std::fabs(implVol-v) > tolerance) {
                           // the difference might not matter
                           vol->setValue(implVol);
                           Real value2 = option->NPV();
@@ -898,7 +898,7 @@ void EuropeanOptionTest::testImpliedVolContainment() {
                    "in another instrument");
 
     option2->recalculate();
-    if (QL_FABS(option2->NPV() - refValue) >= 1.0e-8)
+    if (std::fabs(option2->NPV() - refValue) >= 1.0e-8)
         BOOST_FAIL("implied volatility calculation changed the value "
                    "of another instrument: \n"
                    "previous value: " +
@@ -911,7 +911,7 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     if (!f.isUp())
         BOOST_FAIL("volatility change not notified");
 
-    if (QL_FABS(option2->NPV() - refValue) <= 1.0e-8)
+    if (std::fabs(option2->NPV() - refValue) <= 1.0e-8)
         BOOST_FAIL("volatility change did not cause the value to change");
 
 }

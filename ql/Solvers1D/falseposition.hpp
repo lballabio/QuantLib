@@ -73,7 +73,7 @@ namespace QuantLib {
                 }
                 dx=xh-xl;
                 // Convergence criterion
-                if (QL_FABS(del) < xAccuracy || froot == 0.0)  {
+                if (std::fabs(del) < xAccuracy || froot == 0.0)  {
                     return root_;
                 }
             }

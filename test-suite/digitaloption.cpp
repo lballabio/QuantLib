@@ -126,7 +126,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         VanillaOption opt(stochProcess, payoff, exercise, engine);
 
         Real calculated = opt.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result,
@@ -179,7 +179,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         VanillaOption opt(stochProcess, payoff, exercise, engine);
 
         Real calculated = opt.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result,
@@ -232,7 +232,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
         VanillaOption opt(stochProcess, payoff, exercise, engine);
 
         Real calculated = opt.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result,
@@ -299,7 +299,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
                           engine);
 
         Real calculated = opt.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
@@ -364,7 +364,7 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
                           engine);
 
         Real calculated = opt.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
@@ -384,8 +384,8 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.3604, 1e-4 },
         { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.2223, 1e-4 },
         // in the money options (guaranteed discounted payoff)
-        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000*QL_EXP(-0.05), 1e-16 },
-        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000*QL_EXP(-0.05), 1e-16 }
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000*std::exp(-0.05), 1e-16 },
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000*std::exp(-0.05), 1e-16 }
     };
 
     DayCounter dc = Actual360();
@@ -425,7 +425,7 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
                           engine);
 
         Real calculated = opt.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
@@ -451,8 +451,8 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         //                                                    = spot * dividendDiscount)
         { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-16 },
         { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-16 },
-        { Option::Call, 100.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000*QL_EXP(-0.005), 1e-16 },
-        { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000*QL_EXP(-0.005), 1e-16 }
+        { Option::Call, 100.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000*std::exp(-0.005), 1e-16 },
+        { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000*std::exp(-0.005), 1e-16 }
     };
 
     DayCounter dc = Actual360();
@@ -492,7 +492,7 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
                           engine);
 
         Real calculated = opt.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
@@ -716,7 +716,7 @@ void DigitalOptionTest::testMCCashAtHit() {
 
         antitheticVariate = false;
         brownianBridge = true;
-        Size requiredSamples = Size(QL_POW(2.0, 14)-1);
+        Size requiredSamples = Size(std::pow(2.0, 14)-1);
         boost::shared_ptr<PricingEngine> mcldEngine(new
             MCDigitalEngine<LowDiscrepancy>(maxTimeStepsPerYear,
                                             brownianBridge,
@@ -728,7 +728,7 @@ void DigitalOptionTest::testMCCashAtHit() {
                           mcldEngine);
 
         Real calculated = opt.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,

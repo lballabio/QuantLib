@@ -40,7 +40,7 @@ namespace QuantLib {
          403291461126605635584000000.0,       10888869450418352160768000000.0
         };
 
-        const Size tabulated = 
+        const Size tabulated =
             sizeof(firstFactorials)/sizeof(firstFactorials[0])-1;
 
     }
@@ -49,13 +49,13 @@ namespace QuantLib {
         if (i<=tabulated) {
             return firstFactorials[i];
         } else {
-            return QL_EXP(GammaFunction().logValue(i+1));
+            return std::exp(GammaFunction().logValue(i+1));
         }
     }
 
     Real Factorial::ln(Natural i) {
         if (i<=tabulated) {
-            return QL_LOG(firstFactorials[i]);
+            return std::log(firstFactorials[i]);
         } else {
             return GammaFunction().logValue(i+1);
         }

@@ -70,7 +70,7 @@ namespace QuantLib {
 
 
     class ArithmeticAPOPathPricer : public PathPricer<Path> {
-        public:
+      public:
         ArithmeticAPOPathPricer(Option::Type type,
                                 Real underlying,
                                 Real strike,
@@ -88,13 +88,13 @@ namespace QuantLib {
                 fixings = n+1;
             }
             for (Size i=0; i<n; i++) {
-                price1 *= QL_EXP(path[i]);
+                price1 *= std::exp(path[i]);
                 averagePrice1 += price1;
             }
             averagePrice1 = averagePrice1/fixings;
             return discount_ * payoff_(averagePrice1);
         }
-        private:
+      private:
         Real underlying_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;

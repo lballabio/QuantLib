@@ -27,9 +27,9 @@
 namespace QuantLib {
 
     inline Real betaFunction(Real z, Real w) {
-    	return QL_EXP(GammaFunction().logValue(z) +
-                      GammaFunction().logValue(w) -
-                      GammaFunction().logValue(z+w));
+	return std::exp(GammaFunction().logValue(z) +
+                    GammaFunction().logValue(w) -
+                    GammaFunction().logValue(z+w));
     }
 
     Real betaContinuedFraction(Real a,

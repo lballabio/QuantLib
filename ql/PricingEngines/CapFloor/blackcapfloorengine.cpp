@@ -64,8 +64,8 @@ namespace QuantLib {
             return QL_MAX<Rate>(forward-strike,0.0);
         } else {
             // forecast
-            return BlackModel::formula(forward, strike, 
-                                       vol*QL_SQRT(start), 1);
+            return BlackModel::formula(forward, strike,
+                                       vol*std::sqrt(start), 1);
         }
     }
 
@@ -78,7 +78,7 @@ namespace QuantLib {
         } else {
             // forecast
             return BlackModel::formula(forward, strike,
-                                       vol*QL_SQRT(start), -1);
+                                       vol*std::sqrt(start), -1);
         }
     }
 

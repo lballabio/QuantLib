@@ -55,7 +55,7 @@ namespace QuantLib {
                 N *= 2;
                 newAdjI = (4.0*newI-I)/3.0;
                 // good enough? Also, don't run away immediately
-                if (QL_FABS(adjI-newAdjI) <= accuracy_ && i > 5)
+                if (std::fabs(adjI-newAdjI) <= accuracy_ && i > 5)
                     // ok, exit
                     return newAdjI;
                 // oh well. Another step.

@@ -27,8 +27,8 @@
 namespace QuantLib {
 
     //! Cox-Ingersoll-Ross model class.
-    /*! This class implements the Cox-Ingersoll-Ross model defined by 
-        \f[ 
+    /*! This class implements the Cox-Ingersoll-Ross model defined by
+        \f[
             dr_t = k(\theta - r_t)dt + \sqrt{r_t}\sigma dW_t .
         \f]
 
@@ -40,8 +40,8 @@ namespace QuantLib {
     class CoxIngersollRoss : public OneFactorAffineModel {
       public:
         CoxIngersollRoss(Rate r0 = 0.05,
-                         Real theta = 0.1, 
-                         Real k = 0.1, 
+                         Real theta = 0.1,
+                         Real k = 0.1,
                          Real sigma = 0.1);
 
         virtual Real discountBondOption(Option::Type type,
@@ -75,14 +75,14 @@ namespace QuantLib {
 
     class CoxIngersollRoss::HelperProcess : public StochasticProcess {
       public:
-        HelperProcess(Real theta, Real k, Real sigma, Real y0) 
+        HelperProcess(Real theta, Real k, Real sigma, Real y0)
         : y0_(y0), theta_(theta), k_(k), sigma_(sigma) {}
 
         Real x0() const {
             return y0_;
         }
         Real drift(Time, Real y) const {
-            return (0.5*theta_*k_ - 0.125*sigma_*sigma_)/y 
+            return (0.5*theta_*k_ - 0.125*sigma_*sigma_)/y
                 - 0.5*k_*y;
         }
         Real diffusion(Time, Real) const {
@@ -94,10 +94,10 @@ namespace QuantLib {
     };
 
     //! %Dynamics of the short-rate under the Cox-Ingersoll-Ross model
-    /*! The state variable \f$ y_t \f$ will here be the square-root of the 
+    /*! The state variable \f$ y_t \f$ will here be the square-root of the
         short-rate. It satisfies the following stochastic equation
         \f[
-            dy_t=\left[ 
+            dy_t=\left[
                     (\frac{k\theta }{2}+\frac{\sigma ^2}{8})\frac{1}{y_t}-
                     \frac{k}{2}y_t \right] d_t+ \frac{\sigma }{2}dW_{t}
         \f].
@@ -109,10 +109,10 @@ namespace QuantLib {
                  Real sigma,
                  Real x0)
         : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
-                          new HelperProcess(theta, k, sigma, QL_SQRT(x0)))) {}
+                        new HelperProcess(theta, k, sigma, std::sqrt(x0)))) {}
 
         virtual Real variable(Time, Rate r) const {
-            return QL_SQRT(r);
+            return std::sqrt(r);
         }
         virtual Real shortRate(Time, Real y) const {
             return y*y;

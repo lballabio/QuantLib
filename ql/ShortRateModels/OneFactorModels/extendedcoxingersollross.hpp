@@ -88,7 +88,7 @@ namespace QuantLib {
         : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(phi) {}
 
         virtual Real variable(Time t, Rate r) const {
-            return QL_SQRT(r - phi_(t));
+            return std::sqrt(r - phi_(t));
         }
         virtual Real shortRate(Time t, Real y) const {
             return y*y + phi_(t);
@@ -120,8 +120,8 @@ namespace QuantLib {
             Real value(const Array&, Time t) const {
                 Rate forwardRate =
                     termStructure_->forwardRate(t, t, Continuous, NoFrequency);
-                Real h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
-                Real expth = QL_EXP(t*h);
+                Real h = std::sqrt(k_*k_ + 2.0*sigma_*sigma_);
+                Real expth = std::exp(t*h);
                 Real temp = 2.0*h + (k_+h)*(expth-1.0);
                 Real phi = forwardRate -
                     2.0*k_*theta_*(expth - 1.0)/temp -

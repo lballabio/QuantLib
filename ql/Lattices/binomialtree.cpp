@@ -44,14 +44,14 @@ namespace QuantLib {
     Real EqualJumpsBinomialTree::underlying(Size i, Size index) const {
         BigInteger j = 2*BigInteger(index) - BigInteger(i);
         // exploiting equal jump and the x0_ tree centering
-        return x0_*QL_EXP(j*dx_);
+        return x0_*std::exp(j*dx_);
     }
 
     Real EqualProbabilitiesBinomialTree::underlying(Size i,
                                                     Size index) const {
         BigInteger j = 2*BigInteger(index) - BigInteger(i);
         // exploiting the forward value tree centering
-        return x0_*QL_EXP(i*driftPerStep_ + j*up_);
+        return x0_*std::exp(i*driftPerStep_ + j*up_);
     }
 
 
@@ -60,28 +60,28 @@ namespace QuantLib {
     : EqualProbabilitiesBinomialTree(process, end, steps) {
 
         // drift removed
-        up_ = QL_SQRT(process->variance(0.0, x0_, dt_));
+        up_ = std::sqrt(process->variance(0.0, x0_, dt_));
     }
 
     AdditiveEQPBinomialTree::AdditiveEQPBinomialTree(
-                          const boost::shared_ptr<StochasticProcess>& process, 
+                          const boost::shared_ptr<StochasticProcess>& process,
                           Time end, Size steps, Real)
     : EqualProbabilitiesBinomialTree(process, end, steps) {
 
         up_ = - 0.5 * driftPerStep_ + 0.5 *
-            QL_SQRT(4.0*process->variance(0.0, x0_, dt_)-
-                    3.0*driftPerStep_*driftPerStep_);
+            std::sqrt(4.0*process->variance(0.0, x0_, dt_)-
+                      3.0*driftPerStep_*driftPerStep_);
     }
 
 
 
 
     CoxRossRubinstein::CoxRossRubinstein(
-                          const boost::shared_ptr<StochasticProcess>& process, 
+                          const boost::shared_ptr<StochasticProcess>& process,
                           Time end, Size steps, Real)
     : EqualJumpsBinomialTree(process, end, steps) {
 
-        dx_ = QL_SQRT(process->variance(0.0, x0_, dt_));
+        dx_ = std::sqrt(process->variance(0.0, x0_, dt_));
         pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
         pd_ = 1.0 - pu_;
 
@@ -91,12 +91,12 @@ namespace QuantLib {
 
 
     Trigeorgis::Trigeorgis(
-                         const boost::shared_ptr<StochasticProcess>& process, 
+                         const boost::shared_ptr<StochasticProcess>& process,
                          Time end, Size steps, Real)
     : EqualJumpsBinomialTree(process, end, steps) {
 
-        dx_ = QL_SQRT(process->variance(0.0, x0_, dt_)+
-                      driftPerStep_*driftPerStep_);
+        dx_ = std::sqrt(process->variance(0.0, x0_, dt_)+
+                        driftPerStep_*driftPerStep_);
         pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
         pd_ = 1.0 - pu_;
 
@@ -105,15 +105,15 @@ namespace QuantLib {
     }
 
 
-    Tian::Tian(const boost::shared_ptr<StochasticProcess>& process, 
+    Tian::Tian(const boost::shared_ptr<StochasticProcess>& process,
                Time end, Size steps, Real)
     : BinomialTree(process, end, steps) {
 
-        Real q = QL_EXP(process->variance(0.0, x0_, dt_));
-        Real r = QL_EXP(driftPerStep_)*QL_SQRT(q);
+        Real q = std::exp(process->variance(0.0, x0_, dt_));
+        Real r = std::exp(driftPerStep_)*std::sqrt(q);
 
-        up_ = 0.5 * r * q * (q + 1 + QL_SQRT(q * q + 2 * q - 3));
-        down_ = 0.5 * r * q * (q + 1 - QL_SQRT(q * q + 2 * q - 3));
+        up_ = 0.5 * r * q * (q + 1 + std::sqrt(q * q + 2 * q - 3));
+        down_ = 0.5 * r * q * (q + 1 - std::sqrt(q * q + 2 * q - 3));
 
         pu_ = (r - down_) / (up_ - down_);
         pd_ = 1.0 - pu_;
@@ -127,8 +127,8 @@ namespace QuantLib {
     }
 
     Real Tian::underlying(Size i, Size index) const {
-        return x0_ * QL_POW(down_, Real(BigInteger(i)-BigInteger(index)))
-                   * QL_POW(up_, Real(index));
+        return x0_ * std::pow(down_, Real(BigInteger(i)-BigInteger(index)))
+                   * std::pow(up_, Real(index));
     }
 
     Real Tian::probability(Size, Size, Size branch) const {
@@ -147,12 +147,12 @@ namespace QuantLib {
         QL_REQUIRE(strike>0.0, "strike must be positive");
         Size oddSteps = (steps%2 ? steps : steps+1);
         Real variance = process->variance(0.0, x0_, end);
-        Real ermqdt = QL_EXP(driftPerStep_ + 0.5*variance/oddSteps);
-        Real d2 = (QL_LOG(x0_/strike) + driftPerStep_*oddSteps ) /
-                                                            QL_SQRT(variance);
+        Real ermqdt = std::exp(driftPerStep_ + 0.5*variance/oddSteps);
+        Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /
+                                                          std::sqrt(variance);
         pu_ = PeizerPrattMethod2Inversion(d2, oddSteps);
         pd_ = 1.0 - pu_;
-        Real pdash = PeizerPrattMethod2Inversion(d2+QL_SQRT(variance),
+        Real pdash = PeizerPrattMethod2Inversion(d2+std::sqrt(variance),
                                                  oddSteps);
         up_ = ermqdt * pdash / pu_;
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
@@ -160,8 +160,8 @@ namespace QuantLib {
     }
 
     Real LeisenReimer::underlying(Size i, Size index) const {
-        return x0_ * QL_POW(down_, Real(BigInteger(i)-BigInteger(index)))
-                   * QL_POW(up_, Real(index));
+        return x0_ * std::pow(down_, Real(BigInteger(i)-BigInteger(index)))
+                   * std::pow(up_, Real(index));
     }
 
     Real LeisenReimer::probability(Size, Size, Size branch) const {

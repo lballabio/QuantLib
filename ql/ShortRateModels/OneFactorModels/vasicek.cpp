@@ -31,24 +31,24 @@ namespace QuantLib {
     Real Vasicek::A(Time t, Time T) const {
         Real sigma2 = sigma()*sigma();
         Real bt = B(t, T);
-        return QL_EXP((b() - 0.5*sigma2/(a()*a()))*(bt - (T - t)) -
-                      0.25*sigma2*bt*bt/a());
+        return std::exp((b() - 0.5*sigma2/(a()*a()))*(bt - (T - t)) -
+                        0.25*sigma2*bt*bt/a());
     }
 
     Real Vasicek::B(Time t, Time T) const {
-        return (1.0 - QL_EXP(-a()*(T - t)))/a();
+        return (1.0 - std::exp(-a()*(T - t)))/a();
     }
 
     Real Vasicek::discountBondOption(Option::Type type,
-                                     Real strike, Time maturity, 
+                                     Real strike, Time maturity,
                                      Time bondMaturity) const {
 
         Real v;
-        if (QL_FABS(maturity) < QL_EPSILON) {
+        if (std::fabs(maturity) < QL_EPSILON) {
             v = 0.0;
         } else {
             v = sigma()*B(maturity, bondMaturity)*
-                QL_SQRT(0.5*(1.0 - QL_EXP(-2.0*a()*maturity))/a());
+                std::sqrt(0.5*(1.0 - std::exp(-2.0*a()*maturity))/a());
         }
         Real f = discountBond(0.0, bondMaturity, r0_);
         Real k = discountBond(0.0, maturity, r0_)*strike;

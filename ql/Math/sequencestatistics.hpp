@@ -258,7 +258,7 @@ namespace QuantLib {
                         correlation[i][j] = 1.0;
                     } else {
                         correlation[i][j] *=
-                            1.0/QL_SQRT(variances[i]*variances[j]);
+                            1.0/std::sqrt(variances[i]*variances[j]);
                     }
                 } else {
                     if (variances[i]==0.0 && variances[j]==0) {
@@ -267,7 +267,7 @@ namespace QuantLib {
                         correlation[i][j] = 0.0;
                     } else {
                         correlation[i][j] *=
-                            1.0/QL_SQRT(variances[i]*variances[j]);
+                            1.0/std::sqrt(variances[i]*variances[j]);
                     }
                 }
             } // j for

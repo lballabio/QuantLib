@@ -294,7 +294,7 @@ void SwaptionTest::testSpreadTreatment() {
                         makeSwaption(swap,exerciseDate,0.20);
                     boost::shared_ptr<Swaption> swaption2 =
                         makeSwaption(equivalentSwap,exerciseDate,0.20);
-                    if (QL_FABS(swaption1->NPV()-swaption2->NPV()) > 1.0e-10)
+                    if (std::fabs(swaption1->NPV()-swaption2->NPV()) > 1.0e-10)
                         BOOST_FAIL(
                             "wrong spread treatment: \n"
                             "    exercise date: " +
@@ -340,7 +340,7 @@ void SwaptionTest::testCachedValue() {
 	Real cachedNPV = 3.639692232647;
 #endif
 
-    if (QL_FABS(swaption->NPV()-cachedNPV) > 1.0e-11)
+    if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-11)
         BOOST_FAIL(
             "failed to reproduce cached swaption value:\n"
             "    calculated: " +

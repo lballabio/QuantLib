@@ -42,7 +42,7 @@ namespace QuantLib {
                 for (i = 0; i < numSteps; i++)
                     for (j = 0; j < numAssets; j++) {
                         averageGain += underlying_[j] *
-                            (QL_EXP(multiPath[j][i]) -1.0);
+                            (std::exp(multiPath[j][i]) -1.0);
                     }
                 return discount_ * fraction_
                     * QL_MAX<Real>(0.0, QL_MIN(roof_, averageGain));

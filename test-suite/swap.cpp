@@ -106,7 +106,7 @@ void SwapTest::testFairRate() {
             boost::shared_ptr<SimpleSwap> swap =
                 makeSwap(lengths[i],0.0,spreads[j]);
             swap = makeSwap(lengths[i],swap->fairRate(),spreads[j]);
-            if (QL_FABS(swap->NPV()) > 1.0e-10) {
+            if (std::fabs(swap->NPV()) > 1.0e-10) {
                 BOOST_FAIL(
                     "recalculating with implied rate:\n"
                     "    length: " +
@@ -139,7 +139,7 @@ void SwapTest::testFairSpread() {
             boost::shared_ptr<SimpleSwap> swap =
                 makeSwap(lengths[i],rates[j],0.0);
             swap = makeSwap(lengths[i],rates[j],swap->fairSpread());
-            if (QL_FABS(swap->NPV()) > 1.0e-10) {
+            if (std::fabs(swap->NPV()) > 1.0e-10) {
                 BOOST_FAIL(
                     "recalculating with implied spread:\n"
                     "    length: " +
@@ -268,7 +268,7 @@ void SwapTest::testInArrears() {
                                              Following, dayCounter,
                                              termStructure_));
     Rate oneYear = 0.05;
-    Rate r = QL_LOG(1.0+oneYear);
+    Rate r = std::log(1.0+oneYear);
     termStructure_.linkTo(flatRate(today_,r,dayCounter));
 
 
@@ -287,7 +287,7 @@ void SwapTest::testInArrears() {
 
     Swap swap(floatingLeg,fixedLeg,termStructure_);
 
-    if (QL_FABS(swap.NPV()) > 1.0e-4)
+    if (std::fabs(swap.NPV()) > 1.0e-4)
         BOOST_FAIL("While setting up test:\n"
                    "    expected swap NPV: 0.0\n"
                    "    calculated:        "
@@ -306,7 +306,7 @@ void SwapTest::testInArrears() {
     Decimal storedValue = -144813.0;
     Real tolerance = 1.0;
 
-    if (QL_FABS(swap.NPV()-storedValue) > tolerance)
+    if (std::fabs(swap.NPV()-storedValue) > tolerance)
         BOOST_FAIL("Wrong NPV calculation:\n"
                    "    expected:   "
                    + DecimalFormatter::toString(storedValue,0) + "\n"
@@ -335,7 +335,7 @@ void SwapTest::testCachedValue() {
     Real cachedNPV   = -5.872342992212;
 #endif
 
-    if (QL_FABS(swap->NPV()-cachedNPV) > 1.0e-11)
+    if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_FAIL("failed to reproduce cached swap value:\n"
                    "    calculated: " +
                    DecimalFormatter::toString(swap->NPV(),12) + "\n"

@@ -32,7 +32,7 @@ namespace {
         for (Size i=0; i<m.rows(); i++)
             for (Size j=0; j<m.columns(); j++)
                 sum += m[i][j]*m[i][j];
-        return QL_SQRT(sum);
+        return std::sqrt(sum);
     }
 }
 
@@ -63,7 +63,7 @@ void CovarianceTest::testSalvagingCorrelation() {
         for (Size j=0; j<n; j++) {
             expected   = goodCorr[i][j];
             calculated = calcCorr[i][j];
-            if (QL_FABS(calculated-expected) > 1.0e-10)
+            if (std::fabs(calculated-expected) > 1.0e-10)
                 BOOST_FAIL("SalvagingCorrelation with spectral alg "
                            "cor[" + SizeFormatter::toString(i) + "]"
                            "[" + SizeFormatter::toString(j) + "]:\n"
@@ -84,7 +84,7 @@ void CovarianceTest::testSalvagingCorrelation() {
 
     Real error = norm(goodCov-badCov);
     if (error > 4.0e-4)
-        BOOST_FAIL(DecimalFormatter::toExponential(error) + 
+        BOOST_FAIL(DecimalFormatter::toExponential(error) +
             " error while salvaging covariance matrix with spectral alg\n"
             "input matrix:\n" +
             MatrixFormatter::toString(badCov)
@@ -139,7 +139,7 @@ void CovarianceTest::testCovariance() {
         for (j=0; j<n; j++) {
             expected   =  expCor[i][j];
             calculated = calcCor[i][j];
-            if (QL_FABS(calculated-expected) > 1.0e-10)
+            if (std::fabs(calculated-expected) > 1.0e-10)
                 BOOST_FAIL("SequenceStatistics "
                            "cor[" + SizeFormatter::toString(i) + "]"
                            "[" + SizeFormatter::toString(j) + "]:\n"
@@ -150,7 +150,7 @@ void CovarianceTest::testCovariance() {
 
             expected   =  expCov[i][j];
             calculated = calcCov[i][j];
-            if (QL_FABS(calculated-expected) > 1.0e-10)
+            if (std::fabs(calculated-expected) > 1.0e-10)
                 BOOST_FAIL("SequenceStatistics "
                            "cov[" + SizeFormatter::toString(i) + "]"
                            "[" + SizeFormatter::toString(j) + "]:\n"
@@ -167,7 +167,7 @@ void CovarianceTest::testCovariance() {
         for (j=0; j<n; j++) {
             Real calculated = calcCov[i][j],
                  expected   = expCov[i][j];
-            if (QL_FABS(calculated-expected) > 1.0e-10) {
+            if (std::fabs(calculated-expected) > 1.0e-10) {
                 BOOST_FAIL("getCovariance "
                            "cov[" + SizeFormatter::toString(i) + "]"
                            "[" + SizeFormatter::toString(j) + "]:\n"
@@ -189,7 +189,7 @@ void CovarianceTest::testCovariance() {
     for (i=0; i<n; i++) {
         calculated = calcStd[i];
         expected   = std[i];
-        if (QL_FABS(calculated-expected) > 1.0e-16) {
+        if (std::fabs(calculated-expected) > 1.0e-16) {
             BOOST_FAIL("CovarianceDecomposition "
                         "standardDev[" + SizeFormatter::toString(i) + "]"
                         ":\n"
@@ -201,7 +201,7 @@ void CovarianceTest::testCovariance() {
         for (j=0; j<n; j++) {
             calculated = calcCor[i][j];
             expected   = expCor[i][j];
-            if (QL_FABS(calculated-expected) > 1.0e-14) {
+            if (std::fabs(calculated-expected) > 1.0e-14) {
                 BOOST_FAIL("\nCovarianceDecomposition "
                            "corr[" + SizeFormatter::toString(i) + "]"
                            "[" + SizeFormatter::toString(j) + "]:\n"

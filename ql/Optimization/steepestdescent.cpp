@@ -36,7 +36,7 @@ namespace QuantLib {
         functionValue() = P.valueAndGradient(gold, X);
         searchDirection() = -gold;
         gradientNormValue() = DotProduct(gold, gold);
-        normdiff = QL_SQRT(gradientNormValue());
+        normdiff = std::sqrt(gradientNormValue());
 
         do {
             // Linesearch
@@ -44,10 +44,10 @@ namespace QuantLib {
 
             QL_REQUIRE(lineSearch_->succeed(), "line-search failed!");
             // End criteria
-            end = endCriteria()(iterationNumber_, functionValue(), 
-                                QL_SQRT(gradientNormValue()), 
+            end = endCriteria()(iterationNumber_, functionValue(),
+                                std::sqrt(gradientNormValue()),
                                 lineSearch_->lastFunctionValue(),
-                                QL_SQRT(lineSearch_->lastGradientNorm2()), 
+                                std::sqrt(lineSearch_->lastGradientNorm2()),
                                 normdiff);
 
             // Updates
@@ -57,7 +57,7 @@ namespace QuantLib {
             functionValue() = lineSearch_->lastFunctionValue();
             // New gradient and search direction vectors
             gdiff = gold - lineSearch_->lastGradient();
-            normdiff = QL_SQRT(DotProduct (gdiff, gdiff));
+            normdiff = std::sqrt(DotProduct (gdiff, gdiff));
             gold = lineSearch_->lastGradient();
             searchDirection() = -gold;
             // New gradient squared norm

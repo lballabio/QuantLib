@@ -153,10 +153,12 @@ namespace QuantLib {
                         dt * diffusionProcs_[j]->drift(t, asset[j]);
                     next_.value[j].diffusion()[i] =
                         temp[j] *
-                        QL_SQRT(diffusionProcs_[j]->variance(t, asset[j], dt));
+                        std::sqrt(diffusionProcs_[j]->variance(t,
+                                                               asset[j],
+                                                               dt));
                     asset[j] *=
-                        QL_EXP(next_.value[j].drift()[i] +
-                               next_.value[j].diffusion()[i]);
+                        std::exp(next_.value[j].drift()[i] +
+                                 next_.value[j].diffusion()[i]);
                 }
             }
 

@@ -293,7 +293,7 @@ namespace QuantLib {
         for (Size i = 0; i < n; i++)
             log_variation += path[i];
 
-        return payoff_(underlying_ * QL_EXP(log_variation)) * discount_;
+        return payoff_(underlying_ * std::exp(log_variation)) * discount_;
     }
 
 }

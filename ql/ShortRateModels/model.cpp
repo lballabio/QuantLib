@@ -23,16 +23,16 @@ namespace QuantLib {
         void no_deletion(ShortRateModel*) {}
     }
 
-    ShortRateModel::ShortRateModel(Size nArguments) 
+    ShortRateModel::ShortRateModel(Size nArguments)
     : arguments_(nArguments),
       constraint_(new PrivateConstraint(arguments_)) {}
 
     class ShortRateModel::CalibrationFunction : public CostFunction {
       public:
-        CalibrationFunction( 
+        CalibrationFunction(
                   ShortRateModel* model,
-                  const std::vector<boost::shared_ptr<CalibrationHelper> >& 
-                                                                  instruments) 
+                  const std::vector<boost::shared_ptr<CalibrationHelper> >&
+                                                                  instruments)
         : model_(model, no_deletion), instruments_(instruments) {}
         virtual ~CalibrationFunction() {}
 
@@ -45,7 +45,7 @@ namespace QuantLib {
                 value += diff*diff;
             }
 
-            return QL_SQRT(value);
+            return std::sqrt(value);
         }
         virtual Real finiteDifferenceEpsilon() const { return 1e-6; }
       private:
@@ -55,7 +55,7 @@ namespace QuantLib {
 
     void ShortRateModel::calibrate(
         const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments,
-        OptimizationMethod& method, 
+        OptimizationMethod& method,
         const Constraint& additionalConstraint) {
 
         Constraint c;
@@ -86,7 +86,7 @@ namespace QuantLib {
                 params[k] = arguments_[i].params()[j];
             }
         }
-        return params; 
+        return params;
     }
 
     void ShortRateModel::setParams(const Array& params) {

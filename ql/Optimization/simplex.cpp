@@ -16,7 +16,7 @@
 */
 
 /* The implementation of the algorithm was highly inspired by
- * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, 
+ * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling,
  * Flannery, chapter 10
  */
 
@@ -93,8 +93,8 @@ namespace QuantLib {
             }
             Real low = values_[iLowest], high = values_[iHighest];
 
-            Real rtol = 2.0*QL_FABS(high - low)/
-                (QL_FABS(high) + QL_FABS(low) + QL_EPSILON);
+            Real rtol = 2.0*std::fabs(high - low)/
+                (std::fabs(high) + std::fabs(low) + QL_EPSILON);
             if (rtol < tol_) {
                 X = vertices_[iLowest];
                 return;
@@ -113,7 +113,7 @@ namespace QuantLib {
                     if (vTry >= vSave) {
                         for (Size i=0; i<=n; i++) {
                             if (i!=iLowest) {
-                                vertices_[i] = 
+                                vertices_[i] =
                                     0.5*(vertices_[i] + vertices_[iLowest]);
                                 values_[i] = P.value(vertices_[i]);
                             }

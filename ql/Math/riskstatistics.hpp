@@ -132,7 +132,7 @@ namespace QuantLib {
 
     template <class S>
     inline Real GenericRiskStatistics<S>::semiDeviation() const {
-        return QL_SQRT(semiVariance());
+        return std::sqrt(semiVariance());
     }
 
     template <class S>
@@ -142,7 +142,7 @@ namespace QuantLib {
 
     template <class S>
     inline Real GenericRiskStatistics<S>::downsideDeviation() const {
-        return QL_SQRT(downsideVariance());
+        return std::sqrt(downsideVariance());
     }
 
     // template definitions

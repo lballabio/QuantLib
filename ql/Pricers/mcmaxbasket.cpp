@@ -48,7 +48,7 @@ namespace QuantLib {
                     for(i = 0; i < numSteps; i++)
                         log_variation += multiPath[j][i];
                     maxPrice = QL_MAX(maxPrice,
-                                      underlying_[j]*QL_EXP(log_variation));
+                                      underlying_[j]*std::exp(log_variation));
                 }
                 return discount_ * maxPrice;
             }

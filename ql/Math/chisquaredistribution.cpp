@@ -33,7 +33,7 @@ namespace QuantLib {
         const Size itrmax = 10000;
         Real lam = 0.5*ncp_;
 
-        Real u = QL_EXP(-lam);
+        Real u = std::exp(-lam);
         Real v = u;
         Real x2 = 0.5*x;
         Real f2 = 0.5*df_;
@@ -41,12 +41,13 @@ namespace QuantLib {
 
         Real t = 0.0;
         if (f2*QL_EPSILON > 0.125 &&
-            QL_FABS(x2-f2) < QL_SQRT(QL_EPSILON)*f2) {
-            t = QL_EXP((1 - t)*(2 - t/(f2+1)))/QL_SQRT(2.0*M_PI*(f2 + 1.0));
+            std::fabs(x2-f2) < std::sqrt(QL_EPSILON)*f2) {
+            t = std::exp((1 - t) *
+                         (2 - t/(f2+1)))/std::sqrt(2.0*M_PI*(f2 + 1.0));
         }
         else {
-            t = QL_EXP(f2*QL_LOG(x2) - x2 - 
-                       GammaFunction().logValue(f2 + 1));
+            t = std::exp(f2*std::log(x2) - x2 -
+                         GammaFunction().logValue(f2 + 1));
         }
 
         Real ans = v*t;
@@ -67,7 +68,7 @@ namespace QuantLib {
                 v += u;
                 t *= x / f_2n;
                 ans += v*t;
-                n++; 
+                n++;
                 f_2n += 2.0;
                 f_x_2n += 2.0;
                 if (!flag && n <= itrmax)

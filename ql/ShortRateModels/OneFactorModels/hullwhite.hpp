@@ -112,7 +112,7 @@ namespace QuantLib {
             Real value(const Array& params, Time t) const {
                 Rate forwardRate =
                     termStructure_->forwardRate(t, t, Continuous, NoFrequency);
-                Real temp = sigma_*(1.0 - QL_EXP(-a_*t))/a_;
+                Real temp = sigma_*(1.0 - std::exp(-a_*t))/a_;
                 return (forwardRate + 0.5*temp*temp);
             }
           private:

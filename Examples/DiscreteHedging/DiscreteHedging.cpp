@@ -65,7 +65,7 @@ public:
       sigma_(sigma), r_(r) {
 
         // value of the option
-        DiscountFactor rDiscount = QL_EXP(-r_*maturity_);
+        DiscountFactor rDiscount = std::exp(-r_*maturity_);
         DiscountFactor qDiscount = 1.0;
         Real forward = s0_*qDiscount/rDiscount;
         Real variance = sigma_*sigma_*maturity_;
@@ -206,8 +206,8 @@ Real ReplicationPathPricer::operator()(const Path& path) const
     /*** the initial deal ***/
     /************************/
     // option fair price (Black-Scholes) at t=0
-    DiscountFactor rDiscount = QL_EXP(-r_*maturity_);
-    DiscountFactor qDiscount = QL_EXP(-stockDividendYield*maturity_);
+    DiscountFactor rDiscount = std::exp(-r_*maturity_);
+    DiscountFactor qDiscount = std::exp(-stockDividendYield*maturity_);
     Real forward = stock*qDiscount/rDiscount;
     Real variance = sigma_*sigma_*maturity_;
     boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -230,18 +230,18 @@ Real ReplicationPathPricer::operator()(const Path& path) const
         t += dt;
 
         // accruing on the money account
-        money_account *= QL_EXP( r_*dt );
+        money_account *= std::exp( r_*dt );
 
         // stock growth:
         // path contains the list of Gaussian variations
         // and path[n] is the n-th variation
         stockLogGrowth += path[step];
-        stock = underlying_*QL_EXP(stockLogGrowth);
+        stock = underlying_*std::exp(stockLogGrowth);
 
         // recalculate option value at the current stock value,
         // and the current time to maturity
-        rDiscount = QL_EXP(-r_*(maturity_-t));
-        qDiscount = QL_EXP(-stockDividendYield*(maturity_-t));
+        rDiscount = std::exp(-r_*(maturity_-t));
+        qDiscount = std::exp(-stockDividendYield*(maturity_-t));
         forward = stock*qDiscount/rDiscount;
         variance = sigma_*sigma_*(maturity_-t);
         BlackFormula black(forward,rDiscount,variance,payoff);
@@ -258,10 +258,10 @@ Real ReplicationPathPricer::operator()(const Path& path) const
     /*** option expiration ***/
     /*************************/
     // last accrual on my money account
-    money_account *= QL_EXP( r_*dt );
+    money_account *= std::exp( r_*dt );
     // last stock growth
     stockLogGrowth += path[n-1];
-    stock = underlying_*QL_EXP(stockLogGrowth);
+    stock = underlying_*std::exp(stockLogGrowth);
 
     // the hedger delivers the option payoff to the option holder
     Real optionPayoff = PlainVanillaPayoff(type_, strike_)(stock);
@@ -346,7 +346,7 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     Real PLKurt  = MCSimulation.sampleAccumulator().kurtosis();
 
     // Derman and Kamal's formula
-    Real theorStD = QL_SQRT(M_PI/4/nTimeSteps)*vega_*sigma_;
+    Real theorStD = std::sqrt(M_PI/4/nTimeSteps)*vega_*sigma_;
 
 
     std::cout << nSamples << "\t| "

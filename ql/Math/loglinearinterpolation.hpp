@@ -43,14 +43,14 @@ namespace QuantLib {
                 for (Size i=0; i<logY_.size(); i++) {
                     QL_REQUIRE(this->yBegin_[i]>0.0,
                                "negative values not allowed");
-                    logY_[i]=QL_LOG(this->yBegin_[i]);
+                    logY_[i] = std::log(this->yBegin_[i]);
                 }
                 linearInterpolation_ = LinearInterpolation(this->xBegin_,
                                                            this->xEnd_,
                                                            logY_.begin());
             }
             Real value(Real x) const {
-                return QL_EXP(linearInterpolation_(x,true));
+                return std::exp(linearInterpolation_(x,true));
             }
             Real primitive(Real) const {
                 QL_FAIL("not implemented");

@@ -310,7 +310,7 @@ void BasketOptionTest::testEuroTwoValues() {
         // analytic engine
         Real calculated = basketOption.NPV();
         Real expected = values[i].result;
-        Real error = QL_FABS(calculated-expected);
+        Real error = std::fabs(calculated-expected);
         if (error > values[i].tol) {
             REPORT_FAILURE_2("value", values[i].basketType, payoff, exercise,
                              values[i].s1, values[i].s2, values[i].q1,
@@ -756,7 +756,7 @@ void BasketOptionTest::testOneDAmericanValues() {
         Real expected = values[i].result;
         // Real errorEstimate = basketOption.errorEstimate();
         Real relError = relativeError(calculated, expected, values[i].s);
-        // Real error = QL_FABS(calculated-expected);
+        // Real error = std::fabs(calculated-expected);
 
         if (relError > values[i].tol) {
             BOOST_FAIL("expected value: "

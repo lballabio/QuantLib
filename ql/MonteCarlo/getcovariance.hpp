@@ -57,7 +57,7 @@ namespace QuantLib {
         DataIterator iIt, jIt;
         for (i=0, iIt=volBegin; i<size; i++, iIt++){
             for (j=0, jIt=volBegin; j<i; j++, jIt++){
-                QL_REQUIRE(QL_FABS(corr[i][j]-corr[j][i]) <= tolerance,
+                QL_REQUIRE(std::fabs(corr[i][j]-corr[j][i]) <= tolerance,
                            "invalid correlation matrix:"
                            "\nc[" + SizeFormatter::toString(i) +
                            ", "   + SizeFormatter::toString(j) +
@@ -70,7 +70,7 @@ namespace QuantLib {
                     0.5 * (corr[i][j] + corr[j][i]);
                 covariance[j][i] = covariance[i][j];
             }
-            QL_REQUIRE(QL_FABS(corr[i][i]-1.0) <= tolerance,
+            QL_REQUIRE(std::fabs(corr[i][i]-1.0) <= tolerance,
                        "invalid correlation matrix, diagonal element of the "
                        + SizeFormatter::toOrdinal(i) +
                        " row is "

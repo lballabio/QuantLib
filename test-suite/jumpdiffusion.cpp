@@ -346,20 +346,20 @@ void JumpDiffusionTest::testMerton76() {
 
         // delta in Haug's notation
         Real jVol = values[i].v *
-            QL_SQRT(values[i].gamma / values[i].jumpIntensity);
+            std::sqrt(values[i].gamma / values[i].jumpIntensity);
         jumpVol->setValue(jVol);
 
         // z in Haug's notation
-        Real diffusionVol = values[i].v * QL_SQRT(1.0 - values[i].gamma);
+        Real diffusionVol = values[i].v * std::sqrt(1.0 - values[i].gamma);
         vol  ->setValue(diffusionVol);
 
         // Haug is assuming zero meanJump
         Real meanJump = 0.0;
-        meanLogJump->setValue(QL_LOG(1.0+meanJump)-0.5*jVol*jVol);
+        meanLogJump->setValue(std::log(1.0+meanJump)-0.5*jVol*jVol);
 
-        Volatility totalVol = QL_SQRT(values[i].jumpIntensity*jVol*jVol +
+        Volatility totalVol = std::sqrt(values[i].jumpIntensity*jVol*jVol +
                                       diffusionVol*diffusionVol);
-        Volatility volError = QL_FABS(totalVol-values[i].v);
+        Volatility volError = std::fabs(totalVol-values[i].v);
         QL_REQUIRE(volError<1e-13,
                    DecimalFormatter::toString(volError) +
                    " mismatch");
@@ -367,7 +367,7 @@ void JumpDiffusionTest::testMerton76() {
         EuropeanOption option(stochProcess, payoff, exercise, engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);
+        Real error = std::fabs(calculated-values[i].result);
         if (error>values[i].tol) {
             REPORT_FAILURE_2("value", payoff, exercise,
                              values[i].s, values[i].q, values[i].r,
@@ -533,7 +533,7 @@ void JumpDiffusionTest::testGreeks() {
                               Real expct = expected  [greek],
                                    calcl = calculated[greek],
                                    tol   = tolerance [greek];
-                              Real error = QL_FABS(expct-calcl);
+                              Real error = std::fabs(expct-calcl);
                               if (error>tol) {
                                   REPORT_FAILURE_1(greek, payoff, exercise,
                                                    u, q, r, today, v,

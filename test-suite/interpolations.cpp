@@ -47,7 +47,7 @@ namespace {
     std::vector<Real> gaussian(const std::vector<Real>& x) {
         std::vector<Real> y(x.size());
         for (Size i=0; i<x.size(); i++)
-            y[i] = QL_EXP(-x[i]*x[i]);
+            y[i] = std::exp(-x[i]*x[i]);
         return y;
     }
 
@@ -64,7 +64,7 @@ namespace {
         Real tolerance = 2.0e-15;
         while (xBegin != xEnd) {
             Real interpolated = spline(*xBegin);
-            if (QL_FABS(interpolated-*yBegin) > tolerance) {
+            if (std::fabs(interpolated-*yBegin) > tolerance) {
                 BOOST_FAIL(std::string(type) +
                            " interpolation failed at x = " +
                            DecimalFormatter::toString(*xBegin) +
@@ -74,7 +74,7 @@ namespace {
                            DecimalFormatter::toExponential(*yBegin) +
                            "\n    error:              "
                            + DecimalFormatter::toExponential(
-                                              QL_FABS(interpolated-*yBegin)));
+                                            std::fabs(interpolated-*yBegin)));
             }
             ++xBegin; ++yBegin;
         }
@@ -86,7 +86,7 @@ namespace {
                                  Real value) {
         Real tolerance = 1.0e-14;
         Real interpolated = spline.derivative(x);
-        Real error = QL_FABS(interpolated-value);
+        Real error = std::fabs(interpolated-value);
         if (error > tolerance) {
             BOOST_FAIL(std::string(type) +
                        " interpolation first derivative failure\n"
@@ -107,7 +107,7 @@ namespace {
                                  Real value) {
         Real tolerance = 1.0e-13;
         Real interpolated = spline.secondDerivative(x);
-        Real error = QL_FABS(interpolated-value);
+        Real error = std::fabs(interpolated-value);
         if (error > tolerance) {
             BOOST_FAIL(std::string(type) +
                        " interpolation second derivative failure\n"
@@ -127,7 +127,7 @@ namespace {
 
         Real tolerance = 1.0e-14;
         const std::vector<Real>& c = spline.cCoefficients();
-        if (QL_FABS(c[0]-c[1]) > tolerance) {
+        if (std::fabs(c[0]-c[1]) > tolerance) {
             BOOST_FAIL(std::string(type) +
                        " interpolation failure"
                        "\n    cubic coefficient of the first"
@@ -138,7 +138,7 @@ namespace {
                        + DecimalFormatter::toString(c[1]));
         }
         Size n = c.size();
-        if (QL_FABS(c[n-2]-c[n-1]) > tolerance) {
+        if (std::fabs(c[n-2]-c[n-1]) > tolerance) {
             BOOST_FAIL(std::string(type) +
                        " interpolation failure"
                        "\n    cubic coefficient of the 2nd to last"
@@ -156,14 +156,15 @@ namespace {
         Real tolerance = 1.0e-15;
         for (Real x = xMin; x < 0.0; x += 0.1) {
             Real y1 = spline(x), y2 = spline(-x);
-            if (QL_FABS(y1-y2) > tolerance) {
+            if (std::fabs(y1-y2) > tolerance) {
                 BOOST_FAIL(std::string(type) +
                            " interpolation not symmetric"
                            "\n    x = "   + DecimalFormatter::toString(x) +
                            "\n    g(x)  = " + DecimalFormatter::toString(y1) +
                            "\n    g(-x) = " + DecimalFormatter::toString(y2) +
                            "\n    error:              "
-                           + DecimalFormatter::toExponential(QL_FABS(y1-y2)));
+                           + DecimalFormatter::toExponential(
+                                                           std::fabs(y1-y2)));
             }
         }
     }
@@ -173,7 +174,7 @@ namespace {
       public:
         errorFunction(const F& f) : f_(f) {}
         Real operator()(Real x) const {
-            Real temp = f_(x)-QL_EXP(-x*x);
+            Real temp = f_(x)-std::exp(-x*x);
             return temp*temp;
         }
       private:
@@ -186,9 +187,9 @@ namespace {
     }
 
     Real multif(Real s, Real t, Real u, Real v, Real w) {
-        return QL_SQRT(s * QL_SINH(QL_LOG(t)) +
-                       QL_EXP(QL_SIN(u) * QL_SIN(3 * v)) +
-                       QL_SINH(QL_LOG(v * w)));
+        return std::sqrt(s * std::sinh(std::log(t)) +
+                         std::exp(std::sin(u) * std::sin(3 * v)) +
+                         std::sinh(std::log(v * w)));
     }
 
 }
@@ -231,9 +232,9 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
                                     CubicSpline::NotAKnot, Null<Real>(),
                                     CubicSpline::NotAKnot, Null<Real>(),
                                     false);
-        Real result = QL_SQRT(integral(make_error_function(f), -1.7, 1.9));
+        Real result = std::sqrt(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
-        if (QL_FABS(result-tabulatedErrors[i]) > toleranceOnTabErr[i])
+        if (std::fabs(result-tabulatedErrors[i]) > toleranceOnTabErr[i])
             BOOST_FAIL("Not-a-knot spline interpolation "
                        "\n    sample points:      " +
                        SizeFormatter::toString(n) +
@@ -246,9 +247,9 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         f = MonotonicCubicSpline(x.begin(), x.end(), y.begin(),
                                  CubicSpline::NotAKnot, Null<Real>(),
                                  CubicSpline::NotAKnot, Null<Real>());
-        result = QL_SQRT(integral(make_error_function(f), -1.7, 1.9));
+        result = std::sqrt(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
-        if (QL_FABS(result-tabulatedMCErrors[i]) > toleranceOnTabMCErr[i])
+        if (std::fabs(result-tabulatedMCErrors[i]) > toleranceOnTabMCErr[i])
             BOOST_FAIL("MC Not-a-knot spline interpolation "
                        "\n    sample points:      " +
                        SizeFormatter::toString(n) +
@@ -512,7 +513,7 @@ void InterpolationTest::testSplineOnGenericValues() {
     for (i=0; i<n; i++) {
         interpolated = f.secondDerivative(generic_x[i]);
         error = interpolated - generic_natural_y2[i];
-        if (QL_FABS(error)>3e-16) {
+        if (std::fabs(error)>3e-16) {
             BOOST_FAIL("Natural spline interpolation "
                        "second derivative failed at x="
                        + DecimalFormatter::toString(generic_x[i]) +
@@ -733,7 +734,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                                   CubicSpline::NotAKnot, Null<Real>(),
                                   true);
     interpolated = f(zero);
-    if (QL_FABS(interpolated-expected)>1e-15) {
+    if (std::fabs(interpolated-expected)>1e-15) {
         BOOST_FAIL("MC not-a-knot spline"
                    " interpolation failed at x = " +
                    DecimalFormatter::toString(zero) +
@@ -743,7 +744,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                    DecimalFormatter::toString(expected) +
                    "\n    error:              "
                    + DecimalFormatter::toExponential(
-                                             QL_FABS(interpolated-expected)));
+                                           std::fabs(interpolated-expected)));
     }
 
 
@@ -753,7 +754,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                     CubicSpline::FirstDerivative, -4.0,
                     true);
     interpolated = f(zero);
-    if (QL_FABS(interpolated-expected)>1e-15) {
+    if (std::fabs(interpolated-expected)>1e-15) {
         BOOST_FAIL("MC clamped spline"
                    " interpolation failed at x = " +
                    DecimalFormatter::toString(zero) +
@@ -763,7 +764,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                    DecimalFormatter::toString(expected) +
                    "\n    error:              "
                    + DecimalFormatter::toExponential(
-                                             QL_FABS(interpolated-expected)));
+                                           std::fabs(interpolated-expected)));
     }
 
 
@@ -772,7 +773,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                     CubicSpline::SecondDerivative, -2.0,
                     CubicSpline::SecondDerivative, -2.0,
                     true);
-    if (QL_FABS(interpolated-expected)>1e-15) {
+    if (std::fabs(interpolated-expected)>1e-15) {
         BOOST_FAIL("MC SecondDerivative spline"
                    " interpolation failed at x = " +
                    DecimalFormatter::toString(zero) +
@@ -782,7 +783,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                    DecimalFormatter::toString(expected) +
                    "\n    error:              "
                    + DecimalFormatter::toExponential(
-                                             QL_FABS(interpolated-expected)));
+                                           std::fabs(interpolated-expected)));
     }
 
 }
@@ -854,7 +855,7 @@ void InterpolationTest::testMultiSpline() {
                         w = grid[4][m];
                         Real interpolated = cs(args);
                         Real expected = y5[i][j][k][l][m];
-                        Real error = QL_FABS(interpolated-expected);
+                        Real error = std::fabs(interpolated-expected);
                         Real tolerance = 1e-16;
                         if (error > tolerance) {
                             BOOST_FAIL("\n  At ("
@@ -889,7 +890,7 @@ void InterpolationTest::testMultiSpline() {
         v = grid[3].front() + next[3]*(grid[3].back()-grid[3].front());
         w = grid[4].front() + next[4]*(grid[4].back()-grid[4].front());
         Real interpolated = cs(args), expected = multif(s, t, u, v, w);
-        Real error = QL_FABS(interpolated-expected);
+        Real error = std::fabs(interpolated-expected);
         if (error > tolerance) {
             BOOST_FAIL("\n  At (" + DecimalFormatter::toString(s) + ","
                        + DecimalFormatter::toString(t) + ","

@@ -66,10 +66,10 @@ namespace QuantLib {
         Real strike, y, dy, strikep, strikem;
         Real w, wp, wm, dwdy, d2wdy2;
         strike = underlyingLevel;
-        y = QL_LOG(strike/forwardValue);
+        y = std::log(strike/forwardValue);
         dy = ((y!=0.0) ? y*0.000001 : 0.000001);
-        strikep=strike*QL_EXP(dy);
-        strikem=strike/QL_EXP(dy);
+        strikep=strike*std::exp(dy);
+        strikem=strike/std::exp(dy);
         w  = blackTS_->blackVariance(t, strike,  true);
         wp = blackTS_->blackVariance(t, strikep, true);
         wm = blackTS_->blackVariance(t, strikem, true);
@@ -111,7 +111,7 @@ namespace QuantLib {
         }
 
         if (dwdy==0.0 && d2wdy2==0.0) { // avoid /w where w might be 0.0
-            return QL_SQRT(dwdt);
+            return std::sqrt(dwdt);
         } else {
             Real den1 = 1.0 - y/w*dwdy;
             Real den2 = 0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy;
@@ -124,8 +124,8 @@ namespace QuantLib {
                       " and time "
                       + DecimalFormatter::toString(t) +
                       "; the black vol surface is not smooth enough");
-            return QL_SQRT(result);
-            // return QL_SQRT(dwdt / (1.0 - y/w*dwdy +
+            return std::sqrt(result);
+            // return std::sqrt(dwdt / (1.0 - y/w*dwdy +
             //    0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy + 0.5*d2wdy2));
         }
     }

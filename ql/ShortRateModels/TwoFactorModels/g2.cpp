@@ -50,19 +50,19 @@ namespace QuantLib {
     }
 
     Real G2::sigmaP(Time t, Time s) const {
-        Real temp = 1.0 - QL_EXP(-(a()+b())*t);
-        Real temp1 = 1.0 - QL_EXP(-a()*(s-t));
-        Real temp2 = 1.0 - QL_EXP(-b()*(s-t));
+        Real temp = 1.0 - std::exp(-(a()+b())*t);
+        Real temp1 = 1.0 - std::exp(-a()*(s-t));
+        Real temp2 = 1.0 - std::exp(-b()*(s-t));
         Real a3 = a()*a()*a();
         Real b3 = b()*b()*b();
         Real sigma2 = sigma()*sigma();
         Real eta2 = eta()*eta();
         Real value =
-            0.5*sigma2*temp1*temp1*(1.0 - QL_EXP(-2.0*a()*t))/a3 +
-            0.5*eta2*temp2*temp2*(1.0 - QL_EXP(-2.0*b()*t))/b3 +
+            0.5*sigma2*temp1*temp1*(1.0 - std::exp(-2.0*a()*t))/a3 +
+            0.5*eta2*temp2*temp2*(1.0 - std::exp(-2.0*b()*t))/b3 +
             2.0*rho()*sigma()*eta()/(a()*b()*(a()+b()))*
             temp1*temp2*temp;
-        return QL_SQRT(value);
+        return std::sqrt(value);
     }
 
     Real G2::discountBondOption(Option::Type type, Real strike, Time maturity,
@@ -78,8 +78,8 @@ namespace QuantLib {
     }
 
     Real G2::V(Time t) const {
-        Real expat = QL_EXP(-a()*t);
-        Real expbt = QL_EXP(-b()*t);
+        Real expat = std::exp(-a()*t);
+        Real expbt = std::exp(-b()*t);
         Real cx = sigma()/a();
         Real cy = eta()/b();
         Real valuex = cx*cx*(t + (2.0*expat-0.5*expat*expat-1.5)/a());
@@ -92,11 +92,11 @@ namespace QuantLib {
 
     Real G2::A(Time t, Time T) const {
         return termStructure()->discount(T)/termStructure()->discount(t)*
-            QL_EXP(0.5*(V(T-t) - V(T) + V(t)));
+            std::exp(0.5*(V(T-t) - V(T) + V(t)));
     }
 
     Real G2::B(Real x, Time t) const {
-        return (1.0 - QL_EXP(-x*t))/x;
+        return (1.0 - std::exp(-x*t))/x;
     }
 
     class G2::SwaptionPricingFunction {
@@ -111,22 +111,22 @@ namespace QuantLib {
           A_(size_), Ba_(size_), Bb_(size_) {
 
 
-            sigmax_ = sigma_*QL_SQRT(0.5*(1.0-QL_EXP(-2.0*a_*T_))/a_);
-            sigmay_ =   eta_*QL_SQRT(0.5*(1.0-QL_EXP(-2.0*b_*T_))/b_);
-            rhoxy_ = rho_*eta_*sigma_*(1.0 - QL_EXP(-(a_+b_)*T_))/
+            sigmax_ = sigma_*std::sqrt(0.5*(1.0-std::exp(-2.0*a_*T_))/a_);
+            sigmay_ =   eta_*std::sqrt(0.5*(1.0-std::exp(-2.0*b_*T_))/b_);
+            rhoxy_ = rho_*eta_*sigma_*(1.0 - std::exp(-(a_+b_)*T_))/
                 ((a_+b_)*sigmax_*sigmay_);
 
             Real temp = sigma_*sigma_/(a_*a_);
-            mux_ = -((temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - QL_EXP(-a*T_)) -
-                     0.5*temp*(1.0 - QL_EXP(-2.0*a_*T_)) -
+            mux_ = -((temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - std::exp(-a*T_)) -
+                     0.5*temp*(1.0 - std::exp(-2.0*a_*T_)) -
                      rho_*sigma_*eta_/(b_*(a_+b_))*
-                     (1.0- QL_EXP(-(b_+a_)*T_)));
+                     (1.0- std::exp(-(b_+a_)*T_)));
 
             temp = eta_*eta_/(b_*b_);
-            muy_ = -((temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - QL_EXP(-b*T_)) -
-                     0.5*temp*(1.0 - QL_EXP(-2.0*b_*T_)) -
+            muy_ = -((temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - std::exp(-b*T_)) -
+                     0.5*temp*(1.0 - std::exp(-2.0*b_*T_)) -
                      rho_*sigma_*eta_/(a_*(a_+b_))*
-                     (1.0- QL_EXP(-(b_+a_)*T_)));
+                     (1.0- std::exp(-(b_+a_)*T_)));
 
             for (Size i=0; i<size_; i++) {
                 A_[i] = model.A(T_, t_[i]);
@@ -140,14 +140,14 @@ namespace QuantLib {
         Real operator()(Real x) const {
             CumulativeNormalDistribution phi;
             Real temp = (x - mux_)/sigmax_;
-            Real txy = QL_SQRT(1.0 - rhoxy_*rhoxy_);
+            Real txy = std::sqrt(1.0 - rhoxy_*rhoxy_);
 
             Array lambda(size_);
             Size i;
             for (i=0; i<size_; i++) {
                 Real tau = (i==0 ? t_[0] - T_ : t_[i] - t_[i-1]);
                 Real c = (i==size_-1 ? (1.0+rate_*tau) : rate_*tau);
-                lambda[i] = c*A_[i]*QL_EXP(-Ba_[i]*x);
+                lambda[i] = c*A_[i]*std::exp(-Ba_[i]*x);
             }
 
             SolvingFunction function(lambda, Bb_) ;
@@ -162,15 +162,15 @@ namespace QuantLib {
 
             for (i=0; i<size_; i++) {
                 Real h2 = h1 +
-                    Bb_[i]*sigmay_*QL_SQRT(1.0-rhoxy_*rhoxy_);
+                    Bb_[i]*sigmay_*std::sqrt(1.0-rhoxy_*rhoxy_);
                 Real kappa = - Bb_[i] *
                     (muy_ - 0.5*txy*txy*sigmay_*sigmay_*Bb_[i] +
                      rhoxy_*sigmay_*(x-mux_)/sigmax_);
-                value -= lambda[i] *QL_EXP(kappa)*phi(-w_*h2);
+                value -= lambda[i] *std::exp(kappa)*phi(-w_*h2);
             }
 
-            return QL_EXP(-0.5*temp*temp)*value/
-                          (sigmax_*QL_SQRT(2.0*M_PI));
+            return std::exp(-0.5*temp*temp)*value/
+                (sigmax_*std::sqrt(2.0*M_PI));
         }
 
 
@@ -182,7 +182,7 @@ namespace QuantLib {
             Real operator()(Real y) const {
                 Real value = 1.0;
                 for (Size i=0; i<lambda_.size(); i++) {
-                    value -= lambda_[i]*QL_EXP(-Bb_[i]*y);
+                    value -= lambda_[i]*std::exp(-Bb_[i]*y);
                 }
                 return value;
             }

@@ -77,7 +77,7 @@ namespace QuantLib {
                     break;
                 }
                 // good enough? Also, don't run away immediately
-                if (QL_FABS(I-newI) <= accuracy_ && i > 5)
+                if (std::fabs(I-newI) <= accuracy_ && i > 5)
                     // ok, exit
                     return newI;
                 // oh well. Another step.

@@ -159,7 +159,7 @@ int main(int, char* [])
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<JarrowRudd>(timeSteps)));
         value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
+        discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
              << DecimalFormatter::toString(value, 6) << "\t"
@@ -172,7 +172,7 @@ int main(int, char* [])
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<CoxRossRubinstein>(timeSteps)));
         value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
+        discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
              << DecimalFormatter::toString(value, 6) << "\t"
@@ -185,7 +185,7 @@ int main(int, char* [])
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<AdditiveEQPBinomialTree>(timeSteps)));
         value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
+        discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
              << DecimalFormatter::toString(value, 6) << "\t"
@@ -198,7 +198,7 @@ int main(int, char* [])
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<Trigeorgis>(timeSteps)));
         value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
+        discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
              << DecimalFormatter::toString(value, 6) << "\t"
@@ -211,7 +211,7 @@ int main(int, char* [])
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<Tian>(timeSteps)));
         value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
+        discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
              << DecimalFormatter::toString(value, 6) << "\t"
@@ -224,7 +224,7 @@ int main(int, char* [])
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<LeisenReimer>(timeSteps)));
         value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
+        discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
              << DecimalFormatter::toString(value, 6) << "\t"
@@ -237,7 +237,7 @@ int main(int, char* [])
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BaroneAdesiWhaleyApproximationEngine));
         value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
+        discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
              << DecimalFormatter::toString(value, 6) << "\t"
@@ -250,7 +250,7 @@ int main(int, char* [])
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BjerksundStenslandApproximationEngine));
         value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
+        discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
              << DecimalFormatter::toString(value, 6) << "\t"

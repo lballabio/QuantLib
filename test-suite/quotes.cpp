@@ -83,7 +83,7 @@ void QuoteTest::testDerived() {
         DerivedQuote<unary_f> derived(h,funcs[i]);
         Real x = derived.value(),
              y = funcs[i](me->value());
-        if (QL_FABS(x-y) > 1.0e-10)
+        if (std::fabs(x-y) > 1.0e-10)
             BOOST_FAIL("derived quote yields " +
                        DecimalFormatter::toString(x) + "\n"
                        "function result is " +
@@ -106,7 +106,7 @@ void QuoteTest::testComposite() {
         CompositeQuote<binary_f> composite(h1,h2,funcs[i]);
         Real x = composite.value(),
              y = funcs[i](me1->value(),me2->value());
-        if (QL_FABS(x-y) > 1.0e-10)
+        if (std::fabs(x-y) > 1.0e-10)
             BOOST_FAIL("composite quote yields " +
                        DecimalFormatter::toString(x) + "\n"
                        "function result is " +

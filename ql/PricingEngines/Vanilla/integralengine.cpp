@@ -30,10 +30,10 @@ namespace QuantLib {
                       Real variance)
            : payoff_(payoff), s0_(s0), drift_(drift), variance_(variance) {}
             Real operator()(Real x) const {
-                Real temp = s0_ * QL_EXP(x);
+                Real temp = s0_ * std::exp(x);
                 Real result = (*payoff_)(temp);
                 return result *
-                    QL_EXP(-(x - drift_)*(x -drift_)/(2.0*variance_)) ;
+                    std::exp(-(x - drift_)*(x -drift_)/(2.0*variance_)) ;
             }
           private:
             boost::shared_ptr<Payoff> payoff_;
@@ -48,32 +48,32 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff = 
+        boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        Real variance = 
+        Real variance =
             arguments_.blackScholesProcess->blackVolatility()->blackVariance(
                            arguments_.exercise->lastDate(), payoff->strike());
 
-        DiscountFactor dividendDiscount = 
+        DiscountFactor dividendDiscount =
             arguments_.blackScholesProcess->dividendYield()->discount(
                                              arguments_.exercise->lastDate());
-        DiscountFactor riskFreeDiscount = 
+        DiscountFactor riskFreeDiscount =
             arguments_.blackScholesProcess->riskFreeRate()->discount(
                                              arguments_.exercise->lastDate());
-        Rate drift = QL_LOG(dividendDiscount/riskFreeDiscount)-0.5*variance;
+        Rate drift = std::log(dividendDiscount/riskFreeDiscount)-0.5*variance;
 
-        Integrand f(arguments_.payoff, 
-                    arguments_.blackScholesProcess->stateVariable()->value(), 
+        Integrand f(arguments_.payoff,
+                    arguments_.blackScholesProcess->stateVariable()->value(),
                     drift, variance);
         SegmentIntegral integrator(5000);
 
-        Real infinity = 10.0*QL_SQRT(variance);
+        Real infinity = 10.0*std::sqrt(variance);
         results_.value =
             arguments_.blackScholesProcess->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate()) /
-            QL_SQRT(2.0*M_PI*variance) *
+            std::sqrt(2.0*M_PI*variance) *
             integrator(f, drift-infinity, drift+infinity);
     }
 

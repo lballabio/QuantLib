@@ -44,7 +44,7 @@ namespace QuantLib {
         Real muPlusHalfSquareVol = jdProcess->logMeanJump()->value()
             + 0.5*jumpSquareVol;
         // mean jump size
-        Real k = QL_EXP(muPlusHalfSquareVol) - 1.0;
+        Real k = std::exp(muPlusHalfSquareVol) - 1.0;
         Real lambda = (k+1.0) * jdProcess->jumpIntensity()->value();
 
         // dummy strike
@@ -54,7 +54,7 @@ namespace QuantLib {
         Date volRefDate = jdProcess->blackVolatility()->referenceDate();
         Time t = voldc.yearFraction(volRefDate,
                                     arguments_.exercise->lastDate());
-        Rate riskFreeRate = -QL_LOG(jdProcess->riskFreeRate()->discount(
+        Rate riskFreeRate = -std::log(jdProcess->riskFreeRate()->discount(
                                           arguments_.exercise->lastDate()))/t;
         Date rateRefDate = jdProcess->riskFreeRate()->referenceDate();
 
@@ -98,7 +98,7 @@ namespace QuantLib {
              i++) {
 
             // constant vol/rate assumption. It should be relaxed
-            v = QL_SQRT((variance + i*jumpSquareVol)/t);
+            v = std::sqrt((variance + i*jumpSquareVol)/t);
             r = riskFreeRate - jdProcess->jumpIntensity()->value()*k
                 + i*muPlusHalfSquareVol/t;
             riskFreeTS.linkTo(boost::shared_ptr<YieldTermStructure>(
@@ -119,32 +119,32 @@ namespace QuantLib {
             results_.rho         += weight * baseResults->rho;
             results_.dividendRho += weight * baseResults->dividendRho;
 
-            lastContribution = QL_FABS(baseResults->value /
-                (QL_FABS(results_.value)>QL_EPSILON ? results_.value : 1.0));
+            lastContribution = std::fabs(baseResults->value /
+                (std::fabs(results_.value)>QL_EPSILON ? results_.value : 1.0));
 
             lastContribution = QL_MAX<Real>(lastContribution,
-                QL_FABS(baseResults->delta /
-                (QL_FABS(results_.delta)>QL_EPSILON ? results_.delta : 1.0)));
+                std::fabs(baseResults->delta /
+               (std::fabs(results_.delta)>QL_EPSILON ? results_.delta : 1.0)));
 
             lastContribution = QL_MAX<Real>(lastContribution,
-                QL_FABS(baseResults->gamma /
-                (QL_FABS(results_.gamma)>QL_EPSILON ? results_.gamma : 1.0)));
+                std::fabs(baseResults->gamma /
+               (std::fabs(results_.gamma)>QL_EPSILON ? results_.gamma : 1.0)));
 /*
             lastContribution = QL_MAX<Real>(lastContribution,
-                QL_FABS(baseResults->theta /
-                (QL_FABS(results_.theta)>QL_EPSILON ? results_.theta : 1.0)));
+                std::fabs(baseResults->theta /
+               (std::fabs(results_.theta)>QL_EPSILON ? results_.theta : 1.0)));
 
             lastContribution = QL_MAX<Real>(lastContribution,
-                QL_FABS(baseResults->vega /
-                (QL_FABS(results_.vega)>QL_EPSILON ? results_.vega : 1.0)));
+                std::fabs(baseResults->vega /
+               (std::fabs(results_.vega)>QL_EPSILON ? results_.vega : 1.0)));
 */
             lastContribution = QL_MAX<Real>(lastContribution,
-                QL_FABS(baseResults->rho /
-                (QL_FABS(results_.rho)>QL_EPSILON ? results_.rho : 1.0)));
+                std::fabs(baseResults->rho /
+               (std::fabs(results_.rho)>QL_EPSILON ? results_.rho : 1.0)));
 
             lastContribution = QL_MAX<Real>(lastContribution,
-                QL_FABS(baseResults->dividendRho /
-                (QL_FABS(results_.dividendRho)>QL_EPSILON ?
+                std::fabs(baseResults->dividendRho /
+               (std::fabs(results_.dividendRho)>QL_EPSILON ?
                                           results_.dividendRho : 1.0)));
 
             lastContribution *= weight;

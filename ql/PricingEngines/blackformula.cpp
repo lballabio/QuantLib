@@ -22,7 +22,7 @@ namespace QuantLib {
 
     BlackFormula::BlackFormula(
                            Real forward, DiscountFactor discount,
-                           Real variance, 
+                           Real variance,
                            const boost::shared_ptr<StrikedTypePayoff>& payoff)
     : forward_(forward), discount_(discount), variance_(variance) {
 
@@ -41,7 +41,7 @@ namespace QuantLib {
                    DecimalFormatter::toString(variance) +
                    " not allowed");
 
-        stdDev_ = QL_SQRT(variance);
+        stdDev_ = std::sqrt(variance);
         strike_ = payoff->strike();
 
         Real n_d1, n_d2;
@@ -52,7 +52,7 @@ namespace QuantLib {
                 cum_d1_ = 1.0;
                 cum_d2_= 1.0;
             } else {
-                D1_ = (QL_LOG(forward/strike_) + 0.5*variance) / stdDev_;
+                D1_ = (std::log(forward/strike_) + 0.5*variance) / stdDev_;
                 D2_ = D1_-stdDev_;
                 CumulativeNormalDistribution f;
                 cum_d1_ = f(D1_);
@@ -109,7 +109,7 @@ namespace QuantLib {
             if (pv)
                 return;
 
-           and save the time that would be spent in the four dynamic 
+           and save the time that would be spent in the four dynamic
            casts below (which would all be executed since they would
            all fail.)
         */
@@ -213,7 +213,7 @@ namespace QuantLib {
         Real del = delta(spot);
         if (val>QL_EPSILON)
             return del/val*spot;
-        else if (QL_FABS(del)<QL_EPSILON)
+        else if (std::fabs(del)<QL_EPSILON)
             return 0.0;
         else if (del>0.0)
             return QL_MAX_REAL;
@@ -226,7 +226,7 @@ namespace QuantLib {
         Real del = deltaForward();
         if (val>QL_EPSILON)
             return del/val*forward_;
-        else if (QL_FABS(del)<QL_EPSILON)
+        else if (std::fabs(del)<QL_EPSILON)
             return 0.0;
         else if (del>0.0)
             return QL_MAX_REAL;
@@ -272,13 +272,13 @@ namespace QuantLib {
     Real BlackFormula::theta(Real spot, Time maturity) const {
 
         if (maturity>0.0) {
-//            vol = stdDev_ / QL_SQRT(maturity);
-//            rate = -QL_LOG(discount_)/maturity;
-//            dividendRate = -QL_LOG(forward_ / spot * discount_)/maturity;
+//            vol = stdDev_ / std::sqrt(maturity);
+//            rate = -std::log(discount_)/maturity;
+//            dividendRate = -std::log(forward_ / spot * discount_)/maturity;
 //            return rate*value() - (rate-dividendRate)*spot*delta(spot)
 //                - 0.5*vol*vol*spot*spot*gamma(spot);
-            return -( QL_LOG(discount_)            * value()
-                     +QL_LOG(forward_/spot) * spot * delta(spot)
+            return -( std::log(discount_)            * value()
+                     +std::log(forward_/spot) * spot * delta(spot)
                      +0.5*variance_ * spot  * spot * gamma(spot))/maturity;
         } else if (maturity==0.0) {
             // should be r*value(), where r is the short rate
@@ -318,14 +318,14 @@ namespace QuantLib {
         QL_REQUIRE(maturity>=0.0,
                    "negative maturity not allowed");
 
-        Real temp = QL_LOG(strike_/forward_)/variance_;
+        Real temp = std::log(strike_/forward_)/variance_;
         // actually DalphaDsigma / SQRT(T)
         Real DalphaDsigma = DalphaDd1_*(temp+0.5);
         Real DbetaDsigma  = DbetaDd2_ *(temp-0.5);
 
         Real temp2 = DalphaDsigma * forward_ + DbetaDsigma * X_;
 
-        return discount_ * QL_SQRT(maturity) * temp2;
+        return discount_ * std::sqrt(maturity) * temp2;
 
     }
 

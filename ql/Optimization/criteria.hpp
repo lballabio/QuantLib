@@ -36,8 +36,8 @@ namespace QuantLib {
 
         //! default constructor
         EndCriteria()
-        : maxIteration_(100), functionEpsilon_(1e-8), 
-          gradientEpsilon_(1e-8), maxIterStatPt_(10), 
+        : maxIteration_(100), functionEpsilon_(1e-8),
+          gradientEpsilon_(1e-8), maxIterStatPt_(10),
           statState_(0), endCriteria_(none),
           positiveOptimization_(false) {}
 
@@ -45,7 +45,7 @@ namespace QuantLib {
         EndCriteria(Size maxIteration, Real epsilon)
         : maxIteration_(maxIteration), functionEpsilon_(epsilon),
           gradientEpsilon_(epsilon), maxIterStatPt_(maxIteration/10),
-          statState_(0), endCriteria_(none), 
+          statState_(0), endCriteria_(none),
           positiveOptimization_(false) {}
 
         void setPositiveOptimization() {
@@ -60,7 +60,7 @@ namespace QuantLib {
         }
 
         bool checkStationaryValue(Real fold, Real fnew) {
-            bool test = (QL_FABS(fold - fnew) < functionEpsilon_);
+            bool test = (std::fabs(fold - fnew) < functionEpsilon_);
             if (test) {
                 statState_++;
                 if (statState_ > maxIterStatPt_) {
@@ -103,7 +103,7 @@ namespace QuantLib {
                         Real fnew,
                         Real normgnew,
                         Real) {
-            return 
+            return
                 checkIterationNumber(iteration) ||
                 checkStationaryValue(fold, fnew) ||
                 checkAccuracyValue(fnew) ||

@@ -50,13 +50,15 @@ namespace QuantLib {
     // inline definitions
 
     inline bool close(Real x, Real y, Size n) {
-        Real diff = QL_FABS(x-y), tolerance = n*QL_EPSILON;
-        return diff <= tolerance*QL_FABS(x) && diff <= tolerance*QL_FABS(y);
+        Real diff = std::fabs(x-y), tolerance = n*QL_EPSILON;
+        return diff <= tolerance*std::fabs(x) &&
+               diff <= tolerance*std::fabs(y);
     }
 
     inline bool close_enough(Real x, Real y, Size n) {
-        Real diff = QL_FABS(x-y), tolerance = n*QL_EPSILON;
-        return diff <= tolerance*QL_FABS(x) || diff <= tolerance*QL_FABS(y);
+        Real diff = std::fabs(x-y), tolerance = n*QL_EPSILON;
+        return diff <= tolerance*std::fabs(x) ||
+               diff <= tolerance*std::fabs(y);
     }
 
 }

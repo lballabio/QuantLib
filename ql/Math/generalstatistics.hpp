@@ -194,11 +194,11 @@ namespace QuantLib {
     }
 
     inline Real GeneralStatistics::standardDeviation() const {
-        return QL_SQRT(variance());
+        return std::sqrt(variance());
     }
 
     inline Real GeneralStatistics::errorEstimate() const {
-        return QL_SQRT(variance()/samples());
+        return std::sqrt(variance()/samples());
     }
 
     inline Real GeneralStatistics::min() const {
