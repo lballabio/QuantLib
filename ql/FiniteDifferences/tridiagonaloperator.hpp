@@ -63,7 +63,7 @@ namespace QuantLib {
             TridiagonalOperator(Size size = 0);
             TridiagonalOperator(const Array& low, const Array& mid,
                 const Array& high);
-            #if defined(QL_PATCH_MICROSOFT_BUGS)
+            #if defined(QL_PATCH_MICROSOFT)
                 /* This copy constructor and assignment operator are here
                    because somehow Visual C++ is not able to generate working
                    ones. They are _not_ to be defined for other compilers
@@ -117,7 +117,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        #if defined(QL_PATCH_MICROSOFT_BUGS)
+        #if defined(QL_PATCH_MICROSOFT)
             inline TridiagonalOperator::TridiagonalOperator(
                 const TridiagonalOperator& L) {
                     belowDiagonal_ = L.belowDiagonal_;

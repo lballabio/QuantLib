@@ -38,7 +38,7 @@ namespace QuantLib {
                             const Handle<Indexes::Xibor>& index,
                             int fixingDays,
                             const std::vector<Spread>& spreads,
-                            #if defined(QL_PATCH_MICROSOFT_BUGS)
+                            #if defined(QL_PATCH_MICROSOFT)
                             const Date& stubDate,
                             #else
                             const Date& stubDate = Date(),

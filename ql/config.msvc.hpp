@@ -156,7 +156,7 @@
 
 #define HAVE_INCOMPLETE_ITERATOR_SUPPORT
 
-#define QL_PATCH_MICROSOFT_BUGS
+#define QL_PATCH_MICROSOFT
 
 /*** libraries to be linked***/
 
