@@ -20,10 +20,11 @@
     \brief Discretized asset classes
 */
 
-#ifndef quantlib_discretized_asset_h
-#define quantlib_discretized_asset_h
+#ifndef quantlib_discretized_asset_hpp
+#define quantlib_discretized_asset_hpp
 
 #include <ql/numericalmethod.hpp>
+#include <ql/Math/array.hpp>
 #include <ql/Math/comparison.hpp>
 #include <ql/exercise.hpp>
 #include <list>

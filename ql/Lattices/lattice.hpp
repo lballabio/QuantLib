@@ -20,10 +20,11 @@
     \brief Lattice method class
 */
 
-#ifndef quantlib_lattices_lattice_h
-#define quantlib_lattices_lattice_h
+#ifndef quantlib_lattices_lattice_hpp
+#define quantlib_lattices_lattice_hpp
 
 #include <ql/numericalmethod.hpp>
+#include <ql/Math/array.hpp>
 
 namespace QuantLib {
 

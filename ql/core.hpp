@@ -48,6 +48,7 @@
 #include <ql/stochasticprocess.hpp>
 #include <ql/swaptionvolstructure.hpp>
 #include <ql/termstructure.hpp>
+#include <ql/timegrid.hpp>
 #include <ql/types.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/yieldtermstructure.hpp>

@@ -20,10 +20,11 @@
     \brief single factor random walk
 */
 
-#ifndef quantlib_montecarlo_path_h
-#define quantlib_montecarlo_path_h
+#ifndef quantlib_montecarlo_path_hpp
+#define quantlib_montecarlo_path_hpp
 
-#include <ql/grid.hpp>
+#include <ql/timegrid.hpp>
+#include <ql/Math/array.hpp>
 
 namespace QuantLib {
 

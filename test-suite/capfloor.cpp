@@ -28,6 +28,7 @@
 #include <ql/CashFlows/upfrontindexedcoupon.hpp>
 #endif
 #include <ql/Utilities/dataformatters.hpp>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

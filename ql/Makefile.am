@@ -68,6 +68,7 @@ include_HEADERS = \
 	stochasticprocess.hpp \
 	swaptionvolstructure.hpp \
 	termstructure.hpp \
+	timegrid.hpp \
 	types.hpp \
 	voltermstructure.hpp \
 	yieldtermstructure.hpp
@@ -115,9 +116,9 @@ libQuantLib_la_SOURCES = \
 	errors.cpp \
 	exchangerate.cpp \
 	exercise.cpp \
-    grid.cpp \
     interestrate.cpp \
     money.cpp \
     schedule.cpp \
 	stochasticprocess.cpp \
+	timegrid.cpp \
     voltermstructure.cpp
