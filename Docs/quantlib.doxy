@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 PROJECT_NAME           = QuantLib
 PROJECT_NUMBER         = 0.1.9
-OUTPUT_DIRECTORY       = 
+OUTPUT_DIRECTORY       =
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = NO
@@ -16,7 +16,7 @@ BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = NO
 ALWAYS_DETAILED_SEC    = NO
 FULL_PATH_NAMES        = NO
-STRIP_FROM_PATH        = 
+STRIP_FROM_PATH        =
 INTERNAL_DOCS          = NO
 CLASS_DIAGRAMS         = YES
 SOURCE_BROWSER         = NO
@@ -33,11 +33,11 @@ INLINE_INFO            = YES
 SORT_MEMBER_DOCS       = NO
 DISTRIBUTE_GROUP_DOC   = NO
 TAB_SIZE               = 4
-ENABLED_SECTIONS       = 
+ENABLED_SECTIONS       =
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
-ALIASES                = 
+ALIASES                =
 MAX_INITIALIZER_LINES  = 30
 OPTIMIZE_OUTPUT_FOR_C  = NO
 SHOW_USED_FILES        = YES
@@ -48,7 +48,7 @@ QUIET                  = YES
 WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = NO
 WARN_FORMAT            = "$file:$line: $text"
-WARN_LOGFILE           = 
+WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
@@ -63,26 +63,26 @@ EXCLUDE                = ../Include/ql/config.hpp \
                          ../Include/ql/config.msvc.hpp \
                          ../Include/ql/config.mwcw.hpp \
                          ../Include/ql/quantlib.hpp
-EXCLUDE_PATTERNS       = 
-EXAMPLE_PATH           = ../Examples
+EXCLUDE_PATTERNS       =
+EXAMPLE_PATH           = Examples
 EXAMPLE_PATTERNS       = *.cpp
-IMAGE_PATH             = 
-INPUT_FILTER           = 
+IMAGE_PATH             =
+INPUT_FILTER           =
 FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
 ALPHABETICAL_INDEX     = YES
 COLS_IN_ALPHA_INDEX    = 3
-IGNORE_PREFIX          = 
+IGNORE_PREFIX          =
 #---------------------------------------------------------------------------
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
-HTML_HEADER            = 
+HTML_HEADER            =
 HTML_FOOTER            = quantlibfooter.html
-HTML_STYLESHEET        = 
+HTML_STYLESHEET        =
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = YES
 GENERATE_CHI           = NO
@@ -99,8 +99,8 @@ GENERATE_LATEX         = YES
 LATEX_OUTPUT           = latex
 COMPACT_LATEX          = NO
 PAPER_TYPE             = a4wide
-EXTRA_PACKAGES         = 
-LATEX_HEADER           = 
+EXTRA_PACKAGES         =
+LATEX_HEADER           =
 PDF_HYPERLINKS         = YES
 USE_PDFLATEX           = YES
 LATEX_BATCHMODE        = NO
@@ -111,17 +111,17 @@ GENERATE_RTF           = NO
 RTF_OUTPUT             = rtf
 COMPACT_RTF            = NO
 RTF_HYPERLINKS         = NO
-RTF_STYLESHEET_FILE    = 
-RTF_EXTENSIONS_FILE    = 
+RTF_STYLESHEET_FILE    =
+RTF_EXTENSIONS_FILE    =
 #---------------------------------------------------------------------------
-# Configuration options related to the preprocessor   
+# Configuration options related to the preprocessor
 #---------------------------------------------------------------------------
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
-INCLUDE_PATH           = 
-INCLUDE_FILE_PATTERNS  = 
+INCLUDE_PATH           =
+INCLUDE_FILE_PATTERNS  =
 PREDEFINED             = __DOXYGEN__ \
                          __BORLANDC__ \
                          HAVE_CMATH \
@@ -135,16 +135,16 @@ PREDEFINED             = __DOXYGEN__ \
                          HAVE_TEMPLATE_METAPROGRAMMING \
                          QL_ITERATOR \
                          QL_ITERATOR_TRAITS
-EXPAND_AS_DEFINED      = 
+EXPAND_AS_DEFINED      =
 #---------------------------------------------------------------------------
-# Configuration::addtions related to external references   
+# Configuration::addtions related to external references
 #---------------------------------------------------------------------------
-TAGFILES               = 
-GENERATE_TAGFILE       = 
+TAGFILES               =
+GENERATE_TAGFILE       =
 ALLEXTERNALS           = NO
 PERL_PATH              = /usr/bin/perl
 #---------------------------------------------------------------------------
-# Configuration options related to the dot tool   
+# Configuration options related to the dot tool
 #---------------------------------------------------------------------------
 HAVE_DOT               = YES
 CLASS_GRAPH            = YES
@@ -152,18 +152,18 @@ COLLABORATION_GRAPH    = NO
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = NO
 GRAPHICAL_HIERARCHY    = YES
-DOT_PATH               = 
+DOT_PATH               =
 MAX_DOT_GRAPH_WIDTH    = 800
 MAX_DOT_GRAPH_HEIGHT   = 600
 GENERATE_LEGEND        = YES
 DOT_CLEANUP            = YES
 #---------------------------------------------------------------------------
-# Configuration::addtions related to the search engine   
+# Configuration::addtions related to the search engine
 #---------------------------------------------------------------------------
 SEARCHENGINE           = NO
 CGI_NAME               = search.cgi
-CGI_URL                = 
-DOC_URL                = 
-DOC_ABSPATH            = 
+CGI_URL                =
+DOC_URL                =
+DOC_ABSPATH            =
 BIN_ABSPATH            = /usr/local/bin/
-EXT_DOC_PATHS          = 
+EXT_DOC_PATHS          =

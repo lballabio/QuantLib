@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.1  2001/06/22 14:54:48  nando
+    doxygen example file moved under Docs/Examples
+
     Revision 1.5  2001/04/10 14:51:51  lballabio
     Added Microsoft Help format to Doxygen output
 

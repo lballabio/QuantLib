@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.10  2001/06/22 14:54:48  nando
+# doxygen example file moved under Docs/Examples
+#
 # Revision 1.9  2001/06/05 10:53:48  lballabio
 # tab fixed
 #
@@ -12,6 +15,7 @@
 # smoothing #include xx.hpp
 #
 
+SUBDIRS=Examples
 
 EXTRA_DIST = README.txt \
              quantlib.doxy quantlib.linux.doxy quantlib.win32.doxy \
