@@ -43,44 +43,6 @@ namespace QuantLib {
             impl_->removedHolidays.insert(d);
     }
 
-    #if !(defined(QL_PATCH_MICROSOFT) || defined(QL_PATCH_BORLAND))
-
-    void Calendar::load(const std::string& filename) {
-        std::ifstream file(filename.c_str());
-        QL_REQUIRE(file, "failed to open " + filename);
-
-        static std::string comment = "(#.*)$";
-        boost::regex record(
-                   "^\\s*(\\w+)\\s*:\\s*([+-]?)\\s*(\\d{4})-(\\d{2})-(\\d{2})"
-                   "\\s*(#.*)?$");
-        boost::regex empty("^\\s*(#.*)?$");
-        boost::smatch m;
-
-        std::string line;
-        while (std::getline(file, line)) {
-            if (boost::regex_search(line, m, record)) {
-                std::string key = m[1];
-                std::string flag = m[2];
-                if (key == name()) {
-                    Day day = boost::lexical_cast<Day>(std::string(m[5]));
-                    Month month = 
-                        Month(boost::lexical_cast<Integer>(std::string(m[4])));
-                    Year year = boost::lexical_cast<Year>(std::string(m[3]));
-                    if (flag == "-")
-                        removeHoliday(Date(day,month,year));
-                    else
-                        addHoliday(Date(day,month,year));
-                }
-            } else if (boost::regex_search(line, m, empty)) {
-                continue;
-            } else {
-                QL_FAIL("badly formatted line: " + line);
-            }
-        }
-    }
-
-    #endif
-
     Date Calendar::adjust(const Date& d,
                           BusinessDayConvention c,
                           const Date& origin) const {

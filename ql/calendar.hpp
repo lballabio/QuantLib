@@ -104,35 +104,11 @@ namespace QuantLib {
             month in given market.
         */
         bool isEndOfMonth(const Date& d) const;
+
         /*! Adds a date to the set of holidays for the given calendar. */
         void addHoliday(const Date&);
         /*! Removes a date from the set of holidays for the given calendar. */
         void removeHoliday(const Date&);
-        #if !defined(QL_PATCH_MICROSOFT)
-        /*! Modifies the set of holidays as specified by a data file.
-
-            Each line in the file must have the following format:
-            \code
-            calendar: [+/-] date  [# comment]
-            \endcode
-            where \c calendar is the calendar name exactly as returned 
-            by the name() method, \c + (the default if omitted) specifies
-            that the date is to be added as a holiday, \c - specifies
-            that the date is to be removed as a holiday, and the date
-            is in the ISO format yyyy-mm-dd padded with zeroes if the
-            day or the month are one-digit numbers. An example file is:
-            \code
-            NewYork: + 2005-02-08   # Luigi's birthday
-            TARGET:  - 2004-05-01
-            \endcode
-            Blank lines and comments on a single line are also allowed.
-
-            When this method is called through a given calendar instance,
-            only those lines with a calendar name corresponding to that
-            of the instance will be considered.
-        */
-        void load(const std::string& filename);
-        #endif
 
         #ifndef QL_DISABLE_DEPRECATED
         /*! Returns the next business day on the given market with respect to

@@ -81,50 +81,6 @@ void CalendarTest::testModifiedCalendars() {
         BOOST_FAIL(DateFormatter::toString(d1) + " still a business day");
     if (c1.isHoliday(d2))
         BOOST_FAIL(DateFormatter::toString(d2) + " still a holiday");
-
-    #if !(defined(QL_PATCH_MICROSOFT) || defined(QL_PATCH_BORLAND))
-
-    // repeat, loading from file
-
-    std::ofstream f1("calendars.dat");
-    f1 << "TARGET: - "
-       << DateFormatter::toString(d1, DateFormatter::ISO)
-       << "    # a comment"
-       << std::endl;
-    f1 << std::endl;
-    f1 << "TARGET: + " 
-       << DateFormatter::toString(d2, DateFormatter::ISO)
-       << std::endl;
-    f1.close();
-    c1.load("calendars.dat");
-
-    if (c3.isHoliday(d1))
-        BOOST_FAIL(DateFormatter::toString(d1) + " holiday for TARGET");
-    if (c3.isBusinessDay(d2))
-        BOOST_FAIL(DateFormatter::toString(d2) + " business day for TARGET");
-
-    if (c2.isBusinessDay(d1))
-        BOOST_FAIL(DateFormatter::toString(d1) + " business day for New York");
-    if (c2.isHoliday(d2))
-        BOOST_FAIL(DateFormatter::toString(d2) + " holiday for New York");
-
-    std::ofstream f2("calendars.dat");
-    f2 << "    # another comment" << std::endl;
-    f2 << "TARGET: + " 
-       << DateFormatter::toString(d1, DateFormatter::ISO)
-       << std::endl;
-    f2 << "TARGET: - " 
-       << DateFormatter::toString(d2, DateFormatter::ISO)
-       << std::endl;
-    f2.close();
-    c3.load("calendars.dat");
-
-    if (c1.isBusinessDay(d1))
-        BOOST_FAIL(DateFormatter::toString(d1) + " business day for TARGET");
-    if (c1.isHoliday(d2))
-        BOOST_FAIL(DateFormatter::toString(d2) + " holiday for TARGET");
-
-    #endif
 }
 
 
