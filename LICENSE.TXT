@@ -1,7 +1,7 @@
 
 QUANTLIB LICENSE 1.0
 
-Copyright (C) 2000-2001 QuantLib Group. All rights reserved.
+Copyright (C) 2000-2001-2002 QuantLib Group. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,3 +25,15 @@ Except as contained in this notice, the name of QuantLib Group members and the
 name of the QuantLib Group itself shall not be used in advertising or
 otherwise to promote the sale, use or other dealings in this Software without
 prior written authorization of the interested party.
+
+The QuantLib Group includes:
+    Ferdinando Ametrano
+    Luigi Ballabio
+    Marco Marchioro
+    Sadruddin Rejeb
+    RiskMap srl
+    Nicolas Di Césaré
+    Enrico Sirola
+    Mario Aleppo
+    Adolfo Benin
+    Maxim Sokolov
