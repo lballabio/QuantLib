@@ -50,7 +50,7 @@ class BSMOption : public Option {
 	  virtual double theta() const = 0;
 	  virtual double vega() const = 0;
 	  virtual double rho() const = 0;
-	  virtual double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
+	  double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
 	  virtual Handle<BSMOption> clone() const = 0;
   protected:
 	  // input data
