@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -124,6 +121,10 @@ CLEAN :
 	-@erase "$(INTDIR)\europeananalyticalengine.sbr"
 	-@erase "$(INTDIR)\europeanbinomialengine.obj"
 	-@erase "$(INTDIR)\europeanbinomialengine.sbr"
+	-@erase "$(INTDIR)\europeanFDengine.obj"
+	-@erase "$(INTDIR)\europeanFDengine.sbr"
+	-@erase "$(INTDIR)\europeanMCengine.obj"
+	-@erase "$(INTDIR)\europeanMCengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -337,7 +338,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -476,6 +510,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\europeananalyticalengine.sbr" \
 	"$(INTDIR)\europeanbinomialengine.sbr" \
+	"$(INTDIR)\europeanFDengine.sbr" \
+	"$(INTDIR)\europeanMCengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -629,6 +665,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
+	"$(INTDIR)\europeanFDengine.obj" \
+	"$(INTDIR)\europeanMCengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -738,6 +776,10 @@ CLEAN :
 	-@erase "$(INTDIR)\europeananalyticalengine.sbr"
 	-@erase "$(INTDIR)\europeanbinomialengine.obj"
 	-@erase "$(INTDIR)\europeanbinomialengine.sbr"
+	-@erase "$(INTDIR)\europeanFDengine.obj"
+	-@erase "$(INTDIR)\europeanFDengine.sbr"
+	-@erase "$(INTDIR)\europeanMCengine.obj"
+	-@erase "$(INTDIR)\europeanMCengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -952,7 +994,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1091,6 +1166,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\europeananalyticalengine.sbr" \
 	"$(INTDIR)\europeanbinomialengine.sbr" \
+	"$(INTDIR)\europeanFDengine.sbr" \
+	"$(INTDIR)\europeanMCengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -1244,6 +1321,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
+	"$(INTDIR)\europeanFDengine.obj" \
+	"$(INTDIR)\europeanMCengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -1353,6 +1432,10 @@ CLEAN :
 	-@erase "$(INTDIR)\europeananalyticalengine.sbr"
 	-@erase "$(INTDIR)\europeanbinomialengine.obj"
 	-@erase "$(INTDIR)\europeanbinomialengine.sbr"
+	-@erase "$(INTDIR)\europeanFDengine.obj"
+	-@erase "$(INTDIR)\europeanFDengine.sbr"
+	-@erase "$(INTDIR)\europeanMCengine.obj"
+	-@erase "$(INTDIR)\europeanMCengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -1566,7 +1649,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1705,6 +1821,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\europeananalyticalengine.sbr" \
 	"$(INTDIR)\europeanbinomialengine.sbr" \
+	"$(INTDIR)\europeanFDengine.sbr" \
+	"$(INTDIR)\europeanMCengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -1858,6 +1976,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
+	"$(INTDIR)\europeanFDengine.obj" \
+	"$(INTDIR)\europeanMCengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -1967,6 +2087,10 @@ CLEAN :
 	-@erase "$(INTDIR)\europeananalyticalengine.sbr"
 	-@erase "$(INTDIR)\europeanbinomialengine.obj"
 	-@erase "$(INTDIR)\europeanbinomialengine.sbr"
+	-@erase "$(INTDIR)\europeanFDengine.obj"
+	-@erase "$(INTDIR)\europeanFDengine.sbr"
+	-@erase "$(INTDIR)\europeanMCengine.obj"
+	-@erase "$(INTDIR)\europeanMCengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -2181,7 +2305,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2320,6 +2477,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\europeananalyticalengine.sbr" \
 	"$(INTDIR)\europeanbinomialengine.sbr" \
+	"$(INTDIR)\europeanFDengine.sbr" \
+	"$(INTDIR)\europeanMCengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -2473,6 +2632,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
+	"$(INTDIR)\europeanFDengine.obj" \
+	"$(INTDIR)\europeanMCengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -2489,36 +2650,6 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -3338,6 +3469,18 @@ SOURCE=.\ql\PricingEngines\europeananalyticalengine.cpp
 SOURCE=.\ql\PricingEngines\europeanbinomialengine.cpp
 
 "$(INTDIR)\europeanbinomialengine.obj"	"$(INTDIR)\europeanbinomialengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\europeanFDengine.cpp
+
+"$(INTDIR)\europeanFDengine.obj"	"$(INTDIR)\europeanFDengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\europeanMCengine.cpp
+
+"$(INTDIR)\europeanMCengine.obj"	"$(INTDIR)\europeanMCengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
-
+/************************************/
 
         // New option pricing framework 
         std::cout << "\nNew Pricing engine framework" << std::endl;
@@ -296,10 +296,39 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
+
+        // Finite Differences Method
+        method = "Finite Diff.";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new EuropeanFDEngine()));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+        
+        // Monte Carlo Method
+        method = "Monte Carlo";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new EuropeanMCEngine()));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
         
 
         Handle<EuropeanAnalyticalEngine> baseEngine(new
             EuropeanAnalyticalEngine);
+
         Handle<QuantoEngine<VanillaOptionArguments,
                             VanillaOptionResults> >
             quantoEngine(new QuantoEngine<VanillaOptionArguments,

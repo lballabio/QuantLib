@@ -1623,6 +1623,14 @@ SOURCE=.\ql\PricingEngines\europeanbinomialengine.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\europeanFDengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\europeanMCengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\forwardengines.hpp
 # End Source File
 # Begin Source File

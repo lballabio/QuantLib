@@ -33,6 +33,8 @@ namespace QuantLib {
 
         void EuropeanAnalyticalEngine::calculate() const {
 
+            // this should be moved to a better place where it checks
+            // exercise type for all the european engines
             QL_REQUIRE(arguments_.exercise.type() == Exercise::European,
                 "EuropeanAnalyticalEngine::calculate() : "
                 "not an European Option");
