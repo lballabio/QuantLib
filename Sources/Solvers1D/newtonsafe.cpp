@@ -31,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.29  2001/08/09 08:25:05  marmar
+// fabs changed in QL_FABS
+//
 // Revision 1.28  2001/08/08 11:07:50  sigmud
 // inserting \fullpath for doxygen
 //
@@ -73,7 +76,7 @@ namespace QuantLib {
 
             // the "stepsize before last"
             dxold=xMax_-xMin_;
-            // it was dxold=fabs(xMax_-xMin_); in Numerical Recipes
+            // it was dxold=QL_FABS(xMax_-xMin_); in Numerical Recipes
             // here (xMax_-xMin_ > 0) is verified in the constructor
 
             // and the last step
