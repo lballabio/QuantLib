@@ -611,6 +611,34 @@ class CLGaussianGeneratorPtr(CLGaussianGenerator):
 
 CLGaussianGenerator.next = new.instancemethod(QuantLibc.CLGaussianGenerator_next, None, CLGaussianGenerator)
 
+class History:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_History,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_History(self)
+    def firstDate(*args, **kwargs):
+        val = apply(QuantLibc.History_firstDate,args, kwargs)
+        if val: val = DatePtr(val) ; val.thisown = 1
+        return val
+    def lastDate(*args, **kwargs):
+        val = apply(QuantLibc.History_lastDate,args, kwargs)
+        if val: val = DatePtr(val) ; val.thisown = 1
+        return val
+class HistoryPtr(History):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = History
+
+
+History.size = new.instancemethod(QuantLibc.History_size, None, History)
+History.__str__ = new.instancemethod(QuantLibc.History___str__, None, History)
+History.__repr__ = new.instancemethod(QuantLibc.History___repr__, None, History)
+History.__getitem__ = new.instancemethod(QuantLibc.History___getitem__, None, History)
+
 
 
 #-------------- FUNCTION WRAPPERS ------------------
