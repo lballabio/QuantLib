@@ -183,6 +183,7 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibormanager.obj"
+	-@erase "$(INTDIR)\zerocurve.obj"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
@@ -201,6 +202,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\johannesburg.obj" \
+	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
@@ -302,6 +304,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\zerocurve.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
@@ -339,8 +342,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\jointcalendar.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -499,6 +501,7 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibormanager.obj"
+	-@erase "$(INTDIR)\zerocurve.obj"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
@@ -519,6 +522,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\johannesburg.obj" \
+	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
@@ -620,6 +624,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\zerocurve.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
@@ -657,8 +662,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\jointcalendar.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -818,6 +822,7 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibormanager.obj"
+	-@erase "$(INTDIR)\zerocurve.obj"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
@@ -836,6 +841,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\johannesburg.obj" \
+	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
@@ -937,6 +943,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\zerocurve.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
@@ -974,8 +981,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\jointcalendar.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1134,6 +1140,7 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibormanager.obj"
+	-@erase "$(INTDIR)\zerocurve.obj"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
@@ -1154,6 +1161,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\johannesburg.obj" \
+	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
@@ -1255,6 +1263,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\zerocurve.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
@@ -1292,8 +1301,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\jointcalendar.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1976,6 +1984,12 @@ SOURCE=.\ql\TermStructures\piecewiseflatforward.cpp
 SOURCE=.\ql\TermStructures\ratehelpers.cpp
 
 "$(INTDIR)\ratehelpers.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\TermStructures\zerocurve.cpp
+
+"$(INTDIR)\zerocurve.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
