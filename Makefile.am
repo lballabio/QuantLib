@@ -29,7 +29,8 @@ EXTRA_DIST=News.txt Contributors.txt History.txt LICENSE.TXT \
 	Docs/README.txt \
 	Docs/offline.doxy \
 	Docs/online.doxy \
-	Docs/onlinefooter.html
+	Docs/onlinefooter.html \
+	Examples/history_iterators.cpp
 	 
 
 python:
