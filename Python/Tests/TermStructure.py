@@ -1,8 +1,49 @@
+"""
+/*
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
+ * This file is part of QuantLib.
+ * QuantLib is a C++ open source library for financial quantitative
+ * analysts and developers --- http://quantlib.sourceforge.net/
+ *
+ * QuantLib is free software and you are allowed to use, copy, modify, merge,
+ * publish, distribute, and/or sell copies of it under the conditions stated
+ * in the QuantLib License.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+ *
+ * You should have received a copy of the license along with this file;
+ * if not, contact ferdinando@ametrano.net
+ *
+ * QuantLib license is also available at:
+ * http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+"""
+
+"""
+    $Source$
+    $Log$
+    Revision 1.2  2001/02/01 11:10:29  nando
+    almost a test
+
+    Revision 1.2  2001/01/08 16:19:29  nando
+    more homogeneous format
+
+    Revision 1.1  2001/01/08 15:12:45  nando
+    added test for date and distributions
+
+"""
 
 from QuantLib import *
 import time
+startTime = time.time()
 
-gmt = time.gmtime(time.time())
+print 'Testing TermStructrure class (NOT a real test)'
+
+
+gmt = time.gmtime(startTime)
 today =  Date(gmt[2],gmt[1],gmt[0])
 
 currency =  EUR()
@@ -27,7 +68,7 @@ flatCurve =  FlatForward(currency,curveDayCount,today,0.05)
 days = 380
 settlement = curve.settlementDate()
 
-time      = map(lambda i : i/365.0, range(days))
+ytime      = map(lambda i : i/365.0, range(days))
 dates     = map(settlement.plusDays,range(days))
 
 discounts = map(lambda x: curve.discount(x, 1),  dates)
@@ -38,5 +79,10 @@ forwards  = map(lambda x: curve.forward(x, 1),   dates)
 print ' time                dates          disc    zero   forward'
 for i in range(days):
     print '%5.3f %20s %13.10f %7.3f %9.3f' % \
-        (time[i], dates[i], discounts[i], zeros[i]*100, forwards[i]*100)
-    
+        (ytime[i], dates[i], discounts[i], zeros[i]*100, forwards[i]*100)
+
+
+print
+print 'Test passed (elapsed time', time.time() - startTime, ')'
+print 'Press return to end this test'
+raw_input()
