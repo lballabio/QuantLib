@@ -56,7 +56,7 @@ namespace QuantLib {
                        double globalFloor,
                        bool redemptionOnly,
                        bool antitheticVariance,
-                       long seed);
+                       long seed = 0);
         };
 
     }
