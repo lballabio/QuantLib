@@ -27,6 +27,7 @@
 
 namespace QuantLib {
 
+#ifndef QL_DEPRECATED_DISABLED
     //! default choice for Gaussian path generator.
     /*! \deprecated use MonteCarlo traits instead */
     typedef SingleAsset<PseudoRandom>::path_generator_type
@@ -44,7 +45,7 @@ namespace QuantLib {
     //! default choice for multi-factor Monte Carlo model.
     typedef MonteCarloModel<MultiAsset<PseudoRandom> >
                                                   MultiFactorMonteCarloOption;
-
+#endif
 }
 
 

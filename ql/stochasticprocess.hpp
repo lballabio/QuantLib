@@ -27,12 +27,13 @@
 
 namespace QuantLib {
 
+#ifndef QL_DEPRECATED_DISABLED
     //! \deprecated Use BlackScholesProcess instead
     typedef BlackScholesProcess BlackScholesStochasticProcess;
 
     //! \deprecated Use Merton76Process instead
     typedef Merton76Process Merton76StochasticProcess;
-
+#endif
 }
 
 

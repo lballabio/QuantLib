@@ -27,6 +27,7 @@
 
 namespace QuantLib {
 
+#ifndef QL_DEPRECATED_DISABLED
     //! simple example of multi-factor Monte Carlo pricer
     /*! \deprecated use BasketOption instead */
     class McBasket : public McPricer<MultiAsset<PseudoRandom> > {
@@ -43,6 +44,7 @@ namespace QuantLib {
                  double residualTime,
                  long seed = 0);
     };
+#endif
 
 }
 

@@ -21,6 +21,7 @@
 
 namespace QuantLib {
 
+#ifndef QL_DEPRECATED_DISABLED
     namespace {
 
         class BasketPathPricer : public PathPricer<MultiPath> {
@@ -103,7 +104,7 @@ namespace QuantLib {
         for (Size i=0; i<n; i++) {
             RelinkableHandle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
-            processes[i] = Handle<DiffusionProcess>(
+            processes[i] = boost::shared_ptr<DiffusionProcess>(
                                     new BlackScholesProcess(u, 
                                                             dividendYield[i], 
                                                             riskFreeRate, 
@@ -129,5 +130,6 @@ namespace QuantLib {
             new MonteCarloModel<MultiAsset<PseudoRandom> >(
                              pathGenerator, pathPricer, Statistics(), false));
     }
+#endif
 
 }

@@ -65,6 +65,7 @@ void OldPricerTest::testCliquetPricer() {
             DoubleFormatter::toString(expected));
 }
 
+#ifndef QL_DEPRECATED_DISABLED
 void OldPricerTest::testDividendEuropeanPricer() {
 
     BOOST_MESSAGE("Testing old-style European option pricer "
@@ -184,6 +185,7 @@ void OldPricerTest::testDividendEuropeanPricer() {
       }
     }
 }
+#endif
 
 void OldPricerTest::testFdEuropeanPricer() {
 
@@ -807,16 +809,20 @@ void OldPricerTest::testMcMultiFactorPricers() {
                    1.0e-8,
                    "McEverest");
 
-    // McBasket
     std::vector<double> sameAssetValues(4,25.0);
+    double strike;
+
+#ifndef QL_DEPRECATED_DISABLED
     Option::Type type = Option::Call;
-    double strike = 100.0;
+    strike = 100.0;
+    // McBasket
     testMcMFPricer(McBasket(type, sameAssetValues, strike, sameAssetDividend,
                             riskFreeRate, sameAssetVols, perfectCorrelation,
                             resTime, seed),
                    12.69493382,
                    1.0e-8,
                    "McBasket");
+#endif
 
     // McMaxBasket
     std::vector<double> assetValues(4);

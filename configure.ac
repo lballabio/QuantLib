@@ -8,7 +8,8 @@ AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([ql/config.hpp])
 AM_INIT_AUTOMAKE([foreign])
 
-AC_COPYRIGHT([Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+AC_COPYRIGHT([Copyright (C) 2004 Ferdinando Ametrano
+Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -157,11 +158,11 @@ fi
 
 AC_ARG_ENABLE([deprecated-code-disabled],
               AC_HELP_STRING([--enable-deprecated-code-disabled],
-                             [If enabled , deprecated code will be
+                             [If enabled, deprecated code will be
                               disabled.]),
               [ql_deprecated_code_disabled=$enableval],
               [ql_deprecated_code_disabled=no])
-if test "$ql_deprecated_code_disabled" = "no" ; then
+if test "$ql_deprecated_code_disabled" = "yes" ; then
    AC_DEFINE([QL_DEPRECATED_DISABLED],[1],
              [Define this if you want to disable deprecated
               code.])

@@ -26,6 +26,7 @@
 
 namespace QuantLib {
 
+#ifndef QL_DEPRECATED_DISABLED
     //! European option with dividends
     /*! \deprecated use DividendVanillaOption with 
                     AnalyticDividendEuropeanEngine instead
@@ -52,6 +53,7 @@ namespace QuantLib {
         double rho_;
     };
 
+#endif
 }
 
 

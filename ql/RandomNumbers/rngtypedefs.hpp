@@ -40,6 +40,7 @@ namespace QuantLib {
     /*! \deprecated use random number traits instead */
     typedef PseudoRandom::urng_type UniformRandomGenerator;
 
+#ifndef QL_DEPRECATED_DISABLED
     //! default choice for Gaussian random number generator.
     /*! \deprecated use random number traits instead */
     typedef PseudoRandom::rng_type GaussianRandomGenerator;
@@ -58,6 +59,7 @@ namespace QuantLib {
     /*! \deprecated use random number traits instead */
     typedef LowDiscrepancy::rsg_type GaussianLowDiscrepancySequenceGenerator;
 
+#endif
 }
 
 

@@ -21,6 +21,7 @@
 
 namespace QuantLib {
 
+#ifndef QL_DEPRECATED_DISABLED
     DividendEuropeanOption::DividendEuropeanOption(
                    Option::Type type, double underlying, double strike,
                    Spread dividendYield, Rate riskFreeRate, Time residualTime,
@@ -75,6 +76,7 @@ namespace QuantLib {
         rho_ = black.rho(residualTime) +
                delta_rho * black.delta(spot);
     }
+#endif
 
 }
 
