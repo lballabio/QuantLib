@@ -73,9 +73,9 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # QuantLib library
-QuantLib$(_D).lib:: $(CORE_OBJS) SubLibraries
-    if exist QuantLib$(_D).lib del QuantLib$(_D).lib
-    $(TLIB) $(TLIB_OPTS) QuantLib$(_D).lib /a $(QUANTLIB_OBJS)
+..\lib\QuantLib$(_D).lib:: $(CORE_OBJS) SubLibraries
+    if exist ..\lib\QuantLib$(_D).lib del ..\lib\QuantLib$(_D).lib
+    $(TLIB) $(TLIB_OPTS) ..\lib\QuantLib$(_D).lib /a $(QUANTLIB_OBJS)
 
 SubLibraries:
     cd Calendars
@@ -126,4 +126,5 @@ clean::
     if exist *.obj      del /q *.obj
     if exist *.obj_d    del /q *.obj
     if exist *.lib      del /q *.lib
+    if exist ..\lib/*.lib  del /q *.lib
 
