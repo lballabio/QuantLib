@@ -13,7 +13,7 @@ SOURCES_DIR		= ..\Sources
 INCLUDE_DIR		= ..\Include
 BCC_INCLUDE		= $(MAKEDIR)\..\include
 BCC_LIBS		= $(MAKEDIR)\..\lib
-PYTHON_ROOT     = "C:\Program Files\Python"
+PYTHON_ROOT     = "C:\Python20"
 PYTHON_INCLUDE	= $(PYTHON_ROOT)\include
 PYTHON_LIBS		= $(PYTHON_ROOT)\libs
 
@@ -31,7 +31,7 @@ WIN_OBJS		= c0d32.obj
 
 # Libraries
 WIN_LIBS 		= import32.lib cw32mt.lib
-PYTHON_LIB		= $(PYTHON_LIBS)\python15.lib
+PYTHON_LIB		= $(PYTHON_LIBS)\python20.lib
 PYTHON_BCC_LIB	= bccpython.lib
 
 # Tools to be used
