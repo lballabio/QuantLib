@@ -756,6 +756,10 @@ SOURCE=.\ql\Math\errorfunction.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\functional.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\gammadistribution.cpp
 # End Source File
 # Begin Source File
@@ -841,6 +845,10 @@ SOURCE=.\ql\Math\primenumbers.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\riskmeasures.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\riskstatistics.hpp
 # End Source File
 # Begin Source File
 
