@@ -43,7 +43,6 @@ Changes since Release 0.3.3:
 
     MATH
     - Added more integration algorithms contributed by Roman Gitlin
-     (which ones? copyright?)
     - Relaxed constaints on interval boundaries for integration algorithms
     - Interpolation traits
 

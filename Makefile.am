@@ -28,9 +28,11 @@ EXTRA_DIST = \
 	bootstrap \
 	makefile.mak
 
+.PHONY: examples
 examples:
 	$(MAKE) -C Examples examples
 
+.PHONY: docs-all docs-html docs-html-online docs-pdf docs-man docs-clean
 docs-all:
 	$(MAKE) -C Docs docs-all
 docs-html:

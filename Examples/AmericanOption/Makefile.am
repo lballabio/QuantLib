@@ -16,5 +16,6 @@ EXTRA_DIST = \
     makefile.mak \
     ReadMe.txt
 
+.PHONY: examples
 examples: AmericanOption
 

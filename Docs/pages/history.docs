@@ -68,7 +68,6 @@
 
     MATH
     - Added more integration algorithms contributed by Roman Gitlin
-     (which ones? copyright?)
     - Relaxed constaints on interval boundaries for integration algorithms
     - Interpolation traits
 
