@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.6  2001/06/18 08:50:21  lballabio
+//  Added cross check on stub date and first period day count
+//
 //  Revision 1.5  2001/06/18 08:05:59  lballabio
 //  Reworked indexes and floating rate coupon
 //
@@ -71,24 +74,25 @@ namespace QuantLib {
             Date start = scheduler.date(0), end = scheduler.date(1);
             Rate rate = couponRates[0];
             double nominal = nominals[0];
-            Handle<DayCounter> firstDC;
-            if (firstPeriodDayCount.isNull())
-                firstDC = dayCount;
-            else
-                firstDC = firstPeriodDayCount;
             if (scheduler.isRegular(1)) {
+                QL_REQUIRE(firstPeriodDayCount.isNull(),
+                    "regular first bond coupon "
+                    "does not allow a first period day count");
                 push_back(Handle<CashFlow>(
                     new FixedRateCoupon(nominal, rate, calendar, 
-                        rollingConvention, firstDC, 
+                        rollingConvention, dayCount, 
                         start, end, start, end)));
             } else {
+                QL_REQUIRE(!firstPeriodDayCount.isNull(),
+                    "irregular first bond coupon "
+                    "requires a first period day count");
                 Date reference = end.plusMonths(-12/frequency);
                 if (isAdjusted)
                     reference = 
                         calendar->roll(reference,rollingConvention);
                 push_back(Handle<CashFlow>(
                     new FixedRateCoupon(nominal, rate, calendar, 
-                        rollingConvention, firstDC, 
+                        rollingConvention, firstPeriodDayCount, 
                         start, end, reference, end)));
             }
             // regular periods
