@@ -27,103 +27,17 @@
 #include <ql/functions/daycounters.hpp>
 
 using QuantLib::DayCounter;
-using QuantLib::DayCounters::Actual360;
-using QuantLib::DayCounters::Actual365;
-using QuantLib::DayCounters::ActualActual;
-using QuantLib::DayCounters::Thirty360;
 
 namespace QuantLib {
 
     namespace Functions {
-		int accrualDays(Date d1, Date d2, DayCounter::Type type) {
-			int result;
-			DayCounter dc = Actual365();
-			switch(type) {
-			  case DayCounter::Actual365:
-				  dc = Actual365();
-				  result = dc.dayCount(d1, d2);
-				  break;
-			  case DayCounter::Actual360:
-				  dc = Actual360();
-				  result = dc.dayCount(d1, d2);
-				  break;
-			  case DayCounter::ActActEuro:
-				  dc = ActualActual(ActualActual::Euro);
-				  result = dc.dayCount(d1, d2);
-  				  break;
-			  case DayCounter::Thirty360:
-			  case DayCounter::Thirty360ISDA:
-                  dc = Thirty360(Thirty360::USA);
-				  result = dc.dayCount(d1, d2);
-  				  break;
-			  case DayCounter::ActActBond:
-				  dc = ActualActual(ActualActual::Bond);
-				  result = dc.dayCount(d1, d2);
-  				  break;
-			  case DayCounter::ActActISDA:
-				  dc = ActualActual(ActualActual::ISDA);
-				  result = dc.dayCount(d1, d2);
-  				  break;
-			  case DayCounter::ThirtyE360:
-			  case DayCounter::ThirtyE360ISDA:
-				  dc = Thirty360(Thirty360::European);
-				  result = dc.dayCount(d1, d2);
-  				  break;
-			  case DayCounter::ThirtyEplus360:
-				  dc = Thirty360(Thirty360::Italian);
-				  result = dc.dayCount(d1, d2);
-  				  break;
-			  default:
-				  throw IllegalArgumentError(
-					  "accrualDays: unknown DayCounter::Type");
-			}
-			return result;
+		int accrualDays(DayCounter dc, Date d1, Date d2) {
+			return dc.dayCount(d1, d2);
 		}
 
 
-		double accrualFactor(Date d1, Date d2, DayCounter::Type type) {
-			double result;
-			DayCounter dc = Actual365();
-			switch(type) {
-			  case DayCounter::Actual365:
-				  dc = Actual365();
-				  result = dc.yearFraction(d1, d2);
-				  break;
-			  case DayCounter::Actual360:
-				  dc = Actual360();
-				  result = dc.yearFraction(d1, d2);
-				  break;
-			  case DayCounter::ActActEuro:
-				  dc = ActualActual(ActualActual::Euro);
-				  result = dc.yearFraction(d1, d2);
-  				  break;
-			  case DayCounter::Thirty360:
-			  case DayCounter::Thirty360ISDA:
-                  dc = Thirty360(Thirty360::USA);
-				  result = dc.yearFraction(d1, d2);
-  				  break;
-			  case DayCounter::ActActBond:
-				  dc = ActualActual(ActualActual::Bond);
-				  result = dc.yearFraction(d1, d2);
-  				  break;
-			  case DayCounter::ActActISDA:
-				  dc = ActualActual(ActualActual::ISDA);
-				  result = dc.yearFraction(d1, d2);
-  				  break;
-			  case DayCounter::ThirtyE360:
-			  case DayCounter::ThirtyE360ISDA:
-				  dc = Thirty360(Thirty360::European);
-				  result = dc.yearFraction(d1, d2);
-  				  break;
-			  case DayCounter::ThirtyEplus360:
-				  dc = Thirty360(Thirty360::Italian);
-				  result = dc.yearFraction(d1, d2);
-  				  break;
-			  default:
-				  throw IllegalArgumentError(
-					  "accrualFactor: unknown DayCounter::Type");
-			}
-			return result;
+		double accrualFactor(DayCounter dc, Date d1, Date d2) {
+            return dc.yearFraction(d1, d2);
 		}
     }
 
