@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,73 +20,52 @@
     \brief bilinear interpolation between discrete points
 */
 
-#ifndef quantlib_bilinear_interpolation_h
-#define quantlib_bilinear_interpolation_h
+#ifndef quantlib_bilinear_interpolation_hpp
+#define quantlib_bilinear_interpolation_hpp
 
 #include <ql/Math/interpolation2D.hpp>
 
 namespace QuantLib {
 
     //! bilinear interpolation between discrete points
-    template <class RandomAccessIteratorX, 
-              class RandomAccessIteratorY,
-              class MatricialData>
-    class BilinearInterpolation
-    : public Interpolation2D<RandomAccessIteratorX,
-                             RandomAccessIteratorY,
-                             MatricialData> {
+    class BilinearInterpolation : public Interpolation2D {
+      protected:
+        //! bilinear interpolation implementation
+        template <class I1, class I2, class M>
+        class Impl : public Interpolation2D::templateImpl<I1,I2,M> {
+          public:
+            Impl(const I1& xBegin, const I1& xEnd, 
+                 const I2& yBegin, const I2& yEnd, const M& zData)
+            : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
+                                                     yBegin,yEnd,
+                                                     zData) {}
+            double value(double x, double y) const {
+                Size i = locateX(x), j = locateY(y);
+
+                double z1=zData_[j][i];
+                double z2=zData_[j][i+1];
+                double z3=zData_[j+1][i];
+                double z4=zData_[j+1][i+1];
+
+                double t=(x-xBegin_[i])/(xBegin_[i+1]-xBegin_[i]);
+                double u=(y-yBegin_[j])/(yBegin_[j+1]-yBegin_[i]);
+
+                return (1.0-t)*(1.0-u)*z1 + t*(1.0-u)*z2 
+                     + (1.0-t)*u*z3 + t*u*z4;
+            }
+        };
       public:
-        typedef
-            typename QL_ITERATOR_TRAITS<RandomAccessIteratorX>::value_type
-                                                          first_argument_type;
-        typedef
-            typename QL_ITERATOR_TRAITS<RandomAccessIteratorY>::value_type
-                                                         second_argument_type;
-        typedef double result_type;
-        BilinearInterpolation(const RandomAccessIteratorX& xBegin,
-                              const RandomAccessIteratorX& xEnd,
-                              const RandomAccessIteratorY& yBegin,
-                              const RandomAccessIteratorY& yEnd,
-                              const MatricialData& data)
-        : Interpolation2D<RandomAccessIteratorX,
-                          RandomAccessIteratorY,
-                          MatricialData>(xBegin,xEnd,yBegin,yEnd,data) {}
-        result_type operator()(const first_argument_type& x,
-                               const second_argument_type& y,
-                               bool allowExtrapolation = false) const;
-    };
-
-
-    // template definitions
-
-    template <class I1, class I2, class M>
-    double BilinearInterpolation<I1,I2,M>::operator()(
-                      const typename 
-                      BilinearInterpolation<I1,I2,M>::first_argument_type& x,
-                      const typename 
-                      BilinearInterpolation<I1,I2,M>::second_argument_type& y,
-                      bool allowExtrapolation) const {
-
-        locate(x, y);
-        if (isOutOfRange_) {
-            QL_REQUIRE(allowExtrapolation,
-                       "BilinearInterpolation::operator() : "
-                       "extrapolation not allowed");
+        /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */
+        template <class I1, class I2, class M>
+        BilinearInterpolation(const I1& xBegin, const I1& xEnd, 
+                              const I2& yBegin, const I2& yEnd,
+                              const M& zData) {
+            impl_ = Handle<Interpolation2D::Impl>(
+                  new BilinearInterpolation::Impl<I1,I2,M>(xBegin, xEnd, 
+                                                           yBegin, yEnd,
+                                                           zData));
         }
-
-        double z1=data_[yPos_-yBegin_]   [xPos_-xBegin_];
-        double z2=data_[yPos_-yBegin_]   [xPos_-xBegin_+1];
-        double z3=data_[yPos_-yBegin_+1] [xPos_-xBegin_];
-        double z4=data_[yPos_-yBegin_+1] [xPos_-xBegin_+1];
-
-        double t=(x-*xPos_)/(*(xPos_+1)-*xPos_);
-        double u=(y-*yPos_)/(*(yPos_+1)-*yPos_);
-
-        return (1.0-t) * (1.0-u) * z1+
-                  t    * (1.0-u) * z2+
-               (1.0-t) *    u    * z3+
-                  t    *    u    * z4;
-    }
+    };
 
 }
 

@@ -110,18 +110,12 @@ namespace QuantLib {
 
         switch (interpolation2DType) {
           case 1:
-            result = BilinearInterpolation<
-                        std::vector<double>::const_iterator,
-			            std::vector<double>::const_iterator,
-                        Matrix>(x_values.begin(), x_values.end(),
+            result = BilinearInterpolation(x_values.begin(), x_values.end(),
                         y_values.begin(), y_values.end(), dataMatrix)(x,y,
                         allowExtrapolation);
             break;
           case 2:
-            result = BicubicSplineInterpolation<
-                        std::vector<double>::const_iterator,
-			            std::vector<double>::const_iterator,
-                        Matrix>(x_values.begin(), x_values.end(),
+            result = BicubicSpline(x_values.begin(), x_values.end(),
                         y_values.begin(), y_values.end(), dataMatrix)(x,y,
                         allowExtrapolation);
             break;

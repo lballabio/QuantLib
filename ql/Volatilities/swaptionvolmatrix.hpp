@@ -61,11 +61,7 @@ namespace QuantLib {
         std::vector<Period> lengths_;
         std::vector<Time> timeLengths_;
         Matrix volatilities_;
-        // interpolation
-        typedef Interpolation2D<std::vector<Time>::iterator,
-                                std::vector<Time>::iterator,
-                                Matrix> VolInterpolation;
-        Handle<VolInterpolation> interpolation_;
+        Interpolation2D interpolation_;
         double volatilityImpl(Time start, Time length, Rate strike) const;
         std::pair<Time,Time> convertDates(const Date& start, 
                                           const Period& length) const;
@@ -122,7 +118,7 @@ namespace QuantLib {
 
     inline double SwaptionVolatilityMatrix::volatilityImpl(
                                         Time start, Time length, Rate) const {
-        return (*interpolation_)(start,length,false);
+        return interpolation_(start,length,false);
     }
 
     inline std::pair<Time,Time> SwaptionVolatilityMatrix::convertDates(

@@ -38,13 +38,12 @@ namespace QuantLib {
             return LinearInterpolation(xBegin,xEnd,yBegin);
         }
         template <class I1, class I2, class M>
-        static Handle<Interpolation2D<I1,I2,M> >
-        make_interpolation(const I1& xBegin, const I1& xEnd,
-                           const I2& yBegin, const I2& yEnd,
-                           const M& z) {
-            return Handle<Interpolation2D<I1,I2,M> >(
-                           new BilinearInterpolation<I1,I2,M>(xBegin,xEnd,
-                                                              yBegin,yEnd,z));
+        static Interpolation2D make_interpolation(const I1& xBegin, 
+                                                  const I1& xEnd,
+                                                  const I2& yBegin, 
+                                                  const I2& yEnd,
+                                                  const M& z) {
+            return BilinearInterpolation(xBegin,xEnd,yBegin,yEnd,z);
         }
     };
 
@@ -69,13 +68,12 @@ namespace QuantLib {
             return NaturalCubicSpline(xBegin,xEnd,yBegin);
         }
         template <class I1, class I2, class M>
-        static Handle<Interpolation2D<I1,I2,M> >
-        make_interpolation(const I1& xBegin, const I1& xEnd,
-                           const I2& yBegin, const I2& yEnd,
-                           const M& z) {
-            return Handle<Interpolation2D<I1,I2,M> >(
-                      new BicubicSplineInterpolation<I1,I2,M>(xBegin,xEnd,
-                                                              yBegin,yEnd,z));
+        static Interpolation2D make_interpolation(const I1& xBegin, 
+                                                  const I1& xEnd,
+                                                  const I2& yBegin, 
+                                                  const I2& yEnd,
+                                                  const M& z) {
+            return BicubicSpline(xBegin,xEnd,yBegin,yEnd,z);
         }
     };
 

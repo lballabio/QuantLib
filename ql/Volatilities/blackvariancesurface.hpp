@@ -90,21 +90,18 @@ namespace QuantLib {
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
-        protected:
+      protected:
         virtual double blackVarianceImpl(Time t,
                                          double strike,
                                          bool extrapolate = false) const;
-        private:
-        typedef Interpolation2D<std::vector<Time>::iterator,
-                                std::vector<double>::iterator,
-                                Matrix> Interpolation_t;
+      private:
         Date referenceDate_;
         DayCounter dayCounter_;
         Date maxDate_;
         std::vector<double> strikes_;
         std::vector<Time> times_;
         Matrix variances_;
-        Handle<Interpolation_t> varianceSurface_;
+        Interpolation2D varianceSurface_;
         Extrapolation lowerExtrapolation_, upperExtrapolation_;
     };
 

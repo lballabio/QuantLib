@@ -67,6 +67,7 @@ namespace QuantLib {
             Interpolation linearInterpolation_;
         };
       public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         LogLinearInterpolation(const I1& xBegin, const I1& xEnd,
                                const I2& yBegin) {

@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,8 +20,8 @@
     \brief bicubic spline interpolation between discrete points
 */
 
-#ifndef quantlib_bicubicspline_interpolation_h
-#define quantlib_bicubicspline_interpolation_h
+#ifndef quantlib_bicubic_spline_interpolation_hpp
+#define quantlib_bicubic_spline_interpolation_hpp
 
 #include <ql/Math/interpolation2D.hpp>
 #include <ql/Math/cubicspline.hpp>
@@ -28,65 +29,43 @@
 namespace QuantLib {
 
     //! bicubic spline interpolation between discrete points
-    template <class RandomAccessIteratorX,
-              class RandomAccessIteratorY,
-              class MatricialData>
-    class BicubicSplineInterpolation
-    : public Interpolation2D<RandomAccessIteratorX,
-                             RandomAccessIteratorY,
-                             MatricialData> {
+    class BicubicSpline : public Interpolation2D {
+      protected:
+        //! bicubic spline implementation
+        template <class I1, class I2, class M>
+        class Impl : public Interpolation2D::templateImpl<I1,I2,M> {
+          public:
+            Impl(const I1& xBegin, const I1& xEnd, 
+                 const I2& yBegin, const I2& yEnd, const M& zData)
+            : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
+                                                     yBegin,yEnd,
+                                                     zData) {
+                for (Size i=0; i<zData_.rows(); i++)
+                    splines_.push_back(NaturalCubicSpline(
+                                           xBegin, xEnd, zData_.row_begin(i)));
+            }
+            double value(double x, double y) const {
+                std::vector<double> section(splines_.size());
+                for (Size i=0; i<splines_.size(); i++)
+                    section[i]=splines_[i](x,true);
+
+                NaturalCubicSpline spline(yBegin_, yEnd_, section.begin());
+                return spline(y,true);
+            }
+          private:
+            std::vector<Interpolation> splines_;
+        };
       public:
-        typedef
-            typename QL_ITERATOR_TRAITS<RandomAccessIteratorX>::value_type
-                                                          first_argument_type;
-        typedef
-            typename QL_ITERATOR_TRAITS<RandomAccessIteratorY>::value_type
-                                                         second_argument_type;
-        typedef double result_type;
-        BicubicSplineInterpolation(const RandomAccessIteratorX& xBegin,
-                                   const RandomAccessIteratorX& xEnd,
-                                   const RandomAccessIteratorY& yBegin,
-                                   const RandomAccessIteratorY& yEnd,
-                                   const MatricialData& data);
-        result_type operator()(const first_argument_type& x,
-                               const second_argument_type& y,
-                               bool allowExtrapolation = false) const;
-      private:
-        Size rows_;
-        std::vector<Interpolation> splines_;
-    };
-
-
-    // inline definitions
-    template <class I1, class I2, class M>
-    BicubicSplineInterpolation<I1,I2,M>::BicubicSplineInterpolation(
-                                             const I1& xBegin, const I1& xEnd,
-                                             const I2& yBegin, const I2& yEnd,
-                                             const M& data)
-    : Interpolation2D<I1,I2, M>(xBegin,xEnd,yBegin,yEnd,data),
-      rows_(data_.rows()) {
-        typedef typename M::const_row_iterator row_iterator;
-        for (Size i = 0; i< rows_; i++)
-            splines_.push_back(NaturalCubicSpline(
-                                           xBegin, xEnd, data_.row_begin(i)));
-    }
-
-    template <class I1, class I2, class M>
-    double BicubicSplineInterpolation<I1,I2,M>::operator()(
-               const typename
-               BicubicSplineInterpolation<I1,I2,M>::first_argument_type& x,
-               const typename
-               BicubicSplineInterpolation<I1,I2,M>::second_argument_type& y,
-               bool allowExtrapolation) const {
-
-        std::vector<result_type> newColumn(rows_);
-        for (Size i = 0; i< rows_; i++) {
-            newColumn[i]=splines_[i](x, allowExtrapolation);
+        /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */
+        template <class I1, class I2, class M>
+        BicubicSpline(const I1& xBegin, const I1& xEnd, 
+                      const I2& yBegin, const I2& yEnd,
+                      const M& zData) {
+            impl_ = Handle<Interpolation2D::Impl>(
+                  new BicubicSpline::Impl<I1,I2,M>(xBegin, xEnd, 
+                                                   yBegin, yEnd, zData));
         }
-
-        NaturalCubicSpline columnSpline(yBegin_, yEnd_, newColumn.begin());
-        return columnSpline(y, allowExtrapolation);
-    }
+    };
 
 }
 

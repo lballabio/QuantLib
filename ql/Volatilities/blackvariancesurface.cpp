@@ -98,7 +98,7 @@ namespace QuantLib {
                    "negative time (" + DoubleFormatter::toString(t) +
                    ") not allowed");
         if (t<=times_.back())
-            return (*varianceSurface_)(t, strike, extrapolate);
+            return varianceSurface_(t, strike, extrapolate);
         else // t>times_.back() || extrapolate
             QL_REQUIRE(extrapolate,
                        "ConstantVol::blackVolImpl : "
@@ -106,7 +106,7 @@ namespace QuantLib {
                        ") greater than max time (" +
                        DoubleFormatter::toString(times_.back()) +
                        ")");
-        return (*varianceSurface_)(times_.back(), strike, extrapolate)*
+        return varianceSurface_(times_.back(), strike, extrapolate)*
             t/times_.back();
     }
 

@@ -24,7 +24,6 @@
 #define quantlib_interpolation_hpp
 
 #include <ql/errors.hpp>
-#include <ql/types.hpp>
 #include <ql/Patterns/bridge.hpp>
 #include <ql/dataformatters.hpp>
 
@@ -64,7 +63,7 @@ namespace QuantLib {
           public:
             templateImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
             : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin) {
-                QL_REQUIRE(xEnd_-xBegin >= 2,
+                QL_REQUIRE(xEnd_-xBegin_ >= 2,
                            "not enough points to interpolate");
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
                 for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; i++, j++)

@@ -55,6 +55,7 @@ namespace QuantLib {
             }
         };
       public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         LinearInterpolation(const I1& xBegin, const I1& xEnd, 
                             const I2& yBegin) {
