@@ -38,6 +38,7 @@ include_HEADERS = \
 	primenumbers.hpp \
 	pseudosqrt.hpp \
 	riskstatistics.hpp \
+	rounding.hpp \
 	segmentintegral.hpp \
 	sequencestatistics.hpp \
 	simpsonintegral.hpp \
