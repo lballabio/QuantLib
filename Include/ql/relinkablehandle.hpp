@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/21 14:30:43  lballabio
+// Observability is back
+//
 // Revision 1.3  2001/06/20 11:52:29  lballabio
 // Some observability is back
 //
@@ -72,8 +75,9 @@ namespace QuantLib {
             in case the programmer cannot guarantee that the object pointed 
             to will remain alive for the whole lifetime of the handle - 
             namely, it should be set to <tt>false</tt> when the passed handle 
-            was created with <tt>owns = false</tt> (the programmer should 
-            know if that happened). Failure to do so can very likely result 
+            was created with <tt>owns = false</tt> (the latter should only 
+            happen in a controlled environment, so that the programmer is 
+            aware of it). Failure to do so can very likely result 
             in a program crash. 
             
             If the programmer does want the relinkable handle to register as 

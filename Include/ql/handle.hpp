@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/06/21 14:30:43  lballabio
+// Observability is back
+//
 // Revision 1.12  2001/06/19 15:01:33  lballabio
 // Handle can be downcasted to non-const pointer
 //
@@ -116,16 +119,18 @@ namespace QuantLib {
         : ptr_(0), n_(new int(1)), owns_(true) {}
         //! Constructor taking a pointer.
         /*! If <b>owns</b> is set to <tt>true</tt> (the default), the handle
-            will be responsible for the deletion of the pointer. If it is set to
-            <tt>false</tt>, the programmer must make sure that the pointed
-            object remains in scope for the lifetime of the handle and its
-            copies. Destruction of the object is also responsibility of the
-            programmer.
+            will be responsible for the deletion of the pointer. If it is 
+            set to <tt>false</tt>, the programmer must make sure that the 
+            pointed object remains in scope for the lifetime of the handle 
+            and its copies. Destruction of the object is also responsibility 
+            of the programmer. 
             
-            It is advised that handles be used with <tt>owns = false</tt> only 
-            when an object needs to pass a handle to itself to callbacks or 
-            bootstrappers - i.e., temporary objects whose lifetime is guaranteed 
-            to be shorter than the lifetime of the object.
+            It is advised that handles be used with <tt>owns = false</tt> 
+            only in a controlled an self-contained environment. Such a case 
+            happens when an object needs to pass a handle to itself to inner 
+            classes or bootstrappers - i.e., contained or temporary objects 
+            whose lifetime is guaranteed not to last more than the lifetime 
+            of the object.
         */
         explicit Handle(Type* ptr, bool owns = true)
         : ptr_(ptr), n_(new int(1)), owns_(owns) {}

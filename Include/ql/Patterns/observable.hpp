@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/21 14:30:43  lballabio
+// Observability is back
+//
 // Revision 1.4  2001/06/20 11:52:30  lballabio
 // Some observability is back
 //
@@ -70,8 +73,8 @@ namespace QuantLib {
             virtual ~Observable() {}
             /*! \name Observer management
                 \warning It is responsibility of the programmer to make sure 
-                that the registered observers stay alive for the whole time 
-                of their registration with an observable.
+                that the registered observers unregister themselves before 
+                going out of scope.
             */
             //@{
             virtual void registerObserver(Observer*);

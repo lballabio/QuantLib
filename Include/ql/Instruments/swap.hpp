@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.3  2001/06/21 14:30:43  lballabio
+//  Observability is back
+//
 //  Revision 1.2  2001/05/31 13:17:36  lballabio
 //  Added SimpleSwap
 //
@@ -59,6 +62,7 @@ namespace QuantLib {
                  const RelinkableHandle<TermStructure>& termStructure, 
                  const std::string& isinCode = "",
                  const std::string& description = "");
+            ~Swap();
           protected:
             std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
             RelinkableHandle<TermStructure> termStructure_;

@@ -58,7 +58,8 @@ namespace QuantLib {
                std::vector<Handle<CashFlow> >(),
                termStructure, isinCode, description), 
           payFixedRate_(payFixedRate) {
-            
+            // the base Swap class already registers as observer with 
+            // the term structure. The index is only used for past fixings.
             maturity_ = calendar->advance(startDate,n,units,rollingConvention);
             if (payFixedRate_) {
                 firstLeg_ = FixedRateCouponVector(nominals, 

@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.2  2001/06/21 14:30:43  lballabio
+//  Observability is back
+//
 //  Revision 1.1  2001/05/31 08:56:40  lballabio
 //  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 //
@@ -45,8 +48,14 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& termStructure, 
             const std::string& isinCode, const std::string& description)
         : Instrument(isinCode,description), firstLeg_(firstLeg), 
-            secondLeg_(secondLeg), termStructure_(termStructure) {}
-    
+          secondLeg_(secondLeg), termStructure_(termStructure) {
+            termStructure_.registerObserver(this);
+        }
+
+        Swap::~Swap() {
+            termStructure_.unregisterObserver(this);
+        }
+
         void Swap::performCalculations() const {
             QL_REQUIRE(!termStructure_.isNull(),
                 "trying to price swap on null term structure");

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.17  2001/06/21 14:30:43  lballabio
+// Observability is back
+//
 // Revision 1.16  2001/06/20 11:52:30  lballabio
 // Some observability is back
 //
@@ -198,6 +201,8 @@ namespace QuantLib {
 
         double SwapRateHelper::rateError() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
+            // we didn't register as observers - force calculation
+            swap_->recalculate();
             Rate impliedRate = -swap_->NPV()/swap_->BPS();
             return rate_-impliedRate;
         }
