@@ -105,6 +105,8 @@ namespace QuantLib {
     }
 
     inline void SimpleMarketElement::setValue(double value) {
+       if (value_ == value)
+	  return;
         value_ = value;
         notifyObservers();
     }
