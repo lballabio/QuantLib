@@ -187,16 +187,17 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
     Integer lengths[] = { 1, 2 };
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(qRate));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(rRate));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     boost::shared_ptr<BlackScholesProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
@@ -280,13 +281,13 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
                           expected["vega"] = (value_p - value_m)/(2*dv);
 
                           // perturb date and get theta
-                          Time dT = 1.0/365;
+                          Time dT = dc.yearFraction(today-1, today+1);
                           Settings::instance().setEvaluationDate(today-1);
                           value_m = option.NPV();
                           Settings::instance().setEvaluationDate(today+1);
                           value_p = option.NPV();
                           Settings::instance().setEvaluationDate(today);
-                          expected["theta"] = (value_p - value_m)/(2*dT);
+                          expected["theta"] = (value_p - value_m)/dT;
 
                           // compare
                           std::map<std::string,Real>::iterator it;
@@ -641,16 +642,17 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     Integer lengths[] = { 1, 2 };
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(qRate));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(rRate));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     boost::shared_ptr<BlackScholesProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
@@ -745,13 +747,13 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                           expected["vega"] = (value_p - value_m)/(2*dv);
 
                           // perturb date and get theta
-                          Time dT = 1.0/365;
+                          Time dT = dc.yearFraction(today-1, today+1);
                           Settings::instance().setEvaluationDate(today-1);
                           value_m = option.NPV();
                           Settings::instance().setEvaluationDate(today+1);
                           value_p = option.NPV();
                           Settings::instance().setEvaluationDate(today);
-                          expected["theta"] = (value_p - value_m)/(2*dT);
+                          expected["theta"] = (value_p - value_m)/dT;
 
                           // compare
                           std::map<std::string,Real>::iterator it;

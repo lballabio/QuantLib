@@ -628,13 +628,13 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                       expected["vega"] = (value_p - value_m)/(2*dv);
 
                       // perturb date and get theta
-                      Time dT = 1.0/360;
+                      Time dT = dc.yearFraction(today-1, today+1);
                       Settings::instance().setEvaluationDate(today-1);
                       value_m = opt.NPV();
                       Settings::instance().setEvaluationDate(today+1);
                       value_p = opt.NPV();
                       Settings::instance().setEvaluationDate(today);
-                      expected["theta"] = (value_p - value_m)/(2*dT);
+                      expected["theta"] = (value_p - value_m)/dT;
 
                       // check
                       std::map<std::string,Real>::iterator it;

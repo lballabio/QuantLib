@@ -687,13 +687,13 @@ void EuropeanOptionTest::testGreeks() {
                           expected["vega"] = (value_p - value_m)/(2*dv);
 
                           // perturb date and get theta
-                          Time dT = 1.0/360;
+                          Time dT = dc.yearFraction(today-1, today+1);
                           Settings::instance().setEvaluationDate(today-1);
                           value_m = option.NPV();
                           Settings::instance().setEvaluationDate(today+1);
                           value_p = option.NPV();
                           Settings::instance().setEvaluationDate(today);
-                          expected["theta"] = (value_p - value_m)/(2*dT);
+                          expected["theta"] = (value_p - value_m)/dT;
 
                           // compare
                           std::map<std::string,Real>::iterator it;
