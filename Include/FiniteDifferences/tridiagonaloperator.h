@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/02 18:04:58  lballabio
+    Added division by double
+
     Revision 1.8  2001/01/26 10:30:04  lballabio
     wrapping fixed
 
@@ -89,6 +92,8 @@ namespace QuantLib {
             friend TridiagonalOperator operator*(double, 
                 const TridiagonalOperator&);
             friend TridiagonalOperator operator*(const TridiagonalOperator&, 
+                double);
+            friend TridiagonalOperator operator/(const TridiagonalOperator&, 
                 double);
             friend TridiagonalOperator operator+(const TridiagonalOperator&, 
                 const TridiagonalOperator&);
@@ -206,6 +211,16 @@ namespace QuantLib {
           double a) {
             Array low = D.belowDiagonal*a, mid = D.diagonal*a, 
                 high = D.aboveDiagonal*a;
+            TridiagonalOperator result(low,mid,high);
+            result.setLowerBC(D.theLowerBC);
+            result.setHigherBC(D.theHigherBC);
+            return result;
+        }
+
+        inline TridiagonalOperator operator/(const TridiagonalOperator& D, 
+          double a) {
+            Array low = D.belowDiagonal/a, mid = D.diagonal/a, 
+                high = D.aboveDiagonal/a;
             TridiagonalOperator result(low,mid,high);
             result.setLowerBC(D.theLowerBC);
             result.setHigherBC(D.theHigherBC);
