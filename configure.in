@@ -140,7 +140,6 @@ AC_OUTPUT(Makefile \
     Sources/Pricers/Makefile \
     Sources/Solvers1D/Makefile \
     Sources/TermStructures/Makefile \
-    SWIG/Makefile \
     Docs/Makefile \
     Examples/Makefile)
 

@@ -4,7 +4,7 @@
 
 AUTOMAKE_OPTIONS=foreign
 
-SUBDIRS=Sources Include Docs SWIG Examples
+SUBDIRS=Sources Include Docs Examples
 
 EXTRA_DIST=Authors.txt \
 	Contributors.txt \
