@@ -42,12 +42,12 @@ namespace QuantLib {
             typedef Sample<Path> sample_type;
             // constructors
             PathGenerator(const Handle<DiffusionProcess>& diffProcess,
-                           Time length,
-                           Size timeSteps,
-                           SG generator);
+                          Time length,
+                          Size timeSteps,
+                          SG generator);
             PathGenerator(const Handle<DiffusionProcess>& diffProcess,
-                           const Handle<TimeGrid>& times,
-                           SG generator);
+                          const Handle<TimeGrid>& times,
+                          SG generator);
             //! \name inspectors
             //@{
             const sample_type& next() const;
@@ -56,7 +56,6 @@ namespace QuantLib {
             //@}
           private:
             mutable Sample<Path> next_;
-            mutable typename SG::sample_type sequence_;
             mutable double asset_;
             Handle<DiffusionProcess> diffProcess_;
             SG generator_;
@@ -68,7 +67,7 @@ namespace QuantLib {
         PathGenerator<SG>::PathGenerator(
             const Handle<DiffusionProcess>& diffProcess,
             Time length, Size timeSteps, SG generator)
-        : next_(Path(timeSteps),1.0), sequence_(Array(timeSteps), 0.0),
+        : next_(Path(timeSteps),1.0),
           diffProcess_(diffProcess), generator_(generator),
           dimension_(generator_.dimension()) {
             QL_REQUIRE(dimension_==timeSteps,
@@ -85,7 +84,7 @@ namespace QuantLib {
         PathGenerator<SG>::PathGenerator(
             const Handle<DiffusionProcess>& diffProcess,
             const Handle<TimeGrid>& timeGrid, SG generator)
-        : next_(Path(timeGrid->size()-1),1.0), sequence_(Array(timeGrid->size()-1), 0.0),
+        : next_(Path(timeGrid->size()-1),1.0),
           diffProcess_(diffProcess), generator_(generator),
           dimension_(generator_.dimension()), timeGrid_(timeGrid) {
             QL_REQUIRE(dimension_==timeGrid_->size()-1,
@@ -100,8 +99,9 @@ namespace QuantLib {
         template <class SG>
         inline const typename PathGenerator<SG>::sample_type&
         PathGenerator<SG>::next() const {
-
-            sequence_ = generator_.nextSequence();
+            
+            typedef typename SG::sample_type sequence_type;
+            const sequence_type& sequence_ = generator_.nextSequence();
 
             next_.weight = sequence_.weight;
 
