@@ -83,7 +83,7 @@ void CovarianceTest::testSalvagingCorrelation() {
     Matrix goodCov = b * transpose(b);
 
     Real error = norm(goodCov-badCov);
-    if (error > 5.0e-4)
+    if (error > 4.0e-4)
         BOOST_FAIL(DecimalFormatter::toExponential(error) + 
             " error while salvaging covariance matrix with spectral alg\n"
             "input matrix:\n" +
