@@ -18,6 +18,7 @@ include_HEADERS = \
 	matrix.hpp \
 	multivariateaccumulator.hpp \
 	normaldistribution.hpp \
+	primenumbers.hpp \
 	riskmeasures.hpp \
 	segmentintegral.hpp \
 	statistics.hpp \
@@ -32,6 +33,7 @@ libMath_la_SOURCES = \
     matrix.cpp \
     multivariateaccumulator.cpp \
     normaldistribution.cpp \
+	primenumbers.cpp \
     statistics.cpp \
     symmetricschurdecomposition.cpp
 

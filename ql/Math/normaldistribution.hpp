@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
@@ -99,9 +98,9 @@ namespace QuantLib {
             This class can also be used to generate a gaussian normal
             distribution from a uniform distribution.
             This is especially useful when a gaussian normal distribution
-            is generated from a quasi-random uniform distribution: in this
-            case the traditional Box-Muller approach and its variants
-            would not preserve the sequence's low-discrepancy.
+            is generated from a low discrepancy uniform distribution:
+            in this case the traditional Box-Muller approach and its
+            variants would not preserve the sequence's low-discrepancy.
         */
         class InvCumulativeNormalDistribution
         : public std::unary_function<double,double> {

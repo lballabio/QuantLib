@@ -15,6 +15,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
+    halton.obj$(_D) \
     knuthuniformrng.obj$(_D) \
     lecuyeruniformrng.obj$(_D)
 

@@ -7,6 +7,7 @@ includedir = $(prefix)/include/ql/RandomNumbers
 include_HEADERS = \
 	boxmullergaussianrng.hpp \
 	centrallimitgaussianrng.hpp \
+	halton.hpp \
 	inversecumgaussianrng.hpp \
 	knuthuniformrng.hpp \
 	lecuyeruniformrng.hpp \
@@ -16,6 +17,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libRandomNumbers_la_SOURCES = \
+	halton.cpp \
 	knuthuniformrng.cpp \
 	lecuyeruniformrng.cpp
 

@@ -743,6 +743,14 @@ SOURCE=.\ql\Math\normaldistribution.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\primenumbers.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\primenumbers.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\riskmeasures.hpp
 # End Source File
 # Begin Source File
@@ -1352,6 +1360,14 @@ SOURCE=.\ql\RandomNumbers\boxmullergaussianrng.hpp
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\centrallimitgaussianrng.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\halton.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\halton.hpp
 # End Source File
 # Begin Source File
 

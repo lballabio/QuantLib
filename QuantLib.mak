@@ -174,6 +174,8 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
+	-@erase "$(INTDIR)\halton.obj"
+	-@erase "$(INTDIR)\halton.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
@@ -254,6 +256,8 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
+	-@erase "$(INTDIR)\primenumbers.obj"
+	-@erase "$(INTDIR)\primenumbers.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -493,7 +497,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\halton.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -649,7 +655,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\halton.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -800,6 +808,8 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
+	-@erase "$(INTDIR)\halton.obj"
+	-@erase "$(INTDIR)\halton.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
@@ -880,6 +890,8 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
+	-@erase "$(INTDIR)\primenumbers.obj"
+	-@erase "$(INTDIR)\primenumbers.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -1120,7 +1132,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\halton.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1276,7 +1290,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\halton.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1427,6 +1443,8 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
+	-@erase "$(INTDIR)\halton.obj"
+	-@erase "$(INTDIR)\halton.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
@@ -1507,6 +1525,8 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
+	-@erase "$(INTDIR)\primenumbers.obj"
+	-@erase "$(INTDIR)\primenumbers.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -1746,7 +1766,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\halton.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1902,7 +1924,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\halton.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2053,6 +2077,8 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
+	-@erase "$(INTDIR)\halton.obj"
+	-@erase "$(INTDIR)\halton.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
@@ -2133,6 +2159,8 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
+	-@erase "$(INTDIR)\primenumbers.obj"
+	-@erase "$(INTDIR)\primenumbers.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -2373,7 +2401,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\halton.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2529,7 +2559,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\halton.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2885,6 +2917,12 @@ SOURCE=.\ql\Math\normaldistribution.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Math\primenumbers.cpp
+
+"$(INTDIR)\primenumbers.obj"	"$(INTDIR)\primenumbers.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Math\statistics.cpp
 
 "$(INTDIR)\statistics.obj"	"$(INTDIR)\statistics.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3230,6 +3268,12 @@ SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
 SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
 
 "$(INTDIR)\fdvanillaengine.obj"	"$(INTDIR)\fdvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\RandomNumbers\halton.cpp
+
+"$(INTDIR)\halton.obj"	"$(INTDIR)\halton.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
