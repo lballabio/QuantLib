@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/03 15:35:53  lballabio
+    Fixed line wrappings
+
     Revision 1.1  2001/04/09 14:03:55  nando
     all the *.hpp moved below the Include/ql level
 
@@ -53,9 +56,11 @@ namespace QuantLib {
         class ActualActual : public DayCounter {
           public:
             std::string name() const { return std::string("act/act"); }
-            int dayCount(const Date& d1, const Date& d2) const { return (d2-d1); }
+            int dayCount(const Date& d1, const Date& d2) const { 
+                return (d2-d1); }
             Time yearFraction(const Date& d1, const Date& d2,
-              const Date& refPeriodStart = Date(), const Date& refPeriodEnd = Date()) const;
+              const Date& refPeriodStart = Date(), 
+              const Date& refPeriodEnd = Date()) const;
         };
 
     }
