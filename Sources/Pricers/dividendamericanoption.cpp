@@ -32,21 +32,21 @@ namespace QuantLib {
 
 		DividendAmericanOption::DividendAmericanOption(Option::Type type, double underlying, double strike,
 		  Rate underlyingGrowthRate, Rate riskFreeRate,	Time residualTime, double volatility,
-		   std::vector<double> dividends, std::vector<Time> exdivdates)
-			:theDividends(dividends),theExDivDates(exdivdates), theNumberOfDivs(dividends.size()),
-			BSMNumericalOption(type, underlying-addElements(dividends), strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
-			  (residualTime>1.0 ? (int)(100+(residualTime-1.0)*50) : 100)+1){
+		   std::vector<double> dividends, std::vector<Time> exdivdates, int timeSteps, int gridPoints)
+			:theDividends(dividends),theExDivDates(exdivdates), theNumberOfDivs(dividends.size()),timeStepPerDiv(timeSteps),
+			BSMNumericalOption(type, underlying-addElements(dividends), strike,underlyingGrowthRate,
+			riskFreeRate,residualTime,volatility,gridPoints){
 
-			Require(theNumberOfDivs==theExDivDates.size(),"the number of dividends is diffrent from	that of	dates");
-			Require(theNumberOfDivs>=1,"the	number of dividends must be at least one");
-			Require(underlying-addElements(dividends)>0,"Dividends cannot exceed underlying");
-			Require(theExDivDates[0]>0,"The	ex dividend dates must be positive");
-			Require(theExDivDates[theExDivDates.size()-1]<residualTime,"The	ex dividend dates must be within the residual time");
-			Require(theDividends[0]>=0,"Dividends cannot be	negative");
-			for(unsigned int j=1; j<theNumberOfDivs;j++){
-				Require(theExDivDates[j-1]<theExDivDates[j],"Dividend dates must be in increasing order");
-				Require(theDividends[j]>=0,"DividendAmericanOption: Dividends cannot be	negative");
-			}
+				Require(theNumberOfDivs==theExDivDates.size(),"the number of dividends is diffrent from	that of	dates");
+				Require(theNumberOfDivs>=1,"the	number of dividends must be at least one");
+				Require(underlying-addElements(dividends)>0,"Dividends cannot exceed underlying");
+				Require(theExDivDates[0]>0,"The	ex dividend dates must be positive");
+				Require(theExDivDates[theExDivDates.size()-1]<residualTime,"The	ex dividend dates must be within the residual time");
+				Require(theDividends[0]>=0,"Dividends cannot be	negative");
+				for(unsigned int j=1; j<theNumberOfDivs;j++){
+					Require(theExDivDates[j-1]<theExDivDates[j],"Dividend dates must be in increasing order");
+					Require(theDividends[j]>=0,"DividendAmericanOption: Dividends cannot be	negative");
+				}
 		}
 
 		double DividendAmericanOption::value() const {
@@ -72,10 +72,10 @@ namespace QuantLib {
 					else
 						endDate	= 0.0;
 					if(theOptionIsAmerican)
-						model.rollback(prices,beginDate,endDate,theGridPoints-1,americanCondition);
+						model.rollback(prices,beginDate,endDate,timeStepPerDiv,americanCondition);
 					else
-						model.rollback(prices,beginDate,endDate,theGridPoints-1);
-					model.rollback(controlPrices,beginDate,endDate,theGridPoints-1);
+						model.rollback(prices,beginDate,endDate,timeStepPerDiv);
+					model.rollback(controlPrices,beginDate,endDate,timeStepPerDiv);
 					beginDate = endDate;
 
 					if(j >=	0){

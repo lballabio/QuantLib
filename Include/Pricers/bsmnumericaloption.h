@@ -24,6 +24,7 @@
 #ifndef BSM_numerical_option_pricer_h
 #define BSM_numerical_option_pricer_h
 
+
 #include "qldefines.h"
 #include "bsmoption.h"
 #include "array.h"
@@ -33,17 +34,21 @@
 namespace QuantLib {
 
 	namespace Pricers {
-	
+//! The following is a safety check to be sure we have enough grid points.
+
+		#define QL_NUM_OPT_MIN_GRID_POINTS				100
+		#define QL_NUM_OPT_GRID_POINTS_PER_YEAR		50
+		
 		class BSMNumericalOption : public BSMOption {
 		  public:
-			BSMNumericalOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
-			  Rate riskFreeRate, Time residualTime, double volatility, int gridPoints);
-			// accessors
-			double delta() const;
-			double gamma() const;
-			double theta() const;
-			double rho()   const;
-			double vega()  const;
+				BSMNumericalOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
+				  Rate riskFreeRate, Time residualTime, double volatility, int gridPoints);
+				// accessors
+				double delta() const;
+				double gamma() const;
+				double theta() const;
+				double rho()   const;
+				double vega()  const;
 		
 		  protected:
 			// methods

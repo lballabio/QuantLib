@@ -51,11 +51,12 @@ namespace QuantLib {
 			// constructor
 			DividendAmericanOption(Option::Type type, double underlying, double strike, 
 			  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility,
-			   std::vector<double> dividends, std::vector<Time> exdivdates);
+			   std::vector<double> dividends, std::vector<Time> exdivdates, int timeSteps, int gridPoints);
 			// accessors
 			double value() const;
 			private:
 			mutable bool theOptionIsAmerican;
+			double timeStepPerDiv;
 			std::vector<double> theDividends;
 			std::vector<Time> theExDivDates;
 			unsigned int  theNumberOfDivs;

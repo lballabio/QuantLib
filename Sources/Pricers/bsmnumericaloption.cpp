@@ -37,9 +37,15 @@ namespace QuantLib {
 		BSMNumericalOption::BSMNumericalOption(BSMOption::Type type, double underlying, double strike, 
 		  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility, int gridPoints)
 		: BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility), 
-		  theGridPoints(gridPoints),rhoComputed(false), vegaComputed(false),theGrid(theGridPoints),
+		  theGridPoints(gridPoints),rhoComputed(false), vegaComputed(false),
 		  theInitialPrices(theGridPoints){
-			hasBeenCalculated = false;
+//! The following is a safety check to be sure we have enough grid points.
+#if defined(QL_NUM_OPT_MIN_GRID_POINTS) && defined(QL_NUM_OPT_GRID_POINTS_PER_YEAR)
+				theGridPoints = QL_MAX(theGridPoints,	residualTime>1.0 ? (int)(QL_NUM_OPT_MIN_GRID_POINTS+
+					(residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR) : QL_NUM_OPT_MIN_GRID_POINTS);
+#endif
+				theGrid = Array(theGridPoints);
+				hasBeenCalculated = false;
 		}
 		
 		double BSMNumericalOption::delta() const {
