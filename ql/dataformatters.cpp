@@ -55,6 +55,16 @@ namespace QuantLib {
         return std::string(s);
     }
 
+    std::string DoubleFormatter::toExponential(double x, int precision, 
+                                               int digits) {
+        if (x == Null<double>())
+            return std::string("null");
+        char s[64];
+        QL_SPRINTF(s,"%*.*e",(digits>64?64:digits),
+                             (precision>64?64:precision),x);
+        return std::string(s);
+    }
+
     std::ostream& operator<< (std::ostream& stream, const Array& a) {
         return stream << ArrayFormatter::toString(a.begin(), a.end());
     }

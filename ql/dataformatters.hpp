@@ -42,6 +42,8 @@ namespace QuantLib {
       public:
         static std::string toString(double x, int precision = 6,
                                     int digits = 0);
+        static std::string toExponential(double x, int precision = 6,
+                                         int digits = 0);
     };
 
     //! Formats arrays for output
