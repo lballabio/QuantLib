@@ -635,10 +635,6 @@ SOURCE=.\ql\Pricers\americancondition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\americanoption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\barrieroption.cpp
 # End Source File
 # Begin Source File
@@ -647,27 +643,11 @@ SOURCE=.\ql\Pricers\barrieroption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\bermudanoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\bermudanoption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\binaryoption.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Pricers\binaryoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\bsmfdoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\bsmfdoption.hpp
 # End Source File
 # Begin Source File
 
@@ -707,38 +687,6 @@ SOURCE=.\ql\Pricers\discretegeometricaso.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\dividendamericanoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\dividendamericanoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\dividendeuropeanoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\dividendeuropeanoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\dividendoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\dividendoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\dividendshoutoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\dividendshoutoption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\europeanengine.cpp
 # End Source File
 # Begin Source File
@@ -755,6 +703,66 @@ SOURCE=.\ql\Pricers\europeanoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\fdamericanoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fdbermudanoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fdbermudanoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fdbsmoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fdbsmoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fddividendamericanoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fddividendamericanoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fddividendeuropeanoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fddividendeuropeanoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fddividendoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fddividendoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fddividendshoutoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fddividendshoutoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fdeuropean.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fdeuropean.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\fdeuropeanswaption.cpp
 # End Source File
 # Begin Source File
@@ -763,11 +771,23 @@ SOURCE=.\ql\Pricers\fdeuropeanswaption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\finitedifferenceeuropean.cpp
+SOURCE=.\ql\Pricers\fdmultiperiodoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\finitedifferenceeuropean.hpp
+SOURCE=.\ql\Pricers\fdmultiperiodoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fdshoutoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fdstepconditionoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fdstepconditionoption.hpp
 # End Source File
 # Begin Source File
 
@@ -839,19 +859,7 @@ SOURCE=.\ql\Pricers\mcpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\multiperiodoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\multiperiodoption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\shoutcondition.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\shoutoption.hpp
 # End Source File
 # Begin Source File
 
@@ -863,11 +871,7 @@ SOURCE=.\ql\Pricers\singleassetoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\stepconditionoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\stepconditionoption.hpp
+SOURCE=.\ql\Pricers\swaptioncondition.hpp
 # End Source File
 # End Group
 # Begin Group "RandomNumbers"
