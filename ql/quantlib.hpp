@@ -74,11 +74,7 @@
 #include "ql/DayCounters/actual360.hpp"
 #include "ql/DayCounters/actual365.hpp"
 #include "ql/DayCounters/actualactual.hpp"
-#include "ql/DayCounters/actualactualeuro.hpp"
-#include "ql/DayCounters/actualactualhistorical.hpp"
 #include "ql/DayCounters/thirty360.hpp"
-#include "ql/DayCounters/thirty360european.hpp"
-#include "ql/DayCounters/thirty360italian.hpp"
 
 #include "ql/FiniteDifferences/backwardeuler.hpp"
 #include "ql/FiniteDifferences/boundarycondition.hpp"

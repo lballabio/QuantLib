@@ -37,14 +37,47 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        int Thirty360::dayCount(const Date& d1, const Date& d2) const {
-            int dd2 = d2.dayOfMonth(), mm2 = d2.month();
-            if (dd2 == 31 && d1.dayOfMonth() < 30){
-                dd2 = 1;
-                mm2++;
+        std::string Thirty360::name() const {
+            switch (convention_) {
+              case USA:
+                return std::string("30/360");
+              case European:
+                return std::string("30/360eu");
+              case Italian:
+                return std::string("30/360it");
+              default:
+                throw Error("Unknown 30/360 convention");
             }
-            return 360*(d2.year()-d1.year()) + 30*(mm2-d1.month()-1) +
-                QL_MAX(0,30-d1.dayOfMonth()) + QL_MIN(30,dd2);
+            QL_DUMMY_RETURN(std::string());
+        }
+
+        int Thirty360::dayCount(const Date& d1, const Date& d2) const {
+            int dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
+            int mm1 = d1.month(), mm2 = d2.month();
+            int yy1 = d1.year(), yy2 = d2.year();
+
+            switch (convention_) {
+              case USA:
+                if (dd2 == 31 && dd1 < 30) { dd2 = 1; mm2++; }
+                return 360*(yy2-yy1) + 30*(mm2-mm1-1) +
+                       QL_MAX(0,30-dd1) + QL_MIN(30,dd2);
+              case European:
+                return 360*(yy2-yy1) + 30*(mm2-mm1-1) + 
+                       QL_MAX(0,30-dd1) + QL_MIN(30,dd2);
+              case Italian:
+                if (mm1 == 2 && dd1 > 27) dd1 = 30;
+                if (mm2 == 2 && dd2 > 27) dd2 = 30;
+                return 360*(yy2-yy1) + 30*(mm2-mm1-1) +
+                       QL_MAX(0,30-dd1) + QL_MIN(30,dd2);
+              default:
+                throw Error("Unknown 30/360 convention");
+            }
+            QL_DUMMY_RETURN(0);
+        }
+
+        Time Thirty360::yearFraction(const Date& d1, const Date& d2,
+            const Date&, const Date&) const {
+                return dayCount(d1,d2)/360.0;
         }
 
     }

@@ -43,13 +43,19 @@ namespace QuantLib {
         //! 30/360 day count convention
         class Thirty360 : public DayCounter {
           public:
-            std::string name() const { return std::string("30/360"); }
+            enum Convention { USA, European, Italian };
+            explicit Thirty360(Convention c = USA)
+            : convention_(c) {}
+            //! \name DayCounter interface
+            //@{
+            std::string name() const;
             int dayCount(const Date& d1, const Date& d2) const;
             Time yearFraction(const Date& d1, const Date& d2,
               const Date& refPeriodStart = Date(), 
-              const Date& refPeriodEnd = Date()) const {
-                return dayCount(d1,d2)/360.0;
-            }
+              const Date& refPeriodEnd = Date()) const;
+            //@}
+          private:
+            Convention convention_;
         };
 
     }

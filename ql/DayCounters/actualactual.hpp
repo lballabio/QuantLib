@@ -40,23 +40,33 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        //! Actual/Actual day count according to ISMA and US Treasury
-        /*! Actual/Actual day count according to ISMA and US Treasury
-            convention. Also known as "Actual/Actual (Bond)".
-            For more detail please refer to:
-            http://www.isda.org/c_and_a/pdf/mktc1198.pdf
+        //! Actual/Actual day count
+        /*! The day count can be calculated according to ISMA and US Treasury
+            convention, also known as "Actual/Actual (Bond)"; to ISDA, also 
+            known as "Actual/Actual (Historical)"; or to AFB, also known as
+            "Actual/Actual (Euro)".
 
+            For more details, refer to 
+            http://www.isda.org/c_and_a/pdf/mktc1198.pdf
         */
         class ActualActual : public DayCounter {
           public:
-            std::string name() const { return std::string("act/act(b)"); }
-            int dayCount(const Date& d1,
-                         const Date& d2) const {
-                            return (d2-d1); }
-            Time yearFraction(const Date& d1,
-                              const Date& d2,
-                              const Date& refPeriodStart,
-                              const Date& refPeriodEnd) const;
+            enum Convention { ISMA, Bond, ISDA, Historical, AFB, Euro };
+            explicit ActualActual(Convention c = ISMA)
+            : convention_(c) {}
+            //! \name DayCounter interface
+            //@{
+            std::string name() const;
+            int dayCount(const Date& d1, const Date& d2) const;
+            Time yearFraction(const Date& d1, const Date& d2,
+                const Date& refPeriodStart, const Date& refPeriodEnd) const;
+            //@}
+          private:
+            Convention convention_;
+            Time ismaYearFraction(const Date& d1, const Date& d2,
+                const Date& refPeriodStart, const Date& refPeriodEnd) const;
+            Time isdaYearFraction(const Date& d1, const Date& d2) const;
+            Time afbYearFraction(const Date& d1, const Date& d2) const;
         };
 
     }

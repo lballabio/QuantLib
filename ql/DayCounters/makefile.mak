@@ -1,5 +1,4 @@
 
-
 # $Id$
 
 .autodepend
@@ -18,10 +17,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 # Object files
 OBJS = \
     actualactual.obj$(_D) \
-    actualactualeuro.obj$(_D) \
-    actualactualhistorical.obj$(_D) \
-    thirty360.obj$(_D) \
-    thirty360italian.obj$(_D)
+    thirty360.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

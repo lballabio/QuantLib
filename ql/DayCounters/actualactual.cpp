@@ -37,17 +37,53 @@ namespace QuantLib {
 
     namespace DayCounters {
 
+        std::string ActualActual::name() const { 
+            switch (convention_) {
+              case ISMA:
+              case Bond:
+                return std::string("act/act(b)");
+              case ISDA:
+              case Historical:
+                return std::string("act/act(h)");
+              case AFB:
+              case Euro:
+                return std::string("act/act(e)");
+              default:
+                throw Error("Unknown act/act convention");
+            }
+            QL_DUMMY_RETURN(std::string());
+        }
+            
+        int ActualActual::dayCount(const Date& d1, const Date& d2) const {
+            return (d2-d1);
+        }
+
         Time ActualActual::yearFraction(const Date& d1, const Date& d2,
           const Date& refPeriodStart, const Date& refPeriodEnd) const {
+            switch (convention_) {
+              case ISMA:
+              case Bond:
+                return ismaYearFraction(d1,d2,refPeriodStart,refPeriodEnd);
+              case ISDA:
+              case Historical:
+                return isdaYearFraction(d1,d2);
+              case AFB:
+              case Euro:
+                return afbYearFraction(d1,d2);
+              default:
+                throw Error("Unknown act/act convention");
+            }
+            QL_DUMMY_RETURN(Time());
+        }
 
+
+        Time ActualActual::ismaYearFraction(const Date& d1, const Date& d2,
+          const Date& refPeriodStart, const Date& refPeriodEnd) const {
             QL_REQUIRE(d1<=d2, "invalid dates");
-
             QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() &&
                 refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
                 "Invalid reference period");
 
-            
-            
             // estimate roughly the length in months of a period
             int months = int(0.5+12*double(refPeriodEnd-refPeriodStart)/365);
             QL_REQUIRE(months != 0,
@@ -55,9 +91,10 @@ namespace QuantLib {
             double period = double(months)/12.0;
 
             if (d2 <= refPeriodEnd) {
-                // here refPeriodEnd is a future (maybe notional) payment date 
+                // here refPeriodEnd is a future (notional?) payment date 
                 if (d1 >= refPeriodStart)
-                    // here refPeriodStart is the last (maybe notional) payment date.
+                    // here refPeriodStart is the last (maybe notional) 
+                    // payment date.
                     // refPeriodStart <= d1 <= d2 <= refPeriodEnd
                     // [maybe the equality should be enforced, since
                     // refPeriodStart < d1 <= d2 < refPeriodEnd
@@ -65,28 +102,32 @@ namespace QuantLib {
                     return period*double(dayCount(d1,d2)) /
                         dayCount(refPeriodStart,refPeriodEnd);
                 else {
-                    // here refPeriodStart is the next (maybe notional) payment date.
-                    // and so refPeriodEnd is the next-next (maybe notional) payment date.
-                    // d1 < refPeriodStart < refPeriodEnd AND d2 <= refPeriodEnd
+                    // here refPeriodStart is the next (maybe notional) 
+                    // payment date and refPeriodEnd is the second next 
+                    // (maybe notional) payment date.
+                    // d1 < refPeriodStart < refPeriodEnd 
+                    // AND d2 <= refPeriodEnd
                     // this case is long first coupon
 
-                    // the the last notional payment date
+                    // the last notional payment date
                     Date previousRef = refPeriodStart.plusMonths(-months);
-                    return yearFraction(
-                                d1,refPeriodStart,previousRef,refPeriodStart) +
-                           yearFraction(
-                                refPeriodStart,d2,refPeriodStart,refPeriodEnd);
+                    return yearFraction(d1, refPeriodStart, previousRef, 
+                                        refPeriodStart) +
+                           yearFraction(refPeriodStart, d2, refPeriodStart, 
+                                        refPeriodEnd);
                 }
             } else {
-                // here refPeriodEnd is the last (maybe notional) payment date 
+                // here refPeriodEnd is the last (notional?) payment date 
                 // d1 < refPeriodEnd < d2 AND refPeriodStart < refPeriodEnd
                 QL_REQUIRE(refPeriodStart<=d1,
-                    "invalid dates: cannot be d1 < refPeriodStart < refPeriodEnd < d2");
+                    "invalid dates: "
+                    "d1 < refPeriodStart < refPeriodEnd < d2");
                 // now it is: refPeriodStart <= d1 < refPeriodEnd < d2
 
                 // the part from d1 to refPeriodEnd
                 double sum =
-                    yearFraction(d1,refPeriodEnd,refPeriodStart,refPeriodEnd);
+                    yearFraction(d1, refPeriodEnd, refPeriodStart, 
+                                 refPeriodEnd);
 
                 // the part from refPeriodEnd to d2
                 // count how many regular periods are in [refPeriodEnd, d2],
@@ -106,6 +147,49 @@ namespace QuantLib {
                 sum += yearFraction(newRefStart,d2,newRefStart,newRefEnd);
                 return sum;
             }
+        }
+
+        Time ActualActual::isdaYearFraction(const Date& d1, 
+          const Date& d2) const {
+            QL_REQUIRE(d2>=d1, "Invalid reference period");
+
+	        int y1 = d1.year(), y2 = d2.year();
+	        double dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
+		           dib2 = (Date::isLeap(y2) ? 366.0 : 365.0);
+
+	        double sum = y2 - y1 - 1;
+	        sum += dayCount(d1, Date(1,(Month)1,y1+1))/dib1;
+	        sum += dayCount(Date(1,(Month)1,y2),d2)/dib2;
+	        return sum;
+        }
+
+        Time ActualActual::afbYearFraction(const Date& d1, 
+          const Date& d2) const {
+            QL_REQUIRE(d1<=d2, "Invalid reference period");
+
+            Date newD2=d2, temp=d2;
+            Time sum = 0.0;
+            while (temp > d1) {
+                temp = newD2.plusYears(-1);
+                if (temp.dayOfMonth()==28 && temp.month()==2
+                    && Date::isLeap(temp.year())) {
+                    temp.plusDays(1);
+                }
+                if (temp>=d1) {
+                    sum += 1.0;
+                    newD2 = temp;
+                }
+            }
+
+            double den = 365.0;
+            if ((Date::isLeap(newD2.year()) && 
+                    newD2>Date(29, (Month)2, newD2.year()))
+                || (Date::isLeap(d1.year()) &&
+                    d1<=Date(29, (Month)2, d1.year()))) {
+                den += 1.0;
+            }
+
+            return sum+dayCount(d1, newD2)/den;
         }
 
     }
