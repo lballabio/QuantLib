@@ -20,6 +20,7 @@
 #include "lowdiscrepancysequences.hpp"
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
+#include <fstream>
 
 using namespace QuantLib;
 using namespace QuantLib::Math;
@@ -29,6 +30,7 @@ using namespace QuantLib::Math;
 CppUnit::Test* LDSTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Low discrepancy sequences' tests");
+
     tests->addTest(new CppUnit::TestCaller<LDSTest>
                    ("Testing primitive polynomials modulo two",
                     &LDSTest::testPolynomialsModuloTwo));
@@ -214,7 +216,7 @@ void LDSTest::testHalton() {
         }
     }
 
-    const double vanderCorputSequenceModuloThree[] = {
+    static const double vanderCorputSequenceModuloThree[] = {
         // first cycle (zero excluded)
         1.0/3,  2.0/3,
         // second cycle
@@ -307,12 +309,80 @@ void LDSTest::testHalton() {
 
 void LDSTest::testDiscrepancy() {
 
-    Array point;
-    unsigned long dim, dimensionality[] = {2, 3, 5, 10, 15, 30, 50, 100 };
-    unsigned long seed = 123456;
+    const double discrRandDim2[]   = { 0.0116518781661380};
+    const double discrRandDim3[]   = {0.00927283};
+    const double discrRandDim5[]   = {0.00515021};
+    const double discrRandDim10[]  = {0.000968531};
+    const double discrRandDim15[]  = {0.000172521};
+    const double discrRandDim30[]  = {9.54138e-007};
+    const double discrRandDim50[]  = {9.31778e-010};
+    const double discrRandDim100[] = {2.77691e-017};
+    const double * const discrRand[8] = { discrRandDim2,  discrRandDim3,
+        discrRandDim5,  discrRandDim10, discrRandDim15, discrRandDim30,
+        discrRandDim50, discrRandDim100 };
 
+    const double discrMersDim2[]   = { 0.00884306};
+    const double discrMersDim3[]   = { 0.00701655};
+    const double discrMersDim5[]   = { 0.00428155};
+    const double discrMersDim10[]  = { 0.000883079};
+    const double discrMersDim15[]  = { 0.000163131};
+    const double discrMersDim30[]  = { 4.38406e-007};
+    const double discrMersDim50[]  = { 3.27135e-010};
+    const double discrMersDim100[] = { 5.29737e-019};
+    const double * const discrMers[8] = { discrMersDim2,  discrMersDim3,
+        discrMersDim5,  discrMersDim10, discrMersDim15, discrMersDim30,
+        discrMersDim50, discrMersDim100 };
+
+    const double discrHaltDim2[]   = { 0.00125753};
+    const double discrHaltDim3[]   = { 0.00162592};
+    const double discrHaltDim5[]   = { 0.00193329};
+    const double discrHaltDim10[]  = { 0.00123382};
+    const double discrHaltDim15[]  = { 0.000574585};
+    const double discrHaltDim30[]  = { 0.000445345};
+    const double discrHaltDim50[]  = { 0.000404071};
+    const double discrHaltDim100[] = { 0.000362872};
+    const double * const discrHalt[8] = { discrHaltDim2,  discrHaltDim3,
+        discrHaltDim5,  discrHaltDim10, discrHaltDim15, discrHaltDim30,
+        discrHaltDim50, discrHaltDim100 };
+
+    const double discrSoboDim2[]   = { 0.000832648};
+    const double discrSoboDim3[]   = { 0.00120968};
+    const double discrSoboDim5[]   = { 0.0201095};
+    const double discrSoboDim10[]  = { 0.00167361};
+    const double discrSoboDim15[]  = { 0.000315283};
+    const double discrSoboDim30[]  = { 7.39576e-007};
+    const double discrSoboDim50[]  = { 6.85048e-010};
+    const double discrSoboDim100[] = { 2.2668e-018};
+    const double * const discrSobo[8] = { discrSoboDim2,  discrSoboDim3,
+        discrSoboDim5,  discrSoboDim10, discrSoboDim15, discrSoboDim30,
+        discrSoboDim50, discrSoboDim100 };
+
+    const double discrUnSoDim2[]   = { 0.000832648};
+    const double discrUnSoDim3[]   = { 0.00120968};
+    const double discrUnSoDim5[]   = { 0.0119804};
+    const double discrUnSoDim10[]  = { 0.00124387};
+    const double discrUnSoDim15[]  = { 0.0001963648626249};
+    const double discrUnSoDim30[]  = { 0.0000275078009842};
+    const double discrUnSoDim50[]  = { 9.53743e-006};
+    const double discrUnSoDim100[] = { 1.54476e-006};
+    const double * const discrUnSo[8] = { discrUnSoDim2,  discrUnSoDim3,
+        discrUnSoDim5,  discrUnSoDim10, discrUnSoDim15, discrUnSoDim30,
+        discrUnSoDim50, discrUnSoDim100 };
+
+    static const unsigned long dimensionality[] = {2, 3, 5, 10, 15, 30, 50, 100 };
+
+    Array point;
+    unsigned long dim;
+    unsigned long seed = 123456;
+    double trueRandomFactor;
+
+    std::ofstream outStream("discrepancy.txt");
     for (int i = 0; i<8; i++) {
         dim = dimensionality[i];
+        trueRandomFactor = (1.0/QL_POW(2.0, int(dim))
+            -1.0/QL_POW(3.0, int(dim)));
+ 
+        outStream << "******" << dim << std::endl;
         MersenneTwisterUniformRsg mer(dim, seed);
         HaltonRsg                 hal(dim);
         SobolRsg                  sob(dim, seed);
@@ -323,10 +393,15 @@ void LDSTest::testDiscrepancy() {
         DiscrepancyStatistics sobStat(dim);
         DiscrepancyStatistics unSStat(dim);
 
+        double ranDiscr, merDiscr, halDiscr, sobDiscr, unSDiscr;
+        double tolerance=1e-4;
+
         Size k = 0;
-// too long
-//        for (int j=10; j<17; j++) {
-        for (int j=10; j<11; j++) {
+        Size jMin = 10;
+        // it would take too long for usual/frequent test running
+//        Size sampleLoops = 7;
+        Size sampleLoops = 1;
+        for (int j=jMin; j<jMin+sampleLoops; j++) {
             Size points = Size(QL_POW(2.0, j))-1;
             for (; k<points; k++) {
                 point = mer.nextSequence().value;
@@ -338,19 +413,77 @@ void LDSTest::testDiscrepancy() {
                 point = unS.nextSequence().value;
                 unSStat.add(point);
             }
-/*
-            std::cout << points << ": "
-                "r " << QL_SQRT((1.0/QL_POW(2.0, int(dim))
-                                 -1.0/QL_POW(3.0, int(dim)))
-                                /points) <<
-                ", Mers. " << merStat.discrepancy() <<
-                ", Halt. " << halStat.discrepancy() <<
-                ", Sobol " << sobStat.discrepancy() <<
-                ", UnitS " << unSStat.discrepancy() <<
+            ranDiscr = QL_SQRT(trueRandomFactor/points);
+            if (QL_FABS(ranDiscr-discrRand[i][j-jMin])>tolerance*ranDiscr) {
+                CPPUNIT_FAIL("True random discrepancy dimension " +
+                             IntegerFormatter::toString(dimensionality[i]) +
+                             " at " +
+                             IntegerFormatter::toString(points) +
+                             " samples is " +
+                             DoubleFormatter::toString(ranDiscr, 16) +
+                             " instead of " +
+                             DoubleFormatter::toString(discrRand[i][j-jMin], 16));
+            }
+
+            merDiscr = merStat.discrepancy();
+            if (QL_FABS(merDiscr-discrMers[i][j-jMin])>tolerance*merDiscr) {
+                CPPUNIT_FAIL("Mersenne discrepancy dimension " +
+                             IntegerFormatter::toString(dimensionality[i]) +
+                             " at " +
+                             IntegerFormatter::toString(points) +
+                             " samples is " +
+                             DoubleFormatter::toString(merDiscr, 16) +
+                             " instead of " +
+                             DoubleFormatter::toString(discrMers[i][j-jMin], 16));
+            }
+
+            halDiscr = halStat.discrepancy();
+            if (QL_FABS(halDiscr-discrHalt[i][j-jMin])>tolerance*halDiscr) {
+                CPPUNIT_FAIL("Halton discrepancy dimension " +
+                             IntegerFormatter::toString(dimensionality[i]) +
+                             " at " +
+                             IntegerFormatter::toString(points) +
+                             " samples is " +
+                             DoubleFormatter::toString(halDiscr, 16) +
+                             " instead of " +
+                             DoubleFormatter::toString(discrHalt[i][j-jMin], 16));
+            }
+
+            sobDiscr = sobStat.discrepancy();
+            if (QL_FABS(sobDiscr-discrSobo[i][j-jMin])>tolerance*sobDiscr) {
+                CPPUNIT_FAIL("Sobol discrepancy dimension " +
+                             IntegerFormatter::toString(dimensionality[i]) +
+                             " at " +
+                             IntegerFormatter::toString(points) +
+                             " samples is " +
+                             DoubleFormatter::toString(sobDiscr, 16) +
+                             " instead of " +
+                             DoubleFormatter::toString(discrSobo[i][j-jMin], 16));
+            }
+
+            unSDiscr = unSStat.discrepancy();
+            if (QL_FABS(unSDiscr-discrUnSo[i][j-jMin])>tolerance*unSDiscr) {
+                CPPUNIT_FAIL("Unit Sobol discrepancy dimension " +
+                             IntegerFormatter::toString(dimensionality[i]) +
+                             " at " +
+                             IntegerFormatter::toString(points) +
+                             " samples is " +
+                             DoubleFormatter::toString(unSDiscr, 16) +
+                             " instead of " +
+                             DoubleFormatter::toString(discrUnSo[i][j-jMin], 16));
+            }
+
+            outStream << "points: " << points << std::endl;
+            outStream <<
+                "ra " << ranDiscr <<
+                " M " << merDiscr <<
+                " H " << halDiscr <<
+                " S " << sobDiscr <<
+                " U " << unSDiscr <<
                 std::endl;
-*/
         }
     }
+    outStream.close();
 
 }
 
