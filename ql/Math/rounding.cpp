@@ -15,47 +15,49 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+/*! \file rounding.hpp
+    \brief Rounding implementation
+*/
+
 #include <ql/Math/rounding.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    Decimal Rounding::round(const Decimal value) const {
-        if (type_ == None) 
-            return value;
-        Decimal mult = pow(10.0,precision_);
-        bool neg = (value < 0.0);
-        Decimal lvalue = QL_FABS(value)*mult;
-        Decimal integral = 0.0;
-        Decimal modVal = QL_MODF(lvalue,&integral);
-        switch (type_) {
-          case Up:
-            lvalue -= modVal;
-            if (modVal >= (digit_/10.0))
-                lvalue += 1.0;
-            break;
-          case Down:
-            lvalue -= modVal;
-            break;
-          case Floor:
-            lvalue -= modVal;
-            if (!neg) {
-                if (modVal >= (digit_/10.0))
-                lvalue += 1.0;
-            }
-            break;
-          case Ceiling:
-            lvalue -= modVal;
-            if (neg) {
-                if (modVal >= (digit_/10.0))
-                lvalue += 1.0;
-            }
-            break;
-          default:
-            QL_FAIL("unknown rounding method");
-        }
-        return (neg) ? (lvalue/mult)*-1.0 : lvalue/mult;
+    Decimal Rounding::operator()(Decimal value) const {
+	if (type_ == None) return value;
+	Real mult = pow(10.0,precision_);
+	bool neg = (value < 0.0);
+	Real lvalue = QL_FABS(value)*mult;
+	Real integral = 0.0;
+	Real modVal = QL_MODF(lvalue,&integral);
+	lvalue -= modVal;
+	switch (type_) {
+	    case Down:
+		break;
+	    case Up:
+		lvalue += 1.0;
+		break;
+	    case Closest:
+		if (modVal >= (digit_/10.0))
+		    lvalue += 1.0;
+		break;
+	    case Floor:
+		if (!neg) {
+		    if (modVal >= (digit_/10.0))
+			lvalue += 1.0;
+		}
+		break;
+	    case Ceiling:
+		if (neg) {
+		    if (modVal >= (digit_/10.0))
+			lvalue += 1.0;
+		}
+		break;
+	    default:
+		QL_FAIL("unknown rounding method");
+	}
+	return (neg) ? (lvalue/mult)*-1.0 : lvalue/mult;
     }
-
+    
 }
-

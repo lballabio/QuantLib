@@ -42,6 +42,8 @@ namespace QuantLib {
                           rounded up if greater than the rounding digit */
             Down,    /*!< all decimal places past the precision will be 
                           truncated */
+	    Closest, /*!< numbers will be rounded either up or down depending
+		          on which is closest to the rounding digit */
             Floor,   /*!< positive numbers will be rounded up and negative
                           numbers will be rounded down using the round up
                           and round down rules */
@@ -49,11 +51,12 @@ namespace QuantLib {
                           numbers will be rounded up using the round up
                           and round down rules */
         };
+	Rounding() {}
         Rounding(Integer precision,
-                 Type type = Up,
+                 Type type = Closest,
                  Integer digit = 5)
         : precision_(precision), type_(type), digit_(digit) {}
-        Decimal round(const Decimal value) const;
+        Decimal operator()(Decimal value) const;
       private:
         Integer precision_;
         Type type_;
