@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     //! Cap/floor priced by means of the Black formula
+    /*! \ingroup capfloorengines */
     class BlackCapFloor : public GenericModelEngine<BlackModel, 
                                                     CapFloor::arguments,
                                                     CapFloor::results> {

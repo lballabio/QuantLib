@@ -56,6 +56,8 @@ namespace QuantLib {
     //! Quanto engine base class
     /*! \warning for the time being, this engine will only work with
                  simple Black-Scholes processes (i.e., no Merton.)
+
+        \ingroup quantoengines
     */
     template<class ArgumentsType, class ResultsType>
     class QuantoEngine

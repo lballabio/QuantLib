@@ -31,6 +31,8 @@ namespace QuantLib {
         "Options on the Minimum or the Maximum of Two Risky Assets", 
             Rene Stulz, 
             Journal of Financial Ecomomics (1982) 10, 161-185.
+
+        \ingroup basketengines
     */
     class StulzEngine : public BasketOption::engine {
       public:

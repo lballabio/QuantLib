@@ -32,6 +32,8 @@ namespace QuantLib {
                  options.
         \bug This engine does not yet work for put options. More problems
              might surface.
+
+        \ingroup basketengines
     */
     class MCAmericanBasketEngine : public BasketOption::engine {
       public:

@@ -31,6 +31,8 @@ namespace QuantLib {
         using analytic formulae
 
         \todo add more greeks (as of now only delta and rho available)
+
+        \ingroup vanillaengines
     */
     class AnalyticDigitalAmericanEngine : public VanillaOption::engine {
       public:

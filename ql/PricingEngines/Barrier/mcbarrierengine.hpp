@@ -42,6 +42,8 @@ namespace QuantLib {
         M. El Babsiri and G. Noel
         Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
         </i>
+
+        \ingroup barrierengines
     */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCBarrierEngine : public BarrierOption::engine,

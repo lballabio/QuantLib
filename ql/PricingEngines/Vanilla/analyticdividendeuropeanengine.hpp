@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! Analytic pricing engine for European options with discrete dividends
+    /*! \ingroup vanillaengines */
     class AnalyticDividendEuropeanEngine 
         : public DividendVanillaOption::engine {
       public:

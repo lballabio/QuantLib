@@ -30,6 +30,7 @@
 namespace QuantLib {
 
     //! European option pricing engine using Monte Carlo simulation
+    /*! \ingroup vanillaengines */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCEuropeanEngine : public MCVanillaEngine<RNG,S> {
       public:

@@ -28,6 +28,7 @@
 namespace QuantLib {
 
     //! Cap/floor priced on a lattice
+    /*! \ingroup capfloorengines */
     class TreeCapFloor 
         : public LatticeShortRateModelEngine<CapFloor::arguments,
                                              CapFloor::results> {

@@ -27,7 +27,8 @@
 
 namespace QuantLib {
 
-    //! MC Pricing engine for European Baskets
+    //! MC pricing engine for European baskets
+    /*! \ingroup basketengines */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCBasketEngine  : public BasketOption::engine,
                             public McSimulation<MultiAsset<RNG>, S> {

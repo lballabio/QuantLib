@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     //! Analytical pricer for cap/floor
+    /*! \ingroup capfloorengines */
     class AnalyticalCapFloor 
         : public GenericModelEngine<AffineModel, 
                                     CapFloor::arguments,

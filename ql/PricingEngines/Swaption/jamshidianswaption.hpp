@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     //! Jamshidian swaption pricer
+    /*! \ingroup swaptionengines */
     class JamshidianSwaption 
         : public GenericModelEngine<OneFactorAffineModel,
                                     Swaption::arguments,

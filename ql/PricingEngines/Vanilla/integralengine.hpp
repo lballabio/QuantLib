@@ -30,6 +30,8 @@ namespace QuantLib {
     /*! Pricing engine for European vanilla options using integral approach
 
         \todo define tolerance for calculate()
+
+        \ingroup vanillaengines
     */
     class IntegralEngine : public VanillaOption::engine {
       public:

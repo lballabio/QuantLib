@@ -28,6 +28,7 @@
 namespace QuantLib {
 
     //! %Swaption priced on a lattice
+    /*! \ingroup swaptionengines */
     class TreeSwaption 
     : public LatticeShortRateModelEngine<Swaption::arguments,
                                          Swaption::results> {

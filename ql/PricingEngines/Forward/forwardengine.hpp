@@ -40,6 +40,7 @@ namespace QuantLib {
 
 
     //! Forward engine base class
+    /*! \ingroup forwardengines */
     template<class ArgumentsType, class ResultsType>
     class ForwardEngine
         : public GenericEngine<ForwardOptionArguments<ArgumentsType>,

@@ -26,6 +26,8 @@
 
 namespace QuantLib {
 
+    //! Jump-diffusion engine for vanilla options
+    /*! \ingroup vanillaengines */
     class JumpDiffusionEngine : public VanillaOption::engine {
       public:
         JumpDiffusionEngine(const boost::shared_ptr<VanillaOption::engine>&,

@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     //! %Swaption priced by means of the Black formula
+    /*! \ingroup swaptionengines */
     class BlackSwaption : public GenericModelEngine<BlackModel, 
                                                     Swaption::arguments,
                                                     Swaption::results> {

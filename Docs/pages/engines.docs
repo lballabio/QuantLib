@@ -1,0 +1,48 @@
+
+/*
+ Copyright (C) 2004 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email quantlib-dev@lists.sf.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
+
+/*! \defgroup engines Pricing engines
+
+    @{
+*/
+
+/*! \defgroup asianengines Asian option engines */
+
+/*! \defgroup barrierengines Barrier option engines */
+
+/*! \defgroup basketengines Basket option engines */
+
+/*! \defgroup capfloorengines Cap/floor engines */
+
+/*! \defgroup cliquetengines Cliquet option engines */
+
+/*! \defgroup forwardengines Forward option engines */
+
+/*! \defgroup quantoengines Quanto option engines */
+
+/*! \defgroup swaptionengines Swaption engines */
+
+/*! \defgroup vanillaengines Vanilla option engines */
+
+/*! @} */
+

@@ -33,6 +33,8 @@ namespace QuantLib {
         Art", edited by L. Clewlow, C. Strickland, pag 65-97
 
         \bug calculated Greeks do not match numerical results
+
+        \ingroup asianengines
     */
     class AnalyticDiscreteAveragingAsianEngine 
         : public DiscreteAveragingAsianOption::engine {

@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! Pricing engine for Cliquet options using analytical formulae
+    /*! \ingroup cliquetengines */
     class AnalyticCliquetEngine : public CliquetOption::engine {
       public:
         void calculate() const;

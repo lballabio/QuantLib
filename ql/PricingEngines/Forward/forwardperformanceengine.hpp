@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! Forward performance engine 
+    /*! \ingroup forwardengines */
     template<class ArgumentsType, class ResultsType>
     class ForwardPerformanceEngine
         : public ForwardEngine<ArgumentsType, ResultsType> {
