@@ -23,8 +23,8 @@ EXTRA_DIST = \
 	QuantLib.nsi \
 	QuantLib.sln \
 	QuantLib.vcproj \
-	QuantLib_8.sln \
-	QuantLib_8.vcproj \
+	QuantLib_vc8.sln \
+	QuantLib_vc8.vcproj \
 	Readme.txt \
 	autogen.sh \
 	makefile.mak
