@@ -38,22 +38,33 @@ EXTRA_DIST=News.txt Contributors.txt History.txt LICENSE.TXT \
 	Docs/footer.html \
 	Examples/history_iterators.cpp
 
-
-if SWIG_FOUND
+if PYTHON_FOUND
+if SWIG_FOUND 
 python:
 	$(MAKE) -C Python python
 else
 python:
-	echo You have to install swig in order to generate wrappers, sorry.
+	echo You need to install swig in order to generate wrappers
+endif
+python-install:
+	$(MAKE) -C Python python-install
+python-test:
+	$(MAKE) -C Python/Tests python-test
+else
+python:
+	echo You need to install python in order to build this module
+python-install:
+        echo You need to install python in order to install this module
+python-test:
+	echo You need to install python in order to test this module
 endif
 
-test:
-	$(MAKE) -C Python/Tests test
 
 if DOXYGEN_FOUND
 docs:
 	$(MAKE) -C Docs docs
 else
 docs:
-	echo You do not have doxygen, so you cannot generate docs, sorry.
+	echo You need to install doxygen to generate documentation.
 endif
+

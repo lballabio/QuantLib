@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.26  2001/03/23 15:01:19  lballabio
+   Added targets python and python-install which actually build and install the module, and renamed target test to python-test
+
    Revision 1.25  2001/03/21 15:04:06  lballabio
    Started playing with Ruby
 
@@ -124,4 +127,5 @@ using QuantLib::IndexError;
 
 
 #endif
+
 
