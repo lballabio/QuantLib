@@ -1,3 +1,79 @@
+June 2004 Release 0.3.6
+Changes since Release 0.3.5:
+
+    **************************************************************
+    ***                                                        ***
+    *** QuantLib depends on the Boost library (www.boost.org). ***
+    *** You will need to download, build, and install Boost    ***
+    *** before compiling and using QuantLib.                   ***
+    ***                                                        ***
+    **************************************************************
+
+
+
+    Date, calendars, and day count conventions
+    -
+
+    Math
+    -
+
+    1-dimensional solvers
+    -
+
+    Optimization
+	-
+
+    Random-number generation
+    -
+
+    Patterns
+	-
+
+    Finite differences
+    -
+
+    Lattices
+    -
+
+    Monte Carlo
+    -
+
+    Pricing engines
+    -
+
+    Pricers
+    -
+
+    Financial Instruments
+    -
+
+    Yield term structures
+    -
+
+    Volatility
+    -
+
+    Short rate models
+    -
+
+    Credit derivatives
+    -
+
+
+    Test suite
+    - Moved to Boost unit test framework. CppUnit unsupported.
+
+    Miscellanea
+    - Removed deprecated classes.
+
+    Documentation
+    -
+
+    Distribution
+    - Fink package available
+
+
+=====================================================
 
 2004-03-31 Release 0.3.5
 Changes since Release 0.3.4:

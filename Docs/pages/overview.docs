@@ -389,7 +389,7 @@
 
 
 
-    <strong>Test suite</strong>
+    <strong>Test suite (Boost Unit Test Framework)</strong>
 
     More than 100 automated tests covering:
     - American options.

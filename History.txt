@@ -1,5 +1,7 @@
 
-2003-03-31 Release 0.3.5
+June 2004 Release 0.3.6
+
+2004-03-31 Release 0.3.5
 
 2003-11-21 Release 0.3.4
 
