@@ -135,8 +135,11 @@ namespace QuantLib {
                                              nominals,
                                              index, fixingDays,
                                              spreads,
-                                             dayCounter,
-                                             (const coupon_type*) 0);
+                                             dayCounter
+                                             #ifdef QL_PATCH_MSVC6
+                                             , (const coupon_type*) 0
+                                             #endif
+                                             );
         return leg;
     }
 

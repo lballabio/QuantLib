@@ -48,8 +48,11 @@ namespace QuantLib {
                         const boost::shared_ptr<Xibor>& index,
                         Integer fixingDays,
                         const std::vector<Spread>& spreads,
-                        const DayCounter& dayCounter = DayCounter(),
-                        const IndexedCouponType* msvc6_bug = 0) {
+                        const DayCounter& dayCounter = DayCounter()
+                        #ifdef QL_PATCH_MSVC6
+                        , const IndexedCouponType* msvc6_bug = 0
+                        #endif
+                        ) {
 
         QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
         QL_REQUIRE(paymentAdjustment != Unadjusted,
