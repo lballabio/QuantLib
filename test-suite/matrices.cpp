@@ -42,7 +42,7 @@ namespace {
         return QL_SQRT(sum);
     }
 
-    void initialize() {
+    void setup() {
 
         N = 3;
         M1 = M2 = I = Matrix(N,N);
@@ -77,7 +77,8 @@ void MatricesTest::testEigenvectors() {
 
     BOOST_MESSAGE("Testing eigenvalues and eigenvectors calculation...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Matrix testMatrices[] = { M1, M2 };
 
@@ -111,13 +112,16 @@ void MatricesTest::testEigenvectors() {
         if (norm(m-I) > 1.0e-15)
             BOOST_FAIL("Eigenvector not normalized");
     }
+
+    QL_TEST_END
 }
 
 void MatricesTest::testSqrt() {
 
     BOOST_MESSAGE("Testing matricial square root...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Matrix m = pseudoSqrt(M1, SalvagingAlgorithm::None);
     Matrix temp = m*transpose(m);
@@ -135,13 +139,15 @@ void MatricesTest::testSqrt() {
                    "\ntolerance: " + DecimalFormatter::toString(tolerance));
     }
 
+    QL_TEST_END
 }
 
 void MatricesTest::testSVD() {
 
     BOOST_MESSAGE("Testing singular value decomposition...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Real tol = 1.0e-12;
     Matrix testMatrices[] = { M1, M2, M3, M4 };
@@ -183,6 +189,8 @@ void MatricesTest::testSVD() {
                        DecimalFormatter::toExponential(norm(A_reconstructed-A))
                        + ")");
     }
+
+    QL_TEST_END
 }
 
 

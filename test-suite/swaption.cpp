@@ -81,7 +81,7 @@ namespace {
                   engine));
     }
 
-    void initialize() {
+    void setup() {
         settlementDays_ = 2;
         fixingDays_ = 2;
         nominal_ = 100.0;
@@ -100,7 +100,7 @@ namespace {
         termStructure_.linkTo(flatRate(settlement_,0.05,Actual365()));
     }
 
-    void finalize() {
+    void teardown() {
         Settings::instance().setEvaluationDate(Date());
     }
 
@@ -110,7 +110,8 @@ void SwaptionTest::testStrikeDependency() {
 
     BOOST_MESSAGE("Testing swaption dependency on strike...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
@@ -181,14 +182,15 @@ void SwaptionTest::testStrikeDependency() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void SwaptionTest::testSpreadDependency() {
 
     BOOST_MESSAGE("Testing swaption dependency on spread...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
 
@@ -259,14 +261,15 @@ void SwaptionTest::testSpreadDependency() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void SwaptionTest::testSpreadTreatment() {
 
     BOOST_MESSAGE("Testing swaption treatment of spread...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
 
@@ -312,14 +315,15 @@ void SwaptionTest::testSpreadTreatment() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void SwaptionTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing swaption value against cached value...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     today_ = Date(13,March,2002);
     settlement_ = Date(15,March,2002);
@@ -344,7 +348,7 @@ void SwaptionTest::testCachedValue() {
             "    expected:   " +
             DecimalFormatter::toString(cachedNPV,12));
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 

@@ -58,7 +58,7 @@ namespace {
                            termStructure_));
     }
 
-    void initialize() {
+    void setup() {
         payFixed_ = true;
         settlementDays_ = 2;
         fixingDays_ = 2;
@@ -78,7 +78,7 @@ namespace {
         termStructure_.linkTo(flatRate(settlement_,0.05,Actual365()));
     }
 
-    void finalize() {
+    void teardown() {
         Settings::instance().setEvaluationDate(Date());
     }
 
@@ -88,7 +88,8 @@ void SwapTest::testFairRate() {
 
     BOOST_MESSAGE("Testing simple swap calculation of fair fixed rate...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
@@ -112,7 +113,7 @@ void SwapTest::testFairRate() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void SwapTest::testFairSpread() {
@@ -120,7 +121,8 @@ void SwapTest::testFairSpread() {
     BOOST_MESSAGE("Testing simple swap calculation of "
                   "fair floating spread...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
@@ -144,14 +146,15 @@ void SwapTest::testFairSpread() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void SwapTest::testRateDependency() {
 
     BOOST_MESSAGE("Testing simple swap dependency on fixed rate...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
@@ -188,14 +191,15 @@ void SwapTest::testRateDependency() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void SwapTest::testSpreadDependency() {
 
     BOOST_MESSAGE("Testing simple swap dependency on floating spread...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
@@ -232,14 +236,15 @@ void SwapTest::testSpreadDependency() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void SwapTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing simple swap calculation against cached value...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     today_ = Date(17,June,2002);
     Settings::instance().setEvaluationDate(today_);
@@ -261,7 +266,7 @@ void SwapTest::testCachedValue() {
             "    expected:   " +
             DecimalFormatter::toString(cachedNPV,12));
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 

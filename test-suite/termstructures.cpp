@@ -47,7 +47,7 @@ namespace {
         Rate rate;
     };
 
-    void initialize() {
+    void setup() {
         calendar_ = TARGET();
         settlementDays_ = 2;
         Date today = calendar_.adjust(Date::todaysDate());
@@ -92,7 +92,7 @@ namespace {
                 new PiecewiseFlatForward(settlement,instruments,Actual360()));
     }
 
-    void finalize() {
+    void teardown() {
         Settings::instance().setEvaluationDate(Date());
     }
 
@@ -103,7 +103,8 @@ void TermStructureTest::testReferenceChange() {
 
     BOOST_MESSAGE("Testing term structure against evaluation date change...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     termStructure_ = boost::shared_ptr<YieldTermStructure>(
          new FlatForward(settlementDays_, NullCalendar(), 0.03, Actual360()));
@@ -131,7 +132,7 @@ void TermStructureTest::testReferenceChange() {
                        + DecimalFormatter::toString(calculated[i],12));
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 
@@ -139,7 +140,8 @@ void TermStructureTest::testImplied() {
 
     BOOST_MESSAGE("Testing consistency of implied term structure...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Real tolerance = 1.0e-10;
     Date today = Settings::instance().evaluationDate();
@@ -159,13 +161,16 @@ void TermStructureTest::testImplied() {
             + DecimalFormatter::toString(baseDiscount*impliedDiscount,10)+"\n"
             "    expected:   "
             + DecimalFormatter::toString(discount,10));
+
+    QL_TEST_TEARDOWN
 }
 
 void TermStructureTest::testImpliedObs() {
 
     BOOST_MESSAGE("Testing observability of implied term structure...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Date today = Settings::instance().evaluationDate();
     Date newToday = today.plusYears(3);
@@ -178,13 +183,16 @@ void TermStructureTest::testImpliedObs() {
     h.linkTo(termStructure_);
     if (!flag.isUp())
         BOOST_FAIL("Observer was not notified of term structure change");
+
+    QL_TEST_TEARDOWN
 }
 
 void TermStructureTest::testFSpreaded() {
 
     BOOST_MESSAGE("Testing consistency of forward-spreaded term structure...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Real tolerance = 1.0e-10;
     boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
@@ -202,6 +210,8 @@ void TermStructureTest::testFSpreaded() {
             + RateFormatter::toString(spreadedForward-me->value(),10) + "\n"
             "    expected:   "
             + RateFormatter::toString(forward,10));
+
+    QL_TEST_TEARDOWN
 }
 
 void TermStructureTest::testFSpreadedObs() {
@@ -209,7 +219,8 @@ void TermStructureTest::testFSpreadedObs() {
     BOOST_MESSAGE("Testing observability of forward-spreaded "
                   "term structure...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
@@ -225,13 +236,16 @@ void TermStructureTest::testFSpreadedObs() {
     me->setValue(0.005);
     if (!flag.isUp())
         BOOST_FAIL("Observer was not notified of spread change");
+
+    QL_TEST_TEARDOWN
 }
 
 void TermStructureTest::testZSpreaded() {
 
     BOOST_MESSAGE("Testing consistency of zero-spreaded term structure...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Real tolerance = 1.0e-10;
     boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
@@ -249,13 +263,16 @@ void TermStructureTest::testZSpreaded() {
             + RateFormatter::toString(spreadedZero-me->value(),10) + "\n"
             "    expected:   "
             + RateFormatter::toString(zero,10));
+
+    QL_TEST_TEARDOWN
 }
 
 void TermStructureTest::testZSpreadedObs() {
 
     BOOST_MESSAGE("Testing observability of zero-spreaded term structure...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
@@ -271,6 +288,8 @@ void TermStructureTest::testZSpreadedObs() {
     me->setValue(0.005);
     if (!flag.isUp())
         BOOST_FAIL("Observer was not notified of spread change");
+
+    QL_TEST_TEARDOWN
 }
 
 

@@ -72,7 +72,7 @@ namespace {
     boost::shared_ptr<YieldTermStructure> termStructure;
 
 
-    void initialize() {
+    void setup() {
 
         // data
         calendar = Johannesburg();
@@ -113,7 +113,7 @@ namespace {
                                                  frequency,dayCounter));
     }
 
-    void finalize() {
+    void teardown() {
         Settings::instance().setEvaluationDate(Date());
     }
 
@@ -124,7 +124,8 @@ void CompoundForwardTest::testSuppliedRates() {
     BOOST_MESSAGE("Testing consistency of compound-forward curve "
                   "with supplied rates...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Handle<YieldTermStructure> liborHandle;
     liborHandle.linkTo(termStructure);
@@ -155,7 +156,7 @@ void CompoundForwardTest::testSuppliedRates() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void CompoundForwardTest::testConvertedRates() {
@@ -163,7 +164,8 @@ void CompoundForwardTest::testConvertedRates() {
     BOOST_MESSAGE("Testing consistency of compound-forward curve "
                   "with converted rates...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Handle<YieldTermStructure> liborHandle;
     liborHandle.linkTo(termStructure);
@@ -196,7 +198,7 @@ void CompoundForwardTest::testConvertedRates() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 

@@ -78,7 +78,7 @@ namespace {
     std::vector<boost::shared_ptr<RateHelper> > instruments;
     boost::shared_ptr<YieldTermStructure> termStructure;
 
-    void initialize() {
+    void setup() {
 
         // data
         calendar = TARGET();
@@ -136,7 +136,7 @@ namespace {
 
     }
 
-    void finalize() {
+    void teardown() {
         Settings::instance().setEvaluationDate(Date());
     }
 
@@ -146,7 +146,8 @@ void PiecewiseFlatForwardTest::testConsistency() {
 
     BOOST_MESSAGE("Testing consistency of piecewise flat forward curve...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Handle<YieldTermStructure> euriborHandle;
     euriborHandle.linkTo(termStructure);
@@ -197,14 +198,15 @@ void PiecewiseFlatForwardTest::testConsistency() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void PiecewiseFlatForwardTest::testObservability() {
 
     BOOST_MESSAGE("Testing observability of piecewise flat forward curve...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     termStructure = boost::shared_ptr<YieldTermStructure>(
                           new PiecewiseFlatForward(settlementDays,calendar,
@@ -225,7 +227,7 @@ void PiecewiseFlatForwardTest::testObservability() {
     if (!f.isUp())
             BOOST_FAIL("Observer was not notified of date change");
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 

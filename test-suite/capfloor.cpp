@@ -97,9 +97,8 @@ namespace {
         }
     }
 
-    // initialization
 
-    void initialize() {
+    void setup() {
         nominals_ = std::vector<Real>(1,100.0);
         frequency_ = Semiannual;
         index_ = boost::shared_ptr<Xibor>(
@@ -114,7 +113,7 @@ namespace {
         termStructure_.linkTo(flatRate(settlement_,0.05,Actual360()));
     }
 
-    void finalize() {
+    void teardown() {
         Settings::instance().setEvaluationDate(Date());
     }
 
@@ -125,7 +124,8 @@ void CapFloorTest::testStrikeDependency() {
 
     BOOST_MESSAGE("Testing cap/floor dependency on strike...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     Volatility vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
@@ -193,14 +193,15 @@ void CapFloorTest::testStrikeDependency() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void CapFloorTest::testConsistency() {
 
     BOOST_MESSAGE("Testing consistency between cap, floor and collar...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     Rate cap_rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -249,14 +250,15 @@ void CapFloorTest::testConsistency() {
       }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void CapFloorTest::testParity() {
 
     BOOST_MESSAGE("Testing put/call parity for cap and floor...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -304,14 +306,15 @@ void CapFloorTest::testParity() {
       }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void CapFloorTest::testImpliedVolatility() {
 
     BOOST_MESSAGE("Testing implied term volatility for cap and floor...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
@@ -396,14 +399,15 @@ void CapFloorTest::testImpliedVolatility() {
         }
     }
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 void CapFloorTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing cap/floor value against cached values...");
 
-    initialize();
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
 
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
@@ -439,7 +443,7 @@ void CapFloorTest::testCachedValue() {
             "    expected:   " +
             DecimalFormatter::toString(cachedFloorNPV,12));
 
-    finalize();
+    QL_TEST_TEARDOWN
 }
 
 

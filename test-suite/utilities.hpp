@@ -31,6 +31,18 @@
 // This makes it easier to use array literals (alas, no std::vector literals)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
+
+/* the following somewhat support setup() and teardown() functions,
+   the latter being called even in presence of exceptions.  When used,
+   QL_TEST_BEGIN must begin the test, and either QL_TEST_TEARDOWN or
+   QL_TEST_END must close the test.  When needed, QL_TEST_SETUP must
+   be put in between. */
+#define QL_TEST_BEGIN     try {
+#define QL_TEST_SETUP     setup();
+#define QL_TEST_TEARDOWN  } catch (...) { teardown(); throw; }
+#define QL_TEST_END       } catch (...) { throw; }
+
+
 namespace QuantLib {
 
     std::string payoffTypeToString(const boost::shared_ptr<Payoff>&);
