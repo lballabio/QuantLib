@@ -95,7 +95,7 @@ namespace QuantLib {
             timeDelays_ = std::vector<Time>(timeSteps, dt);
             Array variances = covariance.diagonal();
             for (size_t j=0; j<numAssets_; j++) {
-                QL_REQUIRE(vols[j]>=0, "MultiPathGenerator: negative variance");
+                QL_REQUIRE(variances[j]>=0, "MultiPathGenerator: negative variance");
                 for (size_t i=0; i<timeSteps; i++) {
                     next_.value[j].times()[i] = (i+1)*dt;
                     next_.value[j].drift()[i]=drifts_[j]*timeDelays_[i];
