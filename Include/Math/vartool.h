@@ -1,6 +1,9 @@
 /*! \file vartool.h
     $Source$
     $Log$
+    Revision 1.2  2001/02/21 11:33:47  lballabio
+    Inlined definition that was supposed to be
+
     Revision 1.1  2001/02/20 13:59:00  nando
     added class VarTool.
     RiskStatistics was derived from Statistics:
@@ -66,7 +69,7 @@ namespace QuantLib {
             return gI(target);
         }
 
-        double VarTool::averageShortfall(double target,
+        inline double VarTool::averageShortfall(double target,
                                            double mean,
                                            double std) const {
             Math::CumulativeNormalDistribution gI(mean, std);
