@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -152,7 +151,8 @@ namespace QuantLib {
         //! Checks if the contained pointer is actually allocated
         bool isNull() const;
         //! Checks if the two handles point to the same object
-        bool shareSameObject(const Handle<T>&) const;
+        bool operator==(const Handle<T>&) const;
+        bool operator!=(const Handle<T>&) const;
         //@}
       private:
         mutable T* ptr_;
@@ -206,8 +206,13 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline bool Handle<T>::shareSameObject(const Handle<T>& h) const {
-        return (ptr_ == h.ptr_);
+    inline bool Handle<T>::operator==(const Handle<T>& h) const {
+        return (n_ == h.n_);
+    }
+
+    template <class T>
+    inline bool Handle<T>::operator!=(const Handle<T>& h) const {
+        return (n_ != h.n_);
     }
 
 }

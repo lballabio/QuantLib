@@ -126,7 +126,7 @@ namespace QuantLib {
                 for (iterator i=observables_.begin(); 
                               i!=observables_.end(); 
                               ++i) {
-                    if (h.shareSameObject(*i)) {
+                    if (h == *i) {
                         (*i)->unregisterObserver(this);
                         observables_.erase(i);
                         return;

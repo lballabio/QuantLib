@@ -102,15 +102,17 @@ namespace QuantLib {
     template <class Type>
     inline void Link<Type>::linkTo(const Handle<Type>& h,
                                    bool registerAsObserver) {
-        if (!h_.isNull() && isObserver_) {
-            unregisterWith(h_);
+        if ((h != h_) || (isObserver_ != registerAsObserver)) {
+            if (!h_.isNull() && isObserver_) {
+                unregisterWith(h_);
+            }
+            h_ = h;
+            isObserver_ = registerAsObserver;
+            if (!h_.isNull() && isObserver_) {
+                registerWith(h_);
+            }
+            notifyObservers();
         }
-        h_ = h;
-        isObserver_ = registerAsObserver;
-        if (!h_.isNull() && isObserver_) {
-            registerWith(h_);
-        }
-        notifyObservers();
     }
 
 
