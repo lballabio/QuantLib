@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,13 +20,14 @@
     \brief Affine term structure
 */
 
-#ifndef quantlib_term_structures_affine_h
-#define quantlib_term_structures_affine_h
+#ifndef quantlib_term_structures_affine_hpp
+#define quantlib_term_structures_affine_hpp
 
 #include <ql/dataformatters.hpp>
 #include <ql/ShortRateModels/model.hpp>
 #include <ql/Optimization/method.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>
+#include <ql/Patterns/lazyobject.hpp>
 
 namespace QuantLib {
 
@@ -39,7 +41,7 @@ namespace QuantLib {
         term-structure on which the model is based.
     */
     class AffineTermStructure : public DiscountStructure,
-                                public Observer {
+                                public LazyObject {
       public:
         //! constructor using a fixed model
         AffineTermStructure(const Date& todaysDate,
@@ -59,19 +61,16 @@ namespace QuantLib {
         Date todaysDate() const {return todaysDate_; }
         Date referenceDate() const;
         Date maxDate() const;
-
-        void update();
       protected:
         DiscountFactor discountImpl(Time) const;
       private:
         class CalibrationFunction;
 
-        void calibrate() const;
+        virtual void performCalculations() const;
 
         DayCounter dayCounter_;
         Date todaysDate_, referenceDate_;
 
-        mutable bool needsRecalibration_;
         boost::shared_ptr<AffineModel> model_;
         std::vector<boost::shared_ptr<RateHelper> > instruments_;
         boost::shared_ptr<OptimizationMethod> method_;
@@ -89,13 +88,8 @@ namespace QuantLib {
         return Date::maxDate();
     }
 
-    inline void AffineTermStructure::update() {
-        needsRecalibration_ = true;
-        notifyObservers();
-    }
-
     inline DiscountFactor AffineTermStructure::discountImpl(Time t) const {
-        if (needsRecalibration_) calibrate();
+        calculate();
         return model_->discount(t);
     }
 

@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,8 +50,7 @@ namespace QuantLib {
                                   const boost::shared_ptr<AffineModel>& model,
                                   const DayCounter& dayCounter)
     : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-      referenceDate_(referenceDate), needsRecalibration_(false), 
-      model_(model) { }
+      referenceDate_(referenceDate), model_(model) { }
 
     AffineTermStructure::AffineTermStructure(
                const Date& todaysDate,
@@ -60,13 +60,13 @@ namespace QuantLib {
                const boost::shared_ptr<OptimizationMethod>& method,
                const DayCounter& dayCounter)
     : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-      referenceDate_(referenceDate), needsRecalibration_(true), 
-      model_(model), instruments_(instruments), method_(method) {
+      referenceDate_(referenceDate), model_(model), 
+      instruments_(instruments), method_(method) {
         for (Size i=0; i<instruments_.size(); i++)
             registerWith(instruments_[i]);
     }
 
-    void AffineTermStructure::calibrate() const {
+    void AffineTermStructure::performCalculations() const {
         boost::shared_ptr<ShortRateModel> model = 
             boost::dynamic_pointer_cast<ShortRateModel>(model_);
         CalibrationFunction f(model, instruments_);
@@ -78,7 +78,6 @@ namespace QuantLib {
 
         Array result(prob.minimumValue());
         model->setParams(result);
-        needsRecalibration_ = false;
     }
 
 }
