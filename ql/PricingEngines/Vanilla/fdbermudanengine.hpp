@@ -39,7 +39,8 @@ namespace QuantLib {
       protected:
         Real extraTermInBermudan ;
         void initializeStepCondition() const {
-            stepCondition_ = boost::shared_ptr<StandardStepCondition>();
+            stepCondition_ = boost::shared_ptr<StandardStepCondition>(
+                                                  new NullCondition<Array>());
         };
         void executeIntermediateStep(Size ) const {
             Size size = intrinsicValues_.size();
