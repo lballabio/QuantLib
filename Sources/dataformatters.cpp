@@ -15,11 +15,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
- * if not, contact ferdinando@ametrano.net
+ * if not, please email quantlib-users@lists.sourceforge.net
  * The license is also available at http://quantlib.org/LICENSE.TXT
  *
  * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/Authors.txt
+ * available at http://quantlib.org/group.html
 */
 
 /*! \file dataformatters.cpp
@@ -29,6 +29,9 @@
 */
 
 // $Log$
+// Revision 1.24  2001/08/07 11:25:54  sigmud
+// copyright header maintenance
+//
 // Revision 1.23  2001/07/27 07:46:01  nando
 // pruned warnings
 //

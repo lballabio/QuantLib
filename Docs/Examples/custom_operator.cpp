@@ -15,11 +15,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
- * if not, contact ferdinando@ametrano.net
+ * if not, please email quantlib-users@lists.sourceforge.net
  * The license is also available at http://quantlib.org/LICENSE.TXT
  *
  * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/Authors.txt
+ * available at http://quantlib.org/group.html
 */
 
 // Simple definition of the discretized Black-Scholes operator.
