@@ -73,10 +73,9 @@ namespace QuantLib {
             const std::vector<Handle<Asset> >& assets,
             Time to) const {
 
-            std::vector<Handle<Asset> >::const_iterator begin;
+            std::vector<Handle<Asset> >::const_iterator begin = assets.begin();
             Time from = (*begin)->time();
-            ++begin;
-            for (; begin != assets.end(); ++begin) {
+            for (++begin; begin != assets.end(); ++begin) {
                 QL_REQUIRE((*begin)->time()==from,
                     "Assets must be at the same time!");
             }
