@@ -32,7 +32,7 @@ namespace QuantLib {
       public:
         virtual ~DayCounterImpl() {}
         virtual std::string name() const = 0;
-        //! to be overloaded for more complex daycont
+        //! to be overloaded by more complex day counters
         virtual BigInteger dayCount(const Date& d1,
                                     const Date& d2) const { return (d2-d1); }
         virtual Time yearFraction(const Date&, const Date&,

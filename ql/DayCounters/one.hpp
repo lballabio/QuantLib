@@ -34,12 +34,12 @@ namespace QuantLib {
           public:
             std::string name() const { return std::string("1/1"); }
             BigInteger dayCount(const Date& d1, const Date& d2) const {
-                BigInteger delta = d2-d1; // the sign is all we need
-                return (delta>0 ? 1 : -1);
+                // the sign is all we need
+                return (d2 > d1 ? 1 : -1);
             };
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const {
-                return dayCount(d1, d2);
+                return Time(dayCount(d1, d2));
             }
         };
       public:

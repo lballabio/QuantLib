@@ -44,9 +44,9 @@ namespace QuantLib {
         if (d1 == d2)
             return 0.0;
 
-        QL_REQUIRE(d1<=d2, "Invalid reference period: start date "
+        QL_REQUIRE(d1<=d2, "Invalid reference period: the start date "
                            + DateFormatter::toString(d1) +
-                           " is greater than the end date "
+                           " is later than the end date "
                            + DateFormatter::toString(d2));
         Date refPeriodStart = (d3 != Date() ? d3 : d1);
         Date refPeriodEnd = (d4 != Date() ? d4 : d2);
@@ -130,9 +130,9 @@ namespace QuantLib {
     Time ActualActual::ISDA_Impl::yearFraction(const Date& d1, const Date& d2,
                                                const Date&,
                                                const Date&) const {
-        QL_REQUIRE(d2>=d1, "Invalid reference period: start date "
+        QL_REQUIRE(d2>=d1, "Invalid reference period: the start date "
                            + DateFormatter::toString(d1) +
-                           " is greater than the end date "
+                           " is later than the end date "
                            + DateFormatter::toString(d2));
 
         if (d1 == d2)
@@ -150,9 +150,9 @@ namespace QuantLib {
 
     Time ActualActual::AFB_Impl::yearFraction(const Date& d1, const Date& d2,
                                               const Date&, const Date&) const {
-        QL_REQUIRE(d1<=d2, "Invalid reference period: start date "
+        QL_REQUIRE(d1<=d2, "Invalid reference period: the start date "
                            + DateFormatter::toString(d1) +
-                           " is greater than the end date "
+                           " is later than the end date "
                            + DateFormatter::toString(d2));
 
         if (d1 == d2)
