@@ -30,10 +30,8 @@ namespace QuantLib {
         const Handle<BlackScholesStochasticProcess>& stochProc,
         const Handle<Payoff>& payoff,
         const Handle<Exercise>& exercise,
-        const Handle<PricingEngine>& engine,
-        const std::string& isinCode,
-        const std::string& description)
-    : Option(payoff, exercise, engine, isinCode, description),
+        const Handle<PricingEngine>& engine)
+    : Option(payoff, exercise, engine),
       blackScholesProcess_(stochProc) {
         registerWith(blackScholesProcess_->stateVariable);
         registerWith(blackScholesProcess_->dividendTS);

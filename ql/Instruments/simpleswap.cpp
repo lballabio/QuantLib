@@ -40,12 +40,10 @@ namespace QuantLib {
                          const Handle<Xibor>& index,
                          int indexFixingDays,
                          Spread spread,
-                         const RelinkableHandle<TermStructure>& termStructure,
-                         const std::string& isinCode, 
-                         const std::string& description)
+                         const RelinkableHandle<TermStructure>& termStructure)
     : Swap(std::vector<Handle<CashFlow> >(),
            std::vector<Handle<CashFlow> >(),
-           termStructure, isinCode, description),
+           termStructure),
       payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
       nominal_(nominal) {
 
@@ -94,12 +92,10 @@ namespace QuantLib {
                          const Handle<Xibor>& index,
                          int indexFixingDays,
                          Spread spread,
-                         const RelinkableHandle<TermStructure>& termStructure,
-                         const std::string& isinCode, 
-                         const std::string& description)
+                         const RelinkableHandle<TermStructure>& termStructure)
     : Swap(std::vector<Handle<CashFlow> >(),
            std::vector<Handle<CashFlow> >(),
-           termStructure, isinCode, description),
+           termStructure),
       payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
       nominal_(nominal) {
 

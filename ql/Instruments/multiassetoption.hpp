@@ -31,14 +31,13 @@ namespace QuantLib {
     //! Base class for options on multiple assets
     class MultiAssetOption : public Option {
       public:
-        MultiAssetOption(const std::vector<Handle<BlackScholesStochasticProcess> >& stochProcs,            
-                       const Handle<Payoff>& payoff,
-                       const Handle<Exercise>& exercise,                       
-                       const Matrix& correlation,
-                       const Handle<PricingEngine>& engine =
-                                            Handle<PricingEngine>(),
-                       const std::string& isinCode = "",
-                       const std::string& description = "");
+        MultiAssetOption(
+               const std::vector<Handle<BlackScholesStochasticProcess> >& 
+                                                                   stochProcs,
+               const Handle<Payoff>& payoff,
+               const Handle<Exercise>& exercise,
+               const Matrix& correlation,
+               const Handle<PricingEngine>& engine = Handle<PricingEngine>());
         //! \name Instrument interface
         //@{
         class arguments;
@@ -49,10 +48,10 @@ namespace QuantLib {
         //@{
         double delta() const;
         double gamma() const;
-        double theta() const;        
+        double theta() const;
         double vega() const;
         double rho() const;
-        double dividendRho() const;        
+        double dividendRho() const;
         //@}        
         void setupArguments(Arguments*) const;
       protected:
@@ -62,7 +61,8 @@ namespace QuantLib {
         mutable double delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
         // arguments        
-        std::vector< Handle<BlackScholesStochasticProcess> > blackScholesProcesses_;        
+        std::vector< Handle<BlackScholesStochasticProcess> > 
+            blackScholesProcesses_;
         Matrix correlation_;
     };
 
@@ -71,17 +71,18 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        std::vector< Handle<BlackScholesStochasticProcess> > blackScholesProcesses;          
+        std::vector< Handle<BlackScholesStochasticProcess> > 
+            blackScholesProcesses;
         Matrix correlation;
     };
 
     //! %results from multi asset option calculation
     class MultiAssetOption::results : public Value,
-                                    public Greeks {
+                                      public Greeks {
       public:
         void reset() {
             Value::reset();
-            Greeks::reset();            
+            Greeks::reset();
         }
     };
 

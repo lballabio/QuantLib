@@ -34,14 +34,9 @@ namespace QuantLib {
     */
     class Instrument : public LazyObject {
       public:
-        Instrument(const std::string& isinCode = "",
-                   const std::string& description = "");
+        Instrument();
         //! \name Inspectors
         //@{
-        //! returns the ISIN code of the instrument, when given.
-        std::string isinCode() const;
-        //! returns a brief textual description of the instrument.
-        std::string description() const;
         //! returns the net present value of the instrument.
         double NPV() const;
         //! returns the error estimate on the NPV when available.
@@ -88,8 +83,6 @@ namespace QuantLib {
         //@}
       protected:
         Handle<PricingEngine> engine_;
-      private:
-        std::string isinCode_, description_;
     };
 
     //! pricing results
@@ -106,18 +99,8 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Instrument::Instrument(const std::string& isinCode,
-                                  const std::string& description)
-    : NPV_(0.0), errorEstimate_(Null<double>()), 
-      isinCode_(isinCode), description_(description) {}
-
-    inline std::string Instrument::isinCode() const {
-        return isinCode_;
-    }
-
-    inline std::string Instrument::description() const {
-        return description_;
-    }
+    inline Instrument::Instrument()
+    : NPV_(0.0), errorEstimate_(Null<double>()) {}
 
     inline void Instrument::setPricingEngine(const Handle<PricingEngine>& e) {
         QL_REQUIRE(!IsNull(e), "Instrument: null pricing engine");

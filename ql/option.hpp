@@ -35,11 +35,8 @@ namespace QuantLib {
         enum Type { Call, Put, Straddle };
         Option(const Handle<Payoff>& payoff,
                const Handle<Exercise>& exercise,
-               const Handle<PricingEngine>& engine = Handle<PricingEngine>(),
-               const std::string& isinCode = "",
-               const std::string& description = "")
-        : Instrument(isinCode, description), payoff_(payoff),
-          exercise_(exercise) {
+               const Handle<PricingEngine>& engine = Handle<PricingEngine>())
+        : payoff_(payoff), exercise_(exercise) {
             if (!IsNull(engine))
                 setPricingEngine(engine);
         }

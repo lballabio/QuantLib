@@ -33,9 +33,7 @@ namespace QuantLib {
                       const Handle<StrikedTypePayoff>& payoff,
                       const Handle<Exercise>& exercise,
                       const Handle<PricingEngine>& engine =
-                          Handle<PricingEngine>(),
-                      const std::string& isinCode = "",
-                      const std::string& description = "");
+                          Handle<PricingEngine>());
       protected:
         // enforce in this class any check on engine/payoff
         void performCalculations() const;

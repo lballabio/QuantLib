@@ -26,10 +26,9 @@ namespace QuantLib {
 
     Swap::Swap(const std::vector<Handle<CashFlow> >& firstLeg,
                const std::vector<Handle<CashFlow> >& secondLeg,
-               const RelinkableHandle<TermStructure>& termStructure,
-               const std::string& isinCode, const std::string& description)
-    : Instrument(isinCode,description), firstLeg_(firstLeg),
-      secondLeg_(secondLeg), termStructure_(termStructure) {
+               const RelinkableHandle<TermStructure>& termStructure)
+    : firstLeg_(firstLeg), secondLeg_(secondLeg), 
+      termStructure_(termStructure) {
         registerWith(termStructure_);
         std::vector<Handle<CashFlow> >::iterator i;
         for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)

@@ -29,11 +29,9 @@ namespace QuantLib {
         const Handle<BlackScholesStochasticProcess>& stochProc,
         const Handle<StrikedTypePayoff>& payoff,
         const Handle<Exercise>& exercise,
-        const Handle<PricingEngine>& engine,
-        const std::string& isinCode,
-        const std::string& description)
-    : VanillaOption(stochProc, payoff, exercise, engine, isinCode,
-      description), moneyness_(moneyness), resetDate_(resetDate) {}
+        const Handle<PricingEngine>& engine)
+    : VanillaOption(stochProc, payoff, exercise, engine), 
+      moneyness_(moneyness), resetDate_(resetDate) {}
 
     void ForwardVanillaOption::setupArguments(Arguments* args) const {
         VanillaOption::setupArguments(args);

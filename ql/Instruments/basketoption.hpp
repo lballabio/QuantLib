@@ -33,16 +33,15 @@ namespace QuantLib {
       public:
         class arguments;
         enum BasketType { Min, Max };
-        BasketOption(const BasketType basketType,
-                      const std::vector<Handle<BlackScholesStochasticProcess> >& stochProcs,
-                      const Handle<PlainVanillaPayoff>& payoff,
-                      const Handle<Exercise>& exercise,                      
-                      const Matrix& correlation,
-                      const Handle<PricingEngine>& engine =
-                          Handle<PricingEngine>(),
-                      const std::string& isinCode = "",
-                      const std::string& description = "");
-        
+        BasketOption(
+               const BasketType basketType,
+               const std::vector<Handle<BlackScholesStochasticProcess> >& 
+                                                                  stochProcs,
+               const Handle<PlainVanillaPayoff>& payoff,
+               const Handle<Exercise>& exercise,
+               const Matrix& correlation,
+               const Handle<PricingEngine>& engine = Handle<PricingEngine>());
+
         void setupArguments(Arguments*) const;
       protected:
         // enforce in this class any check on engine/payoff

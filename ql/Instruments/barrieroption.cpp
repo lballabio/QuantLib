@@ -34,12 +34,9 @@ namespace QuantLib {
         const Handle<BlackScholesStochasticProcess>& stochProc,
         const Handle<StrikedTypePayoff>& payoff,
         const Handle<Exercise>& exercise,
-        const Handle<PricingEngine>& engine,
-        const std::string& isinCode, 
-        const std::string& description)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine, isinCode,
-      description), barrierType_(barrierType), barrier_(barrier),
-      rebate_(rebate) {
+        const Handle<PricingEngine>& engine)
+    : OneAssetStrikedOption(stochProc, payoff, exercise, engine), 
+      barrierType_(barrierType), barrier_(barrier), rebate_(rebate) {
 
         if (IsNull(engine))
             setPricingEngine(Handle<PricingEngine>(new AnalyticBarrierEngine));

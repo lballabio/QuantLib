@@ -27,16 +27,14 @@
 namespace QuantLib {
 
     MultiAssetOption::MultiAssetOption(
-        const std::vector<Handle<BlackScholesStochasticProcess> >& stochProcs,       
+        const std::vector<Handle<BlackScholesStochasticProcess> >& stochProcs,
         const Handle<Payoff>& payoff,
-        const Handle<Exercise>& exercise,        
+        const Handle<Exercise>& exercise,
         const Matrix& correlation,
-        const Handle<PricingEngine>& engine,
-        const std::string& isinCode,
-        const std::string& description)
-    : Option(payoff, exercise, engine, isinCode, description),
-    blackScholesProcesses_(stochProcs), correlation_(correlation) {
-      
+        const Handle<PricingEngine>& engine)
+    : Option(payoff, exercise, engine),
+      blackScholesProcesses_(stochProcs), correlation_(correlation) {
+
         // register all the stochastic processes
         Handle<BlackScholesStochasticProcess> blackScholesProcess; 
         std::vector< Handle<BlackScholesStochasticProcess> >::const_iterator proc = stochProcs.begin();

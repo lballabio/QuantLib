@@ -30,11 +30,9 @@ namespace QuantLib {
         const Handle<BlackScholesStochasticProcess>& stochProc,
         const Handle<StrikedTypePayoff>& payoff,
         const Handle<Exercise>& exercise,
-        const Handle<PricingEngine>& engine,
-        const std::string& isinCode,
-        const std::string& description)
-    : VanillaOption(stochProc, payoff, exercise, engine, isinCode,
-      description), foreignRiskFreeTS_(foreignRiskFreeTS),
+        const Handle<PricingEngine>& engine)
+    : VanillaOption(stochProc, payoff, exercise, engine), 
+      foreignRiskFreeTS_(foreignRiskFreeTS),
       exchRateVolTS_(exchRateVolTS), correlation_(correlation) {
         QL_REQUIRE(!IsNull(engine),
                    "QuantoVanillaOption::QuantoVanillaOption : "

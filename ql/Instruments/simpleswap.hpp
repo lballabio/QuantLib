@@ -50,10 +50,7 @@ namespace QuantLib {
                    int indexFixingDays,
                    Spread spread,
                    // hook to term structure
-                   const RelinkableHandle<TermStructure>& termStructure,
-                   // description
-                   const std::string& isinCode = "",
-                   const std::string& description = "");
+                   const RelinkableHandle<TermStructure>& termStructure);
         SimpleSwap(bool payFixedRate,
                    double nominal,
                    const Schedule& fixedSchedule,
@@ -63,9 +60,7 @@ namespace QuantLib {
                    const Handle<Xibor>& index,
                    int indexFixingDays,
                    Spread spread,
-                   const RelinkableHandle<TermStructure>& termStructure,
-                   const std::string& isinCode = "",
-                   const std::string& description = "");
+                   const RelinkableHandle<TermStructure>& termStructure);
         // results
         Rate fairRate() const;
         Spread fairSpread() const;

@@ -37,9 +37,7 @@ namespace QuantLib {
       public:
         Swap(const std::vector<Handle<CashFlow> >& firstLeg,
              const std::vector<Handle<CashFlow> >& secondLeg,
-             const RelinkableHandle<TermStructure>& termStructure,
-             const std::string& isinCode = "",
-             const std::string& description = "");
+             const RelinkableHandle<TermStructure>& termStructure);
         //! \name Instrument interface
         //@{
         bool isExpired() const;

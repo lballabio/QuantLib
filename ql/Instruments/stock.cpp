@@ -23,15 +23,14 @@
 
 namespace QuantLib {
 
-    Stock::Stock(const RelinkableHandle<Quote>& quote,
-                 const std::string& isinCode, const std::string& description)
-    : Instrument(isinCode,description), quote_(quote) {
+    Stock::Stock(const RelinkableHandle<Quote>& quote)
+    : quote_(quote) {
         registerWith(quote_);
     }
 
     void Stock::performCalculations() const {
         QL_REQUIRE(!quote_.isNull(),
-                   "null quote set for "+isinCode()+" stock");
+                   "Stock: null quote set");
         NPV_ = quote_->value();
     }
 

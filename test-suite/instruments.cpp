@@ -27,7 +27,7 @@ void InstrumentTest::testObservable() {
 
     Handle<SimpleQuote> me1(new SimpleQuote(0.0));
     RelinkableHandle<Quote> h(me1);
-    Handle<Instrument> s(new Stock(h,"foo","bar"));
+    Handle<Instrument> s(new Stock(h));
 
     Flag f;
     f.registerWith(s);

@@ -29,11 +29,8 @@ namespace QuantLib {
         const Handle<BlackScholesStochasticProcess>& stochProc,
         const Handle<StrikedTypePayoff>& payoff,
         const Handle<Exercise>& exercise,
-        const Handle<PricingEngine>& engine,
-        const std::string& isinCode,
-        const std::string& description)
-    : OneAssetOption(stochProc, payoff, exercise, engine, isinCode,
-      description) {}
+        const Handle<PricingEngine>& engine)
+    : OneAssetOption(stochProc, payoff, exercise, engine) {}
 
 
     double OneAssetStrikedOption::strikeSensitivity() const {

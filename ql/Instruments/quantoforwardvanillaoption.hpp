@@ -43,9 +43,7 @@ namespace QuantLib {
                  const Handle<BlackScholesStochasticProcess>& stochProc,
                  const Handle<StrikedTypePayoff>& payoff,
                  const Handle<Exercise>& exercise,
-                 const Handle<PricingEngine>& engine,
-                 const std::string& isinCode = "",
-                 const std::string& description = "");
+                 const Handle<PricingEngine>& engine);
         void setupArguments(Arguments*) const;
       private:
         // arguments

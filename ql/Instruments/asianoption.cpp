@@ -31,11 +31,9 @@ namespace QuantLib {
         const Handle<BlackScholesStochasticProcess>& stochProc,
         const Handle<StrikedTypePayoff>& payoff,
         const Handle<Exercise>& exercise,
-        const Handle<PricingEngine>& engine,
-        const std::string& isinCode,
-        const std::string& description)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine, isinCode,
-      description), averageType_(averageType), runningProduct_(runningProduct),
+        const Handle<PricingEngine>& engine)
+    : OneAssetStrikedOption(stochProc, payoff, exercise, engine), 
+      averageType_(averageType), runningProduct_(runningProduct),
       pastFixings_(pastFixings), fixingDates_(fixingDates) {
         std::sort(fixingDates_.begin(), fixingDates_.end());
     }
