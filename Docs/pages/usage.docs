@@ -46,7 +46,6 @@
     -# you won't have to explicitly link your application to the QuantLib
     library. This is done automatically by compiler directives embedded
     in the sources.
-    -# You have to define the NOMINMAX macro.
     -# Your project must be compiled with the same options that were used in
     compiling the %QuantLib library you're linking with.
     For VC6 please

@@ -45,12 +45,6 @@
 
 // leave outside here common configs
 
-
-// force undefining min and max macros
-#ifndef NOMINMAX
-    #error Add NOMINMAX to preprocessor definitions
-#endif
-
 #define HAVE_CSTDLIB 1
 #define HAVE_CMATH   1
 
