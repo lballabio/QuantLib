@@ -56,40 +56,50 @@ namespace QuantLib {
 			// constructors
 			ForwardEuler(const operatorType& D) : D(D), dt(0.0) {}
 			void step(arrayType& a, Time t) const;
-			void setStep(Time dt) { this->dt = dt; }
-			Operator D;
+			void setStep(Time dt) {
+				this->dt = dt;
+				explicitPart = Identity<arrayType>()-dt*D;
+			}
+			Operator D, explicitPart;
 			Time dt;
+			#if QL_TEMPLATE_METAPROGRAMMING_WORKS
+				// a bit of template metaprogramming to relax interface constraints on time-constant operators
+				// see T. L. Veldhuizen, "Using C++ Template Metaprograms", C++ Report, Vol 7 No. 4, May 1995
+				// http://extreme.indiana.edu/~tveldhui/papers/
+				template <int constant>
+				class ForwardEulerTimeSetter {};
+				// the following specialization will be instantiated if Operator is derived from TimeConstantOperator
+				template<>
+				class ForwardEulerTimeSetter<0> {
+				  public:
+					static inline void setTime(Operator& D, Operator& explicitPart, Time t, Time dt) {}
+				};
+				// the following specialization will be instantiated if Operator is derived from TimeDependentOperator:
+				// only in this case Operator will be required to implement void setTime(Time t)
+				template<>
+				class ForwardEulerTimeSetter<1> {
+				  public:
+					static inline void setTime(Operator& D, Operator& explicitPart, Time t, Time dt) {
+						D.setTime(t);
+						explicitPart = Identity<arrayType>()-dt*D;
+					}
+				};
+			#endif
 		};
-		
-		// a bit of template metaprogramming to relax interface constraints on time-constant operators
-		// see T. L. Veldhuizen, "Using C++ Template Metaprograms", C++ Report, Vol 7 No. 4, May 1995
-		// http://extreme.indiana.edu/~tveldhui/papers/
-		
-		template <class Operator, int constant>
-		class ForwardEulerTimeSetter {};
-		
-		// the following specialization will be instantiated if Operator is derived from TimeConstantOperator
-		template<class Operator>
-		class ForwardEulerTimeSetter<Operator,0> {
-		  public:
-			static inline void setTime(Operator& D, Time t) {}
-		};
-		
-		// the following specialization will be instantiated if Operator is derived from TimeDependentOperator:
-		// only in this case Operator will be required to implement void setTime(Time t)
-		template<class Operator>
-		class ForwardEulerTimeSetter<Operator,1> {
-		  public:
-			static inline void setTime(Operator& D, Time t) { D.setTime(t); }
-		};
-		
 		
 		// inline definitions
 		
 		template<class Operator>
 		inline void ForwardEuler<Operator>::step(arrayType& a, Time t) const {
-			ForwardEulerTimeSetter<Operator,Operator::isTimeDependent>::setTime(D,t);
-			a -= dt*(D.applyTo(a));
+			#if QL_TEMPLATE_METAPROGRAMMING_WORKS
+				ForwardEulerTimeSetter<Operator::isTimeDependent>::setTime(D,explicitPart,t,dt);
+			#else
+				if (Operator::isTimeDependent) {
+					D.setTime(t);
+					explicitPart = Identity<arrayType>()-dt*D;
+				}
+			#endif
+			a = explicitPart.applyTo(a);
 		}
 
 	}
