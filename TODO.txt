@@ -69,7 +69,6 @@ LIBRARY
     implement round as per OMG enumeration/definition
     add one-touch option (american binary)
     implement dividendRho for dividendOption
-    redesign segment integral
     add historicalvolatility to RiskMeasures
     rename all files/dirs to lowercase no spaces (except INSTALL, TODO?)
     histogram class

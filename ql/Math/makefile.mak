@@ -1,7 +1,6 @@
 
 # $Id$
 
-
 .autodepend
 .silent
 
@@ -20,7 +19,6 @@ OBJS = chisquaredistribution.obj$(_D) \
        matrix.obj$(_D) \
        multivariateaccumulator.obj$(_D) \
        normaldistribution.obj$(_D) \
-       segmentintegral.obj$(_D) \
        statistics.obj$(_D) \
        symmetricschurdecomposition.obj$(_D)
 

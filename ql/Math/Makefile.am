@@ -31,7 +31,6 @@ libMath_la_SOURCES = \
     matrix.cpp \
     multivariateaccumulator.cpp \
     normaldistribution.cpp \
-    segmentintegral.cpp \
     statistics.cpp \
     symmetricschurdecomposition.cpp
 

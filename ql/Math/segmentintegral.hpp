@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -24,30 +23,61 @@
 
 // $Id$
 
-#include <ql/solver1d.hpp>
-
 #ifndef quantlib_segment_integral_h
 #define quantlib_segment_integral_h
+
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
     namespace Math {
 
-        /*! \brief Integral of a one-dimensional function
-
-            \warning the use of this class is not recommended since
-            it will be redesigned in one of the next minor releases.
-
-            \todo Redesign as a template function.
+        //! Integral of a one-dimensional function
+        /*! Given a number \f$ N \f$ of intervals, the integral of
+            a function \f$ f \f$ between \f$ a \f$ and \f$ b \f$ is 
+            calculated by means of the trapezoid formula
+            \f[
+            \int_{a}^{b} f \mathrm{d}x = 
+            \frac{1}{2} f(x_{0}) + f(x_{1}) + f(x_{2}) + \dots 
+            + f(x_{N-1}) + \frac{1}{2} f(x_{N})
+            \f]
+            where \f$ x_0 = a \f$, \f$ x_N = b \f$, and 
+            \f$ x_i = a+i \Delta x \f$ with 
+            \f$ \Delta x = (b-a)/N \f$.
         */
         class SegmentIntegral{
           public:
             SegmentIntegral(Size intervals);
-            double operator()(const ObjectiveFunction &f,
-                             double a, double b) const;
+            template <class F>
+            double operator()(const F& f, double a, double b) const;
           private:
             Size intervals_;
-       };
+        };
+
+
+        // inline and template definitions
+        
+        inline SegmentIntegral::SegmentIntegral(Size intervals)
+        : intervals_(intervals) {
+            QL_REQUIRE(intervals > 0, "at least 1 interval needed, 0 given");
+        }
+
+        template <class F>
+        double SegmentIntegral::operator()(
+            const F& f, double a, double b) const {
+                QL_REQUIRE(a < b,
+                           "to compute an integral on [a,b] it must be a<b; "
+                           "a="+DoubleFormatter::toString(a)+", "
+                           "b="+DoubleFormatter::toString(b));
+
+                double dx = (b-a)/intervals_;
+                double sum = 0.5*(f(a)+f(b));
+                double end = b - 0.5*dx;
+                for (double x = a+dx; x < end; x += dx)
+                    sum += f(x);
+                return sum*dx;
+        }
 
     }
 
