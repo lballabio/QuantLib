@@ -17,9 +17,12 @@ SOURCES_DIR		= ..\Sources
 INCLUDE_DIR		= ..\Include
 BCC_INCLUDE		= $(MAKEDIR)\..\include
 BCC_LIBS		= $(MAKEDIR)\..\lib
-PYTHON_ROOT     = "C:\Program Files\Python"
-PYTHON_INCLUDE	= $(PYTHON_ROOT)\include
-PYTHON_LIBS		= $(PYTHON_ROOT)\libs
+!if "$(PYTHON_HOME)" == ""
+!message Please set the PYTHON_HOME environment variable to the absolute path of your Python installation.
+!error terminated
+!endif
+PYTHON_INCLUDE	= "$(PYTHON_HOME)"\include
+PYTHON_LIBS		= "$(PYTHON_HOME)"\libs
 
 # Object files
 CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
@@ -35,7 +38,6 @@ WIN_OBJS		= c0d32.obj
 
 # Libraries
 WIN_LIBS 		= import32.lib cw32mt.lib
-PYTHON_LIB		= $(PYTHON_LIBS)\python15.lib
 PYTHON_BCC_LIB	= bccpython.lib
 
 # Tools to be used
@@ -110,7 +112,8 @@ $(OUTPUT_DIR):
 
 # Python lib in OMF format
 $(PYTHON_BCC_LIB):
-	$(COFF2OMF) -q $(PYTHON_LIB) $(PYTHON_BCC_LIB)
+	if exist $(PYTHON_LIBS)\python15.lib	$(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
+	if exist $(PYTHON_LIBS)\python20.lib	$(COFF2OMF) -q $(PYTHON_LIBS)\python20.lib $(PYTHON_BCC_LIB)
 
 # Wrapper functions
 $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
@@ -196,8 +199,9 @@ $(OUTPUT_DIR)\piecewiseconstantforwards.obj: $(SOURCES_DIR)\TermStructures\piece
 
 # Clean up
 clean::
-	if exist $(PYTHON_DIR)\QuantLib.pyc      del $(PYTHON_DIR)\QuantLib.pyc
-	if exist $(PYTHON_DIR)\QuantLibc.dll     del $(PYTHON_DIR)\QuantLibc.dll
+	if exist $(PYTHON_BCC_LIB)				del $(PYTHON_BCC_LIB)
+	if exist $(PYTHON_DIR)\QuantLib.pyc		del $(PYTHON_DIR)\QuantLib.pyc
+	if exist $(PYTHON_DIR)\QuantLibc.dll	del $(PYTHON_DIR)\QuantLibc.dll
 	if exist $(OUTPUT_DIR) rd /s /q $(OUTPUT_DIR)
 
 
@@ -251,6 +255,6 @@ test::
 
 # Install PyQuantLib
 install::
-	if exist $(PYTHON_ROOT)\QuantLib.pyc      del $(PYTHON_ROOT)\QuantLib.pyc
-	copy $(PYTHON_DIR)\QuantLib.py $(PYTHON_ROOT)\QuantLib.py
-	copy $(PYTHON_DIR)\QuantLibc.dll $(PYTHON_ROOT)\QuantLibc.dll
+	if exist $(PYTHON_HOME)\QuantLib.pyc      del $(PYTHON_HOME)\QuantLib.pyc
+	copy $(PYTHON_DIR)\QuantLib.py $(PYTHON_HOME)\QuantLib.py
+	copy $(PYTHON_DIR)\QuantLibc.dll $(PYTHON_HOME)\QuantLibc.dll
