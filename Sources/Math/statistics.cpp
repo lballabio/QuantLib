@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.6  2001/01/12 18:28:44  lballabio
+	Updated to reflect changes in statistics.h
+
 	Revision 1.5  2000/12/20 15:30:21  lballabio
 	Using new defines for helping Linux port
-
+	
 	Revision 1.4  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -46,14 +49,14 @@ namespace QuantLib {
 		}
 		
 		void Statistics::reset() {
-			theMin = QL_MAX_DOUBLE;
-			theMax = QL_MIN_DOUBLE;
-			theSampleNumber = 0;
-			theSampleWeight = 0.0;
-			theSum = 0.0;
-			theQuadraticSum = 0.0;
-			theCubicSum = 0.0;
-			theFourthPowerSum = 0.0;
+			min_ = QL_MAX_DOUBLE;
+			max_ = QL_MIN_DOUBLE;
+			sampleNumber_ = 0;
+			sampleWeight_ = 0.0;
+			sum_ = 0.0;
+			quadraticSum_ = 0.0;
+			cubicSum_ = 0.0;
+			fourthPowerSum_ = 0.0;
 		}
 
 	}

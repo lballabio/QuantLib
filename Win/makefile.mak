@@ -164,7 +164,8 @@ $(PYTHON_BCC_LIB):
 # Wrapper functions
 $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
     echo Compiling wrappers...
-    $(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT $(PYTHON_DIR)\quantlib_wrap.cpp
+    $(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT \
+    $(PYTHON_DIR)\quantlib_wrap.cpp
 $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\QuantLib.i \
     $(SWIG_DIR)\BoundaryConditions.i \
