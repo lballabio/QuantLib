@@ -27,7 +27,6 @@
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
-using namespace QuantLib::RandomNumbers;
 
 CppUnit::Test* LDSTest::suite() {
     CppUnit::TestSuite* tests =

@@ -25,79 +25,73 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    HullWhite::HullWhite(const RelinkableHandle<TermStructure>& termStructure, 
+                         double a, double sigma)
+    : Vasicek(termStructure->instantaneousForward(0.0), a, 0.0, sigma), 
+      TermStructureConsistentModel(termStructure) {
+        arguments_[1] = NullParameter();
+        generateArguments();
+    }
 
-        HullWhite::HullWhite(
-            const RelinkableHandle<TermStructure>& termStructure, 
-            double a, double sigma)
-        : Vasicek(termStructure->instantaneousForward(0.0), a, 0.0, sigma), 
-          TermStructureConsistentModel(termStructure) {
-            arguments_[1] = NullParameter();
-            generateArguments();
-        }
+    Handle<Lattice> HullWhite::tree(const TimeGrid& grid) const {
 
-        Handle<Lattice> HullWhite::tree(
-            const TimeGrid& grid) const {
+        TermStructureFittingParameter phi(termStructure());
 
-            TermStructureFittingParameter phi(termStructure());
+        Handle<ShortRateDynamics> numericDynamics(
+                                             new Dynamics(phi, a(), sigma()));
 
-            Handle<ShortRateDynamics> numericDynamics(
-                new Dynamics(phi, a(), sigma()));
+        Handle<TrinomialTree> trinomial(
+                         new TrinomialTree(numericDynamics->process(), grid));
 
-            Handle<TrinomialTree> trinomial(
-                new TrinomialTree(numericDynamics->process(), grid));
-                
-            Handle<ShortRateTree> numericTree(
-                new ShortRateTree(trinomial, numericDynamics, grid));
+        Handle<ShortRateTree> numericTree(
+                         new ShortRateTree(trinomial, numericDynamics, grid));
 
-            Handle<TermStructureFittingParameter::NumericalImpl> impl =
-                phi.implementation();
-            impl->reset();
-            for (Size i=0; i<(grid.size() - 1); i++) {
-                double discountBond = termStructure()->discount(grid[i+1]);
-                const Array& statePrices = numericTree->statePrices(i);
-                Size size = numericTree->size(i);
-                double dt = numericTree->timeGrid().dt(i);
-                double dx = trinomial->dx(i);
-                double x = trinomial->underlying(i,0);
-                double value = 0.0;
-                for (Size j=0; j<size; j++) {
-                    value += statePrices[j]*QL_EXP(-x*dt);
-                    x += dx;
-                }
-                value = QL_LOG(value/discountBond)/dt;
-                impl->set(grid[i], value);
+        Handle<TermStructureFittingParameter::NumericalImpl> impl =
+            phi.implementation();
+        impl->reset();
+        for (Size i=0; i<(grid.size() - 1); i++) {
+            double discountBond = termStructure()->discount(grid[i+1]);
+            const Array& statePrices = numericTree->statePrices(i);
+            Size size = numericTree->size(i);
+            double dt = numericTree->timeGrid().dt(i);
+            double dx = trinomial->dx(i);
+            double x = trinomial->underlying(i,0);
+            double value = 0.0;
+            for (Size j=0; j<size; j++) {
+                value += statePrices[j]*QL_EXP(-x*dt);
+                x += dx;
             }
-            return numericTree;
+            value = QL_LOG(value/discountBond)/dt;
+            impl->set(grid[i], value);
         }
+        return numericTree;
+    }
 
-        double HullWhite::A(Time t, Time T) const {
-            double discount1 = termStructure()->discount(t);
-            double discount2 = termStructure()->discount(T);
-            double forward = termStructure()->instantaneousForward(t);
-            double temp = sigma()*B(t,T);
-            double value = B(t,T)*forward - 0.25*temp*temp*B(0.0,2.0*t);
-            return QL_EXP(value)*discount2/discount1;
-        }
+    double HullWhite::A(Time t, Time T) const {
+        double discount1 = termStructure()->discount(t);
+        double discount2 = termStructure()->discount(T);
+        double forward = termStructure()->instantaneousForward(t);
+        double temp = sigma()*B(t,T);
+        double value = B(t,T)*forward - 0.25*temp*temp*B(0.0,2.0*t);
+        return QL_EXP(value)*discount2/discount1;
+    }
 
-        void HullWhite::generateArguments() {
-            phi_ = FittingParameter(termStructure(), a(), sigma());
-        }
+    void HullWhite::generateArguments() {
+        phi_ = FittingParameter(termStructure(), a(), sigma());
+    }
 
-        double HullWhite::discountBondOption(
-            Option::Type type, double strike, 
-            Time maturity, Time bondMaturity) const {
+    double HullWhite::discountBondOption(Option::Type type, double strike, 
+                                         Time maturity, 
+                                         Time bondMaturity) const {
 
-            double v = sigma()*B(maturity, bondMaturity)*
-                       QL_SQRT(0.5*(1.0 - QL_EXP(-2.0*a()*maturity))/a());
-            double f = termStructure()->discount(bondMaturity);
-            double k = termStructure()->discount(maturity)*strike;
+        double v = sigma()*B(maturity, bondMaturity)*
+            QL_SQRT(0.5*(1.0 - QL_EXP(-2.0*a()*maturity))/a());
+        double f = termStructure()->discount(bondMaturity);
+        double k = termStructure()->discount(maturity)*strike;
 
-            double w = (type==Option::Call)? 1.0 : -1.0;
+        double w = (type==Option::Call)? 1.0 : -1.0;
 
-            return BlackModel::formula(f, k, v, w);
-        }
-
+        return BlackModel::formula(f, k, v, w);
     }
 
 }

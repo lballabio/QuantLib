@@ -23,8 +23,6 @@
 
 namespace QuantLib {
 
-    using ShortRateModels::OneFactorModel;
-
     OneFactorOperator::OneFactorOperator(
                      const Array& grid,
                      const Handle<OneFactorModel::ShortRateDynamics>& process)

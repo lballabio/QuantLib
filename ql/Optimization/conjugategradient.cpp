@@ -19,66 +19,62 @@
     \brief Conjugate gradient optimization method
 */
 
-#include "ql/Optimization/conjugategradient.hpp"
+#include <ql/Optimization/conjugategradient.hpp>
 
 namespace QuantLib {
 
-    namespace Optimization {
+    void ConjugateGradient::minimize(const Problem &P) const {
+        bool end;
 
-        void ConjugateGradient::minimize(const Problem &P) const {
-            bool end;
+        // function and squared norm of gradient values;
+        double fold, gold2;
+        double c;
+        double normdiff;
+        // classical initial value for line-search step
+        double t = 1.0;
 
-            // function and squared norm of gradient values;
-            double fold, gold2;
-            double c;
-            double normdiff;
-            // classical initial value for line-search step
-            double t = 1.0;
+        // reference X as the optimization problem variable
+        Array& X = x();
+        Array& SearchDirection = searchDirection();
+        // Set g at the size of the optimization problem search direction
+        int sz = searchDirection().size();
+        Array g(sz), d(sz), sddiff(sz);
 
-            // reference X as the optimization problem variable
-            Array& X = x();
-            Array& SearchDirection = searchDirection();
-            // Set g at the size of the optimization problem search direction
-            int sz = searchDirection().size();
-            Array g(sz), d(sz), sddiff(sz);
+        functionValue() = P.valueAndGradient(g, X);
+        SearchDirection = -g;
+        gradientNormValue() = DotProduct(g, g);
 
-            functionValue() = P.valueAndGradient(g, X);
-            SearchDirection = -g;
-            gradientNormValue() = DotProduct(g, g);
+        do {
+            // Linesearch
+            t = (*lineSearch_)(P, t);
+            if (!lineSearch_->succeed())
+                throw Error("Conjugate gradient: line-search failed!");
 
-            do {
-                // Linesearch
-                t = (*lineSearch_)(P, t);
-                if (!lineSearch_->succeed())
-                    throw Error("Conjugate gradient: line-search failed!");
+            // Updates
+            d = SearchDirection;
+            // New point
+            X = lineSearch_->lastX();
+            // New function value
+            fold = functionValue();
+            functionValue() = lineSearch_->lastFunctionValue();
+            // New gradient and search direction vectors
+            g = lineSearch_->lastGradient();
+            // orthogonalization coef
+            gold2 = gradientNormValue();
+            gradientNormValue() = lineSearch_->lastGradientNorm2();
+            c = gradientNormValue() / gold2;
+            // conjugate gradient search direction
+            sddiff = (-g + c * d) - SearchDirection;
+            normdiff = QL_SQRT(DotProduct(sddiff, sddiff));
+            SearchDirection = -g + c * d;
+            // End criteria
+            end = endCriteria()(iterationNumber_,
+                                fold, QL_SQRT(gold2), functionValue(), 
+                                QL_SQRT(gradientNormValue()), normdiff);
 
-                // Updates
-                d = SearchDirection;
-                // New point
-                X = lineSearch_->lastX();
-                // New function value
-                fold = functionValue();
-                functionValue() = lineSearch_->lastFunctionValue();
-                // New gradient and search direction vectors
-                g = lineSearch_->lastGradient();
-                // orthogonalization coef
-                gold2 = gradientNormValue();
-                gradientNormValue() = lineSearch_->lastGradientNorm2();
-                c = gradientNormValue() / gold2;
-                // conjugate gradient search direction
-                sddiff = (-g + c * d) - SearchDirection;
-                normdiff = QL_SQRT(DotProduct(sddiff, sddiff));
-                SearchDirection = -g + c * d;
-                // End criteria
-                end = endCriteria()(iterationNumber_,
-                    fold, QL_SQRT(gold2), functionValue(), 
-                    QL_SQRT(gradientNormValue()), normdiff);
-
-                // Increase interation number
-                iterationNumber()++;
-            } while (end == false);
-
-        }
+            // Increase interation number
+            iterationNumber()++;
+        } while (end == false);
 
     }
 

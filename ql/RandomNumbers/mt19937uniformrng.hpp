@@ -28,40 +28,35 @@
 
 namespace QuantLib {
 
-    namespace RandomNumbers {
+    //! Uniform random number generator
+    /*! Mersenne Twister random number generator of period 2**19937-1
 
-        //! Uniform random number generator
-        /*! Mersenne Twister random number generator of period 2**19937-1
-
-            For more details see http://www.math.keio.ac.jp/matumoto/emt.html
-        */
-        class MersenneTwisterUniformRng {
-          public:
-            typedef Sample<double> sample_type;
-            /*! if the given seed is 0, a random seed will be chosen
-                based on clock() */
-            explicit MersenneTwisterUniformRng(unsigned long seed = 0);
-            explicit MersenneTwisterUniformRng(
-                const std::vector<unsigned long>& seeds);
-            /*! returns a sample with weight 1.0 containing a random number
-                on (0.0, 1.0)-real-interval  */
-            sample_type next() const {
-                // divide by 2^32
-                double result = (double(nextInt32())+ 0.5)/4294967296.0;
-                return sample_type(result,1.0);
-            }
-            //! return  a random number on [0,0xffffffff]-interval 
-            unsigned long nextInt32() const;
-          private:
-            void seedInitialization(unsigned long seed);
-            mutable std::vector<unsigned long> mt;
-            static const Size N, M;
-            static const unsigned long MATRIX_A, UPPER_MASK, LOWER_MASK;
-            static Size mti;
-        };
-
-
-    }
+        For more details see http://www.math.keio.ac.jp/matumoto/emt.html
+    */
+    class MersenneTwisterUniformRng {
+      public:
+        typedef Sample<double> sample_type;
+        /*! if the given seed is 0, a random seed will be chosen
+            based on clock() */
+        explicit MersenneTwisterUniformRng(unsigned long seed = 0);
+        explicit MersenneTwisterUniformRng(
+                                     const std::vector<unsigned long>& seeds);
+        /*! returns a sample with weight 1.0 containing a random number
+            on (0.0, 1.0)-real-interval  */
+        sample_type next() const {
+            // divide by 2^32
+            double result = (double(nextInt32())+ 0.5)/4294967296.0;
+            return sample_type(result,1.0);
+        }
+        //! return  a random number on [0,0xffffffff]-interval 
+        unsigned long nextInt32() const;
+      private:
+        void seedInitialization(unsigned long seed);
+        mutable std::vector<unsigned long> mt;
+        static const Size N, M;
+        static const unsigned long MATRIX_A, UPPER_MASK, LOWER_MASK;
+        static Size mti;
+    };
 
 }
 

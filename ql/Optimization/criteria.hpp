@@ -24,113 +24,109 @@
 
 namespace QuantLib {
 
-    namespace Optimization {
-
-        /*!
-          class to gather criteria to end optimization process :
+    /*! class to gather criteria to end optimization process :
           - stationary point
           - stationary gradient
           - maximum number of iterations
           ....
-        */
-        class EndCriteria {
-          public:
-            enum Type { maxIter, statPt, statGd };
+    */
+    class EndCriteria {
+      public:
+        enum Type { maxIter, statPt, statGd };
 
-            //! default constructor
-            EndCriteria()
-            : maxIteration_(100), functionEpsilon_(1e-8), 
-              gradientEpsilon_(1e-8), maxIterStatPt_(10), 
-              statState_(0), endCriteria_(0),
-              positiveOptimization_ (false) {}
+        //! default constructor
+        EndCriteria()
+        : maxIteration_(100), functionEpsilon_(1e-8), 
+          gradientEpsilon_(1e-8), maxIterStatPt_(10), 
+          statState_(0), endCriteria_(0),
+          positiveOptimization_ (false) {}
 
-            //! initialization constructor
-            EndCriteria(int maxIteration, double epsilon)
-            : maxIteration_ (maxIteration), functionEpsilon_ (epsilon),
-              gradientEpsilon_ (epsilon), maxIterStatPt_(maxIteration/10),
-              statState_ (0), endCriteria_ (0), 
-              positiveOptimization_ (false) {}
+        //! initialization constructor
+        EndCriteria(int maxIteration, double epsilon)
+        : maxIteration_ (maxIteration), functionEpsilon_ (epsilon),
+          gradientEpsilon_ (epsilon), maxIterStatPt_(maxIteration/10),
+          statState_ (0), endCriteria_ (0), 
+          positiveOptimization_ (false) {}
 
-            void setPositiveOptimization() {
-                positiveOptimization_ = true;
-            }
+        void setPositiveOptimization() {
+            positiveOptimization_ = true;
+        }
 
-            bool checkIterationNumber (int iteration) {
-                bool test = (iteration >= maxIteration_);
-                if (test)
-                    endCriteria_ = maxIter;
-                return test;
-            }
-            bool checkStationaryValue(double fold, double fnew) {
-                bool test = (QL_FABS(fold - fnew) < functionEpsilon_);
-                if (test) {
-                    statState_++;
-                    if (statState_ > maxIterStatPt_) {
-                        endCriteria_ = statPt;
-                    }
-                } else {
-                    if (statState_ != 0)
-                    statState_ = 0;
-                }
-                return (test && (statState_ > maxIterStatPt_));
-            }
+        bool checkIterationNumber (int iteration) {
+            bool test = (iteration >= maxIteration_);
+            if (test)
+                endCriteria_ = maxIter;
+            return test;
+        }
 
-            bool checkAccuracyValue(double f) {
-                bool test = (f < functionEpsilon_ && positiveOptimization_);
-                if (test) {
+        bool checkStationaryValue(double fold, double fnew) {
+            bool test = (QL_FABS(fold - fnew) < functionEpsilon_);
+            if (test) {
+                statState_++;
+                if (statState_ > maxIterStatPt_) {
                     endCriteria_ = statPt;
                 }
-                return test;
+            } else {
+                if (statState_ != 0)
+                    statState_ = 0;
             }
+            return (test && (statState_ > maxIterStatPt_));
+        }
 
-            bool checkStationaryGradientNorm (double normDiff) {
-                bool test = (normDiff < gradientEpsilon_);
-                if (test)
-                    endCriteria_ = statGd;
-                return test;
+        bool checkAccuracyValue(double f) {
+            bool test = (f < functionEpsilon_ && positiveOptimization_);
+            if (test) {
+                endCriteria_ = statPt;
             }
+            return test;
+        }
 
-            bool checkAccuracyGradientNorm (double norm) {
-                bool test = (norm < gradientEpsilon_);
-                if (test)
-                    endCriteria_ = statGd;
-                return test;
-            }
+        bool checkStationaryGradientNorm (double normDiff) {
+            bool test = (normDiff < gradientEpsilon_);
+            if (test)
+                endCriteria_ = statGd;
+            return test;
+        }
 
-            //! test if the number of iteration is not too big and if we don't
-            //  raise a stationary point
-            bool operator()(int iteration,
-                            double fold,
-                            double normgold,
-                            double fnew,
-                            double normgnew,
-                            double normdiff) {
-                return 
-                    checkIterationNumber(iteration) ||
-                    checkStationaryValue(fold, fnew) ||
-                    checkAccuracyValue(fnew) ||
-                    checkAccuracyValue(fold) ||
-                    checkAccuracyGradientNorm(normgnew) ||
-                    checkAccuracyGradientNorm(normgold);
-            }
+        bool checkAccuracyGradientNorm (double norm) {
+            bool test = (norm < gradientEpsilon_);
+            if (test)
+                endCriteria_ = statGd;
+            return test;
+        }
 
-            //! return the end criteria type
-            int criteria() const {
-                return endCriteria_;
-            }
+        //! test if the number of iteration is not too big and if we don't
+        //  raise a stationary point
+        bool operator()(int iteration,
+                        double fold,
+                        double normgold,
+                        double fnew,
+                        double normgnew,
+                        double normdiff) {
+            return 
+                checkIterationNumber(iteration) ||
+                checkStationaryValue(fold, fnew) ||
+                checkAccuracyValue(fnew) ||
+                checkAccuracyValue(fold) ||
+                checkAccuracyGradientNorm(normgnew) ||
+                checkAccuracyGradientNorm(normgold);
+        }
 
-          protected:
-            //! Maximum number of iterations
-            int maxIteration_;
-            //! function and gradient epsilons
-            double functionEpsilon_, gradientEpsilon_;
-            //! Maximun number of iterations in stationary state
-            int maxIterStatPt_, statState_;
-            int endCriteria_;
-            bool positiveOptimization_;
-        };
+        //! return the end criteria type
+        int criteria() const {
+            return endCriteria_;
+        }
 
-    }
+      protected:
+        //! Maximum number of iterations
+        int maxIteration_;
+        //! function and gradient epsilons
+        double functionEpsilon_, gradientEpsilon_;
+        //! Maximun number of iterations in stationary state
+        int maxIterStatPt_, statState_;
+        int endCriteria_;
+        bool positiveOptimization_;
+    };
 
 }
 

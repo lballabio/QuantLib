@@ -28,167 +28,160 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    //! Base class for model parameter implementation
+    class ParameterImpl {
+      public:
+        virtual ~ParameterImpl() {}
+        virtual double value(const Array& params, Time t) const = 0;
+    };
 
-        //! Base class for model parameter implementation
-        class ParameterImpl {
-          public:
-            virtual ~ParameterImpl() {}
-            virtual double value(const Array& params, Time t) const = 0;
-        };
+    //! Base class for model arguments
+    class Parameter : public Bridge<Parameter,ParameterImpl> {
+      public:
+        Parameter()
+        : constraint_(NoConstraint()) {}
+        const Array& params() const { return params_; }
+        void setParam(Size i, double x) { params_[i] = x; }
+        bool testParams(const Array& params) const {
+            return constraint_.test(params);
+        }
+        Size size() const { return params_.size(); }
+        double operator()(Time t) const {
+            return impl_->value(params_, t);
+        }
+        const Handle<ParameterImpl>& implementation() const {return impl_;}
+      protected:
+        Parameter(Size size,
+                  const Handle<ParameterImpl>& impl,
+                  const Constraint& constraint)
+        : Bridge<Parameter,ParameterImpl>(impl),
+          params_(size), constraint_(constraint) {}
+        Array params_;
+        Constraint constraint_;
+    };
 
-        //! Base class for model arguments
-        class Parameter : public Bridge<Parameter,ParameterImpl> {
+    //! Standard constant parameter \f$ a(t) = a \f$
+    class ConstantParameter : public Parameter {
+      private:
+        class Impl : public Parameter::Impl {
           public:
-            Parameter()
-            : constraint_(Optimization::NoConstraint()) {}
-            const Array& params() const { return params_; }
-            void setParam(Size i, double x) { params_[i] = x; }
-            bool testParams(const Array& params) const {
-                return constraint_.test(params);
+            double value(const Array& params, Time t) const {
+                return params[0];
             }
-            Size size() const { return params_.size(); }
-            double operator()(Time t) const {
-                return impl_->value(params_, t);
+        };
+      public:
+        ConstantParameter(const Constraint& constraint)
+        : Parameter(1,
+                    Handle<Parameter::Impl>(new ConstantParameter::Impl),
+                    constraint)
+        {}
+
+        ConstantParameter(double value,
+                          const Constraint& constraint)
+        : Parameter(1,
+                    Handle<Parameter::Impl>(new ConstantParameter::Impl),
+                    constraint) {
+            params_[0] = value;
+            QL_REQUIRE(testParams(params_),
+                       "ConstantParameter: invalid value in constructor");
+        }
+
+    };
+
+    //! Parameter which is always zero \f$ a(t) = 0 \f$
+    class NullParameter : public Parameter {
+      private:
+        class Impl : public Parameter::Impl {
+          public:
+            double value(const Array& params, Time t) const {
+                return 0.0;
             }
-            const Handle<ParameterImpl>& implementation() const {return impl_;}
-          protected:
-            Parameter(Size size,
-                      const Handle<ParameterImpl>& impl,
-                      const Optimization::Constraint& constraint)
-            : Bridge<Parameter,ParameterImpl>(impl),
-              params_(size), constraint_(constraint) {}
-            Array params_;
-            Optimization::Constraint constraint_;
         };
+      public:
+        NullParameter()
+        : Parameter(0,
+                    Handle<Parameter::Impl>(new NullParameter::Impl),
+                    NoConstraint())
+        {}
+    };
 
-        //! Standard constant parameter \f$ a(t) = a \f$
-        class ConstantParameter : public Parameter {
-          private:
-            class Impl : public Parameter::Impl {
-              public:
-                double value(const Array& params, Time t) const {
-                    return params[0];
-                }
-            };
+    //! Piecewise constant parameter
+    /*! \f$ a(t) = a_i if t_{i-1} \geq t < t_i \f$.
+        This kind of parameter is usually used to enhance the fitting of a
+        model
+    */
+    class PiecewiseConstantParameter : public Parameter {
+      private:
+        class Impl : public Parameter::Impl {
           public:
-            ConstantParameter(
-                const Optimization::Constraint& constraint)
-            : Parameter(1,
-                        Handle<Parameter::Impl>(new ConstantParameter::Impl),
-                        constraint)
-            {}
+            Impl(const std::vector<Time>& times)
+            : times_(times) {}
 
-            ConstantParameter(
-                double value,
-                const Optimization::Constraint& constraint)
-            : Parameter(1,
-                        Handle<Parameter::Impl>(new ConstantParameter::Impl),
-                        constraint) {
-                params_[0] = value;
-                QL_REQUIRE(testParams(params_),
-                           "ConstantParameter: invalid value in constructor");
+            double value(const Array& params, Time t) const {
+                Size size = times_.size();
+                for (Size i=0; i<size; i++) {
+                    if (t<times_[i])
+                        return params[i];
+                }
+                return params[size];
             }
-
-        };
-
-        //! Parameter which is always zero \f$ a(t) = 0 \f$
-        class NullParameter : public Parameter {
           private:
-            class Impl : public Parameter::Impl {
-              public:
-                double value(const Array& params, Time t) const {
-                    return 0.0;
-                }
-            };
-          public:
-            NullParameter()
-            : Parameter(0,
-                        Handle<Parameter::Impl>(new NullParameter::Impl),
-                        Optimization::NoConstraint())
-            {}
+            std::vector<Time> times_;
         };
+      public:
+        PiecewiseConstantParameter(const std::vector<Time>& times)
+        : Parameter(times.size()+1,
+                    Handle<Parameter::Impl>(
+                                 new PiecewiseConstantParameter::Impl(times)),
+                    NoConstraint())
+        {}
+    };
 
-        //! Piecewise constant parameter
-        /*! \f$ a(t) = a_i if t_{i-1} \geq t < t_i \f$.
-            This kind of parameter is usually used to enhance the fitting of a
-            model
-        */
-        class PiecewiseConstantParameter : public Parameter {
+    //! Deterministic time-dependent parameter used for yield-curve fitting
+    class TermStructureFittingParameter : public Parameter {
+      public:
+        class NumericalImpl : public Parameter::Impl {
+          public:
+            NumericalImpl(
+                          const RelinkableHandle<TermStructure>& termStructure)
+            : times_(0), values_(0), termStructure_(termStructure) {}
+
+            void set(Time t, double x) {
+                times_.push_back(t);
+                values_.push_back(x);
+            }
+            void change(double x) {
+                values_.back() = x;
+            }
+            void reset() {
+                times_.clear();
+                values_.clear();
+            }
+            double value(const Array& params, Time t) const {
+                std::vector<Time>::const_iterator result =
+                    std::find(times_.begin(), times_.end(), t);
+                QL_REQUIRE(result!=times_.end(),
+                           "Fitting parameter not set!");
+                return values_[result - times_.begin()];
+            }
+            const RelinkableHandle<TermStructure>& termStructure() const {
+                return termStructure_;
+            }
           private:
-            class Impl : public Parameter::Impl {
-              public:
-                Impl(const std::vector<Time>& times)
-                : times_(times) {}
-
-                double value(const Array& params, Time t) const {
-                    Size size = times_.size();
-                    for (Size i=0; i<size; i++) {
-                        if (t<times_[i])
-                            return params[i];
-                    }
-                    return params[size];
-                }
-              private:
-                std::vector<Time> times_;
-            };
-          public:
-            PiecewiseConstantParameter(const std::vector<Time>& times)
-            : Parameter(times.size()+1,
-                        Handle<Parameter::Impl>(
-                            new PiecewiseConstantParameter::Impl(times)),
-                        Optimization::NoConstraint())
-            {}
+            std::vector<Time> times_;
+            std::vector<double> values_;
+            RelinkableHandle<TermStructure> termStructure_;
         };
 
-        //! Deterministic time-dependent parameter used for yield-curve fitting
-        class TermStructureFittingParameter : public Parameter {
-          public:
-            class NumericalImpl : public Parameter::Impl {
-              public:
-                NumericalImpl(
-                    const RelinkableHandle<TermStructure>& termStructure)
-                : times_(0), values_(0), termStructure_(termStructure) {}
+        TermStructureFittingParameter(const Handle<Parameter::Impl>& impl)
+        : Parameter(0, impl, NoConstraint()) {}
 
-                void set(Time t, double x) {
-                    times_.push_back(t);
-                    values_.push_back(x);
-                }
-                void change(double x) {
-                    values_.back() = x;
-                }
-                void reset() {
-                    times_.clear();
-                    values_.clear();
-                }
-                double value(const Array& params, Time t) const {
-                    std::vector<Time>::const_iterator result =
-                        std::find(times_.begin(), times_.end(), t);
-                    QL_REQUIRE(result!=times_.end(),
-                               "Fitting parameter not set!");
-                    return values_[result - times_.begin()];
-                }
-                const RelinkableHandle<TermStructure>& termStructure() const {
-                    return termStructure_;
-                }
-              private:
-                std::vector<Time> times_;
-                std::vector<double> values_;
-                RelinkableHandle<TermStructure> termStructure_;
-            };
-
-            TermStructureFittingParameter(const Handle<Parameter::Impl>& impl)
-            : Parameter(0, impl, Optimization::NoConstraint()) {}
-
-            TermStructureFittingParameter(
-                const RelinkableHandle<TermStructure>& term)
-            : Parameter(0, Handle<Parameter::Impl>(new NumericalImpl(term)),
-                        Optimization::NoConstraint())
-            {}
-        };
-
-
-    }
+        TermStructureFittingParameter(
+                                  const RelinkableHandle<TermStructure>& term)
+        : Parameter(0, Handle<Parameter::Impl>(new NumericalImpl(term)),
+                    NoConstraint())
+        {}
+    };
 
 }
 

@@ -40,10 +40,10 @@ namespace QuantLib {
     struct GenericPseudoRandom {
         // typedefs
         typedef RNG urng_type;
-        typedef RandomNumbers::ICGaussianRng<urng_type,IC> rng_type;
-        typedef RandomNumbers::RandomSequenceGenerator<urng_type> 
+        typedef ICGaussianRng<urng_type,IC> rng_type;
+        typedef RandomSequenceGenerator<urng_type> 
         ursg_type;
-        typedef RandomNumbers::ICGaussianRsg<ursg_type,IC> rsg_type;
+        typedef ICGaussianRsg<ursg_type,IC> rsg_type;
         // more traits
         enum { allowsErrorEstimate = 1 };
         // factory
@@ -55,14 +55,14 @@ namespace QuantLib {
     };
 
     // default choice
-    typedef GenericPseudoRandom<RandomNumbers::MersenneTwisterUniformRng,
+    typedef GenericPseudoRandom<MersenneTwisterUniformRng,
                                 InverseCumulativeNormal> PseudoRandom;
 
     struct LowDiscrepancy {
         // typedefs
-        typedef RandomNumbers::SobolRsg ursg_type;
+        typedef SobolRsg ursg_type;
         typedef InverseCumulativeNormal ic_type;
-        typedef RandomNumbers::ICGaussianRsg<ursg_type,ic_type> rsg_type;
+        typedef ICGaussianRsg<ursg_type,ic_type> rsg_type;
         // more traits
         enum { allowsErrorEstimate = 0 };
         // factory
@@ -97,16 +97,16 @@ namespace QuantLib {
     // support for migration --- born deprecated 
 
     struct PseudoRandom_old {
-        typedef RandomNumbers::MersenneTwisterUniformRng urng_type;
+        typedef MersenneTwisterUniformRng urng_type;
         typedef InverseCumulativeNormal ic_type;
-        typedef RandomNumbers::ICGaussianRng<urng_type,ic_type> rsg_type;
+        typedef ICGaussianRng<urng_type,ic_type> rsg_type;
     };
 
     struct PseudoRandomSequence_old {
-        typedef RandomNumbers::MersenneTwisterUniformRng urng_type;
+        typedef MersenneTwisterUniformRng urng_type;
         typedef InverseCumulativeNormal ic_type;
-        typedef RandomNumbers::ICGaussianRng<urng_type,ic_type> rng_type;
-        typedef RandomNumbers::RandomArrayGenerator<rng_type> rsg_type;
+        typedef ICGaussianRng<urng_type,ic_type> rng_type;
+        typedef RandomArrayGenerator<rng_type> rsg_type;
     };
 
 

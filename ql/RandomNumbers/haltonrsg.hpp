@@ -28,33 +28,31 @@
 
 namespace QuantLib {
 
-    namespace RandomNumbers {
-        //! Halton low-discrepancy sequence generator
-        /*! Halton algorithm for low-discrepancy sequence.
-            For more details see chapter 8, paragraph 2 of
-            "Monte Carlo Methods in Finance", by Peter Jäckel
-        */
-        class HaltonRsg {
-          public:
-            typedef Sample<Array> sample_type;
-            HaltonRsg(Size dimensionality,
-                      unsigned long seed = 0,
-                      bool randomStart = true,
-                      bool randomShift = false);
-            const sample_type& nextSequence() const;
-            const sample_type& lastSequence() const {
-                return sequence_;
-            }
-            Size dimension() const {return dimensionality_;}
-          private:
-            Size dimensionality_;
-            mutable unsigned long sequenceCounter_;
-            mutable sample_type sequence_;
-            std::vector<unsigned long> randomStart_;
-            Array randomShift_;
-        };
-    }
-
+    //! Halton low-discrepancy sequence generator
+    /*! Halton algorithm for low-discrepancy sequence.  For more
+        details see chapter 8, paragraph 2 of "Monte Carlo Methods in
+        Finance", by Peter Jäckel
+    */
+    class HaltonRsg {
+      public:
+        typedef Sample<Array> sample_type;
+        HaltonRsg(Size dimensionality,
+                  unsigned long seed = 0,
+                  bool randomStart = true,
+                  bool randomShift = false);
+        const sample_type& nextSequence() const;
+        const sample_type& lastSequence() const {
+            return sequence_;
+        }
+        Size dimension() const {return dimensionality_;}
+      private:
+        Size dimensionality_;
+        mutable unsigned long sequenceCounter_;
+        mutable sample_type sequence_;
+        std::vector<unsigned long> randomStart_;
+        Array randomShift_;
+    };
 }
+
 
 #endif

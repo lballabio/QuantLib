@@ -26,45 +26,42 @@
 
 namespace QuantLib {
 
-    namespace Optimization {
+    //!  Cost function abstract class for optimization problem
+    class CostFunction {
+      public:
+        virtual ~CostFunction() {}
+        //! method to overload to compute the cost functon value in x
+        virtual double value(const Array& x) const = 0;
 
-        //!  Cost function abstract class for optimization problem
-        class CostFunction {
-          public:
-            virtual ~CostFunction() {}
-            //! method to overload to compute the cost functon value in x
-            virtual double value(const Array& x) const = 0;
+        //! method to overload to compute grad_f, the first derivative of
+        //  the cost function with respect to x
+        virtual void gradient(Array& grad, const Array& x) const {
+            double eps = finiteDifferenceEpsilon(), fp, fm;
+            Array xx(x);
 
-            //! method to overload to compute grad_f, the first derivative of
-            //  the cost function with respect to x
-            virtual void gradient(Array& grad, const Array& x) const {
-                double eps = finiteDifferenceEpsilon(), fp, fm;
-                Array xx(x);
-
-                for (Size i=0; i<x.size(); i++) {
-                    xx[i] += eps;
-                    fp = value(xx);
-                    xx[i] -= 2.0*eps;
-                    fm = value(xx);
-                    grad[i] = 0.5*(fp - fm)/eps;
-                    xx[i] = x[i];
-                }
+            for (Size i=0; i<x.size(); i++) {
+                xx[i] += eps;
+                fp = value(xx);
+                xx[i] -= 2.0*eps;
+                fm = value(xx);
+                grad[i] = 0.5*(fp - fm)/eps;
+                xx[i] = x[i];
             }
+        }
 
-            //! method to overload to compute grad_f, the first derivative of
-            //  the cost function with respect to x and also the cost function
-            virtual double valueAndGradient(Array& grad, 
-                                            const Array& x) const {
-                gradient(grad, x);
-                return value(x);
-            }
+        //! method to overload to compute grad_f, the first derivative of
+        //  the cost function with respect to x and also the cost function
+        virtual double valueAndGradient(Array& grad, 
+                                        const Array& x) const {
+            gradient(grad, x);
+            return value(x);
+        }
 
-            //! Default epsilon for finite difference method :
-            virtual double finiteDifferenceEpsilon() const { return 1e-8; }
-        };
-
-    }
+        //! Default epsilon for finite difference method :
+        virtual double finiteDifferenceEpsilon() const { return 1e-8; }
+    };
 
 }
+
 
 #endif

@@ -20,7 +20,6 @@
 #include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::RandomNumbers;
 
 void MersenneTwisterTest::runTest() {
 

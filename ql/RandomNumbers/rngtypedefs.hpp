@@ -27,40 +27,34 @@
 
 namespace QuantLib {
 
-    namespace RandomNumbers {
-
-        /* Some default choices. Kind of redundant with the default
-           choices made in mctraits---and in fact, defined depending
-           on the former. Personally, I'd dump these ones and keep 
-           the traits only. It's not as we're preventing the user 
-           from creating his own typedefs (and with his own names) 
-           if he feels the itch.
+    /* Some default choices. Kind of redundant with the default
+       choices made in mctraits---and in fact, defined depending
+       on the former. Personally, I'd dump these ones and keep 
+       the traits only. It's not as we're preventing the user 
+       from creating his own typedefs (and with his own names) 
+       if he feels the itch.
                                              LB
-        */
+    */
 
-        //! default choice for uniform random number generator.
-        typedef PseudoRandom::urng_type UniformRandomGenerator;
+    //! default choice for uniform random number generator.
+    typedef PseudoRandom::urng_type UniformRandomGenerator;
 
-        //! default choice for Gaussian random number generator.
-        typedef PseudoRandom::rng_type GaussianRandomGenerator;
+    //! default choice for Gaussian random number generator.
+    typedef PseudoRandom::rng_type GaussianRandomGenerator;
 
-        //! default choice for Gaussian array generator.
-        typedef RandomArrayGenerator<GaussianRandomGenerator>
-			GaussianArrayGenerator;
+    //! default choice for Gaussian array generator.
+    typedef RandomArrayGenerator<GaussianRandomGenerator>
+                                                      GaussianArrayGenerator;
 
-        //! default choice for uniform random sequence generator.
-        typedef PseudoRandom::ursg_type UniformRandomSequenceGenerator;
+    //! default choice for uniform random sequence generator.
+    typedef PseudoRandom::ursg_type UniformRandomSequenceGenerator;
 
-        //! default choice for Gaussian random sequence generator.
-        typedef PseudoRandom::rsg_type GaussianRandomSequenceGenerator;
+    //! default choice for Gaussian random sequence generator.
+    typedef PseudoRandom::rsg_type GaussianRandomSequenceGenerator;
 
-        typedef LowDiscrepancy::ursg_type
-            UniformLowDiscrepancySequenceGenerator;
+    typedef LowDiscrepancy::ursg_type UniformLowDiscrepancySequenceGenerator;
 
-        typedef LowDiscrepancy::rsg_type 
-            GaussianLowDiscrepancySequenceGenerator;
-
-    }
+    typedef LowDiscrepancy::rsg_type GaussianLowDiscrepancySequenceGenerator;
 
 }
 

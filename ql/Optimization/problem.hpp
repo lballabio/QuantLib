@@ -26,70 +26,72 @@
 
 namespace QuantLib {
 
-    namespace Optimization {
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace Optimization = ::QuantLib;
 
-        //! Constrained optimization problem
-        class Problem {
-          public:
-            //! default constructor
-            Problem(CostFunction& f,// Function and it gradient vector
-                    Constraint& c,  // Constraint
-                    Method& meth)   // Optimization method
-            : costFunction_(f), constraint_(c), method_(meth) {}
+    //! Constrained optimization problem
+    class Problem {
+      public:
+        //! default constructor
+        Problem(CostFunction& f,// Function and it gradient vector
+                Constraint& c,  // Constraint
+                Method& meth)   // Optimization method
+        : costFunction_(f), constraint_(c), method_(meth) {}
 
-            //! call cost function computation and increment evaluation counter
-            double value(const Array& x) const;
+        //! call cost function computation and increment evaluation counter
+        double value(const Array& x) const;
 
-            //! call cost function gradient computation and increment
-            //  evaluation counter
-            void gradient(Array& grad_f, const Array& x) const;
+        //! call cost function gradient computation and increment
+        //  evaluation counter
+        void gradient(Array& grad_f, const Array& x) const;
 
-            //! call cost function computation and it gradient
-            double valueAndGradient(Array& grad_f, const Array& x) const;
+        //! call cost function computation and it gradient
+        double valueAndGradient(Array& grad_f, const Array& x) const;
 
-            //! Constrained optimization method
-            Method& method() const { return method_; }
+        //! Constrained optimization method
+        Method& method() const { return method_; }
 
-            //! Constraint
-            Constraint& constraint() const { return constraint_; }
+        //! Constraint
+        Constraint& constraint() const { return constraint_; }
 
-            //! Cost function
-            CostFunction& costFunction() const { return costFunction_; }
+        //! Cost function
+        CostFunction& costFunction() const { return costFunction_; }
 
-            //! Minimization
-            void minimize() const { method_.minimize(*this); }
+        //! Minimization
+        void minimize() const { method_.minimize(*this); }
 
-            Array& minimumValue() const { return method_.x (); }
+        Array& minimumValue() const { return method_.x (); }
 
-          protected:
-            //! Unconstrained cost function
-            CostFunction& costFunction_;
-            //! Constraint
-            Constraint& constraint_;
-            //! constrained optimization method
-            Method& method_;
-        };
+      protected:
+        //! Unconstrained cost function
+        CostFunction& costFunction_;
+        //! Constraint
+        Constraint& constraint_;
+        //! constrained optimization method
+        Method& method_;
+    };
 
-        // inline definitions
 
-        inline double Problem::value(const Array& x) const {
-            method_.functionEvaluation()++;
-            return costFunction_.value(x);
-        }
+    // inline definitions
 
-        inline void Problem::gradient(Array& grad_f, const Array& x) const {
-            method_.gradientEvaluation()++;
-            costFunction_.gradient(grad_f, x);
-        }
+    inline double Problem::value(const Array& x) const {
+        method_.functionEvaluation()++;
+        return costFunction_.value(x);
+    }
 
-        inline double Problem::valueAndGradient(Array& grad_f, 
-                                                const Array& x) const {
-            method_.functionEvaluation()++;
-            method_.gradientEvaluation()++;
-            return costFunction_.valueAndGradient(grad_f, x);
-        }
+    inline void Problem::gradient(Array& grad_f, const Array& x) const {
+        method_.gradientEvaluation()++;
+        costFunction_.gradient(grad_f, x);
+    }
 
+    inline double Problem::valueAndGradient(Array& grad_f, 
+                                            const Array& x) const {
+        method_.functionEvaluation()++;
+        method_.gradientEvaluation()++;
+        return costFunction_.valueAndGradient(grad_f, x);
     }
 
 }
+
+
 #endif

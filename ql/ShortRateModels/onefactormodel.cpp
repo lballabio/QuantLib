@@ -25,81 +25,74 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    //Private function used by solver to determine time-dependent parameter
+    class OneFactorModel::ShortRateTree::Helper {
+      public:
+        Helper(Size i,
+               double discountBondPrice,
+               const Handle<TermStructureFittingParameter::NumericalImpl>& 
+                                                                       theta,
+               ShortRateTree& tree)
+        : size_(tree.size(i)),
+          i_(i),
+          statePrices_(tree.statePrices(i)),
+          discountBondPrice_(discountBondPrice),
+          theta_(theta),
+          tree_(tree) {
+            theta_->set(tree.timeGrid()[i], 0.0);
+        }
 
-        //Private function used by solver to determine time-dependent parameter
-        class OneFactorModel::ShortRateTree::Helper {
-          public:
-            Helper(
-                Size i,
-                double discountBondPrice,
-                const Handle<TermStructureFittingParameter::NumericalImpl>& 
-                      theta,
-                ShortRateTree& tree)
-            : size_(tree.size(i)),
-              i_(i),
-              statePrices_(tree.statePrices(i)),
-              discountBondPrice_(discountBondPrice),
-              theta_(theta),
-              tree_(tree) {
-                theta_->set(tree.timeGrid()[i], 0.0);
-            }
+        double operator()(double theta) const {
+            double value = discountBondPrice_;
+            theta_->change(theta);
+            for (Size j=0; j<size_; j++)
+                value -= statePrices_[j]*tree_.discount(i_,j);
+            return value;
+        }
 
-            double operator()(double theta) const {
-                double value = discountBondPrice_;
-                theta_->change(theta);
-                for (Size j=0; j<size_; j++)
-                    value -= statePrices_[j]*tree_.discount(i_,j);
-                return value;
-            }
+      private:
+        Size size_;
+        Size i_;
+        const Array& statePrices_;
+        double discountBondPrice_;
+        Handle<TermStructureFittingParameter::NumericalImpl> theta_;
+        ShortRateTree& tree_;
+    };
 
-          private:
-            Size size_;
-            Size i_;
-            const Array& statePrices_;
-            double discountBondPrice_;
-            Handle<TermStructureFittingParameter::NumericalImpl> theta_;
-            ShortRateTree& tree_;
-        };
-
-        OneFactorModel::ShortRateTree::ShortRateTree(
+    OneFactorModel::ShortRateTree::ShortRateTree(
             const Handle<Tree>& tree,
             const Handle<ShortRateDynamics>& dynamics,
             const Handle<TermStructureFittingParameter::NumericalImpl>& theta,
             const TimeGrid& timeGrid)
-        : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {
+    : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {
 
-            theta->reset();
-            double value = 1.0;
-            double vMin = -100.0;
-            double vMax = 100.0;
-            for (Size i=0; i<(timeGrid.size() - 1); i++) {
-                double discountBond = theta->termStructure()->discount(t_[i+1]);
-                Helper finder(i, discountBond, theta, *this);
-                Solvers1D::Brent s1d = Solvers1D::Brent();
-                s1d.setMaxEvaluations(1000);
-                value = s1d.solve(finder, 1e-7, value, vMin, vMax);
-//                vMin = value - 1.0;
-//                vMax = value + 1.0;
-                theta->change(value);
-            }
+        theta->reset();
+        double value = 1.0;
+        double vMin = -100.0;
+        double vMax = 100.0;
+        for (Size i=0; i<(timeGrid.size() - 1); i++) {
+            double discountBond = theta->termStructure()->discount(t_[i+1]);
+            Helper finder(i, discountBond, theta, *this);
+            Brent s1d;
+            s1d.setMaxEvaluations(1000);
+            value = s1d.solve(finder, 1e-7, value, vMin, vMax);
+            // vMin = value - 1.0;
+            // vMax = value + 1.0;
+            theta->change(value);
         }
+    }
 
-        OneFactorModel::ShortRateTree::ShortRateTree(
-            const Handle<Tree>& tree,
-            const Handle<ShortRateDynamics>& dynamics,
-            const TimeGrid& timeGrid)
-        : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {}
+    OneFactorModel::ShortRateTree::ShortRateTree(
+                                    const Handle<Tree>& tree,
+                                    const Handle<ShortRateDynamics>& dynamics,
+                                    const TimeGrid& timeGrid)
+    : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {}
 
-        OneFactorModel::OneFactorModel(Size nArguments) : Model(nArguments) {}
+    OneFactorModel::OneFactorModel(Size nArguments) : Model(nArguments) {}
 
-        Handle<Lattice> OneFactorModel::tree(const TimeGrid& grid) const {
-            Handle<Tree> trinomial(
-                new TrinomialTree(dynamics()->process(), grid));
-            return Handle<Lattice>(
-                new ShortRateTree(trinomial, dynamics(), grid));
-        }
-
+    Handle<Lattice> OneFactorModel::tree(const TimeGrid& grid) const {
+        Handle<Tree> trinomial(new TrinomialTree(dynamics()->process(), grid));
+        return Handle<Lattice>(new ShortRateTree(trinomial, dynamics(), grid));
     }
 
 }

@@ -27,80 +27,76 @@
 
 namespace QuantLib {
 
-    namespace RandomNumbers {
-
-        //! Generates random arrays using a random number generator
-        /*! \deprecated use RandomSequenceGenerator instead. */
-        template <class RNG>
-        class RandomArrayGenerator {
-          public:
-            typedef Sample<Array> sample_type;
-            // equal average, different variances, no covariance
-            RandomArrayGenerator(const Array& variance,
-                                 long seed = 0);
-            // different averages, different variances, covariance
-            RandomArrayGenerator(const Matrix& covariance,
-                                 long seed = 0);
-            const sample_type& next() const;
-            int size() const { return next_.size(); }
-          private:
-            mutable sample_type next_;
-            RNG generator_;
-            Array sqrtVariance_;
-            Matrix sqrtCovariance_;
-        };
+    //! Generates random arrays using a random number generator
+    /*! \deprecated use RandomSequenceGenerator instead. */
+    template <class RNG>
+    class RandomArrayGenerator {
+      public:
+        typedef Sample<Array> sample_type;
+        // equal average, different variances, no covariance
+        RandomArrayGenerator(const Array& variance,
+                             long seed = 0);
+        // different averages, different variances, covariance
+        RandomArrayGenerator(const Matrix& covariance,
+                             long seed = 0);
+        const sample_type& next() const;
+        int size() const { return next_.size(); }
+      private:
+        mutable sample_type next_;
+        RNG generator_;
+        Array sqrtVariance_;
+        Matrix sqrtCovariance_;
+    };
 
 
-        template <class RNG>
-        inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
-            const Array& variance, long seed)
-        : next_(Array(variance.size()),1.0), generator_(seed),
-          sqrtVariance_(variance.size()) {
-            for (Size i=0; i<variance.size(); i++) {
-                QL_REQUIRE(variance[i] >= 0,
-                    "RandomArrayGenerator: negative variance"
-                    + DoubleFormatter::toString(variance[i])
-                    + "in position "
-                    + IntegerFormatter::toString(i));
-                sqrtVariance_[i] = QL_SQRT(variance[i]);
-            }
+    template <class RNG>
+    inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
+                                             const Array& variance, long seed)
+    : next_(Array(variance.size()),1.0), generator_(seed),
+      sqrtVariance_(variance.size()) {
+        for (Size i=0; i<variance.size(); i++) {
+            QL_REQUIRE(variance[i] >= 0,
+                       "RandomArrayGenerator: negative variance"
+                       + DoubleFormatter::toString(variance[i])
+                       + "in position "
+                       + IntegerFormatter::toString(i));
+            sqrtVariance_[i] = QL_SQRT(variance[i]);
+        }
+    }
+
+    template <class RNG>
+    inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
+                                          const Matrix& covariance, long seed)
+    : next_(Array(covariance.rows()),1.0), generator_(seed) {
+        QL_REQUIRE(covariance.rows() == covariance.columns(),
+                   "Covariance matrix must be square (is "+
+                   IntegerFormatter::toString(covariance.rows())+ " x "+
+                   IntegerFormatter::toString(covariance.columns())+ ")");
+        QL_REQUIRE(covariance.rows() > 0,
+                   "Null covariance matrix given");
+        sqrtCovariance_ = pseudoSqrt(covariance);
+    }
+
+
+    template <class RNG>
+    inline const typename RandomArrayGenerator<RNG>::sample_type&
+    RandomArrayGenerator<RNG>::next() const{
+        // starting point for product
+        next_.weight = 1.0;
+
+        for (Size j=0; j<next_.value.size(); j++) {
+            typename RNG::sample_type sample = generator_.next();
+            next_.value[j] = sample.value;
+            next_.weight *= sample.weight;
         }
 
-        template <class RNG>
-        inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
-            const Matrix& covariance, long seed)
-        : next_(Array(covariance.rows()),1.0), generator_(seed) {
-            QL_REQUIRE(covariance.rows() == covariance.columns(),
-                "Covariance matrix must be square (is "+
-                IntegerFormatter::toString(covariance.rows())+ " x "+
-                IntegerFormatter::toString(covariance.columns())+ ")");
-            QL_REQUIRE(covariance.rows() > 0,
-                "Null covariance matrix given");
-            sqrtCovariance_ = pseudoSqrt(covariance);
+        if (sqrtCovariance_.rows() != 0) {  // general case
+            next_.value = sqrtCovariance_ * next_.value;
+        } else {                            // degenerate case
+            for (Size j=0; j<next_.value.size(); j++)
+                next_.value[j] *= sqrtVariance_[j];
         }
-
-
-        template <class RNG>
-        inline const typename RandomArrayGenerator<RNG>::sample_type&
-        RandomArrayGenerator<RNG>::next() const{
-            // starting point for product
-            next_.weight = 1.0;
-
-            for (Size j=0; j<next_.value.size(); j++) {
-                typename RNG::sample_type sample = generator_.next();
-                next_.value[j] = sample.value;
-                next_.weight *= sample.weight;
-            }
-
-            if (sqrtCovariance_.rows() != 0) {  // general case
-                next_.value = sqrtCovariance_ * next_.value;
-            } else {                            // degenerate case
-                for (Size j=0; j<next_.value.size(); j++)
-                    next_.value[j] *= sqrtVariance_[j];
-            }
-            return next_;
-        }
-
+        return next_;
     }
 
 }

@@ -28,34 +28,29 @@
 #define quantlib_optimization_simplex_h
 
 #include <ql/Optimization/problem.hpp>
-
 #include <vector>
 
 namespace QuantLib {
 
-    namespace Optimization {
+    //! Multi-dimensional Simplex class
+    class Simplex : public Method {
+      public:
+        /*! Constructor taking as input lambda as the
+          characteristic length and tol as the precision
+        */
+        Simplex(double lambda, double tol) 
+        : Method(), lambda_(lambda), tol_(tol) {}
+        virtual ~Simplex() {}
 
-        //! Multi-dimensional Simplex class
-        class Simplex : public Method {
-          public:
-            /*! Constructor taking as input lambda as the
-                characteristic length and tol as the precision
-            */
-            Simplex(double lambda, double tol) 
-            : Method(), lambda_(lambda), tol_(tol) {}
-            virtual ~Simplex() {}
-
-            virtual void minimize(const Problem& P) const;
-          private:
-            double extrapolate(const Problem& P, Size iHighest, 
-                               double& factor) const;
-            double lambda_;
-            double tol_;
-            mutable std::vector<Array> vertices_;
-            mutable Array values_, sum_;
-        };
-
-    }
+        virtual void minimize(const Problem& P) const;
+      private:
+        double extrapolate(const Problem& P, Size iHighest, 
+                           double& factor) const;
+        double lambda_;
+        double tol_;
+        mutable std::vector<Array> vertices_;
+        mutable Array values_, sum_;
+    };
 
 }
 

@@ -25,8 +25,6 @@
 
 namespace QuantLib {
 
-    using namespace RandomNumbers;
-
     // constructor
     BarrierPathPricer::BarrierPathPricer(
                             Barrier::Type barrierType, 

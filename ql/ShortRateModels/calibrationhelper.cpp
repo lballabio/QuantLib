@@ -19,37 +19,35 @@
     \brief Calibration helper class
 */
 
-#include "ql/ShortRateModels/calibrationhelper.hpp"
-#include "ql/Solvers1D/brent.hpp"
+#include <ql/ShortRateModels/calibrationhelper.hpp>
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    class CalibrationHelper::ImpliedVolatilityHelper {
+      public:
+        ImpliedVolatilityHelper(const CalibrationHelper& helper,
+                                double value)
+        : helper_(helper), value_(value) {}
 
-        class CalibrationHelper::ImpliedVolatilityHelper {
-          public:
-            ImpliedVolatilityHelper(const CalibrationHelper& helper,
-                                    double value)
-            : helper_(helper), value_(value) {}
-
-            double operator()(double x) const {
-                return value_ - helper_.blackPrice(x);
-            }
-          private:
-            const CalibrationHelper& helper_;
-            double value_;
-        };
-
-        double CalibrationHelper::impliedVolatility(double targetValue,
-            double accuracy, Size maxEvaluations,
-            double minVol, double maxVol) const {
-
-            ImpliedVolatilityHelper f(*this,targetValue);
-            Solvers1D::Brent solver;
-            solver.setMaxEvaluations(maxEvaluations);
-            return solver.solve(f,accuracy,volatility_->value(),minVol,maxVol);
+        double operator()(double x) const {
+            return value_ - helper_.blackPrice(x);
         }
+      private:
+        const CalibrationHelper& helper_;
+        double value_;
+    };
 
+    double CalibrationHelper::impliedVolatility(double targetValue,
+                                                double accuracy, 
+                                                Size maxEvaluations,
+                                                double minVol, 
+                                                double maxVol) const {
+
+        ImpliedVolatilityHelper f(*this,targetValue);
+        Brent solver;
+        solver.setMaxEvaluations(maxEvaluations);
+        return solver.solve(f,accuracy,volatility_->value(),minVol,maxVol);
     }
 
 }

@@ -55,7 +55,7 @@ namespace QuantLib {
                          double underlying,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
                          const Handle<DiffusionProcess>& diffProcess,
-                         RandomNumbers::UniformRandomSequenceGenerator sequenceGen);
+                         UniformRandomSequenceGenerator sequenceGen);
         double operator()(const Path& path) const;
       private:
         Binary::Type binaryType_;
@@ -64,7 +64,7 @@ namespace QuantLib {
         Option::Type type_;
         double underlying_;
         Handle<DiffusionProcess> diffProcess_;
-        RandomNumbers::UniformRandomSequenceGenerator sequenceGen_;
+        UniformRandomSequenceGenerator sequenceGen_;
     };
 
 }

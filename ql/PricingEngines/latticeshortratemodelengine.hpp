@@ -33,13 +33,12 @@ namespace QuantLib {
     */
     template <class Arguments, class Results>
     class LatticeShortRateModelEngine 
-        : public GenericModelEngine<ShortRateModels::Model, 
-                                    Arguments, Results > {
+        : public GenericModelEngine<Model, Arguments, Results> {
       public:
-        LatticeShortRateModelEngine(const Handle<ShortRateModels::Model>& model,
+        LatticeShortRateModelEngine(const Handle<Model>& model,
                                     Size timeSteps);
 
-        LatticeShortRateModelEngine(const Handle<ShortRateModels::Model>& model,
+        LatticeShortRateModelEngine(const Handle<Model>& model,
                                     const TimeGrid& timeGrid);
         void update();
       protected:
@@ -50,16 +49,16 @@ namespace QuantLib {
 
     template <class Arguments, class Results>
     LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
-            const Handle<ShortRateModels::Model>& model, 
+            const Handle<Model>& model, 
             Size timeSteps) 
-    : GenericModelEngine<ShortRateModels::Model, Arguments, Results >(model), 
+    : GenericModelEngine<Model, Arguments, Results>(model), 
       timeSteps_(timeSteps) {}
 
     template <class Arguments, class Results>
     LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
-            const Handle<ShortRateModels::Model>& model,
+            const Handle<Model>& model,
             const TimeGrid& timeGrid) 
-    : GenericModelEngine<ShortRateModels::Model, Arguments, Results >(model), 
+    : GenericModelEngine<Model, Arguments, Results>(model), 
       timeGrid_(timeGrid), timeSteps_(0) {
         lattice_ = model_->tree(timeGrid);
     }

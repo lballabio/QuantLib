@@ -26,10 +26,10 @@ namespace QuantLib {
     namespace TermStructures {
 
         class AffineTermStructure::CalibrationFunction
-            : public Optimization::CostFunction {
+            : public CostFunction {
           public:
             CalibrationFunction(
-              const Handle<ShortRateModels::Model>& model,
+              const Handle<Model>& model,
               const std::vector<Handle<RateHelper> >& instruments)
             : model_(model), instruments_(instruments) {}
             virtual ~CalibrationFunction() {}
@@ -46,14 +46,14 @@ namespace QuantLib {
             }
             virtual double finiteDifferenceEpsilon() const { return 1e-7; }
           private:
-            Handle<ShortRateModels::Model> model_;
+            Handle<Model> model_;
             const std::vector<Handle<RateHelper> >& instruments_;
         };
 
         AffineTermStructure::AffineTermStructure(
             const Date& todaysDate,
             const Date& referenceDate,
-            const Handle<ShortRateModels::AffineModel>& model,
+            const Handle<AffineModel>& model,
             const DayCounter& dayCounter)
         : dayCounter_(dayCounter), todaysDate_(todaysDate), 
           referenceDate_(referenceDate), needsRecalibration_(false), 
@@ -62,9 +62,9 @@ namespace QuantLib {
         AffineTermStructure::AffineTermStructure(
             const Date& todaysDate,
             const Date& referenceDate,
-            const Handle<ShortRateModels::AffineModel>& model,
+            const Handle<AffineModel>& model,
             const std::vector<Handle<RateHelper> >& instruments,
-            const Handle<Optimization::Method>& method,
+            const Handle<Method>& method,
             const DayCounter& dayCounter)
         : dayCounter_(dayCounter), todaysDate_(todaysDate), 
           referenceDate_(referenceDate), needsRecalibration_(true), 
@@ -74,12 +74,12 @@ namespace QuantLib {
         }
 
         void AffineTermStructure::calibrate() const {
-            Handle<ShortRateModels::Model> model = model_;
+            Handle<Model> model = model_;
             CalibrationFunction f(model, instruments_);
 
             method_->setInitialValue(model->params());
             method_->endCriteria().setPositiveOptimization();
-            Optimization::Problem prob(f, *model->constraint(), *method_);
+            Problem prob(f, *model->constraint(), *method_);
             prob.minimize();
 
             Array result(prob.minimumValue());

@@ -26,78 +26,76 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    //! Vasicek model class
+    /*! This class implements the Vasicek model defined by 
+        \f[ 
+            dr_t = a(b - r_t)dt + \sigma dW_t ,
+        \f]
+        where \f$ a \f$, \f$ b \f$ and \f$ \sigma \f$ are constants. 
+    */
+    class Vasicek : public OneFactorAffineModel {
+      public:
+        Vasicek(Rate r0 = 0.05, 
+                double a = 0.1, double b = 0.05, double sigma = 0.01);
 
-        //! Vasicek model class
-        /*! This class implements the Vasicek model defined by 
-            \f[ 
-                dr_t = a(b - r_t)dt + \sigma dW_t ,
-            \f]
-            where \f$ a \f$, \f$ b \f$ and \f$ \sigma \f$ are constants. 
-        */
-        class Vasicek : public OneFactorAffineModel {
-          public:
-            Vasicek(Rate r0 = 0.05, 
-                    double a = 0.1, double b = 0.05, double sigma = 0.01);
+        virtual double discountBondOption(Option::Type type,
+                                          double strike,
+                                          Time maturity,
+                                          Time bondMaturity) const;
 
-            virtual double discountBondOption(Option::Type type,
-                                      double strike,
-                                      Time maturity,
-                                      Time bondMaturity) const;
+        virtual Handle<ShortRateDynamics> dynamics() const;
 
-            virtual Handle<ShortRateDynamics> dynamics() const;
+      protected:
+        virtual double A(Time t, Time T) const;
+        virtual double B(Time t, Time T) const;
 
-          protected:
-            virtual double A(Time t, Time T) const;
-            virtual double B(Time t, Time T) const;
+        double a() const { return a_(0.0); }
+        double b() const { return b_(0.0); }
+        double sigma() const { return sigma_(0.0); }
 
-            double a() const { return a_(0.0); }
-            double b() const { return b_(0.0); }
-            double sigma() const { return sigma_(0.0); }
-            
-          private:
-            class Dynamics;
+      private:
+        class Dynamics;
 
-            double r0_;
-            Parameter& a_;
-            Parameter& b_;
-            Parameter& sigma_;
-        };
+        double r0_;
+        Parameter& a_;
+        Parameter& b_;
+        Parameter& sigma_;
+    };
 
-        //! Short-rate dynamics in the Vasicek model
-        /*! The short-rate follows an Ornstein-Uhlenbeck process with mean
-            \f$ b \f$.
-        */
-        class Vasicek::Dynamics : public ShortRateDynamics {
-          public:
-            Dynamics(double a,
-                     double b,
-                     double sigma,
-                     double r0)
-            : ShortRateDynamics(Handle<DiffusionProcess>(
-                  new OrnsteinUhlenbeckProcess(a, sigma, r0 - b))),
-              a_(a), b_(b), r0_(r0) {}
+    //! Short-rate dynamics in the Vasicek model
+    /*! The short-rate follows an Ornstein-Uhlenbeck process with mean
+        \f$ b \f$.
+    */
+    class Vasicek::Dynamics : public ShortRateDynamics {
+      public:
+        Dynamics(double a,
+                 double b,
+                 double sigma,
+                 double r0)
+        : ShortRateDynamics(Handle<DiffusionProcess>(
+                             new OrnsteinUhlenbeckProcess(a, sigma, r0 - b))),
+          a_(a), b_(b), r0_(r0) {}
 
-            virtual double variable(Time t, Rate r) const {
-                return r - b_;
-            }
-            virtual double shortRate(Time t, double x) const {
-                return x + b_;
-            }
-          private:
-            double a_, b_, r0_;
-        };
-
-        // inline definitions
-
-        inline Handle<OneFactorModel::ShortRateDynamics> 
-        Vasicek::dynamics() const {
-            return Handle<ShortRateDynamics>(
-                new Dynamics(a(), b() , sigma(), r0_));
+        virtual double variable(Time t, Rate r) const {
+            return r - b_;
         }
+        virtual double shortRate(Time t, double x) const {
+            return x + b_;
+        }
+      private:
+        double a_, b_, r0_;
+    };
 
+
+    // inline definitions
+
+    inline Handle<OneFactorModel::ShortRateDynamics> 
+    Vasicek::dynamics() const {
+        return Handle<ShortRateDynamics>(
+                                     new Dynamics(a(), b() , sigma(), r0_));
     }
 
 }
+
 
 #endif

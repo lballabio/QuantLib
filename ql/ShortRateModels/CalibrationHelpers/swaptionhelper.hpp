@@ -28,33 +28,28 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    class SwaptionHelper : public CalibrationHelper {
+      public:
+        //!Constructor for ATM swaption
+        SwaptionHelper(const Period& maturity,
+                       const Period& length,
+                       const RelinkableHandle<MarketElement>& volatility,
+                       const Handle<Xibor>& index,
+                       const RelinkableHandle<TermStructure>& termStructure);
 
-        namespace CalibrationHelpers {
+        virtual void addTimesTo(std::list<Time>& times) const;
 
-            class SwaptionHelper : public CalibrationHelper {
-              public:
-                //!Constructor for ATM swaption
-                SwaptionHelper(
-                    const Period& maturity,
-                    const Period& length,
-                    const RelinkableHandle<MarketElement>& volatility,
-                    const Handle<Xibor>& index,
-                    const RelinkableHandle<TermStructure>& termStructure);
+        virtual double modelValue();
 
-                virtual void addTimesTo(std::list<Time>& times) const;
+        virtual double blackPrice(double volatility) const;
 
-                virtual double modelValue();
+      private:
+        Rate exerciseRate_;
+        Handle<SimpleSwap> swap_;
+        Handle<Swaption> swaption_;
+    };
 
-                virtual double blackPrice(double volatility) const;
-
-              private:
-                Rate exerciseRate_;
-                Handle<SimpleSwap> swap_;
-                Handle<Swaption> swaption_;
-            };
-        }
-    }
 }
+
 
 #endif

@@ -159,9 +159,8 @@ namespace QuantLib {
                     arguments_.riskFreeTS));
         } else {
             TimeGrid grid = timeGrid();
-            RandomNumbers::UniformRandomSequenceGenerator 
-                sequenceGen(grid.size()-1, 
-                            RandomNumbers::UniformRandomGenerator(5));
+            UniformRandomSequenceGenerator 
+                sequenceGen(grid.size()-1, UniformRandomGenerator(5));
 
             return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(

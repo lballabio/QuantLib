@@ -25,7 +25,6 @@
 #include <ql/Solvers1D/newtonsafe.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::Solvers1D;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 

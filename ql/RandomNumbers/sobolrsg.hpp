@@ -28,56 +28,54 @@
 
 namespace QuantLib {
 
-    namespace RandomNumbers {
+    //! Sobol low-discrepancy sequence generator
+    /*! A Gray code counter and bitwise operations are used for 
+        very fast sequence generation.
 
-        //! Sobol low-discrepancy sequence generator
-        /*! A Gray code counter and bitwise operations are used for 
-            very fast sequence generation.
+        The implementation relies on primitive polynomials modulo two
+        and initialization numbers from the book "Monte Carlo Methods
+        in Finance" by Peter Jäckel.
 
-            The implementation relies on primitive polynomials modulo two and
-            initialization numbers from the book "Monte Carlo Methods in
-            Finance" by Peter Jäckel.
+        21200 primitive polynomials modulo two are provided by
+        default.  There are 8 129 334 polynomials as provided by
+        Jäckel which can be downloaded from quantlib.org. If you need
+        that many dimensions you must replace the
+        primitivepolynomial.* files with the ones downloaded and
+        recompile the library.
 
-            21200 primitive polynomials modulo two are provided by default.
-            There are 8 129 334 polynomials as provided by Jäckel which can
-            be downloaded from quantlib.org. If you need that many dimensions
-            you must replace the primitivepolynomial.* files with the ones
-            downloaded and recompile the library.
+        The choice of initialization numbers is crucial for the
+        homogeneity properties of the sequence. Jäckel's
+        initialization numbers are superior to the "unit
+        initialization" suggested in "Numerical Recipes in C" by
+        Press, Teukolsky, Vetterling, and Flannery.
 
-            The choice of initialization numbers is crucial for the homogeneity
-            properties of the sequence. Jäckel's initialization numbers are
-            superior to the "unit initialization" suggested in "Numerical
-            Recipes in C" by Press, Teukolsky, Vetterling, and Flannery.
-
-            For more info on Sobol sequences see "Monte Carlo Methods in
-            Finance", by Peter Jäckel, section 8.3 and "Numerical Recipes in
-            C", 2nd edition, by Press, Teukolsky, Vetterling, and Flannery,
-            section 7.7.
-        */
-        class SobolRsg {
-          public:
-            typedef Sample<Array> sample_type;
-            // dimensionality must be <= PPMT_MAX_DIM
-            SobolRsg(Size dimensionality,
-                     unsigned long seed = 0,
-                     bool unitInitialization = false);
-            const sample_type& nextSequence() const;
-            const sample_type& lastSequence() const {
-                return sequence_;
-            }
-            Size dimension() const { return dimensionality_; }
-          private:
-            static const int bits_;
-            static const double normalizationFactor_;
-            unsigned long dimensionality_;
-            mutable unsigned long sequenceCounter_;
-            mutable bool firstDraw_;
-            mutable sample_type sequence_;
-            mutable std::vector<unsigned long> integerSequence_;
-            std::vector<std::vector<unsigned long> > directionIntegers_;
-        };
-
-    }
+        For more info on Sobol sequences see "Monte Carlo Methods in
+        Finance", by Peter Jäckel, section 8.3 and "Numerical Recipes
+        in C", 2nd edition, by Press, Teukolsky, Vetterling, and
+        Flannery, section 7.7.
+    */
+    class SobolRsg {
+      public:
+        typedef Sample<Array> sample_type;
+        // dimensionality must be <= PPMT_MAX_DIM
+        SobolRsg(Size dimensionality,
+                 unsigned long seed = 0,
+                 bool unitInitialization = false);
+        const sample_type& nextSequence() const;
+        const sample_type& lastSequence() const {
+            return sequence_;
+        }
+        Size dimension() const { return dimensionality_; }
+      private:
+        static const int bits_;
+        static const double normalizationFactor_;
+        unsigned long dimensionality_;
+        mutable unsigned long sequenceCounter_;
+        mutable bool firstDraw_;
+        mutable sample_type sequence_;
+        mutable std::vector<unsigned long> integerSequence_;
+        std::vector<std::vector<unsigned long> > directionIntegers_;
+    };
 
 }
 

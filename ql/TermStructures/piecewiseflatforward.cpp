@@ -24,8 +24,6 @@
 
 namespace QuantLib {
 
-    using Solvers1D::Brent;
-
     namespace TermStructures {
 
         PiecewiseFlatForward::PiecewiseFlatForward(const Date& todaysDate,

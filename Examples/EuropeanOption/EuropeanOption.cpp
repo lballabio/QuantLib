@@ -19,7 +19,6 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::RandomNumbers;
 using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 

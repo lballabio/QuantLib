@@ -24,88 +24,83 @@
 
 #include <ql/solver1d.hpp>
 
-
 namespace QuantLib {
 
-    namespace Solvers1D {
+    //! safe %Newton 1-D solver
+    /*! \note This solver requires that the passed function object
+              implement a method <tt>double derivative(double)</tt>.
+    */
+    class NewtonSafe : public Solver1D<NewtonSafe> {
+      public:
+        template <class F>
+        double solveImpl(const F& f, double xAccuracy) const {
 
-        //! safe %Newton 1-D solver
-        /*! \note This solver requires that the passed function object
-                  implement a method <tt>double derivative(double)</tt>.
-        */
-        class NewtonSafe : public Solver1D<NewtonSafe> {
-          public:
-            template <class F>
-            double solveImpl(const F& f, double xAccuracy) const {
+            /* The implementation of the algorithm was inspired by
+               Press, Teukolsky, Vetterling, and Flannery,
+               "Numerical Recipes in C", 2nd edition, 
+               Cambridge University Press
+            */
 
-                /* The implementation of the algorithm was inspired by
-                   Press, Teukolsky, Vetterling, and Flannery,
-                   "Numerical Recipes in C", 2nd edition, 
-                   Cambridge University Press
-                */
+            double froot, dfroot, dx, dxold;
+            double xh, xl;
 
-                double froot, dfroot, dx, dxold;
-                double xh, xl;
+            // Orient the search so that f(xl) < 0
+            if (fxMin_ < 0.0) {
+                xl=xMin_;
+                xh=xMax_;
+            } else {
+                xh=xMin_;
+                xl=xMax_;
+            }
 
-                // Orient the search so that f(xl) < 0
-                if (fxMin_ < 0.0) {
-                    xl=xMin_;
-                    xh=xMax_;
+            // the "stepsize before last"
+            dxold=xMax_-xMin_;
+            // it was dxold=QL_FABS(xMax_-xMin_); in Numerical Recipes
+            // here (xMax_-xMin_ > 0) is verified in the constructor
+
+            // and the last step
+            dx=dxold;
+
+            froot = f(root_);
+            dfroot = f.derivative(root_);
+            QL_REQUIRE(dfroot != Null<double>(),
+                       "NewtonSafe requires function's derivative");
+            evaluationNumber_++;
+
+            while (evaluationNumber_<=maxEvaluations_) {
+                // Bisect if (out of range || not decreasing fast enough)
+                if ((((root_-xh)*dfroot-froot)*
+                     ((root_-xl)*dfroot-froot) > 0.0)
+                    || (QL_FABS(2.0*froot) > QL_FABS(dxold*dfroot))) {
+
+                    dxold = dx;
+                    dx = (xh-xl)/2.0;
+                    root_=xl+dx;
                 } else {
-                    xh=xMin_;
-                    xl=xMax_;
+                    dxold=dx;
+                    dx=froot/dfroot;
+                    root_ -= dx;
                 }
-
-                // the "stepsize before last"
-                dxold=xMax_-xMin_;
-                // it was dxold=QL_FABS(xMax_-xMin_); in Numerical Recipes
-                // here (xMax_-xMin_ > 0) is verified in the constructor
-
-                // and the last step
-                dx=dxold;
-
+                // Convergence criterion
+                if (QL_FABS(dx) < xAccuracy)
+                    return root_;
                 froot = f(root_);
                 dfroot = f.derivative(root_);
-                QL_REQUIRE(dfroot != Null<double>(),
-                           "NewtonSafe requires function's derivative");
                 evaluationNumber_++;
-
-                while (evaluationNumber_<=maxEvaluations_) {
-                    // Bisect if (out of range || not decreasing fast enough)
-                    if ((((root_-xh)*dfroot-froot)*
-                         ((root_-xl)*dfroot-froot) > 0.0)
-                        || (QL_FABS(2.0*froot) > QL_FABS(dxold*dfroot))) {
-
-                        dxold = dx;
-                        dx = (xh-xl)/2.0;
-                        root_=xl+dx;
-                    } else {
-                        dxold=dx;
-                        dx=froot/dfroot;
-                        root_ -= dx;
-                    }
-                    // Convergence criterion
-                    if (QL_FABS(dx) < xAccuracy)
-                        return root_;
-                    froot = f(root_);
-                    dfroot = f.derivative(root_);
-                    evaluationNumber_++;
-                    if (froot < 0.0)
-                        xl=root_;
-                    else
-                        xh=root_;
-                }
-
-                throw Error("NewtonSafe::solveImpl "
-                            "maximum number of function evaluations (" +
-                            IntegerFormatter::toString(maxEvaluations_) +
-                            ") exceeded");
-
-                QL_DUMMY_RETURN(0.0);
+                if (froot < 0.0)
+                    xl=root_;
+                else
+                    xh=root_;
             }
-        };
 
-    }
+            throw Error("NewtonSafe::solveImpl "
+                        "maximum number of function evaluations (" +
+                        IntegerFormatter::toString(maxEvaluations_) +
+                        ") exceeded");
+
+            QL_DUMMY_RETURN(0.0);
+        }
+    };
 
 }
 

@@ -25,116 +25,97 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    SwaptionHelper::SwaptionHelper(
+                         const Period& maturity,
+                         const Period& length,
+                         const RelinkableHandle<MarketElement>& volatility,
+                         const Handle<Xibor>& index,
+                         const RelinkableHandle<TermStructure>& termStructure)
+    : CalibrationHelper(volatility,termStructure) {
 
-        namespace CalibrationHelpers {
+        Period indexTenor = index->tenor();
+        int frequency;
+        if (indexTenor.units() == Months) {
+            QL_REQUIRE((12%indexTenor.length()) == 0, 
+                       "Invalid index tenor");
+            frequency = 12/indexTenor.length();
+        } else if (indexTenor.units() == Years) {
+            QL_REQUIRE(indexTenor.length()==1, "Invalid index tenor");
+            frequency=1;
+        } else
+            throw Error("index tenor not valid!");
+        Date startDate = index->calendar().advance(
+                                                   termStructure->referenceDate(),
+                                                   maturity.length(), maturity.units());
+        Rate fixedRate = 0.04;//dummy value
+        swap_ = Handle<SimpleSwap>(new SimpleSwap(
+                                                  false,
+                                                  startDate,
+                                                  length.length(),
+                                                  length.units(),
+                                                  index->calendar(),
+                                                  index->rollingConvention(),
+                                                  1.0,
+                                                  frequency,
+                                                  fixedRate,
+                                                  false,
+                                                  index->dayCounter(),
+                                                  frequency,
+                                                  index,
+                                                  0,//FIXME
+                                                  0.0,
+                                                  termStructure));
+        Rate fairFixedRate = swap_->fairRate();
+        swap_ = Handle<SimpleSwap>(new SimpleSwap(
+                            false, startDate, length.length(), length.units(),
+                            index->calendar(), index->rollingConvention(),
+                            1.0, frequency, fairFixedRate, false,
+                            index->dayCounter(), frequency, index,
+                            0,//FIXME
+                            0.0, termStructure));
+        exerciseRate_ = fairFixedRate;
+        engine_  = Handle<PricingEngine>(new BlackSwaption(blackModel_));
+        Date exerciseDate = index->calendar().roll(
+                                       startDate, index->rollingConvention());
 
-            SwaptionHelper::SwaptionHelper(
-                const Period& maturity,
-                const Period& length,
-                const RelinkableHandle<MarketElement>& volatility,
-                const Handle<Xibor>& index,
-                const RelinkableHandle<TermStructure>& termStructure)
-            : CalibrationHelper(volatility,termStructure) {
+        swaption_ = Handle<Swaption>(
+                          new Swaption(swap_, EuropeanExercise(exerciseDate), 
+                                       termStructure, engine_));
+        marketValue_ = blackPrice(volatility_->value());
+    }
 
-                Period indexTenor = index->tenor();
-                int frequency;
-                if (indexTenor.units() == Months) {
-                    QL_REQUIRE((12%indexTenor.length()) == 0, 
-                        "Invalid index tenor");
-                    frequency = 12/indexTenor.length();
-                } else if (indexTenor.units() == Years) {
-                    QL_REQUIRE(indexTenor.length()==1, "Invalid index tenor");
-                    frequency=1;
-                } else
-                    throw Error("index tenor not valid!");
-                Date startDate = index->calendar().advance(
-                    termStructure->referenceDate(),
-                    maturity.length(), maturity.units());
-                Rate fixedRate = 0.04;//dummy value
-                swap_ = Handle<SimpleSwap>(new SimpleSwap(
-                  false,
-                  startDate,
-                  length.length(),
-                  length.units(),
-                  index->calendar(),
-                  index->rollingConvention(),
-                  1.0,
-                  frequency,
-                  fixedRate,
-                  false,
-                  index->dayCounter(),
-                  frequency,
-                  index,
-                  0,//FIXME
-                  0.0,
-                  termStructure));
-                Rate fairFixedRate = swap_->fairRate();
-                swap_ = Handle<SimpleSwap>(new SimpleSwap(
-                  false,
-                  startDate,
-                  length.length(),
-                  length.units(),
-                  index->calendar(),
-                  index->rollingConvention(),
-                  1.0,
-                  frequency,
-                  fairFixedRate,
-                  false,
-                  index->dayCounter(),
-                  frequency,
-                  index,
-                  0,//FIXME
-                  0.0,
-                  termStructure));
-                exerciseRate_ = fairFixedRate;
-                engine_  = Handle<PricingEngine>( 
-                    new BlackSwaption(blackModel_));
-                Date exerciseDate = index->calendar().roll(
-                    startDate, index->rollingConvention());
+    void SwaptionHelper::addTimesTo(std::list<Time>& times) const {
+        Swaption::arguments* params =
+            dynamic_cast<Swaption::arguments*>(engine_->arguments());
+        swaption_->setupArguments(params);
+        Size i;
+        for (i=0; i<params->exerciseTimes.size(); i++)
+            times.push_back(params->exerciseTimes[i]);
+        for (i=0; i<params->fixedResetTimes.size(); i++)
+            times.push_back(params->fixedResetTimes[i]);
+        for (i=0; i<params->fixedPayTimes.size(); i++)
+            times.push_back(params->fixedPayTimes[i]);
+        for (i=0; i<params->floatingResetTimes.size(); i++)
+            times.push_back(params->floatingResetTimes[i]);
+        for (i=0; i<params->floatingPayTimes.size(); i++)
+            times.push_back(params->floatingPayTimes[i]);
+    }
 
-                swaption_ = Handle<Swaption>(new
-                    Swaption(swap_, EuropeanExercise(exerciseDate), 
-                             termStructure, engine_));
-                marketValue_ = blackPrice(volatility_->value());
-            }
+    double SwaptionHelper::modelValue() {
+        swaption_->setPricingEngine(engine_);
+        return swaption_->NPV();
+    }
 
-            void SwaptionHelper::addTimesTo(std::list<Time>& times) const {
-                Swaption::arguments* params =
-                    dynamic_cast<Swaption::arguments*>(engine_->arguments());
-                swaption_->setupArguments(params);
-                Size i;
-                for (i=0; i<params->exerciseTimes.size(); i++)
-                    times.push_back(params->exerciseTimes[i]);
-                for (i=0; i<params->fixedResetTimes.size(); i++)
-                    times.push_back(params->fixedResetTimes[i]);
-                for (i=0; i<params->fixedPayTimes.size(); i++)
-                    times.push_back(params->fixedPayTimes[i]);
-                for (i=0; i<params->floatingResetTimes.size(); i++)
-                    times.push_back(params->floatingResetTimes[i]);
-                for (i=0; i<params->floatingPayTimes.size(); i++)
-                    times.push_back(params->floatingPayTimes[i]);
-            }
-
-            double SwaptionHelper::modelValue() {
-                swaption_->setPricingEngine(engine_);
-                return swaption_->NPV();
-            }
-
-            double SwaptionHelper::blackPrice(double sigma) const {
-                Handle<MarketElement> vol(new SimpleMarketElement(sigma));
-                Handle<BlackModel> blackModel(
-                    new BlackModel(RelinkableHandle<MarketElement>(vol), 
-                                   termStructure_));
-                Handle<PricingEngine> black(new BlackSwaption(blackModel));
-                swaption_->setPricingEngine(black);
-                double value = swaption_->NPV();
-                swaption_->setPricingEngine(engine_);
-                return value;
-            }
-
-        }
-
+    double SwaptionHelper::blackPrice(double sigma) const {
+        Handle<MarketElement> vol(new SimpleMarketElement(sigma));
+        Handle<BlackModel> blackModel(
+                         new BlackModel(RelinkableHandle<MarketElement>(vol), 
+                                        termStructure_));
+        Handle<PricingEngine> black(new BlackSwaption(blackModel));
+        swaption_->setPricingEngine(black);
+        double value = swaption_->NPV();
+        swaption_->setPricingEngine(engine_);
+        return value;
     }
 
 }

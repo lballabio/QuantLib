@@ -180,7 +180,7 @@ namespace QuantLib {
         //@}
       private:
         mutable Sample<Path> next_;
-        Handle<RandomNumbers::RandomArrayGenerator<RNG> > generator_;
+        Handle<RandomArrayGenerator<RNG> > generator_;
     };
 
     template <class RNG>
@@ -198,8 +198,8 @@ namespace QuantLib {
 
         QL_REQUIRE(variance >= 0.0, 
                    "PathGenerator_old: negative variance");
-        generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
-                         new RandomNumbers::RandomArrayGenerator<RNG>(
+        generator_ = Handle<RandomArrayGenerator<RNG> >(
+                         new RandomArrayGenerator<RNG>(
                                         Array(timeSteps, variance*dt), seed));
     }
 
@@ -217,9 +217,8 @@ namespace QuantLib {
             variancePerTime[i] = variance*times.dt(i);
         }
 
-        generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
-                         new RandomNumbers::RandomArrayGenerator<RNG>(
-                                                      variancePerTime, seed));
+        generator_ = Handle<RandomArrayGenerator<RNG> >(
+                         new RandomArrayGenerator<RNG>(variancePerTime, seed));
     }
 
     template <class RNG>
@@ -244,9 +243,8 @@ namespace QuantLib {
             variancePerTime[i] = variance[i]*times.dt(i);
         }
 
-        generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
-                         new RandomNumbers::RandomArrayGenerator<RNG>(
-                                                      variancePerTime, seed));
+        generator_ = Handle<RandomArrayGenerator<RNG> >(
+                         new RandomArrayGenerator<RNG>(variancePerTime, seed));
     }
 
     template <class RNG>

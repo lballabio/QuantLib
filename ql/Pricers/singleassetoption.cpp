@@ -171,7 +171,7 @@ namespace QuantLib {
         // objective function
         VolatilityFunction bsmf(tempBSM, targetValue);
         // solver
-        Solvers1D::Brent s1d = Solvers1D::Brent();
+        Brent s1d;
         s1d.setMaxEvaluations(maxEvaluations);
         s1d.setLowerBound(minVol);
         s1d.setUpperBound(maxVol);
@@ -196,7 +196,7 @@ namespace QuantLib {
         // objective function
         DivYieldFunction bsmf(tempBSM, targetValue);
         // solver
-        Solvers1D::Brent s1d = Solvers1D::Brent();
+        Brent s1d;
         s1d.setMaxEvaluations(maxEvaluations);
         s1d.setLowerBound(minDivYield);
         s1d.setUpperBound(maxDivYield);

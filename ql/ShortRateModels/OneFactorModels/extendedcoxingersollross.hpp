@@ -26,136 +26,132 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    //! Extended Cox-Ingersoll-Ross model class.
+    /*! This class implements the extended Cox-Ingersoll-Ross model
+        defined by 
+        \f[ 
+            dr_t = (\theta(t) - \alpha r_t)dt + \sqrt{r_t}\sigma dW_t .
+        \f]
 
-        //! Extended Cox-Ingersoll-Ross model class.
-        /*! This class implements the extended Cox-Ingersoll-Ross model
-            defined by 
-            \f[ 
-                dr_t = (\theta(t) - \alpha r_t)dt + \sqrt{r_t}\sigma dW_t .
-            \f]
+        \unstable This class was not tested enough to guarantee
+                  its functionality.
+    */
+    class ExtendedCoxIngersollRoss : public CoxIngersollRoss,
+                                     public TermStructureConsistentModel {
+      public:
+        ExtendedCoxIngersollRoss(
+                         const RelinkableHandle<TermStructure>& termStructure,
+                         double theta = 0.1,
+                         double k = 0.1,
+                         double sigma = 0.1,
+                         double x0 = 0.05);
 
-            \unstable This class was not tested enough to guarantee
-                      its functionality.
-        */
-        class ExtendedCoxIngersollRoss : public CoxIngersollRoss,
-                                         public TermStructureConsistentModel {
-          public:
-            ExtendedCoxIngersollRoss(
-                const RelinkableHandle<TermStructure>& termStructure,
-                double theta = 0.1,
-                double k = 0.1,
-                double sigma = 0.1,
-                double x0 = 0.05);
+        Handle<Lattice> tree(const TimeGrid& grid) const;
 
-            Handle<Lattice> tree(const TimeGrid& grid) const;
+        Handle<ShortRateDynamics> dynamics() const;
 
-            Handle<ShortRateDynamics> dynamics() const;
+        double discountBondOption(Option::Type type,
+                                  double strike,
+                                  Time maturity,
+                                  Time bondMaturity) const;
 
-            double discountBondOption(Option::Type type,
-                                      double strike,
-                                      Time maturity,
-                                      Time bondMaturity) const;
+      protected:
+        void generateArguments();
+        double A(Time t, Time T) const;
 
-          protected:
-            void generateArguments();
-            double A(Time t, Time T) const;
+      private:
+        class Dynamics;
+        class FittingParameter;
 
-          private:
-            class Dynamics;
-            class FittingParameter;
+        Parameter phi_;
+    };
 
-            Parameter phi_;
-        };
-
-        //! Short-rate dynamics in the extended Cox-Ingersoll-Ross model
-        /*! The short-rate is here
-            \f[
-                r_t = \varphi(t) + y_t^2
-             \f]
-            where \f$ \varphi(t) \f$ is the deterministic time-dependent 
-            parameter used for term-structure fitting and \f$ y_t \f$ is the 
-            state variable, the square-root of a standard CIR process.
-        */
-        class ExtendedCoxIngersollRoss::Dynamics
+    //! Short-rate dynamics in the extended Cox-Ingersoll-Ross model
+    /*! The short-rate is here
+        \f[
+            r_t = \varphi(t) + y_t^2
+        \f]
+        where \f$ \varphi(t) \f$ is the deterministic time-dependent 
+        parameter used for term-structure fitting and \f$ y_t \f$ is the 
+        state variable, the square-root of a standard CIR process.
+    */
+    class ExtendedCoxIngersollRoss::Dynamics
         : public CoxIngersollRoss::Dynamics {
-          public:
-            Dynamics(const Parameter& phi,
-                     double theta,
-                     double k,
-                     double sigma,
-                     double x0)
-            : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(phi) {}
+      public:
+        Dynamics(const Parameter& phi,
+                 double theta,
+                 double k,
+                 double sigma,
+                 double x0)
+        : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(phi) {}
 
-            virtual double variable(Time t, Rate r) const {
-                return QL_SQRT(r - phi_(t));
-            }
-            virtual double shortRate(Time t, double y) const {
-                return y*y + phi_(t);
-            }
-          private:
-            Parameter phi_;
-        };
+        virtual double variable(Time t, Rate r) const {
+            return QL_SQRT(r - phi_(t));
+        }
+        virtual double shortRate(Time t, double y) const {
+            return y*y + phi_(t);
+        }
+      private:
+        Parameter phi_;
+    };
 
-        //! Analytical term-structure fitting parameter \f$ \varphi(t) \f$.
-        /*! \f$ \varphi(t) \f$ is analytically defined by
-            \f[
-                \varphi(t) = f(t) - 
-                             \frac{2k\theta(e^{th}-1)}{2h+(k+h)(e^{th}-1)} -
-                             \frac{4 x_0 h^2 e^{th}}{(2h+(k+h)(e^{th}-1))^1},
-            \f]
-            where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$ 
-            and \f$ h = \sqrt{k^2 + 2\sigma^2} \f$.
-        */
-        class ExtendedCoxIngersollRoss::FittingParameter 
+    //! Analytical term-structure fitting parameter \f$ \varphi(t) \f$.
+    /*! \f$ \varphi(t) \f$ is analytically defined by
+        \f[
+            \varphi(t) = f(t) - 
+                         \frac{2k\theta(e^{th}-1)}{2h+(k+h)(e^{th}-1)} -
+                         \frac{4 x_0 h^2 e^{th}}{(2h+(k+h)(e^{th}-1))^1},
+        \f]
+        where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$ 
+        and \f$ h = \sqrt{k^2 + 2\sigma^2} \f$.
+    */
+    class ExtendedCoxIngersollRoss::FittingParameter 
         : public TermStructureFittingParameter {
-          private:
-            class Impl : public Parameter::Impl {
-              public:
-                Impl(const RelinkableHandle<TermStructure>& termStructure,
-                     double theta, double k, double sigma, double x0) 
-                : termStructure_(termStructure), 
-                  theta_(theta), k_(k), sigma_(sigma), x0_(x0) {}
-
-                double value(const Array& params, Time t) const {
-                    double forwardRate = 
-                        termStructure_->instantaneousForward(t);
-                    double h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
-                    double expth = QL_EXP(t*h);
-                    double temp = 2.0*h + (k_+h)*(expth-1.0);
-                    double phi = forwardRate -
-                                 2.0*k_*theta_*(expth - 1.0)/temp -
-                                 x0_*4.0*h*h*expth/(temp*temp);
-                    return phi;
-                }
-              private:
-                RelinkableHandle<TermStructure> termStructure_;
-                double theta_, k_, sigma_, x0_;
-            };
+      private:
+        class Impl : public Parameter::Impl {
           public:
-            FittingParameter(
-                const RelinkableHandle<TermStructure>& termStructure,
-                double theta, double k, double sigma, double x0) 
-            : TermStructureFittingParameter(Handle<Parameter::Impl>(
-                new FittingParameter::Impl(
-                    termStructure, theta, k, sigma, x0))) {}
+            Impl(const RelinkableHandle<TermStructure>& termStructure,
+                 double theta, double k, double sigma, double x0) 
+            : termStructure_(termStructure), 
+              theta_(theta), k_(k), sigma_(sigma), x0_(x0) {}
+
+            double value(const Array& params, Time t) const {
+                double forwardRate = 
+                    termStructure_->instantaneousForward(t);
+                double h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
+                double expth = QL_EXP(t*h);
+                double temp = 2.0*h + (k_+h)*(expth-1.0);
+                double phi = forwardRate -
+                    2.0*k_*theta_*(expth - 1.0)/temp -
+                    x0_*4.0*h*h*expth/(temp*temp);
+                return phi;
+            }
+          private:
+            RelinkableHandle<TermStructure> termStructure_;
+            double theta_, k_, sigma_, x0_;
         };
+      public:
+        FittingParameter(
+                         const RelinkableHandle<TermStructure>& termStructure,
+                         double theta, double k, double sigma, double x0) 
+        : TermStructureFittingParameter(Handle<Parameter::Impl>(
+                 new FittingParameter::Impl(
+                                     termStructure, theta, k, sigma, x0))) {}
+    };
 
-        // inline definitions
+    // inline definitions
 
-        inline Handle<OneFactorModel::ShortRateDynamics> 
-        ExtendedCoxIngersollRoss::dynamics() const {
-            return Handle<ShortRateDynamics>(
-                new Dynamics(phi_, theta(), k() , sigma(), x0()));
-        }
+    inline Handle<OneFactorModel::ShortRateDynamics> 
+    ExtendedCoxIngersollRoss::dynamics() const {
+        return Handle<ShortRateDynamics>(
+                            new Dynamics(phi_, theta(), k() , sigma(), x0()));
+    }
 
-        inline void ExtendedCoxIngersollRoss::generateArguments() {
-            phi_ = FittingParameter(termStructure(), theta(), k(), sigma(), 
-                                    x0());
-        }
-
+    inline void ExtendedCoxIngersollRoss::generateArguments() {
+        phi_ = FittingParameter(termStructure(), theta(), k(), sigma(), x0());
     }
 
 }
+
 
 #endif

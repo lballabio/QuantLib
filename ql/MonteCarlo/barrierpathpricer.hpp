@@ -57,7 +57,7 @@ namespace QuantLib {
                           double strike,
                           const RelinkableHandle<TermStructure>& riskFreeTS,
                           const Handle<DiffusionProcess>& diffProcess,
-                          RandomNumbers::UniformRandomSequenceGenerator sequenceGen);
+                          UniformRandomSequenceGenerator sequenceGen);
         double operator()(const Path& path) const;
       private:
         double underlying_;
@@ -65,7 +65,7 @@ namespace QuantLib {
         double barrier_;
         double rebate_;
         Handle<DiffusionProcess> diffProcess_;
-        RandomNumbers::UniformRandomSequenceGenerator sequenceGen_;
+        UniformRandomSequenceGenerator sequenceGen_;
 
         // it would be easy to generalize to more exotic payoffs
         PlainVanillaPayoff payoff_;

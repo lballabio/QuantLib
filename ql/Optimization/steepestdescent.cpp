@@ -19,62 +19,58 @@
     \brief Steepest descent optimization method
 */
 
-#include "ql/Optimization/steepestdescent.hpp"
+#include <ql/Optimization/steepestdescent.hpp>
 
 namespace QuantLib {
 
-    namespace Optimization {
+    void SteepestDescent::minimize(const Problem& P) const {
+        bool end;
 
-        void SteepestDescent::minimize(const Problem& P) const {
-            bool end;
+        // function and squared norm of gradient values;
+        double normdiff;
+        // classical initial value for line-search step
+        double t = 1.0;
 
-            // function and squared norm of gradient values;
-            double normdiff;
-            // classical initial value for line-search step
-            double t = 1.0;
+        // reference X as the optimization problem variable
+        Array& X = x();
+        // Set gold at the size of the optimization problem search direction
+        Array gold(searchDirection().size());
+        Array gdiff(searchDirection().size());
 
-            // reference X as the optimization problem variable
-            Array& X = x();
-            // Set gold at the size of the optimization problem search direction
-            Array gold(searchDirection().size());
-            Array gdiff(searchDirection().size());
+        functionValue() = P.valueAndGradient(gold, X);
+        searchDirection() = -gold;
+        gradientNormValue() = DotProduct(gold, gold);
+        normdiff = QL_SQRT(gradientNormValue());
 
-            functionValue() = P.valueAndGradient(gold, X);
+        do {
+            // Linesearch
+            t = (*lineSearch_)(P, t);
+
+            if (!lineSearch_->succeed()) 
+                throw Error("SteepestDescent: line-search failed!");
+            // End criteria
+            end = endCriteria()(iterationNumber_, functionValue(), 
+                                QL_SQRT(gradientNormValue()), 
+                                lineSearch_->lastFunctionValue(),
+                                QL_SQRT(lineSearch_->lastGradientNorm2()), 
+                                normdiff);
+
+            // Updates
+            // New point
+            X = lineSearch_->lastX();
+            // New function value
+            functionValue() = lineSearch_->lastFunctionValue();
+            // New gradient and search direction vectors
+            gdiff = gold - lineSearch_->lastGradient();
+            normdiff = QL_SQRT(DotProduct (gdiff, gdiff));
+            gold = lineSearch_->lastGradient();
             searchDirection() = -gold;
-            gradientNormValue() = DotProduct(gold, gold);
-            normdiff = QL_SQRT(gradientNormValue());
+            // New gradient squared norm
+            gradientNormValue() = lineSearch_->lastGradientNorm2();
 
-            do {
-                // Linesearch
-                t = (*lineSearch_)(P, t);
-
-                if (!lineSearch_->succeed()) 
-                    throw Error("SteepestDescent: line-search failed!");
-                // End criteria
-                end = endCriteria()(
-                    iterationNumber_, functionValue(), 
-                    QL_SQRT(gradientNormValue()), 
-                    lineSearch_->lastFunctionValue(),
-                    QL_SQRT(lineSearch_->lastGradientNorm2()), normdiff);
-
-                // Updates
-                // New point
-                X = lineSearch_->lastX();
-                // New function value
-                functionValue() = lineSearch_->lastFunctionValue();
-                // New gradient and search direction vectors
-                gdiff = gold - lineSearch_->lastGradient();
-                normdiff = QL_SQRT(DotProduct (gdiff, gdiff));
-                gold = lineSearch_->lastGradient();
-                searchDirection() = -gold;
-                // New gradient squared norm
-                gradientNormValue() = lineSearch_->lastGradientNorm2();
-
-                // Increase interation number
-                iterationNumber()++;
-            } while (end == false);
-        }
-
+            // Increase interation number
+            iterationNumber()++;
+        } while (end == false);
     }
 
 }

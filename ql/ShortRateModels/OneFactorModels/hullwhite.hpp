@@ -26,114 +26,111 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    //! Single-factor Hull-White (extended Vasicek) model class.
+    /*! This class implements the standard single-factor Hull-White model
+        defined by 
+        \f[ 
+            dr_t = (\theta(t) - \alpha r_t)dt + \sigma dW_t
+        \f]
+        where \f$ \alpha \f$ and \f$ \sigma \f$ are constants. 
+    */
+    class HullWhite : public Vasicek, public TermStructureConsistentModel {
+      public:
+        HullWhite(const RelinkableHandle<TermStructure>& termStructure, 
+                  double a = 0.1, double sigma = 0.01);
 
-        //! Single-factor Hull-White (extended Vasicek) model class.
-        /*! This class implements the standard single-factor Hull-White model
-            defined by 
-            \f[ 
-                dr_t = (\theta(t) - \alpha r_t)dt + \sigma dW_t
-            \f]
-            where \f$ \alpha \f$ and \f$ \sigma \f$ are constants. 
-        */
-        class HullWhite : public Vasicek, public TermStructureConsistentModel {
-          public:
-            HullWhite(const RelinkableHandle<TermStructure>& termStructure, 
-                      double a = 0.1, double sigma = 0.01);
+        Handle<Lattice> tree(const TimeGrid& grid) const;
 
-            Handle<Lattice> tree(const TimeGrid& grid) const;
+        Handle<ShortRateDynamics> dynamics() const;
 
-            Handle<ShortRateDynamics> dynamics() const;
+        double discountBondOption(Option::Type type,
+                                  double strike,
+                                  Time maturity,
+                                  Time bondMaturity) const;
 
-            double discountBondOption(Option::Type type,
-                                      double strike,
-                                      Time maturity,
-                                      Time bondMaturity) const;
+      protected:
+        void generateArguments();
 
-          protected:
-            void generateArguments();
+        double A(Time t, Time T) const;
 
-            double A(Time t, Time T) const;
+      private:
+        class Dynamics;
+        class FittingParameter;
 
-          private:
-            class Dynamics;
-            class FittingParameter;
+        Parameter phi_;
+    };
 
-            Parameter phi_;
+    //! Short-rate dynamics in the Hull-White model
+    /*! The short-rate is here
+        \f[
+            r_t = \varphi(t) + x_t
+        \f]
+        where \f$ \varphi(t) \f$ is the deterministic time-dependent 
+        parameter used for term-structure fitting and \f$ x_t \f$ is the 
+        state variable following an Ornstein-Uhlenbeck process.
+    */
+    class HullWhite::Dynamics : public ShortRateDynamics {
+      public:
+        Dynamics(const Parameter& fitting,
+                 double a,
+                 double sigma)
+        : ShortRateDynamics(Handle<DiffusionProcess>(
+                                     new OrnsteinUhlenbeckProcess(a, sigma))),
+          fitting_(fitting) {}
 
-        };
-
-        //! Short-rate dynamics in the Hull-White model
-        /*! The short-rate is here
-            \f[
-                r_t = \varphi(t) + x_t
-             \f]
-            where \f$ \varphi(t) \f$ is the deterministic time-dependent 
-            parameter used for term-structure fitting and \f$ x_t \f$ is the 
-            state variable following an Ornstein-Uhlenbeck process.
-        */
-        class HullWhite::Dynamics : public ShortRateDynamics {
-          public:
-            Dynamics(const Parameter& fitting,
-                     double a,
-                     double sigma)
-            : ShortRateDynamics(Handle<DiffusionProcess>(
-                  new OrnsteinUhlenbeckProcess(a, sigma))),
-              fitting_(fitting) {}
-
-            double variable(Time t, Rate r) const { 
-                return r - fitting_(t); 
-            }
-            double shortRate(Time t, double x) const { 
-                return x + fitting_(t); 
-            }
-          private:
-            Parameter fitting_;
-        };
-
-        //! Analytical term-structure fitting parameter \f$ \varphi(t) \f$.
-        /*! \f$ \varphi(t) \f$ is analytically defined by
-            \f[
-                \varphi(t) = f(t) + \frac{1}{2}[\frac{\sigma(1-e^{-at})}{a}]^2,
-            \f]
-            where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$.
-        */
-        class HullWhite::FittingParameter 
-            : public TermStructureFittingParameter {
-          private:
-            class Impl : public Parameter::Impl {
-              public:
-                Impl(const RelinkableHandle<TermStructure>& termStructure,
-                     double a, double sigma) 
-                : termStructure_(termStructure), a_(a), sigma_(sigma) {}
-
-                double value(const Array& params, Time t) const {
-                    double forwardRate = 
-                        termStructure_->instantaneousForward(t);
-                    double temp = sigma_*(1.0 - QL_EXP(-a_*t))/a_;
-                    return (forwardRate + 0.5*temp*temp);
-                }
-              private:
-                RelinkableHandle<TermStructure> termStructure_;
-                double a_, sigma_;
-            };
-          public:
-            FittingParameter(
-                const RelinkableHandle<TermStructure>& termStructure,
-                double a, double sigma)
-            : TermStructureFittingParameter(Handle<Parameter::Impl>(
-                new FittingParameter::Impl(termStructure, a, sigma))) {}
-        };
-
-        // inline definitions
-
-        inline Handle<OneFactorModel::ShortRateDynamics> 
-        HullWhite::dynamics() const {
-            return Handle<ShortRateDynamics>(new Dynamics(phi_, a(), sigma()));
+        double variable(Time t, Rate r) const { 
+            return r - fitting_(t); 
         }
+        double shortRate(Time t, double x) const { 
+            return x + fitting_(t); 
+        }
+      private:
+        Parameter fitting_;
+    };
 
+    //! Analytical term-structure fitting parameter \f$ \varphi(t) \f$.
+    /*! \f$ \varphi(t) \f$ is analytically defined by
+        \f[
+            \varphi(t) = f(t) + \frac{1}{2}[\frac{\sigma(1-e^{-at})}{a}]^2,
+        \f]
+        where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$.
+    */
+    class HullWhite::FittingParameter 
+        : public TermStructureFittingParameter {
+      private:
+        class Impl : public Parameter::Impl {
+          public:
+            Impl(const RelinkableHandle<TermStructure>& termStructure,
+                 double a, double sigma) 
+            : termStructure_(termStructure), a_(a), sigma_(sigma) {}
+
+            double value(const Array& params, Time t) const {
+                double forwardRate = 
+                    termStructure_->instantaneousForward(t);
+                double temp = sigma_*(1.0 - QL_EXP(-a_*t))/a_;
+                return (forwardRate + 0.5*temp*temp);
+            }
+          private:
+            RelinkableHandle<TermStructure> termStructure_;
+            double a_, sigma_;
+        };
+      public:
+        FittingParameter(
+                         const RelinkableHandle<TermStructure>& termStructure,
+                         double a, double sigma)
+        : TermStructureFittingParameter(Handle<Parameter::Impl>(
+                      new FittingParameter::Impl(termStructure, a, sigma))) {}
+    };
+
+
+    // inline definitions
+
+    inline Handle<OneFactorModel::ShortRateDynamics> 
+    HullWhite::dynamics() const {
+        return Handle<ShortRateDynamics>(new Dynamics(phi_, a(), sigma()));
     }
 
 }
+
 
 #endif

@@ -24,8 +24,6 @@
 
 namespace QuantLib {
 
-    using namespace RandomNumbers;
-
     BinaryPathPricer::BinaryPathPricer(
                             Binary::Type binaryType, 
                             double barrier, 

@@ -23,29 +23,23 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    TwoFactorModel::TwoFactorModel(Size nArguments) : Model(nArguments) {}
 
-        TwoFactorModel::TwoFactorModel(Size nArguments) : Model(nArguments) {}
+    Handle<Lattice> TwoFactorModel::tree(const TimeGrid& grid) const {
+        Handle<ShortRateDynamics> dyn = dynamics();
 
-        Handle<Lattice> TwoFactorModel::tree(const TimeGrid& grid) const {
-            Handle<ShortRateDynamics> dyn = dynamics();
+        Handle<TrinomialTree> tree1(new TrinomialTree(dyn->xProcess(), grid));
+        Handle<TrinomialTree> tree2(new TrinomialTree(dyn->yProcess(), grid));
 
-            Handle<TrinomialTree> tree1(
-                new TrinomialTree(dyn->xProcess(), grid));
-            Handle<TrinomialTree> tree2(
-                new TrinomialTree(dyn->yProcess(), grid));
-
-            return Handle<Lattice>( 
-                new TwoFactorModel::ShortRateTree(tree1, tree2, dyn));
-        }
-
-        TwoFactorModel::ShortRateTree::ShortRateTree(
-            const Handle<TrinomialTree>& tree1,
-            const Handle<TrinomialTree>& tree2,
-            const Handle<ShortRateDynamics>& dynamics)
-        : Lattice2D(tree1, tree2, dynamics->correlation()), dynamics_(dynamics) 
-        {}
-
+        return Handle<Lattice>( 
+                        new TwoFactorModel::ShortRateTree(tree1, tree2, dyn));
     }
+
+    TwoFactorModel::ShortRateTree::ShortRateTree(
+                                    const Handle<TrinomialTree>& tree1,
+                                    const Handle<TrinomialTree>& tree2,
+                                    const Handle<ShortRateDynamics>& dynamics)
+    : Lattice2D(tree1, tree2, dynamics->correlation()), dynamics_(dynamics) 
+    {}
 
 }

@@ -44,18 +44,17 @@ namespace QuantLib {
                                     public Observer {
           public:
             //! constructor using a fixed model
-            AffineTermStructure(
-                const Date& todaysDate,
-                const Date& referenceDate,
-                const Handle<ShortRateModels::AffineModel>& model,
-                const DayCounter& dayCounter);
+            AffineTermStructure(const Date& todaysDate,
+                                const Date& referenceDate,
+                                const Handle<AffineModel>& model,
+                                const DayCounter& dayCounter);
             //! constructor using a model that has to be calibrated
             AffineTermStructure(
                 const Date& todaysDate,
                 const Date& referenceDate,
-                const Handle<ShortRateModels::AffineModel>& model,
+                const Handle<AffineModel>& model,
                 const std::vector<Handle<RateHelper> >& instruments,
-                const Handle<Optimization::Method>& method,
+                const Handle<Method>& method,
                 const DayCounter& dayCounter);
 
             // inspectors
@@ -77,9 +76,9 @@ namespace QuantLib {
             Date todaysDate_, referenceDate_;
 
             mutable bool needsRecalibration_;
-            Handle<ShortRateModels::AffineModel> model_;
+            Handle<AffineModel> model_;
             std::vector<Handle<RateHelper> > instruments_;
-            Handle<Optimization::Method> method_;
+            Handle<Method> method_;
         };
 
         inline DayCounter AffineTermStructure::dayCounter() const {

@@ -29,12 +29,12 @@ namespace QuantLib {
 
     //! Analytical pricer for cap/floor
     class AnalyticalCapFloor 
-        : public GenericModelEngine<ShortRateModels::AffineModel, 
+        : public GenericModelEngine<AffineModel, 
                                     CapFloor::arguments,
                                     CapFloor::results > {
       public:
-        AnalyticalCapFloor(const Handle<ShortRateModels::AffineModel>& model) 
-        : GenericModelEngine<ShortRateModels::AffineModel, 
+        AnalyticalCapFloor(const Handle<AffineModel>& model) 
+        : GenericModelEngine<AffineModel, 
                              CapFloor::arguments,
                              CapFloor::results >(model) 
         {}

@@ -26,54 +26,50 @@
 
 namespace QuantLib {
 
-    namespace Solvers1D {
+    //! %secant 1-D solver
+    class Secant : public Solver1D<Secant> {
+      public:
+        template <class F>
+        double solveImpl(const F& f, double xAccuracy) const {
 
-        //! %secant 1-D solver
-        class Secant : public Solver1D<Secant> {
-          public:
-            template <class F>
-            double solveImpl(const F& f, double xAccuracy) const {
+            /* The implementation of the algorithm was inspired by
+               Press, Teukolsky, Vetterling, and Flannery,
+               "Numerical Recipes in C", 2nd edition, 
+               Cambridge University Press
+            */
 
-                /* The implementation of the algorithm was inspired by
-                   Press, Teukolsky, Vetterling, and Flannery,
-                   "Numerical Recipes in C", 2nd edition, 
-                   Cambridge University Press
-                */
+            double fl, froot, dx, xl;
 
-                double fl, froot, dx, xl;
-
-                // Pick the bound with the smaller function value
-                // as the most recent guess
-                if (QL_FABS(fxMin_) < QL_FABS(fxMax_)) {
-                    root_=xMin_;
-                    froot=fxMin_;
-                    xl=xMax_;
-                    fl=fxMax_;
-                } else {
-                    root_=xMax_;
-                    froot=fxMax_;
-                    xl=xMin_;
-                    fl=fxMin_;
-                }
-                while (evaluationNumber_<=maxEvaluations_) {
-                    dx=(xl-root_)*froot/(froot-fl);
-                    xl=root_;
-                    fl=froot;
-                    root_ += dx;
-                    froot=f(root_);
-                    evaluationNumber_++;
-                    if (QL_FABS(dx) < xAccuracy || froot == 0.0)
-                        return root_;
-                }
-                throw Error("Secant::solveImpl: "
-                            "maximum number of function evaluations (" +
-                            IntegerFormatter::toString(maxEvaluations_) +
-                            ") exceeded");
-                QL_DUMMY_RETURN(0.0);
+            // Pick the bound with the smaller function value
+            // as the most recent guess
+            if (QL_FABS(fxMin_) < QL_FABS(fxMax_)) {
+                root_=xMin_;
+                froot=fxMin_;
+                xl=xMax_;
+                fl=fxMax_;
+            } else {
+                root_=xMax_;
+                froot=fxMax_;
+                xl=xMin_;
+                fl=fxMin_;
             }
-        };
-
-    }
+            while (evaluationNumber_<=maxEvaluations_) {
+                dx=(xl-root_)*froot/(froot-fl);
+                xl=root_;
+                fl=froot;
+                root_ += dx;
+                froot=f(root_);
+                evaluationNumber_++;
+                if (QL_FABS(dx) < xAccuracy || froot == 0.0)
+                    return root_;
+            }
+            throw Error("Secant::solveImpl: "
+                        "maximum number of function evaluations (" +
+                        IntegerFormatter::toString(maxEvaluations_) +
+                        ") exceeded");
+            QL_DUMMY_RETURN(0.0);
+        }
+    };
 
 }
 

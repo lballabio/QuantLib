@@ -26,98 +26,95 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    //! Cox-Ingersoll-Ross model class.
+    /*! This class implements the Cox-Ingersoll-Ross model defined by 
+        \f[ 
+            dr_t = k(\theta - r_t)dt + \sqrt{r_t}\sigma dW_t .
+        \f]
 
-        //! Cox-Ingersoll-Ross model class.
-        /*! This class implements the Cox-Ingersoll-Ross model defined by 
-            \f[ 
-                dr_t = k(\theta - r_t)dt + \sqrt{r_t}\sigma dW_t .
-            \f]
+        \unstable This class was not tested enough to guarantee
+                  its functionality.
+    */
+    class CoxIngersollRoss : public OneFactorAffineModel {
+      public:
+        CoxIngersollRoss(Rate r0 = 0.05,
+                         double theta = 0.1, 
+                         double k = 0.1, 
+                         double sigma = 0.1);
 
-            \unstable This class was not tested enough to guarantee
-                      its functionality.
-        */
-        class CoxIngersollRoss : public OneFactorAffineModel {
-          public:
-            CoxIngersollRoss(Rate r0 = 0.05,
-                             double theta = 0.1, 
-                             double k = 0.1, 
-                             double sigma = 0.1);
+        virtual double discountBondOption(Option::Type type,
+                                          double strike,
+                                          Time maturity,
+                                          Time bondMaturity) const;
 
-            virtual double discountBondOption(Option::Type type,
-                                              double strike,
-                                              Time maturity,
-                                              Time bondMaturity) const;
+        virtual Handle<ShortRateDynamics> dynamics() const;
 
-            virtual Handle<ShortRateDynamics> dynamics() const;
+        virtual Handle<Lattice> tree(const TimeGrid& grid) const;
 
-            virtual Handle<Lattice> tree(const TimeGrid& grid) const;
+        class Dynamics;
+      protected:
+        double A(Time t, Time T) const;
+        double B(Time t, Time T) const;
 
-            class Dynamics;
-          protected:
-            double A(Time t, Time T) const;
-            double B(Time t, Time T) const;
+        double theta() const { return theta_(0.0); }
+        double k() const { return k_(0.0); }
+        double sigma() const { return sigma_(0.0); }
+        double x0() const { return r0_(0.0); }
 
-            double theta() const { return theta_(0.0); }
-            double k() const { return k_(0.0); }
-            double sigma() const { return sigma_(0.0); }
-            double x0() const { return r0_(0.0); }
-            
-          private:
-            class VolatilityConstraint;
-            class HelperProcess;
+      private:
+        class VolatilityConstraint;
+        class HelperProcess;
 
-            Parameter& theta_;
-            Parameter& k_;
-            Parameter& sigma_;
-            Parameter& r0_;
-        };
+        Parameter& theta_;
+        Parameter& k_;
+        Parameter& sigma_;
+        Parameter& r0_;
+    };
 
-        class CoxIngersollRoss::HelperProcess : public DiffusionProcess {
-          public:
-            HelperProcess(double theta, double k, double sigma, double y0) 
-            : DiffusionProcess(y0), theta_(theta), k_(k), sigma_(sigma) {}
+    class CoxIngersollRoss::HelperProcess : public DiffusionProcess {
+      public:
+        HelperProcess(double theta, double k, double sigma, double y0) 
+        : DiffusionProcess(y0), theta_(theta), k_(k), sigma_(sigma) {}
 
-            double drift(Time t, double y) const {
-                return (0.5*theta_*k_ - 0.125*sigma_*sigma_)/y 
-                       - 0.5*k_*y;
-            }
-            double diffusion(Time t, double y) const {
-                return 0.5*sigma_;
-            }
+        double drift(Time t, double y) const {
+            return (0.5*theta_*k_ - 0.125*sigma_*sigma_)/y 
+                - 0.5*k_*y;
+        }
+        double diffusion(Time t, double y) const {
+            return 0.5*sigma_;
+        }
 
-          private:
-            double theta_, k_, sigma_;
-        };
+      private:
+        double theta_, k_, sigma_;
+    };
 
-        //! Dynamics of the short-rate under the Cox-Ingersoll-Ross model
-        /*! The state variable \f$ y_t \f$ will here be the square-root of the 
-            short-rate. It satisfies the following stochastic equation
-            \f[
-                dy_t=\left[ 
-                        (\frac{k\theta }{2}+\frac{\sigma ^2}{8})\frac{1}{y_t}-
-                        \frac{k}{2}y_t \right] d_t+ \frac{\sigma }{2}dW_{t}
-            \f].
-        */
-        class CoxIngersollRoss::Dynamics : public ShortRateDynamics {
-          public:
-            Dynamics(double theta,
-                     double k,
-                     double sigma,
-                     double x0)
-            : ShortRateDynamics(Handle<DiffusionProcess>(
-                  new HelperProcess(theta, k, sigma, QL_SQRT(x0)))) {}
+    //! Dynamics of the short-rate under the Cox-Ingersoll-Ross model
+    /*! The state variable \f$ y_t \f$ will here be the square-root of the 
+        short-rate. It satisfies the following stochastic equation
+        \f[
+            dy_t=\left[ 
+                    (\frac{k\theta }{2}+\frac{\sigma ^2}{8})\frac{1}{y_t}-
+                    \frac{k}{2}y_t \right] d_t+ \frac{\sigma }{2}dW_{t}
+        \f].
+    */
+    class CoxIngersollRoss::Dynamics : public ShortRateDynamics {
+      public:
+        Dynamics(double theta,
+                 double k,
+                 double sigma,
+                 double x0)
+        : ShortRateDynamics(Handle<DiffusionProcess>(
+                          new HelperProcess(theta, k, sigma, QL_SQRT(x0)))) {}
 
-            virtual double variable(Time t, Rate r) const {
-                return QL_SQRT(r);
-            }
-            virtual double shortRate(Time t, double y) const {
-                return y*y;
-            }
-        };
-    
-    }
+        virtual double variable(Time t, Rate r) const {
+            return QL_SQRT(r);
+        }
+        virtual double shortRate(Time t, double y) const {
+            return y*y;
+        }
+    };
 
 }
+
 
 #endif

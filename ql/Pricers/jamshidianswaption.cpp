@@ -24,8 +24,6 @@
 
 namespace QuantLib {
 
-    using namespace ShortRateModels;
-
     class JamshidianSwaption::rStarFinder {
       public:
         rStarFinder(const Swaption::arguments &params,
@@ -65,7 +63,7 @@ namespace QuantLib {
         amounts.back() += arguments_.nominal;
 
         rStarFinder finder(arguments_, model_, amounts);
-        Solvers1D::Brent s1d = Solvers1D::Brent();
+        Brent s1d;
         double minStrike = -10.0;
         double maxStrike = 10.0;
         s1d.setMaxEvaluations(10000);

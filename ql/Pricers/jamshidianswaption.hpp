@@ -29,12 +29,12 @@ namespace QuantLib {
 
     //! Jamshidian swaption pricer
     class JamshidianSwaption 
-        : public GenericModelEngine<ShortRateModels::OneFactorAffineModel,
+        : public GenericModelEngine<OneFactorAffineModel,
                                     Swaption::arguments,
                                     Swaption::results > {
       public:
-        JamshidianSwaption(const Handle<ShortRateModels::OneFactorAffineModel>& modl)
-        : GenericModelEngine<ShortRateModels::OneFactorAffineModel,
+        JamshidianSwaption(const Handle<OneFactorAffineModel>& modl)
+        : GenericModelEngine<OneFactorAffineModel,
                              Swaption::arguments,
                              Swaption::results >(modl) {} 
         void calculate() const;

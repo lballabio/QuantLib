@@ -36,46 +36,42 @@
 
 namespace QuantLib {
 
-    namespace RandomNumbers {
+    HaltonRsg::HaltonRsg(Size dimensionality, unsigned long seed,
+                         bool randomStart, bool randomShift)
+    : dimensionality_(dimensionality), sequenceCounter_(0),
+      sequence_(Array(dimensionality), 1.0),
+      randomStart_(dimensionality, 0UL),
+      randomShift_(dimensionality, 0.0) {
 
-        HaltonRsg::HaltonRsg(Size dimensionality, unsigned long seed,
-            bool randomStart, bool randomShift)
-        : dimensionality_(dimensionality), sequenceCounter_(0),
-          sequence_(Array(dimensionality), 1.0),
-          randomStart_(dimensionality, 0UL),
-          randomShift_(dimensionality, 0.0) {
-
-            if (randomStart || randomShift) {
-                RandomSequenceGenerator<MersenneTwisterUniformRng>
-                    uniformRsg(dimensionality_, seed);
-                if (randomStart)
-                    randomStart_ = uniformRsg.nextInt32Sequence();
-                if (randomShift)
-                    randomShift_ = uniformRsg.nextSequence().value;
-            }
-
+        if (randomStart || randomShift) {
+            RandomSequenceGenerator<MersenneTwisterUniformRng>
+                uniformRsg(dimensionality_, seed);
+            if (randomStart)
+                randomStart_ = uniformRsg.nextInt32Sequence();
+            if (randomShift)
+                randomShift_ = uniformRsg.nextSequence().value;
         }
 
-        const HaltonRsg::sample_type& HaltonRsg::nextSequence() const {
-            ++sequenceCounter_;
-            unsigned long b, k; 
-            double f, h;
-            for (Size i=0; i<dimensionality_; ++i) {
-                h = 0.0;
-                b = PrimeNumbers::get(i);
-                f = 1.0;
-                k = sequenceCounter_+randomStart_[i];
-                while (k) {
-                    f /= b;
-                    h += (k%b)*f;
-                    k /= b;
-                }
-                sequence_.value[i] = h+randomShift_[i];
-                sequence_.value[i] -= long(sequence_.value[i]);
-            }
-            return sequence_;
-        }
+    }
 
+    const HaltonRsg::sample_type& HaltonRsg::nextSequence() const {
+        ++sequenceCounter_;
+        unsigned long b, k; 
+        double f, h;
+        for (Size i=0; i<dimensionality_; ++i) {
+            h = 0.0;
+            b = PrimeNumbers::get(i);
+            f = 1.0;
+            k = sequenceCounter_+randomStart_[i];
+            while (k) {
+                f /= b;
+                h += (k%b)*f;
+                k /= b;
+            }
+            sequence_.value[i] = h+randomShift_[i];
+            sequence_.value[i] -= long(sequence_.value[i]);
+        }
+        return sequence_;
     }
 
 }

@@ -29,8 +29,6 @@
 
 namespace QuantLib {
 
-    using namespace RandomNumbers;
-
     double interpolate(const std::vector<double>& x_values,
                        const std::vector<double>& y_values, double x,
                        int interpolationType,

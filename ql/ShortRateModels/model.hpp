@@ -30,119 +30,113 @@
 
 namespace QuantLib {
 
-    /*! \namespace QuantLib::ShortRateModels
-        \brief Implementations of short-rate models
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace ShortRateModels = ::QuantLib;
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace CalibrationHelpers = ::QuantLib;
 
-        See sect. \ref fixedincome
+    //! Affine model class
+    /*! This is the base class for analytically tractable models */
+    class AffineModel {
+      public:
+        //! Implied discount curve
+        virtual DiscountFactor discount(Time t) const = 0;
+
+        virtual double discountBondOption(Option::Type type,
+                                          double strike,
+                                          Time maturity,
+                                          Time bondMaturity) const = 0;
+    };
+
+    //! Term-structure consistent model class
+    /*! This is a base class for models that can reprice exactly
+        any discount bond.
     */
+    class TermStructureConsistentModel {
+      public:
+        TermStructureConsistentModel(
+                         const RelinkableHandle<TermStructure>& termStructure)
+        : termStructure_(termStructure) {}
+        const RelinkableHandle<TermStructure>& termStructure() const {
+            return termStructure_;
+        }
+      private:
+        RelinkableHandle<TermStructure> termStructure_;
+    };
 
-    namespace ShortRateModels {
+    //! Abstract short-rate model class
+    class Model : public Observer, public Observable {
+      public:
+        Model(Size nArguments);
 
-        //! Affine model class
-        /*! This is the base class for analytically tractable models */
-        class AffineModel {
-          public:
-            //! Implied discount curve
-            virtual DiscountFactor discount(Time t) const = 0;
-
-            virtual double discountBondOption(Option::Type type,
-                                              double strike,
-                                              Time maturity,
-                                              Time bondMaturity) const = 0;
-        };
-
-        //! Term-structure consistent model class
-        /*! This is a base class for models that can reprice exactly
-            any discount bond.
-        */
-        class TermStructureConsistentModel {
-          public:
-            TermStructureConsistentModel(
-                const RelinkableHandle<TermStructure>& termStructure)
-            : termStructure_(termStructure) {}
-            const RelinkableHandle<TermStructure>& termStructure() const {
-                return termStructure_;
-            }
-          private:
-            RelinkableHandle<TermStructure> termStructure_;
-        };
-
-        //! Abstract short-rate model class
-        class Model : public Observer, public Observable {
-          public:
-            Model(Size nArguments);
-
-            void update() { 
-                generateArguments();
-                notifyObservers(); 
-            }
-
-            virtual Handle<Lattice> tree(const TimeGrid& grid) const = 0;
-
-            //! Calibrate to a set of market instruments (caps/swaptions)
-            /*! An additional constraint can be passed which must be 
-                satisfied in addition to the constraints of the model.
-            */
-            void calibrate(
-                const std::vector<Handle<CalibrationHelper> >& instruments,
-                Optimization::Method& method,
-                const Optimization::Constraint& constraint = 
-                                                 Optimization::Constraint());
-
-            const Handle<Optimization::Constraint>& constraint() const;
-
-            //! Returns array of arguments on which calibration is done
-            Disposable<Array> params() const;
-            void setParams(const Array& params);
-          protected:
-            virtual void generateArguments() {}
-
-            std::vector<Parameter> arguments_;
-            Handle<Optimization::Constraint> constraint_;
-
-          private:
-            //! Constraint imposed on arguments
-            class PrivateConstraint;
-            //! Calibration cost function class
-            class CalibrationFunction;
-            friend class CalibrationFunction;
-        };
-
-        // inline definitions
-
-        inline 
-        const Handle<Optimization::Constraint>& Model::constraint() const {
-            return constraint_;
+        void update() { 
+            generateArguments();
+            notifyObservers(); 
         }
 
-        class Model::PrivateConstraint : public Optimization::Constraint {
-          private:
-            class Impl :  public Optimization::Constraint::Impl {
-              public:
-                Impl(const std::vector<Parameter>& arguments)
-                : arguments_(arguments) {}
-                bool test(const Array& params) const {
-                    Size k=0;
-                    for (Size i=0; i<arguments_.size(); i++) {
-                        Size size = arguments_[i].size();
-                        Array testParams(size);
-                        for (Size j=0; j<size; j++, k++)
-                            testParams[j] = params[k];
-                        if (!arguments_[i].testParams(testParams))
-                            return false;
-                    }
-                    return true;
-                }
-              private:
-                const std::vector<Parameter>& arguments_;
-            };
-          public:
-            PrivateConstraint(const std::vector<Parameter>& arguments)
-            : Optimization::Constraint(Handle<Optimization::Constraint::Impl>(
-                new PrivateConstraint::Impl(arguments))) {}
-        };
+        virtual Handle<Lattice> tree(const TimeGrid& grid) const = 0;
 
+        //! Calibrate to a set of market instruments (caps/swaptions)
+        /*! An additional constraint can be passed which must be 
+          satisfied in addition to the constraints of the model.
+        */
+        void calibrate(
+                   const std::vector<Handle<CalibrationHelper> >& instruments,
+                   Method& method,
+                   const Constraint& constraint = Constraint());
+
+        const Handle<Constraint>& constraint() const;
+
+        //! Returns array of arguments on which calibration is done
+        Disposable<Array> params() const;
+        void setParams(const Array& params);
+      protected:
+        virtual void generateArguments() {}
+
+        std::vector<Parameter> arguments_;
+        Handle<Constraint> constraint_;
+
+      private:
+        //! Constraint imposed on arguments
+        class PrivateConstraint;
+        //! Calibration cost function class
+        class CalibrationFunction;
+        friend class CalibrationFunction;
+    };
+
+
+    // inline definitions
+
+    inline const Handle<Constraint>& Model::constraint() const {
+        return constraint_;
     }
+
+    class Model::PrivateConstraint : public Constraint {
+      private:
+        class Impl :  public Constraint::Impl {
+          public:
+            Impl(const std::vector<Parameter>& arguments)
+            : arguments_(arguments) {}
+            bool test(const Array& params) const {
+                Size k=0;
+                for (Size i=0; i<arguments_.size(); i++) {
+                    Size size = arguments_[i].size();
+                    Array testParams(size);
+                    for (Size j=0; j<size; j++, k++)
+                        testParams[j] = params[k];
+                    if (!arguments_[i].testParams(testParams))
+                        return false;
+                }
+                return true;
+            }
+          private:
+            const std::vector<Parameter>& arguments_;
+        };
+      public:
+        PrivateConstraint(const std::vector<Parameter>& arguments)
+        : Constraint(Handle<Constraint::Impl>(
+                                   new PrivateConstraint::Impl(arguments))) {}
+    };
 
 }
 

@@ -26,66 +26,62 @@
 
 namespace QuantLib {
 
-    namespace Solvers1D {
+    //! False position 1-D solver
+    class FalsePosition : public Solver1D<FalsePosition> {
+      public:
+        template <class F>
+        double solveImpl(const F& f, double xAccuracy) const {
 
-        //! False position 1-D solver
-        class FalsePosition : public Solver1D<FalsePosition> {
-          public:
-            template <class F>
-            double solveImpl(const F& f, double xAccuracy) const {
+            /* The implementation of the algorithm was inspired by
+               Press, Teukolsky, Vetterling, and Flannery,
+               "Numerical Recipes in C", 2nd edition, 
+               Cambridge University Press
+            */
 
-                /* The implementation of the algorithm was inspired by
-                   Press, Teukolsky, Vetterling, and Flannery,
-                   "Numerical Recipes in C", 2nd edition, 
-                   Cambridge University Press
-                */
+            double fl, fh, xl, xh, dx, del, froot;
 
-                double fl, fh, xl, xh, dx, del, froot;
+            // Identify the limits so that xl corresponds to the low side
+            if (fxMin_ < 0.0) {
+                xl=xMin_;
+                fl = fxMin_;
+                xh=xMax_;
+                fh = fxMax_;
+            } else {
+                xl=xMax_;
+                fl = fxMax_;
+                xh=xMin_;
+                fh = fxMin_;
+            }
+            dx=xh-xl;
 
-                // Identify the limits so that xl corresponds to the low side
-                if (fxMin_ < 0.0) {
-                    xl=xMin_;
-                    fl = fxMin_;
-                    xh=xMax_;
-                    fh = fxMax_;
+            while (evaluationNumber_<=maxEvaluations_) {
+                // Increment with respect to latest value
+                root_=xl+dx*fl/(fl-fh);
+                froot=f(root_);
+                evaluationNumber_++;
+                if (froot < 0.0) {       // Replace appropriate limit
+                    del=xl-root_;
+                    xl=root_;
+                    fl=froot;
                 } else {
-                    xl=xMax_;
-                    fl = fxMax_;
-                    xh=xMin_;
-                    fh = fxMin_;
+                    del=xh-root_;
+                    xh=root_;
+                    fh=froot;
                 }
                 dx=xh-xl;
-
-                while (evaluationNumber_<=maxEvaluations_) {
-                    // Increment with respect to latest value
-                    root_=xl+dx*fl/(fl-fh);
-                    froot=f(root_);
-                    evaluationNumber_++;
-                    if (froot < 0.0) {       // Replace appropriate limit
-                        del=xl-root_;
-                        xl=root_;
-                        fl=froot;
-                    } else {
-                        del=xh-root_;
-                        xh=root_;
-                        fh=froot;
-                    }
-                    dx=xh-xl;
-                    // Convergence criterion
-                    if (QL_FABS(del) < xAccuracy || froot == 0.0)  {
-                        return root_;
-                    }
+                // Convergence criterion
+                if (QL_FABS(del) < xAccuracy || froot == 0.0)  {
+                    return root_;
                 }
-
-                throw Error("FalsePosition::solveImpl: "
-                            "maximum number of function evaluations (" +
-                            IntegerFormatter::toString(maxEvaluations_) +
-                            ") exceeded");
-                QL_DUMMY_RETURN(0.0);
             }
-        };
 
-    }
+            throw Error("FalsePosition::solveImpl: "
+                        "maximum number of function evaluations (" +
+                        IntegerFormatter::toString(maxEvaluations_) +
+                        ") exceeded");
+            QL_DUMMY_RETURN(0.0);
+        }
+    };
 
 }
 

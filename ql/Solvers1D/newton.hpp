@@ -26,57 +26,53 @@
 
 namespace QuantLib {
 
-    namespace Solvers1D {
+    //! %Newton 1-D solver
+    /*! \note This solver requires that the passed function object
+              implement a method <tt>double derivative(double)</tt>.
+    */
+    class Newton : public Solver1D<Newton> {
+      public:
+        template <class F>
+        double solveImpl(const F& f, double xAccuracy) const {
 
-        //! %Newton 1-D solver
-        /*! \note This solver requires that the passed function object
-                  implement a method <tt>double derivative(double)</tt>.
-        */
-        class Newton : public Solver1D<Newton> {
-          public:
-            template <class F>
-            double solveImpl(const F& f, double xAccuracy) const {
+            /* The implementation of the algorithm was inspired by
+               Press, Teukolsky, Vetterling, and Flannery,
+               "Numerical Recipes in C", 2nd edition, 
+               Cambridge University Press
+            */
 
-                /* The implementation of the algorithm was inspired by
-                   Press, Teukolsky, Vetterling, and Flannery,
-                   "Numerical Recipes in C", 2nd edition, 
-                   Cambridge University Press
-                */
+            double froot, dfroot, dx;
 
-                double froot, dfroot, dx;
+            froot = f(root_);
+            dfroot = f.derivative(root_);
+            QL_REQUIRE(dfroot != Null<double>(),
+                       "Newton requires function's derivative");
+            evaluationNumber_++;
 
+            while (evaluationNumber_<=maxEvaluations_) {
+                dx=froot/dfroot;
+                root_ -= dx;
+                // jumped out of brackets, switch to NewtonSafe
+                if ((xMin_-root_)*(root_-xMax_) < 0.0) {
+                    NewtonSafe s;
+                    s.setMaxEvaluations(maxEvaluations_-evaluationNumber_);
+                    return s.solve(f, xAccuracy, root_+dx, xMin_, xMax_);
+                }
+                if (QL_FABS(dx) < xAccuracy)
+                    return root_;
                 froot = f(root_);
                 dfroot = f.derivative(root_);
-                QL_REQUIRE(dfroot != Null<double>(),
-                           "Newton requires function's derivative");
                 evaluationNumber_++;
-
-                while (evaluationNumber_<=maxEvaluations_) {
-                    dx=froot/dfroot;
-                    root_ -= dx;
-                    // jumped out of brackets, switch to NewtonSafe
-                    if ((xMin_-root_)*(root_-xMax_) < 0.0) {
-                        NewtonSafe s;
-                        s.setMaxEvaluations(maxEvaluations_-evaluationNumber_);
-                        return s.solve(f, xAccuracy, root_+dx, xMin_, xMax_);
-                    }
-                    if (QL_FABS(dx) < xAccuracy)
-                        return root_;
-                    froot = f(root_);
-                    dfroot = f.derivative(root_);
-                    evaluationNumber_++;
-                }
-
-                throw Error("Newton::solveImpl: "
-                            " maximum number of function evaluations (" +
-                            IntegerFormatter::toString(maxEvaluations_) +
-                            ") exceeded");
-
-                QL_DUMMY_RETURN(0.0);
             }
-        };
 
-    }
+            throw Error("Newton::solveImpl: "
+                        " maximum number of function evaluations (" +
+                        IntegerFormatter::toString(maxEvaluations_) +
+                        ") exceeded");
+
+            QL_DUMMY_RETURN(0.0);
+        }
+    };
 
 }
 

@@ -28,31 +28,23 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    class CapHelper : public CalibrationHelper {
+      public:
+        //Constructor for ATM cap
+        CapHelper(const Period& length,
+                  const RelinkableHandle<MarketElement>& volatility,
+                  const Handle<Xibor>& index,
+                  const RelinkableHandle<TermStructure>& termStructure);
 
-        namespace CalibrationHelpers {
+        virtual void addTimesTo(std::list<Time>& times) const;
 
-            class CapHelper : public CalibrationHelper {
-              public:
-                //Constructor for ATM cap
-                CapHelper(
-                    const Period& length,
-                    const RelinkableHandle<MarketElement>& volatility,
-                    const Handle<Xibor>& index,
-                    const RelinkableHandle<TermStructure>& termStructure);
+        virtual double modelValue();
 
-                virtual void addTimesTo(std::list<Time>& times) const;
+        virtual double blackPrice(double volatility) const;
 
-                virtual double modelValue();
-
-                virtual double blackPrice(double volatility) const;
-
-              private:
-                Handle<Cap> cap_;
-            };
-        }
-
-    }
+      private:
+        Handle<Cap> cap_;
+    };
 
 }
 

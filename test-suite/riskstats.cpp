@@ -22,7 +22,6 @@
 #include <ql/RandomNumbers/sobolrsg.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::RandomNumbers;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 

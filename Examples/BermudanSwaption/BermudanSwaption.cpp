@@ -18,11 +18,7 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::ShortRateModels;
 using namespace QuantLib::TermStructures;
-
-using CalibrationHelpers::CapHelper;
-using CalibrationHelpers::SwaptionHelper;
 
 
 //Number of swaptions to be calibrated to...
@@ -48,8 +44,8 @@ void calibrateModel(const Handle<Model>& model,
                     CalibrationSet& calibs,
                     double lambda) {
 
-    Optimization::Simplex om(lambda, 1e-9);
-    om.setEndCriteria(Optimization::EndCriteria(10000, 1e-7));
+    Simplex om(lambda, 1e-9);
+    om.setEndCriteria(EndCriteria(10000, 1e-7));
     model->calibrate(calibs, om);
 
     #if defined(QL_PATCH_DARWIN)

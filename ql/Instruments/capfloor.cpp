@@ -153,7 +153,7 @@ namespace QuantLib {
         double guess = 0.10;   // no way we can get a more accurate one
 
         ImpliedVolHelper f(*this,termStructure_,targetValue);
-        Solvers1D::Brent solver;
+        Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }

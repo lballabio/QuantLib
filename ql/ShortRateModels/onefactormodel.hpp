@@ -28,109 +28,106 @@
 
 namespace QuantLib {
 
-    namespace ShortRateModels {
+    //! Single-factor short-rate model abstract class
+    class OneFactorModel : public Model {
+      public:
+        OneFactorModel(Size nArguments);
+        virtual ~OneFactorModel() {}
 
-        //! Single-factor short-rate model abstract class
-        class OneFactorModel : public Model {
-          public:
-            OneFactorModel(Size nArguments);
-            virtual ~OneFactorModel() {}
+        class ShortRateDynamics;
 
-            class ShortRateDynamics;
+        //! returns the short-rate dynamics
+        virtual Handle<ShortRateDynamics> dynamics() const = 0;
 
-            //! returns the short-rate dynamics
-            virtual Handle<ShortRateDynamics> dynamics() const = 0;
+        //! Return by default a trinomial recombining tree
+        virtual Handle<Lattice> tree(const TimeGrid& grid) const;
 
-            //! Return by default a trinomial recombining tree
-            virtual Handle<Lattice> tree(const TimeGrid& grid) const;
+      protected:
+        class ShortRateTree;
+    };
 
-          protected:
-            class ShortRateTree;
-        };
+    //! Base class describing the short-rate dynamics
+    class OneFactorModel::ShortRateDynamics {
+      public:
+        ShortRateDynamics(const Handle<DiffusionProcess>& process)
+        : process_(process) {}
+        virtual ~ShortRateDynamics() {};
 
-        //! Base class describing the short-rate dynamics
-        class OneFactorModel::ShortRateDynamics {
-          public:
-            ShortRateDynamics(const Handle<DiffusionProcess>& process)
-            : process_(process) {}
-            virtual ~ShortRateDynamics() {};
+        //! Compute state variable from short rate
+        virtual double variable(Time t, Rate r) const = 0;
 
-            //! Compute state variable from short rate
-            virtual double variable(Time t, Rate r) const = 0;
+        //! Compute short rate from state variable
+        virtual Rate shortRate(Time t, double variable) const = 0;
 
-            //! Compute short rate from state variable
-            virtual Rate shortRate(Time t, double variable) const = 0;
+        //! Returns the risk-neutral dynamics of the state variable
+        const Handle<DiffusionProcess>& process() { return process_; }
+      private:
+        Handle<DiffusionProcess> process_;
+    };
 
-            //! Returns the risk-neutral dynamics of the state variable
-            const Handle<DiffusionProcess>& process() { return process_; }
-          private:
-            Handle<DiffusionProcess> process_;
-        };
+    //! Recombining trinomial tree discretizing the state variable
+    class OneFactorModel::ShortRateTree : public Lattice {
+      public:
+        //! Plain tree build-up from short-rate dynamics
+        ShortRateTree(const Handle<Tree>& tree,
+                      const Handle<ShortRateDynamics>& dynamics,
+                      const TimeGrid& timeGrid);
+        //! Tree build-up + numerical fitting to term-structure
+        ShortRateTree(
+              const Handle<Tree>& tree,
+              const Handle<ShortRateDynamics>& dynamics,
+              const Handle<TermStructureFittingParameter::NumericalImpl>& phi,
+              const TimeGrid& timeGrid);
 
-        //! Recombining trinomial tree discretizing the state variable
-        class OneFactorModel::ShortRateTree : public Lattice {
-          public:
-            //! Plain tree build-up from short-rate dynamics
-            ShortRateTree(
-                const Handle<Tree>& tree,
-                const Handle<ShortRateDynamics>& dynamics,
-                const TimeGrid& timeGrid);
-            //! Tree build-up + numerical fitting to term-structure
-            ShortRateTree(
-                const Handle<Tree>& tree,
-                const Handle<ShortRateDynamics>& dynamics,
-                const Handle<TermStructureFittingParameter::NumericalImpl>& phi,
-                const TimeGrid& timeGrid);
+        Size size(Size i) const {
+            return tree_->size(i);
+        }
+        DiscountFactor discount(Size i, Size index) const {
+            double x = tree_->underlying(i, index);
+            Rate r = dynamics_->shortRate(timeGrid()[i], x);
+            return QL_EXP(-r*timeGrid().dt(i));
+        }
+      protected:
+        Size descendant(Size i, Size index, Size branch) const {
+            return tree_->descendant(i, index, branch);
+        }
+        double probability(Size i, Size index, Size branch) const {
+            return tree_->probability(i, index, branch);
+        }
+      private:
+        Handle<Tree> tree_;
+        Handle<ShortRateDynamics> dynamics_;
+        class Helper;
+    };
 
-            Size size(Size i) const {
-                return tree_->size(i);
-            }
-            DiscountFactor discount(Size i, Size index) const {
-                double x = tree_->underlying(i, index);
-                Rate r = dynamics_->shortRate(timeGrid()[i], x);
-                return QL_EXP(-r*timeGrid().dt(i));
-            }
-          protected:
-            Size descendant(Size i, Size index, Size branch) const {
-                return tree_->descendant(i, index, branch);
-            }
-            double probability(Size i, Size index, Size branch) const {
-                return tree_->probability(i, index, branch);
-            }
-          private:
-            Handle<Tree> tree_;
-            Handle<ShortRateDynamics> dynamics_;
-            class Helper;
-        };
+    //! Single-factor affine base class
+    /*! Single-factor models with an analytical formula for discount bonds
+        should inherit from this class. They must then implement the 
+        functions \f$ A(t,T) \f$ and \f$ B(t,T) \f$ such that
+        \f[
+            P(t, T, r_t) = A(t,T)e^{ -B(t,T) r_t}.
+        \f]
+    */
+    class OneFactorAffineModel : public OneFactorModel,
+                                 public AffineModel {
+      public:
+        OneFactorAffineModel(Size nArguments) 
+        : OneFactorModel(nArguments) {}
 
-        //! Single-factor affine base class
-        /*! Single-factor models with an analytical formula for discount bonds
-            should inherit from this class. They must then implement the 
-            functions \f$ A(t,T) \f$ and \f$ B(t,T) \f$ such that
-            \f[
-                P(t, T, r_t) = A(t,T)e^{ -B(t,T) r_t}.
-            \f]
-        */
-        class OneFactorAffineModel : public OneFactorModel,
-                                     public AffineModel {
-          public:
-            OneFactorAffineModel(Size nArguments) 
-            : OneFactorModel(nArguments) {}
-
-            double discountBond(Time now, Time maturity, Rate rate) const {
-                return A(now, maturity)*QL_EXP(-B(now, maturity)*rate);
-            }
-            DiscountFactor discount(Time t) const {
-                double x0 = dynamics()->process()->x0();
-                Rate r0 = dynamics()->shortRate(0.0, x0);
-                return discountBond(0.0, t, r0);
-            }
-          protected:
-            virtual double A(Time t, Time T) const = 0;
-            virtual double B(Time t, Time T) const = 0;
-        };
-
-    }
+        double discountBond(Time now, Time maturity, Rate rate) const {
+            return A(now, maturity)*QL_EXP(-B(now, maturity)*rate);
+        }
+        DiscountFactor discount(Time t) const {
+            double x0 = dynamics()->process()->x0();
+            Rate r0 = dynamics()->shortRate(0.0, x0);
+            return discountBond(0.0, t, r0);
+        }
+      protected:
+        virtual double A(Time t, Time T) const = 0;
+        virtual double B(Time t, Time T) const = 0;
+    };
 
 }
+
+
 #endif

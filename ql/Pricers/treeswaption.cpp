@@ -24,14 +24,12 @@
 
 namespace QuantLib {
 
-    using namespace ShortRateModels;
-
-    TreeSwaption::TreeSwaption(const Handle<ShortRateModels::Model>& model,
+    TreeSwaption::TreeSwaption(const Handle<Model>& model,
                                Size timeSteps) 
     : LatticeShortRateModelEngine<Swaption::arguments, Swaption::results> 
     (model, timeSteps) {} 
 
-    TreeSwaption::TreeSwaption(const Handle<ShortRateModels::Model>& model,
+    TreeSwaption::TreeSwaption(const Handle<Model>& model,
                                const TimeGrid& timeGrid) 
     : LatticeShortRateModelEngine<Swaption::arguments, Swaption::results> 
     (model, timeGrid) {}

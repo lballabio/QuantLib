@@ -66,7 +66,7 @@ namespace QuantLib {
         // Exercise dates
         TimeGrid grid(T, timeSteps_);
 
-        RandomNumbers::GaussianRandomSequenceGenerator gen = 
+        GaussianRandomSequenceGenerator gen = 
             PseudoRandom::make_sequence_generator(grid.size()-1,seed_);
 
         Handle<GaussianPathGenerator> pathGenerator(

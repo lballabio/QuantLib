@@ -22,40 +22,37 @@
 #ifndef quantlib_optimization_conjugate_gradient_h
 #define quantlib_optimization_conjugate_gradient_h
 
-#include "ql/Optimization/armijo.hpp"
+#include <ql/Optimization/armijo.hpp>
 
 namespace QuantLib {
 
-    namespace Optimization {
+    //! Multi-dimensional Conjugate Gradient class
+    /*! User has to provide line-search method and
+        optimization end criteria
 
-        //! Multi-dimensional Conjugate Gradient class
-        /*! User has to provide line-search method and
-            optimization end criteria
+        search direction \f$ d_i = - f'(x_i) + c_i*d_{i-1} \f$
+        where \f$ c_i = ||f'(x_i)||^2/||f'(x_{i-1})||^2 \f$
+        and \f$ d_1 = - f'(x_1) \f$
+    */
+    class ConjugateGradient: public Method {
+      public:
+        //! default constructor
+        ConjugateGradient() 
+        : Method(),
+          lineSearch_(Handle<LineSearch>(new ArmijoLineSearch())) {}
 
-            search direction \f$ d_i = - f'(x_i) + c_i*d_{i-1} \f$
-            where \f$ c_i = ||f'(x_i)||^2/||f'(x_{i-1})||^2 \f$
-            and \f$ d_1 = - f'(x_1) \f$
-        */
-        class ConjugateGradient: public Method {
-          public:
-            //! default constructor
-            ConjugateGradient() : Method(),
-              lineSearch_(Handle<LineSearch>(new ArmijoLineSearch())) {}
+        ConjugateGradient(const Handle<LineSearch>& lineSearch)
+        : Method(), lineSearch_ (lineSearch) {}
 
-            ConjugateGradient(const Handle<LineSearch>& lineSearch)
-            : Method(), lineSearch_ (lineSearch) {}
+        //! destructor
+        virtual ~ConjugateGradient() {}
 
-            //! destructor
-            virtual ~ConjugateGradient() {}
-
-            //! minimize the optimization problem P
-            virtual void minimize(const Problem& P) const;
-          private:
-            //! line search
-            Handle<LineSearch> lineSearch_;
-        };
-
-    }
+        //! minimize the optimization problem P
+        virtual void minimize(const Problem& P) const;
+      private:
+        //! line search
+        Handle<LineSearch> lineSearch_;
+    };
 
 }
 

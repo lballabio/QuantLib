@@ -361,8 +361,11 @@ namespace QLPAT = QuantLib::Patterns;
 namespace QLPRC = QuantLib::Pricers;
 //! \deprecated inner namespace aliases will be removed in next release
 namespace QLPRE = QuantLib::PricingEngines;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLRNG = QuantLib::RandomNumbers;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLSRM = QuantLib::ShortRateModels;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLS1D = QuantLib::Solvers1D;
 namespace QLTST = QuantLib::TermStructures;
 namespace QLUTL = QuantLib::Utilities;

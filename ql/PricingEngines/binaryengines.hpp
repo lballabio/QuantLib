@@ -166,9 +166,8 @@ namespace QuantLib {
         } else {                   
         */
         TimeGrid grid = timeGrid();
-        RandomNumbers::UniformRandomSequenceGenerator 
-            sequenceGen(grid.size()-1, 
-                        RandomNumbers::UniformRandomGenerator(76));
+        UniformRandomSequenceGenerator 
+            sequenceGen(grid.size()-1, UniformRandomGenerator(76));
 
         return Handle<MCBinaryEngine<RNG,S>::path_pricer_type>(
             new BinaryPathPricer(

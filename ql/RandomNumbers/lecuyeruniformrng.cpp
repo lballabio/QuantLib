@@ -23,24 +23,21 @@
 
 namespace QuantLib {
 
-    namespace RandomNumbers {
+    const long LecuyerUniformRng::m1 = 2147483563L;
+    const long LecuyerUniformRng::a1 = 40014L;
+    const long LecuyerUniformRng::q1 = 53668L;
+    const long LecuyerUniformRng::r1 = 12211L;
 
-        const long LecuyerUniformRng::m1 = 2147483563L;
-        const long LecuyerUniformRng::a1 = 40014L;
-        const long LecuyerUniformRng::q1 = 53668L;
-        const long LecuyerUniformRng::r1 = 12211L;
+    const long LecuyerUniformRng::m2 = 2147483399L;
+    const long LecuyerUniformRng::a2 = 40692L;
+    const long LecuyerUniformRng::q2 = 52774L;
+    const long LecuyerUniformRng::r2 = 3791L;
 
-        const long LecuyerUniformRng::m2 = 2147483399L;
-        const long LecuyerUniformRng::a2 = 40692L;
-        const long LecuyerUniformRng::q2 = 52774L;
-        const long LecuyerUniformRng::r2 = 3791L;
+    const int LecuyerUniformRng::bufferSize = 32;
 
-        const int LecuyerUniformRng::bufferSize = 32;
+    // int(1+m1/bufferSize) = int(1+(m1-1)/bufferSize)
+    const long LecuyerUniformRng::bufferNormalizer = 67108862L;
 
-        // int(1+m1/bufferSize) = int(1+(m1-1)/bufferSize)
-        const long LecuyerUniformRng::bufferNormalizer = 67108862L;
+    const long double LecuyerUniformRng::maxRandom = 1.0-QL_EPSILON;
 
-        const long double LecuyerUniformRng::maxRandom = 1.0-QL_EPSILON;
-
-    }
 }

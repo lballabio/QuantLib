@@ -26,35 +26,30 @@
 
 namespace QuantLib {
 
-    namespace Optimization {
+    //! Multi-dimensional steepest-descent class
+    /*! User has to provide line-search method and optimization end criteria
 
-        //! Multi-dimensional steepest-descent class
-        /*! User has to provide line-search method and
-            optimization end criteria
+        search direction \f$ = - f'(x) \f$
+    */
+    class SteepestDescent : public Method {
+      public:
+        //! default default constructor (msvc bug)
+        SteepestDescent()
+        : Method(), 
+          lineSearch_(Handle<LineSearch>(new ArmijoLineSearch())) {}
 
-            search direction \f$ = - f'(x) \f$
-        */
-        class SteepestDescent : public Method {
-          public:
-            //! default default constructor (msvc bug)
-            SteepestDescent()
-            : Method(), 
-              lineSearch_(Handle<LineSearch>(new ArmijoLineSearch())) {}
+        //! default constructor
+        SteepestDescent(const Handle<LineSearch>& lineSearch)
+        : Method(), lineSearch_(lineSearch) {}
+        //! destructor
+        virtual ~SteepestDescent() {}
 
-            //! default constructor
-            SteepestDescent(const Handle<LineSearch>& lineSearch)
-            : Method(), lineSearch_(lineSearch) {}
-            //! destructor
-            virtual ~SteepestDescent() {}
-
-            //! minimize the optimization problem P
-            virtual void minimize(const Problem& P) const;
-          private:
-            //! line search
-            Handle<LineSearch> lineSearch_;
-        };
-
-    }
+        //! minimize the optimization problem P
+        virtual void minimize(const Problem& P) const;
+      private:
+        //! line search
+        Handle<LineSearch> lineSearch_;
+    };
 
 }
 

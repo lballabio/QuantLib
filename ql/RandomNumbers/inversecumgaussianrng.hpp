@@ -27,63 +27,60 @@
 
 namespace QuantLib {
 
-    namespace RandomNumbers {
+    //! Inverse cumulative Gaussian random number generator
+    /*! It uses a uniform deviate in (0, 1) as the source of cumulative
+        normal distribution values.
+        Then an inverse cumulative normal distribution is used as it is
+        approximately a Gaussian deviate with average 0.0 and standard
+        deviation 1.0.
 
-        //! Inverse cumulative Gaussian random number generator
-        /*! It uses a uniform deviate in (0, 1) as the source of cumulative
-            normal distribution values.
-            Then an inverse cumulative normal distribution is used as it is
-            approximately a Gaussian deviate with average 0.0 and standard
-            deviation 1.0.
+        The uniform deviate is supplied by RNG.
 
-            The uniform deviate is supplied by RNG.
+        Class RNG must implement the following interface:
+        \code
+            RNG::sample_type RNG::next() const;
+        \endcode
 
-            Class RNG must implement the following interface:
-            \code
-                RNG::sample_type RNG::next() const;
-            \endcode
+        The inverse cumulative normal distribution is supplied by I.
 
-            The inverse cumulative normal distribution is supplied by I.
-
-            Class I must implement the following interface:
-            \code
-                I::I();
-                double I::operator() const;
-            \endcode
+        Class I must implement the following interface:
+        \code
+            I::I();
+            double I::operator() const;
+        \endcode
+    */
+    template <class RNG, class I>
+    class ICGaussianRng {
+      public:
+        typedef Sample<double> sample_type;
+        explicit ICGaussianRng(const RNG& uniformGenerator);
+        /*! \deprecated initialize with a random number
+          generator instead.
         */
-        template <class RNG, class I>
-        class ICGaussianRng {
-          public:
-            typedef Sample<double> sample_type;
-            explicit ICGaussianRng(const RNG& uniformGenerator);
-            /*! \deprecated initialize with a random number
-                            generator instead.
-            */
-            explicit ICGaussianRng(long seed = 0);
-            //! returns next sample from the Gaussian distribution
-            sample_type next() const;
-          private:
-            RNG uniformGenerator_;
-            I ICND_;
-        };
+        explicit ICGaussianRng(long seed = 0);
+        //! returns next sample from the Gaussian distribution
+        sample_type next() const;
+      private:
+        RNG uniformGenerator_;
+        I ICND_;
+    };
 
-        template <class RNG, class I>
-        ICGaussianRng<RNG, I>::ICGaussianRng(const RNG& uniformGenerator)
-        : uniformGenerator_(uniformGenerator) {}
+    template <class RNG, class I>
+    ICGaussianRng<RNG, I>::ICGaussianRng(const RNG& uniformGenerator)
+    : uniformGenerator_(uniformGenerator) {}
 
-        template <class RNG, class I>
-        ICGaussianRng<RNG, I>::ICGaussianRng(long seed)
-        : uniformGenerator_(seed) {}
+    template <class RNG, class I>
+    ICGaussianRng<RNG, I>::ICGaussianRng(long seed)
+    : uniformGenerator_(seed) {}
 
-        template <class RNG, class I>
-        inline typename ICGaussianRng<RNG, I>::sample_type
-        ICGaussianRng<RNG, I>::next() const {
-            typename RNG::sample_type sample = uniformGenerator_.next();
-            return sample_type(ICND_(sample.value),sample.weight);
-        }
-
+    template <class RNG, class I>
+    inline typename ICGaussianRng<RNG, I>::sample_type
+    ICGaussianRng<RNG, I>::next() const {
+        typename RNG::sample_type sample = uniformGenerator_.next();
+        return sample_type(ICND_(sample.value),sample.weight);
     }
 
 }
+
 
 #endif

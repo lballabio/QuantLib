@@ -25,8 +25,6 @@
 
 namespace QuantLib {
 
-    using namespace ShortRateModels;
-
     TreeCapFloor::TreeCapFloor(const Handle<Model>& model, Size timeSteps) 
     : LatticeShortRateModelEngine<CapFloor::arguments, 
                                   CapFloor::results >(model,timeSteps){}
