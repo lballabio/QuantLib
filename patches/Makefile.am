@@ -3,6 +3,8 @@
 
 EXTRA_DIST = darwin.BermudanSwaption \
              darwin.configure \
-             darwin.history
+             darwin.history \
+	     solaris.xibormanager \
+	     solaris.europeanoption
 
 
