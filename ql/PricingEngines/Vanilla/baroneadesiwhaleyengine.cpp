@@ -62,36 +62,55 @@ namespace QuantLib {
             double Q, LHS, RHS, bi;
             double forwardSi = Si * dividendDiscount / riskFreeDiscount;
             double d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance)/QL_SQRT(variance);
-            CumulativeNormalDistribution CND;
+            CumulativeNormalDistribution cumNormalDist;
             double K = -2.0*QL_LOG(riskFreeDiscount)/
                 (variance*(1.0-riskFreeDiscount));
             switch (payoff->optionType()) {
                 case Option::Call:
                     Q = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
                     LHS = Si - payoff->strike();
-                    RHS = BlackFormula(forwardSi, riskFreeDiscount, variance, payoff).value() + (1 - dividendDiscount * CND(d1)) * Si / Q;
-                    bi =  dividendDiscount * CND(d1) * (1 - 1/Q) + (1 - dividendDiscount * CND(d1) / QL_SQRT(variance)) / Q;
+                    RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
+                        payoff).value() + (1 - dividendDiscount *
+                        cumNormalDist(d1)) * Si / Q;
+                    bi =  dividendDiscount * cumNormalDist(d1) * (1 - 1/Q) +
+                        (1 - dividendDiscount *
+                        cumNormalDist(d1) / QL_SQRT(variance)) / Q;
                     while (QL_FABS(LHS - RHS)/payoff->strike() > tolerance) {
                         Si = (payoff->strike() + RHS - bi * Si) / (1 - bi);
                         forwardSi = Si * dividendDiscount / riskFreeDiscount;
-                        d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance)/QL_SQRT(variance);
+                        d1 = (QL_LOG(forwardSi/payoff->strike())+0.5*variance)
+                            /QL_SQRT(variance);
                         LHS = Si - payoff->strike();
-                        RHS = BlackFormula(forwardSi, riskFreeDiscount, variance, payoff).value() + (1 - dividendDiscount * CND(d1)) * Si / Q;
-                        bi = dividendDiscount * CND(d1) * (1 - 1 / Q) + (1 - dividendDiscount * CND.derivative(d1) / QL_SQRT(variance)) / Q;
+                        RHS = BlackFormula(forwardSi, riskFreeDiscount,
+                            variance, payoff).value() + (1 - dividendDiscount
+                            * cumNormalDist(d1)) * Si / Q;
+                        bi = dividendDiscount * cumNormalDist(d1) * (1 - 1 / Q)
+                            + (1 - dividendDiscount *
+                            cumNormalDist.derivative(d1) / QL_SQRT(variance))
+                            / Q;
                     }
                     break;
                 case Option::Put:
                     Q = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
                     LHS = payoff->strike() - Si;
-                    RHS = BlackFormula(forwardSi, riskFreeDiscount, variance, payoff).value() - (1 - dividendDiscount * CND(-d1)) * Si / Q;
-                    bi = -dividendDiscount * CND(-d1) * (1 - 1/Q) - (1 + dividendDiscount * CND.derivative(-d1) / QL_SQRT(variance)) / Q;
+                    RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
+                        payoff).value() - (1 - dividendDiscount *
+                        cumNormalDist(-d1)) * Si / Q;
+                    bi = -dividendDiscount * cumNormalDist(-d1) * (1 - 1/Q)
+                        - (1 + dividendDiscount * cumNormalDist.derivative(-d1)
+                        / QL_SQRT(variance)) / Q;
                     while (QL_FABS(LHS - RHS)/payoff->strike() > tolerance) {
                         Si = (payoff->strike() - RHS + bi * Si) / (1 + bi);
                         forwardSi = Si * dividendDiscount / riskFreeDiscount;
-                        d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance)/QL_SQRT(variance);
+                        d1 = (QL_LOG(forwardSi/payoff->strike())+0.5*variance)
+                            /QL_SQRT(variance);
                         LHS = payoff->strike() - Si;
-                        RHS = BlackFormula(forwardSi, riskFreeDiscount, variance, payoff).value() - (1 - dividendDiscount * CND(-d1)) * Si / Q;
-                        bi = -dividendDiscount * CND(-d1) * (1 - 1 / Q) - (1 + dividendDiscount * CND(-d1) / QL_SQRT(variance)) / Q;
+                        RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
+                            payoff).value() - (1 - dividendDiscount *
+                            cumNormalDist(-d1)) * Si / Q;
+                        bi = -dividendDiscount * cumNormalDist(-d1) * (1 - 1 / Q)
+                            - (1 + dividendDiscount * cumNormalDist(-d1) 
+                            / QL_SQRT(variance)) / Q;
                     }
                     break;
                 default:
@@ -114,7 +133,8 @@ namespace QuantLib {
         Handle<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex,
-                   "BaroneAdesiWhaleyApproximationEngine: non-American exercise given");
+                   "BaroneAdesiWhaleyApproximationEngine: "
+                   "non-American exercise given");
         #else
         Handle<AmericanExercise> ex = arguments_.exercise;
         #endif
@@ -134,22 +154,25 @@ namespace QuantLib {
         double variance = arguments_.blackScholesProcess->volTS->blackVariance(
             ex->lastDate(), payoff->strike());
         DiscountFactor dividendDiscount =
-            arguments_.blackScholesProcess->dividendTS->discount(ex->lastDate());
+            arguments_.blackScholesProcess->dividendTS->discount(
+            ex->lastDate());
         DiscountFactor riskFreeDiscount =
-            arguments_.blackScholesProcess->riskFreeTS->discount(ex->lastDate());
-        double forwardPrice = arguments_.blackScholesProcess->stateVariable->value() *
-            dividendDiscount / riskFreeDiscount;
+            arguments_.blackScholesProcess->riskFreeTS->discount(
+            ex->lastDate());
+        double spot = arguments_.blackScholesProcess->stateVariable->value();
+        double forwardPrice = spot * dividendDiscount / riskFreeDiscount;
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
         if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
             // early exercise never optimal
             results_.value        = black.value();
-            results_.delta        = black.delta(arguments_.blackScholesProcess->stateVariable->value());
+            results_.delta        = black.delta(spot);
             results_.deltaForward = black.deltaForward();
-            results_.elasticity   = black.elasticity(arguments_.blackScholesProcess->stateVariable->value());
-            results_.gamma        = black.gamma(arguments_.blackScholesProcess->stateVariable->value());
+            results_.elasticity   = black.elasticity(spot);
+            results_.gamma        = black.gamma(spot);
 
-            Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+            Time t =
+                arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
                 arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
                 arguments_.exercise->lastDate());
             results_.rho = black.rho(t);
@@ -163,18 +186,20 @@ namespace QuantLib {
                 arguments_.blackScholesProcess->volTS->referenceDate(),
                 arguments_.exercise->lastDate());
             results_.vega        = black.vega(t);
-            results_.theta       = black.theta(arguments_.blackScholesProcess->stateVariable->value(), t);
-            results_.thetaPerDay = black.thetaPerDay(arguments_.blackScholesProcess->stateVariable->value(), t);
+            results_.theta       = black.theta(spot, t);
+            results_.thetaPerDay = black.thetaPerDay(spot, t);
 
             results_.strikeSensitivity = black.strikeSensitivity();
             results_.itmProbability    = black.itmProbability();
         } else {
             // early exercise can be optimal 
-            CumulativeNormalDistribution CND;
+            CumulativeNormalDistribution cumNormalDist;
             double tolerance = 1e-6;
-            double Sk = Kc(payoff, riskFreeDiscount, dividendDiscount, variance, tolerance);
+            double Sk = Kc(payoff, riskFreeDiscount, dividendDiscount,
+                variance, tolerance);
             double forwardSk = Sk * dividendDiscount / riskFreeDiscount;
-            double d1 = (QL_LOG(forwardSk/payoff->strike()) + 0.5*variance)/QL_SQRT(variance);
+            double d1 = (QL_LOG(forwardSk/payoff->strike()) + 0.5*variance)
+                /QL_SQRT(variance);
             double n = 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/(variance);
             double K = -2.0*QL_LOG(riskFreeDiscount)/
                 (variance*(1.0-riskFreeDiscount));
@@ -182,20 +207,20 @@ namespace QuantLib {
             switch (payoff->optionType()) {
                 case Option::Call:
                     Q = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0))+4.0*K))/2.0;
-                    a =  (Sk/Q) * (1.0 - dividendDiscount * CND(d1));
-                    if (arguments_.blackScholesProcess->stateVariable->value()<Sk) {
-                        results_.value = black.value() + a * QL_POW((arguments_.blackScholesProcess->stateVariable->value()/Sk), Q);
+                    a =  (Sk/Q) * (1.0 - dividendDiscount * cumNormalDist(d1));
+                    if (spot<Sk) {
+                        results_.value = black.value() + a * QL_POW((spot/Sk), Q);
                     } else {
-                        results_.value = arguments_.blackScholesProcess->stateVariable->value() - payoff->strike();
+                        results_.value = spot - payoff->strike();
                     }
                     break;
                 case Option::Put:
                     Q = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0))+4.0*K))/2.0;
-                    a = -(Sk/Q) * (1.0 - dividendDiscount * CND(-d1));
-                    if (arguments_.blackScholesProcess->stateVariable->value()>Sk) {
-                        results_.value = black.value() + a * QL_POW((arguments_.blackScholesProcess->stateVariable->value()/Sk), Q);
+                    a = -(Sk/Q) * (1.0 - dividendDiscount * cumNormalDist(-d1));
+                    if (spot>Sk) {
+                        results_.value = black.value() + a * QL_POW((spot/Sk), Q);
                     } else {
-                        results_.value = payoff->strike() - arguments_.blackScholesProcess->stateVariable->value();
+                        results_.value = payoff->strike() - spot;
                     }
                     break;
                 default:

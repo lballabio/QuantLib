@@ -27,7 +27,7 @@ namespace QuantLib {
 
     namespace {
 
-        CumulativeNormalDistribution CND;
+        CumulativeNormalDistribution cumNormalDist;
 
         double phi(double S, double gamma, double H, double I,
             double rfD, double dD, double variance) {
@@ -35,11 +35,14 @@ namespace QuantLib {
             double bT = QL_LOG(dD/rfD);
             double rT = QL_LOG(1.0/rfD);
 
-            double lambda = (-rT + gamma * bT + 0.5 * gamma * (gamma - 1.0) * variance);
-            double d = -(QL_LOG(S / H) + (bT + (gamma - 0.5) * variance) ) / QL_SQRT(variance);
+            double lambda = (-rT + gamma * bT + 0.5 * gamma * (gamma - 1.0)
+                * variance);
+            double d = -(QL_LOG(S / H) + (bT + (gamma - 0.5) * variance) )
+                / QL_SQRT(variance);
             double kappa = 2.0 * bT / variance + (2.0 * gamma - 1.0);
-            return QL_EXP(lambda) * QL_POW(S, gamma) * (CND(d)
-                - QL_POW((I / S), kappa) * CND(d - 2.0 * QL_LOG(I / S) / QL_SQRT(variance)));
+            return QL_EXP(lambda) * QL_POW(S, gamma) * (cumNormalDist(d)
+                - QL_POW((I / S), kappa) *
+                cumNormalDist(d - 2.0 * QL_LOG(I / S) / QL_SQRT(variance)));
         }
 
 
@@ -49,10 +52,12 @@ namespace QuantLib {
             double bT = QL_LOG(dD/rfD);
             double rT = QL_LOG(1.0/rfD);
     
-            double Beta = (0.5 - bT/variance) + QL_SQRT(QL_POW((bT/variance - 0.5), 2.0) + 2.0 * rT/variance);
+            double Beta = (0.5 - bT/variance) +
+                QL_SQRT(QL_POW((bT/variance - 0.5), 2.0) + 2.0 * rT/variance);
             double BInfinity = Beta / (Beta - 1.0) * X;
             double B0 = QL_MAX(X, rT / (rT - bT) * X);
-            double ht = -(bT + 2.0 * QL_SQRT(variance)) * B0 / (BInfinity - B0);
+            double ht = -(bT + 2.0 * QL_SQRT(variance)) * B0 /
+                (BInfinity - B0);
             double I = B0 + (BInfinity - B0) * (1 - QL_EXP(ht));
             double alpha = (I - X) * QL_POW(I, (-Beta));
             if (S >= I)
@@ -77,7 +82,8 @@ namespace QuantLib {
         Handle<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex,
-                   "BjerksundStenslandApproximationEngine: non-American exercise given");
+                   "BjerksundStenslandApproximationEngine: "
+                   "non-American exercise given");
         #else
         Handle<AmericanExercise> ex = arguments_.exercise;
         #endif
@@ -100,19 +106,21 @@ namespace QuantLib {
             arguments_.blackScholesProcess->dividendTS->discount(ex->lastDate());
         DiscountFactor riskFreeDiscount =
             arguments_.blackScholesProcess->riskFreeTS->discount(ex->lastDate());
-        double forwardPrice = arguments_.blackScholesProcess->stateVariable->value() *
+        double spot = arguments_.blackScholesProcess->stateVariable->value();
+        double forwardPrice = spot *
             dividendDiscount / riskFreeDiscount;
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
         if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
             // early exercise never optimal
             results_.value        = black.value();
-            results_.delta        = black.delta(arguments_.blackScholesProcess->stateVariable->value());
+            results_.delta        = black.delta(spot);
             results_.deltaForward = black.deltaForward();
-            results_.elasticity   = black.elasticity(arguments_.blackScholesProcess->stateVariable->value());
-            results_.gamma        = black.gamma(arguments_.blackScholesProcess->stateVariable->value());
+            results_.elasticity   = black.elasticity(spot);
+            results_.gamma        = black.gamma(spot);
 
-            Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+            Time t =
+                arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
                 arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
                 arguments_.exercise->lastDate());
             results_.rho = black.rho(t);
@@ -126,8 +134,8 @@ namespace QuantLib {
                 arguments_.blackScholesProcess->volTS->referenceDate(),
                 arguments_.exercise->lastDate());
             results_.vega        = black.vega(t);
-            results_.theta       = black.theta(arguments_.blackScholesProcess->stateVariable->value(), t);
-            results_.thetaPerDay = black.thetaPerDay(arguments_.blackScholesProcess->stateVariable->value(), t);
+            results_.theta       = black.theta(spot, t);
+            results_.thetaPerDay = black.thetaPerDay(spot, t);
 
             results_.strikeSensitivity = black.strikeSensitivity();
             results_.itmProbability    = black.itmProbability();
@@ -136,14 +144,15 @@ namespace QuantLib {
             switch (payoff->optionType()) {
                 case Option::Call:
                     results_.value = americanCallApproximation(
-                        arguments_.blackScholesProcess->stateVariable->value(), payoff->strike(),
+                        spot, payoff->strike(),
                         riskFreeDiscount, dividendDiscount, variance);
                     break;
                 case Option::Put:
                     // Use the Bjerksund and Stensland put-call transformation
                     results_.value = americanCallApproximation(
-                        payoff->strike(), arguments_.blackScholesProcess->stateVariable->value(),
-                        riskFreeDiscount/dividendDiscount, 1.0/dividendDiscount, variance);
+                        payoff->strike(), spot,
+                        riskFreeDiscount/dividendDiscount,
+                        1.0/dividendDiscount, variance);
                     break;
                 default:
                     throw Error("BaroneAdesiWhaleyApproximationEngine::"
