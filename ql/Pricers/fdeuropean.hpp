@@ -38,14 +38,14 @@ namespace QuantLib {
         class FdEuropean : public FdBsmOption {
           public:
             FdEuropean(Option::Type type,
-                                     double underlying,
-                                     double strike,
-                                     Spread dividendYield,
-                                     Rate riskFreeRate,
-                                     Time residualTime,
-                                     double volatility,
-                                     Size timeSteps = 200,
-                                     Size gridPoints = 800);
+                       double underlying,
+                       double strike,
+                       Spread dividendYield,
+                       Rate riskFreeRate,
+                       Time residualTime,
+                       double volatility,
+                       Size timeSteps = 200,
+                       Size gridPoints = 800);
                    Array getPrices() const;
             Handle<SingleAssetOption> clone() const{
                 return Handle<SingleAssetOption>(
