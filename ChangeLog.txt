@@ -1,3 +1,7 @@
+2002-04-08 07:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.21): updated
+
 2002-04-08 07:35  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* ql/: Math/normaldistribution.cpp (1.6),
