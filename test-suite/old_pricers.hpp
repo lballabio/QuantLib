@@ -23,8 +23,6 @@
 
 class OldPricerTest : public CppUnit::TestFixture {
   public:
-    void testBarrierPricer();
-    void testBinaryPricer();
     void testCliquetPricer();
     void testDividendEuropeanPricer();
     void testFdEuropeanPricer();
