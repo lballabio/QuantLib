@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.21  2001/03/06 15:12:35  marmar
+    80 column format enforced
+
     Revision 1.20  2001/03/02 08:36:45  enri
     Shout options added:
     	* BSMAmericanOption is now AmericanOption, same interface
@@ -140,7 +143,8 @@ namespace QuantLib {
                 do {
                     Handle<StandardStepCondition> americanCondition(
                         new AmericanCondition(initialPrices_));
-                    StandardFiniteDifferenceModel model(finiteDifferenceOperator_);
+                    StandardFiniteDifferenceModel
+                         model(finiteDifferenceOperator_);
                     Time endDate;
                     if (j >= 0)
                         endDate = theExDivDates[j];
@@ -220,12 +224,12 @@ namespace QuantLib {
 
             int j;
             Array vOldGrid(oldGrid + Div);
-            CubicSpline<Array::iterator,Array::iterator> priceSpline(
+            CubicSpline<Array::iterator, Array::iterator> priceSpline(
                 vOldGrid.begin(), vOldGrid.end(), prices.begin());
             if (optionIsAmerican_) {
                 for (j = 0; j < prices.size(); j++)
-                    prices[j] = QL_MAX(priceSpline(newGrid[j]) , 
-                        initialPrices_[j]);
+                    prices[j] = QL_MAX(priceSpline(newGrid[j]), 
+                                       initialPrices_[j]      );
             } else {
                 for (j = 0; j < prices.size(); j++)
                     prices[j] = priceSpline(newGrid[j]);
