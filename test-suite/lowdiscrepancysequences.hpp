@@ -60,6 +60,7 @@ class LowDiscrepancyTest {
     static void testSobolLevitanSobolDiscrepancy();
     static void testSobolLevitanLemieuxSobolDiscrepancy();
     static void testUnitSobolDiscrepancy();
+    static void testRandomizedLowDiscrepancySequence();
 
     static boost::unit_test_framework::test_suite* suite();
 };

@@ -7987,10 +7987,19 @@
 				RelativePath="ql\RandomNumbers\primitivepolynomials.h">
 			</File>
 			<File
+				RelativePath=".\ql\RandomNumbers\randomizedlds.hpp">
+			</File>
+			<File
 				RelativePath="ql\RandomNumbers\randomsequencegenerator.hpp">
 			</File>
 			<File
 				RelativePath="ql\RandomNumbers\rngtraits.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\RandomNumbers\seedgenerator.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\RandomNumbers\seedgenerator.hpp">
 			</File>
 			<File
 				RelativePath="ql\RandomNumbers\sobolrsg.cpp">

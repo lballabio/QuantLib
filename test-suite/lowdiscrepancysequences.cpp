@@ -22,6 +22,7 @@
 #include <ql/RandomNumbers/haltonrsg.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 #include <ql/RandomNumbers/primitivepolynomials.h>
+#include <ql/RandomNumbers/randomizedlds.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
 
@@ -68,8 +69,48 @@ void LowDiscrepancyTest::testPolynomialsModuloTwo() {
 
 }
 
+void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
+
+    BOOST_MESSAGE("Testing Randomized low discrepancy sequances up to "
+                  "dimension " + IntegerFormatter::toString(PPMT_MAX_DIM) +
+                  "...");
+
+
+    RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(PPMT_MAX_DIM);
+    rldsg.nextSequence();
+    rldsg.lastSequence();
+    rldsg.nextRandomizer();
+
+    MersenneTwisterUniformRng t0;
+    SobolRsg t1(PPMT_MAX_DIM);
+    RandomSequenceGenerator<MersenneTwisterUniformRng> t2(PPMT_MAX_DIM);
+    RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg2(t1, t2);
+    rldsg2.nextSequence();
+    rldsg2.lastSequence();
+    rldsg2.nextRandomizer();
+
+    RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg3(t1);
+    rldsg3.nextSequence();
+    rldsg3.lastSequence();
+    rldsg3.nextRandomizer();
+
+}
 
 void LowDiscrepancyTest::testSobol() {
+
+
+    RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(5);
+    rldsg.nextSequence();
+    rldsg.nextRandomizer();
+
+    MersenneTwisterUniformRng t0;
+    SobolRsg t1(5);
+    RandomSequenceGenerator<MersenneTwisterUniformRng> t2(5);
+    RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg2(t1, t2);
+    rldsg2.nextSequence();
+    rldsg2.lastSequence();
+    rldsg2.nextRandomizer();
+
 
     BOOST_MESSAGE("Testing Sobol sequences up to dimension " +
                   IntegerFormatter::toString(PPMT_MAX_DIM) + "...");
@@ -919,6 +960,9 @@ void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
 
 test_suite* LowDiscrepancyTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
+
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testRandomizedLowDiscrepancySequence));
 
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testMersenneTwisterDiscrepancy));
