@@ -25,6 +25,9 @@
 /*! \file riskmeasures.hpp
     $Source$
     $Log$
+    Revision 1.3  2001/06/11 13:51:34  aleppo
+    Potential  Up Front added
+
     Revision 1.2  2001/05/28 13:09:55  nando
     R019-branch-merge3 merged into trunk
 
@@ -52,6 +55,9 @@ namespace QuantLib {
         class RiskMeasures {
           public:
             RiskMeasures() {}
+            double potentialUpFront(double percentile,
+                                    double mean,
+                                    double std) const ;
             double valueAtRisk(double percentile,
                                double mean,
                                double std) const ;
@@ -67,6 +73,20 @@ namespace QuantLib {
        };
 
         // inline definitions
+        /*! \pre percentile must be in range 90%-100% */
+        inline double RiskMeasures::potentialUpFront(double percentile,
+                                                     double mean,
+                                                     double std) const {
+            QL_REQUIRE(percentile<1.0 && percentile>=0.9,
+                "RsikMeasures::valueAtRisk : percentile (" +
+                DoubleFormatter::toString(percentile) +
+                ") out of range 90%-100%");
+
+            Math::InvCumulativeNormalDistribution gInverse(mean, std);
+            // PotenzialUpFront must be a gain
+            // this means that it has to be MAX(dist(percentile), 0.0)
+            return QL_MAX(gInverse(percentile), 0.0);
+        }
 
         /*! \pre percentile must be in range 90%-100% */
         inline double RiskMeasures::valueAtRisk(double percentile,

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/11 13:51:16  aleppo
+// Potential  Up Front added
+//
 // Revision 1.5  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -74,6 +77,12 @@ namespace QuantLib {
         double max() const {return statistics_.max(); }
 
         // RiskMeasures proxy methods
+        //! returns the Potential-Up-Front at a given percentile
+        double potentialUpFront(double percentile) const {
+            return riskMeasures_.potentialUpFront(percentile,
+                                               statistics_.mean(),
+                                               statistics_.standardDeviation());
+        }
         //! returns the Value-At-Risk at a given percentile
         double valueAtRisk(double percentile) const {
             return riskMeasures_.valueAtRisk(percentile,
