@@ -28,7 +28,8 @@
 #define HAVE_EXPRESSION_TEMPLATES
 #define HAVE_TEMPLATE_METAPROGRAMMING
 
-#define QL_ITERATOR std::iterator
+#define QL_ITERATOR         std::iterator
+#define QL_ITERATOR_TRAITS  std::iterator_traits
 
 
 #endif

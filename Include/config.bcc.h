@@ -27,7 +27,8 @@
 
 #define HAVE_EXPRESSION_TEMPLATES
 
-#define QL_ITERATOR std::iterator
+#define QL_ITERATOR         std::iterator
+#define QL_ITERATOR_TRAITS  std::iterator_traits
 
 
 #endif

@@ -22,7 +22,8 @@
 #define QL_TOLOWER  tolower
 #define QL_TOUPPER  toupper
 
-#define QL_ITERATOR std::iterator
+#define QL_ITERATOR         std::iterator
+#define QL_ITERATOR_TRAITS  std::iterator_traits
 
 
 #endif
