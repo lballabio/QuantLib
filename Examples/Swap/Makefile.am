@@ -1,4 +1,4 @@
-CXXFLAGS = -g -O1 -pedantic -Wall @QUANTLIB_CXXFLAGS@
+CXXFLAGS = @CXXFLAGS@ @QUANTLIB_CXXFLAGS@
 INCLUDES = -I${top_srcdir} -I${top_builddir}
 
 bin_PROGRAMS = SwapValuation
