@@ -33,7 +33,6 @@
 #ifndef quantlib_pagoda_option_pricer_h
 #define quantlib_pagoda_option_pricer_h
 
-#include "ql/types.hpp"
 #include "ql/MonteCarlo/multifactorpricer.hpp"
 
 namespace QuantLib {

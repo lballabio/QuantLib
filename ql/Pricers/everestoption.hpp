@@ -34,7 +34,6 @@
 #ifndef quantlib_pricers_everest_option_h
 #define quantlib_pricers_everest_option_h
 
-#include "ql/date.hpp"
 #include "ql/MonteCarlo/multifactorpricer.hpp"
 
 namespace QuantLib {

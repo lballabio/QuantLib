@@ -50,7 +50,8 @@ namespace QuantLib {
         class ControlVariatedPathPricer: public PathPricer {
           public:
             ControlVariatedPathPricer(Handle<PathPricer> pricer,
-                Handle<PathPricer> controlVariate, double controlVariateValue);
+                                      Handle<PathPricer> controlVariate,
+                                      double controlVariateValue);
             double operator()(const Path &path) const;
           private:
             Handle<PathPricer> pricer_, controlVariate_;

@@ -68,11 +68,10 @@ namespace QuantLib {
         template<class S, class PG, class PP>
         class MonteCarloModel {
           public:
-//            MonteCarloModel();
             MonteCarloModel(const Handle<PG>& pathGenerator,
                             const Handle<PP>& pathPricer,
                             const S& sampleAccumulator);
-            void addSamples(long samples);
+            void addSamples(unsigned int samples);
             const S& sampleAccumulator(void) const;
           private:
             Handle<PG> pathGenerator_;
@@ -93,7 +92,7 @@ namespace QuantLib {
 
         template<class S, class PG, class PP>
         inline void MonteCarloModel<S, PG, PP>::
-                    addSamples(long samples){
+                    addSamples(unsigned int samples) {
             for(long j = 1; j <= samples; j++) {
                 typename PG::sample_type path = pathGenerator_->next();
                 typename PP::result_type price = (*pathPricer_)(path);

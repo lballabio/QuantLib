@@ -42,8 +42,8 @@ namespace QuantLib {
 
         //! Gaussian random number generator
         /*! It uses the well-known fact that the sum of 12 uniform deviate
-            in (-.5,.5) is approximately a Gaussian deviate with average 0.0
-            and standard deviation 1.0,
+            in (-.5,.5) is approximately a Gaussian deviate with average 0
+            and standard deviation 1.
             The uniform deviate is supplied by U.
 
             Class U should satisfies

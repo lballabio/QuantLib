@@ -49,7 +49,7 @@ namespace QuantLib {
           public:
             MultiPathPricer() : isInitialized_(false) {}
             virtual ~MultiPathPricer() {}
-            virtual double operator()(const MultiPath &multiPath) const = 0;
+            virtual double operator()(const MultiPath& multiPath) const = 0;
           protected:
             bool isInitialized_;
         };

@@ -38,8 +38,8 @@ namespace QuantLib {
     namespace MonteCarlo {
         using QuantLib::Math::Matrix;
 
-        Matrix getCovariance(const Array &volatilities,
-                             const Matrix &correlations){
+        Matrix getCovariance(const Array& volatilities,
+                             const Matrix& correlations) {
             unsigned int size = volatilities.size();
             QL_REQUIRE(correlations.rows() == size,
                        "getCovariance: volatilities and correlations "

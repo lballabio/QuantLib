@@ -43,9 +43,13 @@ namespace QuantLib {
         //! geometric Asian option
         class GeometricAsianOption : public EuropeanOption    {
            public:
-            GeometricAsianOption(Option::Type type, double underlying, 
-                double strike, Rate dividendYield, Rate riskFreeRate, 
-                Time residualTime, double volatility);
+            GeometricAsianOption(Option::Type type,
+                                 double underlying,
+                                 double strike,
+                                 Rate dividendYield,
+                                 Rate riskFreeRate,
+                                 Time residualTime,
+                                 double volatility);
             double vega() const;
             double rho() const;
             Handle<SingleAssetOption> clone() const;

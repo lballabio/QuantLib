@@ -53,7 +53,6 @@ namespace QuantLib {
         at discretized time \f$ t_i \f$. The first index refers to the
         underlying, the second to the time position MultiPath[j,i]
         */
-//        typedef QuantLib::Math::Matrix MultiPath;
 
         //! single random walk
         class MultiPath {
@@ -63,10 +62,13 @@ namespace QuantLib {
             MultiPath(const std::vector<Path>& multiPath);
             //! \name inspectors
             //@{
-            const Path& operator[](unsigned int j) const {return multiPath_[j]; }
-            Path& operator[](unsigned int j) {return multiPath_[j]; }
             unsigned int assetNumber() const {return multiPath_.size(); }
             unsigned int pathSize() const {return multiPath_[0].size(); }
+            //@}
+            //! \name read/write access to components
+            //@{
+            const Path& operator[](unsigned int j) const {return multiPath_[j]; }
+            Path& operator[](unsigned int j) {return multiPath_[j]; }
             //@}
           private:
             std::vector<Path> multiPath_;

@@ -47,7 +47,7 @@ namespace QuantLib {
         class PathPricer : public std::unary_function<Path, double> {
           public:
             virtual ~PathPricer() {}
-            virtual double operator()(const Path &path) const=0;
+            virtual double operator()(const Path& path) const=0;
         };
 
     }

@@ -49,7 +49,7 @@ namespace QuantLib {
                                      double strike,
                                      double discount,
                                      bool antitheticVariance);
-            virtual double operator()(const Path &path) const;
+            virtual double operator()(const Path& path) const;
         };
 
     }

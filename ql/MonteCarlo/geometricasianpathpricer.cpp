@@ -49,7 +49,7 @@ namespace QuantLib {
         : SingleAssetPathPricer(type, underlying, strike, discount,
           antitheticVariance) {}
 
-        double GeometricAsianPathPricer::operator()(const Path & path) const {
+        double GeometricAsianPathPricer::operator()(const Path& path) const {
 
             int n = path.size();
             QL_REQUIRE(n>0,"the path cannot be empty");

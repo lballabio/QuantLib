@@ -39,8 +39,7 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         ControlVariatedPathPricer::ControlVariatedPathPricer(
-            Handle<PathPricer > pricer,
-            Handle<PathPricer > controlVariate,
+            Handle<PathPricer > pricer, Handle<PathPricer > controlVariate,
             double controlVariateValue)
         : pricer_(pricer), controlVariate_(controlVariate),
           controlVariateValue_(controlVariateValue) {}

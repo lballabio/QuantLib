@@ -45,8 +45,8 @@ namespace QuantLib {
             used. Also it is assumed that the diagonal member of the
             correlation matrix equals one.
         */
-        Math::Matrix getCovariance(const Array &volatilities,
-            const Math::Matrix &correlations);
+        Math::Matrix getCovariance(const Array& volatilities,
+            const Math::Matrix& correlations);
 
     }
 

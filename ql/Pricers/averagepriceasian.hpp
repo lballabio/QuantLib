@@ -45,10 +45,17 @@ namespace QuantLib {
         //! example of Monte Carlo pricer using a control variate
         class AveragePriceAsian : public McPricer {
           public:
-            AveragePriceAsian(Option::Type type, double underlying,
-                double strike, Rate dividendYield,   Rate riskFreeRate,
-                double residualTime, double volatility, int timesteps,
-                long samples, bool antitheticVariance = false, long seed=0);
+            AveragePriceAsian(Option::Type type,
+                              double underlying,
+                              double strike,
+                              Rate dividendYield,
+                              Rate riskFreeRate,
+                              double residualTime,
+                              double volatility,
+                              int timesteps,
+                              long samples,
+                              bool antitheticVariance,
+                              long seed=0);
         };
 
     }
