@@ -100,7 +100,7 @@ namespace QuantLib {
             These methods must be implemented in derived classes to perform
             the actual discount and rate calculations. When they are called,
             range check has already been performed; therefore, they must
-            assume that extrapolation is to be performed.
+            assume that extrapolation is required.
         */
         //@{
         //! zero-yield calculation
@@ -114,7 +114,7 @@ namespace QuantLib {
         //@}
       private:
         void checkRange(const Date&, bool extrapolate) const;
-        void checkRange(const Time&, bool extrapolate) const;
+        void checkRange(Time, bool extrapolate) const;
     };
 
 
@@ -303,8 +303,7 @@ namespace QuantLib {
         checkRange(t,extrapolate);
     }
 
-    inline void TermStructure::checkRange(const Time& t,
-                                          bool extrapolate) const {
+    inline void TermStructure::checkRange(Time t, bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
                    "negative time (" +
                    DoubleFormatter::toString(t) +
