@@ -15,9 +15,11 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
-       tree.obj$(_D) \
-       trinomialtree.obj$(_D) \
-       twodimensionaltree.obj$(_D)
+       binomialtree.obj$(_D) \
+       bsmlattice.obj$(_D) \
+       lattice.obj$(_D) \
+       lattice2d.obj$(_D) \
+       trinomialtree.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

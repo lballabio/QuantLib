@@ -20,6 +20,7 @@ OBJS = \
        blackswaption.obj$(_D) \
        fdbermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
+       binomialplainoption.obj$(_D) \
        capfloorpricer.obj$(_D) \
        cliquetoption.obj$(_D) \
        discretegeometricapo.obj$(_D) \
