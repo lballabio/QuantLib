@@ -368,9 +368,9 @@ $(INCLUDE_DIR)\secant.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\solver1d.h
 
 # Term structures
 TermStructures: $(TERMSTRUC_OBJS)
-$(OUTPUT_DIR)\piecewiseconstantforwards.obj: $(SOURCES_DIR)\piecewiseconstantforwards.cpp
+$(OUTPUT_DIR)\piecewiseconstantforwards.obj: $(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp
 
-$(SOURCES_DIR)\piecewiseconstantforwards.cpp: $(INCLUDE_DIR)\piecewiseconstantforwards.h
+$(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp: $(INCLUDE_DIR)\piecewiseconstantforwards.h
 	@touch $<
 
 $(INCLUDE_DIR)\deposit.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\calendar.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\daycounter.h $(INCLUDE_DIR)\rate.h
