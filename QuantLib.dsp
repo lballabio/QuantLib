@@ -1020,6 +1020,10 @@ SOURCE=.\Include\ql\calendar.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\ql\cashflow.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Include\ql\config.ansi.hpp
 # End Source File
 # Begin Source File
