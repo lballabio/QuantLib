@@ -29,9 +29,9 @@ experience and interests.
 
 ============= UNIX USERS =================
 
-The simplest way to compile and install %QuantLib is:
+The simplest way to compile and install QuantLib is:
 
--# `cd' to the %QuantLib directory and type `./configure' to configure the
+-# `cd' to the QuantLib directory and type `./configure' to configure the
    package for your system.  If you're using `csh' on an old version of
    System V, you might need to type `sh ./configure' instead to prevent
    `csh' from trying to execute `configure' itself.
@@ -51,7 +51,7 @@ The simplest way to compile and install %QuantLib is:
    m4, GNU make, and maybe others. They all come with recent GNU/Linux
    distributions. To begin the build process after `make distclean' start
    with `sh ./bootstrap' which will prepare the package for compilation. You
-   can then use `configure' and `make' in the usual way.</p>
+   can then use `configure' and `make' in the usual way.
 
 
 GNU Libtool is used to build shared libraries.  Compilation of shared
@@ -78,4 +78,4 @@ Free compiler from: <http://www.borland.com/bcppbuilder/freecompiler/>
 
 QuantLib.nsi is a script file used to generate the Win32 binary installer. It
 has to be used by NSIS, the great free Nullsoft Scriptable Install System, that
-can be downlaoded from <http://www.nullsoft.com/free/nsis/>
+can be downloaded from <http://www.nullsoft.com/free/nsis/>
