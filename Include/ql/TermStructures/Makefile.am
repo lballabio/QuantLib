@@ -3,7 +3,7 @@
 # $Source$
 
 includedir = $(prefix)/include/ql/TermStructures
-include_HEADERS = 
+include_HEADERS = \
     flatforward.hpp \
 	piecewiseflatforwards.hpp \
 	ratehelpers.hpp \
