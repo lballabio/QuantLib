@@ -1,3 +1,4 @@
 A Linux port is not yet ready due to our limited experience with g++.
-The main issue seems to be the lack of a complete implementation of the C++ template standard library in the g++ version bundled with the current Linux distributions. 
-Any contribution is welcome as a Linux g++ port is definitely a priority.
+The main issue seems to be the lack of a complete implementation of the C++ 
+template standard library in gcc. 
+Any contribution is welcome as a Linux gcc port is definitely a priority.
