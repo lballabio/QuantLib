@@ -37,7 +37,7 @@
     \begin{quotation}
         \small Anyone attempting to generate random numbers by
         deterministic means is, of course, living in a state of sin.
-        \hfill --- John Von Neumann
+        \hfill  ---  John Von Neumann
     \end{quotation}
     \endlatexonly
 
@@ -50,7 +50,7 @@
     with the discrete sum
     \f[ \frac{1}{N} \sum_{i=1}^{N} f(\mathbf{x}_i) w(\mathbf{x}_i) \f]
     where the \f$ \mathbf{x}_i \f$ are drawn from \f$ p(\mathbf{x}) \f$,
-    possibly with a weight \f$ w(\mathbf{x}_i) \f$---which otherwise can
+    possibly with a weight \f$ w(\mathbf{x}_i) \f$ --- which otherwise can
     be considered uniformly equal to 1.
 
     The above sum has a straightforward interpretation in the case of
@@ -59,7 +59,7 @@
     follow, while the \f$ f(\mathbf{x}_i) \f$ are the values of the
     derivative on each of such paths. The sum above can therefore be taken
     as an estimate of the price of the derivative, namely, the average of
-    its value on all possible paths---or rather all considered paths. Such
+    its value on all possible paths --- or rather all considered paths. Such
     a method enables the user to construct pricing classes for an unlimited
     range of derivatives, most notably path-dependent ones which cannot be
     priced by means of finite difference methods.
@@ -76,7 +76,7 @@
     \f$ \mathbf{x}_i \f$, the evaluation of the \f$ f(\mathbf{x}_i) \f$,
     and the averaging process itself.
     The QuantLib::MonteCarlo::MonteCarloModel class acts as a glue for
-    such three steps---which are outlined in the following subsections---and
+    such three steps --- which are outlined in the following subsections --- and
     provides the interface of the resulting Monte Carlo model to the
     end user.
 
@@ -102,7 +102,7 @@
     intervals \f$ \Delta t_i, i = 0 \dots M-1 \f$.
     Each such variation will be drawn from a Gaussian distribution with
     average \f$ \nu \Delta T_i \f$ and standard deviation
-    \f$ \sigma \sqrt{\Delta T_i} \f$ --- or possibly \f$ \nu_i \Delta T_i \f$
+    \f$ \sigma \sqrt{\Delta T_i} \f$  ---  or possibly \f$ \nu_i \Delta T_i \f$
     and \f$ \sigma_i \sqrt{\Delta T_i} \f$ should \f$ \nu \f$ and
     \f$ \sigma \f$ vary in time.
 
@@ -122,7 +122,7 @@
     For the time being, the path generator is initialized with a constant
     drift and variance. This requirement will most likely be relaxed in
     the next release. The multi-path generator is initialized with an array
-    of constant drifts---one for each single path---and a covariance matrix
+    of constant drifts --- one for each single path --- and a covariance matrix
     which encapsulates the relations between the diffusion components of
     the single paths.
 
@@ -257,8 +257,8 @@
     \f[ u = u_0 \prod_1^N e^{p_i} =
             u_0 \exp \left( \sum_1^N p_i \right) =
             u_0 \exp \left( \sum_1^N d_i + \sum_1^N r_i \right) \f]
-    while the price on the antithetic path---i.e., same drift and opposite
-    diffusion---is
+    while the price on the antithetic path --- i.e., same drift and opposite
+    diffusion --- is
     \f[ u_0 \exp \left( \sum_1^N d_i - \sum_1^N r_i \right). \f]
 
     The corresponding path pricer can be implemented as:
