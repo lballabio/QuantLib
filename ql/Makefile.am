@@ -83,6 +83,9 @@ depend:
 	makedepend $(INCLUDES) -- $(CFLAGS) -- $(SOURCES)
 
 
+lib_LTLIBRARIES = libQuantLib.la
+libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)
+
 libQuantLib_la_LIBADD = \
     Calendars/libCalendars.la \
     CashFlows/libCashFlows.la \
@@ -114,5 +117,3 @@ libQuantLib_la_SOURCES = \
     grid.cpp \
     scheduler.cpp \
     voltermstructure.cpp
-
-lib_LTLIBRARIES = libQuantLib.la

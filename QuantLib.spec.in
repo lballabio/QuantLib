@@ -106,8 +106,8 @@ rm -rf %{buildroot}
 %{docdir}/INSTALL.txt
 %{docdir}/TODO.txt
 %{_libdir}/libQuantLib.la
-%{_libdir}/libQuantLib.so.0
-%{_libdir}/libQuantLib.so.0.0.0
+%{_libdir}/libQuantLib.so
+%{_libdir}/libQuantLib-0.3.6.so
 
 %files devel
 %defattr(-,root,root)
