@@ -50,10 +50,10 @@ namespace QuantLib {
             double maxCenter = QL_MAX(initialCenter, strikeCenter);
             double minCenter = QL_MIN(initialCenter, strikeCenter);
             double volatility = model.process()->diffusion(0.0, initialCenter);
-            //double volSqrtTime = volatility*QL_SQRT(timeDelay);
-            //double minMaxFactor = 4.0*volSqrtTime + 0.08;
-            double volSqrtTime = volatility*QL_SQRT(residualTime);
-            double minMaxFactor = volSqrtTime;
+            double volSqrtTime = volatility*QL_SQRT(timeDelay);
+            double minMaxFactor = 4.0*volSqrtTime + 0.08;
+            volSqrtTime = volatility*QL_SQRT(residualTime);
+            minMaxFactor = volSqrtTime;
             double xMin = minCenter - minMaxFactor;
             double xMax = maxCenter + minMaxFactor;
             if (xMin<model.minStateVariable())
