@@ -51,8 +51,8 @@ libMath_la_SOURCES = \
 	matrix.cpp \
 	normaldistribution.cpp \
 	primenumbers.cpp \
-	svd.cpp
-	symmetricschurdecomposition.cpp \
+	svd.cpp \
+	symmetricschurdecomposition.cpp
 
 
 noinst_LTLIBRARIES = libMath.la
