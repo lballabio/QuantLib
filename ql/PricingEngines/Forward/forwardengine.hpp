@@ -184,7 +184,7 @@ namespace QuantLib {
             this->arguments_.moneyness * originalResults_->strikeSensitivity);
         this->results_.gamma = 0.0;
         this->results_.theta = process->dividendYield()->
-            zeroRate(this->arguments_.resetDate, divdc, Continuous, Annual)
+            zeroRate(this->arguments_.resetDate, divdc, Continuous, NoFrequency)
             * this->results_.value;
         this->results_.vega  = discQ * originalResults_->vega;
         this->results_.rho   = discQ *  originalResults_->rho;

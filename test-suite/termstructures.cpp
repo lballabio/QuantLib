@@ -259,8 +259,8 @@ void TermStructureTest::testZSpreaded() {
     #else
     DayCounter rfdc  = Settings::instance().dayCounter();
     #endif
-    Rate zero = termStructure_->zeroRate(testDate, rfdc, Continuous, Annual);
-    Rate spreadedZero = spreaded->zeroRate(testDate, rfdc, Continuous, Annual);
+    Rate zero = termStructure_->zeroRate(testDate, rfdc, Continuous, NoFrequency);
+    Rate spreadedZero = spreaded->zeroRate(testDate, rfdc, Continuous, NoFrequency);
     if (QL_FABS(zero - (spreadedZero-me->value())) > tolerance)
         BOOST_FAIL(
             "unable to reproduce zero yield from spreaded curve\n"

@@ -164,7 +164,7 @@ namespace QuantLib {
         if (needsBootstrap_)
             bootstrap();
         //return discountCurve()->zeroYield(t,true);
-        return discountCurve()->zeroRate(t, Continuous, Annual, true);
+        return discountCurve()->zeroRate(t, Continuous, NoFrequency, true);
     }
 
     DiscountFactor CompoundForward::discountImpl(Time t) const {

@@ -141,7 +141,7 @@ namespace QuantLib {
 
     Rate AnalyticBarrierEngine::riskFreeRate() const {
         return arguments_.blackScholesProcess->riskFreeRate()->
-            zeroRate(residualTime(), Continuous, Annual);
+            zeroRate(residualTime(), Continuous, NoFrequency);
     }
 
     DiscountFactor AnalyticBarrierEngine::riskFreeDiscount() const {
@@ -151,7 +151,7 @@ namespace QuantLib {
 
     Rate AnalyticBarrierEngine::dividendYield() const {
         return arguments_.blackScholesProcess->dividendYield()->
-            zeroRate(residualTime(), Continuous, Annual);
+            zeroRate(residualTime(), Continuous, NoFrequency);
     }
 
     DiscountFactor AnalyticBarrierEngine::dividendDiscount() const {

@@ -90,14 +90,14 @@ namespace QuantLib {
         #ifndef QL_DISABLE_DEPRECATED
         //! zero-yield rate
         /*! \deprecated use zeroRate(const Date& d, const DayCounter& dc,
-                                     Continuous, Annual, bool extrapolate)
+                                     Continuous, NoFrequency, bool extrapolate)
                         instead
         */
         Rate zeroYield(const Date&,
                        bool extrapolate = false) const;
 
         //! zero-yield rate
-        /*! \deprecated use zeroRate(Time t, Continuous, Annual,
+        /*! \deprecated use zeroRate(Time t, Continuous, NoFrequency,
                                      bool extrapolate)
                         instead
         */
@@ -199,11 +199,21 @@ namespace QuantLib {
         Rate compoundForward(Time,
                              Integer,
                              bool extrapolate = false) const;
+        #ifndef QL_DISABLE_DEPRECATED
         //! discrete forward rate between two dates
-        Rate forward(const Date&,
-                     const Date&,
+        /*! \deprecated use forwardRate(const Date& d1, const Date& d2,
+                                        const DayCounter& dc,
+                                        Continuous, NoFrequency, bool extrapolate)
+                        instead
+        */
+        Rate forward(const Date& d1,
+                     const Date& d2,
                      bool extrapolate = false) const;
         //! discrete forward rate between two times
+        /*! \deprecated use forwardRate(Time t1, Time t2,
+                                        Continuous, NoFrequency, bool extrapolate)
+                        instead
+        */
         Rate forward(Time,
                      Time,
                      bool extrapolate = false) const;
@@ -212,6 +222,7 @@ namespace QuantLib {
         /*! returns the implied forward Rate between two dates
             The resulting Rate has the required daycounting rule.
         */
+        #endif
         Rate forwardRate(const Date& d1,
                          const Date& d2,
                          const DayCounter& resultDayCounter,
@@ -400,6 +411,10 @@ namespace QuantLib {
             Real compound = discount(t1, extrapolate)/discount(t2, extrapolate);
             return InterestRate::impliedRate(compound, t2-t1, comp, freq);
         }
+        QL_REQUIRE(d1 < d2,
+                   DateFormatter::toString(d1) +
+                   " later than " +
+                   DateFormatter::toString(d2));
         Real compound = discount(d1, extrapolate)/discount(d2, extrapolate);
         return InterestRate::impliedRate(compound,
                                          d1, d2, dayCounter,
@@ -457,6 +472,7 @@ namespace QuantLib {
     }
 
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline Rate YieldTermStructure::forward(const Date& d1, const Date& d2,
                                             bool extrapolate) const {
         QL_REQUIRE(d1 <= d2,
@@ -479,6 +495,7 @@ namespace QuantLib {
         else
             return QL_LOG(discountImpl(t1)/discountImpl(t2))/(t2-t1);
     }
+    #endif
 
                                             
     inline Rate YieldTermStructure::instantaneousForward(const Date& d,

@@ -73,15 +73,6 @@ namespace QuantLib {
 
             BlackFormula black(forward, discount, variance, payoff);
 
-            results_.value += weight * black.value();
-            results_.delta += weight * (black.delta(underlying) +
-                                        moneyness->strike() * discount * 
-                                        black.beta());
-            results_.gamma += 0.0;
-            results_.theta += process->dividendYield()
-                ->forward(resetDates[i-1],resetDates[i]) * 
-                weight * black.value();
-
             #ifndef QL_DISABLE_DEPRECATED
             DayCounter rfdc  = process->riskFreeRate()->dayCounter();
             DayCounter divdc = process->dividendYield()->dayCounter();
@@ -91,6 +82,16 @@ namespace QuantLib {
             DayCounter divdc = Settings::instance().dayCounter();
             DayCounter voldc = Settings::instance().dayCounter();
             #endif
+
+            results_.value += weight * black.value();
+            results_.delta += weight * (black.delta(underlying) +
+                                        moneyness->strike() * discount * 
+                                        black.beta());
+            results_.gamma += 0.0;
+            results_.theta += process->dividendYield()->forwardRate(
+                resetDates[i-1], resetDates[i], rfdc, Continuous, NoFrequency) * 
+                weight * black.value();
+
             Time dt = rfdc.yearFraction(resetDates[i-1],resetDates[i]);
             results_.rho += weight * black.rho(dt);
 

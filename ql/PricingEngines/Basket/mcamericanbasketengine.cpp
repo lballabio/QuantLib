@@ -201,7 +201,7 @@ namespace QuantLib {
         DayCounter rfdc  = Settings::instance().dayCounter();
         #endif
         Rate r = process->riskFreeRate()->
-            zeroRate(arguments_.exercise->lastDate(), rfdc, Continuous, Annual);
+            zeroRate(arguments_.exercise->lastDate(), rfdc, Continuous, NoFrequency);
 
         // counters
         Size i; // for paths

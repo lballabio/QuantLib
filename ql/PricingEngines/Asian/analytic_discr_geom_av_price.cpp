@@ -94,10 +94,10 @@ namespace QuantLib {
         Date exDate = arguments_.exercise->lastDate();
         Rate dividendRate = process->dividendYield()->
             //zeroYield(exDate);
-            zeroRate(exDate, divdc, Continuous, Annual);
+            zeroRate(exDate, divdc, Continuous, NoFrequency);
         Rate riskFreeRate = process->riskFreeRate()->
             //zeroYield(exDate);
-            zeroRate(exDate, rfdc, Continuous, Annual);
+            zeroRate(exDate, rfdc, Continuous, NoFrequency);
         Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
         Real muG = pastWeight * runningLog +
             futureWeight * QL_LOG(process->stateVariable()->value()) +

@@ -69,9 +69,9 @@ namespace QuantLib {
             arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
         Rate r = process->riskFreeRate()->zeroRate(maturityDate,
-            rfdc, Continuous, Annual);
+            rfdc, Continuous, NoFrequency);
         Rate q = process->dividendYield()->zeroRate(maturityDate,
-            divdc, Continuous, Annual);
+            divdc, Continuous, NoFrequency);
         Date referenceDate = process->riskFreeRate()->referenceDate();
 
         // binomial trees with constant coefficient
