@@ -23,16 +23,28 @@ namespace QuantLib {
 
     void AnalyticDiscreteGeometricAveragePriceAsianEngine::calculate() const {
 
+        /* this engine cannot really check for the averageType==Geometric
+           since it can be used as control variate for the Arithmetic version
         QL_REQUIRE(arguments_.averageType == Average::Geometric,
                    "not a geometric average option");
+       */
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        QL_REQUIRE(arguments_.runningAccumulator>0.0,
-                   "positive running product required: "
-                   + DecimalFormatter::toString(arguments_.runningAccumulator) +
-                   " not allowed");
+        Real runningLog;
+        Size pastFixings;
+        if (arguments_.averageType == Average::Geometric) {
+            QL_REQUIRE(arguments_.runningAccumulator>0.0,
+                "positive running product required: "
+                + DecimalFormatter::toString(arguments_.runningAccumulator) +
+                " not allowed");
+            runningLog = QL_LOG(arguments_.runningAccumulator);
+            pastFixings = arguments_.pastFixings;
+        } else {  // it is being used as control variate
+            runningLog = 1.0;
+            pastFixings = 0;
+        }
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
@@ -52,7 +64,6 @@ namespace QuantLib {
             }
         }
 
-        Size pastFixings = arguments_.pastFixings;
         Size remainingFixings = fixingTimes.size();
         Real N = Real(pastFixings + remainingFixings);
 
@@ -77,7 +88,6 @@ namespace QuantLib {
         Rate riskFreeRate = process->riskFreeRate()->zeroYield(
                                              arguments_.exercise->lastDate());
         Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
-        Real runningLog = QL_LOG(arguments_.runningAccumulator);
         Real muG = pastWeight * runningLog +
             futureWeight * QL_LOG(process->stateVariable()->value()) +
             nu*timeSum/N;
