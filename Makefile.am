@@ -2,14 +2,27 @@ AUTOMAKE_OPTIONS=foreign
 
 SUBDIRS=Sources Include Docs SWIG Python Ruby Examples
 
-EXTRA_DIST=News.txt Authors.txt Contributors.txt \
-	History.txt LICENSE.TXT Readme.txt \
-	updateproject.sh makefile.mak \
-	README-win.txt QuantLib.dsp \
-	README-mac.txt QuantLib.prj QuantLib.prj.exp
+EXTRA_DIST=Authors.txt \
+    Contributors.txt \
+	History.txt \
+	LICENSE.TXT \
+	makefile.mak \
+    News.txt \
+	QuantLib.dsp \
+	QuantLib.dsw \
+	QuantLib.mak \
+	QuantLib.prj \
+	QuantLib.prj.exp
+	Readme.txt \
+	README-win.txt \
+	README-mac.txt \
+	updateproject.sh \
+	lib/README.txt \
+	lib/Win32/Borland/README.txt \
+	lib/Win32/VisualStudio/README.txt \
 
 if PYTHON_FOUND
-if SWIG_FOUND 
+if SWIG_FOUND
 python:
 	$(MAKE) -C Python python
 else

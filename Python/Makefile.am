@@ -1,8 +1,16 @@
 
 SUBDIRS=Tests COM
 
-EXTRA_DIST=QuantLib.py quantlib_wrap.cpp QuantLibc.def \
-	README.txt setup.py makefile.mak
+EXTRA_DIST=	makefile.mak \
+    PyQuantLib.dsp \
+    PyQuantLib.dsw \
+    PyQuantLib.mak \
+    PyWrap.bat \
+    QuantLib.py \
+    quantlib_wrap.cpp \
+    QuantLibc.def \
+	README.txt \
+	setup.py \
 
 SWIG_INCLUDEDIR = ../SWIG
 
