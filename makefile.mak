@@ -17,6 +17,8 @@
 quantlib::
     cd ql
     $(MAKE)
+    #    cd ..\test-suite
+    #    $(MAKE) -DQL_DIR=".."
     cd ..\Examples
     $(MAKE) -DQL_DIR="..\.."
     cd ..
@@ -66,6 +68,8 @@ docs-ps:
 # Clean up
 clean::
     cd ql
+    $(MAKE) clean
+    cd ..\test-suite
     $(MAKE) clean
     cd ..\Examples
     $(MAKE) clean

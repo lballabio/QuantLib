@@ -1371,15 +1371,19 @@ SOURCE=.\ql\RandomNumbers\centrallimitgaussianrng.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\halton.cpp
+SOURCE=.\ql\RandomNumbers\haltonrsg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\halton.hpp
+SOURCE=.\ql\RandomNumbers\haltonrsg.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\inversecumgaussianrng.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\inversecumgaussianrsg.hpp
 # End Source File
 # Begin Source File
 
@@ -1400,6 +1404,10 @@ SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.hpp
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\randomarraygenerator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\randomsequencegenerator.hpp
 # End Source File
 # Begin Source File
 

@@ -251,7 +251,7 @@
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>
-#include <ql/RandomNumbers/halton.hpp>
+#include <ql/RandomNumbers/haltonrsg.hpp>
 #include <ql/RandomNumbers/inversecumgaussianrng.hpp>
 #include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
 #include <ql/RandomNumbers/knuthuniformrng.hpp>

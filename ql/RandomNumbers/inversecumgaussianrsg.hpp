@@ -42,12 +42,12 @@ namespace QuantLib {
             approximately a Gaussian deviate with average 0.0 and standard
             deviation 1.0.
 
-            The uniform deviate sequence is supplied by U.
+            The uniform deviate sequence is supplied by USG.
 
-            Class U must implement the following interface:
+            Class USG must implement the following interface:
             \code
-                U::sample_type U::next() const;
-                Size U::dimension() const;
+                USG::sample_type USG::next() const;
+                Size USG::dimension() const;
             \endcode
 
             The inverse cumulative normal distribution is supplied by I.
@@ -58,31 +58,33 @@ namespace QuantLib {
                 double I::operator() const;
             \endcode
         */
-        template <class U, class I>
+        template <class USG, class I>
         class ICGaussianRsg {
           public:
             typedef MonteCarlo::Sample<Array> sample_type;
-            explicit ICGaussianRsg(const U& uniformSequenceGenerator);
+            explicit ICGaussianRsg(const USG& uniformSequenceGenerator);
             //! returns next sample from the Gaussian distribution
             const sample_type& nextSequence() const;
             Size dimension() const {return dimension_;}
           private:
-            U uniformSequenceGenerator_;
+            USG uniformSequenceGenerator_;
             Size dimension_;
             mutable sample_type x;
             I ICND_;
         };
 
-        template <class U, class I>
-        ICGaussianRsg<U, I>::ICGaussianRsg(const U& uniformSequenceGenerator)
+        template <class USG, class I>
+        ICGaussianRsg<USG, I>::ICGaussianRsg(
+            const USG& uniformSequenceGenerator)
         : uniformSequenceGenerator_(uniformSequenceGenerator),
           dimension_(uniformSequenceGenerator_.dimension()),
           x(Array(dimension_), 1.0) {}
 
-        template <class U, class I>
-        inline const typename ICGaussianRsg<U, I>::sample_type& 
-        ICGaussianRsg<U, I>::nextSequence() const {
-            typename U::sample_type sample = uniformSequenceGenerator_.nextSequence();
+        template <class USG, class I>
+        inline const typename ICGaussianRsg<USG, I>::sample_type&
+        ICGaussianRsg<USG, I>::nextSequence() const {
+            typename USG::sample_type sample =
+                uniformSequenceGenerator_.nextSequence();
             x.weight = sample.weight;
             for (Size i = 0; i < dimension_; i++) {
                 x.value[i] = ICND_(sample.value[i]);

@@ -176,8 +176,8 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
-	-@erase "$(INTDIR)\halton.obj"
-	-@erase "$(INTDIR)\halton.sbr"
+	-@erase "$(INTDIR)\haltonrsg.obj"
+	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
@@ -400,6 +400,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
@@ -463,7 +464,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\fdvanillaengine.sbr" \
-	"$(INTDIR)\halton.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
@@ -502,7 +502,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\errorfunction.sbr"
+	"$(INTDIR)\haltonrsg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -559,6 +559,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
@@ -622,7 +623,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\fdvanillaengine.obj" \
-	"$(INTDIR)\halton.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\caphelper.obj" \
@@ -661,7 +661,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\errorfunction.obj"
+	"$(INTDIR)\haltonrsg.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -814,8 +814,8 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
-	-@erase "$(INTDIR)\halton.obj"
-	-@erase "$(INTDIR)\halton.sbr"
+	-@erase "$(INTDIR)\haltonrsg.obj"
+	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
@@ -1039,6 +1039,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
@@ -1102,7 +1103,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\fdvanillaengine.sbr" \
-	"$(INTDIR)\halton.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
@@ -1141,7 +1141,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\errorfunction.sbr"
+	"$(INTDIR)\haltonrsg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1198,6 +1198,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
@@ -1261,7 +1262,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\fdvanillaengine.obj" \
-	"$(INTDIR)\halton.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\caphelper.obj" \
@@ -1300,7 +1300,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\errorfunction.obj"
+	"$(INTDIR)\haltonrsg.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1453,8 +1453,8 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
-	-@erase "$(INTDIR)\halton.obj"
-	-@erase "$(INTDIR)\halton.sbr"
+	-@erase "$(INTDIR)\haltonrsg.obj"
+	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
@@ -1677,6 +1677,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
@@ -1740,7 +1741,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\fdvanillaengine.sbr" \
-	"$(INTDIR)\halton.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
@@ -1779,7 +1779,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\errorfunction.sbr"
+	"$(INTDIR)\haltonrsg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1836,6 +1836,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
@@ -1899,7 +1900,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\fdvanillaengine.obj" \
-	"$(INTDIR)\halton.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\caphelper.obj" \
@@ -1938,7 +1938,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\errorfunction.obj"
+	"$(INTDIR)\haltonrsg.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2091,8 +2091,8 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
-	-@erase "$(INTDIR)\halton.obj"
-	-@erase "$(INTDIR)\halton.sbr"
+	-@erase "$(INTDIR)\haltonrsg.obj"
+	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
@@ -2316,6 +2316,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
@@ -2379,7 +2380,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\fdvanillaengine.sbr" \
-	"$(INTDIR)\halton.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
@@ -2418,7 +2418,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\errorfunction.sbr"
+	"$(INTDIR)\haltonrsg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2475,6 +2475,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
@@ -2538,7 +2539,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\fdvanillaengine.obj" \
-	"$(INTDIR)\halton.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\caphelper.obj" \
@@ -2577,7 +2577,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\errorfunction.obj"
+	"$(INTDIR)\haltonrsg.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3293,9 +3293,9 @@ SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\RandomNumbers\halton.cpp
+SOURCE=.\ql\RandomNumbers\haltonrsg.cpp
 
-"$(INTDIR)\halton.obj"	"$(INTDIR)\halton.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\haltonrsg.obj"	"$(INTDIR)\haltonrsg.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

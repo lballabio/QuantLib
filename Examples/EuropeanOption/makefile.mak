@@ -1,6 +1,6 @@
 
 #
-# makefile for EuropeanOption.cpp under Borland C++
+# makefile for test-suite.cpp under Borland C++
 #
 # $Id$
 
@@ -32,8 +32,8 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
 
 # Primary target:
-EuropeanOption$(_D).exe: EuropeanOption.cpp
-    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) -oEuropeanOption$(_D).obj -eEuropeanOption$(_D).exe EuropeanOption.cpp QuantLib$(_D).lib
+test-suite$(_D).exe: test-suite.cpp
+    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) -otest-suite$(_D).obj -etest-suite$(_D).exe test-suite.cpp QuantLib$(_D).lib
 
 # Clean up
 clean::
