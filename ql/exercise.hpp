@@ -35,6 +35,8 @@
 namespace QuantLib {
 
     //! Exercise class (American, Bermudan or European)
+    /*! \warning the input dates must be effective (adjusted) exercise dates.
+    */
     class Exercise {
       public:
         enum Type { American, Bermudan, European };
@@ -46,22 +48,11 @@ namespace QuantLib {
         Date date(Size index = 0) const;
         const std::vector<Date>& dates() const;
 
-        // please add a comment here
-        // I wouldn't allow for date adjustment in the Exercise class
-        // this is dangerous
-        // the user should provide the real exercise dates
-        RollingConvention rollingConvention() const;
-        Calendar calendar() const;
-        int settlementDays() const;
-
       protected:
         std::vector<Date> dates_;
 
       private:
         Type type_;
-        Calendar calendar_;
-        RollingConvention convention_;
-        int settlementDays_;
     };
 
     //! American exercise class
@@ -92,8 +83,7 @@ namespace QuantLib {
     // inline definitions
 
     inline Exercise::Exercise(Type type, const std::vector<Date>& dates)
-    : dates_(dates), type_(type), calendar_(Calendars::TARGET()),
-      convention_(ModifiedFollowing), settlementDays_(0) {}
+    : dates_(dates), type_(type) {}
 
     inline Exercise::Type Exercise::type() const {
         return type_;
@@ -105,18 +95,6 @@ namespace QuantLib {
 
     inline const std::vector<Date>& Exercise::dates() const {
         return dates_;
-    }
-
-    inline RollingConvention Exercise::rollingConvention() const {
-        return convention_;
-    }
-
-    inline Calendar Exercise::calendar() const {
-        return calendar_;
-    }
-
-    inline int Exercise::settlementDays() const {
-        return settlementDays_;
     }
 
     inline AmericanExercise::AmericanExercise(Date earliest, Date latest)

@@ -35,16 +35,26 @@ namespace QuantLib {
 
     namespace TermStructures {
 
+        //! Term-structure implied by an affine model
+        /*! This class defines a term-structure that is based on an affine
+            model, e.g. Vasicek or Cox-Ingersoll-Ross. It either be instanced
+            using a model with defined parameters, or the model can be 
+            calibrated to a set of rate helpers. Of course, there is no point
+            in using a term-structure consistent affine model, since the implied
+            term-structure will just be the initial term-structure on which the
+            model is based.
+        */
         class AffineTermStructure : public DiscountStructure,
                                     public Patterns::Observer {
           public:
-            // constructor
+            //! constructor using a fixed model
             AffineTermStructure(
                 Currency currency,
                 const DayCounter& dayCounter,
                 const Date& todaysDate, const Calendar& calendar,
                 int settlementDays, 
                 const Handle<ShortRateModels::AffineModel>& model);
+            //! constructor using a model that has to be calibrated
             AffineTermStructure(
                 Currency currency,
                 const DayCounter& dayCounter,
@@ -53,6 +63,7 @@ namespace QuantLib {
                 const Handle<ShortRateModels::AffineModel>& model,
                 const std::vector<Handle<RateHelper> >& instruments,
                 const Handle<Optimization::Method>& method);
+
             // inspectors
             Currency currency() const;
             DayCounter dayCounter() const;
@@ -64,11 +75,8 @@ namespace QuantLib {
             Date minDate() const;
             Time maxTime() const;
             Time minTime() const;
-            //@}
-            //! \name Observer interface
-            //@{
+
             void update();
-            //@}
           protected:
             DiscountFactor discountImpl(Time,
                 bool extrapolate = false) const;

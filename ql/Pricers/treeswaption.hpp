@@ -26,7 +26,7 @@
 #define quantlib_pricers_tree_swaption_h
 
 #include <ql/Pricers/swaptionpricer.hpp>
-#include <ql/Lattices/tree.hpp>
+#include <ql/Lattices/lattice.hpp>
 #include <ql/ShortRateModels/model.hpp>
 
 namespace QuantLib {
@@ -48,7 +48,7 @@ namespace QuantLib {
           private:
             TimeGrid timeGrid_;
             Size timeSteps_;
-            Handle<Lattices::Tree> tree_;
+            Handle<Lattices::Lattice> tree_;
         };
 
     }

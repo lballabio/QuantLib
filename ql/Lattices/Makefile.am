@@ -5,16 +5,20 @@ INCLUDES= -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Lattices
 
 include_HEADERS = \
-    column.hpp \
+    binomialtree.hpp \
+    bsmlattice.hpp \
+    lattice.hpp \
+    lattice2d.hpp \
     tree.hpp \
-    trinomialtree.hpp \
-    twodimensionaltree.hpp
+    trinomialtree.hpp
 
 EXTRA_DIST=makefile.mak
 
 libLattices_la_SOURCES = \
-    tree.cpp \
-    trinomialtree.cpp \
-    twodimensionaltree.cpp
+    binomialtree.cpp \
+    bsmlattice.cpp \
+    lattice.cpp \
+    lattice2d.cpp \
+    trinomialtree.cpp
 
 noinst_LTLIBRARIES = libLattices.la

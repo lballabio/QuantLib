@@ -40,10 +40,10 @@ namespace QuantLib {
 
             void reset(Size size) {
                 values_ = Array(size, 0.0);
-                applyCondition();
+                adjustValues();
             }
 
-            void applyCondition();
+            void adjustValues();
 
             void addTimes(std::list<Time>& times) const {
                 Size i;
@@ -74,10 +74,10 @@ namespace QuantLib {
 
             void reset(Size size) {
                 values_ = Array(size, 0.0);
-                applyCondition();
+                adjustValues();
             }
 
-            virtual void applyCondition();
+            virtual void adjustValues();
 
             void addTimes(std::list<Time>& times) const {
                 swap_->addTimes(times);

@@ -13,65 +13,60 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file tree.cpp
-    \brief Tree class
+/*! \file lattice.cpp
+    \brief Lattice class
 
     \fullpath
-    ql/Lattices/%tree.cpp
+    ql/Lattices/%lattice.cpp
 */
 
 // $Id$
 
-#include "ql/Lattices/tree.hpp"
+#include "ql/Lattices/lattice.hpp"
 
 namespace QuantLib {
 
     namespace Lattices {
 
-        void Tree::computeStatePrices(Size until) {
+        void Lattice::computeStatePrices(Size until) {
             for (Size i=statePricesLimit_; i<until; i++) {
-                const Column& c = column(i);
-                for (Size j=0; j<column(i).size(); j++) {
-                    double discount = c.discount(j);
-                    double statePrice = c.statePrice(j);
+                statePrices_.push_back(Array(size(i+1), 0.0));
+                for (Size j=0; j<size(i); j++) {
+                    DiscountFactor disc = discount(i,j);
+                    double statePrice = statePrices_[i][j];
                     for (Size l=0; l<n_; l++) {
-                        column(i+1).addToStatePrice(
-                            c.descendant(j,l),
-                            statePrice*discount*c.probability(j,l));
+                        statePrices_[i+1][descendant(i,j,l)] +=
+                            statePrice*disc*probability(i,j,l);
                     }
                 }
             }
             statePricesLimit_ = until;
         }
 
-        const std::vector<double>& Tree::statePrices(Size i) {
+        const Array& Lattice::statePrices(Size i) {
             if (i>statePricesLimit_)
                 computeStatePrices(i);
-            return column(i).statePrices();
+            return statePrices_[i];
         }
 
-        double Tree::presentValue(const Handle<DiscretizedAsset>& asset) {
+        double Lattice::presentValue(
+            const Handle<DiscretizedAsset>& asset) {
             Size i = t_.findIndex(asset->time());
             if (i>statePricesLimit_)
                 computeStatePrices(i);
-            double value = 0.0;
-            const Column& c = column(i);
-            for (Size j=0; j<c.size(); j++) {
-                value += asset->values()[j]*c.statePrice(j);
-            }
-            return value;
+            return DotProduct(asset->values(), statePrices_[i]);
         }
 
-        void Tree::initialize(const Handle<DiscretizedAsset>& asset, 
+        void Lattice::initialize(const Handle<DiscretizedAsset>& asset, 
                               Time t) const {
 
             Size i = t_.findIndex(t);
             asset->setTime(t);
-            asset->reset(column(i).size());
+            asset->reset(size(i));
         }
 
-        void Tree::rollback(const Handle<DiscretizedAsset>& asset, 
-                            Time to) const {
+        void Lattice::rollback(const Handle<DiscretizedAsset>& asset, 
+                                      Time to) const {
 
             Time from = asset->time();
 
@@ -80,20 +75,23 @@ namespace QuantLib {
             Size iTo = t_.findIndex(to);
 
             for (int i=(int)(iFrom-1); i>=(int)iTo; i--) {
-                const Column& c = column(i);
-                Array newValues(c.size());
-                for (Size j=0; j<c.size(); j++) {
-                    double value = 0.0;
-                    for (Size l=0; l<n_; l++) {
-                        value += c.probability(j,l)*
-                                 asset->values()[c.descendant(j,l)];
-                    }
-                    value *= c.discount(j);
-                    newValues[j] = value;
-                }
+                Array newValues(size(i));
+                stepback(i, asset->values(), newValues);
                 asset->setTime(t_[i]);
                 asset->setValues(newValues);
-                asset->applyCondition();
+                asset->adjustValues();
+            }
+        }
+
+        void Lattice::stepback(
+            Size i, const Array& values, Array& newValues) const {
+            for (Size j=0; j<size(i); j++) {
+                double value = 0.0;
+                for (Size l=0; l<n_; l++) {
+                    value += probability(i,j,l)*values[descendant(i,j,l)];
+                }
+                value *= discount(i,j);
+                newValues[j] = value;
             }
         }
 

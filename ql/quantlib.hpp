@@ -117,7 +117,10 @@
 #include <ql/Instruments/swap.hpp>
 #include <ql/Instruments/swaption.hpp>
 
-#include <ql/Lattices/column.hpp>
+#include <ql/Lattices/binomialtree.hpp>
+#include <ql/Lattices/bsmlattice.hpp>
+#include <ql/Lattices/lattice.hpp>
+#include <ql/Lattices/lattice2d.hpp>
 #include <ql/Lattices/tree.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 
@@ -175,6 +178,7 @@
 #include <ql/Pricers/analyticalcapfloor.hpp>
 #include <ql/Pricers/barrieroption.hpp>
 #include <ql/Pricers/binaryoption.hpp>
+#include <ql/Pricers/binomialplainoption.hpp>
 #include <ql/Pricers/blackcapfloor.hpp>
 #include <ql/Pricers/blackswaption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>

@@ -25,8 +25,10 @@
 #ifndef quantlib_interest_rate_modelling_one_factor_model_h
 #define quantlib_interest_rate_modelling_one_factor_model_h
 
+#include <ql/diffusionprocess.hpp>
 #include <ql/ShortRateModels/model.hpp>
-#include <ql/Lattices/trinomialtree.hpp>
+#include <ql/Lattices/lattice.hpp>
+#include <ql/Lattices/tree.hpp>
 
 namespace QuantLib {
 
@@ -44,11 +46,10 @@ namespace QuantLib {
             virtual Handle<ShortRateDynamics> dynamics() const = 0;
 
             //! Return by default a trinomial recombining tree
-            virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const;
+            virtual Handle<Lattices::Lattice> tree(const TimeGrid& grid) const;
 
           protected:
             class ShortRateTree;
-            class ShortRateDiscounting;
         };
 
         //! Base class describing the short-rate dynamics
@@ -71,36 +72,39 @@ namespace QuantLib {
         };
 
         //! Recombining trinomial tree discretizing the state variable
-        class OneFactorModel::ShortRateTree : public Lattices::TrinomialTree {
+        class OneFactorModel::ShortRateTree : public Lattices::Lattice {
           public:
             //! Plain tree build-up from short-rate dynamics
             ShortRateTree(
+                const Handle<Lattices::Tree>& tree,
                 const Handle<ShortRateDynamics>& dynamics,
-                const TimeGrid& timeGrid,
-                bool isPositive = false);
+                const TimeGrid& timeGrid);
             //! Tree build-up + numerical fitting to term-structure
             ShortRateTree(
+                const Handle<Lattices::Tree>& tree,
                 const Handle<ShortRateDynamics>& dynamics,
                 const Handle<TermStructureFittingParameter::NumericalImpl>& phi,
-                const TimeGrid& timeGrid,
-                bool isPositive = false);
-          private:
-            class Helper;
-        };
+                const TimeGrid& timeGrid);
 
-        class OneFactorModel::ShortRateDiscounting 
-            : public Lattices::Discounting {
-          public:
-            ShortRateDiscounting(
-                const Handle<ShortRateDynamics>& dynamics,
-                const Handle<Lattices::TrinomialBranching>& branching,
-                Time t, Time dt, double dx);
-
-            double discount(Size index) const;
+            Size size(Size i) const {
+                return tree_->size(i);
+            }
+            DiscountFactor discount(Size i, Size index) const {
+                double x = tree_->underlying(i, index);
+                Rate r = dynamics_->shortRate(timeGrid()[i], x);
+                return QL_EXP(-r*timeGrid().dt(i));
+            }
+          protected:
+            Size descendant(Size i, Size index, Size branch) const {
+                return tree_->descendant(i, index, branch);
+            }
+            double probability(Size i, Size index, Size branch) const {
+                return tree_->probability(i, index, branch);
+            }
           private:
-            Time t_, dt_;
-            double xMin_, dx_;
+            Handle<Lattices::Tree> tree_;
             Handle<ShortRateDynamics> dynamics_;
+            class Helper;
         };
 
         //! Single-factor affine base class

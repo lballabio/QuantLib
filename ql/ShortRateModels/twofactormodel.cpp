@@ -30,30 +30,9 @@ namespace QuantLib {
 
         using namespace Lattices;
 
-        TwoFactorModel::ShortRateDiscounting::ShortRateDiscounting(
-            const Handle<ShortRateDynamics>& dynamics,
-            const Handle<TwoDimensionalBranching>& branching,
-            Time t, Time dt, double dx, double dy)
-        : t_(t), dt_(dt), dx_(dx), dy_(dy), dynamics_(dynamics) {
-              modulo_ = branching->modulo();
-              xMin_ = dynamics->xProcess()->x0() +
-                      branching->branching1()->jMin()*dx;
-              yMin_ = dynamics->yProcess()->x0() +
-                      branching->branching2()->jMin()*dy;
-          }
-
-        double 
-        TwoFactorModel::ShortRateDiscounting::discount(Size index) const {
-            double x = xMin_ + (index%modulo_)*dx_;
-            double y = yMin_ + ((int)(index/modulo_))*dy_;
-
-            Rate r = dynamics_->shortRate(t_, x, y);
-            return QL_EXP(-r*dt_);
-        }
-
         TwoFactorModel::TwoFactorModel(Size nParameters) : Model(nParameters) {}
 
-        Handle<Tree> TwoFactorModel::tree(const TimeGrid& grid) const {
+        Handle<Lattice> TwoFactorModel::tree(const TimeGrid& grid) const {
             Handle<ShortRateDynamics> dyn = dynamics();
 
             Handle<TrinomialTree> tree1(
@@ -61,18 +40,16 @@ namespace QuantLib {
             Handle<TrinomialTree> tree2(
                 new TrinomialTree(dyn->yProcess(), grid));
 
-            Handle<Tree> temp(
-                new TwoDimensionalTree(tree1, tree2, dyn->correlation()));
-            for (Size i=0; i<(grid.size() - 1); i++) {
-                Column& column = const_cast<Column&>(temp->column(i));
-                column.setDiscounting(Handle<Discounting>(new 
-                    ShortRateDiscounting(dyn, temp->column(i).branching(), 
-                                         grid[i], grid.dt(i), 
-                                         tree1->dx(i), tree2->dx(i))));
-            }
-
-            return temp;
+            return Handle<Lattice>( 
+                new TwoFactorModel::ShortRateTree(tree1, tree2, dyn));
         }
+
+        TwoFactorModel::ShortRateTree::ShortRateTree(
+            const Handle<TrinomialTree>& tree1,
+            const Handle<TrinomialTree>& tree2,
+            const Handle<ShortRateDynamics>& dynamics)
+        : Lattice2D(tree1, tree2, dynamics->correlation()), dynamics_(dynamics) 
+        {}
 
     }
 

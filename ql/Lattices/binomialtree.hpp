@@ -32,26 +32,35 @@ namespace QuantLib {
 
     namespace Lattices {
 
-        class BinomialBranching : public Branching {
+        //! Binomial tree base class
+        class BinomialTree : public Tree {
           public:
-            BinomialBranching() {}
-            virtual ~BinomialBranching() {}
+            BinomialTree(Size nColumns) : Tree(nColumns) {}
 
-            Size descendant(Size index, Size branch) const {
-                return index + branch;
+            Size size(Size i) const {
+                return i+1;
             }
-
-            double probability(Size index, Size branch) const {
-                return 0.5;
+            Size descendant(Size i, Size index, Size branch) const {
+                return index + branch;
             }
         };
 
-        class BinomialTree : public Tree {
+        //! Additive binomial tree class with equal probabilities
+        class StandardBinomialTree : public BinomialTree {
           public:
-            BinomialTree() : Tree(2) {}
+            StandardBinomialTree(const Handle<DiffusionProcess>& process,
+                                 Time end, Size steps);
 
-            BinomialTree(const Handle<DiffusionProcess>& process,
-                         Time end, Size steps);
+            double probability(Size i, Size index, Size branch) const {
+                return 0.5;
+            }
+            double underlying(Size i, Size index) const {
+                int j = (2*index - i);
+                return x0_ + j*dx_;
+            }
+          private:
+            double x0_, dx_;
+
         };
 
     }

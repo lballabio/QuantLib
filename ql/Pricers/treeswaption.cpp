@@ -54,7 +54,7 @@ namespace QuantLib {
         void TreeSwaption::calculate() const {
 
             QL_REQUIRE(!model_.isNull(), "TreeSwaption: No model");
-            Handle<Tree> tree;
+            Handle<Lattice> tree;
 
             if (tree_.isNull()) {
                 std::list<Time> times(0);

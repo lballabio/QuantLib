@@ -28,25 +28,14 @@ namespace QuantLib {
 
     namespace Lattices {
 
-        BinomialTree::BinomialTree(const Handle<DiffusionProcess>& process,
-                                   Time end, Size steps)
-        : Lattices::Tree(ConstantTimeGrid(end, steps), 2) {
-
-            nodes_.push_back(Column(0, 1));
-            nodes_[0].statePrice(0) = 1.0;
+        StandardBinomialTree::StandardBinomialTree(
+            const Handle<DiffusionProcess>& process,
+            Time end, Size steps) : BinomialTree(steps + 1) {
 
             double dt = end/steps;
 
-            double x0 = process->x0();
-            double dx = QL_SQRT(process->variance(t(i), 0.0, dt(i)));
-
-            Size nTimeSteps = t_.size() - 1;
-            for (Size i=0; i<nTimeSteps; i++) {
-                //Determine branching
-                Handle<BinomialBranching> branching(new BinomialBranching());
-                column(i).setBranching(branching);
-                nodes_.push_back(Column(i+1, i+2));
-            }
+            x0_ = process->x0();
+            dx_ = QL_SQRT(process->variance(0.0, 0.0, dt));
         }
 
     }

@@ -23,11 +23,14 @@
 // $Id$
 
 #include "ql/ShortRateModels/OneFactorModels/hullwhite.hpp"
+#include "ql/Lattices/trinomialtree.hpp"
 #include "ql/blackmodel.hpp"
 
 namespace QuantLib {
 
     namespace ShortRateModels {
+
+        using namespace Lattices;
 
         HullWhite::HullWhite(
             const RelinkableHandle<TermStructure>& termStructure, 
@@ -38,36 +41,36 @@ namespace QuantLib {
             generateParameters();
         }
 
-        Handle<Lattices::Tree> HullWhite::tree(const TimeGrid& timeGrid) const {
+        Handle<Lattices::Lattice> HullWhite::tree(
+            const TimeGrid& grid) const {
 
             TermStructureFittingParameter phi(termStructure());
 
             Handle<ShortRateDynamics> numericDynamics(
                 new Dynamics(phi, a(), sigma()));
 
+            Handle<TrinomialTree> trinomial(
+                new TrinomialTree(numericDynamics->process(), grid));
             Handle<ShortRateTree> numericTree(
-                new ShortRateTree(numericDynamics, timeGrid));
+                new ShortRateTree(trinomial, numericDynamics, grid));
 
             Handle<TermStructureFittingParameter::NumericalImpl> impl = 
                 phi.implementation();
             impl->reset();
-            for (Size i=0; i<(timeGrid.size() - 1); i++) {
-                double discountBond = termStructure()->discount(timeGrid[i+1]);
-                const std::vector<double>& statePrices = 
-                    numericTree->statePrices(i);
-                Size size = numericTree->column(i).size();
-                Handle<Lattices::TrinomialBranching> 
-                    branching(numericTree->column(i).branching());
+            for (Size i=0; i<(grid.size() - 1); i++) {
+                double discountBond = termStructure()->discount(grid[i+1]);
+                const Array& statePrices = numericTree->statePrices(i);
+                Size size = numericTree->size(i);
                 double dt = numericTree->timeGrid().dt(i);
-                double dx = numericTree->dx(i);
-                double x = branching->jMin()*dx;
+                double dx = trinomial->dx(i);
+                double x = trinomial->underlying(i,0);
                 double value = 0.0;
                 for (Size j=0; j<size; j++) {
                     value += statePrices[j]*QL_EXP(-x*dt);
                     x += dx;
                 }
                 value = QL_LOG(value/discountBond)/dt;
-                impl->set(timeGrid[i], value);
+                impl->set(grid[i], value);
             }
             return numericTree;
         }

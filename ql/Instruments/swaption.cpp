@@ -121,10 +121,7 @@ namespace QuantLib {
             parameters->exerciseTimes.clear();
             const std::vector<Date> dates = exercise_.dates();
             for (i=0; i<dates.size(); i++) {
-                Date exerciseDate = exercise_.calendar().advance(
-                    dates[i], exercise_.settlementDays(), Days,
-                    exercise_.rollingConvention());
-                Time time = counter.yearFraction(settlement, exerciseDate);
+                Time time = counter.yearFraction(settlement, dates[i]);
                 parameters->exerciseTimes.push_back(time);
             }
         }

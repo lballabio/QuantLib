@@ -97,9 +97,12 @@ namespace QuantLib {
                 exerciseRate_ = fairFixedRate;
                 engine_  = Handle<OptionPricingEngine>( 
                     new Pricers::BlackSwaption(blackModel_));
+                Date exerciseDate = index->calendar().roll(
+                    startDate, index->rollingConvention());
+
                 swaption_ = Handle<Swaption>(new
-                    Swaption(swap_, EuropeanExercise(startDate), termStructure,
-                             engine_));
+                    Swaption(swap_, EuropeanExercise(exerciseDate), 
+                             termStructure, engine_));
                 marketValue_ = blackPrice(volatility_->value());
             }
 

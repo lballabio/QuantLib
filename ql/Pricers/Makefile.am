@@ -8,6 +8,7 @@ include_HEADERS = \
     analyticalcapfloor.hpp \
     barrieroption.hpp \
     binaryoption.hpp \
+    binomialplainoption.hpp \
     blackcapfloor.hpp \
     blackswaption.hpp \
     capfloorpricer.hpp \
@@ -48,6 +49,7 @@ EXTRA_DIST=makefile.mak
 libPricers_la_SOURCES = \
     analyticalcapfloor.cpp \
     barrieroption.cpp \
+    binomialplainoption.cpp \
     blackcapfloor.cpp \
     blackswaption.cpp \
     capfloorpricer.cpp \

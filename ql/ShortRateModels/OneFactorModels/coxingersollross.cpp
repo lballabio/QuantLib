@@ -23,11 +23,14 @@
 // $Id$
 
 #include "ql/ShortRateModels/OneFactorModels/coxingersollross.hpp"
+#include "ql/Lattices/trinomialtree.hpp"
 #include "ql/Math/chisquaredistribution.hpp"
 
 namespace QuantLib {
 
     namespace ShortRateModels {
+
+        using namespace Lattices;
 
         using Optimization::Constraint;
         using Optimization::PositiveConstraint;
@@ -139,6 +142,14 @@ namespace QuantLib {
                 return call;
             else
                 return call - discountS + strike*discountT;
+        }
+
+        Handle<Lattice> CoxIngersollRoss::tree(
+            const TimeGrid& grid) const {
+            Handle<Tree> trinomial(
+                new TrinomialTree(dynamics()->process(), grid, true));
+            return Handle<Lattice>(
+                new ShortRateTree(trinomial, dynamics(), grid));
         }
 
     }

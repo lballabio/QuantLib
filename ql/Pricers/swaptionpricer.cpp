@@ -28,7 +28,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        void DiscretizedSwap::applyCondition() {
+        void DiscretizedSwap::adjustValues() {
             Size i;
 
             for (i=0; i<parameters_.fixedPayTimes.size(); i++) {
@@ -60,7 +60,7 @@ namespace QuantLib {
             }
         }
 
-        void DiscretizedSwaption::applyCondition() {
+        void DiscretizedSwaption::adjustValues() {
             method()->rollback(swap_, time());
 
             if (parameters_.exerciseType != Exercise::American) {

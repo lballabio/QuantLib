@@ -30,7 +30,7 @@ namespace QuantLib {
 
         using Instruments::VanillaCapFloor;
 
-        void DiscretizedCapFloor::applyCondition() {
+        void DiscretizedCapFloor::adjustValues() {
             for (Size i=0; i<parameters_.startTimes.size(); i++) {
                 if (isOnTime(parameters_.startTimes[i])) {
                     Time end = parameters_.endTimes[i];

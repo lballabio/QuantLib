@@ -27,7 +27,7 @@
 
 #include <ql/Pricers/capfloorpricer.hpp>
 #include <ql/ShortRateModels/model.hpp>
-#include <ql/Lattices/tree.hpp>
+#include <ql/Lattices/lattice.hpp>
 
 namespace QuantLib {
 
@@ -48,7 +48,7 @@ namespace QuantLib {
           private:
             TimeGrid timeGrid_;
             Size timeSteps_;
-            Handle<Lattices::Tree> tree_;
+            Handle<Lattices::Lattice> tree_;
         };
 
     }

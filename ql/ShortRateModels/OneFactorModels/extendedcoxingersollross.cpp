@@ -23,11 +23,14 @@
 // $Id$
 
 #include <ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp>
+#include "ql/Lattices/trinomialtree.hpp"
 #include <ql/Math/chisquaredistribution.hpp>
 
 namespace QuantLib {
 
     namespace ShortRateModels {
+
+        using namespace Lattices;
 
         ExtendedCoxIngersollRoss::ExtendedCoxIngersollRoss(
             const RelinkableHandle<TermStructure>& termStructure,
@@ -37,14 +40,17 @@ namespace QuantLib {
             generateParameters();
         }
 
-        Handle<Lattices::Tree> ExtendedCoxIngersollRoss::tree(
+        Handle<Lattice> ExtendedCoxIngersollRoss::tree(
             const TimeGrid& grid) const {
             TermStructureFittingParameter phi(termStructure());
             Handle<Dynamics> numericDynamics(
                 new Dynamics(phi, theta(), k(), sigma(), x0()));
-            return Handle<Lattices::Tree>(
-                new ShortRateTree(numericDynamics, phi.implementation(),
-                                     grid, true));
+
+            Handle<Tree> trinomial(
+                new TrinomialTree(numericDynamics->process(), grid, true));
+            return Handle<Lattice>(
+                new ShortRateTree(trinomial, numericDynamics, 
+                                  phi.implementation(), grid));
         }
 
         double ExtendedCoxIngersollRoss::A(Time t, Time s) const {

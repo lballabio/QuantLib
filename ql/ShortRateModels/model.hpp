@@ -29,7 +29,7 @@
 #include <ql/array.hpp>
 #include <ql/option.hpp>
 #include <ql/termstructure.hpp>
-#include <ql/Lattices/tree.hpp>
+#include <ql/Lattices/lattice.hpp>
 #include <ql/ShortRateModels/parameter.hpp>
 #include <ql/Optimization/problem.hpp>
 
@@ -85,7 +85,8 @@ namespace QuantLib {
                 notifyObservers(); 
             }
 
-            virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const = 0;
+            virtual Handle<Lattices::Lattice> tree(
+                const TimeGrid& grid) const = 0;
 
             //! Calibrate to a set of market instruments (caps/swaptions)
             void calibrate(

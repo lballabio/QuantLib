@@ -74,7 +74,7 @@ namespace QuantLib {
     //! Black-Scholes diffusion process class
     /*! This class describes the stochastic process governed by 
         \f[
-            dS = r dt + \sigma dW_t.
+            dS = (r - \frac{\sigma^2}{2}) dt + \sigma dW_t.
         \f]
     */
     class BlackScholesProcess : public DiffusionProcess {

@@ -28,39 +28,24 @@
 #include <ql/handle.hpp>
 #include <ql/grid.hpp>
 #include <ql/numericalmethod.hpp>
-#include <ql/Lattices/column.hpp>
 
 namespace QuantLib {
 
     namespace Lattices {
 
-        class Tree : public NumericalMethod {
+        //! Tree approximating a single-factor diffusion
+        class Tree {
           public:
-            Tree(const TimeGrid& timeGrid, Size n)
-            : NumericalMethod(timeGrid), n_(n) {
-                QL_REQUIRE(n>0, "There is no zeronomial tree!");
-                statePricesLimit_ = 0;
-            }
+            Tree(Size nColumns) : nColumns_(nColumns) {}
+            virtual ~Tree() {}
+            virtual double underlying(Size i, Size index) const = 0;
+            virtual Size size(Size i) const = 0;
+            virtual Size descendant(Size i, Size index, Size branch) const = 0;
+            virtual double probability(Size i, Size index, Size branch) const = 0;
 
-            //! Computes the present value of an asset using Arrow-Debrew prices
-            double presentValue(const Handle<DiscretizedAsset>& asset);
-
-            void initialize(const Handle<DiscretizedAsset>& asset,
-                            Time t) const;
-            void rollback(const Handle<DiscretizedAsset>& asset,
-                          Time to) const;
-
-            const Column& column(Size i) const { return columns_[i]; }
-
-            const std::vector<double>& statePrices(Size i);
-
-          protected:
-            void computeStatePrices(Size until);
-            std::vector<Column> columns_;
-
+            Size nColumns() const { return nColumns_; }
           private:
-            Size n_;
-            Size statePricesLimit_;
+            Size nColumns_;
         };
 
     }

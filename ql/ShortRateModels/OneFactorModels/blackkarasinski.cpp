@@ -23,11 +23,14 @@
 // $Id$
 
 #include "ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp"
+#include "ql/Lattices/trinomialtree.hpp"
 #include "ql/Solvers1D/brent.hpp"
 
 namespace QuantLib {
 
     namespace ShortRateModels {
+
+        using namespace Lattices;
 
         //Private function used by solver to determine time-dependent parameter
         class BlackKarasinski::Helper : public ObjectiveFunction {
@@ -35,7 +38,7 @@ namespace QuantLib {
             Helper(Size i, double xMin, double dx,
                    double discountBondPrice, 
                    const Handle<ShortRateTree>& tree)
-            : size_(tree->column(i).size()), 
+            : size_(tree->size(i)), 
               dt_(tree->timeGrid().dt(i)),
               xMin_(xMin), dx_(dx),
               statePrices_(tree->statePrices(i)),
@@ -56,7 +59,7 @@ namespace QuantLib {
             Size size_;
             Time dt_;
             double xMin_, dx_;
-            const std::vector<double>& statePrices_;
+            const Array& statePrices_;
             double discountBondPrice_;
         };
 
@@ -71,16 +74,18 @@ namespace QuantLib {
             sigma_ = ConstantParameter(sigma, PositiveConstraint());
         }
 
-        Handle<Lattices::Tree> BlackKarasinski::tree(
-            const TimeGrid& timeGrid) const {
+        Handle<Lattice> BlackKarasinski::tree(
+            const TimeGrid& grid) const {
 
             TermStructureFittingParameter phi(termStructure());
 
             Handle<ShortRateDynamics> numericDynamics(
                 new Dynamics(phi, a(), sigma()));
 
+            Handle<TrinomialTree> trinomial(
+                new TrinomialTree(numericDynamics->process(), grid));
             Handle<ShortRateTree> numericTree(
-                new ShortRateTree(numericDynamics, timeGrid));
+                new ShortRateTree(trinomial, numericDynamics, grid));
 
             Handle<TermStructureFittingParameter::NumericalImpl> impl = 
                 phi.implementation();
@@ -88,17 +93,15 @@ namespace QuantLib {
             double value = 1.0;
             double vMin = -50.0;
             double vMax = 50.0;
-            for (Size i=0; i<(timeGrid.size() - 1); i++) {
-                double discountBond = termStructure()->discount(timeGrid[i+1]);
-                Handle<Lattices::TrinomialBranching> 
-                    branching(numericTree->column(i).branching());
-                double dx = numericTree->dx(i);
-                double xMin = branching->jMin()*dx;
+            for (Size i=0; i<(grid.size() - 1); i++) {
+                double discountBond = termStructure()->discount(grid[i+1]);
+                double xMin = trinomial->underlying(i, 0);
+                double dx = trinomial->dx(i);
                 Helper finder(i, xMin, dx, discountBond, numericTree);
                 Solvers1D::Brent s1d = Solvers1D::Brent();
                 s1d.setMaxEvaluations(1000);
                 value = s1d.solve(finder, 1e-7, value, vMin, vMax);
-                impl->set(timeGrid[i], value);
+                impl->set(grid[i], value);
 //                vMin = value - 10.0;
 //                vMax = value + 10.0;
             }

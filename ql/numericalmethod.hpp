@@ -70,7 +70,7 @@ namespace QuantLib {
         void setTime(Time t) { time_ = t; }
         void setValues(const Array& values) { values_ = values; }
 
-        virtual void applyCondition() {}
+        virtual void adjustValues() {}
         virtual void addTimes(std::list<Time>& times) const {}
       protected:
         bool isOnTime(Time t) const;

@@ -32,22 +32,39 @@ namespace QuantLib {
 
     namespace Lattices {
 
+        class TrinomialBranching;
+
         //! Recombining trinomial tree class
+        /*! This class defines a recombining trinomial tree approximating a
+            a diffusion.
+            \warning The diffusion term of the SDE must be independent of the
+                     underlying process.
+        */
         class TrinomialTree : public Tree {
           public:
             TrinomialTree(const Handle<DiffusionProcess>& process,
                           const TimeGrid& timeGrid,
                           bool isPositive = false);
             double dx(Size i) const { return dx_[i]; }
+            Size size(Size i) const;
+            double underlying(Size i, Size index) const;
+            const TimeGrid& timeGrid() const { return timeGrid_; }
+
+            Size descendant(Size i, Size index, Size branch) const;
+            double probability(Size i, Size index, Size branch) const;
+
           protected:
+            std::vector<Handle<TrinomialBranching> > branchings_;
+            double x0_;
             std::vector<double> dx_;
+            TimeGrid timeGrid_;
         };
 
         //! Branching scheme for a trinomial node
         /*! Each node has three descendants, with the middle branch linked
             to the node which is closest to the expectation of the variable.
         */
-        class TrinomialBranching : public Branching {
+        class TrinomialBranching {
           public:
             TrinomialBranching() : probs_(3) {}
             virtual ~TrinomialBranching() {}
@@ -61,6 +78,16 @@ namespace QuantLib {
             std::vector<int> k_;
             std::vector<std::vector<double> > probs_;
         };
+
+        inline 
+        Size TrinomialTree::descendant(Size i, Size index, Size branch) const {
+            return branchings_[i]->descendant(index, branch);
+        }
+
+        inline
+        double TrinomialTree::probability(Size i, Size j, Size b) const {
+            return branchings_[i]->probability(j, b);
+        }
 
         inline 
         Size TrinomialBranching::descendant(Size index, Size branch) const {

@@ -43,8 +43,8 @@ namespace QuantLib {
           public:
             HullWhite(const RelinkableHandle<TermStructure>& termStructure, 
                       double a = 0.1, double sigma = 0.01);
-           
-            Handle<Lattices::Tree> tree(const TimeGrid& timeGrid) const;
+
+            Handle<Lattices::Lattice> tree(const TimeGrid& grid) const;
 
             Handle<ShortRateDynamics> dynamics() const;
 

@@ -39,10 +39,10 @@ namespace QuantLib {
 
             void reset(Size size) {
                 values_ = Array(size, 0.0);
-                applyCondition();
+                adjustValues();
             }
 
-            virtual void applyCondition();
+            virtual void adjustValues();
 
             void addTimes(std::list<Time>& times) const {
                 for (Size i=0; i<parameters_.startTimes.size(); i++) {

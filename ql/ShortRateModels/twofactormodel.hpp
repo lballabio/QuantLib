@@ -27,7 +27,7 @@
 
 #include <ql/diffusionprocess.hpp>
 #include <ql/ShortRateModels/model.hpp>
-#include <ql/Lattices/twodimensionaltree.hpp>
+#include <ql/Lattices/lattice2d.hpp>
 
 namespace QuantLib {
 
@@ -39,15 +39,14 @@ namespace QuantLib {
             TwoFactorModel(Size nParams);
 
             class ShortRateDynamics;
+            class ShortRateTree;
 
             //! Returns the short-rate dynamics
             virtual Handle<ShortRateDynamics> dynamics() const = 0;
 
             //! Returns a two-dimensional trinomial tree
-            virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const;
+            virtual Handle<Lattices::Lattice> tree(const TimeGrid& grid) const;
 
-          protected:
-            class ShortRateDiscounting;
         };
 
         //! Class describing the dynamics of the two state variables
@@ -102,22 +101,29 @@ namespace QuantLib {
             double correlation_;
         };
 
-        class TwoFactorModel::ShortRateDiscounting 
-            : public Lattices::Discounting {
+        //! Recombining two-dimensional tree discretizing the state variable
+        class TwoFactorModel::ShortRateTree : public Lattices::Lattice2D {
           public:
-            ShortRateDiscounting(
-                const Handle<ShortRateDynamics>& process,
-                const Handle<Lattices::TwoDimensionalBranching>& branching,
-                Time t, Time dt, double dx, double dy);
+            //! Plain tree build-up from short-rate dynamics
+            ShortRateTree(
+                const Handle<Lattices::TrinomialTree>& tree1,
+                const Handle<Lattices::TrinomialTree>& tree2,
+                const Handle<ShortRateDynamics>& dynamics);
 
-            double discount(Size index) const;
+            DiscountFactor discount(Size i, Size index) const {
+                Size modulo = tree1_->size(i);
+                Size index1 = index % modulo;
+                Size index2 = index / modulo;
+
+                double x = tree1_->underlying(i, index1);
+                double y = tree1_->underlying(i, index2);
+
+                Rate r = dynamics_->shortRate(timeGrid()[i], x, y);
+                return QL_EXP(-r*timeGrid().dt(i));
+            }
           private:
-            Size modulo_;
-            Time t_, dt_;
-            double xMin_, dx_, yMin_, dy_;
             Handle<ShortRateDynamics> dynamics_;
         };
-
     }
 
 }

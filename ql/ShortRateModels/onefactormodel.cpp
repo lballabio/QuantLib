@@ -41,11 +41,12 @@ namespace QuantLib {
                 const Handle<TermStructureFittingParameter::NumericalImpl>& 
                       theta,
                 ShortRateTree& tree)
-            : size_(tree.column(i).size()),
+            : size_(tree.size(i)),
+              i_(i),
               statePrices_(tree.statePrices(i)),
               discountBondPrice_(discountBondPrice),
               theta_(theta),
-              discounting_(tree.column(i).discounting()) {
+              tree_(tree) {
                 theta_->set(tree.timeGrid()[i], 0.0);
             }
 
@@ -53,36 +54,31 @@ namespace QuantLib {
                 double value = discountBondPrice_;
                 theta_->change(theta);
                 for (Size j=0; j<size_; j++)
-                    value -= statePrices_[j]*discounting_->discount(j);
+                    value -= statePrices_[j]*tree_.discount(i_,j);
                 return value;
             }
 
           private:
             Size size_;
-            const std::vector<double>& statePrices_;
+            Size i_;
+            const Array& statePrices_;
             double discountBondPrice_;
             Handle<TermStructureFittingParameter::NumericalImpl> theta_;
-            Handle<Lattices::Discounting> discounting_;
+            ShortRateTree& tree_;
         };
 
         OneFactorModel::ShortRateTree::ShortRateTree(
+            const Handle<Tree>& tree,
             const Handle<ShortRateDynamics>& dynamics,
             const Handle<TermStructureFittingParameter::NumericalImpl>& theta,
-            const TimeGrid& timeGrid,
-            bool isPositive)
-        : Lattices::TrinomialTree(
-              dynamics->process(), 
-              timeGrid, 
-              isPositive) {
+            const TimeGrid& timeGrid)
+        : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {
 
             theta->reset();
             double value = 1.0;
             double vMin = -100.0;
             double vMax = 100.0;
             for (Size i=0; i<(timeGrid.size() - 1); i++) {
-                columns_[i].setDiscounting(Handle<Discounting>(new 
-                    ShortRateDiscounting(dynamics, column(i).branching(), 
-                                         timeGrid[i], timeGrid.dt(i), dx(i))));
                 double discountBond = theta->termStructure()->discount(t_[i+1]);
                 Helper finder(i, discountBond, theta, *this);
                 Solvers1D::Brent s1d = Solvers1D::Brent();
@@ -95,35 +91,18 @@ namespace QuantLib {
         }
 
         OneFactorModel::ShortRateTree::ShortRateTree(
+            const Handle<Tree>& tree,
             const Handle<ShortRateDynamics>& dynamics,
-            const TimeGrid& timeGrid,
-            bool isPositive)
-        : TrinomialTree(dynamics->process(), timeGrid, isPositive) {
-            for (Size i=0; i<(timeGrid.size() - 1); i++)
-                columns_[i].setDiscounting(Handle<Discounting>(new 
-                    ShortRateDiscounting(dynamics, column(i).branching(), 
-                                         timeGrid[i], timeGrid.dt(i), dx(i))));
-        }
-
-        OneFactorModel::ShortRateDiscounting::ShortRateDiscounting(
-            const Handle<ShortRateDynamics>& dynamics,
-            const Handle<TrinomialBranching>& branching,
-            Time t, Time dt, double dx)
-        : t_(t), dt_(dt), dx_(dx), dynamics_(dynamics) {
-              xMin_ = dynamics->process()->x0() +
-                      branching->jMin()*dx;
-          }
-
-        double OneFactorModel::ShortRateDiscounting::discount(Size index) const {
-            double x = xMin_ + index*dx_;
-            Rate r = dynamics_->shortRate(t_, x);
-            return QL_EXP(-r*dt_);
-        }
+            const TimeGrid& timeGrid)
+        : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {}
 
         OneFactorModel::OneFactorModel(Size nParameters) : Model(nParameters) {}
 
-        Handle<Tree> OneFactorModel::tree(const TimeGrid& grid) const {
-            return Handle<Tree>(new ShortRateTree(dynamics(), grid));
+        Handle<Lattice> OneFactorModel::tree(const TimeGrid& grid) const {
+            Handle<Tree> trinomial(
+                new TrinomialTree(dynamics()->process(), grid));
+            return Handle<Lattice>(
+                new ShortRateTree(trinomial, dynamics(), grid));
         }
 
     }
