@@ -27,8 +27,9 @@
     email python-finance
     email quantitative finance
     update freshmeat
+    update Vault Of Parnassus (http://www.vex.net/parnassus/)
     email finance-and-physics
-email AllAboutDerivatives
+    email AllAboutDerivatives
 email ffts
     merge into trunk any branch change
 wilmott
