@@ -48,6 +48,7 @@ LIBRARY
     add historicalvolatility to RiskMeasures
     rename all files/dirs to lowercase no spaces (except INSTALL, TODO?)
     histogram class
+    contact M. Higgings
 
 DOCUMENTATION ***
     ******
