@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.8  2001/03/06 17:00:37  marmar
+	First, simplified version, of everest option introduced
+
 	Revision 1.7  2001/02/26 17:05:30  lballabio
 	Ultimate Array interface and typemap for SWIG
-
+	
 	Revision 1.6  2001/02/13 10:06:50  marmar
 	Ambiguous variable name underlyingGrowthRate changed in
 	unambiguos dividendYield
@@ -65,76 +68,57 @@
 #if defined(SWIGPYTHON)
 
 %{
-#include "standardpathgenerator.h"
-using QuantLib::MonteCarlo::StandardPathGenerator;
-%}
-
-class StandardPathGenerator{
-    public:
-	StandardPathGenerator(int dimension, long seed=0);
-	Array next() const; // Note that currently Path and Array are equivalent
-	double weight() const;
-};
-
-%{
-#include "mceuropeanpricer.h"
 using QuantLib::Pricers::McEuropeanPricer;
+using QuantLib::Pricers::GeometricAsianOption;
+using QuantLib::Pricers::AveragePriceAsian;
+using QuantLib::Pricers::AverageStrikeAsian;
+using QuantLib::Pricers::PlainBasketOption;
+using QuantLib::Pricers::Himalaya;
+using QuantLib::Pricers::EverestOption;
 %}
+
 
 class McEuropeanPricer{
     public:
 	McEuropeanPricer(OptionType type, double underlying, double strike, 
 		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
+    ~McEuropeanPricer();
 	double value() const;
 	double errorEstimate() const;
 };
-
-%{
-#include "geometricasianoption.h"
-using QuantLib::Pricers::GeometricAsianOption;
-%}
 
 class GeometricAsianOption {
   public:
 	GeometricAsianOption(OptionType type, double underlying, double strike, 
 		Rate dividendYield, Rate exerciseRate,
 		double residualTime, double volatility);
+    ~GeometricAsianOption();
 	double value() const;
 };
 
-%{
-#include "averagepriceasian.h"
-using QuantLib::Pricers::AveragePriceAsian;
-%}
 
 class AveragePriceAsian{
     public:
 	AveragePriceAsian(OptionType type, double underlying, double strike, 
 		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
+    ~AveragePriceAsian();
 	double value() const;
 	double errorEstimate() const;
 };
-%{
-#include "averagestrikeasian.h"
-using QuantLib::Pricers::AverageStrikeAsian;
-%}
+
 
 class AverageStrikeAsian{
     public:
 	AverageStrikeAsian(OptionType type, double underlying, double strike, 
 		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
+    ~AverageStrikeAsian();
 	double value() const;
 	double errorEstimate() const;
 };
 
-
-%{
-#include "plainbasketoption.h"
-using QuantLib::Pricers::PlainBasketOption;
-%}
 
 class PlainBasketOption{
     public:
@@ -142,23 +126,33 @@ class PlainBasketOption{
         const Array &dividendYield, const Matrix &covariance, 
         Rate riskFreeRate,  double residualTime, 
         int timesteps, long samples, long seed = 0);
+    ~PlainBasketOption();
 	double value() const;
 	double errorEstimate() const;
 };
 
-%{
-#include "himalaya.h"
-using QuantLib::Pricers::Himalaya;
-%}
 
 class Himalaya{
     public:
     Himalaya(const Array& underlying, const Array& dividendYield, 
         const Matrix &covariance, Rate riskFreeRate, double strike, 
         const DoubleVector &timeDelays, long samples, long seed=0);
+    ~Himalaya();
 	double value() const;
 	double errorEstimate() const;
 };
+
+
+class EverestOption{
+    public:
+    EverestOption(const Array& underlying, const Array& dividendYield, 
+        const Matrix &covariance, Rate riskFreeRate, Time residualTime,
+        long samples, long seed=0);
+    ~EverestOption();
+	double value() const;
+	double errorEstimate() const;
+};
+
 
 #elif defined(SWIGJAVA)
 // export relevant functions

@@ -53,6 +53,7 @@ MONTECARLO_OBJS  = $(OUTPUT_DIR)\avgpriceasianpathpricer.obj \
                    $(OUTPUT_DIR)\basketpathpricer.obj       \
                    $(OUTPUT_DIR)\controlvariatedpathpricer.obj \
                    $(OUTPUT_DIR)\europeanpathpricer.obj        \
+                   $(OUTPUT_DIR)\everestpathpricer.obj        \
                    $(OUTPUT_DIR)\geometricasianpathpricer.obj  \
                    $(OUTPUT_DIR)\himalayapathpricer.obj  \
                    $(OUTPUT_DIR)\lecuyerrandomgenerator.obj                    
@@ -70,6 +71,7 @@ PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\bsmeuropeanoption.obj \
                    $(OUTPUT_DIR)\dividendamericanoption.obj \
                    $(OUTPUT_DIR)\dividendeuropeanoption.obj \
+                   $(OUTPUT_DIR)\everestoption.obj \
                    $(OUTPUT_DIR)\himalaya.obj \
                    $(OUTPUT_DIR)\mceuropeanpricer.obj \
                    $(OUTPUT_DIR)\plainbasketoption.obj \
@@ -284,6 +286,8 @@ $(OUTPUT_DIR)\controlvariatedpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\controlvariatedpathpricer.cpp
 $(OUTPUT_DIR)\europeanpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\europeanpathpricer.cpp
+$(OUTPUT_DIR)\everestpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\everestpathpricer.cpp
 $(OUTPUT_DIR)\geometricasianpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\geometricasianpathpricer.cpp
 $(OUTPUT_DIR)\himalayapathpricer.obj: \
@@ -311,6 +315,8 @@ $(OUTPUT_DIR)\dividendamericanoption.obj: \
                 $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
 $(OUTPUT_DIR)\dividendeuropeanoption.obj: \
                 $(SOURCES_DIR)\Pricers\dividendeuropeanoption.cpp
+$(OUTPUT_DIR)\everestoption.obj: \
+                $(SOURCES_DIR)\Pricers\everestoption.cpp
 $(OUTPUT_DIR)\himalaya.obj: \
                 $(SOURCES_DIR)\Pricers\himalaya.cpp
 $(OUTPUT_DIR)\mceuropeanpricer.obj: \

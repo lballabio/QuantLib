@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2001/03/06 17:00:36  marmar
+	First, simplified version, of everest option introduced
+
 	Revision 1.3  2001/02/26 17:05:30  lballabio
 	Ultimate Array interface and typemap for SWIG
-
+	
 	Revision 1.2  2001/02/13 10:08:58  marmar
 	Changed interface to StandardMultiPathGenerator
 	
@@ -50,8 +53,9 @@
 
 #if defined(SWIGPYTHON)
 %{
-#include "gaussianarraygenerator.h"
 using QuantLib::MonteCarlo::GaussianArrayGenerator;
+using QuantLib::MonteCarlo::StandardPathGenerator;
+using QuantLib::MonteCarlo::StandardMultiPathGenerator;
 %}
 
 class GaussianArrayGenerator{
@@ -59,14 +63,20 @@ class GaussianArrayGenerator{
 	GaussianArrayGenerator(const Array& average,
                            const Matrix& covariance, 
                            long seed=0);
+    ~GaussianArrayGenerator();                           
 	Array next() const;
 	double weight() const;
 };
 
-%{
-#include "standardmultipathgenerator.h"
-using QuantLib::MonteCarlo::StandardMultiPathGenerator;
-%}
+
+class StandardPathGenerator{
+    public:
+	StandardPathGenerator(int dimension, long seed=0);
+	~StandardPathGenerator();
+	Array next() const; // Note that currently Path and Array are equivalent
+	double weight() const;
+};
+
 
 class StandardMultiPathGenerator{
     public:
@@ -74,6 +84,7 @@ class StandardMultiPathGenerator{
 	                           const Array& average, 
                                const Matrix& covariance,
                                long seed=0);
+    ~StandardMultiPathGenerator();                              
 	Matrix next() const;
 	double weight() const;
 };

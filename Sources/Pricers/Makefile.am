@@ -10,15 +10,16 @@ libPricers_la_SOURCES = \
     averagepriceasian.cpp \
     averagestrikeasian.cpp \
     barrieroption.cpp \
-    stepconditionoption.cpp \
+    binaryoption.cpp    \
     bsmeuropeanoption.cpp \
     bsmnumericaloption.cpp \
     bsmoption.cpp \
     dividendamericanoption.cpp \
     dividendeuropeanoption.cpp \
+    everestoption.cpp \
     himalaya.cpp \
     mceuropeanpricer.cpp \
     plainbasketoption.cpp \
-    binaryoption.cpp
+    stepconditionoption.cpp 
 
 noinst_LTLIBRARIES = libPricers.la

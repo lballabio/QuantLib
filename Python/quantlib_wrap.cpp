@@ -489,66 +489,67 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 
 #define  SWIGTYPE_p_Brent swig_types[0] 
 #define  SWIGTYPE_p_Secant swig_types[1] 
-#define  SWIGTYPE_p_PlainBasketOption swig_types[2] 
-#define  SWIGTYPE_p_GeometricAsianOption swig_types[3] 
-#define  SWIGTYPE_p_Matrix swig_types[4] 
-#define  SWIGTYPE_p_DMinus swig_types[5] 
-#define  SWIGTYPE_p_DPlusDMinus swig_types[6] 
-#define  SWIGTYPE_p_BSMEuropeanOption swig_types[7] 
-#define  SWIGTYPE_p_AmericanOption swig_types[8] 
-#define  SWIGTYPE_p_ShoutOption swig_types[9] 
-#define  SWIGTYPE_p_DividendAmericanOption swig_types[10] 
-#define  SWIGTYPE_p_DividendEuropeanOption swig_types[11] 
-#define  SWIGTYPE_p_BarrierOption swig_types[12] 
-#define  SWIGTYPE_p_Bisection swig_types[13] 
-#define  SWIGTYPE_p_BoundaryCondition swig_types[14] 
-#define  SWIGTYPE_p_DZero swig_types[15] 
-#define  SWIGTYPE_p_CurrencyHandle swig_types[16] 
-#define  SWIGTYPE_p_TermStructureHandle swig_types[17] 
-#define  SWIGTYPE_p_Date swig_types[18] 
-#define  SWIGTYPE_p_DoubleVector swig_types[19] 
-#define  SWIGTYPE_p_DateVector swig_types[20] 
-#define  SWIGTYPE_p_Newton swig_types[21] 
-#define  SWIGTYPE_p_BinaryOption swig_types[22] 
-#define  SWIGTYPE_p_ArrayLexicographicalViewColumn swig_types[23] 
-#define  SWIGTYPE_p_DPlus swig_types[24] 
-#define  SWIGTYPE_p_GaussianArrayGenerator swig_types[25] 
-#define  SWIGTYPE_p_StandardPathGenerator swig_types[26] 
+#define  SWIGTYPE_p_EverestOption swig_types[2] 
+#define  SWIGTYPE_p_PlainBasketOption swig_types[3] 
+#define  SWIGTYPE_p_GeometricAsianOption swig_types[4] 
+#define  SWIGTYPE_p_Matrix swig_types[5] 
+#define  SWIGTYPE_p_DMinus swig_types[6] 
+#define  SWIGTYPE_p_DPlusDMinus swig_types[7] 
+#define  SWIGTYPE_p_BSMEuropeanOption swig_types[8] 
+#define  SWIGTYPE_p_AmericanOption swig_types[9] 
+#define  SWIGTYPE_p_ShoutOption swig_types[10] 
+#define  SWIGTYPE_p_DividendAmericanOption swig_types[11] 
+#define  SWIGTYPE_p_DividendEuropeanOption swig_types[12] 
+#define  SWIGTYPE_p_BarrierOption swig_types[13] 
+#define  SWIGTYPE_p_Bisection swig_types[14] 
+#define  SWIGTYPE_p_BoundaryCondition swig_types[15] 
+#define  SWIGTYPE_p_DZero swig_types[16] 
+#define  SWIGTYPE_p_CurrencyHandle swig_types[17] 
+#define  SWIGTYPE_p_TermStructureHandle swig_types[18] 
+#define  SWIGTYPE_p_Date swig_types[19] 
+#define  SWIGTYPE_p_DoubleVector swig_types[20] 
+#define  SWIGTYPE_p_DateVector swig_types[21] 
+#define  SWIGTYPE_p_Newton swig_types[22] 
+#define  SWIGTYPE_p_BinaryOption swig_types[23] 
+#define  SWIGTYPE_p_ArrayLexicographicalViewColumn swig_types[24] 
+#define  SWIGTYPE_p_DPlus swig_types[25] 
+#define  SWIGTYPE_p_GaussianArrayGenerator swig_types[26] 
 #define  SWIGTYPE_p_HistoryValidDataIterator swig_types[27] 
 #define  SWIGTYPE_p_HistoryDataIterator swig_types[28] 
 #define  SWIGTYPE_p_HistoryValidIterator swig_types[29] 
 #define  SWIGTYPE_p_HistoryIterator swig_types[30] 
 #define  SWIGTYPE_p_TridiagonalOperator swig_types[31] 
-#define  SWIGTYPE_p_StandardMultiPathGenerator swig_types[32] 
-#define  SWIGTYPE_p_UniformRandomGenerator swig_types[33] 
-#define  SWIGTYPE_p_GaussianRandomGenerator swig_types[34] 
-#define  SWIGTYPE_p_MultivariateAccumulator swig_types[35] 
-#define  SWIGTYPE_p_InvCumulativeNormalDistribution swig_types[36] 
-#define  SWIGTYPE_p_NormalDistribution swig_types[37] 
-#define  SWIGTYPE_p_CumulativeNormalDistribution swig_types[38] 
-#define  SWIGTYPE_p_Himalaya swig_types[39] 
-#define  SWIGTYPE_p_RiskStatistics swig_types[40] 
-#define  SWIGTYPE_p_Statistics swig_types[41] 
-#define  SWIGTYPE_p_NewtonSafe swig_types[42] 
-#define  SWIGTYPE_p_VarTool swig_types[43] 
-#define  SWIGTYPE_p_History swig_types[44] 
-#define  SWIGTYPE_p_Solver1D swig_types[45] 
-#define  SWIGTYPE_p_Array swig_types[46] 
-#define  SWIGTYPE_p_ArrayLexicographicalView swig_types[47] 
-#define  SWIGTYPE_p_Ridder swig_types[48] 
-#define  SWIGTYPE_p_DepositRate swig_types[49] 
-#define  SWIGTYPE_p_MatrixRow swig_types[50] 
-#define  SWIGTYPE_p_ObjectiveFunction swig_types[51] 
-#define  SWIGTYPE_p_McEuropeanPricer swig_types[52] 
-#define  SWIGTYPE_p_CalendarHandle swig_types[53] 
-#define  SWIGTYPE_p_DayCounterHandle swig_types[54] 
-#define  SWIGTYPE_p_InstrumentHandle swig_types[55] 
-#define  SWIGTYPE_p_InterpolationHandle swig_types[56] 
-#define  SWIGTYPE_p_FalsePosition swig_types[57] 
-#define  SWIGTYPE_p_AverageStrikeAsian swig_types[58] 
-#define  SWIGTYPE_p_AveragePriceAsian swig_types[59] 
-#define  SWIGTYPE_p_IntVector swig_types[60] 
-static swig_type_info *swig_types[62];
+#define  SWIGTYPE_p_StandardPathGenerator swig_types[32] 
+#define  SWIGTYPE_p_StandardMultiPathGenerator swig_types[33] 
+#define  SWIGTYPE_p_UniformRandomGenerator swig_types[34] 
+#define  SWIGTYPE_p_GaussianRandomGenerator swig_types[35] 
+#define  SWIGTYPE_p_MultivariateAccumulator swig_types[36] 
+#define  SWIGTYPE_p_InvCumulativeNormalDistribution swig_types[37] 
+#define  SWIGTYPE_p_NormalDistribution swig_types[38] 
+#define  SWIGTYPE_p_CumulativeNormalDistribution swig_types[39] 
+#define  SWIGTYPE_p_Himalaya swig_types[40] 
+#define  SWIGTYPE_p_RiskStatistics swig_types[41] 
+#define  SWIGTYPE_p_Statistics swig_types[42] 
+#define  SWIGTYPE_p_NewtonSafe swig_types[43] 
+#define  SWIGTYPE_p_VarTool swig_types[44] 
+#define  SWIGTYPE_p_History swig_types[45] 
+#define  SWIGTYPE_p_Solver1D swig_types[46] 
+#define  SWIGTYPE_p_Array swig_types[47] 
+#define  SWIGTYPE_p_ArrayLexicographicalView swig_types[48] 
+#define  SWIGTYPE_p_Ridder swig_types[49] 
+#define  SWIGTYPE_p_DepositRate swig_types[50] 
+#define  SWIGTYPE_p_MatrixRow swig_types[51] 
+#define  SWIGTYPE_p_ObjectiveFunction swig_types[52] 
+#define  SWIGTYPE_p_McEuropeanPricer swig_types[53] 
+#define  SWIGTYPE_p_CalendarHandle swig_types[54] 
+#define  SWIGTYPE_p_DayCounterHandle swig_types[55] 
+#define  SWIGTYPE_p_InstrumentHandle swig_types[56] 
+#define  SWIGTYPE_p_InterpolationHandle swig_types[57] 
+#define  SWIGTYPE_p_FalsePosition swig_types[58] 
+#define  SWIGTYPE_p_AverageStrikeAsian swig_types[59] 
+#define  SWIGTYPE_p_AveragePriceAsian swig_types[60] 
+#define  SWIGTYPE_p_IntVector swig_types[61] 
+static swig_type_info *swig_types[63];
 
 /* -------- TYPES TABLE (END) -------- */
 
@@ -899,33 +900,18 @@ using QuantLib::Math::matrixSqrt;
 
 #include "quantlib.h"
 
-#include "standardpathgenerator.h"
-using QuantLib::MonteCarlo::StandardPathGenerator;
-
-#include "mceuropeanpricer.h"
 using QuantLib::Pricers::McEuropeanPricer;
-
-#include "geometricasianoption.h"
 using QuantLib::Pricers::GeometricAsianOption;
-
-#include "averagepriceasian.h"
 using QuantLib::Pricers::AveragePriceAsian;
-
-#include "averagestrikeasian.h"
 using QuantLib::Pricers::AverageStrikeAsian;
-
-#include "plainbasketoption.h"
 using QuantLib::Pricers::PlainBasketOption;
-
-#include "himalaya.h"
 using QuantLib::Pricers::Himalaya;
+using QuantLib::Pricers::EverestOption;
 
 #include "quantlib.h"
 
-#include "gaussianarraygenerator.h"
 using QuantLib::MonteCarlo::GaussianArrayGenerator;
-
-#include "standardmultipathgenerator.h"
+using QuantLib::MonteCarlo::StandardPathGenerator;
 using QuantLib::MonteCarlo::StandardMultiPathGenerator;
 
 #include "quantlib.h"
@@ -11802,103 +11788,6 @@ static PyObject *_wrap_MatrixRow___setitem__(PyObject *self, PyObject *args, PyO
 }
 
 
-static PyObject *_wrap_new_StandardPathGenerator(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    int arg0 ;
-    long arg1 = 0 ;
-    char *kwnames[] = {
-        "dimension","seed", NULL 
-    };
-    StandardPathGenerator *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"i|l:new_StandardPathGenerator",kwnames,&arg0,&arg1)) return NULL;
-    {
-        try {
-            result = (StandardPathGenerator *)new StandardPathGenerator(arg0,arg1);
-            
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_StandardPathGenerator);
-    return resultobj;
-}
-
-
-static PyObject *_wrap_StandardPathGenerator_next(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    StandardPathGenerator *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    Array *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:StandardPathGenerator_next",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_StandardPathGenerator,1)) == -1) return NULL;
-    {
-        try {
-            result = new Array (arg0->next());
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Array);
-    return resultobj;
-}
-
-
-static PyObject *_wrap_StandardPathGenerator_weight(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    StandardPathGenerator *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    double result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:StandardPathGenerator_weight",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_StandardPathGenerator,1)) == -1) return NULL;
-    {
-        try {
-            result = (double )arg0->weight();
-            
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = PyFloat_FromDouble(result);
-    return resultobj;
-}
-
-
 static PyObject *_wrap_new_McEuropeanPricer(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     OptionType *arg0 ;
@@ -11957,6 +11846,39 @@ static PyObject *_wrap_new_McEuropeanPricer(PyObject *self, PyObject *args, PyOb
     {
         delete arg0;
     }
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_McEuropeanPricer(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    McEuropeanPricer *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_McEuropeanPricer",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_McEuropeanPricer,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
     return resultobj;
 }
 
@@ -12086,6 +12008,39 @@ static PyObject *_wrap_new_GeometricAsianOption(PyObject *self, PyObject *args, 
 }
 
 
+static PyObject *_wrap_delete_GeometricAsianOption(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    GeometricAsianOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_GeometricAsianOption",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_GeometricAsianOption,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
 static PyObject *_wrap_GeometricAsianOption_value(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     GeometricAsianOption *arg0 ;
@@ -12177,6 +12132,39 @@ static PyObject *_wrap_new_AveragePriceAsian(PyObject *self, PyObject *args, PyO
     {
         delete arg0;
     }
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_AveragePriceAsian(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    AveragePriceAsian *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_AveragePriceAsian",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_AveragePriceAsian,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
     return resultobj;
 }
 
@@ -12305,6 +12293,39 @@ static PyObject *_wrap_new_AverageStrikeAsian(PyObject *self, PyObject *args, Py
     {
         delete arg0;
     }
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_AverageStrikeAsian(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    AverageStrikeAsian *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_AverageStrikeAsian",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_AverageStrikeAsian,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
     return resultobj;
 }
 
@@ -12471,6 +12492,39 @@ static PyObject *_wrap_new_PlainBasketOption(PyObject *self, PyObject *args, PyO
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_PlainBasketOption);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_PlainBasketOption(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    PlainBasketOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_PlainBasketOption",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_PlainBasketOption,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
     return resultobj;
 }
 
@@ -12672,6 +12726,39 @@ static PyObject *_wrap_new_Himalaya(PyObject *self, PyObject *args, PyObject *kw
 }
 
 
+static PyObject *_wrap_delete_Himalaya(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Himalaya *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_Himalaya",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Himalaya,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
 static PyObject *_wrap_Himalaya_value(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     Himalaya *arg0 ;
@@ -12716,6 +12803,204 @@ static PyObject *_wrap_Himalaya_errorEstimate(PyObject *self, PyObject *args, Py
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Himalaya_errorEstimate",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Himalaya,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->errorEstimate();
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_new_EverestOption(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    Array *arg1 ;
+    Matrix *arg2 ;
+    Rate arg3 ;
+    Time arg4 ;
+    long arg5 ;
+    long arg6 = 0 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    Array temp0 ;
+    PyObject * obj1  = 0 ;
+    PyObject * argo2 =0 ;
+    char *kwnames[] = {
+        "underlying","dividendYield","covariance","riskFreeRate","residualTime","samples","seed", NULL 
+    };
+    EverestOption *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOddl|l:new_EverestOption",kwnames,&obj0,&obj1,&argo2,&arg3,&arg4,&arg5,&arg6)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"Array expected");
+            return NULL;
+        }
+    }
+    {
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp0 = Array(size);
+            arg1 = &temp0;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"Array expected");
+            return NULL;
+        }
+    }
+    if ((SWIG_ConvertPtr(argo2,(void **) &arg2,SWIGTYPE_p_Matrix,1)) == -1) return NULL;
+    {
+        try {
+            result = (EverestOption *)new EverestOption((Array const &)*arg0,(Array const &)*arg1,(Matrix const &)*arg2,arg3,arg4,arg5,arg6);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_EverestOption);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_EverestOption(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    EverestOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_EverestOption",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_EverestOption,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+static PyObject *_wrap_EverestOption_value(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    EverestOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:EverestOption_value",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_EverestOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->value();
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_EverestOption_errorEstimate(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    EverestOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:EverestOption_errorEstimate",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_EverestOption,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->errorEstimate();
@@ -12803,6 +13088,39 @@ static PyObject *_wrap_new_GaussianArrayGenerator(PyObject *self, PyObject *args
 }
 
 
+static PyObject *_wrap_delete_GaussianArrayGenerator(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    GaussianArrayGenerator *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_GaussianArrayGenerator",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_GaussianArrayGenerator,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
 static PyObject *_wrap_GaussianArrayGenerator_next(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     GaussianArrayGenerator *arg0 ;
@@ -12846,6 +13164,136 @@ static PyObject *_wrap_GaussianArrayGenerator_weight(PyObject *self, PyObject *a
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:GaussianArrayGenerator_weight",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_GaussianArrayGenerator,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->weight();
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_new_StandardPathGenerator(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    int arg0 ;
+    long arg1 = 0 ;
+    char *kwnames[] = {
+        "dimension","seed", NULL 
+    };
+    StandardPathGenerator *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"i|l:new_StandardPathGenerator",kwnames,&arg0,&arg1)) return NULL;
+    {
+        try {
+            result = (StandardPathGenerator *)new StandardPathGenerator(arg0,arg1);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_StandardPathGenerator);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_StandardPathGenerator(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    StandardPathGenerator *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_StandardPathGenerator",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_StandardPathGenerator,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+static PyObject *_wrap_StandardPathGenerator_next(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    StandardPathGenerator *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    Array *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:StandardPathGenerator_next",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_StandardPathGenerator,1)) == -1) return NULL;
+    {
+        try {
+            result = new Array (arg0->next());
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Array);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_StandardPathGenerator_weight(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    StandardPathGenerator *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:StandardPathGenerator_weight",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_StandardPathGenerator,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->weight();
@@ -12961,6 +13409,39 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_StandardMultiPathGenerator);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_StandardMultiPathGenerator(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    StandardMultiPathGenerator *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_StandardMultiPathGenerator",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_StandardMultiPathGenerator,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
     return resultobj;
 }
 
@@ -19553,30 +20034,43 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "delete_MatrixRow", (PyCFunction) _wrap_delete_MatrixRow, METH_VARARGS | METH_KEYWORDS },
 	 { "MatrixRow___getitem__", (PyCFunction) _wrap_MatrixRow___getitem__, METH_VARARGS | METH_KEYWORDS },
 	 { "MatrixRow___setitem__", (PyCFunction) _wrap_MatrixRow___setitem__, METH_VARARGS | METH_KEYWORDS },
-	 { "new_StandardPathGenerator", (PyCFunction) _wrap_new_StandardPathGenerator, METH_VARARGS | METH_KEYWORDS },
-	 { "StandardPathGenerator_next", (PyCFunction) _wrap_StandardPathGenerator_next, METH_VARARGS | METH_KEYWORDS },
-	 { "StandardPathGenerator_weight", (PyCFunction) _wrap_StandardPathGenerator_weight, METH_VARARGS | METH_KEYWORDS },
 	 { "new_McEuropeanPricer", (PyCFunction) _wrap_new_McEuropeanPricer, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_McEuropeanPricer", (PyCFunction) _wrap_delete_McEuropeanPricer, METH_VARARGS | METH_KEYWORDS },
 	 { "McEuropeanPricer_value", (PyCFunction) _wrap_McEuropeanPricer_value, METH_VARARGS | METH_KEYWORDS },
 	 { "McEuropeanPricer_errorEstimate", (PyCFunction) _wrap_McEuropeanPricer_errorEstimate, METH_VARARGS | METH_KEYWORDS },
 	 { "new_GeometricAsianOption", (PyCFunction) _wrap_new_GeometricAsianOption, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_GeometricAsianOption", (PyCFunction) _wrap_delete_GeometricAsianOption, METH_VARARGS | METH_KEYWORDS },
 	 { "GeometricAsianOption_value", (PyCFunction) _wrap_GeometricAsianOption_value, METH_VARARGS | METH_KEYWORDS },
 	 { "new_AveragePriceAsian", (PyCFunction) _wrap_new_AveragePriceAsian, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_AveragePriceAsian", (PyCFunction) _wrap_delete_AveragePriceAsian, METH_VARARGS | METH_KEYWORDS },
 	 { "AveragePriceAsian_value", (PyCFunction) _wrap_AveragePriceAsian_value, METH_VARARGS | METH_KEYWORDS },
 	 { "AveragePriceAsian_errorEstimate", (PyCFunction) _wrap_AveragePriceAsian_errorEstimate, METH_VARARGS | METH_KEYWORDS },
 	 { "new_AverageStrikeAsian", (PyCFunction) _wrap_new_AverageStrikeAsian, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_AverageStrikeAsian", (PyCFunction) _wrap_delete_AverageStrikeAsian, METH_VARARGS | METH_KEYWORDS },
 	 { "AverageStrikeAsian_value", (PyCFunction) _wrap_AverageStrikeAsian_value, METH_VARARGS | METH_KEYWORDS },
 	 { "AverageStrikeAsian_errorEstimate", (PyCFunction) _wrap_AverageStrikeAsian_errorEstimate, METH_VARARGS | METH_KEYWORDS },
 	 { "new_PlainBasketOption", (PyCFunction) _wrap_new_PlainBasketOption, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_PlainBasketOption", (PyCFunction) _wrap_delete_PlainBasketOption, METH_VARARGS | METH_KEYWORDS },
 	 { "PlainBasketOption_value", (PyCFunction) _wrap_PlainBasketOption_value, METH_VARARGS | METH_KEYWORDS },
 	 { "PlainBasketOption_errorEstimate", (PyCFunction) _wrap_PlainBasketOption_errorEstimate, METH_VARARGS | METH_KEYWORDS },
 	 { "new_Himalaya", (PyCFunction) _wrap_new_Himalaya, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_Himalaya", (PyCFunction) _wrap_delete_Himalaya, METH_VARARGS | METH_KEYWORDS },
 	 { "Himalaya_value", (PyCFunction) _wrap_Himalaya_value, METH_VARARGS | METH_KEYWORDS },
 	 { "Himalaya_errorEstimate", (PyCFunction) _wrap_Himalaya_errorEstimate, METH_VARARGS | METH_KEYWORDS },
+	 { "new_EverestOption", (PyCFunction) _wrap_new_EverestOption, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_EverestOption", (PyCFunction) _wrap_delete_EverestOption, METH_VARARGS | METH_KEYWORDS },
+	 { "EverestOption_value", (PyCFunction) _wrap_EverestOption_value, METH_VARARGS | METH_KEYWORDS },
+	 { "EverestOption_errorEstimate", (PyCFunction) _wrap_EverestOption_errorEstimate, METH_VARARGS | METH_KEYWORDS },
 	 { "new_GaussianArrayGenerator", (PyCFunction) _wrap_new_GaussianArrayGenerator, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_GaussianArrayGenerator", (PyCFunction) _wrap_delete_GaussianArrayGenerator, METH_VARARGS | METH_KEYWORDS },
 	 { "GaussianArrayGenerator_next", (PyCFunction) _wrap_GaussianArrayGenerator_next, METH_VARARGS | METH_KEYWORDS },
 	 { "GaussianArrayGenerator_weight", (PyCFunction) _wrap_GaussianArrayGenerator_weight, METH_VARARGS | METH_KEYWORDS },
+	 { "new_StandardPathGenerator", (PyCFunction) _wrap_new_StandardPathGenerator, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_StandardPathGenerator", (PyCFunction) _wrap_delete_StandardPathGenerator, METH_VARARGS | METH_KEYWORDS },
+	 { "StandardPathGenerator_next", (PyCFunction) _wrap_StandardPathGenerator_next, METH_VARARGS | METH_KEYWORDS },
+	 { "StandardPathGenerator_weight", (PyCFunction) _wrap_StandardPathGenerator_weight, METH_VARARGS | METH_KEYWORDS },
 	 { "new_StandardMultiPathGenerator", (PyCFunction) _wrap_new_StandardMultiPathGenerator, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_StandardMultiPathGenerator", (PyCFunction) _wrap_delete_StandardMultiPathGenerator, METH_VARARGS | METH_KEYWORDS },
 	 { "StandardMultiPathGenerator_next", (PyCFunction) _wrap_StandardMultiPathGenerator_next, METH_VARARGS | METH_KEYWORDS },
 	 { "StandardMultiPathGenerator_weight", (PyCFunction) _wrap_StandardMultiPathGenerator_weight, METH_VARARGS | METH_KEYWORDS },
 	 { "new_TridiagonalOperator", (PyCFunction) _wrap_new_TridiagonalOperator, METH_VARARGS | METH_KEYWORDS },
@@ -19788,6 +20282,7 @@ static void *_p_BisectionTo_p_Solver1D(void *x) {
 }
 static swig_type_info _swigt__p_Brent[] = {{"_p_Brent", 0, "Brent *"},{"_p_Brent"},{0}};
 static swig_type_info _swigt__p_Secant[] = {{"_p_Secant", 0, "Secant *"},{"_p_Secant"},{0}};
+static swig_type_info _swigt__p_EverestOption[] = {{"_p_EverestOption", 0, "EverestOption *"},{"_p_EverestOption"},{0}};
 static swig_type_info _swigt__p_PlainBasketOption[] = {{"_p_PlainBasketOption", 0, "PlainBasketOption *"},{"_p_PlainBasketOption"},{0}};
 static swig_type_info _swigt__p_GeometricAsianOption[] = {{"_p_GeometricAsianOption", 0, "GeometricAsianOption *"},{"_p_GeometricAsianOption"},{0}};
 static swig_type_info _swigt__p_Matrix[] = {{"_p_Matrix", 0, "Matrix *"},{"_p_Matrix"},{0}};
@@ -19812,12 +20307,12 @@ static swig_type_info _swigt__p_BinaryOption[] = {{"_p_BinaryOption", 0, "Binary
 static swig_type_info _swigt__p_ArrayLexicographicalViewColumn[] = {{"_p_ArrayLexicographicalViewColumn", 0, "ArrayLexicographicalViewColumn *"},{"_p_ArrayLexicographicalViewColumn"},{0}};
 static swig_type_info _swigt__p_DPlus[] = {{"_p_DPlus", 0, "DPlus *"},{"_p_DPlus"},{0}};
 static swig_type_info _swigt__p_GaussianArrayGenerator[] = {{"_p_GaussianArrayGenerator", 0, "GaussianArrayGenerator *"},{"_p_GaussianArrayGenerator"},{0}};
-static swig_type_info _swigt__p_StandardPathGenerator[] = {{"_p_StandardPathGenerator", 0, "StandardPathGenerator *"},{"_p_StandardPathGenerator"},{0}};
 static swig_type_info _swigt__p_HistoryValidDataIterator[] = {{"_p_HistoryValidDataIterator", 0, "HistoryValidDataIterator *"},{"_p_HistoryValidDataIterator"},{0}};
 static swig_type_info _swigt__p_HistoryDataIterator[] = {{"_p_HistoryDataIterator", 0, "HistoryDataIterator *"},{"_p_HistoryDataIterator"},{0}};
 static swig_type_info _swigt__p_HistoryValidIterator[] = {{"_p_HistoryValidIterator", 0, "HistoryValidIterator *"},{"_p_HistoryValidIterator"},{0}};
 static swig_type_info _swigt__p_HistoryIterator[] = {{"_p_HistoryIterator", 0, "HistoryIterator *"},{"_p_HistoryIterator"},{0}};
 static swig_type_info _swigt__p_TridiagonalOperator[] = {{"_p_TridiagonalOperator", 0, "TridiagonalOperator *"},{"_p_DPlusDMinus", _p_DPlusDMinusTo_p_TridiagonalOperator},{"_p_DMinus", _p_DMinusTo_p_TridiagonalOperator},{"_p_DPlus", _p_DPlusTo_p_TridiagonalOperator},{"_p_TridiagonalOperator"},{"_p_DZero", _p_DZeroTo_p_TridiagonalOperator},{0}};
+static swig_type_info _swigt__p_StandardPathGenerator[] = {{"_p_StandardPathGenerator", 0, "StandardPathGenerator *"},{"_p_StandardPathGenerator"},{0}};
 static swig_type_info _swigt__p_StandardMultiPathGenerator[] = {{"_p_StandardMultiPathGenerator", 0, "StandardMultiPathGenerator *"},{"_p_StandardMultiPathGenerator"},{0}};
 static swig_type_info _swigt__p_UniformRandomGenerator[] = {{"_p_UniformRandomGenerator", 0, "UniformRandomGenerator *"},{"_p_UniformRandomGenerator"},{0}};
 static swig_type_info _swigt__p_GaussianRandomGenerator[] = {{"_p_GaussianRandomGenerator", 0, "GaussianRandomGenerator *"},{"_p_GaussianRandomGenerator"},{0}};
@@ -19851,6 +20346,7 @@ static swig_type_info _swigt__p_IntVector[] = {{"_p_IntVector", 0, "IntVector *"
 static swig_type_info *swig_types_initial[] = {
 _swigt__p_Brent, 
 _swigt__p_Secant, 
+_swigt__p_EverestOption, 
 _swigt__p_PlainBasketOption, 
 _swigt__p_GeometricAsianOption, 
 _swigt__p_Matrix, 
@@ -19875,12 +20371,12 @@ _swigt__p_BinaryOption,
 _swigt__p_ArrayLexicographicalViewColumn, 
 _swigt__p_DPlus, 
 _swigt__p_GaussianArrayGenerator, 
-_swigt__p_StandardPathGenerator, 
 _swigt__p_HistoryValidDataIterator, 
 _swigt__p_HistoryDataIterator, 
 _swigt__p_HistoryValidIterator, 
 _swigt__p_HistoryIterator, 
 _swigt__p_TridiagonalOperator, 
+_swigt__p_StandardPathGenerator, 
 _swigt__p_StandardMultiPathGenerator, 
 _swigt__p_UniformRandomGenerator, 
 _swigt__p_GaussianRandomGenerator, 

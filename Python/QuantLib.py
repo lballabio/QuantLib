@@ -698,31 +698,14 @@ class MatrixRowPtr(MatrixRow):
 MatrixRow.__getitem__ = new.instancemethod(QuantLibc.MatrixRow___getitem__, None, MatrixRow)
 MatrixRow.__setitem__ = new.instancemethod(QuantLibc.MatrixRow___setitem__, None, MatrixRow)
 
-class StandardPathGenerator:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_StandardPathGenerator,args,kwargs)
-        self.thisown = 1
-
-    def next(*args, **kwargs):
-        val = apply(QuantLibc.StandardPathGenerator_next,args, kwargs)
-        if val: val = ArrayPtr(val) ; val.thisown = 1
-        return val
-    def __repr__(self):
-        return "<C StandardPathGenerator instance at %s>" % (self.this,)
-class StandardPathGeneratorPtr(StandardPathGenerator):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = StandardPathGenerator
-
-
-StandardPathGenerator.weight = new.instancemethod(QuantLibc.StandardPathGenerator_weight, None, StandardPathGenerator)
-
 class McEuropeanPricer:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_McEuropeanPricer,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_McEuropeanPricer(self)
     def __repr__(self):
         return "<C McEuropeanPricer instance at %s>" % (self.this,)
 class McEuropeanPricerPtr(McEuropeanPricer):
@@ -740,6 +723,9 @@ class GeometricAsianOption:
         self.this = apply(QuantLibc.new_GeometricAsianOption,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_GeometricAsianOption(self)
     def __repr__(self):
         return "<C GeometricAsianOption instance at %s>" % (self.this,)
 class GeometricAsianOptionPtr(GeometricAsianOption):
@@ -756,6 +742,9 @@ class AveragePriceAsian:
         self.this = apply(QuantLibc.new_AveragePriceAsian,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_AveragePriceAsian(self)
     def __repr__(self):
         return "<C AveragePriceAsian instance at %s>" % (self.this,)
 class AveragePriceAsianPtr(AveragePriceAsian):
@@ -773,6 +762,9 @@ class AverageStrikeAsian:
         self.this = apply(QuantLibc.new_AverageStrikeAsian,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_AverageStrikeAsian(self)
     def __repr__(self):
         return "<C AverageStrikeAsian instance at %s>" % (self.this,)
 class AverageStrikeAsianPtr(AverageStrikeAsian):
@@ -790,6 +782,9 @@ class PlainBasketOption:
         self.this = apply(QuantLibc.new_PlainBasketOption,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_PlainBasketOption(self)
     def __repr__(self):
         return "<C PlainBasketOption instance at %s>" % (self.this,)
 class PlainBasketOptionPtr(PlainBasketOption):
@@ -807,6 +802,9 @@ class Himalaya:
         self.this = apply(QuantLibc.new_Himalaya,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_Himalaya(self)
     def __repr__(self):
         return "<C Himalaya instance at %s>" % (self.this,)
 class HimalayaPtr(Himalaya):
@@ -819,11 +817,34 @@ class HimalayaPtr(Himalaya):
 Himalaya.value = new.instancemethod(QuantLibc.Himalaya_value, None, Himalaya)
 Himalaya.errorEstimate = new.instancemethod(QuantLibc.Himalaya_errorEstimate, None, Himalaya)
 
+class EverestOption:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_EverestOption,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_EverestOption(self)
+    def __repr__(self):
+        return "<C EverestOption instance at %s>" % (self.this,)
+class EverestOptionPtr(EverestOption):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = EverestOption
+
+
+EverestOption.value = new.instancemethod(QuantLibc.EverestOption_value, None, EverestOption)
+EverestOption.errorEstimate = new.instancemethod(QuantLibc.EverestOption_errorEstimate, None, EverestOption)
+
 class GaussianArrayGenerator:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_GaussianArrayGenerator,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_GaussianArrayGenerator(self)
     def next(*args, **kwargs):
         val = apply(QuantLibc.GaussianArrayGenerator_next,args, kwargs)
         if val: val = ArrayPtr(val) ; val.thisown = 1
@@ -839,11 +860,37 @@ class GaussianArrayGeneratorPtr(GaussianArrayGenerator):
 
 GaussianArrayGenerator.weight = new.instancemethod(QuantLibc.GaussianArrayGenerator_weight, None, GaussianArrayGenerator)
 
+class StandardPathGenerator:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_StandardPathGenerator,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_StandardPathGenerator(self)
+    def next(*args, **kwargs):
+        val = apply(QuantLibc.StandardPathGenerator_next,args, kwargs)
+        if val: val = ArrayPtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C StandardPathGenerator instance at %s>" % (self.this,)
+class StandardPathGeneratorPtr(StandardPathGenerator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = StandardPathGenerator
+
+
+StandardPathGenerator.weight = new.instancemethod(QuantLibc.StandardPathGenerator_weight, None, StandardPathGenerator)
+
 class StandardMultiPathGenerator:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_StandardMultiPathGenerator,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_StandardMultiPathGenerator(self)
     def next(*args, **kwargs):
         val = apply(QuantLibc.StandardMultiPathGenerator_next,args, kwargs)
         if val: val = MatrixPtr(val) ; val.thisown = 1
