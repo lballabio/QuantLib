@@ -182,7 +182,7 @@ namespace QuantLib {
             theta_[timeSteps_-1] = theta_[timeSteps_-2];
         }
 
-        double BlackKarasinski::discountBond(Time now, Time maturity, Rate r) const {
+        double BlackKarasinski::discountBond(Time now, Time maturity, Rate r) {
 
             Rate r0 = termStructure()->forward(0.0);
             TrinomialTree tree;

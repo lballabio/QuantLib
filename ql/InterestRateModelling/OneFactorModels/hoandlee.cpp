@@ -72,7 +72,7 @@ namespace QuantLib {
         }
 
         double HoAndLee::discountBondOption(Option::Type type, double strike, 
-            Time maturity, Time bondMaturity) const {
+            Time maturity, Time bondMaturity) {
 
             double discountT = termStructure()->discount(maturity);
             double discountS = termStructure()->discount(bondMaturity);

@@ -86,12 +86,12 @@ namespace QuantLib {
             return value;
         }
 
-        double HullAndWhite::discountBond(Time T, Time s, Rate r) const {
+        double HullAndWhite::discountBond(Time T, Time s, Rate r) {
             return QL_EXP(lnA(T,s) - B(s-T)*r);
         }
 
         double HullAndWhite::discountBondOption(Option::Type type, 
-            double strike, Time maturity, Time bondMaturity) const {
+            double strike, Time maturity, Time bondMaturity) {
 
             double discountT = termStructure()->discount(maturity);
             double discountS = termStructure()->discount(bondMaturity);

@@ -44,20 +44,20 @@ namespace QuantLib {
           public:
             BlackDermanAndToy(
                 const RelinkableHandle<TermStructure>& termStructure, 
-                unsigned int timeSteps = 1000);
+                unsigned int timeSteps);
             virtual ~BlackDermanAndToy() {}
 
             virtual void setParameters(const Array& params) {
                 QL_REQUIRE(params.size()==1,
                     "Incorrect number of parameters for BDT calibration");
                 sigma_ = params[0];
-                calculateTree();
+                initializeTree();
             }
 
-            virtual double discountBond(Time now, Time maturity, Rate r) const;
+            virtual double discountBond(Time now, Time maturity, Rate r);
 
             virtual double discountBondOption(Option::Type type, 
-                double strike, Time maturity, Time bondMaturity) const;
+                double strike, Time maturity, Time bondMaturity);
 
             virtual double stateVariable(Rate r) const {
                 return QL_LOG(r);
@@ -67,9 +67,10 @@ namespace QuantLib {
             }
 
           private:
-            void calculateTree();
+            void initializeTree();
+            void calculateTree(unsigned int iMax);
 
-            double theta(Time t) const;
+            double theta(Time t);
             double sigma(Time t) const { return sigma_; }
             double sigmaPrime(Time t) const { return 0.0; }
 
@@ -81,6 +82,7 @@ namespace QuantLib {
 
             std::vector<double> theta_, u_;
             std::vector<std::vector<double> > statePrices_, discountFactors_;
+            unsigned int iMax_;
             double sigma_;
             double dt_;
             unsigned int timeSteps_;

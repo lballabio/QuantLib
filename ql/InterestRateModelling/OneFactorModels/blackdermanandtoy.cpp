@@ -65,28 +65,29 @@ namespace QuantLib {
 
             u_.resize(timeSteps_+1);
             theta_.resize(timeSteps_+1);
-            discountFactors_.resize(timeSteps_+1);
             statePrices_.resize(timeSteps_+1);
-
-            for (unsigned i=0; i<=timeSteps_; i++) {
-                discountFactors_[i].resize(i+1);
+            discountFactors_.resize(timeSteps_+1);
+            for  (unsigned i=0; i<=timeSteps_; i++) {
                 statePrices_[i].resize(i+1);
+                discountFactors_[i].resize(i+1);
             }
+
 
             constraint_ = Handle<Constraint>(new Constraint(
                   std::vector<double>(1, 0.0),
                   std::vector<double>(1, 1.0)));
 
             sigma_ = 0.10;
-            calculateTree();
+            initializeTree();
         }
 
         double BlackDermanAndToy::discountBond(Time now, Time maturity, 
-            Rate r) const {
+            Rate r) {
 
             unsigned iNow = (unsigned)(now/dt_);
             unsigned iMaturity = (unsigned)(maturity/dt_);
-
+            if (iMaturity > iMax_)
+                calculateTree(iMaturity);
             signed iDiff = iMaturity - iNow;
             signed jr = (signed)(QL_LOG(r/u_[iNow])/(sigma_*QL_SQRT(dt_)));
             std::vector<double> prices(iDiff+1, 1.0);
@@ -104,26 +105,29 @@ namespace QuantLib {
         }
 
         double BlackDermanAndToy::discountBondOption(
-          Option::Type type, 
-          double strike, 
-          Time maturity, 
-          Time bondMaturity
-          ) const {
+          Option::Type type, double strike, Time maturity, Time bondMaturity) {
             unsigned iBond = (unsigned)(bondMaturity/dt_);
             unsigned iOption = (unsigned)(maturity/dt_);
-            const std::vector<double>& statePrices = statePrices_[iOption];
 
+            if (iBond > iMax_)
+                calculateTree(iBond);
+ 
             std::vector<double> dbValues(iBond + 1, 1.0);
             for (signed i=(signed)(iBond-1); i>=(signed)iOption; i--) {
-                for (signed j=0; j<(i+1); j++)
-                    dbValues[j] = 0.5*discountFactors_[i][j]*
-                        (dbValues[j] + dbValues[j+1]);
+                unsigned index = 0;
+                for (signed j=-i; j<=i; j+=2) {
+                    double discountFactor = 1.0/(1.0 + u_[i]*
+                        QL_EXP(sigma_*(j)*QL_SQRT(dt_))*dt_);
+                    dbValues[index] = 0.5*discountFactor*
+                        (dbValues[index] + dbValues[index+1]);
+                    index++;
+                }
             }
             dbValues.resize(iOption+1);
 
             double value = 0.0;
 
-            for (unsigned j=0; j<statePrices.size(); j++) {
+            for (unsigned j=0; j<dbValues.size(); j++) {
                 double payoff = 0.0;
 
                 switch(type) {
@@ -138,7 +142,7 @@ namespace QuantLib {
                   default:
                     throw Error("unsupported option type");
                 }
-                value += statePrices[j]*payoff;
+                value += statePrices_[iOption][j]*payoff;
             }
 
             return value;
@@ -180,26 +184,46 @@ namespace QuantLib {
             return value;
         }
 
-        void BlackDermanAndToy::calculateTree() {
-            cout << "Initializing BDT for sigma = " << sigma_*100.0 << "%" << endl;
+        void BlackDermanAndToy::initializeTree() {
+            cout << "Initializing tree for alpha = " << sigma_*100.0 << "%" << endl;
             double r0 = termStructure()->forward(0.0);
 
             statePrices_[0][0] = 1.0;
             discountFactors_[0][0] = 1.0/(1.0 + r0*dt_);
+            u_[0] = r0;
+            iMax_ = 0;
+        }
 
-            cout << "tree built" << endl;
-            unsigned int i;
-            for (i=0; i<timeSteps_; i++) {
+        void BlackDermanAndToy::calculateTree(unsigned int newMax) {
+            QL_REQUIRE(newMax>iMax_, "Tree already built");
+
+            for (unsigned int i=iMax_+1; i<=newMax; i++) {
+                //Compute state prices for t_i
+                statePrices_[i][i]= 0.5*statePrices_[i-1][i-1]*
+                    discountFactors_[i-1][i-1];
+                for (unsigned int k=(i-1); k>=1; k--) {
+                    statePrices_[i][k] = 0.5*
+                        (statePrices_[i-1][k]*discountFactors_[i-1][k] +
+                        statePrices_[i-1][k-1]*discountFactors_[i-1][k-1]);
+                }
+                statePrices_[i][0]= 0.5*statePrices_[i-1][0]*
+                    discountFactors_[i-1][0];
+
+                //Compute u(t_i)
                 double discountBond = termStructure()->discount(dt_*(i+1));
                 PrivateFunction finder(this, statePrices_[i], discountBond);
-                // solver
                 Solvers1D::Brent s1d = Solvers1D::Brent();
                 double minStrike = 0.001;
                 double maxStrike = 0.200;
+                double accuracy = 1e-5;
+                double startValue = u_[i-1];
                 s1d.setMaxEvaluations(1000);
                 s1d.setLowBound(minStrike);
                 s1d.setHiBound(maxStrike);
-                u_[i] = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
+                u_[i] = s1d.solve(finder, accuracy, startValue, minStrike, 
+                    maxStrike);
+
+                //Compute discount factors for t_i
                 unsigned int index = 0;
                 for (int j=-int(i); j<=int(i); j+=2) {
                     discountFactors_[i][index] = 1.0/(1.0 + u_[i]*
@@ -207,22 +231,23 @@ namespace QuantLib {
                     index++;
                 }
 
-                statePrices_[i+1][0]= 0.5*statePrices_[i][0]*discountFactors_[i][0];
-                for (unsigned int k=1; k<=i; k++) {
-                    statePrices_[i+1][k] = 0.5*
-                        (statePrices_[i][k]*discountFactors_[i][k] +
-                        statePrices_[i][k-1]*discountFactors_[i][k-1]);
-                }
-                statePrices_[i+1][i+1]= 0.5*statePrices_[i][i]*discountFactors_[i][i];
             }
-            cout << "Tree filled " << endl;
-            u_[timeSteps_] = u_[timeSteps_-1];
-            for (i=0; i<timeSteps_; i++)
-                theta_[i] = (u_[i+1] - u_[i])/dt_;
-            theta_[timeSteps_] = theta_[timeSteps_-1];
+
+            if (iMax_>0)
+                theta_[iMax_] = 0.5*(u_[iMax_+1] - u_[iMax_-1])/dt_;
+            else
+                theta_[0] = (u_[1]  - u_[0])/dt_;
+            for (unsigned int k=iMax_+1; k<newMax; k++)
+                theta_[k] = 0.5*(u_[k+1] - u_[k-1])/dt_;
+            theta_[newMax] = (u_[newMax] - u_[newMax-1])/dt_;
+
+            iMax_ = newMax;
         }
-        double BlackDermanAndToy::theta(Time t) const {
+
+        double BlackDermanAndToy::theta(Time t) {
             unsigned int low = (unsigned int)(t/dt_);
+            if ((low+1)>iMax_)
+                calculateTree(low+1);
             double weight = t/dt_ - low*1.0;
             return theta_[low]*weight + theta_[low+1]*(1-weight);
         }

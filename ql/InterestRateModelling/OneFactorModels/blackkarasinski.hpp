@@ -54,9 +54,9 @@ namespace QuantLib {
                 calculateTree();
             }
 
-            virtual double discountBond(Time now, Time maturity, Rate r) const;
+            virtual double discountBond(Time now, Time maturity, Rate r);
 
-            virtual double discountBondOption(Option::Type type, double strike, Time maturity, Time bondMaturity) const {
+            virtual double discountBondOption(Option::Type type, double strike, Time maturity, Time bondMaturity) {
                 throw("Not yet implemented");
                 QL_DUMMY_RETURN(0.0);
             }

@@ -59,10 +59,10 @@ namespace QuantLib {
             virtual Rate getRateFrom(double y) const {
                 return y;
             }
-            virtual double discountBond(Time T, Time s, Rate r) const ;
+            virtual double discountBond(Time T, Time s, Rate r);
 
             virtual double discountBondOption(Option::Type type, double strike,
-                Time maturity, Time bondMaturity) const;
+                Time maturity, Time bondMaturity);
 
           private:
             inline double B(Time t) const {
