@@ -1,5 +1,4 @@
-
-2001-05-30 Release 0.1.9
+2001-05-31 Release 0.1.9
 
 Changes since Release 0.1.1:
 - Library:

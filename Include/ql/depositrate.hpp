@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/25 10:04:01  nando
+// R019-branch-merge5 merged into trunk
+//
 // Revision 1.3  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -44,6 +47,12 @@
 namespace QuantLib {
 
     //! %deposit rate
+    /*! \ingroup deprecated
+        \deprecated
+        this class was used for building the PiecewiseConstantForwards term
+        structure. The DepositRateHelper and PiecewiseFlatForward classes
+        should be used instead.
+    */
     class DepositRate {
       public:
         DepositRate() {}

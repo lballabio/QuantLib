@@ -2,25 +2,18 @@
 # $Id$
 # $Source$
 # $Log$
-# Revision 1.10  2001/06/22 14:54:48  nando
-# doxygen example file moved under Docs/Examples
-#
-# Revision 1.9  2001/06/05 10:53:48  lballabio
-# tab fixed
-#
-# Revision 1.8  2001/06/05 09:35:13  lballabio
-# Updated docs to use Doxygen 1.2.8
-#
-# Revision 1.7  2001/05/24 12:52:01  nando
-# smoothing #include xx.hpp
+# Revision 1.11  2001/06/25 10:04:01  nando
+# R019-branch-merge5 merged into trunk
 #
 
 SUBDIRS=Examples
 
-EXTRA_DIST = README.txt \
-             quantlib.doxy quantlib.linux.doxy quantlib.win32.doxy \
+EXTRA_DIST = makefile.mak \
+             quantlib.doxy \
+             quantlib.linux.doxy \
+             quantlib.win32.doxy \
              quantlibfooter.html \
-             makefile.mak
+             README.txt
 
 docs-html:
 	$(DOXYGEN) quantlib.linux.doxy

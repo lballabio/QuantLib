@@ -30,16 +30,10 @@
 
 // $Source$
 // $Log$
-// Revision 1.8  2001/06/12 13:43:04  lballabio
-// Today's date is back into term structures
-// Instruments are now constructed with settlement days instead of settlement date
+// Revision 1.9  2001/06/25 10:04:01  nando
+// R019-branch-merge5 merged into trunk
 //
-// Revision 1.7  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.6  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
+
 
 #ifndef quantlib_piecewise_constant_forward_curve_h
 #define quantlib_piecewise_constant_forward_curve_h
@@ -51,12 +45,22 @@ namespace QuantLib {
 
     namespace TermStructures {
 
+        /*! \defgroup deprecated Deprecated classes
+
+            The use of the following classes is deprecated since they will be
+            removed in future releases.
+        */
+
+        /*! \ingroup deprecated
+            \deprecated
+            the PiecewiseFlatForward class should be used instead.
+        */
         class PiecewiseConstantForwards : public TermStructure {
           public:
             // constructor
             PiecewiseConstantForwards(Currency currency,
                 const Handle<DayCounter>& dayCounter, const Date& todaysDate,
-                const Handle<Calendar>& calendar, int settlementDays, 
+                const Handle<Calendar>& calendar, int settlementDays,
                 const std::vector<DepositRate>& deposits);
             // inspectors
             Currency currency() const;
