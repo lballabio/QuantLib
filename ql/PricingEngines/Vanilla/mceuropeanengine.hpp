@@ -81,7 +81,7 @@ namespace QuantLib {
         EuropeanPathPricer(Option::Type type,
                            double underlying,
                            double strike,
-                           const RelinkableHandle<TermStructure>& riskFreeTS);
+                           const RelinkableHandle<TermStructure>& discountTS);
         double operator()(const Path& path) const;
       private:
         double underlying_;
@@ -259,8 +259,8 @@ namespace QuantLib {
     inline EuropeanPathPricer::EuropeanPathPricer(
                             Option::Type type,
                             double underlying, double strike,
-                            const RelinkableHandle<TermStructure>& riskFreeTS)
-    : PathPricer<Path>(riskFreeTS), underlying_(underlying),
+                            const RelinkableHandle<TermStructure>& discountTS)
+    : PathPricer<Path>(discountTS), underlying_(underlying),
       payoff_(type, strike) {
         QL_REQUIRE(underlying>0.0,
                    "EuropeanPathPricer: "
@@ -280,7 +280,7 @@ namespace QuantLib {
             log_variation += path[i];
 
         return payoff_(underlying_ * QL_EXP(log_variation)) *
-                       riskFreeTS_->discount(path.timeGrid().back());
+                       discountTS_->discount(path.timeGrid().back());
     }
 
 }

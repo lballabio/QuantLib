@@ -25,10 +25,10 @@ namespace QuantLib {
         const boost::shared_ptr<CashOrNothingPayoff>& payoff,
         const boost::shared_ptr<AmericanExercise>& exercise,
         double underlying,
-        const RelinkableHandle<TermStructure>& riskFreeTS,
+        const RelinkableHandle<TermStructure>& discountTS,
         const boost::shared_ptr<DiffusionProcess>& diffProcess,
         const PseudoRandom::ursg_type& sequenceGen)
-    : PathPricer<Path>(riskFreeTS),
+    : PathPricer<Path>(discountTS),
       payoff_(payoff), exercise_(exercise),
       underlying_(underlying),
       diffProcess_(diffProcess), sequenceGen_(sequenceGen) {
@@ -67,13 +67,13 @@ namespace QuantLib {
                 if (y >= log_strike) {
                     if (exercise_->payoffAtExpiry()) {
                         return payoff_->cashPayoff() * 
-                            riskFreeTS_->discount(path.timeGrid().back());
+                            discountTS_->discount(path.timeGrid().back());
                     } else {
                         // the discount should be calculated at the exercise 
                         // time between path.timeGrid()[i+1] and 
                         // path.timeGrid()[i+2]
                         return payoff_->cashPayoff() * 
-                            riskFreeTS_->discount(path.timeGrid()[i+1]);
+                            discountTS_->discount(path.timeGrid()[i+1]);
                     }
                 }
                 log_asset_price += x;
@@ -94,13 +94,13 @@ namespace QuantLib {
                 if (y <= log_strike) {
                     if (exercise_->payoffAtExpiry()) {
                         return payoff_->cashPayoff() * 
-                            riskFreeTS_->discount(path.timeGrid().back());
+                            discountTS_->discount(path.timeGrid().back());
                     } else {
                         // the discount should be calculated at the exercise 
                         // time between path.timeGrid()[i+1] and 
                         // path.timeGrid()[i+2]
                         return payoff_->cashPayoff() *
-                            riskFreeTS_->discount(path.timeGrid()[i+1]);
+                            discountTS_->discount(path.timeGrid()[i+1]);
                     }
                 }
                 log_asset_price += x;

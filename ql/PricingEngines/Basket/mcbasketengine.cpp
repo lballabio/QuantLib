@@ -26,8 +26,8 @@ namespace QuantLib {
                 Option::Type type,
                 double strike,
                 Array underlying, 
-                const RelinkableHandle<TermStructure>& riskFreeTS)
-    : PathPricer<MultiPath>(riskFreeTS), basketType_(basketType), 
+                const RelinkableHandle<TermStructure>& discountTS)
+    : PathPricer<MultiPath>(discountTS), basketType_(basketType), 
         underlying_(underlying), payoff_(type, strike) {
 
         // check underlying is not zero
@@ -90,7 +90,7 @@ namespace QuantLib {
 
         // return the payoff
         return payoff_(basketPrice) 
-            * riskFreeTS_->discount(multiPath[0].timeGrid().back());
+            * discountTS_->discount(multiPath[0].timeGrid().back());
     }
 
 }

@@ -71,7 +71,7 @@ namespace QuantLib {
                 Option::Type type,
                 double strike,
                 Array underlying,
-                const RelinkableHandle<TermStructure>& riskFreeTS);
+                const RelinkableHandle<TermStructure>& discountTS);
         double operator()(const MultiPath& multiPath) const;
       private:
         BasketOption::BasketType basketType_;

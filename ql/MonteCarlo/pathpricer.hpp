@@ -31,26 +31,22 @@
 namespace QuantLib {
 
     //! base class for path pricers
-    /*! Given a path the value of an option is returned on that path.
-     */
+    /*! Given a path the value of an option is returned on that path. */
     template<class PathType, class ValueType=double>
     class PathPricer : public std::unary_function<PathType, ValueType> {
       public:
-        PathPricer(const RelinkableHandle<TermStructure>& riskFreeTS);
+        explicit PathPricer(const RelinkableHandle<TermStructure>& discountTS =
+                                           RelinkableHandle<TermStructure>());
         virtual ~PathPricer() {}
         virtual ValueType operator()(const PathType& path) const=0;
       protected:
-        RelinkableHandle<TermStructure> riskFreeTS_;
+        RelinkableHandle<TermStructure> discountTS_;
     };
 
     template<class P,class V>
     PathPricer<P,V>::PathPricer(
-                            const RelinkableHandle<TermStructure>& riskFreeTS)
-    : riskFreeTS_(riskFreeTS) {
-        QL_REQUIRE(!riskFreeTS.isNull(),
-                   "PathPricer::PathPricer() : "
-                   "no risk free term structure given");
-    }
+                            const RelinkableHandle<TermStructure>& discountTS)
+    : discountTS_(discountTS) {}
 
 
 

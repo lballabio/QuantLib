@@ -88,7 +88,7 @@ namespace QuantLib {
                       Option::Type type,
                       double underlying,
                       double strike,
-                      const RelinkableHandle<TermStructure>& riskFreeTS,
+                      const RelinkableHandle<TermStructure>& discountTS,
                       const boost::shared_ptr<DiffusionProcess>& diffProcess,
                       const PseudoRandom::ursg_type& sequenceGen);
         double operator()(const Path& path) const;
@@ -112,7 +112,7 @@ namespace QuantLib {
                            Option::Type type,
                            double underlying,
                            double strike,
-                           const RelinkableHandle<TermStructure>& riskFreeTS);
+                           const RelinkableHandle<TermStructure>& discountTS);
         double operator()(const Path& path) const;
       private:
         double underlying_;

@@ -28,10 +28,10 @@ namespace QuantLib {
                        Option::Type type,
                        double underlying, 
                        double strike,
-                       const RelinkableHandle<TermStructure>& riskFreeTS,
+                       const RelinkableHandle<TermStructure>& discountTS,
                        const boost::shared_ptr<DiffusionProcess>& diffProcess,
                        const PseudoRandom::ursg_type& sequenceGen)
-    : PathPricer<Path>(riskFreeTS), underlying_(underlying),
+    : PathPricer<Path>(discountTS), underlying_(underlying),
       barrierType_(barrierType), barrier_(barrier), 
       rebate_(rebate), diffProcess_(diffProcess),
       sequenceGen_(sequenceGen), payoff_(type, strike) {
@@ -145,7 +145,7 @@ namespace QuantLib {
 
         if (isOptionActive) {
             return payoff_(asset_price) *
-                riskFreeTS_->discount(path.timeGrid().back());
+                discountTS_->discount(path.timeGrid().back());
         } else {
             return 0.0;
         }
@@ -159,8 +159,8 @@ namespace QuantLib {
                             Option::Type type,
                             double underlying, 
                             double strike,
-                            const RelinkableHandle<TermStructure>& riskFreeTS)
-    : PathPricer<Path>(riskFreeTS), underlying_(underlying),
+                            const RelinkableHandle<TermStructure>& discountTS)
+    : PathPricer<Path>(discountTS), underlying_(underlying),
       barrierType_(barrierType), barrier_(barrier), 
       rebate_(rebate), payoff_(type, strike) {
         QL_REQUIRE(underlying>0.0,
@@ -236,7 +236,7 @@ namespace QuantLib {
 
         if (isOptionActive) {
             return payoff_(asset_price) *
-                riskFreeTS_->discount(path.timeGrid().back());
+                discountTS_->discount(path.timeGrid().back());
         } else {
             return 0.0;
         }
