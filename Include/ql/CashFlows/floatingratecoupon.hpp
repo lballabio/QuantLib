@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/06/21 11:34:23  lballabio
+    Ensured that floating rate coupon index stays alive
+
     Revision 1.2  2001/06/18 11:51:38  lballabio
     Fixed cash flow date
 
@@ -73,7 +76,7 @@ namespace QuantLib {
             double nominal_;
             Date startDate_, endDate_;
             Date refPeriodStart_, refPeriodEnd_;
-            const Indexes::Xibor* index_;
+            Handle<Indexes::Xibor> index_;
             Spread spread_;
             RelinkableHandle<TermStructure> termStructure_;
         };

@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/06/21 11:34:23  lballabio
+    Ensured that floating rate coupon index stays alive
+
     Revision 1.1  2001/06/18 08:11:06  lballabio
     Reworked indexes and floating rate coupon
 
@@ -53,14 +56,15 @@ namespace QuantLib {
           startDate_(startDate), endDate_(endDate), 
           refPeriodStart_(refPeriodStart), 
           refPeriodEnd_(refPeriodEnd), spread_(spread) {
-            if (!index.isNull())
+            if (!index.isNull()) {
                 #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                index_ = index.downcast<Xibor>();
+                const Xibor* ptr = index.downcast<Xibor>();
                 #else
-                index_ = dynamic_cast<const Xibor*>(index.pointer());
+                const Xibor* ptr = dynamic_cast<const Xibor*>(index.pointer());
                 #endif
-            else
-                index_ = 0;
+                if (ptr != 0)
+                    index_ = Handle<Xibor>(new Xibor(*ptr));
+            }
         }
 
         double FloatingRateCoupon::amount() const {
@@ -69,7 +73,7 @@ namespace QuantLib {
             Date settlementDate = termStructure_->settlementDate();
             if (startDate_ < settlementDate) {
                 // must have been fixed
-                QL_REQUIRE(index_ != 0,
+                QL_REQUIRE(!index_.isNull(),
                     "null or non-libor index given");
                 Rate pastFixing = XiborManager::getHistory(
                     index_->name())[startDate_];
@@ -81,7 +85,7 @@ namespace QuantLib {
             if (startDate_ == settlementDate) {
                 // might have been fixed
                 try {
-                    QL_REQUIRE(index_ != 0,
+                    QL_REQUIRE(!index_.isNull(),
                         "null or non-libor index given");
                     Rate pastFixing = XiborManager::getHistory(
                         index_->name())[startDate_];
@@ -105,7 +109,7 @@ namespace QuantLib {
         }
 
         double FloatingRateCoupon::accrualPeriod() const {
-            QL_REQUIRE(index_ != 0,
+            QL_REQUIRE(!index_.isNull(),
                 "null or non-libor index given");
             return index_->dayCounter()->yearFraction(
                 startDate_,endDate_,refPeriodStart_,refPeriodEnd_);
