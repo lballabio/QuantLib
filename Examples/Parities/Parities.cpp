@@ -237,7 +237,7 @@ int main(int argc, char* argv[])
         // for plain vanilla european option the number of steps is not
         // significant. Let's go for the fastest way: just one step
         int nTimeSteps = 1;
-        int nSamples = 100000;
+        int nSamples = 200000;
         long seed = 100000*UniformRandomGenerator().next();
 	    double drift = riskFreeRate - 0.5*volatility*volatility;
         Statistics samples;
@@ -248,10 +248,11 @@ int main(int argc, char* argv[])
 
         // fifth method:  MonteCarlo
         method ="Monte Carlo";
+        bool antitheticVariance = false;
         // The European path pricer
         Handle<PathPricer> myEuropeanPathPricer =
             Handle<PathPricer>(new EuropeanPathPricer(Option::Call,
-            underlying, strike, exp(-riskFreeRate*maturity)));
+            underlying, strike, exp(-riskFreeRate*maturity), antitheticVariance));
         // The OneFactorMontecarloModel generates paths using myPathGenerator
         // each path is priced using myPathPricer
         // prices will be accumulated into samples
@@ -271,6 +272,30 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
+
+        // sixth method:  MonteCarlo with antithetic variance reduction
+        method ="MC antithetic";
+        antitheticVariance = true;
+        // The European path pricer, this time with antithetic variance reduction
+        myEuropeanPathPricer =
+            Handle<PathPricer>(new EuropeanPathPricer(Option::Call,
+            underlying, strike, exp(-riskFreeRate*maturity), antitheticVariance));
+        // reset the statistic accumulator
+        samples.reset();
+	    mc = OneFactorMonteCarloOption(myPathGenerator, myEuropeanPathPricer,
+		    samples);
+        mc.addSamples(nSamples);
+        value = mc.sampleAccumulator().mean();
+        estimatedError = mc.sampleAccumulator().errorEstimate();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
 
         //
         //  Option calculus analogy to energy conservation in heat diffusion
