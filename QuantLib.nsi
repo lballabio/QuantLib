@@ -7,7 +7,7 @@
 #       makensis-bz2 QuantLib.nsi
 
 
-!define VER_NUMBER "0.3.3"
+!define VER_NUMBER "0.3.4a1"
 
 # HEADER CONFIGURATION COMMANDS
 !ifdef LIGHT
