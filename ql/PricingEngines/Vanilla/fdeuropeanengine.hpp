@@ -22,7 +22,7 @@
 #ifndef quantlib_fd_european_engine_hpp
 #define quantlib_fd_european_engine_hpp
 
-#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
 
 namespace QuantLib {
 
@@ -32,14 +32,13 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               checking it against analytic results.
     */
-    class FDEuropeanEngine : public VanillaOption::engine {
+    class FDEuropeanEngine : public FDVanillaEngine {
       public:
-        FDEuropeanEngine(Size timeSteps, Size gridPoints)
-        : timeSteps_(timeSteps), gridPoints_(gridPoints) {};
-        void calculate() const;
+        FDEuropeanEngine(Size timeSteps=100, Size gridPoints=100)
+        : FDVanillaEngine(timeSteps, gridPoints) {}
       private:
-        Size timeSteps_;
-        Size gridPoints_;
+        mutable Array euroPrices_;
+        void calculate() const;
     };
 
 }

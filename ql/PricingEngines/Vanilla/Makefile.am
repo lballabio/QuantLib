@@ -15,6 +15,7 @@ include_HEADERS = \
     jumpdiffusionengine.hpp \
     juquadraticengine.hpp \
     fdeuropeanengine.hpp \
+    fdvanillaengine.hpp \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
     mcvanillaengine.hpp
@@ -32,6 +33,7 @@ libVanillaEngines_la_SOURCES = \
     jumpdiffusionengine.cpp \
     juquadraticengine.cpp \
     fdeuropeanengine.cpp \
+    fdvanillaengine.cpp \
     mcdigitalengine.cpp
 
 noinst_LTLIBRARIES = libVanillaEngines.la

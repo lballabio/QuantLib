@@ -27,6 +27,7 @@
 #include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
 #include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/fdeuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
 #include <ql/PricingEngines/Vanilla/integralengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>

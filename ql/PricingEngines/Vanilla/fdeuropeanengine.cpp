@@ -16,57 +16,27 @@
 */
 
 #include <ql/PricingEngines/Vanilla/fdeuropeanengine.hpp>
-#include <ql/Pricers/fdeuropean.hpp>
+#include <ql/FiniteDifferences/fdtypedefs.hpp>
+#include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
 
     void FDEuropeanEngine::calculate() const {
+        setGridLimits();
+        initializeGrid();
+        initializeInitialCondition();
+        initializeOperator();
 
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "not an European option");
+        StandardFiniteDifferenceModel model(finiteDifferenceOperator_, BCs_);
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-striked payoff given");
+        euroPrices_ = intrinsicValues_;
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+        model.rollback(euroPrices_, getResidualTime(),
+                       0, timeSteps_);
 
-        Real spot = process->stateVariable()->value();
-        Date exerciseDate = arguments_.exercise->lastDate();
-
-        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
-        Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                   arguments_.exercise->lastDate());
-
-        FdEuropean option(payoff->optionType(),
-                          spot,
-                          payoff->strike(),
-                          process->dividendYield()->zeroRate(t, Continuous),
-                          process->riskFreeRate()->zeroRate(t, Continuous),
-                          t,
-                          process->blackVolatility()->blackVol(
-                                              exerciseDate, payoff->strike()),
-                          timeSteps_, gridPoints_);
-
-        results_.value = option.value();
-        results_.delta = option.delta();
-        results_.deltaForward = Null<Real>();
-        results_.elasticity = Null<Real>();
-        results_.gamma = option.gamma();
-
-        results_.dividendRho = option.dividendRho();
-
-        results_.vega = option.vega();
-        try {
-            results_.theta = option.theta();
-        } catch (Error&) {
-            results_.theta = Null<Real>();
-        }
-        results_.thetaPerDay = Null<Real>();
-
-        results_.strikeSensitivity  = Null<Real>();
-        results_.itmCashProbability = Null<Real>();
+        results_.value = valueAtCenter(euroPrices_);
+        results_.delta = firstDerivativeAtCenter(euroPrices_, grid_);
+        results_.gamma = secondDerivativeAtCenter(euroPrices_, grid_);
     }
 
 }
