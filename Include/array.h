@@ -29,6 +29,7 @@
 #define quantlib_array_h
 
 #include "qldefines.h"
+#include "qlerrors.h"
 #if QL_EXPRESSION_TEMPLATES_WORK
 #include "expressiontemplates.h"
 #endif
