@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.5  2001/02/07 10:15:57  marmar
+	Interface for Himalaya-type option pricer
+
 	Revision 1.4  2001/02/05 16:55:12  marmar
 	McAsianPricer replaced by AveragePriceAsian and AverageStrikeAsian
-
+	
 	Revision 1.3  2001/02/02 10:58:39  marmar
 	MonteCarloTools.i added
 	
@@ -133,6 +136,23 @@ class PlainBasketOption{
         const PyArray &underlyingGrowthRate, const Matrix &covariance, 
         Rate riskFreeRate,  double residualTime, 
         int timesteps, long samples, long seed = 0);
+	double value() const;
+	double errorEstimate() const;
+};
+
+%{
+#include "himalaya.h"
+using QuantLib::Pricers::Himalaya;
+%}
+
+%include Vectors.i
+%include Matrix.i
+
+class Himalaya{
+    public:
+    Himalaya(const PyArray &underlying, const PyArray  &underlyingGrowthRate, 
+        const Matrix &covariance, Rate riskFreeRate, double strike, 
+        const DoubleVector &timeDelays, long samples, long seed=0);
 	double value() const;
 	double errorEstimate() const;
 };

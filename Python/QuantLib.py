@@ -731,6 +731,23 @@ class PlainBasketOptionPtr(PlainBasketOption):
 PlainBasketOption.value = new.instancemethod(QuantLibc.PlainBasketOption_value, None, PlainBasketOption)
 PlainBasketOption.errorEstimate = new.instancemethod(QuantLibc.PlainBasketOption_errorEstimate, None, PlainBasketOption)
 
+class Himalaya:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_Himalaya,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C Himalaya instance at %s>" % (self.this,)
+class HimalayaPtr(Himalaya):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = Himalaya
+
+
+Himalaya.value = new.instancemethod(QuantLibc.Himalaya_value, None, Himalaya)
+Himalaya.errorEstimate = new.instancemethod(QuantLibc.Himalaya_errorEstimate, None, Himalaya)
+
 class GaussianArrayGenerator:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_GaussianArrayGenerator,args,kwargs)
