@@ -9,4 +9,5 @@ include_HEADERS = \
     curiouslyrecurring.hpp \
     lazyobject.hpp \
     observable.hpp \
+    singleton.hpp \
     visitor.hpp

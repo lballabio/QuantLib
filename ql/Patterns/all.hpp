@@ -25,6 +25,7 @@
 #include <ql/Patterns/curiouslyrecurring.hpp>
 #include <ql/Patterns/lazyobject.hpp>
 #include <ql/Patterns/observable.hpp>
+#include <ql/Patterns/singleton.hpp>
 #include <ql/Patterns/visitor.hpp>
 
 

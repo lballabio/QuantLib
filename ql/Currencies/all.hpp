@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 StatPro Italia srl
  Copyright (C) 2004 Decillion Pty(Ltd)
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,6 +26,8 @@
 #include <ql/Currencies/asia.hpp>
 #include <ql/Currencies/europe.hpp>
 #include <ql/Currencies/oceania.hpp>
+
+#include <ql/Currencies/exchangeratemanager.hpp>
 
 
 #endif
