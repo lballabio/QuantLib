@@ -46,7 +46,8 @@ namespace QuantLib {
           public:
             VanillaOptionArguments() : type(Option::Type(-1)),
                                        underlying(Null<double>()),
-                                       strike(Null<double>()) {}
+                                       strike(Null<double>()),
+                                       maturity(Null<double>()) {}
             void validate() const;
             Option::Type type;
             double underlying, strike;
@@ -66,28 +67,31 @@ namespace QuantLib {
                        "no option type given");
             QL_REQUIRE(underlying != Null<double>(),
                        "VanillaOptionArguments::validate() : "
-                       "null underlying given");
+                       "no underlying given");
             QL_REQUIRE(underlying > 0.0,
                        "VanillaOptionArguments::validate() : "
                        "negative or zero underlying given");
             QL_REQUIRE(strike != Null<double>(),
                        "VanillaOptionArguments::validate() : "
-                       "null strike given");
+                       "no strike given");
             QL_REQUIRE(strike >= 0.0,
                        "VanillaOptionArguments::validate() : "
                        "negative strike given");
             QL_REQUIRE(!dividendTS.isNull(),
                        "VanillaOptionArguments::validate() : "
-                       "null dividend term structure");
+                       "no dividend term structure given");
             QL_REQUIRE(!riskFreeTS.isNull(),
                        "VanillaOptionArguments::validate() : "
-                       "null risk free term structure");
+                       "no risk free term structure given");
+            QL_REQUIRE(maturity != Null<double>(),
+                       "VanillaOptionArguments::validate() : "
+                       "no maturity given");
             QL_REQUIRE(maturity>=0.0,
                        "VanillaOptionArguments::validate() : "
                        "negative maturity");
             QL_REQUIRE(!volTS.isNull(),
                        "VanillaOptionArguments::validate() : "
-                       "null vol term structure");
+                       "no vol term structure given");
         }
 
         //! %results from vanilla option calculation
