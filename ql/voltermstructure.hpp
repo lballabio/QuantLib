@@ -97,15 +97,9 @@ namespace QuantLib {
         //! the latest date for which the term structure can return vols
         virtual Date maxDate() const = 0;
         //! the earliest time for which the term structure can return vols
-        virtual Time minTime() const = 0;
+        Time minTime() const;
         //! the latest time for which the term structure can return vols
-        virtual Time maxTime() const = 0;
-        //@}
-
-        //! \name Other inspectors
-        //@{
-        //! returns the underlying upon which the VolTermStructure is defined
-        virtual std::string underlying() const = 0;
+        Time maxTime() const;
         //@}
       protected:
         //! implements the actual Black variance calculation in derived classes
@@ -116,6 +110,14 @@ namespace QuantLib {
             bool extrapolate = false) const = 0;
     };
 
+
+    inline double VolTermStructure::minTime() const {
+        return dayCounter().yearFraction(referenceDate(), minDate());
+    }
+
+    inline double VolTermStructure::maxTime() const {
+        return dayCounter().yearFraction(referenceDate(), maxDate());
+    }
 
     inline double VolTermStructure::blackVol(const Date& maturity,
         double strike, bool extrapolate) const {
