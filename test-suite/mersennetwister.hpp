@@ -24,7 +24,7 @@
 
 class MersenneTwisterTest : public CppUnit::TestCase {
   public:
-    MersenneTwisterTest() : CppUnit::TestCase("Testing Mersenne Twister") {}
+    MersenneTwisterTest() : CppUnit::TestCase("Testing Mersenne twister") {}
     void runTest();
 };
 
