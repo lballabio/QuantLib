@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Neil Firth
  Copyright (C) 2003 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -24,8 +25,9 @@
 class MatricesTest : public CppUnit::TestFixture {
   public:
     void setUp();
-    void testEigenvectors();
+    void testEigenvectors();   
     void testSqrt();
+    void testSVD();
     static CppUnit::Test* suite();
 };
 

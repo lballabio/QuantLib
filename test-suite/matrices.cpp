@@ -18,6 +18,7 @@
 #include "matrices.hpp"
 #include "utilities.hpp"
 #include <ql/Math/matrix.hpp>
+#include <ql/Math/svd.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
 #include <ql/dataformatters.hpp>
 #include <cppunit/TestSuite.h>
@@ -28,7 +29,7 @@ using namespace QuantLib;
 namespace {
 
     Size N;
-    Matrix M1, M2, I;
+    Matrix M1, M2, M3, M4, I;
 
     double norm(const Array& v) {
         return QL_SQRT(DotProduct(v,v));
@@ -48,6 +49,7 @@ void MatricesTest::setUp() {
 
     N = 3;
     M1 = M2 = I = Matrix(N,N);
+    M3 = M4 = Matrix(4,3);
 
     M1[0][0] = 1.0;  M1[0][1] = 0.9;  M1[0][2] = 0.7;
     M1[1][0] = 0.9;  M1[1][1] = 1.0;  M1[1][2] = 0.4;
@@ -60,6 +62,16 @@ void MatricesTest::setUp() {
     I[0][0] = 1.0;  I[0][1] = 0.0;  I[0][2] = 0.0;
     I[1][0] = 0.0;  I[1][1] = 1.0;  I[1][2] = 0.0;
     I[2][0] = 0.0;  I[2][1] = 0.0;  I[2][2] = 1.0;
+
+    M3[0][0] = 1; M3[0][1] = 2; M3[0][2] = 0; 
+    M3[1][0] = 2; M3[1][1] = 0; M3[1][2] = 1; 
+    M3[2][0] = 3; M3[2][1] = 2; M3[2][2] = 0; 
+    M3[3][0] = 4; M3[3][1] = 1; M3[3][2] = 0;   
+
+    M4[0][0] = 1; M4[0][1] = 2; M4[0][2] = 400; 
+    M4[1][0] = 2; M4[1][1] = 0; M4[1][2] = 1; 
+    M4[2][0] = 30; M4[2][1] = 2; M4[2][2] = 0; 
+    M4[3][0] = 2; M4[3][1] = 0; M4[3][2] = 1.05;
 }
 
 void MatricesTest::testEigenvectors() {
@@ -99,6 +111,49 @@ void MatricesTest::testSqrt() {
 
 }
 
+void MatricesTest::testSVD() {      
+    
+    double tol = 1.0e-6;
+    Matrix testMatrices[] = { M1, M2, M3, M4 };
+
+    for (Size j = 0; j < LENGTH(testMatrices); j++) {
+        // m >= n required (rows >= columns)        
+        Matrix& A = testMatrices[j];        
+        SVD svd(A);    
+        // U is m x n
+        Matrix U(A.rows(), A.columns());
+        // s is n long
+        Array s(A.columns());
+        // S is n x n
+        Matrix S(I);
+        // V is n x n 
+        Matrix V(A.columns(), A.columns());
+        
+        svd.getU(U);
+        svd.getV(V);
+        svd.getSingularValues(s);
+
+        for (Size i=0; i < S.rows(); i++) {
+            S[i][i] = s[i];
+        }
+        
+        // tests
+        Matrix U_Utranspose = transpose(U)*U;    
+        if (norm(U_Utranspose-I) > tol)
+                CPPUNIT_FAIL("U not orthogonal"
+                    + DoubleFormatter::toExponential(norm(U_Utranspose-I)));
+
+        Matrix V_Vtranspose = transpose(V)*V;
+        if (norm(V_Vtranspose-I) > tol)
+            CPPUNIT_FAIL("V not orthogonal: error " 
+                + DoubleFormatter::toExponential(norm(V_Vtranspose-I)));
+
+        Matrix A_reconstructed = U * S * transpose(V);        
+        if (norm(A_reconstructed-A) > tol)
+            CPPUNIT_FAIL("Product does not recover A: error " 
+                + DoubleFormatter::toExponential(norm(A_reconstructed-A)));
+    }
+}
 
 CppUnit::Test* MatricesTest::suite() {
     CppUnit::TestSuite* tests = new CppUnit::TestSuite("Matrix tests");
@@ -108,6 +163,9 @@ CppUnit::Test* MatricesTest::suite() {
     tests->addTest(new CppUnit::TestCaller<MatricesTest>
                    ("Testing matricial square root",
                     &MatricesTest::testSqrt));
+    tests->addTest(new CppUnit::TestCaller<MatricesTest>
+                   ("Testing Singular Value Decomposition - SVD",
+                    &MatricesTest::testSVD));
     return tests;
 }
 
