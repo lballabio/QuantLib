@@ -50,11 +50,11 @@ namespace QuantLib {
         */
         class SegmentIntegral{
           public:
-            SegmentIntegral(long intervals);
+            SegmentIntegral(unsigned int intervals);
             double operator()(const ObjectiveFunction &f, 
                              double a, double b) const;
           private:
-            long intervals_;
+            unsigned int intervals_;
        };
 
     }

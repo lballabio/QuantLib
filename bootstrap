@@ -4,9 +4,9 @@
 # configure program
 # this is known to work with the following tools:
 #
-# automake 1.5
-# autoconf 2.52
-# libtool 1.4.2
+# GNU automake 1.5
+# GNU Autoconf 2.52
+# GNU libtool 1.4.2
 
 aclocal
 autoheader

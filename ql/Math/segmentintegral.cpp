@@ -37,7 +37,7 @@ namespace QuantLib {
 
     namespace Math {
 
-        SegmentIntegral::SegmentIntegral(long intervals)
+        SegmentIntegral::SegmentIntegral(unsigned int intervals)
             :intervals_(intervals){
             QL_REQUIRE(intervals > 3,
                "at least 4 intervals needed, given only "+
@@ -45,7 +45,7 @@ namespace QuantLib {
             }
 
         double SegmentIntegral::operator()(
-            const ObjectiveFunction &f, double a, double b) const{
+            const ObjectiveFunction& f, double a, double b) const {
                 QL_REQUIRE(a < b,
                            "to compute an integral on [a,b] it must be a<b; a="+
                            DoubleFormatter::toString(a)+" b="+
