@@ -762,6 +762,25 @@ class CumulativeNormalDistributionPtr(CumulativeNormalDistribution):
 CumulativeNormalDistribution.derivative = new.instancemethod(QuantLibc.CumulativeNormalDistribution_derivative, None, CumulativeNormalDistribution)
 CumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.CumulativeNormalDistribution___call__, None, CumulativeNormalDistribution)
 
+class InverseCumulativeNormalDistribution:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_InverseCumulativeNormalDistribution,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_InverseCumulativeNormalDistribution(self)
+    def __repr__(self):
+        return "<C InverseCumulativeNormalDistribution instance at %s>" % (self.this,)
+class InverseCumulativeNormalDistributionPtr(InverseCumulativeNormalDistribution):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = InverseCumulativeNormalDistribution
+
+
+InverseCumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.InverseCumulativeNormalDistribution___call__, None, InverseCumulativeNormalDistribution)
+
 class StandardPathGenerator:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_StandardPathGenerator,args,kwargs)

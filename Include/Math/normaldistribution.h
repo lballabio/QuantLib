@@ -22,20 +22,23 @@
 */
 
 /*! \file normaldistribution.h
-	\brief normal and cumulative normal distributions
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.5  2001/01/04 11:59:29  lballabio
-	Line wraps fixed when stumbling upon them
+    \brief normal, cumulative and inverse cumulative distributions
+    
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.6  2001/01/08 16:22:32  nando
+    added InverseCumulativeNormalDistribution
 
-	Revision 1.4  2000/12/27 17:18:35  lballabio
-	Changes for compiling under Linux and Alpha Linux
-	
-	Revision 1.3  2000/12/14 12:32:30  lballabio
-	Added CVS tags in Doxygen file documentation blocks
-	
+    Revision 1.5  2001/01/04 11:59:29  lballabio
+    Line wraps fixed when stumbling upon them
+    
+    Revision 1.4  2000/12/27 17:18:35  lballabio
+    Changes for compiling under Linux and Alpha Linux
+    
+    Revision 1.3  2000/12/14 12:32:30  lballabio
+    Added CVS tags in Doxygen file documentation blocks
+    
 */
 
 #ifndef quantlib_normal_distribution_h
@@ -46,54 +49,64 @@
 
 namespace QuantLib {
 
-	namespace Math {
+    namespace Math {
 
-		class NormalDistribution : public std::unary_function<double,double> {
-		  public:
-			NormalDistribution(double average = 0.0, double sigma = 1.0);
-			// function
-			double operator()(double x);
-		  private:
-			static const double pi;
-			double average, sigma, normalizationFactor, denominator;
-		};
-		
-		typedef NormalDistribution GaussianDistribution;
-		
-		class CumulativeNormalDistribution : 
-		  public std::unary_function<double,double> {
-		  public:
-			CumulativeNormalDistribution();
-			// function
-			double operator()(double x);
-			double derivative(double x);
-		  private:
-			static const double a1, a2, a3, a4, a5, gamma, precision;
-			NormalDistribution gaussian;
-		};
-		
-		// inline definitions
-		
-		inline NormalDistribution::NormalDistribution(double average, 
-		  double sigma)
-		: average(average), sigma(sigma) {
-			normalizationFactor = 1.0/(sigma*QL_SQRT(2.0*pi));
-			denominator = 2.0*sigma*sigma;
-		}
-		
-		inline double NormalDistribution::operator()(double x) {
-			double deltax = x-average;
-			return normalizationFactor*QL_EXP(-deltax*deltax/denominator);
-		}
-		
-		inline CumulativeNormalDistribution::CumulativeNormalDistribution() {}
-		
-		inline double CumulativeNormalDistribution::derivative(double x) {
-			return gaussian(x);
-		}
+        class NormalDistribution : public std::unary_function<double,double> {
+          public:
+            NormalDistribution(double average = 0.0, double sigma = 1.0);
+            // function
+            double operator()(double x) const;
+          private:
+            static const double pi_;
+            double average_, sigma_, normalizationFactor_, denominator_;
+        };
+        
+        typedef NormalDistribution GaussianDistribution;
+        
+        class CumulativeNormalDistribution : 
+          public std::unary_function<double,double> {
+          public:
+            CumulativeNormalDistribution();
+            // function
+            double operator()(double x) const;
+            double derivative(double x) const;
+          private:
+            static const double a1_, a2_, a3_, a4_, a5_, gamma_, precision_;
+            NormalDistribution gaussian_;
+        };
+        
+        class InverseCumulativeNormalDistribution : 
+          public std::unary_function<double,double> {
+          public:
+            InverseCumulativeNormalDistribution() {}
+            // function
+            double operator()(double x) const;
+          private:
+            static const double p0_, p1_, p2_, q1_, q2_, q3_;
+        };
 
-	}
-	
+        // inline definitions
+
+        inline NormalDistribution::NormalDistribution(double average, 
+          double sigma)
+        : average_(average), sigma_(sigma) {
+            normalizationFactor_ = 1.0/(sigma_*QL_SQRT(2.0*pi_));
+            denominator_ = 2.0*sigma_*sigma_;
+        }
+
+        inline double NormalDistribution::operator()(double x) const {
+            double deltax = x-average_;
+            return normalizationFactor_*QL_EXP(-deltax*deltax/denominator_);
+        }
+
+        inline CumulativeNormalDistribution::CumulativeNormalDistribution() {}
+        
+        inline double CumulativeNormalDistribution::derivative(double x) const {
+            return gaussian_(x);
+        }
+
+    }
+    
 }
 
 
