@@ -79,7 +79,7 @@ namespace QuantLib {
     :   brownianBridge_(brownianBridge),
         diffusionProcs_(diffusionProcs),
         numAssets_(correlation.rows()),         
-        sqrtCorrelation_(matrixSqrt(correlation)),
+        sqrtCorrelation_(pseudoSqrt(correlation,SalvagingAlgorithm::Spectral)),
         generator_(generator),
         next_(MultiPath(correlation.rows(), times), 1.0) {
 

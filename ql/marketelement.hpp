@@ -34,9 +34,6 @@ namespace QuantLib {
         virtual double value() const = 0;
     };
 
-    //! \deprecated use Quote
-    typedef Quote MarketElement;
-
 
     //! market element returning a stored value
     class SimpleQuote : public Quote {
@@ -53,9 +50,6 @@ namespace QuantLib {
       private:
         double value_;
     };
-
-    //! \deprecated use SimpleQuote
-    typedef SimpleQuote SimpleMarketElement;
 
 
     //! market element whose value depends on another market element

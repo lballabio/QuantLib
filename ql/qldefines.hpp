@@ -34,13 +34,13 @@
 #endif
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x000305f0
+#define QL_HEX_VERSION 0x000306a0
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "0.3.5-debug"
+    #define QL_VERSION "0.3.6-debug"
 #else
-    #define QL_VERSION "0.3.5"
+    #define QL_VERSION "0.3.6"
 #endif
 
 //! specific per-compiler definitions
@@ -485,76 +485,5 @@ QL_SPECIALIZE_ITERATOR_TRAITS(long double)
 #endif
 
 /*! @}  */
-
-
-namespace QuantLib {
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Math = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Calendars = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace CashFlows = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace DayCounters = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Indexes = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Instruments = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace PricingEngines = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Solvers1D = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace TermStructures = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace VolTermStructures = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace FiniteDifferences = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Lattices = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace MonteCarlo = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Optimization = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Patterns = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Pricers = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace RandomNumbers = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace ShortRateModels = ::QuantLib;
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace CalibrationHelpers = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Utilities = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Volatilities = ::QuantLib;
-
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Functions = ::QuantLib;
-
-
-}
 
 #endif

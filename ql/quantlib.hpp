@@ -44,48 +44,4 @@
 #include <ql/Volatilities/all.hpp>
 #include <ql/functions/all.hpp>
 
-
-/*** shortcuts for the full namespaces ***/
-
-//! \deprecated define your own alias when you use QuantLib
-namespace QL    = QuantLib;
-
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLCAL = QuantLib::Calendars;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLCFL = QuantLib::CashFlows;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLDCO = QuantLib::DayCounters;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLFDM = QuantLib::FiniteDifferences;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLFUN = QuantLib::Functions;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLIDX = QuantLib::Indexes;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLINS = QuantLib::Instruments;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLMTH = QuantLib::Math;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLMNT = QuantLib::MonteCarlo;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLPAT = QuantLib::Patterns;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLPRC = QuantLib::Pricers;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLPRE = QuantLib::PricingEngines;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLRNG = QuantLib::RandomNumbers;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLSRM = QuantLib::ShortRateModels;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLS1D = QuantLib::Solvers1D;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLTST = QuantLib::TermStructures;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLUTL = QuantLib::Utilities;
-//! \deprecated inner namespace aliases will be removed in next release
-namespace QLVOL = QuantLib::Volatilities;
-
-
 #endif

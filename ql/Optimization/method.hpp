@@ -85,10 +85,6 @@ namespace QuantLib {
         mutable Array x_, searchDirection_;
     };
 
-    /*! \deprecated use OptimizationMethod */
-    typedef OptimizationMethod Method;
-
-
     // inline definitions
 
     inline void OptimizationMethod::setEndCriteria(

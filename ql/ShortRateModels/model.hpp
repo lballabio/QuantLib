@@ -99,10 +99,6 @@ namespace QuantLib {
         friend class CalibrationFunction;
     };
 
-    /*! \deprecated use ShortRateModel */
-    typedef ShortRateModel Model;
-
-
     // inline definitions
 
     inline const Handle<Constraint>& ShortRateModel::constraint() const {

@@ -72,12 +72,6 @@ namespace QuantLib {
                                              SalvagingAlgorithm::Type);
 
 
-    /*! \deprecated use CholeskyDecomposition or pseudoSqrt instead 
-
-        \relates Matrix
-    */
-    const Disposable<Matrix> matrixSqrt(const Matrix&);
-
 }
 
 
