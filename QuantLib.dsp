@@ -600,6 +600,10 @@ SOURCE=.\ql\Instruments\capfloor.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\cliquetoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\forwardvanillaoption.cpp
 # End Source File
 # Begin Source File

@@ -509,6 +509,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
+	"$(INTDIR)\localvolsurface.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -518,8 +519,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\localvolsurface.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -673,6 +673,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
+	"$(INTDIR)\localvolsurface.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -682,8 +683,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\localvolsurface.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1168,6 +1168,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
+	"$(INTDIR)\localvolsurface.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -1177,8 +1178,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\localvolsurface.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1332,6 +1332,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
+	"$(INTDIR)\localvolsurface.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -1341,8 +1342,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\localvolsurface.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1827,6 +1827,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
+	"$(INTDIR)\localvolsurface.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -1836,8 +1837,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\localvolsurface.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1991,6 +1991,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
+	"$(INTDIR)\localvolsurface.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -2000,8 +2001,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\localvolsurface.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2486,6 +2486,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
+	"$(INTDIR)\localvolsurface.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -2495,8 +2496,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\localvolsurface.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2650,6 +2650,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
+	"$(INTDIR)\localvolsurface.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -2659,8 +2660,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\localvolsurface.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3145,6 +3145,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
+	"$(INTDIR)\localvolsurface.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -3154,8 +3155,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\localvolsurface.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3309,6 +3309,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
+	"$(INTDIR)\localvolsurface.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -3318,8 +3319,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\localvolsurface.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
