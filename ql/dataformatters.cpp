@@ -16,10 +16,82 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+/*! \file dataformatters.cpp
+    \brief classes used to format data for output
+*/
+
 #include <ql/dataformatters.hpp>
 #include <ql/null.hpp>
 
 namespace QuantLib {
+
+    std::string IntegerFormatter::toString(int l, int digits) {
+        return toString(long(l), digits);
+    }
+
+    std::string IntegerFormatter::toString(unsigned int l, int digits) {
+        return toString((unsigned long)l, digits);
+    }
+
+    std::string IntegerFormatter::toString(long l, int digits) {
+        static long null = long(Null<int>());
+        if (l == null)
+            return std::string("null");
+        char s[64];
+        QL_SPRINTF(s,"%*ld",(digits>64?64:digits),l);
+        return std::string(s);
+    }
+
+    std::string IntegerFormatter::toString(unsigned long l, int digits) {
+        static unsigned long null = (unsigned long) Null<int>();
+        if (l == null)
+            return std::string("null");
+        char s[64];
+        QL_SPRINTF(s,"%*lu",(digits>64?64:digits),l);
+        return std::string(s);
+    }
+
+    std::string IntegerFormatter::toOrdinal(unsigned long l) {
+        std::string suffix;
+        if (l == 11UL || l == 12UL || l == 13UL) {
+            suffix = "th";
+        } else {
+            switch (l % 10) {
+              case 1:  suffix = "st";  break;
+              case 2:  suffix = "nd";  break;
+              case 3:  suffix = "rd";  break;
+              default: suffix = "th";
+            }
+        }
+        return toString(l)+suffix;
+    }
+
+    std::string IntegerFormatter::toPowerOfTwo(int l, int digits) {
+        return toPowerOfTwo(long(l), digits);
+    }
+
+    std::string IntegerFormatter::toPowerOfTwo(unsigned int l, int digits) {
+        return toPowerOfTwo((unsigned long)l, digits);
+    }
+
+    std::string IntegerFormatter::toPowerOfTwo(long l, int digits) {
+        if (l < 0L)
+            return "-" + toPowerOfTwo((unsigned long)(-l),digits);
+        else 
+            return toPowerOfTwo((unsigned long)(l),digits);
+    }
+
+    std::string IntegerFormatter::toPowerOfTwo(unsigned long l, int digits) {
+        static unsigned long null = (unsigned long) Null<int>();
+        if (l == null)
+            return std::string("null");
+        int power = 0;
+        while (!(l & 1UL)) {
+            power++;
+            l >>= 1;
+        }
+        return toString(l,digits) + "*2^" + toString(power,2);
+    }
 
     std::string DoubleFormatter::toString(double x, int precision, 
                                           int digits) {
@@ -134,7 +206,7 @@ namespace QuantLib {
                          IntegerFormatter::toString(dd);
                 break;
               default:
-                QL_FAIL("unknown date format");
+                throw Error("unknown date format");
             }
         }
         return output;
@@ -224,7 +296,7 @@ namespace QuantLib {
           case Option::Put:      return "put";
           case Option::Straddle: return "straddle";
           default:
-            QL_FAIL("unknown option type");
+            throw Error("unknown option type");
         }
     }
 

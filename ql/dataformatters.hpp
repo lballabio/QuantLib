@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,8 +20,8 @@
     \brief Classes used to format data for output
 */
 
-#ifndef quantlib_data_formatters_h
-#define quantlib_data_formatters_h
+#ifndef quantlib_data_formatters_hpp
+#define quantlib_data_formatters_hpp
 
 #include <ql/currency.hpp>
 #include <ql/option.hpp>
@@ -32,50 +32,15 @@ namespace QuantLib {
     //! Formats integers for output
     class IntegerFormatter {
       public:
-        template<class int_type>
-        static std::string toString(int_type l,
-                                    unsigned int digits = 0) {
-            if (l == Null<int_type>())
-                return std::string("null");
-
-            char s[64];
-            QL_SPRINTF(s,"%*ld",(digits>64?64:digits),l);
-            return std::string(s);
-        }
-        template<class int_type>
-        static std::string toOrdinal(int_type l) {
-            std::string suffix;
-            if (l==int_type(11) || l==int_type(12) || l==int_type(13))
-                suffix = "th";
-            else {
-                switch (l % int_type(10)) {
-                case 1:  suffix = "st";  break;
-                case 2:  suffix = "nd";  break;
-                case 3:  suffix = "rd";  break;
-                default: suffix = "th";
-                }
-            }
-            return toString(l)+suffix;
-        }
-        template<class int_type>
-        static std::string toPowerOfTwo(int_type l,
-                                        unsigned int digits = 0) {
-            if (long(l) == Null<int_type>())
-                return std::string("null");
-
-            unsigned long power = 0;
-            std::string sign = "";
-            if (!(l >= int_type(0))) {
-                sign = "-"
-                l = -l;
-            }
-            while (!(l & int_type(1))) {
-                power++;
-                l >>= 1;
-            }
-            return sign + toString(l,digits) + "*2^" + toString(power,2);
-        }
-
+        static std::string toString(int l, int digits = 0);
+        static std::string toString(unsigned int l, int digits = 0);
+        static std::string toString(long l, int digits = 0);
+        static std::string toString(unsigned long l, int digits = 0);
+        static std::string toOrdinal(unsigned long l);
+        static std::string toPowerOfTwo(int l, int digits = 0);
+        static std::string toPowerOfTwo(unsigned int l, int digits = 0);
+        static std::string toPowerOfTwo(long l, int digits = 0);
+        static std::string toPowerOfTwo(unsigned long l, int digits = 0);
     };
 
     //! Formats doubles for output
@@ -96,7 +61,7 @@ namespace QuantLib {
         static std::string toString(DataIterator begin,
                                     DataIterator end,
                                     int precision = 6,
-                                    int digits = 0,
+                                    int digits = 0, 
                                     Size elementsPerRow = QL_MAX_INT) {
             std::string s = "[ ";
             DataIterator i;
