@@ -25,6 +25,8 @@ CC_OPTS = -vi- -w-8057 \
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
+!else
+CC_OPTS = $(CC_OPTS) -O2
 !endif
 !ifdef SAFE
 CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS

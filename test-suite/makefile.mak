@@ -58,6 +58,8 @@ CC_OPTS = -vi- \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
+!else
+CC_OPTS = $(CC_OPTS) -O2
 !endif
 !ifdef SAFE
 CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
@@ -75,7 +77,6 @@ test-suite$(_D).exe: $(QL_TESTS)
     $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) -L$(CPPUNIT_LIB_DIR) -L$(BCC_LIBS) \
     -etest-suite$(_D).exe $(QL_TESTS) \
     QuantLib$(_D).lib cppunit$(_bc5D)_bc5.lib
-
 
 # Clean up
 clean::

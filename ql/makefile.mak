@@ -68,7 +68,7 @@ QUANTLIB_OBJS = \
     $(RNG_LIB) \
     $(TERMSTRUCT_LIB) \
     $(TWOFACTOR_LIB) \
-    $(VOLATILITY_LIB) 
+    $(VOLATILITY_LIB)
 
 # Tools to be used
 CC        = bcc32
@@ -88,6 +88,8 @@ CC_OPTS = -vi- -q -c -tWM \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
+!else
+CC_OPTS = $(CC_OPTS) -O2
 !endif
 !ifdef SAFE
 CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
