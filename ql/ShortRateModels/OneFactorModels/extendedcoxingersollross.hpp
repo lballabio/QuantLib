@@ -50,7 +50,7 @@ namespace QuantLib {
 
             Handle<Lattices::Tree> tree(const TimeGrid& grid) const;
 
-            Handle<ShortRateDynamics> dynamics() const;
+            //Handle<ShortRateDynamics> dynamics() const;
 
             double discountBond(Time T, Time s, Rate r) const;
             double discountBondOption(Option::Type type,
@@ -59,7 +59,7 @@ namespace QuantLib {
                                       Time bondMaturity) const;
 
           protected:
-            void generateParameters();
+            //void generateParameters();
 
           private:
             class Dynamics;

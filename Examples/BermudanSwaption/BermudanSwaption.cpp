@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
 
         std::cout << "Calibrating to swaptions" << std::endl;
 
-        std::cout << "Hull-White: (analitycal formulae)" << std::endl;
+        std::cout << "Hull-White (analitycal formulae):" << std::endl;
         swaptions.setPricingEngine(
             Handle<OptionPricingEngine>(new JamshidianSwaption(modelHW)));
 
@@ -244,7 +244,7 @@ int main(int argc, char* argv[])
                   << std::endl
                   << std::endl;
 
-        std::cout << "Hull-White: (numerical calibration)" << std::endl;
+        std::cout << "Hull-White (numerical calibration):" << std::endl;
         swaptions.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelHW2, grid)));
 
