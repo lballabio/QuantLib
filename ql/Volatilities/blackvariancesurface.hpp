@@ -141,11 +141,11 @@ namespace QuantLib {
             blackVarianceImpl(Time t, double strike, bool extrapolate) const {
 
             // enforce constant extrapolation when required
-            if (strike < strikes_.front() && strikes_.front()<strikes_.back()
+            if (strike < strikes_.front() && strike < strikes_.back()
                 && extrapolate
                 && lowerExtrapolation_ == ConstantExtrapolation)
                 strike = strikes_.front();
-            if (strike > strikes_.back() && strikes_.back()>strikes_.front()
+            if (strike > strikes_.back() && strike > strikes_.front()
                 && extrapolate
                 && upperExtrapolation_ == ConstantExtrapolation)
                 strike = strikes_.back();
