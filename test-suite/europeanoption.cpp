@@ -895,9 +895,9 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     // link to the same stochastic process, which shouldn't be changed
     // by calling methods of either option
 
-    Handle<VanillaOption> option1(
+    boost::shared_ptr<VanillaOption> option1(
                                new EuropeanOption(process, payoff, exercise));
-    Handle<VanillaOption> option2(
+    boost::shared_ptr<VanillaOption> option2(
                                new EuropeanOption(process, payoff, exercise));
 
     // test

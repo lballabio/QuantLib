@@ -44,15 +44,15 @@
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "0.3.6-debug"
+    #define QL_VERSION "0.3.7-debug"
 #else
-    #define QL_VERSION "0.3.6"
+    #define QL_VERSION "0.3.7"
 #endif
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x000306a0
+#define QL_HEX_VERSION 0x000307a0
 //! version string for output lib name
-#define QL_LIB_VERSION "0_3_6"
+#define QL_LIB_VERSION "0_3_7"
 
 #if   defined(__BORLANDC__)     // Borland C++ 5.5
     #include <ql/config.bcc.hpp>
@@ -62,8 +62,8 @@
     #include <ql/config.msvc.hpp>
 #elif defined(HAVE_CONFIG_H)    // Dynamically created by configure
     #include <ql/config.hpp>
-#else
-    #error Unsupported compiler - please contact the QuantLib team
+#else                           // We hope that the compiler follows ANSI
+    #include <ql/config.ansi.hpp>
 #endif
 
 
