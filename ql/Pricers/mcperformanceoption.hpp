@@ -35,16 +35,17 @@ namespace QuantLib {
         strike) options is \$ max(S/X- 1) \$.
     */
     class McPerformanceOption 
-        : public McPricer<SingleAsset_old<PseudoRandom_old> >{
+        : public McPricer<SingleAsset<PseudoRandom> >{
       public:
-        McPerformanceOption(Option::Type type,
-                            double underlying,
-                            double moneyness,
-                            const std::vector<Spread>& dividendYield,
-                            const std::vector<Rate>& riskFreeRate,
-                            const std::vector<Time>& times,
-                            const std::vector<double>& volatility,
-                            long seed=0);
+        McPerformanceOption(
+                    Option::Type type,
+                    double underlying,
+                    double moneyness,
+                    const RelinkableHandle<TermStructure>& dividendYield,
+                    const RelinkableHandle<TermStructure>& riskFreeRate,
+                    const RelinkableHandle<BlackVolTermStructure>& volatility,
+                    const std::vector<Time>& times,
+                    long seed = 0);
     };
 
 }

@@ -51,14 +51,6 @@ namespace QuantLib {
 
     // support for migration --- born deprecated 
 
-    template <class rng_traits = PseudoRandom_old>
-    struct SingleAsset_old {
-        typedef Path path_type;
-        typedef PathPricer<Path> path_pricer_type;
-        typedef typename rng_traits::rsg_type rsg_type;
-        typedef PathGenerator_old<rsg_type> path_generator_type;
-    };
-
     template <class rng_traits = PseudoRandomSequence_old>
     struct MultiAsset_old {
         typedef MultiPath path_type;

@@ -30,18 +30,19 @@
 namespace QuantLib {
 
     //! example of Monte Carlo pricer using a control variate.
-    /*! \todo Continous Averaging version     */
+    /*! \todo continous-averaging version */
     class McDiscreteArithmeticASO 
-        : public McPricer<SingleAsset_old<PseudoRandom_old> >{
+        : public McPricer<SingleAsset<PseudoRandom> >{
       public:
-        McDiscreteArithmeticASO(Option::Type type,
-                                double underlying,
-                                Spread dividendYield,
-                                Rate riskFreeRate,
-                                const std::vector<Time>& times,
-                                double volatility,
-                                bool controlVariate,
-                                long seed = 0);
+        McDiscreteArithmeticASO(
+                    Option::Type type,
+                    double underlying,
+                    const RelinkableHandle<TermStructure>& dividendYield,
+                    const RelinkableHandle<TermStructure>& riskFreeRate,
+                    const RelinkableHandle<BlackVolTermStructure>& volatility,
+                    const std::vector<Time>& times,
+                    bool controlVariate,
+                    long seed = 0);
     };
 
 }

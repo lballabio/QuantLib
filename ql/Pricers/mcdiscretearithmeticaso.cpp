@@ -17,7 +17,6 @@
 
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
-#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
@@ -112,53 +111,59 @@ namespace QuantLib {
 
     }
 
-    McDiscreteArithmeticASO::McDiscreteArithmeticASO(Option::Type type,
-      double underlying,
-      Spread dividendYield, Rate riskFreeRate,
-      const std::vector<Time>& times, double volatility,
-      bool controlVariate, long seed) {
+    McDiscreteArithmeticASO::McDiscreteArithmeticASO(
+                    Option::Type type,
+                    double underlying,
+                    const RelinkableHandle<TermStructure>& dividendYield,
+                    const RelinkableHandle<TermStructure>& riskFreeRate,
+                    const RelinkableHandle<BlackVolTermStructure>& volatility,
+                    const std::vector<Time>& times,
+                    bool controlVariate,
+                    long seed) {
 
         QL_REQUIRE(times.size() >= 2,
                    "McDiscreteArithmeticASO: "
                    "you must have at least 2 time-steps");
 
         // initialize the path generator
-        double mu = riskFreeRate - dividendYield
-                                 - 0.5 * volatility * volatility;
+        boost::shared_ptr<DiffusionProcess> diffusion(
+                          new BlackScholesProcess(riskFreeRate, dividendYield,
+                                                  volatility, underlying));
+        TimeGrid grid(times.begin(), times.end());
+        PseudoRandom::rsg_type rsg =
+            PseudoRandom::make_sequence_generator(grid.size()-1,seed);
 
-        boost::shared_ptr<GaussianPathGenerator_old> pathGenerator(
-            new GaussianPathGenerator_old(mu, volatility*volatility,
-                TimeGrid(times.begin(), times.end()),
-                seed));
-
-        RelinkableHandle<TermStructure> discount(
-                  Handle<TermStructure>(
-                      new FlatForward(Date::todaysDate(), Date::todaysDate(), 
-                                      riskFreeRate)));
+        boost::shared_ptr<GaussianPathGenerator> pathGenerator(
+                      new GaussianPathGenerator(diffusion, grid, rsg, false));
 
         // initialize the Path Pricer
         boost::shared_ptr<PathPricer<Path> > spPricer(
-                     new ArithmeticASOPathPricer(type, underlying, discount));
+                 new ArithmeticASOPathPricer(type, underlying, riskFreeRate));
 
         if (controlVariate) {
             boost::shared_ptr<PathPricer<Path> > controlVariateSpPricer(
-                      new GeometricASOPathPricer(type, underlying, discount));
+                  new GeometricASOPathPricer(type, underlying, riskFreeRate));
+
+            // Not sure whether this work when curves are not flat...
+            Time exercise = times.back();
+            Rate r = riskFreeRate->zeroYield(exercise);
+            Rate q = dividendYield->zeroYield(exercise);
+            double sigma = volatility->blackVol(exercise,underlying);
 
             double controlVariatePrice = DiscreteGeometricASO(type,
-                underlying, dividendYield, riskFreeRate,
-                times, volatility).value();
+                underlying, q, r, times, sigma).value();
 
             // initialize the one-dimensional Monte Carlo
-            mcModel_ = boost::shared_ptr<MonteCarloModel<SingleAsset_old<
-                                              PseudoRandom_old> > > (
-                new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
+            mcModel_ = boost::shared_ptr<MonteCarloModel<SingleAsset<
+                                              PseudoRandom> > > (
+                new MonteCarloModel<SingleAsset<PseudoRandom> >(
                     pathGenerator, spPricer, Statistics(), false,
                     controlVariateSpPricer, controlVariatePrice));
         } else {
             // initialize the one-dimensional Monte Carlo
-            mcModel_ = boost::shared_ptr<MonteCarloModel<SingleAsset_old<
-                                              PseudoRandom_old> > > (
-                new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
+            mcModel_ = boost::shared_ptr<MonteCarloModel<SingleAsset<
+                                              PseudoRandom> > > (
+                new MonteCarloModel<SingleAsset<PseudoRandom> >(
                     pathGenerator, spPricer, Statistics(), false));
         }
 

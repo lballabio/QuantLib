@@ -33,6 +33,7 @@
 #include <ql/Pricers/mchimalaya.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/MonteCarlo/getcovariance.hpp>
+#include <ql/DayCounters/actual365.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -557,13 +558,21 @@ void OldPricerTest::testMcSingleFactorPricers() {
         std::vector<Time> timeIncrements(cases4[k].fixings);
         for (Size i=0; i<cases4[k].fixings; i++)
             timeIncrements[i] = i*dt + cases4[k].first;
+
+        RelinkableHandle<TermStructure> riskFreeRate(
+                       makeFlatCurve(cases4[k].riskFreeRate, Actual365()));
+        RelinkableHandle<TermStructure> dividendYield(
+                       makeFlatCurve(cases4[k].dividendYield, Actual365()));
+        RelinkableHandle<BlackVolTermStructure> volatility(
+                       makeFlatVolatility(cases4[k].volatility, Actual365()));
+
         McDiscreteArithmeticAPO pricer(cases4[k].type,
                                        cases4[k].underlying,
                                        cases4[k].strike,
-                                       cases4[k].dividendYield,
-                                       cases4[k].riskFreeRate,
+                                       dividendYield,
+                                       riskFreeRate,
+                                       volatility,
                                        timeIncrements,
-                                       cases4[k].volatility,
                                        cases4[k].controlVariate,
                                        seed);
         double value = pricer.valueWithSamples(fixedSamples);
@@ -661,12 +670,20 @@ void OldPricerTest::testMcSingleFactorPricers() {
         std::vector<Time> timeIncrements(cases5[l].fixings);
         for (Size i=0; i<cases5[l].fixings; i++)
             timeIncrements[i] = i*dt + cases5[l].first;
+
+        RelinkableHandle<TermStructure> riskFreeRate(
+                       makeFlatCurve(cases5[l].riskFreeRate, Actual365()));
+        RelinkableHandle<TermStructure> dividendYield(
+                       makeFlatCurve(cases5[l].dividendYield, Actual365()));
+        RelinkableHandle<BlackVolTermStructure> volatility(
+                       makeFlatVolatility(cases5[l].volatility, Actual365()));
+
         McDiscreteArithmeticASO pricer(cases5[l].type,
                                        cases5[l].underlying,
-                                       cases5[l].dividendYield,
-                                       cases5[l].riskFreeRate,
+                                       dividendYield,
+                                       riskFreeRate,
+                                       volatility,
                                        timeIncrements,
-                                       cases5[l].volatility,
                                        cases5[l].controlVariate,
                                        seed);
         double value = pricer.valueWithSamples(fixedSamples);

@@ -280,14 +280,30 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
        lognormally with a fixed known volatility that stays constant
        throughout time.
     */
-    double drift = r_ - 0.5*sigma_*sigma_;
+    Date today = Date::todaysDate();
+    RelinkableHandle<TermStructure> riskFreeRate(
+                          boost::shared_ptr<TermStructure>(
+                                        new FlatForward(today, today, r_)));
+    RelinkableHandle<TermStructure> dividendYield(
+                          boost::shared_ptr<TermStructure>(
+                                        new FlatForward(today, today, 0.0)));
+    RelinkableHandle<BlackVolTermStructure> volatility(
+                          boost::shared_ptr<BlackVolTermStructure>(
+                                        new BlackConstantVol(today, sigma_)));
+    boost::shared_ptr<DiffusionProcess> diffusion(
+                          new BlackScholesProcess(riskFreeRate, dividendYield,
+                                                  volatility, s0_));
 
     // Black Scholes equation rules the path generator:
     // at each step the log of the stock
     // will have drift and sigma^2 variance
-    boost::shared_ptr<GaussianPathGenerator_old> myPathGenerator(
-        new GaussianPathGenerator_old(drift, sigma_*sigma_,
-            maturity_, nTimeSteps));
+    PseudoRandom::rsg_type rsg = 
+        PseudoRandom::make_sequence_generator(nTimeSteps, 0);
+
+    boost::shared_ptr<GaussianPathGenerator> myPathGenerator(
+        new GaussianPathGenerator(diffusion,
+                                  maturity_, nTimeSteps,
+                                  rsg, false));
 
     // The replication strategy's Profit&Loss is computed for each path
     // of the stock. The path pricer knows how to price a path using its

@@ -59,6 +59,12 @@ namespace QuantLib {
                                        RelinkableHandle<Quote>(forward), dc));
     }
 
+    boost::shared_ptr<TermStructure> 
+    makeFlatCurve(Rate forward, DayCounter dc) {
+        return makeFlatCurve(
+                      boost::shared_ptr<Quote>(new SimpleQuote(forward)), dc);
+    }
+
     boost::shared_ptr<BlackVolTermStructure> 
     makeFlatVolatility(const boost::shared_ptr<Quote>& vol,
                        DayCounter dc) {
@@ -66,6 +72,12 @@ namespace QuantLib {
         return boost::shared_ptr<BlackVolTermStructure>(
                       new BlackConstantVol(today, 
                                            RelinkableHandle<Quote>(vol), dc));
+    }
+
+    boost::shared_ptr<BlackVolTermStructure> 
+    makeFlatVolatility(double vol, DayCounter dc) {
+        return makeFlatVolatility(
+                          boost::shared_ptr<Quote>(new SimpleQuote(vol)), dc);
     }
 
     double relativeError(double x1, double x2, double reference) {

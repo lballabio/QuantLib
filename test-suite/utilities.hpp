@@ -22,7 +22,6 @@
 #include <ql/exercise.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
-#include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Patterns/observable.hpp>
 #include <vector>
 #include <string>
@@ -36,14 +35,19 @@ namespace QuantLib {
     std::string payoffTypeToString(const boost::shared_ptr<Payoff>&);
     std::string exerciseTypeToString(const boost::shared_ptr<Exercise>&);
 
-
     boost::shared_ptr<TermStructure> 
     makeFlatCurve(const boost::shared_ptr<Quote>& forward,
                   DayCounter dc);
 
+    boost::shared_ptr<TermStructure> 
+    makeFlatCurve(Rate forward, DayCounter dc);
+
     boost::shared_ptr<BlackVolTermStructure> 
     makeFlatVolatility(const boost::shared_ptr<Quote>& volatility,
                        DayCounter dc);
+
+    boost::shared_ptr<BlackVolTermStructure> 
+    makeFlatVolatility(double volatility, DayCounter dc);
 
     double relativeError(double x1, double x2, double reference);
 

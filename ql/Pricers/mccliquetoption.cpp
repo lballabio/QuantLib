@@ -124,48 +124,35 @@ namespace QuantLib {
 
     }
 
-    McCliquetOption::McCliquetOption(Option::Type type,
-                                     double underlying, double moneyness,
-                                     const std::vector<Spread>& dividendYield,
-                                     const std::vector<Rate>& riskFreeRate,
-                                     const std::vector<Time>& times,
-                                     const std::vector<double>& volatility,
-                                     double accruedCoupon, double lastFixing,
-                                     double localCap, double localFloor, 
-                                     double globalCap, double globalFloor, 
-                                     bool redemptionOnly, 
-                                     long seed) {
+    McCliquetOption::McCliquetOption(
+                    Option::Type type,
+                    double underlying, double moneyness,
+                    const RelinkableHandle<TermStructure>& dividendYield,
+                    const RelinkableHandle<TermStructure>& riskFreeRate,
+                    const RelinkableHandle<BlackVolTermStructure>& volatility,
+                    const std::vector<Time>& times,
+                    double accruedCoupon, double lastFixing,
+                    double localCap, double localFloor, 
+                    double globalCap, double globalFloor, 
+                    bool redemptionOnly, 
+                    long seed) {
 
-        Size dimension = times.size();
-        QL_REQUIRE(dividendYield.size()==dimension,
-                   "McCliquetOption: dividendYield vector of wrong size");
-        QL_REQUIRE(riskFreeRate.size()==dimension,
-                   "McCliquetOption: riskFreeRate vector of wrong size");
-        QL_REQUIRE(volatility.size()==dimension,
-                   "McCliquetOption: volatility vector of wrong size");
+        std::vector<double> discounts(times.size());
+        for (Size i = 0; i<times.size(); i++)
+            discounts[i] = riskFreeRate->discount(times[i]);
 
         // initialize the path generator
-        std::vector<double> mu(dimension);
-        std::vector<double> diffusion(dimension);
-        std::vector<double> discounts(dimension);
-        for (Size i = 0; i<dimension; i++) {
-            mu[i]= riskFreeRate[i] - dividendYield[i] -
-                0.5 * volatility[i] * volatility[i];
-            diffusion[i]= volatility[i] * volatility[i];
-            if (i==0)
-                discounts[i] = QL_EXP(-riskFreeRate[i]*times[i]);
-            else
-                discounts[i] = discounts[i-1]*
-                    QL_EXP(-riskFreeRate[i]*(times[i]-times[i-1]));
-        }
+        boost::shared_ptr<DiffusionProcess> diffusion(
+                          new BlackScholesProcess(riskFreeRate, dividendYield,
+                                                  volatility, underlying));
+        TimeGrid grid(times.begin(), times.end());
+        PseudoRandom::rsg_type rsg =
+            PseudoRandom::make_sequence_generator(grid.size()-1,seed);
 
+        boost::shared_ptr<GaussianPathGenerator> pathGenerator(
+                      new GaussianPathGenerator(diffusion, grid, rsg, false));
 
-        boost::shared_ptr<GaussianPathGenerator_old> pathGenerator(
-            new GaussianPathGenerator_old(mu, diffusion,
-                                          TimeGrid(times.begin(), times.end()),
-                                          seed));
-
-        // initialize the pricer on the single Path
+        // initialize the path pricer
         boost::shared_ptr<PathPricer<Path> > cliquetPathPricer(
             new CliquetOptionPathPricer(type, underlying, moneyness, 
                                         accruedCoupon, lastFixing,
@@ -175,9 +162,8 @@ namespace QuantLib {
 
         // initialize the one-factor Monte Carlo
         mcModel_ = 
-            boost::shared_ptr<MonteCarloModel<SingleAsset_old<
-                                                PseudoRandom_old> > >(
-                new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
+            boost::shared_ptr<MonteCarloModel<SingleAsset<PseudoRandom> > >(
+                new MonteCarloModel<SingleAsset<PseudoRandom> >(
                       pathGenerator, cliquetPathPricer, Statistics(), false));
     }
 
