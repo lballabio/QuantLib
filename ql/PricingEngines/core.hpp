@@ -20,6 +20,7 @@
 
 #include <ql/qldefines.hpp>
 
+#include <ql/PricingEngines/blackformula.hpp>
 #include <ql/PricingEngines/genericmodelengine.hpp>
 #include <ql/PricingEngines/latticeshortratemodelengine.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>

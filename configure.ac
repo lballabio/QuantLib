@@ -201,6 +201,7 @@ AC_CONFIG_FILES([
     ql/Patterns/Makefile
     ql/Pricers/Makefile
     ql/PricingEngines/Makefile
+    ql/PricingEngines/Asian/Makefile
     ql/PricingEngines/Barrier/Makefile
     ql/PricingEngines/Cliquet/Makefile
     ql/PricingEngines/Forward/Makefile

@@ -7,7 +7,7 @@ include_HEADERS = \
 
 EXTRA_DIST=makefile.mak
 
-libVanillaEngines_la_SOURCES = \
+libAsianEngines_la_SOURCES = \
     analyticasianengine.cpp
 
 noinst_LTLIBRARIES = libAsianEngines.la
