@@ -36,11 +36,15 @@ namespace QuantLib {
 
     std::string IntegerFormatter::toOrdinal(long l) {
         std::string suffix;
-        switch (l % 10) {
-          case 1:  suffix = "st";  break;
-          case 2:  suffix = "nd";  break;
-          case 3:  suffix = "rd";  break;
-          default: suffix = "th";
+        if (l==11 || l==12 || l==13)
+            suffix = "th";
+        else {
+            switch (l % 10) {
+              case 1:  suffix = "st";  break;
+              case 2:  suffix = "nd";  break;
+              case 3:  suffix = "rd";  break;
+              default: suffix = "th";
+            }
         }
         return toString(l)+suffix;
     }
