@@ -1342,6 +1342,14 @@ SOURCE=.\ql\functions\mathf.cpp
 SOURCE=.\ql\functions\mathf.hpp
 # End Source File
 # End Group
+# Begin Group "Volatilities"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\swaptionvolmatrix.hpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\ql\argsandresults.hpp

@@ -326,6 +326,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
@@ -386,9 +388,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -447,6 +447,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\blackcapfloor.obj" \
+	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
@@ -507,9 +509,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\blackcapfloor.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -813,6 +813,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
@@ -873,9 +875,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -934,6 +934,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\blackcapfloor.obj" \
+	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
@@ -994,9 +996,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\blackcapfloor.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1299,6 +1299,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
@@ -1359,9 +1361,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1420,6 +1420,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\blackcapfloor.obj" \
+	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
@@ -1480,9 +1482,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\blackcapfloor.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1786,6 +1786,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
@@ -1846,9 +1848,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1907,6 +1907,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\blackcapfloor.obj" \
+	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
@@ -1967,9 +1969,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\blackcapfloor.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
