@@ -1,0 +1,77 @@
+
+/*
+ * Copyright (C) 2000
+ * Ferdinando Ametrano,	Luigi Ballabio,	Adolfo Benin, Marco	Marchioro
+ * 
+ * This	file is	part of	QuantLib.
+ * QuantLib	is a C++ open source library for financial quantitative
+ * analysts	and	developers --- http://quantlib.sourceforge.net/
+ *
+ * QuantLib	is free	software and you are allowed to	use, copy, modify, merge,
+ * publish,	distribute,	and/or sell	copies of it under the conditions stated 
+ * in the QuantLib License.
+ *
+ * This	program	is distributed in the hope that	it will	be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A	PARTICULAR PURPOSE.	See	the	license	for	more details.
+ *
+ * You should have received	a copy of the license along	with this file;
+ * if not, contact ferdinando@ametrano.net
+ *
+ * QuantLib	license	is also	available at http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+
+/*! \file geometricasianoption.h
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.1  2001/01/04 17:31:23  marmar
+	Alpha version of the Monte Carlo tools.
+
+*/
+
+#ifndef	quantlib_geometric_asian_option_pricer_h
+#define	quantlib_geometric_asian_option_pricer_h
+
+#include "qldefines.h"
+#include "bsmeuropeanoption.h"
+
+namespace QuantLib {
+
+	namespace Pricers {
+	
+		class GeometricAsianOption : public BSMEuropeanOption	{
+   		public:
+			GeometricAsianOption(Type type, double underlying, double	strike,	
+				Rate underlyingGrowthRate, Rate riskFreeRate, Time	residualTime, 
+				double volatility);        		
+			double vega() const;
+    		double rho() const;
+        	Handle<BSMOption> clone() const;
+		};
+
+		inline GeometricAsianOption::GeometricAsianOption(Type type, double underlying, 
+			double	strike,	Rate underlyingGrowthRate, Rate riskFreeRate, 
+			Time residualTime, double volatility): 
+			BSMEuropeanOption(type, underlying, strike, underlyingGrowthRate/2, 
+			riskFreeRate/2-volatility*volatility/12, residualTime,volatility/QL_SQRT(3)){}        		
+
+		inline double GeometricAsianOption::rho() const{    			    
+    		return BSMEuropeanOption::rho()/2;
+    	}
+
+		inline double GeometricAsianOption::vega() const{ 
+			return BSMEuropeanOption::vega()/QL_SQRT(3)
+				-BSMEuropeanOption::rho()*theVolatility*theVolatility/4; 
+		}
+
+        inline Handle<BSMOption> GeometricAsianOption::clone() const{
+        	return Handle<BSMOption>(new GeometricAsianOption(*this));
+        }
+
+	}
+
+}
+
+#endif

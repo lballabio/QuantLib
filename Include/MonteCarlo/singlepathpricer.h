@@ -19,47 +19,37 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
+/*! \file singlepathpricer.h
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.1  2001/01/04 17:31:22  marmar
+	Alpha version of the Monte Carlo tools.
 
-%module QuantLib
+*/
 
-%{
-#include "quantlib.h"
-%}
+#ifndef quantlib_montecarlo_single_path_pricer_h
+#define quantlib_montecarlo_single_path_pricer_h
 
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
+#include "qldefines.h"
+#include "path.h"
 
-%except(python) {
-	try {
-		$function
-	} catch (std::exception& e) {
-		PyErr_SetString(PyExc_Exception,e.what());
-		return NULL;
-	} catch (...) {
-		PyErr_SetString(PyExc_Exception,"unknown error");
-		return NULL;
+namespace QuantLib {
+
+	namespace MonteCarlo {
+
+		class SinglePathPricer {
+		public:
+			typedef double SampleType;
+			SinglePathPricer():isInitialized_(false) {}
+			~SinglePathPricer() {}
+			virtual double value(const Path &path) const=0;
+		protected:
+			bool isInitialized_;
+		};
+
 	}
-}
 
-%include Date.i
-%include Calendars.i
-%include DayCounters.i
-%include Currencies.i
-%include Financial.i
-%include Options.i
-%include Instruments.i
-%include Operators.i
-%include Pricers.i
-%include Solvers1D.i
-%include TermStructures.i
-%include Statistics.i
-%include RandomGenerators.i
-%include History.i
-%include Distributions.i
-%include MontecarloPricers.i
+}
+#endif

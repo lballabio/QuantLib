@@ -760,6 +760,73 @@ class CumulativeNormalDistributionPtr(CumulativeNormalDistribution):
 CumulativeNormalDistribution.derivative = new.instancemethod(QuantLibc.CumulativeNormalDistribution_derivative, None, CumulativeNormalDistribution)
 CumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.CumulativeNormalDistribution___call__, None, CumulativeNormalDistribution)
 
+class StandardPathGenerator:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_StandardPathGenerator,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C StandardPathGenerator instance at %s>" % (self.this,)
+class StandardPathGeneratorPtr(StandardPathGenerator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = StandardPathGenerator
+
+
+StandardPathGenerator.next = new.instancemethod(QuantLibc.StandardPathGenerator_next, None, StandardPathGenerator)
+StandardPathGenerator.weight = new.instancemethod(QuantLibc.StandardPathGenerator_weight, None, StandardPathGenerator)
+
+class McEuropeanPricer:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_McEuropeanPricer,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C McEuropeanPricer instance at %s>" % (self.this,)
+class McEuropeanPricerPtr(McEuropeanPricer):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = McEuropeanPricer
+
+
+McEuropeanPricer.value = new.instancemethod(QuantLibc.McEuropeanPricer_value, None, McEuropeanPricer)
+McEuropeanPricer.errorEstimate = new.instancemethod(QuantLibc.McEuropeanPricer_errorEstimate, None, McEuropeanPricer)
+
+class GeometricAsianOption:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_GeometricAsianOption,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C GeometricAsianOption instance at %s>" % (self.this,)
+class GeometricAsianOptionPtr(GeometricAsianOption):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = GeometricAsianOption
+
+
+GeometricAsianOption.value = new.instancemethod(QuantLibc.GeometricAsianOption_value, None, GeometricAsianOption)
+
+class McAsianPricer:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_McAsianPricer,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C McAsianPricer instance at %s>" % (self.this,)
+class McAsianPricerPtr(McAsianPricer):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = McAsianPricer
+
+
+McAsianPricer.value = new.instancemethod(QuantLibc.McAsianPricer_value, None, McAsianPricer)
+McAsianPricer.errorEstimate = new.instancemethod(QuantLibc.McAsianPricer_errorEstimate, None, McAsianPricer)
+
 
 
 #-------------- FUNCTION WRAPPERS ------------------

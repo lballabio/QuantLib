@@ -1,3 +1,4 @@
+"""
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -19,47 +20,28 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
+"""
+print "Testing Monte Carlo pricers"
 
-%module QuantLib
+from QuantLib import McEuropeanPricer
+from QuantLib import McAsianPricer
 
-%{
-#include "quantlib.h"
-%}
+type = "Call"
+underlying = 100
+strike = 100
+underlyingGrowthRate = 0.0
+riskFreeRate = 0.05
+residualTime = 1.0
+volatility = 0.3
+timesteps = 100
+numIte = 10000
+seed = 6919789
 
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
+print "Pricer                          iterations   Value     Error Estimate "
+for pricer in [McEuropeanPricer, McAsianPricer]:
+  p = pricer(type, underlying, strike, underlyingGrowthRate, riskFreeRate,
+             residualTime, volatility, timesteps, numIte, seed=seed)
+  print "%30s: %7i %12.6f %12.6f" %(pricer, numIte, p.value(), p.errorEstimate())
 
-%except(python) {
-	try {
-		$function
-	} catch (std::exception& e) {
-		PyErr_SetString(PyExc_Exception,e.what());
-		return NULL;
-	} catch (...) {
-		PyErr_SetString(PyExc_Exception,"unknown error");
-		return NULL;
-	}
-}
-
-%include Date.i
-%include Calendars.i
-%include DayCounters.i
-%include Currencies.i
-%include Financial.i
-%include Options.i
-%include Instruments.i
-%include Operators.i
-%include Pricers.i
-%include Solvers1D.i
-%include TermStructures.i
-%include Statistics.i
-%include RandomGenerators.i
-%include History.i
-%include Distributions.i
-%include MontecarloPricers.i
+print 'Press return to end this test'
+raw_input()

@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- *
+ * 
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
+ * publish, distribute, and/or sell copies of it under the conditions stated 
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but
+ * This program is distributed in the hope that it will be useful, but 
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -19,37 +19,37 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
-
-/*! \file gaussianrandomgenerator.h
-    \brief the best Gaussian random-number generator available in QuantLib
-
-    $Source$
-    $Name$
-    $Log$
-    Revision 1.3  2001/01/04 17:31:22  marmar
-    Alpha version of the Monte Carlo tools.
+/*! \file path.h
+	\brief This class represent the idea of path	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.1  2001/01/04 17:31:22  marmar
+	Alpha version of the Monte Carlo tools.
 
 */
 
-#ifndef ql_gaussian_random_generator_h
-#define ql_gaussian_random_generator_h
+#ifndef quantlib_montecarlo_path_h
+#define quantlib_montecarlo_path_h
+	/*!
+	For the time being Path is equivalent to Array.	In the future this 
+	could change and path might contain more information.
+	As today, Path contains the list of continuously-compunded variations,
+		LOG(Y_{i+1}/Y_i) for i = 0, ..., n-1 ,
+	where Y_i is the value of the underlying at discretized time i.
+	*/
 
 #include "qldefines.h"
-#include "uniformrandomgenerator.h"
-#include "boxmuller.h"
+#include "array.h"
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+	namespace MonteCarlo {
 
-    /*! \typedef GaussianRandomGenerator
-    	Default choice for the gaussian random number 
-		generator. See the corresponding class for documentation.
-	*/
-        typedef BoxMuller<UniformRandomGenerator> GaussianRandomGenerator;
-
-    }
+		typedef Array Path;
+	}
 
 }
 
 #endif
+

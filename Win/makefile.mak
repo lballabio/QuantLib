@@ -25,16 +25,64 @@ PYTHON_INCLUDE    = "$(PYTHON_HOME)"\include
 PYTHON_LIBS        = "$(PYTHON_HOME)"\libs
 
 # Object files
-CORE_OBJS        = $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
-CALENDAR_OBJS    = $(OUTPUT_DIR)\westerncalendar.obj $(OUTPUT_DIR)\frankfurt.obj $(OUTPUT_DIR)\london.obj $(OUTPUT_DIR)\milan.obj $(OUTPUT_DIR)\newyork.obj $(OUTPUT_DIR)\target.obj $(OUTPUT_DIR)\zurich.obj 
-DAYCOUNT_OBJS    = $(OUTPUT_DIR)\actualactual.obj $(OUTPUT_DIR)\thirty360.obj $(OUTPUT_DIR)\thirty360italian.obj
-MATH_OBJS        = $(OUTPUT_DIR)\normaldistribution.obj $(OUTPUT_DIR)\statistics.obj  $(OUTPUT_DIR)\newcubicspline.obj
-MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj
-FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj $(OUTPUT_DIR)\bsmoperator.obj
-PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj $(OUTPUT_DIR)\bsmnumericaloption.obj $(OUTPUT_DIR)\bsmeuropeanoption.obj $(OUTPUT_DIR)\bsmamericanoption.obj $(OUTPUT_DIR)\dividendamericanoption.obj 
-SOLVER1D_OBJS    = $(OUTPUT_DIR)\bisection.obj $(OUTPUT_DIR)\brent.obj $(OUTPUT_DIR)\falseposition.obj $(OUTPUT_DIR)\newton.obj $(OUTPUT_DIR)\newtonsafe.obj $(OUTPUT_DIR)\ridder.obj $(OUTPUT_DIR)\secant.obj
+CORE_OBJS        = $(OUTPUT_DIR)\calendar.obj \
+                   $(OUTPUT_DIR)\date.obj \
+                   $(OUTPUT_DIR)\solver1d.obj \
+                   $(OUTPUT_DIR)\dataformatters.obj
+
+CALENDAR_OBJS    = $(OUTPUT_DIR)\westerncalendar.obj \
+                   $(OUTPUT_DIR)\frankfurt.obj \
+                   $(OUTPUT_DIR)\london.obj \
+                   $(OUTPUT_DIR)\milan.obj \
+                   $(OUTPUT_DIR)\newyork.obj \
+                   $(OUTPUT_DIR)\target.obj \
+                   $(OUTPUT_DIR)\zurich.obj 
+                   
+DAYCOUNT_OBJS    = $(OUTPUT_DIR)\actualactual.obj \
+                   $(OUTPUT_DIR)\thirty360.obj \
+                   $(OUTPUT_DIR)\thirty360italian.obj
+                   
+MATH_OBJS        = $(OUTPUT_DIR)\normaldistribution.obj \
+                   $(OUTPUT_DIR)\statistics.obj \
+                   $(OUTPUT_DIR)\newcubicspline.obj
+                   
+MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj \
+                   $(OUTPUT_DIR)\singlepathaveragepriceasianpricer.obj \
+                   $(OUTPUT_DIR)\singlepathgeometricasianpricer.obj \
+                   $(OUTPUT_DIR)\singlepatheuropeanpricer.obj \
+                   $(OUTPUT_DIR)\singlepathcontrolvariatedpricer.obj
+		  
+FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
+                   $(OUTPUT_DIR)\bsmoperator.obj
+                   
+PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
+                   $(OUTPUT_DIR)\bsmnumericaloption.obj \
+                   $(OUTPUT_DIR)\bsmeuropeanoption.obj \
+                   $(OUTPUT_DIR)\bsmamericanoption.obj \
+                   $(OUTPUT_DIR)\dividendamericanoption.obj \
+                   $(OUTPUT_DIR)\mcasianpricer.obj \
+                   $(OUTPUT_DIR)\mceuropeanpricer.obj 
+                   
+SOLVER1D_OBJS    = $(OUTPUT_DIR)\bisection.obj \
+                   $(OUTPUT_DIR)\brent.obj \
+                   $(OUTPUT_DIR)\falseposition.obj \
+                   $(OUTPUT_DIR)\newton.obj \
+                   $(OUTPUT_DIR)\newtonsafe.obj \
+                   $(OUTPUT_DIR)\ridder.obj \
+                   $(OUTPUT_DIR)\secant.obj
+                   
 TERMSTRUC_OBJS   = $(OUTPUT_DIR)\piecewiseconstantforwards.obj 
-QUANTLIB_OBJS    = $(CORE_OBJS) $(CALENDAR_OBJS) $(DAYCOUNT_OBJS) $(MATH_OBJS) $(MONTECARLO_OBJS) $(FDM_OBJS) $(PRICER_OBJS) $(SOLVER1D_OBJS) $(TERMSTRUC_OBJS) 
+
+QUANTLIB_OBJS    = $(CORE_OBJS) \
+                   $(CALENDAR_OBJS) \
+                   $(DAYCOUNT_OBJS) \
+                   $(MATH_OBJS) \
+                   $(MONTECARLO_OBJS) \
+                   $(FDM_OBJS) \
+                   $(PRICER_OBJS) \
+                   $(SOLVER1D_OBJS) \
+                   $(TERMSTRUC_OBJS) 
+                   
 WIN_OBJS         = c0d32.obj 
 
 # Libraries
@@ -108,18 +156,30 @@ $(OUTPUT_DIR):
 
 # Python lib in OMF format
 $(PYTHON_BCC_LIB):
-    if exist $(PYTHON_LIBS)\python15.lib    $(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
-    if exist $(PYTHON_LIBS)\python20.lib    $(COFF2OMF) -q $(PYTHON_LIBS)\python20.lib $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_LIBS)\python15.lib $(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_LIBS)\python20.lib $(COFF2OMF) -q $(PYTHON_LIBS)\python20.lib $(PYTHON_BCC_LIB)
 
 # Wrapper functions
 $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
     echo Compiling wrappers...
     $(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT $(PYTHON_DIR)\quantlib_wrap.cpp
-$(PYTHON_DIR)\quantlib_wrap.cpp:: $(SWIG_DIR)\QuantLib.i $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i \
-  $(SWIG_DIR)\DayCounters.i $(SWIG_DIR)\Currencies.i $(SWIG_DIR)\Financial.i $(SWIG_DIR)\Options.i \
-  $(SWIG_DIR)\Instruments.i $(SWIG_DIR)\Operators.i $(SWIG_DIR)\Pricers.i $(SWIG_DIR)\Solvers1D.i \
-  $(SWIG_DIR)\TermStructures.i $(SWIG_DIR)\Vectors.i $(SWIG_DIR)\BoundaryConditions.i $(SWIG_DIR)\Statistics.i \
-  $(SWIG_DIR)\History.i
+$(PYTHON_DIR)\quantlib_wrap.cpp:: $(SWIG_DIR)\QuantLib.i \
+    $(SWIG_DIR)\BoundaryConditions.i \
+    $(SWIG_DIR)\Calendars.i \
+    $(SWIG_DIR)\Currencies.i \
+    $(SWIG_DIR)\Date.i \
+    $(SWIG_DIR)\DayCounters.i \
+    $(SWIG_DIR)\Financial.i \
+    $(SWIG_DIR)\History.i \
+    $(SWIG_DIR)\Instruments.i \
+    $(SWIG_DIR)\MontecarloPricers.i \
+    $(SWIG_DIR)\Options.i \
+    $(SWIG_DIR)\Operators.i \
+    $(SWIG_DIR)\Pricers.i \
+    $(SWIG_DIR)\Solvers1D.i \
+    $(SWIG_DIR)\Statistics.i \
+    $(SWIG_DIR)\TermStructures.i \
+    $(SWIG_DIR)\Vectors.i 
     echo Generating wrappers...
     $(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
     copy .\QuantLib.py $(PYTHON_DIR)\QuantLib.py
@@ -168,9 +228,15 @@ $(OUTPUT_DIR)\normaldistribution.obj: $(SOURCES_DIR)\Math\normaldistribution.cpp
 $(OUTPUT_DIR)\statistics.obj: $(SOURCES_DIR)\Math\statistics.cpp
 $(OUTPUT_DIR)\newcubicspline.obj: $(SOURCES_DIR)\Math\newcubicspline.cpp
 
+
 # Monte Carlo
 MonteCarlo: $(OUTPUT_DIR) $(MONTECARLO_OBJS)
 $(OUTPUT_DIR)\lecuyerrandomgenerator.obj: $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
+$(OUTPUT_DIR)\singlepatheuropeanpricer.obj: $(SOURCES_DIR)\MonteCarlo\singlepatheuropeanpricer.cpp 
+$(OUTPUT_DIR)\singlepathgeometricasianpricer.obj: $(SOURCES_DIR)\MonteCarlo\singlepathgeometricasianpricer.cpp 
+$(OUTPUT_DIR)\singlepathaveragepriceasianpricer.obj: $(SOURCES_DIR)\MonteCarlo\singlepathaveragepriceasianpricer.cpp 
+$(OUTPUT_DIR)\singlepathcontrolvariatedpricer.obj: $(SOURCES_DIR)\MonteCarlo\singlepathcontrolvariatedpricer.cpp
+
 
 # Pricers
 Pricers: $(OUTPUT_DIR) $(PRICER_OBJS)
@@ -179,6 +245,8 @@ $(OUTPUT_DIR)\bsmnumericaloption.obj: $(SOURCES_DIR)\Pricers\bsmnumericaloption.
 $(OUTPUT_DIR)\bsmeuropeanoption.obj: $(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp
 $(OUTPUT_DIR)\bsmamericanoption.obj: $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp
 $(OUTPUT_DIR)\dividendamericanoption.obj: $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
+$(OUTPUT_DIR)\mcasianpricer.obj: $(SOURCES_DIR)\Pricers\mcasianpricer.cpp
+$(OUTPUT_DIR)\mceuropeanpricer.obj: $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp  
 
 
 # 1D solvers

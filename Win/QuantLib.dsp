@@ -243,6 +243,26 @@ SOURCE=..\Include\Pricers\dividendamericanoption.h
 
 SOURCE=..\Include\Pricers\dividendeuropeanoption.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\geometricasianoption.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Pricers\mcasianpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\mcasianpricer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Pricers\mceuropeanpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\mceuropeanpricer.h
+# End Source File
 # End Group
 # Begin Group "Solvers1D"
 
@@ -469,6 +489,10 @@ SOURCE=..\Include\Patterns\observable.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\Include\MonteCarlo\antitheticcv.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\MonteCarlo\boxmuller.h
 # End Source File
 # Begin Source File
@@ -486,6 +510,66 @@ SOURCE=..\Sources\MonteCarlo\lecuyerrandomgenerator.cpp
 # Begin Source File
 
 SOURCE=..\Include\MonteCarlo\lecuyerrandomgenerator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\mcoptionsample.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\mcpricer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\montecarlo1d.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\path.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\pathgenerator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\MonteCarlo\singlepathaveragepriceasianpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\singlepathaveragepriceasianpricer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\MonteCarlo\singlepathcontrolvariatedpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\singlepathcontrolvariatedpricer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\MonteCarlo\singlepatheuropeanpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\singlepatheuropeanpricer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\MonteCarlo\singlepathgeometricasianpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\singlepathgeometricasianpricer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\singlepathpricer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\standardpathgenerator.h
 # End Source File
 # Begin Source File
 

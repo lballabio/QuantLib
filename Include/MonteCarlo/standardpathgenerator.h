@@ -19,47 +19,31 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
+/*! \file standardpathgenerator.h
+	\brief Generates path from random points
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.1  2001/01/04 17:31:22  marmar
+	Alpha version of the Monte Carlo tools.
 
-%module QuantLib
+*/
 
-%{
-#include "quantlib.h"
-%}
 
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
+#ifndef quantlib_montecarlo_standard_path_generator_h
+#define quantlib_montecarlo_standard_path_generator_h
 
-%except(python) {
-	try {
-		$function
-	} catch (std::exception& e) {
-		PyErr_SetString(PyExc_Exception,e.what());
-		return NULL;
-	} catch (...) {
-		PyErr_SetString(PyExc_Exception,"unknown error");
-		return NULL;
+#include "gaussianrandomgenerator.h"
+#include "pathgenerator.h"
+
+namespace QuantLib {
+
+	namespace MonteCarlo {
+
+		typedef PathGenerator<GaussianRandomGenerator > StandardPathGenerator;
+
 	}
 }
 
-%include Date.i
-%include Calendars.i
-%include DayCounters.i
-%include Currencies.i
-%include Financial.i
-%include Options.i
-%include Instruments.i
-%include Operators.i
-%include Pricers.i
-%include Solvers1D.i
-%include TermStructures.i
-%include Statistics.i
-%include RandomGenerators.i
-%include History.i
-%include Distributions.i
-%include MontecarloPricers.i
+#endif
