@@ -86,7 +86,8 @@ namespace QuantLib {
               boost::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
               constraint) {
             params_[0] = value;
-            QL_REQUIRE(testParams(params_), "invalid value");
+            QL_REQUIRE(testParams(params_), 
+                DecimalFormatter::toString(value) + ": invalid value");
         }
 
     };
