@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -37,7 +36,7 @@ namespace QuantLib {
         /*! Given a real symmetric matrix S, the Schur decomposition
             finds the eigenvalues and eigenvectors of S. If D is the
             diagonal matrix formed by the eigenvalues and U the
-            unitarian matrix of th eigenvector we can write the
+            unitarian matrix of the eigenvectors we can write the
             Schur decomposition as
             \f[ S = U \cdot D \cdot U^T \, ,\f]
             where \f$ \cdot \f$ is the standard matrix product
@@ -52,8 +51,8 @@ namespace QuantLib {
           public:
             /* \pre s must be symmetric */
             SymmetricSchurDecomposition(Matrix &s);
-            Array eigenvalues() const;
-            Matrix eigenvectors() const;
+            const Array& eigenvalues() const;
+            const Matrix& eigenvectors() const;
           private:
             Matrix s_;
             int size_;
@@ -70,13 +69,13 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline Array SymmetricSchurDecomposition::eigenvalues() const{
+        inline const Array& SymmetricSchurDecomposition::eigenvalues() const{
             if(!hasBeenComputed_)
                 compute();
             return diagonal_;
         }
 
-        inline Matrix SymmetricSchurDecomposition::eigenvectors() const{
+        inline const Matrix& SymmetricSchurDecomposition::eigenvectors() const{
             if(!hasBeenComputed_)
                 compute();
             return eigenVectors_;
