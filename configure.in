@@ -107,6 +107,7 @@ else
   AC_ERROR(Could not find ctime nor time.h)
 fi
 QL_CHECK_FUNCTION([clock],[$ql_time],[])
+QL_CHECK_FUNCTION([time],[$ql_time],[])
 
 QL_CHECK_FUNCTION([max],[algorithm],[1,2])
 QL_CHECK_FUNCTION([min],[algorithm],[1,2])
