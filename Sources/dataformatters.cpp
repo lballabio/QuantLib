@@ -73,13 +73,17 @@ namespace QuantLib {
 			output = monthName[mm] + " ";
 			output += IntegerFormatter::toString(dd);
 			switch (dd) {
-			  case 1,21,31:
+			  case 1:
+			  case 21:
+			  case 31:
 				output += "st, ";
 				break;
-			  case 2,22:
+			  case 2:
+			  case 22:
 				output += "nd, ";
 				break;
-			  case 3,23:
+			  case 3:
+			  case 23:
 				output += "rd, ";
 				break;
 			  default:
