@@ -96,10 +96,21 @@ namespace QuantLib {
             */
             double expectedShortfall(double percentile) const;
 
-            //! probability of missing the given target
+            /*! probability of missing the given target, defined as
+                \f[ \mathrm{E}\left[ \Theta \;|\; (-\infty,\infty) \right] \f]
+                where
+                \f[ \Theta(x) = \left\{
+                    \begin{array}{ll}
+                    1 & x < t \\
+                    0 & x \geq t
+                    \end{array}
+                    \right. \f]
+            */
             double shortfall(double target) const;
 
-            //! averaged shortfallness
+            /*! averaged shortfallness, defined as
+                \f[ \mathrm{E}\left[ t-x \;|\; x<t \right] \f]
+            */
             double averageShortfall(double target) const;
         };
 

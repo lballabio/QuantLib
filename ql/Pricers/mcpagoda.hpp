@@ -40,9 +40,9 @@ namespace QuantLib {
             If the performance of the portfolio is below then the payoff
             is null.
         */
-        class McPagoda : public McPricer<Math::Statistics,
-            MonteCarlo::GaussianMultiPathGenerator,
-            MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
+        class McPagoda 
+        : public McPricer<MonteCarlo::MultiAsset_old,
+                          MonteCarlo::PseudoRandomSequence_old> {
           public:
             McPagoda(const std::vector<double>& portfolio,
                      double fraction,

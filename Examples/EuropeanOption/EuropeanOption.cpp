@@ -452,53 +452,12 @@ int main(int argc, char* argv[])
         timeSteps = 365;
         TimeGrid timeGrid(maturity, timeSteps);
         method = "MC (crude)";
-
-        UniformRandomSequenceGenerator rsg(timeSteps, mcSeed);
-        GaussianRandomSequenceGenerator grsg(rsg);
-
-        UniformLowDiscrepancySequenceGenerator ldsg(timeSteps);
-        GaussianLowDiscrepancySequenceGenerator gldsg(ldsg);
-
-        /*
-        Sample<std::vector<double> > wp = 
-            Sample<std::vector<double> >(std::vector<double>(),1.0);
-        BrownianBridge<GaussianRandomSequenceGenerator> b1(grsg);
-        wp = b1.next();
-        wp = b1.antithetic();
-        BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b2(gldsg);
-        wp = b2.next();
-        wp = b2.antithetic();
-        BrownianBridge<GaussianRandomSequenceGenerator> b3(maturity, timeSteps, grsg);
-        wp = b3.next();
-        wp = b3.antithetic();
-        BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b4(maturity, timeSteps, gldsg);
-        wp = b4.next();
-        wp = b4.antithetic();
-        BrownianBridge<GaussianRandomSequenceGenerator> b5(timeGrid, grsg);
-        wp = b5.next();
-        wp = b5.antithetic();
-        BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b6(timeGrid, gldsg);
-        wp = b6.next();
-        wp = b6.antithetic();
-        BrownianBridge<GaussianRandomSequenceGenerator> b7(flatVolTS, timeGrid, grsg);
-        wp = b7.next();
-        wp = b7.antithetic();
-        BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b8(flatVolTS, timeGrid, gldsg);
-        wp = b8.next();
-        wp = b8.antithetic();
-        BrownianBridge<GaussianRandomSequenceGenerator> b9(blackSurface, timeGrid, grsg);
-        wp = b9.next();
-        wp = b9.antithetic();
-        BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b10(blackSurface, timeGrid, gldsg);
-        wp = b10.next();
-        wp = b10.antithetic();
-        */
-
-        option.setPricingEngine(Handle<PricingEngine>(
-            new MCEuropeanEngine<
-                Statistics,
-                GaussianRandomSequenceGenerator,
-                GaussianPathGenerator>(false, false, timeSteps, grsg)));
+        Handle<PricingEngine> mcengine1 =
+            MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(timeSteps)
+                                                .withTolerance(0.02)
+                                                .withSeed(mcSeed);
+        option.setPricingEngine(mcengine1);
+        
         value = option.NPV();
         double errorEstimate = option.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
@@ -510,7 +469,26 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
+        method = "MC (Sobol)";
 
+        Handle<PricingEngine> mcengine2 =
+            MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(timeSteps)
+                                                  .withSamples(nSamples);
+        option.setPricingEngine(mcengine2);
+        
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+
+
+        // quanto and all that
 
         Handle<AnalyticEuropeanEngine> baseEngine(new
             AnalyticEuropeanEngine);

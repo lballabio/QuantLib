@@ -29,11 +29,7 @@ namespace QuantLib {
     namespace Pricers {
 
         using Math::Statistics;
-        using MonteCarlo::Path;
-        using MonteCarlo::GaussianPathGenerator_old;
-        using MonteCarlo::PathPricer_old;
-        using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::PerformanceOptionPathPricer_old;
+        using namespace MonteCarlo;
 
         McPerformanceOption::McPerformanceOption(Option::Type type,
           double underlying, double moneyness,
@@ -79,10 +75,10 @@ namespace QuantLib {
                 antitheticVariance));
 
             //! Initialize the one-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<Statistics,
-                GaussianPathGenerator_old, PathPricer_old<Path> > > (
-                new MonteCarloModel<Statistics,
-                GaussianPathGenerator_old, PathPricer_old<Path> > (
+            mcModel_ = Handle<MonteCarloModel<SingleAsset_old,
+                                              PseudoRandom_old> > (
+                new MonteCarloModel<SingleAsset_old,
+                                              PseudoRandom_old> (
                 pathGenerator, performancePathPricer,
                 Statistics(), false));
 

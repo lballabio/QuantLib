@@ -39,9 +39,9 @@ namespace QuantLib {
             strike) options is \$ max(S/X- 1) \$.
 
         */
-        class McPerformanceOption : public McPricer<Math::Statistics,
-            MonteCarlo::GaussianPathGenerator_old,
-            MonteCarlo::PathPricer_old<MonteCarlo::Path> > {
+        class McPerformanceOption 
+        : public McPricer<MonteCarlo::SingleAsset_old,
+                          MonteCarlo::PseudoRandom_old> {
           public:
             McPerformanceOption(Option::Type type,
                        double underlying,

@@ -34,9 +34,8 @@ namespace QuantLib {
     namespace Pricers {
 
         //! simple example of multi-factor Monte Carlo pricer
-        class McBasket : public McPricer<Math::Statistics,
-            MonteCarlo::GaussianMultiPathGenerator,
-            MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
+        class McBasket : public McPricer<MonteCarlo::MultiAsset_old,
+                                         MonteCarlo::PseudoRandomSequence_old>{
           public:
               McBasket(Option::Type type,
                        const std::vector<double>& underlying,

@@ -32,11 +32,7 @@ namespace QuantLib {
 
         using Math::Statistics;
         using Math::Matrix;
-        using MonteCarlo::MultiPath;
-        using MonteCarlo::GaussianMultiPathGenerator;
-        using MonteCarlo::PathPricer_old;
-        using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::HimalayaPathPricer_old;
+        using namespace MonteCarlo;
 
         McHimalaya::McHimalaya(const std::vector<double>& underlying,
             const Array& dividendYield, const Math::Matrix& covariance,
@@ -73,10 +69,10 @@ namespace QuantLib {
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<Statistics,
-                GaussianMultiPathGenerator, PathPricer_old<MultiPath> > > (
-                new MonteCarloModel<Statistics,
-                GaussianMultiPathGenerator, PathPricer_old<MultiPath> > (
+            mcModel_ = Handle<MonteCarloModel<MultiAsset_old,
+                                              PseudoRandomSequence_old> > (
+                new MonteCarloModel<MultiAsset_old,
+                                    PseudoRandomSequence_old> (
                 pathGenerator, pathPricer, Statistics(), false));
 
         }

@@ -25,12 +25,9 @@
 #ifndef quantlib_mc_typedefs_h
 #define quantlib_mc_typedefs_h
 
+#include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
-#include <ql/MonteCarlo/pathgenerator.hpp>
-#include <ql/MonteCarlo/multipathgenerator.hpp>
-#include <ql/MonteCarlo/pathpricer.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
-#include <ql/Math/statistics.hpp>
 
 namespace QuantLib {
 
@@ -50,15 +47,11 @@ namespace QuantLib {
             GaussianMultiPathGenerator;
 
         //! default choice for one-factor Monte Carlo model.
-        typedef MonteCarloModel<Math::Statistics,
-                                GaussianPathGenerator_old,
-                                PathPricer_old<Path> >
+        typedef MonteCarloModel<SingleAsset_old, PseudoRandom_old>
                                     OneFactorMonteCarloOption_old;
 
         //! default choice for multi-factor Monte Carlo model.
-        typedef MonteCarloModel<Math::Statistics,
-                                GaussianMultiPathGenerator,
-                                PathPricer_old<MultiPath> >
+        typedef MonteCarloModel<MultiAsset_old, PseudoRandomSequence_old>
                                     MultiFactorMonteCarloOption;
 
     }

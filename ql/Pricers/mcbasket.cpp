@@ -24,6 +24,7 @@
 #include <ql/handle.hpp>
 #include <ql/MonteCarlo/basketpathpricer.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/Pricers/mcbasket.hpp>
 
 namespace QuantLib {
@@ -34,8 +35,9 @@ namespace QuantLib {
         using MonteCarlo::MultiPath;
         using MonteCarlo::GaussianMultiPathGenerator;
         using MonteCarlo::BasketPathPricer_old;
-        using MonteCarlo::MultiFactorMonteCarloOption;
         using MonteCarlo::MonteCarloModel;
+        using MonteCarlo::MultiAsset_old;
+        using MonteCarlo::PseudoRandomSequence_old;
         using Math::Statistics;
 
         McBasket::McBasket(Option::Type type, const std::vector<double>& underlying,
@@ -70,13 +72,13 @@ namespace QuantLib {
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<Math::Statistics,
-                GaussianMultiPathGenerator,
-                PathPricer_old<MultiPath> > > (
-                new MonteCarloModel<Math::Statistics,
-                GaussianMultiPathGenerator,
-                PathPricer_old<MultiPath> > (pathGenerator,
-                pathPricer, Math::Statistics(), false));
+            mcModel_ = Handle<MonteCarloModel<MultiAsset_old,
+                                              PseudoRandomSequence_old> > (
+                new MonteCarloModel<MultiAsset_old,
+                                    PseudoRandomSequence_old> (pathGenerator,
+                                                               pathPricer, 
+                                                               Statistics(), 
+                                                               false));
 
         }
 

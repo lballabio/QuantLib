@@ -31,12 +31,7 @@ namespace QuantLib {
     namespace Pricers {
 
         using Math::Statistics;
-        using MonteCarlo::Path;
-        using MonteCarlo::GaussianPathGenerator_old;
-        using MonteCarlo::PathPricer_old;
-        using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::ArithmeticASOPathPricer_old;
-        using MonteCarlo::GeometricASOPathPricer_old;
+        using namespace MonteCarlo;
 
         McDiscreteArithmeticASO::McDiscreteArithmeticASO(Option::Type type,
           double underlying,
@@ -71,23 +66,19 @@ namespace QuantLib {
                     times, volatility).value();
 
                 //! Initialize the one-dimensional Monte Carlo
-                mcModel_ = Handle<MonteCarloModel<Statistics,
-                    GaussianPathGenerator_old,
-                    PathPricer_old<Path> > > (
-                    new MonteCarloModel<Statistics,
-                    GaussianPathGenerator_old,
-                    PathPricer_old<Path> > (pathGenerator, spPricer,
-                    Statistics(), false,
-                    controlVariateSpPricer, controlVariatePrice));
+                mcModel_ = Handle<MonteCarloModel<SingleAsset_old,
+                                                  PseudoRandom_old> > (
+                    new MonteCarloModel<SingleAsset_old,
+                                        PseudoRandom_old>(
+                        pathGenerator, spPricer, Statistics(), false,
+                        controlVariateSpPricer, controlVariatePrice));
             } else {
                 //! Initialize the one-dimensional Monte Carlo
-                mcModel_ = Handle<MonteCarloModel<Statistics,
-                    GaussianPathGenerator_old,
-                    PathPricer_old<Path> > > (
-                    new MonteCarloModel<Statistics,
-                    GaussianPathGenerator_old,
-                    PathPricer_old<Path> > (pathGenerator, spPricer,
-                    Statistics(), false));
+                mcModel_ = Handle<MonteCarloModel<SingleAsset_old,
+                                                  PseudoRandom_old> > (
+                    new MonteCarloModel<SingleAsset_old,
+                                        PseudoRandom_old>(
+                        pathGenerator, spPricer, Statistics(), false));
             }
 
         }

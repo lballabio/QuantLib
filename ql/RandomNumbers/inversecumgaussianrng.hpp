@@ -25,7 +25,6 @@
 #ifndef quantlib_inversecumulative_gaussian_rng_h
 #define quantlib_inversecumulative_gaussian_rng_h
 
-#include <ql/Math/normaldistribution.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 
 namespace QuantLib {

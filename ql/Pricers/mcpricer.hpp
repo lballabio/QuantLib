@@ -41,7 +41,9 @@ namespace QuantLib {
             Basket as example of multi factor pricer.
         */
 
-        template<class S, class PG, class PP>
+        template <class MC,
+                  class RNG = MonteCarlo::PseudoRandom,
+                  class S = Math::Statistics>
         class McPricer {
           public:
             virtual ~McPricer() {}
@@ -56,17 +58,17 @@ namespace QuantLib {
             const S& sampleAccumulator(void) const;
           protected:
             McPricer() {}
-            mutable Handle<MonteCarlo::MonteCarloModel<S, PG, PP> > mcModel_;
+            mutable Handle<MonteCarlo::MonteCarloModel<MC,RNG,S> > mcModel_;
             static const Size minSample_;
         };
 
 
-        template<class S, class PG, class PP>
-        const Size McPricer<S, PG, PP>::minSample_ = 100;
+        template<class MC, class RNG, class S>
+        const Size McPricer<MC, RNG, S>::minSample_ = 100;
 
         // inline definitions
-        template<class S, class PG, class PP>
-        inline double McPricer<S, PG, PP>::value(double tolerance,
+        template<class MC, class RNG, class S>
+        inline double McPricer<MC, RNG, S>::value(double tolerance,
             Size maxSamples) const {
 
             Size sampleNumber =
@@ -104,8 +106,8 @@ namespace QuantLib {
         }
 
 
-        template<class S, class PG, class PP>
-        inline double McPricer<S, PG, PP>::valueWithSamples(Size samples)
+        template<class MC, class RNG, class S>
+        inline double McPricer<MC, RNG, S>::valueWithSamples(Size samples)
             const {
 
             QL_REQUIRE(samples>=minSample_,
@@ -132,8 +134,8 @@ namespace QuantLib {
         }
 
 
-        template<class S, class PG, class PP>
-        inline double McPricer<S, PG, PP>::errorEstimate() const {
+        template<class MC, class RNG, class S>
+        inline double McPricer<MC, RNG, S>::errorEstimate() const {
 
             Size sampleNumber =
                 mcModel_->sampleAccumulator().samples();
@@ -144,12 +146,15 @@ namespace QuantLib {
             return mcModel_->sampleAccumulator().errorEstimate();
         }
 
-        template<class S, class PG, class PP>
-        inline const S& McPricer<S, PG, PP>::sampleAccumulator() const {
+        template<class MC, class RNG, class S>
+        inline const S& McPricer<MC, RNG, S>::sampleAccumulator() const {
 
             return mcModel_->sampleAccumulator();
         }
+
     }
+
 }
+
 
 #endif

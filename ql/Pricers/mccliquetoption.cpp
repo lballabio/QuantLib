@@ -79,12 +79,10 @@ namespace QuantLib {
                 discounts, redemptionOnly, antitheticVariance));
 
             //! Initialize the one-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<Statistics,
-                GaussianPathGenerator_old, PathPricer_old<Path> > > (
-                new MonteCarloModel<Statistics,
-                GaussianPathGenerator_old, PathPricer_old<Path> > (
-                pathGenerator, cliquetPathPricer,
-                Statistics(), false));
+            mcModel_ = Handle<MonteCarloModel<SingleAsset_old,
+                                              PseudoRandom_old> >(
+                new MonteCarloModel<SingleAsset_old, PseudoRandom_old> (
+                    pathGenerator, cliquetPathPricer, Statistics(), false));
 
         }
 

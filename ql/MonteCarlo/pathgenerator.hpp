@@ -29,12 +29,11 @@
 #include <ql/grid.hpp>
 #include <ql/MonteCarlo/path.hpp>
 #include <ql/MonteCarlo/sample.hpp>
+#include <ql/RandomNumbers/randomarraygenerator.hpp>
 
 namespace QuantLib {
 
     namespace MonteCarlo {
-
-
 
         //! Generates random paths using a sequence generator
         /*! Generates random paths with drift(S,t) and variance(S,t)
@@ -48,10 +47,10 @@ namespace QuantLib {
             PathGenerator(const Handle<DiffusionProcess>& diffProcess,
                           Time length,
                           Size timeSteps,
-                          SG generator);
+                          const SG& generator);
             PathGenerator(const Handle<DiffusionProcess>& diffProcess,
                           const TimeGrid& timeGrid,
-                          SG generator);
+                          const SG& generator);
             //! \name inspectors
             //@{
             const sample_type& next() const;
@@ -71,7 +70,7 @@ namespace QuantLib {
         template <class SG>
         PathGenerator<SG>::PathGenerator(
             const Handle<DiffusionProcess>& diffProcess,
-            Time length, Size timeSteps, SG generator)
+            Time length, Size timeSteps, const SG& generator)
         : generator_(generator), dimension_(generator_.dimension()),
           next_(Path(timeGrid),1.0), diffProcess_(diffProcess),
           timeGrid_(length, timeSteps) {
@@ -87,7 +86,7 @@ namespace QuantLib {
         template <class SG>
         PathGenerator<SG>::PathGenerator(
             const Handle<DiffusionProcess>& diffProcess,
-            const TimeGrid& timeGrid, SG generator)
+            const TimeGrid& timeGrid, const SG& generator)
         : generator_(generator), dimension_(generator_.dimension()),
           next_(Path(timeGrid),1.0), diffProcess_(diffProcess),
           timeGrid_(timeGrid) {
@@ -120,7 +119,8 @@ namespace QuantLib {
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = sequence_.value[i] *
                     QL_SQRT(diffProcess_->variance(t, asset_, dt));
-                asset_ *= QL_EXP(next_.value.drift()[i] + next_.value.diffusion()[i]);
+                asset_ *= QL_EXP(next_.value.drift()[i] + 
+                                 next_.value.diffusion()[i]);
             }
 
             return next_;
@@ -146,7 +146,8 @@ namespace QuantLib {
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = - sequence_.value[i] *
                     QL_SQRT(diffProcess_->variance(t, asset_, dt));
-                asset_ *= QL_EXP(next_.value.drift()[i] + next_.value.diffusion()[i]);
+                asset_ *= QL_EXP(next_.value.drift()[i] + 
+                                 next_.value.diffusion()[i]);
             }
 
             return next_;
@@ -154,13 +155,8 @@ namespace QuantLib {
 
 
 
-
-
         //! Generates random paths from a random number generator
-        /* Generates random paths from a random number generator
-
-           \deprecated use PathGenerator instead
-        */
+        /*! \deprecated use PathGenerator instead */
         template <class RNG>
         class PathGenerator_old {
           public:

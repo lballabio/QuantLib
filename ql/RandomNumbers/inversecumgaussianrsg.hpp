@@ -26,7 +26,6 @@
 #define quantlib_inversecumulative_gaussian_rsg_h
 
 #include <ql/array.hpp>
-#include <ql/Math/normaldistribution.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 
 namespace QuantLib {

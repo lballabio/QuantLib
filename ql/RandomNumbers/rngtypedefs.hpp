@@ -25,183 +25,44 @@
 #ifndef quantlib_rng_typedefs_h
 #define quantlib_rng_typedefs_h
 
-#include <ql/RandomNumbers/lecuyeruniformrng.hpp>
-#include <ql/RandomNumbers/knuthuniformrng.hpp>
-#include <ql/RandomNumbers/mt19937uniformrng.hpp>
-
-#include <ql/RandomNumbers/boxmullergaussianrng.hpp>
-#include <ql/RandomNumbers/centrallimitgaussianrng.hpp>
-#include <ql/RandomNumbers/inversecumgaussianrng.hpp>
-
-#include <ql/RandomNumbers/randomarraygenerator.hpp>
-
-#include <ql/RandomNumbers/randomsequencegenerator.hpp>
-#include <ql/RandomNumbers/haltonrsg.hpp>
-#include <ql/RandomNumbers/sobolrsg.hpp>
-
-#include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
+#include <ql/MonteCarlo/mctraits.hpp>
 
 namespace QuantLib {
 
     namespace RandomNumbers {
 
-/************* Uniform number generators *************/
-
-        // no low discrepancy, since they are sequence generators.
-
-        // There are Lecuyer, Knuth and MersenneTwister19937 uniform number
-        // generators, plus:
+        /* Some default choices. Kind of redundant with the default
+           choices made in mctraits---and in fact, defined depending
+           on the former. Personally, I'd dump these ones and keep 
+           the traits only. It's not as we're preventing the user 
+           from creating his own typedefs (and with his own names) 
+           if he feels the itch.
+                                             LB
+        */
 
         //! default choice for uniform random number generator.
-        typedef MersenneTwisterUniformRng UniformRandomGenerator;
+        typedef MonteCarlo::PseudoRandom::urng_type UniformRandomGenerator;
 
-
-/************* Gaussian number generators *************/
-
-        // no low discrepancy, since they are sequence generators.
-
-        // Gaussian random number generators based on
-        // Lecuyer uniform random number generator
-        // 1) Central Limit
-        typedef CLGaussianRng<LecuyerUniformRng>
-			CentralLimitLecuyerGaussianRng;
-        // 2) Box Muller
-        typedef BoxMullerGaussianRng<LecuyerUniformRng>
-			BoxMullerLecuyerGaussianRng;
-        // 3) Moro
-        typedef ICGaussianRng<LecuyerUniformRng,
-            QuantLib::Math::MoroInverseCumulativeNormal>
-			MoroInvCumulativeLecuyerGaussianRng;
-        // 4) Acklam (recommended)
-        typedef ICGaussianRng<LecuyerUniformRng,
-            QuantLib::Math::InverseCumulativeNormal>
-			InvCumulativeLecuyerGaussianRng;
-        
-        // Gaussian random number generators based on
-        // Knuth uniform random number generator
-        // 1) Central Limit
-        typedef CLGaussianRng<KnuthUniformRng>
-			CentralLimitKnuthGaussianRng;
-        // 2) Box Muller
-        typedef BoxMullerGaussianRng<KnuthUniformRng>
-			BoxMullerKnuthGaussianRng;
-        // 3) Moro
-        typedef ICGaussianRng<KnuthUniformRng,
-            QuantLib::Math::MoroInverseCumulativeNormal>
-			MoroInvCumulativeKnuthGaussianRng;
-        // 4) Acklam (recommended)
-        typedef ICGaussianRng<KnuthUniformRng,
-            QuantLib::Math::InverseCumulativeNormal>
-			InvCumulativeKnuthGaussianRng;
-
-        // Gaussian random number generators based on
-        // Mersenne Twister uniform random number generator
-        // 1) Central Limit
-        typedef CLGaussianRng<MersenneTwisterUniformRng>
-			CentralLimitMersenneTwisterGaussianRng;
-        // 2) Box Muller
-        typedef BoxMullerGaussianRng<MersenneTwisterUniformRng>
-			BoxMullerMersenneTwisterGaussianRng;
-        // 3) Moro
-        typedef ICGaussianRng<MersenneTwisterUniformRng,
-            QuantLib::Math::MoroInverseCumulativeNormal>
-			MoroInvCumulativeMersenneTwisterGaussianRng;
-        // 4) Acklam (recommended)
-        typedef ICGaussianRng<MersenneTwisterUniformRng,
-            QuantLib::Math::InverseCumulativeNormal>
-			InvCumulativeMersenneTwisterGaussianRng;
-        
         //! default choice for Gaussian random number generator.
-        typedef ICGaussianRng<UniformRandomGenerator,
-            QuantLib::Math::InverseCumulativeNormal>
-			GaussianRandomGenerator;
+        typedef MonteCarlo::PseudoRandom::rng_type GaussianRandomGenerator;
 
         //! default choice for Gaussian array generator.
         typedef RandomArrayGenerator<GaussianRandomGenerator>
 			GaussianArrayGenerator;
 
-
-/************* Uniform sequence generators *************/
-
-        // all low discrepancy sequence generators plus:
-        typedef RandomSequenceGenerator<LecuyerUniformRng>
-            LecuyerUniformRsg;
-        typedef RandomSequenceGenerator<KnuthUniformRng>
-            KnuthUniformRsg;
-        typedef RandomSequenceGenerator<MersenneTwisterUniformRng>
-            MersenneTwisterUniformRsg;
-
         //! default choice for uniform random sequence generator.
-        typedef MersenneTwisterUniformRsg UniformRandomSequenceGenerator;
+        typedef MonteCarlo::PseudoRandom::ursg_type 
+            UniformRandomSequenceGenerator;
 
-        //! default choice for uniform low discrepancy sequence generator
-        typedef SobolRsg UniformLowDiscrepancySequenceGenerator;
-
-
-
-/************* Gaussian sequence generators *************/
-
-        // Gaussian random sequence generators based on
-        // Lecuyer uniform random sequence generator
-        // 1) Moro
-        typedef ICGaussianRsg<LecuyerUniformRsg,
-            QuantLib::Math::MoroInverseCumulativeNormal>
-			MoroInvCumulativeLecuyerGaussianRsg;
-        // 2) Acklam
-        typedef ICGaussianRsg<LecuyerUniformRsg,
-            QuantLib::Math::InverseCumulativeNormal>
-			InvCumulativeLecuyerGaussianRsg;
-
-        // Gaussian random sequence generators based on
-        // Knuth uniform random sequence generator
-        // 1) Moro
-        typedef ICGaussianRsg<KnuthUniformRsg,
-            QuantLib::Math::MoroInverseCumulativeNormal>
-			MoroInvCumulativeKnuthGaussianRsg;
-        // 2) Acklam
-        typedef ICGaussianRsg<KnuthUniformRsg,
-            QuantLib::Math::InverseCumulativeNormal>
-			InvCumulativeKnuthGaussianRsg;
-
-        // Gaussian random sequence generators based on
-        // Mersenne Twister uniform random sequence generator
-        // 1) Moro
-        typedef ICGaussianRsg<MersenneTwisterUniformRsg,
-            QuantLib::Math::MoroInverseCumulativeNormal>
-			MoroInvCumulativeMersenneTwisterGaussianRsg;
-        // 2) Acklam
-        typedef ICGaussianRsg<MersenneTwisterUniformRsg,
-            QuantLib::Math::InverseCumulativeNormal>
-			InvCumulativeMersenneTwisterGaussianRsg;
-
-        // Gaussian low discrepancy sequence generators based on
-        // Halton uniform low discrepancy sequence generator
-        // 1) Moro
-        typedef ICGaussianRsg<HaltonRsg,
-            QuantLib::Math::MoroInverseCumulativeNormal>
-			MoroInvCumulativeHaltonGaussianRsg;
-        // 2) Acklam
-        typedef ICGaussianRsg<HaltonRsg,
-            QuantLib::Math::InverseCumulativeNormal>
-			InvCumulativeHaltonGaussianRsg;
-
-        // Gaussian low discrepancy sequence generators based on
-        // Sobol uniform low discrepancy sequence generator
-        // 1) Moro
-        typedef ICGaussianRsg<SobolRsg,
-            QuantLib::Math::MoroInverseCumulativeNormal>
-			MoroInvCumulativeSobolGaussianRsg;
-        // 2) Acklam
-        typedef ICGaussianRsg<SobolRsg,
-            QuantLib::Math::InverseCumulativeNormal>
-			InvCumulativeSobolGaussianRsg;
-
-        //! default choice for gaussian random sequence generator.
-        typedef InvCumulativeMersenneTwisterGaussianRsg
+        //! default choice for Gaussian random sequence generator.
+        typedef MonteCarlo::PseudoRandom::rsg_type 
             GaussianRandomSequenceGenerator;
 
-        //! default choice for gaussian low discrepancy sequence generator
-        typedef InvCumulativeSobolGaussianRsg GaussianLowDiscrepancySequenceGenerator;
+        typedef MonteCarlo::LowDiscrepancy::ursg_type
+            UniformLowDiscrepancySequenceGenerator;
+
+        typedef MonteCarlo::LowDiscrepancy::rsg_type 
+            GaussianLowDiscrepancySequenceGenerator;
 
     }
 

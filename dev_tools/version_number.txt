@@ -10,13 +10,13 @@ n  is an ordinal number; 0 is only allowed when l equals f
 e.g. R000300a2 stands for Release 0.3.1a2
 e.g. R000301f0 stands for Release 0.3.1f0
 
-The current version number is 0.3.2a1 - 000302a1
+The current version number is 0.3.2a2 - 000302a2
 
 This version number is in:
     QuantLib/dev_tools/version_number.txt,
+    QuantLib/configure.ac,
     QuantLib/QuantLib.nsi,
     QuantLib/Docs/quantlib.doxy,
-    QuantLib/Docs/configure.ac,
     QuantLib/ql/qldefines.hpp,
 
     QuantLib-SWIG/SWIG/ql.i

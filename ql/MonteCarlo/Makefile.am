@@ -18,6 +18,7 @@ include_HEADERS = \
 	himalayapathpricer.hpp \
 	mctypedefs.hpp \
 	maxbasketpathpricer.hpp \
+    mctraits.hpp \
 	montecarlomodel.hpp \
 	multipath.hpp \
 	multipathgenerator.hpp \

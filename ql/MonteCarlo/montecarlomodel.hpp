@@ -25,6 +25,8 @@
 #define quantlib_montecarlo_model_h
 
 #include <ql/handle.hpp>
+#include <ql/MonteCarlo/mctraits.hpp>
+#include <ql/Math/statistics.hpp>
 
 namespace QuantLib {
 
@@ -33,65 +35,66 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! General purpose Monte Carlo model for path samples
-        /*! Any Monte Carlo which uses path samples has three main components,
-            namely,
-                - S, a sample accumulator,
-                - PG, a path generator,
-                - PP, a path pricer.
-            MonteCarloModel<S, PG, PP> puts together these three elements.
+        /*! The template arguments of this class correspond to
+            available policies for the particular model to be
+            instantiated---i.e., whether it is single- or multi-asset,
+            or whether it should use pseudo-random or low-discrepancy
+            numbers for path generation. Such decisions are grouped
+            in trait classes so as to be orthogonal---see mctraits.hpp
+            for examples.
+
             The constructor accepts two safe references, i.e. two smart
             pointers, one to a path generator and the other to a path pricer.
             In case of control variate technique the user should provide the
             additional control option, namely the option path pricer and the
             option value.
 
-            The minimal interfaces for the classes S, PG, and PP are:
-
-            \code
-            class S{
-                void add(VALUE_TYPE sample, double weight) const;
-            };
-
-            class PG{
-                Sample<PATH_TYPE> next() const;
-            };
-
-            class PP :: unary_function<PATH_TYPE, VALUE_TYPE> {
-                VALUE_TYPE operator()(PATH_TYPE &) const;
-            };
-            \endcode
         */
-        template<class S, class PG, class PP>
+        template <class mc_traits,
+                  class rng_traits = PseudoRandom,
+                  class stats_traits = Math::Statistics>
         class MonteCarloModel {
           public:
-            typedef typename PG::sample_type sample_type;
-	    typedef typename PP::result_type result_type;
-            MonteCarloModel(const Handle<PG>& pathGenerator,
-                            const Handle<PP>& pathPricer,
-                            const S& sampleAccumulator,
+            // extract traits
+            typedef typename rng_traits::rsg_type rsg_type;
+            typedef typename mc_traits::path_generator<rsg_type>::type
+                path_generator_type;
+            typedef typename mc_traits::path_pricer_type path_pricer_type;
+            typedef typename path_generator_type::sample_type sample_type;
+            typedef typename path_pricer_type::result_type result_type;
+            typedef stats_traits stats_type;
+            // constructor
+            MonteCarloModel(const Handle<path_generator_type>& pathGenerator,
+                            const Handle<path_pricer_type>& pathPricer,
+                            const stats_type& sampleAccumulator,
                             bool antitheticVariate,
-                            const Handle<PP>& cvPathPricer = Handle<PP>(),
+                            const Handle<path_pricer_type>& cvPathPricer 
+                                = Handle<path_pricer_type>(),
                             result_type cvOptionValue = result_type());
             void addSamples(Size samples);
-            const S& sampleAccumulator(void) const;
+            const stats_type& sampleAccumulator(void) const;
           private:
-            Handle<PG> pathGenerator_;
-            Handle<PP> pathPricer_;
-            S sampleAccumulator_;
+            Handle<path_generator_type> pathGenerator_;
+            Handle<path_pricer_type> pathPricer_;
+            stats_type sampleAccumulator_;
             bool isAntitheticVariate_;
-            Handle<PP> cvPathPricer_;
+            Handle<path_pricer_type> cvPathPricer_;
             result_type cvOptionValue_;
             bool isControlVariate_;
         };
 
         // inline definitions
-        template<class S, class PG, class PP>
-        inline MonteCarloModel<S, PG, PP>::MonteCarloModel(
-	    const Handle<PG>& pathGenerator,
-	    const Handle<PP>& pathPricer, const S& sampleAccumulator,
-        bool antitheticVariate,
-	    const Handle<PP>& cvPathPricer, 
-	    MonteCarloModel<S, PG, PP>::result_type cvOptionValue)
+        template<class MC, class RNG, class S>
+        inline MonteCarloModel<MC,RNG,S>::MonteCarloModel(
+            const Handle<MonteCarloModel<MC,RNG,S>::path_generator_type>& 
+                pathGenerator,
+            const Handle<MonteCarloModel<MC,RNG,S>::path_pricer_type>& 
+                pathPricer, 
+            const MonteCarloModel<MC,RNG,S>::stats_type& sampleAccumulator,
+            bool antitheticVariate,
+            const Handle<MonteCarloModel<MC,RNG,S>::path_pricer_type>& 
+                cvPathPricer, 
+            MonteCarloModel<MC,RNG,S>::result_type cvOptionValue)
         : pathGenerator_(pathGenerator), pathPricer_(pathPricer),
           sampleAccumulator_(sampleAccumulator),
           isAntitheticVariate_(antitheticVariate),
@@ -102,8 +105,8 @@ namespace QuantLib {
                 isControlVariate_=true;
         }
 
-        template<class S, class PG, class PP>
-        inline void MonteCarloModel<S, PG, PP>::addSamples(Size samples) {
+        template<class MC, class RNG, class S>
+        inline void MonteCarloModel<MC,RNG,S>::addSamples(Size samples) {
             for(Size j = 1; j <= samples; j++) {
 
                 sample_type path = pathGenerator_->next();
@@ -124,11 +127,14 @@ namespace QuantLib {
             }
         }
 
-        template<class S, class PG, class PP>
-        inline const S& MonteCarloModel<S, PG, PP>::sampleAccumulator() const {
+        template<class MC, class RNG, class S>
+        inline const typename MonteCarloModel<MC,RNG,S>::stats_type& 
+        MonteCarloModel<MC,RNG,S>::sampleAccumulator() const {
             return sampleAccumulator_;
         }
+
     }
+
 }
 
 
