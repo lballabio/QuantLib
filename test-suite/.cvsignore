@@ -1,5 +1,3 @@
-*.obj
-*.obj_d
 testsuite.dep
 testsuite.plg
 test-suite.tds

@@ -24,11 +24,12 @@ CC_OPTS = -vi- -w-8057 \
     -I$(QL_INCLUDE_DIR) \
     -I$(BCC_INCLUDE) \
     -n$(OBJDIR)
+
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
 !ifdef SAFE
-CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
+CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
 # Primary target:
@@ -37,7 +38,7 @@ DiscreteHedging$(_D).exe: $(OBJDIR) DiscreteHedging.cpp
 
 #create build dir
 $(OBJDIR):
-        @if not exist $(OBJDIR) (md $(OBJDIR)) else echo $(OBJDIR) directory already exist
+        @if not exist $(OBJDIR) (md $(OBJDIR))
 
 # Clean up
 clean::

@@ -60,7 +60,7 @@ CC_OPTS = -vi- \
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
 !ifdef SAFE
-CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
+CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
 # Generic rules
@@ -78,7 +78,7 @@ test-suite$(_D).exe: $(OBJDIR) $(QL_TESTS)
 
 #create build dir
 $(OBJDIR):
-        @if not exist $(OBJDIR) (md $(OBJDIR)) else echo $(OBJDIR) directory already exist
+        @if not exist $(OBJDIR) (md $(OBJDIR))
 
 # Clean up
 clean::
