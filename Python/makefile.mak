@@ -79,17 +79,23 @@ LINK_OPTS    = $(LINK_OPTS) -v
 # Python module
 python: $(QUANTLIB_DLL)
 
-$(QUANTLIB_DLL):: quantlib_wrap$(_D).obj $(QUANTLIB_LIB) $(PYTHON_BCC_LIB)
+$(QUANTLIB_DLL):: quantlib_wrap$(_D).obj
+    $(QUANTLIB_LIB) \
+    $(PYTHON_BCC_LIB)
     echo Linking Python module...
     $(LINK) $(LINK_OPTS) \
         quantlib_wrap$(_D).obj $(WIN_OBJS), \
         $(QUANTLIB_DLL),, \
         $(QUANTLIB_LIB) $(PYTHON_BCC_LIB) $(WIN_LIBS), \
         QuantLibc.def
-    del QuantLibc$(_D).ilc
-    del QuantLibc$(_D).ild
-    del QuantLibc$(_D).ilf
-    del QuantLibc$(_D).ils
+    if exist QuantLibc.ilc     del QuantLibc.ilc
+    if exist QuantLibc_d.ilc   del QuantLibc_d.ilc
+    if exist QuantLibc.ild     del QuantLibc.ild
+    if exist QuantLibc_d.ild   del QuantLibc_d.ild
+    if exist QuantLibc.ilf     del QuantLibc.ilf
+    if exist QuantLibc_d.ilf   del QuantKitc_d.ilf
+    if exist QuantLibc.ils     del QuantLibc.ils
+    if exist QuantLibc_d.ils   del QuantLibc_d.ils
     if exist QuantLibc.tds del QuantLibc.tds
     echo Build completed
 
@@ -145,19 +151,24 @@ quantlib_wrap.cpp:: \
 clean::
     if exist bccpython_d.lib        del bccpython_d.lib
     if exist bccpython.lib          del bccpython.lib
+
     if exist quantlib_wrap.cpp      del quantlib_wrap.cpp
     if exist QuantLib.py            del QuantLib.py
     if exist QuantLib.pyc           del QuantLib.pyc
+
     if exist quantlib_wrap.obj      del quantlib_wrap.obj
     if exist quantlib_wrap_d.obj    del quantlib_wrap_d.obj
+
     if exist QuantLibc.dll          del QuantLibc.dll
     if exist QuantLibc.tds          del QuantLibc.tds
+
     if exist QuantLibc_d.dll        del QuantLibc_d.dll
     if exist QuantLibc_d.tds        del QuantLibc_d.tds
     if exist QuantLibc_d.ilc        del QuantLibc_d.ilc
     if exist QuantLibc_d.ild        del QuantLibc_d.ild
     if exist QuantLibc_d.ilf        del QuantLibc_d.ilf
     if exist QuantLibc_d.ils        del QuantLibc_d.ils
+
     cd Tests
     if exist *.pyc              del *.pyc
 
