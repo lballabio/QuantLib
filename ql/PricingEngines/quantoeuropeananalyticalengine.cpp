@@ -1,7 +1,6 @@
 
 /*
  Copyright (C) 2002 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,33 +14,38 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file pricingengine.hpp
-    \brief Base class for pricing engines
+/*! \file quantoeuropeananalyticalengine.cpp
+    \brief Quanto european option engine using analytic formulas
 
     \fullpath
-    ql/%pricingengine.hpp
+    ql/PricingEngines/%quantoeuropeananalyticalengine.cpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricingengine_h
-#define quantlib_pricingengine_h
-
-#include <ql/argsandresults.hpp>
-#include <ql/null.hpp>
+#include <ql/PricingEngines/quantoengines.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 
-    //! base class for pricing engines
-    class PricingEngine {
-      public:
-        virtual ~PricingEngine() {}
-        virtual Arguments* parameters() = 0;
-        virtual const Results* results() const = 0;
-        virtual void calculate() const = 0;
-    };
+    namespace PricingEngines {
+
+        void QuantoEuropeanAnalyticalEngine::calculate() const {
+
+            results_.value = 0.0;
+            results_.delta = 0.0;
+            results_.gamma = 0.0;
+            results_.theta = 0.0;
+            results_.rho = 0.0;
+            results_.dividendRho = 0.0;
+            results_.vega = 0.0;
+
+            results_.vega2 = 0.0;
+            results_.rho2 = 0.0;
+            results_.lambda = 0.0;
+        }
+
+    }
 
 }
 
-
-#endif

@@ -112,7 +112,8 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\OnTheEdgeDebug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR /YX /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /YX /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c
+# SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -451,6 +452,14 @@ SOURCE=.\ql\Instruments\capfloor.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\quantooption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\quantooption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\simpleswap.cpp
 # End Source File
 # Begin Source File
@@ -767,14 +776,6 @@ SOURCE=.\ql\Pricers\binaryoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\binomialvanillaengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\binomialvanillaengine.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\blackcapfloor.cpp
 # End Source File
 # Begin Source File
@@ -824,14 +825,6 @@ SOURCE=.\ql\Pricers\discretegeometricaso.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\discretegeometricaso.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\europeanengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\europeanengine.hpp
 # End Source File
 # Begin Source File
 
@@ -1052,14 +1045,6 @@ SOURCE=.\ql\Pricers\treeswaption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\treeswaption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\vanillaoptionengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\vanillaoptionengine.hpp
 # End Source File
 # End Group
 # Begin Group "RandomNumbers"
@@ -1508,6 +1493,42 @@ SOURCE=.\ql\ShortRateModels\twofactormodel.cpp
 # Begin Source File
 
 SOURCE=.\ql\ShortRateModels\twofactormodel.hpp
+# End Source File
+# End Group
+# Begin Group "PricingEngines"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\discretizedvanillaoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\europeananalyticalengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\europeanbinomialengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\genericengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\quantoengines.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\quantoeuropeananalyticalengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\vanillaengines.hpp
 # End Source File
 # End Group
 # Begin Source File

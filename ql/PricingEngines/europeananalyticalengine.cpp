@@ -14,38 +14,41 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file europeanengine.cpp
-    \brief analytic pricing engine for European options
+/*! \file europeananalyticalengine.cpp
+    \brief European option engine using analytic formulas
 
     \fullpath
-    ql/Pricers/%europeanengine.cpp
+    ql/Pricers/%europeananalyticalengine.cpp
 */
 
 // $Id$
 
-#include <ql/Pricers/europeanengine.hpp>
+#include <ql/PricingEngines/vanillaengines.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 
-    namespace Pricers {
+    namespace PricingEngines {
 
-        void EuropeanEngine::calculate() const {
-            static Math::CumulativeNormalDistribution f;
-            double alpha, beta;
+        void EuropeanAnalyticalEngine::calculate() const {
+
+            DiscountFactor dividendDiscount =
+                QL_EXP(-parameters_.dividendYield*parameters_.residualTime);
+            DiscountFactor riskFreeDiscount =
+                QL_EXP(-parameters_.riskFreeRate*parameters_.residualTime);
+
             double stdDev = parameters_.volatility *
                 QL_SQRT(parameters_.residualTime);
-            double D1 =
+
+            static Math::CumulativeNormalDistribution f;
+            double alpha, beta, NID1;
+
+            double D1 = 
                 QL_LOG(parameters_.underlying/parameters_.strike)/stdDev +
                 stdDev/2.0 +
                 (parameters_.riskFreeRate-parameters_.dividendYield) *
                     parameters_.residualTime/stdDev;
             double D2 = D1-stdDev;
-            double NID1;
-            DiscountFactor dividendDiscount =
-                QL_EXP(-parameters_.dividendYield*parameters_.residualTime);
-            DiscountFactor riskFreeDiscount =
-                QL_EXP(-parameters_.riskFreeRate*parameters_.residualTime);
 
             switch (parameters_.type) {
               case Option::Call:

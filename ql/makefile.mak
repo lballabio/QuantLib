@@ -23,25 +23,26 @@ CORE_OBJS        = calendar.obj$(_D) \
                    scheduler.obj$(_D) \
                    solver1d.obj$(_D)
 
-CALENDAR_LIB     = Calendars\Calendars$(_D).lib
-CALIBRATION_LIB  = ShortRateModels\CalibrationHelpers\CalibrationHelpers$(_D).lib
-CASHFLOWS_LIB    = CashFlows\CashFlows$(_D).lib
-DAYCOUNTER_LIB   = DayCounters\DayCounters$(_D).lib
-FDM_LIB          = FiniteDifferences\FiniteDifferences$(_D).lib
-FUNCTIONS        = functions\functions$(_D).lib
-INDEXES_LIB      = Indexes\Indexes$(_D).lib
-INSTRUMENTS_LIB  = Instruments\Instruments$(_D).lib
+CALENDAR_LIB        = Calendars\Calendars$(_D).lib
+CALIBRATION_LIB     = ShortRateModels\CalibrationHelpers\CalibrationHelpers$(_D).lib
+CASHFLOWS_LIB       = CashFlows\CashFlows$(_D).lib
+DAYCOUNTER_LIB      = DayCounters\DayCounters$(_D).lib
+FDM_LIB             = FiniteDifferences\FiniteDifferences$(_D).lib
+FUNCTIONS           = functions\functions$(_D).lib
+INDEXES_LIB         = Indexes\Indexes$(_D).lib
+INSTRUMENTS_LIB     = Instruments\Instruments$(_D).lib
 SHORTRATEMODELS_LIB = ShortRateModels\ShortRateModels$(_D).lib
-LATTICES_LIB     = Lattices\Lattices$(_D).lib
-MATH_LIB         = Math\Math$(_D).lib
-MONTECARLO_LIB   = MonteCarlo\MonteCarlo$(_D).lib
-ONEFACTOR_LIB    = ShortRateModels\OneFactorModels\OneFactorModels$(_D).lib
-OPTIMIZATION_LIB = Optimization\Optimization$(_D).lib
-PRICER_LIB       = Pricers\Pricers$(_D).lib
-RNG_LIB          = RandomNumbers\RandomNumbers$(_D).lib
-SOLVER1D_LIB     = Solvers1D\Solvers1D$(_D).lib
-TERMSTRUCT_LIB   = TermStructures\TermStructures$(_D).lib
-TWOFACTOR_LIB    = ShortRateModels\TwoFactorModels\TwoFactorModels$(_D).lib
+LATTICES_LIB        = Lattices\Lattices$(_D).lib
+MATH_LIB            = Math\Math$(_D).lib
+MONTECARLO_LIB      = MonteCarlo\MonteCarlo$(_D).lib
+ONEFACTOR_LIB       = ShortRateModels\OneFactorModels\OneFactorModels$(_D).lib
+OPTIMIZATION_LIB    = Optimization\Optimization$(_D).lib
+PRICER_LIB          = Pricers\Pricers$(_D).lib
+PRICING_ENGINES_LIB = PricingEngines\PricingEngines$(_D).lib
+RNG_LIB             = RandomNumbers\RandomNumbers$(_D).lib
+SOLVER1D_LIB        = Solvers1D\Solvers1D$(_D).lib
+TERMSTRUCT_LIB      = TermStructures\TermStructures$(_D).lib
+TWOFACTOR_LIB       = ShortRateModels\TwoFactorModels\TwoFactorModels$(_D).lib
 
 QUANTLIB_OBJS    = \
                    $(CALENDAR_LIB) \
@@ -60,6 +61,7 @@ QUANTLIB_OBJS    = \
                    $(ONEFACTOR_LIB) \
                    $(OPTIMIZATION_LIB) \
                    $(PRICER_LIB) \
+                   $(PRICING_ENGINES_LIB) \
                    $(RNG_LIB) \
                    $(SOLVER1D_LIB) \
                    $(TERMSTRUCT_LIB) \
@@ -122,6 +124,8 @@ SubLibraries:
     $(MAKE)
     cd ..\Pricers
     $(MAKE)
+    cd ..\PricingEngines
+    $(MAKE)
     cd ..\RandomNumbers
     $(MAKE)
     cd ..\Lattices
@@ -177,6 +181,8 @@ clean::
     cd ..\Optimization
     $(MAKE) clean
     cd ..\Pricers
+    $(MAKE) clean
+    cd ..\PricingEngines
     $(MAKE) clean
     cd ..\RandomNumbers
     $(MAKE) clean

@@ -36,6 +36,7 @@ namespace QuantLib {
     class Arguments {
       public:
         virtual ~Arguments() {}
+        virtual void validate() const = 0;
     };
 
     //! base class for generic result groups
@@ -55,48 +56,6 @@ namespace QuantLib {
       public:
         OptionValue() : value(Null<double>()) {}
         double value;
-    };
-
-    //! %option pricing results
-    class OptionDelta : public virtual Results {
-      public:
-        OptionDelta() : delta(Null<double>()) {}
-        double delta;
-    };
-
-    //! %option pricing results
-    class OptionGamma : public virtual Results {
-      public:
-        OptionGamma() : gamma(Null<double>()) {}
-        double gamma;
-    };
-
-    //! %option pricing results
-    class OptionTheta : public virtual Results {
-      public:
-        OptionTheta() : theta(Null<double>()) {}
-        double theta;
-    };
-
-    //! %option pricing results
-    class OptionVega : public virtual Results {
-      public:
-        OptionVega() : vega(Null<double>()) {}
-        double vega;
-    };
-
-    //! %option pricing results
-    class OptionRho : public virtual Results {
-      public:
-        OptionRho() : rho(Null<double>()) {}
-        double rho;
-    };
-
-    //! %option pricing results
-    class OptionDividendRho : public virtual Results {
-      public:
-        OptionDividendRho() : dividendRho(Null<double>()) {}
-        double dividendRho;
     };
 
     //! %option pricing results

@@ -183,14 +183,12 @@
 #include <ql/Pricers/analyticalcapfloor.hpp>
 #include <ql/Pricers/barrieroption.hpp>
 #include <ql/Pricers/binaryoption.hpp>
-#include <ql/Pricers/binomialvanillaengine.hpp>
 #include <ql/Pricers/blackcapfloor.hpp>
 #include <ql/Pricers/blackswaption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>
 #include <ql/Pricers/continuousgeometricapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
-#include <ql/Pricers/europeanengine.hpp>
 #include <ql/Pricers/europeanoption.hpp>
 #include <ql/Pricers/fdamericanoption.hpp>
 #include <ql/Pricers/fdbermudanoption.hpp>
@@ -219,7 +217,11 @@
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/Pricers/treecapfloor.hpp>
 #include <ql/Pricers/treeswaption.hpp>
-#include <ql/Pricers/vanillaoptionengine.hpp>
+
+#include <ql/PricingEngines/discretizedvanillaoption.hpp>
+#include <ql/PricingEngines/genericengine.hpp>
+#include <ql/PricingEngines/quantoengines.hpp>
+#include <ql/PricingEngines/vanillaengines.hpp>
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>

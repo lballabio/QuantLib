@@ -196,6 +196,13 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
+
+
+
+
+        // New option pricing framework 
+        std::cout << "\nNew Pricing engine framework" << std::endl;
+
         Date todaysDate(17, February, 1999);
         Currency currency = EUR;
         DayCounter depositDayCounter = DayCounters::Thirty360();
@@ -213,16 +220,13 @@ int main(int argc, char* argv[])
             flatTermStructure,
             todaysDate.plus(3, Months),
             Handle<MarketElement>(new SimpleMarketElement(volatility)),
-            Handle<PricingEngine>(new Pricers::BinomialVanillaEngine(
-                Pricers::BinomialVanillaEngine::JarrowRudd, 100)));
+            Handle<PricingEngine>(new PricingEngines::EuropeanAnalyticalEngine())
+            );
             
 
-        std::cout << "\nNew Pricing engine framework" << std::endl;
         
         // method: Black Scholes Engine
         method = "Black Scholes";
-        option.setPricingEngine(Handle<PricingEngine>(
-            new Pricers::EuropeanEngine()));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -236,8 +240,8 @@ int main(int argc, char* argv[])
         // Binomial Method (JR)
         method = "Binomial (JR)";
         option.setPricingEngine(Handle<PricingEngine>(
-            new Pricers::BinomialVanillaEngine(
-                Pricers::BinomialVanillaEngine::JarrowRudd, 800)));
+            new PricingEngines::EuropeanBinomialEngine(
+                PricingEngines::EuropeanBinomialEngine::JarrowRudd, 800)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -251,8 +255,8 @@ int main(int argc, char* argv[])
         // Binomial Method (CRR)
         method = "Binomial (CRR)";
         option.setPricingEngine(Handle<PricingEngine>(
-            new Pricers::BinomialVanillaEngine(
-                Pricers::BinomialVanillaEngine::CoxRossRubinstein, 800)));
+            new PricingEngines::EuropeanBinomialEngine(
+                PricingEngines::EuropeanBinomialEngine::CoxRossRubinstein, 800)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;

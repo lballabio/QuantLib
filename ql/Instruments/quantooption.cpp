@@ -1,7 +1,7 @@
 
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2002 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,84 +15,114 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file vanillaoption.cpp
-    \brief Vanilla (no dividends, no barriers) option on a single asset
+/*! \file quantooption.cpp
+    \brief Quanto option on a single asset
 
     \fullpath
-    ql/Instruments/%vanillaoption.cpp
+    ql/Instruments/%quantooption.cpp
 */
 
 // $Id$
 
-#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/quantooption.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
     namespace Instruments {
 
-        VanillaOption::VanillaOption(Option::Type type,
+        QuantoOption::QuantoOption(Option::Type type,
             const RelinkableHandle<MarketElement>& underlying,
             double strike,
             const RelinkableHandle<TermStructure>& dividendYield,
             const RelinkableHandle<TermStructure>& riskFreeRate,
             const Date& exerciseDate,
             const RelinkableHandle<MarketElement>& volatility,
-            const Handle<PricingEngines::VanillaEngine>& engine,
+            const RelinkableHandle<TermStructure>& foreignRiskFreeRate,
+            const RelinkableHandle<MarketElement>& exchangeRateVolatility,
+            const RelinkableHandle<MarketElement>& correlation,
+            const Handle<PricingEngines::QuantoEngine>& engine,
             const std::string& isinCode, const std::string& description)
         : Option(engine, isinCode, description), type_(type),
           underlying_(underlying), strike_(strike),
           dividendYield_(dividendYield), riskFreeRate_(riskFreeRate),
-          exerciseDate_(exerciseDate), volatility_(volatility) {
+          exerciseDate_(exerciseDate), volatility_(volatility),
+          foreignRiskFreeRate_(foreignRiskFreeRate),
+          exchangeRateVolatility_(exchangeRateVolatility),
+          correlation_(correlation) {
             registerWith(underlying_);
             registerWith(dividendYield_);
             registerWith(riskFreeRate_);
             registerWith(volatility_);
+            registerWith(foreignRiskFreeRate_);
+            registerWith(exchangeRateVolatility_);
+            registerWith(correlation_);
         }
 
-        double VanillaOption::delta() const {
+        double QuantoOption::delta() const {
             calculate();
             QL_REQUIRE(delta_ != Null<double>(),
                        "delta calculation failed");
             return delta_;
         }
 
-        double VanillaOption::gamma() const {
+        double QuantoOption::gamma() const {
             calculate();
             QL_REQUIRE(gamma_ != Null<double>(),
                        "gamma calculation failed");
             return gamma_;
         }
 
-        double VanillaOption::theta() const {
+        double QuantoOption::theta() const {
             calculate();
             QL_REQUIRE(theta_ != Null<double>(),
                        "theta calculation failed");
             return theta_;
         }
 
-        double VanillaOption::vega() const {
+        double QuantoOption::vega() const {
             calculate();
             QL_REQUIRE(vega_ != Null<double>(),
                        "vega calculation failed");
             return vega_;
         }
 
-        double VanillaOption::rho() const {
+        double QuantoOption::rho() const {
             calculate();
             QL_REQUIRE(rho_ != Null<double>(),
                        "rho calculation failed");
             return rho_;
         }
 
-        double VanillaOption::dividendRho() const {
+        double QuantoOption::dividendRho() const {
             calculate();
             QL_REQUIRE(dividendRho_ != Null<double>(),
                        "dividend rho calculation failed");
             return dividendRho_;
         }
 
-        double VanillaOption::impliedVolatility(double targetValue,
+        double QuantoOption::vega2() const {
+            calculate();
+            QL_REQUIRE(vega2_ != Null<double>(),
+                       "vega calculation failed");
+            return vega2_;
+        }
+
+        double QuantoOption::rho2() const {
+            calculate();
+            QL_REQUIRE(rho2_ != Null<double>(),
+                       "rho calculation failed");
+            return rho2_;
+        }
+
+        double QuantoOption::lambda() const {
+            calculate();
+            QL_REQUIRE(lambda_ != Null<double>(),
+                       "dividend rho calculation failed");
+            return lambda_;
+        }
+
+        double QuantoOption::impliedVolatility(double targetValue,
           double accuracy, Size maxEvaluations,
           double minVol, double maxVol) const {
             double value = NPV(), vol = volatility_->value();
@@ -107,9 +137,9 @@ namespace QuantLib {
             }
         }
 
-        void VanillaOption::setupEngine() const {
-            PricingEngines::VanillaOptionParameters* parameters =
-                dynamic_cast<PricingEngines::VanillaOptionParameters*>(
+        void QuantoOption::setupEngine() const {
+            PricingEngines::QuantoOptionParameters* parameters =
+                dynamic_cast<PricingEngines::QuantoOptionParameters*>(
                     engine_->parameters());
             QL_REQUIRE(parameters != 0,
                        "pricing engine does not supply needed parameters");
@@ -141,44 +171,59 @@ namespace QuantLib {
 
             QL_REQUIRE(!volatility_.isNull(), "null volatility given");
             parameters->volatility = volatility_->value();
+
+            if (foreignRiskFreeRate_.isNull())
+                parameters->foreignRiskFreeRate = 0.0;
+            else
+                parameters->foreignRiskFreeRate =
+                foreignRiskFreeRate_->zeroYield(exerciseDate_);
+
+            QL_REQUIRE(!exchangeRateVolatility_.isNull(),
+                "null exchange rate volatility given");
+            parameters->exchangeRateVolatility =
+                exchangeRateVolatility_->value();
+
+            QL_REQUIRE(!correlation_.isNull(),
+                "null correlation given");
+            parameters->correlation =
+                correlation_->value();
+
         }
 
-        void VanillaOption::performCalculations() const {
+        void QuantoOption::performCalculations() const {
             if (exerciseDate_ <= riskFreeRate_->settlementDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ = theta_ =
-                    vega_ = rho_ = dividendRho_ = 0.0;
+                    vega_ = rho_ = dividendRho_ =
+                    vega2_ = rho2_ = lambda_ = 0.0;
             } else {
                 isExpired_ = false;
                 Option::performCalculations();
-                const OptionGreeks* results =
-                    dynamic_cast<const OptionGreeks*>(engine_->results());
+
+                const PricingEngines::QuantoOptionResults* results =
+                    dynamic_cast<const PricingEngines::QuantoOptionResults*>(
+                    engine_->results());
                 QL_ENSURE(results != 0,
                           "no greeks returned from pricing engine");
-                /* no check on null values - just copy.
-                   this allows:
-                   a) to decide in derived options what to do when null 
-                      results are returned (throw? numerical calculation?)
-                   b) to implement slim engines which only calculate the
-                      value---of course care must be taken not to call
-                      the greeks methods when using these.
-                */
                 delta_       = results->delta;
                 gamma_       = results->gamma;
                 theta_       = results->theta;
                 vega_        = results->vega;
                 rho_         = results->rho;
                 dividendRho_ = results->dividendRho;
+                rho2_        = results->rho2;
+                vega2_       = results->vega2;
+                lambda_      = results->lambda;
             }
             QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
                       "null value returned from option pricer");
         }
 
 
-        VanillaOption::ImpliedVolHelper::ImpliedVolHelper(
+        QuantoOption::ImpliedVolHelper::ImpliedVolHelper(
             const Handle<PricingEngine>& engine, double targetValue)
         : engine_(engine), targetValue_(targetValue) {
-            parameters_ = dynamic_cast<PricingEngines::VanillaOptionParameters*>(
+            parameters_ = dynamic_cast<PricingEngines::QuantoOptionParameters*>(
                 engine_->parameters());
             QL_REQUIRE(parameters_ != 0,
                        "pricing engine does not supply needed parameters");
@@ -188,7 +233,7 @@ namespace QuantLib {
                        "pricing engine does not supply needed results");
         }
 
-        double VanillaOption::ImpliedVolHelper::operator()(double x) const {
+        double QuantoOption::ImpliedVolHelper::operator()(double x) const {
             parameters_->volatility = x;
             engine_->calculate();
             return results_->value-targetValue_;

@@ -8,7 +8,6 @@ include_HEADERS = \
     analyticalcapfloor.hpp \
     barrieroption.hpp \
     binaryoption.hpp \
-    binomialvanillaengine.hpp \
     blackcapfloor.hpp \
     blackswaption.hpp \
     capfloorpricer.hpp \
@@ -16,7 +15,6 @@ include_HEADERS = \
     continuousgeometricapo.hpp \
     discretegeometricapo.hpp \
     discretegeometricaso.hpp \
-    europeanengine.hpp \
     europeanoption.hpp \
     fdamericanoption.hpp \
     fdbermudanoption.hpp \
@@ -45,8 +43,7 @@ include_HEADERS = \
     singleassetoption.hpp \
     swaptionpricer.hpp \
     treecapfloor.hpp \
-    treeswaption.hpp \
-    vanillaoptionengine.hpp
+    treeswaption.hpp
 
 EXTRA_DIST=makefile.mak
 

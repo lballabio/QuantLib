@@ -115,6 +115,9 @@ SectionIn 1 2 3
     SetOutPath  $INSTDIR\ql\Pricers
     File /r "ql\Pricers\*.hpp"
 
+    SetOutPath  $INSTDIR\ql\PricingEngines
+    File /r "ql\PricingEngines\*.hpp"
+
     SetOutPath  $INSTDIR\ql\RandomNumbers
     File /r "ql\RandomNumbers\*.hpp"
 
@@ -251,6 +254,10 @@ SectionIn 1
   SetOutPath  $INSTDIR\ql\Pricers
   File /r "ql\Pricers\*.cpp"
   File /r "ql\Pricers\makefile.mak"
+
+  SetOutPath  $INSTDIR\ql\PricingEngines
+  File /r "ql\PricingEngines\*.cpp"
+  File /r "ql\PricingEngines\makefile.mak"
 
   SetOutPath  $INSTDIR\ql\RandomNumbers
   File /r "ql\RandomNumbers\*.cpp"

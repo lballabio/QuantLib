@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
+ Copyright (C) 2002 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -13,43 +13,31 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file binomialvanillaengine.hpp
-    \brief Plain-option pricer using binomial methods 
+/*! \file discretizedvanillaoption.hpp
+    \brief Discretized Vanilla Option
 
     \fullpath
-    ql/Pricers/%binomialvanillaengine.hpp
+    ql/PricingEngines/%discretizedvanillaoption.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_binomial_plain_option_h
-#define quantlib_pricers_binomial_plain_option_h
+#ifndef quantlib_discretized_vanilla_option_h
+#define quantlib_discretized_vanilla_option_h
 
 #include <ql/numericalmethod.hpp>
-#include <ql/Pricers/vanillaoptionengine.hpp>
+#include <ql/Lattices/bsmlattice.hpp>
+#include <ql/Pricers/singleassetoption.hpp>
+#include <ql/PricingEngines/genericengine.hpp>
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! binomial pricing engine for European options
-        class BinomialVanillaEngine : public VanillaOptionEngine {
-          public:
-            enum Type { CoxRossRubinstein, JarrowRudd, LeisenReimer };
-
-            BinomialVanillaEngine(Type type, Size steps)
-            : type_(type), steps_(steps) {}
-            void calculate() const;
-          private:
-            Type type_;
-            Size steps_;
-        };
+    namespace PricingEngines {
 
         class DiscretizedVanillaOption : public DiscretizedAsset {
           public:
-            DiscretizedVanillaOption(
-                const Handle<NumericalMethod>& method, 
-                const VanillaOptionParameters& params)
+            DiscretizedVanillaOption(const Handle<NumericalMethod>& method,
+                                     const VanillaOptionParameters& params)
             : DiscretizedAsset(method), parameters_(params) {}
 
             void reset(Size size);
@@ -64,7 +52,6 @@ namespace QuantLib {
             void applySpecificCondition();
             VanillaOptionParameters parameters_;
         };
-
 
     }
 

@@ -18,6 +18,7 @@ SUBDIRS = \
     Optimization \
     Patterns \
     Pricers \
+    PricingEngines \
     RandomNumbers \
     ShortRateModels \
     Solvers1D \
