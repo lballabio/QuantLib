@@ -26,7 +26,6 @@ namespace QuantLib {
 
     void AnalyticDiscreteAveragingAsianEngine::calculate() const {
 
-
         QL_REQUIRE(arguments_.averageType == Average::Geometric,
                    "AnalyticDiscreteAveragingAsianEngine::calculate() : "
                    "not a geometric average option");
@@ -34,8 +33,6 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exerciseType == Exercise::European,
                    "AnalyticDiscreteAveragingAsianEngine::calculate() : "
                    "not an European Option");
-
-
 
         #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff =
@@ -47,22 +44,35 @@ namespace QuantLib {
         #endif
 
 
-        double pastWeight = arguments_.pastWeight;
+        Date referenceDate = arguments_.riskFreeTS->referenceDate();
+        DayCounter dc = arguments_.volTS->dayCounter();
+        std::vector<Time> fixingTimes;
+        Size i;
+        for (i=0; i<arguments_.fixingDates.size(); i++) {
+            if (arguments_.fixingDates[i]>=referenceDate) {
+                Time t = dc.yearFraction(referenceDate,
+                    arguments_.fixingDates[i]);
+                fixingTimes.push_back(t);
+            }
+        }
+
+        Size pastFixings = arguments_.pastFixings;
+        Size remainingFixings = fixingTimes.size();
+        double N = pastFixings + remainingFixings;
+
+        double pastWeight   = pastFixings/N;
         double futureWeight = 1.0-pastWeight;
 
-        Size remainingFixings = arguments_.fixingTimes.size();
-        Size N = remainingFixings / futureWeight;
-        Size m = N - remainingFixings;
 
-        double timeSum = std::accumulate(arguments_.fixingTimes.begin(),
-            arguments_.fixingTimes.end(), 0.0);
+        double timeSum = std::accumulate(fixingTimes.begin(),
+            fixingTimes.end(), 0.0);
 
 
         double vola = arguments_.volTS->blackVol(arguments_.maturity,
             payoff->strike());
         double temp = 0.0;
-        for (Size i=m+1; i<N; i++)
-            temp += arguments_.fixingTimes[i-m-1]*(N-i);
+        for (i=pastFixings+1; i<N; i++)
+            temp += fixingTimes[i-pastFixings-1]*(N-i);
         double variance = vola*vola /N/N * 
             (timeSum+ 2.0*temp);
 
@@ -72,9 +82,8 @@ namespace QuantLib {
         Rate riskFreeRate =
             arguments_.riskFreeTS->zeroYield(arguments_.maturity);
         double nu = riskFreeRate - dividendRate - 0.5*vola*vola;
-        double runningAverage = arguments_.runningAverage;
-        double runningLogAverage = QL_LOG(runningAverage);
-        double muG = pastWeight * runningLogAverage +
+        double runningLog = QL_LOG(arguments_.runningProduct);
+        double muG = pastWeight * runningLog +
             futureWeight * QL_LOG(arguments_.underlying) +
             nu*timeSum/N;
         double forwardPrice = QL_EXP(muG + variance / 2.0);

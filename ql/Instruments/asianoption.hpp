@@ -35,13 +35,14 @@ namespace QuantLib {
     //! Asian option
     class DiscreteAveragingAsianOption : public OneAssetStrikedOption {
       public:
-          DiscreteAveragingAsianOption(Average::Type averageType,
+          DiscreteAveragingAsianOption(
+                    Average::Type averageType,
                     Option::Type type,
                     const RelinkableHandle<Quote>& underlying,
                     double strike,
-                    double runningAverage,
-                    double pastWeight,
-                    std::vector<Time> fixingTimes,
+                    double runningProduct,
+                    Size pastFixings,
+                    std::vector<Date> fixingDates,
                     const RelinkableHandle<TermStructure>& dividendTS,
                     const RelinkableHandle<TermStructure>& riskFreeTS,
                     const Exercise& exercise,
@@ -60,8 +61,9 @@ namespace QuantLib {
         void performCalculations() const;
         // arguments
         Average::Type averageType_;
-        double runningAverage_, pastWeight_;
-        std::vector<Time> fixingTimes_;
+        double runningProduct_;
+        Size pastFixings_;
+        std::vector<Date> fixingDates_;
     };
 
     //! extra arguments for single asset asian option calculation
@@ -69,8 +71,9 @@ namespace QuantLib {
       public:
         void validate() const;
         Average::Type averageType;
-        double runningAverage, pastWeight;
-        std::vector<Time> fixingTimes;
+        double runningProduct;
+        Size pastFixings;
+        std::vector<Date> fixingDates;
     };
 
 

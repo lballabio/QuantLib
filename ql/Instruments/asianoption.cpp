@@ -28,9 +28,9 @@ namespace QuantLib {
                          Option::Type type,
                          const RelinkableHandle<Quote>& underlying,
                          double strike,
-                         double runningAverage,
-                         double pastWeight,
-                         std::vector<Time> fixingTimes,
+                         double runningProduct,
+                         Size pastFixings,
+                         std::vector<Date> fixingDates,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
                          const Exercise& exercise,
@@ -41,8 +41,10 @@ namespace QuantLib {
     : OneAssetStrikedOption(type, underlying, strike, dividendTS, riskFreeTS,
       exercise, volTS, engine, isinCode, description),
       averageType_(averageType), 
-      runningAverage_(runningAverage), pastWeight_(pastWeight),
-      fixingTimes_(fixingTimes) {}
+      runningProduct_(runningProduct), pastFixings_(pastFixings),
+      fixingDates_(fixingDates) {
+        std::sort(fixingDates_.begin(), fixingDates_.end());
+    }
 
 
 
@@ -54,9 +56,9 @@ namespace QuantLib {
                    "DiscreteAveragingAsianOption::setupArguments : "
                    "wrong argument type");
         moreArgs->averageType = averageType_;
-        moreArgs->runningAverage = runningAverage_;
-        moreArgs->pastWeight = pastWeight_;
-        moreArgs->fixingTimes = fixingTimes_;
+        moreArgs->runningProduct = runningProduct_;
+        moreArgs->pastFixings = pastFixings_;
+        moreArgs->fixingDates = fixingDates_;
 
         OneAssetStrikedOption::arguments* arguments =
             dynamic_cast<OneAssetStrikedOption::arguments*>(args);
@@ -81,16 +83,9 @@ namespace QuantLib {
         OneAssetStrikedOption::arguments::validate();
         #endif
 
-        QL_REQUIRE(runningAverage >= 0.0,
+        QL_REQUIRE(runningProduct >= 0.0,
                    "DiscreteAveragingAsianOption::arguments::validate() : "
-                   "negative running average");
-        QL_REQUIRE(pastWeight >= 0.0,
-                   "DiscreteAveragingAsianOption::arguments::validate() : "
-                   "negative weight to past observations");
-        QL_REQUIRE(pastWeight <= 1.0,
-                   "DiscreteAveragingAsianOption::arguments::validate() : "
-                   "past observations' weight > 1");
-
+                   "negative running product");
 
         // check fixingTimes_ here
     }
