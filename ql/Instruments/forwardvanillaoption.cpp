@@ -17,9 +17,6 @@
 
 /*! \file forwardvanillaoption.cpp
     \brief Forward version of a vanilla option
-
-    \fullpath
-    ql/Instruments/%forwardvanillaoption.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file quantotermstructure.hpp
     \brief Quanto term structure
-
-    \fullpath
-    ql/TermStructures/%quantotermstructure.hpp
 */
 
 // $Id$

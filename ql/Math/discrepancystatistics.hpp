@@ -18,9 +18,6 @@
 
 /*! \file discrepancystatistics.hpp
     \brief Statistic tool for sequences with discrepancy calculation
-
-    \fullpath
-    ql/Math/%discrepancystatistics.hpp
 */
 
 // $Id$

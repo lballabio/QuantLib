@@ -17,9 +17,6 @@
 
 /*! \file zurich.cpp
     \brief Zurich calendar
-
-    \fullpath
-    ql/Calendars/%zurich.cpp
 */
 
 // $Id$

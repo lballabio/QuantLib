@@ -17,9 +17,6 @@
 
 /*! \file capflatvolvector.hpp
     \brief Cap/floor at-the-money flat volatility vector
-
-    \fullpath
-    ql/Volatilities/%capflatvolmatrix.hpp
 */
 
 // $Id$

@@ -18,9 +18,6 @@
 
 /*! \file tokyo.cpp
     \brief Tokyo calendar
-
-    \fullpath
-    ql/Calendars/%tokyo.cpp
 */
 
 // $Id$

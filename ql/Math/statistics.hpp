@@ -18,9 +18,6 @@
 
 /*! \file statistics.hpp
     \brief statistics tool with gaussian risk measures
-
-    \fullpath
-    ql/Math/%statistics.hpp
 */
 
 // $Id$

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file getcovariance.cpp
     \brief Covariance matrix calculation
-
-    \fullpath
-    ql/MonteCarlo/%getcovariance.cpp
 */
 
 // $Id$

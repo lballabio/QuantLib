@@ -17,9 +17,6 @@
 
 /*! \file thirty360.cpp
     \brief 30/360 day counters
-
-    \fullpath
-    ql/DayCounters/%thirty360.cpp
 */
 
 // $Id$

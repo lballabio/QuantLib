@@ -17,9 +17,6 @@
 
 /*! \file qldefines.hpp
     \brief Global definitions and compiler switches.
-
-    \fullpath
-    ql/%qldefines.hpp
 */
 
 // $Id$
@@ -160,16 +157,19 @@
     @{
 */
 /*! \def QL_MIN_INT
-    Defines the value of the maximum representable negative integer value
+    Defines the value of the largest representable negative integer value
 */
 /*! \def QL_MAX_INT
-    Defines the value of the maximum representable integer value
+    Defines the value of the largest representable integer value
 */
 /*! \def QL_MIN_DOUBLE
-    Defines the value of the maximum representable negative double value
+    Defines the value of the largest representable negative double value
+*/
+/*! \def QL_MIN_POSITIVE_DOUBLE
+    Defines the value of the smallest representable positive double value
 */
 /*! \def QL_MAX_DOUBLE
-    Defines the value of the maximum representable double value
+    Defines the value of the largest representable double value
 */
 /*! \def QL_EPSILON
     Defines the machine precision for operations over doubles
@@ -502,8 +502,6 @@ QL_SPECIALIZE_ITERATOR_TRAITS(long double)
 #if !defined(HAVE_INCOMPLETE_ITERATOR_SUPPORT)
     #define QL_FULL_ITERATOR_SUPPORT
 #endif
-
-/*! @}  */
 
 /*! @}  */
 

@@ -17,9 +17,6 @@
 
 /*! \file flatforward.hpp
     \brief flat forward rate term structure
-
-    \fullpath
-    ql/TermStructures/%flatforward.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file swaptionpricer.hpp
     \brief Swaption pricer class
-
-    \fullpath
-    ql/Pricers/%swaptionpricer.hpp
 */
 
 // $Id$

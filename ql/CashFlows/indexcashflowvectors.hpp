@@ -17,9 +17,6 @@
 
 /*! \file indexcashflowvectors.hpp
     \brief Index Cash flow vector builders
-
-    \fullpath
-    ql/CashFlows/%indexcashflowvectors.hpp
 */
 
 

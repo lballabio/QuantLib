@@ -17,9 +17,6 @@
 
 /*! \file lattice2d.hpp
     \brief Two-dimensional tree class
-
-    \fullpath
-    ql/Lattices/%lattice2d.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file frankfurt.hpp
     \brief Frankfurt calendar
-
-    \fullpath
-    ql/Calendars/%frankfurt.hpp
 */
 
 // $Id$

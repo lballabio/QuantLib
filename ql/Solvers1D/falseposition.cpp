@@ -17,9 +17,6 @@
 
 /*! \file falseposition.cpp
     \brief false-position 1-D solver
-
-    \fullpath
-    ql/Solvers1D/%falseposition.cpp
 */
 
 // $Id$

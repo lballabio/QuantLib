@@ -17,9 +17,6 @@
 
 /*! \file continuousgeometricapo.hpp
     \brief Continuous Geometric Average Price Option (European exercise)
-
-    \fullpath
-    ql/Pricers/%continuousgeometricapo.hpp
 */
 
 // $Id$

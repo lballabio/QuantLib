@@ -18,9 +18,6 @@
 
 /*! \file vanillaoption.cpp
     \brief Vanilla option on a single asset
-
-    \fullpath
-    ql/Instruments/%vanillaoption.cpp
 */
 
 // $Id$

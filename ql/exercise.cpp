@@ -16,11 +16,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file exercise.cpp
     \brief Option exercise classes and exercise payoff function
-
-    \fullpath
-    ql/%exercise.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file coxingersollross.cpp
     \brief Cox-Ingersoll-Ross model
-
-    \fullpath
-    ql/ShortRateModels/OneFactorModels/%coxingersollross.cpp
 */
 
 // $Id$

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file forwardvanillaoption.hpp
     \brief Forward version of a vanilla option
-
-    \fullpath
-    ql/Instruments/%forwardvanillaoption.hpp
 */
 
 // $Id$

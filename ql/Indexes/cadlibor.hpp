@@ -17,9 +17,6 @@
 
 /*! \file cadlibor.hpp
     \brief %CAD %Libor index (Also known as CDOR)
-
-    \fullpath
-    ql/Indexes/%cadlibor.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file solver1d.hpp
     \brief Abstract 1-D solver class
-
-    \fullpath
-    ql/%solver1d.hpp
 */
 
 // $Id$

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file mt19937uniformrng.hpp
     \brief Mersenne Twister uniform random number generator
-
-    \fullpath
-    ql/RandomNumbers/%mt19937uniformrng.hpp
 */
 
 // $Id$

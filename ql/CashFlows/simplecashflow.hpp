@@ -17,9 +17,6 @@
 
 /*! \file simplecashflow.hpp
     \brief Predetermined cash flow
-
-    \fullpath
-    ql/CashFlows/%simplecashflow.hpp
 */
 
 // $Id$

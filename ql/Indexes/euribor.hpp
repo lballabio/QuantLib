@@ -17,9 +17,6 @@
 
 /*! \file euribor.hpp
     \brief %Euribor index
-
-    \fullpath
-    ql/Indexes/%euribor.hpp
 */
 
 // $Id$

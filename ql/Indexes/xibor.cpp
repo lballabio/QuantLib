@@ -17,9 +17,6 @@
 
 /*! \file xibor.cpp
     \brief purely virtual base class for libor indexes
-
-    \fullpath
-    ql/Indexes/%xibor.cpp
 */
 
 // $Id$

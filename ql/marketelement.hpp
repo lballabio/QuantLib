@@ -17,9 +17,6 @@
 
 /*! \file marketelement.hpp
     \brief purely virtual base class for market observables
-
-    \fullpath
-    ql/%marketelement.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file constraint.hpp
     \brief Abstract constraint class
-
-    \fullpath
-    ql/Optimization/%constraint.hpp
 */
 
 // $Id$

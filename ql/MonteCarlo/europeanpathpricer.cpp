@@ -15,12 +15,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file europeanpathpricer.cpp
     \brief path pricer for European options
-
-    \fullpath
-    ql/MonteCarlo/%europeanpathpricer.cpp
-
 */
 
 // $Id$

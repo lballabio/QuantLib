@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file multivariateaccumulator.cpp
     \brief A simple accumulator for vector-type samples
-
-    \fullpath
-    ql/Math/%multivariateaccumulator.cpp
 */
 
 // $Id$

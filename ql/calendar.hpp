@@ -17,9 +17,6 @@
 
 /*! \file calendar.hpp
     \brief %calendar class
-
-    \fullpath
-    ql/%calendar.hpp
 */
 
 // $Id$

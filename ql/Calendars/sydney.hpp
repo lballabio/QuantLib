@@ -17,9 +17,6 @@
 
 /*! \file sydney.hpp
     \brief Sydney calendar
-
-    \fullpath
-    ql/Calendars/%sydney.hpp
 */
 
 // $Id$

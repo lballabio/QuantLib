@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file newyork.cpp
     \brief New York calendar
-
-    \fullpath
-    ql/Calendars/%newyork.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file capvolstructures.hpp
     \brief Cap/Floor volatility structures
-
-    \fullpath
-    ql/%capvolstructures.hpp
 */
 
 // $Id$

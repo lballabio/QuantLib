@@ -17,9 +17,6 @@
 
 /*! \file swaptionvolmatrix.hpp
     \brief Swaption at-the-money volatility matrix
-
-    \fullpath
-    ql/Volatilities/%swaptionvolmatrix.hpp
 */
 
 // $Id$

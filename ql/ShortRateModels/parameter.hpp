@@ -17,9 +17,6 @@
 
 /*! \file parameter.hpp
     \brief Model parameter classes
-
-    \fullpath
-    ql/ShortRateModels/%parameter.hpp
 */
 
 // $Id$

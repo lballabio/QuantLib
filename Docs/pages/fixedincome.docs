@@ -41,9 +41,7 @@
         dr_t = (\theta(t) - \alpha(t) r_t)dt + \sigma(t) dW_t
     \f]
     When \f$ \alpha \f$ and \f$ \sigma \f$ are constants, this model
-    has analytical formulas for 
-    \link QuantLib::ShortRateModels::HullWhite::discountBond discount bonds \endlink 
-    and discount bond options.
+    has analytical formulas for discount bonds and discount bond options.
 
     \par The Black-Karasinski model
     \f[

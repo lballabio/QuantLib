@@ -17,9 +17,6 @@
 
 /*! \file ridder.cpp
     \brief Ridder 1-D solver
-
-    \fullpath
-    ql/Solvers1D/%ridder.cpp
 */
 
 // $Id$

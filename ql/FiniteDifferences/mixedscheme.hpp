@@ -18,9 +18,6 @@
 
 /*! \file mixedscheme.hpp
     \brief Mixed (explicit/implicit) scheme for finite difference methods
-
-    \fullpath
-    ql/FiniteDifferences/%mixedscheme.hpp
 */
 
 // $Id$

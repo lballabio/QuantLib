@@ -17,9 +17,6 @@
 
 /*! \file audlibor.hpp
     \brief %AUD %Libor index (check settlement days)
-
-    \fullpath
-    ql/Indexes/%audlibor.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file actual360.hpp
     \brief act/360 day counter
-
-    \fullpath
-    ql/DayCounters/%actual360.hpp
 */
 
 // $Id$

@@ -17,10 +17,6 @@
 
 /*! \file brownianbridge.hpp
     \brief Browian bridge
-
-    \fullpath
-    ql/MonteCarlo/%brownianbridge.hpp
-
 */
 
 // $Id$

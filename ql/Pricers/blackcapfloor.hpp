@@ -17,9 +17,6 @@
 
 /*! \file blackcapfloor.hpp
     \brief CapFloor calculated using the Black formula
-
-    \fullpath
-    ql/Pricers/%blackcapfloor.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file forwardengines.hpp
     \brief Forward (strike-resetting) option engines
-
-    \fullpath
-    ql/PricingEngines/%forwardengines.hpp
 */
 
 // $Id$

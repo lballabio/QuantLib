@@ -17,9 +17,6 @@
 
 /*! \file blackcapfloor.cpp
     \brief European capfloor calculated using Black formula
-
-    \fullpath
-    ql/Pricers/%blackcapfloor.cpp
 */
 
 // $Id$

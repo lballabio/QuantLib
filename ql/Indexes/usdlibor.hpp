@@ -17,9 +17,6 @@
 
 /*! \file usdlibor.hpp
     \brief %USD %Libor index
-
-    \fullpath
-    ql/Indexes/%usdlibor.hpp
 */
 
 // $Id$

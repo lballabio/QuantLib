@@ -17,9 +17,6 @@
 
 /*! \file jpylibor.hpp
     \brief %JPY %Libor index (Also known as TIBOR, check settlement days)
-
-    \fullpath
-    ql/Indexes/%jpylibor.hpp
 */
 
 // $Id$

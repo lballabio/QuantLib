@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file expliciteuler.hpp
     \brief explicit Euler scheme for finite difference methods
-
-    \fullpath
-    ql/FiniteDifferences/%expliciteuler.hpp
 */
 
 // $Id$

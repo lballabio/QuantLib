@@ -17,9 +17,6 @@
 
 /*! \file dataformatters.cpp
     \brief classes used to format data for output
-
-    \fullpath
-    ql/%dataformatters.cpp
 */
 
 // $Id$

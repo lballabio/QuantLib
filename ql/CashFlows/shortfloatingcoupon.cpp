@@ -17,9 +17,6 @@
 
 /*! \file shortfloatingcoupon.cpp
     \brief Short coupon at par on a term structure
-
-    \fullpath
-    ql/CashFlows/%shortfloatingcoupon.cpp
 */
 
 // $Id$

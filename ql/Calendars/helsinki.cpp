@@ -17,9 +17,6 @@
 
 /*! \file helsinki.cpp
     \brief Helsinki calendar
-
-    \fullpath
-    Calendars/%helsinki.cpp
 */
 
 // $Id$

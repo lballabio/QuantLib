@@ -17,9 +17,6 @@
 
 /*! \file caphelper.cpp
     \brief Cap calibration helper
-
-    \fullpath
-    ql/ShortRateModels/CalibrationHelpers/%caphelper.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file upfrontindexedcoupon.hpp
     \brief Up front indexed coupon
-
-    \fullpath
-    ql/CashFlows/%upfrontindexedcoupon.hpp
 */
 
 #ifndef quantlib_up_front_indexed_coupon_hpp

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file simpleswap.hpp
     \brief Simple fixed-rate vs Libor swap
-
-    \fullpath
-    ql/Instruments/%simpleswap.hpp
 */
 
 // $Id$

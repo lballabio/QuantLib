@@ -17,9 +17,6 @@
 
 /*! \file target.cpp
     \brief TARGET calendar
-
-    \fullpath
-    ql/Calendars/%target.cpp
 */
 
 // $Id$

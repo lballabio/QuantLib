@@ -17,9 +17,6 @@
 
 /*! \file piecewiseflatforward.hpp
     \brief piecewise flat forward term structure
-
-    \fullpath
-    ql/TermStructures/%piecewiseflatforward.hpp
 */
 
 // $Id$

@@ -19,9 +19,6 @@
 
 /*! \file vanillaengines.hpp
     \brief Vanilla option engines
-
-    \fullpath
-    ql/PricingEngines/%vanillaengines.hpp
 */
 
 // $Id$

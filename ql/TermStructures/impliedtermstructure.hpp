@@ -17,9 +17,6 @@
 
 /*! \file impliedtermstructure.hpp
     \brief Implied term structure
-
-    \fullpath
-    ql/TermStructures/%impliedtermstructure.hpp
 */
 
 // $Id$

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file array.hpp
     \brief 1-D array used in linear algebra.
-
-    \fullpath
-    ql/%array.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file zerocurve.cpp
     \brief Term structure based on linear interpolation of zero yields
-
-    \fullpath
-    ql/TermStructures/%zerocurve.cpp
 */
 
 // $Id$

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file bsmfdoption.hpp
-    \brief common code for numerical option evaluation
 
-    \fullpath
-    ql/Pricers/%bsmfdoption.hpp
+/*! \file fdbsmoption.hpp
+    \brief common code for numerical option evaluation
 */
 
 // $Id$

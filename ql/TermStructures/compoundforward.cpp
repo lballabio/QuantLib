@@ -17,9 +17,6 @@
 
 /*! \file compoundforward.cpp
   \brief compounded forward term structure
-
-  \fullpath
-  ql/TermStructures/%compoundforward.cpp
 */
 
 // $Id$

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -16,11 +15,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 */
+
 /*! \file multivariateaccumulator.hpp
     \brief A simple accumulator for vector-type samples
-
-    \fullpath
-    ql/Math/%multivariateaccumulator.hpp
 */
 
 // $Id$

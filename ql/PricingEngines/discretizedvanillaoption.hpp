@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2002, 2003 Sadruddin Rejeb
 
@@ -13,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file discretizedvanillaoption.hpp
-    \brief Discretized Vanilla Option
 
-    \fullpath
-    ql/PricingEngines/%discretizedvanillaoption.hpp
+/*! \file discretizedvanillaoption.hpp
+    \brief discretized vanilla option
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file instrument.hpp
     \brief Abstract instrument class
-
-    \fullpath
-    ql/%instrument.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file actualactual.cpp
     \brief act/act day counters
-
-    \fullpath
-    ql/DayCounters/%actualactual.cpp
 */
 
 // $Id$

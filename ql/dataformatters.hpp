@@ -17,9 +17,6 @@
 
 /*! \file dataformatters.hpp
     \brief Classes used to format data for output
-
-    \fullpath
-    ql/%dataformatters.hpp
 */
 
 // $Id$

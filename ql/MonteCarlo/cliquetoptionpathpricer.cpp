@@ -17,10 +17,6 @@
 
 /*! \file cliquetoptionpathpricer.cpp
     \brief path pricer for cliquet options
-
-    \fullpath
-    ql/MonteCarlo/%cliquetoptionpathpricer.cpp
-
 */
 
 // $Id$

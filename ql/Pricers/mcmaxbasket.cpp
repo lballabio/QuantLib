@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file mcmaxbasket.cpp
     \brief Max Basket Monte Carlo pricer
-
-    \fullpath
-    ql/Pricers/%mcmaxbasket.cpp
 */
 
 // $Id$

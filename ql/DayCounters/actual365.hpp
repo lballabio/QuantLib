@@ -17,9 +17,6 @@
 
 /*! \file actual365.hpp
     \brief act/365 day counter
-
-    \fullpath
-    ql/DayCounters/%actual365.hpp
 */
 
 // $Id$

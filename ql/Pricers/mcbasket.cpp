@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file mcbasket.cpp
     \brief simple example of multi-factor Monte Carlo pricer
-
-    \fullpath
-    ql/Pricers/%mcbasket.cpp
 */
 
 // $Id$

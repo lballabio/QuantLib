@@ -25,9 +25,6 @@
 
 /*! \file errorfunction.cpp
     \brief Error function
-
-    \fullpath
-    ql/Math/%errorfunction.cpp
 */
 
 // $Id$

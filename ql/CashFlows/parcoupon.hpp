@@ -17,9 +17,6 @@
 
 /*! \file parcoupon.hpp
     \brief Coupon at par on a term structure
-
-    \fullpath
-    ql/CashFlows/%parcoupon.hpp
 */
 
 // $Id$

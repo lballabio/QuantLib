@@ -18,9 +18,6 @@
 
 /*! \file interpolation.hpp
     \brief abstract base classes for interpolations
-
-    \fullpath
-    ql/Math/%interpolation.hpp
 */
 
 // $Id$

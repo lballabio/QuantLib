@@ -17,9 +17,6 @@
 
 /*! \file inarrearindexedcoupon.hpp
     \brief in arrear indexed coupon
-
-    \fullpath
-    ql/CashFlows/%inarrearindexedcoupon.hpp
 */
 
 #ifndef quantlib_in_arrear_indexed_coupon_hpp

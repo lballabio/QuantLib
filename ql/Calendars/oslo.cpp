@@ -17,9 +17,6 @@
 
 /*! \file oslo.cpp
     \brief Oslo calendar
-
-    \fullpath
-    ql/Calendars/%oslo.cpp
 */
 
 // $Id$

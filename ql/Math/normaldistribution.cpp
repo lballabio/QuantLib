@@ -18,9 +18,6 @@
 
 /*! \file normaldistribution.cpp
     \brief normal, cumulative and inverse cumulative distributions
-
-    \fullpath
-    ql/Math/%normaldistribution.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file newtonsafe.hpp
     \brief Safe (braketed) Newton 1-D solver
-
-    \fullpath
-    ql/Solvers1D/%newtonsafe.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file zerocurve.hpp
     \brief pre-bootstrapped zero curve structure
-
-    \fullpath
-    ql/TermStructures/%zerocurve.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file swaption.cpp
     \brief Swaption
-
-    \fullpath
-    ql/Instruments/%swaption.cpp
 */
 
 // $Id$

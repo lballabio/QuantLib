@@ -18,9 +18,6 @@
 
 /*! \file sequencestatistics.hpp
     \brief Statistics tools for sequence (vector, list, array) samples
-
-    \fullpath
-    ql/Math/%sequencestatistics.hpp
 */
 
 // $Id$

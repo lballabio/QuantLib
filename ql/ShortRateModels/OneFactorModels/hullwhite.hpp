@@ -17,9 +17,6 @@
 
 /*! \file hullwhite.hpp
     \brief Hull & White (HW) model
-
-    \fullpath
-    ql/ShortRateModels/OneFactorModels/%hullwhite.hpp
 */
 
 // $Id$

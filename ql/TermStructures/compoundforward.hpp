@@ -17,9 +17,6 @@
 
 /*! \file compoundforward.hpp
     \brief compounded forward term structure
-
-    \fullpath
-    ql/TermStructures/%compoundforward.hpp
 */
 
 // $Id$
@@ -74,7 +71,6 @@ namespace QuantLib {
             Date maxDate() const;
             const std::vector<Time>& times() const;
             Time maxTime() const;
-            //@}
           protected:
             void validateInputs() const;
             DiscountFactor discountImpl(Time, bool extrapolate = false) const;

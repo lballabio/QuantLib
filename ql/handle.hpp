@@ -17,9 +17,6 @@
 
 /*! \file handle.hpp
     \brief Reference-counted pointer
-
-    \fullpath
-    ql/%handle.hpp
 */
 
 // $Id$

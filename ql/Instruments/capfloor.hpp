@@ -17,9 +17,6 @@
 
 /*! \file capfloor.hpp
     \brief Cap and Floor class
-
-    \fullpath
-    ql/Instruments/%capfloor.hpp
 */
 
 // $Id$

@@ -18,9 +18,6 @@
 
 /*! \file mcengine.hpp
     \brief base class for Monte Carlo engines
-
-    \fullpath
-    ql/PricingEngines/%mcengine.hpp
 */
 
 // $Id$

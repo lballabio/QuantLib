@@ -15,6 +15,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+/*! \file getcovariance.hpp
+    \brief Covariance matrix calculation
+*/
+
 // $Id$
 
 #ifndef quantlib_montecarlo_get_covariance_h

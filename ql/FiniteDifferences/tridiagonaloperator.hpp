@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file tridiagonaloperator.hpp
     \brief tridiagonal operator
-
-    \fullpath
-    ql/FiniteDifferences/%tridiagonaloperator.hpp
 */
 
 // $Id$

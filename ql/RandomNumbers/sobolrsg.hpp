@@ -17,9 +17,6 @@
 
 /*! \file sobolrsg.hpp
     \brief Sobol low-discrepancy sequence generator
-
-    \fullpath
-    ql/RandomNumbers/%sobolrsg.hpp
 */
 
 // $Id$

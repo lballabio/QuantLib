@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file blackconstantvol.hpp
     \brief Black constant volatility, no time dependence, no strike dependence
-
-    \fullpath
-    ql/Volatilities/%blackconstantvol.hpp
 */
 
 // $Id$

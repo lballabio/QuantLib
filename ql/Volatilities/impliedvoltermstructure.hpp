@@ -17,9 +17,6 @@
 
 /*! \file impliedvoltermstructure.hpp
     \brief Implied Black Vol Term Structure
-
-    \fullpath
-    ql/Volatilities/%impliedvoltermstructure.hpp
 */
 
 // $Id$

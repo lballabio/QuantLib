@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
@@ -13,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file leastsquare.hpp
     \brief Least square cost function
-
-    \fullpath
-    ql/Optimization/%leastsquare.hpp
 */
 
 #ifndef quantlib_optimization_least_square_h

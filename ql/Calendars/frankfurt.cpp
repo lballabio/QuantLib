@@ -17,9 +17,6 @@
 
 /*! \file frankfurt.cpp
     \brief Frankfurt calendar
-
-    \fullpath
-    Calendars/%frankfurt.cpp
 */
 
 // $Id$

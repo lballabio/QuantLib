@@ -17,9 +17,6 @@
 
 /*! \file visitor.hpp
     \brief degenerate base class for the Acyclic Visitor pattern
-
-    \fullpath
-    ql/Patterns/%visitor.hpp
 */
 
 // $Id$

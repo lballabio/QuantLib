@@ -17,9 +17,6 @@
 
 /*! \file localconstantvol.hpp
     \brief Local constant volatility, no time dependence, no asset dependence
-
-    \fullpath
-    ql/Volatilities/%localconstantvol.hpp
 */
 
 // $Id$

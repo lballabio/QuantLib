@@ -17,9 +17,6 @@
 
 /*! \file swap.hpp
     \brief Interest rate swap
-
-    \fullpath
-    ql/Instruments/%swap.hpp
 */
 
 // $Id$

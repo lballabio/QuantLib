@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -15,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file dividendshoutoption.hpp
-    \brief base class for shout option with dividends
 
-    \fullpath
-    ql/Pricers/%dividendshoutoption.hpp
+/*! \file fddividendshoutoption.hpp
+    \brief base class for shout option with dividends
 */
 
 // $Id$

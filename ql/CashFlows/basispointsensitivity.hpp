@@ -15,11 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file coupon.hpp
-    \brief Coupon accruing over a fixed period
-
-    \fullpath
-    ql/CashFlows/%coupon.hpp
+/*! \file basispointsensitivity.hpp
+    \brief basis point sensitivity calculator
 */
 
 // $Id$

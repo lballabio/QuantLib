@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file bicubicsplineinterpolation.hpp
     \brief bicubic spline interpolation between discrete points
-
-    \fullpath
-    ql/Math/%bicubicsplineinterpolation.hpp
 */
 
 // $Id$

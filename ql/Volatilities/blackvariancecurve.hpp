@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file blackvariancecurve.hpp
     \brief Black volatility curve modelled as variance curve
-
-  \fullpath
-    ql/Volatilities/%blackvariancecurve.hpp
 */
 
 // $Id$

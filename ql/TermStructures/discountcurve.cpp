@@ -17,9 +17,6 @@
 
 /*! \file discountcurve.cpp
     \brief Term structure based on loglinear interpolation of discount factors
-
-    \fullpath
-    ql/TermStructures/%discountcurve.cpp
 */
 
 // $Id$

@@ -16,6 +16,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+/*! \file path.hpp
+    \brief single factor random walk
+*/
+
 // $Id$
 
 #ifndef quantlib_montecarlo_path_h

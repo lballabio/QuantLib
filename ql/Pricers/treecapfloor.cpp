@@ -17,9 +17,6 @@
 
 /*! \file treecapfloor.cpp
     \brief Cap/Floor calculated using a tree
-
-    \fullpath
-    ql/Pricers/%treecapfloor.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file randomsequencegenerator.hpp
     \brief Random sequence generator based on a pseudo-random number generator
-
-    \fullpath
-    ql/RandomNumbers/%randomsequencegenerator.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file calibrationhelper.hpp
     \brief Calibration helper class
-
-    \fullpath
-    ql/ShortRateModels/%calibrationhelper.hpp
 */
 
 // $Id$

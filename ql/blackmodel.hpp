@@ -17,9 +17,6 @@
 
 /*! \file blackmodel.hpp
     \brief Abstract class for Black-type models (market models)
-
-    \fullpath
-    ql/%blackmodel.hpp
 */
 
 // $Id$

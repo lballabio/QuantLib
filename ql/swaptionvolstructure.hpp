@@ -17,9 +17,6 @@
 
 /*! \file swaptionvolstructure.hpp
     \brief Swaption volatility structure
-
-    \fullpath
-    ql/%swaptionvolstructure.hpp
 */
 
 // $Id$

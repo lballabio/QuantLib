@@ -15,11 +15,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file multipathgenerator.hpp
     \brief Generates a multi path from a random-array generator
-
-    \fullpath
-    ql/MonteCarlo/%multipathgenerator.hpp
 */
 
 // $Id$

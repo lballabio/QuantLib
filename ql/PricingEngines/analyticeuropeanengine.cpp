@@ -17,9 +17,6 @@
 
 /*! \file analyticeuropeanengine.cpp
     \brief European option engine using analytic formulas
-
-    \fullpath
-    ql/PricingEngines/%analyticeuropeanengine.cpp
 */
 
 // $Id$

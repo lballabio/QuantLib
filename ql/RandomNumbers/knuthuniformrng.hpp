@@ -17,9 +17,6 @@
 
 /*! \file knuthuniformrng.hpp
     \brief Knuth uniform random number generator
-
-    \fullpath
-    ql/RandomNumbers/%knuthuniformrng.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file argsandresults.hpp
     \brief Base classes for generic arguments and results
-
-    \fullpath
-    ql/%argsandresults.hpp
 */
 
 // $Id$

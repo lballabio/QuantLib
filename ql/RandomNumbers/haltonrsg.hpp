@@ -17,9 +17,6 @@
 
 /*! \file haltonrsg.hpp
     \brief Halton low-discrepancy sequence generator
-
-    \fullpath
-    ql/RandomNumbers/%haltonrsg.hpp
 */
 
 // $Id$

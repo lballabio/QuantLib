@@ -17,9 +17,6 @@
 
 /*! \file bisection.cpp
     \brief bisection 1-D solver
-
-    \fullpath
-    ql/Solvers1D/%bisection.cpp
 */
 
 // $Id$

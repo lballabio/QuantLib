@@ -17,9 +17,6 @@
 
 /*! \file dataparsers.cpp
     \brief classes used to parse data for input
-
-    \fullpath
-    ql/%dataparsers.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file analyticalcapfloor.cpp
     \brief Analytical pricer for caps/floors
-
-    \fullpath
-    ql/Pricers/%analyticalcapfloor.cpp
 */
 
 // $Id$

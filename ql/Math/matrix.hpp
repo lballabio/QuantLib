@@ -15,11 +15,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file matrix.hpp
     \brief matrix used in linear algebra.
-
-    \fullpath
-    ql/Math/%matrix.hpp
 */
 
 // $Id$

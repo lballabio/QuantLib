@@ -17,9 +17,6 @@
 
 /*! \file affinetermstructure.hpp
     \brief Affine term structure
-
-    \fullpath
-    ql/TermStructures/%affinetermstructure.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file quantoforwardvanillaoption.hpp
     \brief Quanto version of a forward vanilla option
-
-    \fullpath
-    ql/Instruments/%quantoforwardvanillaoption.hpp
 */
 
 // $Id$

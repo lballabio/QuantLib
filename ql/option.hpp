@@ -17,9 +17,6 @@
 
 /*! \file option.hpp
     \brief Base option class
-
-    \fullpath
-    ql/%option.hpp
 */
 
 // $Id$

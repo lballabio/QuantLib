@@ -17,9 +17,6 @@
 
 /*! \file warsaw.cpp
     \brief Warsaw calendar
-
-    \fullpath
-    ql/Calendars/%warsaw.cpp
 */
 
 // $Id$

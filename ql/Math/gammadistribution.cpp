@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2000, 2001, 2002, 2003 Sadruddin Rejeb
 
@@ -13,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file gammadistribution.cpp
     \brief Gamma function
-
-    \fullpath
-    ql/Math/%gammadistribution.cpp
 */
 
 // $Id$

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
@@ -13,16 +14,14 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file simplex.cpp
     \brief Simplex optimization method
-
-    \fullpath
-    ql/Optimization/%simplex.cpp
 */
 
 /* The implementation of the algorithm was highly inspired by
- * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
- * Chapter 10
+ * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, 
+ * Flannery, chapter 10
  */
 
 #include "ql/Optimization/simplex.hpp"

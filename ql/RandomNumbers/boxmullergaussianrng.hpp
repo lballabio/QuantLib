@@ -15,11 +15,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file boxmullergaussianrng.hpp
     \brief Box-Muller Gaussian random-number generator
-
-    \fullpath
-    ql/RandomNumbers/%boxmullergaussianrng.hpp
 */
 
 // $Id$

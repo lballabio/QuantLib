@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
@@ -17,9 +18,6 @@
 
 /*! \file discrepancystatistics.cpp
     \brief Statistic tool for sequences with discrepancy calculation
-
-    \fullpath
-    ql/Math/%discrepancystatistics.cpp
 */
 
 // $Id$

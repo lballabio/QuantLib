@@ -17,9 +17,6 @@
 
 /*! \file capfloor.cpp
     \brief European cap and floor class
-
-    \fullpath
-    ql/Instruments/%capfloor.cpp
 */
 
 // $Id$

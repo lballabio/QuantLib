@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
@@ -13,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file conjugategradient.hpp
     \brief Conjugate gradient optimization method
-
-    \fullpath
-    ql/Optimization/%conjugategradient.hpp
 */
 
 #ifndef quantlib_optimization_conjugate_gradient_h

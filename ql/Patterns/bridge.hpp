@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file bridge.hpp
     \brief bridge pattern (a.k.a. handle-body idiom)
-
-    \fullpath
-    ql/Patterns/%bridge.hpp
 */
 
 // $Id$

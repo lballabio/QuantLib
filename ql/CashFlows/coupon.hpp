@@ -17,9 +17,6 @@
 
 /*! \file coupon.hpp
     \brief Coupon accruing over a fixed period
-
-    \fullpath
-    ql/CashFlows/%coupon.hpp
 */
 
 // $Id$

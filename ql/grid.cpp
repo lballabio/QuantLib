@@ -17,9 +17,6 @@
 
 /*! \file grid.cpp
     \brief Grid classes with useful constructors for trees and finite diffs
-
-    \fullpath
-    ql/%grid.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file simpleswap.cpp
     \brief Simple fixed-rate vs Libor swap
-
-    \fullpath
-    ql/Instruments/%simpleswap.cpp
 */
 
 // $Id$

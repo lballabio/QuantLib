@@ -17,9 +17,6 @@
 
 /*! \file drifttermstructure.hpp
     \brief Drift term structure
-
-    \fullpath
-    ql/TermStructures/%drifttermstructure.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file quantovanillaoption.cpp
     \brief Quanto version of a vanilla option
-
-    \fullpath
-    ql/Instruments/%quantovanillaoption.cpp
 */
 
 // $Id$

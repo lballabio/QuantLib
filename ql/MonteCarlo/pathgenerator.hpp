@@ -16,6 +16,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+/*! \file pathgenerator.hpp
+    \brief Generates random paths using a sequence generator
+*/
+
 // $Id$
 
 #ifndef quantlib_montecarlo_path_generator_h

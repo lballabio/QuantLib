@@ -17,9 +17,6 @@
 
 /*! \file gbplibor.hpp
     \brief %GBP %Libor index
-
-    \fullpath
-    ql/Indexes/%gbplibor.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file newyork.hpp
     \brief New York calendar
-
-    \fullpath
-    ql/Calendars/%newyork.hpp
 */
 
 // $Id$

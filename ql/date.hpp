@@ -17,9 +17,6 @@
 
 /*! \file date.hpp
     \brief date- and time-related classes, typedefs and enumerations
-
-    \fullpath
-    ql/%date.hpp
 */
 
 // $Id$

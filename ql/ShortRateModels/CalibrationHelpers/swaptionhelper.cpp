@@ -17,9 +17,6 @@
 
 /*! \file swaptionhelper.cpp
     \brief Swaption calibration helper
-
-    \fullpath
-    ql/ShortRateModels/CalibrationHelpers/%swaptionhelper.cpp
 */
 
 // $Id$

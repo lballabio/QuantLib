@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file finitedifferenceeuropean.hpp
-    \brief Example of European option calculated using finite differences
 
-    \fullpath
-    ql/Pricers/%finitedifferenceeuropean.hpp
+/*! \file fdeuropean.hpp
+    \brief Example of European option calculated using finite differences
 */
 
 // $Id$

@@ -28,9 +28,6 @@
 
 /*! \file primenumbers.cpp
     \brief Prime numbers calculator
-
-    \fullpath
-    ql/RandomNumbers/%primenumbers.cpp
 */
 
 // $Id$

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file dataparsers.hpp
     \brief Classes used to parse data for input
-
-    \fullpath
-    ql/%dataparsers.hpp
 */
 
 // $Id$

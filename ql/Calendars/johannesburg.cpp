@@ -17,9 +17,6 @@
 
 /*! \file johannesburg.cpp
     \brief Johannesburg calendar
-
-    \fullpath
-    Calendars/%johannesburg.cpp
 */
 
 // $Id$

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
@@ -13,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file method.hpp
     \brief Abstract optimization method class
-
-    \fullpath
-    ql/Optimization/%method.hpp
 */
 
 #ifndef quantlib_optimization_method_h

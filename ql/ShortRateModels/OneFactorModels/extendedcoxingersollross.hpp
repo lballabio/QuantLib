@@ -17,9 +17,6 @@
 
 /*! \file extendedcoxingersollross.hpp
     \brief Extended Cox-Ingersoll-Ross model
-
-    \fullpath
-    ql/ShortRateModels/OneFactorModels/%extendedcoxingersollross.hpp
 */
 
 // $Id$

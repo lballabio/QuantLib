@@ -17,9 +17,6 @@
 
 /*! \file stock.cpp
     \brief concrete stock class
-
-    \fullpath
-    ql/Instruments/%stock.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file errors.hpp
     \brief Classes and functions for error handling.
-
-    \fullpath
-    ql/%errors.hpp
 */
 
 // $Id$
@@ -123,7 +120,6 @@ namespace QuantLib {
 
 /*! \def QL_ASSERT
     \brief throw an error if the given condition is not verified
-    \relates Error
 */
 #define QL_ASSERT(condition,description) \
 if (!(condition)) \
@@ -134,7 +130,6 @@ else
 
 /*! \def QL_REQUIRE
     \brief throw an error if the given pre-condition is not verified
-    \relates Error
 */
 #define QL_REQUIRE(condition,description) \
 if (!(condition)) \
@@ -145,7 +140,6 @@ else
 
 /*! \def QL_ENSURE
     \brief throw an error if the given post-condition is not verified
-    \relates Error
 */
 #define QL_ENSURE(condition,description) \
 if (!(condition)) \

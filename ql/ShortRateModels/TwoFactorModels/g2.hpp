@@ -17,9 +17,6 @@
 
 /*! \file g2.hpp
     \brief Two-factor additive Gaussian Model G2++
-
-    \fullpath
-    ql/ShortRateModels/TwoFactorModels/%g2.hpp
 */
 
 // $Id$

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file fdvanillaengine.cpp
-    \brief Vanilla option engine using Finite Differences
 
-    \fullpath
-    ql/Pricers/%fdvanillaengine.cpp
+/*! \file fdvanillaengine.cpp
+    \brief vanilla option engine using finite differences
 */
 
 // $Id$

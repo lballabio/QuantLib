@@ -17,9 +17,6 @@
 
 /*! \file fixedratecoupon.hpp
     \brief Coupon paying a fixed annual rate
-
-    \fullpath
-    ql/CashFlows/%fixedratecoupon.hpp
 */
 
 // $Id$

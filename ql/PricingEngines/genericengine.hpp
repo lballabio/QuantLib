@@ -17,9 +17,6 @@
 
 /*! \file genericengine.hpp
     \brief Generic option engine
-
-    \fullpath
-    ql/PricingEngines/%genericengine.hpp
 */
 
 // $Id$

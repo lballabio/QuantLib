@@ -17,9 +17,6 @@
 
 /*! \file cashflowvectors.cpp
     \brief Cash flow vector builders
-
-    \fullpath
-    ql/CashFlows/%cashflowvectors.cpp
 */
 
 // $Id$

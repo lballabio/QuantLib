@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file arithmeticasopathpricer.cpp
     \brief arithmetic average strike option path pricer
-
-    \fullpath
-    ql/MonteCarlo/%arithmeticasopathpricer.cpp
 */
 
 // $Id$

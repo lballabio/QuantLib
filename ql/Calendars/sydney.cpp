@@ -17,9 +17,6 @@
 
 /*! \file sydney.cpp
     \brief Sydney calendar
-
-    \fullpath
-    ql/Calendars/%sydney.cpp
 */
 
 // $Id$

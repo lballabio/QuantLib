@@ -17,9 +17,6 @@
 
 /*! \file wellington.hpp
     \brief Wellington calendar
-
-    \fullpath
-    ql/Calendars/%wellington.hpp
 */
 
 // $Id$

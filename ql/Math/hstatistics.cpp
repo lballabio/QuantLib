@@ -15,11 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file hstatistics.hpp
+/*! \file hstatistics.cpp
     \brief historical distribution statistics tool with risk measures
-
-    \fullpath
-    ql/Math/%hstatistics.hpp
 */
 
 // $Id$

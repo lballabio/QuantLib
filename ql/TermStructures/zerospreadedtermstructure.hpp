@@ -17,9 +17,6 @@
 
 /*! \file zerospreadedtermstructure.hpp
     \brief Zero spreaded term structure
-
-    \fullpath
-    ql/TermStructures/%zerospreadedtermstructure.hpp
 */
 
 // $Id$

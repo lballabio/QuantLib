@@ -17,9 +17,6 @@
 
 /*! \file termstructure.hpp
     \brief Term structure
-
-    \fullpath
-    ql/%termstructure.hpp
 */
 
 // $Id$

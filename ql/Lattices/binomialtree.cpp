@@ -18,9 +18,6 @@
 
 /*! \file binomialtree.cpp
     \brief Binomial tree class
-
-    \fullpath
-    ql/Lattices/%binomialtree.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file voltermstructure.hpp
     \brief Volatility term structures
-
-    \fullpath
-    ql/%voltermstructure.hpp
 */
 
 // $Id$

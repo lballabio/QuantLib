@@ -17,9 +17,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 /*! \file zarlibor.hpp
     \brief %ZAR %Libor index (also known as JIBAR)
-
-    \fullpath
-    ql/Indexes/%zarlibor.hpp
 */
 
 // $Id$

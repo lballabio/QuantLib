@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file observable.hpp
     \brief observer/observable pattern
-
-    \fullpath
-    ql/Patterns/%observable.hpp
 */
 
 // $Id$

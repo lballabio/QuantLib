@@ -17,9 +17,6 @@
 
 /*! \file relinkablehandle.hpp
     \brief Globally accessible relinkable pointer
-
-    \fullpath
-    ql/%relinkablehandle.hpp
 */
 
 // $Id$

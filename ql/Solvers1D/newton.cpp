@@ -17,9 +17,6 @@
 
 /*! \file newton.cpp
     \brief Newton 1-D solver
-
-    \fullpath
-    ql/Solvers1D/%newton.cpp
 */
 
 // $Id$

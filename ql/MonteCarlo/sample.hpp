@@ -14,12 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file sample.hpp
     \brief weighted sample
-
-    \fullpath
-    ql/MonteCarlo/%sample.hpp
-
 */
 
 // $Id$

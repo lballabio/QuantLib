@@ -17,9 +17,6 @@
 
 /*! \file xibormanager.cpp
     \brief global repository for %Xibor histories
-
-    \fullpath
-    ql/Indexes/%xibormanager.cpp
 */
 
 // $Id$

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -16,9 +17,6 @@
 
 /*! \file stockholm.cpp
     \brief Stockholm calendar
-
-    \fullpath
-    ql/Calendars/%stockholm.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file treeswaption.cpp
     \brief European swaption computed on a lattice
-
-    \fullpath
-    ql/Pricers/%treeswaption.cpp
 */
 
 // $Id$

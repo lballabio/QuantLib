@@ -17,9 +17,6 @@
 
 /*! \file johannesburg.hpp
     \brief Johannesburg calendar
-
-    \fullpath
-    ql/Calendars/%johannesburg.hpp
 */
 
 // $Id$

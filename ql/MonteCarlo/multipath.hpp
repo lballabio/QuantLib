@@ -15,6 +15,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+/*! \file multipath.hpp
+    \brief Correlated multiple asset paths
+*/
+
 // $Id$
 
 #ifndef quantlib_montecarlo_multi_path_h
@@ -26,7 +30,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! MultiPath implements multiple factors evolving at the same time
+        //! Correlated multiple asset paths
         /*!
 
         MultiPath contains the list of variations for each asset,

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file symmetricschurdecomposition.hpp
     \brief Eigenvalues / eigenvectors of a real symmetric matrix
-
-    \fullpath
-    ql/Math/%symmetricschurdecomposition.hpp
 */
 
 // $Id$

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file singleassetoption.cpp
     \brief common code for option evaluation
-
-    \fullpath
-    ql/Pricers/%singleassetoption.cpp
 */
 
 // $Id$

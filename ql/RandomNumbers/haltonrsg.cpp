@@ -28,9 +28,6 @@
 
 /*! \file haltonrsg.cpp
     \brief Halton low-discrepancy sequence generator
-
-    \fullpath
-    ql/RandomNumbers/%haltonrsg.cpp
 */
 
 // $Id$

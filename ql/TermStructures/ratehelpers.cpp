@@ -17,9 +17,6 @@
 
 /*! \file ratehelpers.cpp
     \brief rate helpers base class
-
-    \fullpath
-    ql/TermStructures/%ratehelpers.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file floatingratecoupon.hpp
     \brief Coupon at par on a term structure
-
-    \fullpath
-    ql/CashFlows/%floatingratecoupon.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file hstatistics.hpp
     \brief historical distribution statistics tool with risk measures
-
-    \fullpath
-    ql/Math/%hstatistics.hpp
 */
 
 // $Id$

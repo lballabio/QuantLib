@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2003 Ferdinando Ametrano
 
@@ -13,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file payoff.hpp
     \brief Option payoff classes
-
-    \fullpath
-    ql/%payoff.hpp
 */
 
 // $Id$

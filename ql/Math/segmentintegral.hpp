@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file segmentintegral.hpp
     \brief Integral of a one-dimensional function
-
-    \fullpath
-    ql/Math/%integral.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file integralengines.cpp
     \brief Option engines using the integral approach
-
-    \fullpath
-    ql/PricingEngines/%integralengines.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file bisection.hpp
     \brief bisection 1-D solver
-
-    \fullpath
-    ql/Solvers1D/%bisection.hpp
 */
 
 // $Id$

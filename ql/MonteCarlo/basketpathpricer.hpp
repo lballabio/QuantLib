@@ -14,12 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file basketpathpricer.hpp
     \brief multipath pricer for European-type basket option
-
-    \fullpath
-    ql/MonteCarlo/%basketpathpricer.hpp
-
 */
 
 // $Id$

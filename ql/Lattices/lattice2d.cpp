@@ -17,9 +17,6 @@
 
 /*! \file lattice2d.cpp
     \brief Trinomial tree class
-
-    \fullpath
-    ql/Lattices/%lattice2d.cpp
 */
 
 // $Id$

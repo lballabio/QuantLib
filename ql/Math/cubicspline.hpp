@@ -18,9 +18,6 @@
 
 /*! \file cubicspline.hpp
     \brief cubic spline interpolation between discrete points
-
-    \fullpath
-    ql/Math/%cubicspline.hpp
 */
 
 // $Id$

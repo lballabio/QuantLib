@@ -17,9 +17,6 @@
 
 /*! \file quantoengines.hpp
     \brief Quanto option engines
-
-    \fullpath
-    ql/PricingEngines/%quantoengines.hpp
 */
 
 // $Id$

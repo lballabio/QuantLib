@@ -18,9 +18,6 @@
 
 /*! \file pricingengine.hpp
     \brief Base class for pricing engines
-
-    \fullpath
-    ql/%pricingengine.hpp
 */
 
 // $Id$

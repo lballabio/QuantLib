@@ -17,9 +17,6 @@
 
 /*! \file blackkarasinski.cpp
     \brief Black-Karasinski model
-
-    \fullpath
-    ql/ShortRateModels/OneFactorModels/%blackkarasinski.cpp
 */
 
 // $Id$

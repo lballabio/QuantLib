@@ -17,9 +17,6 @@
 
 /*! \file milan.cpp
       \brief Milan calendar
-
-    \fullpath
-    ql/Calendars/%milan.cpp
 */
 
 // $Id$

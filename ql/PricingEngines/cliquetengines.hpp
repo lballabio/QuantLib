@@ -17,9 +17,6 @@
 
 /*! \file cliquetengines.hpp
     \brief Cliquet option engines
-
-    \fullpath
-    ql/PricingEngines/%cliquetengines.hpp
 */
 
 // $Id$

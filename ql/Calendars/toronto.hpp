@@ -17,9 +17,6 @@
 
 /*! \file toronto.hpp
     \brief Toronto calendar
-
-    \fullpath
-    ql/Calendars/%toronto.hpp
 */
 
 // $Id$

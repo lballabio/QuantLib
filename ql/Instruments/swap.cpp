@@ -17,9 +17,6 @@
 
 /*! \file swap.cpp
     \brief Interest rate swap
-
-    \fullpath
-    ql/Instruments/%swap.cpp
 */
 
 // $Id$

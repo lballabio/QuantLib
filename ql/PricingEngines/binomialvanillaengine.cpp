@@ -18,9 +18,6 @@
 
 /*! \file binomialvanillaengine.cpp
     \brief Vanilla option engine using binomial tree
-
-    \fullpath
-    ql/Pricers/%binomialvanillaengine.cpp
 */
 
 // $Id$

@@ -14,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file interpolation2D.hpp
     \brief abstract base classes for 2-D interpolations
-
-    \fullpath
-    ql/Math/%interpolation2D.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file lazyobject.hpp
     \brief framework for calculation on demand and result caching
-
-    \fullpath
-    ql/Patterns/%lazyobject.hpp
 */
 
 // $Id$

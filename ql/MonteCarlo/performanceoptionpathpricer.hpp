@@ -17,9 +17,6 @@
 
 /*! \file performanceoptionpathpricer.hpp
     \brief path pricer for performance option
-
-    \fullpath
-    ql/MonteCarlo/%performanceoptionpathpricer.hpp
 */
 
 // $Id$

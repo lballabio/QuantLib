@@ -17,9 +17,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 /*! \file chflibor.hpp
     \brief %CHF %Libor index (Also known as ZIBOR)
-
-    \fullpath
-    ql/Indexes/%chflibor.hpp
 */
 
 // $Id$

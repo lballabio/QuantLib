@@ -17,9 +17,6 @@
 
 /*! \file europeanoption.cpp
     \brief european option
-
-    \fullpath
-    ql/Pricers/%europeanoption.cpp
 */
 
 // $Id$

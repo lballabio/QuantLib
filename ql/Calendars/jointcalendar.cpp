@@ -17,9 +17,6 @@
 
 /*! \file jointcalendar.cpp
     \brief Joint calendar
-
-    \fullpath
-    ql/Calendars/%jointcalendar.cpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file calendar.cpp
     \brief Abstract calendar class
-
-    \fullpath
-    ql/%calendar.cpp
 */
 
 // $Id$

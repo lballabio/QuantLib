@@ -17,9 +17,6 @@
 
 /*! \file secant.hpp
     \brief secant 1-D solver
-
-    \fullpath
-    ql/Solvers1D/%secant.hpp
 */
 
 // $Id$

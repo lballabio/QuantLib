@@ -17,9 +17,6 @@
 
 /*! \file cashflow.hpp
     \brief Base class for cash flows
-
-    \fullpath
-    ql/%cashflow.hpp
 */
 
 // $Id$

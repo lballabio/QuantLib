@@ -17,9 +17,6 @@
 
 /*! \file helsinki.hpp
     \brief Helsinki calendar
-
-    \fullpath
-    ql/Calendars/%helsinki.hpp
 */
 
 // $Id$

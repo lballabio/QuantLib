@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
 
@@ -15,11 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file mccliquetoption.hpp
     \brief Cliquet option priced with Monte Carlo simulation
-
-    \fullpath
-    ql/Pricers/%mccliquetoption.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file zurich.hpp
     \brief Zurich calendar
-
-    \fullpath
-    ql/Calendars/%zurich.hpp
 */
 
 // $Id$

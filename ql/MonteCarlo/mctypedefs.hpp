@@ -15,11 +15,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file mctypedefs.hpp
     \brief Default choices for template instantiations
-
-    \fullpath
-    ql/MonteCarlo/%mctypedefs.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file brent.cpp
     \brief Brent 1-D solver
-
-    \fullpath
-    ql/Solvers1D/%brent.cpp
 */
 
 // $Id$

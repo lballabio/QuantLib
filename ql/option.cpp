@@ -17,9 +17,6 @@
 
 /*! \file option.cpp
     \brief Base option class
-
-    \fullpath
-    ql/%option.cpp
 */
 
 // $Id$

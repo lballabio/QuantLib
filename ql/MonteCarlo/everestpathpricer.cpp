@@ -14,12 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file everestpathpricer.cpp
     \brief path pricer for European-type Everest option
-
-    \fullpath
-    MonteCarlo/%everestpathpricer.cpp
-
 */
 
 // $Id$

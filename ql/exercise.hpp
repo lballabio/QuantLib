@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
@@ -14,11 +15,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file exercise.hpp
     \brief Option exercise classes and payoff function
-
-    \fullpath
-    ql/%exercise.hpp
 */
 
 // $Id$

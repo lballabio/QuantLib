@@ -16,10 +16,7 @@
 */
 
 /*! \file discretizedvanillaoption.cpp
-    \brief Discretized Vanilla Option
-
-    \fullpath
-    ql/PricingEngines/%discretizedvanillaoption.cpp
+    \brief discretized vanilla option
 */
 
 // $Id$

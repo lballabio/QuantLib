@@ -17,9 +17,6 @@
 
 /*! \file toronto.cpp
     \brief Toronto calendar
-
-    \fullpath
-    Calendars/%toronto.cpp
 */
 
 // $Id$

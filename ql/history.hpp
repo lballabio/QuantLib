@@ -17,9 +17,6 @@
 
 /*! \file history.hpp
     \brief history class
-
-    \fullpath
-    ql/%history.hpp
 */
 
 // $Id$

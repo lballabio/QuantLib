@@ -17,9 +17,6 @@
 
 /*! \file budapest.cpp
     \brief Budapest calendar
-
-    \fullpath
-    ql/Calendars/%budapest.cpp
 */
 
 // $Id$

@@ -17,10 +17,6 @@
 
 /*! \file pagodapathpricer.cpp
     \brief path pricer for pagoda options
-
-    \fullpath
-    MonteCarlo/%pagodapathpricer.cpp
-
 */
 
 // $Id$

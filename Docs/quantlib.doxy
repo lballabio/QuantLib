@@ -1,4 +1,4 @@
-# Doxyfile 1.3-rc3-20030317
+# Doxyfile 1.3
 
 #---------------------------------------------------------------------------
 # General configuration options
@@ -20,13 +20,13 @@ BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = NO
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
-FULL_PATH_NAMES        = NO
-STRIP_FROM_PATH        = 
+FULL_PATH_NAMES        = YES
+STRIP_FROM_PATH        = ql_basepath
 INTERNAL_DOCS          = NO
 CASE_SENSE_NAMES       = NO
 SHORT_NAMES            = YES
 HIDE_SCOPE_NAMES       = YES
-VERBATIM_HEADERS       = YES
+VERBATIM_HEADERS       = NO
 SHOW_INCLUDE_FILES     = YES
 JAVADOC_AUTOBRIEF      = NO
 MULTILINE_CPP_IS_BRIEF = NO
@@ -40,7 +40,7 @@ GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = NO
 GENERATE_BUGLIST       = NO
 GENERATE_DEPRECATEDLIST= YES
-ALIASES                = "fullpath=\par Full path:"
+ALIASES                = 
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 30
 OPTIMIZE_OUTPUT_FOR_C  = NO
@@ -88,8 +88,8 @@ FILTER_SOURCE_FILES    = NO
 SOURCE_BROWSER         = NO
 INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
-REFERENCED_BY_RELATION = YES
-REFERENCES_RELATION    = YES
+REFERENCED_BY_RELATION = NO
+REFERENCES_RELATION    = NO
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
@@ -213,6 +213,7 @@ DOT_PATH               =
 DOTFILE_DIRS           = 
 MAX_DOT_GRAPH_WIDTH    = 800
 MAX_DOT_GRAPH_HEIGHT   = 600
+MAX_DOT_GRAPH_DEPTH    = 0
 GENERATE_LEGEND        = YES
 DOT_CLEANUP            = YES
 #---------------------------------------------------------------------------

@@ -15,11 +15,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file inversecumgaussianrsg.hpp
     \brief Inverse cumulative Gaussian random sequence generator
-
-    \fullpath
-    ql/RandomNumbers/%inversecumgaussianrsg.hpp
 */
 
 // $Id$

@@ -17,9 +17,6 @@
 
 /*! \file xibor.hpp
     \brief base class for libor indexes
-
-    \fullpath
-    ql/Indexes/%xibor.hpp
 */
 
 // $Id$

@@ -14,12 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file geometricapopathpricer.hpp
     \brief path pricer for geometric average price option
-
-    \fullpath
-    ql/MonteCarlo/%geometricapopathpricer.hpp
-
 */
 
 // $Id$

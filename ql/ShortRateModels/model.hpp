@@ -17,9 +17,6 @@
 
 /*! \file model.hpp
     \brief Abstract interest rate model class
-
-    \fullpath
-    ql/ShortRateModels/%model.hpp
 */
 
 // $Id$

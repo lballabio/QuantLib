@@ -17,9 +17,6 @@
 
 /*! \file loglinearinterpolation.hpp
     \brief log-linear interpolation between discrete points
-
-    \fullpath
-    ql/Math/%loglinearinterpolation.hpp
 */
 
 // $Id$

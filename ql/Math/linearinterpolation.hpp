@@ -17,9 +17,6 @@
 
 /*! \file linearinterpolation.hpp
     \brief linear interpolation between discrete points
-
-    \fullpath
-    ql/Math/%linearinterpolation.hpp
 */
 
 // $Id$

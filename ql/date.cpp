@@ -17,9 +17,6 @@
 
 /*! \file date.cpp
     \brief date- and time-related classes, typedefs and enumerations
-
-    \fullpath
-    ql/%date.cpp
 */
 
 // $Id$
