@@ -48,15 +48,14 @@ namespace QuantLib {
         double forwardPrice = arguments_.underlying *
             dividendDiscount / riskFreeDiscount;
 
-        BlackFormula black(arguments_.underlying, forwardPrice, riskFreeDiscount,
-            variance, payoff);
+        BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
 
         results_.value = black.value();
-        results_.delta = black.delta();
+        results_.delta = black.delta(arguments_.underlying);
         results_.deltaForward = black.deltaForward();
-        results_.elasticity = black.elasticity();
-        results_.gamma = black.gamma();
+        results_.elasticity = black.elasticity(arguments_.underlying);
+        results_.gamma = black.gamma(arguments_.underlying);
 
         Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
             arguments_.riskFreeTS->referenceDate(),
@@ -72,8 +71,8 @@ namespace QuantLib {
             arguments_.volTS->referenceDate(),
             arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
-        results_.theta = black.theta(t);
-        results_.thetaPerDay = black.thetaPerDay(t);
+        results_.theta = black.theta(arguments_.underlying, t);
+        results_.thetaPerDay = black.thetaPerDay(arguments_.underlying, t);
 
         results_.strikeSensitivity = black.strikeSensitivity();
         results_.itmProbability = black.itmProbability();

@@ -39,6 +39,7 @@ namespace QuantLib {
             path_pricer_type;
         typedef typename MCVanillaEngine<RNG,S>::stats_type
             stats_type;
+        // constructor
         MCEuropeanEngine(Size maxTimeStepPerYear,
                          bool antitheticVariate = false,
                          bool controlVariate = false,
