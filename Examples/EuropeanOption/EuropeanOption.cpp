@@ -22,6 +22,8 @@
 
 using namespace QuantLib;
 using namespace QuantLib::PricingEngines;
+using namespace QuantLib::Math;
+using namespace QuantLib::MonteCarlo;
 
 using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Pricers::McEuropean;
@@ -314,7 +316,8 @@ int main(int argc, char* argv[])
         // Monte Carlo Method
         method = "Monte Carlo";
         option.setPricingEngine(Handle<PricingEngine>(
-            new MCVanillaEngine(true)));
+            new MCEuropeanVanillaEngine<Statistics, GaussianPathGenerator,
+                PathPricer<Path> >(true)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;

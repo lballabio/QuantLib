@@ -30,6 +30,7 @@
 
 #include <ql/dataformatters.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
+#include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
 
@@ -58,7 +59,8 @@ namespace QuantLib {
             const S& sampleAccumulator(void) const;
           protected:
             McEngine() {}
-//            virtual Handle<PP> pathPricer() const = 0;
+            virtual Handle<PP> pathPricer() const = 0;
+            virtual Handle<PG> pathGenerator() const = 0;
             mutable Handle<MonteCarlo::MonteCarloModel<S, PG, PP> > mcModel_;
             static const Size minSample_;
         };
@@ -87,10 +89,10 @@ namespace QuantLib {
             while (accuracy > tolerance) {
                 // conservative estimate of how many samples are needed 
                 order = accuracy*accuracy/tolerance/tolerance;
-                
                 nextBatch = Size(
                     QL_MAX(sampleNumber*order*0.8-sampleNumber,
                     double(minSample_)));
+
                 // do not exceed maxSamples
                 nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
                 QL_REQUIRE(nextBatch>0,
@@ -156,7 +158,103 @@ namespace QuantLib {
 
             return mcModel_->sampleAccumulator();
         }
+
+    
+
+
+        //! Base class for Vanilla option Pricing engines using Monte Carlo simulation
+        template<class S, class PG, class PP>
+        class MCVanillaEngine : public VanillaEngine,
+                                public McEngine<S, PG, PP> {
+          public:
+            void calculate() const;
+          protected:
+            MCVanillaEngine(bool antitheticVariance,
+                            long seed=0) 
+            : antitheticVariance_(antitheticVariance), seed_(seed) {}
+            Handle<PG> pathGenerator() const;
+            bool antitheticVariance_;
+          private:
+            long seed_;
+        };
+
+
+
+        template<class S, class PG, class PP>
+        inline Handle<PG> MCVanillaEngine<S, PG, PP>::pathGenerator() const {
+            Date referenceDate = arguments_.riskFreeTS->referenceDate();
+            Date exerciseDate = arguments_.exercise.date();
+            Time residualTime = arguments_.riskFreeTS->dayCounter().yearFraction(
+                referenceDate, exerciseDate);
+
+            //! Initialize the path generator
+            Handle<TermStructure> drift(new
+                TermStructures::DriftTermStructure(arguments_.riskFreeTS,
+                                                   arguments_.dividendTS,
+                                                   arguments_.volTS));
+            double mu = drift->zeroYield(exerciseDate);
+            double volatility = arguments_.volTS->blackVol(
+                arguments_.exercise.date(), arguments_.underlying);
+
+            return Handle<MonteCarlo::GaussianPathGenerator>(
+                new MonteCarlo::GaussianPathGenerator(mu,
+                    volatility*volatility, residualTime, 1, seed_));
+
+        }
+
+
+        template<class S, class PG, class PP>
+        inline void MCVanillaEngine<S, PG, PP>::calculate() const {
+
+            QL_REQUIRE(arguments_.exercise.type() == Exercise::European,
+                "MCVanillaEngine::calculate() : "
+                "not an European Option");
+
+
+            //! Initialize the one-factor Monte Carlo
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG, PP> >(
+                new MonteCarlo::MonteCarloModel<S, PG, PP>(
+                    pathGenerator(), pathPricer(), S()));
+
+
+            value(0.005);
+
+            results_.value       = mcModel_->sampleAccumulator().mean();
+            results_.delta       = 0.0;
+            results_.gamma       = 0.0;
+            results_.theta       = 0.0;
+            results_.rho         = 0.0;
+            results_.dividendRho = 0.0;
+            results_.vega        = 0.0;
+//            results_.errorEstimate = mcModel_->sampleAccumulator().errorEstimate()
+
+        }
+
+
+        //! European Vanilla option pricing engine using Monte Carlo simulation
+        template<class S, class PG, class PP>
+        class MCEuropeanVanillaEngine : MCVanillaEngine<S, PG, PP> {
+          public:
+            MCEuropeanVanillaEngine(bool antitheticVariance,
+                                    long seed=0) 
+            : MCVanillaEngine<S, PG, PP>(antitheticVariance, seed) {}
+          protected:
+            Handle<PP> pathPricer() const;
+        };
+
+        template<class S, class PG, class PP>
+        inline Handle<PP> MCEuropeanVanillaEngine<S, PG, PP>::pathPricer() const {
+            //! Initialize the path pricer
+            return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(
+                new MonteCarlo::EuropeanPathPricer(arguments_.type,
+                arguments_.underlying, arguments_.strike,
+                arguments_.riskFreeTS->discount(arguments_.exercise.date()),
+                antitheticVariance_));
+        }
+
+
     }
+
 }
 
 #endif

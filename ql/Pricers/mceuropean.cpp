@@ -52,7 +52,7 @@ namespace QuantLib {
                 new GaussianPathGenerator(mu, volatility*volatility,
                     residualTime, 1, seed));
 
-            //! Initialize the pricer on the single Path
+            //! Initialize the path pricer
             Handle<PathPricer<Path> > euroPathPricer(
                 new EuropeanPathPricer(type,
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime),
