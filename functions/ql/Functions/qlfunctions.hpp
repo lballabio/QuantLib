@@ -23,11 +23,11 @@
 
 #define QL_FUN_LIB_NAME "QuantLibFunctions-" QL_LIB_TOOLSET QL_LIB_THREAD_OPT QL_LIB_RT_OPT "-" QL_LIB_VERSION ".lib"
 
-#if defined(_MSC_VER)
-#pragma comment(lib, QL_FUN_LIB_NAME)
-#ifdef BOOST_LIB_DIAGNOSTIC
-#  pragma message("Linking to lib file: " QL_FUN_LIB_NAME)
-#endif
+#if defined(_MSC_VER) || defined(__BORLANDC__)
+#  pragma comment(lib, QL_FUN_LIB_NAME)
+#  ifdef BOOST_LIB_DIAGNOSTIC
+#    pragma message("Linking to lib file: " QL_FUN_LIB_NAME)
+#  endif
 #endif
 
 
