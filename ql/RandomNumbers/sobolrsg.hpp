@@ -64,7 +64,8 @@ namespace QuantLib {
             typedef MonteCarlo::Sample<Array> sample_type;
             // dimensionality must be <= PPMT_MAX_DIM
             SobolRsg(Size dimensionality,
-                     unsigned long seed = 0);
+                     unsigned long seed = 0,
+                     bool unitInitialization = false);
             const sample_type& nextSequence() const;
             const sample_type& lastSequence() const {
                 return sequence_;
@@ -74,6 +75,7 @@ namespace QuantLib {
             static const int bits_;
             static const double normalizationFactor_;
             unsigned long dimensionality_;
+            bool unitInitialization_;
             mutable unsigned long sequenceCounter_;
             mutable bool firstDraw_;
             mutable sample_type sequence_;

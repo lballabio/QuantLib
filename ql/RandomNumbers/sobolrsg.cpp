@@ -141,8 +141,10 @@ namespace QuantLib {
         const double SobolRsg::normalizationFactor_ = 
             0.5/(1UL<<(SobolRsg::bits_-1));
 
-        SobolRsg::SobolRsg(Size dimensionality, unsigned long seed)
-        : dimensionality_(dimensionality), sequenceCounter_(0), 
+        SobolRsg::SobolRsg(Size dimensionality, unsigned long seed,
+            bool unitInitialization)
+        : dimensionality_(dimensionality),
+          unitInitialization_(unitInitialization), sequenceCounter_(0), 
           firstDraw_(true), sequence_(Array(dimensionality), 1.0),
           integerSequence_(dimensionality, 0),
           directionIntegers_(dimensionality,std::vector<unsigned long>(bits_))
@@ -174,19 +176,15 @@ namespace QuantLib {
             // and store them into directionIntegers_[dimensionality_][bits_]
             //
             // In each dimension k with its associated primitive polynomial,
-            // the first degree_[k] direction integers
-            // directionIntegers_[k][l] for l=0,...,degree_[k]-1 can be
-            // chosen freely provided that only the l leftmost bits can be
-            // non-zero, and that the l-th leftmost bit of
-            // directionIntegers_[k][l] must be set
+            // the first degree_[k] direction integers can be chosen freely
+            // provided that only the l leftmost bits can be non-zero, and
+            // that the l-th leftmost bit must be set
 
             // degenerate (no free integers) first dimension
             int j;
             for (j=0; j<bits_; j++)
                 directionIntegers_[0][j] = (1UL<<(bits_-j-1));
 
-            bool unitInitializationUpToDim32 = false;
-            bool unitInitializationFromDim32 = true;
 
             unsigned long maxTabulated = 
                 sizeof(initializers)/sizeof(unsigned long *)+1;
@@ -196,10 +194,11 @@ namespace QuantLib {
                 j = 0;
                 // 0UL marks the end of the coefficients for a given dimension
                 while (initializers[k-1][j] != 0UL) {
-                    if (unitInitializationUpToDim32)
+                    if (unitInitialization_) {
                         directionIntegers_[k][j] = 1UL;
-                    else
+                    } else {
                         directionIntegers_[k][j] = initializers[k-1][j];
+                    }
                     directionIntegers_[k][j] <<= (bits_-j-1);
                     j++;
                 }
@@ -210,7 +209,7 @@ namespace QuantLib {
                 MersenneTwisterUniformRng uniformRng(seed);
                 for (k=maxTabulated; k<dimensionality_; k++) {
                     for (Size l=1; l<=degree[k]; l++) {
-                        if (unitInitializationFromDim32)
+                        if (unitInitialization_)
                             directionIntegers_[k][l-1] = 1UL;
                         else {
                             do {
@@ -220,7 +219,7 @@ namespace QuantLib {
                                 // rightmost l bits non-zero
                                 directionIntegers_[k][l-1] =
                                     (unsigned long)(u*(1UL<<l));
-                            } while (directionIntegers_[k][l-1] & 1UL);
+                            } while (!(directionIntegers_[k][l-1] & 1UL));
                             // iterate until the direction integer is odd
                             // that is it has the rightmost bit set
                         }
