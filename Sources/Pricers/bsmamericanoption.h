@@ -28,6 +28,9 @@ class BSMAmericanOption : public BSMNumericalOption {
 	  gridPoints), theTimeSteps(timeSteps) {}
 	// accessors
 	double value() const;
+	Handle<BSMOption> clone() const{	// This method must be implemented to calculate implied volatility
+		return Handle<BSMOption>(new BSMAmericanOption(*this));
+	}
   private:
 	int theTimeSteps;
 };

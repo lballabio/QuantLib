@@ -47,6 +47,7 @@ double BSMNumericalOption::theta() const {
 		value();
 	return theTheta;
 }
+/*
 double BSMNumericalOption::vega() const {
 	return 0.0;
 }
@@ -55,7 +56,7 @@ double BSMNumericalOption::rho() const {
 	return 0.0;
 }
 
-/*
+*/
 double BSMNumericalOption::vega() const {
 
 	if(!vegaComputed){
@@ -76,26 +77,13 @@ double BSMNumericalOption::rho() const {
 		if(!hasBeenCalculated) 
 			value();
 		Handle<BSMOption> brandNewFD = clone();
-		Rate rMinus=theExerciseRate*(1.0-dRMultiplier);		
-		brandNewFD->setExerciseRate(rMinus);
-		theRho=(value() - brandNewFD->value())/(theExerciseRate*dRMultiplier);
+		Rate rMinus=theRiskFreeRate*(1.0-dRMultiplier);		
+		brandNewFD->setRiskFreeRate(rMinus);
+		theRho=(value() - brandNewFD->value())/(theRiskFreeRate*dRMultiplier);
   		rhoComputed  = true;
 	}
 	return theRho;
 }
-
-void BSMNumericalOption::setVolatility(double volatility) {
-	BSMOption::setVolatility(volatility);
-	hasBeenCalculated=false;
-}
-
-void BSMNumericalOption::setExerciseRate(Rate newExerciseRate) {
-	BSMOption::setExerciseRate(newExerciseRate);
-	hasBeenCalculated=false;
-}
-*/
-
-
 
 void BSMNumericalOption::setGridLimits() {
 	double prefactor = 1.0+0.05/theVolatility;		// correction for small volatilities
