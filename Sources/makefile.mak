@@ -101,26 +101,19 @@ SubLibraries:
 clean::
     cd Calendars
     $(MAKE) clean
-    cd ..
-    cd DayCounters
+    cd ..\DayCounters
     $(MAKE) clean
-    cd ..
-    cd FiniteDifferences
+    cd ..\FiniteDifferences
     $(MAKE) clean
-    cd ..
-    cd Math
+    cd ..\Math
     $(MAKE) clean
-    cd ..
-    cd MonteCarlo
+    cd ..\MonteCarlo
     $(MAKE) clean
-    cd ..
-    cd Pricers
+    cd ..\Pricers
     $(MAKE) clean
-    cd ..
-    cd Solvers1D
+    cd ..\Solvers1D
     $(MAKE) clean
-    cd ..
-    cd TermStructures
+    cd ..\TermStructures
     $(MAKE) clean
     cd ..
     if exist *.obj      del /q *.obj
