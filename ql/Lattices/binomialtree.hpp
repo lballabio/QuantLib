@@ -36,7 +36,9 @@ namespace QuantLib {
         //! Binomial tree base class
         class BinomialTree : public Tree {
           public:
-            BinomialTree(Size nColumns) : Tree(nColumns) {}
+            BinomialTree(const Handle<DiffusionProcess>& process,
+                         Time end,
+                         Size steps);
             Size size(Size i) const {
                 return i+1;
             }
@@ -46,7 +48,8 @@ namespace QuantLib {
             virtual double underlying(Size i, Size index) const = 0;
             virtual double probability(Size i, Size index, Size branch) const = 0;
           protected:
-            double x0_;
+            double x0_, driftPerStep_;
+            Time dt_;
         };
 
 
@@ -58,12 +61,12 @@ namespace QuantLib {
             EqualProbabilitiesBinomialTree(
                 const Handle<DiffusionProcess>& process,
                 Time end,
-                Size steps);
+                Size steps)
+            : BinomialTree(process, end, steps) {}
             double underlying(Size i, Size index) const;
             double probability(Size, Size, Size) const {return 0.5 ; }
           protected:
-            double driftPerStep_, up_;
-            Time dt_;
+            double up_;
         };
 
         inline double EqualProbabilitiesBinomialTree::underlying(Size i,
@@ -79,12 +82,12 @@ namespace QuantLib {
           public:
             EqualJumpsBinomialTree(const Handle<DiffusionProcess>& process,
                                    Time end,
-                                   Size steps);
+                                   Size steps)
+            : BinomialTree(process, end, steps) {}
             double underlying(Size i, Size index) const;
             double probability(Size, Size, Size branch) const;
           protected:
-            double driftPerStep_, dx_, pu_, pd_;
-            Time dt_;
+            double dx_, pu_, pd_;
         };
 
         inline double EqualJumpsBinomialTree::underlying(Size i,

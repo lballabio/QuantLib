@@ -30,16 +30,17 @@ namespace QuantLib {
     namespace Lattices {
 
 
-        EqualProbabilitiesBinomialTree::EqualProbabilitiesBinomialTree(
-            const Handle<DiffusionProcess>& process,
+        BinomialTree::BinomialTree(const Handle<DiffusionProcess>& process,
             Time end, Size steps)
-        : BinomialTree(steps+1) {
+        : Tree(steps+1) {
 
             x0_ = process->x0();
             dt_ = end/steps;
-            double drift = process->drift(0.0, x0_);
-            driftPerStep_ = drift * dt_;
+            driftPerStep_ = process->drift(0.0, x0_) * dt_;
         }
+
+
+
 
         JarrowRudd::JarrowRudd(const Handle<DiffusionProcess>& process,
             Time end, Size steps)
@@ -60,29 +61,21 @@ namespace QuantLib {
 
 
        
-        EqualJumpsBinomialTree::EqualJumpsBinomialTree(
-            const Handle<DiffusionProcess>& process, Time end, Size steps)
-        : BinomialTree(steps+1) {
-
-            x0_ = process->x0();
-            dt_ = end/steps;
-            double drift = process->drift(0.0, x0_);
-            driftPerStep_ = drift * dt_;
-        }
-
         CoxRossRubinstein::CoxRossRubinstein(
             const Handle<DiffusionProcess>& process, Time end, Size steps)
         : EqualJumpsBinomialTree(process, end, steps) {
 
             dx_ = QL_SQRT(process->variance(0.0, x0_, dt_));
             pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
+            pd_ = 1.0 - pu_;
+
             QL_REQUIRE(pu_<=1.0,
                 "CoxRossRubinstein::CoxRossRubinstein : "
                 "negative probability");
             QL_REQUIRE(pu_>=0.0,
                 "CoxRossRubinstein::CoxRossRubinstein : "
                 "negative probability");
-            pd_ = 1.0 - pu_;
+       
         }
 
 
@@ -93,13 +86,14 @@ namespace QuantLib {
             dx_ = QL_SQRT(process->variance(0.0, x0_, dt_)+
                           driftPerStep_*driftPerStep_);
             pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
+            pd_ = 1.0 - pu_;
+
             QL_REQUIRE(pu_<=1.0,
                 "CoxRossRubinstein::CoxRossRubinstein : "
                 "negative probability");
             QL_REQUIRE(pu_>=0.0,
                 "CoxRossRubinstein::CoxRossRubinstein : "
                 "negative probability");
-            pd_ = 1.0 - pu_;
         }
 
 
