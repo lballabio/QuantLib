@@ -77,13 +77,13 @@ namespace QuantLib {
                 else
                     j = Location(yBegin_,yBegin_+dataMatrix_.rows()-1,y);
 
-                
-/*               double z1=dataMatrix_[j][i];
-                double z2=dataMatrix_[j+1][i];
-                double z3=dataMatrix_[j+1][i+1];
-                double z4=dataMatrix_[j][i+1];
-*/
-                double z1=0, z2=0, z3=0, z4=0;
+
+
+                double z1=dataMatrix_[j-yBegin_]   [i-xBegin_];
+                double z2=dataMatrix_[j-yBegin_+1] [i-xBegin_];
+                double z3=dataMatrix_[j-yBegin_+1] [i-xBegin_+1];
+                double z4=dataMatrix_[j-yBegin_]   [i-xBegin_+1];
+
 
                 double t=(x-*i)/(*(i+1)-*i);
                 double u=(y-*j)/(*(j+1)-*j);
