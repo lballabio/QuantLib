@@ -35,7 +35,7 @@
 #define quantlib_pricers_average_strike_asian_pricer_h
 
 #include "ql/option.hpp"
-#include "ql/MonteCarlo/mcpricer.hpp"
+#include "ql/Pricers/mcpricer.hpp"
 
 namespace QuantLib {
 

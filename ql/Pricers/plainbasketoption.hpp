@@ -34,7 +34,7 @@
 #define quantlib_plain_basket_pricer_h
 
 #include "ql/types.hpp"
-#include "ql/MonteCarlo/multifactorpricer.hpp"
+#include "ql/Pricers/mcmultifactorpricer.hpp"
 
 namespace QuantLib {
 
@@ -43,7 +43,7 @@ namespace QuantLib {
         //! simple example of multi-factor Monte Carlo pricer
         class PlainBasketOption : public MultiFactorPricer {
           public:
-            PlainBasketOption(const Array& underlying, 
+            PlainBasketOption(const Array& underlying,
                               const Array& dividendYield,
                               const Math::Matrix &covariance,
                               Rate riskFreeRate,

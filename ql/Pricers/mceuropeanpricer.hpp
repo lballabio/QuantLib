@@ -24,7 +24,7 @@
 
 /*! \file mceuropeanpricer.hpp
     \brief simple example of Monte Carlo pricer
-    
+
     \fullpath
     ql/Pricers/%mceuropeanpricer.hpp
 */
@@ -36,7 +36,7 @@
 
 #include "ql/option.hpp"
 #include "ql/types.hpp"
-#include "ql/MonteCarlo/mcpricer.hpp"
+#include "ql/Pricers/mcpricer.hpp"
 
 namespace QuantLib {
 
@@ -45,7 +45,7 @@ namespace QuantLib {
         //! simple example of Monte Carlo pricer
         class McEuropeanPricer : public McPricer {
           public:
-            McEuropeanPricer(Option::Type type, 
+            McEuropeanPricer(Option::Type type,
                              double underlying,
                              double strike,
                              Rate dividendYield,

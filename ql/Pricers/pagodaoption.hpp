@@ -33,7 +33,7 @@
 #ifndef quantlib_pagoda_option_pricer_h
 #define quantlib_pagoda_option_pricer_h
 
-#include "ql/MonteCarlo/multifactorpricer.hpp"
+#include "ql/Pricers/mcmultifactorpricer.hpp"
 
 namespace QuantLib {
 
@@ -41,9 +41,9 @@ namespace QuantLib {
 
         //! roofed Asian option
         /*! Given a certain portfolio of assets at the end of the period
-            it is returned the minimum of a given roof and a certain fraction 
+            it is returned the minimum of a given roof and a certain fraction
             of the positive portfolio performance.
-            If the performance of the portfolio is below then the payoff 
+            If the performance of the portfolio is below then the payoff
             is null.
         */
         class PagodaOption : public MultiFactorPricer {

@@ -33,7 +33,7 @@
 #ifndef quantlib_himalaya_h
 #define quantlib_himalaya_h
 
-#include "ql/MonteCarlo/multifactorpricer.hpp"
+#include "ql/Pricers/mcmultifactorpricer.hpp"
 
 namespace QuantLib {
 
