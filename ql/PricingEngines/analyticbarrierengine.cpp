@@ -39,28 +39,28 @@ namespace QuantLib {
                 switch (barrierType) {
                   case Barrier::DownIn:
                     if (strike() >= barrier())
-                        results_.value = C(1,1) + E(1,1);
+                        results_.value = C(1,1) + E(1);
                     else
-                        results_.value = A(1) - B(1) + D(1,1) + E(1,1);
+                        results_.value = A(1) - B(1) + D(1,1) + E(1);
                     break;
                   case Barrier::UpIn:
                     if (strike() >= barrier())
-                        results_.value = A(1) + E(-1,1);
+                        results_.value = A(1) + E(-1);
                     else
-                        results_.value = B(1) - C(-1,1) + D(-1,1) + E(-1,1);
+                        results_.value = B(1) - C(-1,1) + D(-1,1) + E(-1);
                     break;
                   case Barrier::DownOut:
                     if (strike() >= barrier())
-                        results_.value = A(1) - C(1,1) + F(1,1);
+                        results_.value = A(1) - C(1,1) + F(1);
                     else
-                        results_.value = B(1) - D(1,1) + F(1,1);
+                        results_.value = B(1) - D(1,1) + F(1);
                     break;
                   case Barrier::UpOut:
                     if (strike() >= barrier())
-                        results_.value = F(-1,1);
+                        results_.value = F(-1);
                     else
                         results_.value = A(1) - B(1) + C(-1,1) - 
-                                         D(-1,1) + F(-1,1);
+                                         D(-1,1) + F(-1);
                     break;
                 }
                 break;
@@ -68,28 +68,28 @@ namespace QuantLib {
                 switch (barrierType) {
                   case Barrier::DownIn:
                     if (strike() >= barrier())
-                        results_.value = B(-1) - C(1,-1) + D(1,-1) + E(1,-1);
+                        results_.value = B(-1) - C(1,-1) + D(1,-1) + E(1);
                     else
-                        results_.value = A(-1) + E(1,-1);
+                        results_.value = A(-1) + E(1);
                     break;
                   case Barrier::UpIn:
                     if (strike() >= barrier())
-                        results_.value = A(-1) - B(-1) + D(-1,-1) + E(-1,-1);
+                        results_.value = A(-1) - B(-1) + D(-1,-1) + E(-1);
                     else
-                        results_.value = C(-1,-1) + E(-1,-1);
+                        results_.value = C(-1,-1) + E(-1);
                     break;
                   case Barrier::DownOut:
                     if (strike() >= barrier())
                         results_.value = A(-1) - B(-1) + C(1,-1) - 
-                                         D(1,-1) + F(1,-1);
+                                         D(1,-1) + F(1);
                     else
-                        results_.value = F(1,-1);
+                        results_.value = F(1);
                     break;
                   case Barrier::UpOut:
                     if (strike() >= barrier())
-                        results_.value = B(-1) - D(-1,-1) + F(-1,-1);
+                        results_.value = B(-1) - D(-1,-1) + F(-1);
                     else
-                        results_.value = A(-1) - C(-1,-1) + F(-1,-1);
+                        results_.value = A(-1) - C(-1,-1) + F(-1);
                     break;
                 }
                 break;
@@ -97,33 +97,33 @@ namespace QuantLib {
                 switch (barrierType) {
                   case Barrier::DownIn:
                     if (strike() >= barrier())
-                        results_.value = C(1,1) + E(1,1) + B(-1) - 
-                                         C(1,-1) + D(1,-1) + E(1,-1);
+                        results_.value = C(1,1) + E(1) + B(-1) - 
+                                         C(1,-1) + D(1,-1) + E(1);
                     else
                         results_.value = A(1) - B(1) + D(1,1) + 
-                                         E(1,1) + A(-1) + E(1,-1);
+                                         E(1) + A(-1) + E(1);
                     break;
                   case Barrier::UpIn:
                     if (strike() >= barrier())
-                        results_.value = A(1) + E(-1,1) + A(-1) - 
-                                         B(-1) + D(-1,-1) + E(-1,-1);
+                        results_.value = A(1) + E(-1) + A(-1) - 
+                                         B(-1) + D(-1,-1) + E(-1);
                     else
                         results_.value = B(1) - C(-1,1) + D(-1,1) + 
-                                         E(-1,1) + C(-1,-1) + E(-1,-1);
+                                         E(-1) + C(-1,-1) + E(-1);
                     break;
                   case Barrier::DownOut:
                     if (strike() >= barrier())
-                        results_.value = A(1) - C(1,1) + F(1,1) + A(-1) - 
-                                         B(-1) + C(1,-1) - D(1,-1) + F(1,-1);
+                        results_.value = A(1) - C(1,1) + F(1) + A(-1) - 
+                                         B(-1) + C(1,-1) - D(1,-1) + F(1);
                     else
-                        results_.value = B(1) - D(1,1) + F(1,1) + F(1,-1);
+                        results_.value = B(1) - D(1,1) + F(1) + F(1);
                     break;
                   case Barrier::UpOut:
                     if (strike() >= barrier())
-                        results_.value = F(-1,1) + B(-1) - D(-1,-1) + F(-1,-1);
+                        results_.value = F(-1) + B(-1) - D(-1,-1) + F(-1);
                     else
                         results_.value = A(1) - B(1) + C(-1,1) - D(-1,1) + 
-                                         F(-1,1) + A(-1) - C(-1,-1) + F(-1,-1);
+                                         F(-1) + A(-1) - C(-1,-1) + F(-1);
                     break;
                 }
                 break;
@@ -229,7 +229,7 @@ namespace QuantLib {
                         - strike() * riskFreeDiscount() * powHS0 * N2);
         }
 
-        double AnalyticBarrierEngine::E(double eta, double phi) const {
+        double AnalyticBarrierEngine::E(double eta) const {
             if (rebate() > 0) {
                 double powHS0 = QL_POW(barrier()/underlying(), 2 * mu());
                 double x2 = 
@@ -244,7 +244,7 @@ namespace QuantLib {
             }
         }
 
-        double AnalyticBarrierEngine::F(double eta, double phi) const {
+        double AnalyticBarrierEngine::F(double eta) const {
             if (rebate() > 0) {
                 double m = mu();
                 double vol = volatility();

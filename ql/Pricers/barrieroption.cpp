@@ -30,7 +30,6 @@ namespace QuantLib {
     namespace Pricers {
 
         using namespace DayCounters;
-        using namespace Instruments;
         using namespace PricingEngines;
         using namespace TermStructures;
         using namespace VolTermStructures;

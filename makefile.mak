@@ -2,7 +2,7 @@
 # main makefile for QuantLib under Borland C++
 
 .autodepend
-#.silent
+.silent
 
 # Options
 !ifdef DEBUG

@@ -10,8 +10,7 @@
 # Directories
 INCLUDE_DIR    = ..\..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
-SRCDIR         = "."
-OBJDIR         = "..\..\build\Borland"
+
 
 # Object files
 OBJS = \
@@ -33,8 +32,7 @@ TLIB      = tlib
 # Options
 CC_OPTS        = -vi- -q -c -tWM \
     -I$(INCLUDE_DIR) \
-    -I$(BCC_INCLUDE) \
-    -n$(OBJDIR)
+    -I$(BCC_INCLUDE)
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -49,20 +47,17 @@ TLIB_OPTS    = /P128
 !endif
 
 # Generic rules
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj:
+.cpp.obj:
     $(CC) $(CC_OPTS) $<
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj$(_D):
+.cpp.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # static library
-PricingEngines$(_D).lib:: $(OBJDIR) $(OBJS)
+PricingEngines$(_D).lib:: $(OBJS)
     if exist PricingEngines$(_D).lib     del PricingEngines$(_D).lib
     $(TLIB) $(TLIB_OPTS) PricingEngines$(_D).lib /a $(OBJS)
 
-#create build dir
-$(OBJDIR):
-        @if not exist $(OBJDIR) (md $(OBJDIR))
 
 # Clean up
 clean::

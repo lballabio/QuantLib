@@ -67,8 +67,8 @@ namespace QuantLib {
             double B(double phi) const;
             double C(double eta, double phi) const;
             double D(double eta, double phi) const;
-            double E(double eta, double phi) const;
-            double F(double eta, double phi) const;
+            double E(double eta) const;
+            double F(double eta) const;
         };
 
         //! Pricing engine for Barrier options using Monte Carlo

@@ -25,26 +25,27 @@ CORE_OBJS = \
     scheduler.obj$(_D) \
     voltermstructure.obj$(_D)
 
-CALENDAR_LIB        = Calendars$(_D).lib
-CALIBRATION_LIB     = CalibrationHelpers$(_D).lib
-CASHFLOWS_LIB       = CashFlows$(_D).lib
-DAYCOUNTER_LIB      = DayCounters$(_D).lib
-FDM_LIB             = FiniteDifferences$(_D).lib
-FUNCTIONS           = functions$(_D).lib
-INDEXES_LIB         = Indexes$(_D).lib
-INSTRUMENTS_LIB     = Instruments$(_D).lib
-SHORTRATEMODELS_LIB = ShortRateModels$(_D).lib
-LATTICES_LIB        = Lattices$(_D).lib
-MATH_LIB            = Math$(_D).lib
-MONTECARLO_LIB      = MonteCarlo$(_D).lib
-ONEFACTOR_LIB       = OneFactorModels$(_D).lib
-OPTIMIZATION_LIB    = Optimization$(_D).lib
-PRICER_LIB          = Pricers$(_D).lib
-PRICING_ENGINES_LIB = PricingEngines$(_D).lib
-RNG_LIB             = RandomNumbers$(_D).lib
-TERMSTRUCT_LIB      = TermStructures$(_D).lib
-TWOFACTOR_LIB       = TwoFactorModels$(_D).lib
-VOLATILITY_LIB      = Volatilities$(_D).lib
+CALENDAR_LIB        = Calendars\Calendars$(_D).lib
+CASHFLOWS_LIB       = CashFlows\CashFlows$(_D).lib
+DAYCOUNTER_LIB      = DayCounters\DayCounters$(_D).lib
+FDM_LIB             = FiniteDifferences\FiniteDifferences$(_D).lib
+FUNCTIONS           = functions\functions$(_D).lib
+INDEXES_LIB         = Indexes\Indexes$(_D).lib
+INSTRUMENTS_LIB     = Instruments\Instruments$(_D).lib
+LATTICES_LIB        = Lattices\Lattices$(_D).lib
+MATH_LIB            = Math\Math$(_D).lib
+MONTECARLO_LIB      = MonteCarlo\MonteCarlo$(_D).lib
+OPTIMIZATION_LIB    = Optimization\Optimization$(_D).lib
+PRICER_LIB          = Pricers\Pricers$(_D).lib
+PRICING_ENGINES_LIB = PricingEngines\PricingEngines$(_D).lib
+RNG_LIB             = RandomNumbers\RandomNumbers$(_D).lib
+SHORTRATEMODELS_LIB = ShortRateModels\ShortRateModels$(_D).lib
+CALIBRATION_LIB     = \
+                ShortRateModels\CalibrationHelpers\CalibrationHelpers$(_D).lib
+ONEFACTOR_LIB       = ShortRateModels\OneFactorModels\OneFactorModels$(_D).lib
+TWOFACTOR_LIB       = ShortRateModels\TwoFactorModels\TwoFactorModels$(_D).lib
+TERMSTRUCT_LIB      = TermStructures\TermStructures$(_D).lib
+VOLATILITY_LIB      = Volatilities\Volatilities$(_D).lib
 
 QUANTLIB_OBJS = \
     $(CALENDAR_LIB) \

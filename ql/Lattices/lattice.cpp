@@ -81,10 +81,10 @@ namespace QuantLib {
                        DoubleFormatter::toString(from) + ")");
 
             if (from > to) {
-                Size iFrom = t_.findIndex(from);
-                Size iTo = t_.findIndex(to);
+                int iFrom = t_.findIndex(from);
+                int iTo = t_.findIndex(to);
 
-                for (int i=int(iFrom)-1; i>=int(iTo); i--) {
+                for (int i=iFrom-1; i>=iTo; i--) {
                     Array newValues(size(i));
                     stepback(i, asset->values(), newValues);
                     asset->time() = t_[i];
