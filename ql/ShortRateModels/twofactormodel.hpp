@@ -59,7 +59,7 @@ namespace QuantLib {
         \f[
             y_t = \mu_y(t,y_t)dt + \sigma_y(t, y_t) dW_t^y
         \f]
-        where \f$ W^x \f$ and \f$ W^y \f$ are two brownian motions 
+        where \f$ W^x \f$ and \f$ W^y \f$ are two brownian motions
         satisfying
         \f[
             dW^x_t dW^y_t = \rho dt
@@ -70,7 +70,7 @@ namespace QuantLib {
         ShortRateDynamics(const boost::shared_ptr<DiffusionProcess>& xProcess,
                           const boost::shared_ptr<DiffusionProcess>& yProcess,
                           double correlation)
-        : xProcess_(xProcess), yProcess_(yProcess), 
+        : xProcess_(xProcess), yProcess_(yProcess),
           correlation_(correlation) {}
         virtual ~ShortRateDynamics() {}
 

@@ -64,15 +64,15 @@ namespace QuantLib {
       public:
         ShortRateModel(Size nArguments);
 
-        void update() { 
+        void update() {
             generateArguments();
-            notifyObservers(); 
+            notifyObservers();
         }
 
         virtual boost::shared_ptr<Lattice> tree(const TimeGrid&) const = 0;
 
         //! Calibrate to a set of market instruments (caps/swaptions)
-        /*! An additional constraint can be passed which must be 
+        /*! An additional constraint can be passed which must be
           satisfied in addition to the constraints of the model.
         */
         void calibrate(
@@ -101,7 +101,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline const boost::shared_ptr<Constraint>& 
+    inline const boost::shared_ptr<Constraint>&
     ShortRateModel::constraint() const {
         return constraint_;
     }
