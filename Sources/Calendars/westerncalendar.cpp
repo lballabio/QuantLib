@@ -27,6 +27,9 @@
 
 	$Source$
 	$Log$
+	Revision 1.14  2001/04/09 14:13:33  nando
+	all the *.hpp moved below the Include/ql level
+
 	Revision 1.13  2001/04/06 18:46:21  nando
 	changed Authors, Contributors, Licence and copyright header
 
@@ -50,7 +53,7 @@
 
 */
 
-#include "Calendars/westerncalendar.hpp"
+#include "ql/Calendars/westerncalendar.hpp"
 
 namespace QuantLib {
 

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/04/09 14:13:34  nando
+    all the *.hpp moved below the Include/ql level
+
     Revision 1.7  2001/04/06 18:46:22  nando
     changed Authors, Contributors, Licence and copyright header
 
@@ -57,10 +60,10 @@
 
 */
 
-#include "handle.hpp"
-#include "rate.hpp"
-#include "MonteCarlo/basketpathpricer.hpp"
-#include "Pricers/plainbasketoption.hpp"
+#include "ql/handle.hpp"
+#include "ql/rate.hpp"
+#include "ql/MonteCarlo/basketpathpricer.hpp"
+#include "ql/Pricers/plainbasketoption.hpp"
 
 namespace QuantLib {
 

@@ -28,6 +28,9 @@
   $Source$
 
   $Log$
+  Revision 1.5  2001/04/09 14:13:34  nando
+  all the *.hpp moved below the Include/ql level
+
   Revision 1.4  2001/04/06 18:46:21  nando
   changed Authors, Contributors, Licence and copyright header
 
@@ -48,8 +51,8 @@
 
 */
 
-#include "Pricers/binaryoption.hpp"
-#include "Math/normaldistribution.hpp"
+#include "ql/Pricers/binaryoption.hpp"
+#include "ql/Math/normaldistribution.hpp"
 
 namespace QuantLib
 {

@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.36  2001/04/09 14:17:26  nando
+    all the *.hpp moved below the Include/ql level
+
     Revision 1.35  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -35,7 +38,7 @@
 %module QuantLib
 
 %{
-#include "quantlib.hpp"
+#include "ql/quantlib.hpp"
 %}
 
 %{

@@ -26,6 +26,9 @@
 
     $Source$
     $Log$
+    Revision 1.9  2001/04/09 14:13:34  nando
+    all the *.hpp moved below the Include/ql level
+
     Revision 1.8  2001/04/06 18:46:22  nando
     changed Authors, Contributors, Licence and copyright header
 
@@ -59,9 +62,9 @@
 
 */
 
-#include "handle.hpp"
-#include "MonteCarlo/himalayapathpricer.hpp"
-#include "Pricers/himalaya.hpp"
+#include "ql/handle.hpp"
+#include "ql/MonteCarlo/himalayapathpricer.hpp"
+#include "ql/Pricers/himalaya.hpp"
 
 namespace QuantLib {
 

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.7  2001/04/09 14:13:34  nando
+    all the *.hpp moved below the Include/ql level
+
     Revision 1.6  2001/04/06 18:46:22  nando
     changed Authors, Contributors, Licence and copyright header
 
@@ -56,10 +59,10 @@
 
 */
 
-#include "Pricers/dividendoption.hpp"
-#include "Math/cubicspline.hpp"
-#include "Pricers/dividendeuropeanoption.hpp"
-#include "FiniteDifferences/valueatcenter.hpp"
+#include "ql/Pricers/dividendoption.hpp"
+#include "ql/Math/cubicspline.hpp"
+#include "ql/Pricers/dividendeuropeanoption.hpp"
+#include "ql/FiniteDifferences/valueatcenter.hpp"
 
 namespace QuantLib {
 

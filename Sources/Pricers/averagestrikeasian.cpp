@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/04/09 14:13:34  nando
+    all the *.hpp moved below the Include/ql level
+
     Revision 1.7  2001/04/06 18:46:21  nando
     changed Authors, Contributors, Licence and copyright header
 
@@ -57,13 +60,13 @@
 
 */
 
-#include "handle.hpp"
-#include "MonteCarlo/standardpathgenerator.hpp"
-#include "Pricers/averagestrikeasian.hpp"
-#include "MonteCarlo/controlvariatedpathpricer.hpp"
-#include "MonteCarlo/avgstrikeasianpathpricer.hpp"
-#include "MonteCarlo/geometricasianpathpricer.hpp"
-#include "Pricers/geometricasianoption.hpp"
+#include "ql/handle.hpp"
+#include "ql/MonteCarlo/standardpathgenerator.hpp"
+#include "ql/Pricers/averagestrikeasian.hpp"
+#include "ql/MonteCarlo/controlvariatedpathpricer.hpp"
+#include "ql/MonteCarlo/avgstrikeasianpathpricer.hpp"
+#include "ql/MonteCarlo/geometricasianpathpricer.hpp"
+#include "ql/Pricers/geometricasianoption.hpp"
 
 namespace QuantLib {
 

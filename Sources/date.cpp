@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.18  2001/04/09 14:13:33  nando
+    all the *.hpp moved below the Include/ql level
+
     Revision 1.17  2001/04/06 18:46:21  nando
     changed Authors, Contributors, Licence and copyright header
 
@@ -60,8 +63,8 @@
     Added CVS tags in Doxygen file documentation blocks
 */
 
-#include "date.hpp"
-#include "dataformatters.hpp"
+#include "ql/date.hpp"
+#include "ql/dataformatters.hpp"
 
 namespace QuantLib {
 
