@@ -148,7 +148,15 @@ namespace QuantLib {
     template <class RNG, class S>
     inline Handle<QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>
     MCBarrierEngine<RNG,S>::pathPricer() const {
+        #if defined(HAVE_BOOST)
+        Handle<PlainVanillaPayoff> payoff = 
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff,
+                   "MCBarrierEngine: non-plain payoff given");
+        #else
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
+        #endif
+
         // do this with Template Parameters?
         if (isBiased_) {
             return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
@@ -186,7 +194,6 @@ namespace QuantLib {
 
 
     template<class RNG, class S>
-    inline
     void MCBarrierEngine<RNG,S>::calculate() const {
 
         QL_REQUIRE(requiredTolerance_ != Null<double>() ||
@@ -203,14 +210,14 @@ namespace QuantLib {
         if (controlVariate_) {
 
             Handle<path_pricer_type> controlPP = controlPathPricer();
-            QL_REQUIRE(!controlPP.isNull(),
+            QL_REQUIRE(!IsNull(controlPP),
                        "MCBarrierEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
             Handle<PricingEngine> controlPE = controlPricingEngine();
 
-            QL_REQUIRE(!controlPE.isNull(),
+            QL_REQUIRE(!IsNull(controlPE),
                        "MCBarrierEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");

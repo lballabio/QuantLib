@@ -41,7 +41,9 @@ namespace QuantLib {
     class Bridge {
       public:
         typedef T_impl Impl;
-        bool isNull() const { return impl_.isNull(); }
+        bool isNull() const {
+            return IsNull(impl_);
+        }
       protected:
         Bridge(const Handle<Impl>& impl = Handle<Impl>()) : impl_(impl) {}
         Handle<Impl> impl_;

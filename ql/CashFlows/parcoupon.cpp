@@ -38,7 +38,7 @@ namespace QuantLib {
 
     double ParCoupon::amount() const {
         Handle<TermStructure> termStructure = index_->termStructure();
-        QL_REQUIRE(!termStructure.isNull(),
+        QL_REQUIRE(!IsNull(termStructure),
                    "null term structure set to par coupon");
         Date today = termStructure->todaysDate();
         Date fixing_date = fixingDate();

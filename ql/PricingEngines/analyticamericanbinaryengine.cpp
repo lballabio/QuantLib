@@ -37,7 +37,14 @@ namespace QuantLib {
                    "AnalyticAmericanBinaryEngine::calculate() : "
                    "not a CashAtHit Option");
 
+        #if defined(HAVE_BOOST)
+        Handle<PlainVanillaPayoff> payoff = 
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff,
+                   "AnalyticAmericanBinaryEngine: non-plain payoff given");
+        #else
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
+        #endif
 
         // Binary::Type binaryType = arguments_.binaryType;
         double barrier = arguments_.barrier;

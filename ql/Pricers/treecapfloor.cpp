@@ -37,10 +37,10 @@ namespace QuantLib {
 
     void TreeCapFloor::calculate() const {
 
-        QL_REQUIRE(!model_.isNull(), "TreeCapFloor: No model specified");
+        QL_REQUIRE(!IsNull(model_), "TreeCapFloor: No model specified");
         Handle<Lattice> lattice;
 
-        if (lattice_.isNull()) {
+        if (IsNull(lattice_)) {
             std::list<Time> times(0);
             Size nPeriods = arguments_.startTimes.size();
             Size i;

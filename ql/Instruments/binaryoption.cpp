@@ -59,7 +59,7 @@ namespace QuantLib {
       riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
       volTS_(volTS) {
 
-        if (engine.isNull()) {
+        if (IsNull(engine)) {
             switch (exercise.type()) {
               case Exercise::European:
                 setPricingEngine(Handle<PricingEngine>(
@@ -150,7 +150,7 @@ namespace QuantLib {
         arguments->barrier = barrier_;
         arguments->cashPayoff = cashPayoff_;
 
-        QL_REQUIRE(!underlying_.isNull(),
+        QL_REQUIRE(!IsNull(underlying_),
                    "BinaryOption::setupEngine : "
                    "null underlying price given");
         arguments->underlying = underlying_->value();

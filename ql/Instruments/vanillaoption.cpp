@@ -135,7 +135,7 @@ namespace QuantLib {
         arguments->payoff = Handle<Payoff>(
                                        new PlainVanillaPayoff(type_,strike_));
 
-        QL_REQUIRE(!underlying_.isNull(),
+        QL_REQUIRE(!IsNull(underlying_),
                    "VanillaOption::setupArguments : "
                    "null underlying price given");
         arguments->underlying = underlying_->value();
@@ -188,7 +188,7 @@ namespace QuantLib {
 
 
     void VanillaOption::arguments::validate() const {
-        QL_REQUIRE(!payoff.isNull(),
+        QL_REQUIRE(!IsNull(payoff),
                    "VanillaOption::arguments::validate() : "
                    "null payoff given");
         QL_REQUIRE(underlying != Null<double>(),
@@ -197,10 +197,10 @@ namespace QuantLib {
         QL_REQUIRE(underlying > 0.0,
                    "VanillaOption::arguments::validate() : "
                    "negative or zero underlying given");
-        QL_REQUIRE(!dividendTS.isNull(),
+        QL_REQUIRE(!IsNull(dividendTS),
                    "VanillaOption::arguments::validate() : "
                    "no dividend term structure given");
-        QL_REQUIRE(!riskFreeTS.isNull(),
+        QL_REQUIRE(!IsNull(riskFreeTS),
                    "VanillaOption::arguments::validate() : "
                    "no risk free term structure given");
         QL_REQUIRE(maturity != Null<double>(),
@@ -209,7 +209,7 @@ namespace QuantLib {
         QL_REQUIRE(maturity>=0.0,
                    "VanillaOption::arguments::validate() : "
                    "negative maturity");
-        QL_REQUIRE(!volTS.isNull(),
+        QL_REQUIRE(!IsNull(volTS),
                    "VanillaOption::arguments::validate() : "
                    "no vol term structure given");
     }

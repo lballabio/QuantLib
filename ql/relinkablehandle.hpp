@@ -51,7 +51,7 @@ namespace QuantLib {
         */
         void linkTo(const Handle<Type>& h, bool registerAsObserver = true);
         //! Checks if the contained handle points to anything
-        bool isNull() const { return h_.isNull(); }
+        bool isNull() const { return IsNull(h_); }
         //! Returns the contained handle
         const Handle<Type>& currentLink() const { return h_; }
         //! Observer interface
@@ -98,13 +98,15 @@ namespace QuantLib {
     inline void Link<Type>::linkTo(const Handle<Type>& h,
                                    bool registerAsObserver) {
         if ((h != h_) || (isObserver_ != registerAsObserver)) {
-            if (!h_.isNull() && isObserver_) {
-                unregisterWith(h_);
+            if (!IsNull(h_) && isObserver_) {
+                Handle<Observable> obs = h_;
+                unregisterWith(obs);
             }
             h_ = h;
             isObserver_ = registerAsObserver;
-            if (!h_.isNull() && isObserver_) {
-                registerWith(h_);
+            if (!IsNull(h_) && isObserver_) {
+                Handle<Observable> obs = h_;
+                registerWith(obs);
             }
             notifyObservers();
         }

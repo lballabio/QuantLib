@@ -413,23 +413,19 @@ int main(int argc, char* argv[])
         method = "MC (crude)";
         Size mcSeed = 42;
 
+        #if defined(QL_PATCH_MICROSOFT)
         Handle<PricingEngine> mcengine1(
-            #if defined(QL_PATCH_MICROSOFT)
-            /* the #else branch used to work--now Visual C++ needs this. 
-               We cannot go and see what's wrong because the other branch 
-               does work in debug mode...
-            */
             new MCEuropeanEngine<PseudoRandom>(timeSteps, false, false, 
                                                Null<int>(), 0.02, 
-                                               Null<int>(), mcSeed)
-            #else
+                                               Null<int>(), mcSeed));
+        #else
+        Handle<PricingEngine> mcengine1 =
             MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(timeSteps)
                                                 .withTolerance(0.02)
-                                                .withSeed(mcSeed)
-            #endif
-        );
+                                                .withSeed(mcSeed);
+        #endif
         option.setPricingEngine(mcengine1);
-        
+
         value = option.NPV();
         double errorEstimate = option.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
@@ -444,19 +440,18 @@ int main(int argc, char* argv[])
         method = "MC (Sobol)";
         Size nSamples = 32768;  // 2^15
 
+        #if defined(QL_PATCH_MICROSOFT)
         Handle<PricingEngine> mcengine2(
-            #if defined(QL_PATCH_MICROSOFT)
-            /* See above. */
             new MCEuropeanEngine<LowDiscrepancy>(timeSteps, false, false, 
                                                  nSamples, Null<double>(),
-                                                 Null<int>())
-            #else
+                                                 Null<int>()));
+        #else
+        Handle<PricingEngine> mcengine2 = 
             MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(timeSteps)
-                                                  .withSamples(nSamples)
-            #endif
-        );
+                                                  .withSamples(nSamples);
+        #endif
         option.setPricingEngine(mcengine2);
-        
+
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;

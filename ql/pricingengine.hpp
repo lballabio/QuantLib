@@ -24,11 +24,12 @@
 #define quantlib_pricingengine_h
 
 #include <ql/argsandresults.hpp>
+#include <ql/Patterns/observable.hpp>
 
 namespace QuantLib {
 
     //! base class for pricing engines
-    class PricingEngine {
+    class PricingEngine : public Observable {
       public:
         virtual ~PricingEngine() {}
         virtual Arguments* arguments() const = 0;

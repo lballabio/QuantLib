@@ -35,12 +35,18 @@ namespace QuantLib {
     : DiffusionProcess(s0), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS) {
 
+        Handle<BlackVolTermStructure> blackVol = (*blackVolTS).currentLink();
+
         // constant Black vol?
         Handle<BlackConstantVol> constVol;
+        #if defined(HAVE_BOOST)
+        constVol = boost::dynamic_pointer_cast<BlackConstantVol>(blackVol);
+        #else
         try {
-            constVol = (*blackVolTS).currentLink();
+            constVol = blackVol;
         } catch (...) {}
-        if (!constVol.isNull()) {
+        #endif
+        if (!IsNull(constVol)) {
             // ok, the local vol is constant too.
             localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
                 Handle<LocalVolTermStructure>(
@@ -52,10 +58,14 @@ namespace QuantLib {
 
         // ok, so it's not constant. Maybe it's strike-independent?
         Handle<BlackVarianceCurve> volCurve;
+        #if defined(HAVE_BOOST)
+        volCurve = boost::dynamic_pointer_cast<BlackVarianceCurve>(blackVol);
+        #else
         try {
-            volCurve = (*blackVolTS).currentLink();
+            volCurve = blackVol;
         } catch (...) {}
-        if (!volCurve.isNull()) {
+        #endif
+        if (!IsNull(volCurve)) {
             // ok, we can use the optimized algorithm
             localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
                 Handle<LocalVolTermStructure>(

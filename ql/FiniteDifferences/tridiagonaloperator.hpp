@@ -151,7 +151,7 @@ namespace QuantLib {
     }
 
     inline bool TridiagonalOperator::isTimeDependent() {
-        return !timeSetter_.isNull();
+        return !IsNull(timeSetter_);
     }
 
     inline const Array& TridiagonalOperator::lowerDiagonal() const{
@@ -200,7 +200,7 @@ namespace QuantLib {
     }
 
     inline void TridiagonalOperator::setTime(Time t) {
-        if (!timeSetter_.isNull())
+        if (!IsNull(timeSetter_))
             timeSetter_->setTime(t,*this);
     }
 

@@ -43,7 +43,6 @@ namespace QuantLib {
         typedef std::list<Observer*>::iterator iterator;
     };
 
-
     //! Object that gets notified when a given observable changes
     class Observer {
       public:
@@ -53,8 +52,29 @@ namespace QuantLib {
         Observer& operator=(const Observer&);
         virtual ~Observer();
         // observer interface
-        void registerWith(const Handle<Observable>&);
-        void unregisterWith(const Handle<Observable>&);
+        template <class T>
+        void registerWith(const Handle<T>& h) {
+            if (!IsNull(h)) {
+                Handle<Observable> obs = h;
+                observables_.push_front(obs);
+                obs->registerObserver(this);
+            }
+        }
+        template <class T>
+        void unregisterWith(const Handle<T>& h) {
+            if (!IsNull(h)) {
+                Handle<Observable> obs = h;
+                for (iterator i=observables_.begin(); 
+                              i!=observables_.end();
+                              ++i) {
+                    if (*i == obs) {
+                        (*i)->unregisterObserver(this);
+                        observables_.erase(i);
+                        return;
+                    }
+                }
+            }
+        }
         /*! This method must be implemented in derived classes. An
             instance of %Observer does not call this method directly:
             instead, it will be called by the observables the instance
@@ -104,27 +124,6 @@ namespace QuantLib {
     inline Observer::~Observer() {
         for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
             (*i)->unregisterObserver(this);
-    }
-
-    inline void Observer::registerWith(const Handle<Observable>& h) {
-        if (!h.isNull()) {
-            observables_.push_front(h);
-            h->registerObserver(this);
-        }
-    }
-
-    inline void Observer::unregisterWith(const Handle<Observable>& h) {
-        if (!h.isNull()) {
-            for (iterator i=observables_.begin(); 
-                 i!=observables_.end(); 
-                 ++i) {
-                if (h == *i) {
-                    (*i)->unregisterObserver(this);
-                    observables_.erase(i);
-                    return;
-                }
-            }
-        }
     }
 
 }

@@ -51,9 +51,8 @@ namespace QuantLib {
         const Handle<GenericEngine<ArgumentsType, ResultsType> >&
             originalEngine)
     : originalEngine_(originalEngine) {
-        QL_REQUIRE(!originalEngine_.isNull(),
-                   "ForwardEngine::ForwardEngine : "
-                   "null engine or wrong engine type");
+        QL_REQUIRE(!IsNull(originalEngine_),
+                   "ForwardEngine::ForwardEngine: null engine");
         originalResults_ = dynamic_cast<const ResultsType*>(
             originalEngine_->results());
         originalArguments_ = dynamic_cast<ArgumentsType*>(
@@ -67,7 +66,14 @@ namespace QuantLib {
 
         // Should this be valid also for other types of payoffs?
         // if so the hierarchy of Payoff should be modified
-        Handle<PlainVanillaPayoff> argumentsPayoff(arguments_.payoff);
+        #if defined(HAVE_BOOST)
+        Handle<PlainVanillaPayoff> argumentsPayoff = 
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(argumentsPayoff,
+                   "ForwardEngine: non-plain payoff given");
+        #else
+        Handle<PlainVanillaPayoff> argumentsPayoff = arguments_.payoff;
+        #endif
 
         originalArguments_->payoff = Handle<Payoff>(
             new PlainVanillaPayoff(

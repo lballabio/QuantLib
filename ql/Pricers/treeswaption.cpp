@@ -36,11 +36,11 @@ namespace QuantLib {
 
     void TreeSwaption::calculate() const {
 
-        QL_REQUIRE(!model_.isNull(), 
+        QL_REQUIRE(!IsNull(model_), 
                    "TreeSwaption: No model was specified");
         Handle<Lattice> lattice;
 
-        if (lattice_.isNull()) {
+        if (IsNull(lattice_)) {
             std::list<Time> times;
             Time t;
             Size i;
@@ -77,7 +77,7 @@ namespace QuantLib {
         }
 
 
-        Handle<DiscretizedAsset> swap(
+        Handle<DiscretizedSwap> swap(
                                     new DiscretizedSwap(lattice, arguments_));
         Time lastFixedPay = arguments_.fixedPayTimes.back();
         Time lastFloatPay = arguments_.floatingPayTimes.back();

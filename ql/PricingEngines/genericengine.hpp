@@ -50,8 +50,7 @@ namespace QuantLib {
     template<class ModelType, class ArgumentsType, class ResultsType>
     class GenericModelEngine 
         : public GenericEngine<ArgumentsType, ResultsType>,
-          public Observer,
-          public Observable {
+          public Observer {
       public:
         GenericModelEngine() {}
         GenericModelEngine(const Handle<ModelType>& model)

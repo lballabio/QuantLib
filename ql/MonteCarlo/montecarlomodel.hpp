@@ -65,10 +65,10 @@ namespace QuantLib {
           sampleAccumulator_(sampleAccumulator),
           isAntitheticVariate_(antitheticVariate),
           cvPathPricer_(cvPathPricer), cvOptionValue_(cvOptionValue) {
-            if (cvPathPricer_.isNull())
-                isControlVariate_=false;
+            if (IsNull(cvPathPricer_))
+                isControlVariate_ = false;
             else
-                isControlVariate_=true;
+                isControlVariate_ = true;
         }
         void addSamples(Size samples);
         const stats_type& sampleAccumulator(void) const;

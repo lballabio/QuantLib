@@ -22,16 +22,38 @@
 #ifndef quantlib_handle_h
 #define quantlib_handle_h
 
-#include <ql/errors.hpp>
-#include <typeinfo>
+#include <ql/qldefines.hpp>
 
-// The implementation of this class is taken from
-// "The C++ Programming Language", 3rd edition, B.Stroustrup
+#if defined(HAVE_BOOST)
+
+#include <boost/shared_ptr.hpp>
+
+#define Handle boost::shared_ptr
 
 namespace QuantLib {
 
+    template <class T>
+    bool IsNull(const boost::shared_ptr<T>&);
+
+    template <class T>
+    inline bool IsNull(const boost::shared_ptr<T>& p) {
+        return !p;
+    }
+
+}
+
+#else
+
+#include <ql/errors.hpp>
+#include <typeinfo>
+
+namespace QuantLib {
+
+    // The implementation of this class was originally taken from
+    // B. Stroustrup, "The C++ Programming Language", 3rd edition.
+
     template <class T> class Handle;
-    
+
     class HandleCopier {
       public:
         template <class T, class U>
@@ -163,6 +185,9 @@ namespace QuantLib {
         mutable bool owns_;
     };
 
+    template <class T>
+    bool IsNull(const Handle<T>&);
+
 
     // inline definitions
 
@@ -222,7 +247,14 @@ namespace QuantLib {
         return (n_ != h.n_);
     }
 
+    template <class T>
+    bool IsNull(const Handle<T>& h) {
+        return h.isNull();
+    }
+
 }
 
+
+#endif
 
 #endif

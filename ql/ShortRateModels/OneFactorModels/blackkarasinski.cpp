@@ -77,8 +77,13 @@ namespace QuantLib {
         Handle<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
-        Handle<TermStructureFittingParameter::NumericalImpl> impl =
-            phi.implementation();
+        typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
+        #if defined(HAVE_BOOST)
+        Handle<NumericalImpl> impl = 
+            boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        #else
+        Handle<NumericalImpl> impl = phi.implementation();
+        #endif
         impl->reset();
         double value = 1.0;
         double vMin = -50.0;

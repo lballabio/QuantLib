@@ -36,8 +36,16 @@ namespace QuantLib {
                    "AnalyticBinaryEngine::calculate() : "
                    "not an European Option");
 
-        Option::Type type = 
-            Handle<PlainVanillaPayoff>(arguments_.payoff)->optionType();
+        #if defined(HAVE_BOOST)
+        Handle<PlainVanillaPayoff> plainPayoff = 
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(plainPayoff,
+                   "AnalyticEuropeanBinaryEngine: non-plain payoff given");
+        #else
+        Handle<PlainVanillaPayoff> plainPayoff = arguments_.payoff;
+        #endif
+
+        Option::Type type = plainPayoff->optionType();
         double payoff = arguments_.cashPayoff;
 
         double u = arguments_.underlying;

@@ -588,7 +588,12 @@ int main(int argc, char* argv[])
         // value contained in the MarketElement triggers a new bootstrapping
         // of the curve and a repricing of the swap.
 
+        #if defined(HAVE_BOOST)
+        Handle<SimpleMarketElement> fiveYearsRate = 
+            boost::dynamic_pointer_cast<SimpleMarketElement>(s5yRate);
+        #else
         Handle<SimpleMarketElement> fiveYearsRate = s5yRate;
+        #endif
         fiveYearsRate->setValue(0.0460);
         std::cout << std::endl <<  "*** 5Y swap goes up to 4.60%" << std::endl;
 

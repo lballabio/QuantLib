@@ -256,14 +256,14 @@ namespace QuantLib {
         if (controlVariate_) {
 
             Handle<path_pricer_type> controlPP = controlPathPricer();
-            QL_REQUIRE(!controlPP.isNull(),
+            QL_REQUIRE(!IsNull(controlPP),
                        "MCVanillaEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
             Handle<PricingEngine> controlPE = controlPricingEngine();
 
-            QL_REQUIRE(!controlPE.isNull(),
+            QL_REQUIRE(!IsNull(controlPE),
                        "MCVanillaEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");

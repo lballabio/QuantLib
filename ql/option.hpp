@@ -34,7 +34,7 @@ namespace QuantLib {
                const std::string& isinCode = "",
                const std::string& description = "")
         : Instrument(isinCode, description) {
-            if (!engine.isNull())
+            if (!IsNull(engine))
                 setPricingEngine(engine);
         }
     };

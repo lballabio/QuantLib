@@ -207,3 +207,18 @@ AC_DEFUN([QL_CHECK_GMTIME],
         ])
     ])
 ])
+
+# QL_CHECK_BOOST
+# -----------------------
+# Check whether the Boost libraries are available.
+# It defines HAVE_BOOST.
+AC_DEFUN([QL_CHECK_BOOST],
+[AC_CHECK_HEADER(
+    [boost/shared_ptr.hpp],
+    [AC_DEFINE(QL_TO_UPPER([have_boost]),[1],
+               [Define this if the Boost library is available.])
+    ],
+    [AC_MSG_WARN([Boost not found])
+    ])
+])
+

@@ -61,17 +61,17 @@ namespace {
         return Handle<PricingEngine>(new BlackCapFloor(model));
     }
 
-    Handle<Instrument> makeCapFloor(CapFloor::Type type,
-                                    const std::vector<Handle<CashFlow> >& leg,
-                                    Rate strike, 
-                                    double volatility) {
+    Handle<CapFloor> makeCapFloor(CapFloor::Type type,
+                                  const std::vector<Handle<CashFlow> >& leg,
+                                  Rate strike, 
+                                  double volatility) {
         switch (type) {
           case CapFloor::Cap:
-            return Handle<Instrument>(
+            return Handle<CapFloor>(
                new Cap(leg, std::vector<Rate>(1, strike),
                        termStructure_, makeEngine(volatility)));
           case CapFloor::Floor:
-            return Handle<Instrument>(
+            return Handle<CapFloor>(
                 new Floor(leg, std::vector<Rate>(1, strike),
                           termStructure_, makeEngine(volatility)));
           default:
@@ -192,7 +192,7 @@ void CapFloorTest::testConsistency() {
       for (Size j=0; j<LENGTH(cap_rates); j++) {
         for (Size k=0; k<LENGTH(floor_rates); k++) {
           for (Size l=0; l<LENGTH(vols); l++) {
-              
+
               std::vector<Handle<CashFlow> > leg = 
                   makeLeg(startDate,lengths[i]);
               Handle<Instrument> cap = 
@@ -204,7 +204,7 @@ void CapFloorTest::testConsistency() {
               Collar collar(leg,std::vector<Rate>(1,cap_rates[j]),
                             std::vector<Rate>(1,floor_rates[k]),
                             termStructure_,makeEngine(vols[l]));
-              
+
               if (QL_FABS((cap->NPV()-floor->NPV())-collar.NPV()) > 1.0e-10) {
                   CPPUNIT_FAIL(
                     "inconsistency between cap, floor and collar:\n"
@@ -240,7 +240,7 @@ void CapFloorTest::testParity() {
     for (Size i=0; i<LENGTH(lengths); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(vols); k++) {
-                
+
             std::vector<Handle<CashFlow> > leg = 
                 makeLeg(startDate,lengths[i]);
             Handle<Instrument> cap = 
@@ -310,7 +310,7 @@ void CapFloorTest::testImpliedVolatility() {
 
                         double value = capfloor->NPV();
                         double implVol = 0.0; // just to remove a warning...
-                  
+
                         try {
                             implVol = 
                                 capfloor->impliedVolatility(value, 

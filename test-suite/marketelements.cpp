@@ -38,10 +38,10 @@ namespace {
 
 void MarketElementTest::testObservable() {
 
-    Handle<MarketElement> me(new SimpleMarketElement(0.0));
+    Handle<SimpleMarketElement> me(new SimpleMarketElement(0.0));
     Flag f;
     f.registerWith(me);
-    Handle<SimpleMarketElement>(me)->setValue(3.14);
+    me->setValue(3.14);
 
     if (!f.isUp())
         CPPUNIT_FAIL("Observer was not notified of market element change");
@@ -50,17 +50,17 @@ void MarketElementTest::testObservable() {
 
 void MarketElementTest::testObservableHandle() {
 
-    Handle<MarketElement> me1(new SimpleMarketElement(0.0));
+    Handle<SimpleMarketElement> me1(new SimpleMarketElement(0.0));
     RelinkableHandle<MarketElement> h(me1);
     Flag f;
     f.registerWith(h);
 
-    Handle<SimpleMarketElement>(me1)->setValue(3.14);
+    me1->setValue(3.14);
     if (!f.isUp())
         CPPUNIT_FAIL("Observer was not notified of market element change");
 
     f.lower();
-    Handle<MarketElement> me2(new SimpleMarketElement(0.0));
+    Handle<SimpleMarketElement> me2(new SimpleMarketElement(0.0));
     h.linkTo(me2);
     if (!f.isUp())
         CPPUNIT_FAIL("Observer was not notified of market element change");

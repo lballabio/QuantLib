@@ -23,6 +23,16 @@
 
 namespace QuantLib {
 
+    #if defined(HAVE_BOOST)
+    namespace {
+        void no_deletion(TermStructure*) {}
+    }
+    #else
+    namespace {
+        bool no_deletion = false;
+    }
+    #endif
+
     RateHelper::RateHelper(const RelinkableHandle<MarketElement>& quote)
     : quote_(quote), termStructure_(0) {
         registerWith(quote_);
@@ -262,8 +272,8 @@ namespace QuantLib {
     void SwapRateHelper::setTermStructure(TermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
-        termStructureHandle_.linkTo(
-                                    Handle<TermStructure>(t,false),false);
+        termStructureHandle_.linkTo(Handle<TermStructure>(t,no_deletion),
+                                    false);
         RateHelper::setTermStructure(t);
         Date today = termStructure_->todaysDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);

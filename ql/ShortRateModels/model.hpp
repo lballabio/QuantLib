@@ -32,7 +32,7 @@ namespace QuantLib {
 
     //! Affine model class
     /*! This is the base class for analytically tractable models */
-    class AffineModel {
+    class AffineModel : public virtual Observable {
       public:
         //! Implied discount curve
         virtual DiscountFactor discount(Time t) const = 0;
@@ -47,7 +47,7 @@ namespace QuantLib {
     /*! This is a base class for models that can reprice exactly
         any discount bond.
     */
-    class TermStructureConsistentModel {
+    class TermStructureConsistentModel : public virtual Observable {
       public:
         TermStructureConsistentModel(
                          const RelinkableHandle<TermStructure>& termStructure)
@@ -60,7 +60,7 @@ namespace QuantLib {
     };
 
     //! Abstract short-rate model class
-    class ShortRateModel : public Observer, public Observable {
+    class ShortRateModel : public Observer, public virtual Observable {
       public:
         ShortRateModel(Size nArguments);
 

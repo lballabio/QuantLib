@@ -23,6 +23,16 @@
 
 namespace QuantLib {
 
+    #if defined(HAVE_BOOST)
+    namespace {
+        void no_deletion(ShortRateModel*) {}
+    }
+    #else
+    namespace {
+        bool no_deletion = false;
+    }
+    #endif
+
     ShortRateModel::ShortRateModel(Size nArguments) 
     : arguments_(nArguments),
       constraint_(new PrivateConstraint(arguments_)) {}
@@ -32,7 +42,7 @@ namespace QuantLib {
         CalibrationFunction( 
                   ShortRateModel* model,
                   const std::vector<Handle<CalibrationHelper> >& instruments) 
-        : model_(model, false), instruments_(instruments) {}
+        : model_(model, no_deletion), instruments_(instruments) {}
         virtual ~CalibrationFunction() {}
 
         virtual double value(const Array& params) const {

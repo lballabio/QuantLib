@@ -24,6 +24,7 @@
 
 #include <ql/Patterns/lazyobject.hpp>
 #include <ql/pricingengine.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
@@ -119,7 +120,7 @@ namespace QuantLib {
     }
 
     inline void Instrument::setPricingEngine(const Handle<PricingEngine>& e) {
-        QL_REQUIRE(!e.isNull(), "Instrument: null pricing engine");
+        QL_REQUIRE(!IsNull(e), "Instrument: null pricing engine");
         try {
             unregisterWith(engine_);
         } catch (...) {
@@ -153,7 +154,7 @@ namespace QuantLib {
     }
 
     inline void Instrument::performCalculations() const {
-        QL_REQUIRE(!engine_.isNull(), "Instrument: null pricing engine");
+        QL_REQUIRE(!IsNull(engine_), "Instrument: null pricing engine");
         engine_->reset();
         setupArguments(engine_->arguments());
         engine_->arguments()->validate();

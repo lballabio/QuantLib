@@ -48,7 +48,7 @@ namespace QuantLib {
       riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
       volTS_(volTS) {
 
-        if (engine.isNull())
+        if (IsNull(engine))
             setPricingEngine(Handle<PricingEngine>(new AnalyticBarrierEngine));
 
         registerWith(underlying_);
@@ -129,7 +129,7 @@ namespace QuantLib {
         arguments->barrier = barrier_;
         arguments->rebate = rebate_;
 
-        QL_REQUIRE(!underlying_.isNull(),
+        QL_REQUIRE(!IsNull(underlying_),
                    "BarrierOption::setupArguments : "
                    "null underlying price given");
         arguments->underlying = underlying_->value();

@@ -48,9 +48,8 @@ namespace QuantLib {
         const Handle<GenericEngine<ArgumentsType, ResultsType> >&
             originalEngine)
     : originalEngine_(originalEngine) {
-        QL_REQUIRE(!originalEngine_.isNull(),
-                   "QuantoEngine::QuantoEngine : "
-                   "null engine or wrong engine type");
+        QL_REQUIRE(!IsNull(originalEngine_),
+                   "QuantoEngine::QuantoEngine : null engine");
         originalResults_ = dynamic_cast<const ResultsType*>(
             originalEngine_->results());
         originalArguments_ = dynamic_cast<ArgumentsType*>(
@@ -64,8 +63,16 @@ namespace QuantLib {
         double exchangeRateATMlevel = 1.0;
 
         originalEngine_->reset();
+
         // determine strike from payoff
-        Handle<StrikedTypePayoff> payoff(arguments_.payoff);
+        #if defined(HAVE_BOOST)
+        Handle<StrikedTypePayoff> payoff = 
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff,
+                   "QuantoEngine: non-plain payoff given");
+        #else
+        Handle<StrikedTypePayoff> payoff = arguments_.payoff;
+        #endif
         double strike = payoff->strike();
 
         originalArguments_->payoff = arguments_.payoff;

@@ -26,7 +26,14 @@ namespace QuantLib {
     // calculate
     void AmericanMCVanillaEngine::calculate() const {
         // get the parameters
+        #if defined(HAVE_BOOST)
+        Handle<PlainVanillaPayoff> arg_payoff = 
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(arg_payoff,
+                   "AmericanMCVanillaEngine: non-plain payoff given");
+        #else
         Handle<PlainVanillaPayoff> arg_payoff = arguments_.payoff;
+        #endif
         Option::Type    type    = arg_payoff->optionType();
         double          s0      = arguments_.underlying;
         double          strike  = arg_payoff->strike();

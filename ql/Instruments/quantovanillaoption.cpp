@@ -42,7 +42,7 @@ namespace QuantLib {
       foreignRiskFreeTS_(foreignRiskFreeTS),
       exchRateVolTS_(exchRateVolTS),
       correlation_(correlation) {
-        QL_REQUIRE(!engine.isNull(),
+        QL_REQUIRE(!IsNull(engine),
                    "QuantoVanillaOption::QuantoVanillaOption : "
                    "null engine or wrong engine type");
         registerWith(foreignRiskFreeTS_);
@@ -91,7 +91,7 @@ namespace QuantLib {
 
         arguments->exchRateVolTS = exchRateVolTS_;
 
-        QL_REQUIRE(!correlation_.isNull(),
+        QL_REQUIRE(!IsNull(correlation_),
                    "QuantoVanillaOption::setupArguments() : "
                    "null correlation given");
         arguments->correlation =

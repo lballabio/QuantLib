@@ -219,9 +219,9 @@ int main(int argc, char* argv[])
         // Building time-grid
         TimeGrid grid(times.begin(), times.end(), 30);
 
-        Handle<ShortRateModel> modelHW(new HullWhite(rhTermStructure));
-        Handle<ShortRateModel> modelHW2(new HullWhite(rhTermStructure));
-        Handle<ShortRateModel> modelBK(new BlackKarasinski(rhTermStructure));
+        Handle<HullWhite> modelHW(new HullWhite(rhTermStructure));
+        Handle<HullWhite> modelHW2(new HullWhite(rhTermStructure));
+        Handle<BlackKarasinski> modelBK(new BlackKarasinski(rhTermStructure));
 
         std::cout << "Calibrating to swaptions" << std::endl;
 
@@ -262,7 +262,12 @@ int main(int argc, char* argv[])
         std::vector<Date> bermudanDates;
         const std::vector<Handle<CashFlow> >& leg = swap->floatingLeg();
         for (i=0; i<leg.size(); i++) {
+            #if defined(HAVE_BOOST)
+            Handle<Coupon> coupon = 
+                boost::dynamic_pointer_cast<Coupon>(leg[i]);
+            #else
             Handle<Coupon> coupon = leg[i];
+            #endif
             bermudanDates.push_back(coupon->accrualStartDate());
         }
 

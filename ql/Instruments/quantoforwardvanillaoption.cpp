@@ -43,7 +43,7 @@ namespace QuantLib {
                           exercise, volTS, engine, foreignRiskFreeTS, 
                           exchRateVolTS, correlation, isinCode, description), 
       moneyness_(moneyness), resetDate_(resetDate) {
-        QL_REQUIRE(!engine.isNull(),
+        QL_REQUIRE(!IsNull(engine),
                    "QuantoForwardVanillaOption::QuantoForwardVanillaOption : "
                    "null engine or wrong engine type");
     }
@@ -59,7 +59,7 @@ namespace QuantLib {
 
         arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
         arguments->exchRateVolTS = exchRateVolTS_;
-        QL_REQUIRE(!correlation_.isNull(),
+        QL_REQUIRE(!IsNull(correlation_),
                    "QuantoVanillaOption::setupArguments() : "
                    "null correlation given");
         arguments->correlation =

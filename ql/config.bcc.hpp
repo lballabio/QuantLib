@@ -23,6 +23,9 @@
    modify the following definitions to suit your preferences.
  *************************************************************/
 
+/* Define this if the Boost library is available. */
+// #define HAVE_BOOST 1
+
 /* Define this if error messages should include file and line information. */
 // #define QL_ERROR_LINES 1
 

@@ -34,7 +34,7 @@ namespace QuantLib {
                 spread,refPeriodStart,refPeriodEnd) {}
 
     double ShortFloatingRateCoupon::amount() const {
-        QL_REQUIRE(!index()->termStructure().isNull(),
+        QL_REQUIRE(!IsNull(index()->termStructure()),
                    "null term structure set to par coupon");
         Date today = index()->termStructure()->todaysDate();
         Date fixing_date = fixingDate();

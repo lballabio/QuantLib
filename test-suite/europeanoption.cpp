@@ -45,15 +45,15 @@ namespace {
             return 1.0e+10;
     }
 
-    Handle<Instrument> makeEuropeanOption(Option::Type type,
-                                          const Handle<MarketElement>& u,
-                                          double k,
-                                          const Handle<TermStructure>& q,
-                                          const Handle<TermStructure>& r,
-                                          const Date& exDate,
-                                          const Handle<BlackVolTermStructure>& 
-                                              vol,
-                                          EngineType engineType = Analytic) {
+    Handle<VanillaOption> 
+    makeEuropeanOption(Option::Type type,
+                       const Handle<MarketElement>& u,
+                       double k,
+                       const Handle<TermStructure>& q,
+                       const Handle<TermStructure>& r,
+                       const Date& exDate,
+                       const Handle<BlackVolTermStructure>& vol,
+                       EngineType engineType = Analytic) {
         Handle<PricingEngine> engine;
         switch (engineType) {
           case Analytic:
@@ -79,23 +79,31 @@ namespace {
                 new BinomialVanillaEngine<Tian>(800));
             break;
           case PseudoMonteCarlo:
+            #if defined(QL_PATCH_MICROSOFT)
             engine = Handle<PricingEngine>(
-                MakeMCEuropeanEngine<PseudoRandom>()
-                    .withStepsPerYear(1)
-                    .withTolerance(0.05)
-                    .withSeed(42));
+                            new MCEuropeanEngine(1, false, false, Null<int>(),
+                                                 0.05, Null<int>(), 42));
+            #else
+            engine = MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(1)
+                                                         .withTolerance(0.05)
+                                                         .withSeed(42);
+            #endif
             break;
           case QuasiMonteCarlo:
+            #if defined(QL_PATCH_MICROSOFT)
             engine = Handle<PricingEngine>(
-                MakeMCEuropeanEngine<LowDiscrepancy>()
-                    .withStepsPerYear(1)
-                    .withSamples(1023));
+                            new MCEuropeanEngine(1, false, false, 1023,
+                                                 Null<double>(), Null<int>()));
+            #else
+            engine = MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(1)
+                                                           .withSamples(1023);
+            #endif
             break;
           default:
             throw Error("Unknown engine type");
         }
 
-        return Handle<Instrument>(
+        return Handle<VanillaOption>(
             new VanillaOption(type, RelinkableHandle<MarketElement>(u), k,
                               RelinkableHandle<TermStructure>(q),
                               RelinkableHandle<TermStructure>(r),

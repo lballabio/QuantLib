@@ -51,7 +51,8 @@ namespace QuantLib {
         Handle<path_pricer_type> pathPricer() const;
     };
 
-    // helper class for easier instantiation
+    #if !defined(QL_PATCH_MICROSOFT)
+    // Visual cannot cope with the conversion operator to Handle
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEuropeanEngine {
       public:
@@ -65,14 +66,14 @@ namespace QuantLib {
         MakeMCEuropeanEngine& withAntitheticVariate();
         MakeMCEuropeanEngine& withControlVariate();
         // conversion to pricing engine
-        operator PricingEngine*() const;
+        operator Handle<PricingEngine>() const;
       private:
         bool antithetic_, controlVariate_;
         Size steps_, samples_, maxSamples_;
         double tolerance_;
         long seed_;
     };
-
+    #endif
 
     // inline definitions
 
@@ -98,7 +99,16 @@ namespace QuantLib {
     inline 
     Handle<QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>
     MCEuropeanEngine<RNG,S>::pathPricer() const {
+
+        #if defined(HAVE_BOOST)
+        Handle<PlainVanillaPayoff> payoff = 
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff,
+                   "AnalyticAmericanBinaryEngine: non-plain payoff given");
+        #else
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
+        #endif
+
         return Handle<MCEuropeanEngine<RNG,S>::path_pricer_type>(
             new EuropeanPathPricer(payoff->optionType(),
                                    arguments_.underlying, 
@@ -144,6 +154,8 @@ namespace QuantLib {
         return TimeGrid(arguments_.maturity, calc.size());
     }
 
+
+    #if !defined(QL_PATCH_MICROSOFT)
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>::MakeMCEuropeanEngine()
@@ -212,15 +224,18 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline 
-    MakeMCEuropeanEngine<RNG,S>::operator PricingEngine*() const {
+    MakeMCEuropeanEngine<RNG,S>::operator Handle<PricingEngine>() const {
         QL_REQUIRE(steps_ != Size(Null<int>()),
                    "MakeMCEuropeanEngine<RNG,S>: "
                    "max number of steps per year not given");
-        return new MCEuropeanEngine<RNG,S>(steps_, antithetic_, 
-                                           controlVariate_, 
-                                           samples_, tolerance_, 
-                                           maxSamples_, seed_);
+        return Handle<PricingEngine>(
+                             new MCEuropeanEngine<RNG,S>(steps_, antithetic_, 
+                                                         controlVariate_, 
+                                                         samples_, tolerance_, 
+                                                         maxSamples_, seed_));
     }
+
+    #endif
 
 }
 

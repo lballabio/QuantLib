@@ -83,7 +83,7 @@ namespace QuantLib {
             if (j == stoppingTimes_.size()) {
                 // No stopping time was hit
                 evolver_.step(a,t);
-                if (!condition.isNull())
+                if (!IsNull(condition))
                     condition->applyTo(a, t-dt);
             } else {
                 // A stopping time was hit
@@ -91,13 +91,13 @@ namespace QuantLib {
                 // First baby step from t to stoppingTimes_[j]
                 evolver_.setStep(t-stoppingTimes_[j]);
                 evolver_.step(a,t);
-                if (!condition.isNull())
+                if (!IsNull(condition))
                     condition->applyTo(a,stoppingTimes_[j]);
 
                 // Second baby step from stoppingTimes_[j] to t-dt
                 evolver_.setStep(stoppingTimes_[j] - (t-dt));
                 evolver_.step(a,stoppingTimes_[j]);
-                if (!condition.isNull())
+                if (!IsNull(condition))
                     condition->applyTo(a,t-dt);
 
                 evolver_.setStep(dt);
