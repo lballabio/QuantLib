@@ -1,11 +1,22 @@
 
-the version number is in:
+The convention for the names of the CVS branches is Rxxyyzzln where:
+R stand for Release
+xx is the major number
+yy is the minor number
+zz is the minor-minor number
+l  can be a,b,f for alpha, beta, final respectively
+n  is an ordinal number
+
+e.g. R000300a2 stands for Release 0.3.1a2
+
+The version number is in:
     QuantLib/configure.in,
     QuantLib/QuantLib.nsi,
     QuantLib/Docs/quantlib.doxy,
     QuantLib/ql/qldefines.hpp,
     QuantLib-Python/setup.py
-    QuantLib-Ruby/makedist.rb
 
-Also update any script for automatic building with hard coded version number
-(e.g. release-job.sh, release-job.bat, night-job.bat)
+It's also in some script used for automatic building:
+    release-job.sh
+    release-job.bat
+    night-job.bat
