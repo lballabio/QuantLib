@@ -35,7 +35,7 @@ namespace QuantLib {
                  const RelinkableHandle<TermStructure>& h,
                  const DayCounter& dc = Actual365())
         : Xibor("GBPLibor", n, units, 0, GBP,
-                London(), true, ModifiedFollowing, dc, h) {}
+                GreatBritain(), true, ModifiedFollowing, dc, h) {}
     };
 
 }
