@@ -28,6 +28,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.19  2001/08/28 10:15:37  nando
+// comments removed
+//
 // Revision 1.18  2001/08/23 14:39:50  nando
 // miscellanea
 //
@@ -57,13 +60,6 @@
 // disable useless warning
 // 'identifier' : decorated name length exceeded,
 //                name was truncated in debug info
-/*
-#pragma warning(disable: 4786)
-
-#include "stdlib.h"
-#include <iostream>
-#include <ctime>
-*/
 
 #include "ql\quantlib.hpp"
 
