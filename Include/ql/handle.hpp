@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/05/15 08:08:05  lballabio
+    Restored 'owns' flag
+
     Revision 1.2  2001/05/14 12:47:31  lballabio
     Handle always owns the contained pointer
 
@@ -55,7 +58,7 @@ namespace QuantLib {
     //! Reference-counted pointer
     /*! This class acts as a proxy to a pointer contained in it. Such pointer is
         owned by the handle, i.e., the handle will be responsible for its
-        deletion.
+        deletion, unless explicitly stated by the programmer.
         A count of the references to the contained pointer is incremented every
         time a handle is copied, and decremented every time a handle is deleted
         or goes out of scope. This mechanism ensures on one hand, that the
@@ -80,6 +83,16 @@ namespace QuantLib {
         \code
         Handle<SomeObj> h1(new SomeObj);    // this is as safe as can be.
         \endcode
+
+        \warning When the programmer keeps the ownership of the pointer, as
+        explicitly declared in
+        \code
+        SomeObj so;
+        Handle<SomeObj> h(&so,false);
+        \endcode
+        it is responsibility of the programmer to make sure that the object
+        remain in scope as long as there are handles pointing to it. Also, the
+        programmer must explicitly delete the object if required.
     */
     template <class Type>
     class Handle {
@@ -88,17 +101,22 @@ namespace QuantLib {
         //@{
         //! Default constructor returning a null handle.
         Handle()
-        : ptr_(0), n_(new int(1)) {}
+        : ptr_(0), n_(new int(1)), owns_(true) {}
         //! Constructor taking a pointer.
-        /*! The handle will be responsible for the deletion of the pointer.
+        /*! If <b>owns</b> is set to <tt>true</tt> (the default), the handle
+            will be responsible for the deletion of the pointer. If it is set to
+            <tt>false</tt>, the programmer must make sure that the pointed
+            object remains in scope for the lifetime of the handle and its
+            copies. Destruction of the object is also responsibility of the
+            programmer.
         */
-        explicit Handle(Type* ptr)
-        : ptr_(ptr), n_(new int(1)) {}
+        explicit Handle(Type* ptr, bool owns=true)
+        : ptr_(ptr), n_(new int(1)), owns_(owns) {}
         //! Copy from a handle to a different but compatible type
         template <class Type2> explicit Handle(const Handle<Type2>& from)
         : ptr_(0), n_(new int(1)) { HandleCopier().copy(*this,from); }
         Handle(const Handle& from)
-        : ptr_(from.ptr_), n_(from.n_) { (*n_)++; }
+        : ptr_(from.ptr_), n_(from.n_), owns_(from.owns_) { (*n_)++; }
         ~Handle();
         Handle& operator=(const Handle& from);
         //@}
@@ -118,6 +136,7 @@ namespace QuantLib {
       private:
         Type* ptr_;
         int* n_;
+        bool owns_;
         // used to convert handles to different but compatible types
         class HandleCopier;
         friend class HandleCopier;
@@ -128,12 +147,13 @@ namespace QuantLib {
               Handle<Type2> from) const {
                 if (to.ptr_ != from.ptr_) {
                     if (--(*(to.n_)) == 0) {
-                        if (to.ptr_ != 0)
+                        if (to.ptr_ != 0 && to.owns_)
                             delete to.ptr_;
                         delete to.n_;
                     }
                     to.ptr_  = from.ptr_;
                     to.n_    = from.n_;
+                    to.owns_ = from.owns_;
                     (*(to.n_))++;
                 }
             }
@@ -146,7 +166,7 @@ namespace QuantLib {
     template <class Type>
     inline Handle<Type>::~Handle() {
         if (--(*n_) == 0) {
-            if (ptr_ != 0)
+            if (ptr_ != 0 && owns_)
                 delete ptr_;
             delete n_;
         }
@@ -156,12 +176,13 @@ namespace QuantLib {
     inline Handle<Type>& Handle<Type>::operator=(const Handle& from) {
         if (ptr_ != from.ptr_) {
             if (--(*n_) == 0) {
-                if (ptr_ != 0)
+                if (ptr_ != 0 && owns_)
                     delete ptr_;
                 delete n_;
             }
             ptr_  = from.ptr_;
             n_    = from.n_;
+            owns_ = from.owns_;
             (*n_)++;
         }
         return *this;
