@@ -20,12 +20,15 @@
  * QuantLib license is also available at:
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
-Ã"""
-#
-# $Id$
-#
-# First version by Enrico Sirola
-#
+
+"""
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.9  2001/04/20 13:24:39  nando
+    CVS tags
+
+"""
 
 from distutils.core import setup, Extension
 from distutils.cmd import Command
@@ -137,7 +140,7 @@ if sys.platform == 'win32':
         library_dirs = [quantLibInstallDirectory + '\\lib\\win32\\VisualStudio']
     else:
         raise('Please set environment variable "QL_DIR" to installation directory of QuantLib')
-    
+
 else:
     include_dirs = ["/usr/local/include"]
 
@@ -154,7 +157,7 @@ def my_init_posix():
 sysconfig._init_posix = my_init_posix
 
 
-setup ( cmdclass = cmdclass, 
+setup ( cmdclass = cmdclass,
         name = "pyQuantLib",
         version = "0.1.1",
         maintainer = "Enrico Sirola",
@@ -162,13 +165,13 @@ setup ( cmdclass = cmdclass,
         url = "http://quantlib.sourceforge.net",
         py_modules = ["QuantLib"],
         ext_modules = [
-            Extension ( "QuantLibc", 
-                            ["quantlib_wrap.cpp"], 
+            Extension ( "QuantLibc",
+                            ["quantlib_wrap.cpp"],
                             libraries = ["QuantLib"],
-                            include_dirs = include_dirs, 
+                            include_dirs = include_dirs,
                             library_dirs = library_dirs
-                        ) 
-                ] 
+                        )
+                ]
         )
 
 
