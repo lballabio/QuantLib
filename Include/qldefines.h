@@ -21,6 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+// $Id$
+// $Sources$
+// $Log$
+// Revision 1.14  2000/12/13 17:52:01  nando
+// CVS $Id$ and $Sources$ and $Log$ keywords added
+//
+
+
+
+
 /*! \mainpage
 
     \section copyright Copyright
