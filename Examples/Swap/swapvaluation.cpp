@@ -22,6 +22,7 @@
 
 // the only header you need to use QuantLib
 #include <ql/quantlib.hpp>
+#include <iostream>
 #include <iomanip>
 
 using namespace QuantLib;

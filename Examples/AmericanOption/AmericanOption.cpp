@@ -18,6 +18,7 @@
 */
 
 #include <ql/quantlib.hpp>
+#include <iostream>
 
 using namespace QuantLib;
 

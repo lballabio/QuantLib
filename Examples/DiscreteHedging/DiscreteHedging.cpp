@@ -44,6 +44,7 @@
 
 // the only header you need to use QuantLib
 #include <ql/quantlib.hpp>
+#include <iostream>
 
 using namespace QuantLib;
 
