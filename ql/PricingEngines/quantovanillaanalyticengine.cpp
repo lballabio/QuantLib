@@ -43,21 +43,25 @@ namespace QuantLib {
             originalParameters_->volatility = parameters_.volatility;
 
             originalParameters_->validate();
-            
+
             originalEngine_->calculate();
 
             results_.value = originalResults_->value;
             results_.delta = originalResults_->delta;
             results_.gamma = originalResults_->gamma;
             results_.theta = originalResults_->theta;
-            results_.rho = 0.0;
-            results_.dividendRho = 0.0;
+            results_.rho = originalResults_->rho +
+                originalResults_->dividendRho;
+            results_.dividendRho = originalResults_->dividendRho;
             results_.vega = originalResults_->vega +
-                parameters_.underlying ;
+                parameters_.correlation * parameters_.exchangeRateVolatility *
+                originalResults_->dividendRho ;
 
-            results_.qvega = 0.0;
-            results_.qrho = 0.0;
-            results_.qlambda = 0.0;
+            results_.qvega = parameters_.correlation * parameters_.volatility *
+                originalResults_->dividendRho;
+            results_.qrho = - originalResults_->dividendRho;
+            results_.qlambda = parameters_.exchangeRateVolatility *
+                parameters_.volatility * originalResults_->dividendRho;
         }
 
     }
