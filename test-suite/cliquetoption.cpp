@@ -20,7 +20,6 @@
 #include <ql/Instruments/cliquetoption.hpp>
 #include <ql/PricingEngines/Cliquet/analyticcliquetengine.hpp>
 #include <ql/PricingEngines/Cliquet/analyticperformanceengine.hpp>
-#include <ql/DayCounters/actual365.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>

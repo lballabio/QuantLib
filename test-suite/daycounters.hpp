@@ -27,6 +27,7 @@ class DayCounterTest {
    public:
     static void testActualActual();
     static void testSimple();
+    static void testOne();
     static boost::unit_test_framework::test_suite* suite();
 };
 

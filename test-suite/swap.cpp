@@ -21,7 +21,7 @@
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/thirty360.hpp>
-#include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/CashFlows/inarrearindexedcoupon.hpp>
@@ -81,7 +81,7 @@ namespace {
         today_ = calendar_.adjust(Date::todaysDate());
         Settings::instance().setEvaluationDate(today_);
         settlement_ = calendar_.advance(today_,settlementDays_,Days);
-        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365()));
+        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
     }
 
     void teardown() {
@@ -323,7 +323,7 @@ void SwapTest::testCachedValue() {
     today_ = Date(17,June,2002);
     Settings::instance().setEvaluationDate(today_);
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365()));
+    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
 
     boost::shared_ptr<SimpleSwap> swap = makeSwap(10, 0.06, 0.001);
 #ifndef QL_USE_INDEXED_COUPON

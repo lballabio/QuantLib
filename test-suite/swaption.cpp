@@ -20,7 +20,7 @@
 #include <ql/Instruments/swaption.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>
-#include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
 
@@ -97,7 +97,7 @@ namespace {
         today_ = calendar_.adjust(Date::todaysDate());
         Settings::instance().setEvaluationDate(today_);
         settlement_ = calendar_.advance(today_,settlementDays_,Days);
-        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365()));
+        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
     }
 
     void teardown() {
@@ -328,7 +328,7 @@ void SwaptionTest::testCachedValue() {
     today_ = Date(13,March,2002);
     settlement_ = Date(15,March,2002);
     Settings::instance().setEvaluationDate(today_);
-    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365()));
+    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
     Date exerciseDate = calendar_.advance(settlement_,5,Years);
     Date startDate = calendar_.advance(exerciseDate,settlementDays_,Days);
     boost::shared_ptr<SimpleSwap> swap = makeSwap(startDate,10,0.06,0.0,true);

@@ -42,7 +42,7 @@ int main(int, char* [])
         Settings::instance().setEvaluationDate(todaysDate);
 
         Date exerciseDate(17, May, 1999);
-        DayCounter rateDayCounter = Actual365();
+        DayCounter rateDayCounter = Actual365Fixed();
         Time maturity = rateDayCounter.yearFraction(settlementDate,
                                                     exerciseDate);
 

@@ -23,7 +23,7 @@
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/Patterns/observable.hpp>
-#include <ql/DayCounters/actualactual.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 #include <vector>
 #include <string>
 #include <numeric>
@@ -59,39 +59,39 @@ namespace QuantLib {
     boost::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              const boost::shared_ptr<Quote>& forward,
-             const DayCounter& dc = ActualActual());
+             const DayCounter& dc = Actual365Fixed());
 
     boost::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              Rate forward,
-             const DayCounter& dc = ActualActual());
+             const DayCounter& dc = Actual365Fixed());
 
     boost::shared_ptr<YieldTermStructure>
     flatRate(const boost::shared_ptr<Quote>& forward,
-             const DayCounter& dc = ActualActual());
+             const DayCounter& dc = Actual365Fixed());
 
     boost::shared_ptr<YieldTermStructure>
     flatRate(Rate forward,
-             const DayCounter& dc = ActualActual());
+             const DayCounter& dc = Actual365Fixed());
 
 
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
             const boost::shared_ptr<Quote>& volatility,
-            const DayCounter& dc = ActualActual());
+            const DayCounter& dc = Actual365Fixed());
 
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
             Volatility volatility,
-            const DayCounter& dc = ActualActual());
+            const DayCounter& dc = Actual365Fixed());
 
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(const boost::shared_ptr<Quote>& volatility,
-            const DayCounter& dc = ActualActual());
+            const DayCounter& dc = Actual365Fixed());
 
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(Volatility volatility,
-            const DayCounter& dc = ActualActual());
+            const DayCounter& dc = Actual365Fixed());
 
 
     Real relativeError(Real x1, Real x2, Real reference);

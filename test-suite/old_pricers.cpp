@@ -30,7 +30,6 @@
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/RandomNumbers/rngtraits.hpp>
 #include <ql/MonteCarlo/getcovariance.hpp>
-#include <ql/DayCounters/actual365.hpp>
 #include <boost/progress.hpp>
 #include <map>
 

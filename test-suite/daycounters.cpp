@@ -17,6 +17,7 @@
 
 #include "daycounters.hpp"
 #include <ql/DayCounters/actualactual.hpp>
+#include <ql/DayCounters/one.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/basicdataformatters.hpp>
 
@@ -192,11 +193,39 @@ void DayCounterTest::testSimple() {
     }
 }
 
+void DayCounterTest::testOne() {
+
+    BOOST_MESSAGE("Testing 1/1 day counter...");
+
+    Period p[] = { Period(3,Months), Period(6,Months), Period(1,Years) };
+    Time expected[] = { 1.0, 1.0, 1.0 };
+    Size n = sizeof(p)/sizeof(Period);
+
+    // 1 years should be enough
+    Date first(1,January,2004), last(31,December,2004);
+    DayCounter dayCounter = OneDayCounter();
+
+    for (Date start = first; start <= last; start++) {
+        for (Size i=0; i<n; i++) {
+            Date end = start.plus(p[i]);
+            Time calculated = dayCounter.yearFraction(start,end);
+            if (QL_FABS(calculated-expected[i]) > 1.0e-12) {
+                BOOST_FAIL("from " + DateFormatter::toString(start) +
+                           " to " + DateFormatter::toString(end) + ":\n"
+                           "    calculated: "
+                           + DecimalFormatter::toString(calculated,12) + "\n"
+                           "    expected:   "
+                           + DecimalFormatter::toString(expected[i],2));
+            }
+        }
+    }
+}
 
 test_suite* DayCounterTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Day counter tests");
     suite->add(BOOST_TEST_CASE(&DayCounterTest::testActualActual));
     suite->add(BOOST_TEST_CASE(&DayCounterTest::testSimple));
+    suite->add(BOOST_TEST_CASE(&DayCounterTest::testOne));
     return suite;
 }
 

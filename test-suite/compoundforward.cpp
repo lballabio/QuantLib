@@ -18,7 +18,7 @@
 #include "compoundforward.hpp"
 #include "utilities.hpp"
 #include <ql/TermStructures/compoundforward.hpp>
-#include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/Indexes/zarlibor.hpp>
 
@@ -82,7 +82,7 @@ namespace {
         Settings::instance().setEvaluationDate(today);
         settlement = calendar.advance(today,settlementDays,Days);
         convention = ModifiedFollowing;
-        dayCounter = Actual365();
+        dayCounter = Actual365Fixed();
         frequency = Semiannual;
 
         deposits = LENGTH(depositData);
