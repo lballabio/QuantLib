@@ -18,7 +18,6 @@
 
 #include "asianoptions.hpp"
 #include "utilities.hpp"
-#include <ql/dataformatters.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/asianoption.hpp>
 #include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
@@ -27,6 +26,7 @@
 #include <ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 #include <map>
 
@@ -48,16 +48,13 @@ using namespace boost::unit_test_framework;
                << "    future fixings:   " << fixingDates.size() << "\n" \
                << "    underlying value: " << s << "\n" \
                << "    strike:           " << payoff->strike() << "\n" \
-               << "    dividend yield:   " \
-               << RateFormatter::toString(q) << "\n" \
-               << "    risk-free rate:   " \
-               << RateFormatter::toString(r) << "\n" \
+               << "    dividend yield:   " << io::rate(q) << "\n" \
+               << "    risk-free rate:   " << io::rate(r) << "\n" \
                << "    reference date:   " \
                << DateFormatter::toString(today) << "\n" \
                << "    maturity:         " \
                << DateFormatter::toString(exercise->lastDate()) << "\n" \
-               << "    volatility:       " \
-               << VolatilityFormatter::toString(v) << "\n\n" \
+               << "    volatility:       " << io::volatility(v) << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
                << "    error:            " << std::fabs(expected-calculated) \

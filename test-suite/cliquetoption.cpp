@@ -24,6 +24,7 @@
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/DayCounters/actual360.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -35,16 +36,13 @@ using namespace boost::unit_test_framework;
                << " option:\n" \
                << "    spot value:       " << s << "\n" \
                << "    moneyness:        " << payoff->strike() << "\n" \
-               << "    dividend yield:   " \
-               << RateFormatter::toString(q) << "\n" \
-               << "    risk-free rate:   " \
-               << RateFormatter::toString(r) << "\n" \
+               << "    dividend yield:   " << io::rate(q) << "\n" \
+               << "    risk-free rate:   " << io::rate(r) << "\n" \
                << "    reference date:   " \
                << DateFormatter::toString(today) << "\n" \
                << "    maturity:         " \
                << DateFormatter::toString(exercise->lastDate()) << "\n" \
-               << "    volatility:       " \
-               << VolatilityFormatter::toString(v) << "\n\n" \
+               << "    volatility:       " << io::volatility(v) << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
                << "    error:            " << error << "\n" \

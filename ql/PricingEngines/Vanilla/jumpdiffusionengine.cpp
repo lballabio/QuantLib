@@ -19,6 +19,7 @@
 #include <ql/Math/poissondistribution.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -151,9 +152,8 @@ namespace QuantLib {
         }
         QL_ENSURE(i<maxIterations_,
                   i << " iterations have been not enough to reach "
-                  << "the required " << std::scientific << relativeAccuracy_
-                  << " accuracy. The "
-                  << SizeFormatter::toOrdinal(i)
+                  << "the required " << relativeAccuracy_
+                  << " accuracy. The " << io::ordinal(i)
                   << " addendum was " << lastContribution
                   << " while the running sum was " << results_.value);
     }

@@ -23,6 +23,7 @@
 #include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -37,16 +38,13 @@ using namespace boost::unit_test_framework;
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    underlying value: " << s << "\n" \
                << "    strike:           " << payoff->strike() <<"\n" \
-               << "    dividend yield:   " \
-               << RateFormatter::toString(q) << "\n" \
-               << "    risk-free rate:   " \
-               << RateFormatter::toString(r) << "\n" \
+               << "    dividend yield:   " << io::rate(q) << "\n" \
+               << "    risk-free rate:   " << io::rate(r) << "\n" \
                << "    reference date:   " \
                << DateFormatter::toString(today) << "\n" \
                << "    maturity:         " \
                << DateFormatter::toString(exercise->lastDate()) << "\n" \
-               << "    volatility:       " \
-               << VolatilityFormatter::toString(v) << "\n\n" \
+               << "    volatility:       " << io::volatility(v) << "\n\n" \
                << "    intensity:        " << intensity << "\n" \
                << "    mean log-jump:    " << meanLogJump << "\n" \
                << "    jump volatility:  " << jumpVol << "\n\n" \
@@ -64,16 +62,13 @@ using namespace boost::unit_test_framework;
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    underlying value: " << s << "\n" \
                << "    strike:           " << payoff->strike() <<"\n" \
-               << "    dividend yield:   " \
-               << RateFormatter::toString(q) << "\n" \
-               << "    risk-free rate:   " \
-               << RateFormatter::toString(r) << "\n" \
+               << "    dividend yield:   " << io::rate(q) << "\n" \
+               << "    risk-free rate:   " << io::rate(r) << "\n" \
                << "    reference date:   " \
                << DateFormatter::toString(today) << "\n" \
                << "    maturity:         " \
                << DateFormatter::toString(exercise->lastDate()) << "\n" \
-               << "    volatility:       " \
-               << VolatilityFormatter::toString(v) << "\n" \
+               << "    volatility:       " << io::volatility(v) << "\n" \
                << "    intensity:        " << intensity << "\n" \
                << "    gamma:            " << gamma << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \

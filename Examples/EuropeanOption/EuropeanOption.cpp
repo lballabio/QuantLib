@@ -85,11 +85,11 @@ int main(int, char* [])
                   << std::endl;
         std::cout << "Strike = "                  << strike
                   << std::endl;
-        std::cout << "Risk-free interest rate = " << riskFreeRate
+        std::cout << "Risk-free interest rate = " << io::rate(riskFreeRate)
                   << std::endl;
-        std::cout << "dividend yield = " << dividendYield
+        std::cout << "Dividend yield = " << io::rate(dividendYield)
                   << std::endl;
-        std::cout << "Volatility = "              << volatility
+        std::cout << "Volatility = " << io::volatility(volatility)
                   << std::endl;
         std::cout << std::endl;
 
@@ -208,11 +208,8 @@ int main(int, char* [])
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
-             << DecimalFormatter::toString(value, 4) << "\t"
-             << "N/A\t\t"
-             << DecimalFormatter::toString(discrepancy, 6) << "\t"
-             << DecimalFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+                  << value << "\t" << "N/A\t\t"
+                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
 
         // method: Integral
         method = "Binary Asset";
@@ -222,11 +219,8 @@ int main(int, char* [])
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
-             << DecimalFormatter::toString(value, 4) << "\t"
-             << "N/A\t\t"
-             << DecimalFormatter::toString(discrepancy, 6) << "\t"
-             << DecimalFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+                  << value << "\t" << "N/A\t\t"
+                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
 
 */
         Size timeSteps = 801;

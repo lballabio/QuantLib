@@ -22,6 +22,7 @@
 #include <ql/Math/incrementalstatistics.hpp>
 #include <ql/Math/gaussianstatistics.hpp>
 #include <ql/Math/sequencestatistics.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -155,7 +156,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (calculated[i] != expected)
                 BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << SizeFormatter::toOrdinal(i+1) << " dimension: "
+                           << io::ordinal(i+1) << " dimension: "
                            << "wrong minimum value\n"
                            << "    calculated: " << calculated[i] << "\n"
                            << "    expected:   " << expected);
@@ -166,7 +167,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (calculated[i] != expected)
                 BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << SizeFormatter::toOrdinal(i+1) << " dimension: "
+                           << io::ordinal(i+1) << " dimension: "
                            << "wrong maximun value\n"
                            << "    calculated: " << calculated[i] << "\n"
                            << "    expected:   " << expected);
@@ -178,7 +179,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (std::fabs(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << SizeFormatter::toOrdinal(i+1) << " dimension: "
+                           << io::ordinal(i+1) << " dimension: "
                            << "wrong mean value\n"
                            << "    calculated: " << calculated[i] << "\n"
                            << "    expected:   " << expected);
@@ -189,7 +190,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (std::fabs(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << SizeFormatter::toOrdinal(i+1) << " dimension: "
+                           << io::ordinal(i+1) << " dimension: "
                            << "wrong variance\n"
                            << "    calculated: " << calculated[i] << "\n"
                            << "    expected:   " << expected);
@@ -200,7 +201,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (std::fabs(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << SizeFormatter::toOrdinal(i+1) << " dimension: "
+                           << io::ordinal(i+1) << " dimension: "
                            << "wrong standard deviation\n"
                            << "    calculated: " << calculated[i] << "\n"
                            << "    expected:   " << expected);
@@ -211,7 +212,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (std::fabs(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << SizeFormatter::toOrdinal(i+1) << " dimension: "
+                           << io::ordinal(i+1) << " dimension: "
                            << "wrong skewness\n"
                            << "    calculated: " << calculated[i] << "\n"
                            << "    expected:   " << expected);
@@ -222,7 +223,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (std::fabs(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << SizeFormatter::toOrdinal(i+1) << " dimension: "
+                           << io::ordinal(i+1) << " dimension: "
                            << "wrong kurtosis\n"
                            << "    calculated: " << calculated[i] << "\n"
                            << "    expected:   " << expected);

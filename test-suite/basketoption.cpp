@@ -26,6 +26,7 @@
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 
 using namespace QuantLib;
@@ -43,20 +44,15 @@ using namespace boost::unit_test_framework;
                << "1st underlying value: " << s1 << "\n" \
                << "2nd underlying value: " << s2 << "\n" \
                << "              strike: " << payoff->strike() << "\n" \
-               << "  1st dividend yield: " \
-               << RateFormatter::toString(q1) << "\n" \
-               << "  2nd dividend yield: " \
-               << RateFormatter::toString(q2) << "\n" \
-               << "      risk-free rate: " \
-               << RateFormatter::toString(r) << "\n" \
+               << "  1st dividend yield: " << io::rate(q1) << "\n" \
+               << "  2nd dividend yield: " << io::rate(q2) << "\n" \
+               << "      risk-free rate: " << io::rate(r) << "\n" \
                << "      reference date: " \
                << DateFormatter::toString(today) << "\n" \
                << "            maturity: " \
                << DateFormatter::toString(exercise->lastDate()) << "\n" \
-               << "1st asset volatility: " \
-               << VolatilityFormatter::toString(v1) << "\n" \
-               << "2nd asset volatility: " \
-               << VolatilityFormatter::toString(v2) << "\n" \
+               << "1st asset volatility: " << io::volatility(v1) << "\n" \
+               << "2nd asset volatility: " << io::volatility(v2) << "\n" \
                << "         correlation: " << rho << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
@@ -76,18 +72,14 @@ using namespace boost::unit_test_framework;
                << "2nd underlying value: " << s2 << "\n" \
                << "3rd underlying value: " << s3 << "\n" \
                << "              strike: " << payoff->strike() <<"\n" \
-               << "      risk-free rate: " \
-               << RateFormatter::toString(r) << "\n" \
+               << "      risk-free rate: " << io::rate(r) << "\n" \
                << "      reference date: " \
                << DateFormatter::toString(today) << "\n" \
                << "            maturity: " \
                << DateFormatter::toString(exercise->lastDate()) << "\n" \
-               << "1st asset volatility: " \
-               << VolatilityFormatter::toString(v1) << "\n" \
-               << "2nd asset volatility: " \
-               << VolatilityFormatter::toString(v2) << "\n" \
-               << "3rd asset volatility: " \
-               << VolatilityFormatter::toString(v3) << "\n" \
+               << "1st asset volatility: " << io::volatility(v1) << "\n" \
+               << "2nd asset volatility: " << io::volatility(v2) << "\n" \
+               << "3rd asset volatility: " << io::volatility(v3) << "\n" \
                << "         correlation: " << rho << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\

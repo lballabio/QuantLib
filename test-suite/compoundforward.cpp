@@ -21,6 +21,7 @@
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/Indexes/zarlibor.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -148,10 +149,11 @@ void CompoundForwardTest::testSuppliedRates() {
              estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(swapData[i].n << " year(s) swap:\n"
+                       << std::setprecision(8)
                        << "    estimated rate: "
-                       << RateFormatter::toString(estimatedRate,8) << "\n"
+                       << io::rate(estimatedRate) << "\n"
                        << "    expected rate:  "
-                       << RateFormatter::toString(expectedRate,8));
+                       << io::rate(expectedRate));
         }
     }
 
@@ -189,12 +191,12 @@ void CompoundForwardTest::testConvertedRates() {
                                                            frequency);
         Rate estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
-            BOOST_FAIL(
-                       swapData[i].n << " year(s) swap:\n"
+            BOOST_FAIL(swapData[i].n << " year(s) swap:\n"
+                       << std::setprecision(8)
                        << "    estimated rate: "
-                       << RateFormatter::toString(estimatedRate,8) << "\n"
+                       << io::rate(estimatedRate) << "\n"
                        << "    compound rate:  "
-                       << RateFormatter::toString(expectedRate,8));
+                       << io::rate(expectedRate));
         }
     }
 

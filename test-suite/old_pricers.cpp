@@ -82,13 +82,11 @@ void OldPricerTest::testFdEuropeanPricer() {
                            << OptionTypeFormatter::toString(types[j]) << "\n"
                            << "    underlying:     " << under << "\n"
                            << "    strike:         " << strike << "\n"
-                           << "    dividend yield: "
-                           << RateFormatter::toString(qRate) << "\n"
-                           << "    risk-free rate: "
-                           << RateFormatter::toString(rRate) << "\n"
+                           << "    dividend yield: " << io::rate(qRate) << "\n"
+                           << "    risk-free rate: " << io::rate(rRate) << "\n"
                            << "    residual time:  " << resTime << "\n"
-                           << "    volatility:     "
-                           << VolatilityFormatter::toString(vol) << "\n\n"
+                           << "    volatility:     " << io::volatility(vol)
+                           << "\n\n"
                            << "    calculated value: " << numValue << "\n"
                            << "    expected:         " << anValue);
         }
@@ -160,13 +158,11 @@ namespace {
                         << "\n"
                         << "    underlying:     " << u << "\n"
                         << "    strike:         " << k << "\n"
-                        << "    dividend yield: "
-                        << RateFormatter::toString(q) << "\n"
-                        << "    risk-free rate: "
-                        << RateFormatter::toString(r) << "\n"
+                        << "    dividend yield: " << io::rate(q) << "\n"
+                        << "    risk-free rate: " << io::rate(r) << "\n"
                         << "    residual time:  " << T << "\n"
-                        << "    volatility:     "
-                        << VolatilityFormatter::toString(v) << "\n\n"
+                        << "    volatility:     " << io::volatility(v)
+                        << "\n\n"
                         << "    calculated " << greek << ": " << calcl << "\n"
                         << "    expected:  " << greek << ": " << expct);
             }

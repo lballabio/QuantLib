@@ -84,12 +84,11 @@ namespace QuantLib {
           case 2:
               for (i=0; i<n; i++) {
                   result[i] = f.secondDerivative(*(x_begin+i),
-                      allowExtrapolation); 
+                      allowExtrapolation);
               }
             break;
           default:
-              QL_FAIL(IntegerFormatter::toString(derivativeOrder)
-                  + " is an invalid derivative order");
+            QL_FAIL(derivativeOrder << " is an invalid derivative order");
         }
 
         return result;

@@ -26,6 +26,7 @@
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 #include <map>
 
@@ -40,16 +41,13 @@ using namespace boost::unit_test_framework;
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    spot value:       " << s << "\n" \
                << "    strike:           " << payoff->strike() << "\n" \
-               << "    dividend yield:   " \
-               << RateFormatter::toString(q) << "\n" \
-               << "    risk-free rate:   " \
-               << RateFormatter::toString(r) << "\n" \
+               << "    dividend yield:   " << io::rate(q) << "\n" \
+               << "    risk-free rate:   " << io::rate(r) << "\n" \
                << "    reference date:   " \
                << DateFormatter::toString(today) << "\n" \
                << "    maturity:         " \
                << DateFormatter::toString(exercise->lastDate()) << "\n" \
-               << "    volatility:       " \
-               << VolatilityFormatter::toString(v) << "\n\n" \
+               << "    volatility:       " << io::volatility(v) << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
                << "    error:            " << error << "\n" \
@@ -786,14 +784,12 @@ void EuropeanOptionTest::testImpliedVol() {
                               << " option :\n"
                               << "    spot value:     " << u << "\n"
                               << "    strike:         " << strikes[j] << "\n"
-                              << "    dividend yield: "
-                              << RateFormatter::toString(q) << "\n"
-                              << "    risk-free rate: "
-                              << RateFormatter::toString(r) << "\n"
+                              << "    dividend yield: " << io::rate(q) << "\n"
+                              << "    risk-free rate: " << io::rate(r) << "\n"
                               << "    maturity:       "
                               << DateFormatter::toString(exDate) << "\n"
-                              << "    volatility:     "
-                              << VolatilityFormatter::toString(v) << "\n\n"
+                              << "    volatility:     " << io::volatility(v)
+                              << "\n\n"
                               << e.what());
                       }
                       if (std::fabs(implVol-v) > tolerance) {
@@ -809,17 +805,17 @@ void EuropeanOptionTest::testImpliedVol() {
                                   << "    strike:              "
                                   << strikes[j] << "\n"
                                   << "    dividend yield:      "
-                                  << RateFormatter::toString(q) << "\n"
+                                  << io::rate(q) << "\n"
                                   << "    risk-free rate:      "
-                                  << RateFormatter::toString(r) << "\n"
+                                  << io::rate(r) << "\n"
                                   << "    maturity:            "
                                   << DateFormatter::toString(exDate) << "\n\n"
                                   << "    original volatility: "
-                                  <<  VolatilityFormatter::toString(v) << "\n"
+                                  << io::volatility(v) << "\n"
                                   << "    price:               "
                                   << value << "\n"
                                   << "    implied volatility:  "
-                                  << VolatilityFormatter::toString(implVol)
+                                  << io::volatility(implVol)
                                   << "\n"
                                   << "    corresponding price: "
                                   << value2 << "\n"
@@ -987,15 +983,15 @@ namespace {
                                   << "    strike:           "
                                   << strikes[j] << "\n"
                                   << "    dividend yield:   "
-                                  << RateFormatter::toString(q) << "\n"
+                                  << io::rate(q) << "\n"
                                   << "    risk-free rate:   "
-                                  << RateFormatter::toString(r) << "\n"
+                                  << io::rate(r) << "\n"
                                   << "    reference date:   "
                                   << DateFormatter::toString(today) << "\n"
                                   << "    maturity:         "
                                   << DateFormatter::toString(exDate) << "\n"
                                   << "    volatility:       "
-                                  << VolatilityFormatter::toString(v) << "\n\n"
+                                  << io::volatility(v) << "\n\n"
                                   << "    analytic value: "
                                   << refValue << "\n"
                                   << "    "

@@ -55,11 +55,11 @@ int main(int, char* [])
                   << std::endl;
         std::cout << "Strike = "                  << strike
                   << std::endl;
-        std::cout << "Risk-free interest rate = " << riskFreeRate
+        std::cout << "Risk-free interest rate = " << io::rate(riskFreeRate)
                   << std::endl;
-        std::cout << "dividend yield = " << dividendYield
+        std::cout << "Dividend yield = " << io::rate(dividendYield)
                   << std::endl;
-        std::cout << "Volatility = "              << volatility
+        std::cout << "Volatility = " << io::volatility(volatility)
                   << std::endl;
         std::cout << std::endl;
 

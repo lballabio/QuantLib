@@ -23,6 +23,7 @@
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -146,11 +147,9 @@ void SwaptionTest::testStrikeDependency() {
                             << DateFormatter::toString(exerciseDate) << "\n"
                             << "    length: " << lengths[j] << " years\n"
                             << "    value:  " << values[n]
-                            << " at strike: "
-                            << RateFormatter::toString(strikes[n],2) << "\n"
+                            << " at strike: " << io::rate(strikes[n]) << "\n"
                             << "    value:  " << values[n+1]
-                            << " at strike: "
-                            << RateFormatter::toString(strikes[n+1],2));
+                            << " at strike: " << io::rate(strikes[n+1]));
                     }
                 } else {
                     std::vector<Real>::iterator it =
@@ -165,11 +164,9 @@ void SwaptionTest::testStrikeDependency() {
                             << DateFormatter::toString(exerciseDate) << "\n"
                             << "    length: " << lengths[j] << " years\n"
                             << "    value:  " << values[n]
-                            << " at strike: "
-                            << RateFormatter::toString(strikes[n],2) << "\n"
+                            << " at strike: " << io::rate(strikes[n]) << "\n"
                             << "    value:  " << values[n+1]
-                            << " at strike: "
-                            << RateFormatter::toString(strikes[n+1],2));
+                            << " at strike: " << io::rate(strikes[n+1]));
                     }
                 }
             }
@@ -219,11 +216,9 @@ void SwaptionTest::testSpreadDependency() {
                             << DateFormatter::toString(exerciseDate) << "\n"
                             << "    length: " << lengths[j] << " years\n"
                             << "    value:  " << values[n]
-                            << " for spread: "
-                            << RateFormatter::toString(spreads[n],2) << "\n"
+                            << " for spread: " << io::rate(spreads[n]) << "\n"
                             << "    value:  " << values[n+1]
-                            << " for spread: "
-                            << RateFormatter::toString(spreads[n+1],2));
+                            << " for spread: " << io::rate(spreads[n+1]));
                     }
                 } else {
                     std::vector<Real>::iterator it =
@@ -238,11 +233,9 @@ void SwaptionTest::testSpreadDependency() {
                             << DateFormatter::toString(exerciseDate) << "\n"
                             << "    length: " << lengths[j] << " years\n"
                             << "    value:  " << values[n]
-                            << " for spread: "
-                            << RateFormatter::toString(spreads[n],2) << "\n"
+                            << " for spread: " << io::rate(spreads[n]) << "\n"
                             << "    value:  " << values[n+1]
-                            << " for spread: "
-                            << RateFormatter::toString(spreads[n+1],2));
+                            << " for spread: " << io::rate(spreads[n+1]));
                     }
                 }
             }
@@ -290,8 +283,7 @@ void SwaptionTest::testSpreadTreatment() {
                             << "    length: " << lengths[j] << " years\n"
                             << "    pay " << (payFixed[k] ? "fixed\n"
                                                           : "floating\n")
-                            << "    spread: "
-                            << RateFormatter::toString(spreads[l],2) << "\n"
+                            << "    spread: " << io::rate(spreads[l]) << "\n"
                             << "    value of original swaption:   "
                             << swaption1->NPV() << "\n"
                             << "    value of equivalent swaption: "

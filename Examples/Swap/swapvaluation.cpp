@@ -413,11 +413,12 @@ int main(int, char* [])
 
         std::cout << dblrule << std::endl;
         std::cout <<  "5-year market swap-rate = "
-                  << RateFormatter::toString(s5yRate->value()) << std::endl;
+                  << std::setprecision(2) << io::rate(s5yRate->value())
+                  << std::endl;
         std::cout << dblrule << std::endl;
 
         std::cout << tab << "5-years swap paying "
-                  << RateFormatter::toString(fixedRate) << std::endl;
+                  << io::rate(fixedRate) << std::endl;
         std::cout << headers[0] << separator
                   << headers[1] << separator
                   << headers[2] << separator
@@ -441,16 +442,16 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
 
         // let's check that the 5 years swap has been correctly re-priced
         QL_REQUIRE(std::fabs(fairRate-s5yQuote)<1e-8,
                    "5-years swap mispriced by "
-                   + RateFormatter::toString(std::fabs(fairRate-s5yQuote)));
+                   << io::rate(std::fabs(fairRate-s5yQuote)));
 
 
         forecastingTermStructure.linkTo(depoFutSwapTermStructure);
@@ -465,9 +466,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
         QL_REQUIRE(std::fabs(fairRate-s5yQuote)<1e-8,
@@ -486,9 +487,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
         QL_REQUIRE(std::fabs(fairRate-s5yQuote)<1e-8,
@@ -500,7 +501,7 @@ int main(int, char* [])
         // now let's price the 1Y forward 5Y swap
 
         std::cout << tab << "5-years, 1-year forward swap paying "
-                  << RateFormatter::toString(fixedRate) << std::endl;
+                  << io::rate(fixedRate) << std::endl;
         std::cout << headers[0] << separator
                   << headers[1] << separator
                   << headers[2] << separator
@@ -520,9 +521,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
 
@@ -538,9 +539,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
 
@@ -556,9 +557,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
 
@@ -577,11 +578,11 @@ int main(int, char* [])
 
         std::cout << dblrule << std::endl;
         std::cout <<  "5-year market swap-rate = "
-                  << RateFormatter::toString(s5yRate->value()) << std::endl;
+                  << io::rate(s5yRate->value()) << std::endl;
         std::cout << dblrule << std::endl;
 
         std::cout << tab << "5-years swap paying "
-                  << RateFormatter::toString(fixedRate) << std::endl;
+                  << io::rate(fixedRate) << std::endl;
         std::cout << headers[0] << separator
                   << headers[1] << separator
                   << headers[2] << separator
@@ -601,9 +602,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
         QL_REQUIRE(std::fabs(fairRate-s5yRate->value())<1e-8,
@@ -622,9 +623,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
         QL_REQUIRE(std::fabs(fairRate-s5yRate->value())<1e-8,
@@ -643,9 +644,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
         QL_REQUIRE(std::fabs(fairRate-s5yRate->value())<1e-8,
@@ -656,7 +657,7 @@ int main(int, char* [])
         // the 1Y forward 5Y swap changes as well
 
         std::cout << tab << "5-years, 1-year forward swap paying "
-                  << RateFormatter::toString(fixedRate,2) << std::endl;
+                  << io::rate(fixedRate) << std::endl;
         std::cout << headers[0] << separator
                   << headers[1] << separator
                   << headers[2] << separator
@@ -676,9 +677,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
 
@@ -694,9 +695,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
 
@@ -712,9 +713,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread) << separator;
+                  << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate) << separator;
+                  << io::rate(fairRate) << separator;
         std::cout << std::endl;
 
         return 0;

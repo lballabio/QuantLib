@@ -27,6 +27,7 @@
 #include <ql/CashFlows/indexcashflowvectors.hpp>
 #include <ql/CashFlows/upfrontindexedcoupon.hpp>
 #endif
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -157,15 +158,13 @@ void CapFloorTest::testStrikeDependency() {
                 Size n = it - cap_values.begin();
                 BOOST_FAIL(
                     "NPV is increasing with the strike in a cap: \n"
+                    << std::setprecision(2)
                     << "    length:     " << lengths[i] << " years\n"
-                    << "    volatility: "
-                    << VolatilityFormatter::toString(vols[j],2) << "\n"
+                    << "    volatility: " << io::volatility(vols[j]) << "\n"
                     << "    value:      " << cap_values[n]
-                    << " at strike: "
-                    << RateFormatter::toString(strikes[n],2) << "\n"
+                    << " at strike: " << io::rate(strikes[n]) << "\n"
                     << "    value:      " << cap_values[n+1]
-                    << " at strike: "
-                    << RateFormatter::toString(strikes[n+1],2));
+                    << " at strike: " << io::rate(strikes[n+1]));
             }
             // same for floors
             it = std::adjacent_find(floor_values.begin(),floor_values.end(),
@@ -174,15 +173,13 @@ void CapFloorTest::testStrikeDependency() {
                 Size n = it - floor_values.begin();
                 BOOST_FAIL(
                     "NPV is decreasing with the strike in a floor: \n"
+                    << std::setprecision(2)
                     << "    length:     " << lengths[i] << " years\n"
-                    << "    volatility: "
-                    << VolatilityFormatter::toString(vols[j],2) << "\n"
+                    << "    volatility: " << io::volatility(vols[j]) << "\n"
                     << "    value:      " << floor_values[n]
-                    << " at strike: "
-                    << RateFormatter::toString(strikes[n],2) << "\n"
+                    << " at strike: " << io::rate(strikes[n]) << "\n"
                     << "    value:      " << floor_values[n+1]
-                    << " at strike: "
-                    << RateFormatter::toString(strikes[n+1],2));
+                    << " at strike: " << io::rate(strikes[n+1]));
             }
         }
     }
@@ -225,14 +222,11 @@ void CapFloorTest::testConsistency() {
                   BOOST_FAIL(
                     "inconsistency between cap, floor and collar:\n"
                     << "    length:       " << lengths[i] << " years\n"
-                    << "    volatility:   "
-                    << VolatilityFormatter::toString(vols[l],2) << "\n"
+                    << "    volatility:   " << io::volatility(vols[l]) << "\n"
                     << "    cap value:    " << cap->NPV()
-                    << " at strike: "
-                    << RateFormatter::toString(cap_rates[j],2) << "\n"
+                    << " at strike: " << io::rate(cap_rates[j]) << "\n"
                     << "    floor value:  " << floor->NPV()
-                    << " at strike: "
-                    << RateFormatter::toString(floor_rates[k],2) << "\n"
+                    << " at strike: " << io::rate(floor_rates[k]) << "\n"
                     << "    collar value: " << collar.NPV());
               }
           }
@@ -280,10 +274,8 @@ void CapFloorTest::testParity() {
                 BOOST_FAIL(
                     "put/call parity violated:\n"
                     << "    length:      " << lengths[i] << " years\n"
-                    << "    volatility:  "
-                    << VolatilityFormatter::toString(vols[k],2) << "\n"
-                    << "    strike: "
-                    << RateFormatter::toString(strikes[j],2) << "\n"
+                    << "    volatility:  " << io::volatility(vols[k]) << "\n"
+                    << "    strike:      " << io::rate(strikes[j]) << "\n"
                     << "    cap value:   " << cap->NPV() << "\n"
                     << "    floor value: " << floor->NPV() << "\n"
                     << "    swap value:  " << swap.NPV());
@@ -346,11 +338,11 @@ void CapFloorTest::testImpliedVolatility() {
                                 << "    strike:           "
                                 << strikes[j] << "\n"
                                 << "    risk-free rate:   "
-                                << RateFormatter::toString(r) << "\n"
+                                << io::rate(r) << "\n"
                                 << "    length:         "
                                 << lengths[k] << " years\n"
                                 << "    volatility:       "
-                                << VolatilityFormatter::toString(v) << "\n\n"
+                                << io::volatility(v) << "\n\n"
                                 << e.what());
                         }
                         if (std::fabs(implVol-v) > tolerance) {
@@ -363,16 +355,15 @@ void CapFloorTest::testImpliedVolatility() {
                                     << "    strike:           "
                                     << strikes[j] << "\n"
                                     << "    risk-free rate:   "
-                                    << RateFormatter::toString(r) << "\n"
+                                    << io::rate(r) << "\n"
                                     << "    length:         "
                                     << lengths[k] << " years\n\n"
                                     << "    original volatility: "
-                                    << VolatilityFormatter::toString(v) << "\n"
+                                    << io::volatility(v) << "\n"
                                     << "    price:               "
                                     << value << "\n"
                                     << "    implied volatility:  "
-                                    << VolatilityFormatter::toString(implVol)
-                                    << "\n"
+                                    << io::volatility(implVol) << "\n"
                                     << "    corresponding price: " << value2);
                             }
                         }

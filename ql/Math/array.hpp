@@ -30,6 +30,9 @@
 #include <boost/iterator/reverse_iterator.hpp>
 #include <functional>
 #include <numeric>
+#ifdef QL_PATCH_MSVC6
+#include <sstream>
+#endif
 
 namespace QuantLib {
 
@@ -175,18 +178,20 @@ namespace QuantLib {
                                                precision,digits,
                                                elementsPerRow);
             #else
-            std::string s = "[ ";
+            std::ostringstream s;
+            s << "[ ";
             for (Size n=0; n<a.size(); ++n) {
                 if (n == elementsPerRow) {
-                    s += ";\n  ";
+                    s << ";\n  ";
                     n = 0;
                 }
                 if (n!=0)
-                    s += " ; ";
-                s += DecimalFormatter::toString(a[n], precision, digits);
+                    s << " ; ";
+                s << std::setprecision(precision)
+                  << std::setw(digits) << a[n];
             }
-            s += " ]";
-            return s;
+            s << " ]";
+            return s.str();
             #endif
         }
     };

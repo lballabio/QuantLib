@@ -22,6 +22,7 @@
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -163,10 +164,9 @@ void PiecewiseFlatForwardTest::testConsistency() {
                 depositData[i].n << " "
                 << (depositData[i].units == Weeks ? "week(s)" : "month(s)")
                 << " deposit: \n"
-                << "    estimated rate: "
-                << RateFormatter::toString(estimatedRate,8) << "\n"
-                << "    expected rate:  "
-                << RateFormatter::toString(expectedRate,8));
+                << std::setprecision(8)
+                << "    estimated rate: " << io::rate(estimatedRate) << "\n"
+                << "    expected rate:  " << io::rate(expectedRate));
         }
     }
 
@@ -189,10 +189,11 @@ void PiecewiseFlatForwardTest::testConsistency() {
              estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(swapData[i].n << " year(s) swap:\n"
+                       << std::setprecision(8)
                        << "    estimated rate: "
-                       << RateFormatter::toString(estimatedRate,8) << "\n"
+                       << io::rate(estimatedRate) << "\n"
                        << "    expected rate:  "
-                       << RateFormatter::toString(expectedRate,8));
+                       << io::rate(expectedRate));
         }
     }
 

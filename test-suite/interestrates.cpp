@@ -21,6 +21,7 @@
 #include <ql/Math/rounding.hpp>
 #include <ql/Math/comparison.hpp>
 #include <ql/DayCounters/actual360.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -147,10 +148,9 @@ void InterestRateTest::testConversions() {
         error = std::fabs(ir.rate()-r2);
         if (error>1e-15)
             BOOST_FAIL("\n    original rate: "
+                       << std::setprecision(12)
                        << InterestRateFormatter::toString(ir, 12)
-                       << "\n  equivalent rate: "
-                       << RateFormatter::toString(r2,12)
-                       << std::scientific
+                       << "\n  equivalent rate: " << io::rate(r2)
                        << "\n            error: " << error);
 
         // check that the equivalent InterestRate with *different*
@@ -162,19 +162,20 @@ void InterestRateTest::testConversions() {
         r3 = roundingPrecision(ir3.rate());
         error = std::fabs(r3-expectedIR.rate());
         if (error>1.0e-17)
-            BOOST_FAIL("\n               original interest rate: "
+            BOOST_FAIL(std::setprecision(cases[i].precision+1)
+                       << "\n               original interest rate: "
                        << InterestRateFormatter::toString(ir,
                                                           cases[i].precision+1)
                        << "\n  calculated equivalent interest rate: "
                        << InterestRateFormatter::toString(ir3,
                                                           cases[i].precision+1)
                        << "\n            truncated equivalent rate: "
-                       << RateFormatter::toString(r3, cases[i].precision+1)
+                       << io::rate(r3)
                        << "\n    expected equivalent interest rate: "
                        << InterestRateFormatter::toString(expectedIR,
                                                           cases[i].precision+1)
                        << "\n                           rate error: "
-                       << std::scientific << error);
+                       << error);
         if (ir3.dayCounter()!=expectedIR.dayCounter())
             BOOST_FAIL("\n day counter error"
                        "\n    original interest rate: "
@@ -201,13 +202,11 @@ void InterestRateTest::testConversions() {
         r3 = roundingPrecision(r3);
         error = std::fabs(r3-cases[i].expected);
         if (error>1.0e-17)
-            BOOST_FAIL("\n  calculated equivalent rate: "
-                       << RateFormatter::toString(r3,cases[i].precision-2)
+            BOOST_FAIL(std::setprecision(cases[i].precision-2)
+                       << "\n  calculated equivalent rate: " << io::rate(r3)
                        << "\n    expected equivalent rate: "
-                       << RateFormatter::toString(cases[i].expected,
-                                                  cases[i].precision-2)
-                       << "\n                       error: "
-                       << std::scientific << error);
+                       << io::rate(cases[i].expected)
+                       << "\n                       error: " << error);
     }
 }
 

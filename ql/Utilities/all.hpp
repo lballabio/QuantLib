@@ -20,6 +20,8 @@
 
 #include <ql/qldefines.hpp>
 
+#include <ql/Utilities/dataformatters.hpp>
+#include <ql/Utilities/tracing.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 
 

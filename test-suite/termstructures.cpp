@@ -27,6 +27,7 @@
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Math/comparison.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -207,10 +208,10 @@ void TermStructureTest::testFSpreaded() {
     if (std::fabs(forward - (spreadedForward-me->value())) > tolerance)
         BOOST_FAIL(
             "unable to reproduce forward from spreaded curve\n"
-            "    calculated: "
-            + RateFormatter::toString(spreadedForward-me->value(),10) + "\n"
-            "    expected:   "
-            + RateFormatter::toString(forward,10));
+            << std::setprecision(10)
+            << "    calculated: "
+            << io::rate(spreadedForward-me->value()) << "\n"
+            << "    expected:   " << io::rate(forward));
 
     QL_TEST_TEARDOWN
 }
@@ -263,10 +264,9 @@ void TermStructureTest::testZSpreaded() {
     if (std::fabs(zero - (spreadedZero-me->value())) > tolerance)
         BOOST_FAIL(
             "unable to reproduce zero yield from spreaded curve\n"
-            "    calculated: "
-            + RateFormatter::toString(spreadedZero-me->value(),10) + "\n"
-            "    expected:   "
-            + RateFormatter::toString(zero,10));
+            << std::setprecision(10)
+            << "    calculated: " << io::rate(spreadedZero-me->value()) << "\n"
+            << "    expected:   " << io::rate(zero));
 
     QL_TEST_TEARDOWN
 }

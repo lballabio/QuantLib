@@ -27,6 +27,7 @@
 #include <ql/RandomNumbers/randomizedlds.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 
 //#define PRINT_ONLY
@@ -137,10 +138,9 @@ void LowDiscrepancyTest::testSobol() {
         mean = stat.mean();
         for (i=0; i<dimensionality; i++) {
             if (mean[i] != 0.5) {
-                BOOST_FAIL(SizeFormatter::toOrdinal(i+1)
-                           << " dimension mean (" << mean[i]
-                           << ") at the end of the "
-                           << SizeFormatter::toOrdinal(j+1)
+                BOOST_FAIL(io::ordinal(i+1) << " dimension "
+                           << "mean (" << mean[i]
+                           << ") at the end of the " << io::ordinal(j+1)
                            << " cycle in Sobol sequence is not " << 0.5);
             }
         }
@@ -167,7 +167,7 @@ void LowDiscrepancyTest::testSobol() {
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            BOOST_FAIL(SizeFormatter::toOrdinal(i+1) << " draw (" << point[0]
+            BOOST_FAIL(io::ordinal(i+1) << " draw (" << point[0]
                        << ") in 1-D Sobol sequence is not in the "
                        << "van der Corput sequence modulo two: "
                        << "it should have been "
@@ -214,8 +214,7 @@ void LowDiscrepancyTest::testFaure() {
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            BOOST_FAIL(SizeFormatter::toOrdinal(i+1)
-                       << " draw, dimension 1 (" << point[0]
+            BOOST_FAIL(io::ordinal(i+1) << " draw, dimension 1 (" << point[0]
                        << ") in 3-D Faure sequence should have been "
                        << vanderCorputSequenceModuloTwo[i]);
         }
@@ -246,14 +245,12 @@ void LowDiscrepancyTest::testFaure() {
         //std::cout << i+1 << ", " << ArrayFormatter::toString(point)
         //          << std::endl;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            BOOST_FAIL(SizeFormatter::toOrdinal(i+1)
-                       << " draw, dimension 1 (" << point[0]
+            BOOST_FAIL(io::ordinal(i+1) << " draw, dimension 1 (" << point[0]
                        << ") in 3-D Faure sequence should have been "
                        << vanderCorputSequenceModuloTwo[i]);
         }
         if (point[1]!=FaureDimensionTwoOfTwo[i]) {
-            BOOST_FAIL(SizeFormatter::toOrdinal(i+1)
-                       << " draw, dimension 2 (" << point[1]
+            BOOST_FAIL(io::ordinal(i+1) << " draw, dimension 2 (" << point[1]
                        << ") in 3-D Faure sequence should have been "
                        << FaureDimensionTwoOfTwo[i]);
         }
@@ -287,20 +284,17 @@ void LowDiscrepancyTest::testFaure() {
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=FaureDimensionOneOfThree[i]) {
-            BOOST_FAIL(SizeFormatter::toOrdinal(i+1)
-                       << " draw, dimension 1 (" << point[0]
+            BOOST_FAIL(io::ordinal(i+1) << " draw, dimension 1 (" << point[0]
                        << ") in 3-D Faure sequence should have been "
                        << FaureDimensionOneOfThree[i]);
         }
         if (point[1]!=FaureDimensionTwoOfThree[i]) {
-            BOOST_FAIL(SizeFormatter::toOrdinal(i+1)
-                       << " draw, dimension 2 (" << point[1]
+            BOOST_FAIL(io::ordinal(i+1) << " draw, dimension 2 (" << point[1]
                        << ") in 3-D Faure sequence should have been "
                        << FaureDimensionTwoOfThree[i]);
         }
         if (point[2]!=FaureDimensionThreeOfThree[i]) {
-            BOOST_FAIL(SizeFormatter::toOrdinal(i+1)
-                       << " draw, dimension 3 (" << point[2]
+            BOOST_FAIL(io::ordinal(i+1) << " draw, dimension 3 (" << point[2]
                        << ") in 3-D Faure sequence should have been "
                        << FaureDimensionThreeOfThree[i]);
         }
@@ -346,7 +340,7 @@ void LowDiscrepancyTest::testHalton() {
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            BOOST_FAIL(SizeFormatter::toOrdinal(i+1) << " draw (" << point[0]
+            BOOST_FAIL(io::ordinal(i+1) << " draw (" << point[0]
                        << ") in 1-D Halton sequence is not in the "
                        << "van der Corput sequence modulo two: "
                        << "it should have been "
@@ -371,8 +365,7 @@ void LowDiscrepancyTest::testHalton() {
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            BOOST_FAIL("First component of "
-                       << SizeFormatter::toOrdinal(i+1)
+            BOOST_FAIL("First component of " << io::ordinal(i+1)
                        << " draw (" << point[0]
                        << ") in 2-D Halton sequence is not in the "
                        << "van der Corput sequence modulo two: "
@@ -380,8 +373,7 @@ void LowDiscrepancyTest::testHalton() {
                        << vanderCorputSequenceModuloTwo[i]);
         }
         if (std::fabs(point[1]-vanderCorputSequenceModuloThree[i])>1.0e-15) {
-            BOOST_FAIL("Second component of "
-                       << SizeFormatter::toOrdinal(i+1)
+            BOOST_FAIL("Second component of " << io::ordinal(i+1)
                        << " draw (" << point[1]
                        << ") in 2-D Halton sequence is not in the "
                        << "van der Corput sequence modulo three: "
@@ -406,8 +398,7 @@ void LowDiscrepancyTest::testHalton() {
         mean = stat.mean();
         if (mean[0] != 0.5) {
             BOOST_FAIL("First dimension mean (" << mean[0]
-                       << ") at the end of the "
-                       << SizeFormatter::toOrdinal(j+1)
+                       << ") at the end of the " << io::ordinal(j+1)
                        << " cycle in Halton sequence is not " << 0.5);
         }
     }
@@ -425,8 +416,7 @@ void LowDiscrepancyTest::testHalton() {
         mean = stat.mean();
         if (std::fabs(mean[1]-0.5)>1e-16) {
             BOOST_FAIL("Second dimension mean (" << mean[1]
-                       << ") at the end of the "
-                       << SizeFormatter::toOrdinal(j+1)
+                       << ") at the end of the " << io::ordinal(j+1)
                        << " cycle in Halton sequence is not " << 0.5);
         }
     }
@@ -754,7 +744,7 @@ namespace {
                 #ifdef PRINT_ONLY
                 if (j!=jMin)
                     outStream << ", ";
-                outStream << DecimalFormatter::toExponential(discr, 2);
+                outStream << std::fixed << std::setprecision(2) << discr;
                 #else
                 if (std::fabs(discr-discrepancy[i][j-jMin])>tolerance*discr) {
                     BOOST_FAIL(generatorFactory.name()

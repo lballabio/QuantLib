@@ -1412,8 +1412,8 @@ namespace QuantLib {
                                           << degree[k] << "\t"
                                           << ppmt[k]   << "\t";
                    for (j=0; j<10; j++) {
-                       outStream << IntegerFormatter::toPowerOfTwo(
-                           directionIntegers_[k][j], 3) << "\t";
+                       outStream << io::power_of_two(
+                           directionIntegers_[k][j]) << "\t";
                    }
                }
                outStream.close();

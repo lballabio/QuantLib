@@ -114,9 +114,7 @@ namespace QuantLib {
 
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "GSG/timeGrid dimension mismatch"
-                   "(" + IntegerFormatter::toString(dimension_) +
-                   "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
-                   ")");
+                   "(" << dimension_ << "/" + timeGrid_.size()-1 << ")");
 
         initialize(std::vector<Real>(dimension_, 1.0));
     }
@@ -137,9 +135,7 @@ namespace QuantLib {
 
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "GSG/timeGrid dimension mismatch"
-                   "(" + IntegerFormatter::toString(dimension_) +
-                   "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
-                   ")");
+                   "(" << dimension_ << "/" << timeGrid_.size()-1 << ")");
 
         initialize(std::vector<Real>(dimension_, 1.0));
     }
@@ -161,15 +157,11 @@ namespace QuantLib {
 
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "GSG/timeGrid dimension mismatch"
-                   "(" + IntegerFormatter::toString(dimension_) +
-                   "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
-                   ")");
+                   "(" << dimension_ << "/" << timeGrid_.size()-1 << ")");
 
         QL_REQUIRE(dimension_==variances.size(),
                    "GSG/variances dimension mismatch"
-                   "(" + IntegerFormatter::toString(dimension_) +
-                   "/" + IntegerFormatter::toString(variances.size()) +
-                   ")");
+                   "(" << dimension_ << "/" << variances.size() << ")");
 
         initialize(variances);
     }
@@ -192,9 +184,7 @@ namespace QuantLib {
 
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "GSG/timeGrid dimension mismatch"
-                   "(" + IntegerFormatter::toString(dimension_) +
-                   "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
-                   ")");
+                   "(" << dimension_ << "/" << timeGrid_.size()-1 << ")");
 
         std::vector<Real> variances(dimension_);
         for (Size i=0; i<dimension_; i++) {

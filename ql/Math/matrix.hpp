@@ -176,19 +176,21 @@ namespace QuantLib {
                                                precision,digits,
                                                m.columns());
             #else
-            std::string s = "[ ";
+            std::ostringstream s;
+            s << "[ ";
             Matrix::const_iterator begin = m.begin(), end = m.end();
             for (Size n=0; begin!=end; ++begin, ++n) {
                 if (n == m.columns()) {
-                    s += ";\n  ";
+                    s << ";\n  ";
                     n = 0;
                 }
                 if (n!=0)
-                    s += " ; ";
-                s += DecimalFormatter::toString(*begin, precision, digits);
+                    s << " ; ";
+                s << std::setprecision(precision)
+                  << std::setw(digits) << *begin;
             }
-            s += " ]";
-            return s;
+            s << " ]";
+            return s.str();
             #endif
         }
     };

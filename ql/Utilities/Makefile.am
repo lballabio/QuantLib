@@ -4,12 +4,14 @@ includedir = $(prefix)/include/ql/Utilities
 
 include_HEADERS = \
     all.hpp \
+    dataformatters.hpp \
     steppingiterator.hpp \
     tracing.hpp
 
 EXTRA_DIST=makefile.mak
 
 libUtilities_la_SOURCES = \
+    dataformatters.cpp \
     tracing.cpp
 
 noinst_LTLIBRARIES = libUtilities.la

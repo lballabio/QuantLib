@@ -24,6 +24,7 @@
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/actualactual.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -99,17 +100,14 @@ void BondTest::testYield() {
                           << DateFormatter::toString(issue) << "\n"
                           << "    maturity:  "
                           << DateFormatter::toString(maturity) << "\n"
-                          << "    coupon:    "
-                          << RateFormatter::toString(coupons[k]) << "\n"
+                          << "    coupon:    " << io::rate(coupons[k]) << "\n"
                           << "    frequency: "
                           << FrequencyFormatter::toString(frequencies[l])
                           << "\n\n"
-                          << "    yield:  "
-                          << RateFormatter::toString(yields[m]) << "\n"
+                          << "    yield:  " << io::rate(yields[m]) << "\n"
                           << std::setprecision(7)
                           << "    price:  " << price << "\n"
-                          << "    yield': "
-                          << RateFormatter::toString(calculated) << "\n"
+                          << "    yield': " << io::rate(calculated) << "\n"
                           << "    price': " << price2);
                   }
               }
@@ -182,12 +180,10 @@ void BondTest::testCachedYield() {
     yield = bond1.yield(marketPrice1);
     if (std::fabs(yield-cachedYield1) > tolerance) {
         BOOST_FAIL("failed to reproduce cached yield:\n"
-                   "    calculated: "
-                   + RateFormatter::toString(yield,4) + "\n"
-                   "    expected:   "
-                   + RateFormatter::toString(cachedYield1,4) + "\n"
-                   "    error:      "
-                   + RateFormatter::toString(yield-cachedYield1,4));
+                   << std::setprecision(4)
+                   << "    calculated: " << io::rate(yield) << "\n"
+                   << "    expected:   " << io::rate(cachedYield1) << "\n"
+                   << "    error:      " << io::rate(yield-cachedYield1));
     }
 
 
@@ -202,12 +198,10 @@ void BondTest::testCachedYield() {
     yield = bond2.yield(marketPrice2);
     if (std::fabs(yield-cachedYield2) > tolerance) {
         BOOST_FAIL("failed to reproduce cached yield:\n"
-                   "    calculated: "
-                   + RateFormatter::toString(yield,4) + "\n"
-                   "    expected:   "
-                   + RateFormatter::toString(cachedYield2,4) + "\n"
-                   "    error:      "
-                   + RateFormatter::toString(yield-cachedYield2,4));
+                   << std::setprecision(4)
+                   << "    calculated: " << io::rate(yield) << "\n"
+                   << "    expected:   " << io::rate(cachedYield2) << "\n"
+                   << "    error:      " << io::rate(yield-cachedYield2));
     }
 
     // with explicit settlement date:

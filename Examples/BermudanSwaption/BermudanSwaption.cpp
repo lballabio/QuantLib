@@ -29,11 +29,11 @@ Size numCols = 5;
 Integer swapLenghts[] = {
       1,     2,     3,     4,     5};
 Volatility swaptionVols[] = {
-  14.90, 13.40, 12.28, 11.89, 11.48,
-  12.90, 12.01, 11.46, 11.08, 10.40,
-  11.49, 11.12, 10.70, 10.10,  9.57,
-  10.47, 10.21,  9.80,  9.51, 12.70,
-  10.00,  9.50,  9.00, 12.30, 11.60};
+  0.1490, 0.1340, 0.1228, 0.1189, 0.1148,
+  0.1290, 0.1201, 0.1146, 0.1108, 0.1040,
+  0.1149, 0.1112, 0.1070, 0.1010, 0.0957,
+  0.1047, 0.1021, 0.0980, 0.0951, 0.1270,
+  0.1000, 0.0950, 0.0900, 0.1230, 0.1160};
 
 void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
                     const std::vector<boost::shared_ptr<CalibrationHelper> >&
@@ -50,14 +50,16 @@ void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
         Size k = i*numCols + j;
         Real npv = helpers[i]->modelValue();
         Volatility implied = helpers[i]->impliedVolatility(npv, 1e-4,
-            1000, 0.05, 0.50)*100.0;
+                                                           1000, 0.05, 0.50);
         Volatility diff = implied - swaptionVols[k];
 
         std::cout << i+1 << "x" << swapLenghts[j]
-                  << std::fixed << std::setprecision(5) << std::noshowpos
-                  << ": model " << std::setw(5) << implied
-                  << ", market " << std::setw(5) << swaptionVols[k]
-                  << " (" << std::setw(5) << std::showpos << diff << ")\n";
+                  << std::setprecision(5) << std::noshowpos
+                  << ": model " << std::setw(7) << io::volatility(implied)
+                  << ", market " << std::setw(7)
+                  << io::volatility(swaptionVols[k])
+                  << " (" << std::setw(7) << std::showpos
+                  << io::volatility(diff) << std::noshowpos << ")\n";
     }
 }
 
@@ -141,8 +143,7 @@ int main(int, char* [])
         for (i=0; i<numRows; i++) {
             Size j = numCols - i -1; // 1x5, 2x4, 3x3, 4x2, 5x1
             Size k = i*numCols + j;
-            boost::shared_ptr<Quote> vol(new
-                SimpleQuote(swaptionVols[k]*0.01));
+            boost::shared_ptr<Quote> vol(new SimpleQuote(swaptionVols[k]));
             swaptions.push_back(boost::shared_ptr<CalibrationHelper>(new
                 SwaptionHelper(swaptionMaturities[i],
                                Period(swapLenghts[j], Years),
@@ -227,8 +228,8 @@ int main(int, char* [])
         // ATM Bermudan swaption pricing
 
         std::cout << "Payer bermudan swaption "
-            << "struck at " << RateFormatter::toString(fixedATMRate)
-            << " (ATM)" << std::endl;
+                  << "struck at " << io::rate(fixedATMRate)
+                  << " (ATM)" << std::endl;
 
         std::vector<Date> bermudanDates;
         const std::vector<boost::shared_ptr<CashFlow> >& leg =
@@ -270,8 +271,8 @@ int main(int, char* [])
         // OTM Bermudan swaption pricing
 
         std::cout << "Payer bermudan swaption "
-            << "struck at " << RateFormatter::toString(fixedOTMRate)
-            << " (OTM)" << std::endl;
+                  << "struck at " << io::rate(fixedOTMRate)
+                  << " (OTM)" << std::endl;
 
         Swaption otmBermudanSwaption(otmSwap, bermudaExercise, rhTermStructure,
                                      boost::shared_ptr<PricingEngine>());
@@ -299,8 +300,8 @@ int main(int, char* [])
         // ITM Bermudan swaption pricing
 
         std::cout << "Payer bermudan swaption "
-            << "struck at " << RateFormatter::toString(fixedITMRate)
-            << " (ITM)" << std::endl;
+                  << "struck at " << io::rate(fixedITMRate)
+                  << " (ITM)" << std::endl;
 
         Swaption itmBermudanSwaption(itmSwap, bermudaExercise, rhTermStructure,
                                      boost::shared_ptr<PricingEngine>());

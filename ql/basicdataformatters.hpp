@@ -29,32 +29,32 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! Formats integers for output
+    /*! \deprecated use streams and manipulators for proper formatting */
     class IntegerFormatter {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use streams and manipulators for proper formatting */
         static std::string toString(BigInteger l, Integer digits = 0);
-        #endif
         static std::string toPowerOfTwo(BigInteger l, Integer digits = 0);
     };
+    #endif
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! Formats unsigned integers for output
+    /*! \deprecated use streams and manipulators for proper formatting */
     class SizeFormatter {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use streams and manipulators for proper formatting */
         static std::string toString(Size l, Integer digits = 0);
-        #endif
         static std::string toOrdinal(Size l);
         static std::string toPowerOfTwo(Size l, Integer digits = 0);
     };
+    #endif
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! Formats real numbers for output
+    /*! \deprecated use streams and manipulators for proper formatting */
     class DecimalFormatter {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use streams and manipulators for proper formatting */
         static std::string toString(Decimal x,
                                     Integer precision = 6,
                                     Integer digits = 0);
@@ -62,11 +62,11 @@ namespace QuantLib {
         static std::string toExponential(Decimal x,
                                          Integer precision = 6,
                                          Integer digits = 0);
-        #endif
         static std::string toPercentage(Decimal x,
                                         Integer precision = 6,
                                         Integer digits = 0);
     };
+    #endif
 
     //! Formats strings as lower- or uppercase
     class StringFormatter {
@@ -103,21 +103,25 @@ namespace QuantLib {
     };
     #endif
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! Formats rates for output
-    /*! Formatting is in percentage form (xx.xxxxx%) */
+    /*! \deprecated use streams and manipulators for proper formatting */
     class RateFormatter {
       public:
         static std::string toString(Rate rate,
                                     Integer precision = 5);
     };
+    #endif
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! Formats volatilities for output
-    /*! Formatting is in percentage form (xx.xxxxx%) */
+    /*! \deprecated use streams and manipulators for proper formatting */
     class VolatilityFormatter {
       public:
         static std::string toString(Volatility vol,
                                     Integer precision = 5);
     };
+    #endif
 
 }
 

@@ -38,7 +38,6 @@ namespace QuantLib {
             return out.str();
         }
     }
-    #endif
 
     std::string IntegerFormatter::toPowerOfTwo(BigInteger l, Integer digits) {
         if (l < 0L)
@@ -46,6 +45,7 @@ namespace QuantLib {
         else
             return SizeFormatter::toPowerOfTwo(Size(l),digits);
     }
+    #endif
 
     #ifndef QL_DISABLE_DEPRECATED
     std::string SizeFormatter::toString(Size l, Integer digits) {
@@ -59,7 +59,6 @@ namespace QuantLib {
             return out.str();
         }
     }
-    #endif
 
     std::string SizeFormatter::toOrdinal(Size l) {
         std::ostringstream s;
@@ -90,6 +89,7 @@ namespace QuantLib {
         s << std::setw(digits) << l << "*2^" << std::setw(2) << power;
         return s.str();
     }
+    #endif
 
     #ifndef QL_DISABLE_DEPRECATED
     std::string DecimalFormatter::toString(Decimal x, Integer precision,
@@ -119,7 +119,6 @@ namespace QuantLib {
             return out.str();
         }
     }
-    #endif
 
     std::string DecimalFormatter::toPercentage(Decimal x, Integer precision,
                                                Integer digits) {
@@ -130,6 +129,7 @@ namespace QuantLib {
         out << x*100 << "%";
         return out.str();
     }
+    #endif
 
     std::string StringFormatter::toLowercase(const std::string& s) {
         std::string output = s;
@@ -145,6 +145,7 @@ namespace QuantLib {
         return output;
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     std::string RateFormatter::toString(Rate rate, Integer precision) {
         return DecimalFormatter::toPercentage(rate,precision);
     }
@@ -153,5 +154,6 @@ namespace QuantLib {
                                               Integer precision) {
         return DecimalFormatter::toPercentage(vol,precision);
     }
+    #endif
 
 }

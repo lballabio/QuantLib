@@ -26,6 +26,7 @@
 #include <ql/PricingEngines/Forward/forwardperformanceengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -40,20 +41,15 @@ using namespace boost::unit_test_framework;
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    spot value:        " << s << "\n" \
                << "    strike:            " << payoff->strike() << "\n" \
-               << "    dividend yield:    " \
-               << RateFormatter::toString(q) << "\n" \
-               << "    risk-free rate:    " \
-               << RateFormatter::toString(r) << "\n" \
-               << "    fx risk-free rate: " \
-               << RateFormatter::toString(fxr) << "\n" \
+               << "    dividend yield:    " << io::rate(q) << "\n" \
+               << "    risk-free rate:    " << io::rate(r) << "\n" \
+               << "    fx risk-free rate: " << io::rate(fxr) << "\n" \
                << "    reference date:    " \
                << DateFormatter::toString(today) << "\n" \
                << "    maturity:          " \
                << DateFormatter::toString(exercise->lastDate()) << "\n" \
-               << "    volatility:        " \
-               << VolatilityFormatter::toString(v) << "\n" \
-               << "    fx volatility:     " \
-               << VolatilityFormatter::toString(fxv) << "\n" \
+               << "    volatility:        " << io::volatility(v) << "\n" \
+               << "    fx volatility:     " << io::volatility(fxv) << "\n" \
                << "    correlation:       " << corr << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
@@ -70,23 +66,18 @@ using namespace boost::unit_test_framework;
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    spot value:        " << s << "\n" \
                << "    strike:            " << payoff->strike() << "\n" \
-               << "    moneyness:         " << moneyness << "\n" \
-               << "    dividend yield:    " \
-               << RateFormatter::toString(q) << "\n" \
-               << "    risk-free rate:    " \
-               << RateFormatter::toString(r) << "\n" \
-               << "    fx risk-free rate: " \
-               << RateFormatter::toString(fxr) << "\n" \
+               << "    moneyness:         " << io::percent(moneyness) << "\n" \
+               << "    dividend yield:    " << io::rate(q) << "\n" \
+               << "    risk-free rate:    " << io::rate(r) << "\n" \
+               << "    fx risk-free rate: " << io::rate(fxr) << "\n" \
                << "    reference date:    " \
                << DateFormatter::toString(today) << "\n" \
                << "    reset date:        " \
                << DateFormatter::toString(reset) << "\n" \
                << "    maturity:          " \
                << DateFormatter::toString(exercise->lastDate()) << "\n" \
-               << "    volatility:        " \
-               << VolatilityFormatter::toString(v) << "\n" \
-               << "    fx volatility:     " \
-               << VolatilityFormatter::toString(fxv) << "\n" \
+               << "    volatility:        " << io::volatility(v) << "\n" \
+               << "    fx volatility:     " << io::volatility(fxv) << "\n" \
                << "    correlation:       " << corr << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\

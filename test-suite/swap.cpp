@@ -28,6 +28,7 @@
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/indexcashflowvectors.hpp>
 #include <ql/Volatilities/capletconstantvol.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -108,9 +109,10 @@ void SwapTest::testFairRate() {
             swap = makeSwap(lengths[i],swap->fairRate(),spreads[j]);
             if (std::fabs(swap->NPV()) > 1.0e-10) {
                 BOOST_FAIL("recalculating with implied rate:\n"
+                           << std::setprecision(2)
                            << "    length: " << lengths[i] << " years\n"
                            << "    floating spread: "
-                           << RateFormatter::toString(spreads[j],2) << "\n"
+                           << io::rate(spreads[j]) << "\n"
                            << "    swap value: " << swap->NPV());
             }
         }
@@ -138,9 +140,9 @@ void SwapTest::testFairSpread() {
             swap = makeSwap(lengths[i],rates[j],swap->fairSpread());
             if (std::fabs(swap->NPV()) > 1.0e-10) {
                 BOOST_FAIL("recalculating with implied spread:\n"
+                           << std::setprecision(2)
                            << "    length: " << lengths[i] << " years\n"
-                           << "    fixed rate: "
-                           << RateFormatter::toString(rates[j],2) << "\n"
+                           << "    fixed rate: " << io::rate(rates[j]) << "\n"
                            << "    swap value: " << swap->NPV());
             }
         }
@@ -179,11 +181,9 @@ void SwapTest::testRateDependency() {
                     "NPV is increasing with the fixed rate in a swap: \n"
                     << "    length: " << lengths[i] << " years\n"
                     << "    value:  " << swap_values[n]
-                    << " paying fixed rate: "
-                    << RateFormatter::toString(rates[n],2) << "\n"
+                    << " paying fixed rate: " << io::rate(rates[n]) << "\n"
                     << "    value:  " << swap_values[n+1]
-                    << " paying fixed rate: "
-                    << RateFormatter::toString(rates[n+1],2));
+                    << " paying fixed rate: " << io::rate(rates[n+1]));
             }
         }
     }
@@ -221,11 +221,9 @@ void SwapTest::testSpreadDependency() {
                     "NPV is decreasing with the floating spread in a swap: \n"
                     << "    length: " << lengths[i] << " years\n"
                     << "    value:  " << swap_values[n]
-                    << " receiving spread: "
-                    << RateFormatter::toString(spreads[n],2) << "\n"
+                    << " receiving spread: " << io::rate(spreads[n]) << "\n"
                     << "    value:  " << swap_values[n+1]
-                    << " receiving spread: "
-                    << RateFormatter::toString(spreads[n+1],2));
+                    << " receiving spread: " << io::rate(spreads[n+1]));
             }
         }
     }

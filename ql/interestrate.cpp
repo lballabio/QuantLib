@@ -17,8 +17,9 @@
 
 #include <ql/interestrate.hpp>
 #include <ql/null.hpp>
-#include <ql/basicdataformatters.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <sstream>
+#include <iomanip>
 
 namespace QuantLib {
 
@@ -98,7 +99,7 @@ namespace QuantLib {
             return "null interest rate";
         } else {
             out.str(""); // clear
-            out << RateFormatter::toString(ir.rate(),precision);
+            out << std::setprecision(precision) << io::rate(ir.rate());
             out << " ";
             out << ir.dayCounter().name();
             out << " ";

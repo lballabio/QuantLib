@@ -24,6 +24,7 @@
 #define quantlib_montecarlo_get_covariance_h
 
 #include <ql/Math/matrix.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -68,8 +69,7 @@ namespace QuantLib {
             }
             QL_REQUIRE(std::fabs(corr[i][i]-1.0) <= tolerance,
                        "invalid correlation matrix, "
-                       << "diagonal element of the "
-                       << SizeFormatter::toOrdinal(i)
+                       << "diagonal element of the " << io::ordinal(i)
                        << " row is " << corr[i][i] << " instead of 1.0");
             covariance[i][i] = (*iIt) * (*iIt);
         }
