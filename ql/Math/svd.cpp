@@ -100,7 +100,6 @@ namespace QuantLib {
         V_ = Matrix(n_,n_);
         Array e(n_);
         Array work(m_);
-        int wantu = 1;  					/* boolean */
         int i, j, k;
 
         // Reduce A to bidiagonal form, storing the diagonal elements
@@ -149,7 +148,7 @@ namespace QuantLib {
 
                 e[j] = A[k][j];
             }
-            if (wantu & (k < nct)) {
+            if (k < nct) {
 
                 // Place the transformation in U for subsequent back
                 // multiplication.
