@@ -172,11 +172,11 @@ namespace QuantLib {
 
 
 
-        //! Generates random paths using a random number generator
+        //! Generates random paths using a sequence generator
         /*! Generates random paths with drift(S,t) and variance(S,t)
-            using a random number generator
+            using a sequence generator
         */
-        template <class RNG>
+        template <class SG>
         class PathGenerator2 {
           public:
             typedef Sample<Path> sample_type;
@@ -184,10 +184,10 @@ namespace QuantLib {
             PathGenerator2(const Handle<DiffusionProcess>& diffProcess,
                            Time length,
                            Size timeSteps,
-                           const Handle<RNG>& generator);
+                           SG generator);
             PathGenerator2(const Handle<DiffusionProcess>& diffProcess,
                            const Handle<TimeGrid>& times,
-                           const Handle<RNG>& generator);
+                           SG generator);
             //! \name inspectors
             //@{
             const sample_type& next() const;
@@ -196,34 +196,46 @@ namespace QuantLib {
             //@}
           private:
             mutable Sample<Path> next_;
-            mutable std::vector<double> randomExtractions_;
+            mutable typename SG::sample_type sequence_;
             mutable double asset_;
             Handle<DiffusionProcess> diffProcess_;
-            Handle<RNG> generator_;
+            SG generator_;
+            Size dimension_;
             Handle<TimeGrid> times_;
         };
 
-        template <class RNG>
-        PathGenerator2<RNG>::PathGenerator2(
+        template <class SG>
+        PathGenerator2<SG>::PathGenerator2(
             const Handle<DiffusionProcess>& diffProcess,
-            Time length, Size timeSteps, const Handle<RNG>& generator)
-        : next_(Path(timeSteps),1.0), randomExtractions_(timeSteps),
-          diffProcess_(diffProcess), generator_(generator) {
+            Time length, Size timeSteps, SG generator)
+        : next_(Path(timeSteps),1.0), sequence_(Array(timeSteps), 0.0),
+          diffProcess_(diffProcess), generator_(generator),
+          dimension_(generator_.dimension()) {
+            QL_REQUIRE(dimension_==timeSteps,
+                "PathGenerator2::PathGenerator2 :"
+                "sequence generator dimensionality != timeSteps");
             times_ = Handle<TimeGrid>(new TimeGrid(length, timeSteps));
         }
 
-        template <class RNG>
-        PathGenerator2<RNG>::PathGenerator2(
+        template <class SG>
+        PathGenerator2<SG>::PathGenerator2(
             const Handle<DiffusionProcess>& diffProcess,
-            const Handle<TimeGrid>& times, const Handle<RNG>& generator)
-        : next_(Path(times.size())-1,1.0), randomExtractions_(times.size()-1),
-          diffProcess_(diffProcess), generator_(generator), times_(times) {}
+            const Handle<TimeGrid>& times, SG generator)
+        : next_(Path(times.size())-1,1.0), sequence_(Array(times.size()-1), 0.0),
+          diffProcess_(diffProcess), generator_(generator),
+          dimension_(generator_.dimension()), times_(times) {
+            QL_REQUIRE(dimension_==times_.size()-1,
+                "PathGenerator2::PathGenerator2 :"
+                "sequence generator dimensionality != timeSteps");
+        }
     
-        template <class RNG>
-        inline const typename PathGenerator2<RNG>::sample_type&
-        PathGenerator2<RNG>::next() const {
-            // starting point for product
-            next_.weight = 1.0;
+        template <class SG>
+        inline const typename PathGenerator2<SG>::sample_type&
+        PathGenerator2<SG>::next() const {
+
+            sequence_ = generator_.next();
+
+            next_.weight = sequence_.weight;
 
             // starting point for asset value
             asset_ = diffProcess_->x0();
@@ -235,12 +247,9 @@ namespace QuantLib {
                 next_.value.drift()[i] = dt;
                 next_.value.drift()[i] *= 
                     diffProcess_->drift(t, asset_);
-                typename RNG::sample_type sample = generator_->next();
-                randomExtractions_[i] = sample.value;
-                double diff = QL_SQRT(diffProcess_->variance(t, asset_, dt));
-                next_.value.diffusion()[i] = randomExtractions_[i] *
-                    diff;
-                next_.weight *= sample.weight;
+                next_.value.diffusion()[i] = sequence_.value[i];
+                next_.value.diffusion()[i] *=
+                    QL_SQRT(diffProcess_->variance(t, asset_, dt));
                 asset_ *= QL_EXP(next_.value.drift()[i] + next_.value.diffusion()[i]);
             }
 
@@ -258,9 +267,10 @@ namespace QuantLib {
             for (Size i=0; i<next_.value.size(); i++) {
                 t = (*times_)[i+1];
                 dt = times_->dt(i);
-                next_.value.drift()[i] =
-                    diffProcess_->drift(t, asset_) * dt;
-                next_.value.diffusion()[i] = - randomExtractions_[i] *
+                next_.value.drift()[i] = dt;
+                next_.value.drift()[i] *= 
+                    diffProcess_->drift(t, asset_);
+                next_.value.diffusion()[i] = - sequence_.value[i] *
                     QL_SQRT(diffProcess_->variance(t, asset_, dt));
                 asset_ *= QL_EXP(next_.value.drift()[i] + next_.value.diffusion()[i]);
             }

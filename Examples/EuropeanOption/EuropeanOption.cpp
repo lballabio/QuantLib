@@ -24,6 +24,7 @@ using namespace QuantLib;
 using namespace QuantLib::PricingEngines;
 using namespace QuantLib::Math;
 using namespace QuantLib::MonteCarlo;
+using namespace QuantLib::RandomNumbers;
 
 using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Pricers::McEuropean;
@@ -400,11 +401,20 @@ int main(int argc, char* argv[])
         // Monte Carlo Method
         timeSteps = 365;
         method = "MC (crude)";
-        Handle<RandomNumbers::GaussianRandomGenerator> rng(new
-            RandomNumbers::GaussianRandomGenerator(123456));
-        option.setPricingEngine(Handle<PricingEngine>(
-            new MCEuropeanVanillaEngine<Statistics, GaussianPathGenerator2,
-                PathPricer<Path> >(false, false, timeSteps, rng)));
+        UniformRandomGenerator rng(123456);
+
+        UniformRandomSequenceGenerator rsg(timeSteps, rng);
+        UniformLowDiscrepancySequenceGenerator ldsg(timeSteps);
+
+        GaussianRandomSequenceGenerator grsg(rsg);
+        GaussianLowDiscrepancySequenceGenerator gldsg(ldsg);
+
+        MCEuropeanVanillaEngine<
+            Statistics,
+            GaussianRandomSequenceGenerator,
+            GaussianPathGenerator2,
+            PathPricer<Path> >(false, false, timeSteps, grsg);
+
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;

@@ -167,7 +167,7 @@ namespace QuantLib {
     
 
         //! Base class for MonteCarlo pricing engines for vanilla options
-        template<class S, class PG, class PP>
+        template<class S, class SG, class PG, class PP>
         class MCVanillaEngine : public VanillaEngine,
                                 public McEngine<S, PG, PP> {
           public:
@@ -177,23 +177,24 @@ namespace QuantLib {
                 bool antitheticVariance,
                 bool controlVariate,
                 Size timeSteps,
-                const Handle<RandomNumbers::GaussianRandomGenerator>& rng) 
+                SG sequenceGenerator) 
             : antitheticVariance_(antitheticVariance),
               controlVariate_(controlVariate), timeSteps_(timeSteps),
-              rng_(rng) {}
+              sequenceGenerator_(sequenceGenerator) {}
             Handle<PG> pathGenerator() const;
             bool antitheticVariance_, controlVariate_;
           private:
             Size timeSteps_;
-            Handle<RandomNumbers::GaussianRandomGenerator> rng_;
+            SG sequenceGenerator_;
         };
 
 
         // template definitions
 
-        template<class S, class PG, class PP>
-        inline Handle<PG> MCVanillaEngine<S, PG, PP>::pathGenerator() const {
-
+        template<class S, class SG, class PG, class PP>
+        inline
+        Handle<PG> MCVanillaEngine<S, SG, PG, PP>::pathGenerator() const
+        {
             Handle<DiffusionProcess> bs(new
                 BlackScholesProcess(arguments_.riskFreeTS, 
                                     arguments_.dividendTS,
@@ -205,17 +206,15 @@ namespace QuantLib {
 //                new MonteCarlo::PathGenerator<RandomNumbers::GaussianRandomGenerator>(mu,
 //                    volatility*volatility, residualTime, 1, seed_));
 
-            return Handle<MonteCarlo::PathGenerator2<
-                              RandomNumbers::GaussianRandomGenerator> >(
-                new MonteCarlo::PathGenerator2<
-                    RandomNumbers::GaussianRandomGenerator>(
-                        bs, arguments_.maturity, timeSteps_, rng_));
+            return Handle<MonteCarlo::PathGenerator2<SG> >(
+                new MonteCarlo::PathGenerator2<SG>(
+                        bs, arguments_.maturity, timeSteps_, sequenceGenerator_));
 
         }
 
 
-        template<class S, class PG, class PP>
-        inline void MCVanillaEngine<S, PG, PP>::calculate() const {
+        template<class S, class SG, class PG, class PP>
+        inline void MCVanillaEngine<S, SG, PG, PP>::calculate() const {
 
             QL_REQUIRE(arguments_.exerciseType == Exercise::European,
                 "MCVanillaEngine::calculate() : "
@@ -251,11 +250,7 @@ namespace QuantLib {
                     new MonteCarlo::MonteCarloModel<S, PG, PP>(
                         pathGenerator(), pathPricer(), S(),
                         controlPP, controlVariateValue));
-
-//                mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG, PP> >(
-//                    new MonteCarlo::MonteCarloModel<S, PG, PP>(
-//                        pathGenerator(), pathPricer(), S()));
-            
+           
             } else {
                 mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG, PP> >(
                     new MonteCarlo::MonteCarloModel<S, PG, PP>(
@@ -271,23 +266,23 @@ namespace QuantLib {
 
 
         //! European Vanilla option pricing engine using Monte Carlo simulation
-        template<class S, class PG, class PP>
-        class MCEuropeanVanillaEngine : public MCVanillaEngine<S, PG, PP> {
+        template<class S, class SG, class PG, class PP>
+        class MCEuropeanVanillaEngine : public MCVanillaEngine<S, SG, PG, PP> {
           public:
             MCEuropeanVanillaEngine(
                 bool antitheticVariance,
                 bool controlVariate,
                 Size timeSteps,
-                const Handle<RandomNumbers::GaussianRandomGenerator>& rng) 
-            : MCVanillaEngine<S, PG, PP>(antitheticVariance, controlVariate,
-              timeSteps, rng) {}
+                SG sequenceGenerator) 
+            : MCVanillaEngine<S, SG, PG, PP>(antitheticVariance,
+              controlVariate, timeSteps, sequenceGenerator) {}
           protected:
             Handle<PP> pathPricer() const;
         };
 
-        template<class S, class PG, class PP>
+        template<class S, class SG, class PG, class PP>
         inline 
-        Handle<PP> MCEuropeanVanillaEngine<S, PG, PP>::pathPricer() const {
+        Handle<PP> MCEuropeanVanillaEngine<S, SG, PG, PP>::pathPricer() const {
             //! Initialize the path pricer
             return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(
                 new MonteCarlo::EuropeanPathPricer(arguments_.type,
