@@ -9,9 +9,11 @@ include_HEADERS = \
 	centrallimitgaussianrng.hpp \
 	halton.hpp \
 	inversecumgaussianrng.hpp \
+	inversecumgaussianrsg.hpp \
 	knuthuniformrng.hpp \
 	lecuyeruniformrng.hpp \
 	randomarraygenerator.hpp \
+	randomsequencegenerator.hpp \
 	rngtypedefs.hpp
 
 EXTRA_DIST=makefile.mak

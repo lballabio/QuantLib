@@ -253,9 +253,11 @@
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>
 #include <ql/RandomNumbers/halton.hpp>
 #include <ql/RandomNumbers/inversecumgaussianrng.hpp>
+#include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
 #include <ql/RandomNumbers/knuthuniformrng.hpp>
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
+#include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 
 #include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
