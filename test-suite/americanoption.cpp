@@ -16,11 +16,11 @@
 */
 
 #include "americanoption.hpp"
+#include <ql/DayCounters/Actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/DayCounters/Actual360.hpp>
-#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 #include <map>
@@ -32,7 +32,6 @@ using namespace QuantLib;
 
 namespace {
 
-    // utilities
     Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward,
         DayCounter dc) {
         Date today = Date::todaysDate();
@@ -47,55 +46,152 @@ namespace {
             BlackConstantVol(today, RelinkableHandle<Quote>(volatility), dc));
     }
 
-    void check(std::string greekName,
-               Option::Type type,
-               double s,
-               double strike,
-               double q,
-               double r,
-               Date today,
-               Date exDate,
-               double v,
-               double result,
-               double calculated,
-               double tol) {
-        if (QL_FABS(calculated-result) > tol) {
-          CPPUNIT_FAIL(greekName + " of European "
-              + OptionTypeFormatter::toString(type) +
-              " option :\n"
-              "    underlying value: "
-              + DoubleFormatter::toString(s) + "\n"
-              "    strike:           "
-              + DoubleFormatter::toString(strike) +"\n"
-              "    dividend yield:   "
-              + DoubleFormatter::toString(q) + "\n"
-              "    risk-free rate:   "
-              + DoubleFormatter::toString(r) + "\n"
-              "    reference date:   "
-              + DateFormatter::toString(today) + "\n"
-              "    maturity:         "
-              + DateFormatter::toString(exDate) + "\n"
-              "    volatility:       "
-              + DoubleFormatter::toString(v) + "\n\n"
-              "    tabulated value:  "
-              + DoubleFormatter::toString(result) + "\n"
-              "    result:  "
-              + DoubleFormatter::toString(calculated));
+    std::string payoffTypeToString(const Handle<Payoff>& payoff) {
+
+        // PlainVanillaPayoff?
+        Handle<PlainVanillaPayoff> pv;
+        #if defined(HAVE_BOOST)
+        pv = boost::dynamic_pointer_cast<PlainVanillaPayoff>(payoff);
+        #else
+        try {
+            pv = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(pv)) {
+            // ok, the payoff is PlainVanillaPayoff
+            return "PlainVanillaPayoff";
         }
+
+        // CashOrNothingPayoff?
+        Handle<CashOrNothingPayoff> coo;
+        #if defined(HAVE_BOOST)
+        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
+        #else
+        try {
+            coo = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(coo)) {
+            // ok, the payoff is CashOrNothingPayoff
+            return "Cash ("
+                + DoubleFormatter::toString(coo->cashPayoff())
+                + ") or Nothing Payoff";
+        }
+
+        // AssetOrNothingPayoff?
+        Handle<AssetOrNothingPayoff> aoo;
+        #if defined(HAVE_BOOST)
+        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
+        #else
+        try {
+            aoo = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(aoo)) {
+            // ok, the payoff is AssetOrNothingPayoff
+            return "AssetOrNothingPayoff";
+        }
+
+        // SuperSharePayoff?
+        Handle<SuperSharePayoff> ss;
+        #if defined(HAVE_BOOST)
+        ss = boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
+        #else
+        try {
+            ss = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(ss)) {
+            // ok, the payoff is SuperSharePayoff
+            return "SuperSharePayoff";
+        }
+
+        throw Error("payoffTypeToString : unknown payoff type");
     }
 
 
+    std::string exerciseTypeToString(const Handle<Exercise>& exercise) {
 
-}
+        // EuropeanExercise?
+        Handle<EuropeanExercise> european;
+        #if defined(HAVE_BOOST)
+        european = boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+        #else
+        try {
+            european = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(european)) {
+            return "European";
+        }
 
+        // AmericanExercise?
+        Handle<AmericanExercise> american;
+        #if defined(HAVE_BOOST)
+        american = boost::dynamic_pointer_cast<AmericanExercise>(exercise);
+        #else
+        try {
+            american = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(american)) {
+            return "American";
+        }
 
+        // BermudanExercise?
+        Handle<BermudanExercise> bermudan;
+        #if defined(HAVE_BOOST)
+        bermudan = boost::dynamic_pointer_cast<BermudanExercise>(exercise);
+        #else
+        try {
+            bermudan = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(bermudan)) {
+            return "Bermudan";
+        }
 
+        throw Error("exerciseTypeToString : unknown exercise type");
+    }
 
-
-// tests
-
-
-void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
+    void vanillaOptionTestFailed(std::string greekName,
+               const Handle<StrikedTypePayoff>& payoff,
+               const Handle<Exercise>& exercise,
+               double s,
+               double q,
+               double r,
+               Date today,
+               double v,
+               double expected,
+               double calculated,
+               double tolerance = Null<double>()) {
+      CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
+          + OptionTypeFormatter::toString(payoff->optionType()) +
+          " option with "
+          + payoffTypeToString(payoff) + ":\n"
+          "    underlying value: "
+          + DoubleFormatter::toString(s) + "\n"
+          "    strike:           "
+          + DoubleFormatter::toString(payoff->strike()) +"\n"
+          "    dividend yield:   "
+          + DoubleFormatter::toString(q) + "\n"
+          "    risk-free rate:   "
+          + DoubleFormatter::toString(r) + "\n"
+          "    reference date:   "
+          + DateFormatter::toString(today) + "\n"
+          "    maturity:         "
+          + DateFormatter::toString(exercise->lastDate()) + "\n"
+          "    volatility:       "
+          + DoubleFormatter::toString(v) + "\n\n"
+          "    expected   " + greekName + ": "
+          + DoubleFormatter::toString(expected) + "\n"
+          "    calculated " + greekName + ": "
+          + DoubleFormatter::toString(calculated) + "\n"
+          "    error:            "
+          + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
+          + (tolerance==Null<double>() ? "" :
+          "    tolerance:        " + DoubleFormatter::toString(tolerance)));
+    }
 
     struct VanillaOptionData {
         Option::Type type;
@@ -108,6 +204,15 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         double result; // result
         double tol;    // tolerance
     };
+
+}
+
+
+
+// tests
+
+
+void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -163,18 +268,20 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
     DayCounter dc = Actual360();
     Handle<SimpleQuote> spot(new SimpleQuote(0.0));
     Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> divCurve = makeFlatCurve(qRate, dc);
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
     Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rfCurve = makeFlatCurve(rRate, dc);
-    Date today = Date::todaysDate();
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
     Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(vol, dc);
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
     Handle<PricingEngine> engine(new BaroneAdesiWhaleyApproximationEngine);
+
+    Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
         Handle<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
+
         Date exDate = today.plusDays(values[i].t*360);
         Handle<Exercise> exercise(new AmericanExercise(today, exDate));
 
@@ -182,40 +289,19 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
+
         VanillaOption option(payoff, exercise,
                              RelinkableHandle<Quote>(spot),
-                             RelinkableHandle<TermStructure>(divCurve),
-                             RelinkableHandle<TermStructure>(rfCurve),
-                             RelinkableHandle<BlackVolTermStructure>(volCurve),
+                             RelinkableHandle<TermStructure>(qTS),
+                             RelinkableHandle<TermStructure>(rTS),
+                             RelinkableHandle<BlackVolTermStructure>(volTS),
                              engine);
-        double value = option.NPV();
 
-        if (QL_FABS(value-values[i].result) > values[i].tol) {
-          CPPUNIT_FAIL("European "
-              + OptionTypeFormatter::toString(values[i].type) +
-              " option :\n"
-              "    underlying value: "
-              + DoubleFormatter::toString(values[i].s) + "\n"
-              "    strike:           "
-              + DoubleFormatter::toString(values[i].strike) +"\n"
-              "    dividend yield:   "
-              + DoubleFormatter::toString(values[i].q) + "\n"
-              "    risk-free rate:   "
-              + DoubleFormatter::toString(values[i].r) + "\n"
-              "    reference date:   "
-              + DateFormatter::toString(today) + "\n"
-              "    maturity:         "
-              + DateFormatter::toString(exDate) + "\n"
-              "    volatility:       "
-              + DoubleFormatter::toString(values[i].v) + "\n\n"
-              "    tabulated value:  "
-              + DoubleFormatter::toString(values[i].result, 4) + "\n"
-              "    result:           "
-              + DoubleFormatter::toString(value, 4) + "\n"
-              "    error:            "
-              + DoubleFormatter::toString(QL_FABS(value-values[i].result), 4) + "\n"
-              "    tolerance:        "
-              + DoubleFormatter::toString(values[i].tol, 4));
+        double calculated = option.NPV();
+        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
+            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
+                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].tol);
         }
     }
 
@@ -223,18 +309,6 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
 
 void AmericanOptionTest::testBjerksundStenslandValues() {
-
-    struct VanillaOptionData {
-        Option::Type type;
-        double strike;
-        double s;      // spot
-        double q;      // dividend
-        double r;      // risk-free rate
-        Time t;        // time to maturity
-        double v;      // volatility
-        double result; // result
-        double tol;    // tolerance
-    };
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -245,23 +319,22 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         { Option::Call,  40.00,  42.00, 0.08, 0.04, 0.75, 0.35,  5.2704, 1e-4 }
     };
 
-
-
     DayCounter dc = Actual360();
     Handle<SimpleQuote> spot(new SimpleQuote(0.0));
     Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> divCurve = makeFlatCurve(qRate, dc);
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
     Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rfCurve = makeFlatCurve(rRate, dc);
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
     Date today = Date::todaysDate();
     Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(vol, dc);
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
     Handle<PricingEngine> engine(new BjerksundStenslandApproximationEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
         Handle<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
+
         Date exDate = today.plusDays(values[i].t*360);
         Handle<Exercise> exercise(new AmericanExercise(today, exDate));
 
@@ -269,40 +342,19 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
+
         VanillaOption option(payoff, exercise,
                              RelinkableHandle<Quote>(spot),
-                             RelinkableHandle<TermStructure>(divCurve),
-                             RelinkableHandle<TermStructure>(rfCurve),
-                             RelinkableHandle<BlackVolTermStructure>(volCurve),
+                             RelinkableHandle<TermStructure>(qTS),
+                             RelinkableHandle<TermStructure>(rTS),
+                             RelinkableHandle<BlackVolTermStructure>(volTS),
                              engine);
-        double value = option.NPV();
 
-        if (QL_FABS(value-values[i].result) > values[i].tol) {
-          CPPUNIT_FAIL("European "
-              + OptionTypeFormatter::toString(values[i].type) +
-              " option :\n"
-              "    underlying value: "
-              + DoubleFormatter::toString(values[i].s) + "\n"
-              "    strike:           "
-              + DoubleFormatter::toString(values[i].strike) +"\n"
-              "    dividend yield:   "
-              + DoubleFormatter::toString(values[i].q) + "\n"
-              "    risk-free rate:   "
-              + DoubleFormatter::toString(values[i].r) + "\n"
-              "    reference date:   "
-              + DateFormatter::toString(today) + "\n"
-              "    maturity:         "
-              + DateFormatter::toString(exDate) + "\n"
-              "    volatility:       "
-              + DoubleFormatter::toString(values[i].v) + "\n\n"
-              "    tabulated value:  "
-              + DoubleFormatter::toString(values[i].result, 4) + "\n"
-              "    result:           "
-              + DoubleFormatter::toString(value, 4) + "\n"
-              "    error:            "
-              + DoubleFormatter::toString(QL_FABS(value-values[i].result), 4) + "\n"
-              "    tolerance:        "
-              + DoubleFormatter::toString(values[i].tol, 4));
+        double calculated = option.NPV();
+        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
+            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
+                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].tol);
         }
     }
 
@@ -319,6 +371,7 @@ CppUnit::Test* AmericanOptionTest::suite() {
     tests->addTest(new CppUnit::TestCaller<AmericanOptionTest>
         ("Testing Barone-Adesi and Whiley approximation for American options",
         &AmericanOptionTest::testBaroneAdesiWhaleyValues));
+
     return tests;
 }
 
