@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file statistics.hpp
     \brief statistic tools
 
@@ -29,6 +29,7 @@
 
 #include <ql/null.hpp>
 #include <ql/dataformatters.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 
@@ -36,7 +37,8 @@ namespace QuantLib {
 
         //! Statistic tool
         /*! It can accumulate a set of data and return statistic quantities
-            as mean, variance, std. deviation, skewness, and kurtosis.
+            as mean, variance, skewness, kurtosis, error estimation,
+            percentile, etc.
         */
         class Statistics {
           public:
@@ -60,10 +62,16 @@ namespace QuantLib {
                 square root of the variance.
             */
             double standardDeviation() const;
+            /*! returns the y percentile, defined as the value x such that
+                \f[ y = \frac{1}{\sqrt{2 \pi}}
+                     \int_{-\infty}^{x} \exp (-u^2/2) du \f]
+                */
+            double percentile(double y) const;
             /*! returns the downside variance, defined as
                 \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
                 \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
-                where \f$ \theta \f$ = 0 if x > 0 and \f$ \theta \f$ =1 if x <0
+                where \f$ \theta \f$ = 0 if x > 0 and
+                \f$ \theta \f$ =1 if x <0
             */
             double downsideVariance() const;
             /*! returns the downside deviation, defined as the
@@ -98,7 +106,7 @@ namespace QuantLib {
             //@{
             //! adds a datum to the set, possibly with a weight
             void add(double value, double weight = 1.0);
-            //! adds a sequence of data to the set
+            //! adds a sequence of data to the set, with default weight
             template <class DataIterator>
             void addSequence(DataIterator begin, DataIterator end) {
               for (;begin!=end;++begin)
@@ -171,14 +179,15 @@ namespace QuantLib {
                        "Stat::variance() : sample number <=1, unsufficient");
 
             double v = (sampleNumber_/(sampleNumber_-1.0)) *
-                       (quadraticSum_ - sum_*sum_/sampleWeight_)/sampleWeight_;
-            if (QL_FABS(v) <= 1.0e-6) 
+                       (quadraticSum_ - sum_*sum_/sampleWeight_)/
+                                                      sampleWeight_;
+            if (QL_FABS(v) <= 1.0e-6)
                 v = 0.0;
 
             QL_ENSURE(v >= 0.0,
                       "Statistics: negative variance (" +
                       DoubleFormatter::toString(v,20) + ")");
-                      
+
             return v;
         }
 
@@ -250,6 +259,17 @@ namespace QuantLib {
             return max_;
         }
 
+        inline double Statistics::percentile(double y) const {
+
+            QL_REQUIRE(y<1.0 && y>0.0,
+                "Statistics::percentile : percentile (" +
+                DoubleFormatter::toString(y) +
+                ") must be in (0%, 100%) extremes excluded");
+
+            Math::InverseCumulativeNormal gInverse(mean(),
+                standardDeviation());
+            return gInverse(y);
+        }
     }
 
 }

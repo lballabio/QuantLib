@@ -22,6 +22,7 @@ include_HEADERS = \
 	primenumbers.hpp \
 	riskmeasures.hpp \
 	segmentintegral.hpp \
+	sequencestatistics.hpp \
 	statistics.hpp \
 	symmetriceigenvalues.hpp \
 	symmetricschurdecomposition.hpp

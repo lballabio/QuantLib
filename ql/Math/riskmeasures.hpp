@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -29,14 +28,13 @@
 
 #include <ql/null.hpp>
 #include <ql/Math/normaldistribution.hpp>
-#include <vector>
 
 
 namespace QuantLib {
 
     namespace Math {
 
-        //! Interface for risk functions
+        //! Interface for gaussian risk functions
         class RiskMeasures {
           public:
             RiskMeasures() {}
@@ -60,8 +58,8 @@ namespace QuantLib {
         // inline definitions
         /*! \pre percentile must be in range 90%-100% */
         inline double RiskMeasures::potentialUpside(double percentile,
-                                                     double mean,
-                                                     double std) const {
+                                                    double mean,
+                                                    double std) const {
             QL_REQUIRE(percentile<1.0 && percentile>=0.9,
                 "RiskMeasures::potentialUpside : percentile (" +
                 DoubleFormatter::toString(percentile) +
@@ -75,8 +73,8 @@ namespace QuantLib {
 
         /*! \pre percentile must be in range 90%-100% */
         inline double RiskMeasures::valueAtRisk(double percentile,
-                                           double mean,
-                                           double std) const {
+                                                double mean,
+                                                double std) const {
             QL_REQUIRE(percentile<1.0 && percentile>=0.9,
                 "RiskMeasures::valueAtRisk : percentile (" +
                 DoubleFormatter::toString(percentile) +
@@ -91,8 +89,8 @@ namespace QuantLib {
 
         /*! \pre percentile must be in range 90%-100% */
         inline double RiskMeasures::expectedShortfall(double percentile,
-                                                 double mean,
-                                                 double std) const {
+                                                      double mean,
+                                                      double std) const {
             QL_REQUIRE(percentile<1.0 && percentile>=0.9,
                 "RiskMeasures::expectedShortfall : percentile (" +
                 DoubleFormatter::toString(percentile) +
@@ -109,15 +107,15 @@ namespace QuantLib {
         }
 
         inline double RiskMeasures::shortfall(double target,
-                                         double mean,
-                                         double std) const {
+                                              double mean,
+                                              double std) const {
             Math::CumulativeNormalDistribution gIntegral(mean, std);
             return gIntegral(target);
         }
 
         inline double RiskMeasures::averageShortfall(double target,
-                                                double mean,
-                                                double std) const {
+                                                     double mean,
+                                                     double std) const {
             Math::CumulativeNormalDistribution gIntegral(mean, std);
             Math::NormalDistribution g(mean, std);
             return ( (target-mean)*gIntegral(target) + std*std*g(target) );
