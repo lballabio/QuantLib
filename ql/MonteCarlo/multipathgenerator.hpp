@@ -42,35 +42,39 @@ namespace QuantLib {
         };        
         \endcode
     */
-    template <class SG>
+    template <class GSG>
     class MultiPathGenerator {
       public:
         typedef Sample<MultiPath> sample_type;        
-        MultiPathGenerator(const std::vector<Handle<DiffusionProcess> >& diffusionProcs,
-                           const Array& drifts,                           
+        MultiPathGenerator(const std::vector<Handle<DiffusionProcess> >& 
+                                        diffusionProcs,                           
                            const Matrix& correlation,
                            const TimeGrid& timeGrid,
-                           SG generator);
+                           GSG generator,
+                           bool brownianBridge);
         const sample_type& next() const;
         const sample_type& antithetic() const;
       private:
+        bool brownianBridge_;
         std::vector<Handle<DiffusionProcess> > diffusionProcs_;
         Size numAssets_;        
         Matrix sqrtCorrelation_;
-        SG generator_;        
+        GSG generator_;        
         mutable sample_type next_;        
     };
 
     
     // constructor
-    template <class SG>
-    inline MultiPathGenerator<SG>::MultiPathGenerator(
-                                const std::vector<Handle<DiffusionProcess> >& diffusionProcs,
-                                const Array& drifts,                         
+    template <class GSG>
+    inline MultiPathGenerator<GSG>::MultiPathGenerator(
+                                const std::vector<Handle<DiffusionProcess> >& 
+                                            diffusionProcs,                                    
                                 const Matrix& correlation,
                                 const TimeGrid& times, 
-                                SG generator)
-    :   diffusionProcs_(diffusionProcs),
+                                GSG generator,
+                                bool brownianBridge)
+    :   brownianBridge_(brownianBridge),
+        diffusionProcs_(diffusionProcs),
         numAssets_(correlation.rows()),         
         sqrtCorrelation_(matrixSqrt(correlation)),
         generator_(generator),
@@ -83,69 +87,83 @@ namespace QuantLib {
                    IntegerFormatter::toString(numAssets_) + 
                    " * " +
                    IntegerFormatter::toString(times.size()-1) + 
-                   ") the number of assets times the number of time steps");
-        QL_REQUIRE(drifts.size() == numAssets_,
-                   "MultiPathGenerator covariance and average "
-                   "do not have the same size");        
+                   ") the number of assets times the number of time steps");        
         QL_REQUIRE(sqrtCorrelation_.columns() == numAssets_,
                    "MultiPathGenerator correlation is not "
                    "a square matrix");
         QL_REQUIRE(times.size() > 1,
                    "MultiPathGenerator: no times given");
-
-        for (Size j=0; j<numAssets_; j++) {
-            for (Size i = 0; i< times.size()-1; i++) {
-                next_.value[j].drift()[i] = drifts[j] * 
-                    next_.value[j].timeGrid().dt(i);
-            }
-        }
+        
     }
 
 
     // next()
-    template <class SG>
-    inline const typename MultiPathGenerator<SG>::sample_type&
-    MultiPathGenerator<SG>::next() const {
-        typedef typename SG::sample_type sequence_type;
-        const sequence_type& sequence_ = generator_.nextSequence();
+    template <class GSG>
+    inline const typename MultiPathGenerator<GSG>::sample_type&
+    MultiPathGenerator<GSG>::next() const {
 
-        Array asset(numAssets_);
-        Array temp(numAssets_);
-        next_.weight = sequence_.weight;
+        if (brownianBridge_) {
+            /*typedef typename BrownianBridge<GSG>::sample_type sequence_type;
+            const sequence_type& stdDev_ = bb_.next();
 
-        for (Size j = 0; j < numAssets_; j++) {
-            asset[j] = diffusionProcs_[j]->x0();
-        }
+            next_.weight = stdDev_.weight;
 
-        TimeGrid timeGrid = next_.value[0].timeGrid();
-        double dt;
-        double sqrt_dt;
-        Time t;            
-        for (Size i = 0; i < next_.value[0].size(); i++) {
-            Size offset = i*numAssets_;
-            t = timeGrid[i+1];
-            dt = timeGrid.dt(i);            
-            sqrt_dt = QL_SQRT(dt);
-            std::copy(sequence_.value.begin()+offset,
-                      sequence_.value.begin()+offset+numAssets_,
-                      temp.begin());
-            
-            temp = sqrtCorrelation_ * temp;
-
-            for (Size j=0; j<numAssets_; j++) {
-                next_.value[j].drift()[i] = dt * diffusionProcs_[j]->drift(t, asset[j]);
-                next_.value[j].diffusion()[i] = - temp[j] * QL_SQRT(diffusionProcs_[j]->variance(t, asset[j], dt));            
-                asset[j] *= QL_EXP(next_.value[j].drift()[i] + next_.value[j].diffusion()[i]);                    
+            Time t = timeGrid_[1];
+            double dt= timeGrid_.dt(0);
+            next_.value.drift()[0] = dt * 
+                diffProcess_->drift(t, asset_);
+            next_.value.diffusion()[0] = stdDev_.value[0];
+            for (Size i=1; i<next_.value.size(); i++) {
+                t = timeGrid_[i+1];
+                dt = timeGrid_.dt(i);
+                next_.value.drift()[i] = dt * 
+                    diffProcess_->drift(t, asset_);
+                next_.value.diffusion()[i] =
+                    stdDev_.value[i] - stdDev_.value[i-1];
             }
+            */
+            return next_;            
+
+        } else {
+            typedef typename GSG::sample_type sequence_type;
+            const sequence_type& sequence_ = generator_.nextSequence();
+
+            Array asset(numAssets_);
+            Array temp(numAssets_);
+            next_.weight = sequence_.weight;
+
+            for (Size j = 0; j < numAssets_; j++) {
+                asset[j] = diffusionProcs_[j]->x0();
+            }
+
+            TimeGrid timeGrid = next_.value[0].timeGrid();
+            double dt;        
+            Time t;            
+            for (Size i = 0; i < next_.value[0].size(); i++) {
+                Size offset = i*numAssets_;
+                t = timeGrid[i+1];
+                dt = timeGrid.dt(i);                        
+                std::copy(sequence_.value.begin()+offset,
+                        sequence_.value.begin()+offset+numAssets_,
+                        temp.begin());
+                
+                temp = sqrtCorrelation_ * temp;
+
+                for (Size j=0; j<numAssets_; j++) {
+                    next_.value[j].drift()[i] = dt * diffusionProcs_[j]->drift(t, asset[j]);
+                    next_.value[j].diffusion()[i] = - temp[j] * QL_SQRT(diffusionProcs_[j]->variance(t, asset[j], dt));            
+                    asset[j] *= QL_EXP(next_.value[j].drift()[i] + next_.value[j].diffusion()[i]);                    
+                }
+            }
+            
+            return next_;
         }
-        
-        return next_;
     }
 
     // antithetic()
-    template <class SG>
-    inline const typename MultiPathGenerator<SG>::sample_type&
-    MultiPathGenerator<SG>::antithetic() const {
+    template <class GSG>
+    inline const typename MultiPathGenerator<GSG>::sample_type&
+    MultiPathGenerator<GSG>::antithetic() const {
 
         // brownian bridge?
                 
