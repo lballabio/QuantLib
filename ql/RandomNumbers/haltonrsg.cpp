@@ -47,9 +47,9 @@ namespace QuantLib {
             Size b,i,k;
             double f, h;
             for (i=0; i<dimensionality_; ++i) {
-                h = 0;
+                h = 0.0;
                 b = Math::PrimeNumbers::get(i);
-                f = 1.;
+                f = 1.0;
                 k = sequenceCounter_;
                 while (k) {
                     f /= b;
