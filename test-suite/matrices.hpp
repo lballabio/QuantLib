@@ -24,7 +24,7 @@
 
 class MatricesTest : public CppUnit::TestCase {
   public:
-    MatricesTest() : CppUnit::TestCase("Testing Matrices") {}
+    MatricesTest() : CppUnit::TestCase("Testing matrices") {}
     void runTest();
 };
 

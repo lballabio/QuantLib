@@ -48,28 +48,28 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
-    runner.addTest(new MatricesTest());
-    runner.addTest(OldPricerTest::suite());
-    runner.addTest(new MersenneTwisterTest());
-    runner.addTest(new DistributionTest);
-    runner.addTest(CapFloorTest::suite());
-    runner.addTest(SwaptionTest::suite());
-
     runner.addTest(new CalendarTest);
+    runner.addTest(CapFloorTest::suite());
     runner.addTest(new CovarianceTest);
     runner.addTest(new DateTest);
     runner.addTest(new DayCounterTest);
+    runner.addTest(new DistributionTest);
     runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(new IntegralTest);
     runner.addTest(MarketElementTest::suite());
+    runner.addTest(new MatricesTest());
+    runner.addTest(new MersenneTwisterTest());
     runner.addTest(new OperatorTest);
     runner.addTest(new PiecewiseFlatForwardTest);
     runner.addTest(new RiskStatisticsTest);
     runner.addTest(new Solver1DTest);
     runner.addTest(new StatisticsTest);
     runner.addTest(SimpleSwapTest::suite());
+    runner.addTest(SwaptionTest::suite());
     runner.addTest(TermStructureTest::suite());
+    // to be deprecated
+    runner.addTest(OldPricerTest::suite());
 
     std::string header = "Testing QuantLib " QL_VERSION ;
     std::cerr << std::string(header.length(),'=') << std::endl;
