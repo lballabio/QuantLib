@@ -81,13 +81,7 @@ namespace QuantLib {
     // inline definitions
 
     inline DayCounter ParCoupon::dayCounter() const {
-        /// ??? ///
-        #ifndef QL_DISABLE_DEPRECATED
-        DayCounter rfdc = index_->termStructure()->dayCounter();
-        #else
-        DayCounter rfdc = Settings::instance().dayCounter();
-        #endif
-        return dayCounter_.isNull() ? rfdc : dayCounter_;
+        return dayCounter_.isNull() ? index_->dayCounter() : dayCounter_;
     }
 
     inline Date ParCoupon::fixingDate() const {

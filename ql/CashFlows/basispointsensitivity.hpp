@@ -70,13 +70,13 @@ namespace QuantLib {
         : termStructure_(ts), basis_(basis) {}
         //! \name Visitor interface
         //@{
-        Real sensfactor(const Date& date) const;
         virtual void visit(Coupon&);
         virtual void visit(FixedRateCoupon&);
         virtual void visit(CashFlow&);
         //@}
         const TimeBasket& result() const { return result_; }
       private:
+        Real sensfactor(const Date&, const DayCounter&) const;
         Handle<YieldTermStructure> termStructure_;
         Integer basis_;
         TimeBasket result_;

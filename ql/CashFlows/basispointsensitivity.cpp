@@ -45,30 +45,17 @@ namespace QuantLib {
     }
 
 
-    Real BPSBasketCalculator::sensfactor(const Date& date) const {
-        /// ??? ///
-        #ifndef QL_DISABLE_DEPRECATED
-        DayCounter dc = termStructure_->dayCounter();
-        #else
-        DayCounter dc = Settings::instance().dayCounter();
-        #endif
-        Time t = dc.yearFraction(termStructure_->referenceDate(),date);
-        // Based on 1st derivative of zero coupon rate
-        Rate r = termStructure_->zeroCoupon(date,basis_);
-        return -QL_POW(1.0+r/basis_,-1.0-t*basis_)*t;
-    }
-
     void BPSBasketCalculator::visit(Coupon& c) {
         Date today = Settings::instance().evaluationDate(),
              accrualStart = c.accrualStartDate(),
              accrualEnd = c.accrualEndDate(),
              payment = c.date();
         if (accrualStart > today) {
-            Real bps = sensfactor(accrualStart);
+            Real bps = sensfactor(accrualStart, c.dayCounter());
             result_[accrualStart] += bps*c.nominal()/10000.0;
         }
         if (accrualEnd >= today) {
-            Real bps = -sensfactor(accrualEnd);
+            Real bps = -sensfactor(accrualEnd, c.dayCounter());
             DiscountFactor dfs = 1.0, dfe;
             if (accrualStart > today)
                 dfs = termStructure_->discount(accrualStart);
@@ -76,7 +63,7 @@ namespace QuantLib {
             result_[accrualEnd] += bps*c.nominal()*(dfs/dfe)/10000.0;
         }
         if (payment > today) {
-            Real bps = sensfactor(payment);
+            Real bps = sensfactor(payment, c.dayCounter());
             result_[payment] += bps*c.amount()/10000.0;
         }
     }
@@ -85,13 +72,21 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate(),
              payment = c.date();
         if (payment > today) {
-            Real bps = sensfactor(payment);
+            Real bps = sensfactor(payment, c.dayCounter());
             result_[payment] -= bps*c.amount()/10000.0;
         }
     }
 
     void BPSBasketCalculator::visit(CashFlow&) {
         // fall-back for all non-coupons; do nothing
+    }
+
+    Real BPSBasketCalculator::sensfactor(const Date& date,
+                                         const DayCounter& dc) const {
+        Time t = dc.yearFraction(termStructure_->referenceDate(),date);
+        // Based on 1st derivative of zero coupon rate
+        Rate r = termStructure_->zeroCoupon(date,basis_);
+        return -QL_POW(1.0+r/basis_,-1.0-t*basis_)*t;
     }
 
     TimeBasket BasisPointSensitivityBasket(

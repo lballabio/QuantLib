@@ -272,14 +272,8 @@ namespace QuantLib {
     : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
         // extend curve to next point
         curve_->dates_.push_back(rateHelper_->latestDate());
-        /// ??? ///
-        #ifndef QL_DISABLE_DEPRECATED
-        DayCounter dc = curve_->dayCounter();
-        #else
-        DayCounter dc = Settings::instance().dayCounter();
-        #endif
-        curve_->times_.push_back(dc.yearFraction(curve_->referenceDate(),
-                                                 curve_->dates_.back()));
+        curve_->times_.push_back(
+                            curve_->timeFromReference(curve_->dates_.back()));
         if (segment_ == 1) {
             // add dummy values at reference
             curve_->forwards_.push_back(0.0);
