@@ -39,7 +39,8 @@ namespace QuantLib {
     : DiffusionProcess(s0), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS) {
         try {
-            Handle<VolTermStructures::BlackConstantVol> constVolTS = blackVolTS;
+            Handle<VolTermStructures::BlackConstantVol> constVolTS = 
+                (*blackVolTS).currentLink();
             localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
                 Handle<LocalVolTermStructure>(new
                     VolTermStructures::LocalConstantVol(
@@ -51,7 +52,7 @@ namespace QuantLib {
             localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
                 Handle<LocalVolTermStructure>(new
                     VolTermStructures::LocalVolSurface(blackVolTS, riskFreeTS,
-                        dividendTS, s0)));
+                                                       dividendTS, s0)));
         }
     }
 

@@ -408,7 +408,9 @@ int main(int argc, char* argv[])
         UniformLowDiscrepancySequenceGenerator ldsg(timeSteps);
         GaussianLowDiscrepancySequenceGenerator gldsg(ldsg);
 
-        Sample<std::vector<double> > wp(std::vector<double>(),1.0);
+        /*
+        Sample<std::vector<double> > wp = 
+            Sample<std::vector<double> >(std::vector<double>(),1.0);
         BrownianBridge<GaussianRandomSequenceGenerator> b1(grsg);
         wp = b1.next();
         wp = b1.antithetic();
@@ -439,6 +441,7 @@ int main(int argc, char* argv[])
         BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b10(blackSurface, timeGrid, gldsg);
         wp = b10.next();
         wp = b10.antithetic();
+        */
 
         option.setPricingEngine(Handle<PricingEngine>(
             new MCEuropeanEngine<

@@ -20,9 +20,9 @@ docs-all: docs-ps docs-pdf
 docs-html: docs-html-offline
 docs-html-offline:
 	$(SED) -e "s/_MAN           = NO/_MAN           = YES/" \
-	       quantlib.doxy > quantlib.doxy.temp
-	$(DOXYGEN) quantlib.doxy.temp
-	rm quantlib.doxy.temp
+	       quantlib.doxy > .quantlib.doxy
+	$(DOXYGEN) .quantlib.doxy
+	rm .quantlib.doxy
 	cp images/*.jpg html
 	cp images/*.png html
 	cp images/*.eps latex
@@ -30,9 +30,9 @@ docs-html-offline:
 docs-html-online:
 	$(SED) -e "s/quantlibfooter.html/quantlibfooteronline.html/" \
 	       -e "s/_MAN           = NO/_MAN           = YES/" \
-	       quantlib.doxy > quantlib.doxy.temp
-	$(DOXYGEN) quantlib.doxy.temp
-	rm quantlib.doxy.temp
+	       quantlib.doxy > .quantlib.doxy
+	$(DOXYGEN) .quantlib.doxy
+	rm .quantlib.doxy
 	cp images/*.jpg html
 	cp images/*.png html
 	cp images/*.eps latex
@@ -54,7 +54,7 @@ docs-clean:
 
 tex-files: docs-html
 	cp userman.tex latex/userman.tex
-	mv latex/refman.tex oldrefman.tex
+	mv latex/refman.tex .refman.tex
 	$(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
@@ -82,6 +82,9 @@ tex-files: docs-html
            -e "/include{where}/d" \
            -e "/include{todo}/d" \
            -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
-	       oldrefman.tex > latex/refman.tex
-	rm -f oldrefman.tex
+	       .refman.tex > latex/refman.tex
+	rm -f .refman.tex
+	mv latex/deprecated.tex .deprecated.tex
+	$(SED) -e "s/section/chapter/" .deprecated.tex > latex/deprecated.tex
+	rm -f .deprecated.tex
 

@@ -1,4 +1,4 @@
-# Doxyfile 1.3-rc3
+# Doxyfile 1.3-rc3-20030317
 
 #---------------------------------------------------------------------------
 # General configuration options
@@ -7,6 +7,7 @@ PROJECT_NAME           = QuantLib
 PROJECT_NUMBER         = 0.3.2a1-cvs
 OUTPUT_DIRECTORY       = 
 OUTPUT_LANGUAGE        = English
+USE_WINDOWS_ENCODING   = NO
 EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = NO
@@ -129,6 +130,7 @@ LATEX_HEADER           = quantlibheader.tex
 PDF_HYPERLINKS         = YES
 USE_PDFLATEX           = YES
 LATEX_BATCHMODE        = NO
+LATEX_HIDE_INDICES     = NO
 #---------------------------------------------------------------------------
 # configuration options related to the RTF output
 #---------------------------------------------------------------------------

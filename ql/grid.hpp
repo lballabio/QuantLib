@@ -41,35 +41,31 @@ namespace QuantLib {
         Grid(double center, double dx, Size steps);
     };
 
-    inline Grid::Grid(double center, double dx, Size steps) : Array(steps) {
-        for (Size i=0; i<steps; i++)
-            (*this)[i] = center + (i - steps/2.0)*dx;
-    }
-
-    
     //! time grid class
     class TimeGrid : public std::vector<Time> {
       public:
         TimeGrid() {}
         //! Regularly spaced time-grid
         TimeGrid(Time end, Size steps);
-        //! Time grid with mandatory time-points (regularly spaced between them)
+        //! Time grid with mandatory time points
+        /*! Mandatory points are guaranteed to belong to the grid.
+            Additional points are then added with regular spacing
+            between pairs of mandatory times in order to reach the
+            desired number of steps.
+        */
         template <class Iterator>
         TimeGrid(Iterator begin, Iterator end, Size steps)
-        : mandatoryTimeIndex_(1, 0)
-            #if defined(QL_FULL_ITERATOR_SUPPORT)
-            , mandatoryTimes_(begin, end) {
-            #else
-            {
+        #if defined(QL_FULL_ITERATOR_SUPPORT)
+        : mandatoryTimes_(begin, end) {
+        #else
+        {
             while (begin != end)
                 mandatoryTimes_.push_back(*(begin++));
-            #endif
-
-            // sort unique
-            std::sort(mandatoryTimes_.begin(), mandatoryTimes_.end());
-            std::vector<Time>::iterator uniqueEnd = std::unique(
-                mandatoryTimes_.begin(), mandatoryTimes_.end());
-            mandatoryTimes_.resize(uniqueEnd-mandatoryTimes_.begin());
+        #endif
+            std::sort(mandatoryTimes_.begin(),mandatoryTimes_.end());
+            std::vector<Time>::iterator e = 
+                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end());
+            mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             Time last = mandatoryTimes_.back();
             Time dtMax;
@@ -87,48 +83,58 @@ namespace QuantLib {
             } else {
                 dtMax = last/steps;
             }
-
+            
             Time periodBegin = 0.0;
-            std::vector<Time>::const_iterator t;
-            for (t=mandatoryTimes_.begin(); t<mandatoryTimes_.end(); t++) {
-                // mandatory time's position (index) in the time grid
-                mandatoryTimeIndex_.push_back(size());
+            push_back(periodBegin);
+            for (std::vector<Time>::const_iterator t=mandatoryTimes_.begin(); 
+                                                   t<mandatoryTimes_.end(); 
+                                                   t++) {
                 Time periodEnd = *t;
-                Size nSteps = (Size)((periodEnd - periodBegin)/dtMax + 1.0);
-                double dt = (periodEnd - periodBegin)/nSteps;
-                for (Size n=0; n<nSteps; n++) {
-                    push_back(periodBegin + n*dt);
+                if (periodEnd != 0.0) {
+                    Size nSteps = Size((periodEnd - periodBegin)/dtMax + 1.0);
+                    double dt = (periodEnd - periodBegin)/nSteps;
+                    for (Size n=1; n<=nSteps; n++)
+                        push_back(periodBegin + n*dt);
                 }
+                mandatoryTimeIndex_.push_back(size()-1);
                 periodBegin = periodEnd;
             }
-            mandatoryTimeIndex_.push_back(size());
-            push_back(periodBegin); // Note periodBegin = periodEnd
 
-            std::adjacent_difference(this->begin(), this->end(), std::back_inserter(dt_));
+            std::adjacent_difference(this->begin()+1,this->end(),
+                                     std::back_inserter(dt_));
         }
+
         Size findIndex(Time t) const;
-        Time dt(Size i) const {return dt_[i];}
+
+        Time dt(Size i) const;
       private:
-          std::vector<Time> dt_;
-          std::vector<Time> mandatoryTimes_;
-          std::vector<Size> mandatoryTimeIndex_;
+        std::vector<Time> dt_;
+        std::vector<Size> mandatoryTimeIndex_;
+        std::vector<Time> mandatoryTimes_;
     };
 
+    // inline definitions
+
+    inline Grid::Grid(double center, double dx, Size steps) : Array(steps) {
+        for (Size i=0; i<steps; i++)
+            (*this)[i] = center + (i - steps/2.0)*dx;
+    }
 
     inline TimeGrid::TimeGrid(Time end, Size steps) {
         Time dt = end/steps;
         for (Size i=0; i<=steps; i++)
             push_back(dt*i);
 
-        dt_ = std::vector<Time>(steps, dt);
+        mandatoryTimes_ = std::vector<Time>(1);
+        mandatoryTimes_[0] = end;
+        mandatoryTimeIndex_ = std::vector<Size>(1);
+        mandatoryTimeIndex_[0] = steps;
 
-        mandatoryTimes_ = std::vector<Time>(2);
-        mandatoryTimes_[0] = 0;
-        mandatoryTimes_[1] = end;
+        dt_ = std::vector<Time>(steps,dt);
+    }
 
-        mandatoryTimeIndex_ = std::vector<Size>(2);
-        mandatoryTimeIndex_[0] = 0;
-        mandatoryTimeIndex_[1] = steps+1;
+    inline Time TimeGrid::dt(Size i) const {
+        return dt_[i];
     }
 
 }
