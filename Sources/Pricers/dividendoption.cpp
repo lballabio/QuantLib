@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.16  2001/05/25 09:29:40  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 // Revision 1.15  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -38,7 +41,6 @@
 #include "ql/Math/cubicspline.hpp"
 #include "ql/Pricers/dividendeuropeanoption.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
-#include "ql/dataformatters.hpp"
 #include <vector>
 
 namespace QuantLib {

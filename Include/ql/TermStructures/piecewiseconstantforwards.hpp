@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/05/25 09:29:40  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 // Revision 1.6  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -39,7 +42,6 @@
 
 #include "ql/termstructure.hpp"
 #include "ql/depositrate.hpp"
-#include <vector>
 
 namespace QuantLib {
 

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/05/25 09:29:40  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -37,7 +40,6 @@
 #ifndef quantlib_linear_interpolation_h
 #define quantlib_linear_interpolation_h
 
-#include "ql/qlerrors.hpp"
 #include "ql/Math/interpolation.hpp"
 
 namespace QuantLib {

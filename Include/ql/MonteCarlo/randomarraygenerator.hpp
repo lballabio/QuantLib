@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/05/25 09:29:40  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -36,8 +39,6 @@
 #ifndef quantlib_montecarlo_random_array_generator_h
 #define quantlib_montecarlo_random_array_generator_h
 
-#include "ql/qlerrors.hpp"
-#include "ql/array.hpp"
 #include "ql/Math/matrix.hpp"
 #include "ql/dataformatters.hpp"
 

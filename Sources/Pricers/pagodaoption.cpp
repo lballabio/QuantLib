@@ -29,12 +29,14 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/05/25 09:29:40  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 // Revision 1.8  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
 #include "ql/handle.hpp"
-#include "ql/rate.hpp"
 #include "ql/Pricers/pagodaoption.hpp"
 #include "ql/MonteCarlo/pagodapathpricer.hpp"
 

@@ -30,13 +30,14 @@
 
 // $Source$
 // $Log$
+// Revision 1.18  2001/05/25 09:29:40  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 // Revision 1.17  2001/05/24 15:40:09  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
 #include "ql/Math/normaldistribution.hpp"
-#include "ql/qlerrors.hpp"
-#include "ql/dataformatters.hpp"
 
 namespace QuantLib {
 

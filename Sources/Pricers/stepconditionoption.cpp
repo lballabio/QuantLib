@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/05/25 09:29:40  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 // Revision 1.13  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -37,7 +40,6 @@
 #include "ql/Pricers/stepconditionoption.hpp"
 #include "ql/Pricers/bsmeuropeanoption.hpp"
 #include "ql/FiniteDifferences/standardfdmodel.hpp"
-#include "ql/FiniteDifferences/standardstepcondition.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
 
 namespace QuantLib {

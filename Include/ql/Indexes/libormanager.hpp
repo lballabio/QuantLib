@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/05/25 09:29:40  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -37,11 +40,8 @@
 #ifndef quantlib_libor_manager_hpp
 #define quantlib_libor_manager_hpp
 
-#include "ql/currency.hpp"
-#include "ql/date.hpp"
 #include "ql/history.hpp"
 #include "ql/termstructure.hpp"
-#include "ql/handle.hpp"
 #include <map>
 
 namespace QuantLib {

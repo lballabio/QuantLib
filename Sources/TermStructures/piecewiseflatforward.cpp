@@ -30,13 +30,15 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/05/25 09:29:40  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 // Revision 1.4  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
 #include "ql/TermStructures/piecewiseflatforward.hpp"
 #include "ql/Solvers1D/brent.hpp"
-#include <algorithm>
 
 namespace QuantLib {
 

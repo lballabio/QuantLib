@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/05/25 09:29:40  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -38,7 +41,6 @@
 #define quantlib_pricers_shout_condition_h
 
 #include "ql/FiniteDifferences/standardstepcondition.hpp"
-#include <functional>
 
 namespace QuantLib {
     namespace Pricers {
