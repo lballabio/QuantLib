@@ -69,7 +69,6 @@ namespace QuantLib {
                      target value lower than the intrinsic value in the
                      case of American options.
 
-            \bug run-time crashes are possible with the Borland compiler
         */
         Volatility impliedVolatility(Real price,
                                      Real accuracy = 1.0e-4,

@@ -114,7 +114,6 @@ namespace QuantLib {
         ImpliedVolHelper f(engine_,targetValue);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
-        // Borland compiler fails here: cannot enter into Solver1D::solve(...)
         Volatility result = solver.solve(f, accuracy, guess, minVol, maxVol);
         return result;
     }

@@ -1058,7 +1058,6 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testValues));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testGreekValues));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testGreeks));
-    // floating point exception with Borland
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testImpliedVol));
     suite->add(BOOST_TEST_CASE(
                            &EuropeanOptionTest::testImpliedVolContainment));
