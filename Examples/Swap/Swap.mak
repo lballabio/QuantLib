@@ -1,15 +1,15 @@
 # Microsoft Developer Studio Generated NMAKE File, Based on Swap.dsp
 !IF "$(CFG)" == ""
-CFG=Swap - Win32 Debug MTDLL
-!MESSAGE No configuration specified. Defaulting to Swap - Win32 Debug MTDLL.
+CFG=Swap - Win32 Debug SingleThread
+!MESSAGE No configuration specified. Defaulting to Swap - Win32 Debug SingleThread.
 !ENDIF 
 
-!IF "$(CFG)" != "Swap - Win32 Release" && "$(CFG)" != "Swap - Win32 Debug" && "$(CFG)" != "Swap - Win32 Release MTDLL" && "$(CFG)" != "Swap - Win32 Debug MTDLL"
+!IF "$(CFG)" != "Swap - Win32 Release" && "$(CFG)" != "Swap - Win32 Debug" && "$(CFG)" != "Swap - Win32 Release MTDLL" && "$(CFG)" != "Swap - Win32 Debug MTDLL" && "$(CFG)" != "Swap - Win32 Release SingleThread" && "$(CFG)" != "Swap - Win32 Debug SingleThread"
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "Swap.mak" CFG="Swap - Win32 Debug MTDLL"
+!MESSAGE NMAKE /f "Swap.mak" CFG="Swap - Win32 Debug SingleThread"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -17,6 +17,8 @@ CFG=Swap - Win32 Debug MTDLL
 !MESSAGE "Swap - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE "Swap - Win32 Release MTDLL" (based on "Win32 (x86) Console Application")
 !MESSAGE "Swap - Win32 Debug MTDLL" (based on "Win32 (x86) Console Application")
+!MESSAGE "Swap - Win32 Release SingleThread" (based on "Win32 (x86) Console Application")
+!MESSAGE "Swap - Win32 Debug SingleThread" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 !ERROR An invalid configuration is specified.
 !ENDIF 
@@ -252,6 +254,117 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
+!ELSEIF  "$(CFG)" == "Swap - Win32 Release SingleThread"
+
+OUTDIR=.\Swap___Win32_Release_SingleThread
+INTDIR=.\Swap___Win32_Release_SingleThread
+# Begin Custom Macros
+OutDir=.\Swap___Win32_Release_SingleThread
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : ".\build\Release\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Release SingleThread" ".\build\Release\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 Release SingleThreadCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\swapvaluation.obj"
+	-@erase "$(INTDIR)\swapvaluation.sbr"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(OUTDIR)\Swap.bsc"
+	-@erase ".\build\Release\SwapValuation.exe"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP_PROJ=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "..\.." /D "NDEBUG" /D "NOMINMAX" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\Swap.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\Swap.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\swapvaluation.sbr"
+
+"$(OUTDIR)\Swap.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\SwapValuation.pdb" /machine:I386 /out:"build\Release/SwapValuation.exe" /libpath:"..\..\lib" 
+LINK32_OBJS= \
+	"$(INTDIR)\swapvaluation.obj" \
+	"..\..\lib\QuantLib-vc6-s-0_3_6.lib"
+
+".\build\Release\SwapValuation.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "Swap - Win32 Debug SingleThread"
+
+OUTDIR=.\Swap___Win32_Debug_SingleThread
+INTDIR=.\Swap___Win32_Debug_SingleThread
+# Begin Custom Macros
+OutDir=.\Swap___Win32_Debug_SingleThread
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : ".\build\Debug\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Debug SingleThread" ".\build\Debug\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 Debug SingleThreadCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\swapvaluation.obj"
+	-@erase "$(INTDIR)\swapvaluation.sbr"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vc60.pdb"
+	-@erase "$(OUTDIR)\Swap.bsc"
+	-@erase "$(OUTDIR)\SwapValuation.pdb"
+	-@erase ".\build\Debug\SwapValuation.exe"
+	-@erase ".\build\Debug\SwapValuation.ilk"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "..\.." /D "_DEBUG" /D "NOMINMAX" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\Swap.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\Swap.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\swapvaluation.sbr"
+
+"$(OUTDIR)\Swap.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\SwapValuation.pdb" /debug /machine:I386 /out:"build\Debug/SwapValuation.exe" /pdbtype:sept /libpath:"..\..\lib" 
+LINK32_OBJS= \
+	"$(INTDIR)\swapvaluation.obj" \
+	"..\..\lib\QuantLib-vc6-sgd-0_3_6.lib"
+
+".\build\Debug\SwapValuation.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
 !ENDIF 
 
 .c{$(INTDIR)}.obj::
@@ -294,7 +407,7 @@ LINK32_OBJS= \
 !ENDIF 
 
 
-!IF "$(CFG)" == "Swap - Win32 Release" || "$(CFG)" == "Swap - Win32 Debug" || "$(CFG)" == "Swap - Win32 Release MTDLL" || "$(CFG)" == "Swap - Win32 Debug MTDLL"
+!IF "$(CFG)" == "Swap - Win32 Release" || "$(CFG)" == "Swap - Win32 Debug" || "$(CFG)" == "Swap - Win32 Release MTDLL" || "$(CFG)" == "Swap - Win32 Debug MTDLL" || "$(CFG)" == "Swap - Win32 Release SingleThread" || "$(CFG)" == "Swap - Win32 Debug SingleThread"
 SOURCE=.\swapvaluation.cpp
 
 "$(INTDIR)\swapvaluation.obj"	"$(INTDIR)\swapvaluation.sbr" : $(SOURCE) "$(INTDIR)"
@@ -346,6 +459,30 @@ SOURCE=.\swapvaluation.cpp
 "QuantLib - Win32 Debug MTDLLCLEAN" : 
    cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" RECURSE=1 CLEAN 
+   cd ".\Examples\Swap"
+
+!ELSEIF  "$(CFG)" == "Swap - Win32 Release SingleThread"
+
+"QuantLib - Win32 Release SingleThread" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release SingleThread" 
+   cd ".\Examples\Swap"
+
+"QuantLib - Win32 Release SingleThreadCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release SingleThread" RECURSE=1 CLEAN 
+   cd ".\Examples\Swap"
+
+!ELSEIF  "$(CFG)" == "Swap - Win32 Debug SingleThread"
+
+"QuantLib - Win32 Debug SingleThread" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug SingleThread" 
+   cd ".\Examples\Swap"
+
+"QuantLib - Win32 Debug SingleThreadCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug SingleThread" RECURSE=1 CLEAN 
    cd ".\Examples\Swap"
 
 !ENDIF 

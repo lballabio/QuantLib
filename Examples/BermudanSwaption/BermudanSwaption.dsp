@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=BermudanSwaption - Win32 Debug MTDLL
+CFG=BermudanSwaption - Win32 Debug SingleThread
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=BermudanSwaption - Win32 Debug MTDLL
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "BermudanSwaption.mak" CFG="BermudanSwaption - Win32 Debug MTDLL"
+!MESSAGE NMAKE /f "BermudanSwaption.mak" CFG="BermudanSwaption - Win32 Debug SingleThread"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -21,6 +21,8 @@ CFG=BermudanSwaption - Win32 Debug MTDLL
 !MESSAGE "BermudanSwaption - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE "BermudanSwaption - Win32 Release MTDLL" (based on "Win32 (x86) Console Application")
 !MESSAGE "BermudanSwaption - Win32 Debug MTDLL" (based on "Win32 (x86) Console Application")
+!MESSAGE "BermudanSwaption - Win32 Release SingleThread" (based on "Win32 (x86) Console Application")
+!MESSAGE "BermudanSwaption - Win32 Debug SingleThread" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -134,6 +136,60 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"..\..\lib"
 # SUBTRACT LINK32 /profile
 
+!ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 Release SingleThread"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "BermudanSwaption___Win32_Release_SingleThread"
+# PROP BASE Intermediate_Dir "BermudanSwaption___Win32_Release_SingleThread"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "BermudanSwaption___Win32_Release_SingleThread"
+# PROP Intermediate_Dir "BermudanSwaption___Win32_Release_SingleThread"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr /YX"quantlib.hpp" /FD /c
+# ADD CPP /nologo /W3 /Gi /GR /GX /O2 /Ob2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr /YX"quantlib.hpp" /FD /c
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"..\..\lib"
+# SUBTRACT BASE LINK32 /profile
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"..\..\lib"
+# SUBTRACT LINK32 /profile
+
+!ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 Debug SingleThread"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "BermudanSwaption___Win32_Debug_SingleThread"
+# PROP BASE Intermediate_Dir "BermudanSwaption___Win32_Debug_SingleThread"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "BermudanSwaption___Win32_Debug_SingleThread"
+# PROP Intermediate_Dir "BermudanSwaption___Win32_Debug_SingleThread"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr /YX"quantlib.hpp" /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /Gi /GR /GX /ZI /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr /YX"quantlib.hpp" /FD /GZ /c
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"..\..\lib"
+# SUBTRACT BASE LINK32 /profile
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"..\..\lib"
+# SUBTRACT LINK32 /profile
+
 !ENDIF 
 
 # Begin Target
@@ -142,6 +198,8 @@ LINK32=link.exe
 # Name "BermudanSwaption - Win32 Debug"
 # Name "BermudanSwaption - Win32 Release MTDLL"
 # Name "BermudanSwaption - Win32 Debug MTDLL"
+# Name "BermudanSwaption - Win32 Release SingleThread"
+# Name "BermudanSwaption - Win32 Debug SingleThread"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"

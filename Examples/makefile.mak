@@ -13,8 +13,6 @@
 !endif
 !ifdef _DEBUG
     MAKE = $(MAKE) -D_DEBUG
-!else
-    MAKE = $(MAKE) -DNDEBUG
 !endif
 !ifdef SAFE
     MAKE = $(MAKE) -DSAFE

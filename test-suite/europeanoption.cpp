@@ -987,10 +987,8 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testValues));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testGreekValues));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testGreeks));
-    #if !defined(QL_PATCH_BORLAND)
-    // it crashes with Borland
+    // floating point exception with Borland
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testImpliedVol));
-    #endif
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     return suite;

@@ -54,7 +54,7 @@ CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR)
 !ifdef _DEBUG
 CC_OPTS = $(CC_OPTS) -v -D_DEBUG
 !else
-CC_OPTS = $(CC_OPTS) -O2
+CC_OPTS = $(CC_OPTS) -O2 -DNDEBUG
 !endif
 
 !ifdef _RTLDLL

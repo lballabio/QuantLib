@@ -1,15 +1,15 @@
 # Microsoft Developer Studio Generated NMAKE File, Based on QuantLib.dsp
 !IF "$(CFG)" == ""
-CFG=QuantLib - Win32 Debug MTDLL
-!MESSAGE No configuration specified. Defaulting to QuantLib - Win32 Debug MTDLL.
+CFG=QuantLib - Win32 Debug SingleThread
+!MESSAGE No configuration specified. Defaulting to QuantLib - Win32 Debug SingleThread.
 !ENDIF 
 
-!IF "$(CFG)" != "QuantLib - Win32 Release" && "$(CFG)" != "QuantLib - Win32 Debug" && "$(CFG)" != "QuantLib - Win32 Release MTDLL" && "$(CFG)" != "QuantLib - Win32 Debug MTDLL"
+!IF "$(CFG)" != "QuantLib - Win32 Release" && "$(CFG)" != "QuantLib - Win32 Debug" && "$(CFG)" != "QuantLib - Win32 Release MTDLL" && "$(CFG)" != "QuantLib - Win32 Debug MTDLL" && "$(CFG)" != "QuantLib - Win32 Release SingleThread" && "$(CFG)" != "QuantLib - Win32 Debug SingleThread"
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Debug MTDLL"
+!MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Debug SingleThread"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -17,6 +17,8 @@ CFG=QuantLib - Win32 Debug MTDLL
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Release MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug MTDLL" (based on "Win32 (x86) Static Library")
+!MESSAGE "QuantLib - Win32 Release SingleThread" (based on "Win32 (x86) Static Library")
+!MESSAGE "QuantLib - Win32 Debug SingleThread" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 !ERROR An invalid configuration is specified.
 !ENDIF 
@@ -38,7 +40,7 @@ INTDIR=.\build\Release
 OutDir=.\build\Release
 # End Custom Macros
 
-ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-s-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
 
 
 CLEAN :
@@ -368,7 +370,7 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-s-0_3_6.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -499,6 +501,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -537,8 +540,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\blackformula.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -546,7 +548,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\Win32\VisualStudio\QuantLib.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_6.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -670,6 +672,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -708,10 +711,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\blackformula.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
-".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -727,7 +729,7 @@ INTDIR=.\build\Debug
 OutDir=.\build\Debug
 # End Custom Macros
 
-ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
 
 
 CLEAN :
@@ -1056,9 +1058,9 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
-	-@erase ".\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -1189,6 +1191,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1227,8 +1230,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\blackformula.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1236,7 +1238,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib" 
+LIB32_FLAGS=/nologo /out:"lib\QuantLib-vc6-mt-sgd-0_3_6.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -1360,6 +1362,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1398,10 +1401,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\blackformula.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
-".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -1417,7 +1419,7 @@ INTDIR=.\build\ReleaseMTDLL
 OutDir=.\build\ReleaseMTDLL
 # End Custom Macros
 
-ALL : ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
 
 
 CLEAN :
@@ -1747,7 +1749,7 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-0_3_6.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -1878,6 +1880,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1916,8 +1919,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\blackformula.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1925,7 +1927,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-0_3_6.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -2049,6 +2051,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2087,10 +2090,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\blackformula.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
-".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -2106,7 +2108,7 @@ INTDIR=.\build\DebugMTDLL
 OutDir=.\build\DebugMTDLL
 # End Custom Macros
 
-ALL : ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-gd-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
 
 
 CLEAN :
@@ -2435,9 +2437,9 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_6.lib"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
-	-@erase ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -2568,6 +2570,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2606,8 +2609,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\blackformula.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2615,7 +2617,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" 
+LIB32_FLAGS=/nologo /out:"lib\QuantLib-vc6-mt-gd-0_3_6.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -2739,6 +2741,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2777,10 +2780,1388 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\blackformula.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
-".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-gd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+	 $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+SOURCE="$(InputPath)"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release SingleThread"
+
+OUTDIR=.\build\ReleaseST
+INTDIR=.\build\ReleaseST
+# Begin Custom Macros
+OutDir=.\build\ReleaseST
+# End Custom Macros
+
+ALL : ".\lib\QuantLib-vc6-s-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
+
+
+CLEAN :
+	-@erase "$(INTDIR)\actualactual.obj"
+	-@erase "$(INTDIR)\actualactual.sbr"
+	-@erase "$(INTDIR)\affinetermstructure.obj"
+	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\analyticalcapfloor.obj"
+	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticasianengine.obj"
+	-@erase "$(INTDIR)\analyticasianengine.sbr"
+	-@erase "$(INTDIR)\analyticbarrierengine.obj"
+	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
+	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
+	-@erase "$(INTDIR)\armijo.obj"
+	-@erase "$(INTDIR)\armijo.sbr"
+	-@erase "$(INTDIR)\asianoption.obj"
+	-@erase "$(INTDIR)\asianoption.sbr"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.obj"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
+	-@erase "$(INTDIR)\barrieroption.obj"
+	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\basispointsensitivity.obj"
+	-@erase "$(INTDIR)\basispointsensitivity.sbr"
+	-@erase "$(INTDIR)\basketoption.obj"
+	-@erase "$(INTDIR)\basketoption.sbr"
+	-@erase "$(INTDIR)\beta.obj"
+	-@erase "$(INTDIR)\beta.sbr"
+	-@erase "$(INTDIR)\binomialtree.obj"
+	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
+	-@erase "$(INTDIR)\blackcapfloor.obj"
+	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackformula.obj"
+	-@erase "$(INTDIR)\blackformula.sbr"
+	-@erase "$(INTDIR)\blackkarasinski.obj"
+	-@erase "$(INTDIR)\blackkarasinski.sbr"
+	-@erase "$(INTDIR)\blackswaption.obj"
+	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackvariancecurve.obj"
+	-@erase "$(INTDIR)\blackvariancecurve.sbr"
+	-@erase "$(INTDIR)\blackvariancesurface.obj"
+	-@erase "$(INTDIR)\blackvariancesurface.sbr"
+	-@erase "$(INTDIR)\boundarycondition.obj"
+	-@erase "$(INTDIR)\boundarycondition.sbr"
+	-@erase "$(INTDIR)\bsmlattice.obj"
+	-@erase "$(INTDIR)\bsmlattice.sbr"
+	-@erase "$(INTDIR)\bsmoperator.obj"
+	-@erase "$(INTDIR)\bsmoperator.sbr"
+	-@erase "$(INTDIR)\budapest.obj"
+	-@erase "$(INTDIR)\budapest.sbr"
+	-@erase "$(INTDIR)\calendar.obj"
+	-@erase "$(INTDIR)\calendar.sbr"
+	-@erase "$(INTDIR)\calibrationhelper.obj"
+	-@erase "$(INTDIR)\calibrationhelper.sbr"
+	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\capfloor.sbr"
+	-@erase "$(INTDIR)\capfloorpricer.obj"
+	-@erase "$(INTDIR)\capfloorpricer.sbr"
+	-@erase "$(INTDIR)\caphelper.obj"
+	-@erase "$(INTDIR)\caphelper.sbr"
+	-@erase "$(INTDIR)\cashflowvectors.obj"
+	-@erase "$(INTDIR)\cashflowvectors.sbr"
+	-@erase "$(INTDIR)\chisquaredistribution.obj"
+	-@erase "$(INTDIR)\chisquaredistribution.sbr"
+	-@erase "$(INTDIR)\choleskydecomposition.obj"
+	-@erase "$(INTDIR)\choleskydecomposition.sbr"
+	-@erase "$(INTDIR)\cliquetoption.obj"
+	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\compoundforward.obj"
+	-@erase "$(INTDIR)\compoundforward.sbr"
+	-@erase "$(INTDIR)\conjugategradient.obj"
+	-@erase "$(INTDIR)\conjugategradient.sbr"
+	-@erase "$(INTDIR)\copenhagen.obj"
+	-@erase "$(INTDIR)\copenhagen.sbr"
+	-@erase "$(INTDIR)\coxingersollross.obj"
+	-@erase "$(INTDIR)\coxingersollross.sbr"
+	-@erase "$(INTDIR)\dataformatters.obj"
+	-@erase "$(INTDIR)\dataformatters.sbr"
+	-@erase "$(INTDIR)\dataparsers.obj"
+	-@erase "$(INTDIR)\dataparsers.sbr"
+	-@erase "$(INTDIR)\date.obj"
+	-@erase "$(INTDIR)\date.sbr"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\daycounters.sbr"
+	-@erase "$(INTDIR)\diffusionprocess.obj"
+	-@erase "$(INTDIR)\diffusionprocess.sbr"
+	-@erase "$(INTDIR)\discountcurve.obj"
+	-@erase "$(INTDIR)\discountcurve.sbr"
+	-@erase "$(INTDIR)\discrepancystatistics.obj"
+	-@erase "$(INTDIR)\discrepancystatistics.sbr"
+	-@erase "$(INTDIR)\discretegeometricapo.obj"
+	-@erase "$(INTDIR)\discretegeometricapo.sbr"
+	-@erase "$(INTDIR)\discretegeometricaso.obj"
+	-@erase "$(INTDIR)\discretegeometricaso.sbr"
+	-@erase "$(INTDIR)\discretizedasset.obj"
+	-@erase "$(INTDIR)\discretizedasset.sbr"
+	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
+	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
+	-@erase "$(INTDIR)\errorfunction.obj"
+	-@erase "$(INTDIR)\errorfunction.sbr"
+	-@erase "$(INTDIR)\errors.obj"
+	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exercise.obj"
+	-@erase "$(INTDIR)\exercise.sbr"
+	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
+	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
+	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
+	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
+	-@erase "$(INTDIR)\factorial.obj"
+	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\fdbermudanoption.obj"
+	-@erase "$(INTDIR)\fdbermudanoption.sbr"
+	-@erase "$(INTDIR)\fdbsmoption.obj"
+	-@erase "$(INTDIR)\fdbsmoption.sbr"
+	-@erase "$(INTDIR)\fddividendamericanoption.obj"
+	-@erase "$(INTDIR)\fddividendamericanoption.sbr"
+	-@erase "$(INTDIR)\fddividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\fddividendeuropeanoption.sbr"
+	-@erase "$(INTDIR)\fddividendoption.obj"
+	-@erase "$(INTDIR)\fddividendoption.sbr"
+	-@erase "$(INTDIR)\fddividendshoutoption.obj"
+	-@erase "$(INTDIR)\fddividendshoutoption.sbr"
+	-@erase "$(INTDIR)\fdeuropean.obj"
+	-@erase "$(INTDIR)\fdeuropean.sbr"
+	-@erase "$(INTDIR)\fdmultiperiodoption.obj"
+	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
+	-@erase "$(INTDIR)\fdstepconditionoption.obj"
+	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
+	-@erase "$(INTDIR)\forwardvanillaoption.obj"
+	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
+	-@erase "$(INTDIR)\frankfurt.obj"
+	-@erase "$(INTDIR)\frankfurt.sbr"
+	-@erase "$(INTDIR)\g2.obj"
+	-@erase "$(INTDIR)\g2.sbr"
+	-@erase "$(INTDIR)\gammadistribution.obj"
+	-@erase "$(INTDIR)\gammadistribution.sbr"
+	-@erase "$(INTDIR)\generalstatistics.obj"
+	-@erase "$(INTDIR)\generalstatistics.sbr"
+	-@erase "$(INTDIR)\grid.obj"
+	-@erase "$(INTDIR)\grid.sbr"
+	-@erase "$(INTDIR)\haltonrsg.obj"
+	-@erase "$(INTDIR)\haltonrsg.sbr"
+	-@erase "$(INTDIR)\helsinki.obj"
+	-@erase "$(INTDIR)\helsinki.sbr"
+	-@erase "$(INTDIR)\hullwhite.obj"
+	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\incompletegamma.obj"
+	-@erase "$(INTDIR)\incompletegamma.sbr"
+	-@erase "$(INTDIR)\incrementalstatistics.obj"
+	-@erase "$(INTDIR)\incrementalstatistics.sbr"
+	-@erase "$(INTDIR)\integralengine.obj"
+	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\jamshidianswaption.obj"
+	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\johannesburg.obj"
+	-@erase "$(INTDIR)\johannesburg.sbr"
+	-@erase "$(INTDIR)\jointcalendar.obj"
+	-@erase "$(INTDIR)\jointcalendar.sbr"
+	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
+	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
+	-@erase "$(INTDIR)\knuthuniformrng.obj"
+	-@erase "$(INTDIR)\knuthuniformrng.sbr"
+	-@erase "$(INTDIR)\lattice.obj"
+	-@erase "$(INTDIR)\lattice.sbr"
+	-@erase "$(INTDIR)\lattice2d.obj"
+	-@erase "$(INTDIR)\lattice2d.sbr"
+	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
+	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
+	-@erase "$(INTDIR)\localvolsurface.obj"
+	-@erase "$(INTDIR)\localvolsurface.sbr"
+	-@erase "$(INTDIR)\london.obj"
+	-@erase "$(INTDIR)\london.sbr"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\mathf.sbr"
+	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
+	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
+	-@erase "$(INTDIR)\mcbasket.obj"
+	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mcbasketengine.obj"
+	-@erase "$(INTDIR)\mcbasketengine.sbr"
+	-@erase "$(INTDIR)\mccliquetoption.obj"
+	-@erase "$(INTDIR)\mccliquetoption.sbr"
+	-@erase "$(INTDIR)\mcdigitalengine.obj"
+	-@erase "$(INTDIR)\mcdigitalengine.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
+	-@erase "$(INTDIR)\mceverest.obj"
+	-@erase "$(INTDIR)\mceverest.sbr"
+	-@erase "$(INTDIR)\mchimalaya.obj"
+	-@erase "$(INTDIR)\mchimalaya.sbr"
+	-@erase "$(INTDIR)\mcmaxbasket.obj"
+	-@erase "$(INTDIR)\mcmaxbasket.sbr"
+	-@erase "$(INTDIR)\mcpagoda.obj"
+	-@erase "$(INTDIR)\mcpagoda.sbr"
+	-@erase "$(INTDIR)\mcperformanceoption.obj"
+	-@erase "$(INTDIR)\mcperformanceoption.sbr"
+	-@erase "$(INTDIR)\milan.obj"
+	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\model.obj"
+	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\mt19937uniformrng.obj"
+	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
+	-@erase "$(INTDIR)\multiassetoption.obj"
+	-@erase "$(INTDIR)\multiassetoption.sbr"
+	-@erase "$(INTDIR)\newyork.obj"
+	-@erase "$(INTDIR)\newyork.sbr"
+	-@erase "$(INTDIR)\normaldistribution.obj"
+	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\oneassetoption.obj"
+	-@erase "$(INTDIR)\oneassetoption.sbr"
+	-@erase "$(INTDIR)\oneassetstrikedoption.obj"
+	-@erase "$(INTDIR)\oneassetstrikedoption.sbr"
+	-@erase "$(INTDIR)\onefactormodel.obj"
+	-@erase "$(INTDIR)\onefactormodel.sbr"
+	-@erase "$(INTDIR)\onefactoroperator.obj"
+	-@erase "$(INTDIR)\onefactoroperator.sbr"
+	-@erase "$(INTDIR)\oslo.obj"
+	-@erase "$(INTDIR)\oslo.sbr"
+	-@erase "$(INTDIR)\parcoupon.obj"
+	-@erase "$(INTDIR)\parcoupon.sbr"
+	-@erase "$(INTDIR)\performanceoption.obj"
+	-@erase "$(INTDIR)\performanceoption.sbr"
+	-@erase "$(INTDIR)\piecewiseflatforward.obj"
+	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
+	-@erase "$(INTDIR)\primenumbers.obj"
+	-@erase "$(INTDIR)\primenumbers.sbr"
+	-@erase "$(INTDIR)\primitivepolynomials.obj"
+	-@erase "$(INTDIR)\primitivepolynomials.sbr"
+	-@erase "$(INTDIR)\pseudosqrt.obj"
+	-@erase "$(INTDIR)\pseudosqrt.sbr"
+	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
+	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
+	-@erase "$(INTDIR)\quantovanillaoption.obj"
+	-@erase "$(INTDIR)\quantovanillaoption.sbr"
+	-@erase "$(INTDIR)\ratehelpers.obj"
+	-@erase "$(INTDIR)\ratehelpers.sbr"
+	-@erase "$(INTDIR)\scheduler.obj"
+	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
+	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
+	-@erase "$(INTDIR)\simpledaycounter.obj"
+	-@erase "$(INTDIR)\simpledaycounter.sbr"
+	-@erase "$(INTDIR)\simpleswap.obj"
+	-@erase "$(INTDIR)\simpleswap.sbr"
+	-@erase "$(INTDIR)\simplex.obj"
+	-@erase "$(INTDIR)\simplex.sbr"
+	-@erase "$(INTDIR)\singleassetoption.obj"
+	-@erase "$(INTDIR)\singleassetoption.sbr"
+	-@erase "$(INTDIR)\sobolrsg.obj"
+	-@erase "$(INTDIR)\sobolrsg.sbr"
+	-@erase "$(INTDIR)\steepestdescent.obj"
+	-@erase "$(INTDIR)\steepestdescent.sbr"
+	-@erase "$(INTDIR)\stock.obj"
+	-@erase "$(INTDIR)\stock.sbr"
+	-@erase "$(INTDIR)\stockholm.obj"
+	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\stulzengine.obj"
+	-@erase "$(INTDIR)\stulzengine.sbr"
+	-@erase "$(INTDIR)\svd.obj"
+	-@erase "$(INTDIR)\svd.sbr"
+	-@erase "$(INTDIR)\swap.obj"
+	-@erase "$(INTDIR)\swap.sbr"
+	-@erase "$(INTDIR)\swaption.obj"
+	-@erase "$(INTDIR)\swaption.sbr"
+	-@erase "$(INTDIR)\swaptionhelper.obj"
+	-@erase "$(INTDIR)\swaptionhelper.sbr"
+	-@erase "$(INTDIR)\swaptionpricer.obj"
+	-@erase "$(INTDIR)\swaptionpricer.sbr"
+	-@erase "$(INTDIR)\sydney.obj"
+	-@erase "$(INTDIR)\sydney.sbr"
+	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
+	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
+	-@erase "$(INTDIR)\target.obj"
+	-@erase "$(INTDIR)\target.sbr"
+	-@erase "$(INTDIR)\thirty360.obj"
+	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\timebasket.obj"
+	-@erase "$(INTDIR)\timebasket.sbr"
+	-@erase "$(INTDIR)\tokyo.obj"
+	-@erase "$(INTDIR)\tokyo.sbr"
+	-@erase "$(INTDIR)\toronto.obj"
+	-@erase "$(INTDIR)\toronto.sbr"
+	-@erase "$(INTDIR)\treecapfloor.obj"
+	-@erase "$(INTDIR)\treecapfloor.sbr"
+	-@erase "$(INTDIR)\treeswaption.obj"
+	-@erase "$(INTDIR)\treeswaption.sbr"
+	-@erase "$(INTDIR)\tridiagonaloperator.obj"
+	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
+	-@erase "$(INTDIR)\trinomialtree.obj"
+	-@erase "$(INTDIR)\trinomialtree.sbr"
+	-@erase "$(INTDIR)\twofactormodel.obj"
+	-@erase "$(INTDIR)\twofactormodel.sbr"
+	-@erase "$(INTDIR)\valueatcenter.obj"
+	-@erase "$(INTDIR)\valueatcenter.sbr"
+	-@erase "$(INTDIR)\vanillaoption.obj"
+	-@erase "$(INTDIR)\vanillaoption.sbr"
+	-@erase "$(INTDIR)\vasicek.obj"
+	-@erase "$(INTDIR)\vasicek.sbr"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\vols.sbr"
+	-@erase "$(INTDIR)\voltermstructure.obj"
+	-@erase "$(INTDIR)\voltermstructure.sbr"
+	-@erase "$(INTDIR)\warsaw.obj"
+	-@erase "$(INTDIR)\warsaw.sbr"
+	-@erase "$(INTDIR)\wellington.obj"
+	-@erase "$(INTDIR)\wellington.sbr"
+	-@erase "$(INTDIR)\xibor.obj"
+	-@erase "$(INTDIR)\xibor.sbr"
+	-@erase "$(INTDIR)\xibormanager.obj"
+	-@erase "$(INTDIR)\xibormanager.sbr"
+	-@erase "$(INTDIR)\zerocurve.obj"
+	-@erase "$(INTDIR)\zerocurve.sbr"
+	-@erase "$(INTDIR)\zurich.obj"
+	-@erase "$(INTDIR)\zurich.sbr"
+	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\lib\QuantLib-vc6-s-0_3_6.lib"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP_PROJ=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\budapest.sbr" \
+	"$(INTDIR)\copenhagen.sbr" \
+	"$(INTDIR)\frankfurt.sbr" \
+	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\johannesburg.sbr" \
+	"$(INTDIR)\jointcalendar.sbr" \
+	"$(INTDIR)\london.sbr" \
+	"$(INTDIR)\milan.sbr" \
+	"$(INTDIR)\newyork.sbr" \
+	"$(INTDIR)\oslo.sbr" \
+	"$(INTDIR)\stockholm.sbr" \
+	"$(INTDIR)\sydney.sbr" \
+	"$(INTDIR)\target.sbr" \
+	"$(INTDIR)\tokyo.sbr" \
+	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\warsaw.sbr" \
+	"$(INTDIR)\wellington.sbr" \
+	"$(INTDIR)\zurich.sbr" \
+	"$(INTDIR)\basispointsensitivity.sbr" \
+	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\parcoupon.sbr" \
+	"$(INTDIR)\shortfloatingcoupon.sbr" \
+	"$(INTDIR)\timebasket.sbr" \
+	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\simpledaycounter.sbr" \
+	"$(INTDIR)\thirty360.sbr" \
+	"$(INTDIR)\boundarycondition.sbr" \
+	"$(INTDIR)\bsmoperator.sbr" \
+	"$(INTDIR)\onefactoroperator.sbr" \
+	"$(INTDIR)\tridiagonaloperator.sbr" \
+	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\mathf.sbr" \
+	"$(INTDIR)\vols.sbr" \
+	"$(INTDIR)\xibor.sbr" \
+	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\asianoption.sbr" \
+	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\multiassetoption.sbr" \
+	"$(INTDIR)\oneassetoption.sbr" \
+	"$(INTDIR)\oneassetstrikedoption.sbr" \
+	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
+	"$(INTDIR)\quantovanillaoption.sbr" \
+	"$(INTDIR)\simpleswap.sbr" \
+	"$(INTDIR)\stock.sbr" \
+	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\vanillaoption.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
+	"$(INTDIR)\bsmlattice.sbr" \
+	"$(INTDIR)\lattice.sbr" \
+	"$(INTDIR)\lattice2d.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
+	"$(INTDIR)\beta.sbr" \
+	"$(INTDIR)\bivariatenormaldistribution.sbr" \
+	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\choleskydecomposition.sbr" \
+	"$(INTDIR)\discrepancystatistics.sbr" \
+	"$(INTDIR)\errorfunction.sbr" \
+	"$(INTDIR)\factorial.sbr" \
+	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\generalstatistics.sbr" \
+	"$(INTDIR)\incompletegamma.sbr" \
+	"$(INTDIR)\incrementalstatistics.sbr" \
+	"$(INTDIR)\normaldistribution.sbr" \
+	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\pseudosqrt.sbr" \
+	"$(INTDIR)\svd.sbr" \
+	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\armijo.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\simplex.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\discretegeometricapo.sbr" \
+	"$(INTDIR)\discretegeometricaso.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\fdbermudanoption.sbr" \
+	"$(INTDIR)\fdbsmoption.sbr" \
+	"$(INTDIR)\fddividendamericanoption.sbr" \
+	"$(INTDIR)\fddividendeuropeanoption.sbr" \
+	"$(INTDIR)\fddividendoption.sbr" \
+	"$(INTDIR)\fddividendshoutoption.sbr" \
+	"$(INTDIR)\fdeuropean.sbr" \
+	"$(INTDIR)\fdmultiperiodoption.sbr" \
+	"$(INTDIR)\fdstepconditionoption.sbr" \
+	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mccliquetoption.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
+	"$(INTDIR)\mceverest.sbr" \
+	"$(INTDIR)\mchimalaya.sbr" \
+	"$(INTDIR)\mcmaxbasket.sbr" \
+	"$(INTDIR)\mcpagoda.sbr" \
+	"$(INTDIR)\mcperformanceoption.sbr" \
+	"$(INTDIR)\performanceoption.sbr" \
+	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analyticasianengine.sbr" \
+	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
+	"$(INTDIR)\mcamericanbasketengine.sbr" \
+	"$(INTDIR)\mcbasketengine.sbr" \
+	"$(INTDIR)\stulzengine.sbr" \
+	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\analyticeuropeanengine.sbr" \
+	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
+	"$(INTDIR)\bjerksundstenslandengine.sbr" \
+	"$(INTDIR)\discretizedvanillaoption.sbr" \
+	"$(INTDIR)\integralengine.sbr" \
+	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr" \
+	"$(INTDIR)\capfloorpricer.sbr" \
+	"$(INTDIR)\treecapfloor.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
+	"$(INTDIR)\jamshidianswaption.sbr" \
+	"$(INTDIR)\swaptionpricer.sbr" \
+	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\blackformula.sbr" \
+	"$(INTDIR)\haltonrsg.sbr" \
+	"$(INTDIR)\knuthuniformrng.sbr" \
+	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\mt19937uniformrng.sbr" \
+	"$(INTDIR)\primitivepolynomials.sbr" \
+	"$(INTDIR)\sobolrsg.sbr" \
+	"$(INTDIR)\caphelper.sbr" \
+	"$(INTDIR)\swaptionhelper.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollross.sbr" \
+	"$(INTDIR)\extendedcoxingersollross.sbr" \
+	"$(INTDIR)\hullwhite.sbr" \
+	"$(INTDIR)\vasicek.sbr" \
+	"$(INTDIR)\g2.sbr" \
+	"$(INTDIR)\calibrationhelper.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\twofactormodel.sbr" \
+	"$(INTDIR)\affinetermstructure.sbr" \
+	"$(INTDIR)\compoundforward.sbr" \
+	"$(INTDIR)\discountcurve.sbr" \
+	"$(INTDIR)\extendeddiscountcurve.sbr" \
+	"$(INTDIR)\piecewiseflatforward.sbr" \
+	"$(INTDIR)\ratehelpers.sbr" \
+	"$(INTDIR)\zerocurve.sbr" \
+	"$(INTDIR)\blackvariancecurve.sbr" \
+	"$(INTDIR)\blackvariancesurface.sbr" \
+	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\dataparsers.sbr" \
+	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\diffusionprocess.sbr" \
+	"$(INTDIR)\discretizedasset.sbr" \
+	"$(INTDIR)\errors.sbr" \
+	"$(INTDIR)\exercise.sbr" \
+	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\voltermstructure.sbr"
+
+"$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-s-0_3_6.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\budapest.obj" \
+	"$(INTDIR)\copenhagen.obj" \
+	"$(INTDIR)\frankfurt.obj" \
+	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\johannesburg.obj" \
+	"$(INTDIR)\jointcalendar.obj" \
+	"$(INTDIR)\london.obj" \
+	"$(INTDIR)\milan.obj" \
+	"$(INTDIR)\newyork.obj" \
+	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\stockholm.obj" \
+	"$(INTDIR)\sydney.obj" \
+	"$(INTDIR)\target.obj" \
+	"$(INTDIR)\tokyo.obj" \
+	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\warsaw.obj" \
+	"$(INTDIR)\wellington.obj" \
+	"$(INTDIR)\zurich.obj" \
+	"$(INTDIR)\basispointsensitivity.obj" \
+	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\parcoupon.obj" \
+	"$(INTDIR)\shortfloatingcoupon.obj" \
+	"$(INTDIR)\timebasket.obj" \
+	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\simpledaycounter.obj" \
+	"$(INTDIR)\thirty360.obj" \
+	"$(INTDIR)\boundarycondition.obj" \
+	"$(INTDIR)\bsmoperator.obj" \
+	"$(INTDIR)\onefactoroperator.obj" \
+	"$(INTDIR)\tridiagonaloperator.obj" \
+	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
+	"$(INTDIR)\xibor.obj" \
+	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\asianoption.obj" \
+	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\multiassetoption.obj" \
+	"$(INTDIR)\oneassetoption.obj" \
+	"$(INTDIR)\oneassetstrikedoption.obj" \
+	"$(INTDIR)\quantoforwardvanillaoption.obj" \
+	"$(INTDIR)\quantovanillaoption.obj" \
+	"$(INTDIR)\simpleswap.obj" \
+	"$(INTDIR)\stock.obj" \
+	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\vanillaoption.obj" \
+	"$(INTDIR)\binomialtree.obj" \
+	"$(INTDIR)\bsmlattice.obj" \
+	"$(INTDIR)\lattice.obj" \
+	"$(INTDIR)\lattice2d.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
+	"$(INTDIR)\beta.obj" \
+	"$(INTDIR)\bivariatenormaldistribution.obj" \
+	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\choleskydecomposition.obj" \
+	"$(INTDIR)\discrepancystatistics.obj" \
+	"$(INTDIR)\errorfunction.obj" \
+	"$(INTDIR)\factorial.obj" \
+	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\generalstatistics.obj" \
+	"$(INTDIR)\incompletegamma.obj" \
+	"$(INTDIR)\incrementalstatistics.obj" \
+	"$(INTDIR)\normaldistribution.obj" \
+	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\pseudosqrt.obj" \
+	"$(INTDIR)\svd.obj" \
+	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\armijo.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\simplex.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\discretegeometricapo.obj" \
+	"$(INTDIR)\discretegeometricaso.obj" \
+	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\fdbermudanoption.obj" \
+	"$(INTDIR)\fdbsmoption.obj" \
+	"$(INTDIR)\fddividendamericanoption.obj" \
+	"$(INTDIR)\fddividendeuropeanoption.obj" \
+	"$(INTDIR)\fddividendoption.obj" \
+	"$(INTDIR)\fddividendshoutoption.obj" \
+	"$(INTDIR)\fdeuropean.obj" \
+	"$(INTDIR)\fdmultiperiodoption.obj" \
+	"$(INTDIR)\fdstepconditionoption.obj" \
+	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mccliquetoption.obj" \
+	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
+	"$(INTDIR)\mceverest.obj" \
+	"$(INTDIR)\mchimalaya.obj" \
+	"$(INTDIR)\mcmaxbasket.obj" \
+	"$(INTDIR)\mcpagoda.obj" \
+	"$(INTDIR)\mcperformanceoption.obj" \
+	"$(INTDIR)\performanceoption.obj" \
+	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analyticasianengine.obj" \
+	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
+	"$(INTDIR)\mcamericanbasketengine.obj" \
+	"$(INTDIR)\mcbasketengine.obj" \
+	"$(INTDIR)\stulzengine.obj" \
+	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\analyticeuropeanengine.obj" \
+	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
+	"$(INTDIR)\bjerksundstenslandengine.obj" \
+	"$(INTDIR)\discretizedvanillaoption.obj" \
+	"$(INTDIR)\integralengine.obj" \
+	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\blackcapfloor.obj" \
+	"$(INTDIR)\capfloorpricer.obj" \
+	"$(INTDIR)\treecapfloor.obj" \
+	"$(INTDIR)\blackswaption.obj" \
+	"$(INTDIR)\jamshidianswaption.obj" \
+	"$(INTDIR)\swaptionpricer.obj" \
+	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\blackformula.obj" \
+	"$(INTDIR)\haltonrsg.obj" \
+	"$(INTDIR)\knuthuniformrng.obj" \
+	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\mt19937uniformrng.obj" \
+	"$(INTDIR)\primitivepolynomials.obj" \
+	"$(INTDIR)\sobolrsg.obj" \
+	"$(INTDIR)\caphelper.obj" \
+	"$(INTDIR)\swaptionhelper.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollross.obj" \
+	"$(INTDIR)\extendedcoxingersollross.obj" \
+	"$(INTDIR)\hullwhite.obj" \
+	"$(INTDIR)\vasicek.obj" \
+	"$(INTDIR)\g2.obj" \
+	"$(INTDIR)\calibrationhelper.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\twofactormodel.obj" \
+	"$(INTDIR)\affinetermstructure.obj" \
+	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\discountcurve.obj" \
+	"$(INTDIR)\extendeddiscountcurve.obj" \
+	"$(INTDIR)\piecewiseflatforward.obj" \
+	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\zerocurve.obj" \
+	"$(INTDIR)\blackvariancecurve.obj" \
+	"$(INTDIR)\blackvariancesurface.obj" \
+	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\dataparsers.obj" \
+	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\diffusionprocess.obj" \
+	"$(INTDIR)\discretizedasset.obj" \
+	"$(INTDIR)\errors.obj" \
+	"$(INTDIR)\exercise.obj" \
+	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\voltermstructure.obj"
+
+".\lib\QuantLib-vc6-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+	 $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+SOURCE="$(InputPath)"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
+
+OUTDIR=.\build\DebugST
+INTDIR=.\build\DebugST
+# Begin Custom Macros
+OutDir=.\build\DebugST
+# End Custom Macros
+
+ALL : ".\lib\QuantLib-vc6-sgd-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
+
+
+CLEAN :
+	-@erase "$(INTDIR)\actualactual.obj"
+	-@erase "$(INTDIR)\actualactual.sbr"
+	-@erase "$(INTDIR)\affinetermstructure.obj"
+	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\analyticalcapfloor.obj"
+	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticasianengine.obj"
+	-@erase "$(INTDIR)\analyticasianengine.sbr"
+	-@erase "$(INTDIR)\analyticbarrierengine.obj"
+	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
+	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
+	-@erase "$(INTDIR)\armijo.obj"
+	-@erase "$(INTDIR)\armijo.sbr"
+	-@erase "$(INTDIR)\asianoption.obj"
+	-@erase "$(INTDIR)\asianoption.sbr"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.obj"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
+	-@erase "$(INTDIR)\barrieroption.obj"
+	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\basispointsensitivity.obj"
+	-@erase "$(INTDIR)\basispointsensitivity.sbr"
+	-@erase "$(INTDIR)\basketoption.obj"
+	-@erase "$(INTDIR)\basketoption.sbr"
+	-@erase "$(INTDIR)\beta.obj"
+	-@erase "$(INTDIR)\beta.sbr"
+	-@erase "$(INTDIR)\binomialtree.obj"
+	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
+	-@erase "$(INTDIR)\blackcapfloor.obj"
+	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackformula.obj"
+	-@erase "$(INTDIR)\blackformula.sbr"
+	-@erase "$(INTDIR)\blackkarasinski.obj"
+	-@erase "$(INTDIR)\blackkarasinski.sbr"
+	-@erase "$(INTDIR)\blackswaption.obj"
+	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackvariancecurve.obj"
+	-@erase "$(INTDIR)\blackvariancecurve.sbr"
+	-@erase "$(INTDIR)\blackvariancesurface.obj"
+	-@erase "$(INTDIR)\blackvariancesurface.sbr"
+	-@erase "$(INTDIR)\boundarycondition.obj"
+	-@erase "$(INTDIR)\boundarycondition.sbr"
+	-@erase "$(INTDIR)\bsmlattice.obj"
+	-@erase "$(INTDIR)\bsmlattice.sbr"
+	-@erase "$(INTDIR)\bsmoperator.obj"
+	-@erase "$(INTDIR)\bsmoperator.sbr"
+	-@erase "$(INTDIR)\budapest.obj"
+	-@erase "$(INTDIR)\budapest.sbr"
+	-@erase "$(INTDIR)\calendar.obj"
+	-@erase "$(INTDIR)\calendar.sbr"
+	-@erase "$(INTDIR)\calibrationhelper.obj"
+	-@erase "$(INTDIR)\calibrationhelper.sbr"
+	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\capfloor.sbr"
+	-@erase "$(INTDIR)\capfloorpricer.obj"
+	-@erase "$(INTDIR)\capfloorpricer.sbr"
+	-@erase "$(INTDIR)\caphelper.obj"
+	-@erase "$(INTDIR)\caphelper.sbr"
+	-@erase "$(INTDIR)\cashflowvectors.obj"
+	-@erase "$(INTDIR)\cashflowvectors.sbr"
+	-@erase "$(INTDIR)\chisquaredistribution.obj"
+	-@erase "$(INTDIR)\chisquaredistribution.sbr"
+	-@erase "$(INTDIR)\choleskydecomposition.obj"
+	-@erase "$(INTDIR)\choleskydecomposition.sbr"
+	-@erase "$(INTDIR)\cliquetoption.obj"
+	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\compoundforward.obj"
+	-@erase "$(INTDIR)\compoundforward.sbr"
+	-@erase "$(INTDIR)\conjugategradient.obj"
+	-@erase "$(INTDIR)\conjugategradient.sbr"
+	-@erase "$(INTDIR)\copenhagen.obj"
+	-@erase "$(INTDIR)\copenhagen.sbr"
+	-@erase "$(INTDIR)\coxingersollross.obj"
+	-@erase "$(INTDIR)\coxingersollross.sbr"
+	-@erase "$(INTDIR)\dataformatters.obj"
+	-@erase "$(INTDIR)\dataformatters.sbr"
+	-@erase "$(INTDIR)\dataparsers.obj"
+	-@erase "$(INTDIR)\dataparsers.sbr"
+	-@erase "$(INTDIR)\date.obj"
+	-@erase "$(INTDIR)\date.sbr"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\daycounters.sbr"
+	-@erase "$(INTDIR)\diffusionprocess.obj"
+	-@erase "$(INTDIR)\diffusionprocess.sbr"
+	-@erase "$(INTDIR)\discountcurve.obj"
+	-@erase "$(INTDIR)\discountcurve.sbr"
+	-@erase "$(INTDIR)\discrepancystatistics.obj"
+	-@erase "$(INTDIR)\discrepancystatistics.sbr"
+	-@erase "$(INTDIR)\discretegeometricapo.obj"
+	-@erase "$(INTDIR)\discretegeometricapo.sbr"
+	-@erase "$(INTDIR)\discretegeometricaso.obj"
+	-@erase "$(INTDIR)\discretegeometricaso.sbr"
+	-@erase "$(INTDIR)\discretizedasset.obj"
+	-@erase "$(INTDIR)\discretizedasset.sbr"
+	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
+	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
+	-@erase "$(INTDIR)\errorfunction.obj"
+	-@erase "$(INTDIR)\errorfunction.sbr"
+	-@erase "$(INTDIR)\errors.obj"
+	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exercise.obj"
+	-@erase "$(INTDIR)\exercise.sbr"
+	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
+	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
+	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
+	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
+	-@erase "$(INTDIR)\factorial.obj"
+	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\fdbermudanoption.obj"
+	-@erase "$(INTDIR)\fdbermudanoption.sbr"
+	-@erase "$(INTDIR)\fdbsmoption.obj"
+	-@erase "$(INTDIR)\fdbsmoption.sbr"
+	-@erase "$(INTDIR)\fddividendamericanoption.obj"
+	-@erase "$(INTDIR)\fddividendamericanoption.sbr"
+	-@erase "$(INTDIR)\fddividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\fddividendeuropeanoption.sbr"
+	-@erase "$(INTDIR)\fddividendoption.obj"
+	-@erase "$(INTDIR)\fddividendoption.sbr"
+	-@erase "$(INTDIR)\fddividendshoutoption.obj"
+	-@erase "$(INTDIR)\fddividendshoutoption.sbr"
+	-@erase "$(INTDIR)\fdeuropean.obj"
+	-@erase "$(INTDIR)\fdeuropean.sbr"
+	-@erase "$(INTDIR)\fdmultiperiodoption.obj"
+	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
+	-@erase "$(INTDIR)\fdstepconditionoption.obj"
+	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
+	-@erase "$(INTDIR)\forwardvanillaoption.obj"
+	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
+	-@erase "$(INTDIR)\frankfurt.obj"
+	-@erase "$(INTDIR)\frankfurt.sbr"
+	-@erase "$(INTDIR)\g2.obj"
+	-@erase "$(INTDIR)\g2.sbr"
+	-@erase "$(INTDIR)\gammadistribution.obj"
+	-@erase "$(INTDIR)\gammadistribution.sbr"
+	-@erase "$(INTDIR)\generalstatistics.obj"
+	-@erase "$(INTDIR)\generalstatistics.sbr"
+	-@erase "$(INTDIR)\grid.obj"
+	-@erase "$(INTDIR)\grid.sbr"
+	-@erase "$(INTDIR)\haltonrsg.obj"
+	-@erase "$(INTDIR)\haltonrsg.sbr"
+	-@erase "$(INTDIR)\helsinki.obj"
+	-@erase "$(INTDIR)\helsinki.sbr"
+	-@erase "$(INTDIR)\hullwhite.obj"
+	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\incompletegamma.obj"
+	-@erase "$(INTDIR)\incompletegamma.sbr"
+	-@erase "$(INTDIR)\incrementalstatistics.obj"
+	-@erase "$(INTDIR)\incrementalstatistics.sbr"
+	-@erase "$(INTDIR)\integralengine.obj"
+	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\jamshidianswaption.obj"
+	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\johannesburg.obj"
+	-@erase "$(INTDIR)\johannesburg.sbr"
+	-@erase "$(INTDIR)\jointcalendar.obj"
+	-@erase "$(INTDIR)\jointcalendar.sbr"
+	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
+	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
+	-@erase "$(INTDIR)\knuthuniformrng.obj"
+	-@erase "$(INTDIR)\knuthuniformrng.sbr"
+	-@erase "$(INTDIR)\lattice.obj"
+	-@erase "$(INTDIR)\lattice.sbr"
+	-@erase "$(INTDIR)\lattice2d.obj"
+	-@erase "$(INTDIR)\lattice2d.sbr"
+	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
+	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
+	-@erase "$(INTDIR)\localvolsurface.obj"
+	-@erase "$(INTDIR)\localvolsurface.sbr"
+	-@erase "$(INTDIR)\london.obj"
+	-@erase "$(INTDIR)\london.sbr"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\mathf.sbr"
+	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
+	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
+	-@erase "$(INTDIR)\mcbasket.obj"
+	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mcbasketengine.obj"
+	-@erase "$(INTDIR)\mcbasketengine.sbr"
+	-@erase "$(INTDIR)\mccliquetoption.obj"
+	-@erase "$(INTDIR)\mccliquetoption.sbr"
+	-@erase "$(INTDIR)\mcdigitalengine.obj"
+	-@erase "$(INTDIR)\mcdigitalengine.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
+	-@erase "$(INTDIR)\mceverest.obj"
+	-@erase "$(INTDIR)\mceverest.sbr"
+	-@erase "$(INTDIR)\mchimalaya.obj"
+	-@erase "$(INTDIR)\mchimalaya.sbr"
+	-@erase "$(INTDIR)\mcmaxbasket.obj"
+	-@erase "$(INTDIR)\mcmaxbasket.sbr"
+	-@erase "$(INTDIR)\mcpagoda.obj"
+	-@erase "$(INTDIR)\mcpagoda.sbr"
+	-@erase "$(INTDIR)\mcperformanceoption.obj"
+	-@erase "$(INTDIR)\mcperformanceoption.sbr"
+	-@erase "$(INTDIR)\milan.obj"
+	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\model.obj"
+	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\mt19937uniformrng.obj"
+	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
+	-@erase "$(INTDIR)\multiassetoption.obj"
+	-@erase "$(INTDIR)\multiassetoption.sbr"
+	-@erase "$(INTDIR)\newyork.obj"
+	-@erase "$(INTDIR)\newyork.sbr"
+	-@erase "$(INTDIR)\normaldistribution.obj"
+	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\oneassetoption.obj"
+	-@erase "$(INTDIR)\oneassetoption.sbr"
+	-@erase "$(INTDIR)\oneassetstrikedoption.obj"
+	-@erase "$(INTDIR)\oneassetstrikedoption.sbr"
+	-@erase "$(INTDIR)\onefactormodel.obj"
+	-@erase "$(INTDIR)\onefactormodel.sbr"
+	-@erase "$(INTDIR)\onefactoroperator.obj"
+	-@erase "$(INTDIR)\onefactoroperator.sbr"
+	-@erase "$(INTDIR)\oslo.obj"
+	-@erase "$(INTDIR)\oslo.sbr"
+	-@erase "$(INTDIR)\parcoupon.obj"
+	-@erase "$(INTDIR)\parcoupon.sbr"
+	-@erase "$(INTDIR)\performanceoption.obj"
+	-@erase "$(INTDIR)\performanceoption.sbr"
+	-@erase "$(INTDIR)\piecewiseflatforward.obj"
+	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
+	-@erase "$(INTDIR)\primenumbers.obj"
+	-@erase "$(INTDIR)\primenumbers.sbr"
+	-@erase "$(INTDIR)\primitivepolynomials.obj"
+	-@erase "$(INTDIR)\primitivepolynomials.sbr"
+	-@erase "$(INTDIR)\pseudosqrt.obj"
+	-@erase "$(INTDIR)\pseudosqrt.sbr"
+	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
+	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
+	-@erase "$(INTDIR)\quantovanillaoption.obj"
+	-@erase "$(INTDIR)\quantovanillaoption.sbr"
+	-@erase "$(INTDIR)\ratehelpers.obj"
+	-@erase "$(INTDIR)\ratehelpers.sbr"
+	-@erase "$(INTDIR)\scheduler.obj"
+	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
+	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
+	-@erase "$(INTDIR)\simpledaycounter.obj"
+	-@erase "$(INTDIR)\simpledaycounter.sbr"
+	-@erase "$(INTDIR)\simpleswap.obj"
+	-@erase "$(INTDIR)\simpleswap.sbr"
+	-@erase "$(INTDIR)\simplex.obj"
+	-@erase "$(INTDIR)\simplex.sbr"
+	-@erase "$(INTDIR)\singleassetoption.obj"
+	-@erase "$(INTDIR)\singleassetoption.sbr"
+	-@erase "$(INTDIR)\sobolrsg.obj"
+	-@erase "$(INTDIR)\sobolrsg.sbr"
+	-@erase "$(INTDIR)\steepestdescent.obj"
+	-@erase "$(INTDIR)\steepestdescent.sbr"
+	-@erase "$(INTDIR)\stock.obj"
+	-@erase "$(INTDIR)\stock.sbr"
+	-@erase "$(INTDIR)\stockholm.obj"
+	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\stulzengine.obj"
+	-@erase "$(INTDIR)\stulzengine.sbr"
+	-@erase "$(INTDIR)\svd.obj"
+	-@erase "$(INTDIR)\svd.sbr"
+	-@erase "$(INTDIR)\swap.obj"
+	-@erase "$(INTDIR)\swap.sbr"
+	-@erase "$(INTDIR)\swaption.obj"
+	-@erase "$(INTDIR)\swaption.sbr"
+	-@erase "$(INTDIR)\swaptionhelper.obj"
+	-@erase "$(INTDIR)\swaptionhelper.sbr"
+	-@erase "$(INTDIR)\swaptionpricer.obj"
+	-@erase "$(INTDIR)\swaptionpricer.sbr"
+	-@erase "$(INTDIR)\sydney.obj"
+	-@erase "$(INTDIR)\sydney.sbr"
+	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
+	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
+	-@erase "$(INTDIR)\target.obj"
+	-@erase "$(INTDIR)\target.sbr"
+	-@erase "$(INTDIR)\thirty360.obj"
+	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\timebasket.obj"
+	-@erase "$(INTDIR)\timebasket.sbr"
+	-@erase "$(INTDIR)\tokyo.obj"
+	-@erase "$(INTDIR)\tokyo.sbr"
+	-@erase "$(INTDIR)\toronto.obj"
+	-@erase "$(INTDIR)\toronto.sbr"
+	-@erase "$(INTDIR)\treecapfloor.obj"
+	-@erase "$(INTDIR)\treecapfloor.sbr"
+	-@erase "$(INTDIR)\treeswaption.obj"
+	-@erase "$(INTDIR)\treeswaption.sbr"
+	-@erase "$(INTDIR)\tridiagonaloperator.obj"
+	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
+	-@erase "$(INTDIR)\trinomialtree.obj"
+	-@erase "$(INTDIR)\trinomialtree.sbr"
+	-@erase "$(INTDIR)\twofactormodel.obj"
+	-@erase "$(INTDIR)\twofactormodel.sbr"
+	-@erase "$(INTDIR)\valueatcenter.obj"
+	-@erase "$(INTDIR)\valueatcenter.sbr"
+	-@erase "$(INTDIR)\vanillaoption.obj"
+	-@erase "$(INTDIR)\vanillaoption.sbr"
+	-@erase "$(INTDIR)\vasicek.obj"
+	-@erase "$(INTDIR)\vasicek.sbr"
+	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\vols.sbr"
+	-@erase "$(INTDIR)\voltermstructure.obj"
+	-@erase "$(INTDIR)\voltermstructure.sbr"
+	-@erase "$(INTDIR)\warsaw.obj"
+	-@erase "$(INTDIR)\warsaw.sbr"
+	-@erase "$(INTDIR)\wellington.obj"
+	-@erase "$(INTDIR)\wellington.sbr"
+	-@erase "$(INTDIR)\xibor.obj"
+	-@erase "$(INTDIR)\xibor.sbr"
+	-@erase "$(INTDIR)\xibormanager.obj"
+	-@erase "$(INTDIR)\xibormanager.sbr"
+	-@erase "$(INTDIR)\zerocurve.obj"
+	-@erase "$(INTDIR)\zerocurve.sbr"
+	-@erase "$(INTDIR)\zurich.obj"
+	-@erase "$(INTDIR)\zurich.sbr"
+	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_6.lib"
+	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
+	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\budapest.sbr" \
+	"$(INTDIR)\copenhagen.sbr" \
+	"$(INTDIR)\frankfurt.sbr" \
+	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\johannesburg.sbr" \
+	"$(INTDIR)\jointcalendar.sbr" \
+	"$(INTDIR)\london.sbr" \
+	"$(INTDIR)\milan.sbr" \
+	"$(INTDIR)\newyork.sbr" \
+	"$(INTDIR)\oslo.sbr" \
+	"$(INTDIR)\stockholm.sbr" \
+	"$(INTDIR)\sydney.sbr" \
+	"$(INTDIR)\target.sbr" \
+	"$(INTDIR)\tokyo.sbr" \
+	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\warsaw.sbr" \
+	"$(INTDIR)\wellington.sbr" \
+	"$(INTDIR)\zurich.sbr" \
+	"$(INTDIR)\basispointsensitivity.sbr" \
+	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\parcoupon.sbr" \
+	"$(INTDIR)\shortfloatingcoupon.sbr" \
+	"$(INTDIR)\timebasket.sbr" \
+	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\simpledaycounter.sbr" \
+	"$(INTDIR)\thirty360.sbr" \
+	"$(INTDIR)\boundarycondition.sbr" \
+	"$(INTDIR)\bsmoperator.sbr" \
+	"$(INTDIR)\onefactoroperator.sbr" \
+	"$(INTDIR)\tridiagonaloperator.sbr" \
+	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\mathf.sbr" \
+	"$(INTDIR)\vols.sbr" \
+	"$(INTDIR)\xibor.sbr" \
+	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\asianoption.sbr" \
+	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\multiassetoption.sbr" \
+	"$(INTDIR)\oneassetoption.sbr" \
+	"$(INTDIR)\oneassetstrikedoption.sbr" \
+	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
+	"$(INTDIR)\quantovanillaoption.sbr" \
+	"$(INTDIR)\simpleswap.sbr" \
+	"$(INTDIR)\stock.sbr" \
+	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\vanillaoption.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
+	"$(INTDIR)\bsmlattice.sbr" \
+	"$(INTDIR)\lattice.sbr" \
+	"$(INTDIR)\lattice2d.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
+	"$(INTDIR)\beta.sbr" \
+	"$(INTDIR)\bivariatenormaldistribution.sbr" \
+	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\choleskydecomposition.sbr" \
+	"$(INTDIR)\discrepancystatistics.sbr" \
+	"$(INTDIR)\errorfunction.sbr" \
+	"$(INTDIR)\factorial.sbr" \
+	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\generalstatistics.sbr" \
+	"$(INTDIR)\incompletegamma.sbr" \
+	"$(INTDIR)\incrementalstatistics.sbr" \
+	"$(INTDIR)\normaldistribution.sbr" \
+	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\pseudosqrt.sbr" \
+	"$(INTDIR)\svd.sbr" \
+	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\armijo.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\simplex.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\discretegeometricapo.sbr" \
+	"$(INTDIR)\discretegeometricaso.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\fdbermudanoption.sbr" \
+	"$(INTDIR)\fdbsmoption.sbr" \
+	"$(INTDIR)\fddividendamericanoption.sbr" \
+	"$(INTDIR)\fddividendeuropeanoption.sbr" \
+	"$(INTDIR)\fddividendoption.sbr" \
+	"$(INTDIR)\fddividendshoutoption.sbr" \
+	"$(INTDIR)\fdeuropean.sbr" \
+	"$(INTDIR)\fdmultiperiodoption.sbr" \
+	"$(INTDIR)\fdstepconditionoption.sbr" \
+	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mccliquetoption.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
+	"$(INTDIR)\mceverest.sbr" \
+	"$(INTDIR)\mchimalaya.sbr" \
+	"$(INTDIR)\mcmaxbasket.sbr" \
+	"$(INTDIR)\mcpagoda.sbr" \
+	"$(INTDIR)\mcperformanceoption.sbr" \
+	"$(INTDIR)\performanceoption.sbr" \
+	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analyticasianengine.sbr" \
+	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
+	"$(INTDIR)\mcamericanbasketengine.sbr" \
+	"$(INTDIR)\mcbasketengine.sbr" \
+	"$(INTDIR)\stulzengine.sbr" \
+	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\analyticeuropeanengine.sbr" \
+	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
+	"$(INTDIR)\bjerksundstenslandengine.sbr" \
+	"$(INTDIR)\discretizedvanillaoption.sbr" \
+	"$(INTDIR)\integralengine.sbr" \
+	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr" \
+	"$(INTDIR)\capfloorpricer.sbr" \
+	"$(INTDIR)\treecapfloor.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
+	"$(INTDIR)\jamshidianswaption.sbr" \
+	"$(INTDIR)\swaptionpricer.sbr" \
+	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\blackformula.sbr" \
+	"$(INTDIR)\haltonrsg.sbr" \
+	"$(INTDIR)\knuthuniformrng.sbr" \
+	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\mt19937uniformrng.sbr" \
+	"$(INTDIR)\primitivepolynomials.sbr" \
+	"$(INTDIR)\sobolrsg.sbr" \
+	"$(INTDIR)\caphelper.sbr" \
+	"$(INTDIR)\swaptionhelper.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollross.sbr" \
+	"$(INTDIR)\extendedcoxingersollross.sbr" \
+	"$(INTDIR)\hullwhite.sbr" \
+	"$(INTDIR)\vasicek.sbr" \
+	"$(INTDIR)\g2.sbr" \
+	"$(INTDIR)\calibrationhelper.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\twofactormodel.sbr" \
+	"$(INTDIR)\affinetermstructure.sbr" \
+	"$(INTDIR)\compoundforward.sbr" \
+	"$(INTDIR)\discountcurve.sbr" \
+	"$(INTDIR)\extendeddiscountcurve.sbr" \
+	"$(INTDIR)\piecewiseflatforward.sbr" \
+	"$(INTDIR)\ratehelpers.sbr" \
+	"$(INTDIR)\zerocurve.sbr" \
+	"$(INTDIR)\blackvariancecurve.sbr" \
+	"$(INTDIR)\blackvariancesurface.sbr" \
+	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\dataparsers.sbr" \
+	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\diffusionprocess.sbr" \
+	"$(INTDIR)\discretizedasset.sbr" \
+	"$(INTDIR)\errors.sbr" \
+	"$(INTDIR)\exercise.sbr" \
+	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\voltermstructure.sbr"
+
+"$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"lib\QuantLib-vc6-sgd-0_3_6.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\budapest.obj" \
+	"$(INTDIR)\copenhagen.obj" \
+	"$(INTDIR)\frankfurt.obj" \
+	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\johannesburg.obj" \
+	"$(INTDIR)\jointcalendar.obj" \
+	"$(INTDIR)\london.obj" \
+	"$(INTDIR)\milan.obj" \
+	"$(INTDIR)\newyork.obj" \
+	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\stockholm.obj" \
+	"$(INTDIR)\sydney.obj" \
+	"$(INTDIR)\target.obj" \
+	"$(INTDIR)\tokyo.obj" \
+	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\warsaw.obj" \
+	"$(INTDIR)\wellington.obj" \
+	"$(INTDIR)\zurich.obj" \
+	"$(INTDIR)\basispointsensitivity.obj" \
+	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\parcoupon.obj" \
+	"$(INTDIR)\shortfloatingcoupon.obj" \
+	"$(INTDIR)\timebasket.obj" \
+	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\simpledaycounter.obj" \
+	"$(INTDIR)\thirty360.obj" \
+	"$(INTDIR)\boundarycondition.obj" \
+	"$(INTDIR)\bsmoperator.obj" \
+	"$(INTDIR)\onefactoroperator.obj" \
+	"$(INTDIR)\tridiagonaloperator.obj" \
+	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
+	"$(INTDIR)\xibor.obj" \
+	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\asianoption.obj" \
+	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\multiassetoption.obj" \
+	"$(INTDIR)\oneassetoption.obj" \
+	"$(INTDIR)\oneassetstrikedoption.obj" \
+	"$(INTDIR)\quantoforwardvanillaoption.obj" \
+	"$(INTDIR)\quantovanillaoption.obj" \
+	"$(INTDIR)\simpleswap.obj" \
+	"$(INTDIR)\stock.obj" \
+	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\vanillaoption.obj" \
+	"$(INTDIR)\binomialtree.obj" \
+	"$(INTDIR)\bsmlattice.obj" \
+	"$(INTDIR)\lattice.obj" \
+	"$(INTDIR)\lattice2d.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
+	"$(INTDIR)\beta.obj" \
+	"$(INTDIR)\bivariatenormaldistribution.obj" \
+	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\choleskydecomposition.obj" \
+	"$(INTDIR)\discrepancystatistics.obj" \
+	"$(INTDIR)\errorfunction.obj" \
+	"$(INTDIR)\factorial.obj" \
+	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\generalstatistics.obj" \
+	"$(INTDIR)\incompletegamma.obj" \
+	"$(INTDIR)\incrementalstatistics.obj" \
+	"$(INTDIR)\normaldistribution.obj" \
+	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\pseudosqrt.obj" \
+	"$(INTDIR)\svd.obj" \
+	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\armijo.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\simplex.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\discretegeometricapo.obj" \
+	"$(INTDIR)\discretegeometricaso.obj" \
+	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\fdbermudanoption.obj" \
+	"$(INTDIR)\fdbsmoption.obj" \
+	"$(INTDIR)\fddividendamericanoption.obj" \
+	"$(INTDIR)\fddividendeuropeanoption.obj" \
+	"$(INTDIR)\fddividendoption.obj" \
+	"$(INTDIR)\fddividendshoutoption.obj" \
+	"$(INTDIR)\fdeuropean.obj" \
+	"$(INTDIR)\fdmultiperiodoption.obj" \
+	"$(INTDIR)\fdstepconditionoption.obj" \
+	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mccliquetoption.obj" \
+	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
+	"$(INTDIR)\mceverest.obj" \
+	"$(INTDIR)\mchimalaya.obj" \
+	"$(INTDIR)\mcmaxbasket.obj" \
+	"$(INTDIR)\mcpagoda.obj" \
+	"$(INTDIR)\mcperformanceoption.obj" \
+	"$(INTDIR)\performanceoption.obj" \
+	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analyticasianengine.obj" \
+	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
+	"$(INTDIR)\mcamericanbasketengine.obj" \
+	"$(INTDIR)\mcbasketengine.obj" \
+	"$(INTDIR)\stulzengine.obj" \
+	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\analyticeuropeanengine.obj" \
+	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
+	"$(INTDIR)\bjerksundstenslandengine.obj" \
+	"$(INTDIR)\discretizedvanillaoption.obj" \
+	"$(INTDIR)\integralengine.obj" \
+	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\blackcapfloor.obj" \
+	"$(INTDIR)\capfloorpricer.obj" \
+	"$(INTDIR)\treecapfloor.obj" \
+	"$(INTDIR)\blackswaption.obj" \
+	"$(INTDIR)\jamshidianswaption.obj" \
+	"$(INTDIR)\swaptionpricer.obj" \
+	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\blackformula.obj" \
+	"$(INTDIR)\haltonrsg.obj" \
+	"$(INTDIR)\knuthuniformrng.obj" \
+	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\mt19937uniformrng.obj" \
+	"$(INTDIR)\primitivepolynomials.obj" \
+	"$(INTDIR)\sobolrsg.obj" \
+	"$(INTDIR)\caphelper.obj" \
+	"$(INTDIR)\swaptionhelper.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollross.obj" \
+	"$(INTDIR)\extendedcoxingersollross.obj" \
+	"$(INTDIR)\hullwhite.obj" \
+	"$(INTDIR)\vasicek.obj" \
+	"$(INTDIR)\g2.obj" \
+	"$(INTDIR)\calibrationhelper.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\twofactormodel.obj" \
+	"$(INTDIR)\affinetermstructure.obj" \
+	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\discountcurve.obj" \
+	"$(INTDIR)\extendeddiscountcurve.obj" \
+	"$(INTDIR)\piecewiseflatforward.obj" \
+	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\zerocurve.obj" \
+	"$(INTDIR)\blackvariancecurve.obj" \
+	"$(INTDIR)\blackvariancesurface.obj" \
+	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\dataparsers.obj" \
+	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\diffusionprocess.obj" \
+	"$(INTDIR)\discretizedasset.obj" \
+	"$(INTDIR)\errors.obj" \
+	"$(INTDIR)\exercise.obj" \
+	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\voltermstructure.obj"
+
+".\lib\QuantLib-vc6-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -2830,7 +4211,7 @@ SOURCE="$(InputPath)"
 !ENDIF 
 
 
-!IF "$(CFG)" == "QuantLib - Win32 Release" || "$(CFG)" == "QuantLib - Win32 Debug" || "$(CFG)" == "QuantLib - Win32 Release MTDLL" || "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
+!IF "$(CFG)" == "QuantLib - Win32 Release" || "$(CFG)" == "QuantLib - Win32 Debug" || "$(CFG)" == "QuantLib - Win32 Release MTDLL" || "$(CFG)" == "QuantLib - Win32 Debug MTDLL" || "$(CFG)" == "QuantLib - Win32 Release SingleThread" || "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
 SOURCE=.\ql\Calendars\budapest.cpp
 
 "$(INTDIR)\budapest.obj"	"$(INTDIR)\budapest.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3400,6 +4781,26 @@ CPP_SWITCHES=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
 
 CPP_SWITCHES=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+"$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release SingleThread"
+
+CPP_SWITCHES=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
+
+"$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
+
+CPP_SWITCHES=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
 
 "$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
