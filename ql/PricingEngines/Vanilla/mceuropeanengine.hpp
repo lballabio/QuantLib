@@ -105,7 +105,10 @@ namespace QuantLib {
                              requiredSamples,
                              requiredTolerance,
                              maxSamples,
-                             seed) {}
+                             seed) {
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
+                   "not an European Option");
+                             }
 
 
     template <class RNG, class S>
