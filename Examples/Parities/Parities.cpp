@@ -27,6 +27,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.3  2001/07/16 16:12:02  nando
+// style and typo fixed
+//
 // Revision 1.2  2001/07/15 08:34:53  nando
 // feedback to Maxim's example
 //
@@ -47,8 +50,11 @@ using namespace std;
 class TestMethodsAndParity
 {
 public:
-	TestMethodsAndParity(Time maturity, double strike, double s0,
-			double sigma, Rate r)
+	TestMethodsAndParity(Time maturity,
+	                     double strike,
+	                     double s0,
+	                     double sigma,
+	                     Rate r)
 	{
 		maturity_ = maturity;
 		strike_ = strike;
@@ -69,7 +75,7 @@ public:
 		printResult("Using call-put parity", europeanPutFormula() +
 		    s0_ - strike_*QL_EXP(- r_*maturity_));
 		printResult("Monte-Carlo method", europeanCallMC());
-		printResult("FiniteDifference method", eropeanCallFD());
+		printResult("FiniteDifference method", europeanCallFD());
 	}
 
 	void printResult(std::string method,  double v)
@@ -123,7 +129,7 @@ protected:
 
 
 	}
-	double eropeanCallFD(int gridPoints = 100)  // Finite differences
+	double europeanCallFD(int gridPoints = 100)  // Finite differences
 	{
 		return FiniteDifferenceEuropean(Option::Call, s0_, strike_, 0.0,
 			r_, maturity_, sigma_, 100).value();
