@@ -120,22 +120,24 @@ namespace QuantLib {
         std::vector<double> eigenVector(size);
         Size row, col;
         for (col=0; col<size; col++) {
-            // doesn't work for Borland
-            // std::copy(eigenVectors_.column_begin(col), eigenVectors_.column_end(col), eigenVector.begin());
+#if   defined(__BORLANDC__)     // Borland C++ 5.5
             for (row=0; row<size; row++) {
                 eigenVector[row] = eigenVectors_[row][col];
             }
+#else
+            // doesn't work for Borland
+            std::copy(eigenVectors_.column_begin(col), eigenVectors_.column_end(col), eigenVector.begin());
+#endif
             temp[col] = std::make_pair<double, std::vector<double> >(
                 diagonal_[col], eigenVector);
         }
-        // A reverse sort would avoid the ugly (size-col-1) indexing
-        std::sort(temp.begin(), temp.end());
+        std::sort(temp.begin(), temp.end(), std::greater<std::pair<double, std::vector<double> > >());
         for (col=0; col<size; col++) {
-            diagonal_[size-col-1] = temp[col].first;
+            diagonal_[col] = temp[col].first;
             // doesn't work at all :(
-            // std::copy(eigenVector.begin(), eigenVector.end(), eigenVectors_.column_begin(size-col-1));
+            // std::copy(eigenVector.begin(), eigenVector.end(), eigenVectors_.column_begin(col));
             for (row=0; row<size; row++) {
-                eigenVectors_[row][size-col-1] = temp[col].second[row];
+                eigenVectors_[row][col] = temp[col].second[row];
             }
         }
     }

@@ -37,7 +37,6 @@ namespace QuantLib {
       public:
         //! \name Gaussian risk measures
         //@{
-
         /*! returns the downside variance, defined as
             \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
                 \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
@@ -88,8 +87,8 @@ namespace QuantLib {
 
 
     template<class Stat>
-    inline double GaussianStatistics<Stat>::gaussianRegret(
-                                                         double target) const {
+    inline
+    double GaussianStatistics<Stat>::gaussianRegret(double target) const {
         double m = mean();
         double std = standardDeviation();
         double variance = std*std;
