@@ -43,8 +43,10 @@ namespace QuantLib {
           RollingConvention rollingConvention, bool isAdjusted,
           const DayCounter& dayCount, const DayCounter& firstPeriodDayCount,
           const Date& stubDate) {
-            QL_REQUIRE(couponRates.size() != 0, "unspecified coupon rates");
-            QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
+            QL_REQUIRE(couponRates.size() != 0, 
+                       "FixedRateCouponVector: unspecified coupon rates(size=0)");
+            QL_REQUIRE(nominals.size() != 0, 
+                       "FixedRateCouponVector: unspecified nominals()size=0");
 
             std::vector<Handle<CashFlow> > leg;
             Scheduler scheduler(calendar, startDate, endDate, frequency,

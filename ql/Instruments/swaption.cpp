@@ -45,9 +45,9 @@ namespace QuantLib {
 
         void Swaption::setupEngine() const {
             SwaptionArguments* arguments =
-                dynamic_cast<SwaptionArguments*>(
-                    engine_->arguments());
-            QL_REQUIRE(arguments != 0,
+                dynamic_cast<SwaptionArguments*>(engine_->arguments());
+                
+            QL_REQUIRE(arguments != 0, "Swaption: "
                        "pricing engine does not supply needed arguments");
 
             Date settlement = termStructure_->settlementDate();

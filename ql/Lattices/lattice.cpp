@@ -58,7 +58,7 @@ namespace QuantLib {
         }
 
         void Lattice::initialize(const Handle<DiscretizedAsset>& asset, 
-                              Time t) const {
+                                 Time t) const {
 
             Size i = t_.findIndex(t);
             asset->setTime(t);
@@ -66,11 +66,12 @@ namespace QuantLib {
         }
 
         void Lattice::rollback(const Handle<DiscretizedAsset>& asset, 
-                                      Time to) const {
+                               Time to) const {
 
             Time from = asset->time();
 
-            QL_REQUIRE(from>=to, "Wrong rollback extremities");
+            QL_REQUIRE(from >= to, 
+                       "Lattice: Wrong rollback extremities");
             Size iFrom = t_.findIndex(from);
             Size iTo = t_.findIndex(to);
 
