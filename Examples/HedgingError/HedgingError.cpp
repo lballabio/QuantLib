@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
         double volatility = 0.20; // 20%
         Rate riskFreeRate = 0.05; // 5%
         ReplicationError rp(Option::Call, maturity, strike, underlying,
-            volatility, riskFreeRate);
+			    volatility, riskFreeRate);
 
         int scenarios = 50000;
         int hedgesNum;

@@ -145,5 +145,8 @@ AC_OUTPUT(Makefile \
     Sources/Solvers1D/Makefile \
     Sources/TermStructures/Makefile \
     Docs/Makefile \
-    Examples/Makefile)
+    Examples/Makefile \
+    Examples/Parities/Makefile \
+    Examples/HedgingError/Makefile \
+    )
 

@@ -2,13 +2,17 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.43  2001/08/28 14:46:01  enri
+# .am files for examples added, minor changes to permit compilation on unixes
+#
 # Revision 1.42  2001/08/27 15:27:29  nando
 # typo fixed
 #
 
 AUTOMAKE_OPTIONS=foreign
 
-SUBDIRS=Sources Include Docs
+SUBDIRS=Sources Include Docs Examples
+CFLAGS=-Wall
 
 EXTRA_DIST = \
     Authors.txt \

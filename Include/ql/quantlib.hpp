@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000-2001 QuantLib Group
  *
@@ -27,6 +26,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.33  2001/08/28 14:46:01  enri
+// .am files for examples added, minor changes to permit compilation on unixes
+//
 // Revision 1.32  2001/08/22 15:28:20  nando
 // added AntitheticPathGenerator
 //

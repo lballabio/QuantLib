@@ -28,6 +28,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.20  2001/08/28 14:46:01  enri
+// .am files for examples added, minor changes to permit compilation on unixes
+//
 // Revision 1.19  2001/08/28 10:15:37  nando
 // comments removed
 //
@@ -61,7 +64,7 @@
 // 'identifier' : decorated name length exceeded,
 //                name was truncated in debug info
 
-#include "ql\quantlib.hpp"
+#include "ql/quantlib.hpp"
 
 // using namespace std;
 
