@@ -29,35 +29,9 @@
 
 // $Id$
 // $Log$
-// Revision 1.17  2001/08/09 14:59:47  sigmud
-// header modification
+// Revision 1.18  2001/08/22 11:02:09  nando
+// removed unused default constructor
 //
-// Revision 1.16  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.15  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.14  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.13  2001/07/13 14:29:08  sigmud
-// removed a few gcc compile warnings
-//
-// Revision 1.12  2001/07/09 16:29:27  lballabio
-// Some documentation and market element
-//
-// Revision 1.11  2001/07/06 09:15:36  nando
-// style enforced
-//
-// Revision 1.10  2001/07/06 08:08:43  aleppo
-// Bug fixed
-//
-// Revision 1.9  2001/07/05 13:51:04  nando
-// Maxim "Ronin" contribution on efficiency and style
-//
-// Revision 1.8  2001/07/04 12:00:37  uid40428
-// Array of random numbers built with an array of dates
 
 #ifndef quantlib_montecarlo_random_array_generator_h
 #define quantlib_montecarlo_random_array_generator_h
@@ -76,7 +50,6 @@ namespace QuantLib {
             // typedef Array SampleType;
             // this typedef would make RandomArrayGenerator into a sample
             // generator
-            RandomArrayGenerator();
 
             RandomArrayGenerator(int dimension,
                                  double average = 0.0,
@@ -84,9 +57,9 @@ namespace QuantLib {
                                  long seed=0);
             RandomArrayGenerator(const std::vector<Time> & dates,
                                  double average = 0.0,
-                                 double variance = 1.0, 
+                                 double variance = 1.0,
                                  long seed=0);
-            RandomArrayGenerator(const Math::Matrix &covariance, 
+            RandomArrayGenerator(const Math::Matrix &covariance,
                                  long seed=0);
             RandomArrayGenerator(const Array &average,
                                  const Math::Matrix &covariance,
@@ -103,10 +76,6 @@ namespace QuantLib {
             mutable Array averageArray_;
             mutable Math::Matrix sqrtCovariance_;
         };
-
-        template <class RP>
-        inline RandomArrayGenerator<RP >::RandomArrayGenerator():
-                size_(0), weight_(0) {}
 
         template <class RP>
         inline RandomArrayGenerator<RP >::RandomArrayGenerator(int dimension,
@@ -140,7 +109,7 @@ namespace QuantLib {
                     ") must be positive");
                 timeDelays_[0] = dates[0];
             }
-            
+
             if(size_ > 1){
                 for(int i = 1; i < size_; i++){
                     QL_REQUIRE(dates[i] >= dates[i-1],
