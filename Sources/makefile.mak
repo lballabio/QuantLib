@@ -85,40 +85,26 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # QuantLib library
-QuantLib$(_D).lib:: $(QUANTLIB_OBJS)
+QuantLib$(_D).lib:: UpdateSubLibraries
     if exist QuantLib$(_D).lib del QuantLib$(_D).lib
     $(TLIB) $(TLIB_OPTS) QuantLib$(_D).lib /a $(QUANTLIB_OBJS)
 
-$(CALENDAR_LIB)::
+UpdateSubLibraries:
     cd Calendars
     $(MAKE)
-    cd ..
-$(DAYCOUNTER_LIB)::
-    cd DayCounters
+    cd ..\DayCounters
     $(MAKE)
-    cd ..
-$(FDM_LIB)::
-    cd FiniteDifferences
+    cd ..\FiniteDifferences
     $(MAKE)
-    cd ..
-$(MATH_LIB)::
-    cd Math
+    cd ..\Math
     $(MAKE)
-    cd ..
-$(MONTECARLO_LIB)::
-    cd MonteCarlo
+    cd ..\MonteCarlo
     $(MAKE)
-    cd ..
-$(PRICER_LIB)::
-    cd Pricers
+    cd ..\Pricers
     $(MAKE)
-    cd ..
-$(SOLVER1D_LIB)::
-    cd Solvers1D
+    cd ..\Solvers1D
     $(MAKE)
-    cd ..
-$(TERMSTRUCT_LIB)::
-    cd TermStructures
+    cd ..\TermStructures
     $(MAKE)
     cd ..
 
