@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.16  2001/05/31 10:10:08  lballabio
+# Added new dirs in configure.in
+#
 # Revision 1.15  2001/05/31 08:56:40  lballabio
 # Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 #
@@ -10,14 +13,14 @@
 #
 
 SUBDIRS = Calendars \
-	CashFlows \
-	DayCounters \
+    CashFlows \
+    DayCounters \
     FiniteDifferences \
     Indexes \
     Instruments \
-	Math \
-	MonteCarlo \
-	Pricers \
+    Math \
+    MonteCarlo \
+    Pricers \
     Solvers1D \
     TermStructures
 

@@ -118,6 +118,7 @@ AC_OUTPUT(Makefile \
     Include/Makefile \
     Include/ql/Makefile \
     Include/ql/Calendars/Makefile \
+    Include/ql/CashFlows/Makefile \
     Include/ql/DayCounters/Makefile \
     Include/ql/FiniteDifferences/Makefile \
     Include/ql/Indexes/Makefile \
@@ -131,9 +132,11 @@ AC_OUTPUT(Makefile \
     Include/ql/Utilities/Makefile \
     Sources/Makefile \
     Sources/Calendars/Makefile \
+    Sources/CashFlows/Makefile \
     Sources/DayCounters/Makefile \
     Sources/FiniteDifferences/Makefile \
     Sources/Indexes/Makefile \
+    Sources/Instruments/Makefile \
     Sources/Math/Makefile \
     Sources/MonteCarlo/Makefile \
     Sources/Pricers/Makefile \
