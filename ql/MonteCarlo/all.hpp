@@ -26,7 +26,6 @@
 #include <ql/MonteCarlo/barrierpathpricer.hpp>
 #include <ql/MonteCarlo/basketpathpricer.hpp>
 #include <ql/MonteCarlo/biasedbarrierpathpricer.hpp>
-#include <ql/MonteCarlo/binarybarrierpathpricer.hpp>
 #include <ql/MonteCarlo/brownianbridge.hpp>
 #include <ql/MonteCarlo/cliquetoptionpathpricer.hpp>
 #include <ql/MonteCarlo/europeanpathpricer.hpp>

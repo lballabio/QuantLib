@@ -4,17 +4,12 @@ includedir = $(prefix)/include/ql/PricingEngines/Barrier
 
 include_HEADERS = \
 	all.hpp \
-    analyticamericanbinarybarrierengine.hpp \
     analyticbarrierengine.hpp \
-    analyticeuropeanbinarybarrierengine.hpp \
-    mcbarrierengine.hpp \
-    mcbinarybarrierengine.hpp
+    mcbarrierengine.hpp
 
 EXTRA_DIST=makefile.mak
 
 libBarrierEngines_la_SOURCES = \
-    analyticamericanbinarybarrierengine.cpp \
-    analyticbarrierengine.cpp \
-    analyticeuropeanbinarybarrierengine.cpp
+    analyticbarrierengine.cpp
 
 noinst_LTLIBRARIES = libBarrierEngines.la

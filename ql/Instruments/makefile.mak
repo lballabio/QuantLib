@@ -18,7 +18,6 @@ OBJS = \
     asianoption.obj$(_D) \
     barrieroption.obj$(_D) \
     basketoption.obj$(_D) \
-    binarybarrieroption.obj$(_D) \
     capfloor.obj$(_D) \
     forwardvanillaoption.obj$(_D) \
     multiassetoption.obj$(_D) \

@@ -23,7 +23,6 @@
 
 #include <ql/Instruments/barrieroption.hpp>
 #include <ql/Instruments/basketoption.hpp>
-#include <ql/Instruments/binarybarrieroption.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/Instruments/multiassetoption.hpp>

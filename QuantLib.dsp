@@ -627,14 +627,6 @@ SOURCE=.\ql\Instruments\basketoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Instruments\binarybarrieroption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Instruments\binarybarrieroption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Instruments\capfloor.cpp
 # End Source File
 # Begin Source File
@@ -1052,14 +1044,6 @@ SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.cpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\binarybarrierpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\binarybarrierpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -1598,14 +1582,6 @@ SOURCE=.\ql\PricingEngines\Asian\analyticasianengine.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Barrier\analyticamericanbinarybarrierengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Barrier\analyticamericanbinarybarrierengine.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.cpp
 # End Source File
 # Begin Source File
@@ -1614,19 +1590,7 @@ SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Barrier\analyticeuropeanbinarybarrierengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Barrier\analyticeuropeanbinarybarrierengine.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\PricingEngines\Barrier\mcbarrierengine.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Barrier\mcbinarybarrierengine.hpp
 # End Source File
 # End Group
 # Begin Group "Cliquet"

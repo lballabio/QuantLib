@@ -15,9 +15,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
-    analyticbarrierengine.obj$(_D) \
-    analyticamericanbinarybarrierengine.obj$(_D) \
-    analyticeuropeanbinarybarrierengine.obj$(_D)
+    analyticbarrierengine.obj$(_D)
 
 
 # Tools to be used
