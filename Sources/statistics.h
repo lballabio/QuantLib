@@ -57,6 +57,7 @@ class Statistics {
 
 // inline
 inline void Statistics::add(double value, double weight) {
+  Require(weight>0.0, "Statistics::add : negative weight not allowed");
   theSampleNumber += 1;
   theSampleWeight += weight;
   double token, temp;
@@ -87,11 +88,11 @@ inline double Statistics::mean() const {
 }
 
 inline double Statistics::variance() const {
+  Require(theSampleWeight>0.0, "Stat::variance() : theSampleWeight=0, unsufficient");
   Require(theSampleNumber>1, "Stat::variance() : sample number <=1, unsufficient");
-  double m = mean();
 
   return (theSampleNumber/(theSampleNumber-1.0))*
-    (theQuadraticSum/theSampleWeight - m*m);
+    (theQuadraticSum - theSum*theSum/theSampleWeight)/theSampleWeight;
 }
 
 inline double Statistics::standardDeviation() const {
@@ -100,13 +101,14 @@ inline double Statistics::standardDeviation() const {
 
 inline double Statistics::skewness() const {
   Require(theSampleNumber>2, "Stat::skewness() : sample number <=2, unsufficient");
+
+  double m = mean();
   double s = standardDeviation();
   Require(s>0.0, "Stat::skewness() : standard_dev=0.0, skew undefined");
-  double m = mean();
 
   return theSampleNumber*theSampleNumber/
     ((theSampleNumber-1.0)*(theSampleNumber-2.0)*s*s*s)*
-    (theCubicSum/theSampleWeight-3.0*m*theQuadraticSum/theSampleWeight+2.0*m*m*m);
+    (theCubicSum-3.0*m*theQuadraticSum+2.0*m*m*theSum)/theSampleWeight;
 }
 
 inline double Statistics::kurtosis() const {
@@ -115,18 +117,11 @@ inline double Statistics::kurtosis() const {
   double v = variance();
   Require(v>0.0, "Stat::kurtosis() : variance=0.0, kurtosis undefined");
 
-  double coeff1 = theSampleNumber*theSampleNumber*(theSampleNumber+1.0)/
-    ((theSampleNumber-1.0)*(theSampleNumber-2.0)*(theSampleNumber-3.0));
-  double coeff2 = 1.0/(v*v);
-  double a1 = theFourthPowerSum/theSampleWeight;
-  double a2 = -4.0*m*(theCubicSum/theSampleWeight);
-  double a3 = 6.0*m*m*(theQuadraticSum/theSampleWeight);
-  double a4 = -3.0*m*m*m*m;
-  double a5 = a1+a2+a3+a4;
-  double addendum = -3.0*(theSampleNumber-1.0)*(theSampleNumber-1.0)/
+  return theSampleNumber*theSampleNumber*(theSampleNumber+1.0)/
+    ((theSampleNumber-1.0)*(theSampleNumber-2.0)*(theSampleNumber-3.0)*v*v)*
+    (theFourthPowerSum-4.0*m*theCubicSum+6.0*m*m*theQuadraticSum-3.0*m*m*m*theSum)/theSampleWeight-
+    3.0*(theSampleNumber-1.0)*(theSampleNumber-1.0)/
     ((theSampleNumber-2.0)*(theSampleNumber-3.0));
-
-  return coeff1*coeff2*a5+addendum;
 }
 
 inline double Statistics::min() const {
