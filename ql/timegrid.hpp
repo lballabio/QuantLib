@@ -27,6 +27,7 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
+#include <ql/Math/comparison.hpp>
 #include <vector>
 #include <numeric>
 
@@ -64,7 +65,8 @@ namespace QuantLib {
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
                        "negative times not allowed");
             std::vector<Time>::iterator e =
-                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end());
+                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end(),
+                            std::ptr_fun(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             if (mandatoryTimes_[0] > 0.0)
@@ -99,7 +101,8 @@ namespace QuantLib {
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
                        "negative times not allowed");
             std::vector<Time>::iterator e =
-                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end());
+                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end(),
+                            std::ptr_fun(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             Time last = mandatoryTimes_.back();

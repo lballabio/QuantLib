@@ -19,26 +19,10 @@
 */
 
 #include <ql/timegrid.hpp>
-#include <ql/Math/comparison.hpp>
 #include <ql/errors.hpp>
 #include <iomanip>
 
 namespace QuantLib {
-
-    namespace {
-
-        class CloseEnoughTo : public std::unary_function<Real,bool> {
-          public:
-            CloseEnoughTo(Real target) : target_(target) {}
-            bool operator()(Real x) const {
-                return close_enough(x,target_);
-            }
-          private:
-            Real target_;
-        };
-
-    }
-
 
     TimeGrid::TimeGrid(Time end, Size steps) {
         // We seem to assume that the grid begins at 0.
@@ -58,8 +42,9 @@ namespace QuantLib {
 
 
     Size TimeGrid::findIndex(Time t) const {
-        const_iterator result = std::find_if(times_.begin(), times_.end(),
-                                             CloseEnoughTo(t));
+        const_iterator result =
+            std::find_if(times_.begin(), times_.end(),
+                         std::bind2nd(std::ptr_fun(close_enough),t));
         if (result == end()) {
             Size i;
             for (i=0; i<size(); i++) {
