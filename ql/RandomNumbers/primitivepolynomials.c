@@ -2,7 +2,7 @@
 // $Id$
 
 // This file contains 21200 polinomials.
-// Anothyer version does contain 8129334 polinomials.
+// Another version does contain 8129334 polinomials.
 // Both are slightly edited versions of
 // PrimitivePolynomialsModuloTwoUpToDegree27.c
 //
