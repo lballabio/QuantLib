@@ -26,9 +26,7 @@
 #include <ql/Math/rounding.hpp>
 #include <ql/errors.hpp>
 #include <boost/shared_ptr.hpp>
-#if (defined(QL_PATCH_MSVC) || defined(QL_PATCH_BORLAND))
 #include <assert.h>
-#endif
 #include <boost/format.hpp>
 #include <string>
 
