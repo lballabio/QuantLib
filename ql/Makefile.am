@@ -112,7 +112,6 @@ libQuantLib_la_SOURCES = \
 	discretizedasset.cpp \
 	exercise.cpp \
     grid.cpp \
-    option.cpp \
     scheduler.cpp \
     voltermstructure.cpp
 

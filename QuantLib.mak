@@ -254,8 +254,6 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
 	-@erase "$(INTDIR)\onefactoroperator.sbr"
-	-@erase "$(INTDIR)\option.obj"
-	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -510,7 +508,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
 	".\build\Release\old\barrieroption.sbr" \
@@ -673,7 +670,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
 	".\build\Release\old\barrieroption.obj" \
@@ -908,8 +904,6 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
 	-@erase "$(INTDIR)\onefactoroperator.sbr"
-	-@erase "$(INTDIR)\option.obj"
-	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -1165,7 +1159,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
 	".\build\Debug\old\barrieroption.sbr" \
@@ -1328,7 +1321,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
 	".\build\Debug\old\barrieroption.obj" \
@@ -1564,8 +1556,6 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
 	-@erase "$(INTDIR)\onefactoroperator.sbr"
-	-@erase "$(INTDIR)\option.obj"
-	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -1820,7 +1810,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
 	".\build\OnTheEdgeRelease\old\barrieroption.sbr" \
@@ -1983,7 +1972,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
 	".\build\OnTheEdgeRelease\old\barrieroption.obj" \
@@ -2218,8 +2206,6 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
 	-@erase "$(INTDIR)\onefactoroperator.sbr"
-	-@erase "$(INTDIR)\option.obj"
-	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -2475,7 +2461,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
 	".\build\OnTheEdgeDebug\old\barrieroption.sbr" \
@@ -2638,7 +2623,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
 	".\build\OnTheEdgeDebug\old\barrieroption.obj" \
@@ -2874,8 +2858,6 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
 	-@erase "$(INTDIR)\onefactoroperator.sbr"
-	-@erase "$(INTDIR)\option.obj"
-	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -3130,7 +3112,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
 	".\build\OnTheEdgeRelease\old\barrieroption.sbr" \
@@ -3293,7 +3274,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
 	".\build\OnTheEdgeRelease\old\barrieroption.obj" \
@@ -4348,12 +4328,6 @@ SOURCE=.\ql\exercise.cpp
 SOURCE=.\ql\grid.cpp
 
 "$(INTDIR)\grid.obj"	"$(INTDIR)\grid.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\option.cpp
-
-"$(INTDIR)\option.obj"	"$(INTDIR)\option.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

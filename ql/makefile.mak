@@ -24,7 +24,6 @@ CORE_OBJS = \
     $(OBJDIR)\diffusionprocess.obj$(_D) \
     $(OBJDIR)\exercise.obj$(_D) \
     $(OBJDIR)\grid.obj$(_D) \
-    $(OBJDIR)\option.obj$(_D) \
     $(OBJDIR)\scheduler.obj$(_D) \
     $(OBJDIR)\voltermstructure.obj$(_D)
 

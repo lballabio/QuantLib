@@ -23,7 +23,6 @@
 #define quantlib_option_h
 
 #include <ql/instrument.hpp>
-#include <ql/pricingengine.hpp>
 
 namespace QuantLib {
 
@@ -33,21 +32,10 @@ namespace QuantLib {
         enum Type { Call, Put, Straddle };
         Option(const Handle<PricingEngine>& engine,
                const std::string& isinCode = "",
-               const std::string& description = "");
-        virtual ~Option();
-        double errorEstimate() const;
-        void setPricingEngine(const Handle<PricingEngine>&);
-      protected:
-        mutable double errorEstimate_;
-        virtual void setupEngine() const = 0;
-        /*! \warning this method simply launches the engine and copies the 
-                returned value into NPV_. It does <b>not</b> set isExpired_. 
-                This should be taken care of by redefining this method in
-                derived classes and calling this implementation after 
-                checking for validity and only if the check succeeded.
-        */
-        virtual void performCalculations() const;
-        Handle<PricingEngine> engine_;
+               const std::string& description = "")
+        : Instrument(isinCode, description) {
+            setPricingEngine(engine);
+        }
     };
 
 }

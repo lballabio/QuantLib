@@ -2039,10 +2039,6 @@ SOURCE=.\ql\numericalmethod.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\option.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\option.hpp
 # End Source File
 # Begin Source File

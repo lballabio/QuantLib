@@ -23,6 +23,7 @@
 #define quantlib_instrument_h
 
 #include <ql/Patterns/lazyobject.hpp>
+#include <ql/pricingengine.hpp>
 
 /*! \namespace QuantLib::Instruments
     \brief Concrete implementations of the Instrument interface
@@ -48,8 +49,19 @@ namespace QuantLib {
         std::string description() const;
         //! returns the net present value of the instrument.
         double NPV() const;
+        //! returns the error estimate on the NPV when available.
+        double errorEstimate() const;
         //! returns whether the instrument is still tradable.
         virtual bool isExpired() const = 0;
+        //@}
+        //! \name Modifiers
+        //@{
+        //! set the pricing engine to be used.
+        /*! \warning calling this method will have no effects in
+                     case the <b>performCalculation</b> method
+                     was overridden in a derived class.
+        */
+        void setPricingEngine(const Handle<PricingEngine>&);
         //@}
       protected:
         //! \name Calculations 
@@ -59,25 +71,39 @@ namespace QuantLib {
             state when the expiration condition is met.
         */
         virtual void setupExpired() const;
+        /*! In case a pricing engine is used, this method must
+            setup its arguments so that they reflect the current
+            state of the instrument.
+        */
+        virtual void setupEngine() const {}
+        /*! In case a pricing engine is <b>not</b> used, this
+            method must be overridden to perform the actual 
+            calculations and set any needed results. In case
+            a pricing engine is used, the default implementation
+            can be used.
+        */
+        virtual void performCalculations() const;
         //@}
         /*! \name Results
             The value of this attribute and any other that derived 
-            classes might declare must be set in the body of the
-            <b>performCalculations</b> method.
+            classes might declare must be set during calculation.
         */
         //@{
-        mutable double NPV_;
+        mutable double NPV_, errorEstimate_;
         //@}
-        
+      protected:
+        Handle<PricingEngine> engine_;
       private:
         std::string isinCode_, description_;
     };
+
 
     // inline definitions
 
     inline Instrument::Instrument(const std::string& isinCode,
                                   const std::string& description)
-    : NPV_(0.0), isinCode_(isinCode), description_(description) {}
+    : NPV_(0.0), errorEstimate_(Null<double>()), 
+      isinCode_(isinCode), description_(description) {}
 
     inline std::string Instrument::isinCode() const {
         return isinCode_;
@@ -85,6 +111,15 @@ namespace QuantLib {
 
     inline std::string Instrument::description() const {
         return description_;
+    }
+
+    inline void Instrument::setPricingEngine(const Handle<PricingEngine>& e) {
+        QL_REQUIRE(!e.isNull(), "Instrument: null pricing engine");
+        engine_ = e;
+        // this will trigger recalculation and notify observers
+        update();
+        // Why is this needed? 
+        setupEngine();
     }
 
     inline void Instrument::calculate() const {
@@ -97,12 +132,33 @@ namespace QuantLib {
     }
 
     inline void Instrument::setupExpired() const {
-        NPV_ = 0.0;
+        NPV_ = errorEstimate_ = 0.0;
+    }
+
+    inline void Instrument::performCalculations() const {
+        QL_REQUIRE(!engine_.isNull(), "Instrument: null pricing engine");
+        engine_->reset();
+        setupEngine();
+        engine_->arguments()->validate();
+        engine_->calculate();
+        const OptionValue* results =
+            dynamic_cast<const OptionValue*>(engine_->results());
+        QL_ENSURE(results != 0,
+                  "Instrument: no results returned from pricing engine");
+        NPV_ = results->value;
+        errorEstimate_ = results->errorEstimate;
     }
 
     inline double Instrument::NPV() const {
         calculate();
         return NPV_;
+    }
+
+    inline double Instrument::errorEstimate() const {
+        calculate();
+        QL_REQUIRE(errorEstimate_ != Null<double>(),
+                   "error estimate not provided");
+        return errorEstimate_;
     }
 
 }
