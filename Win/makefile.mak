@@ -154,6 +154,8 @@ TLIB_OPTS    = /P32
 TLIB_OPTS    = /P128
 !endif
 
+TEX_OPTS     = --quiet --pool-size=1000000 
+
 # Generic rules
 .cpp.obj:
     $(CC) $(CC_OPTS) $<
@@ -375,18 +377,18 @@ PDF::
     cd ..\Docs
     $(DOXYGEN) quantlib.doxy
     cd latex
-    $(PDFLATEX) refman
+    $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
-    $(PDFLATEX) refman
+    $(PDFLATEX) $(TEX_OPTS) refman
     cd ..\..\Win
 
 PS::
     cd ..\Docs
     $(DOXYGEN) quantlib.doxy
     cd latex
-    $(LATEX) refman
+    $(LATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
-    $(LATEX) refman
+    $(LATEX) $(TEX_OPTS) refman
     $(DVIPS) refman
     cd ..\..\Win
 
@@ -394,12 +396,12 @@ alldocs::
     cd ..\Docs
     $(DOXYGEN) quantlib.doxy
     cd latex
-    $(PDFLATEX) refman
+    $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
-    $(PDFLATEX) refman
-    $(LATEX) refman
+    $(PDFLATEX) $(TEX_OPTS) refman
+    $(LATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
-    $(LATEX) refman
+    $(LATEX) $(TEX_OPTS) refman
     $(DVIPS) refman
     cd ..\..\Win
 
