@@ -45,9 +45,10 @@ namespace QuantLib {
             typedef typename Evolver::operatorType operatorType;
             typedef BoundaryCondition<operatorType> bcType;
             // constructor
-            FiniteDifferenceModel(const operatorType& L,
-                                  const std::vector<Handle<bcType> >& bcs,
-                                  const std::vector<Time>& stoppingTimes=std::vector<Time>())
+            FiniteDifferenceModel(
+                const operatorType& L,
+                const std::vector<Handle<bcType> >& bcs,
+                const std::vector<Time>& stoppingTimes=std::vector<Time>())
             : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {}
             // methods
             // arrayType grid() const { return evolver.xGrid(); }
@@ -56,10 +57,12 @@ namespace QuantLib {
                 \warning being this a rollback, <tt>from</tt> must be a later
                 time than <tt>to</tt>.
             */
-            void rollback(arrayType& a, Time from, Time to,
-              Size steps,
-              Handle<StepCondition<arrayType> > condition =
-                Handle<StepCondition<arrayType> >());
+            void rollback(arrayType& a,
+                          Time from,
+                          Time to,
+                          Size steps,
+                          Handle<StepCondition<arrayType> > condition =
+                                     Handle<StepCondition<arrayType> >());
           private:
             Evolver evolver_;
             std::vector<Time> stoppingTimes_;
@@ -83,7 +86,7 @@ namespace QuantLib {
                     {   // No stopping time was hit
                         evolver_.step(a,t);
                         if (!condition.isNull())
-                            condition->applyTo(a,t-dt);
+                            condition->applyTo(a, t-dt);
                     }
                     else
                     {   // A stopping time was hit
