@@ -24,11 +24,15 @@
 
 /*! \file handle.hpp
     \brief Reference-counted pointer
+
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/05/24 17:50:23  nando
+// no message
+//
 // Revision 1.5  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
