@@ -44,7 +44,10 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        //! Base implementation for tridiagonal operator
+        /*! Base implementation for tridiagonal operator
+            \warning to use real time-dependant algebra, you must overload
+            the corresponding operators in the inheriting time-dependent class
+        */
         class TridiagonalOperator {
            friend TridiagonalOperator operator+(const TridiagonalOperator&);
             friend TridiagonalOperator operator-(const TridiagonalOperator&);
@@ -175,11 +178,7 @@ namespace QuantLib {
             diagonal_[size()-1]      = valB;
         }
 
-        /*! \relates TridiagonalOperator
-            time-constant algebra
-            \warning to use real time-dependant algebra, you must overload
-            these operators in the inheriting time-dependent class
-        */
+        // Time constant algebra
 
         inline TridiagonalOperator operator+(const TridiagonalOperator& D) {
             return D;
