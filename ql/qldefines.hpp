@@ -23,23 +23,6 @@
 /* install-hook */
 #define quantlib_defines_h
 
-#if defined(_DEBUG) || defined(DEBUG)
-    #define QL_DEBUG
-#endif
-
-#if   defined(__BORLANDC__)     // Borland C++ 5.5
-    #include <ql/config.bcc.hpp>
-#elif defined(__MWERKS__)       // Metrowerks CodeWarrior
-    #include <ql/config.mwcw.hpp>
-#elif defined(_MSC_VER)         // Microsoft Visual C++ 6.0
-    #include <ql/config.msvc.hpp>
-#elif defined(HAVE_CONFIG_H)    // Dynamically created by configure
-    #include <ql/config.hpp>
-#else
-    #error Unsupported compiler - please contact the QuantLib team
-#endif
-
-
 #include <boost/version.hpp>
 #if BOOST_VERSION < 103002
     #error using an old version of Boost, please update.
@@ -55,8 +38,9 @@
     @{
 */
 
-//! version hexadecimal number
-#define QL_HEX_VERSION 0x000306a0
+#if (defined(_DEBUG) || defined(DEBUG))
+    #define QL_DEBUG
+#endif
 
 //! version string
 #ifdef QL_DEBUG
@@ -64,6 +48,24 @@
 #else
     #define QL_VERSION "0.3.6"
 #endif
+
+//! version hexadecimal number
+#define QL_HEX_VERSION 0x000306a0
+//! version string for output lib name
+#define QL_LIB_VERSION "0_3_6"
+
+#if   defined(__BORLANDC__)     // Borland C++ 5.5
+    #include <ql/config.bcc.hpp>
+#elif defined(__MWERKS__)       // Metrowerks CodeWarrior
+    #include <ql/config.mwcw.hpp>
+#elif defined(_MSC_VER)         // Microsoft Visual C++
+    #include <ql/config.msvc.hpp>
+#elif defined(HAVE_CONFIG_H)    // Dynamically created by configure
+    #include <ql/config.hpp>
+#else
+    #error Unsupported compiler - please contact the QuantLib team
+#endif
+
 
 /*! \defgroup miscMacros Generic macros
     Miscellaneous macros for compiler idiosyncrasies not fitting other
@@ -105,14 +107,14 @@
     \brief I/O initialization
 
     Sometimes, programs compiled with the free Borland compiler will
-    crash miserably upon attempting to write on std::cout. 
+    crash miserably upon attempting to write on std::cout.
     Strangely enough, issuing the instruction
     \code
     std::cout << std::string();
     \endcode
     at the beginning of the program will prevent other accesses to
     std::cout from crashing the program. This macro, to be called at
-    the beginning of main(), encapsulates the above enchantment for 
+    the beginning of main(), encapsulates the above enchantment for
     Borland and is defined as empty for the other compilers.
 */
 #if defined(QL_PATCH_BORLAND)
