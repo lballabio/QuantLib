@@ -101,47 +101,47 @@ esac
 
 # done, output the configured files
 AC_CONFIG_FILES([
-    Makefile \
-    config/Makefile \
-    ql/Makefile \
-    ql/Calendars/Makefile \
-    ql/CashFlows/Makefile \
-    ql/DayCounters/Makefile \
-    ql/FiniteDifferences/Makefile \
-    ql/functions/Makefile \
-    ql/Indexes/Makefile \
-    ql/Instruments/Makefile \
-    ql/Lattices/Makefile \
-    ql/Math/Makefile \
-    ql/MonteCarlo/Makefile \
-    ql/Optimization/Makefile \
-    ql/Patterns/Makefile \
-    ql/Pricers/Makefile \
-    ql/PricingEngines/Makefile \
-    ql/RandomNumbers/Makefile \
-    ql/ShortRateModels/Makefile \
-    ql/ShortRateModels/CalibrationHelpers/Makefile \
-    ql/ShortRateModels/OneFactorModels/Makefile \
-    ql/ShortRateModels/TwoFactorModels/Makefile \
-    ql/Solvers1D/Makefile \
-    ql/TermStructures/Makefile \
-    ql/Utilities/Makefile \
-    ql/Volatilities/Makefile \
-    man/Makefile \
-    lib/Makefile \
-    lib/Mac/Makefile \
-    lib/Mac/CodeWarrior/Makefile \
-    lib/Win32/Makefile \
-    lib/Win32/Borland/Makefile \
-    lib/Win32/VisualStudio/Makefile \
-    Docs/Makefile \
-    Docs/pages/Makefile \
-    Docs/Examples/Makefile \
-    Docs/images/Makefile \
-    Examples/Makefile \
-    Examples/BermudanSwaption/Makefile \
-    Examples/DiscreteHedging/Makefile \
-    Examples/EuropeanOption/Makefile \
+    Makefile 
+    config/Makefile 
+    ql/Makefile 
+    ql/Calendars/Makefile 
+    ql/CashFlows/Makefile 
+    ql/DayCounters/Makefile 
+    ql/FiniteDifferences/Makefile 
+    ql/functions/Makefile 
+    ql/Indexes/Makefile 
+    ql/Instruments/Makefile 
+    ql/Lattices/Makefile 
+    ql/Math/Makefile 
+    ql/MonteCarlo/Makefile 
+    ql/Optimization/Makefile 
+    ql/Patterns/Makefile 
+    ql/Pricers/Makefile 
+    ql/PricingEngines/Makefile 
+    ql/RandomNumbers/Makefile 
+    ql/ShortRateModels/Makefile 
+    ql/ShortRateModels/CalibrationHelpers/Makefile 
+    ql/ShortRateModels/OneFactorModels/Makefile 
+    ql/ShortRateModels/TwoFactorModels/Makefile 
+    ql/Solvers1D/Makefile 
+    ql/TermStructures/Makefile 
+    ql/Utilities/Makefile 
+    ql/Volatilities/Makefile 
+    man/Makefile 
+    lib/Makefile 
+    lib/Mac/Makefile 
+    lib/Mac/CodeWarrior/Makefile 
+    lib/Win32/Makefile 
+    lib/Win32/Borland/Makefile 
+    lib/Win32/VisualStudio/Makefile 
+    Docs/Makefile 
+    Docs/pages/Makefile 
+    Docs/Examples/Makefile 
+    Docs/images/Makefile 
+    Examples/Makefile 
+    Examples/BermudanSwaption/Makefile 
+    Examples/DiscreteHedging/Makefile 
+    Examples/EuropeanOption/Makefile 
     Examples/Swap/Makefile])
 AC_CONFIG_FILES([quantlib-config],[chmod +x quantlib-config])
 AC_OUTPUT

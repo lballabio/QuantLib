@@ -30,7 +30,7 @@ AC_ARG_ENABLE(quantlibtest, [  --disable-quantlibtest       Do not try to compil
 
   AC_PATH_PROG(QUANTLIB_CONFIG, quantlib-config, no)
   min_quantlib_version=ifelse([$1], ,0.2.0,$1)
-  AC_MSG_CHECKING(for QuantLib - version >= $min_quantlib_version)
+  AC_MSG_CHECKING(QuantLib version ($min_quantlib_version or later required))
   no_quantlib=""
   if test "$QUANTLIB_CONFIG" = "no" ; then
     no_quantlib=yes
@@ -39,11 +39,11 @@ AC_ARG_ENABLE(quantlibtest, [  --disable-quantlibtest       Do not try to compil
     QUANTLIB_LIBS=`$QUANTLIB_CONFIG $quantlibconf_args --libs`
 
     quantlib_major_version=`$QUANTLIB_CONFIG $quantlib_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+           sed 's/\([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)\([[a|b|c]][[0-9]]*\)*\(-cvs\)*/\1/'`
     quantlib_minor_version=`$QUANTLIB_CONFIG $quantlib_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+           sed 's/\([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)\([[a|b|c]][[0-9]]*\)*\(-cvs\)*/\2/'`
     quantlib_micro_version=`$QUANTLIB_CONFIG $quantlib_config_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+           sed 's/\([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)\([[a|b|c]][[0-9]]*\)*\(-cvs\)*/\3/'`
     if test "x$enable_quantlibtest" = "xyes" ; then
       ac_save_CXXFLAGS="$CXXFLAGS"
       ac_save_LIBS="$LIBS"
