@@ -119,7 +119,7 @@ namespace QuantLib {
                 // does nothing
                 break;
               case BoundaryCondition::Neumann:
-                result[0] = result[1] + lowerBC_.value();
+                result[0] = result[1] - lowerBC_.value();
                 break;
               case BoundaryCondition::Dirichlet:
                 result[0] = lowerBC_.value();
