@@ -25,6 +25,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.7  2001/05/15 10:32:38  aleppo
+    Added Down Side Deviation statistic quantity
+
     Revision 1.6  2001/04/27 10:44:15  lballabio
     Support for unittest in Python 2.1
 
@@ -68,7 +71,7 @@ class StatisticsTest(unittest.TestCase):
 
         s = QuantLib.Statistics()
         s.addWeightedSequence(data, weights)
-
+        
         assert s.samples() == len(data), \
             'wrong number of samples\n' + \
             'calculated: %d\n' % s.samples() + \
@@ -106,7 +109,7 @@ class StatisticsTest(unittest.TestCase):
             'wrong standard deviation\n' + \
             'calculated: %f\n' % s.standardDeviation() + \
             'expected  : 1.4944341181\n'
-
+            
         assert abs(s.skewness()-0.359543071407) <= tol, \
             'wrong skewness\n' + \
             'calculated: %f\n' % s.skewness() + \
@@ -116,6 +119,14 @@ class StatisticsTest(unittest.TestCase):
             'wrong kurtosis\n' + \
             'calculated: %f\n' % s.kurtosis() + \
             'expected  : -0.151799637209\n'
+
+        data = map(lambda x: x-3,data)
+        s.reset()
+        s.addWeightedSequence(data, weights)
+        assert abs(s.downsideDeviation()-0.333333333) <= tol, \
+            'wrong down side deviation\n' + \
+            'calculated: %f\n' % s.downsideDeviation() + \
+            'expected  : 0.333333333\n'
 
 
 if __name__ == '__main__':

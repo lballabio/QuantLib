@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/05/15 10:32:02  aleppo
+    Added Down Side Deviation statistic quantity
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -104,6 +107,12 @@ namespace QuantLib {
                 square root of the variance.
             */
             double standardDeviation() const;
+            /*! returns the square root of the downside variance, defined as
+                \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N} 
+                \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
+                where \f$ \theta \f$ = 0 if x > 0 and \f$ \theta \f$ =1 if x <0 
+            */
+            double downsideDeviation() const;
             /*! returns the error estimate \f$ \epsilon \f$, defined as the
                 square root of the ratio of the variance to the number of
                 samples.
@@ -151,7 +160,8 @@ namespace QuantLib {
           private:
             double sampleNumber_;
             double sampleWeight_;
-            double sum_, quadraticSum_, cubicSum_, fourthPowerSum_;
+            double sum_, quadraticSum_, downsideQuadraticSum_,
+                   cubicSum_, fourthPowerSum_;           
             double min_, max_;
         };
 
@@ -168,6 +178,7 @@ namespace QuantLib {
           sum_ += temp;
           temp *= value;
           quadraticSum_ += temp;
+          downsideQuadraticSum_ += value < 0.0 ? temp : 0.0; 
           temp *= value;
           cubicSum_ += temp;
           temp *= value;
@@ -204,6 +215,15 @@ namespace QuantLib {
           return QL_SQRT(variance());
         }
 
+        inline double Statistics::downsideDeviation() const {
+          QL_REQUIRE(sampleWeight_>0.0,
+            "Stat::variance() : sampleWeight_=0, unsufficient");
+          QL_REQUIRE(sampleNumber_>1,
+            "Stat::variance() : sample number <=1, unsufficient");
+
+          return QL_SQRT(sampleNumber_/(sampleNumber_-1.0)*
+                                 downsideQuadraticSum_ /sampleWeight_);
+        }
 
         inline double Statistics::errorEstimate() const {
             double var = variance();
