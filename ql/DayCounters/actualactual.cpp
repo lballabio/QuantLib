@@ -51,12 +51,17 @@ namespace QuantLib {
 
         Time ActualActual::ActActISMAImpl::yearFraction(
           const Date& d1, const Date& d2,
-          const Date& refPeriodStart, const Date& refPeriodEnd) const {
+          const Date& d3, const Date& d4) const {
+
+            if (d1 == d2)
+                return 0.0;
+
             QL_REQUIRE(d1<=d2, 
                 "invalid dates: start = " + DateFormatter::toString(d1) +
                 ", end = " + DateFormatter::toString(d2));
-            QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() &&
-                refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
+            Date refPeriodStart = (d3 != Date() ? d3 : d1);
+            Date refPeriodEnd = (d4 != Date() ? d4 : d2);
+            QL_REQUIRE(refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
                 "Invalid reference period."
                 "Date 1: " + DateFormatter::toString(d1) +
                 "  Date 2: " + DateFormatter::toString(d2) +
@@ -65,9 +70,6 @@ namespace QuantLib {
                 ",  Reference period end: " +
                  DateFormatter::toString(refPeriodEnd)
                 );
-
-            if (d1 == d2)
-                return 0.0;
 
             // estimate roughly the length in months of a period
             int months = int(0.5+12*double(refPeriodEnd-refPeriodStart)/365);
