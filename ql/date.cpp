@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -172,6 +173,39 @@ namespace QuantLib {
         return d;
     }
 
+    Date Date::nextIMM() const {
+        Year y = this->year();
+        Month m = this->month();
+
+        Size skipMonths = 3-(m%3);
+        if (skipMonths != 3 || this->dayOfMonth() > 21) {
+            skipMonths += Size(m);
+            if (skipMonths<=12)
+                m=(Month)skipMonths;
+            else {
+                m=(Month)(skipMonths-12);
+                y+=1;
+            }
+        }
+
+        Date result = nthDayOfWeekForMonthAndYear(3, Wednesday, m, y);
+
+
+        if (result>=(*this))
+            return result;
+        // (*this) is in the IMM week [15,21] with the 3rd Wednesday behind
+        else {
+            if (m<=9)
+                m=(Month)(Size(m)+3);
+            else {
+                m=(Month)(Size(m)-9);
+                y+=1;
+            }
+            return nthDayOfWeekForMonthAndYear(3, Wednesday, m, y);
+        }
+
+    }
+
     Date& Date::operator+=(BigInteger days) {
         BigInteger serial = serialNumber_ + days;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
@@ -244,6 +278,17 @@ namespace QuantLib {
                    DateFormatter::toString(maxDate()) + "]");
         serialNumber_ = serial;
         return temp;
+    }
+
+    Date Date::nthDayOfWeekForMonthAndYear(Size nth, Weekday dayOfWeek,
+        Month m, Year y) {
+
+        QL_REQUIRE(nth>0,
+                   "zeroth day of week in a given (month, year) is undefined");
+        Weekday first = Date(1, m, y).weekday();
+        Size skip = nth - (dayOfWeek>=first ? 1 : 0);
+
+        return Date(1 + dayOfWeek-first + skip*7, m, y);
     }
 
     Date Date::todaysDate() {
@@ -456,4 +501,31 @@ namespace QuantLib {
         return output;
     }
 
+    std::string WeekdayFormatter::toString(Weekday wd,
+                                           WeekdayFormatter::Format f) {
+        static const std::string weekDaysLongNames[] = { "Sunday", "Monday",
+            "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+        };
+        static const std::string weekDaysShortNames[] = { "Sun", "Mon",
+            "Tue", "Wed", "Thu", "Fri", "Sat"
+        };
+        static const std::string weekDaysVeryShortNames[] = { "Su", "Mo",
+            "Tu", "We", "Th", "Fr", "Sa"
+        };
+        std::string output;
+        switch (f) {
+            case Long:
+            output = weekDaysLongNames[wd-1];
+            break;
+            case Short:
+            output = weekDaysShortNames[wd-1];
+            break;
+            case VeryShort:
+            output = weekDaysVeryShortNames[wd-1];
+            break;
+            default:
+            QL_FAIL("unknown weekday format");
+        }
+        return output;
+    }
 }

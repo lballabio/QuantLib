@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -61,6 +62,14 @@ namespace QuantLib {
                  October   = 10,
                  November  = 11,
                  December  = 12
+    };
+
+    //! Main cycle of the International Money Market (a.k.a. IMM) Months
+    /*! \ingroup datetime */
+    enum IMMMonth { H = 3,
+                    M = 6,
+                    U = 9,
+                    Z = 12
     };
 
     //! Year number
@@ -167,6 +176,12 @@ namespace QuantLib {
         Month month() const;
         Year year() const;
         BigInteger serialNumber() const;
+        /*! returns the 1st delivery date for next contract listed in the
+            International Money Market section of the Chicago Mercantile
+            Exchange
+        */
+        //! next IMM date
+        Date nextIMM() const;
         //@}
 
         //! \name date algebra
@@ -206,6 +221,15 @@ namespace QuantLib {
         static Date minDate();
         //! latest allowed date
         static Date maxDate();
+        /*! returns the date of Nth weekday in a given month and year
+            (e.g. 26-March-98 for the 4th Thursday of March, 1998)
+
+            see http://www.cpearson.com/excel/DateTimeWS.htm
+        */
+        static Date nthDayOfWeekForMonthAndYear(Size n,
+                                                Weekday dayOfWeek,
+                                                Month m,
+                                                Year y);
         //! today's date.
         static Date todaysDate();
         //@}
@@ -247,6 +271,21 @@ namespace QuantLib {
                                     Format f = Long);
     };
 
+
+    //! Formats weekday for output
+    /*! Formatting can be in Long (full name), Short (three letters),
+        of VeryShort (two letters) form.
+    */
+    class WeekdayFormatter {
+      public:
+        enum Format { Long, Short, VeryShort };
+        static std::string toString(Weekday wd,
+                                    Format f = Long);
+        static std::string toString(const Date& d,
+                                    Format f = Long) {
+            return WeekdayFormatter::toString(d.weekday(), f);
+        }
+    };
 
     // inline definitions
 
