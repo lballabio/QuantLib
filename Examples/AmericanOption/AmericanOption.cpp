@@ -140,7 +140,7 @@ int main(int, char* [])
             boost::shared_ptr<PricingEngine>(new AnalyticEuropeanEngine()));
 
         // method: Black Scholes Engine
-        method = "equivalent european option       ";
+        method = "equivalent European option       ";
         value = euroOption.NPV();
         std::cout << method << " "
              << DoubleFormatter::toString(value, 6) << "\t"
@@ -180,7 +180,7 @@ int main(int, char* [])
              << std::endl;
 
         // Equal Probability Additive Binomial Tree (EQP)
-        method = "Additive Equiprobabilities       ";
+        method = "Additive equiprobabilities       ";
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<AdditiveEQPBinomialTree>(timeSteps)));
         value = option.NPV();
