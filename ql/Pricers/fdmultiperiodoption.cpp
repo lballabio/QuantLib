@@ -138,10 +138,6 @@ namespace QuantLib {
 
             } while (--j >= firstIndex_);
 
-            double pricePlus = + valueAtCenter(prices_)
-                               - valueAtCenter(controlPrices_)
-                               + analytic_ -> theta() * dt;
-
             model_ -> rollback(prices_,        dt, 0, 1, stepCondition_);
             model_ -> rollback(controlPrices_, dt, 0, 1);
 
@@ -164,15 +160,11 @@ namespace QuantLib {
                      - secondDerivativeAtCenter(controlPrices_, grid_)
                      + analytic_ -> gamma();
 
-            // calculating theta_
-            model_ -> rollback(prices_,        0, -dt, 1, stepCondition_);
-            model_ -> rollback(controlPrices_, 0, -dt, 1);
-
-            double priceMinus = + valueAtCenter(prices_)
-                                - valueAtCenter(controlPrices_)
-                                - analytic_ -> theta() * dt; // + analytic_ -> value()
-
-            theta_= (pricePlus - priceMinus)/(2.0*dt);
+            // use Black-Scholes equation for theta computation
+            theta_ =  riskFreeRate_ * value_
+                    -(riskFreeRate_ - dividendYield_ ) * underlying_ * delta_
+                    - 0.5 * volatility_ * volatility_ *
+                            underlying_ * underlying_ * gamma_;
 
             hasBeenCalculated_ = true;
         }

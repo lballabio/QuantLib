@@ -67,21 +67,12 @@ namespace QuantLib {
             Array europeanPrices = initialPrices_;
             Array americanPrices = initialPrices_;
 
-            // 3) Rollback until dt
-            double dt = residualTime_/timeSteps_;
-            model.rollback(europeanPrices,residualTime_,dt,timeSteps_-1);
-            model.rollback(americanPrices, residualTime_, dt, timeSteps_ -1,
+            // 3) Rollback
+            model.rollback(europeanPrices, residualTime_, 0.0, timeSteps_);
+            model.rollback(americanPrices, residualTime_, 0.0, timeSteps_,
                            stepCondition_);
 
-            // 4) Store option value at time = dt for theta computation
-            double europeanPlusDt = valueAtCenter(europeanPrices);
-            double americanPlusDt = valueAtCenter(americanPrices);
-
-            // 5) Complete rollback
-            model.rollback(europeanPrices, dt, 0.0, 1);
-            model.rollback(americanPrices, dt, 0.0, 1, stepCondition_);
-
-            /* 6) Numerically calculate option value and greeks using
+            /* 4) Numerically calculate option value and greeks using
                   the european option as control variate                */
 
             value_ =  valueAtCenter(americanPrices)
@@ -96,14 +87,11 @@ namespace QuantLib {
                      - secondDerivativeAtCenter(europeanPrices, grid_)
                      + analyticEuro.gamma();
 
-            // 7) Rollback another step to time = -dt for theta computation
-            model.rollback(europeanPrices, 0.0, -dt, 1);
-            model.rollback(americanPrices, 0.0, -dt, 1, stepCondition_);
-
-            // 8) combine the results for theta
-            theta_=(americanPlusDt - valueAtCenter(americanPrices))/(2.0*dt)
-                  -(europeanPlusDt - valueAtCenter(europeanPrices))/(2.0*dt)
-                  + analyticEuro.theta();
+            // 5) Use Black-Scholes equation for theta computation
+            theta_ =  riskFreeRate_ * value_
+                    -(riskFreeRate_ - dividendYield_ ) * underlying_ * delta_
+                    - 0.5 * volatility_ * volatility_ *
+                            underlying_ * underlying_ * gamma_;
 
             hasBeenCalculated_ = true;
         }

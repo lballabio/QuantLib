@@ -62,10 +62,11 @@ namespace QuantLib {
             delta_ = firstDerivativeAtCenter(euroPrices_, grid_);
             gamma_ = secondDerivativeAtCenter(euroPrices_, grid_);
 
-            double dt = residualTime_/timeSteps_;
-            model.rollback(euroPrices_, 0.0, -dt, 1);
-            double valueMinus = valueAtCenter(euroPrices_);
-            theta_ = (value_ - valueMinus) / dt;
+            // use Black-Scholes equation for theta computation
+            theta_ =  riskFreeRate_ * value_
+                    -(riskFreeRate_ - dividendYield_ ) * underlying_ * delta_
+                    - 0.5 * volatility_ * volatility_ *
+                            underlying_ * underlying_ * gamma_;
 
             hasBeenCalculated_ = true;
         }
