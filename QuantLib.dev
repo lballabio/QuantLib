@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=537
+UnitCount=534
 Type=2
 Ver=1
 ObjFiles=
@@ -4108,16 +4108,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit407]
-FileName=ql\PricingEngines\mcsimulation2.hpp
-CompileCpp=1
-Folder=PricingEngines
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit408]
 FileName=ql\PricingEngines\americanpayoffatexpiry.hpp
 CompileCpp=1
 Folder=PricingEngines
@@ -4127,7 +4117,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit409]
+[Unit408]
 FileName=ql\PricingEngines\americanpayoffathit.hpp
 CompileCpp=1
 Folder=PricingEngines
@@ -4137,7 +4127,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit410]
+[Unit409]
 FileName=ql\PricingEngines\blackformula.hpp
 CompileCpp=1
 Folder=PricingEngines
@@ -4147,7 +4137,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit411]
+[Unit410]
 FileName=ql\PricingEngines\blackmodel.hpp
 CompileCpp=1
 Folder=PricingEngines
@@ -4157,7 +4147,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit412]
+[Unit411]
 FileName=ql\PricingEngines\core.hpp
 CompileCpp=1
 Folder=PricingEngines
@@ -4167,7 +4157,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit413]
+[Unit412]
 FileName=ql\PricingEngines\genericmodelengine.hpp
 CompileCpp=1
 Folder=PricingEngines
@@ -4177,7 +4167,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit414]
+[Unit413]
 FileName=ql\PricingEngines\latticeshortratemodelengine.hpp
 CompileCpp=1
 Folder=PricingEngines
@@ -4187,17 +4177,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit415]
-FileName=ql\PricingEngines\makemcengine.hpp
-CompileCpp=1
-Folder=PricingEngines
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit416]
+[Unit414]
 FileName=ql\PricingEngines\mcsimulation.hpp
 CompileCpp=1
 Folder=PricingEngines
@@ -4207,7 +4187,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit417]
+[Unit415]
 FileName=ql\PricingEngines\all.hpp
 CompileCpp=1
 Folder=PricingEngines
@@ -4217,7 +4197,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit418]
+[Unit416]
 FileName=ql\PricingEngines\Asian\mcdiscreteasianengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Asian
@@ -4227,7 +4207,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit419]
+[Unit417]
 FileName=ql\PricingEngines\Asian\analytic_cont_geom_av_price.hpp
 CompileCpp=1
 Folder=PricingEngines/Asian
@@ -4237,7 +4217,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit420]
+[Unit418]
 FileName=ql\PricingEngines\Asian\analytic_discr_geom_av_price.hpp
 CompileCpp=1
 Folder=PricingEngines/Asian
@@ -4247,7 +4227,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit421]
+[Unit419]
 FileName=ql\PricingEngines\Asian\mc_discr_arith_av_price.hpp
 CompileCpp=1
 Folder=PricingEngines/Asian
@@ -4257,7 +4237,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit422]
+[Unit420]
 FileName=ql\PricingEngines\Asian\mc_discr_geom_av_price.hpp
 CompileCpp=1
 Folder=PricingEngines/Asian
@@ -4267,7 +4247,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit423]
+[Unit421]
 FileName=ql\PricingEngines\Asian\all.hpp
 CompileCpp=1
 Folder=PricingEngines/Asian
@@ -4277,7 +4257,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit424]
+[Unit422]
 FileName=ql\PricingEngines\Barrier\mcbarrierengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Barrier
@@ -4287,7 +4267,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit425]
+[Unit423]
 FileName=ql\PricingEngines\Barrier\analyticbarrierengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Barrier
@@ -4297,7 +4277,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit426]
+[Unit424]
 FileName=ql\PricingEngines\Barrier\all.hpp
 CompileCpp=1
 Folder=PricingEngines/Barrier
@@ -4307,7 +4287,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit427]
+[Unit425]
 FileName=ql\PricingEngines\Basket\stulzengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Basket
@@ -4317,7 +4297,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit428]
+[Unit426]
 FileName=ql\PricingEngines\Basket\mcamericanbasketengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Basket
@@ -4327,7 +4307,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit429]
+[Unit427]
 FileName=ql\PricingEngines\Basket\mcbasketengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Basket
@@ -4337,7 +4317,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit430]
+[Unit428]
 FileName=ql\PricingEngines\Basket\all.hpp
 CompileCpp=1
 Folder=PricingEngines/Basket
@@ -4347,7 +4327,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit431]
+[Unit429]
 FileName=ql\PricingEngines\CapFloor\treecapfloorengine.hpp
 CompileCpp=1
 Folder=PricingEngines/CapFloor
@@ -4357,7 +4337,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit432]
+[Unit430]
 FileName=ql\PricingEngines\CapFloor\analyticcapfloorengine.hpp
 CompileCpp=1
 Folder=PricingEngines/CapFloor
@@ -4367,7 +4347,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit433]
+[Unit431]
 FileName=ql\PricingEngines\CapFloor\blackcapfloorengine.hpp
 CompileCpp=1
 Folder=PricingEngines/CapFloor
@@ -4377,7 +4357,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit434]
+[Unit432]
 FileName=ql\PricingEngines\CapFloor\discretizedcapfloor.hpp
 CompileCpp=1
 Folder=PricingEngines/CapFloor
@@ -4387,7 +4367,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit435]
+[Unit433]
 FileName=ql\PricingEngines\CapFloor\all.hpp
 CompileCpp=1
 Folder=PricingEngines/CapFloor
@@ -4397,7 +4377,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit436]
+[Unit434]
 FileName=ql\PricingEngines\Cliquet\all.hpp
 CompileCpp=1
 Folder=PricingEngines/Cliquet
@@ -4407,7 +4387,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit437]
+[Unit435]
 FileName=ql\PricingEngines\Cliquet\analyticcliquetengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Cliquet
@@ -4417,7 +4397,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit438]
+[Unit436]
 FileName=ql\PricingEngines\Cliquet\analyticperformanceengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Cliquet
@@ -4427,7 +4407,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit439]
+[Unit437]
 FileName=ql\PricingEngines\Cliquet\mccliquetengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Cliquet
@@ -4437,7 +4417,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit440]
+[Unit438]
 FileName=ql\PricingEngines\Swaption\treeswaptionengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Swaption
@@ -4447,7 +4427,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit441]
+[Unit439]
 FileName=ql\PricingEngines\Swaption\blackswaptionengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Swaption
@@ -4457,7 +4437,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit442]
+[Unit440]
 FileName=ql\PricingEngines\Swaption\discretizedswaption.hpp
 CompileCpp=1
 Folder=PricingEngines/Swaption
@@ -4467,7 +4447,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit443]
+[Unit441]
 FileName=ql\PricingEngines\Swaption\g2swaptionengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Swaption
@@ -4477,7 +4457,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit444]
+[Unit442]
 FileName=ql\PricingEngines\Swaption\jamshidianswaptionengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Swaption
@@ -4487,7 +4467,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit445]
+[Unit443]
 FileName=ql\PricingEngines\Swaption\all.hpp
 CompileCpp=1
 Folder=PricingEngines/Swaption
@@ -4497,17 +4477,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit446]
-FileName=ql\PricingEngines\Vanilla\mcvanillaengine2.hpp
-CompileCpp=1
-Folder=PricingEngines/Vanilla
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit447]
+[Unit444]
 FileName=ql\PricingEngines\Vanilla\analyticdigitalamericanengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4517,7 +4487,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit448]
+[Unit445]
 FileName=ql\PricingEngines\Vanilla\analyticdividendeuropeanengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4527,7 +4497,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit449]
+[Unit446]
 FileName=ql\PricingEngines\Vanilla\analyticeuropeanengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4537,7 +4507,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit450]
+[Unit447]
 FileName=ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4547,7 +4517,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit451]
+[Unit448]
 FileName=ql\PricingEngines\Vanilla\binomialengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4557,7 +4527,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit452]
+[Unit449]
 FileName=ql\PricingEngines\Vanilla\bjerksundstenslandengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4567,7 +4537,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit453]
+[Unit450]
 FileName=ql\PricingEngines\Vanilla\discretizedvanillaoption.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4577,7 +4547,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit454]
+[Unit451]
 FileName=ql\PricingEngines\Vanilla\integralengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4587,7 +4557,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit455]
+[Unit452]
 FileName=ql\PricingEngines\Vanilla\jumpdiffusionengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4597,7 +4567,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit456]
+[Unit453]
 FileName=ql\PricingEngines\Vanilla\juquadraticengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4607,7 +4577,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit457]
+[Unit454]
 FileName=ql\PricingEngines\Vanilla\mcdigitalengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4617,7 +4587,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit458]
+[Unit455]
 FileName=ql\PricingEngines\Vanilla\mceuropeanengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4627,7 +4597,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit459]
+[Unit456]
 FileName=ql\PricingEngines\Vanilla\mcvanillaengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4637,7 +4607,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit460]
+[Unit457]
 FileName=ql\PricingEngines\Vanilla\all.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -4647,7 +4617,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit461]
+[Unit458]
 FileName=ql\RandomNumbers\sobolrsg.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4657,7 +4627,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit462]
+[Unit459]
 FileName=ql\RandomNumbers\boxmullergaussianrng.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4667,7 +4637,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit463]
+[Unit460]
 FileName=ql\RandomNumbers\centrallimitgaussianrng.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4677,7 +4647,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit464]
+[Unit461]
 FileName=ql\RandomNumbers\core.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4687,7 +4657,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit465]
+[Unit462]
 FileName=ql\RandomNumbers\faurersg.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4697,7 +4667,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit466]
+[Unit463]
 FileName=ql\RandomNumbers\haltonrsg.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4707,7 +4677,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit467]
+[Unit464]
 FileName=ql\RandomNumbers\inversecumgaussianrng.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4717,7 +4687,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit468]
+[Unit465]
 FileName=ql\RandomNumbers\inversecumgaussianrsg.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4727,7 +4697,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit469]
+[Unit466]
 FileName=ql\RandomNumbers\inversecumulativerng.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4737,7 +4707,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit470]
+[Unit467]
 FileName=ql\RandomNumbers\inversecumulativersg.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4747,7 +4717,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit471]
+[Unit468]
 FileName=ql\RandomNumbers\knuthuniformrng.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4757,7 +4727,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit472]
+[Unit469]
 FileName=ql\RandomNumbers\lecuyeruniformrng.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4767,7 +4737,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit473]
+[Unit470]
 FileName=ql\RandomNumbers\mt19937uniformrng.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4777,7 +4747,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit474]
+[Unit471]
 FileName=ql\RandomNumbers\primitivepolynomials.h
 CompileCpp=1
 Folder=RandomNumbers
@@ -4787,7 +4757,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit475]
+[Unit472]
 FileName=ql\RandomNumbers\randomizedlds.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4797,7 +4767,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit476]
+[Unit473]
 FileName=ql\RandomNumbers\randomsequencegenerator.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4807,7 +4777,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit477]
+[Unit474]
 FileName=ql\RandomNumbers\rngtraits.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4817,7 +4787,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit478]
+[Unit475]
 FileName=ql\RandomNumbers\seedgenerator.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4827,7 +4797,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit479]
+[Unit476]
 FileName=ql\RandomNumbers\all.hpp
 CompileCpp=1
 Folder=RandomNumbers
@@ -4837,7 +4807,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit480]
+[Unit477]
 FileName=ql\ShortRateModels\twofactormodel.hpp
 CompileCpp=1
 Folder=ShortRateModels
@@ -4847,7 +4817,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit481]
+[Unit478]
 FileName=ql\ShortRateModels\calibrationhelper.hpp
 CompileCpp=1
 Folder=ShortRateModels
@@ -4857,7 +4827,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit482]
+[Unit479]
 FileName=ql\ShortRateModels\core.hpp
 CompileCpp=1
 Folder=ShortRateModels
@@ -4867,7 +4837,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit483]
+[Unit480]
 FileName=ql\ShortRateModels\model.hpp
 CompileCpp=1
 Folder=ShortRateModels
@@ -4877,7 +4847,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit484]
+[Unit481]
 FileName=ql\ShortRateModels\onefactormodel.hpp
 CompileCpp=1
 Folder=ShortRateModels
@@ -4887,7 +4857,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit485]
+[Unit482]
 FileName=ql\ShortRateModels\parameter.hpp
 CompileCpp=1
 Folder=ShortRateModels
@@ -4897,7 +4867,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit486]
+[Unit483]
 FileName=ql\ShortRateModels\all.hpp
 CompileCpp=1
 Folder=ShortRateModels
@@ -4907,7 +4877,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit487]
+[Unit484]
 FileName=ql\ShortRateModels\CalibrationHelpers\swaptionhelper.hpp
 CompileCpp=1
 Folder=ShortRateModels/CalibrationHelpers
@@ -4917,7 +4887,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit488]
+[Unit485]
 FileName=ql\ShortRateModels\CalibrationHelpers\caphelper.hpp
 CompileCpp=1
 Folder=ShortRateModels/CalibrationHelpers
@@ -4927,7 +4897,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit489]
+[Unit486]
 FileName=ql\ShortRateModels\OneFactorModels\vasicek.hpp
 CompileCpp=1
 Folder=ShortRateModels/OneFactorModels
@@ -4937,7 +4907,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit490]
+[Unit487]
 FileName=ql\ShortRateModels\OneFactorModels\coxingersollross.hpp
 CompileCpp=1
 Folder=ShortRateModels/OneFactorModels
@@ -4947,7 +4917,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit491]
+[Unit488]
 FileName=ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.hpp
 CompileCpp=1
 Folder=ShortRateModels/OneFactorModels
@@ -4957,7 +4927,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit492]
+[Unit489]
 FileName=ql\ShortRateModels\OneFactorModels\hullwhite.hpp
 CompileCpp=1
 Folder=ShortRateModels/OneFactorModels
@@ -4967,7 +4937,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit493]
+[Unit490]
 FileName=ql\ShortRateModels\OneFactorModels\blackkarasinski.hpp
 CompileCpp=1
 Folder=ShortRateModels/OneFactorModels
@@ -4977,7 +4947,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit494]
+[Unit491]
 FileName=ql\ShortRateModels\TwoFactorModels\g2.hpp
 CompileCpp=1
 Folder=ShortRateModels/TwoFactorModels
@@ -4987,7 +4957,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit495]
+[Unit492]
 FileName=ql\TermStructures\zeroyieldstructure.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -4997,7 +4967,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit496]
+[Unit493]
 FileName=ql\TermStructures\all.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5007,7 +4977,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit497]
+[Unit494]
 FileName=ql\TermStructures\compoundforward.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5017,7 +4987,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit498]
+[Unit495]
 FileName=ql\TermStructures\discountcurve.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5027,7 +4997,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit499]
+[Unit496]
 FileName=ql\TermStructures\discountstructure.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5037,7 +5007,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit500]
+[Unit497]
 FileName=ql\TermStructures\drifttermstructure.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5047,7 +5017,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit501]
+[Unit498]
 FileName=ql\TermStructures\extendeddiscountcurve.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5057,7 +5027,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit502]
+[Unit499]
 FileName=ql\TermStructures\flatforward.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5067,7 +5037,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit503]
+[Unit500]
 FileName=ql\TermStructures\forwardspreadedtermstructure.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5077,7 +5047,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit504]
+[Unit501]
 FileName=ql\TermStructures\forwardstructure.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5087,7 +5057,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit505]
+[Unit502]
 FileName=ql\TermStructures\impliedtermstructure.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5097,7 +5067,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit506]
+[Unit503]
 FileName=ql\TermStructures\piecewiseflatforward.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5107,7 +5077,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit507]
+[Unit504]
 FileName=ql\TermStructures\quantotermstructure.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5117,7 +5087,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit508]
+[Unit505]
 FileName=ql\TermStructures\ratehelpers.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5127,7 +5097,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit509]
+[Unit506]
 FileName=ql\TermStructures\zerocurve.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5137,7 +5107,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit510]
+[Unit507]
 FileName=ql\TermStructures\zerospreadedtermstructure.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5147,7 +5117,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit511]
+[Unit508]
 FileName=ql\TermStructures\affinetermstructure.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5157,7 +5127,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit512]
+[Unit509]
 FileName=ql\Solvers1D\secant.hpp
 CompileCpp=1
 Folder=Solvers1D
@@ -5167,7 +5137,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit513]
+[Unit510]
 FileName=ql\Solvers1D\bisection.hpp
 CompileCpp=1
 Folder=Solvers1D
@@ -5177,7 +5147,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit514]
+[Unit511]
 FileName=ql\Solvers1D\brent.hpp
 CompileCpp=1
 Folder=Solvers1D
@@ -5187,7 +5157,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit515]
+[Unit512]
 FileName=ql\Solvers1D\falseposition.hpp
 CompileCpp=1
 Folder=Solvers1D
@@ -5197,7 +5167,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit516]
+[Unit513]
 FileName=ql\Solvers1D\newton.hpp
 CompileCpp=1
 Folder=Solvers1D
@@ -5207,7 +5177,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit517]
+[Unit514]
 FileName=ql\Solvers1D\newtonsafe.hpp
 CompileCpp=1
 Folder=Solvers1D
@@ -5217,7 +5187,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit518]
+[Unit515]
 FileName=ql\Solvers1D\ridder.hpp
 CompileCpp=1
 Folder=Solvers1D
@@ -5227,7 +5197,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit519]
+[Unit516]
 FileName=ql\Solvers1D\all.hpp
 CompileCpp=1
 Folder=Solvers1D
@@ -5237,7 +5207,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit520]
+[Unit517]
 FileName=ql\Volatilities\swaptionvolmatrix.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5247,7 +5217,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit521]
+[Unit518]
 FileName=ql\Volatilities\blackconstantvol.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5257,7 +5227,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit522]
+[Unit519]
 FileName=ql\Volatilities\blackvariancecurve.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5267,7 +5237,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit523]
+[Unit520]
 FileName=ql\Volatilities\blackvariancesurface.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5277,7 +5247,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit524]
+[Unit521]
 FileName=ql\Volatilities\capflatvolvector.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5287,7 +5257,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit525]
+[Unit522]
 FileName=ql\Volatilities\capletconstantvol.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5297,7 +5267,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit526]
+[Unit523]
 FileName=ql\Volatilities\impliedvoltermstructure.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5307,7 +5277,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit527]
+[Unit524]
 FileName=ql\Volatilities\localconstantvol.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5317,7 +5287,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit528]
+[Unit525]
 FileName=ql\Volatilities\localvolcurve.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5327,7 +5297,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit529]
+[Unit526]
 FileName=ql\Volatilities\localvolsurface.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5337,7 +5307,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit530]
+[Unit527]
 FileName=ql\Volatilities\all.hpp
 CompileCpp=1
 Folder=Volatilities
@@ -5347,7 +5317,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit531]
+[Unit528]
 FileName=ql\Utilities\steppingiterator.hpp
 CompileCpp=1
 Folder=Utilities
@@ -5357,7 +5327,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit532]
+[Unit529]
 FileName=ql\Utilities\combiningiterator.hpp
 CompileCpp=1
 Folder=Utilities
@@ -5367,7 +5337,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit533]
+[Unit530]
 FileName=ql\Utilities\couplingiterator.hpp
 CompileCpp=1
 Folder=Utilities
@@ -5377,8 +5347,38 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit534]
+[Unit531]
 FileName=ql\Utilities\filteringiterator.hpp
+CompileCpp=1
+Folder=Utilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit532]
+FileName=ql\Utilities\iteratorcategories.hpp
+CompileCpp=1
+Folder=Utilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit533]
+FileName=ql\Utilities\processingiterator.hpp
+CompileCpp=1
+Folder=Utilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit534]
+FileName=ql\Utilities\all.hpp
 CompileCpp=1
 Folder=Utilities
 Compile=1
