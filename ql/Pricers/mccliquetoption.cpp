@@ -26,7 +26,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using namespace Math;
         using namespace MonteCarlo;
 
         McCliquetOption::McCliquetOption(Option::Type type,

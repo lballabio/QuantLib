@@ -47,7 +47,7 @@ namespace QuantLib {
 
             Handle<Tree> tree1_, tree2_;
           private:
-            Math::Matrix m_;
+            Matrix m_;
             double rho_;
         };
 

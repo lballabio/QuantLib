@@ -66,7 +66,7 @@ namespace QuantLib {
 
             Integrand f(arguments_.payoff, arguments_.underlying, 
                         drift, variance);
-            QuantLib::Math::SegmentIntegral integrator(5000);
+            SegmentIntegral integrator(5000);
 
             double infinity = 10.0*QL_SQRT(variance);
             results_.value =

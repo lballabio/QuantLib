@@ -60,7 +60,7 @@ namespace QuantLib {
             mutable std::vector<Date> dates_;
             mutable std::vector<DiscountFactor> discounts_;
             mutable std::vector<Time> times_;
-            typedef Math::LogLinearInterpolation <
+            typedef LogLinearInterpolation <
                 std::vector<Time>::const_iterator,
                 std::vector<DiscountFactor>::const_iterator > DfInterpolation;
             mutable Handle<DfInterpolation> interpolation_;
@@ -80,7 +80,7 @@ namespace QuantLib {
         DiscountCurve::discounts() const {
             return discounts_;
         }
-       
+
         inline const std::vector<Time>& DiscountCurve::times() const {
             return times_;
         }

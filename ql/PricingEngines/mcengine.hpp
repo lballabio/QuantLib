@@ -40,8 +40,7 @@ namespace QuantLib {
             See McVanillaEngine as an example of one factor engine.
         */
 
-        template <class MC,
-                  class S = Math::Statistics>
+        template <class MC, class S = Statistics>
         class McSimulation {
           public:
             typedef 
@@ -188,7 +187,7 @@ namespace QuantLib {
 
         //! Base class for Monte Carlo vanilla option engines
         template<class RNG = MonteCarlo::PseudoRandom, 
-                 class S = Math::Statistics>
+                 class S = Statistics>
         class MCVanillaEngine 
         : public VanillaEngine,
           public McSimulation<MonteCarlo::SingleAsset<RNG>, S> {

@@ -26,99 +26,95 @@
 
 namespace QuantLib {
 
-    namespace Math {
+    //! Statistic tool for sequences with discrepancy calculation
+    /*! It inherit from SequenceStatistics<Statistics> and adds
+        \f$ L^2 \f$ discrepancy calculation
+    */
+    class DiscrepancyStatistics : public SequenceStatistics<Statistics> {
+      public:
+        // constructor
+        DiscrepancyStatistics(Size dimension);
+        //! \name 1-dimensional inspectors
+        //@{
+        double discrepancy() const;
+        //@}
+        template <class Sequence>
+        void add(const Sequence& sample,
+                 double weight = 1.0) {
+            add(sample.begin(),sample.end(),weight);
+        }
+        template <class Iterator>
+        void add(Iterator begin,
+                 Iterator end,
+                 double weight = 1.0) {
+            SequenceStatistics<Statistics>::add(begin,end,weight);
 
-        //! Statistic tool for sequences with discrepancy calculation
-        /*! It inherit from SequenceStatistics<Statistics> and adds
-            \f$ L^2 \f$ discrepancy calculation
-        */
-        class DiscrepancyStatistics : public SequenceStatistics<Statistics> {
-          public:
-            // constructor
-            DiscrepancyStatistics(Size dimension);
-            //! \name 1-dimensional inspectors
-            //@{
-            double discrepancy() const;
-            //@}
-            template <class Sequence>
-            void add(const Sequence& sample,
-                     double weight = 1.0) {
-                add(sample.begin(),sample.end(),weight);
+            Size k, m, N = samples();
+
+            double r_ik, r_jk, temp = 1.0;
+            Iterator it;
+            for (k=0, it=begin; k<dimension_; ++it, ++k) {
+                r_ik = *it; //i=N
+                temp *= (1.0 - r_ik*r_ik);
             }
-            template <class Iterator>
-            void add(Iterator begin,
-                     Iterator end,
-                     double weight = 1.0) {
-                SequenceStatistics<Statistics>::add(begin,end,weight);
+            cdiscr_ += temp;
 
-                Size k, m, N = samples();
-
-                double r_ik, r_jk, temp = 1.0;
-                Iterator it;
-                for (k=0, it=begin; k<dimension_; ++it, ++k) {
-                    r_ik = *it; //i=N
-                    temp *= (1.0 - r_ik*r_ik);
-                }
-                cdiscr_ += temp;
-
-                for (m=0; m<N-1; m++) {
-                    temp = 1.0;
-                    for (k=0, it=begin; k<dimension_; ++it, ++k) {
-                        // running i=1..(N-1)
-                        r_ik = stats_[k].data()[m].first;
-                        // fixed j=N
-                        r_jk = *it;
-                        temp *= (1.0 - QL_MAX(r_ik, r_jk));
-                    }
-                    adiscr_ += temp;
-
-                    temp = 1.0;
-                    for (k=0, it=begin; k<dimension_; ++it, ++k) {
-                        // fixed i=N
-                        r_ik = *it;
-                        // running j=1..(N-1)
-                        r_jk = stats_[k].data()[m].first;
-                        temp *= (1.0 - QL_MAX(r_ik, r_jk));
-                    }
-                    adiscr_ += temp;
-                }
+            for (m=0; m<N-1; m++) {
                 temp = 1.0;
                 for (k=0, it=begin; k<dimension_; ++it, ++k) {
-                    // fixed i=N, j=N
-                    r_ik = r_jk = *it;
+                    // running i=1..(N-1)
+                    r_ik = stats_[k].data()[m].first;
+                    // fixed j=N
+                    r_jk = *it;
+                    temp *= (1.0 - QL_MAX(r_ik, r_jk));
+                }
+                adiscr_ += temp;
+
+                temp = 1.0;
+                for (k=0, it=begin; k<dimension_; ++it, ++k) {
+                    // fixed i=N
+                    r_ik = *it;
+                    // running j=1..(N-1)
+                    r_jk = stats_[k].data()[m].first;
                     temp *= (1.0 - QL_MAX(r_ik, r_jk));
                 }
                 adiscr_ += temp;
             }
-            void reset(Size dimension = 0);
-          private:
-            mutable double adiscr_, cdiscr_;
-            double bdiscr_, ddiscr_;
-        };
-
-
-        // inline definitions
-
-        inline DiscrepancyStatistics::DiscrepancyStatistics(Size dimension)
-        : SequenceStatistics<Statistics>(dimension) {
-            reset(dimension); 
+            temp = 1.0;
+            for (k=0, it=begin; k<dimension_; ++it, ++k) {
+                // fixed i=N, j=N
+                r_ik = r_jk = *it;
+                temp *= (1.0 - QL_MAX(r_ik, r_jk));
+            }
+            adiscr_ += temp;
         }
+        void reset(Size dimension = 0);
+      private:
+        mutable double adiscr_, cdiscr_;
+        double bdiscr_, ddiscr_;
+    };
 
-        inline void DiscrepancyStatistics::reset(Size dimension) {
-            if (dimension == 0)           // if no size given,
-                dimension = dimension_;   // keep the current one
-            QL_REQUIRE(dimension != 1,
-                "DiscrepancyStatistics::reset : "
-                "dimension==1 not allowed");
 
-            SequenceStatistics<Statistics>::reset(dimension);
+    // inline definitions
 
-            adiscr_ = 0.0;
-            bdiscr_ = 1.0/QL_POW(2.0, int(dimension-1));
-            cdiscr_ = 0.0;
-            ddiscr_ = 1.0/QL_POW(3.0, int(dimension));
-        }
+    inline DiscrepancyStatistics::DiscrepancyStatistics(Size dimension)
+    : SequenceStatistics<Statistics>(dimension) {
+        reset(dimension); 
+    }
 
+    inline void DiscrepancyStatistics::reset(Size dimension) {
+        if (dimension == 0)           // if no size given,
+            dimension = dimension_;   // keep the current one
+        QL_REQUIRE(dimension != 1,
+                   "DiscrepancyStatistics::reset : "
+                   "dimension==1 not allowed");
+
+        SequenceStatistics<Statistics>::reset(dimension);
+
+        adiscr_ = 0.0;
+        bdiscr_ = 1.0/QL_POW(2.0, int(dimension-1));
+        cdiscr_ = 0.0;
+        ddiscr_ = 1.0/QL_POW(3.0, int(dimension));
     }
 
 }

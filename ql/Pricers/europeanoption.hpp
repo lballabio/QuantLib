@@ -54,9 +54,9 @@ namespace QuantLib {
             double beta() const;
           private:
             #if defined(QL_PATCH_SOLARIS)
-            Math::CumulativeNormalDistribution f_;
+            CumulativeNormalDistribution f_;
             #else
-            static const Math::CumulativeNormalDistribution f_;
+            static const CumulativeNormalDistribution f_;
             #endif
             double alpha() const;
             double standardDeviation() const;

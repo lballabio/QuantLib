@@ -26,27 +26,23 @@
 
 namespace QuantLib {
 
-    namespace Math {
+    // Eigenvalues of a symmetric matrix
+    Disposable<Array> SymmetricEigenvalues(Matrix &s);
 
-        // Eigenvalues of a symmetric matrix
-        Disposable<Array> SymmetricEigenvalues(Matrix &s);
-
-        // Eigenvectors of a symmetric matrix
-        Disposable<Matrix> SymmetricEigenvectors(Matrix &s);
+    // Eigenvectors of a symmetric matrix
+    Disposable<Matrix> SymmetricEigenvectors(Matrix &s);
 
 
-        // inline definitions
+    // inline definitions
 
-        inline Disposable<Array> SymmetricEigenvalues(Matrix &s) {
-            Array result = SymmetricSchurDecomposition(s).eigenvalues();
-            return result;
-        }
+    inline Disposable<Array> SymmetricEigenvalues(Matrix &s) {
+        Array result = SymmetricSchurDecomposition(s).eigenvalues();
+        return result;
+    }
 
-        inline Disposable<Matrix> SymmetricEigenvectors(Matrix &s) {
-            Matrix result = SymmetricSchurDecomposition(s).eigenvectors();
-            return result;
-        }
-
+    inline Disposable<Matrix> SymmetricEigenvectors(Matrix &s) {
+        Matrix result = SymmetricSchurDecomposition(s).eigenvectors();
+        return result;
     }
 
 }

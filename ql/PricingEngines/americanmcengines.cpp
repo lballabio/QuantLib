@@ -24,9 +24,6 @@
 namespace QuantLib {
 
     namespace PricingEngines {
-      
-        using Math::Matrix;
-        using Math::SVD;
 
         // calculate
         void AmericanMCVanillaEngine::calculate() const {
@@ -60,7 +57,7 @@ namespace QuantLib {
 */
 
             Size timeStep;
-    
+
             // simulate the paths
             Handle<DiffusionProcess> bs(new
                 BlackScholesProcess(arguments_.riskFreeTS, 
@@ -81,21 +78,21 @@ namespace QuantLib {
 
             MonteCarlo::GaussianPathGenerator::sample_type 
                 pathHolder = pathGenerator->next();
-            
+
             MonteCarlo::Path p = pathHolder.value;
             std::vector<MonteCarlo::Path> paths (N,p);
-            for (i=0; i<N; i++) {   
+            for (i=0; i<N; i++) {
                 pathHolder = pathGenerator->next();
                 paths[i] = pathHolder.value;
             }
-            
+
             // get the asset values into an easy container
             std::vector<double> asset = getAssetSequence(s0, paths[0]); 
             //std::vector<std::vector<double> > assetPaths (N, asset);
  
             //std::cout << " time steps " << timeSteps_ << "\n";
             //std::cout << " asset length " << asset.size() << "\n";
-            
+
             AssetGrid assetPaths (N, asset);
             for (i=1; i<N; i++) { 
                 assetPaths.at(i) = getAssetSequence(s0, paths[i]); 
@@ -106,7 +103,7 @@ namespace QuantLib {
             // example asset prices
 //            AssetGrid assetPaths (N, std::vector<double>(timeSteps_));
 //            getLSAssetsExample(assetPaths, timeSteps_);
-            
+
 
 
             // Payoff matrix
@@ -147,7 +144,7 @@ namespace QuantLib {
             int timeLoop;
             for (timeLoop = timeSteps_-2; timeLoop>=0; timeLoop--) {
                 timeStep = timeLoop;
-                
+
 
   //              std::cout << "\n PROCESS TIME STEP " << timeStep << "\n\n";
 
@@ -158,11 +155,11 @@ namespace QuantLib {
                 // select in the money paths
                 std::vector<int> itmPaths;
                 std::vector<double> y(N);
-                for (i=0; i<N; i++) {                       
+                for (i=0; i<N; i++) {
                     double s = assetPaths[i][timeStep];
-                    double temp  = payoff(s);   
+                    double temp  = payoff(s);
                     y[i] = temp;
-                    if (y[i]>0) {                        
+                    if (y[i]>0) {
                         itmPaths.push_back(i);
                     }
                 }
@@ -176,9 +173,9 @@ namespace QuantLib {
 
                     // discount itm cash flows to current time step
                     // for each itm cash flow
-                    Array y_temp(itmPaths.size());                
-                    for (i=0; i<itmPaths.size(); i++) {   
-                       
+                    Array y_temp(itmPaths.size());
+                    for (i=0; i<itmPaths.size(); i++) {
+
                         // find any payoffs
                         std::vector<double> cashflows = 
                             payoffMatrix.at(itmPaths[i]);
@@ -190,11 +187,11 @@ namespace QuantLib {
                         std::cout << "] \n";
 */
                         double cashflow = 0.0;
-                        int cashflowTime = -1;                    
+                        int cashflowTime = -1;
                         for (j = timeStep; j<timeSteps_; j++) {
                             if (cashflows[j] > 0.0) {
                                 cashflow = cashflows[j];
-                                cashflowTime = j;          
+                                cashflowTime = j;
                                 break;
                             }
                         }
@@ -205,7 +202,7 @@ namespace QuantLib {
                             Time from = grid[timeStep+1];
                             Time to = grid[cashflowTime+1];
                             //Rate forward = arguments_.riskFreeTS_->forward(from, to);
-                            
+
                             // store result in y vector
                             y_temp[i] = cashflow * QL_EXP(-r * (to-from));
                   //          std::cout << "y_temp[" << i << "] = " << y_temp[i] << " \n";
@@ -213,7 +210,7 @@ namespace QuantLib {
                             //MonteCarlo::Path p = paths_[itmPaths[i]];
                             //double s = p->
                             //y.at(i) = pathPricer->subPathValue(p, i, N);                    
-                    
+
                         } else {
                 //            std::cout << "y_temp[" << i << "] = " << y_temp[i] << " \n";
                             y_temp[i] = 0.0;
@@ -238,7 +235,7 @@ namespace QuantLib {
                     }
               //      std::cout << " ] \n";
 
-                    
+
 
                     // do least squares regression                
                     SVD svd(A);
@@ -253,8 +250,8 @@ namespace QuantLib {
         //            std::cout << "s = " << s << " \n";
                     // probably faster to do this directly
                     // in MATLAB this is V*(S\(U'*y_temp))
-                    Matrix Utrans = Math::transpose(U);
-                    Array temp_1 = (Math::transpose(U))*y_temp;
+                    Matrix Utrans = transpose(U);
+                    Array temp_1 = transpose(U) * y_temp;
                     Array temp_2(V.columns());
                     // Some singular values may be zero so we cannot do
                     // temp_1/=s;
@@ -264,12 +261,12 @@ namespace QuantLib {
                         } else {
                             temp_1[i] = 0.0;
                         }
-                    }                
+                    }
                     Array b = V*temp_1;
   //                  std::cout << "b = " << b << " \n";
 
                     // calculate continuation value
-                    Array y_continue = A*b;  
+                    Array y_continue = A*b;
 
                     /*
                     std::cout << " Continuation value " << y_continue << "\n";
@@ -291,7 +288,7 @@ namespace QuantLib {
                                 y_exercise[i];
                         }
                     }
-            
+
              /*       std::cout << " MODIFIED STOPPING RULE\n";
                     for (i=0; i<N; i++) {
                         for (j=0; j<payoffMatrix[i].size(); j++) {
@@ -318,7 +315,7 @@ namespace QuantLib {
             for (timeLoop = timeSteps_-1; timeLoop>=0; timeLoop--) {
                 // sum column - may well be more efficient to 
                 // discount each path separately
-                for (j=0; j<N; j++) {                    
+                for (j=0; j<N; j++) {
                     total += payoffMatrix[j][timeLoop];
                 }
 
@@ -347,14 +344,14 @@ namespace QuantLib {
             double log_drift, log_random;
             log_drift = path.drift()[0];
             log_random = path.diffusion()[0];
-            asset[0] = s0*QL_EXP(log_drift + log_random);                
-            
+            asset[0] = s0*QL_EXP(log_drift + log_random);
+
             for (Size i = 1; i < n; i++) {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
                 asset[i] = asset[i-1]*QL_EXP(log_drift + log_random);
             }
-            
+
             return asset;
         }
 
@@ -363,7 +360,7 @@ namespace QuantLib {
             QL_REQUIRE(n == 8,
                        "AmericanMCEngine: Longstaff Schwartz example "
                        "must have 8 paths");
-            
+
             QL_REQUIRE(timeSteps == 3,
                     "AmericanMCEngine: Longstaff Schwartz 3 time steps");
 

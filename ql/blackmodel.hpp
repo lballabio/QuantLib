@@ -82,12 +82,12 @@ namespace QuantLib {
         \f]
     */
     inline double BlackModel::formula(double f, double k, double v, double w) {
-            if (QL_FABS(v) < QL_EPSILON)
-                return QL_MAX(f*w - k*w, 0.0);
-            double d1 = QL_LOG(f/k)/v + 0.5*v;
-            double d2 = d1 - v;
-            Math::CumulativeNormalDistribution phi;
-            return f*w*phi(w*d1) - k*w*phi(w*d2);
+        if (QL_FABS(v) < QL_EPSILON)
+            return QL_MAX(f*w - k*w, 0.0);
+        double d1 = QL_LOG(f/k)/v + 0.5*v;
+        double d2 = d1 - v;
+        CumulativeNormalDistribution phi;
+        return f*w*phi(w*d1) - k*w*phi(w*d2);
     }
 
 }

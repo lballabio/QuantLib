@@ -19,9 +19,9 @@
     \brief Cox-Ingersoll-Ross model
 */
 
-#include "ql/ShortRateModels/OneFactorModels/coxingersollross.hpp"
-#include "ql/Lattices/trinomialtree.hpp"
-#include "ql/Math/chisquaredistribution.hpp"
+#include <ql/ShortRateModels/OneFactorModels/coxingersollross.hpp>
+#include <ql/Lattices/trinomialtree.hpp>
+#include <ql/Math/chisquaredistribution.hpp>
 
 namespace QuantLib {
 
@@ -125,8 +125,8 @@ namespace QuantLib {
             std::cout << "ncps: " << ncps << std::endl;
             std::cout << "ncpt: " << ncpt << std::endl;
 
-            Math::NonCentralChiSquareDistribution chis(df, ncps);
-            Math::NonCentralChiSquareDistribution chit(df, ncpt);
+            NonCentralChiSquareDistribution chis(df, ncps);
+            NonCentralChiSquareDistribution chit(df, ncpt);
 
             double z = QL_LOG(A(t,s)/strike)/b; 
             double call = discountS*chis(2.0*z*(rho+psi+b)) -

@@ -27,51 +27,47 @@
 
 namespace QuantLib {
 
-    namespace Math {
+    //! Integral of a one-dimensional function
+    class SimpsonIntegral : public TrapezoidIntegral {
+      public:
+        SimpsonIntegral(double accuracy, 
+                        Size maxIterations = Null<int>())
+        : TrapezoidIntegral(accuracy,Default,maxIterations) {}
+        template <class F>
+        double operator()(const F& f, double a, double b) const {
 
-        //! Integral of a one-dimensional function
-        class SimpsonIntegral : public TrapezoidIntegral {
-          public:
-            SimpsonIntegral(double accuracy, 
-                            Size maxIterations = Null<int>())
-            : TrapezoidIntegral(accuracy,Default,maxIterations) {}
-            template <class F>
-            double operator()(const F& f, double a, double b) const {
+            if (a == b)
+                return 0.0;
+            if (a > b)
+                return -(*this)(f,b,a);
 
-                if (a == b)
-                    return 0.0;
-                if (a > b)
-                    return -(*this)(f,b,a);
-
-                // start from the coarsest trapezoid...
-                Size N = 1;
-                double I = (f(a)+f(b))*(b-a)/2.0, newI;
-                double adjI = I, newAdjI;
-                // ...and refine it
-                Size i = 1;
-                do {
-                    newI = defaultIteration(f,a,b,I,N);
-                    N *= 2;
-                    newAdjI = (4.0*newI-I)/3.0;
-                    // good enough? Also, don't run away immediately
-                    if (QL_FABS(adjI-newAdjI) <= accuracy_ && i > 5)
-                        // ok, exit
-                        return newAdjI;
-                    // oh well. Another step.
-                    I = newI;
-                    adjI = newAdjI;
-                    i++;
-                } while (i < maxIterations_);
-                throw Error("SimpsonIntegral: "
-                            "max number of iterations reached");
-            }
-          private:
-            // inhibited
-            Method method() const { return method_; }
-            Method& method() { return method_; }
-        };
-
-    }
+            // start from the coarsest trapezoid...
+            Size N = 1;
+            double I = (f(a)+f(b))*(b-a)/2.0, newI;
+            double adjI = I, newAdjI;
+            // ...and refine it
+            Size i = 1;
+            do {
+                newI = defaultIteration(f,a,b,I,N);
+                N *= 2;
+                newAdjI = (4.0*newI-I)/3.0;
+                // good enough? Also, don't run away immediately
+                if (QL_FABS(adjI-newAdjI) <= accuracy_ && i > 5)
+                    // ok, exit
+                    return newAdjI;
+                // oh well. Another step.
+                I = newI;
+                adjI = newAdjI;
+                i++;
+            } while (i < maxIterations_);
+            throw Error("SimpsonIntegral: "
+                        "max number of iterations reached");
+        }
+      private:
+        // inhibited
+        Method method() const { return method_; }
+        Method& method() { return method_; }
+    };
 
 }
 

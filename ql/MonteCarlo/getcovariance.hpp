@@ -36,9 +36,9 @@ namespace QuantLib {
             correlation matrix equals one.
         */
         template<class DataIterator>
-        Disposable<Math::Matrix> getCovariance(DataIterator volBegin,
-                                               DataIterator volEnd,
-                                               const Math::Matrix& corr){
+        Disposable<Matrix> getCovariance(DataIterator volBegin,
+                                         DataIterator volEnd,
+                                         const Matrix& corr){
             Size size = std::distance(volBegin, volEnd);
             QL_REQUIRE(corr.rows() == size,
                        "getCovariance: volatilities and correlations "
@@ -46,7 +46,7 @@ namespace QuantLib {
             QL_REQUIRE(corr.columns() == size,
                 "getCovariance: correlation matrix is not square");
 
-            Math::Matrix covariance(size,size);
+            Matrix covariance(size,size);
             Size i, j;
             DataIterator iIt, jIt;
             for(i=0, iIt=volBegin; i<size; i++, iIt++){

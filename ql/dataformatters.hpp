@@ -72,12 +72,12 @@ namespace QuantLib {
         }
     };
 
-    
+
     /*! \relates Array */
     std::ostream& operator<< (std::ostream&, const Array&);
-    
+
     /*! \relates Matrix */
-    std::ostream& operator<< (std::ostream&, const Math::Matrix&);    
+    std::ostream& operator<< (std::ostream&, const Matrix&);
 
     //! Formats amounts in Euro for output
     /*! Formatting follows Euro convention (x,xxx,xxx.xx) */

@@ -26,42 +26,38 @@
 
 namespace QuantLib {
 
-    namespace Math {
-
-        //! linear interpolation between discrete points
-        template <class RandomAccessIterator1, class RandomAccessIterator2>
-        class LinearInterpolation
-        : public Interpolation<RandomAccessIterator1,RandomAccessIterator2> {
-          public:
-            /*  these typedefs are repeated because Borland C++ won't inherit
-                them from Interpolation - they shouldn't hurt, though.
-            */
-            typedef
-              typename QL_ITERATOR_TRAITS<RandomAccessIterator1>::value_type
-                argument_type;
-            typedef
-              typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
-                result_type;
-             LinearInterpolation(const RandomAccessIterator1& xBegin,
-                 const RandomAccessIterator1& xEnd,
-                 const RandomAccessIterator2& yBegin)
-             : Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
-                 xBegin,xEnd,yBegin) {}
-            result_type operator()(const argument_type& x,
-                                   bool allowExtrapolation = false) const {
-                locate(x);
-                if (isOutOfRange_) {
-                    QL_REQUIRE(allowExtrapolation,
-                        "LinearInterpolation::operator() : "
-                        "extrapolation not allowed");
-                }
-                RandomAccessIterator2 j = yBegin_+(position_-xBegin_);
-                return *j + (x-*position_)*double(*(j+1)-*j)/
-                    double(*(position_+1)-*position_);
+    //! linear interpolation between discrete points
+    template <class RandomAccessIterator1, class RandomAccessIterator2>
+    class LinearInterpolation
+    : public Interpolation<RandomAccessIterator1,RandomAccessIterator2> {
+      public:
+        /*  these typedefs are repeated because Borland C++ won't inherit
+            them from Interpolation - they shouldn't hurt, though.
+        */
+        typedef
+            typename QL_ITERATOR_TRAITS<RandomAccessIterator1>::value_type
+                                                                argument_type;
+        typedef
+            typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
+                                                                  result_type;
+        LinearInterpolation(const RandomAccessIterator1& xBegin,
+                            const RandomAccessIterator1& xEnd,
+                            const RandomAccessIterator2& yBegin)
+        : Interpolation<RandomAccessIterator1,
+                        RandomAccessIterator2>(xBegin,xEnd,yBegin) {}
+        result_type operator()(const argument_type& x,
+                               bool allowExtrapolation = false) const {
+            locate(x);
+            if (isOutOfRange_) {
+                QL_REQUIRE(allowExtrapolation,
+                           "LinearInterpolation::operator() : "
+                           "extrapolation not allowed");
             }
-        };
-
-    }
+            RandomAccessIterator2 j = yBegin_+(position_-xBegin_);
+            return *j + (x-*position_)*double(*(j+1)-*j)/
+                double(*(position_+1)-*position_);
+        }
+    };
 
 }
 

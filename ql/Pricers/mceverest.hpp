@@ -38,7 +38,7 @@ namespace QuantLib {
                     MonteCarlo::PseudoRandomSequence_old> > {
           public:
             McEverest(const Array& dividendYield,
-                      const Math::Matrix& covariance,
+                      const Matrix& covariance,
                       Rate riskFreeRate,
                       Time residualTime,
                       bool antitheticVariance,

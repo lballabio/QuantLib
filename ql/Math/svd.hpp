@@ -32,10 +32,7 @@
 */
 
 /*! \file svd.hpp
-    \brief Calculates Singular Value Decomposition
-
-    in MATLAB notation
-    A = U*S*V'
+    \brief singular value decomposition
 */
 
 #ifndef quantlib_math_svd_h
@@ -45,33 +42,28 @@
 
 namespace QuantLib {
 
-    namespace Math {
-
-        //! Singular Value Decomposition
-        /*! Refer to Golub and Van Loan: Matrix computation,
-            The Johns Hopkins University Press            
-        */
-        class SVD {
-          public:            
-            SVD(const Matrix &Arg);
-            void getU(Matrix &A) const;
-            void getV(Matrix &A) const;
-            void getSingularValues(Array &x) const;
-            void getS(Matrix &S) const;
-            double norm2();
-            double cond();
-            int rank();     
-        
-          private:
-            Matrix U, V;
-            Array s;
-            int m, n;
-        };
-
-    }
+    //! Singular Value Decomposition
+    /*! Refer to Golub and Van Loan: Matrix computation,
+        The Johns Hopkins University Press            
+    */
+    class SVD {
+      public:
+        SVD(const Matrix &Arg);
+        void getU(Matrix &A) const;
+        void getV(Matrix &A) const;
+        void getSingularValues(Array &x) const;
+        void getS(Matrix &S) const;
+        double norm2();
+        double cond();
+        int rank();
+      private:
+        Matrix U, V;
+        Array s;
+        int m, n;
+    };
 
 }
 
-#endif
 
+#endif
 

@@ -58,14 +58,14 @@ namespace QuantLib {
 
         // default choice
         typedef GenericPseudoRandom<RandomNumbers::MersenneTwisterUniformRng,
-                                    Math::InverseCumulativeNormal>
+                                    InverseCumulativeNormal>
             PseudoRandom;
 
 
         struct LowDiscrepancy {
             // typedefs
             typedef RandomNumbers::SobolRsg ursg_type;
-            typedef Math::InverseCumulativeNormal ic_type;
+            typedef InverseCumulativeNormal ic_type;
             typedef RandomNumbers::ICGaussianRsg<ursg_type,ic_type> rsg_type;
             // more traits
             enum { allowsErrorEstimate = 0 };
@@ -102,13 +102,13 @@ namespace QuantLib {
 
         struct PseudoRandom_old {
             typedef RandomNumbers::MersenneTwisterUniformRng urng_type;
-            typedef Math::InverseCumulativeNormal ic_type;
+            typedef InverseCumulativeNormal ic_type;
             typedef RandomNumbers::ICGaussianRng<urng_type,ic_type> rsg_type;
         };
 
         struct PseudoRandomSequence_old {
             typedef RandomNumbers::MersenneTwisterUniformRng urng_type;
-            typedef Math::InverseCumulativeNormal ic_type;
+            typedef InverseCumulativeNormal ic_type;
             typedef RandomNumbers::ICGaussianRng<urng_type,ic_type> rng_type;
             typedef RandomNumbers::RandomArrayGenerator<rng_type> rsg_type;
         };

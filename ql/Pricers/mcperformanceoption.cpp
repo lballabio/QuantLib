@@ -26,7 +26,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Math::Statistics;
         using namespace MonteCarlo;
 
         McPerformanceOption::McPerformanceOption(Option::Type type,

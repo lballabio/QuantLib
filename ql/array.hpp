@@ -32,6 +32,9 @@
 
 namespace QuantLib {
 
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace Math = ::QuantLib;
+
     //! 1-D array used in linear algebra.
     /*! This class implements the concept of vector as used in linear
         algebra.

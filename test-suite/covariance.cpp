@@ -25,7 +25,6 @@
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
-using namespace QuantLib::Math;
 using namespace QuantLib::MonteCarlo;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))

@@ -44,7 +44,7 @@ namespace QuantLib {
                      double fraction,
                      double roof,
                      const Array& dividendYield,
-                     const Math::Matrix& covariance,
+                     const Matrix& covariance,
                      Rate riskFreeRate,
                      const std::vector<Time>& times,
                      bool antithetic,

@@ -48,7 +48,7 @@ namespace QuantLib {
           public:
             void calculate() const;
           private:
-            Math::CumulativeNormalDistribution f_;
+            CumulativeNormalDistribution f_;
             // helper methods
             double underlying() const;
             double strike() const;
@@ -73,7 +73,7 @@ namespace QuantLib {
 
         //! Pricing engine for Barrier options using Monte Carlo
         template<class RNG = MonteCarlo::PseudoRandom, 
-                 class S = Math::Statistics>
+                 class S = Statistics>
         class MCBarrierEngine 
         : public BarrierEngine,
           public McSimulation<MonteCarlo::SingleAsset<RNG>, S> {

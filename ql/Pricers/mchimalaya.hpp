@@ -42,7 +42,7 @@ namespace QuantLib {
         public:
             McHimalaya(const std::vector<double>& underlying,
                        const Array& dividendYield,
-                       const Math::Matrix& covariance,
+                       const Matrix& covariance,
                        Rate riskFreeRate,
                        double strike,
                        const std::vector<Time>& times,

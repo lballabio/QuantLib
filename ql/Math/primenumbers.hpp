@@ -38,22 +38,18 @@
 
 namespace QuantLib {
 
-    namespace Math {
-        //! Prime numbers calculator
-        /*! Prime numbers calculator.
-            Taken from "Monte Carlo Methods in Finance", by Peter Jäckel
-        */
-        class PrimeNumbers {
-          public:
-            //! Get and store one after another.
-            static unsigned long get(Size absoluteIndex);
-          private:
-            PrimeNumbers() {}
-            static unsigned long nextPrimeNumber();
-            static std::vector<unsigned long> primeNumbers_;
-        };
-
-    }
+    //! Prime numbers calculator
+    /*! Taken from "Monte Carlo Methods in Finance", by Peter Jäckel
+     */
+    class PrimeNumbers {
+      public:
+        //! Get and store one after another.
+        static unsigned long get(Size absoluteIndex);
+      private:
+        PrimeNumbers() {}
+        static unsigned long nextPrimeNumber();
+        static std::vector<unsigned long> primeNumbers_;
+    };
 
 }
 

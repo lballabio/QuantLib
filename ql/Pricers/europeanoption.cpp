@@ -26,7 +26,7 @@ namespace QuantLib {
     namespace Pricers {
 
         #if !defined(QL_PATCH_SOLARIS)
-        const Math::CumulativeNormalDistribution EuropeanOption::f_;
+        const CumulativeNormalDistribution EuropeanOption::f_;
         #endif
 
         EuropeanOption::EuropeanOption(Option::Type type, double underlying,

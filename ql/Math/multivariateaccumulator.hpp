@@ -29,88 +29,84 @@
 
 namespace QuantLib {
 
-    namespace Math {
+    //! A sample accumulator for multivariate analysis
+    /*! MultivariateAccumulator can accumulate vector-type samples and
+        return the average vector, both in Array form and
+        std::vector<double> form, and the covariance matrix
 
-        //! A sample accumulator for multivariate analysis
-        /*! MultivariateAccumulator can accumulate vector-type samples and
-            return the average vector, both in Array form and
-            std::vector<double> form, and the covariance matrix
+        \deprecated use SequenceStatistics instead
+    */
+    class MultivariateAccumulator {
+      public:
+        MultivariateAccumulator();
+        MultivariateAccumulator(Size size);
+        //! \name Inspectors
+        //@{
+        //! size of each sample
+        Size size() const;
+        //! number of samples collected
+        Size samples() const;
+        //! sum of data weights
+        double weightSum() const;
+        //! returns the mean as an Array
+        Disposable<Array> mean() const;
+        //! returns the mean as a std::vector<double>
+        std::vector<double> meanVector() const;
+        //! returns the covariance Matrix
+        Matrix covariance() const;
+        //! returns the correlation Matrix
+        Matrix correlation() const;
 
-            \deprecated use SequenceStatistics instead
-        */
-        class MultivariateAccumulator {
-          public:
-            MultivariateAccumulator();
-            MultivariateAccumulator(Size size);
-            //! \name Inspectors
-            //@{
-            //! size of each sample
-            Size size() const;
-            //! number of samples collected
-            Size samples() const;
-            //! sum of data weights
-            double weightSum() const;
-            //! returns the mean as an Array
-            Disposable<Array> mean() const;
-            //! returns the mean as a std::vector<double>
-            std::vector<double> meanVector() const;
-            //! returns the covariance Matrix
-            Matrix covariance() const;
-            //! returns the correlation Matrix
-            Matrix correlation() const;
+        //@}
 
-            //@}
-
-            //! \name Modifiers
-            //@{
-            //! adds an Array to the collection, possibly with a weight
-            void add(const Array &arr, double weight = 1.0);
-            //! adds a vector<double> to the collection, possibly with a weight
-            void add(const std::vector<double> &vec, double weight = 1.0);
-            //! adds a sequence of data to the collection
-            template <class DataIterator>
-            void addSequence(DataIterator begin, DataIterator end) {
-                for (;begin!=end;++begin)
-                    add(*begin);
-            }
-            //! adds a sequence of data to the collection, each with its weight
-            template <class DataIterator, class WeightIterator>
-            void addSequence(DataIterator begin, DataIterator end,
-                WeightIterator wbegin) {
-                    for(;begin!=end;++begin,++wbegin)
-                        add(*begin, *wbegin);
-            }
-            //! resets the data to a null set
-            void reset();
-            //@}
-          private:
-            Size size_;
-            Size sampleNumber_;
-            double sampleWeight_;
-            Array sum_;
-            Matrix quadraticSum_;
-        };
-
-
-        // inline definitions
-        inline Size MultivariateAccumulator::size() const {
-            return size_;
+        //! \name Modifiers
+        //@{
+        //! adds an Array to the collection, possibly with a weight
+        void add(const Array &arr, double weight = 1.0);
+        //! adds a vector<double> to the collection, possibly with a weight
+        void add(const std::vector<double> &vec, double weight = 1.0);
+        //! adds a sequence of data to the collection
+        template <class DataIterator>
+        void addSequence(DataIterator begin, DataIterator end) {
+            for (;begin!=end;++begin)
+                add(*begin);
         }
-
-        inline Size MultivariateAccumulator::samples() const {
-            return sampleNumber_;
+        //! adds a sequence of data to the collection, each with its weight
+        template <class DataIterator, class WeightIterator>
+        void addSequence(DataIterator begin, DataIterator end,
+                         WeightIterator wbegin) {
+            for(;begin!=end;++begin,++wbegin)
+                add(*begin, *wbegin);
         }
+        //! resets the data to a null set
+        void reset();
+        //@}
+      private:
+        Size size_;
+        Size sampleNumber_;
+        double sampleWeight_;
+        Array sum_;
+        Matrix quadraticSum_;
+    };
 
-        inline double MultivariateAccumulator::weightSum() const {
-            return sampleWeight_;
-        }
 
-        inline Disposable<Array> MultivariateAccumulator::mean() const {
-            QL_REQUIRE(sampleWeight_ > 0.0,
-                "Stat::mean() : sampleWeight_=0, unsufficient");
-            return sum_/sampleWeight_;
-        }
+    // inline definitions
+    inline Size MultivariateAccumulator::size() const {
+        return size_;
+    }
 
+    inline Size MultivariateAccumulator::samples() const {
+        return sampleNumber_;
+    }
+
+    inline double MultivariateAccumulator::weightSum() const {
+        return sampleWeight_;
+    }
+
+    inline Disposable<Array> MultivariateAccumulator::mean() const {
+        QL_REQUIRE(sampleWeight_ > 0.0,
+                   "Stat::mean() : sampleWeight_=0, unsufficient");
+        return sum_/sampleWeight_;
     }
 
 }

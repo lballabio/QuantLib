@@ -22,7 +22,6 @@
 #include <ql/FiniteDifferences/dplusdminus.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::Math;
 
 namespace {
 

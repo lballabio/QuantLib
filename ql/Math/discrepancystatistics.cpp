@@ -23,38 +23,34 @@
 
 namespace QuantLib {
 
-    namespace Math {
+    double DiscrepancyStatistics::discrepancy() const {
+        Size N = samples();
+        /*
+        Size i;
+        double r_ik, r_jk, cdiscr = adiscr = 0.0, temp = 1.0;
 
-        double DiscrepancyStatistics::discrepancy() const {
-            Size N = samples();
-            /*
-            Size i;
-            double r_ik, r_jk, cdiscr = adiscr = 0.0, temp = 1.0;
-
-            for (i=0; i<N; i++) {
-                double temp = 1.0;
-                for (Size k=0; k<dimension_; k++) {
-                    r_ik = stats_[k].sampleData()[i].first;
-                    temp *= (1.0 - r_ik*r_ik);
-                }
-                cdiscr += temp;
+        for (i=0; i<N; i++) {
+            double temp = 1.0;
+            for (Size k=0; k<dimension_; k++) {
+                r_ik = stats_[k].sampleData()[i].first;
+                temp *= (1.0 - r_ik*r_ik);
             }
-
-            for (i=0; i<N; i++) {
-                for (Size j=0; j<N; j++) {
-                    double temp = 1.0;
-                    for (Size k=0; k<dimension_; k++) {
-                        r_jk = stats_[k].sampleData()[j].first;
-                        r_ik = stats_[k].sampleData()[i].first;
-                        temp *= (1.0 - QL_MAX(r_ik, r_jk));
-                    }
-                    adiscr += temp;
-                }
-            }
-            */
-            return QL_SQRT(adiscr_/(N*N)-bdiscr_/N*cdiscr_+ddiscr_);
+            cdiscr += temp;
         }
 
+        for (i=0; i<N; i++) {
+            for (Size j=0; j<N; j++) {
+                double temp = 1.0;
+                for (Size k=0; k<dimension_; k++) {
+                    r_jk = stats_[k].sampleData()[j].first;
+                    r_ik = stats_[k].sampleData()[i].first;
+                    temp *= (1.0 - QL_MAX(r_ik, r_jk));
+                }
+                adiscr += temp;
+            }
+        }
+        */
+        return QL_SQRT(adiscr_/(N*N)-bdiscr_/N*cdiscr_+ddiscr_);
     }
 
 }

@@ -29,8 +29,7 @@ namespace QuantLib {
     namespace PricingEngines {
 
         #if !defined(QL_PATCH_SOLARIS)
-        const Math::CumulativeNormalDistribution
-        AnalyticEuropeanBinaryEngine::f_;
+        const CumulativeNormalDistribution AnalyticEuropeanBinaryEngine::f_;
         #endif
 
         void AnalyticEuropeanBinaryEngine::calculate() const {

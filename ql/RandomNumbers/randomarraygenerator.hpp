@@ -39,7 +39,7 @@ namespace QuantLib {
             RandomArrayGenerator(const Array& variance,
                                  long seed = 0);
             // different averages, different variances, covariance
-            RandomArrayGenerator(const Math::Matrix& covariance,
+            RandomArrayGenerator(const Matrix& covariance,
                                  long seed = 0);
             const sample_type& next() const;
             int size() const { return next_.size(); }
@@ -47,7 +47,7 @@ namespace QuantLib {
             mutable sample_type next_;
             RNG generator_;
             Array sqrtVariance_;
-            Math::Matrix sqrtCovariance_;
+            Matrix sqrtCovariance_;
         };
 
 
@@ -68,7 +68,7 @@ namespace QuantLib {
 
         template <class RNG>
         inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
-            const Math::Matrix& covariance, long seed)
+            const Matrix& covariance, long seed)
         : next_(Array(covariance.rows()),1.0), generator_(seed) {
             QL_REQUIRE(covariance.rows() == covariance.columns(),
                 "Covariance matrix must be square (is "+
@@ -76,7 +76,7 @@ namespace QuantLib {
                 IntegerFormatter::toString(covariance.columns())+ ")");
             QL_REQUIRE(covariance.rows() > 0,
                 "Null covariance matrix given");
-            sqrtCovariance_ = Math::pseudoSqrt(covariance);
+            sqrtCovariance_ = pseudoSqrt(covariance);
         }
 
 

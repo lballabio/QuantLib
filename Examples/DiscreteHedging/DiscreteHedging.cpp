@@ -45,28 +45,10 @@
 // the only header you need to use QuantLib
 #include <ql/quantlib.hpp>
 
-
-// introducing the players ....
-
-// Rate and Time are just double, but having their own types allows for
-// a stronger check at compile time
-using QuantLib::Rate;
-using QuantLib::Time;
-
-// PlainVanillaPayoff is a helper class that calculates option payoff
-using QuantLib::PlainVanillaPayoff;
-
-// Option is a helper class that holds the enumeration {Call, Put, Straddle}
-using QuantLib::Option;
-
-// Handle is the QuantLib way to have reference-counted objects
-using QuantLib::Handle;
+using namespace QuantLib;
 
 // the classic Black Scholes analytic solution for European Option
 using QuantLib::Pricers::EuropeanOption;
-
-// class for statisticsal analysis
-using QuantLib::Math::Statistics;
 
 // single Path of a random variable
 // It contains the list of variations
@@ -80,9 +62,6 @@ using QuantLib::MonteCarlo::GaussianPathGenerator_old;
 
 // the Montecarlo pricing model for option on a single asset
 using QuantLib::MonteCarlo::OneFactorMonteCarloOption_old;
-
-// to format the output of doubles
-using QuantLib::DoubleFormatter;
 
 /* The ReplicationError class carries out Monte Carlo simulations to evaluate
    the outcome (the replication error) of the discrete hedging strategy over

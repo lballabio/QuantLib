@@ -34,7 +34,7 @@ namespace QuantLib {
                         const DayCounter& dc,
                         const std::vector<Date>& dates,
                         const std::vector<double>& strikes,
-                        const Math::Matrix& blackVolSurface,
+                        const Matrix& blackVolSurface,
                         const Date& date1,
                         const Date& date2,
                         double strike,

@@ -26,22 +26,13 @@
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 
-// #define PRINT_ONLY
-#ifdef PRINT_ONLY
-#include <fstream>
-#endif
-
 using namespace QuantLib;
-using namespace QuantLib::Math;
 using namespace QuantLib::RandomNumbers;
 
 CppUnit::Test* LDSTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Low discrepancy sequences' tests");
 
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing true random number discrepancy",
-                    &LDSTest::testTrueRandomNumberDiscrepancy));
     tests->addTest(new CppUnit::TestCaller<LDSTest>
                    ("Testing Mersenne twister discrepancy",
                     &LDSTest::testMersenneTwisterDiscrepancy));
@@ -62,7 +53,6 @@ CppUnit::Test* LDSTest::suite() {
                    ("Testing random-start, random-shift Halton discrepancy",
                     &LDSTest::testRandomStartRandomShiftHaltonDiscrepancy));
 
-  
     tests->addTest(new CppUnit::TestCaller<LDSTest>
         ("Testing " + IntegerFormatter::toString(PPMT_MAX_DIM) +
          " primitive polynomials modulo two",
@@ -599,13 +589,7 @@ namespace {
         // 7 loops would take too long for usual/frequent test running
         Size sampleLoops = Size(QL_MAX(1.0, double(minimumLoops)));
 
-        #ifdef PRINT_ONLY
-        std::ofstream outStream(fileName.c_str());
-        #endif
         for (int i = 0; i<8; i++) {
-            #ifdef PRINT_ONLY
-            outStream << std::endl;
-            #endif
 
             dim = dimensionality[i];
             DiscrepancyStatistics stat(dim);
@@ -614,24 +598,15 @@ namespace {
 
             Size j, k=0, jMin=10;
             stat.reset();
-            #ifdef PRINT_ONLY
-            outStream << "static const double dim" << dim 
-                      << arrayName << "[] = {" ;
-            #endif
             for (j=jMin; j<jMin+sampleLoops; j++) {
                 Size points = Size(QL_POW(2.0, int(j)))-1;
                 for (; k<points; k++) {
                     point = rsg.nextSequence().value;
                     stat.add(point);
                 }
-            
+
                 discr = stat.discrepancy();
-                
-                #ifdef PRINT_ONLY
-                if (j!=jMin)
-                    outStream << ", ";
-                outStream << DoubleFormatter::toExponential(discr, 2);
-                #else
+
                 if (QL_FABS(discr-discrepancy[i][j-jMin]) > tolerance*discr) {
                     CPPUNIT_FAIL(generatorFactory.name() +
                                  "discrepancy dimension " +
@@ -644,15 +619,8 @@ namespace {
                                  DoubleFormatter::toExponential(
                                      discrepancy[i][j-jMin], 2));
                 }
-                #endif
             }
-            #ifdef PRINT_ONLY
-            outStream << "};" << std::endl;
-            #endif
         }
-        #ifdef PRINT_ONLY
-        outStream.close();
-        #endif
     }
 
 }
@@ -672,14 +640,7 @@ void LDSTest::testTrueRandomNumberDiscrepancy() {
     double trueRandomFactor, discr, tolerance=1e-2;
     Size sampleLoops = Size(QL_MAX(7.0, double(minimumLoops)));
 
-    #ifdef PRINT_ONLY
-    std::ofstream outStream("TrueRandomDiscrepancy.txt");
-    #endif
     for (int i = 0; i<8; i++) {
-        #ifdef PRINT_ONLY
-        outStream << std::endl;
-        #endif
-
         dim = dimensionality[i];
         DiscrepancyStatistics stat(dim);
 
@@ -690,20 +651,11 @@ void LDSTest::testTrueRandomNumberDiscrepancy() {
 
         // true random numbers
         stat.reset();
-        #ifdef PRINT_ONLY
-        outStream << "static const double dim" << dim 
-                  << "Discr_True_Random" << "[] = {" ;
-        #endif
         for (j=jMin; j<jMin+sampleLoops; j++) {
             Size points = Size(QL_POW(2.0, int(j)))-1;
 
             discr = QL_SQRT(trueRandomFactor/points);
 
-            #ifdef PRINT_ONLY
-            if (j!=jMin)
-                outStream << ", ";
-            outStream << DoubleFormatter::toExponential(discr, 2);
-            #else
             if(QL_FABS(discr-discrepancy[i][j-jMin])>tolerance*discr) {
                 CPPUNIT_FAIL("True random "
                     "discrepancy dimension " +
@@ -712,15 +664,8 @@ void LDSTest::testTrueRandomNumberDiscrepancy() {
                     DoubleFormatter::toExponential(discr, 2) + " instead of "+
                     DoubleFormatter::toExponential(discrepancy[i][j-jMin], 2));
             }
-            #endif
         }
-        #ifdef PRINT_ONLY
-        outStream << "};" << std::endl;
-        #endif
     }
-    #ifdef PRINT_ONLY
-    outStream.close();
-    #endif
 }
 
 void LDSTest::testMersenneTwisterDiscrepancy() {

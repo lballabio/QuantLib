@@ -43,9 +43,9 @@ namespace QuantLib {
             void calculate() const;
           private:
             #if defined(QL_PATCH_SOLARIS)
-            Math::CumulativeNormalDistribution f_;
+            CumulativeNormalDistribution f_;
             #else
-            static const Math::CumulativeNormalDistribution f_;
+            static const CumulativeNormalDistribution f_;
             #endif
         };
 
@@ -56,7 +56,7 @@ namespace QuantLib {
             void calculate() const;
         };
 
-        
+
         //! Pricing engine for Vanilla options using binomial trees
         class BinomialVanillaEngine : public VanillaEngine {
           public:

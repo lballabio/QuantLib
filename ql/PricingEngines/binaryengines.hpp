@@ -51,9 +51,9 @@ namespace QuantLib {
             void calculate() const;
           private:
             #if defined(QL_PATCH_SOLARIS)
-            Math::CumulativeNormalDistribution f_;
+            CumulativeNormalDistribution f_;
             #else
-            static const Math::CumulativeNormalDistribution f_;
+            static const CumulativeNormalDistribution f_;
             #endif
         };
 
@@ -63,15 +63,15 @@ namespace QuantLib {
             void calculate() const;
           private:
             #if defined(QL_PATCH_SOLARIS)
-            Math::CumulativeNormalDistribution f_;
+            CumulativeNormalDistribution f_;
             #else
-            static const Math::CumulativeNormalDistribution f_;
+            static const CumulativeNormalDistribution f_;
             #endif
         };
 
         //! Pricing engine for Binary options using Monte Carlo
         template<class RNG = MonteCarlo::PseudoRandom, 
-                 class S = Math::Statistics>
+                 class S = Statistics>
         class MCBinaryEngine 
         : public BinaryEngine,
           public McSimulation<MonteCarlo::SingleAsset<RNG>, S> {

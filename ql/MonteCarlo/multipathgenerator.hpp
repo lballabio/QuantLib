@@ -49,29 +49,29 @@ namespace QuantLib {
           public:
             typedef Sample<MultiPath> sample_type;
             MultiPathGenerator(const Array& drifts,
-                               const Math::Matrix& covariance,
+                               const Matrix& covariance,
                                Time length,
                                Size timeSteps,
                                SG generator);
             MultiPathGenerator(const Array& drifts,
-                               const Math::Matrix& covariance,
+                               const Matrix& covariance,
                                const TimeGrid& timeGrid,
                                SG generator);
             const sample_type& next() const;
             const sample_type& antithetic() const;
         private:
             Size numAssets_;
-            Math::Matrix sqrtCovariance_;
+            Matrix sqrtCovariance_;
             SG generator_;
             mutable sample_type next_;
         };
 
         template <class SG>
         inline MultiPathGenerator<SG>::MultiPathGenerator(
-            const Array& drifts, const Math::Matrix& covariance,
+            const Array& drifts, const Matrix& covariance,
             Time length, Size timeSteps, SG generator)
         : numAssets_(covariance.rows()),
-          sqrtCovariance_(Math::matrixSqrt(covariance)),
+          sqrtCovariance_(matrixSqrt(covariance)),
           generator_(generator),
           next_(MultiPath(covariance.rows(),TimeGrid(length,timeSteps)),1.0) {
 
@@ -100,9 +100,9 @@ namespace QuantLib {
 
         template <class SG>
         inline MultiPathGenerator<SG>::MultiPathGenerator(
-            const Array& drifts, const Math::Matrix& covariance,
+            const Array& drifts, const Matrix& covariance,
             const TimeGrid& times, SG generator)
-        : numAssets_(covariance.rows()), sqrtCovariance_(Math::matrixSqrt(covariance)),
+        : numAssets_(covariance.rows()), sqrtCovariance_(matrixSqrt(covariance)),
           generator_(generator),
           next_(MultiPath(covariance.rows(), times), 1.0) {
 
@@ -175,12 +175,12 @@ namespace QuantLib {
           public:
             typedef Sample<MultiPath> sample_type;
             MultiPathGenerator_old(const Array& drifts,
-                               const Math::Matrix& covariance,
+                               const Matrix& covariance,
                                Time length,
                                Size timeSteps,
                                long seed);
             MultiPathGenerator_old(const Array& drifts,
-                               const Math::Matrix& covariance,
+                               const Matrix& covariance,
                                const TimeGrid& times,
                                long seed=0);
             const sample_type& next() const;
@@ -195,7 +195,7 @@ namespace QuantLib {
 
         template <class RAG>
         inline MultiPathGenerator_old<RAG >::MultiPathGenerator_old(
-            const Array& drifts, const Math::Matrix& covariance,
+            const Array& drifts, const Matrix& covariance,
             Time length, Size timeSteps, long seed)
         : numAssets_(covariance.rows()),
           rndArrayGen_(covariance, seed),
@@ -223,7 +223,7 @@ namespace QuantLib {
 
         template <class RAG>
         inline MultiPathGenerator_old<RAG >::MultiPathGenerator_old(
-            const Array& drifts, const Math::Matrix& covariance,
+            const Array& drifts, const Matrix& covariance,
             const TimeGrid& times, long seed)
         : numAssets_(covariance.rows()),
           rndArrayGen_(covariance, seed),

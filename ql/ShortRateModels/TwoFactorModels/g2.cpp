@@ -19,16 +19,15 @@
     \brief Two-factor additive Gaussian Model G2++
 */
 
-#include "ql/ShortRateModels/TwoFactorModels/g2.hpp"
-#include "ql/blackmodel.hpp"
-#include "ql/Math/segmentintegral.hpp"
-#include "ql/Solvers1D/brent.hpp"
+#include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
+#include <ql/blackmodel.hpp>
+#include <ql/Math/segmentintegral.hpp>
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
     namespace ShortRateModels {
 
-        using namespace Math;
         using namespace Optimization;
 
         G2::G2(const RelinkableHandle<TermStructure>& termStructure,
@@ -135,7 +134,7 @@ namespace QuantLib {
               }
 
             double operator()(double x) const {
-                Math::CumulativeNormalDistribution phi;
+                CumulativeNormalDistribution phi;
                 double temp = (x - mux_)/sigmax_;
                 double txy = QL_SQRT(1.0 - rhoxy_*rhoxy_);
 

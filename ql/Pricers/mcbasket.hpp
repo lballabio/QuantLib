@@ -38,7 +38,7 @@ namespace QuantLib {
                        const std::vector<double>& underlying,
                        double strike,
                        const Array& dividendYield,
-                       const Math::Matrix& covariance,
+                       const Matrix& covariance,
                        Rate riskFreeRate,
                        double residualTime,
                        bool antitheticVariance,

@@ -20,7 +20,6 @@
 
 using namespace QuantLib;
 using namespace QuantLib::PricingEngines;
-using namespace QuantLib::Math;
 using namespace QuantLib::MonteCarlo;
 using namespace QuantLib::RandomNumbers;
 using namespace QuantLib::Pricers;

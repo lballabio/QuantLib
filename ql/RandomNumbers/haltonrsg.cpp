@@ -62,7 +62,7 @@ namespace QuantLib {
             double f, h;
             for (Size i=0; i<dimensionality_; ++i) {
                 h = 0.0;
-                b = Math::PrimeNumbers::get(i);
+                b = PrimeNumbers::get(i);
                 f = 1.0;
                 k = sequenceCounter_+randomStart_[i];
                 while (k) {

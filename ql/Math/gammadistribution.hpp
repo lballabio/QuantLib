@@ -24,38 +24,33 @@
 
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
-
 #include <functional>
 
 namespace QuantLib {
 
-    namespace Math {
-
-        class GammaDistribution
+    class GammaDistribution
         : public std::unary_function<double,double> {
-          public:
-            GammaDistribution(double a) : a_(a) {
-                QL_REQUIRE(a>0.0, "Invalid parameter for gamma distribution");
-            }
-            double operator()(double x) const;
-          private:
-            double a_;
-        };
+      public:
+        GammaDistribution(double a) : a_(a) {
+            QL_REQUIRE(a>0.0, "Invalid parameter for gamma distribution");
+        }
+        double operator()(double x) const;
+      private:
+        double a_;
+    };
 
-        //! Gamma function class
-        /*! This is a function defined by 
-            \f[
-                \Gamma(z) = \int_0^{\infty}t^{z-1}e^{-t}dt
-            \f]
-        */
-        class GammaFunction : public std::unary_function<double,double> {
-          public:
-            double logValue(double x) const;
-          private:
-            static const double c1_, c2_, c3_, c4_, c5_, c6_;
-        };
-
-    }
+    //! Gamma function class
+    /*! This is a function defined by 
+        \f[
+            \Gamma(z) = \int_0^{\infty}t^{z-1}e^{-t}dt
+        \f]
+    */
+    class GammaFunction : public std::unary_function<double,double> {
+      public:
+        double logValue(double x) const;
+      private:
+        static const double c1_, c2_, c3_, c4_, c5_, c6_;
+    };
 
 }
 

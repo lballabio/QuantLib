@@ -27,98 +27,94 @@
 
 namespace QuantLib {
 
-    namespace Math {
+    // functions
 
-        // functions
+    template <class T, class U>
+    class constant : public std::unary_function<T,U> {
+      public:
+        constant(const U& u) : u_(u) {}
+        U operator()(const T&) const { return u_; }
+      private:
+        U u_;
+    };
 
-        template <class T, class U>
-        class constant : public std::unary_function<T,U> {
-          public:
-            constant(const U& u) : u_(u) {}
-            U operator()(const T&) const { return u_; }
-          private:
-            U u_;
-        };
+    template <class T>
+    class identity : public std::unary_function<T,T> {
+      public:
+        T operator()(const T& t) const { return t; }
+    };
 
-        template <class T>
-        class identity : public std::unary_function<T,T> {
-          public:
-            T operator()(const T& t) const { return t; }
-        };
+    template <class T>
+    class square : public std::unary_function<T,T> {
+      public:
+        T operator()(const T& t) const { return t*t; }
+    };
 
-        template <class T>
-        class square : public std::unary_function<T,T> {
-          public:
-            T operator()(const T& t) const { return t*t; }
-        };
+    template <class T>
+    class cube : public std::unary_function<T,T> {
+      public:
+        T operator()(const T& t) const { return t*t*t; }
+    };
 
-        template <class T>
-        class cube : public std::unary_function<T,T> {
-          public:
-            T operator()(const T& t) const { return t*t*t; }
-        };
-
-        template <class T>
-        class fourth_power : public std::unary_function<T,T> {
-          public:
-            T operator()(const T& t) const { T t2 = t*t; return t2*t2; }
-        };
+    template <class T>
+    class fourth_power : public std::unary_function<T,T> {
+      public:
+        T operator()(const T& t) const { T t2 = t*t; return t2*t2; }
+    };
 
 
-        // predicates
-        
-        class everywhere : public constant<double,bool> {
-          public:
-            everywhere() : constant<double,bool>(true) {}
-        };
+    // predicates
 
-        class nowhere : public constant<double,bool> {
-          public:
-            nowhere() : constant<double,bool>(false) {}
-        };
+    class everywhere : public constant<double,bool> {
+      public:
+        everywhere() : constant<double,bool>(true) {}
+    };
+
+    class nowhere : public constant<double,bool> {
+      public:
+        nowhere() : constant<double,bool>(false) {}
+    };
 
 
-        // combinators
+    // combinators
 
-        template <class F, class R>
-        class clipped_function {
-          public:
-            typedef typename F::argument_type argument_type;
-            typedef typename F::result_type result_type;
-            clipped_function(const F& f, const R& r) : f_(f), r_(r) {}
-            result_type operator()(const argument_type& x) const {
-                return r_(x) ? f_(x) : result_type();
-            }
-          private:
-            F f_;
-            R r_;
-        };
-
-        template <class F, class R>
-        clipped_function<F,R> clip(const F& f, const R& r) {
-            return clipped_function<F,R>(f,r);
+    template <class F, class R>
+    class clipped_function {
+      public:
+        typedef typename F::argument_type argument_type;
+        typedef typename F::result_type result_type;
+        clipped_function(const F& f, const R& r) : f_(f), r_(r) {}
+        result_type operator()(const argument_type& x) const {
+            return r_(x) ? f_(x) : result_type();
         }
+      private:
+        F f_;
+        R r_;
+    };
+
+    template <class F, class R>
+    clipped_function<F,R> clip(const F& f, const R& r) {
+        return clipped_function<F,R>(f,r);
+    }
 
 
-        template <class F, class G>
-        class composed_function {
-          public:
-            typedef typename G::argument_type argument_type;
-            typedef typename F::result_type result_type;
-            composed_function(const F& f, const G& g) : f_(f), g_(g) {}
-            result_type operator()(const argument_type& x) const {
-                return f_(g_(x));
-            }
-          private:
-            F f_;
-            G g_;
-        };
-
-        template <class F, class G>
-        composed_function<F,G> compose(const F& f, const G& g) {
-            return composed_function<F,G>(f,g);
+    template <class F, class G>
+    class composed_function {
+      public:
+        typedef typename G::argument_type argument_type;
+        typedef typename F::result_type result_type;
+        composed_function(const F& f, const G& g) : f_(f), g_(g) {}
+        result_type operator()(const argument_type& x) const {
+            return f_(g_(x));
         }
+      private:
+        F f_;
+        G g_;
+    };
 
+    template <class F, class G>
+    composed_function<F,G> compose(const F& f, const G& g) {
+        return composed_function<F,G>(f,g);
     }
 
 }

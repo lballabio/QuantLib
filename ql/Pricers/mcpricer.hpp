@@ -39,8 +39,7 @@ namespace QuantLib {
             Basket as example of multi factor pricer.
         */
 
-        template <class MC,
-                  class S = Math::Statistics>
+        template <class MC, class S = Statistics>
         class McPricer {
           public:
             virtual ~McPricer() {}

@@ -79,7 +79,7 @@ namespace QuantLib
          mutable std::vector<Date> dates_;
          mutable std::vector<Rate> forwards_;
          mutable std::vector<Time> times_;
-         typedef Math::LinearInterpolation <
+         typedef LinearInterpolation <
             std::vector < Time >::const_iterator,
             std::vector < Rate >::const_iterator > FwdInterpolation;
          mutable Handle<FwdInterpolation> fwdinterp_;
@@ -91,15 +91,15 @@ namespace QuantLib
       inline Date CompoundForward::maxDate() const {
          return dates_.back();
       }
-      
+
       inline Time CompoundForward::maxTime() const {
          return times_.back();
       }
-      
+
       inline const std::vector<Time>& CompoundForward::times() const {
          return times_;
       }
-      
+
       inline const std::vector<Date>& CompoundForward::dates() const {
          return dates_;
       }

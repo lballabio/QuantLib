@@ -29,8 +29,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Math::CubicSplineInterpolation;
-
         FdDividendOption::FdDividendOption(
             Option::Type type, double underlying,
             double strike, Spread dividendYield, Rate riskFreeRate,

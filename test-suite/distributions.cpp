@@ -20,9 +20,6 @@
 #include <ql/Math/normaldistribution.hpp>
 
 using namespace QuantLib;
-using QuantLib::Math::NormalDistribution;
-using QuantLib::Math::CumulativeNormalDistribution;
-using QuantLib::Math::InverseCumulativeNormal;
 
 namespace {
 

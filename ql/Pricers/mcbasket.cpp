@@ -34,11 +34,10 @@ namespace QuantLib {
         using MonteCarlo::MonteCarloModel;
         using MonteCarlo::MultiAsset_old;
         using MonteCarlo::PseudoRandomSequence_old;
-        using Math::Statistics;
 
         McBasket::McBasket(Option::Type type, const std::vector<double>& underlying,
             double strike, const Array& dividendYield,
-            const Math::Matrix& covariance,
+            const Matrix& covariance,
             Rate riskFreeRate,  double residualTime,
             bool antitheticVariance, long seed) {
 

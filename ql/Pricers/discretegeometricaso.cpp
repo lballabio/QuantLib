@@ -26,7 +26,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        const Math::CumulativeNormalDistribution DiscreteGeometricASO::f_;
+        const CumulativeNormalDistribution DiscreteGeometricASO::f_;
 
         DiscreteGeometricASO::DiscreteGeometricASO(Option::Type type,
             double underlying, Spread dividendYield,

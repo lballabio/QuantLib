@@ -84,8 +84,8 @@ namespace QuantLib {
             double ncps = 2.0*rho*rho*(r0-phi_(0.0))*QL_EXP(h*t)/(rho+psi+b);
             double ncpt = 2.0*rho*rho*(r0-phi_(0.0))*QL_EXP(h*t)/(rho+psi);
 
-            Math::NonCentralChiSquareDistribution chis(df, ncps);
-            Math::NonCentralChiSquareDistribution chit(df, ncpt);
+            NonCentralChiSquareDistribution chis(df, ncps);
+            NonCentralChiSquareDistribution chit(df, ncpt);
 
             double z = QL_LOG(CoxIngersollRoss::A(t,s)/strike)/b; 
             double call = discountS*chis(2.0*z*(rho+psi+b)) -

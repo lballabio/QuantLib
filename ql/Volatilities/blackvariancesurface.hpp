@@ -49,7 +49,7 @@ namespace QuantLib {
             BlackVarianceSurface(const Date& referenceDate,
                                  const std::vector<Date>& dates,
                                  const std::vector<double>& strikes,
-                                 const Math::Matrix& blackVolMatrix,
+                                 const Matrix& blackVolMatrix,
                                  Extrapolation lowerExtrapolation =
                                      InterpolatorDefaultExtrapolation,
                                  Extrapolation upperExtrapolation =
@@ -98,16 +98,16 @@ namespace QuantLib {
                                              double strike,
                                              bool extrapolate = false) const;
           private:
-            typedef Math::Interpolation2D<std::vector<Time>::iterator,
-                                          std::vector<double>::iterator,
-                                          Math::Matrix> Interpolation;
+            typedef Interpolation2D<std::vector<Time>::iterator,
+                                    std::vector<double>::iterator,
+                                    Matrix> Interpolation_t;
             Date referenceDate_;
             DayCounter dayCounter_;
             Date maxDate_;
             std::vector<double> strikes_;
             std::vector<Time> times_;
-            Math::Matrix variances_;
-            Handle<Interpolation> varianceSurface_;
+            Matrix variances_;
+            Handle<Interpolation_t> varianceSurface_;
             Extrapolation lowerExtrapolation_, upperExtrapolation_;
         };
 

@@ -22,8 +22,8 @@
 #ifndef quantlib_optimization_least_square_h
 #define quantlib_optimization_least_square_h
 
-#include "ql/Math/matrix.hpp"
-#include "ql/Optimization/conjugategradient.hpp"
+#include <ql/Math/matrix.hpp>
+#include <ql/Optimization/conjugategradient.hpp>
 
 namespace QuantLib {
 
@@ -40,7 +40,7 @@ namespace QuantLib {
             //! compute the target vector, the values of the fonction to fit 
             //! and the matrix of derivatives
             virtual void targetValueAndGradient (const Array& x,
-                Math::Matrix& grad_fct2fit, Array& target, Array& fct2fit) = 0;
+                Matrix& grad_fct2fit, Array& target, Array& fct2fit) = 0;
         };
 
         /*!
@@ -160,13 +160,13 @@ namespace QuantLib {
             // size of target and function to fit vectors
             Array target (lsp_.size ()), fct2fit (lsp_.size ());
             // size of gradient matrix
-            Math::Matrix grad_fct2fit (lsp_.size (), x.size ());
+            Matrix grad_fct2fit (lsp_.size (), x.size ());
             // compute its values
             lsp_.targetValueAndGradient(x, grad_fct2fit, target, fct2fit);
             // do the difference
             Array diff = target - fct2fit;
             // compute derivative
-            grad_f = -2.0*(Math::transpose(grad_fct2fit)*diff);
+            grad_f = -2.0*(transpose(grad_fct2fit)*diff);
         }
 
         inline double LeastSquareFunction::valueAndGradient(
@@ -174,13 +174,13 @@ namespace QuantLib {
             // size of target and function to fit vectors
             Array target(lsp_.size()), fct2fit(lsp_.size());
             // size of gradient matrix
-            Math::Matrix grad_fct2fit(lsp_.size(), x.size());
+            Matrix grad_fct2fit(lsp_.size(), x.size());
             // compute its values
             lsp_.targetValueAndGradient(x, grad_fct2fit, target, fct2fit);
             // do the difference
             Array diff = target - fct2fit;
             // compute derivative
-            grad_f = -2.0*(Math::transpose(grad_fct2fit)*diff);
+            grad_f = -2.0*(transpose(grad_fct2fit)*diff);
             // and compute the scalar product (square of the norm)
             return DotProduct(diff, diff);
         }

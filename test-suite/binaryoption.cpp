@@ -481,7 +481,7 @@ void BinaryOptionTest::testEngineConsistency() {
 
     Handle<PricingEngine> mcEngine = Handle<PricingEngine>(
         new PricingEngines::MCBinaryEngine
-            <MonteCarlo::PseudoRandom, Math::Statistics>
+            <MonteCarlo::PseudoRandom, Statistics>
                   (maxTimeStepsPerYear, antitheticVariate, controlVariate,
                   requiredSamples, requiredTolerance,
                   maxSamples, isBiased, seed));

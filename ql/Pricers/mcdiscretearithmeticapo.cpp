@@ -28,7 +28,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Math::Statistics;
         using namespace MonteCarlo;
 
         McDiscreteArithmeticAPO::McDiscreteArithmeticAPO(Option::Type type,

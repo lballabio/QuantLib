@@ -33,7 +33,7 @@ namespace QuantLib {
 
         //! European option pricing engine using Monte Carlo simulation
         template <class RNG = MonteCarlo::PseudoRandom, 
-                  class S = Math::Statistics>
+                  class S = Statistics>
         class MCEuropeanEngine : public MCVanillaEngine<RNG,S> {
           public:
             typedef typename MCVanillaEngine<RNG,S>::path_generator_type
@@ -56,7 +56,7 @@ namespace QuantLib {
 
         // helper class for easier instantiation
         template <class RNG = MonteCarlo::PseudoRandom, 
-                  class S = Math::Statistics>
+                  class S = Statistics>
         class MakeMCEuropeanEngine {
           public:
             MakeMCEuropeanEngine();

@@ -24,9 +24,6 @@
 
 namespace QuantLib {
 
-    using Math::LinearInterpolation;
-    using Math::LogLinearInterpolation;
-
     namespace TermStructures {
 
         CompoundForward::CompoundForward(const Date & todaysDate,

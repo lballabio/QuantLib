@@ -49,7 +49,7 @@ namespace QuantLib {
 
         */
         template <class mc_traits,
-                  class stats_traits = Math::Statistics>
+                  class stats_traits = Statistics>
         class MonteCarloModel {
           public:
             // extract traits

@@ -26,7 +26,6 @@
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
-using namespace QuantLib::Math;
 
 namespace {
 

@@ -22,8 +22,8 @@
 #ifndef quantlib_cap_volatility_vector_h
 #define quantlib_cap_volatility_vector_h
 
-#include "ql/capvolstructures.hpp"
-#include "ql/Math/interpolationtraits.hpp"
+#include <ql/capvolstructures.hpp>
+#include <ql/Math/interpolationtraits.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -63,7 +63,7 @@ namespace QuantLib {
             std::vector<Time> timeLengths_;
             std::vector<double> volatilities_;
             // interpolation
-            typedef Math::Interpolation<
+            typedef Interpolation<
                 std::vector<Time>::iterator,
                 std::vector<double>::iterator> VolInterpolation;
             Handle<VolInterpolation> interpolation_;
@@ -96,9 +96,9 @@ namespace QuantLib {
                 volatilities_[i+1] = vols[i];
             }
             interpolation_ = 
-                Math::Linear::make_interpolation(timeLengths_.begin(),
-                                                 timeLengths_.end(),
-                                                 volatilities_.begin());
+                Linear::make_interpolation(timeLengths_.begin(),
+                                           timeLengths_.end(),
+                                           volatilities_.begin());
         }
 
         inline Date CapFlatVolatilityVector::todaysDate() const {

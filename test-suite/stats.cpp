@@ -21,7 +21,6 @@
 #include <ql/Math/sequencestatistics.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::Math;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 

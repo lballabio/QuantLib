@@ -81,15 +81,15 @@ namespace QuantLib {
             virtual double blackVarianceImpl(Time t, double,
                                              bool extrapolate = false) const;
           private:
-            typedef Math::Interpolation<std::vector<Time>::iterator,
-                                        std::vector<double>::iterator>
-                Interpolation;
+            typedef Interpolation<std::vector<Time>::iterator,
+                                  std::vector<double>::iterator>
+                Interpolation_t;
             Date referenceDate_;
             DayCounter dayCounter_;
             Date maxDate_;
             std::vector<Time> times_;
             std::vector<double> variances_;
-            Handle<Interpolation> varianceCurve_;
+            Handle<Interpolation_t> varianceCurve_;
         };
 
 

@@ -27,8 +27,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Math::Statistics;
-        using Math::Matrix;
         using namespace MonteCarlo;
 
         McPagoda::McPagoda(const std::vector<double>& portfolio, double fraction,

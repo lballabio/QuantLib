@@ -27,12 +27,10 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Math::Statistics;
-        using Math::Matrix;
         using namespace MonteCarlo;
 
         McHimalaya::McHimalaya(const std::vector<double>& underlying,
-            const Array& dividendYield, const Math::Matrix& covariance,
+            const Array& dividendYield, const Matrix& covariance,
             Rate riskFreeRate, double strike,
             const std::vector<Time>& times,
             bool antitheticVariance, long seed) {

@@ -29,12 +29,8 @@
 
 namespace QuantLib {
 
-    namespace Math {
-
-        //! default statistics tool
-        typedef GeneralStatistics Statistics;
-
-    }
+    //! default statistics tool
+    typedef GeneralStatistics Statistics;
 
 }
 

@@ -21,13 +21,11 @@
 #include <vector>
 
 using namespace QuantLib;
-using namespace QuantLib::Math;
 
 void MatricesTest::runTest() {
 
     // numerical example from "Monte Carlo Methods in Finance",
     // by Peter Jäckel, Section 6.4
-
 
     Matrix good(3,3,1.0);
     good[0][1] = good[1][0] = 0.9;

@@ -26,8 +26,6 @@
 
 namespace QuantLib {
 
-    using namespace Math;
-
     namespace VolTermStructures {
 
         BlackVarianceSurface::BlackVarianceSurface(

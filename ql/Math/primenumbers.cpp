@@ -30,51 +30,48 @@
     \brief Prime numbers calculator
 */
 
-#include "ql/Math/primenumbers.hpp"
+#include <ql/Math/primenumbers.hpp>
 
 namespace QuantLib {
 
-    namespace Math {
+    namespace {
 
-        namespace {
-            const unsigned long firstPrimes[] = {
-                // the first two primes are mandatory for bootstrapping
-                 2,  3, 
-                // optional additional precomputed primes
-                 5,  7, 11, 13, 17, 19, 23, 29,
-                31, 37, 41, 43, 47 };
+        const unsigned long firstPrimes[] = {
+            // the first two primes are mandatory for bootstrapping
+            2,  3, 
+            // optional additional precomputed primes
+            5,  7, 11, 13, 17, 19, 23, 29,
+            31, 37, 41, 43, 47 };
+    }
+
+    std::vector<unsigned long> PrimeNumbers::primeNumbers_;
+
+    unsigned long PrimeNumbers::get(Size absoluteIndex) {
+        if (primeNumbers_.empty()) {
+            Size n = sizeof(firstPrimes)/sizeof(firstPrimes[0]);
+            std::copy(firstPrimes, firstPrimes+n,
+                      std::back_inserter(primeNumbers_));
         }
+        while (primeNumbers_.size()<=absoluteIndex)
+            nextPrimeNumber();
+        return primeNumbers_[absoluteIndex];
+    }
 
-        std::vector<unsigned long> PrimeNumbers::primeNumbers_;
-
-        unsigned long PrimeNumbers::get(Size absoluteIndex) {
-            if (primeNumbers_.empty()) {
-                Size n = sizeof(firstPrimes)/sizeof(firstPrimes[0]);
-                std::copy(firstPrimes, firstPrimes+n,
-                          std::back_inserter(primeNumbers_));
-            }
-            while (primeNumbers_.size()<=absoluteIndex)
-                nextPrimeNumber();
-            return primeNumbers_[absoluteIndex];
-        }
-
-        unsigned long PrimeNumbers::nextPrimeNumber() {
-            unsigned long p, n, m = primeNumbers_.back();
+    unsigned long PrimeNumbers::nextPrimeNumber() {
+        unsigned long p, n, m = primeNumbers_.back();
+        do {
+            // skip the even numbers
+            m += 2;
+            n = static_cast<unsigned long>(QL_SQRT(double(m)));
+            // i=1 since the even numbers have already been skipped
+            Size i = 1;
             do {
-                // skip the even numbers
-                m += 2;
-                n = static_cast<unsigned long>(QL_SQRT(double(m)));
-                // i=1 since the even numbers have already been skipped
-                Size i = 1;
-                do {
-                    p = primeNumbers_[i];
-                    ++i;
-                } while ( m%p && p<=n );
-            } while ( p<=n );
-            primeNumbers_.push_back(m);
-            return m;
-        }
-
+                p = primeNumbers_[i];
+                ++i;
+            } while ( m%p && p<=n );
+        } while ( p<=n );
+        primeNumbers_.push_back(m);
+        return m;
     }
 
 }

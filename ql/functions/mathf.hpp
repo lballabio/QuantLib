@@ -37,7 +37,7 @@ namespace QuantLib {
 
         double interpolate2D(const std::vector<double>& x_values,
                              const std::vector<double>& y_values,
-                             const Math::Matrix& dataMatrix,
+                             const Matrix& dataMatrix,
                              double x,
                              double y,
                              int interpolation2DType,

@@ -42,9 +42,7 @@
 using namespace QuantLib;
 using namespace QuantLib::Pricers;
 using namespace QuantLib::RandomNumbers;
-using namespace QuantLib::Math;
 using namespace QuantLib::MonteCarlo;
-
 
 namespace {
 

@@ -36,11 +36,11 @@ namespace QuantLib {
           public:
             McMaxBasket(const std::vector<double>& underlying,
                         const Array& dividendYield,
-                        const Math::Matrix& covariance,
+                        const Matrix& covariance,
                         Rate riskFreeRate,
                         double residualTime,
                         bool antitheticVariance,
-                        long seed=0);
+                        long seed = 0);
         };
 
     }

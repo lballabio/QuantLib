@@ -20,7 +20,6 @@
 
 using namespace QuantLib;
 using namespace QuantLib::PricingEngines;
-using namespace QuantLib::Math;
 using namespace QuantLib::MonteCarlo;
 using namespace QuantLib::RandomNumbers;
 using namespace QuantLib::Pricers;
@@ -151,9 +150,8 @@ int main(int argc, char* argv[])
 
         // third method: Integral
         method ="Integral";
-        using QuantLib::Math::SegmentIntegral;
-        WeightedPayoff po(type, maturity, strike, underlying, volatility, riskFreeRate,
-            dividendYield);
+        WeightedPayoff po(type, maturity, strike, underlying, 
+                          volatility, riskFreeRate, dividendYield);
         SegmentIntegral integrator(5000);
 
         double nuT = (riskFreeRate - dividendYield

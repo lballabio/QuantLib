@@ -28,7 +28,6 @@
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::Math;
 using QuantLib::RandomNumbers::MersenneTwisterUniformRng;
 
 namespace QuantLib {

@@ -48,21 +48,19 @@ namespace QuantLib {
             const std::vector<Time>& times() const;
             Time maxTime() const;
           protected:
-
 			Rate zeroYieldImpl(Time t, bool extrapolate = false) const;
-            
 		  private:
             Date todaysDate_;
             std::vector<Date> dates_;
             std::vector<Rate> yields_;
             DayCounter dayCounter_;
             std::vector<Time> times_;
-            typedef Math::LinearInterpolation<
+            typedef LinearInterpolation<
                 std::vector<Time>::const_iterator,
                 std::vector<Rate>::const_iterator> YieldInterpolation;
             Handle<YieldInterpolation> interpolation_;
         };
-       
+
         // inline definitions
 
         inline Date ZeroCurve::referenceDate() const {

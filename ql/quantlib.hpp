@@ -351,6 +351,7 @@ namespace QLFDM = QuantLib::FiniteDifferences;
 namespace QLIDX = QuantLib::Indexes;
 //! \deprecated inner namespace aliases will be removed in next release
 namespace QLINS = QuantLib::Instruments;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLMTH = QuantLib::Math;
 namespace QLMNT = QuantLib::MonteCarlo;
 namespace QLPAT = QuantLib::Patterns;

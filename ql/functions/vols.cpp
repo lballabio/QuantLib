@@ -26,9 +26,6 @@
 #include <ql/Volatilities/blackvariancesurface.hpp>
 
 using QuantLib::Date;
-using QuantLib::Math::Matrix;
-using QuantLib::Math::Interpolation2D;
-using QuantLib::Math::BilinearInterpolation;
 using QuantLib::VolTermStructures::BlackVarianceSurface;
 
 namespace QuantLib {
