@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.6  2001/01/08 11:44:17  lballabio
+	Array back into QuantLib namespace - Math namespace broke expression templates, go figure
+
 	Revision 1.5  2001/01/08 10:28:16  lballabio
 	Moved Array to Math namespace
-
+	
 	Revision 1.4  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -48,15 +51,15 @@ namespace QuantLib {
 
 	namespace Pricers {
 	
-		class BSMAmericanCondition : public FiniteDifferences::StepCondition<Math::Array> {
+		class BSMAmericanCondition : public FiniteDifferences::StepCondition<Array> {
 		  public:
-			BSMAmericanCondition(const Math::Array& initialPrices) : initialPrices(initialPrices) {}
-			void applyTo(Math::Array& a, Time t) const {
+			BSMAmericanCondition(const Array& initialPrices) : initialPrices(initialPrices) {}
+			void applyTo(Array& a, Time t) const {
 				for (int i=0; i<a.size(); i++)
 					a[i] = QL_MAX(a[i],initialPrices[i]);
 			}
 		  private:
-			Math::Array initialPrices;
+			Array initialPrices;
 		};
 	
 	}

@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.6  2001/01/08 11:44:17  lballabio
+	Array back into QuantLib namespace - Math namespace broke expression templates, go figure
+
 	Revision 1.5  2001/01/08 10:28:16  lballabio
 	Moved Array to Math namespace
-
+	
 	Revision 1.4  2000/12/27 14:05:56  lballabio
 	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
 	
@@ -57,10 +60,10 @@ namespace QuantLib {
 			// constructors
 			TridiagonalOperatorCommon() : theSize(0) {}
 			TridiagonalOperatorCommon(int size);
-			TridiagonalOperatorCommon(const Math::Array& low, const Math::Array& mid, const Math::Array& high);
+			TridiagonalOperatorCommon(const Array& low, const Array& mid, const Array& high);
 			// operator interface
-			Math::Array solveFor(const Math::Array& rhs) const;
-			Math::Array applyTo(const Math::Array& v) const;
+			Array solveFor(const Array& rhs) const;
+			Array applyTo(const Array& v) const;
 			// inspectors
 			int size() const { return theSize; }
 			// modifiers
@@ -74,7 +77,7 @@ namespace QuantLib {
 				void setTime(Time t) {}
 			#endif
 		  protected:
-			Math::Array diagonal, belowDiagonal, aboveDiagonal;
+			Array diagonal, belowDiagonal, aboveDiagonal;
 			BoundaryCondition theLowerBC, theHigherBC;
 		  private:
 			int theSize;
@@ -91,15 +94,15 @@ namespace QuantLib {
 			friend TridiagonalOperator operator*(const TridiagonalOperator&, double);
 			friend TridiagonalOperator operator+(const TridiagonalOperator&, const TridiagonalOperator&);
 			friend TridiagonalOperator operator-(const TridiagonalOperator&, const TridiagonalOperator&);
-			friend TridiagonalOperator operator+(const Identity<Math::Array>&, const TridiagonalOperator&);
-			friend TridiagonalOperator operator+(const TridiagonalOperator&, const Identity<Math::Array>&);
-			friend TridiagonalOperator operator-(const Identity<Math::Array>&, const TridiagonalOperator&);
-			friend TridiagonalOperator operator-(const TridiagonalOperator&, const Identity<Math::Array>&);
+			friend TridiagonalOperator operator+(const Identity<Array>&, const TridiagonalOperator&);
+			friend TridiagonalOperator operator+(const TridiagonalOperator&, const Identity<Array>&);
+			friend TridiagonalOperator operator-(const Identity<Array>&, const TridiagonalOperator&);
+			friend TridiagonalOperator operator-(const TridiagonalOperator&, const Identity<Array>&);
 		  public:
 			// constructors
 			TridiagonalOperator() : TridiagonalOperatorCommon() {}
 			TridiagonalOperator(int size) : TridiagonalOperatorCommon(size) {}
-			TridiagonalOperator(const Math::Array& low, const Math::Array& mid, const Math::Array& high)
+			TridiagonalOperator(const Array& low, const Array& mid, const Array& high)
 			: TridiagonalOperatorCommon(low,mid,high) {}
 		};
 
@@ -110,7 +113,7 @@ namespace QuantLib {
 			// constructors
 			TimeDependentTridiagonalOperator() : TridiagonalOperatorCommon() {}
 			TimeDependentTridiagonalOperator(int size) : TridiagonalOperatorCommon(size) {}
-			TimeDependentTridiagonalOperator(const Math::Array& low, const Math::Array& mid, const Math::Array& high)
+			TimeDependentTridiagonalOperator(const Array& low, const Array& mid, const Array& high)
 			: TridiagonalOperatorCommon(low,mid,high) {}
 		};
 
@@ -120,12 +123,12 @@ namespace QuantLib {
 		inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(int size) 
 		: theSize(size) {
 			QL_REQUIRE(theSize >= 3, "invalid size for tridiagonal operator (must be >= 3)");
-			belowDiagonal = Math::Array(theSize-1);
-			diagonal = Math::Array(theSize);
-			aboveDiagonal = Math::Array(theSize-1);
+			belowDiagonal = Array(theSize-1);
+			diagonal = Array(theSize);
+			aboveDiagonal = Array(theSize-1);
 		}
 		
-		inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(const Math::Array& low, const Math::Array& mid, const Math::Array& high)
+		inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(const Array& low, const Array& mid, const Array& high)
 		: diagonal(mid), belowDiagonal(low), aboveDiagonal(high), theSize(mid.size()) {
 			QL_REQUIRE(belowDiagonal.size() == theSize-1, "wrong size for lower diagonal vector");
 			QL_REQUIRE(aboveDiagonal.size() == theSize-1, "wrong size for upper diagonal vector");
@@ -163,7 +166,7 @@ namespace QuantLib {
 		}
 		
 		inline TridiagonalOperator operator-(const TridiagonalOperator& D) {
-			Math::Array low = -D.belowDiagonal, mid = -D.diagonal, high = -D.aboveDiagonal;
+			Array low = -D.belowDiagonal, mid = -D.diagonal, high = -D.aboveDiagonal;
 			TridiagonalOperator result(low,mid,high);
 			result.setLowerBC(D.theLowerBC);
 			result.setHigherBC(D.theHigherBC);
@@ -171,7 +174,7 @@ namespace QuantLib {
 		}
 		
 		inline TridiagonalOperator operator*(double a, const TridiagonalOperator& D) {
-			Math::Array low = D.belowDiagonal*a, mid = D.diagonal*a, high = D.aboveDiagonal*a;
+			Array low = D.belowDiagonal*a, mid = D.diagonal*a, high = D.aboveDiagonal*a;
 			TridiagonalOperator result(low,mid,high);
 			result.setLowerBC(D.theLowerBC);
 			result.setHigherBC(D.theHigherBC);
@@ -179,7 +182,7 @@ namespace QuantLib {
 		}
 		
 		inline TridiagonalOperator operator*(const TridiagonalOperator& D, double a) {
-			Math::Array low = D.belowDiagonal*a, mid = D.diagonal*a, high = D.aboveDiagonal*a;
+			Array low = D.belowDiagonal*a, mid = D.diagonal*a, high = D.aboveDiagonal*a;
 			TridiagonalOperator result(low,mid,high);
 			result.setLowerBC(D.theLowerBC);
 			result.setHigherBC(D.theHigherBC);
@@ -188,44 +191,44 @@ namespace QuantLib {
 		
 		inline TridiagonalOperator operator+(const TridiagonalOperator& D1, const TridiagonalOperator& D2) {
 			// to do: check boundary conditions
-			Math::Array low = D1.belowDiagonal+D2.belowDiagonal, mid = D1.diagonal+D2.diagonal,
+			Array low = D1.belowDiagonal+D2.belowDiagonal, mid = D1.diagonal+D2.diagonal,
 			  high = D1.aboveDiagonal+D2.aboveDiagonal;
 			return TridiagonalOperator(low,mid,high);
 		}
 		
 		inline TridiagonalOperator operator-(const TridiagonalOperator& D1, const TridiagonalOperator& D2) {
 			// to do: check boundary conditions
-			Math::Array low = D1.belowDiagonal-D2.belowDiagonal, mid = D1.diagonal-D2.diagonal,
+			Array low = D1.belowDiagonal-D2.belowDiagonal, mid = D1.diagonal-D2.diagonal,
 			  high = D1.aboveDiagonal-D2.aboveDiagonal;
 			return TridiagonalOperator(low,mid,high);
 		}
 		
-		inline TridiagonalOperator operator+(const TridiagonalOperator& D, const Identity<Math::Array>& I) {
-			Math::Array mid = D.diagonal+1.0;
+		inline TridiagonalOperator operator+(const TridiagonalOperator& D, const Identity<Array>& I) {
+			Array mid = D.diagonal+1.0;
 			TridiagonalOperator result(D.belowDiagonal,mid,D.aboveDiagonal);
 			result.setLowerBC(D.theLowerBC);
 			result.setHigherBC(D.theHigherBC);
 			return result;
 		}
 
-		inline TridiagonalOperator operator+(const Identity<Math::Array>& I, const TridiagonalOperator& D) {
-			Math::Array mid = D.diagonal+1.0;
+		inline TridiagonalOperator operator+(const Identity<Array>& I, const TridiagonalOperator& D) {
+			Array mid = D.diagonal+1.0;
 			TridiagonalOperator result(D.belowDiagonal,mid,D.aboveDiagonal);
 			result.setLowerBC(D.theLowerBC);
 			result.setHigherBC(D.theHigherBC);
 			return result;
 		}
 
-		inline TridiagonalOperator operator-(const TridiagonalOperator& D, const Identity<Math::Array>& I) {
-			Math::Array mid = D.diagonal-1.0;
+		inline TridiagonalOperator operator-(const TridiagonalOperator& D, const Identity<Array>& I) {
+			Array mid = D.diagonal-1.0;
 			TridiagonalOperator result(D.belowDiagonal,mid,D.aboveDiagonal);
 			result.setLowerBC(D.theLowerBC);
 			result.setHigherBC(D.theHigherBC);
 			return result;
 		}
 
-		inline TridiagonalOperator operator-(const Identity<Math::Array>& I, const TridiagonalOperator& D) {
-			Math::Array low = -D.belowDiagonal, mid = 1.0-D.diagonal, high = -D.aboveDiagonal;
+		inline TridiagonalOperator operator-(const Identity<Array>& I, const TridiagonalOperator& D) {
+			Array low = -D.belowDiagonal, mid = 1.0-D.diagonal, high = -D.aboveDiagonal;
 			TridiagonalOperator result(low,mid,high);
 			result.setLowerBC(D.theLowerBC);
 			result.setHigherBC(D.theHigherBC);

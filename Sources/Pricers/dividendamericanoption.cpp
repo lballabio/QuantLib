@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/01/08 11:44:18  lballabio
+    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
+
     Revision 1.11  2001/01/08 10:28:17  lballabio
     Moved Array to Math namespace
 
@@ -51,7 +54,6 @@ namespace QuantLib {
 
     namespace Pricers {
     
-    using Math::Array;
     using Math::NewCubicSpline;
     using FiniteDifferences::FiniteDifferenceModel;
     using FiniteDifferences::CrankNicolson;
@@ -182,8 +184,8 @@ namespace QuantLib {
         }
 
         void DividendAmericanOption::movePricesBeforeExDiv(double Div, 
-            const Math::Array& newGrid, Math::Array& prices, 
-            const Math::Array& oldGrid) const {
+            const Array& newGrid, Array& prices, 
+            const Array& oldGrid) const {
 
             int j;
             Array vOldGrid(oldGrid+Div);

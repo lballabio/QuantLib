@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -25,9 +26,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2001/01/08 11:44:17  lballabio
+	Array back into QuantLib namespace - Math namespace broke expression templates, go figure
+
 	Revision 1.3  2001/01/08 10:28:16  lballabio
 	Moved Array to Math namespace
-
+	
 	Revision 1.2  2001/01/05 15:58:27  lballabio
 	Fixed Doxygen documentation
 	
@@ -57,7 +61,7 @@ namespace QuantLib {
     	where \f$ Y_i \f$ is the value of the underlying at discretized time 
     	\f$ t_i \f$.
     	*/
-		typedef Math::Array Path;
+		typedef Array Path;
 	}
 
 }

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/01/08 11:44:18  lballabio
+    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
+
     Revision 1.7  2001/01/08 10:28:17  lballabio
     Moved Array to Math namespace
 
@@ -46,8 +49,6 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
     
-        using Math::Array;
-        
         void TridiagonalOperatorCommon::setLowerBC(
           const BoundaryCondition& bc) {
             theLowerBC = bc;
@@ -81,8 +82,8 @@ namespace QuantLib {
         }
         
         
-        Math::Array 
-        TridiagonalOperatorCommon::applyTo(const Math::Array& v) const {
+        Array 
+        TridiagonalOperatorCommon::applyTo(const Array& v) const {
             QL_REQUIRE(v.size()==theSize,
                 "TridiagonalOperator::applyTo: vector of the wrong size (" +
                 IntegerFormatter::toString(v.size()) + "instead of " + 
@@ -126,8 +127,8 @@ namespace QuantLib {
             return result;
         }
         
-        Math::Array 
-        TridiagonalOperatorCommon::solveFor(const Math::Array& rhs) const {
+        Array 
+        TridiagonalOperatorCommon::solveFor(const Array& rhs) const {
             QL_REQUIRE(rhs.size()==theSize,
                 "TridiagonalOperator::solveFor: rhs vector has the wrong size");
             Array bcRhs = rhs;

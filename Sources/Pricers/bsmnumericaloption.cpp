@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.21  2001/01/08 11:44:18  lballabio
+    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
+
     Revision 1.20  2001/01/08 10:28:17  lballabio
     Moved Array to Math namespace
 
@@ -46,7 +49,6 @@ namespace QuantLib {
     
         using FiniteDifferences::BoundaryCondition;
         using FiniteDifferences::BSMOperator;
-        using Math::Array;
         
         double BSMNumericalOption::dVolMultiplier=0.0001; 
         double BSMNumericalOption::dRMultiplier=0.0001; 
@@ -186,7 +188,7 @@ namespace QuantLib {
         
         // Useful functions
         
-        double BSMNumericalOption::valueAtCenter(const Math::Array& a) const {
+        double BSMNumericalOption::valueAtCenter(const Array& a) const {
             int jmid = a.size()/2;
             if (a.size() % 2 == 1)
                 return a[jmid];
@@ -194,8 +196,8 @@ namespace QuantLib {
                 return (a[jmid]+a[jmid-1])/2.0;
         }
             
-        double BSMNumericalOption::firstDerivativeAtCenter(const Math::Array& a, 
-            const Math::Array& g) const {
+        double BSMNumericalOption::firstDerivativeAtCenter(const Array& a, 
+            const Array& g) const {
             QL_REQUIRE(a.size()==g.size(),
                 "BSMNumericalOption::firstDerivativeAtCenter: "
                 "a and g must be of the same size");
@@ -210,7 +212,7 @@ namespace QuantLib {
         }
         
         double BSMNumericalOption::secondDerivativeAtCenter(
-            const Math::Array& a, const Math::Array& g) const {
+            const Array& a, const Array& g) const {
             QL_REQUIRE(a.size()==g.size(),
                 "BSMNumericalOption::secondDerivativeAtCenter: "
                 "a and g must be of the same size");

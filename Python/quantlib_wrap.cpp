@@ -752,7 +752,7 @@ InstrumentHandle NewStock(String isinCode = "", String description = "") {
 typedef std::vector<int> IntVector;
 typedef std::vector<double> DoubleVector;
 // array
-using QuantLib::Math::Array;
+using QuantLib::Array;
 
 #include "quantlib.h"
 

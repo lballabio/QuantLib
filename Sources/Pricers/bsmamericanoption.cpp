@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.18  2001/01/08 11:44:18  lballabio
+	Array back into QuantLib namespace - Math namespace broke expression templates, go figure
+
 	Revision 1.17  2001/01/08 10:28:17  lballabio
 	Moved Array to Math namespace
-
+	
 	Revision 1.16  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -44,7 +47,6 @@ namespace QuantLib {
 
 	namespace Pricers {
 	
-		using Math::Array;
 		using FiniteDifferences::FiniteDifferenceModel;
 		using FiniteDifferences::CrankNicolson;
 		using FiniteDifferences::StepCondition;

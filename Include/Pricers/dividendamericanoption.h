@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/01/08 11:44:17  lballabio
+    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
+
     Revision 1.7  2001/01/08 10:28:16  lballabio
     Moved Array to Math namespace
 
@@ -75,8 +78,8 @@ namespace QuantLib {
             std::vector<double> theDividends;
             std::vector<Time> theExDivDates;
             unsigned int  theNumberOfDivs;
-            void movePricesBeforeExDiv(double Div, const Math::Array& newGrid, 
-                Math::Array& prices, const Math::Array& oldGrid) const;
+            void movePricesBeforeExDiv(double Div, const Array& newGrid, 
+                Array& prices, const Array& oldGrid) const;
             Handle<BSMOption> clone() const { 
                 return Handle<BSMOption>(new DividendAmericanOption(*this));
             }
