@@ -50,7 +50,11 @@ namespace QuantLib {
         BusinessDayConvention paymentAdjustment,
         const std::vector<Real>& nominals,
         const boost::shared_ptr<Xibor>& index, Integer fixingDays,
-        const std::vector<Spread>& spreads = std::vector<Spread>(),
+        const std::vector<Spread>& spreads
+        #if !defined(QL_PATCH_MSVC6)
+        = std::vector<Spread>()
+        #endif
+        ,
         const DayCounter& dayCounter = DayCounter());
 
 }

@@ -50,18 +50,10 @@ namespace {
                                                       Integer length) {
         Date endDate = calendar_.advance(startDate,length,Years,convention_);
         Schedule schedule(calendar_,startDate,endDate,frequency_,convention_);
-#ifndef QL_USE_INDEXED_COUPON
         return FloatingRateCouponVector(schedule, convention_, nominals_,
-                                        index_, fixingDays_);
-#else
-		const UpFrontIndexedCoupon* msvc6_bug = 0;
-		double spread = 0.0;
-        return IndexedCouponVector<UpFrontIndexedCoupon>(schedule, convention_, nominals_,
-														index_, fixingDays_,
-														std::vector<Spread>(1,spread),
-														index_->dayCounter(),
-														msvc6_bug);
-#endif
+                                        index_, fixingDays_,
+                                        std::vector<Spread>(),
+                                        index_->dayCounter());
     }
 
     boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
