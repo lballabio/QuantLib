@@ -21,10 +21,12 @@
 
 using namespace QuantLib;
 using namespace QuantLib::Math;
+using namespace QuantLib::RandomNumbers;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 void RiskStatisticsTest::runTest() {
+
 
     Statistics   s;
     HStatistics hs;
@@ -32,26 +34,43 @@ void RiskStatisticsTest::runTest() {
     unsigned long dimension = 5;
     SequenceStatistics<>             ss(dimension);
     SequenceStatistics<HStatistics> hss(dimension);
-
-    double averages[] = { -100.0, 0.0, 100.0 };
-    double sigmas[] = { 0.1, 1.0, 10.0 };
-    Size N = 25000,
-        numberOfSigma = 15;
+            
+    double averages[] = { -100.0, -1.0, 0.0, 1.0, 100.0 };
+    double sigmas[] = { 0.1, 1.0, 100.0 };
+//    Size N = Size(QL_POW(2,18))-1;
+    Size N = Size(QL_POW(2,14)), numberOfSigma = 15;
 
     for (Size i=0; i<LENGTH(averages); i++) {
         for (Size j=0; j<LENGTH(sigmas); j++) {
 
-            NormalDistribution normal(averages[i],sigmas[j]);
+            
+            std::vector<double> data(N), weights(N);
+            NormalDistribution               normal(averages[i],sigmas[j]);
             CumulativeNormalDistribution cumulative(averages[i],sigmas[j]);
+            InverseCumulativeNormal      inverseCum(averages[i],sigmas[j]);
+            SobolRsg rng(1);
+
 
             double dataMin = averages[i] - numberOfSigma*sigmas[j],
                    dataMax = averages[i] + numberOfSigma*sigmas[j];
             double h = (dataMax-dataMin)/(N-1);
 
-            std::vector<double> data(N), weights(N);
             for (Size k=0; k<N; k++)
                 data[k] = dataMin + h*k;
             std::transform(data.begin(),data.end(),weights.begin(),normal);
+
+
+            /*
+            double dataMin = QL_MAX_DOUBLE;
+            double dataMax = QL_MIN_DOUBLE;
+            for (Size k=0; k<N; k++) {
+                data[k] = inverseCum(rng.nextSequence().value[0]);
+                dataMin = QL_MIN(dataMin, data[k]);
+                dataMax = QL_MAX(dataMax, data[k]);
+                weights[k]=1.0;
+//                weights[k]=normal(data[k]);
+            }
+            */
 
             s.addSequence(data.begin(),data.end(),weights.begin());
             hs.addSequence(data.begin(),data.end(),weights.begin());
@@ -106,12 +125,10 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(expected));
 
 
-
-
-
+            tolerance = 1e-12;
             expected = dataMin;
             calculated = s.min();
-            if (calculated != expected)
+            if (QL_FABS(calculated-expected)>tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
                     "wrong minimum value\n"
@@ -120,7 +137,7 @@ void RiskStatisticsTest::runTest() {
                     "    expected:   "
                     + DoubleFormatter::toString(expected));
             calculated = hs.min();
-            if (calculated != expected)
+            if (QL_FABS(calculated-expected)>tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
                     "wrong minimum value\n"
@@ -137,7 +154,7 @@ void RiskStatisticsTest::runTest() {
 
             expected = dataMax;
             calculated = s.max();
-            if (QL_FABS(calculated- expected) > 1.0e-13)
+            if (QL_FABS(calculated-expected)>tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
                     "wrong maximum value\n"
@@ -146,7 +163,7 @@ void RiskStatisticsTest::runTest() {
                     "    expected:   "
                     + DoubleFormatter::toString(expected));
             calculated = hs.max();
-            if (QL_FABS(calculated- expected) > 1.0e-13)
+            if (QL_FABS(calculated-expected)>tolerance)
                 CPPUNIT_FAIL(
                     "HStatistics: "
                     "wrong maximum value\n"
@@ -154,7 +171,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(calculated) + "\n"
                     "    expected:   "
                     + DoubleFormatter::toString(expected));
-
 
 
 
@@ -259,6 +275,7 @@ void RiskStatisticsTest::runTest() {
                     "    expected:   "
                     + DoubleFormatter::toString(expected));
 
+
             expected = 0.0;
             tolerance = 1.0e-1;
             calculated = s.kurtosis();
@@ -279,8 +296,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(calculated) + "\n"
                     "    expected:   "
                     + DoubleFormatter::toString(expected));
-
-
 
 
             double upper_tail = averages[i]+2.0*sigmas[j],
