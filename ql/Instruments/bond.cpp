@@ -104,17 +104,19 @@ namespace QuantLib {
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
                    const boost::shared_ptr<CashFlow>& redemption,
                    Real dirtyPrice,
+                   Compounding compounding,
                    const DayCounter& dayCounter,
                    Frequency frequency,
                    const Date& settlement)
             : cashflows_(cashflows), redemption_(redemption),
-              dirtyPrice_(dirtyPrice), dayCounter_(dayCounter),
-              frequency_(frequency), settlement_(settlement) {}
+              dirtyPrice_(dirtyPrice), compounding_(compounding),
+              dayCounter_(dayCounter), frequency_(frequency),
+              settlement_(settlement) {}
             Real operator()(Real yield) const {
                 return dirtyPrice_ - dirtyPriceFromYield(cashflows_,
                                                          redemption_,
                                                          yield,
-                                                         Compounded,
+                                                         compounding_,
                                                          frequency_,
                                                          dayCounter_,
                                                          settlement_);
@@ -123,6 +125,7 @@ namespace QuantLib {
             std::vector<boost::shared_ptr<CashFlow> > cashflows_;
             boost::shared_ptr<CashFlow> redemption_;
             Real dirtyPrice_;
+            Compounding compounding_;
             DayCounter dayCounter_;
             Frequency frequency_;
             Date settlement_;
@@ -148,21 +151,25 @@ namespace QuantLib {
         return std::max(d, issueDate_);
     }
 
-    Real Bond::cleanPrice(Rate yield, Date settlement) const {
+    Real Bond::cleanPrice(Rate yield, Compounding compounding,
+                          Date settlement) const {
         if (settlement == Date())
             settlement = settlementDate();
-        return dirtyPrice(yield,settlement) - accruedAmount(settlement);
+        return dirtyPrice(yield,compounding,settlement)
+             - accruedAmount(settlement);
     }
 
-    Real Bond::dirtyPrice(Rate yield, Date settlement) const {
+    Real Bond::dirtyPrice(Rate yield, Compounding compounding,
+                          Date settlement) const {
         if (settlement == Date())
             settlement = settlementDate();
         return dirtyPriceFromYield(cashFlows_, redemption_, yield,
-                                   Compounded, frequency_, dayCount_,
+                                   compounding, frequency_, dayCount_,
                                    settlement);
     }
 
-    Real Bond::yield(Real cleanPrice, Date settlement,
+    Real Bond::yield(Real cleanPrice, Compounding compounding,
+                     Date settlement,
                      Real accuracy, Size maxEvaluations) const {
         if (settlement == Date())
             settlement = settlementDate();
@@ -170,7 +177,7 @@ namespace QuantLib {
         solver.setMaxEvaluations(maxEvaluations);
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
         YieldFinder objective(cashFlows_, redemption_, dirtyPrice,
-                              dayCount_, frequency_, settlement);
+                              compounding, dayCount_, frequency_, settlement);
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
 
