@@ -6,24 +6,16 @@ SetCompressor lzma
 !define VER_NUMBER "0.3.5a1"
 
 # HEADER CONFIGURATION COMMANDS
-!ifdef LIGHT
-    Name "QuantLib Light"
-    Caption "QuantLib Light - Setup"
-    #do not change the name below
-    OutFile "..\QuantLib-${VER_NUMBER}-light-inst.exe"
-    ComponentText "This will install QuantLib ${VER_NUMBER} Light on your computer.$\n A more complete version including documentation, examples, source code, etc. can be downloaded from http://quantlib.org"
-!else
-    Name "QuantLib"
-    Caption "QuantLib - Setup"
-    #do not change the name below
-    OutFile "..\QuantLib-${VER_NUMBER}-full-inst.exe"
+Name "QuantLib"
+Caption "QuantLib - Setup"
+#do not change the name below
+OutFile "..\QuantLib-${VER_NUMBER}-full-inst.exe"
 
-    InstType "Full (w/ Source Code)"
-    InstType Typical
-    InstType Minimal
+InstType "Full (w/ Source Code)"
+InstType Typical
+InstType Minimal
 
-    ComponentText "This will install QuantLib ${VER_NUMBER} on your computer"
-!endif
+ComponentText "This will install QuantLib ${VER_NUMBER} on your computer"
 
 SilentInstall normal
 CRCCheck on
@@ -90,9 +82,17 @@ SectionIn 1 2 3
 SectionEnd
 
 
+Section "test-suite"
+SectionIn 1 2 3
+    SetOutPath $INSTDIR\test-suite
+    File /r "test-suite\*.txt"
+    File /r "test-suite\*.mak"
+    File /r "test-suite\*.cpp"
+    File /r "test-suite\*.hpp"
+    File /r "test-suite\*.dsp"
+    File /r "test-suite\CPPUNIT-COPYING"
 
-!ifndef LIGHT
-
+SectionEnd
 
 Section "Examples"
 SectionIn 1 2
@@ -107,20 +107,6 @@ SectionIn 1 2
         CreateShortCut "$SMPROGRAMS\QuantLib\Examples workspace.lnk" \
                        "$INSTDIR\Examples\Examples.dsw"
     NoSourceShortCuts:
-SectionEnd
-
-
-
-Section "test-suite"
-SectionIn 1 2 3
-    SetOutPath $INSTDIR\test-suite
-    File /r "test-suite\*.txt"
-    File /r "test-suite\*.mak"
-    File /r "test-suite\*.cpp"
-    File /r "test-suite\*.hpp"
-    File /r "test-suite\*.dsp"
-    File /r "test-suite\CPPUNIT-COPYING"
-
 SectionEnd
 
 Section "WinHelp documentation"
@@ -161,8 +147,6 @@ SectionIn 1 2 3
   CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib Directory.lnk" \
                  "$INSTDIR"
 SectionEnd
-
-!endif
 
 Function .onInit
   SetOutPath $TEMP
