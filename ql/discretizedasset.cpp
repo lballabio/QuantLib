@@ -33,12 +33,15 @@ namespace QuantLib {
             if (time_ >= exerciseTimes_[0] && time_ <= exerciseTimes_[1])
                 applyExerciseCondition();
             break;
-          default:
+          case Exercise::Bermudan:
+          case Exercise::European:
             for (Size i=0; i<exerciseTimes_.size(); i++) {
                 Time t = exerciseTimes_[i];
                 if (t >= 0.0 && isOnTime(t))
                     applyExerciseCondition();
             }
+          default:
+            QL_FAIL("invalid exercise type");
         }
         underlying_->postAdjustValues();
     }

@@ -31,18 +31,16 @@ namespace QuantLib {
     //! Base exercise class
     class Exercise {
       public:
-
-        enum Type { American, Bermudan, European };
-
+        enum Type { Undefined = -1, American, Bermudan, European };
+        // constructor
+        Exercise(Type type = Undefined) : type_(type) {}
         virtual ~Exercise() {}
-
         // inspectors
-        bool isNull() const { return type_==Type(-1); }
+        bool isNull() const { return type_ == Undefined; }
         Type type() const { return type_; }
         Date date(Size index) const { return dates_[index]; }
         const std::vector<Date>& dates() const { return dates_; }
         Date lastDate() const { return dates_.back(); }
-
       protected:
         std::vector<Date> dates_;
         Type type_;
@@ -56,8 +54,9 @@ namespace QuantLib {
     */
     class EarlyExercise : public Exercise {
       public:
-          EarlyExercise(bool payoffAtExpiry = false)
-          : payoffAtExpiry_(payoffAtExpiry) {}
+        EarlyExercise(Type type = Undefined,
+                      bool payoffAtExpiry = false)
+        : Exercise(type), payoffAtExpiry_(payoffAtExpiry) {}
         bool payoffAtExpiry() const { return payoffAtExpiry_; }
       private:
         bool payoffAtExpiry_;
@@ -73,8 +72,8 @@ namespace QuantLib {
     */
     class AmericanExercise : public EarlyExercise {
       public:
-        AmericanExercise(Date earliestDate,
-                         Date latestDate,
+        AmericanExercise(const Date& earliestDate,
+                         const Date& latestDate,
                          bool payoffAtExpiry = false);
     };
 
@@ -95,7 +94,7 @@ namespace QuantLib {
     */
     class EuropeanExercise : public Exercise {
       public:
-        EuropeanExercise(Date date);
+        EuropeanExercise(const Date& date);
     };
 
 
