@@ -411,8 +411,7 @@ void LDSTest::testDiscrepancy() {
             if (printOnly) {
                 if (j!=jMin)
                     outStream << ", ";
-                else
-                    outStream << DoubleFormatter::toExponential(discr);
+                outStream << DoubleFormatter::toExponential(discr);
             } else {
                 if(QL_FABS(discr-discrRand[i][j-jMin])>tolerance*discr) {
                   CPPUNIT_FAIL("True random discrepancy dimension " +
@@ -446,8 +445,7 @@ void LDSTest::testDiscrepancy() {
             if (printOnly) {
                 if (j!=jMin)
                     outStream << ", ";
-                else
-                    outStream << DoubleFormatter::toExponential(discr);
+                outStream << DoubleFormatter::toExponential(discr);
             } else {
                 if (QL_FABS(discr-discrMers[i][j-jMin])>tolerance*discr) {
                   CPPUNIT_FAIL("Mersenne discrepancy dimension " +
@@ -481,8 +479,7 @@ void LDSTest::testDiscrepancy() {
             if (printOnly) {
                 if (j!=jMin)
                     outStream << ", ";
-                else
-                    outStream << DoubleFormatter::toExponential(discr);
+                outStream << DoubleFormatter::toExponential(discr);
             } else {
                 if (QL_FABS(discr-discrHalt[i][j-jMin])>tolerance*discr) {
                   CPPUNIT_FAIL("Halton discrepancy dimension " +
@@ -516,8 +513,7 @@ void LDSTest::testDiscrepancy() {
             if (printOnly) {
                 if (j!=jMin)
                     outStream << ", ";
-                else
-                    outStream << DoubleFormatter::toExponential(discr);
+                outStream << DoubleFormatter::toExponential(discr);
             } else {
                 if (QL_FABS(discr-discrSobo[i][j-jMin])>tolerance*discr) {
                   CPPUNIT_FAIL("Sobol discrepancy dimension " +
@@ -551,8 +547,7 @@ void LDSTest::testDiscrepancy() {
             if (printOnly) {
                 if (j!=jMin)
                     outStream << ", ";
-                else
-                    outStream << DoubleFormatter::toExponential(discr);
+                outStream << DoubleFormatter::toExponential(discr);
             } else {
                 if (QL_FABS(discr-discrUnSo[i][j-jMin])>tolerance*discr) {
                   CPPUNIT_FAIL("Unit Sobol discrepancy dimension " +
