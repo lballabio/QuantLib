@@ -104,12 +104,12 @@ namespace QuantLib {
                           rebate);
             
             results_.value = pricer.value();
-            results_.delta = pricer.delta();
-            results_.gamma = pricer.gamma();
-            results_.theta = pricer.theta();
-            results_.rho = pricer.rho();
-            results_.dividendRho = pricer.dividendRho();
-            results_.vega = pricer.vega();
+            //results_.delta = pricer.delta();
+            //results_.gamma = pricer.gamma();
+            //results_.theta = pricer.theta();
+            //results_.rho = pricer.rho();
+            //results_.dividendRho = pricer.dividendRho();
+            //results_.vega = pricer.vega();
             
         }
 

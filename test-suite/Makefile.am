@@ -1,5 +1,6 @@
 
-QL_TESTS = calendars.hpp calendars.cpp \
+QL_TESTS = barrieroption.hpp barrieroption.cpp \
+           calendars.hpp calendars.cpp \
            capfloor.hpp capfloor.cpp \
            compoundforward.hpp compoundforward.cpp \
            covariance.hpp covariance.cpp \
