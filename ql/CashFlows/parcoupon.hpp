@@ -29,18 +29,21 @@ namespace QuantLib {
 
     //! %coupon at par on a term structure
     /*! \warning This class does not perform any date adjustment,
-      i.e., the start and end date passed upon construction
-      should be already rolled to a business day.
+                 i.e., the start and end date passed upon construction
+                 should be already rolled to a business day.
     */
     class ParCoupon : public FloatingRateCoupon,
                       public Observer {
       public:
-        ParCoupon(Real nominal, const Date& paymentDate,
+        ParCoupon(Real nominal,
+                  const Date& paymentDate,
                   const boost::shared_ptr<Xibor>& index,
                   const Date& startDate, const Date& endDate,
-                  Integer fixingDays, Spread spread = 0.0,
+                  Integer fixingDays,
+                  Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
-                  const Date& refPeriodEnd = Date());
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter());
         //! \name CashFlow interface
         //@{
         Real amount() const;
@@ -68,13 +71,16 @@ namespace QuantLib {
         //@}
       private:
         boost::shared_ptr<Xibor> index_;
+        DayCounter dayCounter_;
     };
 
 
     // inline definitions
 
     inline DayCounter ParCoupon::dayCounter() const {
-        return index_->termStructure()->dayCounter();
+        return dayCounter_.isNull() ?
+            index_->termStructure()->dayCounter() :
+            dayCounter_;
     }
 
     inline Rate ParCoupon::fixing() const {
@@ -82,8 +88,8 @@ namespace QuantLib {
     }
 
     inline Date ParCoupon::fixingDate() const {
-        return index_->calendar().advance(accrualStartDate_, 
-                                          -fixingDays_, Days, 
+        return index_->calendar().advance(accrualStartDate_,
+                                          -fixingDays_, Days,
                                           Preceding);
     }
 

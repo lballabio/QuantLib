@@ -26,10 +26,11 @@ namespace QuantLib {
                          const Date& startDate, const Date& endDate,
                          Integer fixingDays, Spread spread,
                          const Date& refPeriodStart,
-                         const Date& refPeriodEnd)
+                         const Date& refPeriodEnd,
+                         const DayCounter& dayCounter)
     : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
                          fixingDays, spread, refPeriodStart, refPeriodEnd),
-      index_(index) {
+      index_(index), dayCounter_(dayCounter) {
         registerWith(index_);
     }
 
@@ -66,8 +67,7 @@ namespace QuantLib {
                 Rate pastFixing = XiborManager::getHistory(
                                                  index_->name())[fixing_date];
                 if (pastFixing != Null<Real>())
-                    return (pastFixing+spread_) *
-                        accrualPeriod() * nominal();
+                    return (pastFixing+spread_)*accrualPeriod()*nominal();
                 else
                     ;   // fall through
             } catch (Error&) {
@@ -78,8 +78,7 @@ namespace QuantLib {
                 Rate pastFixing = IndexManager::instance().getHistory(
                                                  index_->name())[fixing_date];
                 if (pastFixing != Null<Real>())
-                    return (pastFixing+spread_) *
-                        accrualPeriod() * nominal();
+                    return (pastFixing+spread_)*accrualPeriod()*nominal();
                 else
                     ;   // fall through and forecast
             } catch (Error&) {
