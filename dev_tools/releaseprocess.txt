@@ -1,0 +1,27 @@
+
+merge relevant branches, if any
+purge headers
+purge warnings
+check for tab
+update ChangeLog
+branch out of the trunk
+update version number on the trunk
+alert Dirk, our Debian packager
+test and bug fixing on the branch
+review documentation
+create hidden sourceforge.net release
+download files on sourceforge.net
+update download and doc pages at quantlib.org
+news on sourceforge.net
+email quantlib-users, quantlib-announce
+update freshmeat
+email python-announce
+email comp-finance
+email AllAboutDerivatives
+email finance-and-physics
+email math-finance newsletter
+email python-finance
+email quantitative finance
+email ffts
+wilmott
+press release
