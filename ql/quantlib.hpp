@@ -132,6 +132,7 @@
 #include <ql/InterestRateModelling/TwoFactorModels/g2.hpp>
 
 #include <ql/Lattices/tree.hpp>
+#include <ql/Lattices/binomialtree.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 
 #include <ql/Math/cubicspline.hpp>

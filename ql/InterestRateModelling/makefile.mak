@@ -18,8 +18,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 OBJS = \
        calibrationhelper.obj$(_D) \
        model.obj$(_D) \
-       onefactormodel.obj$(_D) \
-       timefunction.obj$(_D)
+       onefactormodel.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

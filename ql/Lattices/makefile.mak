@@ -16,6 +16,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
+       binomialtree.obj$(_D) \
        tree.obj$(_D) \
        trinomialtree.obj$(_D)
 

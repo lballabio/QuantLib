@@ -1187,15 +1187,11 @@ SOURCE=.\ql\InterestRateModelling\onefactormodel.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\InterestRateModelling\parameter.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\InterestRateModelling\shortrateprocess.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\timefunction.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\timefunction.hpp
 # End Source File
 # Begin Source File
 
@@ -1283,11 +1279,15 @@ SOURCE=.\ql\Optimization\steepestdescent.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\Lattices\node.hpp
+SOURCE=.\ql\Lattices\binomialtree.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Lattices\timegrid.hpp
+SOURCE=.\ql\Lattices\binomialtree.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\node.hpp
 # End Source File
 # Begin Source File
 
@@ -1477,6 +1477,10 @@ SOURCE=.\ql\swaptionvolsurface.hpp
 # Begin Source File
 
 SOURCE=.\ql\termstructure.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\timegrid.hpp
 # End Source File
 # Begin Source File
 
