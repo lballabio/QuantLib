@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/02/13 09:58:23  lballabio
+    Some more work on iterators
+
     Revision 1.5  2001/02/12 19:00:39  lballabio
     Some more work on iterators
 
@@ -66,17 +69,17 @@ namespace QuantLib {
             Erfurt, Germany, 2000 (http://www.oonumerics.org/tmpw00/)
         */
         template <class Iterator, class Function>
-        class combining_iterator
-        #if defined(QL_INHERIT_ITERATOR)
-         : public QL_ITERATOR<
+        class combining_iterator : public QL_ITERATOR<
             typename std::iterator_traits<Iterator>::iterator_category,
             typename Function::result_type,
             typename std::iterator_traits<Iterator>::difference_type,
             const typename Function::result_type*,
             const typename Function::result_type&>
-        #endif
         {
           public:
+            /* it is not really clear (and 14.6.2.3 of the standard doesn't 
+               help) whether these typedefs are needed or should be inherited 
+               from QL_ITERATOR. Let's play it safe.                       */
             typedef typename std::iterator_traits<Iterator>::iterator_category 
                 iterator_category;
             typedef typename Function::result_type value_type;

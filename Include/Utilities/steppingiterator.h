@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/02/13 09:58:23  lballabio
+    Some more work on iterators
+
     Revision 1.7  2001/02/12 19:00:39  lballabio
     Some more work on iterators
 
@@ -69,24 +72,25 @@ namespace QuantLib {
             \f$ n \f$ is an integer given upon construction.
         */
         template <class RandomAccessIterator>
-        class stepping_iterator 
-        #if defined(QL_INHERIT_ITERATOR)
-        : public QL_ITERATOR<
+        class stepping_iterator : public QL_ITERATOR<
             std::random_access_iterator_tag,
             typename std::iterator_traits<RandomAccessIterator>::value_type,
             typename std::iterator_traits<
                 RandomAccessIterator>::difference_type,
             typename std::iterator_traits<RandomAccessIterator>::pointer,
             typename std::iterator_traits<RandomAccessIterator>::reference>
-        #endif
         {
           public:
+            /* it is not really clear (and 14.6.2.3 of the standard doesn't 
+               help) whether these typedefs are needed or should be inherited 
+               from QL_ITERATOR. Let's play it safe.                       */
             typedef std::iterator_traits<RandomAccessIterator> traits;
             typedef std::random_access_iterator_tag   iterator_category;
             typedef typename traits::value_type       value_type;
             typedef typename traits::difference_type  difference_type;
             typedef typename traits::pointer          pointer;
             typedef typename traits::reference        reference;
+
             stepping_iterator(const RandomAccessIterator&, 
                 difference_type step);
             //! \name Dereferencing

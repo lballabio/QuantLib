@@ -32,6 +32,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.30  2001/02/13 09:58:23  lballabio
+    Some more work on iterators
+
     Revision 1.29  2001/02/12 19:00:39  lballabio
     Some more work on iterators
 
@@ -351,22 +354,17 @@
 #elif defined(HAVE_ITERATOR)
     #define QL_ITERATOR     iterator
 #else
-    template <class _Category, class _Type, class _Distance = ptrdiff_t,
-              class _Pointer = _Type*, class _Reference = _Type&>
+    template <class Category, class T, class Distance = ptrdiff_t,
+              class Pointer = T*, class Reference = T&>
     struct __quantlib_iterator {
-        typedef _Category   iterator_category;
-        typedef _Type       value_type;
-        typedef _Distance   difference_type;
-        typedef _Pointer    pointer;
-        typedef _Reference  reference;
+        typedef T          value_type;
+        typedef Distance   difference_type;
+        typedef Pointer    pointer;
+        typedef Reference  reference;
+        typedef Category   iterator_category;
     };
     #define QL_ITERATOR     __quantlib_iterator
 #endif
-
-/*! \def QL_INHERIT_ITERATOR
-    Some STL implementations require custom iterators to inherit from 
-    std::iterator for some features to work.
-*/
 
 /*! \def QL_REVERSE_ITERATOR
     \brief Blame Microsoft for this one...

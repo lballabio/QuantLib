@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/02/13 09:58:23  lballabio
+    Some more work on iterators
+
     Revision 1.12  2001/02/12 19:00:39  lballabio
     Some more work on iterators
 
@@ -169,15 +172,15 @@ namespace QuantLib {
         };
 
         //! random access iterator on history entries
-        class const_iterator 
-        #if defined(QL_INHERIT_ITERATOR)
-        : public QL_ITERATOR<
+        class const_iterator : public QL_ITERATOR<
             std::random_access_iterator_tag, Entry,
             int, const Entry*, const Entry&>
-        #endif
         {
             friend class History;
           public:
+            /* it is not really clear (and 14.6.2.3 of the standard doesn't 
+               help) whether these typedefs are needed or should be inherited 
+               from QL_ITERATOR. Let's play it safe.                       */
             typedef std::random_access_iterator_tag iterator_category;
             typedef Entry                           value_type;
             typedef int                             difference_type;
