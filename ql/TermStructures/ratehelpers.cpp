@@ -16,6 +16,7 @@
 */
 
 #include <ql/TermStructures/ratehelpers.hpp>
+#include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
@@ -265,6 +266,7 @@ namespace QuantLib {
                                floatingFrequency_, floatingConvention_);
         // dummy Libor index with curve/swap arguments
         Integer fixingDays = settlementDays_;
+		// Currency and dayCounter argument have to be added to SwapHelper
         boost::shared_ptr<Xibor> dummyIndex(
                                      new Xibor("dummy",
                                                12/floatingFrequency_, Months,
@@ -272,7 +274,7 @@ namespace QuantLib {
                                                Currency(),
                                                calendar_,
                                                floatingConvention_,
-                                               t->dayCounter(),
+                                               Actual360(),
                                                termStructureHandle_));
 
         swap_ = boost::shared_ptr<SimpleSwap>(
