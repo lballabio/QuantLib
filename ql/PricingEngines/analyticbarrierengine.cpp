@@ -23,7 +23,6 @@
 */
 
 #include <ql/PricingEngines/barrierengines.hpp>
-#include <ql/Pricers/barrieroption.hpp>
 
 namespace QuantLib {
 

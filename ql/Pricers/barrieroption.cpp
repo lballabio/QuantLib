@@ -46,8 +46,8 @@ namespace QuantLib {
                                      double rebate)
         : SingleAssetOption(type, underlying, strike, dividendYield,
                             riskFreeRate, residualTime, volatility), 
-            barrType_(barrType),
-            barrier_(barrier), rebate_(rebate), f_() {
+            greeksCalculated_(false), barrType_(barrType),
+            barrier_(barrier), rebate_(rebate) {
 
             QL_REQUIRE(barrier_ > 0,
                 "BarrierOption: barrier must be positive");
@@ -87,17 +87,6 @@ namespace QuantLib {
                 throw Error("Barrier Option: unknown type");
             }
 
-        }
-
-        void BarrierOption::initialize_() const {
-            sigmaSqrtT_ = volatility_ * QL_SQRT(residualTime_);
-
-            mu_ = (riskFreeRate_ - dividendYield_)/
-                                (volatility_ * volatility_) - 0.5;
-            muSigma_ = (1 + mu_) * sigmaSqrtT_;
-            dividendDiscount_ = QL_EXP(-dividendYield_*residualTime_);
-            riskFreeDiscount_ = QL_EXP(-riskFreeRate_*residualTime_);
-            greeksCalculated_ = false;
         }
 
         double BarrierOption::value() const {
