@@ -40,10 +40,21 @@ INTDIR=.\build\Release
 OutDir=.\build\Release
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-mt-s-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
+!IF "$(RECURSE)" == "0" 
 
+ALL : ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
+
+ALL : "QuantLibFunctions - Win32 Release" ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 ReleaseCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -370,7 +381,7 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-s-0_3_6.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-s-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -416,6 +427,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
@@ -483,6 +495,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcbasketengine.sbr" \
 	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
@@ -538,9 +551,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\dividendvanillaoption.sbr" \
-	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -548,7 +559,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -587,6 +598,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
@@ -654,6 +666,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcbasketengine.obj" \
 	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
@@ -710,10 +723,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\dividendvanillaoption.obj" \
-	"$(INTDIR)\analyticdividendeuropeanengine.obj"
+	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
-".\lib\QuantLib-vc6-mt-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -729,10 +741,21 @@ INTDIR=.\build\Debug
 OutDir=.\build\Debug
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
+!IF "$(RECURSE)" == "0" 
 
+ALL : ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
+
+ALL : "QuantLibFunctions - Win32 Debug" ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 DebugCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -1059,8 +1082,8 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
 	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_6.idb"
-	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib"
 	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_6.pdb"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -1106,6 +1129,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
@@ -1173,6 +1197,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcbasketengine.sbr" \
 	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
@@ -1228,9 +1253,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\dividendvanillaoption.sbr" \
-	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1238,7 +1261,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -1277,6 +1300,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
@@ -1344,6 +1368,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcbasketengine.obj" \
 	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
@@ -1400,10 +1425,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\dividendvanillaoption.obj" \
-	"$(INTDIR)\analyticdividendeuropeanengine.obj"
+	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
-".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -1419,10 +1443,21 @@ INTDIR=.\build\ReleaseMTDLL
 OutDir=.\build\ReleaseMTDLL
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-mt-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
+!IF "$(RECURSE)" == "0" 
 
+ALL : ".\lib\QuantLib-vc6-mt-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
+
+ALL : "QuantLibFunctions - Win32 Release MTDLL" ".\lib\QuantLib-vc6-mt-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 Release MTDLLCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -1749,7 +1784,7 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-0_3_6.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -1795,6 +1830,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
@@ -1862,6 +1898,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcbasketengine.sbr" \
 	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
@@ -1917,9 +1954,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\dividendvanillaoption.sbr" \
-	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1927,7 +1962,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -1966,6 +2001,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
@@ -2033,6 +2069,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcbasketengine.obj" \
 	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
@@ -2089,10 +2126,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\dividendvanillaoption.obj" \
-	"$(INTDIR)\analyticdividendeuropeanengine.obj"
+	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
-".\lib\QuantLib-vc6-mt-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -2108,10 +2144,21 @@ INTDIR=.\build\DebugMTDLL
 OutDir=.\build\DebugMTDLL
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-mt-gd-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
+!IF "$(RECURSE)" == "0" 
 
+ALL : ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
+
+ALL : "QuantLibFunctions - Win32 Debug MTDLL" ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 Debug MTDLLCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -2438,8 +2485,8 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
 	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_6.idb"
-	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_6.lib"
 	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_6.pdb"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -2485,6 +2532,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
@@ -2552,6 +2600,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcbasketengine.sbr" \
 	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
@@ -2607,9 +2656,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\dividendvanillaoption.sbr" \
-	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2617,7 +2664,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -2656,6 +2703,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
@@ -2723,6 +2771,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcbasketengine.obj" \
 	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
@@ -2779,10 +2828,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\dividendvanillaoption.obj" \
-	"$(INTDIR)\analyticdividendeuropeanengine.obj"
+	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
-".\lib\QuantLib-vc6-mt-gd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -2798,10 +2846,21 @@ INTDIR=.\build\ReleaseST
 OutDir=.\build\ReleaseST
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-s-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
+!IF "$(RECURSE)" == "0" 
 
+ALL : ".\lib\QuantLib-vc6-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
+
+ALL : "QuantLibFunctions - Win32 Release SingleThread" ".\lib\QuantLib-vc6-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 Release SingleThreadCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -3128,7 +3187,7 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-s-0_3_6.lib"
+	-@erase ".\lib\QuantLib-vc6-s-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -3174,6 +3233,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
@@ -3241,6 +3301,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcbasketengine.sbr" \
 	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
@@ -3296,9 +3357,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\dividendvanillaoption.sbr" \
-	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3306,7 +3365,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-s-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-s-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -3345,6 +3404,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
@@ -3412,6 +3472,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcbasketengine.obj" \
 	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
@@ -3468,10 +3529,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\dividendvanillaoption.obj" \
-	"$(INTDIR)\analyticdividendeuropeanengine.obj"
+	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
-".\lib\QuantLib-vc6-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -3487,10 +3547,21 @@ INTDIR=.\build\DebugST
 OutDir=.\build\DebugST
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-sgd-0_3_6.lib" "$(OUTDIR)\QuantLib.bsc"
+!IF "$(RECURSE)" == "0" 
 
+ALL : ".\lib\QuantLib-vc6-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
+
+ALL : "QuantLibFunctions - Win32 Debug SingleThread" ".\lib\QuantLib-vc6-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 Debug SingleThreadCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -3817,8 +3888,8 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
 	-@erase ".\lib\QuantLib-vc6-sgd-0_3_6.idb"
-	-@erase ".\lib\QuantLib-vc6-sgd-0_3_6.lib"
 	-@erase ".\lib\QuantLib-vc6-sgd-0_3_6.pdb"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -3864,6 +3935,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
@@ -3931,6 +4003,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcbasketengine.sbr" \
 	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
@@ -3986,9 +4059,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\dividendvanillaoption.sbr" \
-	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3996,7 +4067,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-sgd-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-sgd-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -4035,6 +4106,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
@@ -4102,6 +4174,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcbasketengine.obj" \
 	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
@@ -4158,10 +4231,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\dividendvanillaoption.obj" \
-	"$(INTDIR)\analyticdividendeuropeanengine.obj"
+	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
-".\lib\QuantLib-vc6-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -5169,6 +5241,80 @@ SOURCE=.\ql\Volatilities\localvolsurface.cpp
 "$(INTDIR)\localvolsurface.obj"	"$(INTDIR)\localvolsurface.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+"QuantLibFunctions - Win32 Release" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 ReleaseCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+"QuantLibFunctions - Win32 Debug" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 DebugCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release MTDLL"
+
+"QuantLibFunctions - Win32 Release MTDLL" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release MTDLL" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 Release MTDLLCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release MTDLL" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
+
+"QuantLibFunctions - Win32 Debug MTDLL" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug MTDLL" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 Debug MTDLLCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug MTDLL" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release SingleThread"
+
+"QuantLibFunctions - Win32 Release SingleThread" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release SingleThread" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 Release SingleThreadCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release SingleThread" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
+
+"QuantLibFunctions - Win32 Debug SingleThread" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug SingleThread" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 Debug SingleThreadCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug SingleThread" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ENDIF 
 
 SOURCE=.\ql\basicdataformatters.cpp
 

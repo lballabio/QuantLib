@@ -37,7 +37,7 @@ RSC=rc.exe
 OUTDIR=.\build\Release
 INTDIR=.\build\Release
 
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_6.lib"
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 
 CLEAN :
@@ -45,7 +45,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_6.lib"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -56,13 +56,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc"
 BSC32_SBRS= \
 	
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\vols.obj"
 
-"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -72,7 +72,7 @@ LIB32_OBJS= \
 OUTDIR=.\build\Debug
 INTDIR=.\build\Debug
 
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_6.lib"
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 
 CLEAN :
@@ -81,7 +81,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_6.lib"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -92,13 +92,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc"
 BSC32_SBRS= \
 	
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\vols.obj"
 
-"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -108,7 +108,7 @@ LIB32_OBJS= \
 OUTDIR=.\build\ReleaseMTDLL
 INTDIR=.\build\ReleaseMTDLL
 
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_6.lib"
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 
 CLEAN :
@@ -116,7 +116,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_6.lib"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -127,13 +127,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc"
 BSC32_SBRS= \
 	
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\vols.obj"
 
-"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -143,7 +143,7 @@ LIB32_OBJS= \
 OUTDIR=.\build\DebugMTDLL
 INTDIR=.\build\DebugMTDLL
 
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_6.lib"
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 
 CLEAN :
@@ -152,7 +152,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_6.lib"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -163,13 +163,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc"
 BSC32_SBRS= \
 	
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\vols.obj"
 
-"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -179,7 +179,7 @@ LIB32_OBJS= \
 OUTDIR=.\build\ReleaseST
 INTDIR=.\build\ReleaseST
 
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_6.lib"
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 
 CLEAN :
@@ -187,7 +187,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_6.lib"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -198,13 +198,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc"
 BSC32_SBRS= \
 	
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\vols.obj"
 
-"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -214,7 +214,7 @@ LIB32_OBJS= \
 OUTDIR=.\build\DebugST
 INTDIR=.\build\DebugST
 
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_6.lib"
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 
 CLEAN :
@@ -223,7 +223,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_6.lib"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -234,13 +234,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc"
 BSC32_SBRS= \
 	
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\vols.obj"
 
-"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
