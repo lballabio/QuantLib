@@ -452,9 +452,21 @@ int main(int argc, char* argv[])
         TimeGrid timeGrid(maturity, timeSteps);
         method = "MC (crude)";
         Handle<PricingEngine> mcengine1(
+            #if defined(QL_PATCH_MICROSOFT)
+            /* the #else branch used to work--now Visual C++ needs this. 
+               Strangely enough, this is not needed below when we instantiate
+               the Sobol engine. Finally, we cannot go and see what's wrong 
+               because the other branch does work in debug mode...
+            */
+            new MCEuropeanEngine<PseudoRandom>(timeSteps, false, false, 
+                                               Null<int>(), 0.02, 
+                                               Null<int>(), mcSeed)
+            #else
             MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(timeSteps)
                                                 .withTolerance(0.02)
-                                                .withSeed(mcSeed));
+                                                .withSeed(mcSeed)
+            #endif
+        );
         option.setPricingEngine(mcengine1);
         
         value = option.NPV();
