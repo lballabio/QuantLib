@@ -27,6 +27,7 @@ class CapFloorTest : public CppUnit::TestFixture {
     void testStrikeDependency();
     void testConsistency();
     void testParity();
+    void testImpliedVolatility();
     void testCachedValue();
     static CppUnit::Test* suite();
 };

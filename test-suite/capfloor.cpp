@@ -18,6 +18,7 @@
 #include "capfloor.hpp"
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/simpleswap.hpp>
+#include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Pricers/blackcapfloor.hpp>
@@ -81,6 +82,19 @@ namespace {
             return Handle<Instrument>(
                 new Floor(leg, std::vector<Rate>(1, strike),
                           termStructure_, makeEngine(volatility)));
+          default:
+            throw Error("unknown cap/floor type");
+        }
+    }
+
+    std::string typeToString(CapFloor::Type type) {
+        switch (type) {
+          case CapFloor::Cap:
+            return "cap";
+          case CapFloor::Floor:
+            return "floor";
+          case CapFloor::Collar:
+            return "collar";
           default:
             throw Error("unknown cap/floor type");
         }
@@ -270,6 +284,92 @@ void CapFloorTest::testParity() {
     }
 }
 
+void CapFloorTest::testImpliedVolatility() {
+    Size maxEvaluations = 100;
+    double tolerance = 1.0e-6;
+
+    CapFloor::Type types[] = { CapFloor::Cap, CapFloor::Floor };
+    Rate strikes[] = { 0.02, 0.03, 0.04 };
+    int lengths[] = { 1, 5, 10 };
+
+    // test data
+    Rate rRates[] = { 0.02, 0.03, 0.04 };
+    double vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
+
+    for (Size k=0; k<LENGTH(lengths); k++) {
+        std::vector<Handle<CashFlow> > leg = makeLeg(settlement_, lengths[k]);
+
+        for (Size i=0; i<LENGTH(types); i++) {
+            for (Size j=0; j<LENGTH(strikes); j++) {
+
+                Handle<CapFloor> capfloor = makeCapFloor(types[i], leg, 
+                                                         strikes[j], 0.0);
+
+                for (Size n=0; n<LENGTH(rRates); n++) {
+                    for (Size m=0; m<LENGTH(vols); m++) {
+
+                        double r = rRates[n],
+                               v = vols[m];
+                        termStructure_.linkTo(
+                            Handle<TermStructure>(
+                                new FlatForward(today_,settlement_,r,
+                                                Actual360())));
+                        capfloor->setPricingEngine(makeEngine(v));
+
+                        double value = capfloor->NPV();
+                        double implVol = 0.0; // just to remove a warning...
+                  
+                        try {
+                            implVol = 
+                                capfloor->impliedVolatility(value, 
+                                                            tolerance,
+                                                            maxEvaluations);
+                        } catch (std::exception& e) {
+                            CPPUNIT_FAIL(
+                                typeToString(types[i]) + ":\n"
+                                "    strike:           "
+                                + DoubleFormatter::toString(strikes[j]) +"\n"
+                                "    risk-free rate:   "
+                                + DoubleFormatter::toString(r) + "\n"
+                                "    length:         "
+                                + IntegerFormatter::toString(lengths[k]) 
+                                + " years\n"
+                                "    volatility:       "
+                                + DoubleFormatter::toString(v) + "\n\n"
+                                + std::string(e.what()));
+                        }
+                        if (QL_FABS(implVol-v) > tolerance) {
+                            // the difference might not matter
+                            capfloor->setPricingEngine(makeEngine(implVol));
+                            double value2 = capfloor->NPV();
+                            if (QL_FABS(value-value2) > tolerance) {
+                                CPPUNIT_FAIL(
+                                    typeToString(types[i]) + ":\n"
+                                    "    strike:           "
+                                    + DoubleFormatter::toString(strikes[j]) 
+                                    + "\n"
+                                    "    risk-free rate:   "
+                                    + DoubleFormatter::toString(r) + "\n"
+                                    "    length:         "
+                                    + IntegerFormatter::toString(lengths[k]) 
+                                    + " years\n\n"
+                                    "    original volatility: "
+                                    + DoubleFormatter::toString(v) + "\n"
+                                    "    price:               "
+                                    + DoubleFormatter::toString(value) + "\n"
+                                    "    implied volatility:  "
+                                    + DoubleFormatter::toString(implVol) + "\n"
+                                    "    corresponding price: "
+                                    + DoubleFormatter::toString(value2));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 void CapFloorTest::testCachedValue() {
 
     Date cachedToday(14,March,2002),
@@ -314,6 +414,9 @@ CppUnit::Test* CapFloorTest::suite() {
     tests->addTest(new CppUnit::TestCaller<CapFloorTest>
                    ("Testing put/call parity for cap and floor",
                     &CapFloorTest::testParity));
+    tests->addTest(new CppUnit::TestCaller<CapFloorTest>
+                   ("Testing implied term volatility for cap and floor",
+                    &CapFloorTest::testImpliedVolatility));
     tests->addTest(new CppUnit::TestCaller<CapFloorTest>
                    ("Testing cap/floor value against cached values",
                     &CapFloorTest::testCachedValue));
