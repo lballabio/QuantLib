@@ -46,12 +46,13 @@ namespace QuantLib {
             virtual void gradient(Array& grad_f, const Array& x) {
                 double eps = finiteDifferenceEpsilon(), fp, fm;
                 Array xx(x);
+				Size i;
                 std::cout << "Gradient at";
-                for (Size i=0; i<x.size(); i++)
+                for (i=0; i<x.size(); i++)
                     std::cout << " " << x[i];
                 std::cout << "  =  ";
 
-                for (Size i=0; i<x.size(); i++) {
+                for (i=0; i<x.size(); i++) {
                     xx[i] += eps;
                     fp = value(xx);
                     xx[i] -= 2.0*eps;

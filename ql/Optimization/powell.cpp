@@ -57,8 +57,9 @@ namespace QuantLib {
             do {
                 Array model_init(n), model_end(n);// input to line search
                 values[0] = P.value(initial);
+				Size i;
 
-                for (Size i=1; i<=n; i++) {
+                for (i=1; i<=n; i++) {
                     searchDirection() = direction[i-1];
                     (*lineSearch_)(P, 1.0);
                     if (!lineSearch_->succeed())
@@ -97,7 +98,7 @@ namespace QuantLib {
                 Size index_max = 0;
                 double deltak = -QL_MIN_DOUBLE;
                 Array diffValues(n);
-                for (Size i=0; i<n; i++) {
+                for (i=0; i<n; i++) {
                     diffValues[i] = values[i] - values[i+1];
                     if (diffValues[i]>deltak) {
                         index_max = i;

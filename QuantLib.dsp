@@ -1062,11 +1062,11 @@ SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\coxingersollrossplus.cpp
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\coxingersollross.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\coxingersollrossplus.hpp
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\coxingersollross.hpp
 # End Source File
 # Begin Source File
 
@@ -1119,19 +1119,15 @@ SOURCE=.\ql\InterestRateModelling\calibrationhelper.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\grid.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\grid.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\InterestRateModelling\model.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\model.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\onefactormodel.cpp
 # End Source File
 # Begin Source File
 
@@ -1148,14 +1144,6 @@ SOURCE=.\ql\InterestRateModelling\timefunction.cpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\timefunction.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\trinomialtree.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\trinomialtree.hpp
 # End Source File
 # Begin Source File
 
@@ -1183,6 +1171,10 @@ SOURCE=.\ql\Optimization\conjugategradient.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Optimization\constraint.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Optimization\costfunction.hpp
 # End Source File
 # Begin Source File
@@ -1200,6 +1192,30 @@ SOURCE=.\ql\Optimization\linesearch.hpp
 # Begin Source File
 
 SOURCE=.\ql\Optimization\optimizer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\powell.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\powell.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\simplex.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\simplex.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\simulatedannealing.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\simulatedannealing.hpp
 # End Source File
 # Begin Source File
 
@@ -1228,6 +1244,14 @@ SOURCE=.\ql\Lattices\tree.cpp
 # Begin Source File
 
 SOURCE=.\ql\Lattices\tree.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\trinomialtree.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\trinomialtree.hpp
 # End Source File
 # End Group
 # Begin Source File
@@ -1273,10 +1297,6 @@ SOURCE=.\ql\config.msvc.hpp
 # Begin Source File
 
 SOURCE=.\ql\config.mwcw.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\constraint.hpp
 # End Source File
 # Begin Source File
 
@@ -1341,10 +1361,6 @@ SOURCE=.\ql\instrument.hpp
 # Begin Source File
 
 SOURCE=.\ql\marketelement.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\minimizer.hpp
 # End Source File
 # Begin Source File
 

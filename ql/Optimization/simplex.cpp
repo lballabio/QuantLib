@@ -48,20 +48,21 @@ namespace QuantLib {
             bool EndCriteria = false;
 
             Array& X = x();
-            Size n = X.size();
+            Size n = X.size(), i;
 
             vertices_ = std::vector<Array>(n+1, X);
-            for (Size i=0; i<n; i++) {
+            for (i=0; i<n; i++) {
                 vertices_[i+1][i] += lambda_;
             }
             values_ = Array(n+1, 0.0);
-            for (Size i=0; i<=n; i++)
+            for (i=0; i<=n; i++)
                 values_[i] = P.value(vertices_[i]);
 
 
             do {
                 sum_ = Array(n, 0.0);
-                for (Size i=0; i<=n; i++)
+				Size i;
+                for (i=0; i<=n; i++)
                     sum_ += vertices_[i];
 
                 //Determine best, worst and 2nd worst vertices
@@ -74,7 +75,7 @@ namespace QuantLib {
                     iHighest = 0;
                     iNextHighest = 1;
                 }
-                for (Size i=1;i<=n; i++) {
+                for (i=1;i<=n; i++) {
                     if (values_[i]>values_[iHighest]) {
                         iNextHighest = iHighest;
                         iHighest = i;
