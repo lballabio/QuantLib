@@ -63,7 +63,7 @@ namespace QuantLib {
                        int indexFixingDays,
                        Spread spread,
                        const RelinkableHandle<TermStructure>& termStructure,
-                       Scheduler& fixedScheduler, Scheduler& floatScheduler,
+                       Schedule& fixedScheduler, Schedule& floatScheduler,
                        const std::string& isinCode = "",
                        const std::string& description = "");
             /*! \deprecated use the constructor taking two Schedulers */

@@ -57,25 +57,25 @@ namespace QuantLib {
             maturity_ = calendar.roll(startDate.plus(n,units),
                                       rollingConvention);
 
-            Scheduler fixedScheduler = 
-                MakeScheduler(calendar,startDate,maturity_,
-                              fixedFrequency,rollingConvention,
-                              fixedIsAdjusted);
-            Scheduler floatScheduler =
-                MakeScheduler(calendar,startDate,maturity_,
-                              floatingFrequency,rollingConvention,
-                              true);
+            Schedule fixedSchedule = 
+                MakeSchedule(calendar,startDate,maturity_,
+                             fixedFrequency,rollingConvention,
+                             fixedIsAdjusted);
+            Schedule floatSchedule =
+                MakeSchedule(calendar,startDate,maturity_,
+                             floatingFrequency,rollingConvention,
+                             true);
             
             std::vector<Handle<CashFlow> > fixedLeg =
                 FixedRateCouponVector(std::vector<double>(1,nominal), 
                                       std::vector<Rate>(1,fixedRate), 
                                       fixedDayCount,fixedDayCount,
-                                      fixedScheduler);
+                                      fixedSchedule);
             std::vector<Handle<CashFlow> > floatingLeg =
                 FloatingRateCouponVector(std::vector<double>(1,nominal),
                                          index, indexFixingDays, 
                                          std::vector<Spread>(1,spread),
-                                         floatScheduler);
+                                         floatSchedule);
             std::vector<Handle<CashFlow> >::const_iterator i;
             for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
                 registerWith(*i);
@@ -99,7 +99,7 @@ namespace QuantLib {
                 int indexFixingDays,
                 Spread spread,
                 const RelinkableHandle<TermStructure>& termStructure,
-                Scheduler& fixedScheduler, Scheduler& floatScheduler,
+                Schedule& fixedSchedule, Schedule& floatSchedule,
                 const std::string& isinCode, const std::string& description)
         : Swap(std::vector<Handle<CashFlow> >(),
                std::vector<Handle<CashFlow> >(),
@@ -111,12 +111,12 @@ namespace QuantLib {
                 FixedRateCouponVector(std::vector<double>(1,nominal), 
                                       std::vector<Rate>(1,fixedRate), 
                                       fixedDayCount,fixedDayCount,
-                                      fixedScheduler);
+                                      fixedSchedule);
             std::vector<Handle<CashFlow> > floatingLeg =
                 FloatingRateCouponVector(std::vector<double>(1,nominal),
                                          index, indexFixingDays, 
                                          std::vector<Spread>(1,spread),
-                                         floatScheduler);
+                                         floatSchedule);
             std::vector<Handle<CashFlow> >::const_iterator i;
             for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
                 registerWith(*i);
@@ -157,31 +157,31 @@ namespace QuantLib {
           payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
           nominal_(nominal), maturity_(maturity) {
 
-            Scheduler fixedScheduler = 
-                MakeScheduler(calendar,startDate,maturity,
-                              fixedFrequency,rollingConvention,
-                              fixedIsAdjusted).
+            Schedule fixedSchedule = 
+                MakeSchedule(calendar,startDate,maturity,
+                             fixedFrequency,rollingConvention,
+                             fixedIsAdjusted).
                     withStubDate(fixedStubDate).
                     backwards(fixedFromEnd).
                     longFinalPeriod(fixedLongFinal);
-            Scheduler floatScheduler =
-                MakeScheduler(calendar,startDate,maturity,
-			          floatingFrequency,rollingConvention,
-			          true).
-                withStubDate(floatStubDate).
-                backwards(floatFromEnd).
-                longFinalPeriod(floatLongFinal);
+            Schedule floatSchedule =
+                MakeSchedule(calendar,startDate,maturity,
+                             floatingFrequency,rollingConvention,
+                             true).
+                    withStubDate(floatStubDate).
+                    backwards(floatFromEnd).
+                    longFinalPeriod(floatLongFinal);
 
             std::vector<Handle<CashFlow> > fixedLeg =
                 FixedRateCouponVector(std::vector<double>(1,nominal), 
                                       std::vector<Rate>(1,fixedRate), 
                                       fixedDayCount,fixedDayCount,
-                                      fixedScheduler);
+                                      fixedSchedule);
             std::vector<Handle<CashFlow> > floatingLeg =
                 FloatingRateCouponVector(std::vector<double>(1,nominal),
                                          index, indexFixingDays, 
                                          std::vector<Spread>(1,spread),
-                                         floatScheduler);
+                                         floatSchedule);
             std::vector<Handle<CashFlow> >::const_iterator i;
             for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
                 registerWith(*i);
