@@ -1,4 +1,4 @@
-# Doxyfile 1.4.1
+# Doxyfile 1.4.2
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -23,6 +23,7 @@ MULTILINE_CPP_IS_BRIEF = NO
 DETAILS_AT_TOP         = YES
 INHERIT_DOCS           = YES
 DISTRIBUTE_GROUP_DOC   = NO
+SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 4
 ALIASES                =
 OPTIMIZE_OUTPUT_FOR_C  = NO
