@@ -63,9 +63,12 @@ namespace QuantLib {
         class PiecewiseFlatForward : public TermStructure {
           public:
             // constructor
-            PiecewiseFlatForward(Currency currency,
-                const Handle<DayCounter>& dayCounter, const Date& todaysDate, 
-                const Handle<Calendar>& calendar, int settlementDays,
+            PiecewiseFlatForward(
+                Currency currency,
+                const Handle<DayCounter>& dayCounter,
+                const Date& todaysDate,
+                const Handle<Calendar>& calendar,
+                int settlementDays,
                 const std::vector<Handle<RateHelper> >& instruments);
             // inspectors
             Currency currency() const;
