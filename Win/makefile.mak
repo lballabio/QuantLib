@@ -50,7 +50,7 @@ MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj \
                    $(OUTPUT_DIR)\averageasianpathpricer.obj \
                    $(OUTPUT_DIR)\geometricasianpathpricer.obj \
                    $(OUTPUT_DIR)\europeanpathpricer.obj \
-                   $(OUTPUT_DIR)\singlepathcontrolvariatedpricer.obj
+                   $(OUTPUT_DIR)\controlvariatedpathpricer.obj
 		  
 FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
                    $(OUTPUT_DIR)\bsmoperator.obj
@@ -239,8 +239,8 @@ $(OUTPUT_DIR)\geometricasianpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\geometricasianpathpricer.cpp 
 $(OUTPUT_DIR)\averageasianpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\averageasianpathpricer.cpp 
-$(OUTPUT_DIR)\singlepathcontrolvariatedpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\singlepathcontrolvariatedpricer.cpp
+$(OUTPUT_DIR)\controlvariatedpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\controlvariatedpathpricer.cpp
 
 
 # Pricers

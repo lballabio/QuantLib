@@ -20,41 +20,47 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file singlepathcontrolvariatedpricer.cpp
+/*! \file controlvariatedpathpricer.h
     
     $Source$
     $Name$
     $Log$
-    Revision 1.2  2001/01/05 11:02:38  lballabio
+    Revision 1.1  2001/01/05 12:28:14  lballabio
+    Renamed SinglePathControlVariatedPricer to ControlVariatedPathPricer
+
+    Revision 1.2  2001/01/05 11:02:37  lballabio
     Renamed SinglePathPricer to PathPricer
 
-    Revision 1.1  2001/01/04 17:31:23  marmar
+    Revision 1.1  2001/01/04 17:31:22  marmar
     Alpha version of the Monte Carlo tools.
-            
+                
 */
 
-#include "singlepathcontrolvariatedpricer.h"
+#ifndef quantlib_montecarlo_control_variated_path_pricer_h
+#define quantlib_montecarlo_control_variated_path_pricer_h
+
+#include "qldefines.h"
+#include "handle.h"
+#include "pathpricer.h"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        SinglePathControlVariatedPricer::SinglePathControlVariatedPricer(
-            Handle<PathPricer > pricer,
-            Handle<PathPricer > controlVariate,
-            double controlVariateValue)
-        : pricer_(pricer), controlVariate_(controlVariate), 
-          controlVariateValue_(controlVariateValue) {
-            isInitialized_=true;
-        }
-        
-        double SinglePathControlVariatedPricer::value(const Path &path) const {
-            QL_REQUIRE(isInitialized_,
-                "SinglePathControlVariatedPricer not initialized");
-            return pricer_->value(path) - controlVariate_->value(path) + 
-                controlVariateValue_;
-        }
+        class ControlVariatedPathPricer: public PathPricer {
+        public:
+            ControlVariatedPathPricer() : PathPricer() {}
+            ControlVariatedPathPricer(Handle<PathPricer> pricer,
+                Handle<PathPricer> controlVariate, double controlVariateValue);
+            double value(const Path &path) const;
+        private:
+            Handle<PathPricer> pricer_, controlVariate_;
+            double controlVariateValue_;
+        };
 
     }
 
 }
+
+
+#endif

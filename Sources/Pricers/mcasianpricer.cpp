@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/01/05 12:28:15  lballabio
+    Renamed SinglePathControlVariatedPricer to ControlVariatedPathPricer
+
     Revision 1.5  2001/01/05 11:52:12  lballabio
     Renamed SinglePathAveragePriceAsianPricer to AverageAsianPathPricer
 
@@ -44,7 +47,7 @@
 
 #include "mcasianpricer.h"
 #include "handle.h"
-#include "singlepathcontrolvariatedpricer.h"
+#include "controlvariatedpathpricer.h"
 #include "averageasianpathpricer.h"
 #include "geometricasianpathpricer.h"
 #include "geometricasianoption.h"
@@ -55,7 +58,7 @@ namespace QuantLib {
 
         using MonteCarlo::MonteCarlo1D;
         using MonteCarlo::PathPricer;
-        using MonteCarlo::SinglePathControlVariatedPricer;
+        using MonteCarlo::ControlVariatedPathPricer;
         using MonteCarlo::AverageAsianPathPricer;
         using MonteCarlo::GeometricAsianPathPricer;
 
@@ -78,7 +81,7 @@ namespace QuantLib {
                 volatility).value(); 
 
             Handle<PathPricer> controlVariatedPricer(
-                new SinglePathControlVariatedPricer(spPricer, 
+                new ControlVariatedPathPricer(spPricer, 
                     controlVariateSpPricer, controlVariatePrice));
 
             montecarloPricer_ = MonteCarlo1D(controlVariatedPricer, 

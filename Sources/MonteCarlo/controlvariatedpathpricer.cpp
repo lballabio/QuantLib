@@ -20,44 +20,44 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file singlepathcontrolvariatedpricer.h
+/*! \file singlepathcontrolvariatedpricer.cpp
     
     $Source$
     $Name$
     $Log$
-    Revision 1.2  2001/01/05 11:02:37  lballabio
+    Revision 1.1  2001/01/05 12:28:15  lballabio
+    Renamed SinglePathControlVariatedPricer to ControlVariatedPathPricer
+
+    Revision 1.2  2001/01/05 11:02:38  lballabio
     Renamed SinglePathPricer to PathPricer
 
-    Revision 1.1  2001/01/04 17:31:22  marmar
+    Revision 1.1  2001/01/04 17:31:23  marmar
     Alpha version of the Monte Carlo tools.
-                
+            
 */
 
-#ifndef quantlib_montecarlo_single_path_control_variated_pricer_h
-#define quantlib_montecarlo_single_path_control_variated_pricer_h
-
-#include "qldefines.h"
-#include "handle.h"
-#include "pathpricer.h"
+#include "controlvariatedpathpricer.h"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        class SinglePathControlVariatedPricer: public PathPricer {
-        public:
-            SinglePathControlVariatedPricer() : PathPricer() {}
-            SinglePathControlVariatedPricer(Handle<PathPricer > pricer,
-                Handle<PathPricer > controlVariate, double controlVariateValue);
-            double value(const Path &path) const;
-        private:
-            Handle<PathPricer> pricer_, controlVariate_;
-            double controlVariateValue_;
-        };
+        ControlVariatedPathPricer::ControlVariatedPathPricer(
+            Handle<PathPricer > pricer,
+            Handle<PathPricer > controlVariate,
+            double controlVariateValue)
+        : pricer_(pricer), controlVariate_(controlVariate), 
+          controlVariateValue_(controlVariateValue) {
+            isInitialized_=true;
+        }
+        
+        double ControlVariatedPathPricer::value(const Path &path) const {
+            QL_REQUIRE(isInitialized_,
+                "SinglePathControlVariatedPricer not initialized");
+            return pricer_->value(path) - controlVariate_->value(path) + 
+                controlVariateValue_;
+        }
 
     }
 
 }
-
-
-#endif
