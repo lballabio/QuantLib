@@ -17,7 +17,7 @@
 INCLUDE_DIR    = ..\Include
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
-$(OUTPUT_DIR)  = ..\lib\Win32\Borland
+OUTPUT_DIR     = ..\lib\Win32\Borland
 
 # Object files
 CORE_OBJS        = calendar.obj$(_D) \
