@@ -39,40 +39,51 @@ namespace QuantLib {
         Handle<StrikedTypePayoff> payoff = arguments_.payoff;
         #endif
 
-        double variance = arguments_.blackScholesProcess->volTS->blackVariance(arguments_.exercise->lastDate(),
-                                                          payoff->strike());
+        const Handle<BlackScholesStochasticProcess>& process =
+            arguments_.blackScholesProcess;
+
+        double variance = 
+            process->volTS->blackVariance(arguments_.exercise->lastDate(),
+                                          payoff->strike());
         DiscountFactor dividendDiscount =
-            arguments_.blackScholesProcess->dividendTS->discount(arguments_.exercise->lastDate());
+            process->dividendTS->discount(arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
-            arguments_.blackScholesProcess->riskFreeTS->discount(arguments_.exercise->lastDate());
-        double forwardPrice = arguments_.blackScholesProcess->stateVariable->value() *
+            process->riskFreeTS->discount(arguments_.exercise->lastDate());
+        double forwardPrice = process->stateVariable->value() *
             dividendDiscount / riskFreeDiscount;
 
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
 
         results_.value = black.value();
-        results_.delta = black.delta(arguments_.blackScholesProcess->stateVariable->value());
+        results_.delta = black.delta(process->stateVariable->value());
         results_.deltaForward = black.deltaForward();
-        results_.elasticity = black.elasticity(arguments_.blackScholesProcess->stateVariable->value());
-        results_.gamma = black.gamma(arguments_.blackScholesProcess->stateVariable->value());
+        results_.elasticity = 
+            black.elasticity(process->stateVariable->value());
+        results_.gamma = black.gamma(process->stateVariable->value());
 
-        Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
+        Time t = process->riskFreeTS->dayCounter().yearFraction(
+            process->riskFreeTS->referenceDate(),
             arguments_.exercise->lastDate());
         results_.rho = black.rho(t);
 
-        t = arguments_.blackScholesProcess->dividendTS->dayCounter().yearFraction(
-            arguments_.blackScholesProcess->dividendTS->referenceDate(),
-            arguments_.exercise->lastDate());
+        t = process->dividendTS->dayCounter().yearFraction(
+                process->dividendTS->referenceDate(),
+                arguments_.exercise->lastDate());
         results_.dividendRho = black.dividendRho(t);
 
-        t = arguments_.blackScholesProcess->volTS->dayCounter().yearFraction(
-            arguments_.blackScholesProcess->volTS->referenceDate(),
-            arguments_.exercise->lastDate());
+        t = process->volTS->dayCounter().yearFraction(
+                process->volTS->referenceDate(),
+                arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
-        results_.theta = black.theta(arguments_.blackScholesProcess->stateVariable->value(), t);
-        results_.thetaPerDay = black.thetaPerDay(arguments_.blackScholesProcess->stateVariable->value(), t);
+        try {
+            results_.theta = black.theta(process->stateVariable->value(), t);
+            results_.thetaPerDay = 
+                black.thetaPerDay(process->stateVariable->value(), t);
+        } catch (Error&) {
+            results_.theta = Null<double>();
+            results_.thetaPerDay = Null<double>();
+        }
 
         results_.strikeSensitivity = black.strikeSensitivity();
         results_.itmProbability = black.itmProbability();
