@@ -82,8 +82,8 @@ namespace QuantLib {
         mutable Real rho_, dividendRho_, vega_, theta_;
         mutable bool rhoComputed_, dividendRhoComputed_, vegaComputed_,
             thetaComputed_;
-        const static Real dVolMultiplier_;
-        const static Real dRMultiplier_;
+        static const Real dVolMultiplier_;
+        static const Real dRMultiplier_;
       private:
         class VolatilityFunction;
         friend class VolatilityFunction;
