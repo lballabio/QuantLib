@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -15,37 +16,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file actual360.hpp
-    \brief act/360 day counter
+/*! \file actual365fixed.hpp
+    \brief Actual/365 (Fixed) day counter
 */
 
-#ifndef quantlib_actual360_day_counter_h
-#define quantlib_actual360_day_counter_h
+#ifndef quantlib_actual365fixed_day_counter_h
+#define quantlib_actual365fixed_day_counter_h
 
 #include <ql/daycounter.hpp>
 
 namespace QuantLib {
 
-    //! Actual/360 day count convention
+    //! Actual/365 (Fixed) day count convention
+    /*! "Actual/365 (Fixed)" day count convention, also know as
+        "Act/365 (Fixed)", "A/365 (Fixed)", or "A/365F".
 
-    /*! Actual/360 day count convention, also known as "Act/360", or "A/360".
-    
         \ingroup daycounters
     */
-    class Actual360 : public DayCounter {
+    class Actual365Fixed : public DayCounter {
       private:
         class Impl : public DayCounter::Impl {
           public:
-            std::string name() const { return std::string("act/360"); }
+            std::string name() const { return std::string("act/365 (fixed)"); }
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const {
-                return dayCount(d1,d2)/360.0;
+                return dayCount(d1,d2)/365.0;
             }
         };
       public:
-        Actual360()
+        Actual365Fixed()
         : DayCounter(boost::shared_ptr<DayCounter::Impl>(
-                                                      new Actual360::Impl)) {}
+                                                 new Actual365Fixed::Impl)) {}
     };
 
 }

@@ -1697,6 +1697,9 @@
 				RelativePath="ql\DayCounters\actual365.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\DayCounters\actual365fixed.hpp">
+			</File>
+			<File
 				RelativePath="ql\DayCounters\actualactual.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -1758,6 +1761,12 @@
 			</File>
 			<File
 				RelativePath="ql\DayCounters\actualactual.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\DayCounters\all.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\DayCounters\one.hpp">
 			</File>
 			<File
 				RelativePath="ql\DayCounters\simpledaycounter.cpp">

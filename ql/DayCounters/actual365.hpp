@@ -26,25 +26,18 @@
 
 namespace QuantLib {
 
-    //! Actual/365 day count convention
-    /*! \ingroup daycounters */
-    class Actual365 : public DayCounter {
-      private:
-        class Impl : public DayCounter::Impl {
-          public:
-            std::string name() const { return std::string("act/365"); }
-            Time yearFraction(const Date& d1, const Date& d2,
-                              const Date&, const Date&) const {
-                return dayCount(d1,d2)/365.0;
-            }
-        };
-      public:
-        Actual365()
-        : DayCounter(boost::shared_ptr<DayCounter::Impl>(
-                                                      new Actual365::Impl)) {}
-    };
+  #ifndef QL_DISABLE_DEPRECATED
+    /*! Actual/365 day count convention
 
-}
+        As per ISDA documentation Actual/365 is the same as Actual/Actual.
+        You should use the ActualActual class instead, or maybe you want to
+        use the Actual365Fixed class.
 
+        \deprecated use ActualActual or Actual365Fixed instead
+
+        \ingroup daycounters
+    */
+    typedef Actual365 Actual365Fixed;
+  #endif
 
 #endif

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,37 +15,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file actual360.hpp
-    \brief act/360 day counter
+/*! \file one.hpp
+    \brief 1/1 day counter
 */
 
-#ifndef quantlib_actual360_day_counter_h
-#define quantlib_actual360_day_counter_h
+#ifndef quantlib_one_day_counter_h
+#define quantlib_one_day_counter_h
 
 #include <ql/daycounter.hpp>
 
 namespace QuantLib {
 
-    //! Actual/360 day count convention
-
-    /*! Actual/360 day count convention, also known as "Act/360", or "A/360".
-    
-        \ingroup daycounters
-    */
-    class Actual360 : public DayCounter {
+    //! 1/1 day count convention
+    /*! \ingroup daycounters */
+    class OneDayCounter : public DayCounter {
       private:
         class Impl : public DayCounter::Impl {
           public:
-            std::string name() const { return std::string("act/360"); }
+            std::string name() const { return std::string("1/1"); }
+            BigInteger dayCount(const Date& d1, const Date& d2) const {
+                BigInteger delta = d2-d1; // the sign is all we need
+                return (delta>0 ? 1 : -1);
+            };
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const {
-                return dayCount(d1,d2)/360.0;
+                return dayCount(d1, d2);
             }
         };
       public:
-        Actual360()
+        OneDayCounter()
         : DayCounter(boost::shared_ptr<DayCounter::Impl>(
-                                                      new Actual360::Impl)) {}
+                                        new OneDayCounter::Impl)) {}
     };
 
 }
