@@ -33,18 +33,6 @@ TLIB      = tlib
 CC_OPTS        = -q -c -tWM -n$(OUTPUT_DIR) \
     -w-8026 -w-8027 -w-8012 \
     -I$(INCLUDE_DIR) \
-    -I$(INCLUDE_DIR)\Calendars \
-    -I$(INCLUDE_DIR)\Currencies \
-    -I$(INCLUDE_DIR)\DayCounters \
-    -I$(INCLUDE_DIR)\FiniteDifferences \
-    -I$(INCLUDE_DIR)\Instruments \
-    -I$(INCLUDE_DIR)\Math \
-    -I$(INCLUDE_DIR)\MonteCarlo \
-    -I$(INCLUDE_DIR)\Patterns \
-    -I$(INCLUDE_DIR)\Pricers \
-    -I$(INCLUDE_DIR)\Solvers1D \
-    -I$(INCLUDE_DIR)\TermStructures \
-    -I$(INCLUDE_DIR)\Utilities \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG

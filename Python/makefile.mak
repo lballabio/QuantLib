@@ -51,18 +51,6 @@ CC_OPTS        = -q -c -tWM -vi- \
     -w-8026 -w-8027 -w-8012 \
     -D__WIN32__ -DMSC_CORE_BC_EXT \
     -I$(INCLUDE_DIR) \
-    -I$(INCLUDE_DIR)\Calendars \
-    -I$(INCLUDE_DIR)\Currencies \
-    -I$(INCLUDE_DIR)\DayCounters \
-    -I$(INCLUDE_DIR)\FiniteDifferences \
-    -I$(INCLUDE_DIR)\Instruments \
-    -I$(INCLUDE_DIR)\Math \
-    -I$(INCLUDE_DIR)\MonteCarlo \
-    -I$(INCLUDE_DIR)\Patterns \
-    -I$(INCLUDE_DIR)\Pricers \
-    -I$(INCLUDE_DIR)\Solvers1D \
-    -I$(INCLUDE_DIR)\TermStructures \
-    -I$(INCLUDE_DIR)\Utilities \
     -I$(PYTHON_INCLUDE) \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
