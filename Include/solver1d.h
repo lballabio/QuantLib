@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/03/23 08:44:12  aleppo
+    Small bug fixed
+
     Revision 1.10  2001/01/17 13:53:35  nando
     80 columns enforced
     tabs removed
@@ -101,8 +104,8 @@ namespace QuantLib {
         double solve(const ObjectiveFunction& f,
                      double xAccuracy,
                      double guess,
-                     double xMin_,
-                     double xMax_) const;
+                     double xMin,
+                     double xMax) const;
         /*! This method sets the maximum number of function evaluations for the
             bracketing routine. An Error is thrown if a bracket is not found
             after this number of evaluations.
@@ -126,7 +129,7 @@ namespace QuantLib {
             - <b>xMin_</b> and  <b>xMax_</b> form a valid bracket;
             - <b>fxMin_</b> and <b>fxMax_</b> contain the values of the function
               in <b>xMin_</b> and  <b>xMax_</b>;
-            - <b>root</b> was initialized to a valid initial guess.
+            - <b>root_</b> was initialized to a valid initial guess.
         */
         virtual double solve_(const ObjectiveFunction& f,
                               double xAccuracy) const = 0;
