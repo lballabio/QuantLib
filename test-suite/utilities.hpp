@@ -18,7 +18,7 @@
 #ifndef quantlib_test_utilities_hpp
 #define quantlib_test_utilities_hpp
 
-#include <ql/payoff.hpp>
+#include <ql/Instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
@@ -39,13 +39,39 @@ namespace QuantLib {
 
     Handle<TermStructure> 
     makeFlatCurve(const Handle<Quote>& forward,
-                  DayCounter dc = SimpleDayCounter());
+                  DayCounter dc);
 
     Handle<BlackVolTermStructure> 
     makeFlatVolatility(const Handle<Quote>& volatility,
-                       DayCounter dc = SimpleDayCounter());
+                       DayCounter dc);
 
     double relativeError(double x1, double x2, double reference);
+
+    struct VanillaOptionData {
+        Option::Type type;
+        double strike;
+        double s;      // spot
+        double q;      // dividend
+        double r;      // risk-free rate
+        Time t;        // time to maturity
+        double v;      // volatility
+        double result; // expected result
+        double tol;    // tolerance
+    };
+
+    void vanillaOptionTestFailed(std::string greekName,
+                                 const Handle<StrikedTypePayoff>& payoff,
+                                 const Handle<Exercise>& exercise,
+                                 double s,
+                                 double q,
+                                 double r,
+                                 Date today,
+                                 DayCounter dc,
+                                 double v,
+                                 double expected,
+                                 double calculated,
+                                 double error,
+                                 double tolerance);
 
 }
 
@@ -71,6 +97,5 @@ double norm(const Iterator& begin, const Iterator& end, double h) {
                     - 0.5*f2.front() - 0.5*f2.back());
     return QL_SQRT(I);
 }
-
 
 #endif

@@ -332,16 +332,17 @@ void BarrierOptionTest::testBabsiriValues() {
         { Barrier::UpIn,   0.30,   100,      110,  12.98351,  0.0 }
     };
 
+    DayCounter dc = SimpleDayCounter();
     Handle<SimpleQuote> underlying(new SimpleQuote(underlyingPrice));
 
     Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
+    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
 
     Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
+    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
 
     Handle<SimpleQuote> volatility(new SimpleQuote(0.10));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatility);
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatility, dc);
 
     Handle<PricingEngine> engine(new AnalyticBarrierEngine);
     Handle<PricingEngine> mcEngine(
@@ -433,16 +434,17 @@ void BarrierOptionTest::testBeagleholeValues() {
         { Barrier::DownOut, 0.50,   50,      45,  5.477,  0.0 }
     };
 
+    DayCounter dc = SimpleDayCounter();
     Handle<SimpleQuote> underlying(new SimpleQuote(underlyingPrice));
 
     Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
+    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
 
     Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
+    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
 
     Handle<SimpleQuote> volatility(new SimpleQuote(0.10));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatility);
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatility, dc);
 
     Handle<PricingEngine> engine(new AnalyticBarrierEngine);
     Handle<PricingEngine> mcEngine(

@@ -60,14 +60,15 @@ void BinaryBarrierOptionTest::testValues() {
           0.2, 0.05, 0.02, 110, 100.0, 35.283179 }
     };
 
+    DayCounter dc = SimpleDayCounter();
     Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyingPrice));
     Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
+    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
     Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
+    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
 
     Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.25));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME);
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME, dc);
 
     Handle<Quote> underlyingH = underlyingH_SME;
 
@@ -145,14 +146,15 @@ void BinaryBarrierOptionTest::testAmericanValues() {
           0.11, 0.01, 0.04, 99.5,  100, 98.7776 }
     };
 
+    DayCounter dc = SimpleDayCounter();
     Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyingPrice));
     Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
+    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
     Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
+    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
 
     Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.25));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME);
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME, dc);
 
     Handle<Quote> underlyingH = underlyingH_SME;
 
@@ -216,14 +218,15 @@ void BinaryBarrierOptionTest::testSelfConsistency() {
     double strikes[] = { 50.0, 99.5, 100.5, 150.0 };
     double volatilities[] = { 0.11, 0.5, 1.2 };
 
+    DayCounter dc = SimpleDayCounter();
     Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyings[0]));
     Handle<SimpleQuote> rH_SME(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
+    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
     Handle<SimpleQuote> qH_SME(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
+    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
 
     Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME);
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME, dc);
 
     Handle<Quote> underlyingH = underlyingH_SME;
 
@@ -413,14 +416,15 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
     //double strikes[] = { 50, 99.5 };
     double volatilities[] = { 0.11, 0.5, 1.2 };
 
+    DayCounter dc = SimpleDayCounter();
     Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyings[0]));
     Handle<SimpleQuote> rH_SME(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
+    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
     Handle<SimpleQuote> qH_SME(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
+    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
 
     Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME);
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME, dc);
 
     Handle<Quote> underlyingH = underlyingH_SME;
 

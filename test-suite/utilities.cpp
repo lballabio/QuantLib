@@ -19,6 +19,7 @@
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <cppunit/TestCaller.h>
 
 #if defined(HAVE_BOOST)
 #define CHECK_DOWNCAST(Derived,Description) { \
@@ -82,6 +83,55 @@ namespace QuantLib {
             // fall back to absolute error
             return QL_FABS(x1-x2);
     }
+
+
+
+    void vanillaOptionTestFailed(std::string greekName,
+                                 const Handle<StrikedTypePayoff>& payoff,
+                                 const Handle<Exercise>& exercise,
+                                 double s,
+                                 double q,
+                                 double r,
+                                 Date today,
+                                 DayCounter dc,
+                                 double v,
+                                 double expected,
+                                 double calculated,
+                                 double error,
+                                 double tolerance) {
+
+        Time t = dc.yearFraction(today, exercise->lastDate());
+
+        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
+            + OptionTypeFormatter::toString(payoff->optionType()) +
+            " option with "
+            + payoffTypeToString(payoff) + " payoff:\n"
+            "    spot value: "
+            + DoubleFormatter::toString(s) + "\n"
+            "    strike:           "
+            + DoubleFormatter::toString(payoff->strike()) +"\n"
+            "    dividend yield:   "
+            + DoubleFormatter::toString(q) + "\n"
+            "    risk-free rate:   "
+            + DoubleFormatter::toString(r) + "\n"
+            "    reference date:   "
+            + DateFormatter::toString(today) + "\n"
+            "    maturity:         "
+            + DateFormatter::toString(exercise->lastDate()) + "\n"
+            "    time to expiry:   "
+            + DoubleFormatter::toString(t) + "\n"
+            "    volatility:       "
+            + DoubleFormatter::toString(v) + "\n\n"
+            "    expected   " + greekName + ": "
+            + DoubleFormatter::toString(expected) + "\n"
+            "    calculated " + greekName + ": "
+            + DoubleFormatter::toString(calculated) + "\n"
+            "    error:            "
+            + DoubleFormatter::toString(error) + "\n"
+            "    tolerance:        "
+            + DoubleFormatter::toString(tolerance));
+    }
+
 
 }
 

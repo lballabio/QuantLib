@@ -144,62 +144,6 @@ namespace {
         }
     }
 
-    void vanillaOptionTestFailed(std::string greekName,
-                                 const Handle<StrikedTypePayoff>& payoff,
-                                 const Handle<Exercise>& exercise,
-                                 double s,
-                                 double q,
-                                 double r,
-                                 Date today,
-                                 DayCounter dc,
-                                 double v,
-                                 double expected,
-                                 double calculated,
-                                 double tolerance = Null<double>()) {
-
-        Time t = dc.yearFraction(today, exercise->lastDate());
-
-        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-            + OptionTypeFormatter::toString(payoff->optionType()) +
-            " option with "
-            + payoffTypeToString(payoff) + " payoff:\n"
-            "    spot value: "
-            + DoubleFormatter::toString(s) + "\n"
-            "    strike:           "
-            + DoubleFormatter::toString(payoff->strike()) +"\n"
-            "    dividend yield:   "
-            + DoubleFormatter::toString(q) + "\n"
-            "    risk-free rate:   "
-            + DoubleFormatter::toString(r) + "\n"
-            "    reference date:   "
-            + DateFormatter::toString(today) + "\n"
-            "    maturity:         "
-            + DateFormatter::toString(exercise->lastDate()) + "\n"
-            "    time to expiry:   "
-            + DoubleFormatter::toString(t) + "\n"
-            "    volatility:       "
-            + DoubleFormatter::toString(v) + "\n\n"
-            "    expected   " + greekName + ": "
-            + DoubleFormatter::toString(expected) + "\n"
-            "    calculated " + greekName + ": "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    error:            "
-            + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
-            + (tolerance==Null<double>() ? std::string("") :
-            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
-    }
-
-    struct VanillaOptionData {
-        Option::Type type;
-        double strike;
-        double s;      // spot
-        double q;      // dividend
-        double r;      // risk-free rate
-        Time t;        // time to maturity
-        double v;      // volatility
-        double result; // expected result
-    };
-
     int timeToDays(Time t) {
         return int(t*360+0.5);
     }
@@ -297,11 +241,13 @@ void EuropeanOptionTest::testValues() {
         VanillaOption option(stochProcess, payoff, exercise, engine);
 
         double calculated = option.NPV();
-        if (QL_FABS(calculated-values[i].result) > 1e-4) {
+        double error = QL_FABS(calculated-values[i].result);
+        double tolerance = 1e-4;
+        if (error>tolerance) {
             vanillaOptionTestFailed("value", payoff, exercise, values[i].s, 
                                     values[i].q, values[i].r, today, dc, 
                                     values[i].v, values[i].result, calculated,
-                                    1e-4);
+                                    error, tolerance);
         }
     }
 
@@ -377,11 +323,13 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->delta();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    double error = QL_FABS(calculated-values[i].result);
+    double tolerance = 1e-4;
+    if (error>tolerance)
         vanillaOptionTestFailed("delta", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
     i++;
     payoff = Handle<StrikedTypePayoff>(new
@@ -395,11 +343,12 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->delta();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    error = QL_FABS(calculated-values[i].result);
+    if (error>tolerance)
         vanillaOptionTestFailed("delta", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
     i++;
     payoff = Handle<StrikedTypePayoff>(new
@@ -413,11 +362,12 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->elasticity();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    error = QL_FABS(calculated-values[i].result);
+    if (error>tolerance)
         vanillaOptionTestFailed("elasticity", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
 
     i++;
@@ -432,11 +382,12 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->gamma();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    error = QL_FABS(calculated-values[i].result);
+    if (error>tolerance)
         vanillaOptionTestFailed("gamma", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
     i++;
     payoff = Handle<StrikedTypePayoff>(new
@@ -450,11 +401,12 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->gamma();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    error = QL_FABS(calculated-values[i].result);
+    if (error>tolerance)
         vanillaOptionTestFailed("gamma", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
 
     i++;
@@ -469,11 +421,12 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->vega();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    error = QL_FABS(calculated-values[i].result);
+    if (error>tolerance)
         vanillaOptionTestFailed("vega", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
 
     i++;
@@ -488,11 +441,12 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->vega();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    error = QL_FABS(calculated-values[i].result);
+    if (error>tolerance)
         vanillaOptionTestFailed("vega", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
 
     i++;
@@ -507,11 +461,12 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->theta();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    error = QL_FABS(calculated-values[i].result);
+    if (error>tolerance)
         vanillaOptionTestFailed("theta", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
 
     i++;
@@ -526,11 +481,12 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->thetaPerDay();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    error = QL_FABS(calculated-values[i].result);
+    if (error>tolerance)
         vanillaOptionTestFailed("thetaPerDay", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
 
     i++;
@@ -545,11 +501,12 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->rho();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    error = QL_FABS(calculated-values[i].result);
+    if (error>tolerance)
         vanillaOptionTestFailed("rho", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
 
     i++;
@@ -564,11 +521,12 @@ void EuropeanOptionTest::testGreekValues() {
     option = Handle<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->dividendRho();
-    if (QL_FABS(calculated-values[i].result) > 1e-4)
+    error = QL_FABS(calculated-values[i].result);
+    if (error>tolerance)
         vanillaOptionTestFailed("dividendRho", payoff, exercise, values[i].s, 
                                 values[i].q, values[i].r, today, dc, 
                                 values[i].v, values[i].result, calculated,
-                                1e-4);
+                                error, tolerance);
 
 }
 
@@ -711,11 +669,12 @@ void EuropeanOptionTest::testGreeks() {
                               double expct = expected  [greek],
                                      calcl = calculated[greek],
                                      tol   = tolerance [greek];
-                              if (relativeError(expct,calcl,u) > tol) {
+                              double error = relativeError(expct,calcl,u);
+                              if (error>tol) {
                                   vanillaOptionTestFailed(greek, payoff, 
                                                           exercise, u, q, r, 
                                                           today, dc, v, expct, 
-                                                          calcl, tol);
+                                                          calcl, error, tol);
                               }
                           }
                       }
