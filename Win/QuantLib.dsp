@@ -223,6 +223,18 @@ SOURCE=..\Sources\Pricers\bsmoption.cpp
 
 SOURCE=..\Include\Pricers\bsmoption.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Pricers\dividendamericanoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\dividendamericanoption.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\dividendeuropeanoption.h
+# End Source File
 # End Group
 # Begin Group "Solvers1D"
 
@@ -287,6 +299,18 @@ SOURCE=..\Include\Solvers1D\secant.h
 # Begin Group "Math"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Include\Math\location.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Math\newcubicspline.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Math\newcubicspline.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Math\normaldistribution.cpp
