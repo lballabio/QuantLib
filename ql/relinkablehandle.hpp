@@ -49,8 +49,12 @@ namespace QuantLib {
     template <class Type>
     class RelinkableHandle {
       public:
-        //! Constructor returning an unlinked handle.
-        RelinkableHandle();
+        //! Constructor returning a handle, possibly already linked.
+        /*! \warning see the documentation of the <tt>linkTo</tt> method
+                for issues relatives to <tt>registerAsObserver</tt>.
+        */
+        RelinkableHandle(const Handle<Type>& h = Handle<Type>(),
+            bool registerAsObserver = true);
         //! Copy constructor
         RelinkableHandle(const RelinkableHandle& from);
         ~RelinkableHandle();
@@ -58,18 +62,17 @@ namespace QuantLib {
         //! \name Linking
         //@{
         /*! \warning <i><b>registerAsObserver</b></i> is left as a backdoor
-            in case the programmer cannot guarantee that the object pointed 
-            to will remain alive for the whole lifetime of the handle - 
-            namely, it should be set to <tt>false</tt> when the passed handle 
-            was created with <tt>owns = false</tt> (the latter should only 
-            happen in a controlled environment, so that the programmer is 
-            aware of it). Failure to do so can very likely result 
-            in a program crash. 
-            
-            If the programmer does want the relinkable handle to register as 
-            observer of such a handle, it is his responsibility to ensure 
-            that the relinkable handle gets destroyed before the pointed 
-            object does.
+                in case the programmer cannot guarantee that the object 
+                pointed to will remain alive for the whole lifetime of the 
+                handle---namely, it should be set to <tt>false</tt> when the 
+                passed handle was created with <tt>owns = false</tt> (the 
+                latter should only happen in a controlled environment, so 
+                that the programmer is aware of it). Failure to do so can 
+                very likely result in a program crash. 
+                If the programmer does want the relinkable handle to register 
+                as observer of such a handle, it is his responsibility to 
+                ensure that the relinkable handle gets destroyed before the 
+                pointed object does.
         */
         void linkTo(const Handle<Type>& h, bool registerAsObserver = true);
         //@}
@@ -90,8 +93,8 @@ namespace QuantLib {
 
         /*! \name Observable interface
             Although this class does not directly inherit from Observable,
-            it contains an inner class which does. This methods act as proxies
-            for the corresponding methods of the data member.
+            it contains an inner class which does. This methods act as 
+            proxies for the corresponding methods of the data member.
         */
         //@{
         void registerObserver(Patterns::Observer*);
@@ -119,9 +122,12 @@ namespace QuantLib {
     // inline definitions
 
     template <class Type>
-    inline RelinkableHandle<Type>::RelinkableHandle()
+    inline RelinkableHandle<Type>::RelinkableHandle(const Handle<Type>& h,
+        bool registerAsObserver)
     : ptr_(new Handle<Type>*(new Handle<Type>)), n_(new int(1)),
-      observer_(new InnerObserver), registeredAsObserver_(new bool(false)) {}
+      observer_(new InnerObserver), registeredAsObserver_(new bool(false)) {
+        linkTo(h,registerAsObserver);
+    }
 
     template <class Type>
     inline RelinkableHandle<Type>::RelinkableHandle(

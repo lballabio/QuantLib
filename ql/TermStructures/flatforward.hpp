@@ -59,21 +59,11 @@ namespace QuantLib {
             Date minDate() const;
             Time maxTime() const;
             Time minTime() const;
-            // unhide non-virtual methods in base class
-            Rate zeroYield(const Date& d, bool extrapolate = false) const {
-                return TermStructure::zeroYield(d,extrapolate);
-            }
-            DiscountFactor discount(const Date& d, 
-                                    bool extrapolate = false) const {
-                return TermStructure::discount(d,extrapolate);
-            }
-            Rate forward(const Date& d, bool extrapolate = false) const {
-                return TermStructure::forward(d,extrapolate);
-            }
-            // implementations
-            Rate zeroYield(Time, bool extrapolate = false) const;
-            DiscountFactor discount(Time, bool extrapolate = false) const;
-            Rate forward(Time, bool extrapolate = false) const;
+          protected:
+            Rate zeroYieldImpl(Time, bool extrapolate = false) const;
+            DiscountFactor discountImpl(Time, 
+                bool extrapolate = false) const;
+            Rate forwardImpl(Time, bool extrapolate = false) const;
           private:
             Currency currency_;
             Handle<DayCounter> dayCounter_;
@@ -138,7 +128,7 @@ namespace QuantLib {
             return 0.0;
         }
 
-        inline Rate FlatForward::zeroYield(Time t, bool) const {
+        inline Rate FlatForward::zeroYieldImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
                 "FlatForward: zero yield requested for negative time (" + 
@@ -146,7 +136,7 @@ namespace QuantLib {
             return forward_;
         }
         
-        inline DiscountFactor FlatForward::discount(Time t, bool) const {
+        inline DiscountFactor FlatForward::discountImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
                 "FlatForward: discount requested for negative time (" + 
@@ -154,7 +144,7 @@ namespace QuantLib {
             return DiscountFactor(QL_EXP(-forward_*t));
         }
 
-        inline Rate FlatForward::forward(Time t, bool) const {
+        inline Rate FlatForward::forwardImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
                 "FlatForward: forward requested for negative time (" + 

@@ -95,7 +95,7 @@ namespace QuantLib {
             }
         }
 
-        Rate PiecewiseFlatForward::zeroYield(Time t, 
+        Rate PiecewiseFlatForward::zeroYieldImpl(Time t, 
             bool extrapolate) const {
                 if (t == 0.0) {
                     return zeroYields_[0];
@@ -111,7 +111,7 @@ namespace QuantLib {
                 QL_DUMMY_RETURN(Rate());
         }
 
-        DiscountFactor PiecewiseFlatForward::discount(
+        DiscountFactor PiecewiseFlatForward::discountImpl(
             Time t, bool extrapolate) const {
                 if (t == 0.0) {
                     return discounts_[0];
@@ -127,13 +127,14 @@ namespace QuantLib {
                 QL_DUMMY_RETURN(DiscountFactor());
         }
 
-        Rate PiecewiseFlatForward::forward(Time t, bool extrapolate) const {
-            if (t == 0.0) {
-                return forwards_[0];
-            } else {
-                return forwards_[referenceNode(t, extrapolate)];
-            }
-            QL_DUMMY_RETURN(Rate());
+        Rate PiecewiseFlatForward::forwardImpl(Time t, 
+            bool extrapolate) const {
+                if (t == 0.0) {
+                    return forwards_[0];
+                } else {
+                    return forwards_[referenceNode(t, extrapolate)];
+                }
+                QL_DUMMY_RETURN(Rate());
         }
 
         int PiecewiseFlatForward::referenceNode(
