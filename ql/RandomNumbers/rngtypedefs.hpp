@@ -30,60 +30,147 @@
 
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
 #include <ql/RandomNumbers/knuthuniformrng.hpp>
+
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>
 #include <ql/RandomNumbers/inversecumgaussianrng.hpp>
+
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
+
+#include <ql/RandomNumbers/randomsequencegenerator.hpp>
+#include <ql/RandomNumbers/haltonrsg.hpp>
+
+#include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
 
 namespace QuantLib {
 
     namespace RandomNumbers {
 
+/************* Uniform number generators *************/
+
+        // no low discrepancy, since they are sequence generators.
+
+        // Lecuyer and Knuth uniform number generators, plus:
+
+        //! default choice for uniform random number generator.
+        typedef LecuyerUniformRng UniformRandomGenerator;
+        // should be Marsenne Twister as soon as it is available in QuantLib
+
+
+/************* Gaussian number generators *************/
+
+        // no low discrepancy, since they are sequence generators.
+
         // Gaussian random number generators based on
         // Lecuyer uniform random number generator
-        typedef BoxMullerGaussianRng<LecuyerUniformRng>
-			BoxMullerLecuyerGaussianRng;
+        // 1) Central Limit
         typedef CLGaussianRng<LecuyerUniformRng>
 			CentralLimitLecuyerGaussianRng;
+        // 2) Box Muller
+        typedef BoxMullerGaussianRng<LecuyerUniformRng>
+			BoxMullerLecuyerGaussianRng;
+        // 3) Moro
+        typedef ICGaussianRng<LecuyerUniformRng,
+            QuantLib::Math::MoroInverseCumulativeNormal>
+			MoroInvCumulativeLecuyerGaussianRng;
+        // 4) Acklam (recommended)
         typedef ICGaussianRng<LecuyerUniformRng,
             QuantLib::Math::InverseCumulativeNormal>
 			InvCumulativeLecuyerGaussianRng;
-
+        
         // Gaussian random number generators based on
         // Knuth uniform random number generator
-        typedef BoxMullerGaussianRng<KnuthUniformRng>
-			BoxMullerKnuthGaussianRng;
+        // 1) Central Limit
         typedef CLGaussianRng<KnuthUniformRng>
 			CentralLimitKnuthGaussianRng;
+        // 2) Box Muller
+        typedef BoxMullerGaussianRng<KnuthUniformRng>
+			BoxMullerKnuthGaussianRng;
+        // 3) Moro
+        typedef ICGaussianRng<KnuthUniformRng,
+            QuantLib::Math::MoroInverseCumulativeNormal>
+			MoroInvCumulativeKnuthGaussianRng;
+        // 4) Acklam (recommended)
         typedef ICGaussianRng<KnuthUniformRng,
             QuantLib::Math::InverseCumulativeNormal>
 			InvCumulativeKnuthGaussianRng;
 
-/*      // looking forward to low-discrepancy sequences
-
-        // default choice for Gaussian low discrepancy sequence generator.
-        typedef ICGaussianRng<SobolUniformLds,
-            QuantLib::Math::InverseCumulativeNormal>
-			InvCumulativeSobolGaussianLds;
-*/
-
-        //! default choice for uniform random number generator.
-        typedef LecuyerUniformRng UniformRandomGenerator;
-
         //! default choice for Gaussian random number generator.
         typedef BoxMullerGaussianRng<UniformRandomGenerator>
 			GaussianRandomGenerator;
-        // It might be substitued by InvCumulativeLecuyerGaussianRng
+        // it should be the following typedef, which use
+        // a better uniform->guassian algo, but
+        // the change will happen when UniformRandomGenerator
+        // will be the Marsenne Twister, so that we have to updated
+        // the calculated values in the test suite only once
+        //typedef ICGaussianRng<UniformRandomGenerator,
+        //    QuantLib::Math::InverseCumulativeNormal>
+		//	GaussianRandomGenerator;
 
         //! default choice for Gaussian array generator.
         typedef RandomArrayGenerator<GaussianRandomGenerator>
 			GaussianArrayGenerator;
 
-/*      //looking forward to low-discrepancy sequences
 
-        // default choice for uniform low discrepancy sequence generator.
-        typedef SobolUniformLds UniformLowDiscrepancy;
-*/
+/************* Uniform sequence generators *************/
+
+        // all low discrepancy sequence generators (HaltonRsg
+        // for the time being), plus:
+        typedef RandomSequenceGenerator<LecuyerUniformRng> LecuyerUniformRsg;
+        typedef RandomSequenceGenerator<KnuthUniformRng> KnuthUniformRsg;
+
+        //! default choice for uniform random sequence generator.
+        typedef LecuyerUniformRsg UniformRandomSequenceGenerator;
+        // should be Marsenne Twister as soon as it is available in QuantLib
+
+        //! default choice for uniform low discrepancy sequence generator
+        typedef HaltonRsg UniformLowDiscrepancySequenceGenerator;
+        // should be Sobol as soon as it is available in QuantLib
+
+
+
+/************* Gaussian sequence generators *************/
+
+        // Gaussian random sequence generators based on
+        // Lecuyer uniform random sequence generator
+        // 1) Moro
+        typedef ICGaussianRsg<LecuyerUniformRsg,
+            QuantLib::Math::MoroInverseCumulativeNormal>
+			MoroInvCumulativeLecuyerGaussianRsg;
+        // 2) Acklam
+        typedef ICGaussianRsg<LecuyerUniformRsg,
+            QuantLib::Math::InverseCumulativeNormal>
+			InvCumulativeLecuyerGaussianRsg;
+
+        // Gaussian random sequence generators based on
+        // Knuth uniform random sequence generator
+        // 1) Moro
+        typedef ICGaussianRsg<KnuthUniformRsg,
+            QuantLib::Math::MoroInverseCumulativeNormal>
+			MoroInvCumulativeKnuthGaussianRsg;
+        // 2) Acklam
+        typedef ICGaussianRsg<KnuthUniformRsg,
+            QuantLib::Math::InverseCumulativeNormal>
+			InvCumulativeKnuthGaussianRsg;
+
+        // Gaussian low discrepancy sequence generators based on
+        // Halton uniform low discrepancy sequence generator
+        // 1) Moro
+        typedef ICGaussianRsg<HaltonRsg,
+            QuantLib::Math::MoroInverseCumulativeNormal>
+			MoroInvCumulativeHaltonGaussianRsg;
+        // 2) Acklam
+        typedef ICGaussianRsg<HaltonRsg,
+            QuantLib::Math::InverseCumulativeNormal>
+			InvCumulativeHaltonGaussianRsg;
+
+        //! default choice for gaussian random sequence generator.
+        typedef InvCumulativeLecuyerGaussianRsg GaussianRandomSequenceGenerator;
+        // should be Marsenne Twister as soon as it is available in QuantLib
+
+        //! default choice for gaussian low discrepancy sequence generator
+        typedef InvCumulativeHaltonGaussianRsg GaussianLowDiscrepancySequenceGenerator;
+        // should be Sobol as soon as it is available in QuantLib
 
 
     }
