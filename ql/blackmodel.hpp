@@ -49,7 +49,7 @@ namespace QuantLib {
         const RelinkableHandle<TermStructure>& termStructure() const;
 
         //! General Black formula
-        static double formula(double k, double f, double v, double w);
+        static double formula(double f, double k, double v, double w);
       private:
         RelinkableHandle<MarketElement> volatility_;
         RelinkableHandle<TermStructure> termStructure_;
@@ -87,7 +87,7 @@ namespace QuantLib {
             d_2(f,k,v) = d_1(f,k,v) - v.
         \f]
     */
-    inline double BlackModel::formula(double k, double f, double v, double w) {
+    inline double BlackModel::formula(double f, double k, double v, double w) {
             if (QL_FABS(v) < QL_EPSILON)
                 return QL_MAX(f*w - k*w, 0.0);
             double d1 = QL_LOG(f/k)/v + 0.5*v;

@@ -36,7 +36,8 @@ namespace QuantLib {
             else 
                 w = -1.0;
             results_.value =  parameters_.fixedBPS * 
-                BlackModel::formula(parameters_.fixedRate, parameters_.fairRate,
+                BlackModel::formula(parameters_.fairRate,
+                                    parameters_.fixedRate, 
                                     model_->volatility()*QL_SQRT(start), w);
         }
 
