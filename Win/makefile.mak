@@ -42,6 +42,7 @@ DOXYGEN		= doxygen
 LATEX		= latex
 PDFLATEX	= pdflatex
 MAKEINDEX	= makeindex
+DVIPS		= dvips
 
 # Options
 CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
