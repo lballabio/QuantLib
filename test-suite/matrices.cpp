@@ -102,7 +102,7 @@ void MatricesTest::testEigenvectors() {
             if (eigenValues[i] >= minHolder) {
                 #ifndef QL_PATCH_MSVC6
                 BOOST_FAIL("Eigenvalues nor ordered: "
-                    + ArrayFormatter::toString(eigenValues)):
+                    + ArrayFormatter::toString(eigenValues));
                 #else
                 BOOST_FAIL("Eigenvalues nor ordered: ");
                 #endif
