@@ -23,10 +23,13 @@
 */
 
 /*! \file bermudanoption.cpp
-    \brief  class for finite-difference evaluation of bermudan option 
+    \brief  class for finite-difference evaluation of bermudan option
 
     $Source$
     $Log$
+    Revision 1.4  2001/04/04 17:13:37  nando
+    bat file was not updated with Luigi's shuffling
+
     Revision 1.3  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -54,12 +57,12 @@ namespace QuantLib {
         BermudanOption::BermudanOption(Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility,
-            const std::vector<Time>& dates, 
+            const std::vector<Time>& dates,
             int timeSteps, int gridPoints)
-        : MultiPeriodOption(type, underlying, strike, dividendYield, 
-          riskFreeRate, residualTime, volatility, dates, timeSteps, 
+        : MultiPeriodOption(type, underlying, strike, dividendYield,
+          riskFreeRate, residualTime, volatility, dates, timeSteps,
           gridPoints) {
-            
+
             analitic_ = Handle<BSMOption> (new BSMEuropeanOption (
                             type_, underlying_, strike_, dividendYield_,
                             riskFreeRate_, residualTime_, volatility_));
@@ -72,10 +75,12 @@ namespace QuantLib {
         }
 
         void BermudanOption::executeIntermediateStep(int step) const{
-            
+
+            // to avoid warning
+            step;
             int size = initialPrices_.size();
             for(int j = 0; size; j++)
-                prices_[j] = QL_MAX(prices_[j], initialPrices_[j]);            
+                prices_[j] = QL_MAX(prices_[j], initialPrices_[j]);
         }
 
     }
