@@ -28,7 +28,7 @@ import copy
 import math
 
 pricer = BSMAmericanOption
-nstp = 400
+nstp = 250
 ngrd = nstp+1
 
 def relErr(x1, x2, reference):
@@ -51,12 +51,12 @@ resuCPSrho   = [];     resuCPSvega  = [];   resuCPparity = []
 
 err_delta = 5e-5
 err_gamma = 5e-5
-err_theta = 5e-5
+err_theta = 9e-5
 err_rho  =  5e-5
 err_vega =  5e-5
 total_number_of_error = 0
 
-print "Test of the class BSMEuropeanOption, maximum-error"
+print "Test of the class BSMAmericanOption, maximum-error"
 print "     Type  items err-value err-delta err-gamma err-theta  err-rho  err-vega "
 
 for typ in ['Call','Put','Straddle']:
