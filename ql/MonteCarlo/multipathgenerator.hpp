@@ -53,7 +53,7 @@ namespace QuantLib {
                      const Matrix& correlation,
                      const TimeGrid& timeGrid,
                      GSG generator,
-                     bool brownianBridge);
+                     bool brownianBridge = false);
         const sample_type& next() const;
         const sample_type& antithetic() const;
       private:
