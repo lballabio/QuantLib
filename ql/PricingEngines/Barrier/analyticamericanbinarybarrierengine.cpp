@@ -32,7 +32,7 @@ namespace QuantLib {
         #if defined(HAVE_BOOST)
         Handle<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
-        QL_REQUIRE(payoff,
+        QL_REQUIRE(ex,
                    "AnalyticAmericanBinaryBarrierEngine: wrong exercise given");
         #else
         Handle<AmericanExercise> ex = arguments_.exercise;

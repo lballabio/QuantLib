@@ -128,21 +128,30 @@ namespace QuantLib {
         Handle<CashOrNothingPayoff> payoff = arguments_.payoff;
         #endif
 
+        #if defined(HAVE_BOOST)
+        Handle<AmericanExercise> exercise =
+            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        QL_REQUIRE(exercise,
+                   "MCDigitalEngine: wrong exercise given");
+        #else
+        Handle<AmericanExercise> exercise = arguments_.exercise;
+        #endif
+
         TimeGrid grid = timeGrid();
         UniformRandomSequenceGenerator
             sequenceGen(grid.size()-1, UniformRandomGenerator(76));
 
         return Handle<MCDigitalEngine<RNG,S>::path_pricer_type>(
-            new DigitalPathPricer(arguments_.payoff,
-                                 arguments_.exercise,
-                                 arguments_.underlying,
-                                 arguments_.riskFreeTS,
-                                 Handle<DiffusionProcess>(new
+            new DigitalPathPricer(payoff,
+                                  exercise,
+                                  arguments_.underlying,
+                                  arguments_.riskFreeTS,
+                                  Handle<DiffusionProcess>(new
                                     BlackScholesProcess(arguments_.riskFreeTS,
                                                         arguments_.dividendTS,
                                                         arguments_.volTS,
                                                         arguments_.underlying)),
-                                 sequenceGen));
+                                  sequenceGen));
 
     }
 

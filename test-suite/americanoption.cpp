@@ -16,7 +16,7 @@
 */
 
 #include "americanoption.hpp"
-#include <ql/DayCounters/Actual360.hpp>
+#include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 #include <ql/TermStructures/flatforward.hpp>

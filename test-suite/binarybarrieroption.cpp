@@ -110,7 +110,7 @@ void BinaryBarrierOptionTest::testValues() {
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
         Handle<PricingEngine> engine(new AnalyticEuropeanBinaryBarrierEngine);
 
-        Handle<Payoff> payoff(new CashOrNothingPayoff(
+        Handle<CashOrNothingPayoff> payoff(new CashOrNothingPayoff(
             Option::Call, values[i].barrier, values[i].rebate));
 
         BinaryBarrierOption binaryBarrierOption(
@@ -196,7 +196,7 @@ void BinaryBarrierOptionTest::testAmericanValues() {
         Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
         Handle<PricingEngine> engine(new AnalyticAmericanBinaryBarrierEngine);
 
-        Handle<Payoff> payoff(new CashOrNothingPayoff(
+        Handle<CashOrNothingPayoff> payoff(new CashOrNothingPayoff(
             values[i].optionType, values[i].barrier, values[i].rebate));
 
         BinaryBarrierOption binaryBarrierOption(
@@ -296,8 +296,8 @@ void BinaryBarrierOptionTest::testSelfConsistency() {
                   Spread dR = r*1.0e-4;
 //                  Spread dQ = q*1.0e-4;
 
-                  Handle<Payoff> payoff(new CashOrNothingPayoff(type,
-                      k, rebate));
+                  Handle<CashOrNothingPayoff> payoff(
+                      new CashOrNothingPayoff(type, k, rebate));
 
                   // reference option
                   BinaryBarrierOption opt(
@@ -490,7 +490,7 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
                   double v = volatilities[i7];
                   volatilityH_SME->setValue(v);
 
-                  Handle<Payoff> payoff(new CashOrNothingPayoff(
+                  Handle<CashOrNothingPayoff> payoff(new CashOrNothingPayoff(
                       type, barrier, cashPayoff));
 
                   // reference option

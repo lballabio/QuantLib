@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     QuantoForwardVanillaOption::QuantoForwardVanillaOption(
-                 const Handle<Payoff>& payoff,
+                 const Handle<StrikedTypePayoff>& payoff,
                  const Handle<Exercise>& exercise,
                  const RelinkableHandle<Quote>& underlying,
                  const RelinkableHandle<TermStructure>& dividendTS,

@@ -17,7 +17,7 @@
 */
 
 #include "europeanoption.hpp"
-#include <ql/DayCounters/Actual360.hpp>
+#include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
@@ -320,11 +320,13 @@ namespace {
         double result; // expected result
     };
 
+    int timeToDays(Time t) {
+        return int(t*360+0.5);
+    }
 
 }
 
 // tests
-
 
 void EuropeanOptionTest::testValues() {
 
@@ -397,8 +399,7 @@ void EuropeanOptionTest::testValues() {
 
         Handle<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
-
-        Date exDate = today.plusDays(int(values[i].t*360));
+        Date exDate = today.plusDays(timeToDays(values[i].t));
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -472,12 +473,12 @@ void EuropeanOptionTest::testGreekValues() {
     Handle<VanillaOption> option;
     double calculated;
 
-    Size i = -1;
+    int i = -1;
 
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -499,7 +500,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -521,7 +522,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -544,7 +545,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -566,7 +567,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -589,7 +590,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -612,7 +613,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -635,7 +636,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -658,7 +659,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -681,7 +682,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -704,7 +705,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = Handle<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(values[i].t*360);
+    exDate = today.plusDays(timeToDays(values[i].t));
     exercise = Handle<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -759,7 +760,7 @@ void EuropeanOptionTest::testGreeks() {
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(residualTimes); k++) {
-          Date exDate = today.plusDays(residualTimes[k]*360);
+          Date exDate = today.plusDays(timeToDays(residualTimes[k]));
           Handle<Exercise> exercise(new EuropeanExercise(exDate));
           Date exDateP = exDate.plusDays(1),
                exDateM = exDate.plusDays(-1);
@@ -1123,8 +1124,7 @@ CppUnit::Test* EuropeanOptionTest::suite() {
                     &EuropeanOptionTest::testGreekValues));
 
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
-                   ("Testing European option analytic greeks against finite "
-                    "difference greeks",
+                   ("Testing European option greeks",
                     &EuropeanOptionTest::testGreeks));
 
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>

@@ -205,7 +205,7 @@ CppUnit::Test* DistributionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Distributions' tests");
     tests->addTest(new CppUnit::TestCaller<DistributionTest>
-                   ("Testing normal distribution(s)",
+                   ("Testing normal distributions",
                     &DistributionTest::testNormal));
     tests->addTest(new CppUnit::TestCaller<DistributionTest>
                    ("Testing bivariate cumulative normal distribution",

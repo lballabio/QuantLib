@@ -38,16 +38,17 @@
 namespace QuantLib {
 
     //! Binary engine base class
-    class BinaryBarrierEngine : public GenericEngine<BinaryBarrierOption::arguments,
-                                              BinaryBarrierOption::results> {};
+    class BinaryBarrierEngine 
+        : public GenericEngine<BinaryBarrierOption::arguments,
+                               BinaryBarrierOption::results> {};
 
-    //! Pricing engine for European binary barrier options using analytic formulae
+    //! Analytic pricing engine for European binary barrier options
     class AnalyticEuropeanBinaryBarrierEngine : public BinaryBarrierEngine {
       public:
         void calculate() const;
     };
 
-    //! Pricing engine for American binary barrier options using analytic formulae
+    //! Analytic pricing engine for American binary barrier options formulae
     class AnalyticAmericanBinaryBarrierEngine : public BinaryBarrierEngine {
       public:
         void calculate() const;
@@ -96,13 +97,14 @@ namespace QuantLib {
 
 
     template<class RNG, class S>
-    MCBinaryBarrierEngine<RNG,S>::MCBinaryBarrierEngine(Size maxTimeStepsPerYear,
-                                          bool antitheticVariate,
-                                          bool controlVariate,
-                                          Size requiredSamples,
-                                          double requiredTolerance,
-                                          Size maxSamples,
-                                          long seed)
+    MCBinaryBarrierEngine<RNG,S>::MCBinaryBarrierEngine(
+                                                     Size maxTimeStepsPerYear,
+                                                     bool antitheticVariate,
+                                                     bool controlVariate,
+                                                     Size requiredSamples,
+                                                     double requiredTolerance,
+                                                     Size maxSamples,
+                                                     long seed)
     : McSimulation<SingleAsset<RNG>,S>(antitheticVariate,
                                        controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
@@ -146,14 +148,24 @@ namespace QuantLib {
         Handle<CashOrNothingPayoff> payoff = arguments_.payoff;
         #endif
 
+
+        #if defined(HAVE_BOOST)
+        Handle<AmericanExercise> exercise =
+            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        QL_REQUIRE(exercise,
+                   "MCBinaryBarrierEngine: wrong exercise given");
+        #else
+        Handle<AmericanExercise> exercise = arguments_.exercise;
+        #endif
+
         TimeGrid grid = timeGrid();
         UniformRandomSequenceGenerator
             sequenceGen(grid.size()-1, UniformRandomGenerator(76));
 
         return Handle<MCBinaryBarrierEngine<RNG,S>::path_pricer_type>(
             new BinaryBarrierPathPricer(
-                    arguments_.payoff,
-                    arguments_.exercise,
+                    payoff,
+                    exercise,
                     arguments_.underlying,
                     arguments_.riskFreeTS,
                     Handle<DiffusionProcess> (new BlackScholesProcess(

@@ -18,7 +18,7 @@
 */
 
 #include "digitaloption.hpp"
-#include <ql/DayCounters/Actual360.hpp>
+#include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
@@ -262,7 +262,7 @@ void DigitalOptionTest::testCashOrNothingValues() {
         Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, values[i].extraParameter));
 
-        Date exDate = today.plusDays(values[i].t*360);
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -311,7 +311,7 @@ void DigitalOptionTest::testAssetOrNothingValues() {
         Handle<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(values[i].t*360);
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -360,7 +360,7 @@ void DigitalOptionTest::testGapValues() {
         Handle<StrikedTypePayoff> payoff(new GapPayoff(
             values[i].type, values[i].strike, values[i].extraParameter));
 
-        Date exDate = today.plusDays(values[i].t*360);
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -420,7 +420,7 @@ void DigitalOptionTest::testCashOrNothingAmericanValues() {
         Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, values[i].extraParameter));
 
-        Date exDate = today.plusDays(values[i].t*360);
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
 
         spot ->setValue(values[i].s);
@@ -501,7 +501,7 @@ void DigitalOptionTest::testCashOrNothingAmericanGreeks() {
     for (Size j=0; j<LENGTH(engines); j++) {
       for (Size i1=0; i1<LENGTH(types); i1++) {
         for (Size i6=0; i6<LENGTH(strikes); i6++) {
-            Handle<Payoff> payoff(new CashOrNothingPayoff(types[i1],
+            Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(types[i1],
               strikes[i6], cashPayoff));
 
             // reference option
@@ -695,7 +695,7 @@ void DigitalOptionTest::testEngineConsistency() {
                   double v = volatilities[i7];
                   vol->setValue(v);
 
-                  Handle<Payoff> payoff(new CashOrNothingPayoff(
+                  Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
                       type, strike, cashPayoff));
 
                   // reference option
@@ -756,21 +756,21 @@ CppUnit::Test* DigitalOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Digital option tests");
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing European Cash-or-Nothing digital option",
+                   ("Testing European cash-or-nothing digital option",
                     &DigitalOptionTest::testCashOrNothingValues));
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing European Asset-or-Nothing digital option",
+                   ("Testing European asset-or-nothing digital option",
                     &DigitalOptionTest::testAssetOrNothingValues));
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing European Gap digital option",
+                   ("Testing European gap digital option",
                     &DigitalOptionTest::testGapValues));
 
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing American Cash-or-Nothing digital option greeks",
+                   ("Testing American cash-or-nothing digital option greeks",
                     &DigitalOptionTest::testCashOrNothingAmericanGreeks));
 
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing American Cash-or-Nothing digital option",
+                   ("Testing American cash-or-nothing digital option",
                     &DigitalOptionTest::testCashOrNothingAmericanValues));
 
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>

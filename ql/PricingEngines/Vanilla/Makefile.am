@@ -17,7 +17,6 @@ libVanillaEngines_la_SOURCES = \
     analyticamericanengine.cpp \
     analyticeuropeanengine.cpp \
     baroneadesiwhaleyengine.cpp \
-    baroneadesiwhaleyengine.cpp \
     bjerksundstenslandengine.cpp \
     discretizedvanillaoption.cpp \
     integralengines.cpp
