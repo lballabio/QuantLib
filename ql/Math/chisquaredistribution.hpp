@@ -14,7 +14,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file chisquaredistribution.hpp
-    \brief Chi-square (central and non-central distributions
+    \brief Chi-square (central and non-central) distributions
 
     \fullpath
     ql/Math/%chisquaredistribution.hpp
