@@ -1,15 +1,14 @@
 
 
+make Parities to work
 remove option integral from parities
 
 switch false/true antithetic variate
 config.h is installed?
-make Parities to work
 installer splash screen
 add examples to documentation
 documentation of path (where it is? continously compounded)
 MonteCarloModel refactoring
-check compile success/failure on (SourceForge compile farm)
 
 
 DISTRIBUTING
@@ -17,8 +16,8 @@ DISTRIBUTING
 
 COMPILING
     *** borland compiler build tree indipendent from source tree
-    *** gnu compiler (make) build tree indipendent from source tree
     *** understand why bootstrap does not work under cygwin
+    **** check compile success/failure on (SourceForge compile farm)
     *** check compile success/failure on other platforms/compilers
     Borland projects
 
