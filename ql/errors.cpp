@@ -41,7 +41,7 @@ namespace {
         if (function != "(unknown)")
             msg << function << ": ";
         #if QL_ERROR_LINES
-        msg << "\n  " << trim(file) << "(" << line << "): ";
+        msg << "\n  " << file << "(" << line << "): \n";
         #endif
         msg << message;
         return msg.str();
