@@ -268,16 +268,17 @@ void OldPricerTest::testMcSingleFactorPricers() {
     //
     // data from "Implementing Derivatives Model",
     // Clewlow, Strickland, p.118-123
+    std::vector<Time> timeIncrements;
+
+    #ifndef QL_DISABLE_DEPRECATED
+    Time times[] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
+    timeIncrements = std::vector<Time>(LENGTH(times));
+    std::copy(times,times+LENGTH(times),timeIncrements.begin());
     Option::Type type = Option::Call;
     Real underlying = 100.0, strike = 100.0;
     Rate dividendYield = 0.03, riskFreeRate = 0.06;
-    Time times[] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
     Volatility volatility = 0.2;
     Real storedValue = 5.3425606635;
-
-    std::vector<Time> timeIncrements(LENGTH(times));
-    #ifndef QL_DISABLE_DEPRECATED
-    std::copy(times,times+LENGTH(times),timeIncrements.begin());
     DiscreteGeometricAPO pricer(type,underlying,strike,dividendYield,
                                 riskFreeRate,timeIncrements, volatility);
     if (QL_FABS(pricer.value()-storedValue) > 1.0e-10)
@@ -294,21 +295,21 @@ void OldPricerTest::testMcSingleFactorPricers() {
     // "batch" 3
     //
     // trying to approximate the continuous version with the discrete version
-    type = Option::Put;
-    underlying = 80.0;
-    strike = 85.0;
-    dividendYield = -0.03;
-    riskFreeRate = 0.05;
     residualTime = 0.25;
-    volatility = 0.2;
     Size timeSteps = 90000;
-    storedValue = 4.6922247251;
 
     timeIncrements = std::vector<Time>(timeSteps);
     Time dt = residualTime/timeSteps;
     for (Size i=0; i<timeSteps; i++)
         timeIncrements[i] = (i+1)*dt;
     #ifndef QL_DISABLE_DEPRECATED
+    type = Option::Put;
+    underlying = 80.0;
+    strike = 85.0;
+    dividendYield = -0.03;
+    riskFreeRate = 0.05;
+    volatility = 0.2;
+    storedValue = 4.6922247251;
     DiscreteGeometricAPO pricer3(type,underlying,strike,dividendYield,
                                  riskFreeRate,timeIncrements,volatility);
     if (QL_FABS(pricer3.value()-storedValue) > 1.0e-10)
@@ -318,7 +319,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
             + DecimalFormatter::toString(pricer3.value(),10) + "\n"
             "    expected:         "
             + DecimalFormatter::toString(storedValue,10));
-    #endif // QL_DISABLE_DEPRECATED
+
 
     // batch 4
     //
@@ -389,7 +390,6 @@ void OldPricerTest::testMcSingleFactorPricers() {
           0.13, true, 2.89703362437 }
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
     for (Size k=0; k<LENGTH(cases4); k++) {
         Time dt = cases4[k].length/(cases4[k].fixings-1);
         std::vector<Time> timeIncrements(cases4[k].fixings);
