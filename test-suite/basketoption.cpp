@@ -257,8 +257,7 @@ void BasketOptionTest::testValues() {
         "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 pag 56-58
     */
     BasketOptionData values[] = {
-        //      basketType,   optionType, strike,    s1,    s2,   q1,   q2,    r,    t,   v1,   v2,  rho,   result, tol
-
+        //      basketType,   optionType, strike,    s1,    s2,   q1,   q2,    r,    t,   v1,   v2,  rho, result, tol
         // data from http://www.maths.ox.ac.uk/~firth/computing/excel.shtml
         {BasketOption::Min, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.90, 10.898, 1.0e-3},
         {BasketOption::Min, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.70,  8.483, 1.0e-3},
@@ -295,34 +294,35 @@ void BasketOptionTest::testValues() {
         {BasketOption::Max,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.30,  3.967, 1.0e-3},
         {BasketOption::Max,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.10,  3.223, 1.0e-3},
 
-        //      basketType,   optionType, strike,    s1,    s2,   q1,   q2,    r,    t,   v1,   v2,  rho,   result, tol
+        //      basketType,   optionType, strike,    s1,    s2,   q1,   q2,    r,    t,   v1,   v2,  rho,  result, tol
         // data from "Option pricing formulas" VB code + spreadsheet 
         {BasketOption::Min, Option::Call,   98.0, 100.0, 105.0, 0.00, 0.00, 0.05, 0.50, 0.11, 0.16, 0.63,  4.8177, 1.0e-4},
         {BasketOption::Max, Option::Call,   98.0, 100.0, 105.0, 0.00, 0.00, 0.05, 0.50, 0.11, 0.16, 0.63, 11.6323, 1.0e-4},
         {BasketOption::Min,  Option::Put,   98.0, 100.0, 105.0, 0.00, 0.00, 0.05, 0.50, 0.11, 0.16, 0.63,  2.0376, 1.0e-4},
         {BasketOption::Max,  Option::Put,   98.0, 100.0, 105.0, 0.00, 0.00, 0.05, 0.50, 0.11, 0.16, 0.63,  0.5731, 1.0e-4},
-//        {BasketOption::Min, Option::Call,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  2.9340, 1.0e-4},
-//        {BasketOption::Min,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  3.5224, 1.0e-4},
+        {BasketOption::Min, Option::Call,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  2.9340, 1.0e-4},
+        {BasketOption::Min,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  3.5224, 1.0e-4},
         // data from "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 pag 58
-//        {BasketOption::Max, Option::Call,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  8.0701, 1.0e-4},
-//        {BasketOption::Max,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  1.2181, 1.0e-4}
+        {BasketOption::Max, Option::Call,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  8.0701, 1.0e-4},
+        {BasketOption::Max,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  1.2181, 1.0e-4}
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> underlying1(new SimpleQuote(0.0));
-    Handle<SimpleQuote> underlying2(new SimpleQuote(0.0));
+    Handle<SimpleQuote> spot1(new SimpleQuote(0.0));
+    Handle<SimpleQuote> spot2(new SimpleQuote(0.0));
 
-    // cannot handle dividends
-    Handle<SimpleQuote> qH_SME(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
+    Handle<SimpleQuote> qRate1(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS1 = makeFlatCurve(qRate1, dc);
+    Handle<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS2 = makeFlatCurve(qRate2, dc);
 
-    Handle<SimpleQuote> rH_SME(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
-    Handle<SimpleQuote> volatility1(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(volatility1, dc);
-    Handle<SimpleQuote> volatility2(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS2 = makeFlatVolatility(volatility2, dc);
+    Handle<SimpleQuote> vol1(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(vol1, dc);
+    Handle<SimpleQuote> vol2(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS2 = makeFlatVolatility(vol2, dc);
 
 
     Handle<PricingEngine> engine(new StulzEngine);
@@ -330,33 +330,32 @@ void BasketOptionTest::testValues() {
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
-
-        rH_SME->setValue(values[i].r);
-
-        underlying1->setValue(values[i].s1);
-        underlying2->setValue(values[i].s2);
-
-        volatility1->setValue(values[i].v1);
-        volatility2->setValue(values[i].v2);
 
         Handle<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        BasketOption::BasketType basketType = values[i].basketType;
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+
+        spot1 ->setValue(values[i].s1);
+        spot2 ->setValue(values[i].s2);
+        qRate1->setValue(values[i].q1);
+        qRate2->setValue(values[i].q2);
+        rRate ->setValue(values[i].r );
+        vol1  ->setValue(values[i].v1);
+        vol2  ->setValue(values[i].v2);
 
         Handle<BlackScholesStochasticProcess> stochProcess1(new
             BlackScholesStochasticProcess(
-                RelinkableHandle<Quote>(underlying1),
-                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<Quote>(spot1),
+                RelinkableHandle<TermStructure>(qTS1),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS1)));
 
         Handle<BlackScholesStochasticProcess> stochProcess2(new
             BlackScholesStochasticProcess(
-                RelinkableHandle<Quote>(underlying2),
-                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<Quote>(spot2),
+                RelinkableHandle<TermStructure>(qTS2),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS2)));
 
@@ -365,11 +364,9 @@ void BasketOptionTest::testValues() {
         procs.push_back(stochProcess1);
         procs.push_back(stochProcess2);
 
-        double rho = values[i].rho;
 
-        // analytic
-        BasketOption basketOption(basketType, procs, payoff, 
-                                  exercise, rho, engine);
+        BasketOption basketOption(values[i].basketType, procs, payoff, 
+                                  exercise, values[i].rho, engine);
 
         double calculated = basketOption.NPV();
         double expected = values[i].result;
