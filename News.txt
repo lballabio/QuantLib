@@ -1,3 +1,77 @@
+2003-11-xx Release 0.3.4
+Changes since Release 0.3.3:
+    MONTE CARLO FRAMEWORK
+    - MC European in one step with strike-independent vol curve (hopefully)
+    - Path pricer for Binary options. It should cover both European	and
+      American style options.  Also known as: Digital, Binary, Cash-At-Hit,
+      Cash-At-Expiry.
+    - Path pricers for barrier options
+
+    FINITE DIFFERENCE FRAMEWORK
+    -
+
+    LATTICE FRAMEWORK
+    -
+
+    PRICING ENGINES FRAMEWORK
+    - More options moved to the new pricing engine framework: binary, barrier
+    - Changed setupEngine() into setupArguments(args)
+    - Moved pricing-engine machinery up to Instrument class
+
+    YIELD TERM STRUCTURE
+    -
+
+    FIXED INCOME
+    - new basis-point sensitivity functions
+    - Added Swap::startDate() and maturity()
+    - Cap/floor fixing days taken into account
+
+    SHORT RATE MODELS
+    - An additional constraint can now be passed to the calibration
+
+    VOLATILITY FRAMEWORK
+    - Visitable volatility term structures
+
+    OPTIMIZATION FRAMEWORK
+    - Added composite constraint
+
+    PATTERNS
+    - Visitor, Alexandrescu-style (saves some code duplication)
+
+    DATE AND CALENDARS
+    -
+
+    MATH
+    - Added more integration algorithms contributed by Roman Gitlin
+     (which ones? copyright?)
+    - Relaxed constaints on interval boundaries for integration algorithms
+    - Interpolation traits
+
+    RISK MEASURES
+    -
+
+    INSTRUMENTS
+    - new approach implemented
+
+    TEST SUITE
+    - Added implied cap/floor term volatility test
+    - Added test for binary options in PricingEngine Framework.
+    - Added tests for Barrier options in PricingEngine Framework. Some Monte
+      Carlo tests, but not comprehensive.
+
+    MISCELLANEA
+    - Conditionally allowed negative yields (disabled by default)
+    - Null calendar and simple day counter for reproducing theoretical
+      calculations
+    - Fixed for VC++.Net compilation
+    - Added configurable spec file
+    - Added global flag for early/late payments
+    - Added test suite for Borland
+    - removed OnTheEdge VC++ configurations
+    - added VC++ configurations for static and dynamic Multithread libraries
+    - Upgraded to use Doxygen 1.3.4
+
+=====================================================
 
 2003-09-03 Release 0.3.3
 Release 0.3.2 skipped

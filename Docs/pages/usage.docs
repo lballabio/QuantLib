@@ -49,8 +49,8 @@
     \endcode
     -# Your main() must be compiled with the same options that were used in
     compiling the %QuantLib library - namely, you'll have to set the run-time
-    library to "Multithreaded" or "Debug Multithreaded" depending on
-    whether you're linking to QuantLib.lib or QuantLib_d.lib, respectively.
+    library to "Multithreaded (DLL)" or "Debug Multithreaded (DLL)" depending
+    on whether you're linking to QuantLib.lib or QuantLib_d.lib, respectively.
     This setting is in the project settings, "C/C++" tab, "Code Generation"
     category.
     You'll have to check the "Use RTTI" option under the "C++ Language"
@@ -69,15 +69,6 @@
     -# To compile in "Win32 Debug" configuration you will need the %QuantLib
     debug libraries, available for download from
     http://quantlib.org/download.html
-    -# The "Win32 OnTheEdgeRelease" and "Win32 OnTheEdgeDebug" configurations
-    are equivalent to "Win32 Release" and "Win32 Debug" respectively, except
-    that they do not use the installed %QuantLib libraries, but look for the
-    hpp and lib %QuantLib files in a relative ..\\%QuantLib path. This is
-    mainly for %QuantLib developers, to allow them to check the examples
-    without having to install their unstable working version of %QuantLib.
-    The "OnTheEdge" approach may be adopted in projects using %QuantLib,
-    allowing for a quick and easy way to check how the projects work with a
-    new %QuantLib release without having to install it.
 
 */
 

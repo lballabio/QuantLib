@@ -23,6 +23,82 @@
 
 /*! \page history Version history
 
+    <strong>Release 0.3.4 - Nvember XXth, 2003</strong>
+
+    MONTE CARLO FRAMEWORK
+    - MC European in one step with strike-independent vol curve (hopefully)
+    - Path pricer for Binary options. It should cover both European	and
+      American style options.  Also known as: Digital, Binary, Cash-At-Hit,
+      Cash-At-Expiry.
+    - Path pricers for barrier options
+
+    FINITE DIFFERENCE FRAMEWORK
+    -
+
+    LATTICE FRAMEWORK
+    -
+
+    PRICING ENGINES FRAMEWORK
+    - More options moved to the new pricing engine framework: binary, barrier
+    - Changed setupEngine() into setupArguments(args)
+    - Moved pricing-engine machinery up to Instrument class
+
+    YIELD TERM STRUCTURE
+    -
+
+    FIXED INCOME
+    - new basis-point sensitivity functions
+    - Added Swap::startDate() and maturity()
+    - Cap/floor fixing days taken into account
+
+    SHORT RATE MODELS
+    - An additional constraint can now be passed to the calibration
+
+    VOLATILITY FRAMEWORK
+    - Visitable volatility term structures
+
+    OPTIMIZATION FRAMEWORK
+    - Added composite constraint
+
+    PATTERNS
+    - Visitor, Alexandrescu-style (saves some code duplication)
+
+    DATE AND CALENDARS
+    -
+
+    MATH
+    - Added more integration algorithms contributed by Roman Gitlin
+     (which ones? copyright?)
+    - Relaxed constaints on interval boundaries for integration algorithms
+    - Interpolation traits
+
+    RISK MEASURES
+    -
+
+    INSTRUMENTS
+    - new approach implemented
+
+    TEST SUITE
+    - Added implied cap/floor term volatility test
+    - Added test for binary options in PricingEngine Framework.
+    - Added tests for Barrier options in PricingEngine Framework. Some Monte
+      Carlo tests, but not comprehensive.
+
+    MISCELLANEA
+    - Conditionally allowed negative yields (disabled by default)
+    - Null calendar and simple day counter for reproducing theoretical
+      calculations
+    - Fixed for VC++.Net compilation
+    - Added configurable spec file
+    - Added global flag for early/late payments
+    - Added test suite for Borland
+    - removed OnTheEdge VC++ configurations
+    - added VC++ configurations for static and dynamic Multithread libraries
+    - Upgraded to use Doxygen 1.3.4
+
+
+
+
     <strong>Release 0.3.3 - September 3rd, 2003</strong>
 
     MONTE CARLO FRAMEWORK
@@ -180,8 +256,8 @@
         FINITE DIFFERENCE FRAMEWORK
         - added mixed (implicit/explicit) scheme, from which Crank-Nicolson,
           ImplicitEuler, and ExplicitEuler are now derived
-        - Finite Difference exercise conditions are now in the FiniteDifferences
-          folder/namespace
+        - Finite Difference exercise conditions are now in the
+          FiniteDifferences folder/namespace
         - Finite Difference pricers now start with 'Fd' letters
         - BSMNumericalOption became BsmFdOption
 
@@ -195,9 +271,11 @@
     	YIELD TERM STRUCTURE
         - new TermStructure class based on affine model
         - yield curves can be spreaded in term of zeros
-         (ZeroSpreadedTermStructure) and forwards (ForwardSpreadedTermStructure)
+         (ZeroSpreadedTermStructure) and forwards
+         (ForwardSpreadedTermStructure)
         - Added dates() and times() to PiecewiseFlatForward
-        - discount factor accuracy in the yield curve bootstrapping is an input
+        - discount factor accuracy in the yield curve bootstrapping is an
+          input
         - added single factor short-rate models (Hull-White, Black-Karasinski)
         - added two factor short-rate models framework
         - cap/floor and swaption calibration helpers
@@ -222,7 +300,8 @@
         - added 2D bilinear interpolation
         - better spline interpolation algorithm
         - Added non-central chi-square distribution function.
-        - Improved Inverse Cumulative Normal Distribution using Moro's algorithm
+        - Improved Inverse Cumulative Normal Distribution using Moro's
+          algorithm
         - Introduced class representing stochastic processes
         - added isExpired() to Instrument interface
         - added functions folder and namespace for QuantLibXL and any other
@@ -302,8 +381,8 @@
         - Upgraded to Doxygen 1.2.11.1
         - Added man pages for installed executables
         - added docs in Windows Help format
-        - added info on "Win32 OnTheEdgeRelease" and  "Win32 OnTheEdgeDebug" MS
-          VC++ configurations
+        - added info on "Win32 OnTheEdgeRelease" and  "Win32 OnTheEdgeDebug"
+          MS VC++ configurations
         - additional information on how to create a MS VC++ project based on
           QuantLib
 
