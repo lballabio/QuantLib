@@ -36,6 +36,8 @@ namespace QuantLib {
         \endcode
         which makes it possible to pass instances of class Foo
         by value while retaining polymorphic behavior.
+
+        \ingroup patterns
     */
     template <class T, class T_impl>
     class Bridge {

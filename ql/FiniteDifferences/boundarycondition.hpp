@@ -28,6 +28,7 @@
 namespace QuantLib {
 
     //! Abstract boundary condition class for finite difference problems
+    /*! \ingroup findiff */
     template <class Operator>
     class BoundaryCondition {
       public:
@@ -67,6 +68,8 @@ namespace QuantLib {
                  between the first two points--i.e., it must be the
                  difference between f[0] and f[1].
         \todo generalize to time-dependent conditions.
+
+        \ingroup findiff
     */
     class NeumannBC : public BoundaryCondition<TridiagonalOperator> {
       public:
@@ -84,7 +87,9 @@ namespace QuantLib {
 
     //! Neumann boundary condition (i.e., constant value)
     /*! \todo generalize to time-dependent conditions.
-     */
+
+        \ingroup findiff
+    */
     class DirichletBC : public BoundaryCondition<TridiagonalOperator> {
       public:
         DirichletBC(double value, Side side);

@@ -28,6 +28,7 @@
 namespace QuantLib {
 
     //! Simple binomial lattice approximating the Black-Scholes model
+    /*! \ingroup lattices */
     class BlackScholesLattice : public Lattice {
       public:
         BlackScholesLattice(const boost::shared_ptr<Tree>& tree, 

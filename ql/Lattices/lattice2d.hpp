@@ -31,6 +31,8 @@ namespace QuantLib {
     //! Two-dimensional lattice.
     /*! This lattice is based on two trinomial trees and primarly used
         for the G2 short-rate model.
+
+        \ingroup lattices
     */
     class Lattice2D : public Lattice {
       public:

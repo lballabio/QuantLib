@@ -34,6 +34,8 @@ namespace QuantLib {
         a diffusion.
         \warning The diffusion term of the SDE must be independent of the
                  underlying process.
+
+        \ingroup lattices
     */
     class TrinomialTree : public Tree {
       public:

@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! degenerate base class for the Acyclic %Visitor pattern
+    /*! \ingroup patterns */
     class AcyclicVisitor {
       public:
         virtual ~AcyclicVisitor() {}

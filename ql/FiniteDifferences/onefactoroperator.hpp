@@ -28,6 +28,7 @@
 namespace QuantLib {
 
     //! Interest-rate single factor model differential operator
+    /*! \ingroup findiff */
     class OneFactorOperator : public TridiagonalOperator {
       public:
         OneFactorOperator() {}

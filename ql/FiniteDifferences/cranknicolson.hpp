@@ -60,6 +60,8 @@ namespace QuantLib {
 
         \warning The differential operator must be linear for
                  this evolver to work.
+
+        \ingroup findiff
     */
     template <class Operator>
     class CrankNicolson : public MixedScheme<Operator> {

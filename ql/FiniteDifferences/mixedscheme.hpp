@@ -65,6 +65,7 @@ namespace QuantLib {
         \todo a) derive variable theta schemes
               b) introduce multi time-level schemes.
 
+        \ingroup findiff
     */
     template <class Operator>
     class MixedScheme  {

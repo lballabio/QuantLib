@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     //! Binomial tree base class
+    /*! \ingroup lattices */
     class BinomialTree : public Tree {
       public:
         BinomialTree(const boost::shared_ptr<StochasticProcess>& process,
@@ -56,6 +57,7 @@ namespace QuantLib {
 
 
     //! Base class for equal probabilities binomial tree
+    /*! \ingroup lattices */
     class EqualProbabilitiesBinomialTree : public BinomialTree {
       public:
         EqualProbabilitiesBinomialTree(
@@ -75,6 +77,7 @@ namespace QuantLib {
 
 
     //! Base class for equal jumps binomial tree
+    /*! \ingroup lattices */
     class EqualJumpsBinomialTree : public BinomialTree {
       public:
         EqualJumpsBinomialTree(
@@ -94,6 +97,7 @@ namespace QuantLib {
 
 
     //! Jarrow-Rudd (multiplicative) equal probabilities binomial tree
+    /*! \ingroup lattices */
     class JarrowRudd : public EqualProbabilitiesBinomialTree {
       public:
         JarrowRudd(const boost::shared_ptr<StochasticProcess>& process,
@@ -103,6 +107,7 @@ namespace QuantLib {
     };
 
     //! Cox-Ross-Rubinstein (multiplicative) equal jumps binomial tree
+    /*! \ingroup lattices */
     class CoxRossRubinstein : public EqualJumpsBinomialTree {
       public:
         CoxRossRubinstein(const boost::shared_ptr<StochasticProcess>& process,
@@ -113,6 +118,7 @@ namespace QuantLib {
 
 
     //! Additive equal probabilities binomial tree
+    /*! \ingroup lattices */
     class AdditiveEQPBinomialTree : public EqualProbabilitiesBinomialTree {
       public:
         AdditiveEQPBinomialTree(
@@ -123,6 +129,7 @@ namespace QuantLib {
     };
 
     //! %Trigeorgis (additive equal jumps) binomial tree
+    /*! \ingroup lattices */
     class Trigeorgis : public EqualJumpsBinomialTree {
       public:
         Trigeorgis(const boost::shared_ptr<StochasticProcess>& process,
@@ -133,6 +140,7 @@ namespace QuantLib {
 
 
     //! %Tian tree: third moment matching, multiplicative approach
+    /*! \ingroup lattices */
     class Tian : public BinomialTree {
       public:
         Tian(const boost::shared_ptr<StochasticProcess>& process,
@@ -149,6 +157,7 @@ namespace QuantLib {
     };
 
     //! Leisen & Reimer tree: multiplicative approach
+    /*! \ingroup lattices */
     class LeisenReimer : public BinomialTree {
       public:
         LeisenReimer(const boost::shared_ptr<StochasticProcess>& process,

@@ -21,6 +21,6 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page currencies Currencies and FX rates
+/*! \defgroup currencies Currencies and FX rates
 
 */

@@ -55,6 +55,8 @@ namespace QuantLib {
         Operator operator*(double, const Operator&);
         Operator operator+(const Operator&, const Operator&);
         \endcode
+
+        \ingroup findiff
     */
     template <class Operator>
     class ImplicitEuler : public MixedScheme<Operator> {

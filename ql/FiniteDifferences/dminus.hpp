@@ -32,6 +32,8 @@ namespace QuantLib {
         \f[ \frac{\partial u_{i}}{\partial x} \approx
             \frac{u_{i}-u_{i-1}}{h} = D_{-} u_{i}
         \f]
+
+        \ingroup findiff
     */
     class DMinus : public TridiagonalOperator {
       public:

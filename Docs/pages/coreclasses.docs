@@ -21,34 +21,9 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page coreclasses Core classes
+/*! \defgroup types Numeric types
 
-    The base directory \c ql of the QuantLib sources contains what 
-    can be considered the %QuantLib foundation, i.e., the core
-    of concrete and abstract classes upon which the rest of the library 
-    is built.
-
-    Subfolders reflect the organization of classes and functions into 
-    definite <em>packages</em> or <em>class families</em>:
-    the former being groups of classes forming a framework for
-    particular applications, e.g., the PDE package for partial
-    differential equations; and the latter being sets of classes which
-    inherit from a common base class or otherwise share a common
-    functionality and interface. These are the subject of later
-    sections.
-
-    The QuantLib core classes include:
-
-    <ul>
-    <li>numeric types such as Time, Rate, Spread, or DiscountFactor;</li>
-
-    <li>concrete data classes such as Date, Currency, or History;
-    base classes such as Calendar or DayCounter; and helper classes such
-    as Scheduler;
-
-    <li>abstract base classes providing interfaces to the rest of the 
-    library. Among these, the most notable include Instrument, Quote,
-    TermStructure, Index, PricingEngine, StochasticProcess, and others.
-    </ul>
+    A number of numeric types are defined in order to add clarity to
+    function and method declarations. 
 
 */

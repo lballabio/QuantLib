@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! Known currencies
+    /*! \ingroup currencies */
     enum Currency {
         ARS,    //!< Argentinian Peso
         ATS,    //!< Austrian Schillings

@@ -28,6 +28,7 @@
 namespace QuantLib {
 
     //! Object that notifies its changes to a set of observables
+    /*! \ingroup patterns */
     class Observable {
         friend class Observer;
       public:
@@ -44,6 +45,7 @@ namespace QuantLib {
     };
 
     //! Object that gets notified when a given observable changes
+    /*! \ingroup patterns */
     class Observer {
       public:
         // constructors, assignment, destructor

@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! condition to be applied at every time step
+    /*! \ingroup findiff */
     template <class arrayType>
     class StepCondition {
       public:

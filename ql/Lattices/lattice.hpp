@@ -30,6 +30,8 @@ namespace QuantLib {
     /*! This class defines a lattice method that is able to rollback
         (with discount) a discretized asset object. It will usually be
         based on one or more trees.
+
+        \ingroup lattices
     */
     class Lattice : public NumericalMethod {
       public:

@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! %Tree approximating a single-factor diffusion
+    /*! \ingroup lattices */
     class Tree {
       public:
         Tree(Size nColumns) : nColumns_(nColumns) {}

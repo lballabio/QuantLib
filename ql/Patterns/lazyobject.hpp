@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! Framework for calculation on demand and result caching.
+    /*! \ingroup patterns */
     class LazyObject : public virtual Observable, 
                        public virtual Observer {
       public:

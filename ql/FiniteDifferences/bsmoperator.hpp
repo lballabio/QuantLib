@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! Black-Scholes-Merton differential operator
+    /*! \ingroup findiff */
     class BSMOperator : public TridiagonalOperator {
       public:
         BSMOperator() {}

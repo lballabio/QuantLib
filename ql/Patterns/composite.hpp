@@ -36,6 +36,8 @@ namespace QuantLib {
         which causes CompositeFoo to inherit from Foo and provides it
         with methods for adding components. Of course, any abstract
         Foo interface must still be implemented.
+
+        \ingroup patterns
     */
     template <class T>
     class Composite : public T {

@@ -31,6 +31,8 @@ namespace QuantLib {
     /*! \warning to use real time-dependant algebra, you must overload
                  the corresponding operators in the inheriting time-dependent
                  class
+
+        \ingroup findiff
     */
     class TridiagonalOperator {
         // unary operators

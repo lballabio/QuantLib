@@ -32,6 +32,8 @@ namespace QuantLib {
         \f[ \frac{\partial u_{i}}{\partial x} \approx
             \frac{u_{i+1}-u_{i-1}}{2h} = D_{0} u_{i}
         \f]
+
+        \ingroup findiff
     */
     class DZero : public TridiagonalOperator {
       public:

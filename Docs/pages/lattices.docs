@@ -20,7 +20,7 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page lattices Lattice methods
+/*! \defgroup lattices Lattice methods
 
     The framework (corresponding to the ql/Lattices directory)
     contains basic building blocks for pricing instruments using lattice

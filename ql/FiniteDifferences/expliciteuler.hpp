@@ -57,6 +57,8 @@ namespace QuantLib {
         \endcode
 
         \todo add Richardson extrapolation
+
+        \ingroup findiff
     */
     template <class Operator>
     class ExplicitEuler : public MixedScheme<Operator> {

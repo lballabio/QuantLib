@@ -28,7 +28,10 @@
 namespace QuantLib {
 
     //! Generic finite difference model
-    /*! See sect. \ref findiff */
+    /*! See sect. \ref findiff
+
+        \ingroup findiff
+    */
     template<class Evolver>
     class FiniteDifferenceModel {
       public:

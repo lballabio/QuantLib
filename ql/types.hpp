@@ -33,18 +33,23 @@ namespace QuantLib {
     typedef double Real;
 
     //! size of a container
+    /*! \ingroup types */
     typedef QL_SIZE_T Size;
 
     //! continuous quantity with 1-year units
+    /*! \ingroup types */
     typedef double Time;
 
     //! used to describe discount factors between dates.
+    /*! \ingroup types */
     typedef double DiscountFactor;
 
     //! used to describe interest rates.
+    /*! \ingroup types */
     typedef double Rate;
 
     //! used to describe spreads on interest rates.
+    /*! \ingroup types */
     typedef double Spread;
 
 

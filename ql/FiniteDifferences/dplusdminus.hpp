@@ -32,6 +32,8 @@ namespace QuantLib {
         \f[ \frac{\partial^2 u_{i}}{\partial x^2} \approx
             \frac{u_{i+1}-2u_{i}+u_{i-1}}{h^2} = D_{+}D_{-} u_{i}
         \f]
+
+        \ingroup findiff
     */
     class DPlusDMinus : public TridiagonalOperator {
       public:
