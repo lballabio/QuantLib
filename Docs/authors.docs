@@ -5,14 +5,14 @@
 
     The %QuantLib Group holds the copyright of all the %QuantLib
     source code. Its current members are:
-    
+
     \htmlonly
     <table>
     <tr>
     <td><strong>name</strong></td>
     <td><strong>email</strong></td>
     <td><strong>role</strong></td>
-    <td><strong>SourceForge user name</strong></td>
+    <td><strong>SourceForge.net user name</strong></td>
     </tr>
 
     <tr>
@@ -79,7 +79,7 @@
     \latexonly
     \begin{itemize}
         \item Mario Aleppo (mario.aleppo@riskmap.net)
-        \item Ferdinando Ametrano (ferdinando@ametrano.net), 
+        \item Ferdinando Ametrano (ferdinando@ametrano.net),
               project manager
         \item Luigi Ballabio (luigi.ballabio@riskmap.net), library designer
         \item Adolfo Benin (adolfo.benin@riskmap.net)
@@ -89,7 +89,7 @@
         \item RiskMap (info@riskmap.net), main sponsor
     \end{itemize}
     \endlatexonly
-    
+
 
     \subsection contributors Contributors
 
@@ -99,7 +99,7 @@
     <td><strong>name</strong></td>
     <td><strong>email</strong></td>
     <td><strong>contribution</strong></td>
-    <td><strong>SourceForge user name</strong></td>
+    <td><strong>SourceForge.net user name</strong></td>
     </tr>
 
     <tr>

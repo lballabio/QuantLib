@@ -10,5 +10,5 @@ Sadruddin Rejeb (sad.rejeb@riskmap.it)
 Peter Schmitteckert
 Bernd Johannes Wuebben
 
-To get the SourceForge user name go to
+To get the SourceForge.net user name go to
 http://sourceforge.net/project/memberlist.php?group_id=12740
