@@ -22,6 +22,7 @@
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace QuantLib::Math;
 using namespace QuantLib::RandomNumbers;
 
 CppUnit::Test* LDSTest::suite() {
@@ -96,7 +97,7 @@ void LDSTest::testSobol() {
     dimensionality = 33;
     seed = 123456;
     rsg = SobolRsg(dimensionality, seed);
-    Math::ArrayStatistics stat(dimensionality);
+    SequenceStatistics<Statistics> stat(dimensionality);
     points = Size(QL_POW(2.0, 5))-1; // five cycles
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
@@ -106,7 +107,7 @@ void LDSTest::testSobol() {
     if (discrepancy!=0.0) {
         CPPUNIT_FAIL("Sobol sequence discrepancy ");
     }
-    Array mean = stat.mean();
+    std::vector<double> mean = stat.mean();
     for (i=0; i<dimensionality; i++) {
         if (mean[i]!=0.5) {
             CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
@@ -174,13 +175,13 @@ void LDSTest::testHalton() {
     dimensionality = 33;
     seed = 123456;
     rsg = HaltonRsg(dimensionality);
-    Math::ArrayStatistics stat(dimensionality);
+    SequenceStatistics<Statistics> stat(dimensionality);
     points = Size(QL_POW(3.0, 3))-1; // three cycles base 3
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         stat.add(point);
     }
-    Array mean = stat.mean();
+    std::vector<double> mean = stat.mean();
     if (mean[1] != 0.5) {
         CPPUNIT_FAIL("Second dimension mean (" +
                      DoubleFormatter::toString(mean[1]) +
