@@ -32,6 +32,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.35  2001/02/19 14:00:07  lballabio
+    Corrected documentation
+
     Revision 1.34  2001/02/19 12:05:03  lballabio
     Corrected documentation
 
@@ -378,7 +381,7 @@
     struct.
 */
 /*! \def QL_SPECIALIZE_ITERATOR_TRAITS
-    When using the QuantLib implementation of iterator_traits, this macro might 
+    When using the %QuantLib implementation of iterator_traits, this macro might 
     be needed to specialize QL_ITERATOR_TRAITS for a pointer to a user-defined 
     type.
 */

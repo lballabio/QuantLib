@@ -124,7 +124,8 @@ PREDEFINED             = __DOXYGEN__ \
                          QL_MAX \
                          HAVE_EXPRESSION_TEMPLATES \
                          HAVE_TEMPLATE_METAPROGRAMMING \
-                         HAVE_STD_ITERATOR
+                         QL_ITERATOR \
+                         QL_ITERATOR_TRAITS
 EXPAND_AS_DEFINED      = 
 
 # Configuration::additions related to external references   
