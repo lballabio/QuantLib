@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file tridiagonaloperator.h
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.10  2001/02/08 17:25:23  lballabio
+    Fixed wrapping
+
     Revision 1.9  2001/02/02 18:04:58  lballabio
     Added division by double
 

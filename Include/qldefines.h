@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file qldefines.h
@@ -31,6 +32,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.26  2001/02/08 17:20:37  lballabio
+    Fixed wrapping
+
     Revision 1.25  2001/02/05 14:49:11  enri
     added some files to Makefile.am files
 
@@ -46,21 +50,6 @@
 
     Revision 1.22  2001/01/09 18:31:18  enri
     gnu autotools files added. QuantLib autoconfiscation in progress....
-
-    Revision 1.21  2001/01/09 11:56:44  lballabio
-    Added QL_ITERATOR macro
-
-    Revision 1.20  2000/12/27 17:18:35  lballabio
-    Changes for compiling under Linux and Alpha Linux
-
-    Revision 1.19  2000/12/27 14:05:56  lballabio
-    Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
-    Revision 1.18  2000/12/20 15:27:02  lballabio
-    Added new defines for helping Linux port
-
-    Revision 1.17  2000/12/14 12:32:29  lballabio
-    Added CVS tags in Doxygen file documentation blocks
 
 */
 
