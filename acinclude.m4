@@ -63,7 +63,7 @@ AC_DEFUN([QL_CHECK_FUNC],
 
 # QL_CHECK_TYPE(TYPE,ARGS,HEADER)
 # -------------------------------
-# Check whether std::TYPE exists by instantiating it with arguments 
+# Check whether std::TYPE exists by instantiating it with arguments
 # ARGS after including HEADER. It falls back on TYPE if it cannot be
 # found in the std namespace. It defines QL_TYPE as the fully
 # qualified name of the type.
@@ -92,9 +92,9 @@ AC_DEFUN([QL_CHECK_TYPE],
 
 # QL_CHECK_TEMPLATE_TYPE(TYPE,TARGS,ARGS,HEADER)
 # ----------------------------------------------
-# Check whether std::TYPE<TARGS> exists by instantiating it with 
-# arguments ARGS after including HEADER. It falls back on TYPE<TARGS> 
-# if it cannot be found in the std namespace. It defines QL_TYPE as the 
+# Check whether std::TYPE<TARGS> exists by instantiating it with
+# arguments ARGS after including HEADER. It falls back on TYPE<TARGS>
+# if it cannot be found in the std namespace. It defines QL_TYPE as the
 # fully qualified name of the type not including <TARGS>.
 AC_DEFUN([QL_CHECK_TEMPLATE_TYPE],
 [AC_MSG_CHECKING([for $1])
@@ -120,8 +120,8 @@ AC_DEFUN([QL_CHECK_TEMPLATE_TYPE],
 
 # QL_CHECK_CONSTANT(NAME,TYPE,HEADER,VALUE,DESCRIPTION)
 # ----------------------------------------------
-# Check whether the constant NAME (of type TYPE) exists in HEADER. 
-# It defines it as VALUE if it cannot be found. 
+# Check whether the constant NAME (of type TYPE) exists in HEADER.
+# It defines it as VALUE if it cannot be found.
 AC_DEFUN([QL_CHECK_CONSTANT],
 [AC_MSG_CHECKING([for $1])
  AC_TRY_COMPILE(
@@ -145,7 +145,7 @@ AC_DEFUN([QL_CHECK_LONG_LONG],
      unsigned long long j;
     ],
     [AC_MSG_RESULT([yes])
-     AC_DEFINE([HAVE_LONG_LONG],[],
+     AC_DEFINE([QL_HAVE_LONG_LONG],[],
                [Define this if your compiler supports the long long type.])
     ],
     [AC_MSG_RESULT([no])
@@ -170,8 +170,8 @@ AC_DEFUN([QL_CHECK_NAMESPACES],
 
 # QL_CHECK_GMTIME
 # -------------------------------
-# Check whether std::gmtime exists. It falls back on gmtime if it 
-# cannot be found in the std namespace. It defines QL_GMTIME as the 
+# Check whether std::gmtime exists. It falls back on gmtime if it
+# cannot be found in the std namespace. It defines QL_GMTIME as the
 # fully qualified name of the function.
 AC_DEFUN([QL_CHECK_GMTIME],
 [AC_MSG_CHECKING([for gmtime])

@@ -72,7 +72,7 @@ namespace QuantLib {
         }
     };
 
-    #if defined(HAVE_LONG_LONG)
+    #if defined(QL_HAVE_LONG_LONG)
 
     template <>
     class Null<long long> {

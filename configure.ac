@@ -116,11 +116,11 @@ AC_PATH_PROG([DVIPS], [dvips])
 # AC_ARG_WITH([real],
 #             AC_HELP_STRING([--with-real=type],
 #                            [The given type will be used for floating-point
-#                             calculations. 
+#                             calculations.
 #                             In case this option is not invoked, double
 #                             will be used.]),
 #             [AC_DEFINE_UNQUOTED([QL_REAL],[$withval],
-#                                 [Define this as the type to be used for 
+#                                 [Define this as the type to be used for
 #                                  floating-point calculations.])],
 #             [AC_DEFINE_UNQUOTED([QL_REAL],[double],
 #                                 [Define this as the type to be used for
@@ -133,12 +133,12 @@ AC_PATH_PROG([DVIPS], [dvips])
 #                             In case this option is not invoked, int
 #                             will be used.]),
 #             [AC_DEFINE_UNQUOTED([QL_INTEGER],[$withval],
-#                                 [Define this as the type to be used for 
-#                                  integer calculations. At least an int 
+#                                 [Define this as the type to be used for
+#                                  integer calculations. At least an int
 #                                  is required.])],
 #             [AC_DEFINE_UNQUOTED([QL_INTEGER],[int],
 #                                 [Define this as the type to be used for
-#                                  integer calculations. At least an int 
+#                                  integer calculations. At least an int
 #                                  is required.])])
 
 # AC_ARG_WITH([big-integer],
@@ -148,7 +148,7 @@ AC_PATH_PROG([DVIPS], [dvips])
 #                             In case this option is not invoked, long
 #                             will be used.]),
 #             [AC_DEFINE_UNQUOTED([QL_BIG_INTEGER],[$withval],
-#                                 [Define this as the type to be used for 
+#                                 [Define this as the type to be used for
 #                                  large integer calculations. At least
 #                                  4 bytes are required.])],
 #             [AC_DEFINE_UNQUOTED([QL_BIG_INTEGER],[long],
@@ -213,7 +213,7 @@ fi
 
 AC_ARG_ENABLE([deprecated-code],
               AC_HELP_STRING([--enable-deprecated-code],
-                             [If enabled (the default), deprecated code 
+                             [If enabled (the default), deprecated code
                               will be included in the library.]),
               [ql_use_deprecated_code=$enableval],
               [ql_use_deprecated_code=yes])

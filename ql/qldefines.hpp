@@ -170,7 +170,7 @@
     Defines the value of the largest representable integer value
 */
 /*! \def QL_MIN_REAL
-    Defines the value of the largest representable negative 
+    Defines the value of the largest representable negative
     floating-point value
 */
 /*! \def QL_MIN_POSITIVE_REAL
@@ -212,7 +212,7 @@
         static long min() { return LONG_MIN; }
         static long max() { return LONG_MAX; }
     };
-    #if defined(HAVE_LONG_LONG)
+    #if defined(QL_HAVE_LONG_LONG)
     template <> struct quantlib_limits__<long long> {
         static long long min() {
             #if defined(LLONG_MIN)
