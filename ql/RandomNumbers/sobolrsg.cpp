@@ -137,7 +137,7 @@ namespace QuantLib {
 
         }
 
-        const int SobolRsg::bits_ = sizeof(unsigned long);
+        const int SobolRsg::bits_ = sizeof(unsigned long)*8;
         // 1/(2^bits_) (written as (1/2)/(2^(bits_-1)) to avoid long overflow)
         const double SobolRsg::normalizationFactor_=0.5/(1L<<(SobolRsg::bits_-1));
 
@@ -151,7 +151,7 @@ namespace QuantLib {
                 "SobolRsg::SobolRsg : dimensionality "
                 + IntegerFormatter::toString(dimensionality) +
                 " exceeds the number of available primitive polynomials modulo"
-                " two " + IntegerFormatter::toString(PPMT_MAX_DIM));
+                " two (" + IntegerFormatter::toString(PPMT_MAX_DIM) +")");
 
             std::vector<unsigned int> degree(dimensionality_);
             std::vector<long> ppmt(dimensionality_);
