@@ -63,10 +63,10 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
-	-@erase "$(INTDIR)\analyticalcapfloor.obj"
-	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
+	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
 	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
@@ -105,14 +105,14 @@ CLEAN :
 	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
-	-@erase "$(INTDIR)\blackcapfloor.obj"
-	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackcapfloorengine.obj"
+	-@erase "$(INTDIR)\blackcapfloorengine.sbr"
 	-@erase "$(INTDIR)\blackformula.obj"
 	-@erase "$(INTDIR)\blackformula.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
-	-@erase "$(INTDIR)\blackswaption.obj"
-	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackswaptionengine.obj"
+	-@erase "$(INTDIR)\blackswaptionengine.sbr"
 	-@erase "$(INTDIR)\blackvariancecurve.obj"
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
@@ -131,8 +131,6 @@ CLEAN :
 	-@erase "$(INTDIR)\calibrationhelper.sbr"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\capfloor.sbr"
-	-@erase "$(INTDIR)\capfloorpricer.obj"
-	-@erase "$(INTDIR)\capfloorpricer.sbr"
 	-@erase "$(INTDIR)\caphelper.obj"
 	-@erase "$(INTDIR)\caphelper.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
@@ -169,6 +167,10 @@ CLEAN :
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
 	-@erase "$(INTDIR)\discretizedasset.sbr"
+	-@erase "$(INTDIR)\discretizedcapfloor.obj"
+	-@erase "$(INTDIR)\discretizedcapfloor.sbr"
+	-@erase "$(INTDIR)\discretizedswaption.obj"
+	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
@@ -231,8 +233,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\jamshidianswaption.obj"
-	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\jointcalendar.obj"
@@ -357,8 +359,6 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
 	-@erase "$(INTDIR)\swaptionhelper.sbr"
-	-@erase "$(INTDIR)\swaptionpricer.obj"
-	-@erase "$(INTDIR)\swaptionpricer.sbr"
 	-@erase "$(INTDIR)\sydney.obj"
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
@@ -375,10 +375,10 @@ CLEAN :
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
 	-@erase "$(INTDIR)\toronto.sbr"
-	-@erase "$(INTDIR)\treecapfloor.obj"
-	-@erase "$(INTDIR)\treecapfloor.sbr"
-	-@erase "$(INTDIR)\treeswaption.obj"
-	-@erase "$(INTDIR)\treeswaption.sbr"
+	-@erase "$(INTDIR)\treecapfloorengine.obj"
+	-@erase "$(INTDIR)\treecapfloorengine.sbr"
+	-@erase "$(INTDIR)\treeswaptionengine.obj"
+	-@erase "$(INTDIR)\treeswaptionengine.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
@@ -538,14 +538,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr" \
-	"$(INTDIR)\capfloorpricer.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
-	"$(INTDIR)\swaptionpricer.sbr" \
-	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -590,7 +582,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -722,14 +722,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\blackcapfloor.obj" \
-	"$(INTDIR)\capfloorpricer.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
-	"$(INTDIR)\swaptionpricer.obj" \
-	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -775,6 +767,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -816,10 +816,10 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
-	-@erase "$(INTDIR)\analyticalcapfloor.obj"
-	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
+	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
 	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
@@ -858,14 +858,14 @@ CLEAN :
 	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
-	-@erase "$(INTDIR)\blackcapfloor.obj"
-	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackcapfloorengine.obj"
+	-@erase "$(INTDIR)\blackcapfloorengine.sbr"
 	-@erase "$(INTDIR)\blackformula.obj"
 	-@erase "$(INTDIR)\blackformula.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
-	-@erase "$(INTDIR)\blackswaption.obj"
-	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackswaptionengine.obj"
+	-@erase "$(INTDIR)\blackswaptionengine.sbr"
 	-@erase "$(INTDIR)\blackvariancecurve.obj"
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
@@ -884,8 +884,6 @@ CLEAN :
 	-@erase "$(INTDIR)\calibrationhelper.sbr"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\capfloor.sbr"
-	-@erase "$(INTDIR)\capfloorpricer.obj"
-	-@erase "$(INTDIR)\capfloorpricer.sbr"
 	-@erase "$(INTDIR)\caphelper.obj"
 	-@erase "$(INTDIR)\caphelper.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
@@ -922,6 +920,10 @@ CLEAN :
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
 	-@erase "$(INTDIR)\discretizedasset.sbr"
+	-@erase "$(INTDIR)\discretizedcapfloor.obj"
+	-@erase "$(INTDIR)\discretizedcapfloor.sbr"
+	-@erase "$(INTDIR)\discretizedswaption.obj"
+	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
@@ -984,8 +986,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\jamshidianswaption.obj"
-	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\jointcalendar.obj"
@@ -1110,8 +1112,6 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
 	-@erase "$(INTDIR)\swaptionhelper.sbr"
-	-@erase "$(INTDIR)\swaptionpricer.obj"
-	-@erase "$(INTDIR)\swaptionpricer.sbr"
 	-@erase "$(INTDIR)\sydney.obj"
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
@@ -1128,10 +1128,10 @@ CLEAN :
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
 	-@erase "$(INTDIR)\toronto.sbr"
-	-@erase "$(INTDIR)\treecapfloor.obj"
-	-@erase "$(INTDIR)\treecapfloor.sbr"
-	-@erase "$(INTDIR)\treeswaption.obj"
-	-@erase "$(INTDIR)\treeswaption.sbr"
+	-@erase "$(INTDIR)\treecapfloorengine.obj"
+	-@erase "$(INTDIR)\treecapfloorengine.sbr"
+	-@erase "$(INTDIR)\treeswaptionengine.obj"
+	-@erase "$(INTDIR)\treeswaptionengine.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
@@ -1292,14 +1292,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr" \
-	"$(INTDIR)\capfloorpricer.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
-	"$(INTDIR)\swaptionpricer.sbr" \
-	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -1344,7 +1336,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1476,14 +1476,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\blackcapfloor.obj" \
-	"$(INTDIR)\capfloorpricer.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
-	"$(INTDIR)\swaptionpricer.obj" \
-	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -1529,6 +1521,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1570,10 +1570,10 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
-	-@erase "$(INTDIR)\analyticalcapfloor.obj"
-	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
+	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
 	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
@@ -1612,14 +1612,14 @@ CLEAN :
 	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
-	-@erase "$(INTDIR)\blackcapfloor.obj"
-	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackcapfloorengine.obj"
+	-@erase "$(INTDIR)\blackcapfloorengine.sbr"
 	-@erase "$(INTDIR)\blackformula.obj"
 	-@erase "$(INTDIR)\blackformula.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
-	-@erase "$(INTDIR)\blackswaption.obj"
-	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackswaptionengine.obj"
+	-@erase "$(INTDIR)\blackswaptionengine.sbr"
 	-@erase "$(INTDIR)\blackvariancecurve.obj"
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
@@ -1638,8 +1638,6 @@ CLEAN :
 	-@erase "$(INTDIR)\calibrationhelper.sbr"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\capfloor.sbr"
-	-@erase "$(INTDIR)\capfloorpricer.obj"
-	-@erase "$(INTDIR)\capfloorpricer.sbr"
 	-@erase "$(INTDIR)\caphelper.obj"
 	-@erase "$(INTDIR)\caphelper.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
@@ -1676,6 +1674,10 @@ CLEAN :
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
 	-@erase "$(INTDIR)\discretizedasset.sbr"
+	-@erase "$(INTDIR)\discretizedcapfloor.obj"
+	-@erase "$(INTDIR)\discretizedcapfloor.sbr"
+	-@erase "$(INTDIR)\discretizedswaption.obj"
+	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
@@ -1738,8 +1740,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\jamshidianswaption.obj"
-	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\jointcalendar.obj"
@@ -1864,8 +1866,6 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
 	-@erase "$(INTDIR)\swaptionhelper.sbr"
-	-@erase "$(INTDIR)\swaptionpricer.obj"
-	-@erase "$(INTDIR)\swaptionpricer.sbr"
 	-@erase "$(INTDIR)\sydney.obj"
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
@@ -1882,10 +1882,10 @@ CLEAN :
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
 	-@erase "$(INTDIR)\toronto.sbr"
-	-@erase "$(INTDIR)\treecapfloor.obj"
-	-@erase "$(INTDIR)\treecapfloor.sbr"
-	-@erase "$(INTDIR)\treeswaption.obj"
-	-@erase "$(INTDIR)\treeswaption.sbr"
+	-@erase "$(INTDIR)\treecapfloorengine.obj"
+	-@erase "$(INTDIR)\treecapfloorengine.sbr"
+	-@erase "$(INTDIR)\treeswaptionengine.obj"
+	-@erase "$(INTDIR)\treeswaptionengine.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
@@ -2045,14 +2045,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr" \
-	"$(INTDIR)\capfloorpricer.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
-	"$(INTDIR)\swaptionpricer.sbr" \
-	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -2097,7 +2089,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2229,14 +2229,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\blackcapfloor.obj" \
-	"$(INTDIR)\capfloorpricer.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
-	"$(INTDIR)\swaptionpricer.obj" \
-	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -2282,6 +2274,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2323,10 +2323,10 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
-	-@erase "$(INTDIR)\analyticalcapfloor.obj"
-	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
+	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
 	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
@@ -2365,14 +2365,14 @@ CLEAN :
 	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
-	-@erase "$(INTDIR)\blackcapfloor.obj"
-	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackcapfloorengine.obj"
+	-@erase "$(INTDIR)\blackcapfloorengine.sbr"
 	-@erase "$(INTDIR)\blackformula.obj"
 	-@erase "$(INTDIR)\blackformula.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
-	-@erase "$(INTDIR)\blackswaption.obj"
-	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackswaptionengine.obj"
+	-@erase "$(INTDIR)\blackswaptionengine.sbr"
 	-@erase "$(INTDIR)\blackvariancecurve.obj"
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
@@ -2391,8 +2391,6 @@ CLEAN :
 	-@erase "$(INTDIR)\calibrationhelper.sbr"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\capfloor.sbr"
-	-@erase "$(INTDIR)\capfloorpricer.obj"
-	-@erase "$(INTDIR)\capfloorpricer.sbr"
 	-@erase "$(INTDIR)\caphelper.obj"
 	-@erase "$(INTDIR)\caphelper.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
@@ -2429,6 +2427,10 @@ CLEAN :
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
 	-@erase "$(INTDIR)\discretizedasset.sbr"
+	-@erase "$(INTDIR)\discretizedcapfloor.obj"
+	-@erase "$(INTDIR)\discretizedcapfloor.sbr"
+	-@erase "$(INTDIR)\discretizedswaption.obj"
+	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
@@ -2491,8 +2493,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\jamshidianswaption.obj"
-	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\jointcalendar.obj"
@@ -2617,8 +2619,6 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
 	-@erase "$(INTDIR)\swaptionhelper.sbr"
-	-@erase "$(INTDIR)\swaptionpricer.obj"
-	-@erase "$(INTDIR)\swaptionpricer.sbr"
 	-@erase "$(INTDIR)\sydney.obj"
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
@@ -2635,10 +2635,10 @@ CLEAN :
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
 	-@erase "$(INTDIR)\toronto.sbr"
-	-@erase "$(INTDIR)\treecapfloor.obj"
-	-@erase "$(INTDIR)\treecapfloor.sbr"
-	-@erase "$(INTDIR)\treeswaption.obj"
-	-@erase "$(INTDIR)\treeswaption.sbr"
+	-@erase "$(INTDIR)\treecapfloorengine.obj"
+	-@erase "$(INTDIR)\treecapfloorengine.sbr"
+	-@erase "$(INTDIR)\treeswaptionengine.obj"
+	-@erase "$(INTDIR)\treeswaptionengine.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
@@ -2799,14 +2799,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr" \
-	"$(INTDIR)\capfloorpricer.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
-	"$(INTDIR)\swaptionpricer.sbr" \
-	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -2851,7 +2843,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2983,14 +2983,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\blackcapfloor.obj" \
-	"$(INTDIR)\capfloorpricer.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
-	"$(INTDIR)\swaptionpricer.obj" \
-	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -3036,6 +3028,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3077,10 +3077,10 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
-	-@erase "$(INTDIR)\analyticalcapfloor.obj"
-	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
+	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
 	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
@@ -3119,14 +3119,14 @@ CLEAN :
 	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
-	-@erase "$(INTDIR)\blackcapfloor.obj"
-	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackcapfloorengine.obj"
+	-@erase "$(INTDIR)\blackcapfloorengine.sbr"
 	-@erase "$(INTDIR)\blackformula.obj"
 	-@erase "$(INTDIR)\blackformula.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
-	-@erase "$(INTDIR)\blackswaption.obj"
-	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackswaptionengine.obj"
+	-@erase "$(INTDIR)\blackswaptionengine.sbr"
 	-@erase "$(INTDIR)\blackvariancecurve.obj"
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
@@ -3145,8 +3145,6 @@ CLEAN :
 	-@erase "$(INTDIR)\calibrationhelper.sbr"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\capfloor.sbr"
-	-@erase "$(INTDIR)\capfloorpricer.obj"
-	-@erase "$(INTDIR)\capfloorpricer.sbr"
 	-@erase "$(INTDIR)\caphelper.obj"
 	-@erase "$(INTDIR)\caphelper.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
@@ -3183,6 +3181,10 @@ CLEAN :
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
 	-@erase "$(INTDIR)\discretizedasset.sbr"
+	-@erase "$(INTDIR)\discretizedcapfloor.obj"
+	-@erase "$(INTDIR)\discretizedcapfloor.sbr"
+	-@erase "$(INTDIR)\discretizedswaption.obj"
+	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
@@ -3245,8 +3247,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\jamshidianswaption.obj"
-	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\jointcalendar.obj"
@@ -3371,8 +3373,6 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
 	-@erase "$(INTDIR)\swaptionhelper.sbr"
-	-@erase "$(INTDIR)\swaptionpricer.obj"
-	-@erase "$(INTDIR)\swaptionpricer.sbr"
 	-@erase "$(INTDIR)\sydney.obj"
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
@@ -3389,10 +3389,10 @@ CLEAN :
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
 	-@erase "$(INTDIR)\toronto.sbr"
-	-@erase "$(INTDIR)\treecapfloor.obj"
-	-@erase "$(INTDIR)\treecapfloor.sbr"
-	-@erase "$(INTDIR)\treeswaption.obj"
-	-@erase "$(INTDIR)\treeswaption.sbr"
+	-@erase "$(INTDIR)\treecapfloorengine.obj"
+	-@erase "$(INTDIR)\treecapfloorengine.sbr"
+	-@erase "$(INTDIR)\treeswaptionengine.obj"
+	-@erase "$(INTDIR)\treeswaptionengine.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
@@ -3552,14 +3552,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr" \
-	"$(INTDIR)\capfloorpricer.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
-	"$(INTDIR)\swaptionpricer.sbr" \
-	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -3604,7 +3596,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3736,14 +3736,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\blackcapfloor.obj" \
-	"$(INTDIR)\capfloorpricer.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
-	"$(INTDIR)\swaptionpricer.obj" \
-	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -3789,6 +3781,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
 	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3830,10 +3830,10 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
-	-@erase "$(INTDIR)\analyticalcapfloor.obj"
-	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
+	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
 	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
@@ -3872,14 +3872,14 @@ CLEAN :
 	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
 	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
-	-@erase "$(INTDIR)\blackcapfloor.obj"
-	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackcapfloorengine.obj"
+	-@erase "$(INTDIR)\blackcapfloorengine.sbr"
 	-@erase "$(INTDIR)\blackformula.obj"
 	-@erase "$(INTDIR)\blackformula.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
-	-@erase "$(INTDIR)\blackswaption.obj"
-	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackswaptionengine.obj"
+	-@erase "$(INTDIR)\blackswaptionengine.sbr"
 	-@erase "$(INTDIR)\blackvariancecurve.obj"
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
@@ -3898,8 +3898,6 @@ CLEAN :
 	-@erase "$(INTDIR)\calibrationhelper.sbr"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\capfloor.sbr"
-	-@erase "$(INTDIR)\capfloorpricer.obj"
-	-@erase "$(INTDIR)\capfloorpricer.sbr"
 	-@erase "$(INTDIR)\caphelper.obj"
 	-@erase "$(INTDIR)\caphelper.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
@@ -3936,6 +3934,10 @@ CLEAN :
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
 	-@erase "$(INTDIR)\discretizedasset.sbr"
+	-@erase "$(INTDIR)\discretizedcapfloor.obj"
+	-@erase "$(INTDIR)\discretizedcapfloor.sbr"
+	-@erase "$(INTDIR)\discretizedswaption.obj"
+	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
@@ -3998,8 +4000,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\jamshidianswaption.obj"
-	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
+	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\jointcalendar.obj"
@@ -4124,8 +4126,6 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
 	-@erase "$(INTDIR)\swaptionhelper.sbr"
-	-@erase "$(INTDIR)\swaptionpricer.obj"
-	-@erase "$(INTDIR)\swaptionpricer.sbr"
 	-@erase "$(INTDIR)\sydney.obj"
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
@@ -4142,10 +4142,10 @@ CLEAN :
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
 	-@erase "$(INTDIR)\toronto.sbr"
-	-@erase "$(INTDIR)\treecapfloor.obj"
-	-@erase "$(INTDIR)\treecapfloor.sbr"
-	-@erase "$(INTDIR)\treeswaption.obj"
-	-@erase "$(INTDIR)\treeswaption.sbr"
+	-@erase "$(INTDIR)\treecapfloorengine.obj"
+	-@erase "$(INTDIR)\treecapfloorengine.sbr"
+	-@erase "$(INTDIR)\treeswaptionengine.obj"
+	-@erase "$(INTDIR)\treeswaptionengine.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
@@ -4306,14 +4306,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr" \
-	"$(INTDIR)\capfloorpricer.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
-	"$(INTDIR)\swaptionpricer.sbr" \
-	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -4358,7 +4350,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4490,14 +4490,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\blackcapfloor.obj" \
-	"$(INTDIR)\capfloorpricer.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
-	"$(INTDIR)\swaptionpricer.obj" \
-	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -4543,6 +4535,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
 	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -5386,51 +5386,51 @@ SOURCE=.\ql\PricingEngines\Vanilla\mcdigitalengine.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\CapFloor\analyticalcapfloor.cpp
+SOURCE=.\ql\PricingEngines\CapFloor\analyticcapfloorengine.cpp
 
-"$(INTDIR)\analyticalcapfloor.obj"	"$(INTDIR)\analyticalcapfloor.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\analyticcapfloorengine.obj"	"$(INTDIR)\analyticcapfloorengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\CapFloor\blackcapfloor.cpp
+SOURCE=.\ql\PricingEngines\CapFloor\blackcapfloorengine.cpp
 
-"$(INTDIR)\blackcapfloor.obj"	"$(INTDIR)\blackcapfloor.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\blackcapfloorengine.obj"	"$(INTDIR)\blackcapfloorengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\CapFloor\capfloorpricer.cpp
+SOURCE=.\ql\PricingEngines\CapFloor\discretizedcapfloor.cpp
 
-"$(INTDIR)\capfloorpricer.obj"	"$(INTDIR)\capfloorpricer.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\discretizedcapfloor.obj"	"$(INTDIR)\discretizedcapfloor.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\CapFloor\treecapfloor.cpp
+SOURCE=.\ql\PricingEngines\CapFloor\treecapfloorengine.cpp
 
-"$(INTDIR)\treecapfloor.obj"	"$(INTDIR)\treecapfloor.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\treecapfloorengine.obj"	"$(INTDIR)\treecapfloorengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Swaption\blackswaption.cpp
+SOURCE=.\ql\PricingEngines\Swaption\blackswaptionengine.cpp
 
-"$(INTDIR)\blackswaption.obj"	"$(INTDIR)\blackswaption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\blackswaptionengine.obj"	"$(INTDIR)\blackswaptionengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaption.cpp
+SOURCE=.\ql\PricingEngines\Swaption\discretizedswaption.cpp
 
-"$(INTDIR)\jamshidianswaption.obj"	"$(INTDIR)\jamshidianswaption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\discretizedswaption.obj"	"$(INTDIR)\discretizedswaption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Swaption\swaptionpricer.cpp
+SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaptionengine.cpp
 
-"$(INTDIR)\swaptionpricer.obj"	"$(INTDIR)\swaptionpricer.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\jamshidianswaptionengine.obj"	"$(INTDIR)\jamshidianswaptionengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Swaption\treeswaption.cpp
+SOURCE=.\ql\PricingEngines\Swaption\treeswaptionengine.cpp
 
-"$(INTDIR)\treeswaption.obj"	"$(INTDIR)\treeswaption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\treeswaptionengine.obj"	"$(INTDIR)\treeswaptionengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

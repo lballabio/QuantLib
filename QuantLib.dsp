@@ -1701,35 +1701,39 @@ SOURCE=.\ql\PricingEngines\Vanilla\mcvanillaengine.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\CapFloor\analyticalcapfloor.cpp
+SOURCE=.\ql\PricingEngines\CapFloor\all.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\CapFloor\analyticalcapfloor.hpp
+SOURCE=.\ql\PricingEngines\CapFloor\analyticcapfloorengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\CapFloor\blackcapfloor.cpp
+SOURCE=.\ql\PricingEngines\CapFloor\analyticcapfloorengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\CapFloor\blackcapfloor.hpp
+SOURCE=.\ql\PricingEngines\CapFloor\blackcapfloorengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\CapFloor\capfloorpricer.cpp
+SOURCE=.\ql\PricingEngines\CapFloor\blackcapfloorengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\CapFloor\capfloorpricer.hpp
+SOURCE=.\ql\PricingEngines\CapFloor\discretizedcapfloor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\CapFloor\treecapfloor.cpp
+SOURCE=.\ql\PricingEngines\CapFloor\discretizedcapfloor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\CapFloor\treecapfloor.hpp
+SOURCE=.\ql\PricingEngines\CapFloor\treecapfloorengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\treecapfloorengine.hpp
 # End Source File
 # End Group
 # Begin Group "Swaption"
@@ -1737,35 +1741,39 @@ SOURCE=.\ql\PricingEngines\CapFloor\treecapfloor.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Swaption\blackswaption.cpp
+SOURCE=.\ql\PricingEngines\Swaption\all.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Swaption\blackswaption.hpp
+SOURCE=.\ql\PricingEngines\Swaption\blackswaptionengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaption.cpp
+SOURCE=.\ql\PricingEngines\Swaption\blackswaptionengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaption.hpp
+SOURCE=.\ql\PricingEngines\Swaption\discretizedswaption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Swaption\swaptionpricer.cpp
+SOURCE=.\ql\PricingEngines\Swaption\discretizedswaption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Swaption\swaptionpricer.hpp
+SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaptionengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Swaption\treeswaption.cpp
+SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaptionengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Swaption\treeswaption.hpp
+SOURCE=.\ql\PricingEngines\Swaption\treeswaptionengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Swaption\treeswaptionengine.hpp
 # End Source File
 # End Group
 # Begin Group "Cliquet"
