@@ -32,15 +32,9 @@
 #ifndef quantlib_lattices_tree_h
 #define quantlib_lattices_tree_h
 
-#include <ql/qldefines.hpp>
 #include <ql/asset.hpp>
-#include <ql/termstructure.hpp>
 #include <ql/Lattices/node.hpp>
 #include <ql/Lattices/timegrid.hpp>
-
-#include <iostream>
-#include <list>
-#include <vector>
 
 namespace QuantLib {
 

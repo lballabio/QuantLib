@@ -37,8 +37,6 @@
 #include <ql/option.hpp>
 #include <ql/termstructure.hpp>
 
-#include <vector>
-
 namespace QuantLib {
 
     namespace InterestRateModelling {

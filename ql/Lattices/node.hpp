@@ -32,11 +32,9 @@
 #ifndef quantlib_lattices_node_h
 #define quantlib_lattices_node_h
 
-#include <ql/qldefines.hpp>
 #include <ql/termstructure.hpp>
 
 #include <iostream>
-#include <vector>
 
 namespace QuantLib {
 

@@ -35,7 +35,6 @@
 #include "ql/InterestRateModelling/onefactormodel.hpp"
 #include "ql/Lattices/tree.hpp"
 
-#include <iostream>
 using std::cout;
 using std::endl;
 

@@ -32,9 +32,7 @@
 #ifndef quantlib_asset_h
 #define quantlib_asset_h
 
-#include <ql/qldefines.hpp>
 #include <ql/array.hpp>
-#include <ql/types.hpp>
 
 namespace QuantLib {
 

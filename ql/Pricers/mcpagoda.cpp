@@ -32,7 +32,6 @@
 #include <ql/handle.hpp>
 #include <ql/Pricers/mcpagoda.hpp>
 #include <ql/MonteCarlo/pagodapathpricer.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
 
 namespace QuantLib {
 

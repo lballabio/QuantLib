@@ -33,7 +33,6 @@
 #define quantlib_plain_option_h
 
 #include <ql/option.hpp>
-#include <ql/marketelement.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/solver1d.hpp>
 

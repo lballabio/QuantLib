@@ -33,12 +33,8 @@
 #define quantlib_interest_rate_modelling_trinomial_tree_h
 
 
-#include <ql/qldefines.hpp>
-#include <ql/termstructure.hpp>
 #include <ql/InterestRateModelling/shortrateprocess.hpp>
 #include <ql/Lattices/tree.hpp>
-
-#include <vector>
 
 namespace QuantLib {
 

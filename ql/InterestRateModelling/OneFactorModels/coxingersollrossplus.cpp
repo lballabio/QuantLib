@@ -31,7 +31,6 @@
 
 #include "ql/InterestRateModelling/OneFactorModels/coxingersollrossplus.hpp"
 #include "ql/Math/normaldistribution.hpp"
-#include "ql/InterestRateModelling/trinomialtree.hpp"
 
 namespace QuantLib {
 

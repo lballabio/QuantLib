@@ -35,7 +35,6 @@
 #include <ql/calendar.hpp>
 #include <ql/currency.hpp>
 #include <ql/daycounter.hpp>
-#include <ql/relinkablehandle.hpp>
 #include <ql/marketelement.hpp>
 #include <vector>
 

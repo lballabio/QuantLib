@@ -30,7 +30,6 @@
 // $Id$
 
 #include <ql/Instruments/simpleswap.hpp>
-#include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 
 namespace QuantLib {

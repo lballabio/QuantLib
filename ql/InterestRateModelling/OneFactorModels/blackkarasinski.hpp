@@ -32,7 +32,6 @@
 #ifndef quantlib_one_factor_models_black_karasinski_h
 #define quantlib_one_factor_models_black_karasinski_h
 
-#include <ql/InterestRateModelling/onefactormodel.hpp>
 #include <ql/InterestRateModelling/timefunction.hpp>
 #include <ql/Lattices/tree.hpp>
 

@@ -32,7 +32,6 @@
 #ifndef quantlib_interest_rate_modelling_short_rate_process_h
 #define quantlib_interest_rate_modelling_short_rate_process_h
 
-#include <ql/qldefines.hpp>
 #include <ql/diffusionprocess.hpp>
 #include <ql/types.hpp>
 

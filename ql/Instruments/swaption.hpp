@@ -33,9 +33,6 @@
 #define quantlib_instruments_swaption_h
 
 #include <ql/exercise.hpp>
-#include <ql/marketelement.hpp>
-#include <ql/option.hpp>
-#include <ql/termstructure.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/InterestRateModelling/model.hpp>
 

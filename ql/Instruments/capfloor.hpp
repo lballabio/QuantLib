@@ -37,7 +37,6 @@
 #include "ql/InterestRateModelling/model.hpp"
 
 #include <list>
-#include <vector>
 
 namespace QuantLib {
 

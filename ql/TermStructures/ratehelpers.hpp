@@ -32,7 +32,6 @@
 #ifndef quantlib_ratehelper_h
 #define quantlib_ratehelper_h
 
-#include <ql/marketelement.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 
 namespace QuantLib {

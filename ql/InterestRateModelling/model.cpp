@@ -29,9 +29,7 @@
 
 // $Id$
 
-#include "ql/InterestRateModelling/model.hpp"
 
-#include "ql/Math/matrix.hpp"
 #include "ql/InterestRateModelling/calibrationhelper.hpp"
 #include "ql/Optimization/leastsquare.hpp"
 

@@ -33,7 +33,6 @@
 #define quantlib_interest_rate_modelling_calibration_helpers_swaption_h
 
 #include <ql/InterestRateModelling/calibrationhelper.hpp>
-#include <ql/Instruments/simpleswap.hpp>
 #include <ql/Instruments/swaption.hpp>
 
 

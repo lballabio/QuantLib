@@ -33,7 +33,6 @@
 #define quantlib_interest_rate_modelling_one_factor_model_h
 
 #include <ql/InterestRateModelling/model.hpp>
-#include <ql/InterestRateModelling/shortrateprocess.hpp>
 #include <ql/InterestRateModelling/trinomialtree.hpp>
 
 namespace QuantLib {

@@ -30,7 +30,6 @@
 // $Id$
 
 #include "ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp"
-#include "ql/InterestRateModelling/trinomialtree.hpp"
 #include "ql/Solvers1D/brent.hpp"
 
 namespace QuantLib {

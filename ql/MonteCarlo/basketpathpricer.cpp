@@ -32,7 +32,6 @@
 
 #include <ql/MonteCarlo/basketpathpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
-#include <ql/dataformatters.hpp>
 
 using QuantLib::Pricers::ExercisePayoff;
 
