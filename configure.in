@@ -10,7 +10,7 @@ AC_INIT(ql/qldefines.hpp)
 AC_CONFIG_AUX_DIR(config)
 
 AM_CONFIG_HEADER(ql/config.hpp)
-AM_INIT_AUTOMAKE(QuantLib, 0.3.0a8-cvs)
+AM_INIT_AUTOMAKE(QuantLib, 0.3.0a9-cvs)
 
 dnl Check for programs
 
