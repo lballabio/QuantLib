@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.8  2000/12/20 15:26:29  lballabio
+	#included null.h
+
 	Revision 1.7  2000/12/15 10:00:38  enri
 	Instrument interface slightly changed. PricedInstrument added.
-
+	
 	Revision 1.6  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -42,6 +45,7 @@
 #include "termstructure.h"
 #include "swaptionvolsurface.h"
 #include "forwardvolsurface.h"
+#include "null.h"
 
 namespace QuantLib {
 
