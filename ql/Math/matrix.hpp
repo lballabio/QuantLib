@@ -170,12 +170,13 @@ namespace QuantLib {
     struct SalvagingAlgorithm {
         enum Type {None, Spectral, Hypersphere};
     };
-    //! returns the pseudo square root of a real symmetric matrix
-    /*! returns the pseudo square root of a real symmetric matrix.
 
+    //! Returns the pseudo square root of a real symmetric matrix
+    /*! Given a matrix \f$ M \f$, the result \f$ S \f$ is defined 
+        as the matrix such that \f$ S S^T = M. \f$
         If the matrix is not positive semi definite, it can
         return an approximation of the pseudo square root
-        using a (user selected) salvaging algorithm
+        using a (user selected) salvaging algorithm.
 
         For more information see: "The most general methodology to create
         a valid correlation matrix for risk management and option pricing
@@ -184,20 +185,25 @@ namespace QuantLib {
         http://www.rebonato.com/correlationmatrix.pdf
 
         Revised and extended in "Monte Carlo Methods in Finance",
-        by Peter Jäckel, Chapter 6
+        by Peter Jäckel, Chapter 6.
+
+        \pre the given matrix must be symmetric.
 
         \relates Matrix
-
-        \bug the non-salvaged algorithm currently yields wrong results
     */
-    const Disposable<Matrix> pseudoSqrt(const Matrix& realSymmetricMatrix,
-                                        SalvagingAlgorithm::Type sa);
+    const Disposable<Matrix> pseudoSqrt(const Matrix&,
+                                        SalvagingAlgorithm::Type);
 
-    const Disposable<Matrix> rankReducedSqrt(const Matrix& realSymmetricMatrix,
+    /*! \pre the given matrix must be symmetric.
+
+        \relates Matrix
+    */
+    const Disposable<Matrix> rankReducedSqrt(const Matrix&,
                                              Size maxRank,
                                              double componentRetainedPercentag,
-                                             SalvagingAlgorithm::Type sa);
+                                             SalvagingAlgorithm::Type);
 
+    /*! \relates Matrix */
     const Disposable<Matrix> CholeskyDecomposition(const Matrix& m,
                                                    bool flexible = false);
 
@@ -347,18 +353,34 @@ namespace QuantLib {
 
     inline Matrix::const_row_iterator
     Matrix::row_begin(Size i) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(i<rows_,
+                   "matrix cannot be accessed out of range");
+        #endif
         return pointer_+columns_*i;
     }
 
     inline Matrix::row_iterator Matrix::row_begin(Size i) {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(i<rows_,
+                   "matrix cannot be accessed out of range");
+        #endif
         return pointer_+columns_*i;
     }
 
     inline Matrix::const_row_iterator Matrix::row_end(Size i) const{
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(i<rows_,
+                   "matrix cannot be accessed out of range");
+        #endif
         return pointer_+columns_*(i+1);
     }
 
     inline Matrix::row_iterator Matrix::row_end(Size i) {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(i<rows_,
+                   "matrix cannot be accessed out of range");
+        #endif
         return pointer_+columns_*(i+1);
     }
 
@@ -382,19 +404,35 @@ namespace QuantLib {
 
     inline Matrix::const_column_iterator
     Matrix::column_begin(Size i) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(i<columns_,
+                   "matrix cannot be accessed out of range");
+        #endif
         return const_column_iterator(pointer_+i,columns_);
     }
 
     inline Matrix::column_iterator Matrix::column_begin(Size i) {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(i<columns_,
+                   "matrix cannot be accessed out of range");
+        #endif
         return column_iterator(pointer_+i,columns_);
     }
 
     inline Matrix::const_column_iterator
     Matrix::column_end(Size i) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(i<columns_,
+                   "matrix cannot be accessed out of range");
+        #endif
         return column_begin(i)+rows_;
     }
 
     inline Matrix::column_iterator Matrix::column_end(Size i) {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(i<columns_,
+                   "matrix cannot be accessed out of range");
+        #endif
         return column_begin(i)+rows_;
     }
 

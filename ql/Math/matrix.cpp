@@ -35,13 +35,22 @@ namespace QuantLib {
         Revised and extended in "Monte Carlo Methods in Finance",
         by Peter Jäckel, Chapter 6
     */
-    const Disposable<Matrix> pseudoSqrt(const Matrix &realSymmetricMatrix,
-        SalvagingAlgorithm::Type sa) {
+    const Disposable<Matrix> pseudoSqrt(const Matrix& matrix,
+                                        SalvagingAlgorithm::Type sa) {
 
+        QL_REQUIRE(matrix.rows() == matrix.columns(),
+                   "pseudoSqrt: matrix not square");
+        Size i, j;
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        for (i=0; i<matrix.rows(); i++)
+            for (j=0; j<i; j++)
+                QL_REQUIRE(matrix[i][j] == matrix[j][i],
+                           "pseudoSqrt: matrix not symmetric");
+        #endif
 
         // spectral (a.k.a Principal Component) analysis
-        SymmetricSchurDecomposition jd(realSymmetricMatrix);
-        Size i, j, size = realSymmetricMatrix.rows();
+        SymmetricSchurDecomposition jd(matrix);
+        Size size = matrix.rows();
         Matrix diagonal(size, size, 0.0);
 
 
@@ -55,7 +64,7 @@ namespace QuantLib {
                 "Matrix pseudoSqrt: negative eigenvalue(s) ("
                 + DoubleFormatter::toExponential(jd.eigenvalues()[size-1]) +
                 ")");
-            result = CholeskyDecomposition(realSymmetricMatrix, true);
+            result = CholeskyDecomposition(matrix, true);
             break;
           default:
             // salvaging algorithm:
@@ -95,29 +104,41 @@ namespace QuantLib {
     }
 
 
-    const Disposable<Matrix> rankReducedSqrt(const Matrix& realSymmetricMatrix,
-        Size maxRank, double componentRetainedPercentage,
-        SalvagingAlgorithm::Type sa) {
+    const Disposable<Matrix> rankReducedSqrt(
+                                         const Matrix& matrix,
+                                         Size maxRank, 
+                                         double componentRetainedPercentage,
+                                         SalvagingAlgorithm::Type sa) {
+
+        QL_REQUIRE(matrix.rows() == matrix.columns(),
+                   "pseudoSqrt: matrix not square");
+        Size i, j;
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        for (i=0; i<matrix.rows(); i++)
+            for (j=0; j<i; j++)
+                QL_REQUIRE(matrix[i][j] == matrix[j][i],
+                           "pseudoSqrt: matrix not symmetric");
+        #endif
 
         QL_REQUIRE(componentRetainedPercentage>0.0,
-            "Matrix rankReducedSqrt: no eigenvalues retained");
+                   "rankReducedSqrt: no eigenvalues retained");
 
         QL_REQUIRE(componentRetainedPercentage<=1.0,
-            "Matrix rankReducedSqrt: percentage to be retained > 100%");
+                   "rankReducedSqrt: percentage to be retained > 100%");
 
         QL_REQUIRE(maxRank>=1,
-            "Matrix rankReducedSqrt: max rank required < 1");
+                   "rankReducedSqrt: max rank required < 1");
 
         // spectral (a.k.a Principal Component) analysis
-        SymmetricSchurDecomposition jd(realSymmetricMatrix);
-        Size i, j, size = realSymmetricMatrix.rows();
+        SymmetricSchurDecomposition jd(matrix);
+        Size size = matrix.rows();
         Matrix diagonal(size, size, 0.0);
         Matrix result(size, size);
 
         // require a positive semi-definite matrix
         // (eigenvalues are sorted in decreasing order)
         QL_REQUIRE(jd.eigenvalues()[size-1]>=0.0,
-            "Matrix rankReducedSqrt: negative eigenvalue(s)");
+                   "rankReducedSqrt: negative eigenvalue(s)");
 
         // rank reduction:
         // output is granted to have a rank<=maxRank
@@ -161,13 +182,20 @@ namespace QuantLib {
 
 
     const Disposable<Matrix> CholeskyDecomposition(const Matrix &S,
-        bool flexible) {
+                                                   bool flexible) {
         Size i, j, size = S.rows();
         // should check for simmetry too: the algorithm will only use
         // the upper triangular part of S anyway...
         QL_REQUIRE(size == S.columns(),
-            "CholeskyDecomposition : "
-            "input matrix is not a square matrix");
+                   "CholeskyDecomposition : "
+                   "input matrix is not a square matrix");
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        for (i=0; i<matrix.rows(); i++)
+            for (j=0; j<i; j++)
+                QL_REQUIRE(S[i][j] == S[j][i],
+                           "CholeskyDecomposition : "
+                           "input matrix is not symmetric");
+        #endif
 
         Matrix result(size, size, 0.0);
         double sum;
