@@ -108,6 +108,9 @@ rm -rf %{buildroot}
 %{_libdir}/libQuantLib.la
 %{_libdir}/libQuantLib.so
 %{_libdir}/libQuantLib-%{version}.so
+%{_libdir}/libQuantLibFunctions.la
+%{_libdir}/libQuantLibFunctions.so
+%{_libdir}/libQuantLibFunctions-%{version}.so
 
 %files devel
 %defattr(-,root,root)
@@ -115,6 +118,8 @@ rm -rf %{buildroot}
 %{_includedir}/ql/
 %{_libdir}/libQuantLib.a
 %{_libdir}/libQuantLib.so
+%{_libdir}/libQuantLibFunctions.a
+%{_libdir}/libQuantLibFunctions.so
 %{_datadir}/aclocal/*
 %{_datadir}/emacs/site-lisp/*
 %{_bindir}/quantlib-config

@@ -57,7 +57,7 @@
 #endif
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x000307a0
+#define QL_HEX_VERSION 0x000307f0
 //! version string for output lib name
 #define QL_LIB_VERSION "0_3_7"
 

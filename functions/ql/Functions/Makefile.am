@@ -9,14 +9,14 @@ include_HEADERS = \
 	qlfunctions.hpp \
 	vols.hpp
 
-EXTRA_DIST=makefile.mak
+EXTRA_DIST = makefile.mak QuantLibFunctions.vcproj
 
 lib_LTLIBRARIES = libQuantLibFunctions.la
 libQuantLibFunctions_la_LDFLAGS = -release $(PACKAGE_VERSION)
 
 libQuantLibFunctions_la_SOURCES = \
-    calendars.cpp \
-    daycounters.cpp \
-    mathf.cpp \
+	calendars.cpp \
+	daycounters.cpp \
+	mathf.cpp \
 	vols.cpp
 

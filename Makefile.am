@@ -24,7 +24,6 @@ EXTRA_DIST = \
 	QuantLib.mak \
 	QuantLib.nsi \
 	QuantLib.sln \
-	QuantLib.spec \
 	QuantLib.vcproj \
 	Readme.txt \
 	TODO.txt \
