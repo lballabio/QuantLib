@@ -26,28 +26,24 @@
 
 namespace QuantLib {
 
-    namespace DayCounters {
-
-        //! Actual/360 day count convention
-        class Actual360 : public DayCounter {
-          private:
-            class Impl : public DayCounter::Impl {
-              public:
-                std::string name() const { return std::string("act/360"); }
-                int dayCount(const Date& d1, const Date& d2) const {
-                    return (d2-d1); 
-                }
-                Time yearFraction(const Date& d1, const Date& d2,
-                                  const Date&, const Date&) const {
-                    return dayCount(d1,d2)/360.0;
-                }
-            };
+    //! Actual/360 day count convention
+    class Actual360 : public DayCounter {
+      private:
+        class Impl : public DayCounter::Impl {
           public:
-            Actual360()
-            : DayCounter(Handle<DayCounter::Impl>(new Actual360::Impl)) {}
+            std::string name() const { return std::string("act/360"); }
+            int dayCount(const Date& d1, const Date& d2) const {
+                return (d2-d1); 
+            }
+            Time yearFraction(const Date& d1, const Date& d2,
+                              const Date&, const Date&) const {
+                return dayCount(d1,d2)/360.0;
+            }
         };
-
-    }
+      public:
+        Actual360()
+        : DayCounter(Handle<DayCounter::Impl>(new Actual360::Impl)) {}
+    };
 
 }
 

@@ -49,7 +49,7 @@ namespace QuantLib {
                 const std::vector<Date>& exerciseDates, 
                 const std::vector<Period>& lengths, 
                 const Math::Matrix& volatilities,
-                const DayCounter& dayCounter = DayCounters::Thirty360());
+                const DayCounter& dayCounter = Thirty360());
             // inspectors
             Date todaysDate() const;
             DayCounter dayCounter() const;

@@ -41,12 +41,10 @@ namespace QuantLib {
           public:
             BlackConstantVol(const Date& referenceDate,
                              double volatility,
-                             const DayCounter& dayCounter = 
-                                 DayCounters::Actual365());
+                             const DayCounter& dayCounter = Actual365());
             BlackConstantVol(const Date& referenceDate,
                              const RelinkableHandle<MarketElement>& volatility,
-                             const DayCounter& dayCounter = 
-                                 DayCounters::Actual365());
+                             const DayCounter& dayCounter = Actual365());
             //! \name BlackVolTermStructure interface
             //@{
             Date referenceDate() const;

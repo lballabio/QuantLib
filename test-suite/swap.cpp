@@ -30,7 +30,6 @@
 using namespace QuantLib;
 using namespace QuantLib::Indexes;
 using namespace QuantLib::TermStructures;
-using namespace QuantLib::DayCounters;
 using namespace QuantLib::Instruments;
 
 namespace {

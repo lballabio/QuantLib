@@ -35,7 +35,7 @@ namespace QuantLib {
           public:
             JPYLibor(int n, TimeUnit units,
                      const RelinkableHandle<TermStructure>& h,
-                     const DayCounter& dc = DayCounters::Actual360())
+                     const DayCounter& dc = Actual360())
             : Xibor("JPYLibor", n, units, 2, JPY,
                     Tokyo(), true, ModifiedFollowing, dc, h) {}
         };

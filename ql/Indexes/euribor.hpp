@@ -35,7 +35,7 @@ namespace QuantLib {
           public:
             Euribor(int n, TimeUnit units,
                     const RelinkableHandle<TermStructure>& h,
-                    const DayCounter& dc = DayCounters::Actual360())
+                    const DayCounter& dc = Actual360())
             : Xibor("Euribor", n, units, 2, EUR,
                     TARGET(), true, ModifiedFollowing, dc, h) {}
         };

@@ -48,8 +48,7 @@ namespace QuantLib {
             BlackVarianceCurve(const Date& referenceDate,
                                const std::vector<Date>& dates,
                                const std::vector<double>& blackVolCurve,
-                               const DayCounter& dayCounter = 
-                                   DayCounters::Actual365());
+                               const DayCounter& dayCounter = Actual365());
             //! \name BlackVolTermStructure interface
             //@{
             Date referenceDate() const;

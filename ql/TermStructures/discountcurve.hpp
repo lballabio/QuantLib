@@ -42,8 +42,7 @@ namespace QuantLib {
             DiscountCurve(const Date &todaysDate,
                           const std::vector<Date> &dates,
                           const std::vector<DiscountFactor> &dfs,
-                          const DayCounter & dayCounter = 
-                              DayCounters::Actual365());
+                          const DayCounter & dayCounter = Actual365());
             Date todaysDate() const { return todaysDate_; }
             Date referenceDate() const { return referenceDate_; };
             DayCounter dayCounter() const { return dayCounter_; };
@@ -66,7 +65,7 @@ namespace QuantLib {
                 std::vector<DiscountFactor>::const_iterator > DfInterpolation;
             mutable Handle<DfInterpolation> interpolation_;
         };
-       
+
         // inline definitions
 
         inline const std::vector<Date>& DiscountCurve::dates() const {

@@ -42,11 +42,11 @@ namespace QuantLib {
             LocalConstantVol(
                 const Date& referenceDate,
                 double volatility,
-                const DayCounter& dayCounter = DayCounters::Actual365());
+                const DayCounter& dayCounter = Actual365());
             LocalConstantVol(
                 const Date& referenceDate,
                 const RelinkableHandle<MarketElement>& volatility,
-                const DayCounter& dayCounter = DayCounters::Actual365());
+                const DayCounter& dayCounter = Actual365());
             //! \name LocalVolTermStructure interface
             //@{
             Date referenceDate() const { return referenceDate_; }

@@ -36,7 +36,7 @@ namespace QuantLib {
           public:
             CADLibor(int n, TimeUnit units,
                      const RelinkableHandle<TermStructure>& h,
-                     const DayCounter& dc = DayCounters::Actual365())
+                     const DayCounter& dc = Actual365())
             : Xibor("CADLibor", n, units, 2, CAD,
                     Toronto(), true, ModifiedFollowing, dc, h) {}
         };

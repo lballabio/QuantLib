@@ -24,9 +24,6 @@
 
 
 using namespace QuantLib;
-using DayCounters::ActualActual;
-using DayCounters::Actual360;
-using DayCounters::Thirty360;
 using Indexes::Xibor;
 using Indexes::Euribor;
 using Instruments::SimpleSwap;

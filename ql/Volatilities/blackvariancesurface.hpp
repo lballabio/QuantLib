@@ -54,8 +54,7 @@ namespace QuantLib {
                                      InterpolatorDefaultExtrapolation,
                                  Extrapolation upperExtrapolation =
                                      InterpolatorDefaultExtrapolation,
-                                 const DayCounter& dayCounter =
-                                     DayCounters::Actual365());
+                                 const DayCounter& dayCounter = Actual365());
             //! \name BlackVolTermStructure interface
             //@{
             Date referenceDate() const { 

@@ -44,8 +44,7 @@ namespace QuantLib {
                                   const std::vector<DiscountFactor> &dfs,
                                   const Calendar & calendar,
                                   const RollingConvention roll,
-                                  const DayCounter & dayCounter = 
-                                      DayCounters::Actual365());
+                                  const DayCounter & dayCounter = Actual365());
             Calendar calendar() const { return calendar_; };
             RollingConvention roll() const { return roll_; };
             //! \name Observer interface
@@ -63,9 +62,9 @@ namespace QuantLib {
             RollingConvention roll_;
             mutable std::map<int,Handle<TermStructure> > forwardCurveMap_;
         };
-       
+
         // inline definitions
-       
+
         inline void ExtendedDiscountCurve::update() {
             forwardCurveMap_.clear();
             notifyObservers();

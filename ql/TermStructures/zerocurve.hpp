@@ -31,15 +31,14 @@ namespace QuantLib {
     namespace TermStructures {
 
         //! Term structure based on linear interpolation of zero yields
-        
+
         class ZeroCurve : public ZeroYieldStructure {
           public:
             // constructor
             ZeroCurve (const Date& todaysDate,
                           const std::vector<Date>& dates,
                           const std::vector<Rate>& yields,
-                          const DayCounter& dayCounter = 
-                              DayCounters::Actual365());
+                          const DayCounter& dayCounter = Actual365());
 
             DayCounter dayCounter() const;
             Date todaysDate() const {return todaysDate_; }

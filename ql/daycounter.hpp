@@ -25,13 +25,10 @@
 #include <ql/date.hpp>
 #include <ql/Patterns/bridge.hpp>
 
-/*! \namespace QuantLib::DayCounters
-    \brief Specialized DayCounter classes
-
-    See sect. \ref dayconters
-*/
-
 namespace QuantLib {
+
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace DayCounters = ::QuantLib;
 
     //! abstract base class for day counter implementations
     class DayCounterImpl {

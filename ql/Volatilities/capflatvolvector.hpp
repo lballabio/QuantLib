@@ -48,7 +48,7 @@ namespace QuantLib {
                 int settlementDays,
                 const std::vector<Period>& lengths,
                 const std::vector<double>& volatilities,
-                const DayCounter& dayCounter = DayCounters::Thirty360());
+                const DayCounter& dayCounter = Thirty360());
             // inspectors
             Date todaysDate() const;
             Date settlementDate() const;

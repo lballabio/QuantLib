@@ -36,13 +36,11 @@ namespace QuantLib {
             FlatForward(const Date& todaysDate,
                         const Date& referenceDate,
                         Rate forward,
-                        const DayCounter& dayCounter = 
-                                                  DayCounters::Actual365());
+                        const DayCounter& dayCounter = Actual365());
             FlatForward(const Date& todaysDate,
                         const Date& referenceDate,
                         const RelinkableHandle<MarketElement>& forward,
-                        const DayCounter& dayCounter = 
-                                                  DayCounters::Actual365());
+                        const DayCounter& dayCounter = Actual365());
             // inspectors
             DayCounter dayCounter() const;
             Date todaysDate() const { return todaysDate_; }

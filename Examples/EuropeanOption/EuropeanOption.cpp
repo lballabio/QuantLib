@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
         Date todaysDate(15, May, 1998);
         Date settlementDate(17, May, 1998);
         Date exerciseDate(17, May, 1999);
-        DayCounter rateDayCounter = DayCounters::Actual365();
+        DayCounter rateDayCounter = Actual365();
         Time maturity = rateDayCounter.yearFraction(settlementDate,
             exerciseDate);
 

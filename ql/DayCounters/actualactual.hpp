@@ -26,61 +26,57 @@
 
 namespace QuantLib {
 
-    namespace DayCounters {
+    //! Actual/Actual day count
+    /*! The day count can be calculated according to ISMA and US Treasury
+        convention, also known as "Actual/Actual (Bond)"; to ISDA, also
+        known as "Actual/Actual (Historical)"; or to AFB, also known as
+        "Actual/Actual (Euro)".
 
-        //! Actual/Actual day count
-        /*! The day count can be calculated according to ISMA and US Treasury
-            convention, also known as "Actual/Actual (Bond)"; to ISDA, also
-            known as "Actual/Actual (Historical)"; or to AFB, also known as
-            "Actual/Actual (Euro)".
-
-            For more details, refer to
-            http://www.isda.org/c_and_a/pdf/mktc1198.pdf
-        */
-        class ActualActual : public DayCounter {
+        For more details, refer to
+        http://www.isda.org/c_and_a/pdf/mktc1198.pdf
+    */
+    class ActualActual : public DayCounter {
+      public:
+        enum Convention { ISMA, Bond, ISDA, Historical, AFB, Euro };
+      private:
+        class ISMA_Impl : public DayCounter::Impl {
           public:
-            enum Convention { ISMA, Bond, ISDA, Historical, AFB, Euro };
-          private:
-            class ISMA_Impl : public DayCounter::Impl {
-              public:
-                std::string name() const { 
-                    return std::string("act/act (Bond)");
-                }
-                int dayCount(const Date& d1, const Date& d2) const {
-                    return (d2-d1); 
-                }
-                Time yearFraction(const Date& d1, const Date& d2,
-                                  const Date&, const Date&) const;
-            };
-            class ISDA_Impl : public DayCounter::Impl {
-              public:
-                std::string name() const { 
-                    return std::string("act/act (ISDA)");
-                }
-                int dayCount(const Date& d1, const Date& d2) const {
-                    return (d2-d1); 
-                }
-                Time yearFraction(const Date& d1, const Date& d2,
-                                  const Date&, const Date&) const;
-            };
-            class AFB_Impl : public DayCounter::Impl {
-              public:
-                std::string name() const { 
-                    return std::string("act/act (Euro)");
-                }
-                int dayCount(const Date& d1, const Date& d2) const {
-                    return (d2-d1); 
-                }
-                Time yearFraction(const Date& d1, const Date& d2,
-                                  const Date&, const Date&) const;
-            };
-            static Handle<DayCounter::Impl> implementation(Convention c);
-          public:
-            ActualActual(Convention c = ActualActual::ISMA)
-            : DayCounter(implementation(c)) {}
+            std::string name() const { 
+                return std::string("act/act (Bond)");
+            }
+            int dayCount(const Date& d1, const Date& d2) const {
+                return (d2-d1); 
+            }
+            Time yearFraction(const Date& d1, const Date& d2,
+                              const Date&, const Date&) const;
         };
-
-    }
+        class ISDA_Impl : public DayCounter::Impl {
+          public:
+            std::string name() const { 
+                return std::string("act/act (ISDA)");
+            }
+            int dayCount(const Date& d1, const Date& d2) const {
+                return (d2-d1); 
+            }
+            Time yearFraction(const Date& d1, const Date& d2,
+                              const Date&, const Date&) const;
+        };
+        class AFB_Impl : public DayCounter::Impl {
+          public:
+            std::string name() const { 
+                return std::string("act/act (Euro)");
+            }
+            int dayCount(const Date& d1, const Date& d2) const {
+                return (d2-d1); 
+            }
+            Time yearFraction(const Date& d1, const Date& d2,
+                              const Date&, const Date&) const;
+        };
+        static Handle<DayCounter::Impl> implementation(Convention c);
+      public:
+        ActualActual(Convention c = ActualActual::ISMA)
+        : DayCounter(implementation(c)) {}
+    };
 
 }
 
