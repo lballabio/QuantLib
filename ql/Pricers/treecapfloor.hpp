@@ -34,7 +34,10 @@ namespace QuantLib {
 
         //! Cap/Floor priced in a tree
         class TreeCapFloor : public
-            CapFloorPricer<ShortRateModels::Model> {
+            PricingEngines::GenericModelEngine<
+                ShortRateModels::Model, 
+                Instruments::CapFloorArguments,
+                Instruments::CapFloorResults > {
           public:
             TreeCapFloor(const Handle<ShortRateModels::Model>& model,
                          Size timeSteps);

@@ -34,12 +34,17 @@ namespace QuantLib {
 
         //! Jamshidian swaption pricer
         class JamshidianSwaption : public 
-            SwaptionPricer<ShortRateModels::OneFactorAffineModel> {
+            PricingEngines::GenericModelEngine<
+                    ShortRateModels::OneFactorAffineModel,
+                    Instruments::SwaptionArguments,
+                    Instruments::SwaptionResults > {
           public:
             JamshidianSwaption(
                 const Handle<ShortRateModels::OneFactorAffineModel>& modl)
-            : SwaptionPricer<ShortRateModels::OneFactorAffineModel>
-                (modl) {} 
+            : PricingEngines::GenericModelEngine<
+                    ShortRateModels::OneFactorAffineModel,
+                    Instruments::SwaptionArguments,
+                    Instruments::SwaptionResults >(modl) {} 
             void calculate() const;
           private:
             class rStarFinder;

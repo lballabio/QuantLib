@@ -34,7 +34,10 @@ namespace QuantLib {
 
         //! Swaption priced in a tree
         class TreeSwaption : public
-            SwaptionPricer<ShortRateModels::Model> {
+            PricingEngines::GenericModelEngine<
+                    ShortRateModels::Model, 
+                    Instruments::SwaptionArguments,
+                    Instruments::SwaptionResults > {
           public:
             TreeSwaption(const Handle<ShortRateModels::Model>& model,
                          Size timeSteps);

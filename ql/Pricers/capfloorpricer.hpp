@@ -26,6 +26,7 @@
 #define quantlib_pricers_capfloor_pricer_h
 
 #include <ql/Instruments/capfloor.hpp>
+#include <ql/PricingEngines/genericengine.hpp>
 
 namespace QuantLib {
 
@@ -53,40 +54,6 @@ namespace QuantLib {
 
           private:
             Instruments::CapFloorArguments arguments_;
-        };
-
-        //! base class for cap/floor pricing engines
-        /*! Derived engines only need to implement the <tt>calculate()</tt>
-            method
-        */
-        template<class ModelType>
-        class CapFloorPricer : public PricingEngine,
-                               public Patterns::Observer,
-                               public Patterns::Observable {
-          public:
-            CapFloorPricer() {}
-            CapFloorPricer(const Handle<ModelType>& model) 
-            : model_(model) {
-                registerWith(model_);
-            }
-            Arguments* arguments() { return &arguments_; }
-            const Results* results() const { return &results_; }
-            void validateArguments() const { arguments_.validate(); }
-
-            void setModel(const Handle<ModelType>& model) {
-                unregisterWith(model_);
-                model_ = model;
-                QL_REQUIRE(!model_.isNull(), "Not an adequate model!");
-                registerWith(model_);
-                update();
-            }
-            virtual void update() {
-                notifyObservers();
-            }
-          protected:
-            Instruments::CapFloorArguments arguments_;
-            mutable Instruments::CapFloorResults results_;
-            Handle<ModelType> model_;
         };
 
     }

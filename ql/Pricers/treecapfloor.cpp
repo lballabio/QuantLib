@@ -34,11 +34,19 @@ namespace QuantLib {
         using namespace Lattices;
 
         TreeCapFloor::TreeCapFloor(const Handle<Model>& model, Size timeSteps) 
-        : CapFloorPricer<Model>(model), timeSteps_(timeSteps) {}
+        : PricingEngines::GenericModelEngine<
+                Model, 
+                Instruments::CapFloorArguments,
+                Instruments::CapFloorResults >(model), 
+          timeSteps_(timeSteps) {}
 
         TreeCapFloor::TreeCapFloor(const Handle<Model>& model,
                                    const TimeGrid& timeGrid) 
-        : CapFloorPricer<Model>(model), timeGrid_(timeGrid), timeSteps_(0) {
+        : PricingEngines::GenericModelEngine<
+                Model, 
+                Instruments::CapFloorArguments,
+                Instruments::CapFloorResults >(model), 
+            timeGrid_(timeGrid), timeSteps_(0) {
             tree_ = model_->tree(timeGrid);
         }
 

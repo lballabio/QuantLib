@@ -34,13 +34,19 @@ namespace QuantLib {
         TreeSwaption::TreeSwaption(
             const Handle<ShortRateModels::Model>& model,
             Size timeSteps) 
-        : SwaptionPricer<ShortRateModels::Model>(model), 
+        : PricingEngines::GenericModelEngine<
+                    ShortRateModels::Model, 
+                    Instruments::SwaptionArguments,
+                    Instruments::SwaptionResults >(model), 
           timeSteps_(timeSteps) {} 
 
         TreeSwaption::TreeSwaption(
             const Handle<ShortRateModels::Model>& model,
             const TimeGrid& timeGrid) 
-        : SwaptionPricer<ShortRateModels::Model>(model), 
+        : PricingEngines::GenericModelEngine<
+                    ShortRateModels::Model, 
+                    Instruments::SwaptionArguments,
+                    Instruments::SwaptionResults >(model), 
           timeGrid_(timeGrid), timeSteps_(0) {
             tree_ = model_->tree(timeGrid);
         }

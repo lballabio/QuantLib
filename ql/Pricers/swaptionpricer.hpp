@@ -27,6 +27,7 @@
 
 #include <ql/numericalmethod.hpp>
 #include <ql/Instruments/swaption.hpp>
+#include <ql/PricingEngines/genericengine.hpp>
 
 namespace QuantLib {
 
@@ -94,45 +95,18 @@ namespace QuantLib {
             Handle<DiscretizedSwap> swap_;
         };
 
-        //! base class for swaption pricing engines
-        /*! Derived engines only need to implement the <tt>calculate()</tt>
-            method
-        */
         template<class ModelType>
-        class SwaptionPricer : public PricingEngine,
-                               public Patterns::Observer,
-                               public Patterns::Observable {
-          public:
-            SwaptionPricer() {}
-            SwaptionPricer(const Handle<ModelType>& model) 
-            : model_(model) {
-                registerWith(model_);
-            }
-            Arguments* arguments() { return &arguments_; }
-            const Results* results() const { return &results_; }
-            void validateArguments() const { arguments_.validate(); }
-
-            void setModel(const Handle<ModelType>& model) {
-                unregisterWith(model_);
-                model_ = model;
-                QL_REQUIRE(!model_.isNull(), "Not an adequate model!");
-                registerWith(model_);
-                update();
-            }
-            virtual void update() {
-                notifyObservers();
-            }
-          protected:
-            Instruments::SwaptionArguments arguments_;
-            mutable Instruments::SwaptionResults results_;
-            Handle<ModelType> model_;
-        };
-
-        template<class ModelType>
-        class SpecificSwaptionPricer : public SwaptionPricer<ModelType> {
+        class SpecificSwaptionPricer : 
+            public PricingEngines::GenericModelEngine<
+                    ModelType, 
+                    Instruments::SwaptionArguments,
+                    Instruments::SwaptionResults > {
           public:
             SpecificSwaptionPricer(const Handle<ModelType>& model) 
-            : SwaptionPricer<ModelType>(model) {}
+            : PricingEngines::GenericModelEngine<
+                    ModelType, 
+                    Instruments::SwaptionArguments,
+                    Instruments::SwaptionResults >(model) {}
 
             void calculate() const { 
                 results_.value = model_->swaption(arguments_); 
