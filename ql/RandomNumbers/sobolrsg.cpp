@@ -24,8 +24,12 @@ namespace QuantLib {
 
     namespace {
 
-        // coefficients of the free direction integers as given
-        // by Jäckel
+        /* coefficients of the free direction integers as given in
+           "Monte Carlo Methods in Finance", by Peter Jäckel, section 8.3
+
+           Property A holds for 1<=d<=32
+           Property A' holds for d<=6
+        */
         const unsigned long dim02initializers[] = {
             1UL, 0UL };
         const unsigned long dim03initializers[] = {
@@ -122,6 +126,139 @@ namespace QuantLib {
             dim31initializers,
             dim32initializers
         };
+
+        /* Sobol' Levitan coefficients of the free direction integers as given
+           by Bratley, P., Fox, B.L. (1988) "Algorithm 659: Implementing Sobol's
+           quasirandom sequence generator," ACM Transactions on Mathematical
+           Software 14:88-100
+
+           See also "Monte Carlo Methods in Financial Engineering," by Paul
+           Glasserman, 2004, Springer, pag 311-312
+
+           Property A holds for 1<=d<=20 and d = 23, 31, 33, 34, 37
+           Property A' holds for d<=6
+        */
+        const unsigned long dim02SLinitializers[] = {
+            1UL, 0UL };
+        const unsigned long dim03SLinitializers[] = {
+            1UL, 1UL, 0UL };
+        const unsigned long dim04SLinitializers[] = {
+            1UL, 3UL, 7UL, 0UL };
+        const unsigned long dim05SLinitializers[] = {
+            1UL, 1UL, 5UL, 0UL };
+        const unsigned long dim06SLinitializers[] = {
+            1UL, 3UL, 1UL, 1UL, 0UL };
+        const unsigned long dim07SLinitializers[] = {
+            1UL, 1UL, 3UL, 7UL, 0UL };
+        const unsigned long dim08SLinitializers[] = {
+            1UL, 3UL, 3UL, 9UL, 9UL, 0UL };
+        const unsigned long dim09SLinitializers[] = {
+            1UL, 3UL, 7UL, 13UL, 3UL, 0UL };
+        const unsigned long dim10SLinitializers[] = {
+            1UL, 1UL, 5UL, 11UL, 27UL, 0UL };
+        const unsigned long dim11SLinitializers[] = {
+            1UL, 3UL, 5UL, 1UL, 15UL, 0UL };
+        const unsigned long dim12SLinitializers[] = {
+            1UL, 1UL, 7UL, 3UL, 29UL, 0UL };
+        const unsigned long dim13SLinitializers[] = {
+            1UL, 3UL, 7UL, 7UL, 21UL, 0UL };
+        const unsigned long dim14SLinitializers[] = {
+            1UL, 1UL, 1UL, 9UL, 23UL, 37UL, 0UL };
+        const unsigned long dim15SLinitializers[] = {
+            1UL, 3UL, 3UL, 5UL, 19UL, 33UL, 0UL };
+        const unsigned long dim16SLinitializers[] = {
+            1UL, 1UL, 3UL, 13UL, 11UL, 7UL, 0UL };
+        const unsigned long dim17SLinitializers[] = {
+            1UL, 1UL, 7UL, 13UL, 25UL, 5UL, 0UL };
+        const unsigned long dim18SLinitializers[] = {
+            1UL, 3UL, 5UL, 11UL, 7UL, 11UL, 0UL };
+        const unsigned long dim19SLinitializers[] = {
+            1UL, 1UL, 1UL, 3UL, 13UL, 39UL, 0UL };
+        const unsigned long dim20SLinitializers[] = {
+            1UL, 3UL, 1UL, 15UL, 17UL, 63UL, 13UL, 0UL };
+        const unsigned long dim21SLinitializers[] = {
+            1UL, 1UL, 5UL, 5UL, 1UL, 27UL, 33UL, 0UL };
+        const unsigned long dim22SLinitializers[] = {
+            1UL, 3UL, 3UL, 3UL, 25UL, 17UL, 115UL, 0UL };
+        const unsigned long dim23SLinitializers[] = {
+            1UL, 1UL, 3UL, 15UL, 29UL, 15UL, 41UL, 0UL };
+        const unsigned long dim24SLinitializers[] = {
+            1UL, 3UL, 1UL, 7UL, 3UL, 23UL, 79UL, 0UL };
+        const unsigned long dim25SLinitializers[] = {
+            1UL, 3UL, 7UL, 9UL, 31UL, 29UL, 17UL, 0UL };
+        const unsigned long dim26SLinitializers[] = {
+            1UL, 1UL, 5UL, 13UL, 11UL, 3UL, 29UL, 0UL };
+        const unsigned long dim27SLinitializers[] = {
+            1UL, 3UL, 1UL, 9UL, 5UL, 21UL, 119UL, 0UL };
+        const unsigned long dim28SLinitializers[] = {
+            1UL, 1UL, 3UL, 1UL, 23UL, 13UL, 75UL, 0UL };
+        const unsigned long dim28SLinitializers[] = {
+            1UL, 3UL, 3UL, 11UL, 27UL, 31UL, 73UL, 0UL };
+        const unsigned long dim30SLinitializers[] = {
+            1UL, 1UL, 7UL, 7UL, 19UL, 25UL, 105UL, 0UL };
+        const unsigned long dim31SLinitializers[] = {
+            1UL, 3UL, 5UL, 5UL, 21UL, 9UL, 7UL, 0UL };
+        const unsigned long dim32SLinitializers[] = {
+            1UL, 1UL, 1UL, 15UL, 5UL, 49UL, 59UL, 0UL };
+        const unsigned long dim33SLinitializers[] = {
+            1UL, 1UL, 1UL, 1UL, 1UL, 33UL, 65UL, 0UL };
+        const unsigned long dim34SLinitializers[] = {
+            1UL, 3UL, 5UL, 15UL, 17UL, 19UL, 21UL, 0UL };
+        const unsigned long dim35SLinitializers[] = {
+            1UL, 1UL, 7UL, 11UL, 13UL, 29UL, 3UL, 0UL };
+        const unsigned long dim36SLinitializers[] = {
+            1UL, 3UL, 7UL, 5UL, 7UL, 11UL, 113UL, 0UL };
+        const unsigned long dim37SLinitializers[] = {
+            1UL, 1UL, 5UL, 3UL, 15UL, 19UL, 61UL, 0UL };
+        const unsigned long dim38SLinitializers[] = {
+            1UL, 3UL, 1UL, 1UL, 9UL, 27UL, 89UL, 7UL, 0UL };
+        const unsigned long dim39SLinitializers[] = {
+            1UL, 1UL, 3UL, 7UL, 31UL, 15UL, 45UL, 23UL, 0UL };
+        const unsigned long dim40SLinitializers[] = {
+            1UL, 3UL, 3UL, 9UL, 9UL, 25UL, 107UL, 39UL, 0UL };
+
+        const unsigned long * const SLinitializers[39] = {
+            dim02SLinitializers,
+            dim03SLinitializers,
+            dim04SLinitializers,
+            dim05SLinitializers,
+            dim06SLinitializers,
+            dim07SLinitializers,
+            dim08SLinitializers,
+            dim09SLinitializers,
+            dim10SLinitializers,
+            dim11SLinitializers,
+            dim12SLinitializers,
+            dim13SLinitializers,
+            dim14SLinitializers,
+            dim15SLinitializers,
+            dim16SLinitializers,
+            dim17SLinitializers,
+            dim18SLinitializers,
+            dim19SLinitializers,
+            dim20SLinitializers,
+            dim21SLinitializers,
+            dim22SLinitializers,
+            dim23SLinitializers,
+            dim24SLinitializers,
+            dim25SLinitializers,
+            dim26SLinitializers,
+            dim27SLinitializers,
+            dim28SLinitializers,
+            dim29SLinitializers,
+            dim30SLinitializers,
+            dim31SLinitializers,
+            dim32SLinitializers
+            dim33SLinitializers,
+            dim34SLinitializers,
+            dim35SLinitializers,
+            dim36SLinitializers,
+            dim37SLinitializers,
+            dim38SLinitializers,
+            dim39SLinitializers,
+            dim40SLinitializers
+        };
+
 
     }
 
