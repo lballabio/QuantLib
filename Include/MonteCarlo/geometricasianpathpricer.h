@@ -19,36 +19,42 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file singlepathgeometricasianpricer.h
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.1  2001/01/04 17:31:22  marmar
-	Alpha version of the Monte Carlo tools.
 
+/*! \file geometricasianpathpricer.h
+    
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.1  2001/01/05 11:18:03  lballabio
+    Renamed SinglePathGeometricAsianPricer to GeometricAsianPathPricer
+
+    Revision 1.1  2001/01/04 17:31:22  marmar
+    Alpha version of the Monte Carlo tools.
+    
 */
 
 
-#ifndef quantlib_montecarlo_single_geometric_asian_pricer_h
-#define quantlib_montecarlo_single_geometric_asian_pricer_h
+#ifndef quantlib_montecarlo_geometric_asian_pricer_h
+#define quantlib_montecarlo_geometric_asian_pricer_h
 
 #include "qldefines.h"
 #include "singlepatheuropeanpricer.h"
 
 namespace QuantLib {
 
-	namespace MonteCarlo {
+    namespace MonteCarlo {
 
-		class SinglePathGeometricAsianPricer : public SinglePathEuropeanPricer{
-		public:
-			SinglePathGeometricAsianPricer():SinglePathEuropeanPricer(){}
-			SinglePathGeometricAsianPricer(Option::Type optiontype, 
-				double underlying, double strike, double discount);
-			virtual double value(const Path &path) const;
-		};
-		
-	}
+        class GeometricAsianPathPricer : public SinglePathEuropeanPricer{
+          public:
+            GeometricAsianPathPricer() : SinglePathEuropeanPricer() {}
+            GeometricAsianPathPricer(Option::Type type, double underlying,
+                double strike, double discount);
+            virtual double value(const Path &path) const;
+        };
+        
+    }
 
 }
+
+
 #endif

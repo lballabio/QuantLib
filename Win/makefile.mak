@@ -48,7 +48,7 @@ MATH_OBJS        = $(OUTPUT_DIR)\normaldistribution.obj \
                    
 MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj \
                    $(OUTPUT_DIR)\singlepathaveragepriceasianpricer.obj \
-                   $(OUTPUT_DIR)\singlepathgeometricasianpricer.obj \
+                   $(OUTPUT_DIR)\geometricasianpathpricer.obj \
                    $(OUTPUT_DIR)\singlepatheuropeanpricer.obj \
                    $(OUTPUT_DIR)\singlepathcontrolvariatedpricer.obj
 		  
@@ -231,11 +231,16 @@ $(OUTPUT_DIR)\newcubicspline.obj: $(SOURCES_DIR)\Math\newcubicspline.cpp
 
 # Monte Carlo
 MonteCarlo: $(OUTPUT_DIR) $(MONTECARLO_OBJS)
-$(OUTPUT_DIR)\lecuyerrandomgenerator.obj: $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
-$(OUTPUT_DIR)\singlepatheuropeanpricer.obj: $(SOURCES_DIR)\MonteCarlo\singlepatheuropeanpricer.cpp 
-$(OUTPUT_DIR)\singlepathgeometricasianpricer.obj: $(SOURCES_DIR)\MonteCarlo\singlepathgeometricasianpricer.cpp 
-$(OUTPUT_DIR)\singlepathaveragepriceasianpricer.obj: $(SOURCES_DIR)\MonteCarlo\singlepathaveragepriceasianpricer.cpp 
-$(OUTPUT_DIR)\singlepathcontrolvariatedpricer.obj: $(SOURCES_DIR)\MonteCarlo\singlepathcontrolvariatedpricer.cpp
+$(OUTPUT_DIR)\lecuyerrandomgenerator.obj: \
+    $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
+$(OUTPUT_DIR)\singlepatheuropeanpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\singlepatheuropeanpricer.cpp 
+$(OUTPUT_DIR)\geometricasianpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\geometricasianpathpricer.cpp 
+$(OUTPUT_DIR)\singlepathaveragepriceasianpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\singlepathaveragepriceasianpricer.cpp 
+$(OUTPUT_DIR)\singlepathcontrolvariatedpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\singlepathcontrolvariatedpricer.cpp
 
 
 # Pricers

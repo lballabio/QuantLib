@@ -19,11 +19,15 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file singlepathpricer.h
+
+/*! \file pathpricer.h
     
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/05 11:18:03  lballabio
+    Renamed SinglePathGeometricAsianPricer to GeometricAsianPathPricer
+
     Revision 1.1  2001/01/05 11:02:37  lballabio
     Renamed SinglePathPricer to PathPricer
 

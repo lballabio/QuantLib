@@ -19,44 +19,50 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file singlepathgeometricasianpricer.cpp
+
+/*! \file geometricasianpathpricer.cpp
 	
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.1  2001/01/05 11:18:04  lballabio
+	Renamed SinglePathGeometricAsianPricer to GeometricAsianPathPricer
+
 	Revision 1.1  2001/01/04 17:31:23  marmar
 	Alpha version of the Monte Carlo tools.
-
+	
 */
 
-#include "singlepathgeometricasianpricer.h"
+#include "geometricasianpathpricer.h"
 
 namespace QuantLib {
 
 	namespace MonteCarlo {
 
-		SinglePathGeometricAsianPricer::SinglePathGeometricAsianPricer(Option::Type optiontype, 
-			double underlying, double strike, double discount):SinglePathEuropeanPricer(optiontype, 
-			underlying, strike, discount){
+		GeometricAsianPathPricer::GeometricAsianPathPricer(Option::Type type,
+		    double underlying, double strike, double discount)
+		: SinglePathEuropeanPricer(type, underlying, strike, discount) {
 			isInitialized_=true;
 		}
 
-		double SinglePathGeometricAsianPricer::value(const Path & path) const{
+		double GeometricAsianPathPricer::value(const Path & path) const {
 
 			int n = path.size();		
 			QL_REQUIRE(n>0,"the path cannot be empty");
-			QL_REQUIRE(isInitialized_,"SinglePathGeometricAsianPricer: pricer not initialized");
+			QL_REQUIRE(isInitialized_,
+			    "SinglePathGeometricAsianPricer: pricer not initialized");
 
 			double price = underlying_;
 			double average = 0.0;
 
-			for(unsigned int i=0;i<n;i++){
+			for (unsigned int i=0; i<n; i++) {
 				price *= QL_EXP(path[i]);
 				average += QL_LOG(price);
 			}
 			average = QL_EXP(average/n);
 
-			return computePlainVanilla(optionType_, average, strike_, discount_);
+			return computePlainVanilla(optionType_, average, strike_,
+			    discount_);
 		}
 		
 	}

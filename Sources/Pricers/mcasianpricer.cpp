@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/05 11:18:04  lballabio
+    Renamed SinglePathGeometricAsianPricer to GeometricAsianPathPricer
+
     Revision 1.2  2001/01/05 11:02:38  lballabio
     Renamed SinglePathPricer to PathPricer
 
@@ -37,7 +40,7 @@
 #include "handle.h"
 #include "singlepathcontrolvariatedpricer.h"
 #include "singlepathaveragepriceasianpricer.h"
-#include "singlepathgeometricasianpricer.h"
+#include "geometricasianpathpricer.h"
 #include "geometricasianoption.h"
 
 namespace QuantLib {
@@ -48,7 +51,7 @@ namespace QuantLib {
         using MonteCarlo::PathPricer;
         using MonteCarlo::SinglePathControlVariatedPricer;
         using MonteCarlo::SinglePathAveragePriceAsianPricer;
-        using MonteCarlo::SinglePathGeometricAsianPricer;
+        using MonteCarlo::GeometricAsianPathPricer;
 
         McAsianPricer::McAsianPricer(Option::Type type, double underlying, 
           double strike, Rate underlyingGrowthRate, Rate riskFreeRate, 
@@ -61,7 +64,7 @@ namespace QuantLib {
                     QL_EXP(-riskFreeRate*residualTime)));
 
             Handle<PathPricer> controlVariateSpPricer(
-                new SinglePathGeometricAsianPricer(type, underlying, strike,
+                new GeometricAsianPathPricer(type, underlying, strike,
                     QL_EXP(-riskFreeRate*residualTime)));
 
             double controlVariatePrice = GeometricAsianOption(type, underlying,
