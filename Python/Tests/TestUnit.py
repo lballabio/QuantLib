@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.3  2001/02/28 12:45:38  lballabio
+    Print exception type besides the message
+
     Revision 1.2  2001/02/23 15:47:21  lballabio
     Added output flush before actual calculation
 
@@ -69,7 +72,7 @@ class TestUnit:
             errorCode = self.doTest()
         except Exception, e:
             if self.verbose:
-                print e
+                print str(e.__class__)[11:]+': '+str(e)
             errorCode = 1
         # stop clock
         stopTime = time.time()
