@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.10  2000/12/28 15:25:38  marmar
+	QLMNT QuantLib::MonteCarlo::
+
 	Revision 1.9  2000/12/27 17:18:35  lballabio
 	Changes for compiling under Linux and Alpha Linux
-
+	
 	Revision 1.8  2000/12/27 15:23:38  marmar
 	Random number generators has been updated and documented.
 	Now the Sample Generator idea is fully implemented
@@ -132,13 +135,13 @@
 #include "newcubicspline.h"
 #include "location.h"		
 
+
 // Monte Carlo tools
 #include "boxmuller.h"		
 #include "centrallimitgaussian.h"		
 #include "gaussianrandomgenerator.h"
 #include "lecuyerrandomgenerator.h"
 #include "uniformrandomgenerator.h"
-
 
 
 // finite difference methods
@@ -153,6 +156,7 @@
 #include "operatortraits.h"
 #include "stepcondition.h"
 #include "tridiagonaloperator.h"
+
 
 // 1-D solvers
 #include "solver1d.h"
@@ -198,6 +202,7 @@
 #define QLINS QuantLib::Instruments::
 #define QLFDM QuantLib::FiniteDifferences::
 #define QLMTH QuantLib::Math::
+#define QLMNT QuantLib::MonteCarlo::
 #define QLPAT QuantLib::Patterns::
 #define QLPRC QuantLib::Pricers::
 #define QLS1D QuantLib::Solvers1D::
