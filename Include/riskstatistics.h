@@ -27,6 +27,10 @@
 
     $Source$
     $Log$
+    Revision 1.4  2001/03/05 10:42:19  nando
+    Expected Shortfall added to classes HVarTool and HRiskStatistics.
+    Expected Shortfall included in python test.
+
     Revision 1.3  2001/02/21 13:16:20  lballabio
     Removed unneeded default constructor
 
@@ -68,7 +72,8 @@ namespace QuantLib {
 
     //! Risk analysis tool
     /*! It can accumulate a set of data and return risk quantities
-        as Value-At-Risk, Shortfall, Average Shortfall, plus statistic
+        as Value-At-Risk, Expected Shortfall, 
+        Shortfall, Average Shortfall, plus statistic
         quantitities as mean, variance, std. deviation, skewness, kurtosis.
     */
     class RiskStatistics {
@@ -91,10 +96,16 @@ namespace QuantLib {
 
         // VarTool proxy methods
         //! returns the Value-At-Risk at a given percentile
-        double valueAtRisk(double percentile)  {
+        double valueAtRisk(double percentile) const {
             return varTool_.valueAtRisk(percentile,
                                         statistics_.mean(),
                                         statistics_.standardDeviation());
+        }
+        //! returns the Expected Shortfall at a given percentile
+        double expectedShortfall(double percentile) const {
+            return varTool_.expectedShortfall(percentile,
+                                              statistics_.mean(),
+                                              statistics_.standardDeviation());
         }
         //! returns the Shortfall (observations below target)
         double shortfall( double target ) const {

@@ -64,6 +64,7 @@ class VarTool {
 };
 
 
+
 class RiskStatistics {
   public:
     RiskStatistics();
@@ -80,6 +81,7 @@ class RiskStatistics {
     double min() const;
     double max() const;
     double valueAtRisk(double percentile) const;
+    double expectedShortfall(double percentile) const;
     double shortfall(double target) const;
     double averageShortfall(double target) const;
     // Modifiers
