@@ -40,8 +40,10 @@ namespace QuantLib {
     template <class T>
     class Composite : public T {
       protected:
-        void add(const Handle<T>& c) { components_.push_back(c); }
         std::list<Handle<T> > components_;
+        void add(const Handle<T>& c) { components_.push_back(c); }
+        typedef typename std::list<Handle<T> >::iterator iterator;
+        typedef typename std::list<Handle<T> >::const_iterator const_iterator;
     };
 
 }
