@@ -38,9 +38,6 @@
 #include <ql/errors.hpp>
 #include <ql/exercise.hpp>
 #include <ql/expressiontemplates.hpp>
-#include <ql/functions/daycounters.hpp>
-#include <ql/functions/mathf.hpp>
-#include <ql/functions/vols.hpp>
 #include <ql/grid.hpp>
 #include <ql/handle.hpp>
 #include <ql/history.hpp>
@@ -114,6 +111,10 @@
 #include <ql/FiniteDifferences/stepcondition.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
+
+#include <ql/functions/daycounters.hpp>
+#include <ql/functions/mathf.hpp>
+#include <ql/functions/vols.hpp>
 
 #include <ql/Indexes/audlibor.hpp>
 #include <ql/Indexes/cadlibor.hpp>
