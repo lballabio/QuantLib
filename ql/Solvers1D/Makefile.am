@@ -11,4 +11,3 @@ include_HEADERS = \
 	ridder.hpp \
 	secant.hpp
 
-EXTRA_DIST=makefile.mak
