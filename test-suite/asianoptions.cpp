@@ -340,8 +340,8 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
                                         exercise, engine);
 
     Real calculated = option.NPV();
-    Real expected = 5.3426;
-    Real tolerance = 1.0e-4;
+    Real expected = 5.3425606635;
+    Real tolerance = 1e-10;
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningProduct, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
