@@ -1,26 +1,29 @@
 
-forbid automatic casting from int to unsigned int
-update automated build to take care of docs installer
-compile with gcc 3.0
-compile examples under linux
-check installers
 
-quantlib.hpp is enough
+Borland projects
+fix build dir under cygwin
+config.h is installed?
+rename HedgingError
+rename updateproject.sh to bootstrap
+make bootstrap work under cygwin
+
+compile with gcc 3.0
+
+chck installer html documentation
+add examples to documentation
 cash flow stream for IRR, duration
 documentation of path (where it is? continously compounded)
 MonteCarloModel refactoring
+*** check compile success/failure on (SourceForge compile farm)
 
 
 DISTRIBUTING
-    QuantLib-docs Win32 NSIS installer
     RPM package
 
 COMPILING
     borland compiler build tree indipendent from source tree
     gnu compiler (make) build tree indipendent from source tree
     understand why updateproject.sh does not work under cygwin
-    *** check compile success/failure on cygwin
-    *** check compile success/failure on (SourceForge compile farm)
     *** check compile success/failure on other platforms/compilers
 
 LIBRARY
