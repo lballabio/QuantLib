@@ -21,7 +21,10 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-%module QuantLib
+#ifndef quantlib_distributions_i
+#define quantlib_distributions_i
+
+%module Distributions
 
 %{
 #include "quantlib.h"
@@ -36,31 +39,37 @@
 #endif
 #endif
 
-%except(python) {
-	try {
-		$function
-	} catch (std::exception& e) {
-		PyErr_SetString(PyExc_Exception,e.what());
-		return NULL;
-	} catch (...) {
-		PyErr_SetString(PyExc_Exception,"unknown error");
-		return NULL;
-	}
+%{
+using QuantLib::Math::NormalDistribution;
+using QuantLib::Math::CumulativeNormalDistribution;
+%}
+
+class NormalDistribution {
+  public:
+	NormalDistribution(double average = 0.0, double sigma = 1.0);
+	~NormalDistribution();
+};
+
+%addmethods NormalDistribution {
+    double __call__(double x) {
+        return (*self)(x);
+    }
 }
 
-%include Date.i
-%include Calendars.i
-%include DayCounters.i
-%include Currencies.i
-%include Financial.i
-%include Options.i
-%include Instruments.i
-%include Operators.i
-%include Pricers.i
-%include Solvers1D.i
-%include TermStructures.i
-%include Statistics.i
-%include RandomGenerators.i
-%include History.i
-%include Distributions.i
+class CumulativeNormalDistribution {
+  public:
+	CumulativeNormalDistribution();
+	~CumulativeNormalDistribution();
+	double derivative(double x);
+};
 
+%addmethods CumulativeNormalDistribution {
+    double __call__(double x) {
+        return (*self)(x);
+    }
+}
+
+
+
+
+#endif
