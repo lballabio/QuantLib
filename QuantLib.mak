@@ -462,10 +462,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\bond.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -598,9 +600,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\bond.sbr" \
-	"$(INTDIR)\fixedcouponbond.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -653,10 +653,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\bond.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\fixedcouponbond.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -789,9 +791,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\bond.obj" \
-	"$(INTDIR)\fixedcouponbond.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1232,10 +1232,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\bond.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -1368,9 +1370,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\bond.sbr" \
-	"$(INTDIR)\fixedcouponbond.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1423,10 +1423,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\bond.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\fixedcouponbond.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -1559,9 +1561,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\bond.obj" \
-	"$(INTDIR)\fixedcouponbond.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2001,10 +2001,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\bond.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -2137,9 +2139,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\bond.sbr" \
-	"$(INTDIR)\fixedcouponbond.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2192,10 +2192,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\bond.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\fixedcouponbond.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -2328,9 +2330,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\bond.obj" \
-	"$(INTDIR)\fixedcouponbond.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2771,10 +2771,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\bond.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -2907,9 +2909,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\bond.sbr" \
-	"$(INTDIR)\fixedcouponbond.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2962,10 +2962,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\bond.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\fixedcouponbond.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -3098,9 +3100,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\bond.obj" \
-	"$(INTDIR)\fixedcouponbond.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3540,10 +3540,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\bond.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -3676,9 +3678,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\bond.sbr" \
-	"$(INTDIR)\fixedcouponbond.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3731,10 +3731,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\bond.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\fixedcouponbond.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -3867,9 +3869,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\bond.obj" \
-	"$(INTDIR)\fixedcouponbond.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4310,10 +4310,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\bond.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -4446,9 +4448,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\bond.sbr" \
-	"$(INTDIR)\fixedcouponbond.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4501,10 +4501,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\bond.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\fixedcouponbond.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -4637,9 +4639,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\bond.obj" \
-	"$(INTDIR)\fixedcouponbond.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib

@@ -515,10 +515,6 @@ SOURCE=.\ql\DayCounters\actual360.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\DayCounters\actual365.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\DayCounters\actual365fixed.hpp
 # End Source File
 # Begin Source File
