@@ -38,7 +38,6 @@ using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 using namespace QuantLib::DayCounters;
 using namespace QuantLib::Calendars;
-//using namespace QuantLib::MonteCarlo;
 
 namespace {
 
@@ -445,7 +444,7 @@ void BinaryOptionTest::testEngineConsistency() {
     bool controlVariate = false;
     Size requiredSamples = 1023;
     double requiredTolerance = 5.0e-2;
-    Size maxSamples = 1000000;
+    Size maxSamples = Null<int>();
     bool isBiased = false;
     long seed = 0;
 
