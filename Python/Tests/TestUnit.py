@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/02/23 15:47:21  lballabio
+    Added output flush before actual calculation
+
     Revision 1.1  2001/02/22 14:27:26  lballabio
     Implemented new test framework
 
@@ -55,6 +58,7 @@ class TestUnit:
             if i == '-b':
                 self.batch = 1
         print 'Testing %s...' % description,
+        sys.stdout.flush()
         if self.verbose:
             print
         # start clock
