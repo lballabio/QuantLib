@@ -28,6 +28,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/09 09:16:43  marmar
+// Better version of Integral method
+//
 // Revision 1.12  2001/08/08 17:24:08  marmar
 // intermediate commit
 //
@@ -37,6 +40,7 @@
 
 #include "stdlib.h"
 #include <iostream>
+#include <ctime>
 
 #include "ql\quantlib.hpp"
 
@@ -77,9 +81,6 @@ using QuantLib::Pricers::FiniteDifferenceEuropean;
 using QuantLib::DoubleFormatter;
 
 
-// ????
-// I need to understand the following
-// ????
 double optionSurplusIntegral(Time maturity_,
         	                 double strike_,
 	                         double s0_,
@@ -125,10 +126,11 @@ class Payoff : public QL::ObjectiveFunction{
         sigma_(sigma),r_(r){}
         
         double operator()(double x) const {
-            double nuT = (r_-0.5*sigma_*sigma_)*maturity_;
+           double nuT = (r_-0.5*sigma_*sigma_)*maturity_;
            return QL_EXP(-r_*maturity_)
                *ExercisePayoff(Option::Call, s0_*QL_EXP(x), strike_)               
-               *QL_EXP(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))/QL_SQRT(2.0*3.141592*sigma_*sigma_*maturity_);
+               *QL_EXP(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))
+               /QL_SQRT(2.0*3.141592*sigma_*sigma_*maturity_);
         }
 private:
     Time maturity_;
@@ -189,7 +191,7 @@ int main(int argc, char* argv[])
         dividendYield, riskFreeRate, maturity, volatility).value()
         + underlying - strike*QL_EXP(- riskFreeRate*maturity);
     estimatedError = 0.0;
-    discrepancy = value-rightValue;
+    discrepancy = QL_FABS(value-rightValue);
     relativeDiscrepancy = discrepancy/rightValue;
     cout << method << "\t" 
          << DoubleFormatter::toString(value, 4) << "\t"
@@ -198,16 +200,35 @@ int main(int argc, char* argv[])
          << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
 
 
+    // third method: Integral    
+    method ="Integral";
+    using QuantLib::Math::SegmentIntegral;
+    Payoff po(maturity, strike, underlying, volatility, riskFreeRate);
+    SegmentIntegral integrator(5000);
+
+    double nuT = (riskFreeRate - 0.5*volatility*volatility)*maturity;
+    double infinity = 10.0*volatility*QL_SQRT(maturity);
+
+    value = integrator(po, nuT-infinity, nuT+infinity);
+    estimatedError = 0.0;
+    discrepancy = QL_FABS(value-rightValue);
+    relativeDiscrepancy = discrepancy/rightValue;
+    cout << method << "\t" 
+         << DoubleFormatter::toString(value, 4) << "\t"
+         << "N/A\t\t"
+         << DoubleFormatter::toString(discrepancy, 6) << "\t"
+         << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
 
 
 
-    // third method: Finite Differences    
+
+    // fourth method: Finite Differences    
     method ="Finite Diff.";
     int grid = 100;
     value = FiniteDifferenceEuropean(Option::Call, underlying, strike,
         dividendYield, riskFreeRate, maturity, volatility, grid).value();
     estimatedError = 0.0;
-    discrepancy = value-rightValue;
+    discrepancy = QL_FABS(value-rightValue);
     relativeDiscrepancy = discrepancy/rightValue;
     cout << method << "\t" 
          << DoubleFormatter::toString(value, 4) << "\t"
@@ -219,12 +240,13 @@ int main(int argc, char* argv[])
 
 
 
-    // fourth method: MonteCarlo  
+    // fifth method:  MonteCarlo  
     method ="MonteCarlo";
     // for plain vanilla european option the number of steps is not significant
     // let's go for the fastest way: just one step
+
     int nTimeSteps = 1;
-    int nSamples = 100000;
+    int nSamples = 400000;
 	double tau = maturity/nTimeSteps;
 	double sigma = volatility* sqrt(tau);
 	double mean = riskFreeRate * tau - 0.5*sigma*sigma;
@@ -246,7 +268,7 @@ int main(int argc, char* argv[])
     // gives access to all the methods of statisticAccumulator
     value = mc.sampleAccumulator().mean();
     estimatedError = mc.sampleAccumulator().errorEstimate();
-    discrepancy = value-rightValue;
+    discrepancy = QL_FABS(value-rightValue);
     relativeDiscrepancy = discrepancy/rightValue;
     cout << method << "\t" 
          << DoubleFormatter::toString(value, 4) << "\t"
@@ -256,35 +278,8 @@ int main(int argc, char* argv[])
 
 
 
-    using QuantLib::Math::SegmentIntegral;
-    // fifth method: Integral
-    method ="Integral";
-
-    Payoff po(maturity, strike, underlying, volatility, riskFreeRate);
-    SegmentIntegral integrator(100000);
-
-    double nuT = (riskFreeRate - 0.5*volatility*volatility)*maturity;
-    double deltaS = 5.0*volatility*volatility*maturity;
-
-//    value = integrator(po,nuT-deltaS,nuT+deltaS);
-    value = integrator(po, -5, 5);
-    estimatedError = 0.0;
-    discrepancy = value-rightValue;
-    relativeDiscrepancy = discrepancy/rightValue;
-    cout << method << "\t" 
-         << DoubleFormatter::toString(value, 4) << "\t"
-         << "N/A\t\t"
-         << DoubleFormatter::toString(discrepancy, 6) << "\t"
-         << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
 
 
-
-
-
-
-    // ????
-    // I need to understand the following
-    // ????
     //
     //  Option calculus analogy to energy conservation in heat diffusion
 	//  equation
