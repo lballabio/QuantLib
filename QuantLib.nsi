@@ -128,6 +128,9 @@ SectionIn 1 2
     CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib VC 7 project workspace.lnk" \
                    "$INSTDIR\QuantLib.sln"
 
+    CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib VC 8 project workspace.lnk" \
+                   "$INSTDIR\QuantLib_vc8.sln"
+
     WriteUninstaller "QuantLibUninstall.exe"
 
 SectionEnd
