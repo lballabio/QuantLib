@@ -38,7 +38,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        HimalayaPathPricer::HimalayaPathPricer(const Array &underlying,
+        HimalayaPathPricer::HimalayaPathPricer(const Array& underlying,
             double strike, double discount, bool antitheticVariance)
         : underlying_(underlying), strike_(strike), discount_(discount),
         antitheticVariance_(antitheticVariance) {

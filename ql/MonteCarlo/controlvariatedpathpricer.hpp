@@ -42,9 +42,8 @@ namespace QuantLib {
     namespace MonteCarlo {
         
         //! generic control variated path pricer
-        /*! ControlVariatedPathPricer combines two PathPricer and a value into a
-            control variated path pricer. To be used with McPricer, see
-            McAsianPricer for an example.
+        /*! \ingroup deprecated
+            \deprecated use MonteCarloControlVariateModel instead.
         */
         class ControlVariatedPathPricer: public PathPricer {
           public:

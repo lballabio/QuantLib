@@ -44,16 +44,16 @@ namespace QuantLib {
 
         //! multipath pricer for European-type Himalaya option
         /*! The payoff of an himalaya option is computed in the following way:
-            given a basket of N assets, and N time periods, at end of
+            given a basket of N assets, and M time periods, at end of
             each period the option who performed the best is added to the
             average and then discarded from the basket. At the end of the
-            N periods the option pays the max between the strike and the
+            M periods the option pays the max between the strike and the
             average of the best performers.
         */
         class HimalayaPathPricer : public MultiPathPricer {
           public:
 //            HimalayaPathPricer() {}
-            HimalayaPathPricer(const Array &underlying,
+            HimalayaPathPricer(const Array& underlying,
                                double strike,
                                double discount,
                                bool antitheticVariance);

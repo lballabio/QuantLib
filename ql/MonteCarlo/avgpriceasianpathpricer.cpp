@@ -49,7 +49,7 @@ namespace QuantLib {
         : SingleAssetPathPricer(type, underlying, strike, discount,
           antitheticVariance) {}
 
-        double AveragePriceAsianPathPricer::operator()(const Path & path) const {
+        double AveragePriceAsianPathPricer::operator()(const Path& path) const {
 
             int n = path.size();
             QL_REQUIRE(n>0,

@@ -39,7 +39,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        BasketPathPricer::BasketPathPricer(const Array &underlying,
+        BasketPathPricer::BasketPathPricer(const Array& underlying,
             double discount, bool antitheticVariance)
         : underlying_(underlying), discount_(discount),
           antitheticVariance_(antitheticVariance) {

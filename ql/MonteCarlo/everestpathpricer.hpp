@@ -42,7 +42,7 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! %path pricer for European-type Everest option
-        /*! The payoff of an Everest option is simply given by the
+        /*! The payoff of an Everest option is given by the
             final-price initial-price ratio of the worst performer.
         */
         class EverestPathPricer : public MultiPathPricer {
