@@ -35,7 +35,6 @@ namespace QuantLib {
         enum Type { American, Bermudan, European };
 
         virtual ~Exercise() {}
-//        Exercise() { type_ = Type(-1); }
 
         // inspectors
         bool isNull() const { return type_==Type(-1); }
