@@ -5,13 +5,21 @@ SUBDIRS=Sources Include SWIG Python
 EXTRA_DIST=News.txt Contributors.txt History.txt LICENSE.TXT \
 	Readme.txt Mac/README.txt Python/README.txt \
 	Win/README.txt SWIG/README.txt \
+	Python/Tests/TestUnit.py \
 	Python/Tests/american_option.py \
+	Python/Tests/barrier_option.py \
+	Python/Tests/date.py \
+	Python/Tests/distributions.py \
 	Python/Tests/european_option.py \
 	Python/Tests/european_with_dividends.py \
-	Python/Tests/impliedVol.py \
-	Python/Tests/mcpricers.py \
-	Python/Tests/statistics_test.py \
-	Python/Tests/testRNGs.py \
+	Python/Tests/himalaya_option.py \
+	Python/Tests/implied_volatility.py \
+	Python/Tests/montecarlo_pricers.py \
+	Python/Tests/plain_basket_options.py \
+	Python/Tests/random_generators.py \
+	Python/Tests/risk_statistics.py \
+	Python/Tests/statistics.py \
+	Python/Tests/term_structures.py \
 	Python/Makefile.am \
 	Python/Makefile.in \
 	Python/setup.py \
@@ -40,3 +48,7 @@ else
 python:
 	echo You have to install swig in order to generate wrappers, sorry.
 endif
+
+test:
+	$(MAKE) -C Python/Tests test
+
