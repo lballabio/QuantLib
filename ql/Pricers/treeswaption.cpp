@@ -92,7 +92,7 @@ namespace QuantLib {
             }
           private:
             const Instruments::SwaptionParameters& parameters_;
-            const Handle<DiscountBondAsset>& bond_;
+            Handle<DiscountBondAsset> bond_;
         };
 
         class SwaptionAsset : public Asset {
@@ -128,7 +128,7 @@ namespace QuantLib {
 
           private:
             const Instruments::SwaptionParameters& parameters_;
-            const Handle<SwapAsset>& swap_;
+            Handle<SwapAsset> swap_;
         };
 
         TreeSwaption::TreeSwaption(Size timeSteps) : timeSteps_(timeSteps) {}
