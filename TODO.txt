@@ -94,7 +94,32 @@ TREES
 - merge rollback scheme with FD merge scheme
 - trinomial trees
 - implied trinomial trees
+
 COMPILING
 - borland compiler build tree indipendent from source tree
 - check compile success/failure on other platforms/compilers available @SF
 - Borland projects
+
+
++Changes to the Web Site
+  * Improve documentation, maybe add a web-log where web-surfer can leave
+    their remarks
+  * Update the "to do" list
+  * Draw a road map of future works
+
++Importance of Unit Testing
+  The idea is to certify the quality of QuantLib using a unit-test framework.
+  The tests would also serve as concrete examples on how the library should
+  be used.
+  QuantLib would be defined by what is tested, all the major features should
+  be tested. In this way it will also be possible to maintain the synchronization
+  of QuantLib with QuantLib.NET.
+  All the tests in python will be moved to corresponding tests written in C++.
+
++Changes to the Library
+  * Improve the documentation
+  * Move to the Instrument/pricing engine framework
+  * Refactor of the Finite-Difference framework merging with
+    the Tree/Lattice framework
+  * Develop a framework for stochastic processes
+  * Build basic Bond classes
