@@ -65,7 +65,8 @@ namespace QuantLib {
 
         void Swap::performCalculations() const {
             QL_REQUIRE(!termStructure_.isNull(),
-                "trying to price swap on null term structure");
+                "Swap::performCalculations trying to price swap "
+                "on null term structure");
             Date settlement = termStructure_->settlementDate();
             NPV_ = 0.0;
             firstLegBPS_ = 0.0;
