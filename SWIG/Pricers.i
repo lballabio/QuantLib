@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.26  2001/03/22 16:37:15  marmar
+   Barrier option greeks included
+
    Revision 1.25  2001/03/21 09:54:56  marmar
    BermudanOption added, DividendOption removed
 
@@ -226,6 +229,11 @@ class BarrierOption {
         double strike, Rate dividendYield, Rate riskFreeRate,
         Time residualTime, double volatility, double barrier, 
         double rebate = 0.0);
+	double delta() const;
+	double gamma() const;
+	double theta() const;
+	double vega() const;
+	double rho() const;
     ~BarrierOption();
     double value() const;
 };

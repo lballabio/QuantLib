@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/03/22 16:37:48  marmar
+    Barrier option greeks included
+
     Revision 1.2  2001/02/21 11:37:05  lballabio
     Changed phony QL_REQUIRE into genuine throws
 
@@ -63,11 +66,12 @@ namespace QuantLib {
             double delta() const;
             double gamma() const;
             double theta() const;
-            double vega() const;
-            double rho() const;
             Handle<BSMOption> clone() const {
                 return Handle<BSMOption>(new BarrierOption(*this)); 
             }
+        protected:
+            void calculate() const;
+            mutable double greeksCalculated_, delta_, gamma_, theta_;
         private:
             BarrierType barrType_; 
             double barrier_, rebate_;            
@@ -157,26 +161,6 @@ namespace QuantLib {
                 return 0.0;                              
         }        
 
-        inline double BarrierOption::delta() const{
-            throw Error("BarrierOption: delta not defined");      
-        }
-        
-        inline double BarrierOption::gamma() const{
-            throw Error("BarrierOption: gamma not defined");      
-        }
-        
-        inline double BarrierOption::theta() const{
-            throw Error("BarrierOption: theta not defined");      
-        }
-        
-        inline double BarrierOption::vega() const{
-            throw Error("BarrierOption: vega not defined");      
-        }
-        
-        inline double BarrierOption::rho() const{
-            throw Error("BarrierOption: rho not defined");      
-        }
-        
     }
 
 }
