@@ -715,14 +715,6 @@ SOURCE=.\ql\Indexes\xibor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Indexes\xibormanager.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Indexes\xibormanager.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Indexes\zarlibor.hpp
 # End Source File
 # End Group
@@ -1379,14 +1371,6 @@ SOURCE=.\ql\Pricers\core.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\discretegeometricapo.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\discretegeometricapo.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\discretegeometricaso.cpp
 # End Source File
 # Begin Source File
@@ -1472,14 +1456,6 @@ SOURCE=.\ql\Pricers\mccliquetoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mccliquetoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.hpp
 # End Source File
 # Begin Source File
 
@@ -2445,14 +2421,6 @@ SOURCE=.\ql\currency.cpp
 # Begin Source File
 
 SOURCE=.\ql\currency.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\dataformatters.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\dataformatters.hpp
 # End Source File
 # Begin Source File
 

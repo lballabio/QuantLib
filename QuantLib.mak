@@ -40,7 +40,7 @@ INTDIR=.\build\Release
 OutDir=.\build\Release
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-s-0_3_9.lib" "$(OUTDIR)\QuantLib.bsc"
 
 
 CLEAN :
@@ -140,8 +140,6 @@ CLEAN :
 	-@erase "$(INTDIR)\coxingersollross.sbr"
 	-@erase "$(INTDIR)\currency.obj"
 	-@erase "$(INTDIR)\currency.sbr"
-	-@erase "$(INTDIR)\dataformatters.obj"
-	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -150,8 +148,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
 	-@erase "$(INTDIR)\discrepancystatistics.sbr"
-	-@erase "$(INTDIR)\discretegeometricapo.obj"
-	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
@@ -270,8 +266,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
 	-@erase "$(INTDIR)\mcdigitalengine.sbr"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
@@ -407,14 +401,12 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
-	-@erase "$(INTDIR)\xibormanager.obj"
-	-@erase "$(INTDIR)\xibormanager.sbr"
 	-@erase "$(INTDIR)\zerocurve.obj"
 	-@erase "$(INTDIR)\zerocurve.sbr"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-s-0_3_8.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-s-0_3_9.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -463,7 +455,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
-	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
@@ -509,7 +500,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
@@ -520,7 +510,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
@@ -594,7 +583,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
@@ -614,7 +602,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_8.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_9.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -656,7 +644,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
-	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
@@ -702,7 +689,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
@@ -713,7 +699,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
-	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
@@ -787,7 +772,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
@@ -801,7 +785,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj"
 
-".\lib\QuantLib-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-s-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -817,7 +801,7 @@ INTDIR=.\build\Debug
 OutDir=.\build\Debug
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-sgd-0_3_9.lib" "$(OUTDIR)\QuantLib.bsc"
 
 
 CLEAN :
@@ -917,8 +901,6 @@ CLEAN :
 	-@erase "$(INTDIR)\coxingersollross.sbr"
 	-@erase "$(INTDIR)\currency.obj"
 	-@erase "$(INTDIR)\currency.sbr"
-	-@erase "$(INTDIR)\dataformatters.obj"
-	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -927,8 +909,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
 	-@erase "$(INTDIR)\discrepancystatistics.sbr"
-	-@erase "$(INTDIR)\discretegeometricapo.obj"
-	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
@@ -1047,8 +1027,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
 	-@erase "$(INTDIR)\mcdigitalengine.sbr"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
@@ -1183,21 +1161,19 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
-	-@erase "$(INTDIR)\xibormanager.obj"
-	-@erase "$(INTDIR)\xibormanager.sbr"
 	-@erase "$(INTDIR)\zerocurve.obj"
 	-@erase "$(INTDIR)\zerocurve.sbr"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_8.idb"
-	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib"
-	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_8.pdb"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_9.idb"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_9.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_9.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_8" /FD /GZ /c 
+CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_9" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1241,7 +1217,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
-	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
@@ -1287,7 +1262,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
@@ -1298,7 +1272,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
@@ -1372,7 +1345,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
@@ -1392,7 +1364,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_9.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -1434,7 +1406,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
-	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
@@ -1480,7 +1451,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
@@ -1491,7 +1461,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
-	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
@@ -1565,7 +1534,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
@@ -1579,7 +1547,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj"
 
-".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-sgd-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -1595,7 +1563,7 @@ INTDIR=.\build\ReleaseMTDLL
 OutDir=.\build\ReleaseMTDLL
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-mt-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-0_3_9.lib" "$(OUTDIR)\QuantLib.bsc"
 
 
 CLEAN :
@@ -1695,8 +1663,6 @@ CLEAN :
 	-@erase "$(INTDIR)\coxingersollross.sbr"
 	-@erase "$(INTDIR)\currency.obj"
 	-@erase "$(INTDIR)\currency.sbr"
-	-@erase "$(INTDIR)\dataformatters.obj"
-	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -1705,8 +1671,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
 	-@erase "$(INTDIR)\discrepancystatistics.sbr"
-	-@erase "$(INTDIR)\discretegeometricapo.obj"
-	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
@@ -1825,8 +1789,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
 	-@erase "$(INTDIR)\mcdigitalengine.sbr"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
@@ -1962,14 +1924,12 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
-	-@erase "$(INTDIR)\xibormanager.obj"
-	-@erase "$(INTDIR)\xibormanager.sbr"
 	-@erase "$(INTDIR)\zerocurve.obj"
 	-@erase "$(INTDIR)\zerocurve.sbr"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-0_3_8.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-0_3_9.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -2018,7 +1978,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
-	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
@@ -2064,7 +2023,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
@@ -2075,7 +2033,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
@@ -2149,7 +2106,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
@@ -2169,7 +2125,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-0_3_8.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-0_3_9.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -2211,7 +2167,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
-	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
@@ -2257,7 +2212,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
@@ -2268,7 +2222,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
-	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
@@ -2342,7 +2295,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
@@ -2356,7 +2308,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj"
 
-".\lib\QuantLib-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -2372,7 +2324,7 @@ INTDIR=.\build\DebugMTDLL
 OutDir=.\build\DebugMTDLL
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-gd-0_3_9.lib" "$(OUTDIR)\QuantLib.bsc"
 
 
 CLEAN :
@@ -2472,8 +2424,6 @@ CLEAN :
 	-@erase "$(INTDIR)\coxingersollross.sbr"
 	-@erase "$(INTDIR)\currency.obj"
 	-@erase "$(INTDIR)\currency.sbr"
-	-@erase "$(INTDIR)\dataformatters.obj"
-	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -2482,8 +2432,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
 	-@erase "$(INTDIR)\discrepancystatistics.sbr"
-	-@erase "$(INTDIR)\discretegeometricapo.obj"
-	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
@@ -2602,8 +2550,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
 	-@erase "$(INTDIR)\mcdigitalengine.sbr"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
@@ -2738,21 +2684,19 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
-	-@erase "$(INTDIR)\xibormanager.obj"
-	-@erase "$(INTDIR)\xibormanager.sbr"
 	-@erase "$(INTDIR)\zerocurve.obj"
 	-@erase "$(INTDIR)\zerocurve.sbr"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_8.idb"
-	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib"
-	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_8.pdb"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_9.idb"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_9.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_9.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_8" /FD /GZ /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_9" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2796,7 +2740,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
-	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
@@ -2842,7 +2785,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
@@ -2853,7 +2795,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
@@ -2927,7 +2868,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
@@ -2947,7 +2887,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_9.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -2989,7 +2929,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
-	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
@@ -3035,7 +2974,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
@@ -3046,7 +2984,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
-	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
@@ -3120,7 +3057,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
@@ -3134,7 +3070,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj"
 
-".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-gd-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -3150,7 +3086,7 @@ INTDIR=.\build\ReleaseST
 OutDir=.\build\ReleaseST
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-s-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-s-0_3_9.lib" "$(OUTDIR)\QuantLib.bsc"
 
 
 CLEAN :
@@ -3250,8 +3186,6 @@ CLEAN :
 	-@erase "$(INTDIR)\coxingersollross.sbr"
 	-@erase "$(INTDIR)\currency.obj"
 	-@erase "$(INTDIR)\currency.sbr"
-	-@erase "$(INTDIR)\dataformatters.obj"
-	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -3260,8 +3194,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
 	-@erase "$(INTDIR)\discrepancystatistics.sbr"
-	-@erase "$(INTDIR)\discretegeometricapo.obj"
-	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
@@ -3380,8 +3312,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
 	-@erase "$(INTDIR)\mcdigitalengine.sbr"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
@@ -3517,14 +3447,12 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
-	-@erase "$(INTDIR)\xibormanager.obj"
-	-@erase "$(INTDIR)\xibormanager.sbr"
 	-@erase "$(INTDIR)\zerocurve.obj"
 	-@erase "$(INTDIR)\zerocurve.sbr"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-s-0_3_8.lib"
+	-@erase ".\lib\QuantLib-vc6-s-0_3_9.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -3573,7 +3501,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
-	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
@@ -3619,7 +3546,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
@@ -3630,7 +3556,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
@@ -3704,7 +3629,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
@@ -3724,7 +3648,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-s-0_3_8.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-s-0_3_9.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -3766,7 +3690,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
-	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
@@ -3812,7 +3735,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
@@ -3823,7 +3745,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
-	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
@@ -3897,7 +3818,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
@@ -3911,7 +3831,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj"
 
-".\lib\QuantLib-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-s-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -3927,7 +3847,7 @@ INTDIR=.\build\DebugST
 OutDir=.\build\DebugST
 # End Custom Macros
 
-ALL : ".\lib\QuantLib-vc6-sgd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-sgd-0_3_9.lib" "$(OUTDIR)\QuantLib.bsc"
 
 
 CLEAN :
@@ -4027,8 +3947,6 @@ CLEAN :
 	-@erase "$(INTDIR)\coxingersollross.sbr"
 	-@erase "$(INTDIR)\currency.obj"
 	-@erase "$(INTDIR)\currency.sbr"
-	-@erase "$(INTDIR)\dataformatters.obj"
-	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -4037,8 +3955,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
 	-@erase "$(INTDIR)\discrepancystatistics.sbr"
-	-@erase "$(INTDIR)\discretegeometricapo.obj"
-	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedasset.obj"
@@ -4157,8 +4073,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
 	-@erase "$(INTDIR)\mcdigitalengine.sbr"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
-	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
@@ -4293,21 +4207,19 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
-	-@erase "$(INTDIR)\xibormanager.obj"
-	-@erase "$(INTDIR)\xibormanager.sbr"
 	-@erase "$(INTDIR)\zerocurve.obj"
 	-@erase "$(INTDIR)\zerocurve.sbr"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-sgd-0_3_8.idb"
-	-@erase ".\lib\QuantLib-vc6-sgd-0_3_8.lib"
-	-@erase ".\lib\QuantLib-vc6-sgd-0_3_8.pdb"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_9.idb"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_9.lib"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_9.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_8" /FD /GZ /c 
+CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_9" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -4351,7 +4263,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
-	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
@@ -4397,7 +4308,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
@@ -4408,7 +4318,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
@@ -4482,7 +4391,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
@@ -4502,7 +4410,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-sgd-0_3_8.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-sgd-0_3_9.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -4544,7 +4452,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
-	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
@@ -4590,7 +4497,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
@@ -4601,7 +4507,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
-	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
@@ -4675,7 +4580,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
@@ -4689,7 +4593,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj"
 
-".\lib\QuantLib-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-sgd-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -4980,12 +4884,6 @@ SOURCE=.\ql\Indexes\xibor.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Indexes\xibormanager.cpp
-
-"$(INTDIR)\xibormanager.obj"	"$(INTDIR)\xibormanager.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Instruments\asianoption.cpp
 
 "$(INTDIR)\asianoption.obj"	"$(INTDIR)\asianoption.sbr" : $(SOURCE) "$(INTDIR)"
@@ -5256,12 +5154,6 @@ SOURCE=.\ql\Optimization\steepestdescent.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\discretegeometricapo.cpp
-
-"$(INTDIR)\discretegeometricapo.obj"	"$(INTDIR)\discretegeometricapo.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Pricers\discretegeometricaso.cpp
 
 "$(INTDIR)\discretegeometricaso.obj"	"$(INTDIR)\discretegeometricaso.sbr" : $(SOURCE) "$(INTDIR)"
@@ -5319,12 +5211,6 @@ SOURCE=.\ql\Pricers\fdstepconditionoption.cpp
 SOURCE=.\ql\Pricers\mccliquetoption.cpp
 
 "$(INTDIR)\mccliquetoption.obj"	"$(INTDIR)\mccliquetoption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.cpp
-
-"$(INTDIR)\mcdiscretearithmeticapo.obj"	"$(INTDIR)\mcdiscretearithmeticapo.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -5763,12 +5649,6 @@ SOURCE=.\ql\calendar.cpp
 SOURCE=.\ql\currency.cpp
 
 "$(INTDIR)\currency.obj"	"$(INTDIR)\currency.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\dataformatters.cpp
-
-"$(INTDIR)\dataformatters.obj"	"$(INTDIR)\dataformatters.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
