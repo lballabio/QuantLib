@@ -102,7 +102,7 @@ namespace QuantLib {
         //! \name implied rate calculations
         //@{
 
-        //! implied rate for a given t-time compound factor.
+        //! implied rate for a given compound factor at a given time.
         /*! The resulting rate is calculated implicitly assuming
             the same day-counting rule used for the time t measure.
 
@@ -112,7 +112,7 @@ namespace QuantLib {
                                 Compounding comp,
                                 Frequency freq = Annual);
 
-        //! implied interest rate for a given t-time compound factor.
+        //! implied interest rate for a given compound factor at a given time.
         /*! The resulting InterestRate has the day-counter provided as input.
 
             \warning Time must be measured using the day-counter provided
