@@ -19,12 +19,15 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file jacobidecomposition.h
+/*! \file symmetricschurdecomposition.h
     \brief Gives the eigenvalues and eigenvectors of a real symmetric matrix
 
     $Source$
     $Name$
     $Log$
+    Revision 1.1  2001/01/25 10:21:51  marmar
+    JacobiDecomposition renamed SymmetricSchurDecomposition
+
     Revision 1.1  2001/01/24 13:00:39  marmar
     Jacobi decomposition return eigenvalues and eigenvectors
     of a square symmmetric real matrix
@@ -41,23 +44,24 @@ namespace QuantLib {
 
     namespace Math {
       //! Implementing the symmetric threshold Jacobi algorithm
-      /*! Given a symmetric matrix S, the Jacobi decomposition 
-          finds the eigenvalues and eigenvectors. If D is the 
+      /*! Given a real symmetric matrix S, the Schur decomposition 
+          finds the eigenvalues and eigenvectors of S. If D is the 
           diagonal matrix formed by the eigenvalues and U the
           unitarian matrix of th eigenvector we can write the
           Schur decomposition as 
           \f[ S = U \cdot D \cdot U^T \, ,\f]
           where \f$ \cdot \f$ is the standard matrix product 
           and  \f$ ^T  \f$ is the transpose operator.
-          For details on the different Jacobi transfomations
-          see great book on matrices:
-          Golub and Van Loan, Matrix computation, second edition
-          The Johns Hopkins University Press
+          This class implements the Schur decomposition using the
+          symmetric threshold Jacobi algorithm. For details on the 
+          different Jacobi transfomations you can start from the great book 
+          on matrix computations by Golub and Van Loan: Matrix computation, 
+          second edition The Johns Hopkins University Press
       */
 
-        class JacobiDecomposition {
+        class SymmetricSchurDecomposition {
         public:
-            JacobiDecomposition(Matrix &s); // s must be symmetric
+            SymmetricSchurDecomposition(Matrix &s); // s must be symmetric
             Array eigenvalues() const;
             Matrix eigenvectors() const;
         private:
@@ -73,20 +77,20 @@ namespace QuantLib {
                 int j1, int k1, int j2, int k2) const;
         };
         
-        inline Array JacobiDecomposition::eigenvalues() const{
+        inline Array SymmetricSchurDecomposition::eigenvalues() const{
             if(!hasBeenComputed_)
                 compute();
             return diagonal_;
         }
         
-        inline Matrix JacobiDecomposition::eigenvectors() const{
+        inline Matrix SymmetricSchurDecomposition::eigenvectors() const{
             if(!hasBeenComputed_)
                 compute();
             return eigenVectors_;            
         }
 
         //! This routines implements the Jacobi, a.k.a. Givens, rotation
-        inline void JacobiDecomposition::jacobiRotate(Matrix &m,
+        inline void SymmetricSchurDecomposition::jacobiRotate(Matrix &m,
               double rot, double dil, int j1, int k1, int j2, int k2) const{
             
             double x1, x2;            
