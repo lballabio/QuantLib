@@ -61,7 +61,8 @@ namespace QuantLib {
             MultiPathGenerator(const Array& drifts,
                                const Math::Matrix& covariance,
                                unsigned int timeSteps,
-                               long seed=0);
+                               Time lenght,
+                               long seed);
             MultiPathGenerator(const Array& drifts,
                                const Math::Matrix& covariance,
                                const std::vector<Time>& times,
@@ -79,11 +80,14 @@ namespace QuantLib {
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
-            const Array& drifts, const Math::Matrix& covariance,
-            unsigned int timeSteps, long seed)
+            const Array& drifts,
+            const Math::Matrix& covariance,
+            unsigned int timeSteps,
+            Time lenght,
+            long seed)
         : drifts_(covariance.rows(),0.0), timeSteps_(timeSteps),
-          timeDelays_(timeSteps, 1.0), numAssets_(covariance.rows()),
-          rndArray_(0.0, covariance, seed) {
+          timeDelays_(timeSteps, lenght/timeSteps),
+          numAssets_(covariance.rows()), rndArray_(0.0, covariance, seed) {
 
             QL_REQUIRE(timeSteps_ > 0, "Time steps(" +
                 IntegerFormatter::toString(timeSteps_) + ") too small");
