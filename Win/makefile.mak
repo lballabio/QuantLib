@@ -10,10 +10,10 @@ PYTHON_DIR		= ..\Python
 SWIG_DIR		= ..\Swig
 SOURCES_DIR		= ..\Sources
 INCLUDE_DIR		= ..\Include
+BCC_INCLUDE		= $(MAKEDIR)\..\include
+BCC_LIBS		= $(MAKEDIR)\..\lib
 PYTHON_INCLUDE	= "C:\Program Files\Python\include"
 PYTHON_LIBS		= "C:\Program Files\Python\libs"
-BCC_INCLUDE		= "C:\Program Files\Borland\Bcc55\include"
-BCC_LIBS		= "C:\Program Files\Borland\Bcc55\lib"
 
 # Object files
 CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
