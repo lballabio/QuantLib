@@ -67,6 +67,7 @@ namespace QuantLib {
         double theta;
         double vega;
         double rho, dividendRho;
+        double strikeSensitivity;
     };
 
 

@@ -118,6 +118,7 @@ namespace QuantLib {
             results_.vega = arguments_.underlying * NID1 *
                 dividendDiscount * QL_SQRT(residualTime);
 
+            results_.strikeSensitivity = - riskFreeDiscount * beta;
         }
 
     }
