@@ -22,23 +22,22 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 """
-print "Testing random number generator"
+print "Testing random number generators"
 
 from QuantLib import Statistics
-from QuantLib import RandomGenerator
-from QuantLib import GaussianGenerator
-from QuantLib import CLGaussianGenerator
+from QuantLib import UniformRandomGenerator
+from QuantLib import GaussianRandomGenerator
 
 tol = 1e-9
 seed = 576919
 numIte = 100000
 print "Generator                         mean    sigma   skewness kurtosis   min     max"
-for RNG in [RandomGenerator, GaussianGenerator, CLGaussianGenerator]:
+for RNG in [UniformRandomGenerator, GaussianRandomGenerator]:
   rn = RNG(seed=seed)
   s = Statistics()
   for ite in range(numIte):
     s.add(rn.next())
-  print "%30s: %7.4f %8.4f %8.4f %8.4f %7.3f %7.3f " %  (RNG, s.mean(),
+  print "%35s: %7.4f %8.4f %8.4f %8.4f %7.3f %7.3f " %  (RNG, s.mean(),
     s.standardDeviation(), s.skewness(), s.kurtosis(), s.min(), s.max())
 
 print 'Press return to end this test'

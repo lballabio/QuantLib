@@ -563,53 +563,56 @@ Statistics.reset = new.instancemethod(QuantLibc.Statistics_reset, None, Statisti
 Statistics.addSequence = new.instancemethod(QuantLibc.Statistics_addSequence, None, Statistics)
 Statistics.addWeightedSequence = new.instancemethod(QuantLibc.Statistics_addWeightedSequence, None, Statistics)
 
-class RandomGenerator:
+class UniformRandomGenerator:
     def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_RandomGenerator,args,kwargs)
+        self.this = apply(QuantLibc.new_UniformRandomGenerator,args,kwargs)
         self.thisown = 1
 
     def __repr__(self):
-        return "<C RandomGenerator instance at %s>" % (self.this,)
-class RandomGeneratorPtr(RandomGenerator):
+        return "<C UniformRandomGenerator instance at %s>" % (self.this,)
+class UniformRandomGeneratorPtr(UniformRandomGenerator):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-        self.__class__ = RandomGenerator
+        self.__class__ = UniformRandomGenerator
 
 
-RandomGenerator.next = new.instancemethod(QuantLibc.RandomGenerator_next, None, RandomGenerator)
+UniformRandomGenerator.next = new.instancemethod(QuantLibc.UniformRandomGenerator_next, None, UniformRandomGenerator)
+UniformRandomGenerator.weight = new.instancemethod(QuantLibc.UniformRandomGenerator_weight, None, UniformRandomGenerator)
 
-class GaussianGenerator:
+class GaussianRandomGenerator:
     def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_GaussianGenerator,args,kwargs)
+        self.this = apply(QuantLibc.new_GaussianRandomGenerator,args,kwargs)
         self.thisown = 1
 
     def __repr__(self):
-        return "<C GaussianGenerator instance at %s>" % (self.this,)
-class GaussianGeneratorPtr(GaussianGenerator):
+        return "<C GaussianRandomGenerator instance at %s>" % (self.this,)
+class GaussianRandomGeneratorPtr(GaussianRandomGenerator):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-        self.__class__ = GaussianGenerator
+        self.__class__ = GaussianRandomGenerator
 
 
-GaussianGenerator.next = new.instancemethod(QuantLibc.GaussianGenerator_next, None, GaussianGenerator)
+GaussianRandomGenerator.next = new.instancemethod(QuantLibc.GaussianRandomGenerator_next, None, GaussianRandomGenerator)
+GaussianRandomGenerator.weight = new.instancemethod(QuantLibc.GaussianRandomGenerator_weight, None, GaussianRandomGenerator)
 
-class CLGaussianGenerator:
+class BM:
     def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_CLGaussianGenerator,args,kwargs)
+        self.this = apply(QuantLibc.new_BM,args,kwargs)
         self.thisown = 1
 
     def __repr__(self):
-        return "<C CLGaussianGenerator instance at %s>" % (self.this,)
-class CLGaussianGeneratorPtr(CLGaussianGenerator):
+        return "<C BM instance at %s>" % (self.this,)
+class BMPtr(BM):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-        self.__class__ = CLGaussianGenerator
+        self.__class__ = BM
 
 
-CLGaussianGenerator.next = new.instancemethod(QuantLibc.CLGaussianGenerator_next, None, CLGaussianGenerator)
+BM.next = new.instancemethod(QuantLibc.BM_next, None, BM)
+BM.weight = new.instancemethod(QuantLibc.BM_weight, None, BM)
 
 class History:
     def __init__(self,*args,**kwargs):

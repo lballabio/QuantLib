@@ -39,29 +39,35 @@
 #endif
 
 %{
-using QuantLib::Math::RandomGenerator;
-using QuantLib::Math::BoxMuller;
-using QuantLib::Math::CLGaussian;
-typedef BoxMuller<RandomGenerator> GaussianGenerator;
-typedef CLGaussian<RandomGenerator> CLGaussianGenerator;
+using QuantLib::MonteCarlo::UniformRandomGenerator;
+using QuantLib::MonteCarlo::GaussianRandomGenerator;
 %}
 
-class RandomGenerator {
+class UniformRandomGenerator {
   public:
-    RandomGenerator(long seed=0);
+    UniformRandomGenerator(long seed=0);
     double next() const;
+    double weight() const;
 };
 
-class GaussianGenerator {
+class GaussianRandomGenerator {
   public:
-    GaussianGenerator(long seed=0);
+    GaussianRandomGenerator(long seed=0);
     double next() const;
+    double weight() const;
 };
 
-class CLGaussianGenerator {
+%{
+using QuantLib::MonteCarlo::UniformRandomGenerator;
+using QuantLib::MonteCarlo::BoxMuller;
+typedef BoxMuller<UniformRandomGenerator> BM;
+%}
+
+class BM {
   public:
-    CLGaussianGenerator(long seed=0);
+    BM(long seed=0);
     double next() const;
+    double weight() const;
 };
 
 #endif
