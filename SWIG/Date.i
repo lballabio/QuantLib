@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -18,7 +17,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 #ifndef quantlib_date_i
@@ -319,14 +319,35 @@ class Date {
         return DateFormatter::toString(*self);
     }
     String __repr__() {
-        return "<Date: "+DateFormatter::toString(*self)+">";
+        return DateFormatter::toString(*self);
+    }
+    int __nonzero__() {
+        return (IsNull(*self) ? 0 : 1);
     }
 }
 
-// typemap Python list of dates to std::vector<Date>
+// typemap None to null Date
+
+%typemap(python,in) Date (Date temp), Date * (Date temp), 
+  const Date & (Date temp), Date & (Date temp) {
+    Date* x;
+    if ($source == Py_None) {
+        temp = Null<Date>();
+        $target = &temp;
+    } else if ((SWIG_ConvertPtr($source,(void **) &x,
+      (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+        $target = x;
+    } else {
+        PyErr_SetString(PyExc_TypeError,"Date expected");
+        return NULL;
+    }
+};
+
+// typemap Python sequence of Dates to std::vector<Date>
 
 %{
 typedef std::vector<Date> DateVector;
+using QuantLib::Null;
 %}
 
 class DateVector {
@@ -336,82 +357,115 @@ class DateVector {
 };
 
 %addmethods DateVector {
+
     int __len__() {
         return self->size();
     }
+
     Date __getitem__(int i) {
         if (i>=0 && i<self->size()) {
             return (*self)[i];
         } else if (i<0 && -i<=self->size()) {
             return (*self)[self->size()+i];
         } else {
-            throw QuantLib::IndexError("DateVector");
+            throw QuantLib::IndexError("DateVector index out of range");
         }
     }
-    void __setitem__(int i, Date d) {
-        (*self)[i] = d;
+
+    void __setitem__(int i, const Date& x) {
+        if (i>=0 && i<self->size()) {
+            (*self)[i] = x;
+        } else if (i<0 && -i<=self->size()) {
+            (*self)[self->size()+i] = x;
+        } else {
+            throw QuantLib::IndexError("DateVector index out of range");
+        }
     }
+
+    DateVector __getslice__(int i, int j) {
+        if (i<0)
+            i = self->size()+i;
+        if (i<0)
+            i = 0;
+        if (j<0)
+            j = self->size()+j;
+        if (j > self->size())
+            j = self->size();
+        DateVector tmp(j-i);
+        std::copy(self->begin()+i,self->begin()+j,tmp.begin());
+        return tmp;
+    }
+
+    void __setslice__(int i, int j, const DateVector& rhs) {
+        if (i<0)
+            i = self->size()+i;
+        if (i<0)
+            i = 0;
+        if (j<0)
+            j = self->size()+j;
+        if (j > self->size())
+            j = self->size();
+        QL_ENSURE(rhs.size() == j-i, "DateVectors are not resizable");
+        std::copy(rhs.begin(),rhs.end(),self->begin()+i);
+    }
+
     String __str__() {
         String s = "(";
         for (int i=0; i<self->size(); i++) {
             if (i != 0)
                 s += ", ";
-            s += QuantLib::DateFormatter::toString((*self)[i]);
+            s += DateFormatter::toString((*self)[i]);
         }
         s += ")";
         return s;
     }
+    String __repr__() {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+                s += ", ";
+            s += DateFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+
+    int __nonzero__() {
+        return (self->size() == 0 ? 0 : 1);
+    }
+
 }; 
 
-%typemap(python,in) DateVector (bool newObj), DateVector * (bool newObj), 
-  const DateVector & (bool newObj), DateVector & (bool newObj) {
+%typemap(python,in) DateVector (DateVector temp), 
+  DateVector * (DateVector temp), const DateVector & (DateVector temp), 
+  DateVector & (DateVector temp) {
     DateVector* v;
-    if ((SWIG_ConvertPtr($source,(void **) &v,
+    if (PyTuple_Check($source) || PyList_Check($source)) {
+        int size = (PyTuple_Check($source) ? 
+            PyTuple_Size($source) :
+            PyList_Size($source));
+        temp = DateVector(size);
+        $target = &temp;
+        for (int i=0; i<size; i++) {
+            Date* x;
+            PyObject* o = PySequence_GetItem($source,i);
+            if (o == Py_None) {
+                (*$target)[i] = Null<Date>();
+            } else if ((SWIG_ConvertPtr(o,(void **) &x,
+              (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                (*$target)[i] = *x;
+            } else {
+                PyErr_SetString(PyExc_TypeError,"Dates expected");
+                return NULL;
+            }
+        }
+    } else if ((SWIG_ConvertPtr($source,(void **) &v,
       (swig_type_info *)SWIG_TypeQuery("DateVector *"),0)) != -1) {
         $target = v;
-        newObj = false;
-    } else if (PyTuple_Check($source)) {
-        int size = PyTuple_Size($source);
-        $target = new DateVector(size);
-        newObj = true;
-        for (int i=0; i<size; i++) {
-            Date* d;
-            PyObject* o = PyTuple_GetItem($source,i);
-            if ((SWIG_ConvertPtr(o,(void **) &d,
-              (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
-                (*$target)[i] = *d;
-            } else {
-                PyErr_SetString(PyExc_TypeError,"tuple must contain dates");
-                delete $target;
-                return NULL;
-            }
-        }
-    } else if (PyList_Check($source)) {
-        int size = PyList_Size($source);
-        $target = new DateVector(size);
-        newObj = true;
-        for (int i=0; i<size; i++) {
-            Date* d;
-            PyObject* o = PyList_GetItem($source,i);
-            if ((SWIG_ConvertPtr(o,(void **) &d,
-              (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
-                (*$target)[i] = *d;
-            } else {
-                PyErr_SetString(PyExc_TypeError,"list must contain dates");
-                delete $target;
-                return NULL;
-            }
-        }
     } else {
-        PyErr_SetString(PyExc_TypeError,"not a sequence");
+        PyErr_SetString(PyExc_TypeError,"DateVector expected");
         return NULL;
     }
-};
-
-%typemap(python,freearg) DateVector, DateVector *, const DateVector &, 
-  DateVector & {
-    if (newObj)
-        delete $source;
 };
 
 
