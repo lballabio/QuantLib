@@ -33,6 +33,7 @@
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/randomizedlds.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
+#include <ql/RandomNumbers/seedgenerator.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
 
 
