@@ -36,7 +36,7 @@ namespace QuantLib {
         ExtendedCoxIngersollRoss::ExtendedCoxIngersollRoss(
             const RelinkableHandle<TermStructure>& termStructure,
             double theta, double k, double sigma, double x0)
-        : CoxIngersollRoss(theta, k, sigma, x0),
+        : CoxIngersollRoss(x0, theta, k, sigma),
           TermStructureConsistentModel(termStructure) {
             generateArguments();
         }
