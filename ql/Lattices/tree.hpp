@@ -36,7 +36,7 @@ namespace QuantLib {
 
         class Tree : public NumericalMethod {
           public:
-            Tree(const TimeGrid& timeGrid, Size n) 
+            Tree(const TimeGrid& timeGrid, Size n)
             : NumericalMethod(timeGrid), n_(n) {
                 QL_REQUIRE(n>0, "There is no zeronomial tree!");
                 statePricesLimit_ = 0;
@@ -45,10 +45,10 @@ namespace QuantLib {
             //! Computes the present value of an asset using Arrow-Debrew prices
             double presentValue(const Handle<DiscretizedAsset>& asset);
 
-            void initialize(
-                const Handle<DiscretizedAsset>& asset, Time t) const;
-            void rollback(
-                const Handle<DiscretizedAsset>& asset, Time to) const;
+            void initialize(const Handle<DiscretizedAsset>& asset,
+                            Time t) const;
+            void rollback(const Handle<DiscretizedAsset>& asset,
+                          Time to) const;
 
             const Column& column(Size i) const { return columns_[i]; }
 

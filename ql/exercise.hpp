@@ -46,6 +46,10 @@ namespace QuantLib {
         Date date(Size index = 0) const;
         const std::vector<Date>& dates() const;
 
+        // please add a comment here
+        // I wouldn't allow for date adjustment in the Exercise class
+        // this is dangerous
+        // the user should provide the real exercise dates
         RollingConvention rollingConvention() const;
         Calendar calendar() const;
         int settlementDays() const;
@@ -88,7 +92,7 @@ namespace QuantLib {
     // inline definitions
 
     inline Exercise::Exercise(Type type, const std::vector<Date>& dates)
-    : dates_(dates), type_(type), calendar_(Calendars::TARGET()), 
+    : dates_(dates), type_(type), calendar_(Calendars::TARGET()),
       convention_(ModifiedFollowing), settlementDays_(0) {}
 
     inline Exercise::Type Exercise::type() const {
@@ -111,7 +115,7 @@ namespace QuantLib {
         return calendar_;
     }
 
-    inline int Exercise::settlementDays() const { 
+    inline int Exercise::settlementDays() const {
         return settlementDays_;
     }
 

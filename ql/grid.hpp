@@ -73,6 +73,9 @@ namespace QuantLib {
     : std::vector<Time>(0) {
         Time last = times.back();
         Time dtMax;
+        // what's happening here?
+        // is the resulting TimeGrid regularly spaced?
+        // please add a comment
         if (steps == 0) {
             std::vector<Time> diff;
             std::back_insert_iterator<std::vector<Time> > ii(diff);
@@ -97,7 +100,7 @@ namespace QuantLib {
         }
         push_back(begin);
     }
-   
+
     inline Size TimeGrid::findIndex(Time t) const {
         const_iterator result = std::find(begin(), end(), t);
         QL_REQUIRE(result!=end(), "Using inadequate tree");

@@ -57,36 +57,30 @@ namespace QuantLib {
         double max() const {return statistics_.max(); }
 
         // RiskMeasures proxy methods
-        //! returns the Potential-Up-Front at a given percentile
+        //! returns the Potential-Upside at a given percentile
         double potentialUpside(double percentile) const {
             return riskMeasures_.potentialUpside(percentile,
-                                               statistics_.mean(),
-                                               statistics_.standardDeviation());
+                statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Value-At-Risk at a given percentile
         double valueAtRisk(double percentile) const {
             return riskMeasures_.valueAtRisk(percentile,
-                                        statistics_.mean(),
-                                        statistics_.standardDeviation());
+                statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Expected Shortfall at a given percentile
         double expectedShortfall(double percentile) const {
             return riskMeasures_.expectedShortfall(percentile,
-                                              statistics_.mean(),
-                                              statistics_.standardDeviation());
+                statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Shortfall (observations below target)
         double shortfall( double target ) const {
             return riskMeasures_.shortfall(target,
-                                      statistics_.mean(),
-                                      statistics_.standardDeviation());
+                statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Average Shortfall (averaged shortfallness)
         double averageShortfall( double target ) const  {
-            return riskMeasures_.averageShortfall(
-                                         target,
-                                         statistics_.mean(),
-                                         statistics_.standardDeviation());
+            return riskMeasures_.averageShortfall(target,
+                statistics_.mean(), statistics_.standardDeviation());
         }
         //@}
         //! \name Modifiers
