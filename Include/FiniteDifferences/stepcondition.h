@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/02/15 17:36:32  marmar
+    Ooops, virtual destructor forgotten.
+
     Revision 1.4  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -48,6 +51,7 @@ namespace QuantLib {
         template <class arrayType>
         class StepCondition {
           public:
+            virtual ~StepCondition() {}
             virtual void applyTo(arrayType& a, Time t) const = 0;
         };
 
