@@ -4,6 +4,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/06/01 16:50:16  lballabio
+// Term structure on deposits and swaps
+//
 // Revision 1.7  2001/05/31 14:48:10  lballabio
 // Worked around Visual C++ deficiencies
 //
@@ -53,7 +56,7 @@
 #define QL_MAX      std::_cpp_max
 
 #define BROKEN_TEMPLATE_SPECIALIZATION
-#define BROKEN_TEMPLATE_METHODS
+#define BROKEN_TEMPLATE_METHOD_CALLS
 #define HAVE_EXPRESSION_TEMPLATES
 #define HAVE_TEMPLATE_METAPROGRAMMING
 

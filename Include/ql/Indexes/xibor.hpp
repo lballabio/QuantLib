@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/01 16:50:16  lballabio
+// Term structure on deposits and swaps
+//
 // Revision 1.4  2001/05/29 09:24:06  lballabio
 // Using relinkable handle to term structure
 //
@@ -53,11 +56,36 @@ namespace QuantLib {
         */
         class Xibor : public Index {
           public:
-            Xibor(const RelinkableHandle<TermStructure>& h)
-            : termStructure_(h) {}
+            Xibor(const std::string& name, Currency currency, 
+                const Handle<Calendar>& calendar, bool isAdjusted, 
+                RollingConvention rollingConvention,
+                const Handle<DayCounter>& dayCounter,
+                const RelinkableHandle<TermStructure>& h)
+            : name_(name), currency_(currency), calendar_(calendar), 
+              isAdjusted_(isAdjusted), rollingConvention_(rollingConvention), 
+              dayCounter_(dayCounter), termStructure_(h) {}
+            //! \name Fixings
+            //@{
             Rate fixing(const Date& fixingDate,
                 int n, TimeUnit unit) const;
+            //@}
+            //! \name Inspectors
+            //@{
+            std::string name() const { return name_; }
+            Currency currency() const { return currency_; }
+            Handle<Calendar> calendar() const { return calendar_; }
+            bool isAdjusted() const { return isAdjusted_; }
+            RollingConvention rollingConvention() const { 
+                return rollingConvention_; }
+            Handle<DayCounter> dayCounter() const { return dayCounter_; }
+            //@}
           private:
+            std::string name_;
+            Currency currency_;
+            Handle<Calendar> calendar_;
+            bool isAdjusted_;
+            RollingConvention rollingConvention_;
+            Handle<DayCounter> dayCounter_;
             RelinkableHandle<TermStructure> termStructure_;
         };
 

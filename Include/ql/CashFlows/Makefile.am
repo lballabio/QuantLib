@@ -9,5 +9,6 @@ include_HEADERS = \
         cashflowvectors.hpp \
         fixedratecoupon.hpp \
         indexlinkedcoupon.hpp \
+        parcoupon.hpp \
         simplecashflow.hpp
         

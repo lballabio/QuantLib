@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/01 16:50:16  lballabio
+// Term structure on deposits and swaps
+//
 // Revision 1.5  2001/05/29 15:12:48  lballabio
 // Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
 //
@@ -55,10 +58,9 @@ namespace QuantLib {
             if (fixingDate < settlementDate) {
                 // must have been fixed
                 Rate pastFixing =
-                    LiborManager::getHistory(name(),n,unit)[fixingDate];
+                    LiborManager::getHistory(name_,n,unit)[fixingDate];
                 QL_REQUIRE(pastFixing != Null<double>(),
-                    "Missing " + CurrencyFormatter::toString(currency()) +
-                        " Libor fixing for " +
+                    "Missing " + name_ + " fixing for " +
                         DateFormatter::toString(fixingDate));
                 return pastFixing;
             }
@@ -66,7 +68,7 @@ namespace QuantLib {
                 // might have been fixed
                 try {
                     Rate pastFixing =
-                        LiborManager::getHistory(name(),n,unit)[fixingDate];
+                        LiborManager::getHistory(name_,n,unit)[fixingDate];
                     if (pastFixing != Null<double>())
                         return pastFixing;
                     else
@@ -76,14 +78,14 @@ namespace QuantLib {
                 }
             }
             Date endDate = fixingDate.plus(n,unit);
-            if (isAdjusted())
-                endDate = calendar()->roll(endDate,rollingConvention());
+            if (isAdjusted_)
+                endDate = calendar_->roll(endDate,rollingConvention_);
             DiscountFactor fixingDiscount =
                 termStructure_->discount(fixingDate);
             DiscountFactor endDiscount =
                 termStructure_->discount(endDate);
             double fixingPeriod =
-                dayCounter()->yearFraction(fixingDate, endDate);
+                dayCounter_->yearFraction(fixingDate, endDate);
             return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
         }
 

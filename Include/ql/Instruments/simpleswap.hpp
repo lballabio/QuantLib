@@ -34,7 +34,7 @@
 #include "ql/Instruments/swap.hpp"
 #include "ql/calendar.hpp"
 #include "ql/daycounter.hpp"
-#include "ql/index.hpp"
+#include "ql/Indexes/xibor.hpp"
 
 namespace QuantLib {
 
@@ -47,20 +47,18 @@ namespace QuantLib {
                 // dates
                 const Date& startDate, int n, TimeUnit units,
                 const Handle<Calendar>& calendar, 
+                RollingConvention rollingConvention, 
                 // nominals
                 const std::vector<double>& nominals, 
                 // fixed leg
                 int fixedFrequency, 
                 const std::vector<Rate>& couponRates, 
-                RollingConvention fixedRollingConvention, 
                 bool fixedIsAdjusted, 
                 const Handle<DayCounter>& fixedDayCount, 
                 // floating leg
                 int floatingFrequency, 
-                const Handle<Index>& index, int fixingDays,
+                const Indexes::Xibor& index, 
                 const std::vector<Spread>& spreads, 
-                RollingConvention floatingRollingConvention, 
-                bool floatingIsAdjusted, 
                 const Handle<DayCounter>& floatingDayCount, 
                 // hook to term structure
                 const RelinkableHandle<TermStructure>& termStructure, 
@@ -68,9 +66,11 @@ namespace QuantLib {
                 const std::string& isinCode = "",
                 const std::string& description = "");
             double BPS() const;
+            const Date& maturity() const { return maturity_; }
           private:
             void performCalculations() const;
             bool payFixedRate_;
+            Date maturity_;
             mutable double BPS_;
         };
 

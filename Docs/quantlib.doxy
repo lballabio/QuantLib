@@ -136,6 +136,7 @@ PREDEFINED             = __DOXYGEN__ \
                          HAVE_CCTYPE \
                          QL_MIN \
                          QL_MAX \
+                         QL_ALLOW_TEMPLATE_METHOD_CALLS=1 \
                          HAVE_EXPRESSION_TEMPLATES \
                          HAVE_TEMPLATE_METAPROGRAMMING \
                          QL_ITERATOR \

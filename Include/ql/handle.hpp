@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/06/01 16:50:16  lballabio
+// Term structure on deposits and swaps
+//
 // Revision 1.10  2001/05/31 14:48:10  lballabio
 // Worked around Visual C++ deficiencies
 //
@@ -62,13 +65,14 @@ namespace QuantLib {
     //! Reference-counted pointer
     /*! This class acts as a proxy to a pointer contained in it. Such pointer is
         owned by the handle, i.e., the handle will be responsible for its
-        deletion.
+        deletion, unless explicitly stated by the programmer.
         
         A count of the references to the contained pointer is incremented every
         time a handle is copied, and decremented every time a handle is deleted
-        or goes out of scope. This mechanism ensures on one hand, that the
-        pointer will not be deallocated as long as a handle refers to it, and on
-        the other hand, that it will be deallocated when no more handles do.
+        or goes out of scope. When the handle owns the pointer, this mechanism 
+        ensures on one hand, that the pointer will not be deallocated as long as 
+        a handle refers to it, and on the other hand, that it will be 
+        deallocated when no more handles do.
 
         \note The implementation of this class was originally taken from
         "The C++ Programming Language", 3rd ed., B.Stroustrup, Addison-Wesley,
@@ -88,6 +92,16 @@ namespace QuantLib {
         \code
         Handle<SomeObj> h1(new SomeObj);    // this is as safe as can be.
         \endcode
+        
+        \warning When the programmer keeps the ownership of the pointer, as
+        explicitly declared in
+        \code
+        SomeObj so;
+        Handle<SomeObj> h(&so,false);
+        \endcode
+        it is responsibility of the programmer to make sure that the object
+        remain in scope as long as there are handles pointing to it. Also, the
+        programmer must explicitly delete the object if required.
     */
     template <class Type>
     class Handle {
@@ -96,14 +110,24 @@ namespace QuantLib {
         //@{
         //! Default constructor returning a null handle.
         Handle()
-        : ptr_(0), n_(new int(1)) {}
+        : ptr_(0), n_(new int(1)), owns_(true) {}
         //! Constructor taking a pointer.
-        /*! The handle will be responsible for its deletion.
+        /*! If <b>owns</b> is set to <tt>true</tt> (the default), the handle
+            will be responsible for the deletion of the pointer. If it is set to
+            <tt>false</tt>, the programmer must make sure that the pointed
+            object remains in scope for the lifetime of the handle and its
+            copies. Destruction of the object is also responsibility of the
+            programmer.
+            
+            It is advised that handles be used with <tt>owns = false</tt> only 
+            when an object needs to pass a handle to itself to callbacks or 
+            bootstrappers - i.e., temporary objects whose lifetime is guaranteed 
+            to be shorter than the lifetime of the object.
         */
-        explicit Handle(Type* ptr)
-        : ptr_(ptr), n_(new int(1)) {}
+        explicit Handle(Type* ptr, bool owns = true)
+        : ptr_(ptr), n_(new int(1)), owns_(owns) {}
         Handle(const Handle& from)
-        : ptr_(from.ptr_), n_(from.n_) { (*n_)++; }
+        : ptr_(from.ptr_), n_(from.n_), owns_(from.owns_) { (*n_)++; }
         ~Handle();
         Handle& operator=(const Handle& from);
         //@}
@@ -119,10 +143,10 @@ namespace QuantLib {
         /*! Returns a null pointer in case of failure.
             \warning The returned pointer is not guaranteed to remain 
             allocated and should be discarded immediately after being used */
-        #if QL_ALLOW_TEMPLATE_METHODS
+        #if QL_ALLOW_TEMPLATE_METHOD_CALLS
         template <class Type2>
-        Type2* downcast() const {
-            return dynamic_cast<Type2*>(ptr_);
+        const Type2* downcast() const {
+            return dynamic_cast<const Type2*>(ptr_);
         }
         #endif
         //@}
@@ -131,7 +155,7 @@ namespace QuantLib {
         //@{
         //! Checks if the contained pointer is actually allocated
         bool isNull() const;
-        #if !QL_ALLOW_TEMPLATE_METHODS
+        #if !QL_ALLOW_TEMPLATE_METHOD_CALLS
         /*! This is here only because MSVC won't compile downcast().
             I know it is dangerous. Avoid using it if you can. 
             Blame Microsoft if you can't. */
@@ -141,6 +165,7 @@ namespace QuantLib {
       private:
         Type* ptr_;
         int* n_;
+        bool owns_;
     };
 
 
@@ -149,7 +174,7 @@ namespace QuantLib {
     template <class Type>
     inline Handle<Type>::~Handle() {
         if (--(*n_) == 0) {
-            if (ptr_ != 0)
+            if (ptr_ != 0 && owns_)
                 delete ptr_;
             delete n_;
         }
@@ -159,12 +184,13 @@ namespace QuantLib {
     inline Handle<Type>& Handle<Type>::operator=(const Handle& from) {
         if (ptr_ != from.ptr_) {
             if (--(*n_) == 0) {
-                if (ptr_ != 0)
+                if (ptr_ != 0 && owns_)
                     delete ptr_;
                 delete n_;
             }
             ptr_  = from.ptr_;
             n_    = from.n_;
+            owns_ = from.owns_;
             (*n_)++;
         }
         return *this;

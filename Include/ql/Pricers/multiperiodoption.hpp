@@ -30,12 +30,15 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/01 16:50:16  lballabio
+// Term structure on deposits and swaps
+//
 // Revision 1.6  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
-#ifndef shaft_multi_period_option_pricer_h
-#define shaft_multi_period_option_pricer_h
+#ifndef quantlib_multi_period_option_pricer_h
+#define quantlib_multi_period_option_pricer_h
 
 #include "ql/Pricers/bsmnumericaloption.hpp"
 #include "ql/handle.hpp"

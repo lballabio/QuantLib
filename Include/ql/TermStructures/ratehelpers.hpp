@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/06/01 16:50:16  lballabio
+// Term structure on deposits and swaps
+//
 // Revision 1.8  2001/05/29 15:12:48  lballabio
 // Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
 //
@@ -46,6 +49,8 @@
 #include "ql/termstructure.hpp"
 #include "ql/calendar.hpp"
 #include "ql/daycounter.hpp"
+#include "ql/Instruments/simpleswap.hpp"
+#include "ql/Indexes/xibor.hpp"
 
 namespace QuantLib {
 
@@ -66,11 +71,11 @@ namespace QuantLib {
                 be used only in term structure constructors, setting the term
                 structure to <b>this</b>, i.e., the one being constructed.
             */
-            virtual void setTermStructure(const TermStructure*);
+            virtual void setTermStructure(TermStructure*);
             //! maturity date
             virtual Date maturity() const = 0;
           protected:
-            const TermStructure* termStructure_;
+            TermStructure* termStructure_;
         };
 
 
@@ -94,6 +99,31 @@ namespace QuantLib {
             Handle<DayCounter> dayCounter_;
             Date maturity_;
             double yearFraction_;
+        };
+
+        //! swap rate
+        class SwapRateHelper : public RateHelper {
+          public:
+            SwapRateHelper(Rate rate, 
+                const Date& startDate, int n, TimeUnit units,
+                const Handle<Calendar>& calendar, 
+                RollingConvention rollingConvention, 
+                // fixed leg
+                int fixedFrequency, 
+                bool fixedIsAdjusted, 
+                const Handle<DayCounter>& fixedDayCount, 
+                // floating leg
+                int floatingFrequency, 
+                const Indexes::Xibor& index, 
+                const Handle<DayCounter>& floatingDayCount);
+            double rateError() const;
+            // double discountGuess() const; // null for the time being
+            Date maturity() const;
+            void setTermStructure(TermStructure*);
+          private:
+            Rate rate_;
+            Handle<Instruments::SimpleSwap> swap_;
+            RelinkableHandle<TermStructure> termStructureHandle_;
         };
 
     }

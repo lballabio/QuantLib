@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.2  2001/06/01 16:50:16  lballabio
+# Term structure on deposits and swaps
+#
 # Revision 1.1  2001/05/31 08:56:40  lballabio
 # Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 #
@@ -23,7 +26,8 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
-OBJS = cashflowvectors.obj$(_D)
+OBJS = cashflowvectors.obj$(_D) \
+       parcoupon.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

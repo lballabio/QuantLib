@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/01 16:50:16  lballabio
+// Term structure on deposits and swaps
+//
 // Revision 1.5  2001/05/31 14:48:10  lballabio
 // Worked around Visual C++ deficiencies
 //
@@ -285,7 +288,7 @@
     #define QL_DECLARE_TEMPLATE_SPECIALIZATIONS
 #endif
 
-/*! \def QL_ALLOW_TEMPLATE_METHODS
+/*! \def QL_ALLOW_TEMPLATE_METHOD_CALLS
     \brief Blame Microsoft for this one...
 
     Their compiler cannot cope with method calls such as
@@ -297,10 +300,10 @@
     For compatibility, a workaround should be implemented (which of course will 
     be less solid or more comples - as I said, blame Microsoft...)
 */
-#if !defined(BROKEN_TEMPLATE_METHODS)
-    #define QL_ALLOW_TEMPLATE_METHODS   1
+#if !defined(BROKEN_TEMPLATE_METHOD_CALLS)
+    #define QL_ALLOW_TEMPLATE_METHOD_CALLS   1
 #else
-    #define QL_ALLOW_TEMPLATE_METHODS   0
+    #define QL_ALLOW_TEMPLATE_METHOD_CALLS   0
 #endif
 
 /*! \def QL_EXPRESSION_TEMPLATES_WORK

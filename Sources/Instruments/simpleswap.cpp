@@ -35,24 +35,23 @@ namespace QuantLib {
 
     using CashFlows::FixedRateCoupon;
     using CashFlows::FixedRateCouponVector;
-    using CashFlows::IndexLinkedCouponVector;
+    using CashFlows::ParCouponVector;
+    using Indexes::Xibor;
     
     namespace Instruments {
 
         SimpleSwap::SimpleSwap(bool payFixedRate,
           const Date& startDate, int n, TimeUnit units,
           const Handle<Calendar>& calendar, 
+          RollingConvention rollingConvention, 
           const std::vector<double>& nominals, 
           int fixedFrequency, 
           const std::vector<Rate>& couponRates, 
-          RollingConvention fixedRollingConvention, 
           bool fixedIsAdjusted, 
           const Handle<DayCounter>& fixedDayCount, 
           int floatingFrequency, 
-          const Handle<Index>& index, int fixingDays,
+          const Xibor& index, 
           const std::vector<Spread>& spreads, 
-          RollingConvention floatingRollingConvention, 
-          bool floatingIsAdjusted, 
           const Handle<DayCounter>& floatingDayCount, 
           const RelinkableHandle<TermStructure>& termStructure, 
           const std::string& isinCode, const std::string& description)
@@ -61,25 +60,24 @@ namespace QuantLib {
                termStructure, isinCode, description), 
           payFixedRate_(payFixedRate) {
             
+            maturity_ = calendar->advance(startDate,n,units,rollingConvention);
             if (payFixedRate_) {
                 firstLeg_ = FixedRateCouponVector(nominals, 
-                    couponRates, startDate, startDate.plus(n,units), 
-                    fixedFrequency, calendar, fixedRollingConvention, 
+                    couponRates, startDate, maturity_, 
+                    fixedFrequency, calendar, rollingConvention, 
                     fixedIsAdjusted, fixedDayCount);
-                secondLeg_ = IndexLinkedCouponVector(nominals, 
-                    index, fixingDays, spreads, startDate, 
-                    startDate.plus(n,units), floatingFrequency, calendar, 
-                    floatingRollingConvention, floatingIsAdjusted, 
-                    floatingDayCount);
+                secondLeg_ = ParCouponVector(nominals, 
+                    index, spreads, startDate, maturity_, floatingFrequency, 
+                    calendar, rollingConvention, floatingDayCount,
+                    termStructure);
             } else {
-                firstLeg_ = IndexLinkedCouponVector(nominals, 
-                    index, fixingDays, spreads, startDate, 
-                    startDate.plus(n,units), floatingFrequency, calendar, 
-                    floatingRollingConvention, floatingIsAdjusted, 
-                    floatingDayCount);
+                firstLeg_ = ParCouponVector(nominals, 
+                    index, spreads, startDate, maturity_, floatingFrequency, 
+                    calendar, rollingConvention, floatingDayCount,
+                    termStructure);
                 secondLeg_ = FixedRateCouponVector(nominals, 
-                    couponRates, startDate, startDate.plus(n,units), 
-                    fixedFrequency, calendar, fixedRollingConvention, 
+                    couponRates, startDate, maturity_, 
+                    fixedFrequency, calendar, rollingConvention, 
                     fixedIsAdjusted, fixedDayCount);
             }
         }
@@ -98,8 +96,8 @@ namespace QuantLib {
             for (; begin != end; ++begin) {
                 // the following should be safe as long as nobody 
                 // messed with the coupons
-                #if QL_ALLOW_TEMPLATE_METHODS
-                FixedRateCoupon* coupon = 
+                #if QL_ALLOW_TEMPLATE_METHOD_CALLS
+                const FixedRateCoupon* coupon = 
                     begin->downcast<FixedRateCoupon>();
                 #else
                 const FixedRateCoupon* coupon = 

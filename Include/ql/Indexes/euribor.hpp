@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/01 16:50:16  lballabio
+// Term structure on deposits and swaps
+//
 // Revision 1.6  2001/05/29 15:12:48  lballabio
 // Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
 //
@@ -55,18 +58,9 @@ namespace QuantLib {
         class Euribor : public Xibor {
           public:
             Euribor(const RelinkableHandle<TermStructure>& h)
-            : Xibor(h) {}
-            Currency currency() const { return EUR; }
-            Handle<Calendar> calendar() const {
-                return Handle<Calendar>(new Calendars::TARGET);
-            }
-            bool isAdjusted() const { return true; }
-            RollingConvention rollingConvention() const { 
-                return ModifiedFollowing; }
-            Handle<DayCounter> dayCounter() const {
-                return Handle<DayCounter>(new DayCounters::Actual360);
-            }
-            std::string name() const { return "Euribor"; }
+            : Xibor("Euribor", EUR, Handle<Calendar>(new Calendars::TARGET), 
+                    true, ModifiedFollowing, 
+                    Handle<DayCounter>(new DayCounters::Actual360), h) {}
         };
 
     }

@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.2  2001/06/01 16:50:16  lballabio
+//  Term structure on deposits and swaps
+//
 //  Revision 1.1  2001/05/31 08:56:40  lballabio
 //  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 //
@@ -40,6 +43,7 @@
 #include "ql/cashflow.hpp"
 #include "ql/CashFlows/fixedratecoupon.hpp"
 #include "ql/CashFlows/indexlinkedcoupon.hpp"
+#include "ql/CashFlows/parcoupon.hpp"
 #include <vector>
 
 namespace QuantLib {
@@ -70,6 +74,22 @@ namespace QuantLib {
                 int frequency, const Handle<Calendar>& calendar, 
                 RollingConvention rollingConvention, bool isAdjusted, 
                 const Handle<DayCounter>& dayCount, 
+                const Date& stubDate = Date(), 
+                const Handle<DayCounter>& firstPeriodDayCount =
+                    Handle<DayCounter>());
+        };
+
+        class ParCouponVector : public std::vector<Handle<CashFlow> > {
+          public:
+            ParCouponVector(
+                const std::vector<double>& nominals, 
+                const Indexes::Xibor& index, 
+                const std::vector<Spread>& spreads, 
+                const Date& startDate, const Date& endDate, 
+                int frequency, const Handle<Calendar>& calendar, 
+                RollingConvention rollingConvention, 
+                const Handle<DayCounter>& dayCount, 
+                const RelinkableHandle<TermStructure>& termStructure,
                 const Date& stubDate = Date(), 
                 const Handle<DayCounter>& firstPeriodDayCount =
                     Handle<DayCounter>());

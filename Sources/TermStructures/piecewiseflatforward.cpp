@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/06/01 16:50:17  lballabio
+// Term structure on deposits and swaps
+//
 // Revision 1.8  2001/05/29 15:12:48  lballabio
 // Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
 //
@@ -73,13 +76,20 @@ namespace QuantLib {
             // sort risk helpers
             std::vector<Handle<RateHelper> > sortedInstruments = instruments;
 			int i;
-            for (i=0; i<sortedInstruments.size(); i++)
-                sortedInstruments[i]->setTermStructure(this);
             std::sort(sortedInstruments.begin(),sortedInstruments.end(),
                 RateHelperSorter());
+            // check that there is no instruments with the same maturity
+            for (i=1; i<sortedInstruments.size(); i++) {
+                Date m1 = sortedInstruments[i-1]->maturity(),
+                     m2 = sortedInstruments[i]->maturity();
+                QL_REQUIRE(m1 != m2,
+                    "Two instruments have the same maturity (" +
+                    DateFormatter::toString(m1) + ")");
+            }
             // bootstrapping loop
             for (i=1; i<sortedInstruments.size()+1; i++) {
                 Handle<RateHelper> instrument = sortedInstruments[i-1];
+                instrument->setTermStructure(this);
                 double guess = instrument->discountGuess();
                 if (guess == Null<double>())
                     guess = discounts_[i-1]*0.9;

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/06/01 16:50:17  lballabio
+// Term structure on deposits and swaps
+//
 // Revision 1.9  2001/05/29 15:12:48  lballabio
 // Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
 //
@@ -50,12 +53,16 @@
 
 namespace QuantLib {
 
+    using Instruments::SimpleSwap;
+    using Indexes::Xibor;
+    
     namespace TermStructures {
 
-        void RateHelper::setTermStructure(const TermStructure* t) {
+        void RateHelper::setTermStructure(TermStructure* t) {
             QL_REQUIRE(t != 0, "null term structure given");
             termStructure_ = t;
         }
+
 
 
         DepositRateHelper::DepositRateHelper(Rate rate, const Date& settlement,
@@ -83,8 +90,51 @@ namespace QuantLib {
         }
 
         Date DepositRateHelper::maturity() const {
-            QL_REQUIRE(termStructure_ != 0, "term structure not set");
             return maturity_;
+        }
+
+
+
+        SwapRateHelper::SwapRateHelper(Rate rate, 
+            const Date& startDate, int n, TimeUnit units,
+            const Handle<Calendar>& calendar, 
+            RollingConvention rollingConvention, 
+            int fixedFrequency, 
+            bool fixedIsAdjusted, 
+            const Handle<DayCounter>& fixedDayCount, 
+            int floatingFrequency, 
+            const Xibor& index, 
+            const Handle<DayCounter>& floatingDayCount)
+        : rate_(rate) {
+            // we don't need to link the index to our own 
+            // relinkable term structure handle since it will be used
+            // for historical fixings only/
+            swap_ = Handle<SimpleSwap>(
+                new SimpleSwap(true,                // pay fixed rate
+                    startDate, n, units, calendar, rollingConvention, 
+                    std::vector<double>(1,100.0),   // nominal
+                    fixedFrequency, 
+                    std::vector<Rate>(1,0.0),       // coupon rate
+                    fixedIsAdjusted, fixedDayCount, 
+                    floatingFrequency, index, 
+                    std::vector<Spread>(),       // null spread
+                    floatingDayCount, 
+                    termStructureHandle_));
+        }
+        
+        void SwapRateHelper::setTermStructure(TermStructure* t) {
+            termStructureHandle_.linkTo(Handle<TermStructure>(t,false));
+            RateHelper::setTermStructure(t);
+        }
+        
+        Date SwapRateHelper::maturity() const {
+            return swap_->maturity();
+        }
+
+        double SwapRateHelper::rateError() const {
+            QL_REQUIRE(termStructure_ != 0, "term structure not set");
+            Rate impliedRate = -swap_->NPV()/swap_->BPS();
+            return rate_-impliedRate;
         }
 
     }
