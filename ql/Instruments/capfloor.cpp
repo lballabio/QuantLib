@@ -102,7 +102,6 @@ namespace QuantLib {
                       "null value returned from cap/floor pricer");
         }
 
-
         void CapFloorParameters::validate() const {
             QL_REQUIRE(
                 endTimes.size() == startTimes.size(),

@@ -13,11 +13,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file exercisetype.hpp
+/*! \file exercise.hpp
     \brief Exercise type class (European, Bermudan or American)
 
     \fullpath
-    ql/%exercisetype.hpp
+    ql/%exercise.hpp
 */
 
 // $Id$
@@ -39,46 +39,86 @@ namespace QuantLib {
       public:
         enum Type { American, Bermudan, European };
 
-        Exercise(Type type, const std::vector<Date>& dates)
-        : type_(type), dates_(dates), calendar_(Calendars::TARGET()), 
-          convention_(ModifiedFollowing), settlementDays_(0) {}
+        Exercise(Type type, const std::vector<Date>& dates);
 
-        Type type() const { return type_; }
+        Type type() const;
 
-        Date date(Size index = 0) const { return dates_[index]; }
-        const std::vector<Date>& dates() const { return dates_; }
+        Date date(Size index = 0) const;
+        const std::vector<Date>& dates() const;
 
-        RollingConvention rollingConvention() const { return convention_; }
-        Calendar calendar() const { return calendar_; }
-        int settlementDays() const { return settlementDays_; }
+        RollingConvention rollingConvention() const;
+        Calendar calendar() const;
+        int settlementDays() const;
+
       protected:
-        Type type_;
         std::vector<Date> dates_;
+
+      private:
+        Type type_;
         Calendar calendar_;
         RollingConvention convention_;
         int settlementDays_;
     };
 
+    //! American exercise class
     class AmericanExercise : public Exercise {
       public:
-        AmericanExercise(Date earliestDate, Date latestDate)
-        : Exercise(American, std::vector<Date>(2)) {
-            dates_[0] = earliestDate;
-            dates_[1] = latestDate;
-        }
+        AmericanExercise(Date earliestDate, Date latestDate);
     };
 
+    //! Bermudan exercise class
     class BermudanExercise : public Exercise {
       public:
-        BermudanExercise(const std::vector<Date>& dates)
-        : Exercise(Bermudan, dates) {}
+        BermudanExercise(const std::vector<Date>& dates);
     };
 
+    //! European exercise class
     class EuropeanExercise : public Exercise {
       public:
-        EuropeanExercise(Date date)
-        : Exercise(European, std::vector<Date>(1,date)) {}
+        EuropeanExercise(Date date);
     };
+
+    //inline definitions
+
+    inline Exercise::Exercise(Type type, const std::vector<Date>& dates)
+    : dates_(dates), type_(type), calendar_(Calendars::TARGET()), 
+      convention_(ModifiedFollowing), settlementDays_(0) {}
+
+    inline Exercise::Type Exercise::type() const {
+        return type_;
+    }
+
+    inline Date Exercise::date(Size index) const {
+        return dates_[index];
+    }
+
+    inline const std::vector<Date>& Exercise::dates() const {
+        return dates_;
+    }
+
+    inline RollingConvention Exercise::rollingConvention() const {
+        return convention_;
+    }
+
+    inline Calendar Exercise::calendar() const {
+        return calendar_;
+    }
+
+    inline int Exercise::settlementDays() const { 
+        return settlementDays_;
+    }
+
+    inline AmericanExercise::AmericanExercise(Date earliest, Date latest)
+    : Exercise(American, std::vector<Date>(2)) {
+        dates_[0] = earliest;
+        dates_[1] = latest;
+    }
+
+    inline BermudanExercise::BermudanExercise(const std::vector<Date>& dates)
+    : Exercise(Bermudan, dates) {}
+
+    inline EuropeanExercise::EuropeanExercise(Date date)
+    : Exercise(European, std::vector<Date>(1,date)) {}
 
 }
 

@@ -31,7 +31,6 @@ namespace QuantLib {
     namespace Pricers {
 
         using Instruments::VanillaCapFloor;
-        using InterestRateModelling::BlackModel;
 
         void BlackCapFloor::calculate() const {
             double value = 0.0;

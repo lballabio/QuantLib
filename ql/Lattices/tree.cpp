@@ -30,43 +30,47 @@ namespace QuantLib {
 
         void Tree::computeStatePrices(Size until) {
             for (Size i=statePricesLimit_; i<until; i++) {
-                Column::const_iterator c = column(i).begin();
-                for (; c != column(i).end(); c++) {
-                    const Node& n = *(*c);
-                    int j = n.j();
-                    double discountFactor = discount(i, j);
+                const Column& c = column(i);
+                for (Size j=0; j<column(i).size(); j++) {
+                    double discount = c.discount(j);
+                    double statePrice = c.statePrice(j);
                     for (Size l=0; l<n_; l++) {
-                        descendant(i,j,l).statePrice() +=
-                            n.statePrice()*n.probability(l)*discountFactor;
+                        column(i+1).addToStatePrice(
+                            c.descendant(j,l),
+                            statePrice*discount*c.probability(j,l));
                     }
                 }
             }
             statePricesLimit_ = until;
         }
 
-        double Tree::presentValue(const Handle<NumericalDerivative>& asset) {
+        const std::vector<double>& Tree::statePrices(Size i) {
+            if (i>statePricesLimit_)
+                computeStatePrices(i);
+            return column(i).statePrices();
+        }
+
+        double Tree::presentValue(const Handle<DiscretizedAsset>& asset) {
             Size i = t_.findIndex(asset->time());
             if (i>statePricesLimit_)
                 computeStatePrices(i);
             double value = 0.0;
-            Size l = 0;
-            Column::const_iterator n = column(i).begin();
-            for (; n != column(i).end(); n++, l++) {
-                value += asset->values()[l]*(*n)->statePrice();
+            const Column& c = column(i);
+            for (Size j=0; j<c.size(); j++) {
+                value += asset->values()[j]*c.statePrice(j);
             }
             return value;
         }
 
-        void Tree::initialize(const Handle<NumericalDerivative>& asset, 
+        void Tree::initialize(const Handle<DiscretizedAsset>& asset, 
                               Time t) const {
 
             Size i = t_.findIndex(t);
-            Size width = column(i).size();
             asset->setTime(t);
-            asset->reset(width);
+            asset->reset(column(i).size());
         }
 
-        void Tree::rollback(const Handle<NumericalDerivative>& asset, 
+        void Tree::rollback(const Handle<DiscretizedAsset>& asset, 
                             Time to) const {
 
             Time from = asset->time();
@@ -76,22 +80,18 @@ namespace QuantLib {
             Size iTo = t_.findIndex(to);
 
             for (int i=(int)(iFrom-1); i>=(int)iTo; i--) {
-                Size width = column(i).size();
-                Array newValues(width);
-                Size k = 0;
-                Column::const_iterator c = column(i).begin();
-                for (; c != column(i).end(); c++, k++) {
-                    const Node& n = *(*c);
-                    int j = n.j();
+                const Column& c = column(i);
+                Array newValues(c.size());
+                for (Size j=0; j<c.size(); j++) {
                     double value = 0.0;
-                    Size index = nodeIndex(i+1, descendant(i,j,0).j());
                     for (Size l=0; l<n_; l++) {
-                        value += n.probability(l)*asset->values()[index+l];
+                        value += c.probability(j,l)*
+                                 asset->values()[c.descendant(j,l)];
                     }
-                    value *= discount(i, j);
-                    newValues[k] = value;
+                    value *= c.discount(j);
+                    newValues[j] = value;
                 }
-                asset->setTime(t(i));
+                asset->setTime(t_[i]);
                 asset->setValues(newValues);
                 asset->applyCondition();
             }

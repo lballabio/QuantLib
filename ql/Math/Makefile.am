@@ -6,9 +6,11 @@ includedir = $(prefix)/include/ql/Math
 
 include_HEADERS = \
 	bilinearinterpolation.hpp \
+    chisquaredistribution.hpp \
 	cubicspline.hpp \
 	interpolation.hpp \
 	interpolation2D.hpp \
+    gammadistribution.hpp \
 	lexicographicalview.hpp \
 	linearinterpolation.hpp \
 	matrix.hpp \
@@ -23,6 +25,8 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libMath_la_SOURCES = \
+    chisquaredistribution.cpp \
+    gammadistribution.cpp \
     matrix.cpp \
     multivariateaccumulator.cpp \
     normaldistribution.cpp \

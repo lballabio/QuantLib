@@ -26,8 +26,8 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        void ConjugateGradient::minimize(OptimizationProblem &P) {
-            bool EndCriteria;
+        void ConjugateGradient::minimize(Problem &P) {
+            bool end;
 
             // function and squared norm of gradient values;
             double fold, gold2;
@@ -72,13 +72,13 @@ namespace QuantLib {
                 normdiff = QL_SQRT(DotProduct(sddiff, sddiff));
                 SearchDirection = -g + c * d;
                 // End criteria
-                EndCriteria = endCriteria()(iterationNumber_,
+                end = endCriteria()(iterationNumber_,
                     fold, QL_SQRT(gold2), functionValue(), 
                     QL_SQRT(gradientNormValue()), normdiff);
 
                 // Increase interation number
                 iterationNumber()++;
-            } while (EndCriteria == false);
+            } while (end == false);
 
         }
 

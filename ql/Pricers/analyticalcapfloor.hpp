@@ -25,7 +25,8 @@
 #ifndef quantlib_pricers_analytical_cap_floor_h
 #define quantlib_pricers_analytical_cap_floor_h
 
-#include <ql/Instruments/capfloor.hpp>
+#include <ql/Pricers/capfloorpricer.hpp>
+#include <ql/ShortRateModels/model.hpp>
 
 namespace QuantLib {
 
@@ -33,11 +34,11 @@ namespace QuantLib {
 
         //! Analytical pricer for cap/floor
         class AnalyticalCapFloor 
-        : public CapFloorPricingEngine<InterestRateModelling::AffineModel> {
+        : public CapFloorPricer<ShortRateModels::AffineModel> {
           public:
             AnalyticalCapFloor(
-                const Handle<InterestRateModelling::AffineModel>& model) 
-            : CapFloorPricingEngine<InterestRateModelling::AffineModel>(model) 
+                const Handle<ShortRateModels::AffineModel>& model) 
+            : CapFloorPricer<ShortRateModels::AffineModel>(model) 
             {}
             void calculate() const;
         };

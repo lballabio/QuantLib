@@ -26,15 +26,11 @@
 #include "ql/Math/matrix.hpp"
 #include "ql/Optimization/conjugategradient.hpp"
 
-#include <iostream>
-/*!
-  Base class for least square problem
-*/
-
 namespace QuantLib {
 
     namespace Optimization {
 
+        //! Base class for least square problem
         class LeastSquareProblem {
           public:
             //! size of the problem ie size of target vector
@@ -147,7 +143,7 @@ namespace QuantLib {
             inline NonLinearLeastSquare(Constraint& c,
                                         double accuracy,
                                         int maxiter,
-                                        Handle<OptimizationMethod> om);
+                                        Handle<Method> om);
             //! Destructor
             inline ~NonLinearLeastSquare () {}
 
@@ -159,15 +155,14 @@ namespace QuantLib {
                 om_->setInitialValue (initialValue_);
                 // set end criteria with a given maximum number of iteration
                 // and a given error eps
-                om_->setEndCriteria(
-                    OptimizationEndCriteria(maxIterations_, eps));
+                om_->setEndCriteria(EndCriteria(maxIterations_, eps));
                 om_->endCriteria().setPositiveOptimization();
 
                 // wrap the least square problem in an optimization function
                 LeastSquareFunction lsf(lsProblem);
 
                 // define optimization problem
-                OptimizationProblem P(lsf, c_, *om_);
+                Problem P(lsf, c_, *om_);
 
                 // minimize
                 P.minimize();
@@ -214,7 +209,7 @@ namespace QuantLib {
             //! maximum and real number of iterations
             Size maxIterations_, nbIterations_;
             //! Optimization method
-            Handle<OptimizationMethod> om_;
+            Handle<Method> om_;
             //constraint
             Constraint& c_;
 
@@ -226,13 +221,13 @@ namespace QuantLib {
           double accuracy,
           int maxiter):
         exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-            om_ (Handle<OptimizationMethod>(new ConjugateGradient())), c_(c)
+            om_ (Handle<Method>(new ConjugateGradient())), c_(c)
         {}
 
         inline NonLinearLeastSquare::NonLinearLeastSquare (
             Constraint& c,
             double accuracy,
-            int maxiter, Handle<OptimizationMethod> om)
+            int maxiter, Handle<Method> om)
         : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
           om_ (om), c_(c) {}
 

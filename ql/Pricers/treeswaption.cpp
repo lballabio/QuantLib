@@ -23,22 +23,40 @@
 // $Id$
 
 #include "ql/Pricers/treeswaption.hpp"
-#include "ql/InterestRateModelling/onefactormodel.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        using namespace InterestRateModelling;
+        using namespace ShortRateModels;
         using namespace Lattices;
+
+        TreeSwaption::TreeSwaption(
+            const Handle<ShortRateModels::Model>& model,
+            Size timeSteps) 
+        : SwaptionPricer<ShortRateModels::Model>(model), 
+          timeSteps_(timeSteps) {} 
+
+        TreeSwaption::TreeSwaption(
+            const Handle<ShortRateModels::Model>& model,
+            const TimeGrid& timeGrid) 
+        : SwaptionPricer<ShortRateModels::Model>(model), 
+          timeGrid_(timeGrid), timeSteps_(0) {
+            tree_ = model_->tree(timeGrid);
+        }
+
+        void TreeSwaption::update() {
+            if (timeGrid_.size() > 0)
+                tree_ = model_->tree(timeGrid_);
+            notifyObservers();
+        }
 
         void TreeSwaption::calculate() const {
 
+            QL_REQUIRE(!model_.isNull(), "TreeSwaption: No model");
             Handle<Tree> tree;
 
             if (tree_.isNull()) {
-                QL_REQUIRE(!model_.isNull(), "You must first define a model");
-
                 std::list<Time> times(0);
                 Size i;
                 for (i=0; i<parameters_.exerciseTimes.size(); i++)
@@ -58,19 +76,13 @@ namespace QuantLib {
                 tree = tree_;
             }
 
-            Handle<NumericalDerivative> swaption(
-                new NumericalSwaption(tree, parameters_));
-
+            Handle<DiscretizedAsset> swaption(
+            new DiscretizedSwaption(tree, parameters_));
 
             tree->initialize(swaption, parameters_.exerciseTimes.back());
             tree->rollback(swaption, parameters_.exerciseTimes.front());
 
             results_.value = tree->presentValue(swaption);
-/*
-            if (!model_.isNull())
-                std::cout << "Theoretical value: " << model_->termStructure()->discount(parameters_.floatingPayTimes[0])*100.0 << std::endl;
-            std::cout << "Swap price: " << swap->values()[0] << std::endl;
-*/
         }
 
     }

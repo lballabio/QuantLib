@@ -25,19 +25,18 @@
 #ifndef quantlib_pricers_black_swaption_h
 #define quantlib_pricers_black_swaption_h
 
-#include <ql/Instruments/swaption.hpp>
-#include <ql/InterestRateModelling/blackmodel.hpp>
+#include <ql/blackmodel.hpp>
+#include <ql/Pricers/swaptionpricer.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
         //! Swaption priced by the Black formula
-        class BlackSwaption : public
-            SwaptionPricingEngine<InterestRateModelling::BlackModel> {
+        class BlackSwaption : public SwaptionPricer<BlackModel> {
           public:
-            BlackSwaption(const Handle<InterestRateModelling::BlackModel>& mod)
-            : SwaptionPricingEngine<InterestRateModelling::BlackModel>(mod) {}
+            BlackSwaption(const Handle<BlackModel>& mod)
+            : SwaptionPricer<BlackModel>(mod) {}
             void calculate() const;
         };
 

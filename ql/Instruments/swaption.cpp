@@ -68,6 +68,8 @@ namespace QuantLib {
             // this is passed explicitly for precision
             parameters->fixedBPS = QL_FABS(swap_->fixedLegBPS());
 
+            parameters->nominal = swap_->nominal();
+
             const std::vector<Handle<CashFlow> >& fixedLeg = swap_->fixedLeg();
 
             parameters->fixedPayTimes.clear();
@@ -81,7 +83,6 @@ namespace QuantLib {
 
             parameters->floatingResetTimes.clear();
             parameters->floatingPayTimes.clear();
-            parameters->nominals.clear();
             const std::vector<Handle<CashFlow> >& floatingLeg = 
                 swap_->floatingLeg();
             std::vector<Handle<CashFlow> >::const_iterator begin, end;
@@ -111,7 +112,6 @@ namespace QuantLib {
 */
                 time = counter.yearFraction(settlement, coupon->date());
                 parameters->floatingPayTimes.push_back(time);
-                parameters->nominals.push_back(coupon->nominal());
             }
             parameters->exerciseType = exercise_.type();
             parameters->exerciseTimes.clear();
@@ -135,6 +135,11 @@ namespace QuantLib {
             }
             QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
                       "null value returned from cap/floor pricer");
+        }
+
+        void SwaptionParameters::validate() const {
+            QL_REQUIRE(fixedPayTimes.size() == fixedCoupons.size(), 
+                       "Invalid pricing parameters");
         }
     
     }

@@ -23,23 +23,37 @@
 // $Id$
 
 #include "ql/Pricers/treecapfloor.hpp"
-#include "ql/InterestRateModelling/onefactormodel.hpp"
+#include "ql/ShortRateModels/onefactormodel.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
         using namespace Instruments;
-        using namespace InterestRateModelling;
+        using namespace ShortRateModels;
         using namespace Lattices;
+
+        TreeCapFloor::TreeCapFloor(const Handle<Model>& model, Size timeSteps) 
+        : CapFloorPricer<Model>(model), timeSteps_(timeSteps) {}
+
+        TreeCapFloor::TreeCapFloor(const Handle<Model>& model,
+                                   const TimeGrid& timeGrid) 
+        : CapFloorPricer<Model>(model), timeGrid_(timeGrid), timeSteps_(0) {
+            tree_ = model_->tree(timeGrid);
+        }
+
+        void TreeCapFloor::update() {
+            if (timeGrid_.size() > 0)
+                tree_ = model_->tree(timeGrid_);
+            notifyObservers();
+        }
 
         void TreeCapFloor::calculate() const {
 
+            QL_REQUIRE(!model_.isNull(), "TreeCapFloor: No model");
             Handle<Tree> tree;
 
             if (tree_.isNull()) {
-                QL_REQUIRE(!model_.isNull(), "Cannot price without model!");
-
                 std::list<Time> times(0);
                 Size nPeriods = parameters_.startTimes.size();
                 Size i;
@@ -56,8 +70,8 @@ namespace QuantLib {
                 tree = tree_;
             }
 
-            Handle<NumericalDerivative> capfloor(
-                new NumericalCapFloor(tree, parameters_));
+            Handle<DiscretizedAsset> capfloor(
+                new DiscretizedCapFloor(tree, parameters_));
 
             tree->initialize(capfloor, parameters_.endTimes.back());
             tree->rollback(capfloor, parameters_.startTimes.front());

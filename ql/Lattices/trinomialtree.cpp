@@ -31,56 +31,60 @@ namespace QuantLib {
         TrinomialTree::TrinomialTree(const Handle<DiffusionProcess>& process,
                                      const TimeGrid& timeGrid,
                                      bool isPositive)
-        : Lattices::Tree(3), process_(process) {
+        : Lattices::Tree(timeGrid, 3), dx_(1, 0.0) {
 
-            nodes_.push_back(Column());
-            nodes_[0].push_back(new TrinomialNode(0));
-            nodes_[0][0]->statePrice() = 1.0;
+            columns_.push_back(Column(1));
+            columns_[0].addToStatePrice(0, 1.0);
             
             t_ = timeGrid;
 
             double x0 = process->x0();
 
             Size nTimeSteps = t_.size() - 1;
-            for (Size i=0; i<nTimeSteps; i++) {
+            int jMin = 0;
+            int jMax = 0;
 
-                //Determine branching
-                double v = QL_SQRT(process->variance(t(i), 0.0, dt(i)));
+            for (Size i=0; i<nTimeSteps; i++) {
+                Time t = t_[i];
+                Time dt = t_.dt(i);
+
+                //Variance must be independent of x
+                double v2 = process->variance(t, 0.0, dt);
+                double v = QL_SQRT(v2);
                 dx_.push_back(v*QL_SQRT(3));
 
-                std::vector<int> k(0);
-                int j;
-                for (j=jMin(i); j<=jMax(i); j++) {
-                    double x = x0 + j*dx(i);
-                    double m = process->expectation(t(i), x, dt(i));
-                    int temp = (int)QL_FLOOR((m-x0)/dx(i+1) + 0.5);
+                Handle<TrinomialBranching> branching(new TrinomialBranching());
+                for (int j=jMin; j<=jMax; j++) {
+                    double x = x0 + j*dx_[i];
+                    double m = process->expectation(t, x, dt);
+                    int temp = (int)QL_FLOOR((m-x0)/dx_[i+1] + 0.5);
+
                     if (isPositive) {
-                        while (x0+(temp-1)*dx(i+1)<=0) {
+                        while (x0+(temp-1)*dx_[i+1]<=0) {
                             temp++;
-                            std::cout << "pushing up to " << temp << std::endl;
+                            std::cout << i << "pushing up to " << temp << std::endl;
                         }
                     }
-                    k.push_back(temp);
-                    double e = m - (x0+temp*dx(i+1));
-                    trinode(i,j)->setValues(e, v);
+
+                    branching->k_.push_back(temp);
+                    double e = m - (x0 + temp*dx_[i+1]);
+                    double e2 = e*e;
+                    double e3 = e*QL_SQRT(3);
+
+                    branching->probs_[0].push_back((1.0 + e2/v2 - e3/v)/6.0);
+                    branching->probs_[1].push_back((2.0 - e2/v2)/3.0);
+                    branching->probs_[2].push_back((1.0 + e2/v2 + e3/v)/6.0);
                 }
-                k_.push_back(k);
-                if (std::adjacent_find(k.begin(),k.end(), std::greater<int>()) 
-                    != k.end())
-                    std::cout << "Warning: link vector unsorted" << std::endl;
-//              QL_REQUIRE(std::adjacent_find(k.begin(),k.end(),
-//                         std::greater<int>()) == k.end(),
-//                         "Link vector unsorted!");
-                nodes_.push_back(Column());
+                columns_[i].setBranching(branching);
 
-                int jMin = *std::min_element(k.begin(), k.end()) - 1;
-                int jMax = *std::max_element(k.begin(), k.end()) + 1;
+                const std::vector<int>& k = branching->k_;
+                jMin = *std::min_element(k.begin(), k.end()) - 1;
+                jMax = *std::max_element(k.begin(), k.end()) + 1;
+                Size width = jMax - jMin + 1;
 
-                for (j=jMin; j<=jMax; j++) {
-                    nodes_.back().push_back(new TrinomialNode(j));
-                }
-
+                columns_.push_back(Column(width));
             }
+
         }
 
     }

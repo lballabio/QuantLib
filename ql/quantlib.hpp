@@ -24,6 +24,7 @@
 
 #include <ql/argsandresults.hpp>
 #include <ql/array.hpp>
+#include <ql/blackmodel.hpp>
 #include <ql/calendar.hpp>
 #include <ql/capvolstructures.hpp>
 #include <ql/cashflow.hpp>
@@ -116,29 +117,14 @@
 #include <ql/Instruments/swap.hpp>
 #include <ql/Instruments/swaption.hpp>
 
-#include <ql/InterestRateModelling/blackmodel.hpp>
-#include <ql/InterestRateModelling/calibrationhelper.hpp>
-#include <ql/InterestRateModelling/model.hpp>
-#include <ql/InterestRateModelling/onefactormodel.hpp>
-#include <ql/InterestRateModelling/parameter.hpp>
-#include <ql/InterestRateModelling/shortrateprocess.hpp>
-#include <ql/InterestRateModelling/twofactormodel.hpp>
-
-#include <ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp>
-#include <ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp>
-
-#include <ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp>
-#include <ql/InterestRateModelling/OneFactorModels/coxingersollross.hpp>
-#include <ql/InterestRateModelling/OneFactorModels/hullwhite.hpp>
-
-#include <ql/InterestRateModelling/TwoFactorModels/g2.hpp>
-
+#include <ql/Lattices/column.hpp>
 #include <ql/Lattices/tree.hpp>
-#include <ql/Lattices/binomialtree.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 
 #include <ql/Math/bilinearinterpolation.hpp>
+#include <ql/Math/chisquaredistribution.hpp>
 #include <ql/Math/cubicspline.hpp>
+#include <ql/Math/gammadistribution.hpp>
 #include <ql/Math/interpolation.hpp>
 #include <ql/Math/interpolation2D.hpp>
 #include <ql/Math/lexicographicalview.hpp>
@@ -179,7 +165,8 @@
 #include <ql/Optimization/criteria.hpp>
 #include <ql/Optimization/leastsquare.hpp>
 #include <ql/Optimization/linesearch.hpp>
-#include <ql/Optimization/optimizer.hpp>
+#include <ql/Optimization/method.hpp>
+#include <ql/Optimization/problem.hpp>
 #include <ql/Optimization/simplex.hpp>
 #include <ql/Optimization/steepestdescent.hpp>
 
@@ -229,6 +216,20 @@
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 
+#include <ql/ShortRateModels/calibrationhelper.hpp>
+#include <ql/ShortRateModels/model.hpp>
+#include <ql/ShortRateModels/onefactormodel.hpp>
+#include <ql/ShortRateModels/parameter.hpp>
+#include <ql/ShortRateModels/twofactormodel.hpp>
+#include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
+#include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
+#include <ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp>
+#include <ql/ShortRateModels/OneFactorModels/coxingersollross.hpp>
+#include <ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp>
+#include <ql/ShortRateModels/OneFactorModels/hullwhite.hpp>
+#include <ql/ShortRateModels/OneFactorModels/vasicek.hpp>
+#include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
+
 #include <ql/Solvers1D/bisection.hpp>
 #include <ql/Solvers1D/brent.hpp>
 #include <ql/Solvers1D/falseposition.hpp>
@@ -261,12 +262,12 @@ namespace QLDCO = QuantLib::DayCounters;
 namespace QLFDM = QuantLib::FiniteDifferences;
 namespace QLIDX = QuantLib::Indexes;
 namespace QLINS = QuantLib::Instruments;
-namespace QLIRM = QuantLib::InterestRateModelling;
 namespace QLMTH = QuantLib::Math;
 namespace QLMNT = QuantLib::MonteCarlo;
 namespace QLPAT = QuantLib::Patterns;
 namespace QLPRC = QuantLib::Pricers;
 namespace QLRNG = QuantLib::RandomNumbers;
+namespace QLSRM = QuantLib::ShortRateModels;
 namespace QLS1D = QuantLib::Solvers1D;
 namespace QLTST = QuantLib::TermStructures;
 namespace QLUTL = QuantLib::Utilities;

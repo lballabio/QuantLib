@@ -25,10 +25,10 @@
 #ifndef quantlib_lattices_tree_h
 #define quantlib_lattices_tree_h
 
-#include <ql/numericalmethod.hpp>
 #include <ql/handle.hpp>
 #include <ql/grid.hpp>
-#include <ql/Lattices/node.hpp>
+#include <ql/numericalmethod.hpp>
+#include <ql/Lattices/column.hpp>
 
 namespace QuantLib {
 
@@ -36,62 +36,26 @@ namespace QuantLib {
 
         class Tree : public NumericalMethod {
           public:
-            Tree() {}
-            Tree(Size n)
-            : dx_(1, 0.0), n_(n) {
+            Tree(const TimeGrid& timeGrid, Size n) 
+            : NumericalMethod(timeGrid), n_(n) {
                 QL_REQUIRE(n>0, "There is no zeronomial tree!");
                 statePricesLimit_ = 0;
             }
-            virtual ~Tree() {
-                for (Size i=0; i<nodes_.size(); i++) {
-                    for (Size j=0; j<nodes_[i].size(); j++) {
-                        delete nodes_[i][j];
-                    }
-                }
-            }
 
-            double presentValue(const Handle<NumericalDerivative>& asset);
+            double presentValue(const Handle<DiscretizedAsset>& asset);
 
             void initialize(
-                const Handle<NumericalDerivative>& asset, Time t) const;
+                const Handle<DiscretizedAsset>& asset, Time t) const;
             void rollback(
-                const Handle<NumericalDerivative>& asset, Time to) const;
+                const Handle<DiscretizedAsset>& asset, Time to) const;
+
+            const Column& column(Size i) const { return columns_[i]; }
+
+            const std::vector<double>& statePrices(Size i);
 
           protected:
-            typedef std::vector<Node*> Column;
-            
-            const Column& column(Size i) const { return nodes_[i]; }
-
-            virtual DiscountFactor discount(Size i, int j) const = 0;
-
-            virtual Node& descendant(Size i, int j, Size branch) = 0;
-            virtual const Node& descendant(Size i, int j, Size branch) const= 0;
-
-            Node& node(Size i, int j) {
-                return *nodes_[i][nodeIndex(i,j)];
-            }
-
-            const Node& node(Size i, int j) const {
-                return *nodes_[i][nodeIndex(i,j)];
-            }
-
-            virtual Size nodeIndex(Size i, int j) const = 0;
-
-            const TimeGrid& timeGrid() const { return t_; }
-
-            //! Returns t_i
-            Time t(Size i) const { return t_[i]; }
-
-            //! Returns \delta t_i = t_{i+1} - t_i
-            Time dt(Size i) const { return t_[i+1] - t_[i]; }
-
-            //! Returns \delta x_i
-            double dx(Size i) const { return dx_[i]; }
-
             void computeStatePrices(Size until);
-            TimeGrid t_;
-            std::vector<double> dx_;
-            std::vector<Column> nodes_;
+            std::vector<Column> columns_;
 
           private:
             Size n_;

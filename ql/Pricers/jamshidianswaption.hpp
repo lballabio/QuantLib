@@ -25,8 +25,8 @@
 #ifndef quantlib_pricers_jamshidian_swaption_h
 #define quantlib_pricers_jamshidian_swaption_h
 
-#include "ql/Instruments/swaption.hpp"
-#include "ql/InterestRateModelling/onefactormodel.hpp"
+#include <ql/Pricers/swaptionpricer.hpp>
+#include <ql/ShortRateModels/onefactormodel.hpp>
 
 namespace QuantLib {
 
@@ -34,11 +34,11 @@ namespace QuantLib {
 
         //! Jamshidian swaption pricer
         class JamshidianSwaption : public 
-            SwaptionPricingEngine<InterestRateModelling::OneFactorAffineModel> {
+            SwaptionPricer<ShortRateModels::OneFactorAffineModel> {
           public:
             JamshidianSwaption(
-                const Handle<InterestRateModelling::OneFactorAffineModel>& modl)
-            : SwaptionPricingEngine<InterestRateModelling::OneFactorAffineModel>
+                const Handle<ShortRateModels::OneFactorAffineModel>& modl)
+            : SwaptionPricer<ShortRateModels::OneFactorAffineModel>
                 (modl) {} 
             void calculate() const;
           private:

@@ -25,8 +25,8 @@
 #ifndef quantlib_pricers_tree_cap_floor_h
 #define quantlib_pricers_tree_cap_floor_h
 
-#include <ql/Instruments/capfloor.hpp>
-#include <ql/InterestRateModelling/onefactormodel.hpp>
+#include <ql/Pricers/capfloorpricer.hpp>
+#include <ql/ShortRateModels/model.hpp>
 #include <ql/Lattices/tree.hpp>
 
 namespace QuantLib {
@@ -35,21 +35,20 @@ namespace QuantLib {
 
         //! Cap/Floor priced in a tree
         class TreeCapFloor : public
-            CapFloorPricingEngine<InterestRateModelling::OneFactorModel> {
+            CapFloorPricer<ShortRateModels::Model> {
           public:
-            TreeCapFloor(
-                const Handle<InterestRateModelling::OneFactorModel>& model,
-                Size timeSteps) 
-            : CapFloorPricingEngine<InterestRateModelling::OneFactorModel>
-                (model), timeSteps_(timeSteps) {} 
+            TreeCapFloor(const Handle<ShortRateModels::Model>& model,
+                         Size timeSteps);
 
-            TreeCapFloor(const Handle<Lattices::Tree>& tree) 
-            : tree_(tree), timeSteps_(0) {}
+            TreeCapFloor(const Handle<ShortRateModels::Model>& model,
+                         const TimeGrid& timeGrid);
 
+            void update();
             void calculate() const;
           private:
-            Handle<Lattices::Tree> tree_;
+            TimeGrid timeGrid_;
             Size timeSteps_;
+            Handle<Lattices::Tree> tree_;
         };
 
     }

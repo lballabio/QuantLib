@@ -26,8 +26,8 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        void SteepestDescent::minimize(OptimizationProblem& P) {
-            bool EndCriteria;
+        void SteepestDescent::minimize(Problem& P) {
+            bool end;
 
             // function and squared norm of gradient values;
             double normdiff;
@@ -52,7 +52,7 @@ namespace QuantLib {
                 if (!lineSearch_->succeed()) 
                     throw Error("SteepestDescent: line-search failed!");
                 // End criteria
-                EndCriteria = endCriteria()(
+                end = endCriteria()(
                     iterationNumber_, functionValue(), 
                     QL_SQRT(gradientNormValue()), 
                     lineSearch_->lastFunctionValue(),
@@ -73,7 +73,7 @@ namespace QuantLib {
 
                 // Increase interation number
                 iterationNumber()++;
-            } while (EndCriteria == false);
+            } while (end == false);
         }
 
     }

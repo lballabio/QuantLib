@@ -29,7 +29,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using namespace InterestRateModelling;
+        using namespace ShortRateModels;
         using Instruments::SwaptionParameters;
 
         class JamshidianSwaption::rStarFinder : public ObjectiveFunction {
@@ -37,7 +37,7 @@ namespace QuantLib {
             rStarFinder(const SwaptionParameters &params,
                         const Handle<OneFactorAffineModel>& model,
                         const std::vector<double>& amounts)
-            : strike_(params.nominals[0]), maturity_(params.exerciseTimes[0]),
+            : strike_(params.nominal), maturity_(params.exerciseTimes[0]),
               times_(params.fixedPayTimes), amounts_(amounts), model_(model) {
             }
 
@@ -69,7 +69,7 @@ namespace QuantLib {
 
 
             std::vector<double> amounts(parameters_.fixedCoupons);
-            amounts.back() += parameters_.nominals[0];
+            amounts.back() += parameters_.nominal;
 
             rStarFinder finder(parameters_, model_, amounts);
             Solvers1D::Brent s1d = Solvers1D::Brent();

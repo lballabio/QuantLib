@@ -10,6 +10,7 @@ include_HEADERS = \
     binaryoption.hpp \
     blackcapfloor.hpp \
     blackswaption.hpp \
+    capfloorpricer.hpp \
     cliquetoption.hpp \
     continuousgeometricapo.hpp \
     discretegeometricapo.hpp \
@@ -38,6 +39,7 @@ include_HEADERS = \
     mcpagoda.hpp \
     mcpricer.hpp \
     singleassetoption.hpp \
+    swaptionpricer.hpp \
     treecapfloor.hpp \
     treeswaption.hpp
 
@@ -48,6 +50,7 @@ libPricers_la_SOURCES = \
     barrieroption.cpp \
     blackcapfloor.cpp \
     blackswaption.cpp \
+    capfloorpricer.cpp \
     fdbermudanoption.cpp \
     binaryoption.cpp \
     cliquetoption.cpp \
@@ -73,6 +76,7 @@ libPricers_la_SOURCES = \
     mcmaxbasket.cpp \
     mcpagoda.cpp \
     singleassetoption.cpp \
+    swaptionpricer.cpp \
     treecapfloor.cpp \
     treeswaption.cpp
 

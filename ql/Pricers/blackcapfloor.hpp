@@ -27,19 +27,18 @@
 #ifndef quantlib_pricers_black_capfloor_h
 #define quantlib_pricers_black_capfloor_h
 
-#include <ql/Instruments/capfloor.hpp>
-#include <ql/InterestRateModelling/blackmodel.hpp>
+#include <ql/blackmodel.hpp>
+#include <ql/Pricers/capfloorpricer.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
         //! CapFloor priced by the Black formula
-        class BlackCapFloor : public
-            CapFloorPricingEngine<InterestRateModelling::BlackModel> {
+        class BlackCapFloor : public CapFloorPricer<BlackModel> {
           public:
-            BlackCapFloor(const Handle<InterestRateModelling::BlackModel>& mod)
-            : CapFloorPricingEngine<InterestRateModelling::BlackModel>(mod) {}
+            BlackCapFloor(const Handle<BlackModel>& mod)
+            : CapFloorPricer<BlackModel>(mod) {}
             void calculate() const;
           private:
             double capletValue(Time start, Rate forward,

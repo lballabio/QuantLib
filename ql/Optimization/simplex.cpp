@@ -32,14 +32,19 @@ namespace QuantLib {
     namespace Optimization {
 
         double Simplex::extrapolate(
-            OptimizationProblem& P,
+            Problem& P,
             Size iHighest,
-            double factor) {
+            double &factor) {
 
-            Size dimensions = values_.size() - 1;
-            double factor1 = (1.0 - factor)/dimensions;
-            double factor2 = factor1 - factor;
-            Array pTry = sum_*factor1 - vertices_[iHighest]*factor2;
+            Array pTry;
+            do {
+                Size dimensions = values_.size() - 1;
+                double factor1 = (1.0 - factor)/dimensions;
+                double factor2 = factor1 - factor;
+                pTry = sum_*factor1 - vertices_[iHighest]*factor2;
+                factor *= 0.5;
+            } while (!P.constraint().test(pTry));
+            factor *= 2.0;
             double vTry = P.value(pTry);
             if (vTry < values_[iHighest]) {
                values_[iHighest] = vTry;
@@ -49,15 +54,17 @@ namespace QuantLib {
             return vTry;
 
         }
-        void Simplex::minimize(OptimizationProblem& P) {
-            bool EndCriteria = false;
+        void Simplex::minimize(Problem& P) {
+            bool end = false;
 
             Array& X = x();
             Size n = X.size(), i;
 
             vertices_ = std::vector<Array>(n+1, X);
             for (i=0; i<n; i++) {
-                vertices_[i+1][i] += lambda_;
+                Array direction(n, 0.0);
+                direction[i] = 1.0;
+                P.constraint().update(vertices_[i+1], direction, lambda_);
             }
             values_ = Array(n+1, 0.0);
             for (i=0; i<=n; i++)
@@ -100,13 +107,16 @@ namespace QuantLib {
                     return;
                 }
 
-                double vTry = extrapolate(P, iHighest, -1.0);
-                if (vTry <= values_[iLowest]) {
-                    extrapolate(P, iHighest, 2.0);
+                double factor = -1.0;
+                double vTry = extrapolate(P, iHighest, factor);
+                if ((vTry <= values_[iLowest]) && (factor == -1.0)) {
+                    factor = 2.0;
+                    extrapolate(P, iHighest, factor);
                 } else {
                     if (vTry >= values_[iNextHighest]) {
                         double vSave = values_[iHighest];
-                        vTry = extrapolate(P, iHighest, 0.5);
+                        factor = 0.5;
+                        vTry = extrapolate(P, iHighest, factor);
                         if (vTry >= vSave) {
                             for (Size i=0; i<=n; i++) {
                                 if (i!=iLowest) {
@@ -121,7 +131,7 @@ namespace QuantLib {
 
                 }
 
-            } while (EndCriteria == false);
+            } while (end == false);
 
         }
 

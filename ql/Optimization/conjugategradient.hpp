@@ -37,20 +37,20 @@ namespace QuantLib {
             where \f$ c_i = ||f'(x_i)||^2/||f'(x_{i-1})||^2 \f$
             and \f$ d_1 = - f'(x_1) \f$
         */
-        class ConjugateGradient: public OptimizationMethod {
+        class ConjugateGradient: public Method {
           public:
             //! default constructor
-            ConjugateGradient() : OptimizationMethod(),
+            ConjugateGradient() : Method(),
               lineSearch_(Handle<LineSearch>(new ArmijoLineSearch())) {}
 
             ConjugateGradient(const Handle<LineSearch>& lineSearch)
-            : OptimizationMethod(), lineSearch_ (lineSearch) {}
+            : Method(), lineSearch_ (lineSearch) {}
 
             //! destructor
             virtual ~ConjugateGradient() {}
 
             //! minimize the optimization problem P
-            virtual void minimize(OptimizationProblem& P);
+            virtual void minimize(Problem& P);
           private:
             //! line search
             Handle<LineSearch> lineSearch_;

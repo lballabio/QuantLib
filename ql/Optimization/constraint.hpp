@@ -33,9 +33,87 @@ namespace QuantLib {
 
         class Constraint {
           public:
-            virtual bool test(const Array& params) const { return true; }
-            virtual void correct(Array& params) const {}
+
+            class ConstraintImpl {
+              public:
+                virtual bool test(const Array& params) const = 0;
+            };
+
+            Constraint(const Handle<ConstraintImpl>& impl) : impl_(impl) {}
+            bool test(const Array& params) const { return impl_->test(params); }
+            double update(Array& params, const Array& direction, double beta) {
+
+                double diff=beta;
+                Array newParams = params + diff*direction;
+                bool valid = test(newParams);
+                int icount = 0;
+                while (!valid) {
+                    if (icount > 200)
+                        throw Error("Can't update parameter vector");
+                    diff *= 0.5;
+                    icount ++;
+            
+                    newParams = params + diff*direction;
+                    valid = test(newParams);
+                }
+
+                params += diff*direction;
+                return diff;
+            }
+
+          private:
+            Handle<ConstraintImpl> impl_;
         };
+
+        class NoConstraint : public Constraint {
+          public:
+            class NoConstraintImpl : public Constraint::ConstraintImpl {
+              public:
+                bool test(const Array& params) const {
+                    return true;
+                }
+            };
+            NoConstraint() 
+            : Constraint(Handle<ConstraintImpl>(new NoConstraintImpl)) {}
+        };
+
+        class PositiveConstraint : public Constraint {
+          public:
+            class PositiveConstraintImpl : public Constraint::ConstraintImpl {
+              public:
+                bool test(const Array& params) const {
+                    for (Size i=0; i<params.size(); i++) {
+                        if (params[i] <= 0.0)
+                            return false;
+                    }
+                    return true;
+                }
+            };
+            PositiveConstraint() 
+            : Constraint(Handle<ConstraintImpl>(new PositiveConstraintImpl)) {}
+        };
+
+        class BoundaryConstraint : public Constraint {
+          public:
+            class BoundaryConstraintImpl : public Constraint::ConstraintImpl {
+              public:
+                BoundaryConstraintImpl(double low, double high) 
+                : low_(low), high_(high) {}
+                bool test(const Array& params) const {
+                    for (Size i=0; i<params.size(); i++) {
+                        if ((params[i] < low_) || (params[i] > high_))
+                            return false;
+                    }
+                    return true; 
+                }
+              private:
+                double low_, high_;
+            };
+            BoundaryConstraint(double low, double high) 
+            : Constraint(Handle<ConstraintImpl>(
+                new BoundaryConstraintImpl(low, high))) {}
+        };
+
     }
 }
 

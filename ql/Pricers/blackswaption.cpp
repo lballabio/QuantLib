@@ -28,8 +28,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using InterestRateModelling::BlackModel;
-
         void BlackSwaption::calculate() const {
             Time start = parameters_.floatingResetTimes[0];
             double w;

@@ -13,7 +13,8 @@ include_HEADERS = \
     criteria.hpp \
     leastsquare.hpp \
     linesearch.hpp \
-    optimizer.hpp \
+    method.hpp \
+    problem.hpp \
     simplex.hpp \
     steepestdescent.hpp
 

@@ -27,10 +27,10 @@ namespace QuantLib {
     namespace Optimization {
 
         double ArmijoLineSearch::operator()(
-            OptimizationProblem &P, // Optimization problem
+            Problem &P, // Optimization problem
             double t_ini)           // initial value of line-search step
         {
-            OptimizationMethod& method = P.optimisationMethod();
+            Method& method = P.method();
             Constraint& constraint = P.constraint();
 
             bool maxIter = false;
@@ -69,7 +69,7 @@ namespace QuantLib {
                     qt_ = P.value (xtd_);
                     P.gradient (gradient_, xtd_);
                     // and it squared norm
-                    maxIter = P.optimisationMethod().endCriteria().
+                    maxIter = P.method().endCriteria().
                         checkIterationNumber(loopNumber);
                 } while (
                     (((qt_ - q0) > (-alpha_ * t * qpt_)) ||

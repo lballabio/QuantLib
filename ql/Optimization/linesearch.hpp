@@ -23,16 +23,13 @@
 #ifndef quantlib_optimization_line_search_h_
 #define quantlib_optimization_line_search_h_
 
-#include "ql/Optimization/optimizer.hpp"
-
-/*!
-  Base class for line search
-*/
+#include <ql/Optimization/problem.hpp>
 
 namespace QuantLib {
 
     namespace Optimization {
 
+        //! Base class for line search
         class LineSearch {
           public:
             //! Default constructor
@@ -54,14 +51,13 @@ namespace QuantLib {
 
             //! Perform line search
             virtual double operator() (
-                OptimizationProblem &P,
+                Problem &P,
                 double t_ini) = 0;
 
-            double update(
-              Array& params, 
-              const Array& direction,
-              double beta,
-              const Constraint& constraint) {
+            double update(Array& params, 
+                          const Array& direction,
+                          double beta,
+                          const Constraint& constraint) {
 
                 double diff=beta;
 

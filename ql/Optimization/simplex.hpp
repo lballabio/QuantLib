@@ -28,7 +28,7 @@
 #ifndef quantlib_optimization_simplex_h
 #define quantlib_optimization_simplex_h
 
-#include <ql/Optimization/optimizer.hpp>
+#include <ql/Optimization/problem.hpp>
 
 #include <vector>
 
@@ -37,19 +37,19 @@ namespace QuantLib {
     namespace Optimization {
 
         //! Multi-dimensionnal Simplex class
-        class Simplex : public OptimizationMethod {
+        class Simplex : public Method {
           public:
             /*! Constructor taking as input \f$ \lambda \f$ as the
                 characteristic length and tol as the precision
             */
             Simplex(double lambda, double tol) 
-            : OptimizationMethod(), lambda_(lambda), tol_(tol) {}
+            : Method(), lambda_(lambda), tol_(tol) {}
             virtual ~Simplex() {}
 
-            double extrapolate(OptimizationProblem& P, Size iHighest, 
-                               double factor);
+            double extrapolate(Problem& P, Size iHighest, 
+                               double& factor);
 
-            virtual void minimize(OptimizationProblem& P);
+            virtual void minimize(Problem& P);
           private:
             double lambda_;
             double tol_;

@@ -27,11 +27,11 @@
 #ifndef quantlib_instruments_capfloor_h
 #define quantlib_instruments_capfloor_h
 
-#include "ql/dataformatters.hpp"
+#include <ql/dataformatters.hpp>
 #include <ql/instrument.hpp>
 #include <ql/numericalmethod.hpp>
+#include <ql/option.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/InterestRateModelling/model.hpp>
 
 namespace QuantLib {
 
@@ -69,7 +69,7 @@ namespace QuantLib {
         class VanillaCap : public VanillaCapFloor {
           public:
             VanillaCap(
-                const CashFlows::FloatingRateCouponVector& floatingLeg,
+                const std::vector<Handle<CashFlow> >& floatingLeg,
                 const std::vector<Rate>& exerciseRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
@@ -82,7 +82,7 @@ namespace QuantLib {
         class VanillaFloor : public VanillaCapFloor {
           public:
             VanillaFloor(
-                const CashFlows::FloatingRateCouponVector& floatingLeg,
+                const std::vector<Handle<CashFlow> >& floatingLeg,
                 const std::vector<Rate>& exerciseRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
@@ -95,7 +95,7 @@ namespace QuantLib {
         class VanillaCollar : public VanillaCapFloor {
           public:
             VanillaCollar(
-                const CashFlows::FloatingRateCouponVector& floatingLeg,
+                const std::vector<Handle<CashFlow> >& floatingLeg,
                 const std::vector<Rate>& capRates,
                 const std::vector<Rate>& floorRates,
                 const RelinkableHandle<TermStructure>& termStructure,
@@ -129,100 +129,6 @@ namespace QuantLib {
 
         //! %results from cap/floor calculation
         class CapFloorResults : public OptionValue {};
-
-    }
-
-    namespace Pricers {
-
-        class NumericalCapFloor : public NumericalDerivative {
-          public:
-            NumericalCapFloor(const Handle<NumericalMethod>& method,
-                              const Instruments::CapFloorParameters& params)
-            : NumericalDerivative(method), parameters_(params) {}
-
-            void reset(Size size) {
-                values_ = Array(size, 0.0);
-                applyCondition();
-            }
-
-            virtual void applyCondition() {
-                for (Size i=0; i<parameters_.startTimes.size(); i++) {
-                    if (time_ == parameters_.startTimes[i]) {
-                        Time end = parameters_.endTimes[i];
-                        Handle<NumericalDerivative> bond(new 
-                            NumericalDiscountBond(method()));
-                        method()->initialize(bond, end);
-                        method()->rollback(bond,time_);
-
-                        Instruments::VanillaCapFloor::Type type = 
-                            parameters_.type;
-
-                        if ( (type == Instruments::VanillaCapFloor::Cap) ||
-                             (type == Instruments::VanillaCapFloor::Collar)) {
-                            double accrual = 1.0 + 
-                                parameters_.capRates[i]*(end - time_);
-                            double strike = 1.0/accrual;
-                            for (Size j=0; j<values_.size(); j++)
-                                values_[j] += parameters_.nominals[i]*accrual*
-                                    QL_MAX(strike - bond->values()[j], 0.0);
-                        }
-
-                        if ( (type == Instruments::VanillaCapFloor::Floor) ||
-                             (type == Instruments::VanillaCapFloor::Collar)) {
-                            double accrual = 1.0 + 
-                                parameters_.floorRates[i]*(end - time_);
-                            double strike = 1.0/accrual;
-                            for (Size j=0; j<values_.size(); j++)
-                                values_[j] += parameters_.nominals[i]*accrual*
-                                    QL_MAX(bond->values()[j] - strike, 0.0);
-                        }
-
-                    }
-                }
-            }
-            void addTimes(std::list<Time>& times) const {
-                for (Size i=0; i<parameters_.startTimes.size(); i++) {
-                    times.push_back(parameters_.startTimes[i]);
-                    times.push_back(parameters_.endTimes[i]);
-                }
-            }
-
-          private:
-            Instruments::CapFloorParameters parameters_;
-        };
-
-        //! base class for cap/floor pricing engines
-        /*! Derived engines only need to implement the <tt>calculate()</tt>
-            method
-        */
-        template<class ModelType>
-        class CapFloorPricingEngine : public OptionPricingEngine,
-                                      public Patterns::Observer,
-                                      public Patterns::Observable {
-          public:
-            CapFloorPricingEngine() {}
-            CapFloorPricingEngine(const Handle<ModelType>& model) 
-            : model_(model) {
-                registerWith(model_);
-            }
-            Arguments* parameters() { return &parameters_; }
-            const Results* results() const { return &results_; }
-            void validateParameters() const { parameters_.validate(); }
-
-            void setModel(const Handle<ModelType>& model) {
-                unregisterWith(model_);
-                model_ = model;
-                QL_REQUIRE(!model_.isNull(), "Not an adequate model!");
-                registerWith(model_);
-            }
-            void update() {
-                notifyObservers();
-            }
-          protected:
-            Instruments::CapFloorParameters parameters_;
-            mutable Instruments::CapFloorResults results_;
-            Handle<ModelType> model_;
-        };
 
     }
 

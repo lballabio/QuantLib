@@ -12,7 +12,6 @@ SUBDIRS = \
     functions \
     Indexes \
     Instruments \
-    InterestRateModelling \
     Lattices \
     Math \
     MonteCarlo \
@@ -20,6 +19,7 @@ SUBDIRS = \
     Patterns \
     Pricers \
     RandomNumbers \
+    ShortRateModels \
     Solvers1D \
     TermStructures \
     Utilities \
@@ -36,6 +36,7 @@ EXTRA_DIST= \
 include_HEADERS = \
 	argsandresults.hpp \
 	array.hpp \
+    blackmodel.hpp \
 	calendar.hpp \
 	capvolstructures.hpp \
 	cashflow.hpp \
@@ -83,16 +84,16 @@ libQuantLib_la_LIBADD = \
     functions/libfunctions.la \
 	Indexes/libIndexes.la \
 	Instruments/libInstruments.la \
-    InterestRateModelling/libInterestRateModelling.la \
-    InterestRateModelling/CalibrationHelpers/libCalibrationHelpers.la \
-    InterestRateModelling/OneFactorModels/libOneFactorModels.la \
-    InterestRateModelling/TwoFactorModels/libTwoFactorModels.la \
     Lattices/libLattices.la \
 	Math/libMath.la \
 	MonteCarlo/libMonteCarlo.la \
     Optimization/libOptimization.la \
 	Pricers/libPricers.la \
 	RandomNumbers/libRandomNumbers.la \
+    ShortRateModels/libShortRateModels.la \
+    ShortRateModels/CalibrationHelpers/libCalibrationHelpers.la \
+    ShortRateModels/OneFactorModels/libOneFactorModels.la \
+    ShortRateModels/TwoFactorModels/libTwoFactorModels.la \
 	Solvers1D/libSolvers1D.la \
 	TermStructures/libTermStructures.la
 

@@ -27,43 +27,28 @@
 namespace QuantLib {
 
     namespace Lattices {
-/*
-        BinomialTree::BinomialTree(Time end, Size steps)
-        : Lattices::Tree(2) {
 
-            t_ = TimeGrid(end, steps);
+        BinomialTree::BinomialTree(const Handle<DiffusionProcess>& process,
+                                   Time end, Size steps)
+        : Lattices::Tree(ConstantTimeGrid(end, steps), 2) {
 
-            //adjust space intervals
-            dx_.resize(t_.size());
-            dx_[0] = 0.0; //Just one node
-            Size i;
-            double dx = QL_SQRT(dt(0));
-            for (i=0; i<(dx_.size()-1); i++) {
-                dx_[i+1] = dx;
-            }
+            nodes_.push_back(Column(0, 1));
+            nodes_[0].statePrice(0) = 1.0;
+
+            double dt = end/steps;
+
+            double x0 = process->x0();
+            double dx = QL_SQRT(process->variance(t(i), 0.0, dt(i)));
 
             Size nTimeSteps = t_.size() - 1;
-            for (i=0; i<nTimeSteps; i++) {
-
+            for (Size i=0; i<nTimeSteps; i++) {
                 //Determine branching
-                double v = dx(i+1)/QL_SQRT(3);
-                double v2 = v*v;
-
-                for (int j=jMin(i); j<=jMax(i); j++) {
-                    double x = j*dx(i);
-                    double m = process->expectation(t(i), x, dt(i));
-                    double e = m - k.back()*dx(i+1);
-                    double e2 = e*e;
-                    double e3 = e*QL_SQRT(3);
-
-                    node(i,j).probability[0] = (1.0 + e2/v2 - e3/v)/6.0;
-                    node(i,j).probability[1] = (2.0 - e2/v2)/3.0;
-                }
-
-                addLevel(k);
+                Handle<BinomialBranching> branching(new BinomialBranching());
+                column(i).setBranching(branching);
+                nodes_.push_back(Column(i+1, i+2));
             }
         }
-*/
+
     }
 
 }

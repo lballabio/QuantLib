@@ -33,8 +33,8 @@ namespace QuantLib {
     //! Diffusion process class
     /*! This class describes a stochastic process goverved by 
         \f[
-            dx = \mu(t, x)dt + \sigma(t, x)dW_t
-        \f].
+            dx = \mu(t, x)dt + \sigma(t, x)dW_t.
+        \f]
     */
     class DiffusionProcess {
       public:
@@ -45,11 +45,11 @@ namespace QuantLib {
 
         virtual double drift(Time t, double x) const = 0;
         virtual double diffusion(Time t, double x) const = 0;
-        //! Euler approximation of the expectation
+        //! By default, returns the Euler approximation of the expectation
         virtual double expectation(Time t0, double x0, Time dt) const {
             return x0 + drift(t0, x0)*dt;
         }
-        //! Euler approximation of the variance
+        //! By default, returns the Euler approximation of the variance
         virtual double variance(Time t0, double x0, Time dt) const {
             double sigma = diffusion(t0, x0);
             return sigma*sigma*dt;
@@ -61,24 +61,24 @@ namespace QuantLib {
     //! Black-Scholes diffusion process class
     /*! This class describes the stochastic process governed by 
         \f[
-            dS = r dt + \sigma dW_t
-        \f].
+            dS = r dt + \sigma dW_t.
+        \f]
     */
     class BlackScholesProcess : public DiffusionProcess {
       public:
         BlackScholesProcess(Rate rate, double volatility, double s0 = 0.0)
         : DiffusionProcess(s0), r_(rate), sigma_(volatility)  {}
 
-        virtual double drift(Time t, double x) const {
+        double drift(Time t, double x) const {
             return - r_*x;
         }
-        virtual double diffusion(Time t, double x) const {
+        double diffusion(Time t, double x) const {
             return sigma_;
         }
-        virtual double expectation(Time t0, double x0, Time dt) const {
+        double expectation(Time t0, double x0, Time dt) const {
             return x0 + r_*dt;
         }
-        virtual double variance(Time t0, double x0, Time dt) const {
+        double variance(Time t0, double x0, Time dt) const {
             return sigma_*sigma_*dt;
         }
       private:
@@ -88,24 +88,24 @@ namespace QuantLib {
     //! Ornstein-Uhlenbeck process class
     /*! This class describes the Ornstein-Uhlenbeck process governed by 
         \f[
-            dx = -a x dt + \sigma dW_t
-        \f].
+            dx = -a x_t dt + \sigma dW_t.
+        \f]
     */
     class OrnsteinUhlenbeckProcess : public DiffusionProcess {
       public:
         OrnsteinUhlenbeckProcess(double speed, double vol, double x0 = 0.0)
         : DiffusionProcess(x0), speed_(speed), volatility_(vol)  {}
 
-        virtual double drift(Time t, double x) const {
+        double drift(Time t, double x) const {
             return - speed_*x;
         }
-        virtual double diffusion(Time t, double x) const {
+        double diffusion(Time t, double x) const {
             return volatility_;
         }
-        virtual double expectation(Time t0, double x0, Time dt) const {
+        double expectation(Time t0, double x0, Time dt) const {
             return x0*QL_EXP(-speed_*dt);
         }
-        virtual double variance(Time t0, double x0, Time dt) const {
+        double variance(Time t0, double x0, Time dt) const {
             return 0.5*volatility_*volatility_/speed_*
                    (1.0 - QL_EXP(-2.0*speed_*dt));
         }
@@ -113,6 +113,26 @@ namespace QuantLib {
         double speed_, volatility_;
     };
 
+    //! Square-root process class
+    /*! This class describes a square-root process governed by 
+        \f[
+            dx = a (b - x_t) dt + \sigma \sqrt{x_t} dW_t.
+        \f]
+    */
+    class SquareRootProcess : public DiffusionProcess {
+      public:
+        SquareRootProcess(double b, double a, double sigma, double x0 = 0)
+        : DiffusionProcess(x0), mean_(b), speed_(a), volatility_(sigma)  {}
+
+        double drift(Time t, double x) const {
+            return speed_*(mean_ - x);
+        }
+        double diffusion(Time t, double x) const {
+            return volatility_*QL_SQRT(x);
+        }
+      private:
+        double mean_, speed_, volatility_;
+    };
 
 }
 

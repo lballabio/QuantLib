@@ -26,33 +26,42 @@
 #define quantlib_numerical_method_h
 
 #include <ql/array.hpp>
+#include <ql/grid.hpp>
 #include <ql/handle.hpp>
 
 #include <list>
 
 namespace QuantLib {
 
-    class NumericalDerivative;
+    class DiscretizedAsset;
 
+    //! Numerical method (Tree, Finite Differences) base class
     class NumericalMethod {
       public:
-        virtual void initialize(
-            const Handle<NumericalDerivative>& derivative,
-            Time time) const = 0;
-        virtual void rollback(
-            const Handle<NumericalDerivative>& derivative,
-            Time to) const = 0;
+        NumericalMethod(const TimeGrid& timeGrid) : t_(timeGrid) {}
+        virtual ~NumericalMethod() {}
+
+        const TimeGrid& timeGrid() const { return t_; }
+
+        virtual void initialize(const Handle<DiscretizedAsset>& derivative,
+                                Time time) const = 0;
+
+        virtual void rollback(const Handle<DiscretizedAsset>& derivative,
+                              Time to) const = 0;
+      protected:
+        TimeGrid t_;
     };
 
-    class NumericalDerivative {
+    //! Discretized asset class used by numerical methods
+    class DiscretizedAsset {
       public:
-        NumericalDerivative(const Handle<NumericalMethod>& method)
+        DiscretizedAsset(const Handle<NumericalMethod>& method)
         : method_(method) {}
-        virtual ~NumericalDerivative() {}
+        virtual ~DiscretizedAsset() {}
 
         Time time() const { return time_; }
 
-        const Array& values() const { return values_; }
+        double value(Size i) const { return values_[i]; }
         Array& values() { return values_; }
 
         const Handle<NumericalMethod>& method() const { return method_; }
@@ -64,6 +73,8 @@ namespace QuantLib {
         virtual void applyCondition() {}
         virtual void addTimes(std::list<Time>& times) const {}
       protected:
+        bool isOnTime(Time t) const;
+
         Array values_;
         Time time_;
 
@@ -71,14 +82,25 @@ namespace QuantLib {
         Handle<NumericalMethod> method_;
     };
 
-    class NumericalDiscountBond : public NumericalDerivative {
+    //! Useful discretized discount bond asset
+    class DiscretizedDiscountBond : public DiscretizedAsset {
       public:
-        NumericalDiscountBond(const Handle<NumericalMethod>& method)
-        : NumericalDerivative(method) {}
+        DiscretizedDiscountBond(const Handle<NumericalMethod>& method)
+        : DiscretizedAsset(method) {}
         void reset(Size size) {
             values_ = Array(size, 1.0);
         }
     };
+
+    // inline methods
+    inline bool DiscretizedAsset::isOnTime(Time t) const {
+        const TimeGrid& grid = method()->timeGrid();
+        Time gridTime = grid[grid.findIndex(t)];
+        if (QL_FABS(gridTime - time()) < QL_EPSILON)
+            return true;
+        else
+            return false;
+    }
 
 }
 

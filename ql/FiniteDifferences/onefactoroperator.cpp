@@ -28,18 +28,19 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        using InterestRateModelling::ShortRateProcess;
+        using ShortRateModels::OneFactorModel;
 
         OneFactorOperator::OneFactorOperator(const Array& grid,
-            const Handle<ShortRateProcess>& process)
+            const Handle<OneFactorModel::ShortRateDynamics>& process)
         : TridiagonalOperator(grid.size()) {
              timeSetter_ = Handle<TridiagonalOperator::TimeSetter>(
                new SpecificTimeSetter(grid[0], grid[1] - grid[0], process));
          }
 
         OneFactorOperator::SpecificTimeSetter::SpecificTimeSetter(
-            double x0, double dx, const Handle<ShortRateProcess>& process)
-        : x0_(x0), dx_(dx), process_(process) {}
+            double x0, double dx, 
+            const Handle<OneFactorModel::ShortRateDynamics>& dynamics)
+        : x0_(x0), dx_(dx), dynamics_(dynamics) {}
 
         void OneFactorOperator::SpecificTimeSetter::setTime(Time t,
             TridiagonalOperator& op) const {
@@ -47,11 +48,9 @@ namespace QuantLib {
             for (Size i=0; i<length; i++) {
                 double x = x0_ + dx_*i;
 
-                Rate r = process_->shortRate(t, x);
-                double mu = process_->drift(t, x);
-                double sigma = process_->diffusion(t, x);
-//                std::cout << t << " " << x << " -> " << r << " " << mu << " " << sigma << std::endl;
-
+                Rate r = dynamics_->shortRate(t, x);
+                double mu = dynamics_->process()->drift(t, x);
+                double sigma = dynamics_->process()->diffusion(t, x);
 
                 double sigma2 = sigma*sigma;
                 double pdown = (- sigma2/(2.0*dx_*dx_) ) + mu/(2.0*dx_);

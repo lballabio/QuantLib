@@ -23,34 +23,32 @@
 #ifndef quantlib_optimization_criteria_h
 #define quantlib_optimization_criteria_h
 
-/*!
-  class to gather criteria to end optimization process :
-  - stationnary point
-  - stationnary gradient
-  - maximum number of iterations
-  ....
-*/
-
 namespace QuantLib {
 
     namespace Optimization {
 
-        class OptimizationEndCriteria {
+        /*!
+          class to gather criteria to end optimization process :
+          - stationnary point
+          - stationnary gradient
+          - maximum number of iterations
+          ....
+        */
+        class EndCriteria {
           public:
-            enum EndCriteria { maxIter = 1, statPt = 2, statGd = 3 };
+            enum Type { maxIter = 1, statPt = 2, statGd = 3 };
 
             //! default constructor
-            inline OptimizationEndCriteria ();
+            inline EndCriteria ();
             //! initialization constructor
-            inline OptimizationEndCriteria (int maxIteration, double epsilon);
+            inline EndCriteria (int maxIteration, double epsilon);
             //! copy constructor
-            inline OptimizationEndCriteria (const OptimizationEndCriteria& oec);
+            inline EndCriteria (const EndCriteria& oec);
             //! destructor
-            inline ~OptimizationEndCriteria () {}
+            inline ~EndCriteria () {}
 
             //! assignement operator
-            inline OptimizationEndCriteria& operator=(
-                const OptimizationEndCriteria& oec);
+            inline EndCriteria& operator=(const EndCriteria& oec);
 
             inline void setPositiveOptimization() {
                 positiveOptimization_ = true;
@@ -122,19 +120,18 @@ namespace QuantLib {
             bool positiveOptimization_;
         };
 
-        inline OptimizationEndCriteria::OptimizationEndCriteria ()
+        inline EndCriteria::EndCriteria ()
         : maxIteration_(100), functionEpsilon_(1e-8), gradientEpsilon_(1e-8),
           maxIterStatPt_(10), statState_(0), endCriteria_(0),
           positiveOptimization_ (false) {}
 
-        inline OptimizationEndCriteria::OptimizationEndCriteria(
+        inline EndCriteria::EndCriteria(
             int maxIteration, double epsilon)
         : maxIteration_ (maxIteration), functionEpsilon_ (epsilon),
           gradientEpsilon_ (epsilon), maxIterStatPt_(maxIteration/10),
           statState_ (0), endCriteria_ (0), positiveOptimization_ (false) {}
 
-        inline OptimizationEndCriteria::OptimizationEndCriteria(
-            const OptimizationEndCriteria & oec)
+        inline EndCriteria::EndCriteria(const EndCriteria& oec)
         : maxIteration_ (oec.maxIteration_),
           functionEpsilon_(oec.functionEpsilon_),
           gradientEpsilon_(oec.gradientEpsilon_),
@@ -143,8 +140,7 @@ namespace QuantLib {
           positiveOptimization_(oec.positiveOptimization_) {
         }
 
-        inline OptimizationEndCriteria& OptimizationEndCriteria::operator=(
-            const OptimizationEndCriteria & oec) {
+        inline EndCriteria& EndCriteria::operator=(const EndCriteria & oec) {
             maxIteration_ = oec.maxIteration_;
             functionEpsilon_ = oec.functionEpsilon_;
             gradientEpsilon_ = oec.gradientEpsilon_;
@@ -155,7 +151,7 @@ namespace QuantLib {
             return (*this);
         }
 
-        inline bool OptimizationEndCriteria::operator()(
+        inline bool EndCriteria::operator()(
             int iteration, double fold, double normgold,
             double fnew, double normgnew, double normdiff) {
             return (

@@ -23,18 +23,18 @@ CORE_OBJS        = calendar.obj$(_D) \
                    solver1d.obj$(_D)
 
 CALENDAR_LIB     = Calendars\Calendars$(_D).lib
-CALIBRATION_LIB  = InterestRateModelling\CalibrationHelpers\CalibrationHelpers$(_D).lib
+CALIBRATION_LIB  = ShortRateModels\CalibrationHelpers\CalibrationHelpers$(_D).lib
 CASHFLOWS_LIB    = CashFlows\CashFlows$(_D).lib
 DAYCOUNTER_LIB   = DayCounters\DayCounters$(_D).lib
 FDM_LIB          = FiniteDifferences\FiniteDifferences$(_D).lib
 FUNCTIONS        = functions\functions$(_D).lib
 INDEXES_LIB      = Indexes\Indexes$(_D).lib
 INSTRUMENTS_LIB  = Instruments\Instruments$(_D).lib
-IRMODELING_LIB   = InterestRateModelling\IRModelling$(_D).lib
+IRMODELING_LIB   = ShortRateModels\IRModelling$(_D).lib
 LATTICES_LIB     = Lattices\Lattices$(_D).lib
 MATH_LIB         = Math\Math$(_D).lib
 MONTECARLO_LIB   = MonteCarlo\MonteCarlo$(_D).lib
-ONEFACTOR_LIB    = InterestRateModelling\OneFactorModels\OneFactorModels$(_D).lib
+ONEFACTOR_LIB    = ShortRateModels\OneFactorModels\OneFactorModels$(_D).lib
 OPTIMIZATION_LIB = Optimization\Optimization$(_D).lib
 PRICER_LIB       = Pricers\Pricers$(_D).lib
 RNG_LIB          = RandomNumbers\RandomNumbers$(_D).lib
@@ -113,11 +113,13 @@ SubLibraries:
     $(MAKE)
     cd ..\Instruments
     $(MAKE)
-    cd ..\InterestRateModelling
+    cd ..\ShortRateModels
     $(MAKE)
     cd CalibrationHelpers
     $(MAKE)
     cd ..\OneFactorModels
+    $(MAKE)
+    cd ..\TwoFactorModels
     $(MAKE)
     cd ..\..\Lattices
     $(MAKE)
@@ -154,11 +156,13 @@ clean::
     $(MAKE) clean
     cd ..\Instruments
     $(MAKE) clean
-    cd ..\InterestRateModelling
+    cd ..\ShortRateModels
     $(MAKE) clean
     cd CalibrationHelpers
     $(MAKE) clean
     cd ..\OneFactorModels
+    $(MAKE) clean
+    cd ..\TwoFactorModels
     $(MAKE) clean
     cd ..\..\Lattices
     $(MAKE) clean
