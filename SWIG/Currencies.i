@@ -33,7 +33,7 @@
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
-%echo "Warning: this is a Python module!!"
+%echo "Warning: Currencies is a Python module!!"
 %echo "Exporting it to any other language is not advised"
 %echo "as it could lead to unpredicted results."
 #endif
@@ -52,35 +52,35 @@ typedef Handle<Currency> CurrencyHandle;
 // export Handle<Currency>
 %name(Currency) class CurrencyHandle {
   public:
-	// no constructor - forbid explicit construction
-	~CurrencyHandle();
+    // no constructor - forbid explicit construction
+    ~CurrencyHandle();
 };
 
 // replicate the Currency interface
 %addmethods CurrencyHandle {
-	CalendarHandle settlementCalendar() {
-		return (*self)->settlementCalendar();
-	}
-	int settlementDays() {
-		return (*self)->settlementDays();
-	}
-	Date settlementDate(const Date& d) {
-		return (*self)->settlementDate(d);
-	}
-	#if defined (SWIGPYTHON)
-	String __str__() {
-		return (*self)->name()+" currency";
-	}
-	String __repr__() {
-		return "<"+(*self)->name()+" currency>";
-	}
-	int __cmp__(const CurrencyHandle& other) {
-		return ((*self) == other ? 0 : 1);
-	}
-	int __nonzero__() {
-		return (IsNull(*self) ? 0 : 1);
-	}
-	#endif
+    CalendarHandle settlementCalendar() {
+        return (*self)->settlementCalendar();
+    }
+    int settlementDays() {
+        return (*self)->settlementDays();
+    }
+    Date settlementDate(const Date& d) {
+        return (*self)->settlementDate(d);
+    }
+    #if defined (SWIGPYTHON)
+    String __str__() {
+        return (*self)->name()+" currency";
+    }
+    String __repr__() {
+        return "<"+(*self)->name()+" currency>";
+    }
+    int __cmp__(const CurrencyHandle& other) {
+        return ((*self) == other ? 0 : 1);
+    }
+    int __nonzero__() {
+        return (IsNull(*self) ? 0 : 1);
+    }
+    #endif
 }
 
 // actual currencies
@@ -98,30 +98,51 @@ using QuantLib::Currencies::DKK;
 using QuantLib::Currencies::JPY;
 using QuantLib::Currencies::SEK;
 
-CurrencyHandle NewEUR()		{ return CurrencyHandle(new EUR); }
-CurrencyHandle NewUSD()		{ return CurrencyHandle(new USD); }
-CurrencyHandle NewGBP()		{ return CurrencyHandle(new GBP); }
-CurrencyHandle NewDEM()		{ return CurrencyHandle(new DEM); }
-CurrencyHandle NewITL()		{ return CurrencyHandle(new ITL); }
-CurrencyHandle NewAUD()		{ return CurrencyHandle(new AUD); }
-CurrencyHandle NewCAD()		{ return CurrencyHandle(new CAD); }
-CurrencyHandle NewCHF()		{ return CurrencyHandle(new CHF); }
-CurrencyHandle NewDKK()		{ return CurrencyHandle(new DKK); }
-CurrencyHandle NewJPY()		{ return CurrencyHandle(new JPY); }
-CurrencyHandle NewSEK()		{ return CurrencyHandle(new SEK); }
+CurrencyHandle NewEUR()        { return CurrencyHandle(new EUR); }
+CurrencyHandle NewUSD()        { return CurrencyHandle(new USD); }
+CurrencyHandle NewGBP()        { return CurrencyHandle(new GBP); }
+CurrencyHandle NewDEM()        { return CurrencyHandle(new DEM); }
+CurrencyHandle NewITL()        { return CurrencyHandle(new ITL); }
+CurrencyHandle NewAUD()        { return CurrencyHandle(new AUD); }
+CurrencyHandle NewCAD()        { return CurrencyHandle(new CAD); }
+CurrencyHandle NewCHF()        { return CurrencyHandle(new CHF); }
+CurrencyHandle NewDKK()        { return CurrencyHandle(new DKK); }
+CurrencyHandle NewJPY()        { return CurrencyHandle(new JPY); }
+CurrencyHandle NewSEK()        { return CurrencyHandle(new SEK); }
 %}
 
-%name(EUR)	CurrencyHandle NewEUR();
-%name(USD)	CurrencyHandle NewUSD();
-%name(GBP)	CurrencyHandle NewGBP();
-%name(DEM)	CurrencyHandle NewDEM();
-%name(ITL)	CurrencyHandle NewITL();
-%name(AUD)	CurrencyHandle NewAUD();
-%name(CAD)	CurrencyHandle NewCAD();
-%name(CHF)	CurrencyHandle NewCHF();
-%name(DKK)	CurrencyHandle NewDKK();
-%name(JPY)	CurrencyHandle NewJPY();
-%name(SEK)	CurrencyHandle NewSEK();
+%name(EUR)    CurrencyHandle NewEUR();
+%name(USD)    CurrencyHandle NewUSD();
+%name(GBP)    CurrencyHandle NewGBP();
+%name(DEM)    CurrencyHandle NewDEM();
+%name(ITL)    CurrencyHandle NewITL();
+%name(AUD)    CurrencyHandle NewAUD();
+%name(CAD)    CurrencyHandle NewCAD();
+%name(CHF)    CurrencyHandle NewCHF();
+%name(DKK)    CurrencyHandle NewDKK();
+%name(JPY)    CurrencyHandle NewJPY();
+%name(SEK)    CurrencyHandle NewSEK();
+
+// string-based factory 
+
+%inline %{
+    CurrencyHandle makeCurrency(const String& name) {
+        String s = StringFormatter::toUppercase(name);
+        if (s == "EUR")      return Handle<Currency>(new EUR);
+        else if (s == "USD") return Handle<Currency>(new USD);
+        else if (s == "GBP") return Handle<Currency>(new GBP);
+        else if (s == "DEM") return Handle<Currency>(new DEM);
+        else if (s == "ITL") return Handle<Currency>(new ITL);
+        else if (s == "AUD") return Handle<Currency>(new AUD);
+        else if (s == "CAD") return Handle<Currency>(new CAD);
+        else if (s == "CHF") return Handle<Currency>(new CHF);
+        else if (s == "JPY") return Handle<Currency>(new JPY);
+        else if (s == "DKK") return Handle<Currency>(new DKK);
+        else if (s == "SEK") return Handle<Currency>(new SEK);
+        else                 throw QuantLib::Error("Unknown currency");
+    }
+%}
+
 
 // typemap Python list of currency handles to std::vector<Handle<Currency> >
 
@@ -131,46 +152,46 @@ typedef std::vector<Handle<Currency> > CurrencyHandleVector;
 
 %typemap(python,in) CurrencyHandleVector, CurrencyHandleVector *, 
   const CurrencyHandleVector & {
-	if (PyTuple_Check($source)) {
-		int size = PyTuple_Size($source);
-		$target = new std::vector<CurrencyHandle>(size);
-		for (int i=0; i<size; i++) {
-			CurrencyHandle* d;
-			PyObject* o = PyTuple_GetItem($source,i);
-			if ((SWIG_ConvertPtr(o,(void **) &d,
-			  (swig_type_info *)SWIG_TypeQuery("CurrencyHandle *"),1)) != -1) {
-				(*$target)[i] = *d;
-			} else {
-				PyErr_SetString(PyExc_TypeError,
-				  "tuple must contain currencies");
-				delete $target;
-				return NULL;
-			}
-		}
-	} else if (PyList_Check($source)) {
-		int size = PyList_Size($source);
-		$target = new std::vector<CurrencyHandle>(size);
-		for (int i=0; i<size; i++) {
-			CurrencyHandle* d;
-			PyObject* o = PyList_GetItem($source,i);
-			if ((SWIG_ConvertPtr(o,(void **) &d,
-			  (swig_type_info *)SWIG_TypeQuery("CurrencyHandle *"),1)) != -1) {
-				(*$target)[i] = *d;
-			} else {
-				PyErr_SetString(PyExc_TypeError,"list must contain currencies");
-				delete $target;
-				return NULL;
-			}
-		}
-	} else {
-		PyErr_SetString(PyExc_TypeError,"not a sequence");
-		return NULL;
-	}
+    if (PyTuple_Check($source)) {
+        int size = PyTuple_Size($source);
+        $target = new std::vector<CurrencyHandle>(size);
+        for (int i=0; i<size; i++) {
+            CurrencyHandle* d;
+            PyObject* o = PyTuple_GetItem($source,i);
+            if ((SWIG_ConvertPtr(o,(void **) &d,
+              (swig_type_info *)SWIG_TypeQuery("CurrencyHandle *"),1)) != -1) {
+                (*$target)[i] = *d;
+            } else {
+                PyErr_SetString(PyExc_TypeError,
+                  "tuple must contain currencies");
+                delete $target;
+                return NULL;
+            }
+        }
+    } else if (PyList_Check($source)) {
+        int size = PyList_Size($source);
+        $target = new std::vector<CurrencyHandle>(size);
+        for (int i=0; i<size; i++) {
+            CurrencyHandle* d;
+            PyObject* o = PyList_GetItem($source,i);
+            if ((SWIG_ConvertPtr(o,(void **) &d,
+              (swig_type_info *)SWIG_TypeQuery("CurrencyHandle *"),1)) != -1) {
+                (*$target)[i] = *d;
+            } else {
+                PyErr_SetString(PyExc_TypeError,"list must contain currencies");
+                delete $target;
+                return NULL;
+            }
+        }
+    } else {
+        PyErr_SetString(PyExc_TypeError,"not a sequence");
+        return NULL;
+    }
 };
 
 %typemap(python,freearg) CurrencyHandleVector, CurrencyHandleVector *, 
   const CurrencyHandleVector & {
-	delete $source;
+    delete $source;
 };
 
 
