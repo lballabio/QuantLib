@@ -41,6 +41,7 @@ namespace QuantLib {
                 if (t >= 0.0 && isOnTime(t))
                     applyExerciseCondition();
             }
+            break;
           default:
             QL_FAIL("invalid exercise type");
         }
