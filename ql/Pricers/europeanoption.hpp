@@ -55,10 +55,10 @@ namespace QuantLib {
             void setVolatility(double newVolatility);
             void setRiskFreeRate(Rate newRate);
             void setDividendYield(Rate newDividendYield);
+            double beta() const;
           private:
             static const Math::CumulativeNormalDistribution f_;
             double alpha() const;
-            double beta() const;
             double standardDeviation() const;
             double D1() const;
             double D2() const;
