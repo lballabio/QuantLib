@@ -703,6 +703,14 @@ SOURCE=.\ql\Instruments\core.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\europeanoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\europeanoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\forwardvanillaoption.cpp
 # End Source File
 # Begin Source File

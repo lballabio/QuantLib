@@ -7,23 +7,23 @@
 CFG=testsuite - Win32 Debug SingleThread
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "testsuite.mak".
-!MESSAGE 
+!MESSAGE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "testsuite.mak" CFG="testsuite - Win32 Debug SingleThread"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "testsuite - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Release MTDLL" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug MTDLL" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Release SingleThread" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug SingleThread" (based on "Win32 (x86) Console Application")
-!MESSAGE 
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -98,8 +98,8 @@ PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_inf
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "testsuite___Win32_Release_MTDLL"
-# PROP BASE Intermediate_Dir "testsuite___Win32_Release_MTDLL"
+# PROP BASE Output_Dir "ReleaseMTDLL"
+# PROP BASE Intermediate_Dir "ReleaseMTDLL"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
@@ -116,8 +116,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 cppunit.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"..\lib\Win32\VisualStudio\\"
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"..\lib"
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /debug /machine:I386 /libpath:"..\lib"
 # Begin Special Build Tool
 TargetDir=.\build\ReleaseMTDLL
 TargetName=testsuite
@@ -130,8 +130,8 @@ PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_inf
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "testsuite___Win32_Debug_MTDLL"
-# PROP BASE Intermediate_Dir "testsuite___Win32_Debug_MTDLL"
+# PROP BASE Output_Dir "DebugMTDLL"
+# PROP BASE Intermediate_Dir "DebugMTDLL"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
@@ -148,7 +148,7 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 cppunitd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\lib\Win32\VisualStudio\\"
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\lib"
 # Begin Special Build Tool
 TargetDir=.\build\DebugMTDLL
@@ -162,8 +162,8 @@ PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_inf
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "testsuite___Win32_Release_SingleThread"
-# PROP BASE Intermediate_Dir "testsuite___Win32_Release_SingleThread"
+# PROP BASE Output_Dir "ReleaseST"
+# PROP BASE Intermediate_Dir "ReleaseST"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
@@ -194,8 +194,8 @@ PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_inf
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "testsuite___Win32_Debug_SingleThread"
-# PROP BASE Intermediate_Dir "testsuite___Win32_Debug_SingleThread"
+# PROP BASE Output_Dir "DebugST"
+# PROP BASE Intermediate_Dir "DebugST"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
@@ -222,7 +222,7 @@ PostBuild_Desc=Auto run test
 PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=no --catch_system_errors=no
 # End Special Build Tool
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 

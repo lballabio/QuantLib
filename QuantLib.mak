@@ -154,6 +154,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -529,6 +531,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -540,7 +543,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\basicdataformatters.sbr"
+	"$(INTDIR)\europeanoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -700,6 +703,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -711,7 +715,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\basicdataformatters.obj"
+	"$(INTDIR)\europeanoption.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -843,6 +847,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -1219,6 +1225,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -1230,7 +1237,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\basicdataformatters.sbr"
+	"$(INTDIR)\europeanoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1390,6 +1397,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -1401,7 +1409,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\basicdataformatters.obj"
+	"$(INTDIR)\europeanoption.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1533,6 +1541,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -1908,6 +1918,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -1919,7 +1930,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\basicdataformatters.sbr"
+	"$(INTDIR)\europeanoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2079,6 +2090,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -2090,7 +2102,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\basicdataformatters.obj"
+	"$(INTDIR)\europeanoption.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2222,6 +2234,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -2598,6 +2612,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -2609,7 +2624,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\basicdataformatters.sbr"
+	"$(INTDIR)\europeanoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2769,6 +2784,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -2780,7 +2796,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\basicdataformatters.obj"
+	"$(INTDIR)\europeanoption.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2912,6 +2928,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -3287,6 +3305,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -3298,7 +3317,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\basicdataformatters.sbr"
+	"$(INTDIR)\europeanoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3458,6 +3477,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -3469,7 +3489,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\basicdataformatters.obj"
+	"$(INTDIR)\europeanoption.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3601,6 +3621,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -3977,6 +3999,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -3988,7 +4011,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\basicdataformatters.sbr"
+	"$(INTDIR)\europeanoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4148,6 +4171,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -4159,7 +4183,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\basicdataformatters.obj"
+	"$(INTDIR)\europeanoption.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4449,6 +4473,12 @@ SOURCE=.\ql\Instruments\basketoption.cpp
 SOURCE=.\ql\Instruments\capfloor.cpp
 
 "$(INTDIR)\capfloor.obj"	"$(INTDIR)\capfloor.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Instruments\europeanoption.cpp
+
+"$(INTDIR)\europeanoption.obj"	"$(INTDIR)\europeanoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
