@@ -69,6 +69,7 @@ namespace QuantLib {
             mutable RandomAccessIterator1 position_;
             RandomAccessIterator1 xBegin_, xEnd_;
             RandomAccessIterator2 yBegin_;
+            Size n_;
         };
 
         // inline definitions
@@ -77,11 +78,15 @@ namespace QuantLib {
         inline Interpolation<I1,I2>::Interpolation(const I1& xBegin,
             const I1& xEnd, const I2& yBegin)
         : isOutOfRange_(false), position_(xBegin),
-          xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE(xEnd_-xBegin_ >= 2,
-                    "not enough points to interpolate");
-            #endif
+          xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin), n_(xEnd-xBegin) {
+            QL_REQUIRE(n_ >= 2,
+                "not enough points to interpolate");
+            I1 xi = xBegin_+1;
+            for (int i=1; i<n_; i++, xi++) {
+                QL_REQUIRE(double(*xi-*(xi-1)) > 0.0,
+                    "Interpolation::Interpolation : "
+                    "x[i] not sorted");
+            }
         }
 
         template <class I1, class I2>

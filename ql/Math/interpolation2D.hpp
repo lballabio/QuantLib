@@ -92,12 +92,25 @@ namespace QuantLib {
             const I2& yBegin, const I2& yEnd, const M& data)
         : isOutOfRange_(false), xPos_(xBegin), yPos_(yBegin), xBegin_(xBegin),
           xEnd_(xEnd), yBegin_(yBegin), yEnd_(yEnd), data_(data) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE(xEnd_-xBegin_ >= 2,
-                    "not enough columns to interpolate");
-                QL_REQUIRE(yEnd_-yBegin_ >= 2,
-                    "not enough rows to interpolate");
-            #endif
+            int i;
+
+            QL_REQUIRE(xEnd_-xBegin_ >= 2,
+                "not enough columns to interpolate");
+            I1 xi = xBegin_+1;
+            for (i=1; i<xEnd_-xBegin_; i++, xi++) {
+                QL_REQUIRE(double(*xi-*(xi-1)) > 0.0,
+                    "Interpolation::Interpolation : "
+                    "x[i] not sorted");
+            }
+
+            QL_REQUIRE(yEnd_-yBegin_ >= 2,
+                "not enough rows to interpolate");
+            I2 yi = yBegin_+1;
+            for (i=1; i<yEnd_-yBegin_; i++, yi++) {
+                QL_REQUIRE(double(*yi-*(yi-1)) > 0.0,
+                    "Interpolation::Interpolation : "
+                    "y[i] not sorted");
+            }
         }
 
         template <class I1, class I2, class M>

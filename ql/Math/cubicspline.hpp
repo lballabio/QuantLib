@@ -73,19 +73,15 @@ namespace QuantLib {
         : Interpolation<I1,I2>(xBegin,xEnd,yBegin), a_(xEnd-xBegin-1),
           b_(xEnd-xBegin-1), c_(xEnd-xBegin-1), d2y_(xEnd-xBegin),
           isNRapproach_(true) {
-            Size n = xEnd_-xBegin_;
-            QL_REQUIRE(n >= 4,
-                "not enough points for cubic spline interpolation");
-            FiniteDifferences::TridiagonalOperator L(n);
 
             if (isNRapproach_) {
                 // calculate cubic spline coefficients
-                std::vector<result_type> u(n-1);
+                std::vector<result_type> u(n_-1);
                 d2y_[0] = u[0] = result_type();
                 I1 xi = xBegin_+1;
                 I2 yi = yBegin_+1;
                 int i;
-                for (i=1; i<n-1; i++,xi++,yi++) {
+                for (i=1; i<n_-1; i++,xi++,yi++) {
                     double sig = double(*xi-*(xi-1))/double(*(xi+1)-*(xi-1));
                     result_type p = sig*d2y_[i-1]+2.0;
                     d2y_[i] = (sig-1)/p;
@@ -94,11 +90,15 @@ namespace QuantLib {
                     u[i] = (6*u[i]/double(*(xi+1)-*(xi-1))-sig*u[i-1])/p;
                 }
 
-                d2y_[n-1] = result_type();
-                for (i=n-2; i>=0; i--)
+                d2y_[n_-1] = result_type();
+                for (i=n_-2; i>=0; i--)
                     d2y_[i] = d2y_[i]*d2y_[i+1] + u[i];
             } else {
-                Array tmp(n);
+                QL_REQUIRE(n_ >= 4,
+                    "CubicSpline::CubicSpline : "
+                    "not enough points for cubic spline interpolation");
+                FiniteDifferences::TridiagonalOperator L(n_);
+                Array tmp(n_);
 
                 argument_type dx01  = xBegin_[1] - xBegin_[0],
                               dx12  = xBegin_[2] - xBegin_[1],
@@ -111,7 +111,7 @@ namespace QuantLib {
                            dx01*dx01*dy12/dx12)/dx02;
 
                 Size i;
-                for (i=1; i<n-1; i++) {
+                for (i=1; i<n_-1; i++) {
                     argument_type dxp = xBegin_[i+1] - xBegin_[i],
                                   dxm = xBegin_[i]   - xBegin_[i-1];
                     result_type   dyp = yBegin_[i+1] - yBegin_[i],
@@ -120,19 +120,19 @@ namespace QuantLib {
                     tmp[i] = 3.0*(dxp*dym/dxm + dxm*dyp/dxp);
                 }
 
-                argument_type dxN32 = xBegin_[n-2] - xBegin_[n-3],
-                              dxN21 = xBegin_[n-1] - xBegin_[n-2],
-                              dxN31 = xBegin_[n-1] - xBegin_[n-3];
-                result_type   dyN32 = yBegin_[n-2] - yBegin_[n-3],
-                              dyN21 = yBegin_[n-1] - yBegin_[n-2];
+                argument_type dxN32 = xBegin_[n_-2] - xBegin_[n_-3],
+                              dxN21 = xBegin_[n_-1] - xBegin_[n_-2],
+                              dxN31 = xBegin_[n_-1] - xBegin_[n_-3];
+                result_type   dyN32 = yBegin_[n_-2] - yBegin_[n_-3],
+                              dyN21 = yBegin_[n_-1] - yBegin_[n_-2];
 
                 L.setLastRow(dxN31,dxN21);
-                tmp[n-1] = ((dxN21+2.0*dxN31)*dxN32*dyN21/dxN21 +
+                tmp[n_-1] = ((dxN21+2.0*dxN31)*dxN32*dyN21/dxN21 +
                              dxN21*dxN21*dyN32/dxN32)/dxN31;
 
                 tmp = L.solveFor(tmp);
 
-                for (i=0; i<n-1; i++) {
+                for (i=0; i<n_-1; i++) {
                     argument_type dx  = xBegin_[i+1]-xBegin_[i];
                     result_type   dy  = yBegin_[i+1]-yBegin_[i];
 
