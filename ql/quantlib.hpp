@@ -132,6 +132,7 @@
 #include <ql/Math/interpolation2D.hpp>
 #include <ql/Math/lexicographicalview.hpp>
 #include <ql/Math/linearinterpolation.hpp>
+#include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/multivariateaccumulator.hpp>
 #include <ql/Math/normaldistribution.hpp>
@@ -242,6 +243,8 @@
 #include <ql/Solvers1D/ridder.hpp>
 #include <ql/Solvers1D/secant.hpp>
 
+#include <ql/TermStructures/compoundforward.hpp>
+#include <ql/TermStructures/discountcurve.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/TermStructures/piecewiseflatforward.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>

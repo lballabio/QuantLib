@@ -6,7 +6,9 @@ includedir = $(prefix)/include/ql/TermStructures
 
 include_HEADERS = \
     affinetermstructure.hpp \
-	piecewiseflatforward.hpp \
+    compoundforward.hpp \
+    discountcurve.hpp \
+		piecewiseflatforward.hpp \
 	ratehelpers.hpp \
     flatforward.hpp
 
@@ -14,6 +16,8 @@ EXTRA_DIST=makefile.mak
 
 libTermStructures_la_SOURCES = \
     affinetermstructure.cpp \
+	compoundforward.cpp \
+	discountcurve.cpp \
     piecewiseflatforward.cpp \
     ratehelpers.cpp
 
