@@ -361,10 +361,6 @@
         typedef typename Iterator::iterator_category    iterator_category;
     };
     #define QL_ITERATOR_TRAITS  __quantlib_iterator_traits
-    #define MUST_SPECIALIZE_ITERATOR_TRAITS
-#endif
-
-#if defined(MUST_SPECIALIZE_ITERATOR_TRAITS)
     #define QL_SPECIALIZE_ITERATOR_TRAITS(T) \
     template<> \
     struct QL_ITERATOR_TRAITS<T*> { \
@@ -382,19 +378,39 @@
         typedef const T&          reference; \
         typedef std::random_access_iterator_tag  iterator_category; \
     };
-    // actual specializations
-    #if !defined(__DOXYGEN__)
-    QL_SPECIALIZE_ITERATOR_TRAITS(bool)
-    QL_SPECIALIZE_ITERATOR_TRAITS(char)
-    QL_SPECIALIZE_ITERATOR_TRAITS(short)
-    QL_SPECIALIZE_ITERATOR_TRAITS(int)
-    QL_SPECIALIZE_ITERATOR_TRAITS(long)
-    QL_SPECIALIZE_ITERATOR_TRAITS(float)
-    QL_SPECIALIZE_ITERATOR_TRAITS(double)
-    QL_SPECIALIZE_ITERATOR_TRAITS(long double)
-    #endif
+#elif defined(SPECIALIZE_MS_ITERATOR_TRAITS)
+    #define QL_SPECIALIZE_ITERATOR_TRAITS(T) \
+    namespace std { \
+        template<> \
+        struct iterator_traits<T*> { \
+            typedef T           value_type; \
+            typedef ptrdiff_t   difference_type; \
+            typedef T*          pointer; \
+            typedef T&          reference; \
+            typedef std::random_access_iterator_tag  iterator_category; \
+        }; \
+        template<> \
+        struct iterator_traits<const T*> { \
+            typedef T           value_type; \
+            typedef ptrdiff_t   difference_type; \
+            typedef const T*          pointer; \
+            typedef const T&          reference; \
+            typedef std::random_access_iterator_tag  iterator_category; \
+        }; \
+    }
 #else
     #define QL_SPECIALIZE_ITERATOR_TRAITS(T)
+#endif
+// actual specializations
+#if !defined(__DOXYGEN__)
+QL_SPECIALIZE_ITERATOR_TRAITS(bool)
+QL_SPECIALIZE_ITERATOR_TRAITS(char)
+QL_SPECIALIZE_ITERATOR_TRAITS(short)
+QL_SPECIALIZE_ITERATOR_TRAITS(int)
+QL_SPECIALIZE_ITERATOR_TRAITS(long)
+QL_SPECIALIZE_ITERATOR_TRAITS(float)
+QL_SPECIALIZE_ITERATOR_TRAITS(double)
+QL_SPECIALIZE_ITERATOR_TRAITS(long double)
 #endif
 
 /*! \def QL_REVERSE_ITERATOR
