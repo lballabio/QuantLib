@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,18 +29,149 @@ using namespace QuantLib;
 
 namespace {
 
-    const double RPN15A_x[] = { 7.99,       8.09,       8.19,      8.7,
-             9.2,     10.0,     12.0,     15.0,     20.0 };
-    const double RPN15A_y[] = {  0.0, 2.76429e-5, 4.37498e-5, 0.169183,
-        0.469428, 0.943740, 0.998636, 0.999919, 0.999994 };
+    std::vector<double> xRange(double start, double end, Size points) {
+        std::vector<double> x(points);
+        double dx = (end-start)/(points-1);
+        for (Size i=0; i<points; i++)
+            x[i] = start+i*dx;
+        return x;
+    }
 
-    const double generic_x[] = { 0.0, 1.0, 3.0, 4.0 };
-    const double generic_y[] = { 0.0, 0.0, 2.0, 2.0 };
-    const double generic_natural_y2[] = { 0.0, 1.5, -1.5, 0.0 };
-    const double generic_natural_a[] = { -0.25,  0.50,  0.50 };
-    const double generic_natural_b[] = {  0.00,  0.75, -0.75 };
-    const double generic_natural_c[] = {  0.25, -0.25,  0.25 };
+    std::vector<double> gaussian(const std::vector<double>& x) {
+        std::vector<double> y(x.size());
+        for (Size i=0; i<x.size(); i++)
+            y[i] = QL_EXP(-x[i]*x[i]);
+        return y;
+    }
 
+    template <class I, class J, class K, class L>
+    void checkValues(const char* type,
+                     const CubicSplineInterpolation<I,J>& spline,
+                     K xBegin, K xEnd, L yBegin) {
+        double tolerance = 1.0e-15;
+        while (xBegin != xEnd) {
+            double interpolated = spline(*xBegin);
+            if (QL_FABS(interpolated-*yBegin) > tolerance) {
+                CPPUNIT_FAIL(std::string(type) + 
+                             " interpolation failed at x = " +
+                             DoubleFormatter::toString(*xBegin) +
+                             "\n    interpolated value: " +
+                             DoubleFormatter::toExponential(interpolated) + 
+                             "\n    expected value:     " +
+                             DoubleFormatter::toExponential(*yBegin));
+            }
+            ++xBegin; ++yBegin;
+        }
+    }
+
+    template <class I, class J, class K>
+    void checkNull1stDerivative(const char* type,
+                                const CubicSplineInterpolation<I,J>& spline,
+                                K xBegin, K xEnd) {
+        double tolerance = 1.0e-16;
+        double x = *xBegin;
+        double interpolated = spline.derivative(x);
+        if (QL_FABS(interpolated) > tolerance) {
+            CPPUNIT_FAIL(std::string(type) + 
+                         " interpolation first derivative failure\n"
+                         "at x="
+                         + DoubleFormatter::toString(x) +
+                         "\n    interpolated value: "
+                         + DoubleFormatter::toString(interpolated) +
+                         "\n    expected value:     "
+                         + DoubleFormatter::toString(0.0));
+        }
+        x = *(xEnd-1);
+        interpolated = spline.derivative(x);
+        if (QL_FABS(interpolated) > tolerance) {
+            CPPUNIT_FAIL(std::string(type) +
+                         " interpolation first derivative failure\n"
+                         "at x="
+                         + DoubleFormatter::toString(x) +
+                         "\n    interpolated value: "
+                         + DoubleFormatter::toString(interpolated) +
+                         "\n    expected value:     "
+                         + DoubleFormatter::toString(0.0));
+        }
+    }
+
+    template <class I, class J, class K>
+    void checkNull2ndDerivative(const char* type,
+                                const CubicSplineInterpolation<I,J>& spline,
+                                K xBegin, K xEnd) {
+        double tolerance = 1.0e-16;
+        double x = *xBegin;
+        double interpolated = spline.secondDerivative(x);
+        if (QL_FABS(interpolated) > tolerance) {
+            CPPUNIT_FAIL(std::string(type) + 
+                         " interpolation second derivative failure\n"
+                         "at x="
+                         + DoubleFormatter::toString(x) +
+                         "\n    interpolated value: "
+                         + DoubleFormatter::toString(interpolated) +
+                         "\n    expected value:     "
+                         + DoubleFormatter::toString(0.0));
+        }
+        x = *(xEnd-1);
+        interpolated = spline.secondDerivative(x);
+        if (QL_FABS(interpolated) > tolerance) {
+            CPPUNIT_FAIL(std::string(type) +
+                         " interpolation second derivative failure\n"
+                         "at x="
+                         + DoubleFormatter::toString(x) +
+                         "\n    interpolated value: "
+                         + DoubleFormatter::toString(interpolated) +
+                         "\n    expected value:     "
+                         + DoubleFormatter::toString(0.0));
+        }
+    }
+
+    template <class I, class J>
+    void checkNull3rdDerivative(const char* type,
+                                const CubicSplineInterpolation<I,J>& spline,
+                                Size points) {
+        Size i=0;
+        double tolerance = 1.0e-14;
+        const std::vector<double>& c = spline.cCoefficients();
+        if (QL_FABS(c[i]-c[i+1]) > tolerance) {
+            CPPUNIT_FAIL(std::string(type) +
+                         " interpolation failure"
+                         "\n    cubic coefficient of the first"
+                         " polinomial is "
+                         + DoubleFormatter::toString(c[i]) +
+                         "\n    cubic coefficient of the second"
+                         " polinomial is "
+                         + DoubleFormatter::toString(c[i+1]));
+        }
+        i = points-3;
+        if (QL_FABS(c[i]-c[i+1]) > tolerance) {
+            CPPUNIT_FAIL(std::string(type) +
+                         " interpolation failure"
+                         "\n    cubic coefficient of the 2nd to last"
+                         " polinomial is "
+                         + DoubleFormatter::toString(c[i]) +
+                         "\n    cubic coefficient of the last"
+                         " polinomial is "
+                         + DoubleFormatter::toString(c[i+1]));
+        }
+    }
+
+    template <class I, class J>
+    void checkSymmetry(const char* type,
+                       const CubicSplineInterpolation<I,J>& spline,
+                       double xMin) {
+        double tolerance = 1.0e-15;
+        for (double x = xMin; x < 0.0; x += 0.1) {
+            double y1 = spline(x), y2 = spline(-x);
+            if (QL_FABS(y1-y2) > tolerance) {
+                CPPUNIT_FAIL(std::string(type) +
+                             " interpolation not symmetric"
+                             "\n    x = "   + DoubleFormatter::toString(x) +
+                             "\n    g(x) = " + DoubleFormatter::toString(y1) +
+                             "\n    g(-x) = " + DoubleFormatter::toString(y1));
+            }
+        }
+    }
 
     template <class F>
     class errorFunction : public std::unary_function<double,double> {
@@ -47,198 +179,81 @@ namespace {
           errorFunction(const F& f) : f_(f) {}
         // instead of the hardcoded x-QL_EXP(-x*x), should be f(x)-QL_EXP(-x*x)
         // where f(x) is the interpolant
-        double operator()(double x) const { double temp = f_(x)-QL_EXP(-x*x); return temp*temp; }
+        double operator()(double x) const { 
+            double temp = f_(x)-QL_EXP(-x*x); 
+            return temp*temp; 
+        }
       private:
         F f_;
     };
 
- }
+    template <class F>
+    errorFunction<F> make_error_function(const F& f) {
+        return errorFunction<F>(f);
+    }
+
+}
 
 void InterpolationTest::testSplineErrorOnGaussianValues() {
 
-    Size i, n;
+    Size points[] = { 5, 9, 17, 33 };
+    double tolerance[] = { 1.0e-1, 1.0e-2, 1.0e-2, 1.0e-5 };
+
     KronrodIntegral integral(1e-10);
-//    SimpsonIntegral integral(1e-7);
-    std::vector<double> x, y;
 
-    std::cout << std::endl;
+    for (Size i=0; i<LENGTH(points); i++) {
+        Size n = points[i];
+        std::vector<double> x = xRange(-1.7, 1.9, n);
+        std::vector<double> y = gaussian(x);
 
-    n = 5;
-    x = std::vector<double>(n);
-    y = std::vector<double>(n);
-    for (i=0; i<n; i++) {
-        x[i] = -1.7+i*3.6/(n-1);
-        y[i] = QL_EXP(-x[i]*x[i]);
+        // Not-a-knot
+        CubicSplineInterpolation<
+            std::vector<double>::const_iterator,
+            std::vector<double>::const_iterator> f(
+                x.begin(), x.end(),
+                y.begin(),
+                Null<double>(), Null<double>(),
+                Null<double>(), Null<double>(),
+                false);
+        double result = QL_SQRT(integral(make_error_function(f), -1.7, 1.9));
+        if (result > tolerance[i])
+            CPPUNIT_FAIL("Not-a-knot spline interpolation "
+                         "\n    sample points:      " +
+                         IntegerFormatter::toString(n) +
+                         "\n    norm of difference: " +
+                         DoubleFormatter::toExponential(result,1));
+
+        // MC not-a-knot
+        f = CubicSplineInterpolation<
+            std::vector<double>::const_iterator,
+            std::vector<double>::const_iterator>(
+                x.begin(), x.end(),
+                y.begin(),
+                Null<double>(), Null<double>(),
+                Null<double>(), Null<double>(),
+                true);
+        result = QL_SQRT(integral(make_error_function(f), -1.7, 1.9));
+        if (result > tolerance[i])
+            CPPUNIT_FAIL("MC Not-a-knot spline interpolation "
+                         "\n    sample points:      " +
+                         IntegerFormatter::toString(n) +
+                         "\n    norm of difference: " +
+                         DoubleFormatter::toExponential(result,1));
     }
-
-
-    // Not-a-knot spline interpolation
-    CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> interpolant(
-            x.begin(), x.end(),
-            y.begin(),
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
-            false);
-    errorFunction<CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> > myErrorFunction(interpolant); 
-    double result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
-
-    // MC not-a-knot spline interpolation
-    interpolant = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
-            x.begin(), x.end(),
-            y.begin(),
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
-            true);
-    myErrorFunction = errorFunction<CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> >(interpolant); 
-    result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
-
-
-    n = 9;
-    x = std::vector<double>(n);
-    y = std::vector<double>(n);
-    for (i=0; i<n; i++) {
-        x[i] = -1.7+i*3.6/(n-1);
-        y[i] = QL_EXP(-x[i]*x[i]);
-    }
-
-
-    // Not-a-knot spline interpolation
-    interpolant = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
-            x.begin(), x.end(),
-            y.begin(),
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
-            false);
-    myErrorFunction = errorFunction<CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> >(interpolant); 
-    result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
-
-    // MC not-a-knot spline interpolation
-    interpolant = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
-            x.begin(), x.end(),
-            y.begin(),
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
-            true);
-    myErrorFunction = errorFunction<CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> >(interpolant); 
-    result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
-
-
-    n = 17;
-    x = std::vector<double>(n);
-    y = std::vector<double>(n);
-    for (i=0; i<n; i++) {
-        x[i] = -1.7+i*3.6/(n-1);
-        y[i] = QL_EXP(-x[i]*x[i]);
-    }
-
-
-    // Not-a-knot spline interpolation
-    interpolant = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
-            x.begin(), x.end(),
-            y.begin(),
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
-            false);
-    myErrorFunction = errorFunction<CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> >(interpolant); 
-    result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
-
-    // MC not-a-knot spline interpolation
-    interpolant = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
-            x.begin(), x.end(),
-            y.begin(),
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
-            true);
-    myErrorFunction = errorFunction<CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> >(interpolant); 
-    result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
-
-    n = 33;
-    x = std::vector<double>(n);
-    y = std::vector<double>(n);
-    for (i=0; i<n; i++) {
-        x[i] = -1.7+i*3.6/(n-1);
-        y[i] = QL_EXP(-x[i]*x[i]);
-    }
-
-
-    // Not-a-knot spline interpolation
-    interpolant = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
-            x.begin(), x.end(),
-            y.begin(),
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
-            false);
-    myErrorFunction = errorFunction<CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> >(interpolant); 
-    result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
-
-    // MC not-a-knot spline interpolation
-    interpolant = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
-            x.begin(), x.end(),
-            y.begin(),
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
-            true);
-    myErrorFunction = errorFunction<CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> >(interpolant); 
-    result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
-
-
 }
 
 void InterpolationTest::testSplineOnGaussianValues() {
     double interpolated, interpolated2;
     Size i, n = 5;
-    bool allowExtrapolation = false;
 
     std::vector<double> x(n), y(n);
     double x1_bad=-1.7, x2_bad=1.7;
 
-    for (double start = -1.9, j=0; j<2; start+=0.2, j++) { 
-        for (i=0; i<n; i++) {
-            x[i] = start+i*3.6/(n-1);
-            y[i] = QL_EXP(-x[i]*x[i]);
-        }
+    for (double start = -1.9, j=0; j<2; start+=0.2, j++) {
+        x = xRange(start, start+3.6, n);
+        y = gaussian(x);
 
-        // Not-a-knot spline values
+        // Not-a-knot spline
         CubicSplineInterpolation<
             std::vector<double>::const_iterator,
             std::vector<double>::const_iterator> interp(
@@ -247,45 +262,12 @@ void InterpolationTest::testSplineOnGaussianValues() {
                 Null<double>(), Null<double>(),
                 Null<double>(), Null<double>(),
                 false);
-        for (i=0; i<n; i++) {
-            interpolated = interp(x[i], allowExtrapolation);
-            if (QL_FABS(interpolated-y[i])>1e-15) {
-                CPPUNIT_FAIL("Not-a-knot spline interpolation failed at x="
-                    + DoubleFormatter::toString(x[i]) +
-                    "\ninterpolated value:  "
-                    + DoubleFormatter::toExponential(interpolated) +
-                    "\nexpected value:     "
-                    + DoubleFormatter::toExponential(y[i]));
-            }
-        }
-        // Not-a-knot spline third derivative
-        i = 0;
-        if (QL_FABS(interp.cCoefficients()[i]-interp.cCoefficients()[i+1])>1e-15) {
-            CPPUNIT_FAIL("Not-a-knot spline interpolation failure"
-                "\n cubic coefficient of the "
-                + IntegerFormatter::toOrdinal(i+1) +
-                " polinomial is "
-                + DoubleFormatter::toString(interp.cCoefficients()[i]) +
-                "\n cubic coefficient of the "
-                + IntegerFormatter::toOrdinal(i+2) +
-                " polinomial is "
-                + DoubleFormatter::toString(interp.cCoefficients()[i+1])
-                );
-        }
-        i = n-3;
-        if (QL_FABS(interp.cCoefficients()[i]-interp.cCoefficients()[i+1])>1e-15) {
-            CPPUNIT_FAIL("Not-a-knot spline interpolation failure"
-                "\n cubic coefficient of the 2nd to last"
-                " polinomial is "
-                + DoubleFormatter::toString(interp.cCoefficients()[i]) +
-                "\n cubic coefficient of the last"
-                " polinomial is "
-                + DoubleFormatter::toString(interp.cCoefficients()[i+1])
-                );
-        }
-        // Not-a-knot spline good performance
-        interpolated = interp(x1_bad, allowExtrapolation);
-        interpolated2= interp(x2_bad, allowExtrapolation);
+        checkValues("Not-a-knot spline", interp,
+                    x.begin(), x.end(), y.begin());
+        checkNull3rdDerivative("Not-a-knot spline", interp, x.size());
+        // bad performance
+        interpolated = interp(x1_bad);
+        interpolated2= interp(x2_bad);
         if (interpolated>0.0 && interpolated2>0.0 ) {
             CPPUNIT_FAIL("Not-a-knot spline interpolation "
                 "bad performance unverified"
@@ -301,9 +283,7 @@ void InterpolationTest::testSplineOnGaussianValues() {
         }
 
 
-
-
-        // MC not-a-knot spline values
+        // MC not-a-knot spline
         interp = CubicSplineInterpolation<
             std::vector<double>::const_iterator,
             std::vector<double>::const_iterator>(
@@ -312,19 +292,10 @@ void InterpolationTest::testSplineOnGaussianValues() {
                 Null<double>(), Null<double>(),
                 Null<double>(), Null<double>(),
                 true);
-        for (i=0; i<n; i++) {
-            interpolated = interp(x[i], allowExtrapolation);
-            if (QL_FABS(interpolated-y[i])>1e-15) {
-                CPPUNIT_FAIL("MC not-a-knot spline interpolation failed at x="
-                    + DoubleFormatter::toString(x[i]) +
-                    "\ninterpolated value:  "
-                    + DoubleFormatter::toExponential(interpolated) +
-                    "\nexpected value:     "
-                    + DoubleFormatter::toExponential(y[i]));
-            }
-        }
-        // MC not-a-knot spline good performance
-        interpolated = interp(x1_bad, allowExtrapolation);
+        checkValues("MC not-a-knot spline", interp,
+                    x.begin(), x.end(), y.begin());
+        // good performance
+        interpolated = interp(x1_bad);
         if (interpolated<0.0) {
             CPPUNIT_FAIL("MC not-a-knot spline interpolation "
                 "good performance unverified\n"
@@ -334,7 +305,7 @@ void InterpolationTest::testSplineOnGaussianValues() {
                 + DoubleFormatter::toString(interpolated) +
                 "\nexpected value > 0.0");
         }
-        interpolated = interp(x2_bad, allowExtrapolation);
+        interpolated = interp(x2_bad);
         if (interpolated<0.0) {
             CPPUNIT_FAIL("MC not-a-knot spline interpolation "
                 "good performance unverified\n"
@@ -345,61 +316,37 @@ void InterpolationTest::testSplineOnGaussianValues() {
                 "\nexpected value > 0.0");
         }
     }
-
-
 }
 
 
 void InterpolationTest::testSplineOnRPN15AValues() {
+
+    const double RPN15A_x[] = { 
+        7.99,       8.09,       8.19,      8.7,
+        9.2,     10.0,     12.0,     15.0,     20.0 
+    };
+    const double RPN15A_y[] = {
+        0.0, 2.76429e-5, 4.37498e-5, 0.169183,
+        0.469428, 0.943740, 0.998636, 0.999919, 0.999994 
+    };
+
     double interpolated;
     Size i, n = LENGTH(RPN15A_x);
-    bool allowExtrapolation = false;
-    bool monotonicityConstraint = false;
 
-    // Natural spline values
+    // Natural spline
     CubicSplineInterpolation<const double*, const double*> interp(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             Null<double>(), 0.0,
             Null<double>(), 0.0,
-            monotonicityConstraint);
-    for (i=0; i<n; i++) {
-        interpolated = interp(RPN15A_x[i], allowExtrapolation);
-        if (interpolated!=RPN15A_y[i]) {
-            CPPUNIT_FAIL("Natural spline interpolation failed at x="
-                + DoubleFormatter::toString(RPN15A_x[i]) +
-                "\ninterpolated value: "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(RPN15A_y[i]));
-        }
-    }
-    // Natural spline second derivative values
-    i = 0;
-    interpolated = interp.secondDerivative(RPN15A_x[i], allowExtrapolation);
-    if (QL_FABS(interpolated)>1e-17) {
-        CPPUNIT_FAIL("Natural spline interpolation second derivative failure\n"
-            "at x="
-            + DoubleFormatter::toString(RPN15A_x[i]) +
-            "\ninterpolated value: "
-            + DoubleFormatter::toString(interpolated) +
-            "\nexpected value:     "
-            + DoubleFormatter::toString(0.0));
-    }
-    i = n-1;
-    interpolated = interp.secondDerivative(RPN15A_x[i], allowExtrapolation);
-    if (QL_FABS(interpolated)>1e-17) {
-        CPPUNIT_FAIL("Natural spline interpolation second derivative failure\n"
-            "at x="
-            + DoubleFormatter::toString(RPN15A_x[i]) +
-            "\ninterpolated value: "
-            + DoubleFormatter::toString(interpolated) +
-            "\nexpected value:     "
-            + DoubleFormatter::toString(0.0));
-    }
-    // Natural spline poor performance
+            false);
+    checkValues("Natural spline", interp,
+                RPN15A_x, RPN15A_x+n, RPN15A_y);
+    checkNull2ndDerivative("Natural spline", interp,
+                           RPN15A_x, RPN15A_x+n);
+    // poor performance
     double x_bad = 11.0;
-    interpolated = interp(x_bad, allowExtrapolation);
+    interpolated = interp(x_bad);
     if (interpolated<1.0) {
         CPPUNIT_FAIL("Natural spline interpolation "
             "poor performance unverified\n"
@@ -410,49 +357,20 @@ void InterpolationTest::testSplineOnRPN15AValues() {
             "\nexpected value > 1.0");
     }
 
-    // Clamped spline values
+
+    // Clamped spline
     interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             0.0, Null<double>(),
             0.0, Null<double>(),
-            monotonicityConstraint);
-    for (i=0; i<n; i++) {
-        interpolated = interp(RPN15A_x[i], allowExtrapolation);
-        if (interpolated!=RPN15A_y[i]) {
-            CPPUNIT_FAIL("Clamped spline interpolation failed at x="
-                + DoubleFormatter::toString(RPN15A_x[i]) +
-                "\ninterpolated value: "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(RPN15A_y[i]));
-        }
-    }
-    // Clamped spline first derivative values
-    i = 0;
-    interpolated = interp.derivative(RPN15A_x[i], allowExtrapolation);
-    if (QL_FABS(interpolated)>1e-17) {
-        CPPUNIT_FAIL("Clamped spline interpolation first derivative failure\n"
-            "at x="
-            + DoubleFormatter::toString(RPN15A_x[i]) +
-            "\ninterpolated value: "
-            + DoubleFormatter::toString(interpolated) +
-            "\nexpected value:     "
-            + DoubleFormatter::toString(0.0));
-    }
-    i = n-1;
-    interpolated = interp.derivative(RPN15A_x[i], allowExtrapolation);
-    if (QL_FABS(interpolated)>1e-16) {
-        CPPUNIT_FAIL("Clamped spline interpolation first derivative failure\n"
-            "at x="
-            + DoubleFormatter::toString(RPN15A_x[i]) +
-            "\ninterpolated value: "
-            + DoubleFormatter::toString(interpolated) +
-            "\nexpected value:     "
-            + DoubleFormatter::toString(0.0));
-    }
-    // Clamped spline poor performance
-    interpolated = interp(x_bad, allowExtrapolation);
+            false);
+    checkValues("Clamped spline", interp,
+                RPN15A_x, RPN15A_x+n, RPN15A_y);
+    checkNull1stDerivative("Clamped spline", interp,
+                           RPN15A_x, RPN15A_x+n);
+    // poor performance
+    interpolated = interp(x_bad);
     if (interpolated<1.0) {
         CPPUNIT_FAIL("Clamped spline interpolation "
             "poor performance unverified\n"
@@ -464,52 +382,18 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     }
 
 
-
-    // Not-a-knot spline values
+    // Not-a-knot spline
     interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             Null<double>(), Null<double>(),
             Null<double>(), Null<double>(),
-            monotonicityConstraint);
-    for (i=0; i<n; i++) {
-        interpolated = interp(RPN15A_x[i], allowExtrapolation);
-        if (QL_FABS(interpolated-RPN15A_y[i])>1e-15) {
-            CPPUNIT_FAIL("Not-a-knot spline interpolation failed at x="
-                + DoubleFormatter::toString(RPN15A_x[i]) +
-                "\ninterpolated value:  "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(RPN15A_y[i]));
-        }
-    }
-    // Not-a-knot spline third derivative
-    i = 0;
-    if (QL_FABS(interp.cCoefficients()[i]-interp.cCoefficients()[i+1])>1e-15) {
-        CPPUNIT_FAIL("Not-a-knot spline interpolation failure"
-            "\n cubic coefficient of the "
-            + IntegerFormatter::toOrdinal(i+1) +
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i]) +
-            "\n cubic coefficient of the "
-            + IntegerFormatter::toOrdinal(i+2) +
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i+1])
-            );
-    }
-    i = n-3;
-    if (QL_FABS(interp.cCoefficients()[i]-interp.cCoefficients()[i+1])>1e-15) {
-        CPPUNIT_FAIL("Not-a-knot spline interpolation failure"
-            "\n cubic coefficient of the 2nd to last"
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i]) +
-            "\n cubic coefficient of the last"
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i+1])
-            );
-    }
-    // Not-a-knot spline poor performance
-    interpolated = interp(x_bad, allowExtrapolation);
+            false);
+    checkValues("Not-a-knot spline", interp,
+                RPN15A_x, RPN15A_x+n, RPN15A_y);
+    checkNull3rdDerivative("Not-a-knot spline", interp, n);
+    // poor performance
+    interpolated = interp(x_bad);
     if (interpolated<1.0) {
         CPPUNIT_FAIL("Not-a-knot spline interpolation "
             "poor performance unverified\n"
@@ -521,31 +405,17 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     }
 
 
-
-
-
-    monotonicityConstraint = true;
-
     // MC natural spline values
     interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             Null<double>(), 0.0,
             Null<double>(), 0.0,
-            monotonicityConstraint);
-    for (i=0; i<n; i++) {
-        interpolated = interp(RPN15A_x[i], allowExtrapolation);
-        if (interpolated!=RPN15A_y[i]) {
-            CPPUNIT_FAIL("MC natural spline interpolation failed at x="
-                + DoubleFormatter::toString(RPN15A_x[i]) +
-                "\ninterpolated value: "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(RPN15A_y[i]));
-        }
-    }
-    // MC natural spline good performance
-    interpolated = interp(x_bad, allowExtrapolation);
+            true);
+    checkValues("MC natural spline", interp,
+                RPN15A_x, RPN15A_x+n, RPN15A_y);
+    // good performance
+    interpolated = interp(x_bad);
     if (interpolated>1.0) {
         CPPUNIT_FAIL("MC natural spline interpolation "
             "good performance unverified\n"
@@ -557,50 +427,19 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     }
 
 
-
     // MC clamped spline values
     interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             0.0, Null<double>(),
             0.0, Null<double>(),
-            monotonicityConstraint);
-    for (i=0; i<n; i++) {
-        interpolated = interp(RPN15A_x[i], allowExtrapolation);
-        if (interpolated!=RPN15A_y[i]) {
-            CPPUNIT_FAIL("MC clamped spline interpolation failed at x="
-                + DoubleFormatter::toString(RPN15A_x[i]) +
-                "\ninterpolated value: "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(RPN15A_y[i]));
-        }
-    }
-    // MC clamped spline first derivative values
-    i = 0;
-    interpolated = interp.derivative(RPN15A_x[i], allowExtrapolation);
-    if (QL_FABS(interpolated)>1e-17) {
-        CPPUNIT_FAIL("MC clamped spline interpolation first derivative failure\n"
-            "at x="
-            + DoubleFormatter::toString(RPN15A_x[i]) +
-            "\ninterpolated value: "
-            + DoubleFormatter::toString(interpolated) +
-            "\nexpected value:     "
-            + DoubleFormatter::toString(0.0));
-    }
-    i = n-1;
-    interpolated = interp.derivative(RPN15A_x[i], allowExtrapolation);
-    if (QL_FABS(interpolated)>1e-16) {
-        CPPUNIT_FAIL("MC clamped spline interpolation first derivative failure\n"
-            "at x="
-            + DoubleFormatter::toString(RPN15A_x[i]) +
-            "\ninterpolated value: "
-            + DoubleFormatter::toString(interpolated) +
-            "\nexpected value:     "
-            + DoubleFormatter::toString(0.0));
-    }
-    // MC clamped spline good performance
-    interpolated = interp(x_bad, allowExtrapolation);
+            true);
+    checkValues("MC clamped spline", interp,
+                RPN15A_x, RPN15A_x+n, RPN15A_y);
+    checkNull1stDerivative("MC clamped spline", interp,
+                           RPN15A_x, RPN15A_x+n);
+    // good performance
+    interpolated = interp(x_bad);
     if (interpolated>1.0) {
         CPPUNIT_FAIL("MC clamped spline interpolation "
             "good performance unverified\n"
@@ -610,7 +449,6 @@ void InterpolationTest::testSplineOnRPN15AValues() {
             + DoubleFormatter::toString(interpolated) +
             "\nexpected value < 1.0");
     }
-
 
 
     // MC not-a-knot spline values
@@ -619,20 +457,11 @@ void InterpolationTest::testSplineOnRPN15AValues() {
             RPN15A_y,
             Null<double>(), Null<double>(),
             Null<double>(), Null<double>(),
-            monotonicityConstraint);
-    for (i=0; i<n; i++) {
-        interpolated = interp(RPN15A_x[i], allowExtrapolation);
-        if (interpolated!=RPN15A_y[i]) {
-            CPPUNIT_FAIL("MC not-a-knot spline interpolation failed at x="
-                + DoubleFormatter::toString(RPN15A_x[i]) +
-                "\ninterpolated value:  "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(RPN15A_y[i]));
-        }
-    }
-    // MC not-a-knot spline good performance
-    interpolated = interp(x_bad, allowExtrapolation);
+            true);
+    checkValues("MC not-a-knot spline", interp,
+                RPN15A_x, RPN15A_x+n, RPN15A_y);
+    // good performance
+    interpolated = interp(x_bad);
     if (interpolated>1.0) {
         CPPUNIT_FAIL("MC clamped spline interpolation "
             "good performance unverified\n"
@@ -642,15 +471,19 @@ void InterpolationTest::testSplineOnRPN15AValues() {
             + DoubleFormatter::toString(interpolated) +
             "\nexpected value < 1.0");
     }
-
-
 }
 
 void InterpolationTest::testSplineOnGenericValues() {
+
+    const double generic_x[] = { 0.0, 1.0, 3.0, 4.0 };
+    const double generic_y[] = { 0.0, 0.0, 2.0, 2.0 };
+    const double generic_natural_y2[] = { 0.0, 1.5, -1.5, 0.0 };
+    const double generic_natural_a[] = { -0.25,  0.50,  0.50 };
+    const double generic_natural_b[] = {  0.00,  0.75, -0.75 };
+    const double generic_natural_c[] = {  0.25, -0.25,  0.25 };
+
     double interpolated, error;
     Size i, n = LENGTH(generic_x);
-    bool monotonicityConstraint = false;
-    bool allowExtrapolation = false;
     std::vector<double> x35(3);
 
     // Natural spline
@@ -659,22 +492,12 @@ void InterpolationTest::testSplineOnGenericValues() {
             generic_y,
             Null<double>(), generic_natural_y2[0],
             Null<double>(), generic_natural_y2[n-1],
-            monotonicityConstraint);
-    // Natural spline values
+            false);
+    checkValues("Natural spline", interp,
+                generic_x, generic_x+n, generic_y);
+    // cached second derivative
     for (i=0; i<n; i++) {
-        interpolated = interp(generic_x[i], allowExtrapolation);
-        if (interpolated!=generic_y[i]) {
-            CPPUNIT_FAIL("Natural spline interpolation failed at x="
-                + DoubleFormatter::toString(generic_x[i]) +
-                "\ninterpolated value: "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(generic_y[i]));
-        }
-    }
-    // Natural spline second derivative
-    for (i=0; i<n; i++) {
-        interpolated = interp.secondDerivative(generic_x[i], allowExtrapolation);
+        interpolated = interp.secondDerivative(generic_x[i]);
         error = interpolated - generic_natural_y2[i];
         if (QL_FABS(error)>1e-17) {
             CPPUNIT_FAIL("Natural spline interpolation "
@@ -686,7 +509,7 @@ void InterpolationTest::testSplineOnGenericValues() {
                 + DoubleFormatter::toString(generic_natural_y2[i]));
         }
     }
-    // Natural spline polinomial coefficients
+    // cached polinomial coefficients
     for (i=0; i<n-1; i++) {
         interpolated = interp.aCoefficients()[i];
         error = interpolated - generic_natural_a[i];
@@ -728,7 +551,6 @@ void InterpolationTest::testSplineOnGenericValues() {
     x35[1] = interp(3.5);
 
 
-
     // Clamped spline
     double y1a = 0.0, y1b = 0.0;
     interp = CubicSplineInterpolation<const double*, const double*>(
@@ -736,42 +558,12 @@ void InterpolationTest::testSplineOnGenericValues() {
             generic_y,
             y1a, Null<double>(),
             y1b, Null<double>(),
-            monotonicityConstraint);
-    // Clamped spline values
-    for (i=0; i<n; i++) {
-        interpolated = interp(generic_x[i], allowExtrapolation);
-        if (interpolated!=generic_y[i]) {
-            CPPUNIT_FAIL("Clamped spline interpolation failed at x="
-                + DoubleFormatter::toString(generic_x[i]) +
-                "\ninterpolated value: "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(generic_y[i]));
-        }
-    }
-    // Clamped spline first derivative
-    i = 0;
-    interpolated = interp.derivative(generic_x[i], allowExtrapolation);
-    if (QL_FABS(interpolated-y1a)>1e-17) {
-        CPPUNIT_FAIL("Clamped spline interpolation first derivative failed at x="
-            + DoubleFormatter::toString(generic_x[i]) +
-            "\ninterpolated value: "
-            + DoubleFormatter::toString(interpolated) +
-            "\nexpected value:     "
-            + DoubleFormatter::toString(y1a));
-    }
-    i = n-1;
-    interpolated = interp.derivative(generic_x[i], allowExtrapolation);
-    if (QL_FABS(interpolated-y1b)>1e-16) {
-        CPPUNIT_FAIL("Clamped spline interpolation first derivative failed at x="
-            + DoubleFormatter::toString(generic_x[i]) +
-            "\ninterpolated value: "
-            + DoubleFormatter::toString(interpolated) +
-            "\nexpected value:     "
-            + DoubleFormatter::toString(y1b));
-    }
+            false);
+    checkValues("Clamped spline", interp,
+                generic_x, generic_x+n, generic_y);
+    checkNull1stDerivative("Clamped spline", interp,
+                           generic_x, generic_x+n);
     x35[0] = interp(3.5);
-
 
 
     // Not-a-knot spline
@@ -780,44 +572,11 @@ void InterpolationTest::testSplineOnGenericValues() {
             generic_y,
             Null<double>(), Null<double>(),
             Null<double>(), Null<double>(),
-            monotonicityConstraint);
-    // Not-a-knot spline values
-    for (i=0; i<n; i++) {
-        interpolated = interp(generic_x[i], allowExtrapolation);
-        if (interpolated!=generic_y[i]) {
-            CPPUNIT_FAIL("Not-a-knot spline interpolation failed at x="
-                + DoubleFormatter::toString(generic_x[i]) +
-                "\ninterpolated value: "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(generic_y[i]));
-        }
-    }
-    // Not-a-knot spline third derivative
-    i = 0;
-    if (QL_FABS(interp.cCoefficients()[i]-interp.cCoefficients()[i+1])>1e-15) {
-        CPPUNIT_FAIL("Not-a-knot spline interpolation failure"
-            "\n cubic coefficient of the "
-            + IntegerFormatter::toOrdinal(i+1) +
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i]) +
-            "\n cubic coefficient of the "
-            + IntegerFormatter::toOrdinal(i+2) +
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i+1])
-            );
-    }
-    i = n-3;
-    if (QL_FABS(interp.cCoefficients()[i]-interp.cCoefficients()[i+1])>1e-15) {
-        CPPUNIT_FAIL("Not-a-knot spline interpolation failure"
-            "\n cubic coefficient of the 2nd to last"
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i]) +
-            "\n cubic coefficient of the last"
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i+1])
-            );
-    }
+            false);
+    checkValues("Not-a-knot spline", interp,
+                generic_x, generic_x+n, generic_y);
+    checkNull3rdDerivative("Not-a-knot spline", interp, n);
+
     x35[2] = interp(3.5);
 
     if (x35[0]>x35[1] || x35[1]>x35[2]) {
@@ -829,25 +588,18 @@ void InterpolationTest::testSplineOnGenericValues() {
             "\nnot-a-knot spline " + DoubleFormatter::toString(x35[2]) +
             "\nvalues should be in increasing order");
     }
-
 }
-
-
 
 
 void InterpolationTest::testingSimmetricEndConditions() {
     double interpolated, interpolated2;
     Size i, n = 9;
-    bool allowExtrapolation = false;
 
-    std::vector<double> x(n), y(n);
+    std::vector<double> x, y;
+    x = xRange(-1.8, 1.8, n);
+    y = gaussian(x);
 
-    for (i=0; i<n; i++) {
-        x[i] = -1.8+i*3.6/(n-1);
-        y[i] = QL_EXP(-x[i]*x[i]);
-    }
-
-    // Not-a-knot spline values
+    // Not-a-knot spline
     CubicSplineInterpolation<
         std::vector<double>::const_iterator,
         std::vector<double>::const_iterator> interp(
@@ -856,62 +608,13 @@ void InterpolationTest::testingSimmetricEndConditions() {
             Null<double>(), Null<double>(),
             Null<double>(), Null<double>(),
             false);
-    for (i=0; i<n; i++) {
-        interpolated = interp(x[i], allowExtrapolation);
-        if (QL_FABS(interpolated-y[i])>1e-15) {
-            CPPUNIT_FAIL("Not-a-knot spline interpolation failed at x="
-                + DoubleFormatter::toString(x[i]) +
-                "\ninterpolated value:  "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(y[i]));
-        }
-    }
-    // Not-a-knot spline third derivative
-    i = 0;
-    if (QL_FABS(interp.cCoefficients()[i]-interp.cCoefficients()[i+1])>1e-14) {
-        CPPUNIT_FAIL("Not-a-knot spline interpolation failure"
-            "\n cubic coefficient of the "
-            + IntegerFormatter::toOrdinal(i+1) +
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i]) +
-            "\n cubic coefficient of the "
-            + IntegerFormatter::toOrdinal(i+2) +
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i+1])
-            );
-    }
-    i = n-3;
-    if (QL_FABS(interp.cCoefficients()[i]-interp.cCoefficients()[i+1])>1e-14) {
-        CPPUNIT_FAIL("Not-a-knot spline interpolation failure"
-            "\n cubic coefficient of the 2nd to last"
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i]) +
-            "\n cubic coefficient of the last"
-            " polinomial is "
-            + DoubleFormatter::toString(interp.cCoefficients()[i+1])
-            );
-    }
-    // now test the simmetry
-    double xx = x[0];
-    while (xx<0.0) {
-        interpolated  = interp( xx);
-        interpolated2 = interp(-xx);
-        if (QL_FABS(interpolated-interpolated2)>1e-15) {
-            CPPUNIT_FAIL("Not-a-knot spline interpolation not simmetric"
-                "\nx="   + DoubleFormatter::toString(xx) +
-                " g(x)=" + DoubleFormatter::toString(interpolated) +
-                "\nx="   + DoubleFormatter::toString(-xx) +
-                " g(x)=" + DoubleFormatter::toString(interpolated2)
-                );
-        }
-        xx+=0.1;
-    }
+    checkValues("Not-a-knot spline", interp,
+                x.begin(), x.end(), y.begin());
+    checkNull3rdDerivative("Not-a-knot spline", interp, x.size());
+    checkSymmetry("Not-a-knot spline", interp, x[0]);
 
 
-
-
-    // MC not-a-knot spline values
+    // MC not-a-knot spline
     interp = CubicSplineInterpolation<
         std::vector<double>::const_iterator,
         std::vector<double>::const_iterator>(
@@ -920,31 +623,10 @@ void InterpolationTest::testingSimmetricEndConditions() {
             Null<double>(), Null<double>(),
             Null<double>(), Null<double>(),
             true);
-    for (i=0; i<n; i++) {
-        interpolated = interp(x[i], allowExtrapolation);
-        if (QL_FABS(interpolated-y[i])>1e-15) {
-            CPPUNIT_FAIL("MC not-a-knot spline interpolation failed at x="
-                + DoubleFormatter::toString(x[i]) +
-                "\ninterpolated value:  "
-                + DoubleFormatter::toExponential(interpolated) +
-                "\nexpected value:     "
-                + DoubleFormatter::toExponential(y[i]));
-        }
-    }
-
+    checkValues("MC not-a-knot spline", interp,
+                x.begin(), x.end(), y.begin());
+    checkSymmetry("MC Not-a-knot spline", interp, x[0]);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 CppUnit::Test* InterpolationTest::suite() {
@@ -961,11 +643,9 @@ CppUnit::Test* InterpolationTest::suite() {
     tests->addTest(new CppUnit::TestCaller<InterpolationTest>
                    ("Testing spline interpolation on a Gaussian data set",
                     &InterpolationTest::testSplineOnGaussianValues));
-/*
     tests->addTest(new CppUnit::TestCaller<InterpolationTest>
                    ("Testing spline interpolation error on Gaussian data sets",
                     &InterpolationTest::testSplineErrorOnGaussianValues));
-*/
     return tests;
 }
 
