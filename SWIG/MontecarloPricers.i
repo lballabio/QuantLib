@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.9  2001/03/07 09:35:14  marmar
+	EverestOption interface changed
+
 	Revision 1.8  2001/03/06 17:00:37  marmar
 	First, simplified version, of everest option introduced
-
+	
 	Revision 1.7  2001/02/26 17:05:30  lballabio
 	Ultimate Array interface and typemap for SWIG
 	
@@ -145,9 +148,9 @@ class Himalaya{
 
 class EverestOption{
     public:
-    EverestOption(const Array& underlying, const Array& dividendYield, 
-        const Matrix &covariance, Rate riskFreeRate, Time residualTime,
-        long samples, long seed=0);
+    EverestOption(const Array& dividendYield, const Matrix &covariance, 
+                  Rate riskFreeRate, Time residualTime,
+                  long samples, long seed=0);
     ~EverestOption();
 	double value() const;
 	double errorEstimate() const;
