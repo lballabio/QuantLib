@@ -1,3 +1,464 @@
+2002-01-08 17:23  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* TODO.txt (1.77), Docs/pages/authors.docs (1.6),
+	Docs/pages/cashflows.docs (1.3), Docs/pages/coreclasses.docs (1.3),
+	Docs/pages/currencies.docs (1.3), Docs/pages/datetime.docs (1.3),
+	Docs/pages/examples.docs (1.3), Docs/pages/findiff.docs (1.4),
+	Docs/pages/groups.docs (1.3), Docs/pages/history.docs (1.4),
+	Docs/pages/index.docs (1.3), Docs/pages/indexes.docs (1.3),
+	Docs/pages/install.docs (1.3), Docs/pages/instruments.docs (1.3),
+	Docs/pages/license.docs (1.4), Docs/pages/math.docs (1.3),
+	Docs/pages/mcarlo.docs (1.5), Docs/pages/overview.docs (1.3),
+	Docs/pages/patterns.docs (1.3), Docs/pages/platforms.docs (1.5),
+	Docs/pages/pricers.docs (1.4), Docs/pages/randomnumbers.docs (1.3),
+	Docs/pages/resources.docs (1.3), Docs/pages/solvers1d.docs (1.3),
+	Docs/pages/termstructures.docs (1.3), Docs/pages/usage.docs (1.3),
+	Docs/pages/utilities.docs (1.3), Docs/pages/where.docs (1.4),
+	Examples/DiscreteHedging/DiscreteHedging.cpp (1.8),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.12),
+	Examples/Swap/swapvaluation.cpp (1.17), dev_tools/licensein.txt
+	(1.1), ql/argsandresults.hpp (1.4), ql/array.hpp (1.6),
+	ql/asset.hpp (1.2), ql/calendar.cpp (1.6), ql/calendar.hpp (1.11),
+	ql/cashflow.hpp (1.6), ql/config.ansi.hpp (1.5), ql/config.bcc.hpp
+	(1.4), ql/config.decc.hpp (1.4), ql/config.msvc.hpp (1.6),
+	ql/config.mwcw.hpp (1.4), ql/constraint.hpp (1.7), ql/currency.hpp
+	(1.4), ql/dataformatters.cpp (1.6), ql/dataformatters.hpp (1.4),
+	ql/date.cpp (1.12), ql/date.hpp (1.10), ql/daycounter.hpp (1.10),
+	ql/diffusionprocess.hpp (1.2), ql/errors.hpp (1.7): new copyright
+	and license agreement
+
+2002-01-08 16:53  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* Examples/DiscreteHedging/Makefile.am (1.8),
+	Examples/EuropeanOption/Makefile.am (1.2),
+	Examples/Swap/Makefile.am (1.2), ql/option.cpp (1.5), ql/option.hpp
+	(1.6), ql/Pricers/binaryoption.cpp (1.6): More work on alpha debian
+
+2002-01-08 16:51  'Matteo Gallivanoni <matteo.gallivanoni@riskmap.net>'
+
+	* dev_tools/modify-copyr.sh (1.1): script for updating copyright
+	notice
+
+2002-01-08 16:38  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/: exercise.hpp (1.4), Instruments/swaption.cpp (1.3),
+	Instruments/swaption.hpp (1.2),
+	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.3),
+	Pricers/treeswaption.cpp (1.8): Refactoring of the Exercise class
+
+2002-01-08 16:04  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.dsp (1.69), QuantLib.mak (1.57): MS VC++ and Borland
+	fixes.	Added few missing files
+
+2002-01-08 15:41  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* TODO.txt (1.76): updated
+
+2002-01-08 15:37  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* TODO.txt (1.75): updated
+
+2002-01-08 15:15  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/Pricers/treeswaption.cpp (1.7): Small fix
+
+2002-01-08 14:51  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/Pricers/treeswaption.cpp (1.6): small fix
+
+2002-01-08 14:45  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* TODO.txt (1.74), ql/quantlib.hpp (1.36),
+	ql/Calendars/frankfurt.cpp (1.7), ql/Instruments/swaption.cpp
+	(1.2), ql/Pricers/treecapfloor.cpp (1.2),
+	ql/Pricers/treeswaption.cpp (1.5): MS VC++ and Borland fixes. 
+	Added few missing files
+
+2002-01-08 14:28  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/quantlib.hpp (1.35): Added missing file
+
+2002-01-08 13:12  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/: makefile.mak (1.4),
+	OneFactorModels/makefile.mak (1.4), TwoFactorModels/makefile.mak
+	(1.1): Updated borland makefiles
+
+2002-01-08 13:09  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/timefunction.cpp (1.1): Added missing
+	file
+
+2002-01-08 12:59  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* configure.in (1.64), quantlib-config.in (1.3): Small fixes
+
+2002-01-08 12:57  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/: Makefile.am (1.12), asset.hpp (1.1), exercise.hpp (1.3),
+	option.cpp (1.4), option.hpp (1.5), quantlib.hpp (1.34),
+	Instruments/Makefile.am (1.8), Instruments/capfloor.cpp (1.9),
+	Instruments/capfloor.hpp (1.9), Instruments/makefile.mak (1.7),
+	Instruments/simpleswap.hpp (1.13), Instruments/swaption.cpp (1.1),
+	Instruments/swaption.hpp (1.1), Lattices/node.hpp (1.2),
+	Lattices/tree.cpp (1.3), Lattices/tree.hpp (1.2),
+	Pricers/Makefile.am (1.22), Pricers/analyticalcapfloor.cpp (1.1),
+	Pricers/analyticalcapfloor.hpp (1.1),
+	Pricers/jamshidianswaption.cpp (1.1),
+	Pricers/jamshidianswaption.hpp (1.1), Pricers/treecapfloor.cpp
+	(1.1), Pricers/treecapfloor.hpp (1.1), Pricers/treeswaption.cpp
+	(1.4), Pricers/treeswaption.hpp (1.4): Made interest-rate pricing
+	framework compliant to new convention (QuEP n5)
+
+2002-01-08 12:54  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/: calibrationhelper.cpp (1.1),
+	calibrationhelper.hpp (1.1),
+	OneFactorModels/coxingersollrossplus.cpp (1.1),
+	OneFactorModels/coxingersollrossplus.hpp (1.1): Refactoring
+	interest-rate modelling framework
+
+2002-01-08 12:53  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/: Makefile.am (1.3), grid.cpp (1.1),
+	grid.hpp (1.9), model.cpp (1.7), model.hpp (1.11),
+	onefactormodel.cpp (1.8), onefactormodel.hpp (1.5),
+	shortrateprocess.hpp (1.2), timefunction.hpp (1.2),
+	trinomialtree.cpp (1.4), trinomialtree.hpp (1.3),
+	twofactormodel.hpp (1.1), CalibrationHelpers/caphelper.cpp (1.2),
+	CalibrationHelpers/caphelper.hpp (1.2),
+	CalibrationHelpers/swaptionhelper.cpp (1.2),
+	CalibrationHelpers/swaptionhelper.hpp (1.2),
+	OneFactorModels/Makefile.am (1.3),
+	OneFactorModels/blackkarasinski.cpp (1.11),
+	OneFactorModels/blackkarasinski.hpp (1.8),
+	OneFactorModels/hullwhite.cpp (1.2), OneFactorModels/hullwhite.hpp
+	(1.2): Refactoring of interest rate modelling framework
+
+2002-01-08 12:50  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/TwoFactorModels/: Makefile.am (1.1),
+	g2.cpp (1.1), g2.hpp (1.1): Added preliminary support for two
+	factor models
+
+2002-01-08 12:49  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/Optimization/: armijo.cpp (1.4), armijo.hpp (1.5),
+	conjugategradient.cpp (1.4), conjugategradient.hpp (1.4),
+	costfunction.hpp (1.3), criteria.hpp (1.3), leastsquare.hpp (1.9),
+	linesearch.hpp (1.4), optimizer.hpp (1.4), steepestdescent.cpp
+	(1.3), steepestdescent.hpp (1.4): Clean-up: changed indentation and
+	removed some unused methods
+
+2002-01-08 11:03  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/pages/: authors.docs (1.5), cashflows.docs (1.2),
+	coreclasses.docs (1.2), currencies.docs (1.2), datetime.docs (1.2),
+	examples.docs (1.2), findiff.docs (1.3), groups.docs (1.2),
+	history.docs (1.3), index.docs (1.2), indexes.docs (1.2),
+	install.docs (1.2), instruments.docs (1.2), license.docs (1.3),
+	math.docs (1.2), mcarlo.docs (1.4), overview.docs (1.2),
+	patterns.docs (1.2), platforms.docs (1.4), pricers.docs (1.3),
+	randomnumbers.docs (1.2), resources.docs (1.2), solvers1d.docs
+	(1.2), termstructures.docs (1.2), usage.docs (1.2), utilities.docs
+	(1.2), where.docs (1.3): new copyright and license agreement
+
+2002-01-08 10:55  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/pages/: authors.docs (1.4), license.docs (1.2):
+	incorporating Richard M. Stallman feedback
+
+2002-01-08 10:41  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Authors.txt (1.8), LICENSE.TXT (1.6): incorporating Richard M.
+	Stallman feedback
+
+2002-01-08 10:12  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* dev_tools/version_number.txt (1.10): adopting an approach similar
+	to QuantLib-Python
+
+2002-01-08 10:00  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* configure.in (1.63): fixed wrong version number
+
+2002-01-07 17:46  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.mak (1.56): update
+
+2002-01-07 11:48  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* dev_tools/version_number.txt (1.9): more expressive
+
+2002-01-07 09:30  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* LICENSE.TXT (1.5): incorporating Richard M. Stallman feedback
+
+2002-01-04 20:40  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* LICENSE.TXT (1.4): few fixes
+
+2002-01-04 19:14  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* LICENSE.TXT (1.3): typos fixed
+
+2002-01-04 17:22  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* acinclude.m4 (1.3), configure.in (1.62): Fixed sprintf check in
+	configure
+
+2002-01-04 16:47  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* lib/Mac/CodeWarrior/README.txt (1.1): Dummy file
+
+2002-01-04 16:30  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* acconfig.h (1.5), configure.in (1.61),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.11), ql/array.hpp
+	(1.5), ql/config.ansi.hpp (1.4), ql/config.bcc.hpp (1.3),
+	ql/config.decc.hpp (1.3), ql/config.msvc.hpp (1.5),
+	ql/config.mwcw.hpp (1.3), ql/constraint.hpp (1.6),
+	ql/dataformatters.cpp (1.5), ql/date.cpp (1.11), ql/date.hpp (1.9),
+	ql/history.hpp (1.7), ql/qldefines.hpp (1.26),
+	ql/riskstatistics.hpp (1.5), ql/scheduler.cpp (1.6),
+	ql/scheduler.hpp (1.6), ql/termstructure.hpp (1.15), ql/types.hpp
+	(1.4), ql/CashFlows/cashflowvectors.cpp (1.8),
+	ql/FiniteDifferences/americancondition.hpp (1.2),
+	ql/FiniteDifferences/bsmoperator.cpp (1.7),
+	ql/FiniteDifferences/bsmoperator.hpp (1.7),
+	ql/FiniteDifferences/cranknicolson.hpp (1.9),
+	ql/FiniteDifferences/dminus.hpp (1.6),
+	ql/FiniteDifferences/dplus.hpp (1.6),
+	ql/FiniteDifferences/dplusdminus.hpp (1.7),
+	ql/FiniteDifferences/dzero.hpp (1.6),
+	ql/FiniteDifferences/expliciteuler.hpp (1.5),
+	ql/FiniteDifferences/finitedifferencemodel.hpp (1.9),
+	ql/FiniteDifferences/impliciteuler.hpp (1.4),
+	ql/FiniteDifferences/shoutcondition.hpp (1.2),
+	ql/FiniteDifferences/tridiagonaloperator.cpp (1.9),
+	ql/FiniteDifferences/tridiagonaloperator.hpp (1.13),
+	ql/FiniteDifferences/valueatcenter.cpp (1.7),
+	ql/Instruments/capfloor.cpp (1.8), ql/Instruments/capfloor.hpp
+	(1.8), ql/Instruments/plainoption.cpp (1.6),
+	ql/Instruments/plainoption.hpp (1.6), ql/Instruments/swap.cpp
+	(1.8), ql/InterestRateModelling/grid.hpp (1.8),
+	ql/InterestRateModelling/onefactormodel.cpp (1.7),
+	ql/InterestRateModelling/trinomialtree.cpp (1.3),
+	ql/InterestRateModelling/OneFactorModels/blackkarasinski.cpp
+	(1.10), ql/Lattices/timegrid.hpp (1.2), ql/Lattices/tree.cpp (1.2),
+	ql/Math/cubicspline.hpp (1.7), ql/Math/matrix.cpp (1.6),
+	ql/Math/matrix.hpp (1.6), ql/Math/multivariateaccumulator.cpp
+	(1.8), ql/Math/multivariateaccumulator.hpp (1.8),
+	ql/Math/segmentintegral.cpp (1.6), ql/Math/segmentintegral.hpp
+	(1.8), ql/Math/statistics.hpp (1.9),
+	ql/MonteCarlo/arithmeticapopathpricer.cpp (1.3),
+	ql/MonteCarlo/arithmeticasopathpricer.cpp (1.3),
+	ql/MonteCarlo/basketpathpricer.cpp (1.13),
+	ql/MonteCarlo/europeanpathpricer.cpp (1.10),
+	ql/MonteCarlo/everestpathpricer.cpp (1.11),
+	ql/MonteCarlo/geometricapopathpricer.cpp (1.5),
+	ql/MonteCarlo/geometricasopathpricer.cpp (1.6),
+	ql/MonteCarlo/getcovariance.cpp (1.6),
+	ql/MonteCarlo/himalayapathpricer.cpp (1.13),
+	ql/MonteCarlo/maxbasketpathpricer.cpp (1.3),
+	ql/MonteCarlo/montecarlomodel.hpp (1.15),
+	ql/MonteCarlo/multipath.hpp (1.8),
+	ql/MonteCarlo/multipathgenerator.hpp (1.24),
+	ql/MonteCarlo/pagodapathpricer.cpp (1.9), ql/MonteCarlo/path.hpp
+	(1.7), ql/MonteCarlo/pathgenerator.hpp (1.17),
+	ql/Optimization/leastsquare.hpp (1.8),
+	ql/Pricers/discretegeometricapo.cpp (1.4),
+	ql/Pricers/discretegeometricaso.cpp (1.4),
+	ql/Pricers/fdbsmoption.cpp (1.2), ql/Pricers/fdbsmoption.hpp (1.2),
+	ql/Pricers/fddividendeuropeanoption.cpp (1.2),
+	ql/Pricers/fddividendeuropeanoption.hpp (1.2),
+	ql/Pricers/fdeuropean.cpp (1.3), ql/Pricers/fdeuropean.hpp (1.3),
+	ql/Pricers/fdmultiperiodoption.cpp (1.3),
+	ql/Pricers/fdmultiperiodoption.hpp (1.2), ql/Pricers/mceverest.cpp
+	(1.7), ql/Pricers/mchimalaya.cpp (1.6), ql/Pricers/mcpricer.hpp
+	(1.14), ql/Pricers/singleassetoption.cpp (1.10),
+	ql/Pricers/singleassetoption.hpp (1.11),
+	ql/Pricers/treeswaption.cpp (1.3), ql/Pricers/treeswaption.hpp
+	(1.3), ql/RandomNumbers/randomarraygenerator.hpp (1.6),
+	ql/TermStructures/piecewiseflatforward.cpp (1.14): size_t changed
+	to QL::Size
+
+2002-01-02 21:03  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* dev_tools/newdeveloperintro.txt (1.1): added developer intro file
+
+2001-12-28 12:31  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* configure.in (1.60): Removed reference to ./test/
+
+2001-12-28 10:29  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* makefile.mak (1.27), Examples/makefile.mak (1.7),
+	Examples/DiscreteHedging/makefile.mak (1.3),
+	Examples/EuropeanOption/makefile.mak (1.3),
+	Examples/Swap/makefile.mak (1.3), ql/makefile.mak (1.8): Added
+	check target
+
+2001-12-28 10:28  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* ql/relinkablehandle.hpp (1.5): Added lockable assignment operator
+
+2001-12-20 14:53  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* ql/TermStructures/piecewiseflatforward.cpp (1.13): typo fixed
+
+2001-12-20 10:19  'Enrico Sirola <enrico.sirola@riskmap.net>'
+
+	* configure.in (1.59), ql/MonteCarlo/montecarlomodel.hpp (1.14),
+	ql/MonteCarlo/pathpricer.hpp (1.8),
+	ql/RandomNumbers/rngtypedefs.hpp (1.5): Second template argument
+	for PathPricer (result_type) defaulting to double
+
+2001-12-20 09:53  'Marco Marchioro <marco.marchioro@riskmap.net>'
+
+	* ql/TermStructures/piecewiseflatforward.cpp (1.12): some
+	beautifications
+
+2001-12-20 09:52  'Marco Marchioro <marco.marchioro@riskmap.net>'
+
+	* ql/Instruments/swap.cpp (1.7): improved error message
+
+2001-12-19 14:20  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/model.hpp (1.10): removed useless method
+
+2001-12-19 14:10  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.dsp (1.68), QuantLib.mak (1.55): MS VC++ and Borland
+	catching up with Sad's commit
+
+2001-12-19 13:35  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.nsi (1.56), ql/constraint.hpp (1.5), ql/exercise.hpp
+	(1.2), ql/quantlib.hpp (1.33),
+	ql/InterestRateModelling/makefile.mak (1.3),
+	ql/InterestRateModelling/trinomialtree.cpp (1.2),
+	ql/InterestRateModelling/trinomialtree.hpp (1.2),
+	ql/InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.9),
+	ql/InterestRateModelling/OneFactorModels/makefile.mak (1.3),
+	ql/Lattices/makefile.mak (1.4), ql/Optimization/armijo.cpp (1.3),
+	ql/Optimization/conjugategradient.cpp (1.3),
+	ql/Pricers/treeswaption.cpp (1.2), ql/Pricers/treeswaption.hpp
+	(1.2), ql/Lattices/makefile.mak (1.5): MS VC++ and Borland catching
+	up with Sad's commit
+
+2001-12-19 12:32  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/: makefile.mak (1.7), Instruments/makefile.mak (1.6),
+	InterestRateModelling/makefile.mak (1.2),
+	InterestRateModelling/CalibrationHelpers/makefile.mak (1.2),
+	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.8),
+	InterestRateModelling/OneFactorModels/makefile.mak (1.2),
+	Lattices/makefile.mak (1.3), Pricers/makefile.mak (1.13): MS VC++
+	and Borland catching up with Sad's commit
+
+2001-12-19 12:22  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/OneFactorModels/: node.hpp (1.4),
+	tree.cpp (1.3), tree.hpp (1.3): remove useless files
+
+2001-12-19 12:19  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/Lattices/makefile.mak (1.2): Removed makefile.mak (Nando will
+	take care of it)
+
+2001-12-19 12:08  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/Lattices/makefile.mak (1.1): Added makefile.mak
+
+2001-12-19 12:04  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* configure.in (1.58): added Lattices/ directory
+
+2001-12-19 12:00  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/FiniteDifferences/swaptioncondition.hpp (1.2): remove
+	SwaptionCondition (until IR modelling framework stabilizes)
+
+2001-12-19 11:58  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/FiniteDifferences/: Makefile.am (1.11), onefactoroperator.cpp
+	(1.3), onefactoroperator.hpp (1.4): Interest rate modelling
+	refactoring
+
+2001-12-19 11:55  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/CalibrationHelpers/: cap.cpp (1.7),
+	cap.hpp (1.6), caphelper.cpp (1.1), caphelper.hpp (1.1),
+	swaption.cpp (1.8), swaption.hpp (1.5), swaptionhelper.cpp (1.1),
+	swaptionhelper.hpp (1.1): renamed classes to more explicit names
+
+2001-12-19 11:53  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/Pricers/: Makefile.am (1.21), couponbondoption.cpp (1.5),
+	couponbondoption.hpp (1.6), fdeuropeanswaption.cpp (1.6),
+	fdeuropeanswaption.hpp (1.6), treeswaption.cpp (1.1),
+	treeswaption.hpp (1.1): refactoring interest rate modelling
+	framework
+
+2001-12-19 11:49  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/Instruments/: Makefile.am (1.7), capfloor.cpp (1.7),
+	capfloor.hpp (1.7), europeanswaption.cpp (1.5),
+	europeanswaption.hpp (1.6): refactoring..
+
+2001-12-19 11:47  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/Lattices/: Makefile.am (1.1), node.hpp (1.1), timegrid.hpp
+	(1.1), tree.cpp (1.1), tree.hpp (1.1): Added lattice framework
+
+2001-12-19 11:46  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/: quantlib.hpp (1.32), Makefile.am (1.11): updated
+
+2001-12-19 11:45  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/: Makefile.am (1.10), constraint.hpp (1.4),
+	diffusionprocess.hpp (1.1), exercise.hpp (1.1), quantlib.hpp
+	(1.31), stochasticprocess.hpp (1.3): Added Exercise class and
+	DiffusionProcess class
+
+2001-12-19 11:42  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/: shortrateprocess.hpp (1.1),
+	timefunction.hpp (1.1), trinomialtree.cpp (1.1), trinomialtree.hpp
+	(1.1): Added a few files, mainly those concerning trinomial trees
+
+2001-12-19 11:38  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/: Makefile.am (1.2), grid.hpp (1.7),
+	model.cpp (1.6), model.hpp (1.9), onefactormodel.cpp (1.6),
+	onefactormodel.hpp (1.4), swapfuturevalue.cpp (1.6),
+	swapfuturevalue.hpp (1.3), CalibrationHelpers/Makefile.am (1.2):
+	Removed swapfuturevalue
+
+2001-12-19 11:35  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/OneFactorModels/: Makefile.am (1.2),
+	blackdermanandtoy.cpp (1.9), blackdermanandtoy.hpp (1.5),
+	blackkarasinski.cpp (1.7), blackkarasinski.hpp (1.7), hoandlee.cpp
+	(1.5), hoandlee.hpp (1.4), hullandwhite.cpp (1.5), hullandwhite.hpp
+	(1.6), hullwhite.cpp (1.1), hullwhite.hpp (1.1): renaming files
+	(removing stupid And in NameAndName)
+
+2001-12-19 11:34  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* News.txt (1.18): typo fixed
+
+2001-12-19 11:11  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* News.txt (1.17): updated
+
+2001-12-19 10:59  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ChangeLog.txt (1.10): updated
+
 2001-12-18 16:26  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
 	* TODO.txt (1.73): updated
