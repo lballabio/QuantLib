@@ -29,6 +29,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/02/14 13:53:19  marmar
+    default  constructor has been moved to the cpp file
+
     Revision 1.10  2001/02/13 10:43:55  marmar
     Efficency improved. Also, dividends do not have to be positive
     to allow for negative cash flows
@@ -76,43 +79,6 @@ namespace QuantLib {
               double riskless(Rate r, std::vector<double> divs, 
                                       std::vector<Time> divDates) const;
         };
-
-        inline DividendEuropeanOption::DividendEuropeanOption(
-            Type type, double underlying, double strike, Rate dividendYield, 
-            Rate riskFreeRate, Time residualTime, double volatility, 
-            const std::vector<double>& dividends,
-            const std::vector<Time>& exdivdates): 
-            theDividends(dividends),theExDivDates(exdivdates),
-            BSMEuropeanOption(type, underlying - riskless(riskFreeRate, 
-                dividends, exdivdates), strike, dividendYield, 
-                riskFreeRate, residualTime, volatility){
-                
-                QL_REQUIRE(theDividends.size()==theExDivDates.size(),
-                    "the number of dividends is different from that of dates");
-                for(int j = 0; j < theDividends.size(); j++){
-
-                    QL_REQUIRE(theExDivDates[j] > 0, "The "+
-                         IntegerFormatter::toString(j)+ "-th" +
-                        "dividend date is not positive"    + "(" + 
-                        DoubleFormatter::toString(theExDivDates[j]) + ")");
-                        
-                    QL_REQUIRE(theExDivDates[j] < residualTime,"The " + 
-                        IntegerFormatter::toString(j) + "-th" +
-                        "dividend date is greater than residual time" + "(" +
-                        DoubleFormatter::toString(theExDivDates[j]) + ">" + 
-                        DoubleFormatter::toString(residualTime)    + ")");
-                }
-            }
-
-        inline double DividendEuropeanOption::rho() const{
-        
-            double tmp_rho = BSMEuropeanOption::rho();
-            double delta_rho = 0.0;
-            for(int j = 0; j < theDividends.size();j++)
-                delta_rho += theExDivDates[j]*theDividends[j]*
-                            QL_EXP(-theRiskFreeRate*theExDivDates[j]);
-            return tmp_rho + delta_rho*BSMEuropeanOption::delta();
-        }
         
         inline double DividendEuropeanOption::riskless(Rate r,
             std::vector<double> divs, std::vector<Time> divDates) const{
