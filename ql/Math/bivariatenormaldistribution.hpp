@@ -39,7 +39,7 @@ namespace QuantLib {
         double operator()(double a, double b) const;
       private:
         double rho_, rho2_;
-        static const std::vector<double> x_, y_;
+        static const double x_[], y_[];
     };
 
 

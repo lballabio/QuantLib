@@ -25,12 +25,10 @@
 
 namespace QuantLib {
 
-    namespace {
-        const double x[] = { 0.24840615, 0.39233107, 0.21141819, 0.03324666,
-            0.00082485334 };
-        const double y[] = { 0.10024215, 0.48281397, 1.06094980, 1.77972940,
-            2.66976040000 };
-    }
+    const double BivariateCumulativeNormalDistribution::x_[] = { 0.24840615,
+        0.39233107, 0.21141819, 0.03324666, 0.00082485334 };
+    const double BivariateCumulativeNormalDistribution::y_[] = { 0.10024215,
+        0.48281397, 1.06094980, 1.77972940, 2.66976040000 };
 
     double BivariateCumulativeNormalDistribution::operator()(double a,
                                                              double b) const {
@@ -41,12 +39,12 @@ namespace QuantLib {
         double result=-1.0;
     
         if (a<=0.0 && b<=0 && rho_<=0) {
-            double sum=0.0*x[0];
+            double sum=0.0*x_[0];
             for (Size i=0; i<5; i++) { 
                 for (Size j=0;j<5; j++) {
-                    sum += x[i]*x[j]*
-                        QL_EXP(a1*(2.0*y[i]-a1)+b1*(2.0*y[j]-b1)
-                               +2.0*rho_*(y[i]-a1)*(y[j]-b1));
+                    sum += x_[i]*x_[j]*
+                        QL_EXP(a1*(2.0*y_[i]-a1)+b1*(2.0*y_[j]-b1)
+                               +2.0*rho_*(y_[i]-a1)*(y_[j]-b1));
                 }
             }
             result= QL_SQRT(1.0 - rho_*rho_)/M_PI*sum;
