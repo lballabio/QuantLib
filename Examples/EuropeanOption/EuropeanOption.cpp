@@ -399,6 +399,7 @@ int main(int argc, char* argv[])
 
         // Monte Carlo Method
         timeSteps = 365;
+        Handle<TimeGrid> timeGrid(new TimeGrid(maturity, timeSteps));
         method = "MC (crude)";
         UniformRandomGenerator rng(123456);
 
@@ -413,7 +414,7 @@ int main(int argc, char* argv[])
                 Statistics,
                 GaussianRandomSequenceGenerator,
                 GaussianPathGenerator2,
-                PathPricer<Path> >(false, false, timeSteps, grsg)));
+                PathPricer<Path> >(false, false, timeGrid, grsg)));
         value = option.NPV();
         double errorEstimate = option.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);

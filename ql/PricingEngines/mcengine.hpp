@@ -29,6 +29,7 @@
 #define quantlib_montecarlo_engine_h
 
 #include <ql/dataformatters.hpp>
+#include <ql/grid.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
 
@@ -166,25 +167,24 @@ namespace QuantLib {
 
     
 
-        //! Base class for MonteCarlo pricing engines for vanilla options
+        //! Base class for Monte Carlo vanilla option engines
         template<class S, class SG, class PG, class PP>
         class MCVanillaEngine : public VanillaEngine,
                                 public McEngine<S, PG, PP> {
           public:
             void calculate() const;
           protected:
-            MCVanillaEngine(
-                bool antitheticVariance,
-                bool controlVariate,
-                Size timeSteps,
-                SG sequenceGenerator) 
+            MCVanillaEngine(bool antitheticVariance,
+                            bool controlVariate,
+                            const Handle<TimeGrid>& timeGrid,
+                            SG sequenceGenerator) 
             : antitheticVariance_(antitheticVariance),
-              controlVariate_(controlVariate), timeSteps_(timeSteps),
+              controlVariate_(controlVariate), timeGrid_(timeGrid),
               sequenceGenerator_(sequenceGenerator) {}
             Handle<PG> pathGenerator() const;
             bool antitheticVariance_, controlVariate_;
           private:
-            Size timeSteps_;
+            Handle<TimeGrid> timeGrid_;
             SG sequenceGenerator_;
         };
 
@@ -207,8 +207,7 @@ namespace QuantLib {
 //                    volatility*volatility, residualTime, 1, seed_));
 
             return Handle<MonteCarlo::PathGenerator2<SG> >(
-                new MonteCarlo::PathGenerator2<SG>(
-                        bs, arguments_.maturity, timeSteps_, sequenceGenerator_));
+                new MonteCarlo::PathGenerator2<SG>(bs, timeGrid_, sequenceGenerator_));
 
         }
 
@@ -272,10 +271,10 @@ namespace QuantLib {
             MCEuropeanVanillaEngine(
                 bool antitheticVariance,
                 bool controlVariate,
-                Size timeSteps,
+                const Handle<TimeGrid>& timeGrid,
                 SG sequenceGenerator) 
             : MCVanillaEngine<S, SG, PG, PP>(antitheticVariance,
-              controlVariate, timeSteps, sequenceGenerator) {}
+              controlVariate, timeGrid, sequenceGenerator) {}
           protected:
             Handle<PP> pathPricer() const;
         };

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
@@ -32,9 +31,6 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! Generates random paths from a random number generator
-        /*! \todo add more general path generator with drift(S,t) and
-                  variance(S,t)
-        */
         template <class RNG>
         class PathGenerator {
           public:
@@ -201,7 +197,7 @@ namespace QuantLib {
             Handle<DiffusionProcess> diffProcess_;
             SG generator_;
             Size dimension_;
-            Handle<TimeGrid> times_;
+            Handle<TimeGrid> timeGrid_;
         };
 
         template <class SG>
@@ -213,20 +209,28 @@ namespace QuantLib {
           dimension_(generator_.dimension()) {
             QL_REQUIRE(dimension_==timeSteps,
                 "PathGenerator2::PathGenerator2 :"
-                "sequence generator dimensionality != timeSteps");
-            times_ = Handle<TimeGrid>(new TimeGrid(length, timeSteps));
+                "sequence generator dimensionality ("
+                + IntegerFormatter::toString(dimension_) +
+                ") != timeSteps ("
+                + IntegerFormatter::toString(timeSteps) +
+                ")");
+            timeGrid_ = Handle<TimeGrid>(new TimeGrid(length, timeSteps));
         }
 
         template <class SG>
         PathGenerator2<SG>::PathGenerator2(
             const Handle<DiffusionProcess>& diffProcess,
-            const Handle<TimeGrid>& times, SG generator)
-        : next_(Path(times.size())-1,1.0), sequence_(Array(times.size()-1), 0.0),
+            const Handle<TimeGrid>& timeGrid, SG generator)
+        : next_(Path(timeGrid->size()-1),1.0), sequence_(Array(timeGrid->size()-1), 0.0),
           diffProcess_(diffProcess), generator_(generator),
-          dimension_(generator_.dimension()), times_(times) {
-            QL_REQUIRE(dimension_==times_.size()-1,
+          dimension_(generator_.dimension()), timeGrid_(timeGrid) {
+            QL_REQUIRE(dimension_==timeGrid_->size()-1,
                 "PathGenerator2::PathGenerator2 :"
-                "sequence generator dimensionality != timeSteps");
+                "sequence generator dimensionality ("
+                + IntegerFormatter::toString(dimension_) +
+                ") != timeSteps ("
+                + IntegerFormatter::toString(timeGrid_->size()-1) +
+                ")");
         }
     
         template <class SG>
@@ -242,8 +246,8 @@ namespace QuantLib {
             double dt;
             Time t;
             for (Size i=0; i<next_.value.size(); i++) {
-                t = (*times_)[i+1];
-                dt = times_->dt(i);
+                t = (*timeGrid_)[i+1];
+                dt = timeGrid_->dt(i);
                 next_.value.drift()[i] = dt;
                 next_.value.drift()[i] *= 
                     diffProcess_->drift(t, asset_);
@@ -265,8 +269,8 @@ namespace QuantLib {
             double dt;
             Time t;
             for (Size i=0; i<next_.value.size(); i++) {
-                t = (*times_)[i+1];
-                dt = times_->dt(i);
+                t = (*timeGrid_)[i+1];
+                dt = timeGrid_->dt(i);
                 next_.value.drift()[i] = dt;
                 next_.value.drift()[i] *= 
                     diffProcess_->drift(t, asset_);

@@ -242,6 +242,7 @@
 #include <ql/Pricers/treecapfloor.hpp>
 #include <ql/Pricers/treeswaption.hpp>
 
+#include <ql/PricingEngines/cliquetengines.hpp>
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 #include <ql/PricingEngines/forwardengines.hpp>
 #include <ql/PricingEngines/genericengine.hpp>
