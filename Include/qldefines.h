@@ -226,9 +226,9 @@
 	template argument.
 */
 #if QL_GARBLED_REVERSE_ITERATORS
-	#define QL_REVERSE_ITERATOR(iterator,type)	std::reverse_iterator<iterator,type>
+	#define QL_REVERSE_ITERATOR(iterator,type)	std::reverse_iterator< iterator , type >
 #else
-	#define QL_REVERSE_ITERATOR(iterator,type)	std::reverse_iterator<iterator>
+	#define QL_REVERSE_ITERATOR(iterator,type)	std::reverse_iterator< iterator >
 #endif
 
 /*! \def QL_GARBLED_PTR_CONST
