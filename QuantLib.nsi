@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.12  2001/05/28 19:25:56  nando
+# removed docs from binary installer
+#
 # Revision 1.11  2001/05/24 11:15:57  lballabio
 # Stripped conventions from Currencies
 #
@@ -13,10 +16,6 @@
 #
 # Revision 1.8  2001/05/21 13:12:44  nando
 # upgraded to NSIS 1.41
-#
-# Revision 1.7  2001/05/11 07:29:56  nando
-# added CVS tag.
-# Swig files are back (for a while)
 #
 
 # HEADER CONFIGURATION COMMANDS
@@ -89,13 +88,6 @@ WriteRegStr HKEY_LOCAL_MACHINE \
             '"QuantLibUninstall.exe"'
 SectionEnd
 
-Section "Documentation"
-SetOutPath $INSTDIR\Docs\html
-File "Docs\html\*.*"
-SetOutPath $INSTDIR\Docs\pdf
-File "Docs\latex\refma*.pdf"
-SectionEnd
-
 Section "Start Menu Shortcuts"
 CreateDirectory "$SMPROGRAMS\QuantLib"
 CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall.lnk" \
@@ -110,7 +102,6 @@ DeleteRegKey HKEY_LOCAL_MACHINE \
              SOFTWARE\QuantLib
 Delete "$SMPROGRAMS\QuantLib\*.*"
 RMDir "$SMPROGRAMS\QuantLib"
-RMDir /r $INSTDIR\Docs
 RMDir /r $INSTDIR\Include
 RMDir /r $INSTDIR\lib
 RMDir /r "$INSTDIR"
