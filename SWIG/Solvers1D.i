@@ -22,19 +22,12 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/* $Source$
-   $Log$
-   Revision 1.15  2001/04/06 18:46:21  nando
-   changed Authors, Contributors, Licence and copyright header
-
-   Revision 1.14  2001/04/02 14:10:44  lballabio
-   Added Brent solver to Ruby module
-
-   Revision 1.13  2001/04/02 10:59:48  lballabio
-   Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
-
-   Revision 1.12  2001/03/09 12:40:41  lballabio
-   Spring cleaning for SWIG interfaces
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.16  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
 

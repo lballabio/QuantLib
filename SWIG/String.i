@@ -22,16 +22,12 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/* $Source$
-   $Log$
-   Revision 1.9  2001/04/06 18:46:21  nando
-   changed Authors, Contributors, Licence and copyright header
-
-   Revision 1.8  2001/03/21 15:04:06  lballabio
-   Started playing with Ruby
-
-   Revision 1.7  2001/03/09 12:40:41  lballabio
-   Spring cleaning for SWIG interfaces
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.10  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
 

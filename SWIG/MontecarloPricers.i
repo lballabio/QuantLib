@@ -22,25 +22,12 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/* $Source$
-   $Log$
-   Revision 1.12  2001/04/06 18:46:21  nando
-   changed Authors, Contributors, Licence and copyright header
-
-   Revision 1.11  2001/03/22 12:13:05  marmar
-   Introducing pagoda options
-
-   Revision 1.10  2001/03/09 12:40:41  lballabio
-   Spring cleaning for SWIG interfaces
-
-	Revision 1.9  2001/03/07 09:35:14  marmar
-	EverestOption interface changed
-
-	Revision 1.8  2001/03/06 17:00:37  marmar
-	First, simplified version, of everest option introduced
-
-	Revision 1.7  2001/02/26 17:05:30  lballabio
-	Ultimate Array interface and typemap for SWIG
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.13  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
 

@@ -22,22 +22,12 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/* $Source$
-   $Log$
-   Revision 1.23  2001/04/06 18:46:21  nando
-   changed Authors, Contributors, Licence and copyright header
-
-   Revision 1.22  2001/03/30 15:45:42  lballabio
-   Still working on make dist (and added IntVector and DoubleVector to Ruby module)
-
-   Revision 1.21  2001/03/15 10:30:48  lballabio
-   Added dummy returns to avoid warnings
-
-   Revision 1.20  2001/03/12 12:59:01  marmar
-   __str__ now represents the object while __repr__ is unchanged
-
-   Revision 1.19  2001/03/09 12:40:41  lballabio
-   Spring cleaning for SWIG interfaces
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.24  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
 

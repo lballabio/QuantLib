@@ -22,22 +22,12 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/* $Source$
-   $Log$
-   Revision 1.8  2001/04/06 18:46:21  nando
-   changed Authors, Contributors, Licence and copyright header
-
-   Revision 1.7  2001/03/28 13:40:12  marmar
-   MultiPathGenerator now has a default for mean
-
-   Revision 1.6  2001/03/15 13:50:26  marmar
-   getCovariance function added
-
-   Revision 1.5  2001/03/09 12:40:41  lballabio
-   Spring cleaning for SWIG interfaces
-
-	Revision 1.4  2001/03/06 17:00:36  marmar
-	First, simplified version, of everest option introduced
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.9  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
 

@@ -22,26 +22,12 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/* $Source$
-   $Log$
-   Revision 1.19  2001/04/06 18:46:21  nando
-   changed Authors, Contributors, Licence and copyright header
-
-   Revision 1.18  2001/03/30 15:45:42  lballabio
-   Still working on make dist (and added IntVector and DoubleVector to Ruby module)
-
-   Revision 1.17  2001/03/28 13:33:51  lballabio
-   Generated distribution almost complete (and added random generators to Ruby module)
-
-   Revision 1.16  2001/03/21 14:25:27  lballabio
-   Fixed %include (linux is case-sensitive, Nando)
-
-   Revision 1.15  2001/03/19 17:28:50  nando
-   added missing
-   %include vectors.i
-
-   Revision 1.14  2001/03/09 12:40:41  lballabio
-   Spring cleaning for SWIG interfaces
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.20  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
 

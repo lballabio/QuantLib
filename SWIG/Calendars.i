@@ -22,28 +22,12 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*  $Source$
-	$Log$
-	Revision 1.20  2001/04/06 18:46:21  nando
-	changed Authors, Contributors, Licence and copyright header
-
-	Revision 1.19  2001/03/26 12:41:23  lballabio
-	Added ruby, ruby-install and ruby-test targets to makefile (and added calendars to Ruby module in the meantime)
-
-	Revision 1.18  2001/03/26 10:00:45  lballabio
-	Turned string-based factory into Calendar constructor
-
-	Revision 1.17  2001/03/26 09:59:35  lballabio
-	Added Helsinki and Wellington calendars
-
-	Revision 1.16  2001/03/12 17:35:11  lballabio
-	Removed global IsNull function - could have caused very vicious loops
-
-	Revision 1.15  2001/03/12 12:59:01  marmar
-	__str__ now represents the object while __repr__ is unchanged
-
-	Revision 1.14  2001/03/09 12:40:41  lballabio
-	Spring cleaning for SWIG interfaces
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.21  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
 

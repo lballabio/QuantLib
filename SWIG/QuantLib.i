@@ -22,48 +22,15 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/* $Source$
-   $Log$
-   Revision 1.34  2001/04/06 18:46:21  nando
-   changed Authors, Contributors, Licence and copyright header
-
-   Revision 1.33  2001/04/06 11:14:13  lballabio
-   Added string-based constructor to Currency and DayCounter in Python and Ruby modules
-
-   Revision 1.32  2001/04/04 11:07:24  nando
-   Headers policy part 1:
-   Headers should have a .hpp (lowercase) filename extension
-   All *.h renamed to *.hpp
-
-   Revision 1.31  2001/04/02 14:10:44  lballabio
-   Added Brent solver to Ruby module
-
-   Revision 1.30  2001/03/30 15:45:42  lballabio
-   Still working on make dist (and added IntVector and DoubleVector to Ruby module)
-
-   Revision 1.29  2001/03/28 13:33:51  lballabio
-   Generated distribution almost complete (and added random generators to Ruby module)
-
-   Revision 1.28  2001/03/27 17:39:39  lballabio
-   Making sure dist target is complete (and added distributions to Ruby module)
-
-   Revision 1.27  2001/03/26 12:41:23  lballabio
-   Added ruby, ruby-install and ruby-test targets to makefile (and added calendars to Ruby module in the meantime)
-
-   Revision 1.26  2001/03/23 15:01:19  lballabio
-   Added targets python and python-install which actually build and install the module, and renamed target test to python-test
-
-   Revision 1.25  2001/03/21 15:04:06  lballabio
-   Started playing with Ruby
-
-   Revision 1.24  2001/03/19 17:30:28  nando
-   refactored *.i files inclusion.
-   The files are sorted by SWIG debug problem
-
-   Revision 1.23  2001/03/09 12:40:41  lballabio
-   Spring cleaning for SWIG interfaces
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.35  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
+
 
 %module QuantLib
 

@@ -22,28 +22,12 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/* $Source$
-   $Log$
-   Revision 1.28  2001/04/06 18:46:21  nando
-   changed Authors, Contributors, Licence and copyright header
-
-   Revision 1.27  2001/04/04 09:51:18  marmar
-   introducing cliquet option
-
-   Revision 1.26  2001/03/22 16:37:15  marmar
-   Barrier option greeks included
-
-   Revision 1.25  2001/03/21 09:54:56  marmar
-   BermudanOption added, DividendOption removed
-
-   Revision 1.24  2001/03/20 15:13:59  marmar
-   MultiPeriodOption is a generalization of DividendAmericanOption
-
-   Revision 1.23  2001/03/12 12:59:01  marmar
-   __str__ now represents the object while __repr__ is unchanged
-
-   Revision 1.22  2001/03/09 12:40:41  lballabio
-   Spring cleaning for SWIG interfaces
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.29  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
 

@@ -22,24 +22,12 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/* $Source$
-   $Log$
-   Revision 1.16  2001/04/06 18:46:21  nando
-   changed Authors, Contributors, Licence and copyright header
-
-   Revision 1.15  2001/03/27 16:16:13  marmar
-   Functions SymmetricEigenvalues and SymmetricEigenvectors added
-
-   Revision 1.14  2001/03/21 10:48:31  marmar
-   valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
-   are no longer methods of BSMNumericalOption but separate
-   functions
-
-   Revision 1.13  2001/03/14 16:20:49  lballabio
-   Added augmented assignment operators for Python 2.0
-
-   Revision 1.12  2001/03/09 12:40:41  lballabio
-   Spring cleaning for SWIG interfaces
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.17  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
 

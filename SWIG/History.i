@@ -22,27 +22,12 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/* $Source$
-   $Log$
-   Revision 1.13  2001/04/06 18:46:21  nando
-   changed Authors, Contributors, Licence and copyright header
-
-   Revision 1.12  2001/04/05 13:33:59  nando
-   small fixes
-
-   Revision 1.11  2001/04/04 11:07:24  nando
-   Headers policy part 1:
-   Headers should have a .hpp (lowercase) filename extension
-   All *.h renamed to *.hpp
-
-   Revision 1.10  2001/03/12 17:35:11  lballabio
-   Removed global IsNull function - could have caused very vicious loops
-
-   Revision 1.9  2001/03/12 12:59:01  marmar
-   __str__ now represents the object while __repr__ is unchanged
-
-   Revision 1.8  2001/03/09 12:40:41  lballabio
-   Spring cleaning for SWIG interfaces
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.14  2001/04/09 12:24:58  nando
+    updated copyright notice header and improved CVS tags
 
 */
 
