@@ -33,9 +33,9 @@ namespace QuantLib {
         QL_REQUIRE(underlying>0.0,
                    "EuropeanPathPricer: "
                    "underlying less/equal zero not allowed");
-        QL_REQUIRE(strike>0.0,
+        QL_REQUIRE(strike>=0.0,
                    "EuropeanPathPricer: "
-                   "strike less/equal zero not allowed");
+                   "strike less than zero not allowed");
     }
 
     double EuropeanPathPricer::operator()(const Path& path) const {

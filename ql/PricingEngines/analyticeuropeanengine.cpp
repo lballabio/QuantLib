@@ -58,13 +58,19 @@ namespace QuantLib {
 
         double fD1, fD2, fderD1;
         if (variance>0.0) {
-            CumulativeNormalDistribution f;
-            double D1 = (QL_LOG(forwardPrice/strike) +
-                         0.5 * variance) / stdDev;
-            double D2 = D1-stdDev;
-            fD1 = f(D1);
-            fD2 = f(D2);
-            fderD1 = f.derivative(D1);
+            if (strike==0.0) {
+                fderD1 = 0.0;
+                fD1 = 1.0;
+                fD2 = 1.0;
+            } else {
+                CumulativeNormalDistribution f;
+                double D1 = (QL_LOG(forwardPrice/strike) +
+                             0.5 * variance) / stdDev;
+                double D2 = D1-stdDev;
+                fD1 = f(D1);
+                fD2 = f(D2);
+                fderD1 = f.derivative(D1);
+            }
         } else {
             fderD1 = 0.0;
             if (forwardPrice>strike) {

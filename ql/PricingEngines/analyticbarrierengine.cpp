@@ -37,6 +37,10 @@ namespace QuantLib {
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
+        QL_REQUIRE(payoff->strike()>0.0,
+            "AnalyticBarrierEngine::calculate() : "
+            "strike must be positive");
+
         Barrier::Type barrierType = arguments_.barrierType;
 
         switch (payoff->optionType()) {

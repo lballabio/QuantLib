@@ -32,9 +32,9 @@ namespace QuantLib {
         QL_REQUIRE(underlying>0.0,
                    "GeometricAPOPathPricer_old: "
                    "underlying less/equal zero not allowed");
-        QL_REQUIRE(strike>0.0,
+        QL_REQUIRE(strike>=0.0,
                    "GeometricAPOPathPricer_old: "
-                   "strike less/equal zero not allowed");
+                   "strike less than zero not allowed");
     }
 
     double GeometricAPOPathPricer_old::operator()(const Path& path) const {

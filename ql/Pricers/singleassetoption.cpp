@@ -39,10 +39,10 @@ namespace QuantLib {
       residualTime_(residualTime), hasBeenCalculated_(false),
       rhoComputed_(false), dividendRhoComputed_(false),
       vegaComputed_(false), thetaComputed_(false) {
-        QL_REQUIRE(strike > 0.0,
+        QL_REQUIRE(strike>=0.0,
                    "SingleAssetOption::SingleAssetOption : strike ("+
                    DoubleFormatter::toString(strike)+
-                   ") must be positive");
+                   ") must be non negative");
         QL_REQUIRE(underlying > 0.0,
                    "SingleAssetOption::SingleAssetOption : underlying ("+
                    DoubleFormatter::toString(underlying)+

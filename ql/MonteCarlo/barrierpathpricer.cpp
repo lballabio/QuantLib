@@ -43,9 +43,9 @@ namespace QuantLib {
         QL_REQUIRE(underlying>0.0,
                    "BarrierPathPricer: "
                    "underlying less/equal zero not allowed");
-        QL_REQUIRE(strike>0.0,
+        QL_REQUIRE(strike>=0.0,
                    "BarrierPathPricer: "
-                   "strike less/equal zero not allowed");
+                   "strike less than zero not allowed");
         QL_REQUIRE(barrier>0.0,
                    "BarrierPathPricer: "
                    "barrier less/equal zero not allowed");

@@ -150,16 +150,17 @@ namespace QuantLib {
         Time end, Size steps, double strike)
     : BinomialTree(process, end, (steps%2 ? steps : steps+1)) {
 
+        QL_REQUIRE(strike>0.0,
+            "LeisenReimer::LeisenReimer : "
+            "strike must be positive");
         Size oddSteps = (steps%2 ? steps : steps+1);
         double variance = process->variance(0.0, x0_, end);
         double ermqdt = QL_EXP(driftPerStep_ + 0.5*variance/oddSteps);
         double d2 = (QL_LOG(x0_/strike) + driftPerStep_*oddSteps ) /
                                                             QL_SQRT(variance);
-        double d1 = (QL_LOG(x0_/strike) + driftPerStep_*oddSteps + variance) /
-                                                            QL_SQRT(variance);
         pu_ = PeizerPrattMethod2Inversion(d2, oddSteps);
         pd_ = 1.0 - pu_;
-        double pdash = PeizerPrattMethod2Inversion(d1, oddSteps);
+        double pdash = PeizerPrattMethod2Inversion(d2+QL_SQRT(variance), oddSteps);
         up_ = ermqdt * pdash / pu_;
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
 

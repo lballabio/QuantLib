@@ -32,9 +32,9 @@ namespace QuantLib {
             QL_REQUIRE(underlying_[j]>0.0,
                        "HimalayaPathPricer_old: "
                        "underlying less/equal zero not allowed");
-            QL_REQUIRE(strike>0.0,
+            QL_REQUIRE(strike>=0.0,
                        "HimalayaPathPricer_old: "
-                       "strike less/equal zero not allowed");
+                       "strike less than zero not allowed");
         }
     }
 
