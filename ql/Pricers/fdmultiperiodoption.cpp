@@ -65,9 +65,10 @@ namespace QuantLib {
                        ", must be within the residual time of " +
                        DecimalFormatter::toString(residualTime) );
 
-            if (dateNumber_ >= 2){
-                if (!firstDateIsZero_)
-                    firstNonZeroDate_ = dates_[0];
+            if (!firstDateIsZero_)
+                firstNonZeroDate_ = dates_[0];
+
+            if (dateNumber_ >= 2) {
                 for (Size j = 1; j < dateNumber_; j++)
                     QL_REQUIRE(dates_[j-1] < dates_[j],
                                "dates must be in increasing order:" +
@@ -76,7 +77,6 @@ namespace QuantLib {
                                DecimalFormatter::toString(dates_[j]) );
             }
         }
-
     }
 
     void FdMultiPeriodOption::calculate() const {
