@@ -1259,6 +1259,10 @@ SOURCE=.\ql\TermStructures\piecewiseflatforward.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\TermStructures\quantotermstructure.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\TermStructures\ratehelpers.cpp
 # End Source File
 # Begin Source File
@@ -1616,10 +1620,6 @@ SOURCE=.\ql\PricingEngines\europeanbinomialengine.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\forwardengines.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\forwardperformanceengines.hpp
 # End Source File
 # Begin Source File
 
