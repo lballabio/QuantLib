@@ -10,3 +10,4 @@ bin
 *.plg
 *.dep
 *.obj
+*.mak
