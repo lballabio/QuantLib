@@ -11,7 +11,7 @@
     <tr>
     <td>CONFIGURATION</td><td>COMPILER</td><td>MAINTAINER</td>
     </tr><tr>
-    <td>i686-pc-debian2.2</td><td>gcc 2.95 and 3.0.1</td><td>Enrico Sirola</td>
+    <td>i686-pc-linux-debian2.2</td><td>gcc 2.95 and 3.0.1</td><td>Enrico Sirola</td>
     </tr><tr>
     <td>i686-pc-WinNT4</td><td>MS Visual C++ 6</td><td>Ferdinando Ametrano</td>
     </tr><tr>
@@ -27,16 +27,12 @@
     <tr><td>alpha-RedHat6.2</td>      <td>Compaq 6.3.9.3</td></tr>
     <tr><td>FreeBSD</td>              <td>gcc 2.95.2</td></tr>
     <tr><td>sparc-sun-solaris</td>    <td>gcc 2.95.2</td></tr>
-    <tr><td>sparc-sun-debian</td>     <td>gcc 2.95.2</td></tr>
-    <tr><td>sgi-RedHat</td>           <td>gcc 2.95</td></tr>
-    <tr><td>sgi-SuSE</td>             <td>gcc 2.95</td></tr>
+    <tr><td>sparc-sun-linux-debian</td>     <td>gcc 2.95.2</td></tr>
+    <tr><td>sgi-linux</td>           <td>gcc 2.95</td></tr>
     <tr><td>ppc-linux</td>            <td>gcc 2.95.2</td></tr>
     <tr><td>arm</td><td></td></tr>
     <tr><td>ia64</td><td></td></tr>
     <tr><td>m68k</td><td></td></tr>
-    <tr><td>mips</td><td></td></tr>
-    <tr><td>mipsel</td><td></td></tr>
-    <tr><td>powerpc</td><td></td></tr>
     <tr><td>s390</td><td></td></tr>
     </table>
 

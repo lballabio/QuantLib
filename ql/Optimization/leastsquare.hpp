@@ -95,7 +95,7 @@ namespace QuantLib {
         };
 
 
-        double LeastSquareFunction::value (const Array & x) {
+        inline double LeastSquareFunction::value (const Array & x) {
             // size of target and function to fit vectors
             Array target (lsp_.size ()), fct2fit (lsp_.size ());
             // compute its values
@@ -106,7 +106,7 @@ namespace QuantLib {
             return DotProduct (diff, diff);
         }
 
-        void LeastSquareFunction::firstDerivative (Array& grad_f,
+        inline void LeastSquareFunction::firstDerivative (Array& grad_f,
            const Array& x) {
             // size of target and function to fit vectors
             Array target (lsp_.size ()), fct2fit (lsp_.size ());
@@ -120,7 +120,7 @@ namespace QuantLib {
             grad_f = -2. * (Math::transpose(grad_fct2fit) * diff);
         }
 
-        double LeastSquareFunction::valueAndFirstDerivative(Array& grad_f,
+        inline double LeastSquareFunction::valueAndFirstDerivative(Array& grad_f,
                                        const Array& x)
         {
             // size of target and function to fit vectors
