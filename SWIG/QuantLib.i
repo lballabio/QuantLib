@@ -47,19 +47,22 @@
 	}
 }
 
-%include Date.i
+%include BoundaryConditions.i
 %include Calendars.i
-%include DayCounters.i
 %include Currencies.i
-%include Financial.i
-%include Options.i
-%include Instruments.i
-%include Operators.i
-%include Pricers.i
-%include Solvers1D.i
-%include TermStructures.i
-%include Statistics.i
-%include RandomGenerators.i
-%include History.i
+%include Date.i
+%include DayCounters.i
 %include Distributions.i
+%include Financial.i
+%include History.i
+%include Instruments.i
 %include MontecarloPricers.i
+%include Operators.i
+%include Options.i
+%include Pricers.i
+%include RandomGenerators.i
+%include Solvers1D.i
+%include Statistics.i
+%include String.i
+%include TermStructures.i
+%include Vectors.i
