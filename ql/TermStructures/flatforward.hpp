@@ -23,7 +23,9 @@
 #define quantlib_flat_forward_curve_h
 
 #include <ql/termstructure.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
+#ifndef QL_DISABLE_DEPRECATED
+#   include <ql/DayCounters/actual365fixed.hpp>
+#endif
 
 namespace QuantLib {
 
@@ -46,17 +48,17 @@ namespace QuantLib {
         #endif
         FlatForward(const Date& referenceDate,
                     const Handle<Quote>& forward,
-                    const DayCounter& dayCounter = Actual365Fixed());
+                    const DayCounter& dayCounter);
         FlatForward(const Date& referenceDate,
                     Rate forward,
-                    const DayCounter& dayCounter = Actual365Fixed());
+                    const DayCounter& dayCounter);
 
         FlatForward(Integer settlementDays, const Calendar& calendar,
                     const Handle<Quote>& forward,
-                    const DayCounter& dayCounter = Actual365Fixed());
+                    const DayCounter& dayCounter);
         FlatForward(Integer settlementDays, const Calendar& calendar,
                     Rate forward,
-                    const DayCounter& dayCounter = Actual365Fixed());
+                    const DayCounter& dayCounter);
 
         // inspectors
         DayCounter dayCounter() const;
