@@ -373,6 +373,10 @@ SOURCE=.\riskstats.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\rngtraits.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\rounding.cpp
 # End Source File
 # Begin Source File

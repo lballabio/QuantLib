@@ -219,7 +219,7 @@ void DistributionTest::testPoisson() {
                        "    error:   "
                        + DecimalFormatter::toExponential(error));
 
-        for (BigNatural i=1; i<25; i++) {
+        for (i=1; i<25; i++) {
             calculated = pdf(i);
             if (mean == 0.0) {
                 expected = 0.0;
@@ -263,7 +263,7 @@ void DistributionTest::testCumulativePoisson() {
                        + DecimalFormatter::toString(cumExpected,13)+
                        "    error:   "
                        + DecimalFormatter::toExponential(error));
-        for (BigNatural i=1; i<25; i++) {
+        for (i=1; i<25; i++) {
             cumCalculated = cdf(i);
             if (mean == 0.0) {
                 cumExpected = 1.0;
