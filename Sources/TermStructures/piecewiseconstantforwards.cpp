@@ -46,7 +46,7 @@ namespace QuantLib {
 			for (int i=1; i<N; i++) {
 				Deposit& deposit = theDeposits[i-1];
 				theNodes[i] = deposit.maturity();
-				theTimes[i] = timeFromSettlement(theNodes[i]);
+				theTimes[i] = theDayCounter->yearFraction(settlementDate(),theNodes[i]);
 				theDiscounts[i] = 1.0/(1.0+deposit.rate()*deposit.dayCounter()->yearFraction(settlement,theNodes[i]));
 				theForwards[i] = QL_LOG(theDiscounts[i-1]/theDiscounts[i])/(theTimes[i]-theTimes[i-1]);
 				theZeroYields[i] = -QL_LOG(theDiscounts[i])/theTimes[i];
@@ -63,7 +63,7 @@ namespace QuantLib {
 				if (d == theNodes[n]) {
 					return theZeroYields[n];
 				} else {
-					Time t = timeFromSettlement(d), tn = theTimes[n-1];
+					Time t = theDayCounter->yearFraction(settlementDate(),d), tn = theTimes[n-1];
 					return (theZeroYields[n-1]*tn+theForwards[n]*(t-tn))/t;
 				}
 			}
@@ -78,7 +78,7 @@ namespace QuantLib {
 				if (d == theNodes[n]) {
 					return theDiscounts[n];
 				} else {
-					Time t = timeFromSettlement(d);
+					Time t = theDayCounter->yearFraction(settlementDate(),d);
 					return theDiscounts[n-1]*QL_EXP(-theForwards[n]*(t-theTimes[n-1]));
 				}
 			}

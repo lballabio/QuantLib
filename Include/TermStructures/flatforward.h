@@ -21,23 +21,21 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#ifndef quantlib_piecewise_constant_forward_curve_h
-#define quantlib_piecewise_constant_forward_curve_h
+#ifndef quantlib_flat_forward_curve_h
+#define quantlib_flat_forward_curve_h
 
 #include "qldefines.h"
 #include "termstructure.h"
-#include "deposit.h"
-#include <vector>
 
 namespace QuantLib {
 
 	namespace TermStructures {
 	
-		class PiecewiseConstantForwards : public TermStructure {
+		class FlatForward : public TermStructure {
 		  public:
 			// constructor
-			PiecewiseConstantForwards(Handle<Currency> currency, Handle<DayCounter> dayCounter, const Date& today, 
-			  const std::vector<Deposit>& deposits);
+			FlatForward(const Handle<Currency>& currency, const Handle<DayCounter>& dayCounter,
+			  const Date& today, Rate forward);
 			// clone
 			Handle<TermStructure> clone() const;
 			// inspectors
@@ -55,53 +53,66 @@ namespace QuantLib {
 			// forward (instantaneous)
 			Rate forward(const Date&) const;
 		  private:
-			// methods
-			int nextNode(const Date& d) const;
-			// data members
 			Handle<Currency> theCurrency;
 			Handle<DayCounter> theDayCounter;
 			Date today;
-			std::vector<Date> theNodes;
-			std::vector<Time> theTimes;
-			std::vector<DiscountFactor> theDiscounts;
-			std::vector<Rate> theForwards, theZeroYields;
-			std::vector<Deposit> theDeposits;
+			Rate theForward;
 		};
 		
 		// inline definitions
 		
-		inline Handle<TermStructure> PiecewiseConstantForwards::clone() const {
-			return Handle<TermStructure>(new PiecewiseConstantForwards(theCurrency,theDayCounter,today,theDeposits));
+		inline FlatForward::FlatForward(const Handle<Currency>& currency, const Handle<DayCounter>& dayCounter,
+		  const Date& today, Rate forward)
+		: theCurrency(currency), theDayCounter(dayCounter), today(today), theForward(forward) {}
+		
+		inline Handle<TermStructure> FlatForward::clone() const {
+			return Handle<TermStructure>(new FlatForward(theCurrency,theDayCounter,today,theForward));
 		}
 		
-		inline Handle<Currency> PiecewiseConstantForwards::currency() const {
+		inline Handle<Currency> FlatForward::currency() const {
 			return theCurrency;
 		}
 		
-		inline Handle<DayCounter> PiecewiseConstantForwards::dayCounter() const {
+		inline Handle<DayCounter> FlatForward::dayCounter() const {
 			return theDayCounter;
 		}
 		
-		inline Date PiecewiseConstantForwards::todaysDate() const {
+		inline Date FlatForward::todaysDate() const {
 			return today;
 		}
 		
-		inline Date PiecewiseConstantForwards::settlementDate() const {
+		inline Date FlatForward::settlementDate() const {
 			return theCurrency->settlementDate(today);
 		}
 		
-		inline Handle<Calendar> PiecewiseConstantForwards::calendar() const {
+		inline Handle<Calendar> FlatForward::calendar() const {
 			return theCurrency->settlementCalendar();
 		}
 		
-		inline Date PiecewiseConstantForwards::maxDate() const {
-			return theNodes.back();
+		inline Date FlatForward::maxDate() const {
+			return Date::maxDate();
 		}
 		
-		inline Date PiecewiseConstantForwards::minDate() const {
+		inline Date FlatForward::minDate() const {
 			return settlementDate();
 		}
 		
+		inline Rate FlatForward::zeroYield(const Date& d) const {
+			Require(d>=minDate() && d<=maxDate(), "date outside curve definition");
+			return theForward;
+		}
+		
+		inline DiscountFactor FlatForward::discount(const Date& d) const {
+			Require(d>=minDate() && d<=maxDate(), "date outside curve definition");
+			double t = theDayCounter->yearFraction(settlementDate(),d);
+			return DiscountFactor(QL_EXP(-theForward*t));
+		}
+		
+		inline Rate FlatForward::forward(const Date& d) const {
+			Require(d>=minDate() && d<=maxDate(), "date outside curve definition");
+			return theForward;
+		}
+
 	}
 
 }
