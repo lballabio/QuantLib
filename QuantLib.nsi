@@ -1,4 +1,7 @@
 
+# $Id$
+# $Source$
+
 # HEADER CONFIGURATION COMMANDS
 Name "QuantLib"
 OutFile "..\QuantLib-inst.exe"
@@ -19,10 +22,11 @@ ShowInstDetails hide
 # INSTALLATION EXECUTION COMMANDS
 Section "-QuantLib"
 SetOutPath $INSTDIR
+File "Authors.txt"
+File "Contributors.txt"
 File "README.txt"
 File "LICENSE.txt"
-File "Contributors.txt"
-File "Authors.txt"
+File "News.txt"
 SetOutPath $INSTDIR\lib\Win32\VisualStudio
 File "lib\Win32\VisualStudio\*.lib"
 SetOutPath $INSTDIR\lib\Win32\Borland
@@ -60,9 +64,9 @@ File /r "Swig\*.i"
 
 Section "Documentation"
 SetOutPath $INSTDIR\Docs\html
-;File "Docs\html\*.*"
+File "Docs\html\*.*"
 SetOutPath $INSTDIR\Docs\pdf
-;File "Docs\latex\*.pdf"
+File "Docs\latex\*.pdf"
 
 ;Section "Examples"
 ;SetOutPath $INSTDIR\Examples
@@ -92,15 +96,11 @@ File /r "Sources\TermStructures\*.cpp"
 Section "Start Menu Shortcuts"
 CreateDirectory "$SMPROGRAMS\QuantLib"
 CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall.lnk" "$INSTDIR\QuantLibUninstall.exe" "" "$INSTDIR\QuantLibUninstall.exe" 0
-;CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib (notepad).lnk" "$INSTDIR\notepad.exe" "" "$INSTDIR\notepad.exe" 0
 
 Section "Uninstall"
-; remove registry keys
 DeleteRegKey HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib"
 DeleteRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib
-; remove shortcuts, if any.
 Delete "$SMPROGRAMS\QuantLib\*.*"
-; remove directories used.
 RMDir "$SMPROGRAMS\QuantLib"
 RMDir /r $INSTDIR\Docs
 RMDir /r $INSTDIR\Examples
@@ -110,7 +110,5 @@ RMDir /r $INSTDIR\lib
 RMDir /r "$INSTDIR"
 
 WriteRegStr HKEY_LOCAL_MACHINE SOFTWARE\QuantLib "Install_Dir" "$INSTDIR"
-; Write the uninstall keys for Windows
 WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" "DisplayName" "QuantLib (remove only)"
 WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" "UninstallString" '"QuantLibUninstall.exe"'
-
