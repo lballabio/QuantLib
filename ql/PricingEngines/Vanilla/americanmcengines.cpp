@@ -103,7 +103,7 @@ namespace QuantLib {
 
         AssetGrid assetPaths (N, asset);
         for (i=1; i<N; i++) { 
-            assetPaths.at(i) = getAssetSequence(s0, paths[i]); 
+            assetPaths[i] = getAssetSequence(s0, paths[i]); 
         }
 
         // change the generated asset prices for the Longstaff-Schwartz
@@ -118,7 +118,7 @@ namespace QuantLib {
         Size payoffGridSize = timeSteps_;
         PayoffGrid payoffMatrix (N, std::vector<double>(payoffGridSize)); 
         for (i=0; i<N; i++) {
-            std::vector<double> cashflows = payoffMatrix.at(i);
+            std::vector<double> cashflows = payoffMatrix[i];
             for (j=0; j<cashflows.size()-1; j++) {
                 cashflows[j] = 0.0;
             }
@@ -161,8 +161,7 @@ namespace QuantLib {
                 for (i=0; i<itmPaths.size(); i++) {
 
                     // find any payoffs
-                    std::vector<double> cashflows = 
-                        payoffMatrix.at(itmPaths[i]);
+                    std::vector<double> cashflows = payoffMatrix[itmPaths[i]];
                     double cashflow = 0.0;
                     int cashflowTime = -1;
                     for (j = timeStep; j<timeSteps_; j++) {

@@ -62,7 +62,7 @@ namespace QuantLib {
                 new_asset_price = 
                     asset_price * QL_EXP(log_drift+log_random);
                 // terminal or initial vol?                        
-                vol = diffProcess_->diffusion(timeGrid.at(i),asset_price);
+                vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
 
                 x = QL_LOG (new_asset_price / asset_price);
@@ -89,7 +89,7 @@ namespace QuantLib {
                 new_asset_price = 
                     asset_price * QL_EXP(log_drift+log_random);
                 // terminal or initial vol?                        
-                vol = diffProcess_->diffusion(timeGrid.at(i),asset_price);
+                vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
 
                 x = QL_LOG (new_asset_price / asset_price);
