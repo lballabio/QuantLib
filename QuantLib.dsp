@@ -159,14 +159,6 @@ SOURCE=.\ql\Calendars\london.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\makefile.mak
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Calendars\milan.cpp
 # End Source File
 # Begin Source File
@@ -235,23 +227,11 @@ SOURCE=.\ql\DayCounters\actualactual.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\DayCounters\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\DayCounters\makefile.mak
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\DayCounters\thirty360.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\DayCounters\thirty360.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\DayCounters\thirty360european.hpp
 # End Source File
 # End Group
 # Begin Group "Finite Differences"
@@ -300,14 +280,6 @@ SOURCE=.\ql\FiniteDifferences\finitedifferencemodel.hpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\forwardeuler.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\FiniteDifferences\standardfdmodel.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\FiniteDifferences\standardstepcondition.hpp
 # End Source File
 # Begin Source File
 
@@ -384,14 +356,6 @@ SOURCE=.\ql\Math\lexicographicalview.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\linearinterpolation.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Math\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Math\makefile.mak
 # End Source File
 # Begin Source File
 
@@ -891,14 +855,6 @@ SOURCE=.\ql\TermStructures\flatforward.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\TermStructures\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\TermStructures\makefile.mak
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\TermStructures\piecewiseflatforward.cpp
 # End Source File
 # Begin Source File
@@ -935,10 +891,6 @@ SOURCE=.\ql\Utilities\iteratorcategories.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Utilities\Makefile.am
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Utilities\processingiterator.hpp
 # End Source File
 # Begin Source File
@@ -956,14 +908,6 @@ SOURCE=.\ql\Indexes\euribor.hpp
 # Begin Source File
 
 SOURCE=.\ql\Indexes\gbplibor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Indexes\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Indexes\makefile.mak
 # End Source File
 # Begin Source File
 
@@ -991,10 +935,6 @@ SOURCE=.\ql\Indexes\xibormanager.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\CashFlows\accruingcoupon.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\CashFlows\cashflowvectors.cpp
 # End Source File
 # Begin Source File
@@ -1012,14 +952,6 @@ SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
 # Begin Source File
 
 SOURCE=.\ql\CashFlows\floatingratecoupon.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\CashFlows\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\CashFlows\makefile.mak
 # End Source File
 # Begin Source File
 
@@ -1092,10 +1024,6 @@ SOURCE=.\ql\daycounter.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\depositrate.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\errors.hpp
 # End Source File
 # Begin Source File
@@ -1121,14 +1049,6 @@ SOURCE=.\ql\index.hpp
 # Begin Source File
 
 SOURCE=.\ql\instrument.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\makefile.mak
 # End Source File
 # Begin Source File
 
