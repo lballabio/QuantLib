@@ -103,11 +103,11 @@ namespace QuantLib {
             case the traditional Box-Muller approach and its variants
             would not preserve the sequence's low-discrepancy.
         */
-        class InvCumulativeNormalDistribution
+        class InvCumulativeNormalDistribution2
         : public std::unary_function<double,double> {
           public:
-            InvCumulativeNormalDistribution(double average = 0.0,
-                                            double sigma   = 1.0);
+            InvCumulativeNormalDistribution2(double average = 0.0,
+                                             double sigma   = 1.0);
             // function
             double operator()(double x) const;
           private:
@@ -132,7 +132,7 @@ namespace QuantLib {
         };
 
 
-        //! Another inverse cumulative normal distribution class
+        //! Inverse cumulative normal distribution class
         /*! Given x between zero and one as
             the integral value of a gaussian normal distribution
             this class provides the value y such that
@@ -142,11 +142,11 @@ namespace QuantLib {
             It might be Hill and Davis (1973), or Odeh and Evans (1974), or
 		    Beasley and Springer (1977)
         */
-        class InvCumulativeNormalDistribution2
+        class InvCumulativeNormalDistribution
         : public std::unary_function<double,double> {
           public:
-            InvCumulativeNormalDistribution2(double average = 0.0,
-                                             double sigma   = 1.0);
+            InvCumulativeNormalDistribution(double average = 0.0,
+                                            double sigma   = 1.0);
             // function
             double operator()(double x) const;
           private:
@@ -200,22 +200,22 @@ namespace QuantLib {
             return gaussian_(xn) / sigma_;
         }
 
-        inline InvCumulativeNormalDistribution2::InvCumulativeNormalDistribution2(
-            double average, double sigma)
-        : average_(average), sigma_(sigma) {
-
-            QL_REQUIRE(sigma_>0.0,
-              "InvCumulativeNormalDistribution2: "
-                "sigma must be greater than 0.0 (" +
-                DoubleFormatter::toString(sigma_) + " not allowed)");
-        }
-
         inline InvCumulativeNormalDistribution::InvCumulativeNormalDistribution(
             double average, double sigma)
         : average_(average), sigma_(sigma) {
 
             QL_REQUIRE(sigma_>0.0,
               "InvCumulativeNormalDistribution: "
+                "sigma must be greater than 0.0 (" +
+                DoubleFormatter::toString(sigma_) + " not allowed)");
+        }
+
+        inline InvCumulativeNormalDistribution2::InvCumulativeNormalDistribution2(
+            double average, double sigma)
+        : average_(average), sigma_(sigma) {
+
+            QL_REQUIRE(sigma_>0.0,
+              "InvCumulativeNormalDistribution2: "
                 "sigma must be greater than 0.0 (" +
                 DoubleFormatter::toString(sigma_) + " not allowed)");
         }
