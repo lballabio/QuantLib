@@ -121,7 +121,6 @@
 	".\Include\ql\date.hpp"\
 	".\Include\ql\daycounter.hpp"\
 	".\Include\ql\DayCounters\actualactual.hpp"\
-	".\Include\ql\DayCounters\thirty360european.hpp"\
 	".\Include\ql\errors.hpp"\
 	".\Include\ql\handle.hpp"\
 	".\Include\ql\null.hpp"\

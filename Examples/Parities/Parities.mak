@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "Parities - Win32 Release"
 
 OUTDIR=.\Release
@@ -38,173 +35,32 @@ INTDIR=.\Release
 OutDir=.\Release
 # End Custom Macros
 
-ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
-
-
-CLEAN :
-	-@erase "$(INTDIR)\Parities.obj"
-	-@erase "$(INTDIR)\Parities.sbr"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(OUTDIR)\Parities.bsc"
-	-@erase "$(OUTDIR)\Parities.exe"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /I "$(QL_DIR)\Include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\Parities.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\Parities.bsc" 
-BSC32_SBRS= \
-	"$(INTDIR)\Parities.sbr"
-
-"$(OUTDIR)\Parities.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
-    $(BSC32) @<<
-  $(BSC32_FLAGS) $(BSC32_SBRS)
-<<
-
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Parities.pdb" /machine:I386 /out:"$(OUTDIR)\Parities.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
-LINK32_OBJS= \
-	"$(INTDIR)\Parities.obj"
-
-"$(OUTDIR)\Parities.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "Parities - Win32 Debug"
-
-OUTDIR=.\Debug
-INTDIR=.\Debug
-# Begin Custom Macros
-OutDir=.\Debug
-# End Custom Macros
+!IF "$(RECURSE)" == "0" 
 
 ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
 
+!ELSE 
 
-CLEAN :
-	-@erase "$(INTDIR)\Parities.obj"
-	-@erase "$(INTDIR)\Parities.sbr"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vc60.pdb"
-	-@erase "$(OUTDIR)\Parities.bsc"
-	-@erase "$(OUTDIR)\Parities.exe"
-	-@erase "$(OUTDIR)\Parities.ilk"
-	-@erase "$(OUTDIR)\Parities.pdb"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QL_DIR)\Include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\Parities.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\Parities.bsc" 
-BSC32_SBRS= \
-	"$(INTDIR)\Parities.sbr"
-
-"$(OUTDIR)\Parities.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
-    $(BSC32) @<<
-  $(BSC32_FLAGS) $(BSC32_SBRS)
-<<
-
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\Parities.pdb" /debug /machine:I386 /out:"$(OUTDIR)\Parities.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
-LINK32_OBJS= \
-	"$(INTDIR)\Parities.obj"
-
-"$(OUTDIR)\Parities.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeRelease"
-
-OUTDIR=.\OnTheEdgeRelease
-INTDIR=.\OnTheEdgeRelease
-# Begin Custom Macros
-OutDir=.\OnTheEdgeRelease
-# End Custom Macros
-
-ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
-
-
-CLEAN :
-	-@erase "$(INTDIR)\Parities.obj"
-	-@erase "$(INTDIR)\Parities.sbr"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(OUTDIR)\Parities.bsc"
-	-@erase "$(OUTDIR)\Parities.exe"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /I "..\..\Include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\Parities.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\Parities.bsc" 
-BSC32_SBRS= \
-	"$(INTDIR)\Parities.sbr"
-
-"$(OUTDIR)\Parities.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
-    $(BSC32) @<<
-  $(BSC32_FLAGS) $(BSC32_SBRS)
-<<
-
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Parities.pdb" /machine:I386 /out:"$(OUTDIR)\Parities.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
-LINK32_OBJS= \
-	"$(INTDIR)\Parities.obj"
-
-"$(OUTDIR)\Parities.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeDebug"
-
-OUTDIR=.\OnTheEdgeDebug
-INTDIR=.\OnTheEdgeDebug
-# Begin Custom Macros
-OutDir=.\OnTheEdgeDebug
-# End Custom Macros
-
-ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
-
-
-CLEAN :
-	-@erase "$(INTDIR)\Parities.obj"
-	-@erase "$(INTDIR)\Parities.sbr"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vc60.pdb"
-	-@erase "$(OUTDIR)\Parities.bsc"
-	-@erase "$(OUTDIR)\Parities.exe"
-	-@erase "$(OUTDIR)\Parities.ilk"
-	-@erase "$(OUTDIR)\Parities.pdb"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\Include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\Parities.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\Parities.bsc" 
-BSC32_SBRS= \
-	"$(INTDIR)\Parities.sbr"
-
-"$(OUTDIR)\Parities.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
-    $(BSC32) @<<
-  $(BSC32_FLAGS) $(BSC32_SBRS)
-<<
-
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\Parities.pdb" /debug /machine:I386 /out:"$(OUTDIR)\Parities.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
-LINK32_OBJS= \
-	"$(INTDIR)\Parities.obj"
-
-"$(OUTDIR)\Parities.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
+ALL : "QuantLib - Win32 Release" "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
 
 !ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 ReleaseCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\Parities.obj"
+	-@erase "$(INTDIR)\Parities.sbr"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(OUTDIR)\Parities.bsc"
+	-@erase "$(OUTDIR)\Parities.exe"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /I "$(QL_DIR)\Include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\Parities.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -236,6 +92,297 @@ LINK32_OBJS= \
    $(CPP_PROJ) $< 
 <<
 
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\Parities.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\Parities.sbr"
+
+"$(OUTDIR)\Parities.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Parities.pdb" /machine:I386 /out:"$(OUTDIR)\Parities.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
+LINK32_OBJS= \
+	"$(INTDIR)\Parities.obj" \
+	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
+
+"$(OUTDIR)\Parities.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "Parities - Win32 Debug"
+
+OUTDIR=.\Debug
+INTDIR=.\Debug
+# Begin Custom Macros
+OutDir=.\Debug
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Debug" "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 DebugCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\Parities.obj"
+	-@erase "$(INTDIR)\Parities.sbr"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vc60.pdb"
+	-@erase "$(OUTDIR)\Parities.bsc"
+	-@erase "$(OUTDIR)\Parities.exe"
+	-@erase "$(OUTDIR)\Parities.ilk"
+	-@erase "$(OUTDIR)\Parities.pdb"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QL_DIR)\Include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\Parities.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\Parities.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\Parities.sbr"
+
+"$(OUTDIR)\Parities.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\Parities.pdb" /debug /machine:I386 /out:"$(OUTDIR)\Parities.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
+LINK32_OBJS= \
+	"$(INTDIR)\Parities.obj" \
+	"..\..\lib\Win32\VisualStudio\QuantLib_d.lib"
+
+"$(OUTDIR)\Parities.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeRelease"
+
+OUTDIR=.\OnTheEdgeRelease
+INTDIR=.\OnTheEdgeRelease
+# Begin Custom Macros
+OutDir=.\OnTheEdgeRelease
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 OnTheEdgeRelease" "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 OnTheEdgeReleaseCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\Parities.obj"
+	-@erase "$(INTDIR)\Parities.sbr"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(OUTDIR)\Parities.bsc"
+	-@erase "$(OUTDIR)\Parities.exe"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /I "..\..\Include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\Parities.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\Parities.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\Parities.sbr"
+
+"$(OUTDIR)\Parities.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Parities.pdb" /machine:I386 /out:"$(OUTDIR)\Parities.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
+LINK32_OBJS= \
+	"$(INTDIR)\Parities.obj" \
+	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
+
+"$(OUTDIR)\Parities.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeDebug"
+
+OUTDIR=.\OnTheEdgeDebug
+INTDIR=.\OnTheEdgeDebug
+# Begin Custom Macros
+OutDir=.\OnTheEdgeDebug
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 OnTheEdgeDebug" "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 OnTheEdgeDebugCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\Parities.obj"
+	-@erase "$(INTDIR)\Parities.sbr"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vc60.pdb"
+	-@erase "$(OUTDIR)\Parities.bsc"
+	-@erase "$(OUTDIR)\Parities.exe"
+	-@erase "$(OUTDIR)\Parities.ilk"
+	-@erase "$(OUTDIR)\Parities.pdb"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\Include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\Parities.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\Parities.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\Parities.sbr"
+
+"$(OUTDIR)\Parities.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\Parities.pdb" /debug /machine:I386 /out:"$(OUTDIR)\Parities.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
+LINK32_OBJS= \
+	"$(INTDIR)\Parities.obj" \
+	"..\..\lib\Win32\VisualStudio\QuantLib_d.lib"
+
+"$(OUTDIR)\Parities.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
+
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
 !IF EXISTS("Parities.dep")
@@ -251,6 +398,56 @@ SOURCE=.\Parities.cpp
 
 "$(INTDIR)\Parities.obj"	"$(INTDIR)\Parities.sbr" : $(SOURCE) "$(INTDIR)"
 
+
+!IF  "$(CFG)" == "Parities - Win32 Release"
+
+"QuantLib - Win32 Release" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
+   cd ".\Examples\Parities"
+
+"QuantLib - Win32 ReleaseCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
+   cd ".\Examples\Parities"
+
+!ELSEIF  "$(CFG)" == "Parities - Win32 Debug"
+
+"QuantLib - Win32 Debug" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
+   cd ".\Examples\Parities"
+
+"QuantLib - Win32 DebugCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
+   cd ".\Examples\Parities"
+
+!ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeRelease"
+
+"QuantLib - Win32 OnTheEdgeRelease" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" 
+   cd ".\Examples\Parities"
+
+"QuantLib - Win32 OnTheEdgeReleaseCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" RECURSE=1 CLEAN 
+   cd ".\Examples\Parities"
+
+!ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeDebug"
+
+"QuantLib - Win32 OnTheEdgeDebug" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" 
+   cd ".\Examples\Parities"
+
+"QuantLib - Win32 OnTheEdgeDebugCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" RECURSE=1 CLEAN 
+   cd ".\Examples\Parities"
+
+!ENDIF 
 
 
 !ENDIF 
