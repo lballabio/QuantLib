@@ -25,6 +25,7 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -37,7 +38,7 @@ namespace QuantLib {
     */
     class KronrodIntegral {
       public:
-        KronrodIntegral(double tolerance, 
+        KronrodIntegral(double tolerance,
                         Size maxFunctionEvaluations = Null<int>());
 
         template <class F>
@@ -62,27 +63,27 @@ namespace QuantLib {
             // weights for 7-point Gauss-Legendre integration
             // (only 4 values out of 7 are given as they are symmetric)
             static const double g7w[] = { 0.417959183673469,
-                                          0.381830050505119, 
-                                          0.279705391489277, 
+                                          0.381830050505119,
+                                          0.279705391489277,
                                           0.129484966168870 };
             // weights for 15-point Gauss-Kronrod integration
-            static const double k15w[] = { 0.209482141084728, 
+            static const double k15w[] = { 0.209482141084728,
                                            0.204432940075298,
-                                           0.190350578064785, 
+                                           0.190350578064785,
                                            0.169004726639267,
-                                           0.140653259715525, 
+                                           0.140653259715525,
                                            0.104790010322250,
-                                           0.063092092629979, 
+                                           0.063092092629979,
                                            0.022935322010529 };
             // abscissae (evaluation points)
             // for 15-point Gauss-Kronrod integration
-            static const double k15t[] = { 0.000000000000000, 
+            static const double k15t[] = { 0.000000000000000,
                                            0.207784955007898,
-                                           0.405845151377397, 
+                                           0.405845151377397,
                                            0.586087235467691,
-                                           0.741531185599394, 
+                                           0.741531185599394,
                                            0.864864423359769,
-                                           0.949107912342758, 
+                                           0.949107912342758,
                                            0.991455371120813 };
 
             const double halflength = (b - a) / 2;
@@ -125,7 +126,7 @@ namespace QuantLib {
             if (QL_FABS(k15 - g7) < tolerance) {
                 return k15;
             } else {
-                QL_REQUIRE(functionEvaluations_+30 <= 
+                QL_REQUIRE(functionEvaluations_+30 <=
                            maxFunctionEvaluations_,
                            "maximum number of function evaluations "
                            "exceeded");
@@ -139,13 +140,21 @@ namespace QuantLib {
         Size maxFunctionEvaluations_;
     };
 
-    inline KronrodIntegral::KronrodIntegral(double tolerance, 
+    inline KronrodIntegral::KronrodIntegral(double tolerance,
                                             Size maxFunctionEvaluations)
-    : tolerance_(tolerance), 
+    : tolerance_(tolerance),
       maxFunctionEvaluations_(maxFunctionEvaluations) {
-        QL_REQUIRE(tolerance > QL_EPSILON, "tolerance must be > 0");
+        QL_REQUIRE(tolerance > QL_EPSILON,
+            "KronrodIntegral::KronrodIntegral : "
+            "required tolerance ("
+            + DoubleFormatter::toExponential(tolerance) +
+            ") not allowed. It must be > "
+            + DoubleFormatter::toExponential(QL_EPSILON));
         QL_REQUIRE(maxFunctionEvaluations >= 15,
-                   "maxFunctionEvaluations must be >= 15");
+            "KronrodIntegral::KronrodIntegral : "
+            "required maxFunctionEvaluations ("
+            + DoubleFormatter::toExponential(maxFunctionEvaluations) +
+            ") not allowed. It must be >= 15");
     }
 
 }
