@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/02/15 15:29:10  marmar
+    dVolMultiplier and dRMultiplier defined
+    constant
+
     Revision 1.11  2001/02/14 10:11:05  marmar
     BSMNumericalOption has  a cleaner constructor
 
@@ -99,7 +103,7 @@ namespace QuantLib {
           private:
             // temporaries
             mutable double theGridLogSpacing;
-            static double dVolMultiplier, dRMultiplier;
+            const static double dVolMultiplier, dRMultiplier;
             int safeGridPoints(int gridPoints, Time residualTime);
         };
 

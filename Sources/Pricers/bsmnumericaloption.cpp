@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.25  2001/02/15 15:30:30  marmar
+    dVolMultiplier and dRMultiplier defined
+    constant
+
     Revision 1.24  2001/02/14 10:11:25  marmar
     BSMNumericalOption has  a cleaner constructor
 
@@ -62,8 +66,8 @@ namespace QuantLib {
         using FiniteDifferences::BoundaryCondition;
         using FiniteDifferences::BSMOperator;
         
-        double BSMNumericalOption::dVolMultiplier = 0.0001; 
-        double BSMNumericalOption::dRMultiplier = 0.0001; 
+        const double BSMNumericalOption::dVolMultiplier = 0.0001; 
+        const double BSMNumericalOption::dRMultiplier = 0.0001; 
         
         BSMNumericalOption::BSMNumericalOption(BSMNumericalOption::Type type,
             double underlying, double strike, Rate dividendYield, 
@@ -74,6 +78,12 @@ namespace QuantLib {
             theGridPoints(safeGridPoints(gridPoints, residualTime)),
             theGrid(theGridPoints), theInitialPrices(theGridPoints){
                 hasBeenCalculated = false;
+                QL_REQUIRE(volatility >= 0.001, 
+                        "BSMNumericalOption: volatility to low "
+                        "for a meaningful result");
+                QL_REQUIRE(volatility <= 3.0, 
+                        "BSMNumericalOption: volatility to high "
+                        "for a meaningful result");
         }
         
         double BSMNumericalOption::delta() const {
