@@ -55,7 +55,6 @@ namespace QuantLib {
             for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
                 registerWith(*i);
             registerWith(termStructure);
-            registerWith(engine);
         }
 
         bool VanillaCapFloor::isExpired() const {

@@ -39,7 +39,6 @@ namespace QuantLib {
           termStructure_(termStructure) {
             registerWith(swap_);
             registerWith(termStructure_);
-            registerWith(engine_);
         }
 
         bool Swaption::isExpired() const {

@@ -104,6 +104,9 @@ namespace QuantLib {
             }
 
             void SwaptionHelper::addTimesTo(std::list<Time>& times) const {
+                swaption_->NPV();   // just for the side effect of setting
+                                    // the engine arguments. Ugly. Find
+                                    // some other way.
                 SwaptionArguments* params =
                     dynamic_cast<SwaptionArguments*>(engine_->arguments());
                 Size i;

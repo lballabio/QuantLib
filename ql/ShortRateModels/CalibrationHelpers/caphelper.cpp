@@ -101,6 +101,9 @@ namespace QuantLib {
             }
 
             void CapHelper::addTimesTo(std::list<Time>& times) const {
+                cap_->NPV();        // just for the side effect of setting
+                                    // the engine arguments. Ugly. Find
+                                    // some other way.
                 CapFloorArguments* params =
                     dynamic_cast<CapFloorArguments*>(engine_->arguments());
                 Size nPeriods = params->startTimes.size();
