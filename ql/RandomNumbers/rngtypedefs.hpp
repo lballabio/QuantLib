@@ -37,19 +37,25 @@ namespace QuantLib {
     */
 
     //! default choice for uniform random number generator.
+    /*! \deprecated use random number traits instead */
     typedef PseudoRandom::urng_type UniformRandomGenerator;
 
     //! default choice for Gaussian random number generator.
+    /*! \deprecated use random number traits instead */
     typedef PseudoRandom::rng_type GaussianRandomGenerator;
 
     //! default choice for uniform random sequence generator.
+    /*! \deprecated use random number traits instead */
     typedef PseudoRandom::ursg_type UniformRandomSequenceGenerator;
 
     //! default choice for Gaussian random sequence generator.
+    /*! \deprecated use random number traits instead */
     typedef PseudoRandom::rsg_type GaussianRandomSequenceGenerator;
 
+    /*! \deprecated use random number traits instead */
     typedef LowDiscrepancy::ursg_type UniformLowDiscrepancySequenceGenerator;
 
+    /*! \deprecated use random number traits instead */
     typedef LowDiscrepancy::rsg_type GaussianLowDiscrepancySequenceGenerator;
 
 }

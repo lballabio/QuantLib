@@ -99,9 +99,10 @@ namespace QuantLib {
         PseudoRandom::rsg_type rsg = 
             PseudoRandom::make_sequence_generator(n*(grid.size()-1),seed);
 
-        boost::shared_ptr<GaussianMultiPathGenerator> pathGenerator(
-            new GaussianMultiPathGenerator(processes, correlation, grid, 
-                                           rsg, false));
+        typedef MultiAsset<PseudoRandom>::path_generator_type generator;
+        boost::shared_ptr<generator> pathGenerator(
+                                  new generator(processes, correlation, grid, 
+                                                rsg, false));
 
         // initialize the path pricer
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(

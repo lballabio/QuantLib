@@ -23,18 +23,18 @@
 #ifndef quantlib_mc_typedefs_h
 #define quantlib_mc_typedefs_h
 
-#include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
-#include <ql/MonteCarlo/brownianbridge.hpp>
 
 namespace QuantLib {
 
     //! default choice for Gaussian path generator.
-    typedef PathGenerator<GaussianRandomSequenceGenerator>
+    /*! \deprecated use MonteCarlo traits instead */
+    typedef SingleAsset<PseudoRandom>::path_generator_type
                                                    GaussianPathGenerator;
 
     //! default choice for Gaussian multi-path generator.
-    typedef MultiPathGenerator<GaussianRandomSequenceGenerator>
+    /*! \deprecated use MonteCarlo traits instead */
+    typedef MultiAsset<PseudoRandom>::path_generator_type
                                                    GaussianMultiPathGenerator;
 
     //! default choice for one-factor Monte Carlo model.

@@ -405,11 +405,11 @@ namespace QuantLib {
         TimeGrid grid(T, timeSteps_);
 
         // create a Gaussian Random Sequence Generator
-        GaussianRandomSequenceGenerator gen = 
+        PseudoRandom::rsg_type gen = 
             PseudoRandom::make_sequence_generator(
                                 numAssets*(grid.size()-1),seed_);
 
-        GaussianLowDiscrepancySequenceGenerator quasiGen = 
+        LowDiscrepancy::rsg_type quasiGen = 
             LowDiscrepancy::make_sequence_generator(
                 numAssets*(grid.size()-1),seed_);
 
@@ -429,24 +429,24 @@ namespace QuantLib {
         }
 
         // create the MultiPathGenerator
-        boost::shared_ptr<MultiPathGenerator<GaussianRandomSequenceGenerator> > 
+        boost::shared_ptr<MultiPathGenerator<PseudoRandom::rsg_type> > 
             multipathGenerator(
-                new MultiPathGenerator<GaussianRandomSequenceGenerator> (
+                new MultiPathGenerator<PseudoRandom::rsg_type> (
                                             diffusionProcs, 
                                             arguments_.correlation, grid, 
                                             gen, brownianBridge));
 
-        boost::shared_ptr<MultiPathGenerator<GaussianLowDiscrepancySequenceGenerator> >
+        boost::shared_ptr<MultiPathGenerator<LowDiscrepancy::rsg_type> >
             quasiMultipathGenerator(
-            new MultiPathGenerator<GaussianLowDiscrepancySequenceGenerator> (
+            new MultiPathGenerator<LowDiscrepancy::rsg_type> (
                                             diffusionProcs, 
                                             arguments_.correlation, grid, 
                                             quasiGen, brownianBridge));
 
-        MultiPathGenerator<GaussianLowDiscrepancySequenceGenerator>
+        MultiPathGenerator<LowDiscrepancy::rsg_type>
             ::sample_type quasiMultipathHolder = multipathGenerator->next(); 
 
-        MultiPathGenerator<GaussianRandomSequenceGenerator>::sample_type 
+        MultiPathGenerator<PseudoRandom::rsg_type>::sample_type 
             multipathHolder = multipathGenerator->next();
 
         bool isQuasi = false;
