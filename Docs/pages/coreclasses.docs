@@ -25,7 +25,7 @@
     Documentation for this part of the library is in progress.
 
     The root namespace QuantLib contains what can be
-    considered the QuantLib foundation, i.e., the core
+    considered the %QuantLib foundation, i.e., the core
     of abstract classes upon which the rest of the library is built.
 
     The folder structure of the sources reflects the organization of

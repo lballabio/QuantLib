@@ -60,23 +60,23 @@
     Under Project | Settings select your project. Select setting for: "All
     configuration".
     On the "C/C++" tab select "Preprocessor" and under "Additional include
-    directory" add "$(QL_DIR)". This will add your current QuantLib
+    directory" add "$(QL_DIR)". This will add your current %QuantLib
     installation directory to the include path.
     On the "Link" tab select "Input" and under "Additional library path" add
-    "$(QL_DIR)\lib\Win32\VisualStudio\". This will add your current QuantLib
+    "$(QL_DIR)\lib\Win32\VisualStudio\". This will add your current %QuantLib
     installation directory to the library path.
-    -# To compile in "Win32 Debug" configuration you will need the QuantLib
+    -# To compile in "Win32 Debug" configuration you will need the %QuantLib
     debug libraries, available for download from
     http://quantlib.org/download.html
     -# The "Win32 OnTheEdgeRelease" and "Win 32 OnTheEdgeDebug" configurations
     are equivalent to "Win32 Release" and "Win32 Debug" respectively, except
-    that they do not use the installed QuantLib libraries, but look for the
-    *.hpp and *.lib QuantLib files in a relative ..\QuantLib path. This is
-    mainly for QuantLib developers, to allow them to check the examples
-    without having to install their unstable working version of QuantLib.
-    The "OnTheEdge" approach may be adopted in projects using QuantLib,
+    that they do not use the installed %QuantLib libraries, but look for the
+    *.hpp and *.lib %QuantLib files in a relative ..\%QuantLib path. This is
+    mainly for %QuantLib developers, to allow them to check the examples
+    without having to install their unstable working version of %QuantLib.
+    The "OnTheEdge" approach may be adopted in projects using %QuantLib,
     allowing for a quick and easy way to check how the projects work with a
-    new QuantLib release without having to install it.
+    new %QuantLib release without having to install it.
 
 */
 
