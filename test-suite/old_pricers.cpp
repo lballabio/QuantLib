@@ -17,10 +17,6 @@
 
 #include "old_pricers.hpp"
 #include "utilities.hpp"
-#include <ql/Pricers/fdeuropean.hpp>
-#include <ql/Pricers/fdamericanoption.hpp>
-#include <ql/Pricers/fdshoutoption.hpp>
-#include <ql/Pricers/fddividendamericanoption.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/mceverest.hpp>
 #include <ql/Pricers/mcmaxbasket.hpp>
@@ -35,66 +31,6 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-
-void OldPricerTest::testFdEuropeanPricer() {
-
-    #ifndef QL_DISABLE_DEPRECATED
-
-    BOOST_MESSAGE("Testing old-style finite-difference European pricer...");
-
-    QL_TEST_START_TIMING
-    Real under = 100.0;
-    Real strikeMin = 60.0, strikeRange = 100.0;
-    Rate rRateMin = 0.0,  rRateRange = 0.18;
-    Rate qRateMin = 0.0,  qRateRange = 0.02;
-    Volatility volMin = 0.0, volRange = 1.2;
-    Time timeMin = 0.5, timeRange = 2.0;
-
-    Real tolerance = 1.0e-2;
-    Size totCases = 200;
-
-    PseudoRandom::urng_type rng(56789012);
-
-    Option::Type types[] = { Option::Call, Option::Put };
-
-    for (Size i=0; i<totCases; i++) {
-
-        Real strike = strikeMin + strikeRange * rng.next().value;
-        Rate qRate = qRateMin + qRateRange * rng.next().value;
-        Rate rRate = rRateMin + rRateRange * rng.next().value;
-        Volatility vol = volMin + volRange * rng.next().value;
-        Time resTime = timeMin + timeRange * rng.next().value;
-
-        for (Size j=0; j<LENGTH(types); j++) {
-
-            DiscountFactor rDiscount = std::exp(-rRate*resTime);
-            DiscountFactor qDiscount = std::exp(-qRate*resTime);
-            Real forward = under*qDiscount/rDiscount;
-            Real variance = vol*vol*resTime;
-            boost::shared_ptr<StrikedTypePayoff> payoff(
-                                    new PlainVanillaPayoff(types[j], strike));
-            Real anValue = BlackFormula(forward, rDiscount,
-                                        variance, payoff).value();
-            Real numValue = FdEuropean(types[j], under, strike,
-                                       qRate, rRate, resTime,
-                                       vol, 100, 400).value();
-            if (std::fabs(anValue-numValue) > tolerance)
-                BOOST_FAIL("Option details: \n"
-                           << "    type:           " << types[j] << "\n"
-                           << "    underlying:     " << under << "\n"
-                           << "    strike:         " << strike << "\n"
-                           << "    dividend yield: " << io::rate(qRate) << "\n"
-                           << "    risk-free rate: " << io::rate(rRate) << "\n"
-                           << "    residual time:  " << resTime << "\n"
-                           << "    volatility:     " << io::volatility(vol)
-                           << "\n\n"
-                           << "    calculated value: " << numValue << "\n"
-                           << "    expected:         " << anValue);
-        }
-    }
-
-    #endif
-}
 
 namespace {
 
@@ -170,105 +106,6 @@ namespace {
         }
     }
 
-}
-
-void OldPricerTest::testFdAmericanPricers() {
-
-    #ifndef QL_DISABLE_DEPRECATED
-
-    BOOST_MESSAGE(
-              "Testing old-style finite-difference American-type pricers...");
-
-    QL_TEST_START_TIMING
-
-    Option::Type types[] = { Option::Call, Option::Put };
-    Real underlyings[] = { 100 };
-    Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Rate qRates[] = { 0.04, 0.05, 0.06 };
-    Time residualTimes[] = { 1.0 };
-    Real strikes[] = { 50, 100, 150 };
-    Volatility volatilities[] = { 0.05, 0.5, 1.2 };
-
-    for (Size i1=0; i1<LENGTH(types); i1++) {
-      for (Size i2=0; i2<LENGTH(underlyings); i2++) {
-        for (Size i3=0; i3<LENGTH(rRates); i3++) {
-          for (Size i4=0; i4<LENGTH(qRates); i4++) {
-            for (Size i5=0; i5<LENGTH(residualTimes); i5++) {
-              for (Size i6=0; i6<LENGTH(strikes); i6++) {
-                for (Size i7=0; i7<LENGTH(volatilities); i7++) {
-                  // test data
-                  Option::Type type = types[i1];
-                  Real u = underlyings[i2];
-                  Rate r = rRates[i3];
-                  Rate q = qRates[i4];
-                  Time T = residualTimes[i5];
-                  Real k = strikes[i6];
-                  Volatility v = volatilities[i7];
-
-                  testStepOption<FdAmericanOption>(type,u,k,q,r,T,v,
-                      std::string("American"));
-                  testStepOption<FdShoutOption>(type,u,k,q,r,T,v,
-                      std::string("shout"));
-
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    #endif
-}
-
-void OldPricerTest::testFdAmericanDividendPricers() {
-
-    #ifndef QL_DISABLE_DEPRECATED
-
-    BOOST_MESSAGE(
-               "Testing finite-difference American pricer with dividends...");
-
-    QL_TEST_START_TIMING
-
-    std::vector<Rate> dividendA, blankA;
-    std::vector<Time> dividendTimeA, blankTimeA;
-
-    Real under = 54.625;
-    Real strike = 55;
-    Rate dividendYield = 0.0;
-    Rate interestRate = 0.052706;
-    Time expirationTime = 0.126027;
-    Volatility sigma = 0.282922;
-    Size timeSteps = 40;
-    Size assetSteps = 300;
-    Real tolerance = 1.0e-6;
-
-    FdDividendAmericanOption opt1(Option::Call, under, strike,
-                                  dividendYield, interestRate,
-                                  expirationTime, sigma,
-                                  blankA, blankTimeA,
-                                  timeSteps, assetSteps);
-    Real refValue = opt1.value();
-
-    for (Size i=0; i <= 6; i++) {
-        FdDividendAmericanOption opt(Option::Call, under, strike,
-                                     dividendYield, interestRate,
-                                     expirationTime, sigma,
-                                     dividendA, dividendTimeA,
-                                     timeSteps, assetSteps);
-
-        Real value = opt.value();
-
-        if (std::fabs(refValue-value) > tolerance)
-            BOOST_FAIL("DividendAmericanOption :\n"
-                       << "    calculated value: " << value << "\n"
-                       << "    expected:         " << refValue);
-
-        dividendA.push_back(0.0);
-        dividendTimeA.push_back(1.0e-3 * i);
-    }
-
-    #endif
 }
 
 
@@ -554,11 +391,6 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
 test_suite* OldPricerTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Old-style pricer tests");
-    #ifndef QL_DISABLE_DEPRECATED
-    suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdEuropeanPricer));
-    suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdAmericanPricers));
-    suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdAmericanDividendPricers));
-    #endif
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcSingleFactorPricers));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcMultiFactorPricers));
     return suite;

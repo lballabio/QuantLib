@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#if !defined(QL_DISABLE_DEPRECATED)
+#if defined(QL_PATCH_MSVC6)
 
 #include <ql/TermStructures/piecewiseflatforward.hpp>
 #include <ql/Solvers1D/brent.hpp>

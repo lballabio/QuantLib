@@ -183,25 +183,6 @@ namespace QuantLib {
     /*! \relates InterestRate */
     std::ostream& operator<<(std::ostream&, const InterestRate&);
 
-
-    #ifndef QL_DISABLE_DEPRECATED
-    //! Formats compounding rule for output
-    /*! \deprecated use streams and manipulators for proper formatting */
-    class CompoundingRuleFormatter {
-      public:
-        static std::string toString(Compounding comp,
-                                    Frequency freq = NoFrequency);
-    };
-
-    //! Formats interest rates for output
-    /*! \deprecated use streams and manipulators for proper formatting */
-    class InterestRateFormatter {
-      public:
-        static std::string toString(InterestRate ir,
-                                    Integer precision = 5);
-    };
-    #endif
-
 }
 
 

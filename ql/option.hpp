@@ -97,19 +97,6 @@ namespace QuantLib {
              strikeSensitivity;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! format option type for output
-    /*! \deprecated use streams and manipulators for proper formatting */
-    class OptionTypeFormatter {
-      public:
-        static std::string toString(Option::Type type) {
-            std::ostringstream out;
-            out << type;
-            return out.str();
-        }
-    };
-    #endif
-
 
     // inline definitions
 

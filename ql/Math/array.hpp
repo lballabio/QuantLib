@@ -167,22 +167,6 @@ namespace QuantLib {
     /*! \relates Array */
     std::ostream& operator<<(std::ostream&, const Array&);
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! format arrays for output
-    /*! \deprecated use streams and manipulators for proper formatting */
-    class ArrayFormatter {
-      public:
-        static std::string toString(const Array& a,
-                                    Integer precision = 6,
-                                    Integer digits = 0,
-                                    Size elementsPerRow = QL_MAX_INTEGER) {
-            std::ostringstream s;
-            s << std::setw(digits) << a;
-            return s.str();
-        }
-    };
-    #endif
-
 
     // inline definitions
 

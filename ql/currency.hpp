@@ -108,16 +108,6 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream&, const Currency&);
 
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! format currencies for output
-    /*! \deprecated use streams and manipulators for proper formatting */
-    class CurrencyFormatter {
-      public:
-        static std::string toString(const Currency& c);
-    };
-    #endif
-
-
     // inline definitions
 
     inline Currency::Currency() {}

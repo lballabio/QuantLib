@@ -19,7 +19,6 @@ This version number is in:
     QuantLib/QuantLib.nsi,
     QuantLib/QuantLib.vcproj,
     QuantLib/QuantLib.dsp,
-    QuantLib/Docs/quantlib.doxy,
     QuantLib/ql/qldefines.hpp,
     QuantLib/functions/ql/Functions/QuantLibFunctions.vcproj
 

@@ -54,15 +54,15 @@
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "0.3.9-debug"
+    #define QL_VERSION "0.3.10-debug"
 #else
-    #define QL_VERSION "0.3.9"
+    #define QL_VERSION "0.3.10"
 #endif
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x000309f0
+#define QL_HEX_VERSION 0x000310f0
 //! version string for output lib name
-#define QL_LIB_VERSION "0_3_9"
+#define QL_LIB_VERSION "0_3_10"
 
 #if   defined(HAVE_CONFIG_H)    // Dynamically created by configure
     #include <ql/config.hpp>
@@ -144,26 +144,8 @@
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::atoi; }
 #endif
-#ifndef QL_DISABLE_DEPRECATED
-/*! \def QL_ATOI
-    \brief conversion from string to int
-    \deprecated use std::atoi instead
-*/
-#define QL_ATOI std::atoi
-#endif
 
 
-/*! \defgroup mathMacros Math functions
-
-    Some compilers still define math functions in the global
-    namespace.  For the code to be portable these macros had to be
-    used instead of the actual functions. However, Boost provides
-    the means of bypassing this limitation; therefore, all these
-    macros are now deprecated in favor of the actual functions in
-    namespace std.
-
-    @{
-*/
 #if defined HAVE_CMATH
     #include <cmath>
 #elif defined HAVE_MATH_H
@@ -176,64 +158,6 @@
                     using ::sin; using ::cos; using ::pow; using ::modf;
                     using ::sinh; using ::cosh; using ::floor; }
 #endif
-#ifndef QL_DISABLE_DEPRECATED
-/*! \def QL_SQRT
-    \brief square root
-    \deprecated use std::sqrt instead
-*/
-#define QL_SQRT std::sqrt
-/*! \def QL_FABS
-    \brief absolute value
-    \deprecated use std::fabs instead
-*/
-#define QL_FABS std::fabs
-/*! \def QL_EXP
-    \brief exponential
-    \deprecated use std::exp instead
-*/
-#define QL_EXP std::exp
-/*! \def QL_LOG
-    \brief logarithm
-    \deprecated use std::log instead
-*/
-#define QL_LOG std::log
-/*! \def QL_SIN
-    \brief sine
-    \deprecated use std::sin instead
-*/
-#define QL_SIN std::sin
-/*! \def QL_COS
-    \brief cosine
-    \deprecated use std::cos instead
-*/
-#define QL_COS std::cos
-/*! \def QL_POW
-    \brief power
-    \deprecated use std::pow instead
-*/
-#define QL_POW std::pow
-/*! \def QL_MODF
-   \brief floating-point module
-   \deprecated use std::modf instead
-*/
-#define QL_MODF std::modf
-/*! \def QL_SINH
-    \brief hyperbolic sine
-    \deprecated use std::sinh instead
-*/
-#define QL_SINH std::sinh
-/*! \def QL_COSH
-    \brief hyperbolic cosine
-    \deprecated use std::cosh instead
-*/
-#define QL_COSH std::cosh
-/*! \def QL_FLOOR
-    \brief floor
-    \deprecated use std::floor instead
-*/
-#define QL_FLOOR std::floor
-#endif
-/*! @} */
 
 
 /*! \defgroup limitMacros Numeric limits
@@ -279,17 +203,6 @@
 /*! @} */
 
 
-/*! \defgroup timeMacros Time functions
-
-    Some compilers still define time functions in the global namespace.
-    For the code to be portable these macros had to be
-    used instead of the actual functions. However, Boost provides
-    the means of bypassing this limitation; therefore, all these
-    macros are now deprecated in favor of the actual functions in
-    namespace std.
-
-    @{
-*/
 #if defined HAVE_CTIME
     #include <ctime>
 #elif defined HAVE_TIME_H
@@ -300,42 +213,8 @@
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::time; using ::time_t; using ::tm; using ::gmtime; }
 #endif
-#ifndef QL_DISABLE_DEPRECATED
-/*! \def QL_TIME
-    \brief time value
-    \deprecated use std::time instead
-*/
-#define QL_TIME std::time
-/*! \def QL_TIME_T
-    \brief time_t type
-    \deprecated use std::time_t instead
-*/
-#define QL_TIME_T std::time_t
-/*! \def QL_TM
-    \brief tm type
-    \deprecated use std::tm instead
-*/
-#define QL_TM std::tm
-/*! \def QL_GMTIME
-    \brief gmtime function
-    \deprecated use std::gmtime instead
-*/
-#define QL_GMTIME std::gmtime
-#endif
-/*! @} */
 
 
-/*! \defgroup charMacros Character functions
-
-    Some compilers still define character functions in the global
-    namespace.  For the code to be portable these macros had to be
-    used instead of the actual functions. However, Boost provides
-    the means of bypassing this limitation; therefore, all these
-    macros are now deprecated in favor of the actual functions in
-    namespace std.
-
-    @{
-*/
 #if defined HAVE_CCTYPE
     #include <cctype>
 #elif defined HAVE_CTYPE_H
@@ -346,47 +225,6 @@
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::tolower; using ::toupper; }
 #endif
-#ifndef QL_DISABLE_DEPRECATED
-/*! \def QL_TOUPPER
-    \brief convert to uppercase
-    \deprecated use std::toupper instead
-*/
-#define QL_TOUPPER std::toupper
-/*! \def QL_TOLOWER
-    \brief convert to lowercase
-    \deprecated use std::tolower instead
-*/
-#define QL_TOLOWER std::tolower
-#endif
-/*! @} */
-
-
-/*! \defgroup algoMacros Min and max functions
-
-    Some compilers still do not define <code>std::min</code> and
-    <code>std::max</code>. Moreover, Visual C++ 6 defines them but for
-    unfathomable reasons garble their names.  For the code to be
-    portable these macros had to be used instead of the actual
-    functions. However, Boost provides the means of bypassing this
-    limitation; therefore, all these macros are now deprecated in
-    favor of the actual functions in namespace std.
-
-    @{
-*/
-#include <algorithm>
-#ifndef QL_DISABLE_DEPRECATED
-/*! \def QL_MIN
-    \brief minimum between two elements
-    \deprecated use std::min instead
-*/
-#define QL_MIN std::min
-/*! \def QL_MAX
-    \brief maximum between two elements
-    \deprecated use std::max instead
-*/
-#define QL_MAX std::max
-#endif
-/*! @} */
 
 
 /*! \defgroup templateMacros Template capabilities

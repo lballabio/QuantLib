@@ -22,16 +22,6 @@
 #include <ql/Pricers/core.hpp>
 
 #include <ql/Pricers/discretegeometricaso.hpp>
-#include <ql/Pricers/fdamericanoption.hpp>
-#include <ql/Pricers/fdbermudanoption.hpp>
-#include <ql/Pricers/fdbsmoption.hpp>
-#include <ql/Pricers/fddividendamericanoption.hpp>
-#include <ql/Pricers/fddividendoption.hpp>
-#include <ql/Pricers/fddividendshoutoption.hpp>
-#include <ql/Pricers/fdeuropean.hpp>
-#include <ql/Pricers/fdmultiperiodoption.hpp>
-#include <ql/Pricers/fdshoutoption.hpp>
-#include <ql/Pricers/fdstepconditionoption.hpp>
 #include <ql/Pricers/mccliquetoption.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/mceverest.hpp>

@@ -167,21 +167,6 @@ namespace QuantLib {
     /*! \relates Matrix */
     std::ostream& operator<<(std::ostream&, const Matrix&);
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! format matrices for output
-    /*! \deprecated use streams and manipulators for proper formatting */
-    class MatrixFormatter {
-      public:
-        static std::string toString(const Matrix& m,
-                                    Integer precision = 6,
-                                    Integer digits = 0) {
-            std::ostringstream s;
-            s << std::setw(digits) << m;
-            return s.str();
-        }
-    };
-    #endif
-
 
     // inline definitions
 

@@ -22,7 +22,7 @@
 #ifndef quantlib_piecewise_flat_forward_curve_hpp
 #define quantlib_piecewise_flat_forward_curve_hpp
 
-#if defined(QL_DISABLE_DEPRECATED)
+#if !defined(QL_PATCH_MSVC6)
 
 #include <ql/TermStructures/piecewiseyieldcurve.hpp>
 

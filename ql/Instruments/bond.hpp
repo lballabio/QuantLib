@@ -98,26 +98,6 @@ namespace QuantLib {
                    Date settlementDate = Date(),
                    Real accuracy = 1.0e-8,
                    Size maxEvaluations = 100) const;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the method taking a compounding */
-        Real cleanPrice(Rate yield,
-                        Date settlementDate = Date()) const {
-            return cleanPrice(yield, Compounded, settlementDate);
-        }
-        /*! \deprecated use the method taking a compounding */
-        Real dirtyPrice(Rate yield,
-                        Date settlementDate = Date()) const {
-            return dirtyPrice(yield, Compounded, settlementDate);
-        }
-        /*! \deprecated use the method taking a compounding */
-        Real yield(Real cleanPrice,
-                   Date settlementDate = Date(),
-                   Real accuracy = 1.0e-8,
-                   Size maxEvaluations = 100) const {
-            return yield(cleanPrice, Compounded, settlementDate,
-                         accuracy, maxEvaluations);
-        }
-        #endif
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
         Real accruedAmount(Date d = Date()) const;

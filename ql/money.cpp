@@ -205,13 +205,4 @@ namespace QuantLib {
         #endif
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    std::string MoneyFormatter::toString(const Money& m) {
-        std::ostringstream out;
-        out << m;
-        return out.str();
-    }
-    #endif
-
-
 }

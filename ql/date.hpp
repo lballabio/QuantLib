@@ -399,34 +399,6 @@ namespace QuantLib {
     }
 
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! Formats dates for output
-    /*! \deprecated use streams and manipulators for proper formatting */
-    class DateFormatter {
-      public:
-        enum Format { Long, Short, ISO };
-        static std::string toString(const Date& d,
-                                    Format f = Long);
-    };
-
-    //! Formats weekday for output
-    /*! \deprecated use streams and manipulators for proper formatting */
-    class WeekdayFormatter {
-      public:
-        enum Format { Long, Short, Shortest };
-        static std::string toString(Weekday wd,
-                                    Format f = Long);
-    };
-
-    //! Formats frequency for output
-    /*! \deprecated use streams and manipulators for proper formatting */
-    class FrequencyFormatter {
-      public:
-        static std::string toString(Frequency f);
-    };
-    #endif
-
-
     // inline definitions
 
     inline Period operator*(Integer n, TimeUnit units) {

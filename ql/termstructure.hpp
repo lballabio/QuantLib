@@ -91,10 +91,6 @@ namespace QuantLib {
         Calendar calendar_;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    typedef TermStructure BaseTermStructure;
-    #endif
-
 
     // inline definitions
 
