@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file toronto.hpp
     \brief Toronto calendar
 
@@ -53,15 +53,14 @@ namespace QuantLib {
         */
         class Toronto : public Calendar {
           private:
-            class TorCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "Toronto"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             Toronto()
-            : Calendar(Handle<CalendarImpl>(new TorCalendarImpl)) {}
-            //! returns a factory of %Toronto calendars
+            : Calendar(Handle<Calendar::Impl>(new Toronto::Impl)) {}
         };
 
     }

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file london.cpp
     \brief London calendar
 
@@ -31,7 +31,7 @@ namespace QuantLib {
     namespace Calendars {
 
         //! see http://www.dti.gov.uk/er/bankhol.htm
-        bool London::LonCalendarImpl::isBusinessDay(const Date& date) const {
+        bool London::Impl::isBusinessDay(const Date& date) const {
             Weekday w = date.weekday();
             Day d = date.dayOfMonth(), dd = date.dayOfYear();
             Month m = date.month();

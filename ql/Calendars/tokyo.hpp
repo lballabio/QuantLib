@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file tokyo.hpp
     \brief Tokyo calendar
 
@@ -64,14 +64,14 @@ namespace QuantLib {
         */
         class Tokyo : public Calendar {
           private:
-            class TokCalendarImpl : public Calendar::CalendarImpl {
+            class Impl : public Calendar::Impl {
               public:
                 std::string name() const { return "Tokyo"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             Tokyo()
-            : Calendar(Handle<CalendarImpl>(new TokCalendarImpl)) {}
+            : Calendar(Handle<Calendar::Impl>(new Tokyo::Impl)) {}
         };
 
     }

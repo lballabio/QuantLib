@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file johannesburg.cpp
     \brief Johannesburg calendar
 
@@ -28,7 +30,7 @@ namespace QuantLib {
 
     namespace Calendars {
 
-        bool Johannesburg::JohCalendarImpl::isBusinessDay(const Date& date) const {
+        bool Johannesburg::Impl::isBusinessDay(const Date& date) const {
             Weekday w = date.weekday();
             Day d = date.dayOfMonth(), dd = date.dayOfYear();
             Month m = date.month();
@@ -53,7 +55,8 @@ namespace QuantLib {
                 || ((d == 9 || (d == 10 && w == Monday)) && m == August)
                 // Heritage Day, September 24th (possibly moved to Monday)
                 || ((d == 24 || (d == 25 && w == Monday)) && m == September)
-                // Day of Reconciliation, December 16th (possibly moved to Monday)
+                // Day of Reconciliation, December 16th 
+                // (possibly moved to Monday)
                 || ((d == 16 || (d == 17 && w == Monday)) && m == December)
                 // Christmas 
                 || (d == 25 && m == December)

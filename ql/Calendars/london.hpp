@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file london.hpp
     \brief London calendar
 
@@ -52,15 +52,14 @@ namespace QuantLib {
         */
         class London : public Calendar {
           private:
-            class LonCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "London"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             London()
-            : Calendar(Handle<CalendarImpl>(new LonCalendarImpl)) {}
-            //! returns a factory of %London calendars
+            : Calendar(Handle<Calendar::Impl>(new London::Impl)) {}
         };
 
     }

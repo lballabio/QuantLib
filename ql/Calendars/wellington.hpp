@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file wellington.hpp
     \brief Wellington calendar
 
@@ -59,14 +59,14 @@ namespace QuantLib {
         */
         class Wellington : public Calendar {
           private:
-            class WelCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "Wellington"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             Wellington()
-            : Calendar(Handle<CalendarImpl>(new WelCalendarImpl)) {}
+            : Calendar(Handle<Calendar::Impl>(new Wellington::Impl)) {}
         };
 
     }

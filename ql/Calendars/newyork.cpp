@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -30,7 +29,7 @@ namespace QuantLib {
 
     namespace Calendars {
 
-        bool NewYork::NYCalendarImpl::isBusinessDay(const Date& date) const {
+        bool NewYork::Impl::isBusinessDay(const Date& date) const {
             Weekday w = date.weekday();
             Day d = date.dayOfMonth();
             Month m = date.month();

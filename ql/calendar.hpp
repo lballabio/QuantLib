@@ -28,8 +28,7 @@
 #define quantlib_calendar_h
 
 #include <ql/date.hpp>
-#include <ql/handle.hpp>
-#include <ql/null.hpp>
+#include <ql/Patterns/bridge.hpp>
 
 /*! \namespace QuantLib::Calendars
     \brief Specialized Calendar classes
@@ -58,15 +57,22 @@ namespace QuantLib {
                                  first business day before the holiday. */
     };
 
+    //! abstract base class for calendar implementations
+    class CalendarImpl {
+      public:
+        virtual std::string name() const = 0;
+        virtual bool isBusinessDay(const Date&) const = 0;
+    };
+
     //! %calendar class
     /*! This class provides methods for determining whether a date is a
         business day or a holiday for a given market, and for
         incrementing/decrementing a date of a given number of business days.
 
-        The Strategy pattern is used to provide the base behavior of the
+        The Bridge pattern is used to provide the base behavior of the
         calendar, namely, to determine whether a date is a business day.
     */
-    class Calendar {
+    class Calendar : public Patterns::Bridge<Calendar,CalendarImpl> {
       public:
         //! \name Calendar interface
         //@{
@@ -103,15 +109,9 @@ namespace QuantLib {
        Date advance(const Date& date, const Period& period, 
                     RollingConvention convention) const;
 
-        //! abstract base class for calendar implementations
-        class CalendarImpl {
-          public:
-            virtual std::string name() const = 0;
-            virtual bool isBusinessDay(const Date&) const = 0;
-        };
         /*! partial implementation providing the means of
             determining the Easter Monday for a given year. */
-        class WesternCalendarImpl : public CalendarImpl {
+        class WesternImpl : public Calendar::Impl {
           protected:
             //! expressed relative to first day of year
             static Day easterMonday(Year y);
@@ -119,9 +119,8 @@ namespace QuantLib {
       protected:
         /*! this protected constructor will only be invoked by derived
             classes which define a given Calendar implementation */
-        Calendar(const Handle<CalendarImpl>& impl) : impl_(impl) {}
-      private:
-        Handle<CalendarImpl> impl_;
+        Calendar(const Handle<Calendar::Impl>& impl) 
+        : Patterns::Bridge<Calendar,CalendarImpl>(impl) {}
     };
 
     /*! Returns <tt>true</tt> iff the two calendars belong to the same

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file sydney.hpp
     \brief Sydney calendar
 
@@ -59,14 +59,14 @@ namespace QuantLib {
         */
         class Sydney : public Calendar {
           private:
-            class SydCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "Sydney"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             Sydney()
-            : Calendar(Handle<CalendarImpl>(new SydCalendarImpl)) {}
+            : Calendar(Handle<Calendar::Impl>(new Sydney::Impl)) {}
         };
 
     }

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file sydney.cpp
     \brief Sydney calendar
 
@@ -30,8 +30,7 @@ namespace QuantLib {
 
     namespace Calendars {
 
-        bool Sydney::SydCalendarImpl::isBusinessDay(const Date& date)
-          const {
+        bool Sydney::Impl::isBusinessDay(const Date& date) const {
             Weekday w = date.weekday();
             Day d = date.dayOfMonth(), dd = date.dayOfYear();
             Month m = date.month();

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file zurich.hpp
     \brief Zurich calendar
 
@@ -52,14 +52,14 @@ namespace QuantLib {
         */
         class Zurich : public Calendar {
           private:
-            class ZurCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "Zurich"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             Zurich()
-            : Calendar(Handle<CalendarImpl>(new ZurCalendarImpl)) {}
+            : Calendar(Handle<Calendar::Impl>(new Zurich::Impl)) {}
         };
 
     }

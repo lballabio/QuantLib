@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file helsinki.hpp
     \brief Helsinki calendar
 
@@ -55,14 +55,14 @@ namespace QuantLib {
         */
         class Helsinki : public Calendar {
           private:
-            class HSKCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "Helsinki"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             Helsinki()
-            : Calendar(Handle<CalendarImpl>(new HSKCalendarImpl)) {}
+            : Calendar(Handle<Calendar::Impl>(new Helsinki::Impl)) {}
         };
 
     }

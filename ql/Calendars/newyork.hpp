@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file newyork.hpp
     \brief New York calendar
 
@@ -56,14 +56,14 @@ namespace QuantLib {
         */
         class NewYork : public Calendar {
           private:
-            class NYCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "NewYork"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             NewYork()
-            : Calendar(Handle<CalendarImpl>(new NYCalendarImpl)) {}
+            : Calendar(Handle<Calendar::Impl>(new NewYork::Impl)) {}
         };
 
     }

@@ -90,7 +90,7 @@ namespace QuantLib {
 
    // Western calendars
 
-    Day Calendar::WesternCalendarImpl::easterMonday(Year y) {
+    Day Calendar::WesternImpl::easterMonday(Year y) {
         static const Day EasterMonday[] = {
             107,  98,  90, 103,  95, 114, 106,  91, 111, 102,   // 1900-1909
              87, 107,  99,  83, 103,  95, 115,  99,  91, 111,   // 1910-1919

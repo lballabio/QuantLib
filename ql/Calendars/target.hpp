@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file target.hpp
     \brief TARGET calendar
 
@@ -48,14 +48,14 @@ namespace QuantLib {
         */
         class TARGET : public Calendar {
           private:
-            class EurCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "TARGET"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             TARGET()
-            : Calendar(Handle<CalendarImpl>(new EurCalendarImpl)) {}
+            : Calendar(Handle<Calendar::Impl>(new TARGET::Impl)) {}
         };
 
     }

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file frankfurt.hpp
     \brief Frankfurt calendar
 
@@ -54,14 +54,14 @@ namespace QuantLib {
         */
         class Frankfurt : public Calendar {
           private:
-            class FFTCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "Frankfurt"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             Frankfurt()
-            : Calendar(Handle<CalendarImpl>(new FFTCalendarImpl)) {}
+            : Calendar(Handle<Calendar::Impl>(new Frankfurt::Impl)) {}
         };
 
     }

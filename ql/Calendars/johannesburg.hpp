@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file johannesburg.hpp
     \brief Johannesburg calendar
 
@@ -42,24 +44,25 @@ namespace QuantLib {
             <li>Freedom Day, April 27th (possibly moved to Monday)</li>
             <li>Workers Day, May 1st (possibly moved to Monday)</li>
             <li>Youth Day, June 16th (possibly moved to Monday)</li>
-            <li>National Women's Day, August 9th (possibly moved to Monday)</li>
+            <li>National Women's Day, August 9th 
+                (possibly moved to Monday)</li>
             <li>Heritage Day, September 24th (possibly moved to Monday)</li>
-            <li>Day of Reconciliation, December 16th (possibly moved to Monday)</li>
+            <li>Day of Reconciliation, December 16th 
+                (possibly moved to Monday)</li>
             <li>Christmas December 25th </li>
             <li>Day of Goodwill December 26th (possibly moved to Monday)</li>
             </ul>
         */
         class Johannesburg : public Calendar {
           private:
-            class JohCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "Johannesburg"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             Johannesburg()
-            : Calendar(Handle<CalendarImpl>(new JohCalendarImpl)) {}
-            //! returns a factory of %Johannesburg calendars
+            : Calendar(Handle<Calendar::Impl>(new Johannesburg::Impl)) {}
         };
 
     }

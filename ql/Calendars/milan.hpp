@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file milan.hpp
     \brief Milan calendar
 
@@ -53,14 +53,14 @@ namespace QuantLib {
         */
         class Milan : public Calendar {
           private:
-            class MilCalendarImpl : public Calendar::WesternCalendarImpl {
+            class Impl : public Calendar::WesternImpl {
               public:
                 std::string name() const { return "Milan"; }
                 bool isBusinessDay(const Date&) const;
             };
           public:
             Milan()
-            : Calendar(Handle<CalendarImpl>(new MilCalendarImpl)) {}
+            : Calendar(Handle<Calendar::Impl>(new Milan::Impl)) {}
         };
 
     }
