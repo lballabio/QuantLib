@@ -47,7 +47,7 @@ SectionIn 1 2
 
     File "*.txt"
     File "*.TXT"
-    File "*.mak"
+    File "makefile.mak"
     File "*.dsp"
     File "*.vcproj"
     File "*.nsi"
@@ -57,10 +57,10 @@ SectionIn 1 2
     File /r "ql\*.h"
     File /r "ql\*.cpp"
     File /r "ql\*.c"
-    File /r "ql\*.mak"
+    File /r "ql\makefile.mak"
 
     SetOutPath $INSTDIR\functions
-    File /r "functions\*.mak"
+    File /r "functions\makefile.mak"
     File /r "functions\*.cpp"
     File /r "functions\*.hpp"
     File /r "functions\*.dsp"
@@ -69,7 +69,7 @@ SectionIn 1 2
 
     SetOutPath $INSTDIR\test-suite
     File /r "test-suite\*.txt"
-    File /r "test-suite\*.mak"
+    File /r "test-suite\makefile.mak"
     File /r "test-suite\*.cpp"
     File /r "test-suite\*.hpp"
     File /r "test-suite\*.dsp"
@@ -81,7 +81,7 @@ SectionIn 1 2
     File /r "Examples\*.cpp"
     File /r "Examples\*.dsp"
     File /r "Examples\*.txt"
-    File /r "Examples\*.mak"
+    File /r "Examples\makefile.mak"
     File /r "Examples\*.vcproj"
 
     SetOutPath $INSTDIR\Docs
@@ -94,7 +94,7 @@ SectionIn 1 2
     File /r "Docs\*.doxy"
     File /r "Docs\*.html"
     File /r "Docs\*.jpg"
-    File /r "Docs\*.mak"
+    File /r "Docs\makefile.mak"
     File /r "Docs\*.png"
     File /r "Docs\*.eps"
     File /r "Docs\*.tex"
