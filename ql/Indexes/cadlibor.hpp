@@ -24,7 +24,7 @@
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/toronto.hpp>
-#include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Currencies/america.hpp>
 
 namespace QuantLib {
@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         CADLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
-                 const DayCounter& dc = Actual365())
+                 const DayCounter& dc = Actual365Fixed())
         : Xibor("CADLibor", n, units, 2, CADCurrency(),
                 Toronto(), ModifiedFollowing, dc, h) {}
     };
