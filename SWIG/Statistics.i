@@ -24,6 +24,10 @@
 
 /* $Source$
    $Log$
+   Revision 1.15  2001/03/19 17:28:50  nando
+   added missing
+   %include vectors.i
+
    Revision 1.14  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -33,6 +37,7 @@
 #define quantlib_statistics_i
 
 %include QLArray.i
+%include vectors.i
 
 %{
 using QuantLib::Math::Statistics;
