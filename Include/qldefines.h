@@ -83,7 +83,6 @@
 	#define QL_GARBLED_MIN_AND_MAX				1
 	#define QL_GARBLED_REVERSE_ITERATORS		1
 	#define QL_GARBLED_PTR_CONST				1
-	#define QL_INCLUDE_IN_SUBFOLDERS			1
 
 #elif defined(__BORLANDC__)				// Borland C++
 	// set switches
@@ -91,13 +90,12 @@
 	#define QL_CCHAR_IN_STD						1
 	#define QL_CTIME_IN_STD						1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	0
-	#define QL_EXPRESSION_TEMPLATES_WORK		0
+	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			0
 	#define QL_BROKEN_TEMPLATE_SPECIALIZATION	0
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
-	#define QL_INCLUDE_IN_SUBFOLDERS			1
 
 #elif defined(__MWERKS__)					// Metrowerks CodeWarrior
 	// set switches
@@ -111,7 +109,6 @@
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
-	#define QL_INCLUDE_IN_SUBFOLDERS			0
 
 #elif defined(__GNUC__)						// GNU C++
 	// set switches
@@ -125,7 +122,6 @@
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
-	#define QL_INCLUDE_IN_SUBFOLDERS			1
 
 #else										// Generic ANSI C++ compliant compiler
 	// set switches
@@ -139,7 +135,6 @@
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
-	#define QL_INCLUDE_IN_SUBFOLDERS			1
 
 #endif
 
@@ -156,10 +151,6 @@
 	Template metaprogramming techniques (see T. L. Veldhuizen, "Using C++ Template Metaprograms", 
 	C++ Report, Vol 7 No. 4, May 1995, available at http://extreme.indiana.edu/~tveldhui/papers)
 	are sometimes too advanced for the template implementation of current compilers.
-*/
-
-/*! \def QL_INCLUDE_IN_SUBFOLDERS
-	Defined as true if the compiler supports the <path/header.h> syntax, as false otherwise.
 */
 
 /*! \def QL_CMATH_IN_STD

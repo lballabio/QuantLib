@@ -41,11 +41,11 @@ namespace QuantLib {
 	  public:
 		VectorialExpression(const Iter& i, int size) : i(i), n(size) {}
 		double operator*() const { return *i; }
-		VectorialExpression& operator++() { ++i; return *this; }
+		const VectorialExpression& operator++() const { ++i; return *this; }
 		// pre-increment operator not defined - inefficient
 		int size() const { return n; }
 	  private:
-		Iter i;
+		mutable Iter i;
 		int n;
 	};
 	
@@ -55,7 +55,7 @@ namespace QuantLib {
 	  public:
 		Scalar(double x) : x(x) {}
 		double operator*() const { return x; }
-		Scalar& operator++() { return *this; }
+		const Scalar& operator++() const { return *this; }
 		// pre-increment operator not defined - inefficient
 	  private:
 		double x;
@@ -68,11 +68,11 @@ namespace QuantLib {
 	  public:
 		UnaryVectorialExpression(const Iter1& i, int size) : i(i), n(size) {}
 		double operator*() const { return Operation::apply(*i); }
-		UnaryVectorialExpression& operator++() { ++i; return *this; }
+		const UnaryVectorialExpression& operator++() const { ++i; return *this; }
 		// pre-increment operator not defined - inefficient
 		int size() const { return n; }
 	  private:
-		Iter1 i;
+		mutable Iter1 i;
 		int n;
 	};
 	
@@ -83,12 +83,12 @@ namespace QuantLib {
 	  public:
 		BinaryVectorialExpression(const Iter1& i, const Iter2& j, int size) : i(i), j(j), n(size) {}
 		double operator*() const { return Operation::apply(*i,*j); }
-		BinaryVectorialExpression& operator++() { ++i; ++j; return *this; }
+		const BinaryVectorialExpression& operator++() const { ++i; ++j; return *this; }
 		// pre-increment operator not defined - inefficient
 		int size() const { return n; }
 	  private:
-		Iter1 i;
-		Iter2 j;
+		mutable Iter1 i;
+		mutable Iter2 j;
 		int n;
 	};
 	

@@ -63,7 +63,7 @@ namespace QuantLib {
 		Array(const Array& from)
 		  : pointer(0), n(0), bufferSize(0) { allocate(from.size()); copy(from); }
 		#if QL_EXPRESSION_TEMPLATES_WORK
-		template <class Iter> Array(VectorialExpression<Iter>& e)
+		template <class Iter> Array(const VectorialExpression<Iter>& e)
 		  : pointer(0), n(0), bufferSize(0) { allocate(e.size()); copy(e); }
 		#endif
 		~Array();
@@ -72,7 +72,7 @@ namespace QuantLib {
 			return *this;
 		}
 		#if QL_EXPRESSION_TEMPLATES_WORK
-		template <class Iter> Array& operator=(VectorialExpression<Iter>& e) {
+		template <class Iter> Array& operator=(const VectorialExpression<Iter>& e) {
 			resize(e.size()); copy(e); return *this;
 		}
 		#endif
@@ -95,7 +95,7 @@ namespace QuantLib {
 		Array& operator/=(const Array&);
 		Array& operator/=(double);
 		#if QL_EXPRESSION_TEMPLATES_WORK
-		template <class Iter> Array& operator+=(VectorialExpression<Iter>& e) {
+		template <class Iter> Array& operator+=(const VectorialExpression<Iter>& e) {
 			#ifdef QL_DEBUG
 				Require(size() == e.size(), "adding arrays with different sizes");
 			#endif
@@ -103,7 +103,7 @@ namespace QuantLib {
 			while (i != j) { *i += *e; ++i; ++e; }
 			return *this;
 		}
-		template <class Iter> Array& operator-=(VectorialExpression<Iter>& e) {
+		template <class Iter> Array& operator-=(const VectorialExpression<Iter>& e) {
 			#ifdef QL_DEBUG
 				Require(size() == e.size(), "subtracting arrays with different sizes");
 			#endif
@@ -111,7 +111,7 @@ namespace QuantLib {
 			while (i != j) { *i -= *e; ++i; ++e; }
 			return *this;
 		}
-		template <class Iter> Array& operator*=(VectorialExpression<Iter>& e) {
+		template <class Iter> Array& operator*=(const VectorialExpression<Iter>& e) {
 			#ifdef QL_DEBUG
 				Require(size() == e.size(), "multiplying arrays with different sizes");
 			#endif
@@ -119,7 +119,7 @@ namespace QuantLib {
 			while (i != j) { *i *= *e; ++i; ++e; }
 			return *this;
 		}
-		template <class Iter> Array& operator/=(VectorialExpression<Iter>& e) {
+		template <class Iter> Array& operator/=(const VectorialExpression<Iter>& e) {
 			#ifdef QL_DEBUG
 				Require(size() == e.size(), "dividing arrays with different sizes");
 			#endif
@@ -163,7 +163,7 @@ namespace QuantLib {
 			std::copy(from.begin(),from.end(),begin());
 		}
 		#if QL_EXPRESSION_TEMPLATES_WORK
-		template <class Iter> void copy(VectorialExpression<Iter>& e) {
+		template <class Iter> void copy(const VectorialExpression<Iter>& e) {
 			iterator i = begin(), j = end();
 			while (i != j) {
 				*i = *e;
