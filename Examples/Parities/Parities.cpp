@@ -139,15 +139,15 @@ int main(int argc, char* argv[])
         Rate riskFreeRate = 0.05; // 5%
         Time maturity = 1.0;      // 1 year
         double volatility = 0.20; // 20%
-        std::cout << "Time to maturity = "        << maturity     
+        std::cout << "Time to maturity = "        << maturity
                   << std::endl;
-        std::cout << "Underlying price = "        << underlying   
+        std::cout << "Underlying price = "        << underlying
                   << std::endl;
-	    std::cout << "Strike = "                  << strike       
+	    std::cout << "Strike = "                  << strike
 	              << std::endl;
-        std::cout << "Risk-free interest rate = " << riskFreeRate 
+        std::cout << "Risk-free interest rate = " << riskFreeRate
                   << std::endl;
-	    std::cout << "Volatility = "              << volatility   
+	    std::cout << "Volatility = "              << volatility
 	              << std::endl;
         std::cout << std::endl;
 
@@ -242,7 +242,7 @@ int main(int argc, char* argv[])
 	    double drift = riskFreeRate - 0.5*volatility*volatility;
         Statistics samples;
         Handle<GaussianPathGenerator> myPathGenerator(
-            new GaussianPathGenerator(drift, volatility*volatility, 
+            new GaussianPathGenerator(drift, volatility*volatility,
                 maturity, nTimeSteps, seed));
 
 
@@ -252,7 +252,8 @@ int main(int argc, char* argv[])
         // The European path pricer
         Handle<PathPricer> myEuropeanPathPricer =
             Handle<PathPricer>(new EuropeanPathPricer(Option::Call,
-            underlying, strike, exp(-riskFreeRate*maturity), antitheticVariance));
+            underlying, strike, exp(-riskFreeRate*maturity),
+            antitheticVariance));
         // The OneFactorMontecarloModel generates paths using myPathGenerator
         // each path is priced using myPathPricer
         // prices will be accumulated into samples
@@ -276,10 +277,12 @@ int main(int argc, char* argv[])
         // sixth method:  MonteCarlo with antithetic variance reduction
         method ="MC antithetic";
         antitheticVariance = true;
-        // The European path pricer, this time with antithetic variance reduction
+        // The European path pricer, this time with antithetic variance
+        // reduction
         myEuropeanPathPricer =
             Handle<PathPricer>(new EuropeanPathPricer(Option::Call,
-            underlying, strike, exp(-riskFreeRate*maturity), antitheticVariance));
+            underlying, strike, exp(-riskFreeRate*maturity),
+            antitheticVariance));
         // reset the statistic accumulator
         samples.reset();
 	    mc = OneFactorMonteCarloOption(myPathGenerator, myEuropeanPathPricer,
