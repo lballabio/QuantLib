@@ -23,6 +23,7 @@
 #define quantlib_flat_forward_curve_h
 
 #include <ql/termstructure.hpp>
+#include <ql/DayCounters/actual365.hpp>
 
 namespace QuantLib {
 
@@ -35,14 +36,16 @@ namespace QuantLib {
             FlatForward(const Date& todaysDate,
                         const Date& referenceDate,
                         Rate forward,
-                        const DayCounter& dayCounter);
+                        const DayCounter& dayCounter = 
+                                                  DayCounters::Actual365());
             FlatForward(const Date& todaysDate,
                         const Date& referenceDate,
                         const RelinkableHandle<MarketElement>& forward,
-                        const DayCounter& dayCounter);
+                        const DayCounter& dayCounter = 
+                                                  DayCounters::Actual365());
             // inspectors
             DayCounter dayCounter() const;
-            Date todaysDate() const {return todaysDate_; }
+            Date todaysDate() const { return todaysDate_; }
             Date referenceDate() const;
             Date maxDate() const;
             // Observer interface
@@ -52,8 +55,8 @@ namespace QuantLib {
             DiscountFactor discountImpl(Time,
                 bool extrapolate = false) const;
             Rate forwardImpl(Time, bool extrapolate = false) const;
-	    Rate compoundForwardImpl(Time t, int compFreq,
-		bool extrapolate) const;
+            Rate compoundForwardImpl(Time t, int compFreq,
+                                     bool extrapolate = false) const;
           private:
             Date todaysDate_, referenceDate_;
             DayCounter dayCounter_;
@@ -124,18 +127,18 @@ namespace QuantLib {
         }
 
         inline Rate FlatForward::compoundForwardImpl(Time t, int compFreq, 
-						     bool extrapolate) const {
-	    double zy = zeroYieldImpl(t, extrapolate);
-	    if (compFreq == 0)
-	       return zy;
-	    if (t <= 1.0/compFreq)
-	       return (QL_EXP(zy*t)-1.0)/t;
-	    return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
-	}
-
+                                                     bool extrapolate) const {
+            double zy = zeroYieldImpl(t, extrapolate);
+            if (compFreq == 0)
+                return zy;
+            if (t <= 1.0/compFreq)
+                return (QL_EXP(zy*t)-1.0)/t;
+            return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
+        }
 
     }
 
 }
+
 
 #endif
