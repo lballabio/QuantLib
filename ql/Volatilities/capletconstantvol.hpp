@@ -105,7 +105,7 @@ namespace QuantLib {
     }
 
     inline Volatility CapletConstantVolatility::volatilityImpl(
-                                                         Time, Real) const {
+                                                         Time, Rate) const {
         return volatility_->value();
     }
 
