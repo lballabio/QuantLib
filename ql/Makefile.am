@@ -12,6 +12,7 @@ SUBDIRS = \
     Indexes \
     Instruments \
     InterestRateModelling \
+    Lattices \
     Math \
     MonteCarlo \
     Optimization \
@@ -41,7 +42,9 @@ include_HEADERS = \
 	dataformatters.hpp \
 	date.hpp \
 	daycounter.hpp \
+    diffusionprocess.hpp \
 	errors.hpp \
+    exercise.hpp \
 	expressiontemplates.hpp \
 	forwardvolsurface.hpp \
 	handle.hpp \
@@ -58,7 +61,6 @@ include_HEADERS = \
 	riskstatistics.hpp \
 	scheduler.hpp \
 	solver1d.hpp \
-    stochasticprocess.hpp \
 	swaptionvolsurface.hpp \
 	termstructure.hpp \
 	types.hpp
@@ -81,6 +83,8 @@ libQuantLib_la_LIBADD = \
     InterestRateModelling/libInterestRateModelling.la \
     InterestRateModelling/CalibrationHelpers/libCalibrationHelpers.la \
     InterestRateModelling/OneFactorModels/libOneFactorModels.la \
+    InterestRateModelling/TwoFactorModels/libTwoFactorModels.la \
+    Lattices/libLattices.la \
 	Math/libMath.la \
 	MonteCarlo/libMonteCarlo.la \
     Optimization/libOptimization.la \

@@ -53,7 +53,7 @@
 #include <ql/riskstatistics.hpp>
 #include <ql/scheduler.hpp>
 #include <ql/solver1d.hpp>
-#include <ql/stochasticprocess.hpp>
+#include <ql/diffusionprocess.hpp>
 #include <ql/swaptionvolsurface.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/types.hpp>
@@ -113,17 +113,20 @@
 #include <ql/InterestRateModelling/grid.hpp>
 #include <ql/InterestRateModelling/model.hpp>
 #include <ql/InterestRateModelling/onefactormodel.hpp>
-#include <ql/InterestRateModelling/swapfuturevalue.hpp>
+#include <ql/InterestRateModelling/shortrateprocess.hpp>
+#include <ql/InterestRateModelling/timefunction.hpp>
 
-#include <ql/InterestRateModelling/CalibrationHelpers/cap.hpp>
-#include <ql/InterestRateModelling/CalibrationHelpers/swaption.hpp>
-
-#include <ql/InterestRateModelling/OneFactorModels/blackdermanandtoy.hpp>
+#include <ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp>
+#include <ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/blackdermantoy.hpp>
 #include <ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp>
-#include <ql/InterestRateModelling/OneFactorModels/hoandlee.hpp>
-#include <ql/InterestRateModelling/OneFactorModels/hullandwhite.hpp>
-#include <ql/InterestRateModelling/OneFactorModels/node.hpp>
-#include <ql/InterestRateModelling/OneFactorModels/tree.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/coxingersollrossplus.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/holee.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/hullwhite.hpp>
+#include <ql/InterestRateModelling/TwoFactorModels/g2.hpp>
+
+#include <ql/Lattices/node.hpp>
+#include <ql/Lattices/tree.hpp>
 
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/interpolation.hpp>

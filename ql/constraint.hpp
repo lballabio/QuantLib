@@ -8,12 +8,17 @@ namespace QuantLib {
 
     class Constraint {
       public:
-        Constraint(std::vector<double> minParams, std::vector<double> maxParams) :
-            minParams_(minParams), maxParams_(maxParams) {
-            QL_REQUIRE(minParams_.size() == maxParams_.size(), 
-              "min. and max. bounds are not of the same size");
-        }
+        Constraint(unsigned int size) 
+        : minParams_(size, QL_MIN_DOUBLE), maxParams_(size, QL_MAX_DOUBLE) {}
         virtual ~Constraint() {}
+
+        double setLowerBound(unsigned int i, double boundary) {
+            minParams_[i] = boundary;
+        }
+
+        double setUpperBound(unsigned int i, double boundary) {
+            maxParams_[i] = boundary;
+        }
 
         virtual bool operator()(const std::vector<double>& params) const {
             size_t size(params.size());

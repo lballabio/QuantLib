@@ -22,32 +22,27 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file stochasticprocess.hpp
-    \brief Stochastic process
+/*! \file diffusionprocess.hpp
+    \brief Diffusion process
 
     \fullpath
-    ql/%stochasticprocess.hpp
+    ql/%diffusionprocess.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_stochastic_process_h
-#define quantlib_stochastic_process_h
+#ifndef quantlib_diffusion_process_h
+#define quantlib_diffusion_process_h
 
 #include <ql/qldefines.hpp>
 
 namespace QuantLib {
 
     //describes a process goverved by dx = \mu(t, x)dt + \sigma(t, x)dW_t
-    class StochasticProcess {
+    class DiffusionProcess {
       public:
-        enum Variable { ShortRate, LogShortRate };
-        StochasticProcess(Variable variable) : variable_(variable) {}
         virtual double drift(double t, double x) const = 0;
         virtual double diffusion(double t, double x) const = 0;
-        virtual Variable variable() { return variable_; }
-      private:
-        Variable variable_;
     };
 
 }
