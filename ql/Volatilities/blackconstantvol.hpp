@@ -44,11 +44,11 @@ namespace QuantLib {
           public:
             // constructors
             BlackConstantVol(const Date& referenceDate,
-                    double volatility,
-                    const DayCounter& dayCounter=DayCounters::Actual365());
+                             double volatility,
+                             const DayCounter& dayCounter=DayCounters::Actual365());
             BlackConstantVol(const Date& referenceDate,
-                    const RelinkableHandle<MarketElement>& volatility,
-                    const DayCounter& dayCounter=DayCounters::Actual365());
+                             const RelinkableHandle<MarketElement>& volatility,
+                             const DayCounter& dayCounter=DayCounters::Actual365());
             // inspectors
             Date referenceDate() const;
             DayCounter dayCounter() const;
