@@ -220,37 +220,5 @@ SOURCE=..\Sources\date.cpp
 SOURCE=..\Sources\solver1d.cpp
 # End Source File
 # End Group
-# Begin Group "Interfaces"
-
-# PROP Default_Filter ".i"
-# Begin Source File
-
-SOURCE=..\SWIG\Calendar.i
-# End Source File
-# Begin Source File
-
-SOURCE=..\SWIG\Currencies.i
-# End Source File
-# Begin Source File
-
-SOURCE=..\SWIG\Date.i
-# End Source File
-# Begin Source File
-
-SOURCE=..\SWIG\DayCounters.i
-# End Source File
-# Begin Source File
-
-SOURCE=..\SWIG\Instruments.i
-# End Source File
-# Begin Source File
-
-SOURCE=..\SWIG\TermStructures.i
-# End Source File
-# Begin Source File
-
-SOURCE=..\SWIG\Vectors.i
-# End Source File
-# End Group
 # End Target
 # End Project
