@@ -27,6 +27,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/02/02 10:42:24  marmar
+    Method added:
+       Array diagonal(void) const;
+    to obtain the diagonal of a Matrix as an Array
+
     Revision 1.3  2001/01/25 11:54:07  lballabio
     Allocation bug fixed
 
@@ -132,6 +137,7 @@ namespace QuantLib {
             //@{
             const_row_iterator operator[](int) const;
             row_iterator operator[](int);
+            Array diagonal(void) const;
             //@}
 
             //! \name Inspectors
@@ -378,6 +384,14 @@ namespace QuantLib {
     
         inline Matrix::row_iterator Matrix::operator[](int i) {
             return row_begin(i);
+        }
+        
+        inline Array Matrix::diagonal(void) const{
+            int arraySize = QL_MIN(rows(),columns());            
+            Array tmp(arraySize);
+            for(int i = 0; i < arraySize; i++)
+                tmp[i] = (*this)[i][i];
+            return tmp;
         }
     
         inline int Matrix::rows() const {
