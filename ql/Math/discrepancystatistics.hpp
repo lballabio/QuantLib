@@ -107,7 +107,13 @@ namespace QuantLib {
         }
 
         inline void DiscrepancyStatistics::reset(Size dimension) {
+            if (dimension == 0)           // if no size given,
+                dimension = dimension_;   // keep the current one
+            QL_REQUIRE(dimension > 0,
+                "DiscrepancyStatistics::reset : null dimension");
+
             SequenceStatistics<Statistics>::reset(dimension);
+
             adiscr_ = 0.0;
             bdiscr_ = 1.0/QL_POW(2.0, int(dimension-1));
             cdiscr_ = 0.0;

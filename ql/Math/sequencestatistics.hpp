@@ -218,8 +218,7 @@ namespace QuantLib {
             if (dimension == 0)           // if no size given,
                 dimension = dimension_;   // keep the current one
             QL_REQUIRE(dimension > 0,
-                "SequenceStatistics::SequenceStatistics : "
-                "null dimension for sequence gaussianstatistics");
+                "SequenceStatistics::reset : null dimension");
             if (dimension == dimension_) {
                 for (Size i=0; i<dimension_; i++)
                     stats_[i].reset();
