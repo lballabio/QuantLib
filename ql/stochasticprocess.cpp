@@ -33,6 +33,9 @@ namespace QuantLib {
         return sigma*sigma*dt;
     }
 
+    void StochasticProcess::update() {
+        notifyObservers(); 
+    }
 
 
     BlackScholesProcess::BlackScholesProcess(
@@ -68,7 +71,7 @@ namespace QuantLib {
 
     void BlackScholesProcess::update() {
         updated_ = false;
-        notifyObservers(); 
+        StochasticProcess::update();
     }
 
     const boost::shared_ptr<Quote>& 

@@ -35,7 +35,7 @@ namespace QuantLib {
             dx_t = \mu(t, x_t)dt + \sigma(t, x_t)dW_t.
         \f]
     */
-    class StochasticProcess {
+    class StochasticProcess : public Observer, public Observable {
       public:
         virtual ~StochasticProcess() {}
         //! returns the initial value of the state variable
@@ -58,6 +58,10 @@ namespace QuantLib {
             \f$ \sigma(t_0, x_0)^2 \Delta t \f$.
         */
         virtual Real variance(Time t0, Real x0, Time dt) const;
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
     };
 
 
@@ -67,8 +71,7 @@ namespace QuantLib {
             dS(t, S)=(r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
         \f]
     */
-    class BlackScholesProcess : public StochasticProcess,
-                                public Observer, public Observable {
+    class BlackScholesProcess : public StochasticProcess {
       public:
         BlackScholesProcess(
             const RelinkableHandle<Quote>& x0,
