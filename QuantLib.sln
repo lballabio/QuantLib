@@ -14,31 +14,31 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuantLibFunctions", "functi
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmericanOption", "..\..\Projects\QuantLib\Examples\AmericanOption\AmericanOption.vcproj", "{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmericanOption", "Examples\AmericanOption\AmericanOption.vcproj", "{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1D456CAA-C3F3-4BC5-BAFA-7831D584553A} = {1D456CAA-C3F3-4BC5-BAFA-7831D584553A}
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BermudanSwaption", "..\..\Projects\QuantLib\Examples\BermudanSwaption\BermudanSwaption.vcproj", "{573F51B0-DEEF-4F64-9F15-B33B8A58325A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BermudanSwaption", "Examples\BermudanSwaption\BermudanSwaption.vcproj", "{573F51B0-DEEF-4F64-9F15-B33B8A58325A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1D456CAA-C3F3-4BC5-BAFA-7831D584553A} = {1D456CAA-C3F3-4BC5-BAFA-7831D584553A}
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DiscreteHedging", "..\..\Projects\QuantLib\Examples\DiscreteHedging\DiscreteHedging.vcproj", "{1CD6F11F-D824-4957-8224-C8CECBCF6B0B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DiscreteHedging", "Examples\DiscreteHedging\DiscreteHedging.vcproj", "{1CD6F11F-D824-4957-8224-C8CECBCF6B0B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1D456CAA-C3F3-4BC5-BAFA-7831D584553A} = {1D456CAA-C3F3-4BC5-BAFA-7831D584553A}
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EuropeanOption", "..\..\Projects\QuantLib\Examples\EuropeanOption\EuropeanOption.vcproj", "{ECBBB55C-AB13-4F2A-B6C3-2C82A330BFB1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EuropeanOption", "Examples\EuropeanOption\EuropeanOption.vcproj", "{ECBBB55C-AB13-4F2A-B6C3-2C82A330BFB1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1D456CAA-C3F3-4BC5-BAFA-7831D584553A} = {1D456CAA-C3F3-4BC5-BAFA-7831D584553A}
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Swap", "..\..\Projects\QuantLib\Examples\Swap\Swap.vcproj", "{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Swap", "Examples\Swap\Swap.vcproj", "{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1D456CAA-C3F3-4BC5-BAFA-7831D584553A} = {1D456CAA-C3F3-4BC5-BAFA-7831D584553A}
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}

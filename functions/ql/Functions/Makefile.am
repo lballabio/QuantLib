@@ -9,7 +9,7 @@ include_HEADERS = \
 	qlfunctions.hpp \
 	vols.hpp
 
-EXTRA_DIST = makefile.mak QuantLibFunctions.vcproj
+EXTRA_DIST = makefile.mak QuantLibFunctions.dsp QuantLibFunctions.vcproj
 
 lib_LTLIBRARIES = libQuantLibFunctions.la
 libQuantLibFunctions_la_LDFLAGS = -release $(PACKAGE_VERSION)

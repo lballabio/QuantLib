@@ -60,6 +60,13 @@ SectionIn 1 2
     File /r "ql\*.c"
     File /r "ql\*.mak"
 
+    SetOutPath $INSTDIR\functions
+    File /r "functions\*.mak"
+    File /r "functions\*.cpp"
+    File /r "functions\*.hpp"
+    File /r "functions\*.dsp"
+    File /r "functions\*.vcproj"
+
     SetOutPath $INSTDIR\test-suite
     File /r "test-suite\*.txt"
     File /r "test-suite\*.mak"
