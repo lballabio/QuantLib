@@ -25,7 +25,6 @@
 #define quantlib_binarybarrier_option_h
 
 #include <ql/Instruments/oneassetstrikedoption.hpp>
-#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +34,7 @@ namespace QuantLib {
     */
     class BinaryBarrierOption : public OneAssetStrikedOption {
       public:
-        class results;
+//        class results;
         BinaryBarrierOption(
                      const Handle<CashOrNothingPayoff>& payoff,
                      const Handle<Exercise>& exercise,
@@ -44,16 +43,15 @@ namespace QuantLib {
                      const RelinkableHandle<TermStructure>& riskFreeTS,
                      const RelinkableHandle<BlackVolTermStructure>& volTS,
                      const Handle<PricingEngine>& engine =
-                     Handle<PricingEngine>(),
+                        Handle<PricingEngine>(),
                      const std::string& isinCode = "",
                      const std::string& description = "");
       protected:
         void performCalculations() const;
-        // results
     };
 
     //! %results from binary barrier option calculation
-    class BinaryBarrierOption::results : public virtual OneAssetOption::results {};
+//    class BinaryBarrierOption::results : public virtual OneAssetOption::results {};
 
 }
 

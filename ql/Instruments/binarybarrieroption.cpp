@@ -21,8 +21,8 @@
     \brief Binary Barrier option on a single asset
 */
 
-#include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Instruments/binarybarrieroption.hpp>
+//#include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
 
 namespace QuantLib {
@@ -57,7 +57,7 @@ namespace QuantLib {
 
     void BinaryBarrierOption::performCalculations() const {
         // enforce in this class any check on engine/payoff
-        OneAssetOption::performCalculations();
+        OneAssetStrikedOption::performCalculations();
     }
 
 
