@@ -23,37 +23,9 @@
 #ifndef quantlib_data_formatters_hpp
 #define quantlib_data_formatters_hpp
 
-#include <ql/currency.hpp>
-#include <ql/option.hpp>
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
-
-    //! Formats integers for output
-    class IntegerFormatter {
-      public:
-        static std::string toString(long l, int digits = 0);
-        static std::string toPowerOfTwo(long l, int digits = 0);
-    };
-
-    //! Formats unsigned integers for output
-    class SizeFormatter {
-      public:
-        static std::string toString(Size l, int digits = 0);
-        static std::string toOrdinal(Size l);
-        static std::string toPowerOfTwo(Size l, int digits = 0);
-    };
-
-    //! Formats doubles for output
-    class DoubleFormatter {
-      public:
-        static std::string toString(double x,
-                                    int precision = 6,
-                                    int digits = 0);
-        static std::string toExponential(double x,
-                                         int precision = 6,
-                                         int digits = 0);
-    };
 
     //! Formats arrays for output
     class ArrayFormatter {
@@ -62,7 +34,7 @@ namespace QuantLib {
         static std::string toString(DataIterator begin,
                                     DataIterator end,
                                     int precision = 6,
-                                    int digits = 0, 
+                                    int digits = 0,
                                     Size elementsPerRow = QL_MAX_INT) {
             std::string s = "[ ";
             DataIterator i;
@@ -89,56 +61,6 @@ namespace QuantLib {
     /*! \relates Matrix */
     std::ostream& operator<< (std::ostream&,
                               const Matrix&);
-
-    //! Formats amounts in Euro for output
-    /*! Formatting follows Euro convention (x,xxx,xxx.xx) */
-    class EuroFormatter {
-      public:
-        static std::string toString(double amount);
-    };
-
-    //! Formats rates for output
-    /*! Formatting is in percentage form (xx.xxxxx%) */
-    class RateFormatter {
-      public:
-        static std::string toString(double rate,
-                                    int precision = 5);
-    };
-
-
-    //! Formats dates for output
-    /*! Formatting can be in short (mm/dd/yyyy)
-        or long (Month ddth, yyyy) form.
-    */
-    class DateFormatter {
-      public:
-        enum Format { Long, Short, ISO };
-        static std::string toString(const Date& d,
-                                    Format f = Long);
-    };
-
-    /*! \relates Date */
-    std::ostream& operator<< (std::ostream&,
-                              const Date&);
-
-    //! Formats currencies for output
-    class CurrencyFormatter {
-      public:
-        static std::string toString(Currency c);
-    };
-
-    //! Formats strings as lower- or uppercase
-    class StringFormatter {
-      public:
-        static std::string toLowercase(const std::string& s);
-        static std::string toUppercase(const std::string& s);
-    };
-
-    //! Formats option type for output
-    class OptionTypeFormatter {
-      public:
-        static std::string toString(Option::Type type);
-    };
 
 }
 

@@ -24,6 +24,7 @@ OUTPUT_DIR     = ..\lib
 
 # Object files
 CORE_OBJS = \
+    "basicdataformatters.obj$(_mt)$(_D)" \
     "calendar.obj$(_mt)$(_D)" \
     "dataformatters.obj$(_mt)$(_D)" \
     "dataparsers.obj$(_mt)$(_D)" \

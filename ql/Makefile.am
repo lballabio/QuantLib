@@ -35,6 +35,7 @@ EXTRA_DIST= \
 include_HEADERS = \
 	core.hpp \
 	argsandresults.hpp \
+	basicdataformatters.hpp \
 	calendar.hpp \
 	capvolstructures.hpp \
 	cashflow.hpp \
@@ -101,6 +102,7 @@ libQuantLib_la_LIBADD = \
     Volatilities/libVolatilities.la
 
 libQuantLib_la_SOURCES = \
+    basicdataformatters.cpp \
     calendar.cpp \
     dataformatters.cpp \
     dataparsers.cpp \
