@@ -1,28 +1,42 @@
 
-/*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
-
- This file is part of QuantLib, a free-software/open-source library
- for financial quantitative analysts and developers - http://quantlib.org/
-
- QuantLib is free software developed by the QuantLib Group; you can
- redistribute it and/or modify it under the terms of the QuantLib License;
- either version 1.0, or (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- QuantLib License for more details.
-
- You should have received a copy of the QuantLib License along with this
- program; if not, please email ferdinando@ametrano.net
-
- The QuantLib License is also available at http://quantlib.org/license.html
- The members of the QuantLib Group are listed in the QuantLib License
-*/
-
 /*! \page license Copyright and License
 
-\include ..\..\LICENSE.TXT
+QUANTLIB LICENSE 1.0
 
+Copyright (c) 2000, 2001, 2002 QuantLib Group. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Except as contained in this notice, the name of QuantLib Group members and the
+name of the QuantLib Group itself shall not be used in advertising or
+otherwise to promote the sale, use or other dealings in this Software without
+prior written authorization of the interested party.
+
+The QuantLib Group includes:
+    Ferdinando Ametrano
+    Luigi Ballabio
+    Marco Marchioro
+    Sadruddin Rejeb
+    RiskMap srl
+    Nicolas Di Césaré
+    Enrico Sirola
+    Mario Aleppo
+    Adolfo Benin
+    Maxim Sokolov
 */

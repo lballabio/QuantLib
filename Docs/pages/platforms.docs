@@ -41,7 +41,7 @@
     </tr>
     </table>
 
-    Dirk Eddelbuettel is the maintainer of the QuantLib Debian packages.
+    Dirk Eddelbuettel is the maintainer of the %QuantLib Debian packages.
     %QuantLib was reported to compile also under:
 
     <table>
