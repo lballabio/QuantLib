@@ -28,7 +28,7 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        //! Multi-dimensionnal Conjugate Gradient class
+        //! Multi-dimensional Conjugate Gradient class
         /*! User has to provide line-search method and
             optimization end criteria
 

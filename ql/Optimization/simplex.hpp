@@ -35,7 +35,7 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        //! Multi-dimensionnal Simplex class
+        //! Multi-dimensional Simplex class
         class Simplex : public Method {
           public:
             /*! Constructor taking as input lambda as the
