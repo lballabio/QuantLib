@@ -89,7 +89,6 @@ for typ in ['Call','Put','Straddle']:
                 thetaNum =-(optionPt.value()-optionMt.value())/(2*dT)
                 rhoNum   = (optionPr.value()-optionMr.value())/(2*dR)
                 vegaNum  = (optionPv.value()-optionMv.value())/(2*dVol)
-		            
                 resuDelta.append(relErr(option.delta(), deltaNum, under))
                 resuGamma.append(relErr(option.gamma(), gammaNum, under))
                 resuTheta.append(relErr(option.theta(), thetaNum, under))
