@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file tridiagonaloperator.cpp
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.10  2001/02/26 17:00:07  lballabio
+    Moved constructor to .cpp - inlined constructors raising exceptions are bad medicine
+
     Revision 1.9  2001/02/21 11:31:04  lballabio
     Removed redundant theSize data member
 
@@ -51,7 +55,22 @@
 namespace QuantLib {
 
     namespace FiniteDifferences {
-    
+
+        TridiagonalOperatorCommon::TridiagonalOperatorCommon(int size)
+        : diagonal(size), belowDiagonal(size-1), aboveDiagonal(size-1) {
+            QL_ENSURE(diagonal.size() >= 3 || diagonal.size() == 0, 
+                "invalid size for tridiagonal operator (must be >= 3)");
+        }
+
+        TridiagonalOperatorCommon::TridiagonalOperatorCommon(
+            const Array& low, const Array& mid, const Array& high)
+        : diagonal(mid), belowDiagonal(low), aboveDiagonal(high) {
+            QL_ENSURE(low.size() == mid.size()-1, 
+                "wrong size for lower diagonal vector");
+            QL_ENSURE(high.size() == mid.size()-1, 
+                "wrong size for upper diagonal vector");
+        }
+
         void TridiagonalOperatorCommon::setLowerBC(
           const BoundaryCondition& bc) {
             theLowerBC = bc;

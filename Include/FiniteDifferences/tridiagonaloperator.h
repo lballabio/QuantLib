@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/02/26 16:59:52  lballabio
+    Moved constructor to .cpp - inlined constructors raising exceptions are bad medicine
+
     Revision 1.12  2001/02/21 11:30:46  lballabio
     Removed redundant theSize data member
 
@@ -158,21 +161,6 @@ namespace QuantLib {
 
 
         // inline definitions
-
-        inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(int size)
-        : diagonal(size), belowDiagonal(size-1), aboveDiagonal(size-1) {
-            QL_ENSURE(diagonal.size() >= 3 || diagonal.size() == 0, 
-                "invalid size for tridiagonal operator (must be >= 3)");
-        }
-
-        inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(
-            const Array& low, const Array& mid, const Array& high)
-        : diagonal(mid), belowDiagonal(low), aboveDiagonal(high) {
-            QL_ENSURE(belowDiagonal.size() == diagonal.size()-1, 
-                "wrong size for lower diagonal vector");
-            QL_ENSURE(aboveDiagonal.size() == diagonal.size()-1, 
-                "wrong size for upper diagonal vector");
-        }
 
         inline void TridiagonalOperatorCommon::setFirstRow(double valB, 
           double valC) {
