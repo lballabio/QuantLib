@@ -89,9 +89,6 @@ namespace QuantLib {
 
         //! arguments for barrier option calculation
         class BarrierOption::arguments : public VanillaOption::arguments {
-          protected:
-            // needed to avoid VC++6 hiccups
-            typedef VanillaOption::arguments super;
           public:
             Barrier::Type barrierType;
             double barrier;
@@ -100,8 +97,13 @@ namespace QuantLib {
         };
 
         inline void BarrierOption::arguments::validate() const {
-            super::validate();
-        
+            #if defined(QL_PATCH_MICROSOFT)
+            VanillaOption::arguments copy = *this;
+            copy.validate();
+            #else
+            VanillaOption::arguments::validate();
+            #endif
+
             switch (barrierType) {
                 case Barrier::DownIn:
                     QL_REQUIRE(underlying >= barrier, "underlying (" +
