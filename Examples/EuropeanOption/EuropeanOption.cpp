@@ -189,44 +189,6 @@ int main(int argc, char* argv[])
              << std::endl;
 
 
-
-
-        // fifth method: Monte Carlo (crude)
-        method ="MC (crude)";
-        Size mcSeed = 12345;
-        bool antitheticVariance = false;
-        McEuropean mcEur(type, underlying, strike, dividendYield,
-            riskFreeRate, maturity, volatility, antitheticVariance, mcSeed);
-        // let's require a tolerance of 0.002%
-        value = mcEur.value(0.02);
-        estimatedError = mcEur.errorEstimate();
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
-
-        // sixth method: Monte Carlo with antithetic variance reduction
-        method ="MC (antithetic)";
-        // let's use the same number of samples as in the crude Monte Carlo
-        Size nSamples = mcEur.sampleAccumulator().samples();
-        antitheticVariance = true;
-        McEuropean mcEur2(type, underlying, strike, dividendYield,
-            riskFreeRate, maturity, volatility, antitheticVariance, mcSeed);
-        value = mcEur2.valueWithSamples(nSamples);
-        estimatedError = mcEur2.errorEstimate();
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
-
 /************************************/
 
         // New option pricing framework
@@ -277,7 +239,8 @@ int main(int argc, char* argv[])
         
         RelinkableHandle<BlackVolTermStructure> blackSurface(
             Handle<BlackVolTermStructure>(
-                new BlackVarianceSurface(settlementDate, dates, strikes, vols)));
+                new BlackVarianceSurface(settlementDate, dates, 
+                                         strikes, vols)));
 
 
         Instruments::VanillaOption option(
@@ -288,7 +251,7 @@ int main(int argc, char* argv[])
             flatTermStructure,
             exercise,
             flatVolTS,
-//            blackSurface,
+            //  blackSurface,
             Handle<PricingEngine>(new AnalyticEuropeanEngine()));
 
 
@@ -351,7 +314,7 @@ int main(int argc, char* argv[])
              << std::endl;
         
 */
-        Size timeSteps=800;
+        Size timeSteps = 800;
 
         // Binomial Method (JR)
         method = "Binomial (JR)";
@@ -448,7 +411,10 @@ int main(int argc, char* argv[])
         // Monte Carlo Method
         timeSteps = 365;
         TimeGrid timeGrid(maturity, timeSteps);
+
         method = "MC (crude)";
+        Size mcSeed = 42;
+
         Handle<PricingEngine> mcengine1(
             #if defined(QL_PATCH_MICROSOFT)
             /* the #else branch used to work--now Visual C++ needs this. 
@@ -478,6 +444,7 @@ int main(int argc, char* argv[])
              << std::endl;
 
         method = "MC (Sobol)";
+        Size nSamples = 32768;  // 2^15
 
         Handle<PricingEngine> mcengine2(
             #if defined(QL_PATCH_MICROSOFT)

@@ -247,7 +247,6 @@
 #include <ql/Pricers/mccliquetoption.hpp>
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
-#include <ql/Pricers/mceuropean.hpp>
 #include <ql/Pricers/mceverest.hpp>
 #include <ql/Pricers/mchimalaya.hpp>
 #include <ql/Pricers/mcmaxbasket.hpp>

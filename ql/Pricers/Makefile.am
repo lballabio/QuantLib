@@ -4,8 +4,6 @@ includedir = $(prefix)/include/ql/Pricers
 
 include_HEADERS = \
     analyticalcapfloor.hpp \
-    barrieroptionpricer.hpp \
-    binaryoptionpricer.hpp \
     blackcapfloor.hpp \
     blackswaption.hpp \
     capfloorpricer.hpp \
@@ -30,7 +28,6 @@ include_HEADERS = \
     mccliquetoption.hpp \
     mcdiscretearithmeticapo.hpp \
     mcdiscretearithmeticaso.hpp \
-    mceuropean.hpp \
     mceverest.hpp \
     mchimalaya.hpp \
     mcmaxbasket.hpp \
@@ -47,8 +44,6 @@ EXTRA_DIST=makefile.mak
 
 libPricers_la_SOURCES = \
     analyticalcapfloor.cpp \
-    barrieroptionpricer.cpp \
-    binaryoptionpricer.cpp \
     blackcapfloor.cpp \
     blackswaption.cpp \
     capfloorpricer.cpp \
@@ -70,7 +65,6 @@ libPricers_la_SOURCES = \
     mccliquetoption.cpp \
     mcdiscretearithmeticapo.cpp \
     mcdiscretearithmeticaso.cpp \
-    mceuropean.cpp \
     mceverest.cpp \
     mchimalaya.cpp \
     mcmaxbasket.cpp \

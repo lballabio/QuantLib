@@ -38,7 +38,6 @@ OBJS = \
     mccliquetoption.obj$(_D) \
     mcdiscretearithmeticapo.obj$(_D) \
     mcdiscretearithmeticaso.obj$(_D) \
-    mceuropean.obj$(_D) \
     mceverest.obj$(_D) \
     mchimalaya.obj$(_D) \
     mcmaxbasket.obj$(_D) \

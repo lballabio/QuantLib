@@ -23,7 +23,6 @@
 #include <ql/Pricers/fdshoutoption.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/Pricers/continuousgeometricapo.hpp>
-#include <ql/Pricers/mceuropean.hpp>
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/mceverest.hpp>
@@ -426,18 +425,6 @@ namespace {
         double strike;
         Rate dividendYield;
         Rate riskFreeRate;
-        Time residualTime;
-        double volatility;
-        bool antithetic;
-        double result;
-    };
-
-    struct Batch5Data {
-        Option::Type type;
-        double underlying;
-        double strike;
-        Rate dividendYield;
-        Rate riskFreeRate;
         Time first;
         Time length;
         Size fixings;
@@ -447,7 +434,7 @@ namespace {
         double result;
     };
 
-    typedef Batch5Data Batch6Data;
+    typedef Batch4Data Batch5Data;
 }
 
 void OldPricerTest::testMcSingleFactorPricers() {
@@ -542,55 +529,12 @@ void OldPricerTest::testMcSingleFactorPricers() {
             + DoubleFormatter::toString(storedValue,10));
 
     // batch 4
-
-    Batch4Data cases4[] = {
-        { Option::Put, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          false, 5.0697930018 },
-        { Option::Put, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          true,  5.2853855509 },
-        { Option::Call, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          false, 2.0462170085 },
-        { Option::Call, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          true, 1.9677728054 },
-        { Option::Straddle, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          false, 7.1160100103 },
-        { Option::Straddle, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          true, 7.2531583563 }
-    };
-
-    for (Size j=0; j<LENGTH(cases4); j++) {
-        McEuropean pricer(cases4[j].type, cases4[j].underlying,
-                          cases4[j].strike, cases4[j].dividendYield,
-                          cases4[j].riskFreeRate, cases4[j].residualTime,
-                          cases4[j].volatility, cases4[j].antithetic, seed);
-        double value = pricer.valueWithSamples(fixedSamples);
-        if (QL_FABS(value-cases4[j].result) > 1.0e-10)
-            CPPUNIT_FAIL(
-                "Batch 4, case " + IntegerFormatter::toString(j+1) + ":\n"
-                "    calculated value: "
-                + DoubleFormatter::toString(value,10) + "\n"
-                "    expected:         "
-                + DoubleFormatter::toString(cases4[j].result,10));
-        double tolerance = pricer.errorEstimate()/value;
-        tolerance = QL_MIN(tolerance/2.0, minimumTol);
-        value = pricer.value(tolerance);
-        double accuracy = pricer.errorEstimate()/value;
-        if (accuracy > tolerance)
-            CPPUNIT_FAIL(
-                "Batch 4, case " + IntegerFormatter::toString(j+1) + ":\n"
-                "    reached accuracy: "
-                + DoubleFormatter::toString(accuracy,10) + "\n"
-                "    expected:         "
-                + DoubleFormatter::toString(tolerance,10));
-    }
-
-    // batch 5
     //
     // data from "Asian Option", Levy, 1997
     // in "Exotic Options: The State of the Art",
     // edited by Clewlow, Strickland
 
-    Batch5Data cases5[] = {
+    Batch4Data cases4[] = {
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2,
           0.13, true, true, 1.3942835683 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4,
@@ -653,49 +597,49 @@ void OldPricerTest::testMcSingleFactorPricers() {
           0.13, true, true, 2.89703362437 }
     };
 
-    for (Size k=0; k<LENGTH(cases5); k++) {
-        Time dt = cases5[k].length/(cases5[k].fixings-1);
-        std::vector<Time> timeIncrements(cases5[k].fixings);
-        for (Size i=0; i<cases5[k].fixings; i++)
-            timeIncrements[i] = i*dt + cases5[k].first;
-        McDiscreteArithmeticAPO pricer(cases5[k].type,
-                                       cases5[k].underlying,
-                                       cases5[k].strike,
-                                       cases5[k].dividendYield,
-                                       cases5[k].riskFreeRate,
+    for (Size k=0; k<LENGTH(cases4); k++) {
+        Time dt = cases4[k].length/(cases4[k].fixings-1);
+        std::vector<Time> timeIncrements(cases4[k].fixings);
+        for (Size i=0; i<cases4[k].fixings; i++)
+            timeIncrements[i] = i*dt + cases4[k].first;
+        McDiscreteArithmeticAPO pricer(cases4[k].type,
+                                       cases4[k].underlying,
+                                       cases4[k].strike,
+                                       cases4[k].dividendYield,
+                                       cases4[k].riskFreeRate,
                                        timeIncrements,
-                                       cases5[k].volatility,
-                                       cases5[k].antithetic,
-                                       cases5[k].controlVariate,
+                                       cases4[k].volatility,
+                                       cases4[k].antithetic,
+                                       cases4[k].controlVariate,
                                        seed);
         double value = pricer.valueWithSamples(fixedSamples);
-        if (QL_FABS(value-cases5[k].result) > 2.0e-2)
+        if (QL_FABS(value-cases4[k].result) > 2.0e-2)
             CPPUNIT_FAIL(
-                "Batch 5, case " + IntegerFormatter::toString(k+1) + ":\n"
+                "Batch 4, case " + IntegerFormatter::toString(k+1) + ":\n"
                 "    calculated value: "
                 + DoubleFormatter::toString(value,10) + "\n"
                 "    expected:         "
-                + DoubleFormatter::toString(cases5[k].result,10));
+                + DoubleFormatter::toString(cases4[k].result,10));
         double tolerance = pricer.errorEstimate()/value;
         tolerance = QL_MIN(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
         double accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
             CPPUNIT_FAIL(
-                "Batch 5, case " + IntegerFormatter::toString(k+1) + ":\n"
+                "Batch 4, case " + IntegerFormatter::toString(k+1) + ":\n"
                 "    reached accuracy: "
                 + DoubleFormatter::toString(accuracy,10) + "\n"
                 "    expected:         "
                 + DoubleFormatter::toString(tolerance,10));
     }
 
-    // batch 6
+    // batch 5
     //
     // data from "Asian Option", Levy, 1997
     // in "Exotic Options: The State of the Art",
     // edited by Clewlow, Strickland
 
-    Batch6Data cases6[] = {
+    Batch5Data cases5[] = {
         { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2,
           0.13, true, true, 1.51917595129 },
         { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4,
@@ -758,35 +702,35 @@ void OldPricerTest::testMcSingleFactorPricers() {
           0.13, true, true, 1.81145760308 }
     };
 
-    for (Size l=0; l<LENGTH(cases6); l++) {
-        Time dt = cases6[l].length/(cases6[l].fixings-1);
-        std::vector<Time> timeIncrements(cases6[l].fixings);
-        for (Size i=0; i<cases6[l].fixings; i++)
-            timeIncrements[i] = i*dt + cases6[l].first;
-        McDiscreteArithmeticASO pricer(cases6[l].type,
-                                       cases6[l].underlying,
-                                       cases6[l].dividendYield,
-                                       cases6[l].riskFreeRate,
+    for (Size l=0; l<LENGTH(cases5); l++) {
+        Time dt = cases5[l].length/(cases5[l].fixings-1);
+        std::vector<Time> timeIncrements(cases5[l].fixings);
+        for (Size i=0; i<cases5[l].fixings; i++)
+            timeIncrements[i] = i*dt + cases5[l].first;
+        McDiscreteArithmeticASO pricer(cases5[l].type,
+                                       cases5[l].underlying,
+                                       cases5[l].dividendYield,
+                                       cases5[l].riskFreeRate,
                                        timeIncrements,
-                                       cases6[l].volatility,
-                                       cases6[l].antithetic,
-                                       cases6[l].controlVariate,
+                                       cases5[l].volatility,
+                                       cases5[l].antithetic,
+                                       cases5[l].controlVariate,
                                        seed);
         double value = pricer.valueWithSamples(fixedSamples);
-        if (QL_FABS(value-cases6[l].result) > 2.0e-2)
+        if (QL_FABS(value-cases5[l].result) > 2.0e-2)
             CPPUNIT_FAIL(
-                "Batch 6, case " + IntegerFormatter::toString(l+1) + ":\n"
+                "Batch 5, case " + IntegerFormatter::toString(l+1) + ":\n"
                 "    calculated value: "
                 + DoubleFormatter::toString(value,10) + "\n"
                 "    expected:         "
-                + DoubleFormatter::toString(cases6[l].result,10));
+                + DoubleFormatter::toString(cases5[l].result,10));
         double tolerance = pricer.errorEstimate()/value;
         tolerance = QL_MIN(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
         double accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
             CPPUNIT_FAIL(
-                "Batch 6, case " + IntegerFormatter::toString(l+1) + ":\n"
+                "Batch 5, case " + IntegerFormatter::toString(l+1) + ":\n"
                 "    reached accuracy: "
                 + DoubleFormatter::toString(accuracy,10) + "\n"
                 "    expected:         "
