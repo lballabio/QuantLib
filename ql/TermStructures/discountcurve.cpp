@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file discountcurve.cpp
-    \brief pre-bootstrapped discount curve
+    \brief Term structure based on loglinear interpolation of discount factors
 
     \fullpath
     ql/TermStructures/%discountcurve.cpp
@@ -25,28 +25,35 @@
 
 #include <ql/TermStructures/discountcurve.hpp>
 
-namespace QuantLib
-{
+namespace QuantLib {
 
-   namespace TermStructures
-   {
+    namespace TermStructures {
 
-      DiscountCurve::DiscountCurve(const Date & todaysDate,
-                                   const Calendar & calendar,
-                                   int settlementDays,
-                                   const DayCounter & dayCounter,
-                                   Currency currency,
-                                   const std::vector < Date > &dates,
-                                   const std::vector < DiscountFactor >
-                                   &discounts):todaysDate_(todaysDate),
-         calendar_(calendar),
-         settlementDays_(settlementDays),
-         dayCounter_(dayCounter),
-         currency_(currency), dates_(dates), discounts_(discounts)
-      {
-         times_.resize(dates.size());
-         for(unsigned int i = 0; i < dates.size(); i++)
-            times_[i] = dayCounter_.yearFraction(settlementDate(), dates_[i]);
+        DiscountCurve::DiscountCurve(const Date & todaysDate,
+            const Calendar & calendar, int settlementDays,
+            const DayCounter & dayCounter, Currency currency,
+            const std::vector < Date > &dates,
+            const std::vector < DiscountFactor > &discounts)
+        : todaysDate_(todaysDate), calendar_(calendar),
+          settlementDays_(settlementDays), dayCounter_(dayCounter),
+          currency_(currency), dates_(dates), discounts_(discounts) {
+
+             times_.resize(dates.size());
+             QL_REQUIRE(dates_[0]>=settlementDate(),
+                "DiscountCurveDiscountCurve : invalid first date greater than "
+                "settlement date");
+             QL_REQUIRE(discounts_[0]<=1.0, "DiscountCurveDiscountCurve :"
+                " invalid first discount greater that one");
+
+             for(Size i = 1; i < dates.size(); i++) {
+                 QL_REQUIRE(dates_[i]>dates_[i-1],
+                    "DiscountCurveDiscountCurve : invalid date");
+                 QL_REQUIRE(discounts_[i]<=discounts_[i-1],
+                    "DiscountCurveDiscountCurve : invalid discount");
+                 times_[i] = dayCounter_.yearFraction(settlementDate(),
+                    dates_[i]);
+             }
+
             interpolation_ = Handle < DfInterpolation >
                 (new DfInterpolation(times_.begin(), times_.end(),
                 discounts.begin(), true));

@@ -38,86 +38,104 @@ namespace QuantLib
    namespace TermStructures
    {
 
-      class DiscountCurve:public DiscountStructure
-      {
-       public:
-         // constructor
-         DiscountCurve(const Date & todaysDate,
-                       const Calendar & calendar,
-                       int settlementDays,
-                       const DayCounter & dayCounter,
-                       Currency currency,
-                       const std::vector < Date > &dates,
-                       const std::vector < DiscountFactor > &discounts);
+        //! Term structure based on loglinear interpolation of discount factors
+        /*! This term structure is based on loglinear interpolation of a grid
+            of discount factors.
 
-         Date todaysDate() const;
-         Date settlementDate() const;
-         int settlementDays() const;
-         Calendar calendar() const;
-         DayCounter dayCounter() const;
-         Currency currency() const;
-         Date minDate() const;
-         Date maxDate() const;
-         Time minTime() const;
-         Time maxTime() const;
-         DiscountFactor discountImpl(Time t, bool extrapolate = false) const;
-       private:
-         const Date todaysDate_;
-         const Calendar calendar_;
-         int settlementDays_;
-         const DayCounter dayCounter_;
-         Currency currency_;
-         const std::vector < Date > &dates_;
-         const std::vector < DiscountFactor > discounts_;
-         std::vector < Time > times_;
-         typedef LogLinearInterpolation <
-            std::vector < Time >::const_iterator,
-            std::vector < double >::const_iterator > DfInterpolation;
-         Handle < DfInterpolation > interpolation_;
-      };
+            Loglinear interpolation guarantees piecewise constant forward
+            rates.
 
-      // inline definitions
+            Rates are assumed to be annual continuos compounding.
+        */
+        class DiscountCurve:public DiscountStructure
+        {
+         public:
+           // constructor
+           DiscountCurve(const Date & todaysDate,
+                         const Calendar & calendar,
+                         int settlementDays,
+                         const DayCounter & dayCounter,
+                         Currency currency,
+                         const std::vector < Date > &dates,
+                         const std::vector < DiscountFactor > &discounts);
 
-      inline Date DiscountCurve::todaysDate() const
-      {
-         return todaysDate_;
-      }
-      inline Date DiscountCurve::settlementDate() const
-      {
-         return calendar_.advance(todaysDate_, settlementDays_, Days);
-      }
-      inline int DiscountCurve::settlementDays() const
-      {
-         return settlementDays_;
-      }
-      inline Calendar DiscountCurve::calendar() const
-      {
-         return calendar_;
-      }
-      inline DayCounter DiscountCurve::dayCounter() const
-      {
-         return dayCounter_;
-      }
-      inline Currency DiscountCurve::currency() const
-      {
-         return currency_;
-      }
-      inline Date DiscountCurve::minDate() const
-      {
-         return settlementDate();
-      }
-      inline Date DiscountCurve::maxDate() const
-      {
-         return dates_.back();
-      }
-      inline Time DiscountCurve::minTime() const
-      {
-         return 0.0;
-      }
-      inline Time DiscountCurve::maxTime() const
-      {
-         return times_.back();
-      }
-   }
+           Currency currency() const;
+           DayCounter dayCounter() const;
+           Date todaysDate() const;
+           int settlementDays() const;
+           Calendar calendar() const;
+           Date settlementDate() const;
+           const std::vector<Date>& dates() const;
+           Date maxDate() const;
+           Date minDate() const;
+           const std::vector<Time>& times() const;
+           Time maxTime() const;
+           Time minTime() const;
+         protected:
+           DiscountFactor discountImpl(Time t, bool extrapolate = false) const;
+         private:
+           Currency currency_;
+           const DayCounter dayCounter_;
+           const Date todaysDate_;
+           const Calendar calendar_;
+           int settlementDays_;
+           const std::vector < Date > &dates_;
+           const std::vector < DiscountFactor > discounts_;
+           std::vector < Time > times_;
+           typedef LogLinearInterpolation <
+              std::vector < Time >::const_iterator,
+              std::vector < double >::const_iterator > DfInterpolation;
+           Handle < DfInterpolation > interpolation_;
+        };
+
+        // inline definitions
+
+        inline Date DiscountCurve::todaysDate() const
+        {
+           return todaysDate_;
+        }
+        inline Date DiscountCurve::settlementDate() const
+        {
+           return calendar_.advance(todaysDate_, settlementDays_, Days);
+        }
+        inline int DiscountCurve::settlementDays() const
+        {
+           return settlementDays_;
+        }
+        inline Calendar DiscountCurve::calendar() const
+        {
+           return calendar_;
+        }
+        inline DayCounter DiscountCurve::dayCounter() const
+        {
+           return dayCounter_;
+        }
+        inline Currency DiscountCurve::currency() const
+        {
+           return currency_;
+        }
+        inline const std::vector<Date>& DiscountCurve::dates() const {
+            return dates_;
+        }
+        inline Date DiscountCurve::minDate() const
+        {
+           return settlementDate();
+        }
+        inline Date DiscountCurve::maxDate() const
+        {
+           return dates_.back();
+        }
+        inline const std::vector<Time>& DiscountCurve::times() const {
+            return times_;
+        }
+        inline Time DiscountCurve::minTime() const
+        {
+           return 0.0;
+        }
+        inline Time DiscountCurve::maxTime() const
+        {
+           return times_.back();
+        }
+     }
 }
 #endif

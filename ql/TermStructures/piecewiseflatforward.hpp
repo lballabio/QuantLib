@@ -47,6 +47,8 @@ namespace QuantLib {
             maturity marks the end of such segment is correctly repriced on
             the curve.
 
+            Rates are assumed to be annual continuos compounding.
+
             \warning The bootstrapping algorithm will raise an exception if
             any two instruments have the same maturity date.
         */
