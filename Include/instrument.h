@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.15  2001/03/13 15:28:22  lballabio
+    Recalculation control mechanism fixed
+
     Revision 1.14  2001/03/12 17:35:09  lballabio
     Removed global IsNull function - could have caused very vicious loops
 
@@ -62,7 +65,8 @@ namespace QuantLib {
             const std::string& description = "")
         : theISINCode(isinCode), theDescription(description),
           termStructureHasChanged(true), swaptionVolHasChanged(true), 
-          forwardVolHasChanged(true), theSettlementDate(Date()), theNPV(0.0), 
+          forwardVolHasChanged(true), isCalculating(false), 
+          theSettlementDate(Date()), theNPV(0.0), 
           expired(false) {}
         virtual ~Instrument();
         //! \name Modifiers
@@ -109,6 +113,20 @@ namespace QuantLib {
             declared as mutable.
         */
         //@{
+        /*! This method returns <tt>true</tt> if all needed (re)calculations 
+            were performed after a term structure or a volatility surface was 
+            set or changed. It should not be redefined in derived classes.
+        */
+        bool isUpToDate() const;
+        /*! This method performs all needed (re)calculations by calling 
+            <b>performTermStructureCalculations</b>,
+            <b>performSwaptionVolCalculations</b>, 
+            <b>performForwardVolCalculations</b>, and 
+            <b>performFinalCalculations</b> if a term structure or a volatility 
+            surface was set or changed. It should not be redefined in derived 
+            classes.
+        */
+        void calculate() const;
         /*! This method must implement any calculations which must be (re)done 
             in case the term structure is set or changes. A default is supplied 
             with a null body. 
@@ -157,7 +175,6 @@ namespace QuantLib {
         mutable bool expired;
         //@}
       private:
-        void calculate() const;
         // data members
         std::string theISINCode, theDescription;
         Handle<TermStructure> theTermStructure;
@@ -165,7 +182,7 @@ namespace QuantLib {
         Handle<ForwardVolatilitySurface> theForwardVol;
         // temporaries
         mutable bool termStructureHasChanged, swaptionVolHasChanged, 
-            forwardVolHasChanged;
+            forwardVolHasChanged, isCalculating;
         // observers
         // term structure
         class TermStructureObserver;
@@ -370,7 +387,16 @@ namespace QuantLib {
             forwardVolHasChanged);
     }
 
+    inline bool Instrument::isUpToDate() const {
+        return isCalculating || 
+           ((!useTermStructure()      || !termStructureHasChanged) &&
+            (!useSwaptionVolatility() || !swaptionVolHasChanged)   &&
+            (!useForwardVolatility()  || !forwardVolHasChanged)    &&
+            !needsFinalCalculations());
+    }
+
     inline void Instrument::calculate() const {
+        isCalculating = true;
         if (useTermStructure() && termStructureHasChanged) {
             QL_REQUIRE(!theTermStructure.isNull(),
                 "term structure not set");
@@ -389,7 +415,7 @@ namespace QuantLib {
         if (needsFinalCalculations())
             performFinalCalculations();
         termStructureHasChanged = swaptionVolHasChanged = 
-            forwardVolHasChanged = false;
+            forwardVolHasChanged = isCalculating = false;
     }
 
     // comparisons
