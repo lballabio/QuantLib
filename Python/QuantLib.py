@@ -553,6 +553,7 @@ Statistics.weightSum = new.instancemethod(QuantLibc.Statistics_weightSum, None, 
 Statistics.mean = new.instancemethod(QuantLibc.Statistics_mean, None, Statistics)
 Statistics.variance = new.instancemethod(QuantLibc.Statistics_variance, None, Statistics)
 Statistics.standardDeviation = new.instancemethod(QuantLibc.Statistics_standardDeviation, None, Statistics)
+Statistics.errorEstimate = new.instancemethod(QuantLibc.Statistics_errorEstimate, None, Statistics)
 Statistics.skewness = new.instancemethod(QuantLibc.Statistics_skewness, None, Statistics)
 Statistics.kurtosis = new.instancemethod(QuantLibc.Statistics_kurtosis, None, Statistics)
 Statistics.min = new.instancemethod(QuantLibc.Statistics_min, None, Statistics)
