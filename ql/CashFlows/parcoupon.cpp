@@ -16,6 +16,7 @@
 */
 
 #include <ql/CashFlows/parcoupon.hpp>
+#include <ql/Indexes/indexmanager.hpp>
 #include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {
@@ -24,16 +25,16 @@ namespace QuantLib {
                          const boost::shared_ptr<Xibor>& index,
                          const Date& startDate, const Date& endDate,
                          Integer fixingDays, Spread spread,
-                         const Date& refPeriodStart, 
+                         const Date& refPeriodStart,
                          const Date& refPeriodEnd)
-    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate, 
+    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
                          fixingDays, spread, refPeriodStart, refPeriodEnd),
       index_(index) {
         registerWith(index_);
     }
 
     Real ParCoupon::amount() const {
-        boost::shared_ptr<TermStructure> termStructure = 
+        boost::shared_ptr<TermStructure> termStructure =
             index_->termStructure();
         QL_REQUIRE(termStructure,
                    "null term structure set to par coupon");
@@ -41,7 +42,17 @@ namespace QuantLib {
         Date fixing_date = fixingDate();
         if (fixing_date < today) {
             // must have been fixed
-            Rate pastFixing = XiborManager::getHistory(
+            #ifndef QL_DISABLE_DEPRECATED
+            if (XiborManager::hasHistory(index_->name())) {
+                Rate pastFixing = XiborManager::getHistory(
+                                                 index_->name())[fixing_date];
+                QL_REQUIRE(pastFixing != Null<Real>(),
+                           "Missing " + index_->name() + " fixing for " +
+                           DateFormatter::toString(fixing_date));
+                return (pastFixing+spread_)*accrualPeriod()*nominal();
+            }
+            #endif
+            Rate pastFixing = IndexManager::instance().getHistory(
                                                  index_->name())[fixing_date];
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " + index_->name() + " fixing for " +
@@ -50,8 +61,21 @@ namespace QuantLib {
         }
         if (fixing_date == today) {
             // might have been fixed
+            #ifndef QL_DISABLE_DEPRECATED
             try {
                 Rate pastFixing = XiborManager::getHistory(
+                                                 index_->name())[fixing_date];
+                if (pastFixing != Null<Real>())
+                    return (pastFixing+spread_) *
+                        accrualPeriod() * nominal();
+                else
+                    ;   // fall through
+            } catch (Error&) {
+                ;       // fall through
+            }
+            #endif
+            try {
+                Rate pastFixing = IndexManager::instance().getHistory(
                                                  index_->name())[fixing_date];
                 if (pastFixing != Null<Real>())
                     return (pastFixing+spread_) *

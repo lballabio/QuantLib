@@ -16,6 +16,7 @@
 */
 
 #include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/indexmanager.hpp>
 #include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {
@@ -56,13 +57,22 @@ namespace QuantLib {
     }
 
     Rate Xibor::fixing(const Date& fixingDate) const {
-        QL_REQUIRE(!termStructure_.isNull(),
-                   "null term structure set");
+        QL_REQUIRE(!termStructure_.isNull(), "no term structure set");
         Date today = termStructure_->todaysDate();
         if (fixingDate < today) {
             // must have been fixed
+            #ifndef QL_DISABLE_DEPRECATED
+            if (XiborManager::hasHistory(name())) {
+                Rate pastFixing =
+                    XiborManager::getHistory(name())[fixingDate];
+                QL_REQUIRE(pastFixing != Null<Real>(),
+                           "Missing " + name() + " fixing for " +
+                           DateFormatter::toString(fixingDate));
+                return pastFixing;
+            }
+            #endif
             Rate pastFixing =
-                XiborManager::getHistory(name())[fixingDate];
+                IndexManager::instance().getHistory(name())[fixingDate];
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " + name() + " fixing for " +
                        DateFormatter::toString(fixingDate));
@@ -70,9 +80,21 @@ namespace QuantLib {
         }
         if (fixingDate == today) {
             // might have been fixed
+            #ifndef QL_DISABLE_DEPRECATED
             try {
                 Rate pastFixing =
                     XiborManager::getHistory(name())[fixingDate];
+                if (pastFixing != Null<Real>())
+                    return pastFixing;
+                else
+                    ;   // fall through
+            } catch (Error&) {
+                ;       // fall through
+            }
+            #endif
+            try {
+                Rate pastFixing =
+                    IndexManager::instance().getHistory(name())[fixingDate];
                 if (pastFixing != Null<Real>())
                     return pastFixing;
                 else
