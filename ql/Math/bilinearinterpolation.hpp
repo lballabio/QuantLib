@@ -35,7 +35,10 @@ namespace QuantLib {
     namespace Math {
 
         //! bilinear interpolation between discrete points
-        /*! \todo Bicubic interpolation and bicubic spline */
+        /*! \todo Bicubic interpolation and bicubic spline
+
+            \warning not working yet !!!!!
+        */
         template <class RandomAccessIteratorX, class RandomAccessIteratorY>
         class BilinearInterpolation
         : public Interpolation2D<RandomAccessIteratorX,RandomAccessIteratorY> {
