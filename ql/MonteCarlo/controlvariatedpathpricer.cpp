@@ -26,7 +26,7 @@
     \brief generic control variated path pricer
 
     \fullpath
-    Sources/MonteCarlo/%controlvariatedpathpricer.cpp
+    ql/MonteCarlo/%controlvariatedpathpricer.cpp
 
 */
 
