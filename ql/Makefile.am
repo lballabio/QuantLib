@@ -29,6 +29,7 @@ EXTRA_DIST= \
 	config.bcc.hpp \
 	config.msvc.hpp \
 	config.mwcw.hpp \
+	config.mingw.hpp \
 	makefile.mak \
 	userconfig.hpp
 

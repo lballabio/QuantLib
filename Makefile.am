@@ -22,6 +22,7 @@ EXTRA_DIST = \
 	QuantLib.nsi \
 	QuantLib.sln \
 	QuantLib.vcproj \
+	QuantLib.dev \
 	Readme.txt \
 	bootstrap \
 	makefile.mak

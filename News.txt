@@ -98,3 +98,6 @@ Changes since release 0.3.7:
   algebra. It manages daycounting convention, compounding convention,
   conversion between different conventions, and discount/compounding factor
   calculations. It also has its own formatter.
+
+- Support for Dev-C++ IDE added.
+

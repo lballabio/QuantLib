@@ -57,4 +57,9 @@ TESTS = quantlib-test-suite
 
 TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=messages
 
-EXTRA_DIST = README.txt testsuite.dsp testsuite.vcproj makefile.mak
+EXTRA_DIST = \
+	README.txt \
+	testsuite.dsp \
+	testsuite.vcproj \
+	QuantLib-test-suite.dev \
+	makefile.mak
