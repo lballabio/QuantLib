@@ -29,9 +29,9 @@ To produce HTML documentation:
 1) Install Doxygen. You will also need to add to your PATH doxygen-x.x.x\bin.
 2) Install Graphviz. Add to your PATH Graphviz\bin
 3) Install Ghostscript. Add to your path gs\gsx.xx\bin
-4) a) Borland user: type 'make html' in the QuantLib\Docs directory
-   b) VC user: go to the QuantLib\Docs directory and type:
-      doxygen quantlib.win32.doxy
+4) a) Borland user: type 'make html' in the Docs directory
+   b) VC user: go to the Docs directory and type:
+      doxygen quantlib.doxy
 
 If you want to produce TeX/PDF/PS documentation:
 5) install MiKTeX 2 or higher from http://www.miktex.org
@@ -44,9 +44,9 @@ If you want to produce TeX/PDF/PS documentation:
    and copy it into a directory on your path
 8) Open MikTeX Options panel from "Programs/MiKTeX 2" list and click on the
    "Refresh Now" button in the "General" folder.
-9) a) Borland users: type 'make ps' or 'make pdf' from the QuantLib\Docs
+9) a) Borland users: type 'make ps' or 'make pdf' from the Docs
       directory
-   b) VC user: go to the QuantLib\Docs\latex directory and type:
+   b) VC user: go to the Docs\latex directory and type:
         latex refman
         makeindex refman.idx
         latex refman
@@ -61,7 +61,7 @@ If you want to compile the HTML documentation into Microsoft Help format:
 10) download and install the HTML Help Workshop from
     msdn.microsoft.com/library/default.asp?url=/library/en-us/htmlhelp/html/vsconhh1start.asp
     and add to your path the directory created by the installer
-11) type 'hhc index.hhp' from the QuantLib\Docs\html directory. The file
+11) type 'hhc index.hhp' from the Docs\html directory. The file
     index.chm will be created.
 
 
@@ -71,7 +71,7 @@ If you want to compile the HTML documentation into Microsoft Help format:
 * Unix/Linux *
 **************
 
-From the QuantLib base directory, you'll have to do
+From the base directory, you'll have to do
 
 cd Docs
 ./bootstrap

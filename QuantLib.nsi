@@ -315,7 +315,7 @@ SectionEnd
 Section "PDF documentation"
 SectionIn 1
   SetOutPath "$INSTDIR\Docs"
-  File "Docs\latex\*refman.pdf"
+  File "Docs\latex\refman.pdf"
   CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (PDF).lnk" \
                  "$INSTDIR\Docs\refman.pdf"
 SectionEnd
