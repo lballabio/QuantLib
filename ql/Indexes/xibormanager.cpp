@@ -19,6 +19,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     #if defined(QL_PATCH_SOLARIS)
     bool XiborManager::initialized_ = false;
     XiborManager::HistoryMap* XiborManager::historyMap_ = 0;
@@ -79,6 +81,8 @@ namespace QuantLib {
         #endif
         return temp;
     }
+
+    #endif
 
 }
 

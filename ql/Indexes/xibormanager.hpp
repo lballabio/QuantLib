@@ -28,7 +28,9 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! global repository for libor histories
+    /*! \deprecated use IndexManager instead */
     class XiborManager {
       public:
         typedef std::map<std::string,History> HistoryMap;
@@ -51,6 +53,7 @@ namespace QuantLib {
         static HistoryMap historyMap_;
         #endif
     };
+    #endif
 
 }
 

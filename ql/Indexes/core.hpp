@@ -19,6 +19,7 @@
 #define quantlib_indexes_core_hpp
 
 #include <ql/qldefines.hpp>
+#include <ql/Indexes/indexmanager.hpp>
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Indexes/xibormanager.hpp>
 
