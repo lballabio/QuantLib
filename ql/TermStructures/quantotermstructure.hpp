@@ -66,8 +66,8 @@ namespace QuantLib {
           private:
             RelinkableHandle<TermStructure> underlyingDividendTS_, riskFreeTS_,
                 foreignRiskFreeTS_;
-            RelinkableHandle<BlackVolTermStructure> underlyingLocalVolTS_,
-                exchRateLocalVolTS_;
+            RelinkableHandle<BlackVolTermStructure> underlyingBlackVolTS_,
+                exchRateBlackVolTS_;
             double underlyingExchRateCorrelation_, underlyingLevel_;
             Date maxDate_;
 
@@ -79,25 +79,25 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& underlyingDividendTS,
             const RelinkableHandle<TermStructure>& riskFreeTS,
             const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-            const RelinkableHandle<BlackVolTermStructure>& underlyingLocalVolTS,
-            const RelinkableHandle<BlackVolTermStructure>& exchRateLocalVolTS,
+            const RelinkableHandle<BlackVolTermStructure>& underlyingBlackVolTS,
+            const RelinkableHandle<BlackVolTermStructure>& exchRateBlackVolTS,
             double underlyingExchRateCorrelation)
         : underlyingDividendTS_(underlyingDividendTS),
           riskFreeTS_(riskFreeTS), foreignRiskFreeTS_(foreignRiskFreeTS),
-          underlyingLocalVolTS_(underlyingLocalVolTS),
-          exchRateLocalVolTS_(exchRateLocalVolTS),
+          underlyingBlackVolTS_(underlyingBlackVolTS),
+          exchRateBlackVolTS_(exchRateBlackVolTS),
           underlyingExchRateCorrelation_(underlyingExchRateCorrelation) {
             registerWith(underlyingDividendTS_);
             registerWith(riskFreeTS_);
             registerWith(foreignRiskFreeTS_);
-            registerWith(underlyingLocalVolTS_);
-            registerWith(exchRateLocalVolTS_);
+            registerWith(underlyingBlackVolTS_);
+            registerWith(exchRateBlackVolTS_);
 
             maxDate_ = QL_MIN(underlyingDividendTS_->maxDate(),
                 riskFreeTS_->maxDate());
             maxDate_ = QL_MIN(maxDate_, foreignRiskFreeTS_->maxDate());
-            maxDate_ = QL_MIN(maxDate_, underlyingLocalVolTS_->maxDate());
-            maxDate_ = QL_MIN(maxDate_, exchRateLocalVolTS_->maxDate());
+            maxDate_ = QL_MIN(maxDate_, underlyingBlackVolTS_->maxDate());
+            maxDate_ = QL_MIN(maxDate_, exchRateBlackVolTS_->maxDate());
 
         }
 
@@ -123,12 +123,12 @@ namespace QuantLib {
             //          It should be QL_REQUIREd, or maybe even enforced in the
             //          whole QuantLib
                 return underlyingDividendTS_->zeroYield(t, extrapolate)
-                    + riskFreeTS_->discount(referenceDate(),extrapolate)
-                    - foreignRiskFreeTS_->discount(referenceDate(),extrapolate)
+                    +            riskFreeTS_->zeroYield(t, extrapolate)
+                    -     foreignRiskFreeTS_->zeroYield(t, extrapolate)
                     + underlyingExchRateCorrelation_
-                      * underlyingLocalVolTS_->blackVol(t, underlyingLevel_,
+                      * underlyingBlackVolTS_->blackVol(t, underlyingLevel_,
                                                                  extrapolate)
-                      * exchRateLocalVolTS_->blackVol(t, underlyingLevel_,
+                      *   exchRateBlackVolTS_->blackVol(t, underlyingLevel_,
                                                                 extrapolate);
         }
     }
