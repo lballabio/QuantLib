@@ -836,11 +836,11 @@ void DigitalOptionTest::testEngineConsistency() {
     Handle<Exercise> exercises[] = {amExercise};
 
 
-    Size maxTimeStepsPerYear = 180;
+    Size maxTimeStepsPerYear = 360;
     bool antitheticVariate = false;
     bool controlVariate = false;
-    Size requiredSamples = Size(QL_POW(2.0, 10)-1);
-    double requiredAccuracy = 0.01;
+    Size requiredSamples = Size(QL_POW(2.0, 17)-1);
+    double requiredAccuracy = 0.005;
 //    double requiredAccuracy = 0.005;
     Size maxSamples = 1000000;
     long seed = 1;
@@ -852,7 +852,7 @@ void DigitalOptionTest::testEngineConsistency() {
                                       maxSamples, seed));
 
     Handle<PricingEngine> mcldEngine = Handle<PricingEngine>(new
-        MCDigitalEngine<LowDiscrepancy>(maxTimeStepsPerYear,
+        MCDigitalEngine<LowDiscrepancy>(maxTimeStepsPerYear*2,
                                         antitheticVariate, controlVariate,
                                         requiredSamples, Null<double>(),
                                         maxSamples));
@@ -867,8 +867,8 @@ void DigitalOptionTest::testEngineConsistency() {
     Handle<PricingEngine> engines[] = {amEngine};
 
 
-//    double testTolerance = requiredAccuracy*2;
-    double testTolerance = 1.0e-2;
+    double testTolerance = requiredAccuracy*2;
+//    double testTolerance = 1.0e-2;
     double calcAnalytic, calcMC;
     for (Size j=0; j<LENGTH(engines); j++) {
       for (Size i1=0; i1<LENGTH(types); i1++) {
@@ -908,18 +908,21 @@ void DigitalOptionTest::testEngineConsistency() {
                       exercises[j],
                       engines[j]);
                   calcAnalytic = opt.NPV();
+                  std::cout << "\n anal: " << DoubleFormatter::toString(calcAnalytic);
 
 //                  std::cout << "\n" << type << ", strike: " << strike;
 //                  std::cout << ", u: " << u << ", r: " << r;
 //                  std::cout << ", q: " << q << ", v: " << v;
 //                  std::cout << ", "<< DoubleFormatter::toString(calcAnalytic);
 
-//                  opt.setPricingEngine(mcldEngine);
-//                  calcMC = opt.NPV();
+                  opt.setPricingEngine(mcldEngine);
+                  calcMC = opt.NPV();
+                  std::cout << "\n MCLD: " << DoubleFormatter::toString(calcMC)
+                      << "with samples: " << requiredSamples;
+
                   opt.setPricingEngine(mcEngine);
                   calcMC = opt.NPV();
-
-//                  std::cout << ", " << DoubleFormatter::toString(calcMC);
+                  std::cout << "\n MC:   " << DoubleFormatter::toString(calcMC);
 
                   if (relativeError(calcAnalytic,calcMC,u) > testTolerance) {
                       vanillaOptionTestFailed("value", payoff, exercises[j], u,
