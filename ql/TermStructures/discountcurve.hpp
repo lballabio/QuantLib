@@ -33,8 +33,6 @@
 namespace QuantLib
 {
 
-   using Math::LogLinearInterpolation;
-
    namespace TermStructures
    {
 
@@ -52,8 +50,6 @@ namespace QuantLib
          public:
            // constructor
            DiscountCurve(const Date & todaysDate,
-                         const Calendar & calendar,
-                         int settlementDays,
                          const DayCounter & dayCounter,
                          Currency currency,
                          const std::vector < Date > &dates,
@@ -62,8 +58,6 @@ namespace QuantLib
            Currency currency() const;
            DayCounter dayCounter() const;
            Date todaysDate() const;
-           int settlementDays() const;
-           Calendar calendar() const;
            Date settlementDate() const;
            const std::vector<Date>& dates() const;
            Date maxDate() const;
@@ -77,12 +71,10 @@ namespace QuantLib
            Currency currency_;
            const DayCounter dayCounter_;
            const Date todaysDate_;
-           const Calendar calendar_;
-           int settlementDays_;
            const std::vector < Date > &dates_;
            const std::vector < DiscountFactor > discounts_;
            std::vector < Time > times_;
-           typedef LogLinearInterpolation <
+           typedef Math::LogLinearInterpolation <
               std::vector < Time >::const_iterator,
               std::vector < double >::const_iterator > DfInterpolation;
            Handle < DfInterpolation > interpolation_;
@@ -96,15 +88,7 @@ namespace QuantLib
         }
         inline Date DiscountCurve::settlementDate() const
         {
-           return calendar_.advance(todaysDate_, settlementDays_, Days);
-        }
-        inline int DiscountCurve::settlementDays() const
-        {
-           return settlementDays_;
-        }
-        inline Calendar DiscountCurve::calendar() const
-        {
-           return calendar_;
+           return dates_[0];
         }
         inline DayCounter DiscountCurve::dayCounter() const
         {
@@ -119,7 +103,7 @@ namespace QuantLib
         }
         inline Date DiscountCurve::minDate() const
         {
-           return settlementDate();
+           return dates_[0];
         }
         inline Date DiscountCurve::maxDate() const
         {

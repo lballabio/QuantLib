@@ -38,14 +38,13 @@ namespace QuantLib {
         class ForwardSpreadedTermStructure : public ForwardRateStructure,
                                              public Patterns::Observer {
           public:
-            ForwardSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
+            ForwardSpreadedTermStructure(
+                const RelinkableHandle<TermStructure>&,
                 const RelinkableHandle<MarketElement>& spread);
             //! \name TermStructure interface
             //@{
             Currency currency() const;
             Date todaysDate() const;
-            int settlementDays() const;
-            Calendar calendar() const;
             DayCounter dayCounter() const;
             Date settlementDate() const;
             Date maxDate() const;
@@ -82,14 +81,6 @@ namespace QuantLib {
 
         inline Date ForwardSpreadedTermStructure::todaysDate() const {
             return originalCurve_->todaysDate();
-        }
-
-        inline int ForwardSpreadedTermStructure::settlementDays() const {
-            return originalCurve_->settlementDays();
-        }
-
-        inline Calendar ForwardSpreadedTermStructure::calendar() const {
-            return originalCurve_->calendar();
         }
 
         inline DayCounter ForwardSpreadedTermStructure::dayCounter() const {

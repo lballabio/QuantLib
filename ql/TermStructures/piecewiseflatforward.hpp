@@ -63,8 +63,7 @@ namespace QuantLib {
                 Currency currency,
                 const DayCounter& dayCounter,
                 const Date& todaysDate,
-                const Calendar& calendar,
-                int settlementDays,
+                const Date& settlementDate,
                 const std::vector<Handle<RateHelper> >& instruments,
                 double accuracy=1.0e-12);
             //! \name TermStructure interface
@@ -72,8 +71,6 @@ namespace QuantLib {
             Currency currency() const;
             DayCounter dayCounter() const;
             Date todaysDate() const;
-            int settlementDays() const;
-            Calendar calendar() const;
             Date settlementDate() const;
             const std::vector<Date>& dates() const;
             Date maxDate() const;
@@ -119,8 +116,6 @@ namespace QuantLib {
             Currency currency_;
             DayCounter dayCounter_;
             Date todaysDate_;
-            Calendar calendar_;
-            int settlementDays_;
             Date settlementDate_;
             std::vector<Handle<RateHelper> > instruments_;
             mutable bool needsBootstrap_;
@@ -143,14 +138,6 @@ namespace QuantLib {
 
         inline Date PiecewiseFlatForward::todaysDate() const {
             return todaysDate_;
-        }
-
-        inline Calendar PiecewiseFlatForward::calendar() const {
-            return calendar_;
-        }
-
-        inline int PiecewiseFlatForward::settlementDays() const {
-            return settlementDays_;
         }
 
         inline Date PiecewiseFlatForward::settlementDate() const {

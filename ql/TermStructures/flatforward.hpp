@@ -39,14 +39,12 @@ namespace QuantLib {
             // constructor
             FlatForward(Currency currency,
                 const DayCounter& dayCounter,
-                const Date& todaysDate, const Calendar& calendar,
-                int settlementDays, Rate forward);
+                const Date& todaysDate, const Date& settlementDate,
+                Rate forward);
             // inspectors
             Currency currency() const;
             DayCounter dayCounter() const;
             Date todaysDate() const;
-            int settlementDays() const;
-            Calendar calendar() const;
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
@@ -61,8 +59,6 @@ namespace QuantLib {
             Currency currency_;
             DayCounter dayCounter_;
             Date todaysDate_;
-            Calendar calendar_;
-            int settlementDays_;
             Date settlementDate_;
             Rate forward_;
         };
@@ -71,14 +67,10 @@ namespace QuantLib {
 
         inline FlatForward::FlatForward(Currency currency,
             const DayCounter& dayCounter, const Date& todaysDate,
-            const Calendar& calendar, int settlementDays,
-            Rate forward)
+            const Date& settlementDate, Rate forward)
         : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), calendar_(calendar),
-          settlementDays_(settlementDays), forward_(forward) {
-            settlementDate_ = calendar_.advance(
-                todaysDate_,settlementDays_,Days);
-        }
+          todaysDate_(todaysDate), settlementDate_(settlementDate),
+          forward_(forward) {}
 
         inline Currency FlatForward::currency() const {
             return currency_;
@@ -90,14 +82,6 @@ namespace QuantLib {
 
         inline Date FlatForward::todaysDate() const {
             return todaysDate_;
-        }
-
-        inline Calendar FlatForward::calendar() const {
-            return calendar_;
-        }
-
-        inline int FlatForward::settlementDays() const {
-            return settlementDays_;
         }
 
         inline Date FlatForward::settlementDate() const {

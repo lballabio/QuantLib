@@ -79,15 +79,10 @@ namespace QuantLib {
         //@{
         //! returns today's date
         virtual Date todaysDate() const = 0;
-        //! returns the number of settlement days
-        virtual int settlementDays() const = 0;
-        //! returns the calendar for settlement calculation
-        virtual Calendar calendar() const = 0;
-        //! returns the day counter
-        virtual DayCounter dayCounter() const = 0;
-
         //! returns the settlement date
         virtual Date settlementDate() const = 0;
+        //! returns the day counter
+        virtual DayCounter dayCounter() const = 0;
         //! returns the earliest date for which the curve can return rates
         virtual Date minDate() const = 0;
         //! returns the latest date for which the curve can return rates
@@ -245,7 +240,7 @@ namespace QuantLib {
             Time dt = 0.001;
             Rate r1 = zeroYieldImpl(t, extrapolate),
                  r2 = zeroYieldImpl(t+dt, true);
-            return r1+t*(r2-r1)/dt;
+            return r2+t*(r2-r1)/dt;
     }
 
 
@@ -253,17 +248,17 @@ namespace QuantLib {
 
     inline Rate DiscountStructure::zeroYieldImpl(Time t,
         bool extrapolate) const {
-            DiscountFactor f = discountImpl(t, extrapolate);
-            return Rate(-QL_LOG(f)/t);
+            DiscountFactor df = discountImpl(t, extrapolate);
+            return Rate(-QL_LOG(df)/t);
     }
 
     inline Rate DiscountStructure::forwardImpl(Time t,
         bool extrapolate) const {
             // less than half day
             Time dt = 0.001;
-            DiscountFactor f1 = discountImpl(t, extrapolate),
-                           f2 = discountImpl(t+dt, true);
-            return Rate(QL_LOG(f1/f2)/dt);
+            DiscountFactor df1 = discountImpl(t, extrapolate),
+                           df2 = discountImpl(t+dt, true);
+            return Rate(QL_LOG(df1/df2)/dt);
     }
 
 

@@ -89,6 +89,8 @@ int main(int argc, char* argv[])
         Date todaysDate(15, February, 2002);
         Calendar calendar = Calendars::TARGET();
         int settlementDays = 2;
+        Date settlementDate=calendar.advance(todaysDate, settlementDays, Days,
+            Following);
         Currency currency = EUR;
 
         //Instruments used to bootstrap the yield curve:
@@ -147,7 +149,7 @@ int main(int argc, char* argv[])
         // bootstrapping the yield curve
         Handle<PiecewiseFlatForward> myTermStructure(new
             PiecewiseFlatForward(currency, depositDayCounter,
-            todaysDate, calendar, settlementDays, instruments));
+            todaysDate, settlementDate, instruments));
 
         RelinkableHandle<TermStructure > rhTermStructure;
         rhTermStructure.linkTo(myTermStructure);

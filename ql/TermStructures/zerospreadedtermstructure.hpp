@@ -43,7 +43,7 @@ namespace QuantLib {
             //@{
             Currency currency() const;
             Date todaysDate() const;
-            int settlementDays() const;
+//            int settlementDays() const;
             Calendar calendar() const;
             DayCounter dayCounter() const;
             Date settlementDate() const;
@@ -81,14 +81,6 @@ namespace QuantLib {
 
         inline Date ZeroSpreadedTermStructure::todaysDate() const {
             return originalCurve_->todaysDate();
-        }
-
-        inline int ZeroSpreadedTermStructure::settlementDays() const {
-            return originalCurve_->settlementDays();
-        }
-
-        inline Calendar ZeroSpreadedTermStructure::calendar() const {
-            return originalCurve_->calendar();
         }
 
         inline DayCounter ZeroSpreadedTermStructure::dayCounter() const {
@@ -132,5 +124,3 @@ namespace QuantLib {
 }
 
 #endif
-
-

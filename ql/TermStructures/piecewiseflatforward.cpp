@@ -35,16 +35,16 @@ namespace QuantLib {
 
         PiecewiseFlatForward::PiecewiseFlatForward(Currency currency,
             const DayCounter& dayCounter, const Date& todaysDate,
-            const Calendar& calendar, int settlementDays,
+            const Date& settlementDate,
             const std::vector<Handle<RateHelper> >& instruments,
             double accuracy)
         : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), calendar_(calendar),
-          settlementDays_(settlementDays), instruments_(instruments),
+          todaysDate_(todaysDate),
+          settlementDate_(settlementDate), instruments_(instruments),
           needsBootstrap_(true), accuracy_(accuracy) {
+
             QL_REQUIRE(instruments_.size()>0, "No instrument given");
-            settlementDate_ = calendar_.advance(
-                todaysDate_,settlementDays_,Days);
+
             // sort risk helpers
             Size i;
             for (i=0; i<instruments_.size(); i++)

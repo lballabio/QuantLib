@@ -56,29 +56,23 @@ namespace QuantLib {
         AffineTermStructure::AffineTermStructure(
             Currency currency,
             const DayCounter& dayCounter, const Date& todaysDate,
-            const Calendar& calendar, int settlementDays,
+            const Date& settlementDate,
             const Handle<ShortRateModels::AffineModel>& model)
         : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), calendar_(calendar),
-          settlementDays_(settlementDays), needsRecalibration_(false),
-          model_(model) {
-            settlementDate_ = calendar_.advance(
-                todaysDate_,settlementDays_,Days);
-        }
+          todaysDate_(todaysDate), settlementDate_(settlementDate),
+          needsRecalibration_(false), model_(model) { }
 
         AffineTermStructure::AffineTermStructure(
             Currency currency,
             const DayCounter& dayCounter, const Date& todaysDate,
-            const Calendar& calendar, int settlementDays,
+            const Date& settlementDate,
             const Handle<ShortRateModels::AffineModel>& model,
             const std::vector<Handle<RateHelper> >& instruments,
             const Handle<Optimization::Method>& method)
         : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), calendar_(calendar),
-          settlementDays_(settlementDays), needsRecalibration_(true),
-          model_(model), instruments_(instruments), method_(method) {
-            settlementDate_ = calendar_.advance(
-                todaysDate_,settlementDays_,Days);
+          todaysDate_(todaysDate), settlementDate_(settlementDate),
+          needsRecalibration_(true), model_(model),
+          instruments_(instruments), method_(method) {
             for (Size i=0; i<instruments_.size(); i++)
                 registerWith(instruments_[i]);
         }

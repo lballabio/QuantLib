@@ -55,6 +55,8 @@ int main(int argc, char* argv[])
          *********************/
 
         Date todaysDate(6, November, 2001);
+        Date settlementDate = calendar.advance(todaysDate,fixingDays, Days,
+            Following);
 
         // deposits
         double d1wQuote=0.0382;
@@ -172,7 +174,7 @@ int main(int argc, char* argv[])
         depoSwapInstruments.push_back(s15y);
         Handle<TermStructure> depoSwapTermStructure(new
             PiecewiseFlatForward(currency, termStructureDayCounter,
-            todaysDate, calendar, settlementDays, depoSwapInstruments));
+            todaysDate, settlementDate, depoSwapInstruments));
 
 
          /*********************
@@ -467,7 +469,7 @@ int main(int argc, char* argv[])
         depoFutSwapInstruments.push_back(s15y);
         Handle<TermStructure> depoFutSwapTermStructure(new
             PiecewiseFlatForward(currency, termStructureDayCounter,
-            todaysDate, calendar, settlementDays, depoFutSwapInstruments));
+            todaysDate, settlementDate, depoFutSwapInstruments));
 
 
 
@@ -486,7 +488,7 @@ int main(int argc, char* argv[])
         depoFRASwapInstruments.push_back(s15y);
         Handle<TermStructure> depoFRASwapTermStructure(new
             PiecewiseFlatForward(currency, termStructureDayCounter,
-            todaysDate, calendar, settlementDays, depoFRASwapInstruments));
+            todaysDate, settlementDate, depoFRASwapInstruments));
 
 
 

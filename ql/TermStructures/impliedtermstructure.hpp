@@ -31,7 +31,7 @@ namespace QuantLib {
     namespace TermStructures {
 
         //! Implied term structure at a given date in the future
-        /*! The given date will be the implied today's date.
+        /*! The given date will be the implied settlement date.
             \note This term structure will remain linked to the original
                 structure, i.e., any changes in the latter will be reflected in
                 this structure as well.
@@ -40,14 +40,13 @@ namespace QuantLib {
                                      public Patterns::Observer {
           public:
             ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
-                const Date& todaysDate);
+                const Date& todaysDate,
+                const Date& newSettlementDate);
             //! \name TermStructure interface
             //@{
             Currency currency() const;
-            Date todaysDate() const;
-            int settlementDays() const;
-            Calendar calendar() const;
             DayCounter dayCounter() const;
+            Date todaysDate() const;
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
@@ -64,13 +63,24 @@ namespace QuantLib {
           private:
             RelinkableHandle<TermStructure> originalCurve_;
             Date todaysDate_;
+            Date newSettlementDate_;
         };
 
 
 
         inline ImpliedTermStructure::ImpliedTermStructure(
-            const RelinkableHandle<TermStructure>& h, const Date& todaysDate)
-        : originalCurve_(h), todaysDate_(todaysDate) {
+            const RelinkableHandle<TermStructure>& h,
+            const Date& todaysDate,
+            const Date& newSettlementDate)
+        : originalCurve_(h), todaysDate_(todaysDate_),
+          newSettlementDate_(newSettlementDate) {
+
+            QL_REQUIRE(newSettlementDate_ <= originalCurve_->maxDate(),
+                "settlement date for the implied curve > max Date "
+                "of original curve");
+            QL_REQUIRE(newSettlementDate_ >= originalCurve_->minDate(),
+                "settlement date for the implied curve < min Date "
+                "of original curve");
             registerWith(originalCurve_);
         }
 
@@ -78,25 +88,16 @@ namespace QuantLib {
             return originalCurve_->currency();
         }
 
-        inline Date ImpliedTermStructure::todaysDate() const {
-            return todaysDate_;
-        }
-
-        inline int ImpliedTermStructure::settlementDays() const {
-            return originalCurve_->settlementDays();
-        }
-
-        inline Calendar ImpliedTermStructure::calendar() const {
-            return originalCurve_->calendar();
-        }
-
         inline DayCounter ImpliedTermStructure::dayCounter() const {
             return originalCurve_->dayCounter();
         }
 
+        inline Date ImpliedTermStructure::todaysDate() const {
+            return todaysDate_;
+        }
+
         inline Date ImpliedTermStructure::settlementDate() const {
-            return calendar().advance(
-                todaysDate_,settlementDays(),Days);
+            return newSettlementDate_;
         }
 
         inline Date ImpliedTermStructure::maxDate() const {
@@ -104,12 +105,12 @@ namespace QuantLib {
         }
 
         inline Date ImpliedTermStructure::minDate() const {
-            return settlementDate();
+            return newSettlementDate_;
         }
 
         inline Time ImpliedTermStructure::maxTime() const {
             return dayCounter().yearFraction(
-                settlementDate(),originalCurve_->maxDate());
+                newSettlementDate_,originalCurve_->maxDate());
         }
 
         inline Time ImpliedTermStructure::minTime() const {
@@ -126,7 +127,8 @@ namespace QuantLib {
                    and needs to be converted to the time relative
                    to the settlement date of the original curve */
                 Time originalTime = t + dayCounter().yearFraction(
-                    originalCurve_->settlementDate(),settlementDate());
+                    originalCurve_->settlementDate(),
+                    newSettlementDate_);
                 // evaluationDate cannot be an extrapolation
                 /* discount at evaluation date cannot be cached
                    since the original curve could change between

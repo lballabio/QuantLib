@@ -51,15 +51,15 @@ namespace QuantLib {
             AffineTermStructure(
                 Currency currency,
                 const DayCounter& dayCounter,
-                const Date& todaysDate, const Calendar& calendar,
-                int settlementDays, 
+                const Date& todaysDate,
+                const Date& settlementDate,
                 const Handle<ShortRateModels::AffineModel>& model);
             //! constructor using a model that has to be calibrated
             AffineTermStructure(
                 Currency currency,
                 const DayCounter& dayCounter,
-                const Date& todaysDate, const Calendar& calendar,
-                int settlementDays, 
+                const Date& todaysDate,
+                const Date& settlementDate,
                 const Handle<ShortRateModels::AffineModel>& model,
                 const std::vector<Handle<RateHelper> >& instruments,
                 const Handle<Optimization::Method>& method);
@@ -68,8 +68,6 @@ namespace QuantLib {
             Currency currency() const;
             DayCounter dayCounter() const;
             Date todaysDate() const;
-            int settlementDays() const;
-            Calendar calendar() const;
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
@@ -88,8 +86,6 @@ namespace QuantLib {
             Currency currency_;
             DayCounter dayCounter_;
             Date todaysDate_;
-            Calendar calendar_;
-            int settlementDays_;
             Date settlementDate_;
 
             mutable bool needsRecalibration_;
@@ -108,14 +104,6 @@ namespace QuantLib {
 
         inline Date AffineTermStructure::todaysDate() const {
             return todaysDate_;
-        }
-
-        inline Calendar AffineTermStructure::calendar() const {
-            return calendar_;
-        }
-
-        inline int AffineTermStructure::settlementDays() const {
-            return settlementDays_;
         }
 
         inline Date AffineTermStructure::settlementDate() const {
