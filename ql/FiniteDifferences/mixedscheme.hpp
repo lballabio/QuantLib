@@ -62,8 +62,9 @@ namespace QuantLib {
         \warning The differential operator must be linear for
                  this evolver to work.
 
-        \todo derive variable theta schemes
-        \todo introduce multi time-level schemes.
+        \todo
+        - derive variable theta schemes
+        - introduce multi time-level schemes.
 
         \ingroup findiff
     */
@@ -79,7 +80,7 @@ namespace QuantLib {
         MixedScheme(const Operator& L,
                     Real theta,
                     const std::vector<boost::shared_ptr<bcType> >& bcs)
-        : L_(L), I_(Operator::identity(L.size())), 
+        : L_(L), I_(Operator::identity(L.size())),
           dt_(0.0), theta_(theta) , bcs_(bcs) {}
         void step(arrayType& a,
                   Time t);

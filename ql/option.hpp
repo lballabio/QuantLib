@@ -50,9 +50,10 @@ namespace QuantLib {
 
     /*! basic %option arguments
 
-        \todo remove std::vector<Time> stoppingTimes
-        \todo how to handle strike-less option (asian average strike,
-              forward, etc.)?
+        \todo
+        - remove std::vector<Time> stoppingTimes
+        - how to handle strike-less option (asian average strike,
+          forward, etc.)?
     */
     class Option::arguments : public virtual Arguments {
       public:

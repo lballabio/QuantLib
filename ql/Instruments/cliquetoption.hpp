@@ -32,8 +32,9 @@ namespace QuantLib {
         strike for each forward start option is set equal to a fixed
         percentage of the spot price at the beginning of each period.
 
-        \todo add local/global caps/floors
-        \todo add accrued coupon and last fixing
+        \todo
+        - add local/global caps/floors
+        - add accrued coupon and last fixing
 
         \ingroup instruments
     */

@@ -33,11 +33,11 @@ namespace QuantLib {
         details see chapter 8, paragraph 2 of "Monte Carlo Methods in
         Finance", by Peter Jäckel
 
-        \test a) the correctness of the returned values is tested by
-                 reproducing known good values.
-
-        \test b) the correctness of the returned values is tested by
-                 checking their discrepancy against known good values.
+        \test
+        - the correctness of the returned values is tested by
+          reproducing known good values.
+        - the correctness of the returned values is tested by checking
+          their discrepancy against known good values.
     */
     class HaltonRsg {
       public:

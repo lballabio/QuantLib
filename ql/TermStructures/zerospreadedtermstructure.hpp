@@ -33,11 +33,11 @@ namespace QuantLib {
 
         \ingroup yieldtermstructures
 
-        \test a) the correctness of the returned values is tested by
-                 checking them against numerical calculations.
-
-        \test b) observability against changes in the underlying term
-                 structure and in the added spread is checked.
+        \test
+        - the correctness of the returned values is tested by
+          checking them against numerical calculations.
+        - observability against changes in the underlying term
+          structure and in the added spread is checked.
     */
     class ZeroSpreadedTermStructure : public ZeroYieldStructure {
       public:

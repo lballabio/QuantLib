@@ -38,10 +38,10 @@ namespace QuantLib {
 
         \ingroup instruments
 
-        \test a) price/yield calculations are cross-checked for
-                 consistency.
-        \test b) price/yield calculations are checked against known
-                 good values.
+        \test
+        - price/yield calculations are cross-checked for consistency.
+        - price/yield calculations are checked against known good
+          values.
     */
     class Bond : public Instrument {
       protected:

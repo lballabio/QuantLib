@@ -51,20 +51,20 @@ namespace QuantLib {
 
         \relates Matrix
 
-        \todo implement Hypersphere decomposition:
-              1) Jäckel "Monte Carlo Methods in Finance", Chapter 6
-              2) Brigo "A Note on Correlation and Rank Reduction"
-              3) Rapisarda, Brigo, Mercurio "Parameterizing correlations:
+        \todo
+        - implement Hypersphere decomposition:
+              -# Jäckel "Monte Carlo Methods in Finance", Chapter 6
+              -# Brigo "A Note on Correlation and Rank Reduction"
+              -# Rapisarda, Brigo, Mercurio "Parameterizing correlations:
                  a geometric interpretation"
+        - implement Higham algorithm:
+          Higham "Computing the nearest correlation matrix"
 
-        \todo implement Higham algorithm:
-              Higham "Computing the nearest correlation matrix"
-
-        \test a) the correctness of the results is tested by
-                 reproducing known good data.
-
-        \test b) the correctness of the results is tested by checking
-                 returned values against numerical calculations.
+        \test
+        - the correctness of the results is tested by reproducing
+          known good data.
+        - the correctness of the results is tested by checking
+          returned values against numerical calculations.
     */
     const Disposable<Matrix> pseudoSqrt(const Matrix&,
                                         SalvagingAlgorithm::Type);

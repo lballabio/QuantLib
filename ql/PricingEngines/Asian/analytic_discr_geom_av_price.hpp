@@ -35,11 +35,11 @@ namespace QuantLib {
         \todo implement correct theta, rho, dividend-rho, and vega
               calculation
 
-        \test a) the correctness of the returned value is tested by
-                 reproducing results available in literature.
-
-        \test b) the correctness of the available greeks is tested
-                 against numerical calculations.
+        \test
+        - the correctness of the returned value is tested by
+          reproducing results available in literature.
+        - the correctness of the available greeks is tested against
+          numerical calculations.
 
         \ingroup asianengines
     */

@@ -29,12 +29,12 @@
 namespace QuantLib {
 
     //! compound-forward structure
-    /*! \test a) the correctness of the curve is tested by reproducing
-                 the input data.
-
-        \test b) the correctness of the curve is tested by checking
-                 the consistency between returned rates and swaps
-                 priced on the curve.
+    /*! \test
+        - the correctness of the curve is tested by reproducing the
+          input data.
+        - the correctness of the curve is tested by checking the
+          consistency between returned rates and swaps priced on the
+          curve.
 
         \bug swap rates are not reproduced exactly when using indexed
              coupons. Apparently, some assumption about the swap

@@ -58,11 +58,11 @@ namespace QuantLib {
 
         \ingroup quantoengines
 
-        \test a) the correctness of the returned value is tested by
-                 reproducing results available in literature.
-
-        \test b) the correctness of the returned greeks is tested by
-                 reproducing numerical derivatives.
+        \test
+        - the correctness of the returned value is tested by
+          reproducing results available in literature.
+        - the correctness of the returned greeks is tested by
+          reproducing numerical derivatives.
     */
     template<class ArgumentsType, class ResultsType>
     class QuantoEngine

@@ -33,13 +33,12 @@ namespace QuantLib {
 
         \ingroup asianengines
 
-        \test a) the correctness of the returned value is tested by
-                 reproducing results available in literature, and
-                 results obtained using a discrete average
-                 approximation.
-
-        \test b) the correctness of the returned greeks is tested by
-                 reproducing numerical derivatives.
+        \test
+        - the correctness of the returned value is tested by
+          reproducing results available in literature, and results
+          obtained using a discrete average approximation.
+        - the correctness of the returned greeks is tested by
+          reproducing numerical derivatives.
 
         \todo handle seasoned options
     */

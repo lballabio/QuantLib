@@ -27,15 +27,16 @@
 namespace QuantLib {
 
     //! American option with discrete dividends.
-    /*! \bug sometimes yields negative vega when deeply in-the-money
-        \bug method impliedVolatility() utterly fails
+    /*! \bug
+        - sometimes yields negative vega when deeply in-the-money
+        - method impliedVolatility() utterly fails
     */
     class FdDividendAmericanOption : public FdDividendOption {
       public:
         FdDividendAmericanOption(
                  Option::Type type, Real underlying,
-                 Real strike, Spread dividendYield, 
-                 Rate riskFreeRate, Time residualTime, 
+                 Real strike, Spread dividendYield,
+                 Rate riskFreeRate, Time residualTime,
                  Volatility volatility,
                  const std::vector<Real>& dividends = std::vector<Real>(),
                  const std::vector<Time>& exdivdates = std::vector<Time>(),
