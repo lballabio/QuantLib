@@ -23,7 +23,7 @@
 #ifndef quantlib_rng_typedefs_h
 #define quantlib_rng_typedefs_h
 
-#include <ql/MonteCarlo/mctraits.hpp>
+#include <ql/RandomNumbers/rngtraits.hpp>
 
 namespace QuantLib {
 

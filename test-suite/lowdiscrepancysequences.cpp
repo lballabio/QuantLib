@@ -66,7 +66,7 @@ CppUnit::Test* LDSTest::suite() {
                     IntegerFormatter::toString(PPMT_MAX_DIM),
                     &LDSTest::testSobol));
     tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing Jackel-Sobol discrepancy",
+                   ("Testing Jäckel-Sobol discrepancy",
                     &LDSTest::testJackelSobolDiscrepancy));
     tests->addTest(new CppUnit::TestCaller<LDSTest>
                    ("Testing unit Sobol discrepancy",

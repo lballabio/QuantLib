@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "testsuite - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -128,7 +125,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -148,6 +178,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
+	"$(INTDIR)\interpolations.sbr" \
 	"$(INTDIR)\jumpdiffusion.sbr" \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
 	"$(INTDIR)\marketelements.sbr" \
@@ -164,8 +195,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\interpolations.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -191,6 +221,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
+	"$(INTDIR)\interpolations.obj" \
 	"$(INTDIR)\jumpdiffusion.obj" \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
 	"$(INTDIR)\marketelements.obj" \
@@ -208,7 +239,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\interpolations.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -317,7 +347,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -337,6 +400,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
+	"$(INTDIR)\interpolations.sbr" \
 	"$(INTDIR)\jumpdiffusion.sbr" \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
 	"$(INTDIR)\marketelements.sbr" \
@@ -353,8 +417,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\interpolations.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -380,6 +443,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
+	"$(INTDIR)\interpolations.obj" \
 	"$(INTDIR)\jumpdiffusion.obj" \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
 	"$(INTDIR)\marketelements.obj" \
@@ -397,7 +461,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\interpolations.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -503,7 +566,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -523,6 +619,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
+	"$(INTDIR)\interpolations.sbr" \
 	"$(INTDIR)\jumpdiffusion.sbr" \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
 	"$(INTDIR)\marketelements.sbr" \
@@ -539,8 +636,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\interpolations.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -566,6 +662,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
+	"$(INTDIR)\interpolations.obj" \
 	"$(INTDIR)\jumpdiffusion.obj" \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
 	"$(INTDIR)\marketelements.obj" \
@@ -583,7 +680,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\interpolations.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_MTDLL.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -692,95 +788,8 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
-BSC32_SBRS= \
-	"$(INTDIR)\americanoption.sbr" \
-	"$(INTDIR)\asianoptions.sbr" \
-	"$(INTDIR)\barrieroption.sbr" \
-	"$(INTDIR)\basketoption.sbr" \
-	"$(INTDIR)\calendars.sbr" \
-	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\compoundforward.sbr" \
-	"$(INTDIR)\covariance.sbr" \
-	"$(INTDIR)\dates.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\digitaloption.sbr" \
-	"$(INTDIR)\distributions.sbr" \
-	"$(INTDIR)\europeanoption.sbr" \
-	"$(INTDIR)\factorial.sbr" \
-	"$(INTDIR)\instruments.sbr" \
-	"$(INTDIR)\integrals.sbr" \
-	"$(INTDIR)\jumpdiffusion.sbr" \
-	"$(INTDIR)\lowdiscrepancysequences.sbr" \
-	"$(INTDIR)\marketelements.sbr" \
-	"$(INTDIR)\matrices.sbr" \
-	"$(INTDIR)\mersennetwister.sbr" \
-	"$(INTDIR)\old_pricers.sbr" \
-	"$(INTDIR)\operators.sbr" \
-	"$(INTDIR)\piecewiseflatforward.sbr" \
-	"$(INTDIR)\qltestlistener.sbr" \
-	"$(INTDIR)\quantlibtestsuite.sbr" \
-	"$(INTDIR)\riskstats.sbr" \
-	"$(INTDIR)\solvers.sbr" \
-	"$(INTDIR)\stats.sbr" \
-	"$(INTDIR)\swap.sbr" \
-	"$(INTDIR)\swaption.sbr" \
-	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\interpolations.sbr"
-
-"$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
-    $(BSC32) @<<
-  $(BSC32_FLAGS) $(BSC32_SBRS)
-<<
-
-LINK32=link.exe
-LINK32_FLAGS=cppunitd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"..\lib\Win32\VisualStudio\\" 
-LINK32_OBJS= \
-	"$(INTDIR)\americanoption.obj" \
-	"$(INTDIR)\asianoptions.obj" \
-	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\basketoption.obj" \
-	"$(INTDIR)\calendars.obj" \
-	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\compoundforward.obj" \
-	"$(INTDIR)\covariance.obj" \
-	"$(INTDIR)\dates.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\digitaloption.obj" \
-	"$(INTDIR)\distributions.obj" \
-	"$(INTDIR)\europeanoption.obj" \
-	"$(INTDIR)\factorial.obj" \
-	"$(INTDIR)\instruments.obj" \
-	"$(INTDIR)\integrals.obj" \
-	"$(INTDIR)\jumpdiffusion.obj" \
-	"$(INTDIR)\lowdiscrepancysequences.obj" \
-	"$(INTDIR)\marketelements.obj" \
-	"$(INTDIR)\matrices.obj" \
-	"$(INTDIR)\mersennetwister.obj" \
-	"$(INTDIR)\old_pricers.obj" \
-	"$(INTDIR)\operators.obj" \
-	"$(INTDIR)\piecewiseflatforward.obj" \
-	"$(INTDIR)\qltestlistener.obj" \
-	"$(INTDIR)\quantlibtestsuite.obj" \
-	"$(INTDIR)\riskstats.obj" \
-	"$(INTDIR)\solvers.obj" \
-	"$(INTDIR)\stats.obj" \
-	"$(INTDIR)\swap.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\interpolations.obj" \
-	"..\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib"
-
-"$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -811,6 +820,96 @@ LINK32_OBJS= \
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\americanoption.sbr" \
+	"$(INTDIR)\asianoptions.sbr" \
+	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\calendars.sbr" \
+	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\compoundforward.sbr" \
+	"$(INTDIR)\covariance.sbr" \
+	"$(INTDIR)\dates.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\digitaloption.sbr" \
+	"$(INTDIR)\distributions.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\factorial.sbr" \
+	"$(INTDIR)\instruments.sbr" \
+	"$(INTDIR)\integrals.sbr" \
+	"$(INTDIR)\interpolations.sbr" \
+	"$(INTDIR)\jumpdiffusion.sbr" \
+	"$(INTDIR)\lowdiscrepancysequences.sbr" \
+	"$(INTDIR)\marketelements.sbr" \
+	"$(INTDIR)\matrices.sbr" \
+	"$(INTDIR)\mersennetwister.sbr" \
+	"$(INTDIR)\old_pricers.sbr" \
+	"$(INTDIR)\operators.sbr" \
+	"$(INTDIR)\piecewiseflatforward.sbr" \
+	"$(INTDIR)\qltestlistener.sbr" \
+	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\riskstats.sbr" \
+	"$(INTDIR)\solvers.sbr" \
+	"$(INTDIR)\stats.sbr" \
+	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\termstructures.sbr" \
+	"$(INTDIR)\utilities.sbr"
+
+"$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=cppunitd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"..\lib\Win32\VisualStudio\\" 
+LINK32_OBJS= \
+	"$(INTDIR)\americanoption.obj" \
+	"$(INTDIR)\asianoptions.obj" \
+	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\calendars.obj" \
+	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\covariance.obj" \
+	"$(INTDIR)\dates.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\digitaloption.obj" \
+	"$(INTDIR)\distributions.obj" \
+	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\factorial.obj" \
+	"$(INTDIR)\instruments.obj" \
+	"$(INTDIR)\integrals.obj" \
+	"$(INTDIR)\interpolations.obj" \
+	"$(INTDIR)\jumpdiffusion.obj" \
+	"$(INTDIR)\lowdiscrepancysequences.obj" \
+	"$(INTDIR)\marketelements.obj" \
+	"$(INTDIR)\matrices.obj" \
+	"$(INTDIR)\mersennetwister.obj" \
+	"$(INTDIR)\old_pricers.obj" \
+	"$(INTDIR)\operators.obj" \
+	"$(INTDIR)\piecewiseflatforward.obj" \
+	"$(INTDIR)\qltestlistener.obj" \
+	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\riskstats.obj" \
+	"$(INTDIR)\solvers.obj" \
+	"$(INTDIR)\stats.obj" \
+	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\termstructures.obj" \
+	"$(INTDIR)\utilities.obj" \
+	"..\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib"
+
+"$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"

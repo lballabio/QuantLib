@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file voltermstructure.cpp
-    \brief Volatility term structures
-*/
-
 #include <ql/voltermstructure.hpp>
 #include <ql/dataformatters.hpp>
 

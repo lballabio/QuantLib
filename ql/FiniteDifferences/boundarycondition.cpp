@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file boundarycondition.cpp
-    \brief boundary conditions for differential operators
-*/
-
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 
 namespace QuantLib {

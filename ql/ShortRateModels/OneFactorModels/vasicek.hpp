@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! Vasicek model class
+    //! %Vasicek model class
     /*! This class implements the Vasicek model defined by 
         \f[ 
             dr_t = a(b - r_t)dt + \sigma dW_t ,
@@ -62,7 +62,7 @@ namespace QuantLib {
         Parameter& sigma_;
     };
 
-    //! Short-rate dynamics in the Vasicek model
+    //! Short-rate dynamics in the %Vasicek model
     /*! The short-rate follows an Ornstein-Uhlenbeck process with mean
         \f$ b \f$.
     */

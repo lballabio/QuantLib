@@ -49,11 +49,7 @@
 
     \section disclaimer Disclaimer
     At this time, this documentation is widely incomplete and must be
-    regarded as a work in progress. Eventually, all %QuantLib classes will be
-    documented.
-    However, no date is currently set for this goal.
-    Join the mailing lists (http://quantlib.org/mailinglists.html) for
-    the latest updates.
+    regarded as a work in progress.  Contributions are welcome.
 
 */
 

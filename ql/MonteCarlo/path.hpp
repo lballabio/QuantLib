@@ -28,7 +28,11 @@
 
 namespace QuantLib {
 
-    //! single factor random walk
+    /*! single factor random walk path pricer
+
+        \todo should Path include the t=0.0 point?
+              Alternatively all path pricers must be revisited.
+    */
     class Path {
       public:
         Path(const TimeGrid& timeGrid,

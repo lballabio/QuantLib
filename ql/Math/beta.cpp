@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file beta.cpp
-    \brief Beta and beta incomplete functions
-*/
-
 #include <ql/Math/beta.hpp>
 
 namespace QuantLib {

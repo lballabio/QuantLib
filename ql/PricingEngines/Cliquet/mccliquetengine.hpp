@@ -28,136 +28,164 @@
 namespace QuantLib {
 
     /*
-        //! Monte Carlo cliquet engine
-        template<class S, class SG, class PG>
-        class McCliquetEngine : public CliquetEngine,
-                                public McSimulation<S, PG, PathPricer<Path> > {
-          public:
-            McCliquetEngine(bool antitheticVariate,
-                            bool controlVariate,
-                            Size maxTimeStepPerYear,
-                            SG sequenceGenerator)
-            : McSimulation<S, PG, PathPricer<Path> >(
-                  antitheticVariate,controlVariate), 
-              maxTimeStepPerYear_(maxTimeStepPerYear),
-              sequenceGenerator_(sequenceGenerator) {}
-            void calculate() const;
-          protected:
-            TimeGrid timeGrid() const;
-            Handle<PG> pathGenerator() const;
-            Handle<PathPricer<Path> > 
-            pathPricer() const;
-          private:
-            Size maxTimeStepPerYear_;
-            SG sequenceGenerator_;
-        };
+
+    //! Monte Carlo cliquet engine
+    template<class S, class SG, class PG>
+    class McCliquetEngine : public CliquetEngine,
+                            public McSimulation<S, PG, PathPricer<Path> > {
+      public:
+        McCliquetEngine(bool antitheticVariate,
+                        bool controlVariate,
+                        Size maxTimeStepPerYear,
+                        SG sequenceGenerator)
+        : McSimulation<S, PG, PathPricer<Path> >(antitheticVariate,
+                                                 controlVariate), 
+          maxTimeStepPerYear_(maxTimeStepPerYear),
+          sequenceGenerator_(sequenceGenerator) {}
+        void calculate() const;
+      protected:
+        TimeGrid timeGrid() const;
+        Handle<PG> pathGenerator() const;
+        Handle<PathPricer<Path> > pathPricer() const;
+      private:
+        Size maxTimeStepPerYear_;
+        SG sequenceGenerator_;
+    };
 
 
-        template<class S, class SG, class PG>
-        inline TimeGrid McCliquetEngine<S, SG, PG>::timeGrid() const {
-            std::vector<Time> resetTimes;
-            Date referenceDate = arguments.riskFreeTS->referenceDate();
-            for (Size i = 0; i< arguments.resetDates.size(); i++) {
-                resetTimes[i] = arguments.riskFreeTS->dayCount().yearFraction(
-                    referenceDate, arguments.resetDates[i]);
-            }
+    class CliquetOptionPathPricer : public PathPricer<Path> {
+      public:
+        CliquetOptionPathPricer(
+                           Option::Type type,
+                           double underlying,
+                           double moneyness,
+                           double accruedCoupon,
+                           double lastFixing,
+                           double localCap,
+                           double localFloor,
+                           double globalCap,
+                           double globalFloor,
+                           bool redemptionOnly,
+                           const RelinkableHandle<TermStructure>& riskFreeTS);
+        double operator()(const Path& path) const;
+      private:
+        Option::Type type_;
+        double underlying_, moneyness_, accruedCoupon_;
+        double lastFixing_, localCap_, localFloor_, globalCap_, globalFloor_;
+        bool redemptionOnly_;
+        RelinkableHandle<TermStructure> riskFreeTS_;
+    };
 
-            try {
-                Handle<BlackConstantVol> constVolTS = 
-                    (*(arguments.blackVolTS)).currentLink();
-                return TimeGrid(resetTimes.begin(), resetTimes.end());
-            } catch (...) {
-                return TimeGrid(resetTimes.begin(), resetTimes.end(),
-                    resetTimes.back()*maxTimeStepsPerYear_);
-            }
 
+    // template definitions
+
+    template<class S, class SG, class PG>
+    inline TimeGrid McCliquetEngine<S, SG, PG>::timeGrid() const {
+        std::vector<Time> resetTimes;
+        Date referenceDate = arguments.riskFreeTS->referenceDate();
+        for (Size i = 0; i< arguments.resetDates.size(); i++) {
+            resetTimes[i] = 
+                arguments.riskFreeTS->dayCount().yearFraction(
+                                      referenceDate, arguments.resetDates[i]);
         }
 
-        template<class S, class SG, class PG>
-        inline
-        Handle<PG> McCliquetEngine<S, SG, PG>::pathGenerator() const
-        {
-            Handle<DiffusionProcess> bs(new
-                BlackScholesProcess(arguments_.riskFreeTS, 
+        try {
+            Handle<BlackConstantVol> constVolTS = 
+                (*(arguments.blackVolTS)).currentLink();
+            return TimeGrid(resetTimes.begin(), resetTimes.end());
+        } catch (...) {
+            return TimeGrid(resetTimes.begin(), resetTimes.end(),
+                            resetTimes.back()*maxTimeStepsPerYear_);
+        }
+
+    }
+
+    template<class S, class SG, class PG>
+    inline
+    Handle<PG> McCliquetEngine<S, SG, PG>::pathGenerator() const {
+        Handle<DiffusionProcess> bs(
+            new BlackScholesProcess(arguments_.riskFreeTS, 
                                     arguments_.dividendTS,
                                     arguments_.volTS, 
                                     arguments_.underlying));
 
-            return Handle<PG>(new PG(bs, timeGrid(), sequenceGenerator_));
+        return Handle<PG>(new PG(bs, timeGrid(), sequenceGenerator_));
 
+    }
+
+    template<class S, class SG, class PG>
+    inline
+    Handle<PathPricer<Path> >
+    McCliquetEngine<S, SG, PG>::pathPricer() const {
+        //! Initialize the path pricer
+        return Handle<PathPricer<Path> >(
+            new CliquetOptionPathPricer(arguments_.type,
+                                        arguments_.underlying, 
+                                        arguments_.moneyness,
+                                        arguments_.accruedCoupon, 
+                                        arguments_.lastFixing,
+                                        arguments_.localCap, 
+                                        arguments_.localFloor,
+                                        arguments_.globalCap, 
+                                        arguments_.globalFloor,
+                                        arguments_.riskFreeTS));
+    }
+
+    template<class S, class SG, class PG>
+    inline void McCliquetEngine<S, SG, PG>::calculate() const {
+
+        QL_REQUIRE(arguments_.exerciseType == Exercise::European,
+                   "MCCliquetEngine::calculate() : "
+                   "not an European Option");
+
+        //! Initialize the one-factor Monte Carlo
+        if (controlVariate_) {
+
+            Handle<PathPricer<Path> >
+                controlPP = controlPathPricer();
+            QL_REQUIRE(!controlPP.isNull(),
+                       "MCCliquetEngine::calculate() : "
+                       "engine does not provide "
+                       "control variation path pricer");
+
+            Handle<PricingEngine> controlPE = controlPricingEngine();
+
+            QL_REQUIRE(!controlPE.isNull(),
+                       "MCCliquetEngine::calculate() : "
+                       "engine does not provide "
+                       "control variation pricing engine");
+
+            CliquetOption::arguments* controlArguments =
+                dynamic_cast<CliquetOption::arguments*>(
+                                                      controlPE->arguments());
+            *controlArguments = arguments_;
+            controlPE->calculate();
+
+            const VanillaOption::results* controlResults =
+                dynamic_cast<const VanillaOption::results*>(
+                                                        controlPE->results());
+            double controlVariateValue = controlResults->value;
+
+            mcModel_ = Handle<MonteCarloModel<S, PG, PathPricer<Path> > >(
+                new MonteCarloModel<S, PG, PathPricer<Path> >(
+                     pathGenerator(), pathPricer(), S(), antitheticVariate_,
+                     controlPP, controlVariateValue));
+
+        } else {
+            mcModel_ = Handle<MonteCarloModel<S, PG, PathPricer<Path> > >(
+                new MonteCarloModel<S, PG, PathPricer<Path> >(
+                     pathGenerator(), pathPricer(), S(), 
+                     antitheticVariate_));
         }
 
-        template<class S, class SG, class PG>
-        inline
-        Handle<PathPricer<Path> >
-        McCliquetEngine<S, SG, PG>::pathPricer() const {
-            //! Initialize the path pricer
-            return Handle<PathPricer<Path> >(new
-                CliquetOptionPathPricer(arguments_.type,
-                    arguments_.underlying, arguments_.moneyness,
-                    arguments_.accruedCoupon, arguments_.lastFixing,
-                    arguments_.localCap, arguments_.localFloor,
-                    arguments_.globalCap, arguments_.globalFloor,
-                    arguments_.riskFreeTS));
-        }
+        value(0.01);
 
+        results_.value = mcModel_->sampleAccumulator().mean();
+        results_.errorEstimate = 
+            mcModel_->sampleAccumulator().errorEstimate();
+    }
 
-
-        template<class S, class SG, class PG>
-        inline void McCliquetEngine<S, SG, PG>::calculate() const {
-
-            QL_REQUIRE(arguments_.exerciseType == Exercise::European,
-                "MCCliquetEngine::calculate() : "
-                "not an European Option");
-
-            //! Initialize the one-factor Monte Carlo
-            if (controlVariate_) {
-
-                Handle<PathPricer<Path> >
-                    controlPP = controlPathPricer();
-                QL_REQUIRE(!controlPP.isNull(),
-                           "MCCliquetEngine::calculate() : "
-                           "engine does not provide "
-                           "control variation path pricer");
-
-                Handle<PricingEngine> controlPE = controlPricingEngine();
-
-                QL_REQUIRE(!controlPE.isNull(),
-                           "MCCliquetEngine::calculate() : "
-                           "engine does not provide "
-                           "control variation pricing engine");
-
-                CliquetOption::arguments* controlArguments =
-                    dynamic_cast<CliquetOption::arguments*>(
-                        controlPE->arguments());
-                *controlArguments = arguments_;
-                controlPE->calculate();
-
-                const VanillaOption::results* controlResults =
-                    dynamic_cast<const VanillaOption::results*>(
-                        controlPE->results());
-                double controlVariateValue = controlResults->value;
-
-                mcModel_ = Handle<MonteCarloModel<S, PG, PathPricer<Path> > >(
-                    new MonteCarloModel<S, PG, PathPricer<Path> >(
-                        pathGenerator(), pathPricer(), S(), antitheticVariate_,
-                        controlPP, controlVariateValue));
-           
-            } else {
-                mcModel_ = Handle<MonteCarloModel<S, PG, PathPricer<Path> > >(
-                    new MonteCarloModel<S, PG, PathPricer<Path> >(
-                        pathGenerator(), pathPricer(), S(), 
-                        antitheticVariate_));
-            }
-
-            value(0.01);
-
-            results_.value = mcModel_->sampleAccumulator().mean();
-            results_.errorEstimate = 
-                mcModel_->sampleAccumulator().errorEstimate();
-        }
     */
-
 }
 
 

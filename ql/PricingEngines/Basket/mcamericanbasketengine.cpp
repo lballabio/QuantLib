@@ -15,20 +15,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcamericanbasketengine.cpp
-    \brief Least-square Monte Carlo engines
-*/
-
-#include <functional>
-#include <ql/Instruments/basketoption.hpp>
-#include <ql/Math/statistics.hpp>
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
+#include <ql/grid.hpp>
+#include <ql/Math/svd.hpp>
+#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/Math/statistics.hpp>
+#include <functional>
 
 namespace QuantLib {
 
     namespace {
 
-        //! Basis function
         class BasisFunction : std::unary_function<std::vector<double>,double> {
           public:
             virtual ~BasisFunction() {}

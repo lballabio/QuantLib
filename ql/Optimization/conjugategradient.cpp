@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file conjugategradient.cpp
-    \brief Conjugate gradient optimization method
-*/
-
 #include <ql/Optimization/conjugategradient.hpp>
 
 namespace QuantLib {

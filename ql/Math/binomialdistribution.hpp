@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file binomial.hpp
+/*! \file binomialdistribution.hpp
     \brief Binomial distribution
 */
 
@@ -156,7 +156,7 @@ namespace QuantLib {
 
 
 
-    /*! it returns p such that:
+    /*! Given an odd integer n and a real number z it returns p such that:
         1 - CumulativeBinomialDistribution((n-1)/2, n, p) =
                                CumulativeNormalDistribution(z)
 

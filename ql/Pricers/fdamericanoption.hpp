@@ -28,7 +28,6 @@
 namespace QuantLib {
 
     //! American option
-    //! \todo make american call with no dividends = european
     class FdAmericanOption : public FdStepConditionOption {
       public:
         // constructor

@@ -15,12 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file g2.cpp
-    \brief Two-factor additive Gaussian Model G2++
-*/
-
 #include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
-#include <ql/Pricers/blackmodel.hpp>
+#include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Solvers1D/brent.hpp>
 

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file quantovanillaoption.cpp
-    \brief Quanto version of a vanilla option
-*/
-
 #include <ql/Instruments/quantovanillaoption.hpp>
 
 namespace QuantLib {

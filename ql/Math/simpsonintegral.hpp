@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file trapezoidintegral.hpp
+/*! \file simpsonintegral.hpp
     \brief integral of a one-dimensional function
 */
 

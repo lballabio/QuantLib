@@ -786,20 +786,19 @@ void BasketOptionTest::testOneDAmericanValues() {
 CppUnit::Test* BasketOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Basket option tests");
-    //fails with Visual C++ 6 when _controlfp(_EM_INEXACT, _MCW_EM) is enabled
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
                    ("Testing two-asset European basket options",
                     &BasketOptionTest::testEuroTwoValues));
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
                    ("Testing three-asset basket options "
-                    "against Barraquand values",
+                    "against Barraquand's values",
                     &BasketOptionTest::testBarraquandThreeValues));
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
                    ("Testing three-asset American basket options "
-                    "against Tavella values",
+                    "against Tavella's values",
                     &BasketOptionTest::testTavellaValues));
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
-                   ("Testing basket American options against 1D case",
+                   ("Testing basket American options against 1-D case",
                     &BasketOptionTest::testOneDAmericanValues));
     return tests;
 }

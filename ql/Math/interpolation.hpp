@@ -23,7 +23,6 @@
 #ifndef quantlib_interpolation_hpp
 #define quantlib_interpolation_hpp
 
-#include <ql/errors.hpp>
 #include <ql/Patterns/bridge.hpp>
 #include <ql/dataformatters.hpp>
 

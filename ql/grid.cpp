@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file grid.cpp
-    \brief Grid classes with useful constructors for trees and finite diffs
-*/
-
 #include <ql/grid.hpp>
 #include <ql/Math/comparison.hpp>
 #include <iostream>

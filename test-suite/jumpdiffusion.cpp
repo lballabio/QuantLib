@@ -422,7 +422,7 @@ void JumpDiffusionTest::testGreeks() {
     tolerance["divRho"] = 1.0e-4;
     tolerance["vega"]   = 1.0e-4;
 
-    Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
+    Option::Type types[] = { Option::Put, Option::Call, Option::Straddle };
     double strikes[] = { 50.0, 100.0, 150.0 };
     double underlyings[] = { 100.0 };
     Rate qRates[] = { -0.05, 0.0, 0.05 };
@@ -445,7 +445,7 @@ void JumpDiffusionTest::testGreeks() {
     Handle<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
     Handle<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     Handle<SimpleQuote> jumpVol(new SimpleQuote(0.0));
-    
+
     Handle<BlackScholesStochasticProcess> stochProcess(new
         Merton76StochasticProcess(
             RelinkableHandle<Quote>(spot),
@@ -538,7 +538,7 @@ void JumpDiffusionTest::testGreeks() {
                           expected["gamma"] = (delta_p - delta_m)/(2*du);
 
                           // perturb rates and get rho and dividend rho
-                          double dr = r*1.0e-5;
+                          double dr = 1.0e-5;
                           rRate->setValue(r+dr);
                           value_p = option->NPV();
                           rRate->setValue(r-dr);
@@ -546,7 +546,7 @@ void JumpDiffusionTest::testGreeks() {
                           rRate->setValue(r);
                           expected["rho"] = (value_p - value_m)/(2*dr);
 
-                          double dq = q*1.0e-4;
+                          double dq = 1.0e-5;
                           qRate->setValue(q+dq);
                           value_p = option->NPV();
                           qRate->setValue(q-dq);
@@ -605,12 +605,11 @@ CppUnit::Test* JumpDiffusionTest::suite() {
         new CppUnit::TestSuite("American option tests");
 
     tests->addTest(new CppUnit::TestCaller<JumpDiffusionTest>
-        ("Testing Merton 76 jump diffusion model for European options",
+        ("Testing Merton 76 jump-diffusion model for European options",
         &JumpDiffusionTest::testMerton76));
 
-    // fails with Borland
     tests->addTest(new CppUnit::TestCaller<JumpDiffusionTest>
-        ("Testing jump diffusion option greeks",
+        ("Testing jump-diffusion option greeks",
         &JumpDiffusionTest::testGreeks));
 
     return tests;

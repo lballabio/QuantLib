@@ -20,24 +20,34 @@
 
 /*! \file mcdigitalengine.hpp
     \brief digital option Monte Carlo engine
-
-    Based on the Vanilla Engine pattern
 */
 
-#ifndef quantlib_digital_mc_engine_h
-#define quantlib_digital_mc_engine_h
+#ifndef quantlib_digital_mc_engine_hpp
+#define quantlib_digital_mc_engine_hpp
 
 #include <ql/exercise.hpp>
 #include <ql/handle.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
-#include <ql/MonteCarlo/digitalpathpricer.hpp>
 #include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
 
 namespace QuantLib {
 
     //! Pricing engine for digital options using Monte Carlo simulation
+    /*! Uses the Brownian Bridge correction for the barrier found in
+        <i>
+        Going to Extremes: Correcting Simulation Bias in Exotic
+        Option Valuation - D.R. Beaglehole, P.H. Dybvig and G. Zhou
+        Financial Analysts Journal; Jan/Feb 1997; 53, 1. pg. 62-68
+        </i>
+        and
+        <i>
+        Simulating path-dependent options: A new approach - 
+        M. El Babsiri and G. Noel
+        Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
+        </i>
+    */
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCDigitalEngine : public MCVanillaEngine<RNG,S> {
       public:
@@ -76,6 +86,26 @@ namespace QuantLib {
 //        long seed_;
     };
 
+    class DigitalPathPricer : public PathPricer<Path> {
+      public:
+        DigitalPathPricer(const Handle<CashOrNothingPayoff>& payoff,
+                          const Handle<AmericanExercise>& exercise,
+                          double underlying,
+                          const RelinkableHandle<TermStructure>& riskFreeTS,
+                          const Handle<DiffusionProcess>& diffProcess,
+                          const PseudoRandom::ursg_type& sequenceGen);
+        double operator()(const Path& path) const;
+      private:
+        Handle<CashOrNothingPayoff> payoff_;
+        Handle<AmericanExercise> exercise_;
+        double underlying_;
+        Handle<DiffusionProcess> diffProcess_;
+        PseudoRandom::ursg_type sequenceGen_;
+    };
+
+
+
+    // template definitions
 
     template<class RNG, class S>
     MCDigitalEngine<RNG,S>::MCDigitalEngine(Size maxTimeStepsPerYear,
@@ -139,8 +169,8 @@ namespace QuantLib {
         #endif
 
         TimeGrid grid = timeGrid();
-        UniformRandomSequenceGenerator
-            sequenceGen(grid.size()-1, UniformRandomGenerator(76));
+        PseudoRandom::ursg_type sequenceGen(grid.size()-1, 
+                                            PseudoRandom::urng_type(76));
 
         return Handle<MCDigitalEngine<RNG,S>::path_pricer_type>(new
           DigitalPathPricer(

@@ -17,6 +17,7 @@ include_HEADERS = \
 	randomarraygenerator.hpp \
 	randomsequencegenerator.hpp \
 	rngtypedefs.hpp \
+	rngtraits.hpp \
 	sobolrsg.hpp
 
 EXTRA_DIST=makefile.mak

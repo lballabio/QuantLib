@@ -14,10 +14,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file copenhagen.cpp
-    \brief Copenhagen calendar
-*/
-
 #include <ql/Calendars/copenhagen.hpp>
 
 namespace QuantLib {

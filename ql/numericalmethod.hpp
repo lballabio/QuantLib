@@ -29,7 +29,7 @@ namespace QuantLib {
 
     class DiscretizedAsset;
 
-    //! Numerical method (Tree, Finite Differences) base class
+    //! Numerical method (tree, finite-differences) base class
     class NumericalMethod {
       public:
         NumericalMethod(const TimeGrid& timeGrid) : t_(timeGrid) {}

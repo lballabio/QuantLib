@@ -15,10 +15,6 @@
   FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file compoundforward.cpp
-  \brief compounded forward term structure
-*/
-
 #include <ql/TermStructures/compoundforward.hpp>
 #include <ql/TermStructures/extendeddiscountcurve.hpp>
 

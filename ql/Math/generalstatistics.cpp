@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file generalstatistics.cpp
-    \brief statistics tool
-*/
-
 #include <ql/Math/generalstatistics.hpp>
 #include <ql/Math/functional.hpp>
 
@@ -94,7 +90,6 @@ namespace QuantLib {
         return c1*(x/(sigma2*sigma2))-c2;
     }
 
-    /*! \pre percent must be in range (0%-100%] */
     double GeneralStatistics::percentile(double percent) const {
 
         QL_REQUIRE(percent > 0.0 && percent <= 1.0,
@@ -121,28 +116,8 @@ namespace QuantLib {
             integral += k->second;
         }
         return k->first;
-
-        /*
-        // interpolating ... wrong thing to do, but here's the code
-        if (k==samples_.begin()) {
-            return k->first;
-        } else {
-            // just in case there are more samples at value k->first
-            double lastAddedWeight = k->second;
-            std::vector<std::pair<double,double> >::iterator kk = k;
-            kk++;
-            while (kk!=samples_.end() && kk->first==k->first) {
-                lastAddedWeight += kk->second;
-                integral        += kk->second;
-                kk++;
-            }
-            double lambda = (integral - perc) / lastAddedWeight;
-            return (1.0-lambda) * (k->first) + lambda * ((k-1)->first);
-        }
-        */
     }
 
-    /*! \pre percent must be in range (0%-100%] */
     double GeneralStatistics::topPercentile(double percent) const {
 
         QL_REQUIRE(percent > 0.0 && percent <= 1.0,

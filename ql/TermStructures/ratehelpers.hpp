@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! base class for rate helpers
+    //! Base class for rate helpers
     /*! This class provides an abstraction for the instruments used to
         bootstrap a term structure.
         It is advised that a rate helper for an instrument contains an
@@ -143,7 +143,7 @@ namespace QuantLib {
     };
 
 
-    //! Interest Rate Futures
+    //! Interest-rate futures
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
@@ -181,7 +181,7 @@ namespace QuantLib {
     };
 
 
-    //! Swap rate
+    //! %Swap rate
     /*! \warning This class assumes that the settlement date
                  does not change between calls of setTermStructure().
     */

@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file exercise.cpp
-    \brief Option exercise classes and exercise payoff function
-*/
-
 #include <ql/exercise.hpp>
 
 namespace QuantLib {

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file calendar.cpp
-    \brief Abstract calendar class
-*/
-
 #include <ql/calendar.hpp>
 
 namespace QuantLib {

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file coxingersollross.cpp
-    \brief Cox-Ingersoll-Ross model
-*/
-
 #include <ql/ShortRateModels/OneFactorModels/coxingersollross.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 #include <ql/Math/chisquaredistribution.hpp>

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file knuthuniformrng.cpp
-    \brief Knuth uniform random number generator
-*/
-
 #include <ql/RandomNumbers/knuthuniformrng.hpp>
 
 namespace QuantLib {

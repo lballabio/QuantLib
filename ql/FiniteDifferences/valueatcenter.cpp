@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file valueatcenter.cpp
-    \brief compute value, first, and second derivatives at grid center
-*/
-
 #include <ql/Math/array.hpp>
 
 namespace QuantLib {

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swap.cpp
-    \brief Interest rate swap
-*/
-
 #include <ql/Instruments/swap.hpp>
 #include <ql/CashFlows/basispointsensitivity.hpp>
 

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file steepestdescent.cpp
-    \brief Steepest descent optimization method
-*/
-
 #include <ql/Optimization/steepestdescent.hpp>
 
 namespace QuantLib {

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file chisquaredistribution.cpp
-    \brief normal, cumulative and inverse cumulative distributions
-*/
-
 #include <ql/Math/chisquaredistribution.hpp>
 #include <ql/Math/gammadistribution.hpp>
 #include <ql/Math/normaldistribution.hpp>

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file thirty360.cpp
-    \brief 30/360 day counters
-*/
-
 #include <ql/DayCounters/thirty360.hpp>
 
 namespace QuantLib {

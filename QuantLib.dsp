@@ -1019,123 +1019,11 @@ SOURCE=.\ql\Math\trapezoidintegral.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\arithmeticapopathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\arithmeticapopathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\barrierpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\barrierpathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\basketpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\basketpathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\brownianbridge.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\cliquetoptionpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\cliquetoptionpathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\digitalpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\digitalpathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\europeanmultipathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\europeanmultipathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\europeanpathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\everestpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\everestpathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\geometricapopathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\geometricapopathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\geometricasopathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\geometricasopathpricer.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\getcovariance.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\himalayapathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\himalayapathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\maxbasketpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\maxbasketpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -1159,14 +1047,6 @@ SOURCE=.\ql\MonteCarlo\multipathgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\pagodapathpricer.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\path.hpp
 # End Source File
 # Begin Source File
@@ -1176,14 +1056,6 @@ SOURCE=.\ql\MonteCarlo\pathgenerator.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\pathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\performanceoptionpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\performanceoptionpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -1281,42 +1153,6 @@ SOURCE=.\ql\Patterns\visitor.hpp
 # Begin Group "Pricers"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\Pricers\analyticalcapfloor.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\analyticalcapfloor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\blackcapfloor.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\blackcapfloor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\blackmodel.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\blackswaption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\blackswaption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\capfloorpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\capfloorpricer.hpp
-# End Source File
 # Begin Source File
 
 SOURCE=.\ql\Pricers\cliquetoption.cpp
@@ -1435,14 +1271,6 @@ SOURCE=.\ql\Pricers\fdstepconditionoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\jamshidianswaption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\jamshidianswaption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\mcbasket.cpp
 
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
@@ -1549,30 +1377,6 @@ SOURCE=.\ql\Pricers\singleassetoption.cpp
 
 SOURCE=.\ql\Pricers\singleassetoption.hpp
 # End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\swaptionpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\swaptionpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\treecapfloor.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\treecapfloor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\treeswaption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\treeswaption.hpp
-# End Source File
 # End Group
 # Begin Group "PricingEngines"
 
@@ -1602,6 +1406,10 @@ SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Barrier\mcbarrierengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Barrier\mcbarrierengine.hpp
 # End Source File
 # End Group
@@ -1622,6 +1430,10 @@ SOURCE=.\ql\PricingEngines\Basket\mcamericanbasketengine.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Basket\mcbasketengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Basket\mcbasketengine.hpp
 # End Source File
 # Begin Source File
@@ -1633,20 +1445,12 @@ SOURCE=.\ql\PricingEngines\Basket\stulzengine.cpp
 SOURCE=.\ql\PricingEngines\Basket\stulzengine.hpp
 # End Source File
 # End Group
-# Begin Group "Cliquet"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Cliquet\mccliquetengine.hpp
-# End Source File
-# End Group
 # Begin Group "Forward"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Forward\forwardengines.hpp
+SOURCE=.\ql\PricingEngines\Forward\forwardengine.hpp
 # End Source File
 # Begin Source File
 
@@ -1726,6 +1530,10 @@ SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\mcdigitalengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\mcdigitalengine.hpp
 # End Source File
 # Begin Source File
@@ -1735,6 +1543,78 @@ SOURCE=.\ql\PricingEngines\Vanilla\mceuropeanengine.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\mcvanillaengine.hpp
+# End Source File
+# End Group
+# Begin Group "CapFloor"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\analyticalcapfloor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\analyticalcapfloor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\blackcapfloor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\blackcapfloor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\capfloorpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\capfloorpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\treecapfloor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\treecapfloor.hpp
+# End Source File
+# End Group
+# Begin Group "Swaption"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Swaption\blackswaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Swaption\blackswaption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Swaption\swaptionpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Swaption\swaptionpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Swaption\treeswaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Swaption\treeswaption.hpp
 # End Source File
 # End Group
 # Begin Source File
@@ -1748,6 +1628,10 @@ SOURCE=.\ql\PricingEngines\americanpayoffathit.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\blackformula.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\blackmodel.hpp
 # End Source File
 # Begin Source File
 
@@ -1828,6 +1712,10 @@ SOURCE=.\ql\RandomNumbers\randomarraygenerator.hpp
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\randomsequencegenerator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\rngtraits.hpp
 # End Source File
 # Begin Source File
 

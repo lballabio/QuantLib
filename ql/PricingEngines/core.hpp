@@ -23,6 +23,7 @@
 #include <ql/PricingEngines/americanpayoffatexpiry.hpp>
 #include <ql/PricingEngines/americanpayoffathit.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/PricingEngines/genericmodelengine.hpp>
 #include <ql/PricingEngines/latticeshortratemodelengine.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>

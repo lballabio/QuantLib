@@ -88,6 +88,22 @@ namespace QuantLib {
     };
 
 
+    //! Helper class for precomputed distributions
+    class StatsHolder {
+    public:
+        StatsHolder(double mean,
+                    double standardDeviation)
+                    : mean_(mean), standardDeviation_(standardDeviation) {}
+        ~StatsHolder() {}
+        double mean() const { return mean_; }
+        double standardDeviation() const { return standardDeviation_; }
+    private:
+        double mean_, standardDeviation_;
+    };
+
+
+    // inline definitions
+
     template<class Stat>
     inline
     double GaussianStatistics<Stat>::gaussianRegret(double target) const {
@@ -213,20 +229,6 @@ namespace QuantLib {
         NormalDistribution g(m, std);
         return ( (target-m) + std*std*g(target)/gIntegral(target) );
     }
-
-
-    //! GaussianStatistics' helper class for precomputed distributions
-    class StatsHolder {
-    public:
-        StatsHolder(double mean,
-                    double standardDeviation)
-                    : mean_(mean), standardDeviation_(standardDeviation) {}
-        ~StatsHolder() {}
-        double mean() const { return mean_; }
-        double standardDeviation() const { return standardDeviation_; }
-    private:
-        double mean_, standardDeviation_;
-    };
 
 }
 

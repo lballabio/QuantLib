@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticeuropeanengine.cpp
-    \brief European option engine using analytic formulas
-*/
-
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 
@@ -49,18 +45,18 @@ namespace QuantLib {
             process->dividendTS->discount(arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
             process->riskFreeTS->discount(arguments_.exercise->lastDate());
-        double forwardPrice = process->stateVariable->value() *
+        double spot = process->stateVariable->value();
+        double forwardPrice = spot *
             dividendDiscount / riskFreeDiscount;
 
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
 
         results_.value = black.value();
-        results_.delta = black.delta(process->stateVariable->value());
+        results_.delta = black.delta(spot);
         results_.deltaForward = black.deltaForward();
-        results_.elasticity = 
-            black.elasticity(process->stateVariable->value());
-        results_.gamma = black.gamma(process->stateVariable->value());
+        results_.elasticity = black.elasticity(spot);
+        results_.gamma = black.gamma(spot);
 
         Time t = process->riskFreeTS->dayCounter().yearFraction(
             process->riskFreeTS->referenceDate(),
@@ -77,16 +73,16 @@ namespace QuantLib {
                 arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
         try {
-            results_.theta = black.theta(process->stateVariable->value(), t);
+            results_.theta = black.theta(spot, t);
             results_.thetaPerDay = 
-                black.thetaPerDay(process->stateVariable->value(), t);
+                black.thetaPerDay(spot, t);
         } catch (Error&) {
             results_.theta = Null<double>();
             results_.thetaPerDay = Null<double>();
         }
 
-        results_.strikeSensitivity = black.strikeSensitivity();
-        results_.itmProbability = black.itmProbability();
+        results_.strikeSensitivity  = black.strikeSensitivity();
+        results_.itmCashProbability = black.itmCashProbability();
     }
 
 }

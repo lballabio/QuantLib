@@ -23,10 +23,6 @@
 // ====================================================
 
 
-/*! \file errorfunction.cpp
-    \brief Error function
-*/
-
 #include <ql/Math/errorfunction.hpp>
 #include <float.h>
 

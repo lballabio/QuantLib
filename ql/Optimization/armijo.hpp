@@ -26,9 +26,8 @@
 
 namespace QuantLib {
 
-    /*! Armijo linesearch.
-
-        Let alpha and beta be 2 scalars in [0,1].
+    //! Armijo line search.
+    /*! Let alpha and beta be 2 scalars in [0,1].
         Let x be the current value of the unknow, d the search direction and
         t the step. Let f be the function to minimize.
         The line search stop when t verifies

@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file basispointsensitivity.cpp
-    \brief basis point sensitivity calculator
-*/
-
 #include <ql/CashFlows/basispointsensitivity.hpp>
 
 namespace QuantLib {

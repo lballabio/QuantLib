@@ -18,10 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file barrierengines.cpp
-    \brief Barrier option engines
-*/
-
 #include <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
 
 namespace QuantLib {

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file scheduler.cpp
-    \brief date scheduler
-*/
-
 #include <ql/scheduler.hpp>
 #include <ql/dataformatters.hpp>
 

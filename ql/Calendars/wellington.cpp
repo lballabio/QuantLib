@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file wellington.cpp
-    \brief Wellington calendar
-*/
-
 #include <ql/Calendars/wellington.hpp>
 
 namespace QuantLib {

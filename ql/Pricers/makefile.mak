@@ -15,10 +15,6 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
-    analyticalcapfloor.obj$(_D) \
-    blackcapfloor.obj$(_D) \
-    blackswaption.obj$(_D) \
-    capfloorpricer.obj$(_D) \
     cliquetoption.obj$(_D) \
     discretegeometricapo.obj$(_D) \
     discretegeometricaso.obj$(_D) \
@@ -32,7 +28,6 @@ OBJS = \
     fdeuropean.obj$(_D) \
     fdmultiperiodoption.obj$(_D) \
     fdstepconditionoption.obj$(_D) \
-    jamshidianswaption.obj$(_D) \
     mcbasket.obj$(_D) \
     mccliquetoption.obj$(_D) \
     mcdiscretearithmeticapo.obj$(_D) \
@@ -43,10 +38,7 @@ OBJS = \
     mcpagoda.obj$(_D) \
     mcperformanceoption.obj$(_D) \
     performanceoption.obj$(_D) \
-    singleassetoption.obj$(_D) \
-    swaptionpricer.obj$(_D) \
-    treecapfloor.obj$(_D) \
-    treeswaption.obj$(_D)
+    singleassetoption.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

@@ -38,6 +38,9 @@ namespace QuantLib {
         The calculation is performed interpolating on the variance
         surface.  Bilinear interpolation is used as default; this can
         be changed by the setInterpolation() method.
+
+        \todo check time extrapolation
+
     */
     class BlackVarianceSurface : public BlackVarianceTermStructure,
                                  public Observer {

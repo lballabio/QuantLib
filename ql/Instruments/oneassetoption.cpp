@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file oneassetoption.cpp
-    \brief Option on a single asset
-*/
-
 #include <ql/Instruments/oneassetoption.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Solvers1D/brent.hpp>
@@ -106,11 +102,12 @@ namespace QuantLib {
         return dividendRho_;
     }
 
-    double OneAssetOption::itmProbability() const {
+    double OneAssetOption::itmCashProbability() const {
         calculate();
-        QL_REQUIRE(itmProbability_ != Null<double>(),
-                   "OneAssetOption: in-the-money probability not provided");
-        return itmProbability_;
+        QL_REQUIRE(itmCashProbability_ != Null<double>(),
+                   "OneAssetOption::itmCashProbability() "
+                   "in-the-money cash probability not provided");
+        return itmCashProbability_;
     }
 
     double OneAssetOption::impliedVolatility(double targetValue,
@@ -130,12 +127,15 @@ namespace QuantLib {
         ImpliedVolHelper f(engine_,targetValue);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
-        return solver.solve(f, accuracy, guess, minVol, maxVol);
+        // Borland compiler fails here: cannot enter into Solver1D::solve(...)
+        double result = solver.solve(f, accuracy, guess, minVol, maxVol);
+        return result;
     }
 
     void OneAssetOption::setupExpired() const {
         NPV_ = delta_ = deltaForward_ = elasticity_ = gamma_ = theta_ =
-            thetaPerDay_ = vega_ = rho_ = dividendRho_ = itmProbability_ = 0.0;
+            thetaPerDay_ = vega_ = rho_ = dividendRho_ =
+            itmCashProbability_ = 0.0;
     }
 
     void OneAssetOption::setupArguments(Arguments* args) const {
@@ -203,10 +203,10 @@ namespace QuantLib {
            value---of course care must be taken not to call
            the greeks methods when using these.
         */
-        deltaForward_   = moreResults->deltaForward;
-        elasticity_     = moreResults->elasticity;
-        thetaPerDay_    = moreResults->thetaPerDay;
-        itmProbability_ = moreResults->itmProbability;
+        deltaForward_       = moreResults->deltaForward;
+        elasticity_         = moreResults->elasticity;
+        thetaPerDay_        = moreResults->thetaPerDay;
+        itmCashProbability_ = moreResults->itmCashProbability;
 
         QL_ENSURE(NPV_ != Null<double>(),
                   "OneAssetOption::performCalculations : "

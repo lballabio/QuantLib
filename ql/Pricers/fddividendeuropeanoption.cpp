@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fddividendeuropeanoption.cpp
-    \brief european option with discrete deterministic dividends
-*/
-
 #include <ql/Pricers/fddividendeuropeanoption.hpp>
 
 namespace QuantLib {

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file choleskydecomposition.cpp
-    \brief Cholesky decomposition
-*/
-
 #include <ql/Math/choleskydecomposition.hpp>
 
 namespace QuantLib {

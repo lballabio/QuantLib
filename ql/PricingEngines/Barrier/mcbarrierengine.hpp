@@ -24,14 +24,26 @@
 #ifndef quantlib_mc_barrier_engines_hpp
 #define quantlib_mc_barrier_engines_hpp
 
+#include <ql/Instruments/barrieroption.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>
-#include <ql/MonteCarlo/barrierpathpricer.hpp>
-#include <ql/MonteCarlo/biasedbarrierpathpricer.hpp>
 
 namespace QuantLib {
 
-    //! Pricing engine for Barrier options using Monte Carlo
-    template<class RNG = PseudoRandom, class S = Statistics>
+    //! Pricing engine for barrier options using Monte Carlo
+    /*! Uses the Brownian-bridge correction for the barrier found in
+        <i>
+        Going to Extremes: Correcting Simulation Bias in Exotic
+        Option Valuation - D.R. Beaglehole, P.H. Dybvig and G. Zhou
+        Financial Analysts Journal; Jan/Feb 1997; 53, 1. pg. 62-68
+        </i>
+        and
+        <i>
+        Simulating path-dependent options: A new approach - 
+        M. El Babsiri and G. Noel
+        Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
+        </i>
+    */
+    template <class RNG = PseudoRandom, class S = Statistics>
     class MCBarrierEngine : public BarrierEngine,
                             public McSimulation<SingleAsset<RNG>, S> {
       public:
@@ -67,9 +79,52 @@ namespace QuantLib {
     };
 
 
+    class BarrierPathPricer : public PathPricer<Path> {
+      public:
+        BarrierPathPricer(Barrier::Type barrierType, 
+                          double barrier, 
+                          double rebate, 
+                          Option::Type type,
+                          double underlying,
+                          double strike,
+                          const RelinkableHandle<TermStructure>& riskFreeTS,
+                          const Handle<DiffusionProcess>& diffProcess,
+                          const PseudoRandom::ursg_type& sequenceGen);
+        double operator()(const Path& path) const;
+      private:
+        double underlying_;
+        Barrier::Type barrierType_;
+        double barrier_;
+        double rebate_;
+        Handle<DiffusionProcess> diffProcess_;
+        PseudoRandom::ursg_type sequenceGen_;
+        PlainVanillaPayoff payoff_;
+    };
+
+
+    class BiasedBarrierPathPricer : public PathPricer<Path> {
+      public:
+        BiasedBarrierPathPricer(
+                           Barrier::Type barrierType, 
+                           double barrier, 
+                           double rebate, 
+                           Option::Type type,
+                           double underlying,
+                           double strike,
+                           const RelinkableHandle<TermStructure>& riskFreeTS);
+        double operator()(const Path& path) const;
+      private:
+        double underlying_;
+        Barrier::Type barrierType_;
+        double barrier_;
+        double rebate_;
+        PlainVanillaPayoff payoff_;
+    };
+
+
     // template definitions
 
-    template<class RNG, class S>
+    template <class RNG, class S>
     inline MCBarrierEngine<RNG,S>::MCBarrierEngine(Size maxTimeStepsPerYear,
                                                    bool antitheticVariate,
                                                    bool controlVariate,
@@ -88,7 +143,7 @@ namespace QuantLib {
       seed_(seed) {}
 
 
-    template<class RNG, class S>
+    template <class RNG, class S>
     inline
     Handle<QL_TYPENAME MCBarrierEngine<RNG,S>::path_generator_type>
     MCBarrierEngine<RNG,S>::pathGenerator() const
@@ -137,8 +192,8 @@ namespace QuantLib {
                     process->riskFreeTS));
         } else {
             TimeGrid grid = timeGrid();
-            UniformRandomSequenceGenerator
-                sequenceGen(grid.size()-1, UniformRandomGenerator(5));
+            PseudoRandom::ursg_type sequenceGen(grid.size()-1, 
+                                                PseudoRandom::urng_type(5));
 
             return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
@@ -172,7 +227,7 @@ namespace QuantLib {
     }
 
 
-    template<class RNG, class S>
+    template <class RNG, class S>
     void MCBarrierEngine<RNG,S>::calculate() const {
 
         QL_REQUIRE(requiredTolerance_ != Null<double>() ||

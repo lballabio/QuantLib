@@ -173,10 +173,12 @@ CppUnit::Test* CompoundForwardTest::suite() {
     CppUnit::TestSuite* tests = 
         new CppUnit::TestSuite("Compound forward tests");
     tests->addTest(new CppUnit::TestCaller<CompoundForwardTest>
-                   ("Testing consistency of compound-forward curve to supplied rates",
+                   ("Testing consistency of compound-forward curve "
+                    "with supplied rates",
                     &CompoundForwardTest::testSuppliedRates));
     tests->addTest(new CppUnit::TestCaller<CompoundForwardTest>
-                   ("Testing consistency of compound-forward curve to converted rates",
+                   ("Testing consistency of compound-forward curve "
+                    "with converted rates",
                     &CompoundForwardTest::testConvertedRates));
     return tests;
 }

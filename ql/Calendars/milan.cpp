@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file milan.cpp
-      \brief Milan calendar
-*/
-
 #include <ql/Calendars/milan.hpp>
 
 namespace QuantLib {

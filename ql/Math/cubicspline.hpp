@@ -31,7 +31,7 @@
 
 namespace QuantLib {
 
-    //! Cubic spline interpolation between discrete points.
+    //! %Cubic spline interpolation between discrete points.
     /*! It implements different type of end conditions: not-a-knot,
         first derivative value, second derivative value.
         
@@ -42,9 +42,10 @@ namespace QuantLib {
         If the interpolating spline is already monotonic, the Hyman filter
         leaves it unchanged.
 
-        See J. M. Hyman, "Accurate monotonicity preserving cubic interpolation"
-        SIAM J. of Scientific and Statist. Computing, v. 4, 1983, pp. 645-654.
-        http://math.lanl.gov/~mac/papers/numerics/H83.pdf
+        See R. L. Dougherty, A. Edelman, and J. M. Hyman, 
+        "Nonnegativity-, Monotonicity-, or Convexity-Preserving Cubic and
+        Quintic Hermite Interpolation"
+        Mathematics Of Computation, v. 52, n. 186, April 1989, pp. 471-494.
     */
     class CubicSpline : public Interpolation {
       public:
@@ -63,9 +64,22 @@ namespace QuantLib {
             Lagrange
         };
       protected:
-        //! cubic spline implementation
+        // target class for dynamic_cast
+        class CoefficientHolder {
+          public:
+            CoefficientHolder(Size n)
+            : n_(n), primitiveConst_(n-1), a_(n-1), b_(n-1), c_(n-1) {}
+            virtual ~CoefficientHolder() {};
+            Size n_;
+            // P[i](x) = y[i] +
+            //           a[i]*(x-x[i]) +
+            //           b[i]*(x-x[i])^2 +
+            //           c[i]*(x-x[i])^3
+            std::vector<double> primitiveConst_, a_, b_, c_;
+        };
         template <class I1, class I2>
-        class Impl : public Interpolation::templateImpl<I1,I2> {
+        class Impl : public Interpolation::templateImpl<I1,I2>,
+                     public CoefficientHolder {
           public:
             Impl(const I1& xBegin, const I1& xEnd, const I2& yBegin,
                  CubicSpline::BoundaryCondition leftCondition,
@@ -74,8 +88,7 @@ namespace QuantLib {
                  double rightConditionValue,
                  bool monotonicityConstraint)
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin), 
-              n_(xEnd-xBegin), primitiveConst_(n_-1),
-              a_(n_-1), b_(n_-1), c_(n_-1),
+              CoefficientHolder(xEnd-xBegin),
               monotone_(false) {
 
                 TridiagonalOperator L(n_);
@@ -137,7 +150,7 @@ namespace QuantLib {
                     break;
                   case SecondDerivative:
                     L.setLastRow(1.0, 2.0);
-                    tmp[n_-1] = 3.0*S[n_-2] - rightConditionValue*dx[n_-2]/2.0;
+                    tmp[n_-1] = 3.0*S[n_-2] + rightConditionValue*dx[n_-2]/2.0;
                     break;
                   case Periodic:
                   case Lagrange:
@@ -153,50 +166,58 @@ namespace QuantLib {
                 tmp = L.solveFor(tmp);
 
                 if (monotonicityConstraint) {
-                    double constraint, correction;
+                    double correction;
+                    double pm, pu, pd, M;
                     for (i=0; i<n_; i++) {
                         if (i==0) {
-                            // locally monotone constrain
-                            constraint = 3.0 * S[0];
-                            if (constraint>=0.0) {
-                                correction = QL_MIN(QL_MAX(0.0, tmp[i]), 
-                                                    constraint);
+                            if (tmp[i]*S[0]>0.0) {
+                                correction = tmp[i]/QL_FABS(tmp[i]) * 
+                                    QL_MIN(QL_FABS(tmp[i]), QL_FABS(3.0*S[0]));
                             } else {
-                                correction = QL_MAX(QL_MIN(0.0, tmp[i]), 
-                                                    constraint);
-                            }
-                            if (correction!=tmp[i]) {
-                                tmp[i] = correction;
-                                monotone_ = true;
+                                correction = 0.0;
                             }
                             if (correction!=tmp[i]) {
                                 tmp[i] = correction;
                                 monotone_ = true;
                             }
                         } else if (i==n_-1) {
-                            // locally monotone constrain
-                            constraint = 3.0 * S[n_-2];
-                            if (constraint>=0.0) {
-                                correction = QL_MIN(QL_MAX(0.0, tmp[i]), 
-                                                    constraint);
+                            if (tmp[i]*S[n_-2]>0.0) {
+                                correction = tmp[i]/QL_FABS(tmp[i]) * 
+                                    QL_MIN(QL_FABS(tmp[i]), QL_FABS(3.0*S[n_-2]));
                             } else {
-                                correction = QL_MAX(QL_MIN(0.0, tmp[i]), 
-                                                    constraint);
+                                correction = 0.0;
                             }
                             if (correction!=tmp[i]) {
                                 tmp[i] = correction;
                                 monotone_ = true;
                             }
                         } else {
-                            // locally non-monotone (generalized) constrain
-                            constraint = 3.0 * QL_MIN(QL_FABS(S[i-1]),
-                                                      QL_FABS(S[i]));
-                            if (tmp[i]>=0.0) {
-                                correction = QL_MIN(QL_MAX(0.0, tmp[i]), 
-                                                    constraint);
+                            pm=(S[i-1]*dx[i]+S[i]*dx[i-1])/
+                                (dx[i-1]+dx[i]);
+                            M = 3.0 * QL_MIN(QL_MIN(QL_FABS(S[i-1]),QL_FABS(S[i])),QL_FABS(pm));
+                            if (i>1) {
+                                if ((S[i-1]-S[i-2])*(S[i]-S[i-1])>0.0) {
+                                    pd=(S[i-1]*(2.0*dx[i-1]+dx[i-2])-S[i-2]*dx[i-1])/
+                                        (dx[i-2]+dx[i-1]);
+                                    if (pm*pd>0.0 && pm*(S[i-1]-S[i-2])>0.0) {
+                                        M = QL_MAX(M, 1.5*QL_MIN(QL_FABS(pm),QL_FABS(pd)));
+                                    }
+                                }
+                            }
+                            if (i<n_-2) {
+                                if ((S[i]-S[i-1])*(S[i+1]-S[i])>0.0) {
+                                    pu=(S[i]*(2.0*dx[i]+dx[i+1])-S[i+1]*dx[i])/
+                                        (dx[i]+dx[i+1]);
+                                    if (pm*pu>0.0 && -pm*(S[i]-S[i-1])>0.0) {
+                                        M = QL_MAX(M, 1.5*QL_MIN(QL_FABS(pm),QL_FABS(pu)));
+                                    }
+                                }
+                            }
+                            if (tmp[i]*pm>0.0) {
+                                correction = tmp[i]/QL_FABS(tmp[i]) * 
+                                    QL_MIN(QL_FABS(tmp[i]), M);
                             } else {
-                                correction = QL_MAX(QL_MIN(0.0, tmp[i]),
-                                                    -constraint);
+                                correction = 0.0;
                             }
                             if (correction!=tmp[i]) {
                                 tmp[i] = correction;
@@ -243,14 +264,10 @@ namespace QuantLib {
                 return 2.0*b_[j] + 6.0*c_[j]*dx;
             }
           private:
-            // P[i](x) = y[i] +
-            //           a[i]*(x-x[i]) +
-            //           b[i]*(x-x[i])^2 +
-            //           c[i]*(x-x[i])^3
-            Size n_;
-            std::vector<double> primitiveConst_, a_, b_, c_;
             bool monotone_;
         };
+      private:
+        Handle<CoefficientHolder> coeffs_;
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
@@ -266,13 +283,27 @@ namespace QuantLib {
                                           leftCondition, leftConditionValue,
                                           rightCondition, rightConditionValue,
                                           monotonicityConstraint));
+            #if defined(HAVE_BOOST)
+            coeffs_ = boost::dynamic_pointer_cast<CoefficientHolder>(impl_);
+            #else
+            coeffs_ = impl_;
+            #endif
+        }
+        const std::vector<double>& aCoefficients() const {
+            return coeffs_->a_;
+        }
+        const std::vector<double>& bCoefficients() const {
+            return coeffs_->b_;
+        }
+        const std::vector<double>& cCoefficients() const {
+            return coeffs_->c_;
         }
     };
 
 
     // convenience classes
 
-    //! cubic spline with monotonicity constraint
+    //! %Cubic spline with monotonicity constraint
     class MonotonicCubicSpline : public CubicSpline {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
@@ -289,7 +320,7 @@ namespace QuantLib {
                       true) {}
     };
 
-    //! cubic spline with null second derivative at end points
+    //! %Cubic spline with null second derivative at end points
     class NaturalCubicSpline : public CubicSpline {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
@@ -302,7 +333,7 @@ namespace QuantLib {
                       false) {}
     };
 
-    //! natural cubic spline with monotonicity constraint
+    //! Natural cubic spline with monotonicity constraint
     class NaturalMonotonicCubicSpline : public CubicSpline {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */

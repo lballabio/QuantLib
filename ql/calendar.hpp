@@ -46,8 +46,8 @@ namespace QuantLib {
                                  first business day before the holiday. */
         MonthEndReference   /*!< Choose the first business day after
                                  the given holiday, if the original date falls
-				 on last business day of month result reverts
-				 to first business day before month-end */
+                                 on last business day of month result reverts
+                                 to first business day before month-end */
     };
 
     //! abstract base class for calendar implementations
@@ -111,8 +111,10 @@ namespace QuantLib {
                      RollingConvention convention) const;
         //@}
 
-        /*! partial implementation providing the means of
-            determining the Easter Monday for a given year. */
+        //! partial calendar implementation
+        /*! This class provides the means of determining the Easter
+            Monday for a given year.
+        */
         class WesternImpl : public CalendarImpl {
           protected:
             //! expressed relative to first day of year

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file calibrationhelper.cpp
-    \brief Calibration helper class
-*/
-
 #include <ql/ShortRateModels/calibrationhelper.hpp>
 #include <ql/Solvers1D/brent.hpp>
 

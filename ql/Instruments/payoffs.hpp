@@ -26,9 +26,7 @@
 
 namespace QuantLib {
 
-    /*! Intermediate class for all those payoff that have
-        a type
-    */
+    //! Intermediate class for call/put/straddle payoffs
     class TypePayoff : public Payoff {
       public:
         TypePayoff(Option::Type type)
@@ -38,9 +36,7 @@ namespace QuantLib {
         Option::Type type_;
     };
 
-    /*! Intermediate class for all those payoff that have
-        a (fixed?) strike
-    */
+    //! Intermediate class for payoffs based on a fixed strike
     class StrikedTypePayoff : public TypePayoff {
       public:
         StrikedTypePayoff(Option::Type type,
@@ -55,8 +51,8 @@ namespace QuantLib {
         double strike_;
     };
 
-    /*! The former PlainPayoff has been renamed PlainVanillaPayoff
-        to stress that fact that now nobody elses derives from it */
+
+    //! Plain-vanilla payoff
     class PlainVanillaPayoff : public StrikedTypePayoff {
       public:
         PlainVanillaPayoff(Option::Type type,
@@ -79,6 +75,7 @@ namespace QuantLib {
     }
 
 
+    //! %Payoff with strike expressed as percentage
     class PercentageStrikePayoff : public StrikedTypePayoff {
       public:
         PercentageStrikePayoff(Option::Type type,
@@ -104,7 +101,8 @@ namespace QuantLib {
         }
     }
 
-    //! Binary Cash-Or-Nothing payoff
+
+    //! Binary cash-or-nothing payoff
     class CashOrNothingPayoff : public StrikedTypePayoff {
       public:
         CashOrNothingPayoff(Option::Type type,
@@ -131,7 +129,7 @@ namespace QuantLib {
     }
 
 
-    //! Binary Asset-Or-Nothing payoff
+    //! Binary asset-or-nothing payoff
     class AssetOrNothingPayoff : public StrikedTypePayoff {
     public:
         AssetOrNothingPayoff(Option::Type type,
@@ -154,7 +152,7 @@ namespace QuantLib {
     }
 
 
-    //! Binary Gap payoff
+    //! Binary gap payoff
     class GapPayoff : public StrikedTypePayoff {
     public:
         GapPayoff(Option::Type type,

@@ -15,16 +15,126 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcdiscretearithmeticapo.cpp
-    \brief Discrete Arithmetic Average Price Option
-*/
-
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
-#include <ql/MonteCarlo/arithmeticapopathpricer.hpp>
-#include <ql/MonteCarlo/geometricapopathpricer.hpp>
 
 namespace QuantLib {
+
+    namespace {
+
+        class ArithmeticAPOPathPricer_old : public PathPricer_old<Path> {
+          public:
+            ArithmeticAPOPathPricer_old(Option::Type type,
+                                        double underlying,
+                                        double strike,
+                                        DiscountFactor discount,
+                                        bool useAntitheticVariance)
+            : PathPricer_old<Path>(discount, useAntitheticVariance),
+              underlying_(underlying), payoff_(type, strike) {
+                QL_REQUIRE(underlying>0.0,
+                           "ArithmeticAPOPathPricer_old: "
+                           "underlying less/equal zero not allowed");
+                QL_REQUIRE(strike>=0.0,
+                           "ArithmeticAPOPathPricer_old: "
+                           "strike less than zero not allowed");
+            }
+
+            double operator()(const Path& path) const  {
+
+                Size n = path.size();
+                QL_REQUIRE(n>0,
+                           "ArithmeticAPOPathPricer_old: "
+                           "the path cannot be empty");
+
+                double price1 = underlying_;
+                double averagePrice1 = 0.0;
+                Size fixings = n;
+                if (path.timeGrid().mandatoryTimes()[0]==0.0) {
+                    averagePrice1 = price1;
+                    fixings = n+1;
+                }
+                Size i;
+                for (i=0; i<n; i++) {
+                    price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
+                    averagePrice1 += price1;
+                }
+                averagePrice1 = averagePrice1/fixings;
+
+                if (useAntitheticVariance_) {
+                    double price2 = underlying_;
+                    double averagePrice2 = 0.0;
+
+                    if (path.timeGrid().mandatoryTimes()[0]==0.0)
+                        averagePrice2 = price2;
+                    for (i=0; i<n; i++) {
+                        price2 *= QL_EXP(path.drift()[i]-path.diffusion()[i]);
+                        averagePrice2 += price2;
+                    }
+                    averagePrice2 = averagePrice2/fixings;
+                    return discount_/2.0 *
+                        (payoff_(averagePrice1)+payoff_(averagePrice2));
+                } else
+                    return discount_ * payoff_(averagePrice1);
+            }
+
+          private:
+            double underlying_;
+            PlainVanillaPayoff payoff_;
+        };
+
+        class GeometricAPOPathPricer_old : public PathPricer_old<Path> {
+          public:
+            GeometricAPOPathPricer_old(Option::Type type,
+                                       double underlying,
+                                       double strike,
+                                       DiscountFactor discount,
+                                       bool useAntitheticVariance)
+            : PathPricer_old<Path>(discount, useAntitheticVariance),
+              underlying_(underlying), payoff_(type, strike) {
+                QL_REQUIRE(underlying>0.0,
+                           "GeometricAPOPathPricer_old: "
+                           "underlying less/equal zero not allowed");
+                QL_REQUIRE(strike>=0.0,
+                           "GeometricAPOPathPricer_old: "
+                           "strike less than zero not allowed");
+            }
+
+            double operator()(const Path& path) const {
+                Size n = path.size();
+                QL_REQUIRE(n>0,
+                           "GeometricAPOPathPricer_old: "
+                           "the path cannot be empty");
+
+                double geoLogDrift = 0.0, geoLogDiffusion = 0.0;
+                Size i;
+                for (i=0; i<n; i++) {
+                    geoLogDrift += (n-i)*path.drift()[i];
+                    geoLogDiffusion += (n-i)*path.diffusion()[i];
+                }
+                Size fixings = n;
+                if (path.timeGrid().mandatoryTimes()[0]==0.0) {
+                    fixings = n+1;
+                }
+                double averagePrice1 = underlying_*
+                    QL_EXP((geoLogDrift+geoLogDiffusion)/fixings);
+
+                if (useAntitheticVariance_) {
+                    double averagePrice2 = underlying_*
+                        QL_EXP((geoLogDrift-geoLogDiffusion)/fixings);
+                    return discount_ * 0.5 *
+                        (payoff_(averagePrice1) +payoff_(averagePrice2));
+                } else {
+                    return discount_* payoff_(averagePrice1);
+                }
+            }
+
+          private:
+            double underlying_;
+            PlainVanillaPayoff payoff_;
+        };
+
+    }
+
 
     McDiscreteArithmeticAPO::McDiscreteArithmeticAPO(Option::Type type,
         double underlying, double strike,
@@ -36,7 +146,7 @@ namespace QuantLib {
                    "McDiscreteArithmeticAPO: "
                    "you must have at least 2 time-steps");
 
-        //! Initialize the path generator
+        // initialize the path generator
         double mu = riskFreeRate - dividendYield
                                  - 0.5 * volatility * volatility;
 
@@ -46,7 +156,7 @@ namespace QuantLib {
                 seed));
 
 
-        //! Initialize the Path Pricer
+        // initialize the Path Pricer
         Handle<PathPricer_old<Path> > spPricer(
             new ArithmeticAPOPathPricer_old(type, underlying, strike,
                 QL_EXP(-riskFreeRate*times.back()), antitheticVariance));
@@ -61,14 +171,14 @@ namespace QuantLib {
                 underlying, strike, dividendYield, riskFreeRate,
                 times, volatility).value();
 
-            //! Initialize the Monte Carlo model
+            // initialize the Monte Carlo model
             mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
                                               PseudoRandom_old> > >(
                 new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
                     pathGenerator, spPricer, Statistics(), false,
                     controlVariateSpPricer, controlVariatePrice));
         } else {
-            //! Initialize the Monte Carlo model
+            // initialize the Monte Carlo model
             mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
                                               PseudoRandom_old> > > (
                 new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(

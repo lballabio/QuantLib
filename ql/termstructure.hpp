@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    //! Term structure
+    //! Interest-rate term structure
     /*! This abstract class defines the interface of concrete
         rate structures which will be derived from this one.
 

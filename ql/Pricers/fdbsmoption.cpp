@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdbsmoption.cpp
-    \brief common code for numerical option evaluation
-*/
-
 #include <ql/Pricers/fdbsmoption.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 

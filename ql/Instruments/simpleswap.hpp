@@ -82,7 +82,7 @@ namespace QuantLib {
         double nominal_;
     };
 
-    //! arguments for simple swap calculation
+    //! %Arguments for simple swap calculation
     class SimpleSwap::arguments : public virtual Arguments {
       public:
         arguments() : payFixed(false),
@@ -99,7 +99,7 @@ namespace QuantLib {
         void validate() const;
     };
 
-    //! %results from swaption calculation
+    //! %Results from simple swap calculation
     class SimpleSwap::results : public Value {};
 
 

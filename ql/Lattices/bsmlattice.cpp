@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bsmlattice.cpp
-    \brief Binomial trees under the BSM model
-*/
-
 #include <ql/Lattices/bsmlattice.hpp>
 
 namespace QuantLib {

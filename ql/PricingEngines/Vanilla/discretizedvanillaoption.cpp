@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discretizedvanillaoption.cpp
-    \brief discretized vanilla option
-*/
-
 #include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
 #include <vector>
 

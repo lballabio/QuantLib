@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file actualactual.cpp
-    \brief act/act day counters
-*/
-
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/dataformatters.hpp>
 

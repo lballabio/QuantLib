@@ -43,7 +43,7 @@
 
     <b>Warning: this section of the documentation is currently outdated.</b>
 
-    This framework (corresponding to the QuantLib::MonteCarlo namespace)
+    This framework (corresponding to the ql/MonteCarlo directory)
     contains basic building blocks for the numerical calculation of
     the integral
     \f[ \int_{\Omega} f(\mathbf{x}) p(\mathbf{x}) d \mathbf{x} \f]
@@ -77,7 +77,7 @@
     components of the above average, namely, the random drawing of the
     \f$ \mathbf{x}_i \f$, the evaluation of the \f$ f(\mathbf{x}_i) \f$,
     and the averaging process itself.
-    The QuantLib::MonteCarlo::MonteCarloModel class acts as a glue for
+    The QuantLib::MonteCarloModel class acts as a glue for
     such three steps --- which are outlined in the following sections --- and
     provides the interface of the resulting Monte Carlo model to the
     end user.
@@ -108,18 +108,18 @@
     and \f$ \sigma_i \sqrt{\Delta T_i} \f$ should \f$ \nu \f$ and
     \f$ \sigma \f$ vary in time.
 
-    The QuantLib::MonteCarlo::Path class stores the variation vector
+    The QuantLib::Path class stores the variation vector
     decomposed in its drift (determined) and diffusion (random) components.
     As shown below, this allows the implementation of antithetic variance
     reduction techniques.
 
-    The QuantLib::MonteCarlo::MultiPath class is a straightforward extension
+    The QuantLib::MultiPath class is a straightforward extension
     which acts as a vector of Path objects.
 
     Classes are provided which generate paths and multi-paths with the
     desired drift and diffusion components, namely,
-    QuantLib::MonteCarlo::PathGenerator and
-    QuantLib::MonteCarlo::MultiPathGenerator.
+    QuantLib::PathGenerator and
+    QuantLib::MultiPathGenerator.
 
     For the time being, the path generator is initialized with a constant
     drift and variance. This requirement will most likely be relaxed in
@@ -134,7 +134,7 @@
 
 
     \section pathprc Pricing an instrument on a path
-    The QuantLib::MonteCarlo::PathPricer class is the base class from
+    The QuantLib::PathPricer class is the base class from
     which path pricers must inherit. The only method which subclasses
     are required to implement is
     \code
@@ -179,12 +179,12 @@
     inside the path pricer itself, whose algorithm can fully exploit such
     factorization.
 
-    A number of path pricers are available in the library and are listed
-    in the QuantLib::MonteCarlo namespace reference.
+    A number of path pricers are available in the library and listed
+    in reference manual.
 
 
     \section pathavg Accumulating and averaging samples
-    The class QuantLib::MonteCarlo::MonteCarloModel encapsulates the
+    The class QuantLib::MonteCarloModel encapsulates the
     general structure of a Monte Carlo calculations, namely, the generation
     of a number of paths, the pricing of the derivative on each path, and
     the averaging of the results to yield the actual derivative price.
@@ -193,7 +193,7 @@
     and a path pricer. The third step is also delegated to an object which
     accumulates weighted values and returns the statistic properties of the
     set of such values. One such class provided by the library is
-    QuantLib::Math::Statistics.
+    QuantLib::Statistics.
 
     The concern of the Monte Carlo model is therefore to act as a glue
     between such three components and can be expressed by the following
@@ -242,7 +242,7 @@
     planned for future releases.
 
 
-    A QuantLib::Pricers::McPricer class is also available which wraps
+    A QuantLib::McPricer class is also available which wraps
     the typical usage of a Monte Carlo model.
 
     Details on the Monte Carlo Pricer interface will be available
@@ -342,7 +342,7 @@
     Handle<GaussianPathGenerator> pathGenerator(
         new GaussianPathGenerator(nu,vol2,residualTime,timeSteps));
     \endcode
-    where QuantLib::MonteCarlo::GaussianPathGenerator is a typedef to a
+    where QuantLib::GaussianPathGenerator is a typedef to a
     path generator using the default choice for a Gaussian random number
     generator.
 
@@ -374,9 +374,9 @@
     error = model.sampleAccumulator().errorEstimate();
     \endcode
 
-    More examples of path pricers can be found in the QuantLib::MonteCarlo
-    namespace, while examples of more sophisticated pricers which uses them
-    in Monte Carlo models can be found in the QuantLib::Pricers namespace.
+    More examples of path pricers can be found in the ql/MonteCarlo
+    directory, while examples of more sophisticated pricers which uses them
+    in Monte Carlo models can be found in the ql/Pricers directory.
 
 
     \section mcnotes Notes

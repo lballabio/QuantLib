@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mathf.cpp
-    \brief math functions
-*/
-
 #include <ql/functions/mathf.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>

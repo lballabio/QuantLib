@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file vols.cpp
-    \brief Volatility functions
-*/
-
 #include <ql/functions/vols.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Volatilities/localconstantvol.hpp>

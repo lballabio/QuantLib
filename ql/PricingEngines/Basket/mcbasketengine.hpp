@@ -22,28 +22,24 @@
 #ifndef quantlib_mc_basket_engine_hpp
 #define quantlib_mc_basket_engine_hpp
 
-#include <ql/diffusionprocess.hpp>
-#include <ql/MonteCarlo/europeanmultipathpricer.hpp>
+#include <ql/Instruments/basketoption.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>
 
 namespace QuantLib {
 
     //! MC Pricing engine for European Baskets
-    /*! MC Basket option pricing engine        
-    */
-    template<class RNG = PseudoRandom, class S = Statistics>
+    template <class RNG = PseudoRandom, class S = Statistics>
     class MCBasketEngine  : public BasketEngine,
                             public McSimulation<MultiAsset<RNG>, S> {
       public:
-        // constructor
         MCBasketEngine(Size maxTimeStepsPerYear,
-                        bool antitheticVariate = false,
-                        bool controlVariate = false,
-                        Size requiredSamples = Null<int>(),
-                        double requiredTolerance = Null<double>(),
-                        Size maxSamples = Null<int>(),
-                        bool brownianBridge = false,
-                        long seed = 0);
+                       bool antitheticVariate = false,
+                       bool controlVariate = false,
+                       Size requiredSamples = Null<int>(),
+                       double requiredTolerance = Null<double>(),
+                       Size maxSamples = Null<int>(),
+                       bool brownianBridge = false,
+                       long seed = 0);
 
         typedef typename McSimulation<MultiAsset<RNG>,S>::path_generator_type
             path_generator_type;
@@ -68,8 +64,24 @@ namespace QuantLib {
         long seed_;
     };
 
+    class EuropeanMultiPathPricer : public PathPricer<MultiPath> {
+      public:
+        EuropeanMultiPathPricer(
+                BasketOption::BasketType basketType,
+                Option::Type type,
+                double strike,
+                Array underlying,
+                const RelinkableHandle<TermStructure>& riskFreeTS);
+        double operator()(const MultiPath& multiPath) const;
+      private:
+        BasketOption::BasketType basketType_;
+        Array underlying_;
+        PlainVanillaPayoff payoff_;
+    };
 
-    // constructor
+
+    // template definitions
+
     template<class RNG, class S>
     inline MCBasketEngine<RNG,S>::MCBasketEngine(Size maxTimeStepsPerYear,
                                                    bool antitheticVariate,
@@ -87,8 +99,7 @@ namespace QuantLib {
       brownianBridge_(brownianBridge),
       seed_(seed) {}
 
-    //  MCSimulation interface implementation of 
-    // pathGenerator()
+
     template<class RNG, class S>
     inline Handle<QL_TYPENAME MCBasketEngine<RNG,S>::path_generator_type>
     MCBasketEngine<RNG,S>::pathGenerator() const {
@@ -103,11 +114,11 @@ namespace QuantLib {
         #endif
 
         Size numAssets = arguments_.blackScholesProcesses.size();
-        
+
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
-        
+
         std::vector<Handle<DiffusionProcess> > diffusionProcs;
         for (Size j = 0; j < numAssets; j++) { 
             Handle<DiffusionProcess> bs(new
@@ -125,8 +136,7 @@ namespace QuantLib {
 
     }
 
-    //  MCSimulation interface implementation of 
-    // pathGenerator()
+
     template <class RNG, class S>
     inline
     Handle<QL_TYPENAME MCBasketEngine<RNG,S>::path_pricer_type>
@@ -158,8 +168,6 @@ namespace QuantLib {
     }
 
 
-    //  MCSimulation interface implementation of 
-    // timeGrid()
     template <class RNG, class S>
     inline TimeGrid MCBasketEngine<RNG,S>::timeGrid() const {
 
@@ -172,8 +180,7 @@ namespace QuantLib {
         return TimeGrid(t, maxTimeStepsPerYear_);
     }
 
-    //  Pricing Engine interface implementation of 
-    // calculate()
+
     template<class RNG, class S>
     inline void MCBasketEngine<RNG,S>::calculate() const {
 

@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     //! example of Monte Carlo pricer using a control variate
-    /*! \todo Continous Averaging version     */
+    /*! \todo Continous-averaging version  */
     class McDiscreteArithmeticAPO 
         : public McPricer<SingleAsset_old<PseudoRandom_old> >{
       public:

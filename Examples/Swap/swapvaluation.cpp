@@ -21,10 +21,9 @@
 
 // the only header you need to use QuantLib
 #include <ql/quantlib.hpp>
-
+#include <iomanip>
 
 using namespace QuantLib;
-
 
 int main(int argc, char* argv[])
 {
@@ -67,211 +66,13 @@ int main(int argc, char* argv[])
         double s15yQuote=0.055175;
 
 
-
-
-        /*********************
-         ***  RATE HELPERS ***
-         *********************/
-
-        // RateHelpers are built from the above quotes together with other
-        // instrument dependant infos.
-
-        // setup deposits
-        DayCounter depositDayCounter = Actual360();
-        int settlementDays = 2;
-
-        Handle<RateHelper> d1w(new DepositRateHelper(
-            d1wQuote, 1, Weeks, settlementDays, 
-            calendar, ModifiedFollowing, depositDayCounter));
-        Handle<RateHelper> d1m(new DepositRateHelper(
-            d1mQuote, 1, Months, settlementDays, 
-            calendar, ModifiedFollowing, depositDayCounter));
-        Handle<RateHelper> d3m(new DepositRateHelper(
-            d3mQuote, 3, Months, settlementDays, 
-            calendar, ModifiedFollowing, depositDayCounter));
-        Handle<RateHelper> d6m(new DepositRateHelper(
-            d6mQuote, 6, Months, settlementDays, 
-            calendar, ModifiedFollowing, depositDayCounter));
-        Handle<RateHelper> d9m(new DepositRateHelper(
-            d9mQuote, 9, Months, settlementDays, 
-            calendar, ModifiedFollowing, depositDayCounter));
-        Handle<RateHelper> d1y(new DepositRateHelper(
-            d1yQuote, 1, Years, settlementDays, 
-            calendar, ModifiedFollowing, depositDayCounter));
-
-        // setup swaps
-        int swFixedLegFrequency = 1;
-        bool swFixedLegIsAdjusted = false;
-        DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
-        int swFloatingLegFrequency = 2;
-
-        Handle<RateHelper> s2y(new SwapRateHelper(
-            s2yQuote, 2, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
-        Handle<RateHelper> s3y(new SwapRateHelper(
-            s3yQuote, 3, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
-        Handle<RateHelper> s5y(new SwapRateHelper(
-            s5yQuote, 5, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
-        Handle<RateHelper> s10y(new SwapRateHelper(
-            s10yQuote, 10, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
-        Handle<RateHelper> s15y(new SwapRateHelper(
-            s15yQuote, 15, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
-
-
-        /*********************
-         **  CURVE BUILDING **
-         *********************/
-
-        // Any DayCounter would be fine.
-        // ActualActual::ISDA ensures that 30 years is 30.0
-        DayCounter termStructureDayCounter =
-            ActualActual(ActualActual::ISDA);
-
-        // A depo-swap curve
-        std::vector<Handle<RateHelper> > depoSwapInstruments;
-        depoSwapInstruments.push_back(d1w);
-        depoSwapInstruments.push_back(d1m);
-        depoSwapInstruments.push_back(d3m);
-        depoSwapInstruments.push_back(d6m);
-        depoSwapInstruments.push_back(d9m);
-        depoSwapInstruments.push_back(d1y);
-        depoSwapInstruments.push_back(s2y);
-        depoSwapInstruments.push_back(s3y);
-        depoSwapInstruments.push_back(s5y);
-        depoSwapInstruments.push_back(s10y);
-        depoSwapInstruments.push_back(s15y);
-        Handle<TermStructure> depoSwapTermStructure(new
-            PiecewiseFlatForward(todaysDate, settlementDate,
-            depoSwapInstruments, termStructureDayCounter));
-
-
-         /*********************
-         * SWAPS TO BE PRICED *
-         **********************/
-
-        // Term structures that will be used for pricing:
-        // the one used for discounting cash flows
-        RelinkableHandle<TermStructure> discountingTermStructure;
-        // the one used for forward rate forecasting
-        RelinkableHandle<TermStructure> forecastingTermStructure;
-
-
-        // constant nominal 1,000,000 Euro
-        double nominal = 1000000.0;
-        // fixed leg
-        int fixedLegFrequency = 1; // annual
-        bool fixedLegIsAdjusted = false;
-        RollingConvention roll = ModifiedFollowing;
-        DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
-        int fixingDays = 2;
-        Rate fixedRate = 0.04;
-
-        // floating leg
-        int floatingLegFrequency = 2;
-        Handle<Xibor> euriborIndex(new Euribor(6, Months,
-            forecastingTermStructure)); // using the forecasting curve
-        Spread spread = 0.0;
-
-        int lenghtInYears = 5;
-        bool payFixedRate = true;
-        SimpleSwap spot5YearSwap(payFixedRate, settlementDate, lenghtInYears,
-            Years, calendar, roll, nominal, fixedLegFrequency, fixedRate,
-            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            euriborIndex, fixingDays, spread,
-            discountingTermStructure); // using the discounting curve
-        SimpleSwap oneYearForward5YearSwap(payFixedRate,
-            calendar.advance(settlementDate, 1, Years, ModifiedFollowing),
-            lenghtInYears, Years,
-            calendar, roll, nominal, fixedLegFrequency, fixedRate,
-            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            euriborIndex, fixingDays, spread,
-            discountingTermStructure); // using the discounting curve
-
-
-
-         /***************
-         * SWAP PRICING *
-         ****************/
-
-        std::cout <<  "*** 5Y swap at 4.43%" << std::endl;
-
-        
-        // let's price in term of NPV, fixed rate, and spread
-        double NPV;
-        Rate fairFixedRate;
-        Spread fairFloatingSpread;
-
-        // Of course, you're not forced to really use different curves
-        forecastingTermStructure.linkTo(depoSwapTermStructure);
-        discountingTermStructure.linkTo(depoSwapTermStructure);
-        std::cout << "*** using Depo-Swap term structure:" << std::endl;
-
-        NPV = spot5YearSwap.NPV();
-        std::cout << "5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " NPV:               "
-            << DoubleFormatter::toString(NPV,2)
-            << std::endl;
-        fairFloatingSpread = spot5YearSwap.fairSpread();
-        std::cout << "5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " fair spread:          "
-            << RateFormatter::toString(fairFloatingSpread,4)
-            << std::endl;
-        fairFixedRate = spot5YearSwap.fairRate();
-        std::cout << "5Y fair fixed rate:             "
-            << RateFormatter::toString(fairFixedRate,4)
-            << std::endl;
-        // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(QL_FABS(fairFixedRate-s5yQuote)<1e-8,
-            "5 years swap mispriced!");
-
-        // now let's price the 1Y forward 5Y swap
-        NPV = oneYearForward5YearSwap.NPV();
-        std::cout << "1Yx5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " NPV:            "
-            << DoubleFormatter::toString(NPV,2)
-            << std::endl;
-        fairFloatingSpread = oneYearForward5YearSwap.fairSpread();
-        std::cout << "1Yx5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " fair spread:       "
-            << RateFormatter::toString(fairFloatingSpread,4)
-            << std::endl;
-        fairFixedRate = oneYearForward5YearSwap.fairRate();
-        std::cout << "1Yx5Y fair fixed rate:          "
-            << RateFormatter::toString(fairFixedRate,4)
-            << std::endl;
-
-
-
-
-
-
-        // now, let's get serious
-
-        /*********************
-         ***  MARKET DATA  ***
-         *********************/
+        /********************
+         ***    QUOTES    ***
+         ********************/
 
         // SimpleQuote stores a value which can be manually changed;
-        // other Quote subclasses could read the value from a
-        // database or some kind of data feed.
+        // other Quote subclasses could read the value from a database
+        // or some kind of data feed.
 
         // deposits
         Handle<Quote> d1wRate(new SimpleQuote(d1wQuote));
@@ -301,79 +102,44 @@ int main(int argc, char* argv[])
         Handle<Quote> s15yRate(new SimpleQuote(s15yQuote));
 
 
-
-
-
-
         /*********************
          ***  RATE HELPERS ***
          *********************/
 
-        // RateHelpers are built from the above quotes together with other
-        // instrument dependant infos.
-        // This time quotes are passed in relinkable
-        // handles which could be relinked to some other data source later.
+        // RateHelpers are built from the above quotes together with
+        // other instrument dependant infos.  Quotes are passed in
+        // relinkable handles which could be relinked to some other
+        // data source later.
 
-        // setup deposits
-        d1w =Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<Quote>(d1wRate),
+        // deposits
+        DayCounter depositDayCounter = Actual360();
+        int settlementDays = 2;
+
+        Handle<RateHelper> d1w(new DepositRateHelper(
+            RelinkableHandle<Quote>(d1wRate), 
             1, Weeks, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
-        d1m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<Quote>(d1mRate),
+        Handle<RateHelper> d1m(new DepositRateHelper(
+            RelinkableHandle<Quote>(d1mRate), 
             1, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
-        d3m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<Quote>(d3mRate),
+        Handle<RateHelper> d3m(new DepositRateHelper(
+            RelinkableHandle<Quote>(d3mRate), 
             3, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
-        d6m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<Quote>(d6mRate),
+        Handle<RateHelper> d6m(new DepositRateHelper(
+            RelinkableHandle<Quote>(d6mRate), 
             6, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
-        d9m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<Quote>(d9mRate),
+        Handle<RateHelper> d9m(new DepositRateHelper(
+            RelinkableHandle<Quote>(d9mRate), 
             9, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
-        d1y=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<Quote>(d1yRate),
+        Handle<RateHelper> d1y(new DepositRateHelper(
+            RelinkableHandle<Quote>(d1yRate), 
             1, Years, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
 
-        // setup swaps
-        s2y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<Quote>(s2yRate),
-            2, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
-        s3y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<Quote>(s3yRate),
-            3, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
-        s5y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<Quote>(s5yRate),
-            5, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
-        s10y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<Quote>(s10yRate),
-            10, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
-        s15y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<Quote>(s15yRate),
-            15, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
-
-
-        // let's add FRA and futures
 
         // setup FRAs
         Handle<RateHelper> fra3x6(new FraRateHelper(
@@ -388,6 +154,7 @@ int main(int argc, char* argv[])
             RelinkableHandle<Quote>(fra6x12Rate),
             6, 12, settlementDays, calendar, ModifiedFollowing,
             depositDayCounter));
+
 
         // setup futures
         int futMonths = 3;
@@ -433,13 +200,71 @@ int main(int argc, char* argv[])
             depositDayCounter));
 
 
+        // setup swaps
+        int swFixedLegFrequency = 1;
+        bool swFixedLegIsAdjusted = false;
+        DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
+        int swFloatingLegFrequency = 2;
 
-
+        Handle<RateHelper> s2y(new SwapRateHelper(
+            RelinkableHandle<Quote>(s2yRate), 
+            2, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
+            swFixedLegIsAdjusted, swFixedLegDayCounter,
+            swFloatingLegFrequency));
+        Handle<RateHelper> s3y(new SwapRateHelper(
+            RelinkableHandle<Quote>(s3yRate), 
+            3, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
+            swFixedLegIsAdjusted, swFixedLegDayCounter,
+            swFloatingLegFrequency));
+        Handle<RateHelper> s5y(new SwapRateHelper(
+            RelinkableHandle<Quote>(s5yRate), 
+            5, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
+            swFixedLegIsAdjusted, swFixedLegDayCounter,
+            swFloatingLegFrequency));
+        Handle<RateHelper> s10y(new SwapRateHelper(
+            RelinkableHandle<Quote>(s10yRate), 
+            10, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
+            swFixedLegIsAdjusted, swFixedLegDayCounter,
+            swFloatingLegFrequency));
+        Handle<RateHelper> s15y(new SwapRateHelper(
+            RelinkableHandle<Quote>(s15yRate), 
+            15, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
+            swFixedLegIsAdjusted, swFixedLegDayCounter,
+            swFloatingLegFrequency));
 
 
         /*********************
          **  CURVE BUILDING **
          *********************/
+
+        // Any DayCounter would be fine.
+        // ActualActual::ISDA ensures that 30 years is 30.0
+        DayCounter termStructureDayCounter =
+            ActualActual(ActualActual::ISDA);
+
+
+        // A depo-swap curve
+        std::vector<Handle<RateHelper> > depoSwapInstruments;
+        depoSwapInstruments.push_back(d1w);
+        depoSwapInstruments.push_back(d1m);
+        depoSwapInstruments.push_back(d3m);
+        depoSwapInstruments.push_back(d6m);
+        depoSwapInstruments.push_back(d9m);
+        depoSwapInstruments.push_back(d1y);
+        depoSwapInstruments.push_back(s2y);
+        depoSwapInstruments.push_back(s3y);
+        depoSwapInstruments.push_back(s5y);
+        depoSwapInstruments.push_back(s10y);
+        depoSwapInstruments.push_back(s15y);
+        Handle<TermStructure> depoSwapTermStructure(new
+            PiecewiseFlatForward(todaysDate, settlementDate,
+            depoSwapInstruments, termStructureDayCounter));
+
 
         // A depo-futures-swap curve
         std::vector<Handle<RateHelper> > depoFutSwapInstruments;
@@ -462,7 +287,6 @@ int main(int argc, char* argv[])
             depoFutSwapInstruments, termStructureDayCounter));
 
 
-
         // A depo-FRA-swap curve
         std::vector<Handle<RateHelper> > depoFRASwapInstruments;
         depoFRASwapInstruments.push_back(d1w);
@@ -481,101 +305,217 @@ int main(int argc, char* argv[])
             depoFRASwapInstruments, termStructureDayCounter));
 
 
+        // Term structures that will be used for pricing:
+        // the one used for discounting cash flows
+        RelinkableHandle<TermStructure> discountingTermStructure;
+        // the one used for forward rate forecasting
+        RelinkableHandle<TermStructure> forecastingTermStructure;
 
 
+        /*********************
+        * SWAPS TO BE PRICED *
+        **********************/
+
+        // constant nominal 1,000,000 Euro
+        double nominal = 1000000.0;
+        // fixed leg
+        int fixedLegFrequency = 1; // annual
+        bool fixedLegIsAdjusted = false;
+        RollingConvention roll = ModifiedFollowing;
+        DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
+        int fixingDays = 2;
+        Rate fixedRate = 0.04;
+
+        // floating leg
+        int floatingLegFrequency = 2;
+        Handle<Xibor> euriborIndex(new Euribor(6, Months,
+            forecastingTermStructure)); // using the forecasting curve
+        Spread spread = 0.0;
+
+        int lenghtInYears = 5;
+        bool payFixedRate = true;
+        SimpleSwap spot5YearSwap(payFixedRate, settlementDate, lenghtInYears,
+            Years, calendar, roll, nominal, fixedLegFrequency, fixedRate,
+            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
+            euriborIndex, fixingDays, spread,
+            discountingTermStructure); // using the discounting curve
+        SimpleSwap oneYearForward5YearSwap(payFixedRate,
+            calendar.advance(settlementDate, 1, Years, ModifiedFollowing),
+            lenghtInYears, Years,
+            calendar, roll, nominal, fixedLegFrequency, fixedRate,
+            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
+            euriborIndex, fixingDays, spread,
+            discountingTermStructure); // using the discounting curve
 
 
-         /***************
-         * SWAP PRICING *
-         ****************/
+        /***************
+        * SWAP PRICING *
+        ****************/
+
+        // utilities for reporting
+        std::vector<std::string> headers(4);
+        headers[0] = "term structure";
+        headers[1] = "net present value";
+        headers[2] = "fair spread";
+        headers[3] = "fair fixed rate";
+        std::string separator = " | ";
+        Size width = headers[0].size() + separator.size() 
+                   + headers[1].size() + separator.size() 
+                   + headers[2].size() + separator.size()
+                   + headers[3].size() + separator.size() - 1;
+        std::string rule(width, '-'), dblrule(width, '=');
+        std::string tab(8, ' ');
+
+        // calculations
+
+        std::cout << dblrule << std::endl;
+        std::cout <<  "5-year market swap-rate = "
+                  << RateFormatter::toString(s5yRate->value(),2) << std::endl;
+        std::cout << dblrule << std::endl;
+
+        std::cout << tab << "5-years swap paying "
+                  << RateFormatter::toString(fixedRate,2) << std::endl;
+        std::cout << headers[0] << separator
+                  << headers[1] << separator
+                  << headers[2] << separator
+                  << headers[3] << separator << std::endl;
+        std::cout << rule << std::endl;
+
+        double NPV;
+        Rate fairRate;
+        Spread fairSpread;
+
+        // Of course, you're not forced to really use different curves
+        forecastingTermStructure.linkTo(depoSwapTermStructure);
+        discountingTermStructure.linkTo(depoSwapTermStructure);
+
+        NPV = spot5YearSwap.NPV();
+        fairSpread = spot5YearSwap.fairSpread();
+        fairRate = spot5YearSwap.fairRate();
+
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
 
 
-        // switch the curve used by the swaps to be priced
+        // let's check that the 5 years swap has been correctly re-priced
+        QL_REQUIRE(QL_FABS(fairRate-s5yQuote)<1e-8,
+                   "5-years swap mispriced!");
+
+
         forecastingTermStructure.linkTo(depoFutSwapTermStructure);
         discountingTermStructure.linkTo(depoFutSwapTermStructure);
-        std::cout << "*** using Depo-Fut-Swap term structure:" << std::endl;
 
         NPV = spot5YearSwap.NPV();
-        std::cout << "5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " NPV:               "
-            << DoubleFormatter::toString(NPV,2)
-            << std::endl;
-        fairFloatingSpread = spot5YearSwap.fairSpread();
-        std::cout << "5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " fair spread:          "
-            << RateFormatter::toString(fairFloatingSpread,4)
-            << std::endl;
-        fairFixedRate = spot5YearSwap.fairRate();
-        std::cout << "5Y fair fixed rate:             "
-            << RateFormatter::toString(fairFixedRate,4)
-            << std::endl;
-        // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(QL_FABS(fairFixedRate-s5yQuote)<1e-8,
-            "5 years swap mispriced!");
+        fairSpread = spot5YearSwap.fairSpread();
+        fairRate = spot5YearSwap.fairRate();
 
-        // now let's price the 1Y forward 5Y swap
-        NPV = oneYearForward5YearSwap.NPV();
-        std::cout << "1Yx5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " NPV:            "
-            << DoubleFormatter::toString(NPV,2)
-            << std::endl;
-        fairFloatingSpread = oneYearForward5YearSwap.fairSpread();
-        std::cout << "1Yx5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " fair spread:       "
-            << RateFormatter::toString(fairFloatingSpread,4)
-            << std::endl;
-        fairFixedRate = oneYearForward5YearSwap.fairRate();
-        std::cout << "1Yx5Y fair fixed rate:          "
-            << RateFormatter::toString(fairFixedRate,4)
-            << std::endl;
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-fut-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
+
+        QL_REQUIRE(QL_FABS(fairRate-s5yQuote)<1e-8,
+                   "5-years swap mispriced!");
 
 
-        // switch the curve used by the swaps to be priced
         forecastingTermStructure.linkTo(depoFRASwapTermStructure);
         discountingTermStructure.linkTo(depoFRASwapTermStructure);
-        std::cout << "*** using Depo-FRA-Swap term structure:" << std::endl;
 
         NPV = spot5YearSwap.NPV();
-        std::cout << "5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " NPV:               "
-            << DoubleFormatter::toString(NPV,2)
-            << std::endl;
-        fairFloatingSpread = spot5YearSwap.fairSpread();
-        std::cout << "5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " fair spread:          "
-            << RateFormatter::toString(fairFloatingSpread,4)
-            << std::endl;
-        fairFixedRate = spot5YearSwap.fairRate();
-        std::cout << "5Y fair fixed rate:             "
-            << RateFormatter::toString(fairFixedRate,4)
-            << std::endl;
-        // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(QL_FABS(fairFixedRate-s5yRate->value())<1e-8,
-            "5 years swap mispriced!");
+        fairSpread = spot5YearSwap.fairSpread();
+        fairRate = spot5YearSwap.fairRate();
+
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-FRA-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
+
+        QL_REQUIRE(QL_FABS(fairRate-s5yQuote)<1e-8,
+                   "5-years swap mispriced!");
+
+
+        std::cout << rule << std::endl;
 
         // now let's price the 1Y forward 5Y swap
+
+        std::cout << tab << "5-years, 1-year forward swap paying "
+                  << RateFormatter::toString(fixedRate,2) << std::endl;
+        std::cout << headers[0] << separator
+                  << headers[1] << separator
+                  << headers[2] << separator
+                  << headers[3] << separator << std::endl;
+        std::cout << rule << std::endl;
+
+
+        forecastingTermStructure.linkTo(depoSwapTermStructure);
+        discountingTermStructure.linkTo(depoSwapTermStructure);
+
         NPV = oneYearForward5YearSwap.NPV();
-        std::cout << "1Yx5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " NPV:            "
-            << DoubleFormatter::toString(NPV,2)
-            << std::endl;
-        fairFloatingSpread = oneYearForward5YearSwap.fairSpread();
-        std::cout << "1Yx5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " fair spread:       "
-            << RateFormatter::toString(fairFloatingSpread,4)
-            << std::endl;
-        fairFixedRate = oneYearForward5YearSwap.fairRate();
-        std::cout << "1Yx5Y fair fixed rate:          "
-            << RateFormatter::toString(fairFixedRate,4)
-            << std::endl;
+        fairSpread = oneYearForward5YearSwap.fairSpread();
+        fairRate = oneYearForward5YearSwap.fairRate();
+
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
+
+
+        forecastingTermStructure.linkTo(depoFutSwapTermStructure);
+        discountingTermStructure.linkTo(depoFutSwapTermStructure);
+
+        NPV = oneYearForward5YearSwap.NPV();
+        fairSpread = oneYearForward5YearSwap.fairSpread();
+        fairRate = oneYearForward5YearSwap.fairRate();
+
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-fut-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
+
+
+        forecastingTermStructure.linkTo(depoFRASwapTermStructure);
+        discountingTermStructure.linkTo(depoFRASwapTermStructure);
+
+        NPV = oneYearForward5YearSwap.NPV();
+        fairSpread = oneYearForward5YearSwap.fairSpread();
+        fairRate = oneYearForward5YearSwap.fairRate();
+
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-FRA-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
 
 
         // now let's say that the 5-years swap rate goes up to 4.60%.
@@ -594,93 +534,148 @@ int main(int argc, char* argv[])
         Handle<SimpleQuote> fiveYearsRate = s5yRate;
         #endif
         fiveYearsRate->setValue(0.0460);
-        std::cout << std::endl <<  "*** 5Y swap goes up to 4.60%" << std::endl;
 
+        std::cout << dblrule << std::endl;
+        std::cout <<  "5-year market swap-rate = "
+                  << RateFormatter::toString(s5yRate->value(),2) << std::endl;
+        std::cout << dblrule << std::endl;
+
+        std::cout << tab << "5-years swap paying "
+                  << RateFormatter::toString(fixedRate,2) << std::endl;
+        std::cout << headers[0] << separator
+                  << headers[1] << separator
+                  << headers[2] << separator
+                  << headers[3] << separator << std::endl;
+        std::cout << rule << std::endl;
 
         // now get the updated results
-        forecastingTermStructure.linkTo(depoFutSwapTermStructure);
-        discountingTermStructure.linkTo(depoFutSwapTermStructure);
-        std::cout << "*** using Depo-Fut-Swap term structure:" << std::endl;
+        forecastingTermStructure.linkTo(depoSwapTermStructure);
+        discountingTermStructure.linkTo(depoSwapTermStructure);
 
         NPV = spot5YearSwap.NPV();
-        std::cout << "5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " NPV:               "
-            << DoubleFormatter::toString(NPV,2)
-            << std::endl;
-        fairFloatingSpread = spot5YearSwap.fairSpread();
-        std::cout << "5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " fair spread:          "
-            << RateFormatter::toString(fairFloatingSpread,4)
-            << std::endl;
-        fairFixedRate = spot5YearSwap.fairRate();
-        std::cout << "5Y fair fixed rate:             "
-            << RateFormatter::toString(fairFixedRate,4)
-            << std::endl;
-        // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(QL_FABS(fairFixedRate-s5yRate->value())<1e-8,
-            "5 years swap mispriced!");
+        fairSpread = spot5YearSwap.fairSpread();
+        fairRate = spot5YearSwap.fairRate();
 
-        NPV = oneYearForward5YearSwap.NPV();
-        std::cout << "1Yx5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " NPV:            "
-            << DoubleFormatter::toString(NPV,2)
-            << std::endl;
-        fairFloatingSpread = oneYearForward5YearSwap.fairSpread();
-        std::cout << "1Yx5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " fair spread:       "
-            << RateFormatter::toString(fairFloatingSpread,4)
-            << std::endl;
-        fairFixedRate = oneYearForward5YearSwap.fairRate();
-        std::cout << "1Yx5Y fair fixed rate:          "
-            << RateFormatter::toString(fairFixedRate,4)
-            << std::endl;
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
+
+        QL_REQUIRE(QL_FABS(fairRate-s5yRate->value())<1e-8,
+                   "5-years swap mispriced!");
+
+
+        forecastingTermStructure.linkTo(depoFutSwapTermStructure);
+        discountingTermStructure.linkTo(depoFutSwapTermStructure);
+
+        NPV = spot5YearSwap.NPV();
+        fairSpread = spot5YearSwap.fairSpread();
+        fairRate = spot5YearSwap.fairRate();
+
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-fut-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
+
+        QL_REQUIRE(QL_FABS(fairRate-s5yRate->value())<1e-8,
+                   "5-years swap mispriced!");
 
 
         forecastingTermStructure.linkTo(depoFRASwapTermStructure);
         discountingTermStructure.linkTo(depoFRASwapTermStructure);
-        std::cout << "*** using Depo-FRA-Swap term structure:" << std::endl;
 
         NPV = spot5YearSwap.NPV();
-        std::cout << "5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " NPV:               "
-            << DoubleFormatter::toString(NPV,2)
-            << std::endl;
-        fairFloatingSpread = spot5YearSwap.fairSpread();
-        std::cout << "5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " fair spread:          "
-            << RateFormatter::toString(fairFloatingSpread,4)
-            << std::endl;
-        fairFixedRate = spot5YearSwap.fairRate();
-        std::cout << "5Y fair fixed rate:             "
-            << RateFormatter::toString(fairFixedRate,4)
-            << std::endl;
-        // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(QL_FABS(fairFixedRate-s5yRate->value())<1e-8,
-            "5 years swap mispriced!");
+        fairSpread = spot5YearSwap.fairSpread();
+        fairRate = spot5YearSwap.fairRate();
+
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-FRA-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
+
+        QL_REQUIRE(QL_FABS(fairRate-s5yRate->value())<1e-8,
+                   "5-years swap mispriced!");
+
+        std::cout << rule << std::endl;
+
+        // the 1Y forward 5Y swap changes as well
+
+        std::cout << tab << "5-years, 1-year forward swap paying "
+                  << RateFormatter::toString(fixedRate,2) << std::endl;
+        std::cout << headers[0] << separator
+                  << headers[1] << separator
+                  << headers[2] << separator
+                  << headers[3] << separator << std::endl;
+        std::cout << rule << std::endl;
+
+
+        forecastingTermStructure.linkTo(depoSwapTermStructure);
+        discountingTermStructure.linkTo(depoSwapTermStructure);
 
         NPV = oneYearForward5YearSwap.NPV();
-        std::cout << "1Yx5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " NPV:            "
-            << DoubleFormatter::toString(NPV,2)
-            << std::endl;
-        fairFloatingSpread = oneYearForward5YearSwap.fairSpread();
-        std::cout << "1Yx5Y "
-            << RateFormatter::toString(fixedRate,2)
-            << " fair spread:       "
-            << RateFormatter::toString(fairFloatingSpread,4)
-            << std::endl;
-        fairFixedRate = oneYearForward5YearSwap.fairRate();
-        std::cout << "1Yx5Y fair fixed rate:          "
-            << RateFormatter::toString(fairFixedRate,4)
-            << std::endl;
+        fairSpread = oneYearForward5YearSwap.fairSpread();
+        fairRate = oneYearForward5YearSwap.fairRate();
 
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
+
+
+        forecastingTermStructure.linkTo(depoFutSwapTermStructure);
+        discountingTermStructure.linkTo(depoFutSwapTermStructure);
+
+        NPV = oneYearForward5YearSwap.NPV();
+        fairSpread = oneYearForward5YearSwap.fairSpread();
+        fairRate = oneYearForward5YearSwap.fairRate();
+
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-fut-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
+
+
+        forecastingTermStructure.linkTo(depoFRASwapTermStructure);
+        discountingTermStructure.linkTo(depoFRASwapTermStructure);
+
+        NPV = oneYearForward5YearSwap.NPV();
+        fairSpread = oneYearForward5YearSwap.fairSpread();
+        fairRate = oneYearForward5YearSwap.fairRate();
+
+        std::cout << std::setw(headers[0].size()) 
+                  << "depo-FRA-swap" << separator;
+        std::cout << std::setw(headers[1].size()) 
+                  << DoubleFormatter::toString(NPV,2) << separator;
+        std::cout << std::setw(headers[2].size()) 
+                  << RateFormatter::toString(fairSpread,4) << separator;
+        std::cout << std::setw(headers[3].size()) 
+                  << RateFormatter::toString(fairRate,4) << separator;
+        std::cout << std::endl;
 
         return 0;
 

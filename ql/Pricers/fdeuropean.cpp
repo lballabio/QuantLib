@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdeuropean.cpp
-    \brief Example of European option calculated using finite differences
-*/
-
 #include <ql/Pricers/fdeuropean.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 

@@ -41,6 +41,9 @@ namespace QuantLib {
             Sample<Array> next();
         };        
         \endcode
+
+        \todo why store correlation Matrix rather than covariance?
+
     */
     template <class GSG>
     class MultiPathGenerator {

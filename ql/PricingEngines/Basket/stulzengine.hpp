@@ -15,18 +15,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file stulz2Dengine.hpp
+/*! \file stulzengine.hpp
     \brief 2D European Basket formulae, due to Stulz (1982)
-
-    "Options on the Minimum or the Maximum of Two Risky Assets" 
-        Rene Stulz 
-        Journal of Financial Ecomomics (1982) 10, 161-185.
 */
 
 #ifndef quantlib_stulz_engine_hpp
 #define quantlib_stulz_engine_hpp
 
-#include <ql/Math/bivariatenormaldistribution.hpp>
 #include <ql/Instruments/basketoption.hpp>
 
 namespace QuantLib {

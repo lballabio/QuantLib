@@ -15,10 +15,6 @@
   FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file simpledaycounter.cpp
-     \brief Simple day counter for reproducing theoretical calculations
-*/
-
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 

@@ -22,12 +22,8 @@
 #ifndef quantlib_american_basket_montecarlo_engine_h
 #define quantlib_american_basket_montecarlo_engine_h
 
-#include <ql/grid.hpp>
-#include <ql/Math/svd.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
-#include <ql/MonteCarlo/europeanpathpricer.hpp>
-#include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Instruments/basketoption.hpp>
+#include <ql/MonteCarlo/path.hpp>
 
 namespace QuantLib {
 

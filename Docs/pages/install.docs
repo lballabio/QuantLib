@@ -23,51 +23,34 @@
 
 /*! \page install Installation
 
-    \section linux Linux/Unix
-    The simplest way to compile and install %QuantLib is:
+    \section linux Linux/Unix/Mac OS X/Cygwin
+    A tarball of the source distribution is available from <br>
+    http://quantlib.org/download.html
 
-    -# get the sources from <br>
-       http://quantlib.org/download.html and untar them.
-    -# `cd' to the %QuantLib directory and type `./configure' to configure the
-       package for your system.  If you're using `csh' on an old version of
-       System V, you might need to type `sh ./configure' instead to prevent
-       `csh' from trying to execute `configure' itself.
-       Running `configure' takes awhile.  While running, it prints some
-       messages telling which features it is checking for.
+    After uncompressing the sources:
+    -# `cd' to the %QuantLib directory and type `./configure' to 
+       configure the package for your system.  Before doing this, 
+       you might want to type `./configure --help' to obtain 
+       information on additional features you can enable.
     -# Type `make' to compile the package.
-    -# Type `make install' to install the programs and any data files and
-       documentation.
-    -# You can remove the program binaries and object files from the
-       source code directory by typing `make clean'.  To also remove the
-       files that `configure' created (so you can compile the package for
-       a different kind of computer), type `make distclean'.  There is
-       also a `make maintainer-clean' target, but that is intended mainly
-       for the package's developers.  If you use it, you will need some GNU
-       tools that usually only developers use, and which are not required to
-       build %QuantLib from tarballs. These are automake, autoconf, libtool, GNU
-       m4, GNU make, and maybe others. They all come with recent GNU/Linux
-       distributions. To begin the build process after `make distclean' start
-       with `sh ./bootstrap' which will prepare the package for compilation. You
-       can then use `configure' and `make' in the usual way.</p>
-
+    -# Type `make install' to install the library. This might require
+       administrative privileges.
 
     The file INSTALL.txt in the %QuantLib source distribution
     contains more detailed instructions.
 
     \section win32 Win32
-    Binary installers are available at <br>
+    An installer for the source distribution is available at <br>
     http://quantlib.org/download.html
 
-    Visual C++ 6.0 projects files and Borland C++ makefiles are supplied in case
-    one wants to rebuild the library.
+    Visual C++ 6.0 projects files and Borland C++ makefiles are supplied 
+    for building the library. You are strongly suggested to also download
+    and build cppUnit (http://cppunit.sourceforge.net) in order to build and
+    run the QuantLib test-suite. 
 
-    The free Borland C++ compiler is available at <br>
-    http://www.borland.com/bcppbuilder/freecompiler/
-
-    \section mac Macintosh
-    Codewarrior support is currently broken.
-    %QuantLib should compile under Mac OS X as outlined under \ref linux.
-
+    Before compiling the library, you might want to edit the file
+    "ql/userconfig.hpp" and enable additional features by uncommenting
+    the relevant lines.
 
 */
 

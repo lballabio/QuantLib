@@ -39,6 +39,9 @@ namespace QuantLib {
         by the setInterpolation() method.
             
         For strike dependence, see BlackVarianceSurface.
+
+        \todo check time extrapolation
+
     */
     class BlackVarianceCurve : public BlackVarianceTermStructure,
                                public Observer {

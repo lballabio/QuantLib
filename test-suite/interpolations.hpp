@@ -25,6 +25,8 @@ class InterpolationTest : public CppUnit::TestFixture {
   public:
     void testSplineOnGenericValues();
     void testingSimmetricEndConditions();
+    void testingDerivativeEndConditions();
+    void testingNonRestrictiveHymanFilter();
     void testSplineOnRPN15AValues();
     void testSplineOnGaussianValues();
     void testSplineErrorOnGaussianValues();

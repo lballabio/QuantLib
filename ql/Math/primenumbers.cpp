@@ -26,10 +26,6 @@
 // granted, provided that this notice is preserved.
 // ===========================================================================
 
-/*! \file primenumbers.cpp
-    \brief Prime numbers calculator
-*/
-
 #include <ql/Math/primenumbers.hpp>
 
 namespace QuantLib {

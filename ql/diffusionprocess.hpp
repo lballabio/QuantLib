@@ -77,6 +77,8 @@ namespace QuantLib {
         \f[
             dS(t, S)= (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
         \f]
+
+        \todo revise extrapolation
     */
     class BlackScholesProcess : public DiffusionProcess {
       public:

@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    //! Error function
+    //! %Error function
     /*! formula here ...
         Used to calculate the cumulative normal distribution function
     */

@@ -15,15 +15,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bjerksundstenslandengine.cpp
-    \brief American option engine using Bjerksund and Stensland approximation
-*/
-
 #include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {
-
 
     namespace {
 
@@ -139,22 +134,27 @@ namespace QuantLib {
             results_.theta       = black.theta(spot, t);
             results_.thetaPerDay = black.thetaPerDay(spot, t);
 
-            results_.strikeSensitivity = black.strikeSensitivity();
-            results_.itmProbability    = black.itmProbability();
+            results_.strikeSensitivity  = black.strikeSensitivity();
+            results_.itmCashProbability = black.itmCashProbability();
         } else {
             // early exercise can be optimal 
             switch (payoff->optionType()) {
                 case Option::Call:
                     results_.value = americanCallApproximation(
-                        spot, payoff->strike(),
-                        riskFreeDiscount, dividendDiscount, variance);
+                        spot,
+                        payoff->strike(),
+                        riskFreeDiscount,
+                        dividendDiscount,
+                        variance);
                     break;
                 case Option::Put:
-                    // Use the Bjerksund and Stensland put-call transformation
+                    // Use put-call simmetry
                     results_.value = americanCallApproximation(
-                        payoff->strike(), spot,
-                        riskFreeDiscount/dividendDiscount,
-                        1.0/dividendDiscount, variance);
+                        payoff->strike(),
+                        spot,
+                        dividendDiscount,
+                        riskFreeDiscount,
+                        variance);
                     break;
                 default:
                     QL_FAIL("BjerksundStenslandApproximationEngine::"

@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! %matrix used in linear algebra.
+    //! %Matrix used in linear algebra.
     /*! This class implements the concept of Matrix as used in linear
         algebra. As such, it is <b>not</b> meant to be used as a
         container.

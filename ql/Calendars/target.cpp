@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file target.cpp
-    \brief TARGET calendar
-*/
-
 #include <ql/Calendars/target.hpp>
 
 namespace QuantLib {

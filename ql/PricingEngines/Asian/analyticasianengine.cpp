@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticeuropeanengine.cpp
-    \brief European option engine using analytic formulas
-*/
-
 #include <ql/PricingEngines/Asian/analyticasianengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 

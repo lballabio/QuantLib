@@ -20,7 +20,6 @@ SilentInstall normal
 CRCCheck on
 LicenseText "You must agree with the following license before installing:"
 LicenseData License.txt
-;DirShow show
 DirText "Please select a location to install QuantLib (or use the default):"
 InstallDir $PROGRAMFILES\QuantLib
 InstallDirRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib "Install_Dir"

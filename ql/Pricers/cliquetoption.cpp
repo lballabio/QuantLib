@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cliquetoption.cpp
-    \brief Cliquet option
-*/
-
 #include <ql/Pricers/cliquetoption.hpp>
 
 namespace QuantLib {

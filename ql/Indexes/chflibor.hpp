@@ -28,7 +28,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    //! %CHF %Libor index (Also known as ZIBOR)
+    //! %CHF %Libor index, also known as ZIBOR
     /*! \todo check settlement days and day-count */
     class CHFLibor : public Xibor {
       public:

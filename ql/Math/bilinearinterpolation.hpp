@@ -48,7 +48,7 @@ namespace QuantLib {
                 double z4=zData_[j+1][i+1];
 
                 double t=(x-xBegin_[i])/(xBegin_[i+1]-xBegin_[i]);
-                double u=(y-yBegin_[j])/(yBegin_[j+1]-yBegin_[i]);
+                double u=(y-yBegin_[j])/(yBegin_[j+1]-yBegin_[j]);
 
                 return (1.0-t)*(1.0-u)*z1 + t*(1.0-u)*z2 
                      + (1.0-t)*u*z3 + t*u*z4;

@@ -20,6 +20,7 @@
 #include "utilities.hpp"
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/RandomNumbers/rngtraits.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
@@ -703,9 +704,7 @@ void EuropeanOptionTest::testImpliedVol() {
     Rate rRates[] = { 0.01, 0.05, 0.10 };
     double vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
 
-    // will fail with Actual 360. Why ??????????????????????
-//    DayCounter dc = Actual360();
-    DayCounter dc = Actual365();
+    DayCounter dc = Actual360();
 
     Handle<SimpleQuote> spot(new SimpleQuote(0.0));
     Handle<SimpleQuote> vol(new SimpleQuote(0.0));
@@ -933,10 +932,12 @@ CppUnit::Test* EuropeanOptionTest::suite() {
                    ("Testing European option greeks",
                     &EuropeanOptionTest::testGreeks));
 
-    // fails with Borland
+    #if !defined(QL_PATCH_BORLAND)
+    // it crashes with Borland
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing European option implied volatility",
                     &EuropeanOptionTest::testImpliedVol));
+    #endif
 
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing binomial European engines "

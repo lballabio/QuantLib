@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file blackkarasinski.cpp
-    \brief Black-Karasinski model
-*/
-
 #include <ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 #include <ql/Solvers1D/brent.hpp>

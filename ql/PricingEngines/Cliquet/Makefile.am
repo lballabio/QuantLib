@@ -7,3 +7,8 @@ include_HEADERS = \
     mccliquetengine.hpp
 
 EXTRA_DIST=makefile.mak
+
+libCliquetEngines_la_SOURCES = \
+    mccliquetengine.cpp
+
+noinst_LTLIBRARIES = libCliquetEngines.la

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file extendeddiscountcurve.cpp
-    \brief discount factor structure with detailed compound-forward calculation
-*/
-
 #include <ql/TermStructures/extendeddiscountcurve.hpp>
 #include <ql/TermStructures/compoundforward.hpp>
 

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file lattice2d.cpp
-    \brief Trinomial tree class
-*/
-
 #include <ql/Lattices/lattice2d.hpp>
 
 namespace QuantLib {

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file forwardvanillaoption.cpp
-    \brief Forward version of a vanilla option
-*/
-
 #include <ql/Instruments/forwardvanillaoption.hpp>
 
 namespace QuantLib {

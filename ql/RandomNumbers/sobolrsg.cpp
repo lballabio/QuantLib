@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file sobolrsg.cpp
-    \brief Sobol low-discrepancy sequence generator
-*/
-
 #include <ql/RandomNumbers/sobolrsg.hpp>
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>

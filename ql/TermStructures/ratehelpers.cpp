@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file ratehelpers.cpp
-    \brief rate helpers base class
-*/
-
 #include <ql/TermStructures/ratehelpers.hpp>
 
 namespace QuantLib {

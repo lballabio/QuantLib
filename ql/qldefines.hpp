@@ -19,12 +19,6 @@
     \brief Global definitions and compiler switches.
 */
 
-/*! \namespace QuantLib
-    \brief a.k.a. the %QuantLib Foundation
-
-    See sect. \ref coreclasses
-*/
-
 #ifndef quantlib_defines_h
 /* install-hook */
 #define quantlib_defines_h
@@ -117,7 +111,7 @@
     the beginning of main(), encapsulates the above enchantment for 
     Borland and is defined as empty for the other compilers.
 */
-#if defined(__BORLANDC__)
+#if defined(QL_PATCH_BORLAND)
     #define QL_IO_INIT    std::cout << std::string();
 #else
     #define QL_IO_INIT
@@ -201,13 +195,6 @@
     #error Neither <limits> nor <float.h> found
 #endif
 /*! @} */
-
-#if defined(_MSC_VER)         // Microsoft Visual C++ 6.0
-    namespace {
-        // 4 old-style pricer tests fails if the following line is uncommented
-        //unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM);
-    }
-#endif
 
 
 /*! \defgroup timeMacros Time functions

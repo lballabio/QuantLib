@@ -77,8 +77,7 @@
 #define QL_ITERATOR         std::iterator
 #define QL_ITERATOR_TRAITS  std::iterator_traits
 
-#ifdef DEBUG
-    #define QL_DEBUG
-#endif
+#define QL_PATCH_BORLAND
+
 
 #endif

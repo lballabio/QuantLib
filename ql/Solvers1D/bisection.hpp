@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! %bisection 1-D solver
+    //! %Bisection 1-D solver
     class Bisection : public Solver1D<Bisection> {
       public:
         template <class F>

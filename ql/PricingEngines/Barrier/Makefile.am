@@ -10,6 +10,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libBarrierEngines_la_SOURCES = \
-    analyticbarrierengine.cpp
+    analyticbarrierengine.cpp \
+	mcbarrierengine.cpp
 
 noinst_LTLIBRARIES = libBarrierEngines.la

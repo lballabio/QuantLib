@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,31 +16,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_h
-#define quantlib_h
+#ifndef quantlib_hpp
+#define quantlib_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/core.hpp>
 
-#include <ql/argsandresults.hpp>
-#include <ql/capvolstructures.hpp>
-#include <ql/dataformatters.hpp>
-#include <ql/dataparsers.hpp>
-#include <ql/disposable.hpp>
-#include <ql/exercise.hpp>
-#include <ql/grid.hpp>
-#include <ql/null.hpp>
-#include <ql/numericalmethod.hpp>
-#include <ql/payoff.hpp>
-#include <ql/solver1d.hpp>
-#include <ql/stochasticprocess.hpp>
-#include <ql/swaptionvolstructure.hpp>
+#include <ql/core.hpp>
 
 #include <ql/Calendars/all.hpp>
 #include <ql/CashFlows/all.hpp>
 #include <ql/DayCounters/all.hpp>
 #include <ql/FiniteDifferences/all.hpp>
-#include <ql/functions/all.hpp>
 #include <ql/Indexes/all.hpp>
 #include <ql/Instruments/all.hpp>
 #include <ql/Lattices/all.hpp>
@@ -56,6 +42,7 @@
 #include <ql/TermStructures/all.hpp>
 #include <ql/Utilities/all.hpp>
 #include <ql/Volatilities/all.hpp>
+#include <ql/functions/all.hpp>
 
 
 /*** shortcuts for the full namespaces ***/

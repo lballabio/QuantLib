@@ -42,7 +42,7 @@
 
 namespace QuantLib {
 
-    //! Singular Value Decomposition
+    //! Singular value decomposition
     /*! Refer to Golub and Van Loan: Matrix computation,
         The Johns Hopkins University Press
     */

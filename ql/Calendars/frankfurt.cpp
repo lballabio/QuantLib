@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file frankfurt.cpp
-    \brief Frankfurt calendar
-*/
-
 #include <ql/Calendars/frankfurt.hpp>
 
 namespace QuantLib {

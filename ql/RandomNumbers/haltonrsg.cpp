@@ -26,10 +26,6 @@
 // granted, provided that this notice is preserved.
 // ===========================================================================
 
-/*! \file haltonrsg.cpp
-    \brief Halton low-discrepancy sequence generator
-*/
-
 #include <ql/RandomNumbers/haltonrsg.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/Math/primenumbers.hpp>

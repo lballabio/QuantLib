@@ -32,6 +32,7 @@
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
+#include <ql/RandomNumbers/rngtraits.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
 
 

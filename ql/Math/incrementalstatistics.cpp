@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file incrementalstatistics.cpp
-    \brief statistics tool based on incremental accumulation
-*/
-
 #include <ql/Math/incrementalstatistics.hpp>
 
 namespace QuantLib {
@@ -42,7 +38,6 @@ namespace QuantLib {
         fourthPowerSum_ = 0.0;
     }
 
-    /*! \pre weights must be positive or null */
     void IncrementalStatistics::add(double value, double weight) {
         QL_REQUIRE(weight>=0.0,
                    "IncrementalStatistics::add : "

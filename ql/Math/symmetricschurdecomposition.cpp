@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file symmetricschurdecomposition.cpp
-    \brief Eigenvalues / eigenvectors of a real symmetric matrix
-*/
-
 #include <ql/Math/symmetricschurdecomposition.hpp>
 #include <vector>
 
@@ -44,7 +40,8 @@ namespace QuantLib {
         double threshold, epsPrec = 1e-15;
         bool keeplooping = true;
         Size maxIterations = 100, ite = 1;
-        do { //main loop
+        do {
+            //main loop
             double sum = 0;
             for (Size a=0; a<size-1; a++) {
                 for (Size b=a+1; b<size; b++) {
@@ -55,8 +52,8 @@ namespace QuantLib {
             if (sum==0) {
                 keeplooping = false;
             } else {
-                /*! To speed up computation a threshold is introduced to
-                make sure it is worthy to perform the Jacobi rotation
+                /* To speed up computation a threshold is introduced to
+                   make sure it is worthy to perform the Jacobi rotation
                 */
                 if (ite<5) threshold = 0.2*sum/(size*size);
                 else       threshold = 0.0;
@@ -120,15 +117,15 @@ namespace QuantLib {
         std::vector<double> eigenVector(size);
         Size row, col;
         for (col=0; col<size; col++) {
-#if   defined(__BORLANDC__)     // Borland C++ 5.5
+            #if defined(QL_PATCH_BORLAND)
             for (row=0; row<size; row++) {
                 eigenVector[row] = eigenVectors_[row][col];
             }
-#else
+            #else
             // doesn't work for Borland
             std::copy(eigenVectors_.column_begin(col),
-                eigenVectors_.column_end(col), eigenVector.begin());
-#endif
+                      eigenVectors_.column_end(col), eigenVector.begin());
+            #endif
             temp[col] = std::make_pair<double, std::vector<double> >(
                 diagonal_[col], eigenVector);
         }

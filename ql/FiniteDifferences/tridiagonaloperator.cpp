@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file tridiagonaloperator.cpp
-    \brief tridiagonal operator
-*/
-
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/dataformatters.hpp>
 

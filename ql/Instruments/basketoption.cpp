@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file basketoption.cpp
-    \brief Basket option on a number of assets
-*/
-
 #include <ql/Instruments/basketoption.hpp>
 
 namespace QuantLib {

@@ -31,11 +31,12 @@
 
 namespace QuantLib {
 
-    //! Black Volatility Term structure
+    //! Black-volatility term structure
     /*! This abstract class defines the interface of concrete
-        Black volatility term structures which will be derived from this one.
+        Black-volatility term structures which will be derived from
+        this one.
 
-        Volatilities are assumed to be expressed on an annual basis
+        Volatilities are assumed to be expressed on an annual basis.
     */
     class BlackVolTermStructure : public Observable {
       public:
@@ -107,9 +108,9 @@ namespace QuantLib {
         static const double dT;
     };
 
-   
 
-    //! Black Volatility term structure
+
+    //! Black-volatility term structure
     /*! This abstract class acts as an adapter to BlackVolTermStructure 
         allowing the programmer to implement only the
         <tt>blackVolImpl(Time, double, bool)</tt> method in derived classes.
@@ -132,7 +133,7 @@ namespace QuantLib {
     };
 
 
-    //! Black Variance term structure
+    //! Black variance term structure
     /*! This abstract class acts as an adapter to VolTermStructure allowing 
         the programmer to implement only the
         <tt>blackVarianceImpl(Time, double, bool)</tt> method in derived
@@ -156,9 +157,9 @@ namespace QuantLib {
     };
 
 
-    //! Local Volatility Term structure
+    //! Local-volatility term structure
     /*! This abstract class defines the interface of concrete
-        local volatility term structures which will be derived from this one.
+        local-volatility term structures which will be derived from this one.
 
         Volatilities are assumed to be expressed on an annual basis.
     */

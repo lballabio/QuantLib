@@ -22,7 +22,6 @@
 */
 
 /*! \page termstructures Term structures
-    Documentation for this part of the library is in progress.
 
     The abstract class QuantLib::TermStructure provides the common
     interface to concrete term structure models. Among others, methods
@@ -31,7 +30,7 @@
     which already implement part of the required methods, thus allowing
     the programmer to define only the non-redundant part. The
     PiecewiseConstantForwards class is provided as an example
-    in the QuantLib::TermStructures namespace.
+    in the ql/TermStructures directory.
 
 */
 

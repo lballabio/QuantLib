@@ -92,12 +92,13 @@ libQuantLib_la_LIBADD = \
     Instruments/libInstruments.la \
     Lattices/libLattices.la \
     Math/libMath.la \
-    MonteCarlo/libMonteCarlo.la \
     Optimization/libOptimization.la \
     Pricers/libPricers.la \
     PricingEngines/Asian/libAsianEngines.la \
     PricingEngines/Barrier/libBarrierEngines.la \
     PricingEngines/Basket/libBasketEngines.la \
+    PricingEngines/CapFloor/libCapFloorEngines.la \
+    PricingEngines/Swaption/libSwaptionEngines.la \
     PricingEngines/Vanilla/libVanillaEngines.la \
     RandomNumbers/libRandomNumbers.la \
     ShortRateModels/libShortRateModels.la \

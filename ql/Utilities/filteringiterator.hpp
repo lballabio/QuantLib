@@ -22,7 +22,7 @@
 #ifndef quantlib_filtering_iterator_h
 #define quantlib_filtering_iterator_h
 
-#include <iterator>
+#include <ql/qldefines.hpp>
 
 namespace QuantLib {
 

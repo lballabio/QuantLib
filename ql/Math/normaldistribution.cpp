@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file normaldistribution.cpp
-    \brief normal, cumulative and inverse cumulative distributions
-*/
-
 #include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {

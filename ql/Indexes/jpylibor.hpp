@@ -28,7 +28,8 @@
 
 namespace QuantLib {
 
-    //! %JPY %Libor index (Also known as TIBOR, check settlement days)
+    //! %JPY %Libor index, also known as TIBOR
+    /*! \todo check settlement days */
     class JPYLibor : public Xibor {
       public:
         JPYLibor(int n, TimeUnit units,

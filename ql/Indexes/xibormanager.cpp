@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file xibormanager.cpp
-    \brief global repository for %Xibor histories
-*/
-
 #include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {

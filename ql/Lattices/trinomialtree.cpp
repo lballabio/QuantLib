@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file trinomialtree.cpp
-    \brief Trinomial tree class
-*/
-
 #include <ql/Lattices/trinomialtree.hpp>
 
 namespace QuantLib {

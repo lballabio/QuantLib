@@ -47,7 +47,12 @@ namespace QuantLib {
     };
 
 
-    //! basic %option arguments
+    /*! basic %option arguments
+
+        \todo a) remove std::vector<Time> stoppingTimes
+              b) how to handle strike-less option (asian average strike,
+                 forward, etc.)?
+    */
     class Option::arguments : public virtual Arguments {
       public:
         arguments() {}
@@ -83,10 +88,10 @@ namespace QuantLib {
       public:
         MoreGreeks() { reset(); }
         void reset() {
-            itmProbability = deltaForward = elasticity = thetaPerDay =
+            itmCashProbability = deltaForward = elasticity = thetaPerDay =
                 strikeSensitivity = Null<double>();
         }
-        double itmProbability, deltaForward, elasticity, thetaPerDay,
+        double itmCashProbability, deltaForward, elasticity, thetaPerDay,
             strikeSensitivity;
     };
 

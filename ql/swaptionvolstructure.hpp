@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    //! Swaption volatility structure
+    //! %Swaption-volatility structure
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
     */

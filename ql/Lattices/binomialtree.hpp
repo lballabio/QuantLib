@@ -50,7 +50,7 @@ namespace QuantLib {
 
 
 
-    //! base class for equal probabilities binomial tree
+    //! Base class for equal probabilities binomial tree
     class EqualProbabilitiesBinomialTree : public BinomialTree {
       public:
         EqualProbabilitiesBinomialTree(const Handle<DiffusionProcess>& process,
@@ -65,7 +65,7 @@ namespace QuantLib {
 
 
 
-    //! base class for equal jumps binomial tree
+    //! Base class for equal jumps binomial tree
     class EqualJumpsBinomialTree : public BinomialTree {
       public:
         EqualJumpsBinomialTree(const Handle<DiffusionProcess>& process,
@@ -108,7 +108,7 @@ namespace QuantLib {
                                 double strike);
     };
 
-    //! Trigeorgis (additive equal jumps) binomial tree
+    //! %Trigeorgis (additive equal jumps) binomial tree
     class Trigeorgis : public EqualJumpsBinomialTree {
       public:
         Trigeorgis(const Handle<DiffusionProcess>& process,
@@ -118,7 +118,7 @@ namespace QuantLib {
     };
 
 
-    //! Tian tree: third moment matching, multiplicative approach
+    //! %Tian tree: third moment matching, multiplicative approach
     class Tian : public BinomialTree {
       public:
         Tian(const Handle<DiffusionProcess>& process,

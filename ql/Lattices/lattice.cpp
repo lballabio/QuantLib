@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file lattice.cpp
-    \brief Lattice class
-*/
-
 #include <ql/Lattices/lattice.hpp>
 #include <ql/discretizedasset.hpp>
 

@@ -30,7 +30,7 @@ namespace QuantLib {
 
     class Problem;
 
-    //! Optimization Method abstract class for constrained optimization pb
+    //! Abstract class for constrained optimization method
     class OptimizationMethod {
       public:
         OptimizationMethod()

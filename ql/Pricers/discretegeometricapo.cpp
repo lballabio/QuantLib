@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discretegeometricapo.cpp
-    \brief Discrete Geometric Average Price Option
-*/
-
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <numeric>
 

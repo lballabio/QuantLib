@@ -15,14 +15,14 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
-    americanmcengines.obj$(_D) \
-    analyticamericanengine.obj$(_D) \
+    analyticdigitalamericanengine.obj$(_D) \
     analyticeuropeanengine.obj$(_D) \
     baroneadesiwhaleyengine.obj$(_D) \
     bjerksundstenslandengine.obj$(_D) \
     discretizedvanillaoption.obj$(_D) \
     integralengine.obj$(_D) \
-    jumpdiffusionengine.obj$(_D)
+    jumpdiffusionengine.obj$(_D) \
+    mcdigitalengine.obj$(_D)
 
 
 # Tools to be used

@@ -107,6 +107,7 @@ namespace QuantLib {
         //! \name Modifiers
         //@{
         //! adds a datum to the set, possibly with a weight
+        /*! \pre weight must be positive or null */
         void add(double value, double weight = 1.0);
         //! adds a sequence of data to the set, with default weight
         template <class DataIterator>
@@ -115,6 +116,7 @@ namespace QuantLib {
                 add(*begin);
         }
         //! adds a sequence of data to the set, each with its weight
+        /*! \pre weights must be positive or null */
         template <class DataIterator, class WeightIterator>
         void addSequence(DataIterator begin, DataIterator end,
                          WeightIterator wbegin) {

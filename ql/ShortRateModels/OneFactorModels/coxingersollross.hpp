@@ -88,7 +88,7 @@ namespace QuantLib {
         double theta_, k_, sigma_;
     };
 
-    //! Dynamics of the short-rate under the Cox-Ingersoll-Ross model
+    //! %Dynamics of the short-rate under the Cox-Ingersoll-Ross model
     /*! The state variable \f$ y_t \f$ will here be the square-root of the 
         short-rate. It satisfies the following stochastic equation
         \f[

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discountcurve.cpp
-    \brief Term structure based on loglinear interpolation of discount factors
-*/
-
 #include <ql/TermStructures/discountcurve.hpp>
 #include <ql/TermStructures/compoundforward.hpp>
 

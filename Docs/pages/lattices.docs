@@ -22,13 +22,13 @@
 
 /*! \page lattices Lattice methods
 
-    The framework corresponding to the QuantLib::Lattices namespace
+    The framework (corresponding to the ql/Lattices directory)
     contains basic building blocks for pricing instruments using lattice
     methods (trees). A lattice, i.e. an instance of the abstract class
-    QuantLib::Lattices::Lattice, relies on one or several trees (each one
+    QuantLib::Lattice, relies on one or several trees (each one
     approximating a diffusion process) to price an instance of the
     DiscretizedAsset class. Trees are instances of classes derived from
-    QuantLib::Lattices::Tree, classes which define the branching between
+    QuantLib::Tree, classes which define the branching between
     nodes and transition probabilities.
 
     \section binomial Binomial trees
@@ -43,7 +43,7 @@
     \section trinomial Trinomial trees
     When the underlying stochastic process has a mean-reverting pattern, it is
     usually better to use a trinomial tree instead of a binomial tree. An
-    example is implemented in the QuantLib::Lattices::TrinomialTree class,
+    example is implemented in the QuantLib::TrinomialTree class,
     which is constructed using a diffusion process and a time-grid. The goal is
     to build a recombining trinomial tree that will discretize, at a finite set
     of times, the possible evolutions of a random variable \f$ y \f$ satisfying
@@ -95,6 +95,6 @@
        stock options).
     -# Define the method adjusting values, when necessary, at each time steps
        (e.g. apply the step condition for american or bermudan options).
-    Some examples are found in QuantLib::Pricers::DiscretizedSwap and
-    QuantLib::Pricers::DiscretizedSwaption.
+    Some examples are found in QuantLib::DiscretizedSwap and
+    QuantLib::DiscretizedSwaption.
 */

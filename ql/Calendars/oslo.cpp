@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file oslo.cpp
-    \brief Oslo calendar
-*/
-
 #include <ql/Calendars/oslo.hpp>
 
 namespace QuantLib {

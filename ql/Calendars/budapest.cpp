@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file budapest.cpp
-    \brief Budapest calendar
-*/
-
 #include <ql/Calendars/budapest.hpp>
 
 namespace QuantLib {

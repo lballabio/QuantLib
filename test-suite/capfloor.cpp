@@ -22,7 +22,7 @@
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>
-#include <ql/Pricers/blackcapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/blackcapfloor.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 

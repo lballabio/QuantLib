@@ -15,13 +15,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaptionhelper.cpp
-    \brief Swaption calibration helper
-*/
-
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
-#include <ql/Pricers/blackswaption.hpp>
+#include <ql/PricingEngines/Swaption/blackswaption.hpp>
 #include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {

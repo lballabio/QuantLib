@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file oneassetstrikedoption.cpp
-    \brief Option on a single asset with striked payoff
-*/
-
 #include <ql/Instruments/oneassetstrikedoption.hpp>
 #include <ql/Instruments/payoffs.hpp>
 

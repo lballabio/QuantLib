@@ -15,8 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file genericengine.hpp
-    \brief Generic option engine
+/*! \file genericmodelengine.hpp
+    \brief Generic option engine based on a model
 */
 
 #ifndef quantlib_generic_model_engine_h
@@ -28,7 +28,7 @@ namespace QuantLib {
 
     //! Base class for some pricing engine on a particular model
     /*! Derived engines only need to implement the <tt>calculate()</tt>
-      method
+        method
     */
     template<class ModelType, class ArgumentsType, class ResultsType>
     class GenericModelEngine 

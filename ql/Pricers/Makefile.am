@@ -5,11 +5,6 @@ includedir = $(prefix)/include/ql/Pricers
 include_HEADERS = \
     all.hpp \
     core.hpp \
-    analyticalcapfloor.hpp \
-    blackcapfloor.hpp \
-    blackmodel.hpp \
-    blackswaption.hpp \
-    capfloorpricer.hpp \
     cliquetoption.hpp \
     continuousgeometricapo.hpp \
     discretegeometricapo.hpp \
@@ -26,7 +21,6 @@ include_HEADERS = \
     fdmultiperiodoption.hpp \
     fdshoutoption.hpp \
     fdstepconditionoption.hpp \
-    jamshidianswaption.hpp \
     mcbasket.hpp \
     mccliquetoption.hpp \
     mcdiscretearithmeticapo.hpp \
@@ -38,18 +32,11 @@ include_HEADERS = \
     mcperformanceoption.hpp \
     mcpricer.hpp \
     performanceoption.hpp \
-    singleassetoption.hpp \
-    swaptionpricer.hpp \
-    treecapfloor.hpp \
-    treeswaption.hpp
+    singleassetoption.hpp
 
 EXTRA_DIST=makefile.mak
 
 libPricers_la_SOURCES = \
-    analyticalcapfloor.cpp \
-    blackcapfloor.cpp \
-    blackswaption.cpp \
-    capfloorpricer.cpp \
     cliquetoption.cpp \
     discretegeometricapo.cpp \
     discretegeometricaso.cpp \
@@ -63,7 +50,6 @@ libPricers_la_SOURCES = \
     fdeuropean.cpp \
     fdmultiperiodoption.cpp \
     fdstepconditionoption.cpp \
-    jamshidianswaption.cpp \
     mcbasket.cpp \
     mccliquetoption.cpp \
     mcdiscretearithmeticapo.cpp \
@@ -74,10 +60,6 @@ libPricers_la_SOURCES = \
     mcpagoda.cpp \
     mcperformanceoption.cpp \
     performanceoption.cpp \
-    singleassetoption.cpp \
-    swaptionpricer.cpp \
-    treecapfloor.cpp \
-    treeswaption.cpp
-
+    singleassetoption.cpp
 
 noinst_LTLIBRARIES = libPricers.la

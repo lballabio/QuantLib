@@ -15,14 +15,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file caphelper.cpp
-    \brief Cap calibration helper
-*/
-
 #include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/Instruments/swap.hpp>
-#include <ql/Pricers/blackcapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/blackcapfloor.hpp>
 
 namespace QuantLib {
 

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file zurich.cpp
-    \brief Zurich calendar
-*/
-
 #include <ql/Calendars/zurich.hpp>
 
 namespace QuantLib {

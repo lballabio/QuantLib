@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file warsaw.cpp
-    \brief Warsaw calendar
-*/
-
 #include <ql/Calendars/warsaw.hpp>
 
 namespace QuantLib {

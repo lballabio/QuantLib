@@ -24,8 +24,8 @@
 
 namespace QuantLib {
 
-    /*! class to gather criteria to end optimization process :
-          - stationary point
+    //! Criteria to end optimization process
+    /*!   - stationary point
           - stationary gradient
           - maximum number of iterations
           ....

@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! Composite pattern. 
+    //! %Composite pattern. 
     /*! The typical use of this class is:
         \code
         class CompositeFoo : public Composite<Foo> {

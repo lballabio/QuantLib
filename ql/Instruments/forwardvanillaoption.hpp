@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! arguments for forward (strike-resetting) option calculation
+    //! %Arguments for forward (strike-resetting) option calculation
     template <class ArgumentsType> 
     class ForwardOptionArguments : public ArgumentsType {
       public:

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file lecuyeruniformrng.cpp
-    \brief L'Ecuyer uniform random number generator
-*/
-
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
 
 namespace QuantLib {

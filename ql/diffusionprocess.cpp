@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file diffusionprocess.cpp
-    \brief Diffusion process
-*/
-
 #include <ql/diffusionprocess.hpp>
 #include <ql/Volatilities/localvolsurface.hpp>
 #include <ql/Volatilities/localvolcurve.hpp>

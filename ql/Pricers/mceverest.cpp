@@ -15,14 +15,57 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mceverest.cpp
-    \brief %Everest-type option pricer
-*/
-
-#include <ql/MonteCarlo/everestpathpricer.hpp>
 #include <ql/Pricers/mceverest.hpp>
 
 namespace QuantLib {
+
+    namespace {
+
+        class EverestPathPricer_old : public PathPricer_old<MultiPath> {
+          public:
+            EverestPathPricer_old(DiscountFactor discount,
+                                  bool useAntitheticVariance)
+            : PathPricer_old<MultiPath>(discount, useAntitheticVariance) {}
+
+            double operator()(const MultiPath& multiPath) const {
+                Size numAssets = multiPath.assetNumber();
+                Size numSteps = multiPath.pathSize();
+
+                double log_drift, log_diffusion;
+                Size i,j;
+                if (useAntitheticVariance_) {
+                    double minPrice = QL_MAX_DOUBLE, minPrice2 = QL_MAX_DOUBLE;
+                    for( j = 0; j < numAssets; j++) {
+                        log_drift = log_diffusion = 0.0;
+                        for( i = 0; i < numSteps; i++) {
+                            log_drift += multiPath[j].drift()[i];
+                            log_diffusion += multiPath[j].diffusion()[i];
+                        }
+                        minPrice  = QL_MIN(minPrice,
+                                           QL_EXP(log_drift+log_diffusion));
+                        minPrice2 = QL_MIN(minPrice2, 
+                                           QL_EXP(log_drift-log_diffusion));
+                    }
+
+                    return discount_ * 0.5 * (minPrice+minPrice2);
+                } else {
+                    double minPrice = QL_MAX_DOUBLE;
+                    for( j = 0; j < numAssets; j++) {
+                        log_drift = log_diffusion = 0.0;
+                        for( i = 0; i < numSteps; i++) {
+                            log_drift += multiPath[j].drift()[i];
+                            log_diffusion += multiPath[j].diffusion()[i];
+                        }
+                        minPrice = QL_MIN(minPrice, 
+                                          QL_EXP(log_drift+log_diffusion));
+                    }
+
+                    return discount_ * minPrice;
+                }
+            }
+        };
+
+    }
 
     McEverest::McEverest(const Array& dividendYield,
                          const Matrix& covariance,
@@ -38,7 +81,7 @@ namespace QuantLib {
         QL_REQUIRE(residualTime > 0,
                    "McEverest: residualTime must be positive");
 
-        //! Initialize the path generator
+        // initialize the path generator
         Array mu(riskFreeRate - dividendYield
                  - 0.5 * covariance.diagonal());
 
@@ -46,12 +89,12 @@ namespace QuantLib {
             new GaussianMultiPathGenerator(mu, covariance,
                                            TimeGrid(residualTime, 1), seed));
 
-        //! Initialize the pricer on the path pricer
+        // initialize the pricer on the path pricer
         Handle<PathPricer_old<MultiPath> > pathPricer(
             new EverestPathPricer_old(QL_EXP(-riskFreeRate*residualTime),
             antitheticVariance));
 
-         //! Initialize the multi-factor Monte Carlo
+        // initialize the multi-factor Monte Carlo
         mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
                                           PseudoRandomSequence_old> > > (
             new MonteCarloModel<MultiAsset_old<

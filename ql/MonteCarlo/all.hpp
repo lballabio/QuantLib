@@ -21,22 +21,8 @@
 #include <ql/qldefines.hpp>
 #include <ql/MonteCarlo/core.hpp>
 
-#include <ql/MonteCarlo/arithmeticapopathpricer.hpp>
-#include <ql/MonteCarlo/arithmeticasopathpricer.hpp>
-#include <ql/MonteCarlo/barrierpathpricer.hpp>
-#include <ql/MonteCarlo/basketpathpricer.hpp>
-#include <ql/MonteCarlo/biasedbarrierpathpricer.hpp>
 #include <ql/MonteCarlo/brownianbridge.hpp>
-#include <ql/MonteCarlo/cliquetoptionpathpricer.hpp>
-#include <ql/MonteCarlo/europeanpathpricer.hpp>
-#include <ql/MonteCarlo/everestpathpricer.hpp>
-#include <ql/MonteCarlo/geometricapopathpricer.hpp>
-#include <ql/MonteCarlo/geometricasopathpricer.hpp>
 #include <ql/MonteCarlo/getcovariance.hpp>
-#include <ql/MonteCarlo/himalayapathpricer.hpp>
-#include <ql/MonteCarlo/maxbasketpathpricer.hpp>
-#include <ql/MonteCarlo/pagodapathpricer.hpp>
-#include <ql/MonteCarlo/performanceoptionpathpricer.hpp>
-
+#include <ql/MonteCarlo/mctraits.hpp>
 
 #endif

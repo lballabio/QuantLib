@@ -2,13 +2,14 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/PricingEngines
 
-SUBDIRS = Asian Barrier Basket Cliquet Forward Quanto Vanilla
+SUBDIRS = Asian Barrier Basket CapFloor Forward Quanto Swaption Vanilla
 
 include_HEADERS = \
     all.hpp \
     americanpayoffatexpiry.hpp \
     americanpayoffathit.hpp \
     blackformula.hpp \
+    blackmodel.hpp \
     core.hpp \
     genericmodelengine.hpp \
     latticeshortratemodelengine.hpp \

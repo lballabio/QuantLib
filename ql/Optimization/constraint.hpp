@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    //! Base class for Constraint implementations
+    //! Base class for constraint implementations
     class ConstraintImpl {
       public:
         virtual ~ConstraintImpl() {}
@@ -58,7 +58,7 @@ namespace QuantLib {
         : Constraint(Handle<Constraint::Impl>(new NoConstraint::Impl)) {}
     };
 
-    //! Constraint imposing positivity to all arguments
+    //! %Constraint imposing positivity to all arguments
     class PositiveConstraint : public Constraint {
       private:
         class Impl : public Constraint::Impl {
@@ -76,7 +76,7 @@ namespace QuantLib {
         : Constraint(Handle<Constraint::Impl>(new PositiveConstraint::Impl)) {}
     };
 
-    //! Constraint imposing all arguments to be in [low,high]
+    //! %Constraint imposing all arguments to be in [low,high]
     class BoundaryConstraint : public Constraint {
       private:
         class Impl : public Constraint::Impl {
@@ -99,7 +99,7 @@ namespace QuantLib {
                                   new BoundaryConstraint::Impl(low, high))) {}
     };
 
-    //! Constraint enforcing both given sub-constraints
+    //! %Constraint enforcing both given sub-constraints
     class CompositeConstraint : public Constraint {
       private:
         class Impl : public Constraint::Impl {

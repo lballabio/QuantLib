@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! arguments for quanto option calculation
+    //! %Arguments for quanto option calculation
     template<class ArgumentsType>
     class QuantoOptionArguments : public ArgumentsType {
       public:
@@ -37,7 +37,7 @@ namespace QuantLib {
         RelinkableHandle<BlackVolTermStructure> exchRateVolTS;
     };
 
-    //! %results from quanto option calculation
+    //! %Results from quanto option calculation
     template<class ResultsType>
     class QuantoOptionResults : public ResultsType {
       public:

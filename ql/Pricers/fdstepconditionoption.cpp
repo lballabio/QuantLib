@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdstepconditionoption.cpp
-    \brief Option requiring additional code to be executed at each time step
-*/
-
 #include <ql/Pricers/fdstepconditionoption.hpp>
 #include <ql/Pricers/europeanoption.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>

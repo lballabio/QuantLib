@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,52 +22,33 @@
 */
 
 /*! \page coreclasses Core classes
-    Documentation for this part of the library is in progress.
 
-    The root namespace QuantLib contains what can be
-    considered the %QuantLib foundation, i.e., the core
-    of abstract classes upon which the rest of the library is built.
+    The base directory \c ql of the QuantLib sources contains what 
+    can be considered the %QuantLib foundation, i.e., the core
+    of concrete and abstract classes upon which the rest of the library 
+    is built.
 
-    The folder structure of the sources reflects the organization of
-    classes and functions into namespaces. These are in turn chosen to
-    represent definite <em>packages</em> or <em>class families</em>:
+    Subfolders reflect the organization of classes and functions into 
+    definite <em>packages</em> or <em>class families</em>:
     the former being groups of classes forming a framework for
     particular applications, e.g., the PDE package for partial
     differential equations; and the latter being sets of classes which
     inherit from a common base class or otherwise share a common
-    functionality and interface, e.g., the TermStructures or Operators
-    families, respectively.
+    functionality and interface. These are the subject of later
+    sections.
 
-    In the QuantLib namespace:
+    The QuantLib core classes include:
 
     <ul>
-    <li>A number of financial types is provided, such as QuantLib::Rate,
-    QuantLib::Spread, or QuantLib::DiscountFactor. All these types act
-    as, and indeed are, doubles.</li>
+    <li>numeric types such as Time, Rate, Spread, or DiscountFactor;</li>
 
-    <li>The Date, Calendar and DayCounter classes are defined 
-    (see \ref datetime).
+    <li>concrete data classes such as Date, Handle, Currency, or History;
+    base classes such as Calendar or DayCounter; and helper classes such
+    as Scheduler;
 
-    <li>The abstract classes QuantLib::ForwardVolatilitySurface
-    and QuantLib::SwaptionVolatilitySurface provide the common interface
-    to concrete volatility models. No examples are available at this
-    time, and the classes themselves will probably need some reworking.</li>
-
-    <li>The abstract class QuantLib::Solver1D provides a common interface for 
-    the one-dimensional solvers implemented in the QuantLib::Solvers1D 
-    namespace.</li>
-
-    <li>The abstract class QuantLib::Index provides the common interface of 
-    the classes implemented in the QuantLib::Indexes namespace.</li>
-
-    <li>The abstract class QuantLib::Instrument provides a common interface 
-    and a calculation ramework for the classes implemented in the 
-    QuantLib::Instruments namespace.</li>
-
-    <li>The abstract class QuantLib::TermStructure provides a common interface 
-    for the classes implemented in the QuantLib::TermStructures 
-    namespace.</li>
-
+    <li>abstract base classes providing interfaces to the rest of the 
+    library. Among these, the most notable include Instrument, Quote,
+    TermStructure, Index, PricingEngine, StochasticProcess, and others.
     </ul>
 
 */

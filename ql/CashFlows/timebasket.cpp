@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file timebasket.cpp
-    Distribution over a number of dates
-*/
-
 #include <ql/CashFlows/timebasket.hpp>
 
 namespace QuantLib {

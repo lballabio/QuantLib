@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file daycounters.cpp
-    \brief day counters functions
-*/
-
 #include <ql/functions/daycounters.hpp>
 
 namespace QuantLib {

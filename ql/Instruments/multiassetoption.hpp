@@ -66,7 +66,7 @@ namespace QuantLib {
         Matrix correlation_;
     };
 
-    //! arguments for multi asset option calculation
+    //! %Arguments for multi-asset option calculation
     class MultiAssetOption::arguments : public Option::arguments {
       public:
         arguments() {}
@@ -76,7 +76,7 @@ namespace QuantLib {
         Matrix correlation;
     };
 
-    //! %results from multi asset option calculation
+    //! %Results from multi-asset option calculation
     class MultiAssetOption::results : public Value,
                                       public Greeks {
       public:

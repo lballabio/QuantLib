@@ -17,6 +17,7 @@ OBJS = \
     beta.obj$(_D) \
     bivariatenormaldistribution.obj$(_D) \
     chisquaredistribution.obj$(_D) \
+    choleskydecomposition.obj$(_D) \
     discrepancystatistics.obj$(_D) \
     errorfunction.obj$(_D) \
     factorial.obj$(_D) \
@@ -24,9 +25,9 @@ OBJS = \
     generalstatistics.obj$(_D) \
     incompletegamma.obj$(_D) \
     incrementalstatistics.obj$(_D) \
-    matrix.obj$(_D) \
     normaldistribution.obj$(_D) \
     primenumbers.obj$(_D) \
+    pseudosqrt.obj$(_D) \
     svd.obj$(_D) \
     symmetricschurdecomposition.obj$(_D)
 

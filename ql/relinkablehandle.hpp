@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! Relinkable access to a Handle
+    //! Relinkable access to a %Handle
     /*! \pre Class "Type" must inherit from Observable */
     template <class Type>
     class Link : public Observable, public Observer {

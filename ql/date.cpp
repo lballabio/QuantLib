@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file date.cpp
-    \brief date- and time-related classes, typedefs and enumerations
-*/
-
 #include <ql/dataformatters.hpp>
 
 namespace QuantLib {

@@ -124,7 +124,7 @@ namespace QuantLib {
     };
 
 
-    //! arguments for cap/floor calculation
+    //! %Arguments for cap/floor calculation
     class CapFloor::arguments : public virtual Arguments {
       public:
         arguments() : type(CapFloor::Type(-1)) {}
@@ -140,7 +140,7 @@ namespace QuantLib {
         void validate() const;
     };
 
-    //! %results from cap/floor calculation
+    //! %Results from cap/floor calculation
     class CapFloor::results : public Value {};
 
 }

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mt19937uniformrng.cpp
-    \brief Mersenne Twister uniform random number generator
-*/
-
 
 // NOTE: The following copyright notice applies to
 // the original C implementation that has been used for this class

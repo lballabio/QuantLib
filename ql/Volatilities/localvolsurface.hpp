@@ -29,8 +29,14 @@ namespace QuantLib {
 
     //! Local volatility surface derived from a Black vol surface
     /*! For details about this implementation refers to
-        "Stochastic Volatility and Local Volatility", by Jim Gatheral
-        www.math.nyu.edu/fellows_fin_math/gatheral/Lecture1_Fall02.pdf
+        "Stochastic Volatility and Local Volatility," in
+        "Case Studies in Financial Modelling Course Notes," by
+        Jim Gatheral, Fall Term, 2003
+
+        see www.math.nyu.edu/fellows_fin_math/gatheral/Lecture1_Fall02.pdf
+
+        \bug This class is untested, probably unreliable.
+
     */
     class LocalVolSurface : public LocalVolTermStructure,
                             public Observer {
@@ -62,10 +68,6 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        /*! see "Lecture 1: Stochastic Volatility and Local Volatility"
-            in "Case studies in Financial Modelling Course Notes",
-            by J. Gatheral
-        */
         double localVolImpl(Time, double, bool extrapolate) const;
       private:
         RelinkableHandle<BlackVolTermStructure> blackTS_;

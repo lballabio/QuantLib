@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file blackvariancesurface.cpp
-    \brief Black volatility surface modelled as variance surface
-*/
-
 #include <ql/Volatilities/blackvariancesurface.hpp>
 #include <ql/Math/interpolationtraits.hpp>
 #include <ql/dataformatters.hpp>

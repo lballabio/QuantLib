@@ -1,5 +1,6 @@
 
 /*!
+ Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2003 Neil Firth
  Adapted from EuropeanOption.cpp
 
@@ -67,7 +68,7 @@ int main(int argc, char* argv[])
         std::cout << std::endl ;
 
         // write column headings
-        std::cout << "Method\t\tValue\tEstimatedError\tDiscrepancy"
+        std::cout << "Method\t\t\t\t  Value\t\tDiscrepancy"
             "\tRel. Discr." << std::endl;
 
         Date midlifeDate(19, November, 1998);
@@ -136,11 +137,10 @@ int main(int argc, char* argv[])
             Handle<PricingEngine>(new AnalyticEuropeanEngine()));
 
         // method: Black Scholes Engine
-        method = "european ";
+        method = "equivalent european option       ";
         value = euroOption.NPV();
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 8) << "\t"
-             << "N/A\t\t"
+        std::cout << method << " "
+             << DoubleFormatter::toString(value, 6) << "\t"
              << "N/A\t\t"
              << "N/A\t\t"
              << std::endl;
@@ -151,86 +151,105 @@ int main(int argc, char* argv[])
         Size timeSteps = 801;
 
         // Binomial Method (JR)
-        method = "Binomial (JR)";
+        method = "Binomial Jarrow-Rudd             ";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine<JarrowRudd>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
+        std::cout << method << " "
              << DoubleFormatter::toString(value, 6) << "\t"
-             << "N/A\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
-
         // Binomial Method (CRR)
-        method = "Binomial (CRR)";
+        method = "Binomial Cox-Ross-Rubinstein     ";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine<CoxRossRubinstein>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
+        std::cout << method << " "
              << DoubleFormatter::toString(value, 6) << "\t"
-             << "N/A\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Equal Probability Additive Binomial Tree (EQP)
-        method = "Additive (EQP)";
+        method = "Additive Equiprobabilities       ";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine<AdditiveEQPBinomialTree>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
+        std::cout << method << " "
              << DoubleFormatter::toString(value, 6) << "\t"
-             << "N/A\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Equal Jumps Additive Binomial Tree (Trigeorgis)
-        method = "Bin. Trigeorgis";
+        method = "Binomial Trigeorgis              ";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine<Trigeorgis>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
+        std::cout << method << " "
              << DoubleFormatter::toString(value, 6) << "\t"
-             << "N/A\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Tian Binomial Tree (third moment matching)
-        method = "Binomial Tian";
+        method = "Binomial Tian                    ";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine<Tian>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 8) << "\t"
-             << "N/A\t\t"
+        std::cout << method << " "
+             << DoubleFormatter::toString(value, 6) << "\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Leisen-Reimer Binomial Tree
-        method = "Binomial LR";
+        method = "Binomial Leisen-Reimer           ";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine<LeisenReimer>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 8) << "\t"
-             << "N/A\t\t"
+        std::cout << method << " "
+             << DoubleFormatter::toString(value, 6) << "\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+        // Barone-Adesi and Whaley approximation
+        method = "Barone-Adesi and Whaley approx.  ";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new BaroneAdesiWhaleyApproximationEngine));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << " "
+             << DoubleFormatter::toString(value, 6) << "\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+        // Bjerksund and Stensland approximation
+        method = "Bjerksund and Stensland approx.  ";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new BjerksundStenslandApproximationEngine));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << " "
+             << DoubleFormatter::toString(value, 6) << "\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file piecewiseflatforward.cpp
-    \brief piecewise flat forward term structure
-*/
-
 #include <ql/TermStructures/piecewiseflatforward.hpp>
 #include <ql/Solvers1D/brent.hpp>
 

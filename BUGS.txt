@@ -4,9 +4,6 @@ Currently known bugs in QuantLib 0.3.5:
 - class AmericanMCVanillaEngine:
     the engine is known not to work for deeply out-of-the-money options.
 
-- class BjerksundStenslandApproximationEngine:
-    the engine was reported to yield wrong results.
-
 - class CoxIngersollRoss;
   class ExtendedCoxIngersollRoss;
   class G2:
@@ -22,3 +19,5 @@ Currently known bugs in QuantLib 0.3.5:
     - sometimes yields negative vega when deeply in-the-money
     - method impliedVolatility() utterly fails
 
+- class OneAssetOption:
+    - method impliedVolatility() crashes (Borland compiler only)

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file stockholm.cpp
-    \brief Stockholm calendar
-*/
-
 #include <ql/Calendars/stockholm.hpp>
 
 namespace QuantLib {

@@ -27,6 +27,10 @@
 
 namespace QuantLib {
 
+    /*! Analytic formula for American exercise payoff at-hit options
+
+        \todo calculate greeks
+    */
     class AmericanPayoffAtHit {
     public:
         AmericanPayoffAtHit(double spot,
@@ -40,11 +44,11 @@ namespace QuantLib {
         double rho(double maturity) const;
     private:
         double spot_, discount_, dividendDiscount_, variance_, stdDev_;
-        
+
         double strike_, K_, DKDstrike_;
 
         double mu_, lambda_, muPlusLambda_, muMinusLambda_, log_H_S_;
-        
+
         double D1_, D2_, cum_d1_, cum_d2_;
 
         double alpha_, beta_, DalphaDd1_, DbetaDd2_;

@@ -16,8 +16,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcengine.hpp
-    \brief base class for Monte Carlo engines
+/*! \file mcvanillaengine.hpp
+    \brief Monte Carlo vanilla option engine
 */
 
 #ifndef quantlib_mcvanilla_engine_h

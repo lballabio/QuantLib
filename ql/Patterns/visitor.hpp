@@ -26,13 +26,13 @@
 
 namespace QuantLib {
 
-    //! degenerate base class for the Acyclic Visitor pattern
+    //! degenerate base class for the Acyclic %Visitor pattern
     class AcyclicVisitor {
       public:
         virtual ~AcyclicVisitor() {}
     };
 
-    //! visitor for a specific class
+    //! %Visitor for a specific class
     template <class T>
     class Visitor {
       public:

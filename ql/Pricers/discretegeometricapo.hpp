@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! Discrete Geometric Average Price Asian Option (European style)
+    //! Discrete geometric average-price Asian option (European style)
     /*! This class implements a discrete geometric average price asian
         option, with european exercise.  The formula is from "Asian
         Option", E. Levy (1997) in "Exotic Options: The State of the

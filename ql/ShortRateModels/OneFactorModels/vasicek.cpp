@@ -15,12 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file vasicek.cpp
-    \brief Vasicek model class
-*/
-
 #include <ql/ShortRateModels/OneFactorModels/vasicek.hpp>
-#include <ql/Pricers/blackmodel.hpp>
+#include <ql/PricingEngines/blackmodel.hpp>
 
 namespace QuantLib {
 

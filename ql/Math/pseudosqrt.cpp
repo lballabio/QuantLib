@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file pseudosqrt.cpp
-    \brief pseudo square root of a real symmetric matrix
-*/
-
 #include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/choleskydecomposition.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>

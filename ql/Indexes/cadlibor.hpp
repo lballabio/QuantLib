@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! %CAD %Libor index (Also known as CDOR)
+    //! %CAD %Libor index, also known as CDOR
     /*! \todo check settlement days */
     class CADLibor : public Xibor {
       public:

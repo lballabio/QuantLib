@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file incompletegamma.cpp
-    \brief Incomplete Gamma function
-*/
-
 /*
     The implementation of the algorithm was inspired by
     "Numerical Recipes in C", 2nd edition,

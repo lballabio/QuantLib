@@ -43,12 +43,12 @@ namespace QuantLib {
                                              Array& fct2fit) = 0;
     };
 
-    /*! Design a least square function as a cost function using the interface
-        provided by LeastSquareProblem class.
-        Array vector class requires function DotProduct() that computes 
-        dot product and - operator.
-        M matrix class requires function transpose() that computes transpose
-        and * operator with vector class.
+    //! Cost function for least-square problems
+    /*! Implements a cost function using the interface provided by
+        the LeastSquareProblem class.  Array vector class requires
+        function DotProduct() that computes dot product and -
+        operator.  M matrix class requires function transpose() that
+        computes transpose and * operator with vector class.
     */
     class LeastSquareFunction : public CostFunction {
       public:
@@ -69,8 +69,9 @@ namespace QuantLib {
         LeastSquareProblem &lsp_;
     };
 
-    /*! Default least square method using a given
-        optimization algorithm (default is conjugate gradient).
+    //! Non-linear least-square method.
+    /*! Using a given optimization algorithm (default is conjugate
+        gradient),
 
         min { r(x) : x in R^n }
 

@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    //! Option payoff base class
+    //! Base class for option payoffs
     class Payoff : std::unary_function<double,double> {
       public:
         virtual ~Payoff() {}

@@ -25,7 +25,6 @@
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
-#include <vector>
 
 namespace QuantLib {
 

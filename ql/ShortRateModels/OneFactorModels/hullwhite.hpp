@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! Single-factor Hull-White (extended Vasicek) model class.
+    //! Single-factor Hull-White (extended %Vasicek) model class.
     /*! This class implements the standard single-factor Hull-White model
         defined by 
         \f[ 

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bsmoperator.cpp
-    \brief differential operator for Black-Scholes-Merton equation
-*/
-
 #include <ql/FiniteDifferences/bsmoperator.hpp>
 
 namespace QuantLib {

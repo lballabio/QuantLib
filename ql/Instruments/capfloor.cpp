@@ -15,12 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capfloor.cpp
-    \brief European cap and floor class
-*/
-
 #include <ql/CashFlows/floatingratecoupon.hpp>
-#include <ql/Pricers/blackcapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/blackcapfloor.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {

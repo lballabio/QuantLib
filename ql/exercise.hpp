@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! Base exercise base class
+    //! Base exercise class
     class Exercise {
       public:
 
@@ -48,8 +48,11 @@ namespace QuantLib {
         Type type_;
     };
 
-    //! Early exercise base class
+    //! Early-exercise base class
     /*! The payoff can be at exercise (default case) or at expiry
+
+        \todo derive a plain American Exercise class (no
+              earliestDate, no payoffAtExpiry)
     */
     class EarlyExercise : public Exercise {
       public:
@@ -58,11 +61,15 @@ namespace QuantLib {
         bool payoffAtExpiry() const { return payoffAtExpiry_; }
       private:
         bool payoffAtExpiry_;
-    };  
+    };
 
     //! American exercise
     /*! An American option can be exercised at any time between two predefined
         dates
+
+        \todo check that everywhere the American condition is applied
+              from the earliestDate and not earlier
+
     */
     class AmericanExercise : public EarlyExercise {
       public:
@@ -73,6 +80,9 @@ namespace QuantLib {
 
     //! Bermudan exercise
     /*! A Bermudan option can only be exercised at a set of fixed dates.
+
+        \todo it would be nice to have a way for making a Bermudan with
+              one exercise date equivalent to an European
     */
     class BermudanExercise : public EarlyExercise {
       public:

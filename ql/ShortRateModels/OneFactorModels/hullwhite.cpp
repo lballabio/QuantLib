@@ -15,13 +15,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file hullwhite.cpp
-    \brief Hull & White model
-*/
-
 #include <ql/ShortRateModels/OneFactorModels/hullwhite.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
-#include <ql/Pricers/blackmodel.hpp>
+#include <ql/PricingEngines/blackmodel.hpp>
 
 namespace QuantLib {
 

@@ -28,12 +28,12 @@
 
 namespace QuantLib {
 
-    //! placeholder for enumerated barrier types
+    //! Placeholder for enumerated barrier types
     struct Barrier {
         enum Type { DownIn, UpIn, DownOut, UpOut };
     };
 
-    //! Barrier option on a single asset.
+    //! %Barrier option on a single asset.
     /*! The analytic pricing engine will be used if none if passed. */
     class BarrierOption : public OneAssetStrikedOption {
       public:
@@ -55,7 +55,7 @@ namespace QuantLib {
         double rebate_;
     };
 
-    //! %arguments for barrier option calculation
+    //! %Arguments for barrier option calculation
     class BarrierOption::arguments : public OneAssetStrikedOption::arguments {
       public:
         Barrier::Type barrierType;
@@ -64,7 +64,7 @@ namespace QuantLib {
         void validate() const;
     };
 
-    //! Barrier engine base class
+    //! %Barrier engine base class
     class BarrierEngine : public GenericEngine<BarrierOption::arguments,
                                                BarrierOption::results> {};
 

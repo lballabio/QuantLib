@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file localvolsurface.cpp
-    \brief Local volatility surface derived from a Black vol surface
-*/
-
 #include <ql/Volatilities/localvolsurface.hpp>
 
 namespace QuantLib {
@@ -59,10 +55,6 @@ namespace QuantLib {
             LocalVolTermStructure::accept(v);
     }
 
-    /*! see "Lecture 1: Stochastic Volatility and Local Volatility"
-        in "Case studies in Financial Modelling Course Notes",
-        by J. Gatheral
-    */
     double LocalVolSurface::localVolImpl(Time t, double underlyingLevel, 
                                          bool extrapolate) const {
 
@@ -79,8 +71,8 @@ namespace QuantLib {
         strikep=strike*QL_EXP(dy);
         strikem=strike/QL_EXP(dy);
         w  = blackTS_->blackVariance(t, strike,  extrapolate);
-        wp = blackTS_->blackVariance(t, strikep, extrapolate);
-        wm = blackTS_->blackVariance(t, strikem, extrapolate);
+        wp = blackTS_->blackVariance(t, strikep, true);
+        wm = blackTS_->blackVariance(t, strikem, true);
         dwdy = (wp-wm)/(2.0*dy);
         d2wdy2 = (wp-2.0*w+wm)/(dy*dy);
 
@@ -88,7 +80,7 @@ namespace QuantLib {
         double dt, wpt, wmt, dwdt;
         if (t==0.0) {
             dt = 0.0001;
-            wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
+            wpt = blackTS_->blackVariance(t+dt, strike, true);
             QL_REQUIRE(wpt>=w,
                        "LocalVolSurface::localVolImpl : "
                        "decreasing variance at strike "
@@ -100,8 +92,8 @@ namespace QuantLib {
             dwdt = (wpt-w)/dt;
         } else {
             dt = QL_MIN(0.0001, t/2.0);
-            wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
-            wmt = blackTS_->blackVariance(t-dt, strike, extrapolate);
+            wpt = blackTS_->blackVariance(t+dt, strike, true);
+            wmt = blackTS_->blackVariance(t-dt, strike, true);
             QL_REQUIRE(wpt>=w,
                        "LocalVolSurface::localVolImpl : "
                        "decreasing variance at strike "

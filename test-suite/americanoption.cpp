@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -131,13 +131,12 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
 void AmericanOptionTest::testBjerksundStenslandValues() {
 
-    /* The data below are from
-       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
-       pag 27
-    */
     VanillaOptionData values[] = {
           //      type, strike,   spot,    q,    r,    t,  vol,   value, tol
-        { Option::Call,  40.00,  42.00, 0.08, 0.04, 0.75, 0.35,  5.2704, 1e-4 }
+          // from "Option pricing formulas", Haug, McGraw-Hill 1998, pag 27
+        { Option::Call,  40.00,  42.00, 0.08, 0.04, 0.75, 0.35,  5.2704, 1e-4 },
+          // from "Option pricing formulas", Haug, McGraw-Hill 1998, VBA code
+        { Option::Put,   40.00,  36.00, 0.00, 0.06, 1.00, 0.20,  4.4531, 1e-4 }
     };
 
     DayCounter dc = Actual360();
@@ -194,7 +193,7 @@ CppUnit::Test* AmericanOptionTest::suite() {
         ("Testing Bjerksund and Stensland approximation for American options",
         &AmericanOptionTest::testBjerksundStenslandValues));
     tests->addTest(new CppUnit::TestCaller<AmericanOptionTest>
-        ("Testing Barone-Adesi and Whiley approximation for American options",
+        ("Testing Barone-Adesi and Whaley approximation for American options",
         &AmericanOptionTest::testBaroneAdesiWhaleyValues));
 
     return tests;

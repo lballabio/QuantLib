@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fddividendamericanoption.cpp
-    \brief american option with discrete deterministic dividends
-*/
-
 #include <ql/Pricers/fddividendamericanoption.hpp>
 
 namespace QuantLib {

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discretizedasset.cpp
-    \brief Discretized asset classes
-*/
-
 #include <ql/discretizedasset.hpp>
 
 namespace QuantLib {

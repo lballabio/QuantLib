@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file twofactormodel.cpp
-    \brief Abstract two-factor interest rate model class
-*/
-
 #include <ql/ShortRateModels/twofactormodel.hpp>
 
 namespace QuantLib {

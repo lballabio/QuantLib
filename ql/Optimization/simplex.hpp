@@ -32,11 +32,11 @@
 
 namespace QuantLib {
 
-    //! Multi-dimensional Simplex class
+    //! Multi-dimensional simplex class
     class Simplex : public OptimizationMethod {
       public:
-        /*! Constructor taking as input lambda as the
-          characteristic length and tol as the precision
+        /*! Constructor taking as input the characteristic length and
+            tolerance
         */
         Simplex(double lambda, double tol) 
         : lambda_(lambda), tol_(tol) {}

@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for Barrier options using analytical formulae
+    //! Pricing engine for barrier options using analytical formulae
     /*! The formulas are taken from "Option pricing formulas",
          E.G. Haug, McGraw-Hill, p.69 and following.
     */

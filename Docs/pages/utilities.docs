@@ -22,8 +22,6 @@
 */
 
 /*! \page utilities Utilities
-    Documentation for this part of the library is in progress.
-
     Iterators are meant to build a sequence on the fly from one or more other
     sequences, without having to allocate place for storing it. A couple of
     examples: suppose we have a function which calculates the average of a
@@ -61,7 +59,7 @@
     have to allocate the product vector, quite possibly just to throw it away
     when the calculation is done.
 
-    QuantLib::Utilities::coupling_iterator allows us to do the same thing
+    QuantLib::coupling_iterator allows us to do the same thing
     without allocating the extra vector: what we do is simply:
 
     \code

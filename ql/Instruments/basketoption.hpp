@@ -22,7 +22,6 @@
 #ifndef quantlib_basket_option_h
 #define quantlib_basket_option_h
 
-
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/Instruments/multiassetoption.hpp>
 
@@ -50,7 +49,7 @@ namespace QuantLib {
         BasketType basketType_;
     };
 
-    //! arguments for basket option calculation
+    //! %Arguments for basket option calculation
     class BasketOption::arguments : public MultiAssetOption::arguments {
       public:
         arguments() {}
@@ -59,7 +58,7 @@ namespace QuantLib {
     };
 
 
-    //! Basket option engine base class
+    //! %Basket option engine base class
     class BasketEngine : public GenericEngine<BasketOption::arguments,
                                                BasketOption::results> {};
 

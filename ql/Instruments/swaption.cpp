@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaption.cpp
-    \brief Swaption
-*/
-
 #include <ql/Instruments/swaption.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/parcoupon.hpp>

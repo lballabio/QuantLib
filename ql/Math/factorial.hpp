@@ -15,7 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 /*! \file factorial.hpp
     \brief Factorial numbers calculator
 */
@@ -27,10 +26,7 @@
 
 namespace QuantLib {
 
-    //! Factorial numbers calculator
-    /*! 
-
-     */
+    //! %Factorial numbers calculator
     class Factorial {
       public:
         static double get(unsigned int n);

@@ -15,15 +15,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file london.cpp
-    \brief London calendar
-*/
-
 #include <ql/Calendars/london.hpp>
 
 namespace QuantLib {
 
-    //! see http://www.dti.gov.uk/er/bankhol.htm
     bool London::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();

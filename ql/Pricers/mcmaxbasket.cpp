@@ -15,14 +15,77 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcmaxbasket.cpp
-    \brief Max Basket Monte Carlo pricer
-*/
-
-#include <ql/MonteCarlo/maxbasketpathpricer.hpp>
 #include <ql/Pricers/mcmaxbasket.hpp>
 
 namespace QuantLib {
+
+    namespace {
+
+        class MaxBasketPathPricer_old : public PathPricer_old<MultiPath> {
+          public:
+            MaxBasketPathPricer_old(const std::vector<double>& underlying,
+                                    DiscountFactor discount,
+                                    bool useAntitheticVariance)
+            : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
+              underlying_(underlying) {
+                for (Size i=0; i<underlying_.size(); i++) {
+                    QL_REQUIRE(underlying_[i]>0.0,
+                               "MaxBasketPathPricer_old: "
+                               "underlying less/equal zero not allowed");
+                }
+            }
+
+            double operator()(const MultiPath& multiPath) const {
+                Size numAssets = multiPath.assetNumber();
+                Size numSteps = multiPath.pathSize();
+                QL_REQUIRE(underlying_.size() == numAssets,
+                           "MaxBasketPathPricer_old: "
+                           "the multi-path must contain "
+                           + IntegerFormatter::toString(underlying_.size()) + 
+                           " assets");
+
+                double log_drift, log_diffusion;
+                Size i,j;
+                if (useAntitheticVariance_) {
+                    double maxPrice = -QL_MAX_DOUBLE, 
+                           maxPrice2 = -QL_MAX_DOUBLE;
+                    for(j = 0; j < numAssets; j++) {
+                        log_drift = log_diffusion = 0.0;
+                        for(i = 0; i < numSteps; i++) {
+                            log_drift += multiPath[j].drift()[i];
+                            log_diffusion += multiPath[j].diffusion()[i];
+                        }
+                        maxPrice = QL_MAX(maxPrice,
+                                          underlying_[j]*QL_EXP(log_drift + 
+                                                                log_diffusion));
+                        maxPrice2 = QL_MAX(maxPrice2,
+                                           underlying_[j]*QL_EXP(log_drift - 
+                                                                 log_diffusion));
+                    }
+                    return discount_*0.5*(maxPrice+maxPrice2);
+                } else {
+                    double maxPrice = -QL_MAX_DOUBLE;
+                    for(j = 0; j < numAssets; j++) {
+                        log_drift = log_diffusion = 0.0;
+                        for(i = 0; i < numSteps; i++) {
+                            log_drift += multiPath[j].drift()[i];
+                            log_diffusion += multiPath[j].diffusion()[i];
+                        }
+                        maxPrice = QL_MAX(maxPrice,
+                                          underlying_[j]*QL_EXP(log_drift + 
+                                                                log_diffusion));
+                    }
+                    return discount_*maxPrice;
+                }
+
+            }
+
+          private:
+            std::vector<double> underlying_;
+        };
+
+    }
+
 
     McMaxBasket::McMaxBasket(const std::vector<double>& underlying,
                              const Array& dividendYield, 
@@ -41,7 +104,7 @@ namespace QuantLib {
         QL_REQUIRE(residualTime > 0,
                    "McMaxBasket: residual time must be positive");
 
-        //! Initialize the path generator
+        // initialize the path generator
         Array mu(riskFreeRate - dividendYield
                  - 0.5 * covariance.diagonal());
 
@@ -49,13 +112,13 @@ namespace QuantLib {
             new GaussianMultiPathGenerator(mu, covariance,
             TimeGrid(residualTime, 1), seed));
 
-        //! Initialize the pricer on the path pricer
+        // initialize the pricer on the path pricer
         Handle<PathPricer_old<MultiPath> > pathPricer(
             new MaxBasketPathPricer_old(
             underlying, QL_EXP(-riskFreeRate*residualTime),
             antitheticVariance));
 
-         //! Initialize the multi-factor Monte Carlo
+        // initialize the multi-factor Monte Carlo
         mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
                                           PseudoRandomSequence_old> > > (
             new MonteCarloModel<MultiAsset_old<

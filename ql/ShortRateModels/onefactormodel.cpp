@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file onefactormodel.cpp
-    \brief Abstract one-factor interest rate model class
-*/
-
 #include <ql/ShortRateModels/onefactormodel.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 #include <ql/Solvers1D/brent.hpp>

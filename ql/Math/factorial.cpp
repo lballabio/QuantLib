@@ -15,11 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
-/*! \file factorial.cpp
-    \brief Factorial numbers calculator
-*/
-
 #include <ql/Math/factorial.hpp>
 #include <ql/Math/gammadistribution.hpp>
 #include <ql/errors.hpp>

@@ -28,7 +28,9 @@
 
 namespace QuantLib {
 
-    //! bicubic spline interpolation between discrete points
+    /*! bicubic spline interpolation between discrete points
+        \todo revise end conditions
+    */
     class BicubicSpline : public Interpolation2D {
       protected:
         //! bicubic spline implementation

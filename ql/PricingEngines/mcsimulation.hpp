@@ -16,8 +16,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcengine.hpp
-    \brief base class for Monte Carlo engines
+/*! \file mcsimulation.hpp
+    \brief framework for Monte Carlo engines
 */
 
 #ifndef quantlib_montecarlo_engine_h
@@ -25,7 +25,6 @@
 
 #include <ql/grid.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
-#include <ql/MonteCarlo/europeanpathpricer.hpp>
 
 namespace QuantLib {
 

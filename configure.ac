@@ -204,9 +204,10 @@ AC_CONFIG_FILES([
     ql/PricingEngines/Asian/Makefile
     ql/PricingEngines/Barrier/Makefile
     ql/PricingEngines/Basket/Makefile
-    ql/PricingEngines/Cliquet/Makefile
+    ql/PricingEngines/CapFloor/Makefile
     ql/PricingEngines/Forward/Makefile
     ql/PricingEngines/Quanto/Makefile
+    ql/PricingEngines/Swaption/Makefile
     ql/PricingEngines/Vanilla/Makefile
     ql/RandomNumbers/Makefile
     ql/ShortRateModels/Makefile

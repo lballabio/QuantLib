@@ -29,9 +29,13 @@ namespace QuantLib {
 
     /*! Combines the correlation matrix and the vector of volatilities
         to return the covariance matrix.
+
         Note that only the symmetric part of the correlation matrix is
         used. Also it is assumed that the diagonal member of the
         correlation matrix equals one.
+
+        \pre The correlation matrix must be symmetric with the diagonal
+             members equal to one.
     */
     template<class DataIterator>
     Disposable<Matrix> getCovariance(DataIterator volBegin,
@@ -47,12 +51,27 @@ namespace QuantLib {
         Matrix covariance(size,size);
         Size i, j;
         DataIterator iIt, jIt;
-        for(i=0, iIt=volBegin; i<size; i++, iIt++){
-            for(j=0, jIt=volBegin; j<i; j++, jIt++){
+        for (i=0, iIt=volBegin; i<size; i++, iIt++){
+            for (j=0, jIt=volBegin; j<i; j++, jIt++){
+                QL_REQUIRE(QL_FABS(corr[i][j]-corr[j][i]) <= 1.0e-12,
+                           "invalid correlation matrix:"
+                           "\nc[" + IntegerFormatter::toString(i) +
+                           ", "   + IntegerFormatter::toString(j) +
+                           "] = " + DoubleFormatter::toString(corr[i][j]) +
+                           "\nc[" + IntegerFormatter::toString(j) +
+                           ", "   + IntegerFormatter::toString(i) +
+                           "] = " + DoubleFormatter::toString(corr[j][i]));
+                covariance[i][i] = (*iIt) * (*iIt);
                 covariance[i][j] = (*iIt) * (*jIt) *
                     0.5 * (corr[i][j] + corr[j][i]);
                 covariance[j][i] = covariance[i][j];
             }
+            QL_REQUIRE(QL_FABS(corr[i][i]-1.0) <= 1.0e-12,
+                       "invalid correlation matrix, diagonal element of the "
+                       + IntegerFormatter::toOrdinal(i) +
+                       " row is "
+                       + DoubleFormatter::toString(corr[i][i]) +
+                       " instead of 1.0");
             covariance[i][i] = (*iIt) * (*iIt);
         }
         return covariance;

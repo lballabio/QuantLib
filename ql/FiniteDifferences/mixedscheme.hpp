@@ -62,7 +62,9 @@ namespace QuantLib {
         \warning The differential operator must be linear for
                  this evolver to work.
 
-        \todo add Douglas Scheme
+        \todo a) derive variable theta schemes
+              b) introduce multi time-level schemes.
+
     */
     template <class Operator>
     class MixedScheme  {

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file europeanoption.cpp
-    \brief european option
-*/
-
 #include <ql/Pricers/europeanoption.hpp>
 
 namespace QuantLib {

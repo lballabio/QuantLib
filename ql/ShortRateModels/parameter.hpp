@@ -88,7 +88,7 @@ namespace QuantLib {
 
     };
 
-    //! Parameter which is always zero \f$ a(t) = 0 \f$
+    //! %Parameter which is always zero \f$ a(t) = 0 \f$
     class NullParameter : public Parameter {
       private:
         class Impl : public Parameter::Impl {
@@ -105,7 +105,7 @@ namespace QuantLib {
         {}
     };
 
-    //! Piecewise constant parameter
+    //! Piecewise-constant parameter
     /*! \f$ a(t) = a_i if t_{i-1} \geq t < t_i \f$.
         This kind of parameter is usually used to enhance the fitting of a
         model

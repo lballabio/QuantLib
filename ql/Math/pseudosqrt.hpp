@@ -50,6 +50,14 @@ namespace QuantLib {
         \pre the given matrix must be symmetric.
 
         \relates Matrix
+
+        \todo a) implement Hypersphere decomposition:
+                 1) Jäckel "Monte Carlo Methods in Finance", Chapter 6
+                 2) Brigo "A Note on Correlation and Rank Reduction"
+                 3) Rapisarda, Brigo, Mercurio "Parameterizing correlations:
+                    a geometric interpretation"
+              b) implement Higham algorithm:
+                 Higham "Computing the nearest correlation matrix"
     */
     const Disposable<Matrix> pseudoSqrt(const Matrix&,
                                         SalvagingAlgorithm::Type);

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file integralengine.cpp
-    \brief Option engine using the integral approach
-*/
-
 #include <ql/PricingEngines/Vanilla/integralengine.hpp>
 #include <ql/Math/segmentintegral.hpp>
 

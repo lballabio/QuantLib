@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdbermudanoption.cpp
-    \brief finite-difference evaluation of Bermudan option
-*/
-
 #include <ql/Pricers/fdbermudanoption.hpp>
 #include <ql/Pricers/europeanoption.hpp>
 

@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! %Sydney, calendar (New South Wales, Australia)
+    //! %Sydney calendar (New South Wales, Australia)
     /*! Holidays:
       <ul>
       <li>Saturdays</li>

@@ -16,7 +16,7 @@
 */
 
 /*! \file mctraits.hpp
-    \brief Monte Carlo policy descriptors
+    \brief Monte Carlo policies
 */
 
 #ifndef quantlib_mc_traits_h
@@ -25,53 +25,9 @@
 #include <ql/MonteCarlo/pathgenerator.hpp>
 #include <ql/MonteCarlo/multipathgenerator.hpp>
 #include <ql/MonteCarlo/pathpricer.hpp>
-#include <ql/RandomNumbers/mt19937uniformrng.hpp>
-#include <ql/RandomNumbers/inversecumgaussianrng.hpp>
-#include <ql/RandomNumbers/randomsequencegenerator.hpp>
-#include <ql/RandomNumbers/sobolrsg.hpp>
-#include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
-#include <ql/Math/normaldistribution.hpp>
+#include <ql/RandomNumbers/rngtraits.hpp>
 
 namespace QuantLib {
-
-    // random number traits
-
-    template <class RNG, class IC>
-    struct GenericPseudoRandom {
-        // typedefs
-        typedef RNG urng_type;
-        typedef ICGaussianRng<urng_type,IC> rng_type;
-        typedef RandomSequenceGenerator<urng_type> ursg_type;
-        typedef ICGaussianRsg<ursg_type,IC> rsg_type;
-        // more traits
-        enum { allowsErrorEstimate = 1 };
-        // factory
-        static rsg_type make_sequence_generator(int dimension,
-                                                unsigned long seed) {
-            ursg_type g(dimension, seed);
-            return rsg_type(g);
-        }
-    };
-
-    // default choice
-    typedef GenericPseudoRandom<MersenneTwisterUniformRng,
-                                InverseCumulativeNormal> PseudoRandom;
-
-    struct LowDiscrepancy {
-        // typedefs
-        typedef SobolRsg ursg_type;
-        typedef InverseCumulativeNormal ic_type;
-        typedef ICGaussianRsg<ursg_type,ic_type> rsg_type;
-        // more traits
-        enum { allowsErrorEstimate = 0 };
-        // factory
-        static rsg_type make_sequence_generator(int dimension,
-                                                unsigned long seed) {
-            ursg_type g(dimension, seed);
-            return rsg_type(g);
-        }
-    };
-
 
     // path generation and pricing traits
 
@@ -94,20 +50,6 @@ namespace QuantLib {
 
 
     // support for migration --- born deprecated 
-
-    struct PseudoRandom_old {
-        typedef MersenneTwisterUniformRng urng_type;
-        typedef InverseCumulativeNormal ic_type;
-        typedef ICGaussianRng<urng_type,ic_type> rsg_type;
-    };
-
-    struct PseudoRandomSequence_old {
-        typedef MersenneTwisterUniformRng urng_type;
-        typedef InverseCumulativeNormal ic_type;
-        typedef ICGaussianRng<urng_type,ic_type> rng_type;
-        typedef RandomArrayGenerator<rng_type> rsg_type;
-    };
-
 
     template <class rng_traits = PseudoRandom_old>
     struct SingleAsset_old {

@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! Swaption class
+    //! %Swaption class
     class Swaption : public Option {
       public:
         class arguments;
@@ -47,7 +47,7 @@ namespace QuantLib {
         const RelinkableHandle<TermStructure>& termStructure_;
     };
 
-    //! arguments for swaption calculation
+    //! %Arguments for swaption calculation
     class Swaption::arguments : public SimpleSwap::arguments,
                                 public Option::arguments {
       public:
@@ -64,7 +64,7 @@ namespace QuantLib {
         void validate() const;
     };
 
-    //! %results from swaption calculation
+    //! %Results from swaption calculation
     class Swaption::results : public Value {};
 
 }

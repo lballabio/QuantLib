@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file tokyo.cpp
-    \brief Tokyo calendar
-*/
-
 #include <ql/Calendars/tokyo.hpp>
 
 namespace QuantLib {

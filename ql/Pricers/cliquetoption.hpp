@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cliquetoption.hpp
+/*! \file Pricers/cliquetoption.hpp
     \brief Cliquet option
 */
 

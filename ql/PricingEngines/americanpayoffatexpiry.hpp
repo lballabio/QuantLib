@@ -27,6 +27,10 @@
 
 namespace QuantLib {
 
+    /*! Analytic formula for American exercise payoff at-expiry options
+
+        \todo calculate greeks
+    */
     class AmericanPayoffAtExpiry {
     public:
         AmericanPayoffAtExpiry(double spot,
@@ -38,11 +42,11 @@ namespace QuantLib {
     private:
         double spot_, discount_, dividendDiscount_, variance_;
         double forward_, stdDev_;
-        
+
         double strike_, K_, DKDstrike_;
 
         double mu_, log_H_S_;
-        
+
         double D1_, D2_, cum_d1_, cum_d2_;
 
         double alpha_, beta_, DalphaDd1_, DbetaDd2_;
@@ -200,7 +204,7 @@ namespace QuantLib {
 
     }
 
-   
+
     inline double AmericanPayoffAtExpiry::value() const {
         return discount_ * K_ * (Y_ * alpha_ + X_ * beta_);
     }

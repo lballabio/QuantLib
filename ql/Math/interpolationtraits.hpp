@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! linear interpolation traits
+    //! %Linear interpolation traits
     class Linear {
       public:
         template <class I1, class I2>
@@ -47,7 +47,7 @@ namespace QuantLib {
         }
     };
 
-    //! log-linear interpolation traits
+    //! Log-linear interpolation traits
     class LogLinear {
       public:
         template <class I1, class I2>
@@ -58,7 +58,7 @@ namespace QuantLib {
         }
     };
 
-    //! cubic-spline interpolation traits
+    //! Cubic-spline interpolation traits
     class Cubic {
       public:
         template <class I1, class I2>

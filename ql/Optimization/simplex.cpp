@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file simplex.cpp
-    \brief Simplex optimization method
-*/
-
 /* The implementation of the algorithm was highly inspired by
  * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, 
  * Flannery, chapter 10

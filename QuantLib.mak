@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -56,10 +53,6 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
-	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
-	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
-	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
-	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
@@ -68,18 +61,12 @@ CLEAN :
 	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\barrierpathpricer.obj"
-	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
 	-@erase "$(INTDIR)\basketoption.sbr"
-	-@erase "$(INTDIR)\basketpathpricer.obj"
-	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\beta.obj"
 	-@erase "$(INTDIR)\beta.sbr"
-	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
-	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
@@ -122,8 +109,6 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
-	-@erase "$(INTDIR)\cliquetoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -142,8 +127,6 @@ CLEAN :
 	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
-	-@erase "$(INTDIR)\digitalpathpricer.obj"
-	-@erase "$(INTDIR)\digitalpathpricer.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -160,14 +143,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
-	-@erase "$(INTDIR)\europeanmultipathpricer.obj"
-	-@erase "$(INTDIR)\europeanmultipathpricer.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
-	-@erase "$(INTDIR)\europeanpathpricer.obj"
-	-@erase "$(INTDIR)\europeanpathpricer.sbr"
-	-@erase "$(INTDIR)\everestpathpricer.obj"
-	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -204,18 +181,12 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
-	-@erase "$(INTDIR)\geometricapopathpricer.obj"
-	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
-	-@erase "$(INTDIR)\geometricasopathpricer.obj"
-	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
 	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
-	-@erase "$(INTDIR)\himalayapathpricer.obj"
-	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
@@ -246,14 +217,18 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\mathf.sbr"
-	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
-	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mcbasketengine.obj"
+	-@erase "$(INTDIR)\mcbasketengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
+	-@erase "$(INTDIR)\mcdigitalengine.obj"
+	-@erase "$(INTDIR)\mcdigitalengine.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
@@ -290,14 +265,10 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactoroperator.sbr"
 	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\oslo.sbr"
-	-@erase "$(INTDIR)\pagodapathpricer.obj"
-	-@erase "$(INTDIR)\pagodapathpricer.sbr"
 	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\parcoupon.sbr"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoption.sbr"
-	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
-	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
@@ -397,7 +368,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -460,6 +464,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\beta.sbr" \
 	"$(INTDIR)\bivariatenormaldistribution.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\choleskydecomposition.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\factorial.sbr" \
@@ -469,32 +474,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\incrementalstatistics.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\pseudosqrt.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\arithmeticapopathpricer.sbr" \
-	"$(INTDIR)\arithmeticasopathpricer.sbr" \
-	"$(INTDIR)\barrierpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
-	"$(INTDIR)\digitalpathpricer.sbr" \
-	"$(INTDIR)\europeanmultipathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricapopathpricer.sbr" \
-	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\maxbasketpathpricer.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr" \
-	"$(INTDIR)\performanceoptionpathpricer.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\capfloorpricer.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
@@ -508,7 +494,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
@@ -520,19 +505,28 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\swaptionpricer.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
+	"$(INTDIR)\mcbasketengine.sbr" \
 	"$(INTDIR)\stulzengine.sbr" \
+	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr" \
+	"$(INTDIR)\capfloorpricer.sbr" \
+	"$(INTDIR)\treecapfloor.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
+	"$(INTDIR)\jamshidianswaption.sbr" \
+	"$(INTDIR)\swaptionpricer.sbr" \
+	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -571,10 +565,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
-	"$(INTDIR)\choleskydecomposition.sbr" \
-	"$(INTDIR)\pseudosqrt.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -643,6 +634,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\beta.obj" \
 	"$(INTDIR)\bivariatenormaldistribution.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\choleskydecomposition.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\factorial.obj" \
@@ -652,32 +644,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\incrementalstatistics.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\pseudosqrt.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\arithmeticapopathpricer.obj" \
-	"$(INTDIR)\arithmeticasopathpricer.obj" \
-	"$(INTDIR)\barrierpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\cliquetoptionpathpricer.obj" \
-	"$(INTDIR)\digitalpathpricer.obj" \
-	"$(INTDIR)\europeanmultipathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricapopathpricer.obj" \
-	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\maxbasketpathpricer.obj" \
-	"$(INTDIR)\pagodapathpricer.obj" \
-	"$(INTDIR)\performanceoptionpathpricer.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\blackcapfloor.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\capfloorpricer.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
@@ -691,7 +664,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
@@ -703,19 +675,28 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\swaptionpricer.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
+	"$(INTDIR)\mcbasketengine.obj" \
 	"$(INTDIR)\stulzengine.obj" \
+	"$(INTDIR)\analyticdigitalamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\blackcapfloor.obj" \
+	"$(INTDIR)\capfloorpricer.obj" \
+	"$(INTDIR)\treecapfloor.obj" \
+	"$(INTDIR)\blackswaption.obj" \
+	"$(INTDIR)\jamshidianswaption.obj" \
+	"$(INTDIR)\swaptionpricer.obj" \
+	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -754,10 +735,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticdigitalamericanengine.obj" \
-	"$(INTDIR)\choleskydecomposition.obj" \
-	"$(INTDIR)\pseudosqrt.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -793,10 +771,6 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
-	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
-	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
-	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
-	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
@@ -805,18 +779,12 @@ CLEAN :
 	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\barrierpathpricer.obj"
-	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
 	-@erase "$(INTDIR)\basketoption.sbr"
-	-@erase "$(INTDIR)\basketpathpricer.obj"
-	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\beta.obj"
 	-@erase "$(INTDIR)\beta.sbr"
-	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
-	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
@@ -859,8 +827,6 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
-	-@erase "$(INTDIR)\cliquetoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -879,8 +845,6 @@ CLEAN :
 	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
-	-@erase "$(INTDIR)\digitalpathpricer.obj"
-	-@erase "$(INTDIR)\digitalpathpricer.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -897,14 +861,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
-	-@erase "$(INTDIR)\europeanmultipathpricer.obj"
-	-@erase "$(INTDIR)\europeanmultipathpricer.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
-	-@erase "$(INTDIR)\europeanpathpricer.obj"
-	-@erase "$(INTDIR)\europeanpathpricer.sbr"
-	-@erase "$(INTDIR)\everestpathpricer.obj"
-	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -941,18 +899,12 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
-	-@erase "$(INTDIR)\geometricapopathpricer.obj"
-	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
-	-@erase "$(INTDIR)\geometricasopathpricer.obj"
-	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
 	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
-	-@erase "$(INTDIR)\himalayapathpricer.obj"
-	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
@@ -983,14 +935,18 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\mathf.sbr"
-	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
-	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mcbasketengine.obj"
+	-@erase "$(INTDIR)\mcbasketengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
+	-@erase "$(INTDIR)\mcdigitalengine.obj"
+	-@erase "$(INTDIR)\mcdigitalengine.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
@@ -1027,14 +983,10 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactoroperator.sbr"
 	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\oslo.sbr"
-	-@erase "$(INTDIR)\pagodapathpricer.obj"
-	-@erase "$(INTDIR)\pagodapathpricer.sbr"
 	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\parcoupon.sbr"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoption.sbr"
-	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
-	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
@@ -1135,7 +1087,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1198,6 +1183,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\beta.sbr" \
 	"$(INTDIR)\bivariatenormaldistribution.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\choleskydecomposition.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\factorial.sbr" \
@@ -1207,32 +1193,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\incrementalstatistics.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\pseudosqrt.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\arithmeticapopathpricer.sbr" \
-	"$(INTDIR)\arithmeticasopathpricer.sbr" \
-	"$(INTDIR)\barrierpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
-	"$(INTDIR)\digitalpathpricer.sbr" \
-	"$(INTDIR)\europeanmultipathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricapopathpricer.sbr" \
-	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\maxbasketpathpricer.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr" \
-	"$(INTDIR)\performanceoptionpathpricer.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\capfloorpricer.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
@@ -1246,7 +1213,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
@@ -1258,19 +1224,28 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\swaptionpricer.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
+	"$(INTDIR)\mcbasketengine.sbr" \
 	"$(INTDIR)\stulzengine.sbr" \
+	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr" \
+	"$(INTDIR)\capfloorpricer.sbr" \
+	"$(INTDIR)\treecapfloor.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
+	"$(INTDIR)\jamshidianswaption.sbr" \
+	"$(INTDIR)\swaptionpricer.sbr" \
+	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1309,10 +1284,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
-	"$(INTDIR)\choleskydecomposition.sbr" \
-	"$(INTDIR)\pseudosqrt.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1381,6 +1353,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\beta.obj" \
 	"$(INTDIR)\bivariatenormaldistribution.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\choleskydecomposition.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\factorial.obj" \
@@ -1390,32 +1363,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\incrementalstatistics.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\pseudosqrt.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\arithmeticapopathpricer.obj" \
-	"$(INTDIR)\arithmeticasopathpricer.obj" \
-	"$(INTDIR)\barrierpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\cliquetoptionpathpricer.obj" \
-	"$(INTDIR)\digitalpathpricer.obj" \
-	"$(INTDIR)\europeanmultipathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricapopathpricer.obj" \
-	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\maxbasketpathpricer.obj" \
-	"$(INTDIR)\pagodapathpricer.obj" \
-	"$(INTDIR)\performanceoptionpathpricer.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\blackcapfloor.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\capfloorpricer.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
@@ -1429,7 +1383,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
@@ -1441,19 +1394,28 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\swaptionpricer.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
+	"$(INTDIR)\mcbasketengine.obj" \
 	"$(INTDIR)\stulzengine.obj" \
+	"$(INTDIR)\analyticdigitalamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\blackcapfloor.obj" \
+	"$(INTDIR)\capfloorpricer.obj" \
+	"$(INTDIR)\treecapfloor.obj" \
+	"$(INTDIR)\blackswaption.obj" \
+	"$(INTDIR)\jamshidianswaption.obj" \
+	"$(INTDIR)\swaptionpricer.obj" \
+	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1492,10 +1454,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticdigitalamericanengine.obj" \
-	"$(INTDIR)\choleskydecomposition.obj" \
-	"$(INTDIR)\pseudosqrt.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1531,10 +1490,6 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
-	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
-	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
-	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
-	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
@@ -1543,18 +1498,12 @@ CLEAN :
 	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\barrierpathpricer.obj"
-	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
 	-@erase "$(INTDIR)\basketoption.sbr"
-	-@erase "$(INTDIR)\basketpathpricer.obj"
-	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\beta.obj"
 	-@erase "$(INTDIR)\beta.sbr"
-	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
-	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
@@ -1597,8 +1546,6 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
-	-@erase "$(INTDIR)\cliquetoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -1617,8 +1564,6 @@ CLEAN :
 	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
-	-@erase "$(INTDIR)\digitalpathpricer.obj"
-	-@erase "$(INTDIR)\digitalpathpricer.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -1635,14 +1580,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
-	-@erase "$(INTDIR)\europeanmultipathpricer.obj"
-	-@erase "$(INTDIR)\europeanmultipathpricer.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
-	-@erase "$(INTDIR)\europeanpathpricer.obj"
-	-@erase "$(INTDIR)\europeanpathpricer.sbr"
-	-@erase "$(INTDIR)\everestpathpricer.obj"
-	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -1679,18 +1618,12 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
-	-@erase "$(INTDIR)\geometricapopathpricer.obj"
-	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
-	-@erase "$(INTDIR)\geometricasopathpricer.obj"
-	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
 	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
-	-@erase "$(INTDIR)\himalayapathpricer.obj"
-	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
@@ -1721,14 +1654,18 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\mathf.sbr"
-	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
-	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mcbasketengine.obj"
+	-@erase "$(INTDIR)\mcbasketengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
+	-@erase "$(INTDIR)\mcdigitalengine.obj"
+	-@erase "$(INTDIR)\mcdigitalengine.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
@@ -1765,14 +1702,10 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactoroperator.sbr"
 	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\oslo.sbr"
-	-@erase "$(INTDIR)\pagodapathpricer.obj"
-	-@erase "$(INTDIR)\pagodapathpricer.sbr"
 	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\parcoupon.sbr"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoption.sbr"
-	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
-	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
@@ -1872,7 +1805,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1935,6 +1901,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\beta.sbr" \
 	"$(INTDIR)\bivariatenormaldistribution.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\choleskydecomposition.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\factorial.sbr" \
@@ -1944,32 +1911,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\incrementalstatistics.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\pseudosqrt.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\arithmeticapopathpricer.sbr" \
-	"$(INTDIR)\arithmeticasopathpricer.sbr" \
-	"$(INTDIR)\barrierpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
-	"$(INTDIR)\digitalpathpricer.sbr" \
-	"$(INTDIR)\europeanmultipathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricapopathpricer.sbr" \
-	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\maxbasketpathpricer.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr" \
-	"$(INTDIR)\performanceoptionpathpricer.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\capfloorpricer.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
@@ -1983,7 +1931,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
@@ -1995,19 +1942,28 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\swaptionpricer.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
+	"$(INTDIR)\mcbasketengine.sbr" \
 	"$(INTDIR)\stulzengine.sbr" \
+	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr" \
+	"$(INTDIR)\capfloorpricer.sbr" \
+	"$(INTDIR)\treecapfloor.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
+	"$(INTDIR)\jamshidianswaption.sbr" \
+	"$(INTDIR)\swaptionpricer.sbr" \
+	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2046,10 +2002,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
-	"$(INTDIR)\choleskydecomposition.sbr" \
-	"$(INTDIR)\pseudosqrt.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2118,6 +2071,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\beta.obj" \
 	"$(INTDIR)\bivariatenormaldistribution.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\choleskydecomposition.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\factorial.obj" \
@@ -2127,32 +2081,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\incrementalstatistics.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\pseudosqrt.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\arithmeticapopathpricer.obj" \
-	"$(INTDIR)\arithmeticasopathpricer.obj" \
-	"$(INTDIR)\barrierpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\cliquetoptionpathpricer.obj" \
-	"$(INTDIR)\digitalpathpricer.obj" \
-	"$(INTDIR)\europeanmultipathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricapopathpricer.obj" \
-	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\maxbasketpathpricer.obj" \
-	"$(INTDIR)\pagodapathpricer.obj" \
-	"$(INTDIR)\performanceoptionpathpricer.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\blackcapfloor.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\capfloorpricer.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
@@ -2166,7 +2101,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
@@ -2178,19 +2112,28 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\swaptionpricer.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
+	"$(INTDIR)\mcbasketengine.obj" \
 	"$(INTDIR)\stulzengine.obj" \
+	"$(INTDIR)\analyticdigitalamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\blackcapfloor.obj" \
+	"$(INTDIR)\capfloorpricer.obj" \
+	"$(INTDIR)\treecapfloor.obj" \
+	"$(INTDIR)\blackswaption.obj" \
+	"$(INTDIR)\jamshidianswaption.obj" \
+	"$(INTDIR)\swaptionpricer.obj" \
+	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2229,10 +2172,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticdigitalamericanengine.obj" \
-	"$(INTDIR)\choleskydecomposition.obj" \
-	"$(INTDIR)\pseudosqrt.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2268,10 +2208,6 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
-	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
-	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
-	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
-	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
@@ -2280,18 +2216,12 @@ CLEAN :
 	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\barrierpathpricer.obj"
-	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
 	-@erase "$(INTDIR)\basketoption.sbr"
-	-@erase "$(INTDIR)\basketpathpricer.obj"
-	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\beta.obj"
 	-@erase "$(INTDIR)\beta.sbr"
-	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
-	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
@@ -2334,8 +2264,6 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
-	-@erase "$(INTDIR)\cliquetoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -2354,8 +2282,6 @@ CLEAN :
 	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
-	-@erase "$(INTDIR)\digitalpathpricer.obj"
-	-@erase "$(INTDIR)\digitalpathpricer.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -2372,14 +2298,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
-	-@erase "$(INTDIR)\europeanmultipathpricer.obj"
-	-@erase "$(INTDIR)\europeanmultipathpricer.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
-	-@erase "$(INTDIR)\europeanpathpricer.obj"
-	-@erase "$(INTDIR)\europeanpathpricer.sbr"
-	-@erase "$(INTDIR)\everestpathpricer.obj"
-	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -2416,18 +2336,12 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
-	-@erase "$(INTDIR)\geometricapopathpricer.obj"
-	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
-	-@erase "$(INTDIR)\geometricasopathpricer.obj"
-	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
 	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
-	-@erase "$(INTDIR)\himalayapathpricer.obj"
-	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
@@ -2458,14 +2372,18 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\mathf.sbr"
-	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
-	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mcbasketengine.obj"
+	-@erase "$(INTDIR)\mcbasketengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
+	-@erase "$(INTDIR)\mcdigitalengine.obj"
+	-@erase "$(INTDIR)\mcdigitalengine.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
@@ -2502,14 +2420,10 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactoroperator.sbr"
 	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\oslo.sbr"
-	-@erase "$(INTDIR)\pagodapathpricer.obj"
-	-@erase "$(INTDIR)\pagodapathpricer.sbr"
 	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\parcoupon.sbr"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoption.sbr"
-	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
-	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
@@ -2610,7 +2524,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2673,6 +2620,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\beta.sbr" \
 	"$(INTDIR)\bivariatenormaldistribution.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\choleskydecomposition.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\factorial.sbr" \
@@ -2682,32 +2630,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\incrementalstatistics.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\pseudosqrt.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\arithmeticapopathpricer.sbr" \
-	"$(INTDIR)\arithmeticasopathpricer.sbr" \
-	"$(INTDIR)\barrierpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
-	"$(INTDIR)\digitalpathpricer.sbr" \
-	"$(INTDIR)\europeanmultipathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricapopathpricer.sbr" \
-	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\maxbasketpathpricer.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr" \
-	"$(INTDIR)\performanceoptionpathpricer.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\blackcapfloor.sbr" \
-	"$(INTDIR)\blackswaption.sbr" \
-	"$(INTDIR)\capfloorpricer.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
@@ -2721,7 +2650,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
@@ -2733,19 +2661,28 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\swaptionpricer.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
+	"$(INTDIR)\mcbasketengine.sbr" \
 	"$(INTDIR)\stulzengine.sbr" \
+	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr" \
+	"$(INTDIR)\capfloorpricer.sbr" \
+	"$(INTDIR)\treecapfloor.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
+	"$(INTDIR)\jamshidianswaption.sbr" \
+	"$(INTDIR)\swaptionpricer.sbr" \
+	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2784,10 +2721,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
-	"$(INTDIR)\choleskydecomposition.sbr" \
-	"$(INTDIR)\pseudosqrt.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2856,6 +2790,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\beta.obj" \
 	"$(INTDIR)\bivariatenormaldistribution.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\choleskydecomposition.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\factorial.obj" \
@@ -2865,32 +2800,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\incrementalstatistics.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\pseudosqrt.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\arithmeticapopathpricer.obj" \
-	"$(INTDIR)\arithmeticasopathpricer.obj" \
-	"$(INTDIR)\barrierpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\cliquetoptionpathpricer.obj" \
-	"$(INTDIR)\digitalpathpricer.obj" \
-	"$(INTDIR)\europeanmultipathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricapopathpricer.obj" \
-	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\maxbasketpathpricer.obj" \
-	"$(INTDIR)\pagodapathpricer.obj" \
-	"$(INTDIR)\performanceoptionpathpricer.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\blackcapfloor.obj" \
-	"$(INTDIR)\blackswaption.obj" \
-	"$(INTDIR)\capfloorpricer.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
@@ -2904,7 +2820,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
@@ -2916,19 +2831,28 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\swaptionpricer.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
+	"$(INTDIR)\mcbasketengine.obj" \
 	"$(INTDIR)\stulzengine.obj" \
+	"$(INTDIR)\analyticdigitalamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\blackcapfloor.obj" \
+	"$(INTDIR)\capfloorpricer.obj" \
+	"$(INTDIR)\treecapfloor.obj" \
+	"$(INTDIR)\blackswaption.obj" \
+	"$(INTDIR)\jamshidianswaption.obj" \
+	"$(INTDIR)\swaptionpricer.obj" \
+	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2967,10 +2891,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticdigitalamericanengine.obj" \
-	"$(INTDIR)\choleskydecomposition.obj" \
-	"$(INTDIR)\pseudosqrt.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2981,36 +2902,6 @@ LIB32_OBJS= \
 SOURCE="$(InputPath)"
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -3455,102 +3346,6 @@ SOURCE=.\ql\Math\symmetricschurdecomposition.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\MonteCarlo\arithmeticapopathpricer.cpp
-
-"$(INTDIR)\arithmeticapopathpricer.obj"	"$(INTDIR)\arithmeticapopathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.cpp
-
-"$(INTDIR)\arithmeticasopathpricer.obj"	"$(INTDIR)\arithmeticasopathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\barrierpathpricer.cpp
-
-"$(INTDIR)\barrierpathpricer.obj"	"$(INTDIR)\barrierpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\basketpathpricer.cpp
-
-"$(INTDIR)\basketpathpricer.obj"	"$(INTDIR)\basketpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.cpp
-
-"$(INTDIR)\biasedbarrierpathpricer.obj"	"$(INTDIR)\biasedbarrierpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\cliquetoptionpathpricer.cpp
-
-"$(INTDIR)\cliquetoptionpathpricer.obj"	"$(INTDIR)\cliquetoptionpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\digitalpathpricer.cpp
-
-"$(INTDIR)\digitalpathpricer.obj"	"$(INTDIR)\digitalpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\europeanmultipathpricer.cpp
-
-"$(INTDIR)\europeanmultipathpricer.obj"	"$(INTDIR)\europeanmultipathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
-
-"$(INTDIR)\europeanpathpricer.obj"	"$(INTDIR)\europeanpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\everestpathpricer.cpp
-
-"$(INTDIR)\everestpathpricer.obj"	"$(INTDIR)\everestpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\geometricapopathpricer.cpp
-
-"$(INTDIR)\geometricapopathpricer.obj"	"$(INTDIR)\geometricapopathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\geometricasopathpricer.cpp
-
-"$(INTDIR)\geometricasopathpricer.obj"	"$(INTDIR)\geometricasopathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\himalayapathpricer.cpp
-
-"$(INTDIR)\himalayapathpricer.obj"	"$(INTDIR)\himalayapathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\maxbasketpathpricer.cpp
-
-"$(INTDIR)\maxbasketpathpricer.obj"	"$(INTDIR)\maxbasketpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
-
-"$(INTDIR)\pagodapathpricer.obj"	"$(INTDIR)\pagodapathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\performanceoptionpathpricer.cpp
-
-"$(INTDIR)\performanceoptionpathpricer.obj"	"$(INTDIR)\performanceoptionpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Optimization\armijo.cpp
 
 "$(INTDIR)\armijo.obj"	"$(INTDIR)\armijo.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3572,30 +3367,6 @@ SOURCE=.\ql\Optimization\simplex.cpp
 SOURCE=.\ql\Optimization\steepestdescent.cpp
 
 "$(INTDIR)\steepestdescent.obj"	"$(INTDIR)\steepestdescent.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\analyticalcapfloor.cpp
-
-"$(INTDIR)\analyticalcapfloor.obj"	"$(INTDIR)\analyticalcapfloor.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\blackcapfloor.cpp
-
-"$(INTDIR)\blackcapfloor.obj"	"$(INTDIR)\blackcapfloor.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\blackswaption.cpp
-
-"$(INTDIR)\blackswaption.obj"	"$(INTDIR)\blackswaption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\capfloorpricer.cpp
-
-"$(INTDIR)\capfloorpricer.obj"	"$(INTDIR)\capfloorpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3674,12 +3445,6 @@ SOURCE=.\ql\Pricers\fdmultiperiodoption.cpp
 SOURCE=.\ql\Pricers\fdstepconditionoption.cpp
 
 "$(INTDIR)\fdstepconditionoption.obj"	"$(INTDIR)\fdstepconditionoption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\jamshidianswaption.cpp
-
-"$(INTDIR)\jamshidianswaption.obj"	"$(INTDIR)\jamshidianswaption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3787,24 +3552,6 @@ SOURCE=.\ql\Pricers\singleassetoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\swaptionpricer.cpp
-
-"$(INTDIR)\swaptionpricer.obj"	"$(INTDIR)\swaptionpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\treecapfloor.cpp
-
-"$(INTDIR)\treecapfloor.obj"	"$(INTDIR)\treecapfloor.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\treeswaption.cpp
-
-"$(INTDIR)\treeswaption.obj"	"$(INTDIR)\treeswaption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\PricingEngines\Asian\analyticasianengine.cpp
 
 "$(INTDIR)\analyticasianengine.obj"	"$(INTDIR)\analyticasianengine.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3817,9 +3564,21 @@ SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\PricingEngines\Barrier\mcbarrierengine.cpp
+
+"$(INTDIR)\mcbarrierengine.obj"	"$(INTDIR)\mcbarrierengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\PricingEngines\Basket\mcamericanbasketengine.cpp
 
 "$(INTDIR)\mcamericanbasketengine.obj"	"$(INTDIR)\mcamericanbasketengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Basket\mcbasketengine.cpp
+
+"$(INTDIR)\mcbasketengine.obj"	"$(INTDIR)\mcbasketengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3868,6 +3627,60 @@ SOURCE=.\ql\PricingEngines\Vanilla\integralengine.cpp
 SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.cpp
 
 "$(INTDIR)\jumpdiffusionengine.obj"	"$(INTDIR)\jumpdiffusionengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Vanilla\mcdigitalengine.cpp
+
+"$(INTDIR)\mcdigitalengine.obj"	"$(INTDIR)\mcdigitalengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\CapFloor\analyticalcapfloor.cpp
+
+"$(INTDIR)\analyticalcapfloor.obj"	"$(INTDIR)\analyticalcapfloor.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\CapFloor\blackcapfloor.cpp
+
+"$(INTDIR)\blackcapfloor.obj"	"$(INTDIR)\blackcapfloor.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\CapFloor\capfloorpricer.cpp
+
+"$(INTDIR)\capfloorpricer.obj"	"$(INTDIR)\capfloorpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\CapFloor\treecapfloor.cpp
+
+"$(INTDIR)\treecapfloor.obj"	"$(INTDIR)\treecapfloor.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Swaption\blackswaption.cpp
+
+"$(INTDIR)\blackswaption.obj"	"$(INTDIR)\blackswaption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaption.cpp
+
+"$(INTDIR)\jamshidianswaption.obj"	"$(INTDIR)\jamshidianswaption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Swaption\swaptionpricer.cpp
+
+"$(INTDIR)\swaptionpricer.obj"	"$(INTDIR)\swaptionpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Swaption\treeswaption.cpp
+
+"$(INTDIR)\treeswaption.obj"	"$(INTDIR)\treeswaption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -131,6 +131,8 @@ namespace QuantLib {
             such that 
             \f[ y = \frac{\sum_{x_i < \bar{x}} w_i}{
                           \sum_i w_i} \f]
+
+            \pre \f$ y \f$ must be in the range \f$ (0-1]. \f$
         */
         double percentile(double y) const;
 
@@ -138,6 +140,8 @@ namespace QuantLib {
             \f$ \bar{x} \f$ such that 
             \f[ y = \frac{\sum_{x_i > \bar{x}} w_i}{
                           \sum_i w_i} \f]
+
+            \pre \f$ y \f$ must be in the range \f$ (0-1]. \f$
         */
         double topPercentile(double y) const;
         //@}

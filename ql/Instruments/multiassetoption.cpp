@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file multiassetoption.cpp
-    \brief Option on multiple assets
-*/
-
 #include <ql/Instruments/multiassetoption.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Solvers1D/brent.hpp>

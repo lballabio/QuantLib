@@ -52,6 +52,11 @@ namespace QuantLib {
         - <tt>root_</tt> is a valid initial guess.
         The implementation of <tt>solveImpl</tt> can safely assume all
         of the above.
+
+        \todo a) Clean up the interface so that it is clear whether the
+              accuracy is specified for x or f(x).
+              b) Add target value (now the target value is 0.0)
+   
     */
     template <class Impl>
     class Solver1D : public CuriouslyRecurringTemplate<Impl> {

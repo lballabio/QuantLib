@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file model.cpp
-    \brief Abstract interest rate model class
-*/
-
 #include <ql/ShortRateModels/model.hpp>
 
 namespace QuantLib {

@@ -22,7 +22,6 @@
 */
 
 /*! \page datetime Date and time calculations
-    Documentation for this part of the library is in progress.
 
     \section date Dates
 
@@ -45,7 +44,7 @@
     interface for determining whether a date is a business day or a
     holiday for a given market, or incrementing/decrementing a date of
     a given number of business days. A number of calendars is
-    contained in the QuantLib::Calendars namespace.
+    contained in the ql/Calendars directory.
 
 
     \section daycounters Day counters
@@ -53,8 +52,8 @@
     The abstract class QuantLib::DayCounter provides more advanced means
     of measuring the distance between two dates according to a given
     market convention, both as number of days of fraction of year. A
-    number of such conventions is contained in the QuantLib::DayCounters
-    namespace, namely,
+    number of such conventions is contained in the ql/DayCounters
+    directory, namely,
 
     - Actual/360
     - Actual/365

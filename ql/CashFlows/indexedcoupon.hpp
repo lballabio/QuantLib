@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    //! %base indexed coupon class
+    //! Base indexed coupon class
     /*! \warning This class does not perform any date adjustment,
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.

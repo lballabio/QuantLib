@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! Continuous Geometric Average Price Option (European exercise)
+    //! Continuous geometric average-price option (European exercise)
     /*! This class implements a continuous geometric average price
         asian option with european exercise.  The formula is from
         "Option Pricing Formulas", E. G. Haug (1997) pag 96-97

@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! %secant 1-D solver
+    //! %Secant 1-D solver
     class Secant : public Solver1D<Secant> {
       public:
         template <class F>

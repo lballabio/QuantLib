@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file jumpdiffusion.cpp
-    \brief Jump diffusion (Merton 1976) engine
-*/
-
 #include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
 #include <ql/Math/poissondistribution.hpp>
 #include <ql/TermStructures/flatforward.hpp>

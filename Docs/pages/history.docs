@@ -23,6 +23,101 @@
 
 /*! \page history Version history
 
+    <strong>Release 0.3.5 - March 31th, 2004</strong>
+
+    BOOST SUPPORT
+    - When available, QuantLib 0.3.5 now uses parts of the Boost
+      library.  The presence of Boost is detected automatically under
+      Unix/Linux systems; on Windows systems, it must be enabled by
+      uncommenting the relevant line in ql/userconfig.hpp.
+
+    - In the next QuantLib release, the presence of the Boost library
+      will be mandatory.
+
+    MONTE CARLO FRAMEWORK
+    - Modified MultiPath interface to remove drifts. They are now in
+      the stochastic processes.
+    - Preliminary implementation of Longstaff-Schwartz least-squares
+	- Monte Carlo pricer for European basket options
+	- Brownian-bridge bugs fixed
+	- StochasticProcess base class and derived classes (diffusion,
+	  jump-diffusion, etc.) have been created.
+
+    PRICING ENGINES FRAMEWORK
+    - Pricing engines now use Payoff and Exercise classes.
+    - American basket options.
+    - Binary barrier option replaced by vanilla option with digital payoff.
+	- Stulz engine for max and min basket calls and puts on two assets.
+	- American binary option added (a.k.a. one-touch, american digital,
+	  americal barrier, etc.) with different payoffs (cash/asset at
+	  hit/expiry, etc.)
+	- Added engine for Merton 1976 jump-diffusion process.
+	- Added Bjerksund and Stensland approximation for American option
+      (still unstable.)
+	- Added Barone-Adesi and Whaley approximation for American option.
+	- Improved Black formula engine with more greeks added.
+	- Discrete geometric asian option.
+	- Added Leisen-Reimer binomial tree.
+
+    SHORT RATE MODELS
+	- Model renamed to ShortRateModel. A typedef is provided for backward
+	  compatibility--it will be removed in subsequent releases.
+
+    VOLATILITY FRAMEWORK
+	- bug fix for short time (0<=t<=Tmin) interpolation
+
+    OPTIMIZATION FRAMEWORK
+	- Method renamed to OptimizationMethod. A typedef is provided for
+      backward compatibility--it will be removed in subsequent releases.
+
+    PATTERNS
+	- Composite pattern
+
+    MATH
+    - Improved cubic spline interpolation. It now handles end conditions
+      such as first derivative value, second derivative value, not-a-knot.
+      Hyman filter for monotonically constrained interpolation has been
+      implemented. Primitive calculation has been enabled in
+      addition to derivative and second derivative.
+    - Primitive, first derivative, and second derivative functions are available
+      for linear interpolator.
+    - Singular value decomposition improved.
+    - Added bivariate cumulative normal distribution.
+	- Added binomial coefficient calculation, binomial distribution,
+	  cumulative binomial distribution, and	Peizer-Pratt inversion (method 2.)
+	- Added beta functions.
+	- Added Poisson distribution and cumulative distribution.
+	- Added incomplete gamma functions.
+	- Added factorial calculation.
+	- Added rank-reduced square root and improved pseudo-square root
+      of square symmetric matrices.
+	- Added Cholesky decomposition.
+
+    TEST SUITE
+    - Added test for cubic spline interpolation.
+    - Added test for singular value decomposition.
+    - Added test for two-asset baskets using the Stulz pricing engine.
+	- Added test for Monte Carlo American cash-at-hit options.
+	- Added test for jump-diffusion engine.
+	- Added test for American and European digital options.
+
+    MISCELLANEA
+    - Inner namespaces have been deprecated.
+	- Added frequency enumeration, including 'once'.
+	- MarketElement renamed to Quote.
+    - Handling strike=0.0 where possible.
+    - More Payoff classes have been introduced: gap, asset-or-nothing,
+      cash-or-nothing. Payoff is now extensively used.
+    - Exercise class is now polymorphic. More derived classes have been
+      introduced, and they are now extensively used.
+    - Introduced QL_FAIL macro.
+	- Added calendar for Copenhagen
+    - 14 April 2004 (election day) added to Johannesburg calendar as
+      a one-off holiday.
+    - Documentation generated with Doxygen 1.3.6.
+    - Win32 installer generated with NSIS 2.0.
+
+
     <strong>Release 0.3.4 - November 21th, 2003</strong>
 
     MONTE CARLO FRAMEWORK

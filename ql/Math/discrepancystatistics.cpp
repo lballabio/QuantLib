@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discrepancystatistics.cpp
-    \brief Statistic tool for sequences with discrepancy calculation
-*/
-
 #include <ql/Math/discrepancystatistics.hpp>
 
 namespace QuantLib {

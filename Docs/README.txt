@@ -1,6 +1,6 @@
 
 The documentation is automatically extracted from the source code using
-Doxygen (http://www.doxygen.org). The suggested version is 1.3.4; versions
+Doxygen (http://www.doxygen.org). The suggested version is 1.3.6; versions
 as back as 1.2.14 should still work.
 
 The basic requirement to produce html documentation are:
@@ -12,7 +12,7 @@ If you want to produce PDF and/or PS documentation you will need also:
 4) TeX/LaTeX
 5) epstopdf. It's available as Perl script (you will also need Perl, of
    course), C source to be compiled or Windows executable.
-The above, and any additional packages your LaTeX installation might need, 
+The above, and any additional packages your LaTeX installation might need,
 are available through the CTAN (http://www.ctan.org/)
 
 

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file dataparsers.cpp
-    \brief classes used to parse data for input
-*/
-
 #include <ql/dataparsers.hpp>
 #include <ql/dataformatters.hpp>
 #include <ql/null.hpp>

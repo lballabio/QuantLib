@@ -16,16 +16,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file stulzengine.cpp
-    \brief European 2D Basket option formulae
-
-    "Options on the Minimum or the Maximum of Two Risky Assets", 
-        Rene Stulz, 
-        Journal of Financial Ecomomics (1982) 10, 161-185.
-*/
-
 #include <ql/PricingEngines/Basket/stulzengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Math/bivariatenormaldistribution.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 
@@ -41,34 +35,37 @@ namespace QuantLib {
             double stdDev1 = QL_SQRT(variance1);
             double stdDev2 = QL_SQRT(variance2);
 
-            double D1_1, D1_2;
-            if (strike != 0.0) {
-                D1_1 = (QL_LOG(forward1/strike) + 0.5 * variance1) / stdDev1;
-                D1_2 = (QL_LOG(forward2/strike) + 0.5 * variance2) / stdDev2;
-            } else {
-                D1_1 = 1000;
-                D1_2 = 1000;
-            }
-
             double variance = variance1 + variance2 - 2 * rho * stdDev1 * stdDev2;
             double stdDev = QL_SQRT(variance);
 
-            double D1 = (QL_LOG(forward1 / forward2) + 0.5 * variance) / stdDev;
             double modRho1 = (rho * stdDev2 - stdDev1) / stdDev;
             double modRho2 = (rho * stdDev1 - stdDev2) / stdDev;
 
-            BivariateCumulativeNormalDistribution bivCNorm = 
-                BivariateCumulativeNormalDistribution(rho);
-            BivariateCumulativeNormalDistribution bivCNormMod2 = 
-                BivariateCumulativeNormalDistribution(modRho2);
-            BivariateCumulativeNormalDistribution bivCNormMod1 = 
-                BivariateCumulativeNormalDistribution(modRho1);
+            double D1 = (QL_LOG(forward1 / forward2) + 0.5 * variance) / stdDev;
 
-            return riskFreeDiscount * (
-                forward1 * bivCNormMod1(D1_1, -D1) + 
-                forward2 * bivCNormMod2(D1_2, D1 - stdDev) - 
-                strike   * bivCNorm(D1_1 - stdDev1, D1_2 - stdDev2)
-                );
+            double alfa, beta, gamma;
+            if (strike != 0.0) {
+                BivariateCumulativeNormalDistribution bivCNorm = 
+                    BivariateCumulativeNormalDistribution(rho);
+                BivariateCumulativeNormalDistribution bivCNormMod2 = 
+                    BivariateCumulativeNormalDistribution(modRho2);
+                BivariateCumulativeNormalDistribution bivCNormMod1 = 
+                    BivariateCumulativeNormalDistribution(modRho1);
+
+                double D1_1 = (QL_LOG(forward1/strike) + 0.5 * variance1) / stdDev1;
+                double D1_2 = (QL_LOG(forward2/strike) + 0.5 * variance2) / stdDev2;
+                alfa = bivCNormMod1(D1_1, -D1);
+                beta = bivCNormMod2(D1_2, D1 - stdDev);
+                gamma = bivCNorm(D1_1 - stdDev1, D1_2 - stdDev2);
+            } else {
+                CumulativeNormalDistribution cum;
+                alfa = cum(-D1);
+                beta = cum(D1 - stdDev);
+                gamma = 1.0;
+            }
+
+            return riskFreeDiscount *
+                (forward1*alfa + forward2*beta - strike*gamma);
 
         }
 

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file singleassetoption.cpp
-    \brief common code for option evaluation
-*/
-
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
@@ -51,9 +47,9 @@ namespace QuantLib {
                    "SingleAssetOption::SingleAssetOption : residual time ("+
                    DoubleFormatter::toString(residualTime)+
                    ") must be positive");
-        //! Checks on volatility values are in setVolatility
+        // checks on volatility values are in setVolatility
         setVolatility(volatility);
-        //! Checks on the risk-free rate are in setRiskFreeRate
+        // checks on the risk-free rate are in setRiskFreeRate
         setRiskFreeRate(riskFreeRate);
     }
 

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file zerocurve.cpp
-    \brief Term structure based on linear interpolation of zero yields
-*/
-
 #include <ql/TermStructures/zerocurve.hpp>
 
 namespace QuantLib {

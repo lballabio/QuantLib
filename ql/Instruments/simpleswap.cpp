@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file simpleswap.cpp
-    \brief Simple fixed-rate vs Libor swap
-*/
-
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>

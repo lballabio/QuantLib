@@ -54,11 +54,9 @@ CppUnit::Test* OldPricerTest::suite() {
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style American-type pricers",
                     &OldPricerTest::testAmericanPricers));
-    //fails with Visual C++ 6 when _controlfp(_EM_INEXACT, _MCW_EM) is enabled
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style Monte Carlo single-factor pricers",
                     &OldPricerTest::testMcSingleFactorPricers));
-    //fails with Visual C++ 6 when _controlfp(_EM_INEXACT, _MCW_EM) is enabled
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style Monte Carlo multi-factor pricers",
                     &OldPricerTest::testMcMultiFactorPricers));

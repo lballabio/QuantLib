@@ -28,7 +28,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    //! %ZAR %Libor index (also known as JIBAR)
+    //! %ZAR %Libor index, also known as JIBAR
     /*! \todo check settlement days */
     class ZARLibor : public Xibor {
       public:

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file armijo.cpp
-    \brief Armijo line-search class
-*/
-
 #include <ql/Optimization/armijo.hpp>
 
 namespace QuantLib {

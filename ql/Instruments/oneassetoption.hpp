@@ -53,7 +53,7 @@ namespace QuantLib {
         double vega() const;
         double rho() const;
         double dividendRho() const;
-        double itmProbability() const;
+        double itmCashProbability() const;
         //@}
         /*! \warning Options with a gamma that changes sign have
                      values that are <b>not</b> monotonic in the
@@ -63,7 +63,10 @@ namespace QuantLib {
                      failure is to have a targetValue that is not
                      attainable with any volatility, e.g.  a
                      targetValue lower than the intrinsic value in the
-                     case of American options. */
+                     case of American options.
+
+            \bug run-time crashes are possible with the Borland compiler
+        */
         double impliedVolatility(double price,
                                  double accuracy = 1.0e-4,
                                  Size maxEvaluations = 100,
@@ -75,7 +78,7 @@ namespace QuantLib {
         void performCalculations() const;
         // results
         mutable double delta_, deltaForward_, elasticity_, gamma_, theta_,
-            thetaPerDay_, vega_, rho_, dividendRho_, itmProbability_;
+            thetaPerDay_, vega_, rho_, dividendRho_, itmCashProbability_;
         // arguments
         Handle<BlackScholesStochasticProcess> blackScholesProcess_;
       private:
@@ -93,7 +96,7 @@ namespace QuantLib {
         };
     };
 
-    //! arguments for single asset option calculation
+    //! %Arguments for single-asset option calculation
     class OneAssetOption::arguments : public Option::arguments {
       public:
         arguments() {}
@@ -101,7 +104,7 @@ namespace QuantLib {
         Handle<BlackScholesStochasticProcess> blackScholesProcess;
     };
 
-    //! %results from single asset option calculation
+    //! %Results from single-asset option calculation
     class OneAssetOption::results : public Value,
                                     public Greeks,
                                     public MoreGreeks {

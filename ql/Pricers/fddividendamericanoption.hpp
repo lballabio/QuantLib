@@ -26,6 +26,7 @@
 
 namespace QuantLib {
 
+    //! American option with discrete dividends.
     /*! \bug sometimes yields negative vega when deeply in-the-money
         \bug method impliedVolatility() utterly fails
     */

@@ -45,13 +45,20 @@ namespace QuantLib {
         double vega(double maturity) const;
         double rho(double maturity) const;
         double dividendRho(double maturity) const;
-        double itmProbability() const;
+        /*! Probability of being in the money in the bond martingale measure.
+            It is a risk-neutral probability, not the real world probability.
+        */
+        double itmCashProbability() const;
+        /*! Probability of being in the money in the asset martingale measure.
+            It is a risk-neutral probability, not the real world probability.
+        */
+        double itmAssetProbability() const;
         double strikeSensitivity() const;
     private:
         double forward_, discount_, variance_;
         double stdDev_, strike_;
         double D1_, D2_, alpha_, beta_, DalphaDd1_, DbetaDd2_;
-        double cum_d2_;
+        double cum_d1_, cum_d2_;
         double X_, DXDs_, DXDstrike_;
     };
 
@@ -82,28 +89,28 @@ namespace QuantLib {
         strike_ = payoff->strike();
 
 
-        double cum_d1, n_d1, n_d2;
+        double n_d1, n_d2;
         if (variance>=QL_EPSILON) {
             if (strike_==0.0) {
                 n_d1 = 0.0;
                 n_d2 = 0.0;
-                cum_d1 = 1.0;
+                cum_d1_ = 1.0;
                 cum_d2_= 1.0;
             } else {
                 D1_ = (QL_LOG(forward/strike_) + 0.5*variance) / stdDev_;
                 D2_ = D1_-stdDev_;
                 CumulativeNormalDistribution f;
-                cum_d1 = f(D1_);
+                cum_d1_ = f(D1_);
                 cum_d2_= f(D2_);
                 n_d1 = f.derivative(D1_);
                 n_d2 = f.derivative(D2_);
             }
         } else {
             if (forward>strike_) {
-                cum_d1 = 1.0;
+                cum_d1_ = 1.0;
                 cum_d2_= 1.0;
             } else {
-                cum_d1 = 0.0;
+                cum_d1_ = 0.0;
                 cum_d2_= 0.0;
             }
             n_d1 = 0.0;
@@ -120,20 +127,20 @@ namespace QuantLib {
         // Plain Vanilla Payoff
         switch (payoff->optionType()) {
             case Option::Call:
-                alpha_     =  cum_d1; //  N(d1)
+                alpha_     =  cum_d1_;//  N(d1)
                 DalphaDd1_ =    n_d1; //  n(d1)
                 beta_      = -cum_d2_;// -N(d2)
                 DbetaDd2_  = -  n_d2; // -n(d2)
                 break;
             case Option::Put:
-                alpha_     = -1.0+cum_d1; // -N(-d1)
+                alpha_     = -1.0+cum_d1_;// -N(-d1)
                 DalphaDd1_ =        n_d1; //  n( d1)
                 beta_      =  1.0-cum_d2_;//  N(-d2)
                 DbetaDd2_  =     -  n_d2; // -n( d2)
                 break;
             case Option::Straddle:
                 // incorporating the linear effect of call + put
-                alpha_     = -1.0 + 2.0*cum_d1; //  N(d1) - N(-d1)
+                alpha_     = -1.0 + 2.0*cum_d1_;//  N(d1) - N(-d1)
                 DalphaDd1_ =        2.0*  n_d1; //  n(d1) + n( d1)
                 beta_      =  1.0 - 2.0*cum_d2_;// -N(d2) + N(-d2)
                 DbetaDd2_  =      - 2.0*  n_d2; // -n(d2) - n( d2)
@@ -191,11 +198,11 @@ namespace QuantLib {
             beta_ = DbetaDd2_ = 0.0;
             switch (payoff->optionType()) {
                 case Option::Call:
-                    alpha_     =  cum_d1; //  N(d1)
+                    alpha_     =  cum_d1_;//  N(d1)
                     DalphaDd1_ =    n_d1; //  n(d1)
                     break;
                 case Option::Put:
-                    alpha_     = 1.0-cum_d1; //  N(-d1)
+                    alpha_     = 1.0-cum_d1_;//  N(-d1)
                     DalphaDd1_ =    -  n_d1; // -n( d1)
                     break;
                 case Option::Straddle:
@@ -243,7 +250,11 @@ namespace QuantLib {
 
 
     inline double BlackFormula::value() const {
-        return discount_ * (forward_ * alpha_ + X_ * beta_);
+        double result = discount_ * (forward_ * alpha_ + X_ * beta_);
+        // numerical inaccuracies can yield a negative answer
+        if (result<0.0 && -1e-16 < result)
+            result = 0.0;
+        return result;
     }
 
     inline double BlackFormula::delta(double spot) const {
@@ -276,12 +287,30 @@ namespace QuantLib {
 
     //! Sensitivity in percent to a percent movement in the underlying price
     inline double BlackFormula::elasticity(double spot) const {
-        return delta(spot)/value()*spot;
+        double val = value();
+        double del = delta(spot);
+        if (val>QL_EPSILON)
+            return del/val*spot;
+        else if (QL_FABS(del)<QL_EPSILON)
+            return 0.0;
+        else if (del>0.0)
+            return QL_MAX_DOUBLE;
+        else
+            return QL_MIN_DOUBLE;
     }
 
     //! Sensitivity in percent to a percent movement in the forward price
     inline double BlackFormula::elasticityForward() const {
-        return deltaForward()/value()*forward_;
+        double val = value();
+        double del = deltaForward();
+        if (val>QL_EPSILON)
+            return del/val*forward_;
+        else if (QL_FABS(del)<QL_EPSILON)
+            return 0.0;
+        else if (del>0.0)
+            return QL_MAX_DOUBLE;
+        else
+            return QL_MIN_DOUBLE;
     }
 
     inline double BlackFormula::gamma(double spot) const {
@@ -404,10 +433,13 @@ namespace QuantLib {
         return discount_ * temp2;
     }
 
-    inline double BlackFormula::itmProbability() const {
+    inline double BlackFormula::itmCashProbability() const {
         return cum_d2_;
     }
 
+    inline double BlackFormula::itmAssetProbability() const {
+        return cum_d1_;
+    }
 }
 
 

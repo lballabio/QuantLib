@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cliquetoption.hpp
+/*! \file Instruments/cliquetoption.hpp
     \brief Cliquet option
 */
 
@@ -26,14 +26,14 @@
 
 namespace QuantLib {
 
-    //! currently just a container for arguments and results
+    // currently just a container for arguments and results
     class CliquetOption {
       public:
         class arguments;
         // class results;
     };
 
-    //! arguments for cliquet option calculation
+    //! %Arguments for cliquet option calculation
     // should inherit from a strikeless version of VanillaOption::arguments
     class CliquetOption::arguments : public VanillaOption::arguments {
       public:

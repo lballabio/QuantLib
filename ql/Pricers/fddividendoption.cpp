@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fddividendoption.cpp
-    \brief base class for options with dividends
-*/
-
 #include <ql/Pricers/fddividendoption.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Pricers/fddividendeuropeanoption.hpp>

@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file dataformatters.cpp
-    \brief classes used to format data for output
-*/
-
 #include <ql/dataformatters.hpp>
 #include <ql/null.hpp>
 

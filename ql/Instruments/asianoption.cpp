@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file asianoption.cpp
-    \brief Asian option (average rate) on a single asset
-*/
-
 #include <ql/Instruments/asianoption.hpp>
 
 namespace QuantLib {

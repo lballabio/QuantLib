@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file barrieroption.cpp
-    \brief Barrier option on a single asset
-*/
-
 #include <ql/Instruments/barrieroption.hpp>
 #include <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>

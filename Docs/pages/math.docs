@@ -22,24 +22,19 @@
 */
 
 /*! \page math Math tools
-    Documentation for this part of the library is in progress.
-    
     Math facilities of the library include:
     
-    \section randomnumbers Random number and low discrepancy sequence generators
-    Documentation for this part of the library is in progress.
+    \section randomnumbers Pseudo-random number and low-discrepancy sequence generators
 
-    Implementations of random number and low discrepancy
-    sequence generators. They share the QuantLib::RandomNumbers namespace.
+    Implementations of pseudo-random number and low-discrepancy
+    sequence generators. They share the ql/RandomNumbers directory.
 
     \section solvers1d One-dimensional solvers
-    Documentation for this part of the library is in progress.
-
     The abstract class QuantLib::Solver1D provides the interface for 
     one-dimensional solvers which can find the zeroes of a given function.
 
-    A number of such solvers is contained in the QuantLib::Solvers1D
-    namespace.
+    A number of such solvers is contained in the ql/Solvers1D
+    directory.
 
     The implementation of the algorithms was inspired by
     "Numerical Recipes in C", 2nd edition,
@@ -50,15 +45,15 @@
     f(x)-accuracy.
 
     \section optimizers Optimizers
-    The optimization framework (corresponding to the Optimization namespace) 
-    implements some multi-dimensional minimizing methods. The function to be 
-    minimized is to be derived from the QuantLib::Optimization::CostFunction 
-    base class (if the gradient is not analytically implemented, it will be 
-    computed numerically).
+    The optimization framework (corresponding to the ql/Optimization
+    directory) implements some multi-dimensional minimizing
+    methods. The function to be minimized is to be derived from the
+    QuantLib::CostFunction base class (if the gradient is not
+    analytically implemented, it will be computed numerically).
     
     \par The simplex method
 
-    This method, implemented in QuantLib::Optimization::Simplex, is rather raw 
+    This method, implemented in QuantLib::Simplex, is rather raw 
     and requires quite a lot of computing resources, but it has the advantage 
     that it does not need any evaluation of the cost function's gradient, and 
     that it is quite easily implemented. First, we must choose N+1 starting 
@@ -69,25 +64,29 @@
     \f]
     where \f$ \lambda \f$ is the problem's characteristic length scale). These 
     points will form a geometrical form called simplex.
-    The principle of the downhill simplex method is, at each iteration, to move 
-    the worst point (highest cost function value) through the opposite face to a 
-    better point. When the simplex seems to be constrained in a valley, it will 
-    be contracted downhill, keeping the best point unchanged.    
+    The principle of the downhill simplex method is, at each
+    iteration, to move the worst point (highest cost function value)
+    through the opposite face to a better point. When the simplex
+    seems to be constrained in a valley, it will be contracted
+    downhill, keeping the best point unchanged.
 
     \par The conjugate gradient method
     We'll now continue with a bit more sophisticated method, implemented in
-    QuantLib::Optimization::ConjugateGradient . At each step, we minimize 
+    QuantLib::ConjugateGradient . At each step, we minimize 
     (using Armijo's line search algorithm, implemented in 
-    QuantLib::Optimization::ArmijoLineSearch ) the function along a line 
+    QuantLib::ArmijoLineSearch) the function along a line 
     defined by 
     \f[
-        \mathbf{d_i} = -\nabla f(\mathbf{x_i})+\frac{\left\Vert \nabla f(\mathbf{x_i})\right\Vert ^{2}}{\left\Vert \nabla f(\mathbf{x_{i-1}})\right\Vert ^{2}}\mathbf{d_{i-1}},
+        \mathbf{d_i} = -\nabla f(\mathbf{x_i})+\frac{\left\Vert 
+        \nabla f(\mathbf{x_i})\right\Vert ^{2}}{\left\Vert 
+        \nabla f(\mathbf{x_{i-1}})\right\Vert ^{2}}\mathbf{d_{i-1}},
     \f]
     \f[
         \mathbf{d}_{0} = -\nabla f(\mathbf{x}_{0}).
     \f]
     
-    As we can see, this optimization method requires the knowledge of the gradient of the cost function. 
-    see QuantLib::Optimization::ConjugateGradient .
+    As we can see, this optimization method requires the knowledge of
+    the gradient of the cost function.
+    See QuantLib::ConjugateGradient .
  
 */

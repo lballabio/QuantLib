@@ -15,15 +15,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file baroneadesiwhaleyengine.cpp
-    \brief American option engine using Barone-Adesi and Whaley approximation
-*/
-
 #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {
-
 
     namespace {
 
@@ -189,8 +184,8 @@ namespace QuantLib {
             results_.theta       = black.theta(spot, t);
             results_.thetaPerDay = black.thetaPerDay(spot, t);
 
-            results_.strikeSensitivity = black.strikeSensitivity();
-            results_.itmProbability    = black.itmProbability();
+            results_.strikeSensitivity  = black.strikeSensitivity();
+            results_.itmCashProbability = black.itmCashProbability();
         } else {
             // early exercise can be optimal 
             CumulativeNormalDistribution cumNormalDist;

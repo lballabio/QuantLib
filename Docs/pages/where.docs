@@ -28,10 +28,6 @@
     %QuantLib releases can be downloaded from
     http://quantlib.org/download.html
 
-    Debian package is available from
-    http://ftp.us.debian.org/debian/pool/main/q/quantlib
-    (the .us can be replaced by .jp, .uk, .de, .it, etc.)
-
     \section cvs Current CVS snapshot
     Instructions for anonymous CVS access are available at
     http://quantlib.org/cvs.html

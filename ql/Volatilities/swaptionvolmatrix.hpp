@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    //! Swaption at-the-money volatility matrix
+    //! At-the-money swaption-volatility matrix
     /*! This class provides the at-the-money volatility for a given
         swaption by interpolating a volatility matrix whose elements
         are the market volatilities of a set of swaption with given

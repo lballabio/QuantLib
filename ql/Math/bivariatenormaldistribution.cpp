@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bivariatenormaldistribution.cpp
-    \brief bivariate cumulative normal distribution
-*/
-
 #include <ql/Math/bivariatenormaldistribution.hpp>
 #include <ql/Math/normaldistribution.hpp>
 

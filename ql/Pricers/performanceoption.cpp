@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file performanceoption.cpp
-    \brief Performance option.computed using Monte Carlo simulation
-*/
-
 #include <ql/Pricers/performanceoption.hpp>
 
 namespace QuantLib {

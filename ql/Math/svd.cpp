@@ -30,10 +30,6 @@
         redistributable libraries or applications. 
 */
 
-/*! \file svd.cpp
-    \brief singular value decomposition
-*/
-
 
 #include <ql/Math/svd.hpp>
 
@@ -57,10 +53,6 @@ namespace QuantLib {
 
     }
 
-    //! Singular Value Decomposition
-    /*! Refer to Golub and Van Loan: Matrix computation,
-        The Johns Hopkins University Press
-    */
 
     SVD::SVD(const Matrix& M) {
 

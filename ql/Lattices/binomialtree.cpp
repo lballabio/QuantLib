@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file binomialtree.cpp
-    \brief Binomial tree class
-*/
-
 #include <ql/Lattices/binomialtree.hpp>
 #include <ql/Math/binomialdistribution.hpp>
 

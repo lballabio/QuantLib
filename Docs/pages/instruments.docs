@@ -23,12 +23,6 @@
 
 /*! \page instruments Instruments and pricers
 
-    Documentation for this part of the library is in progress.
-
-    This section will include documentation for classes such as 
-    QuantLib::Instrument, its derived classes in the QuantLib::Instruments 
-    namespace, and the pricing engines in the QuantLib::Pricers namespace.
-
     \section instruments A developer's guide to the Instrument class
 
     Since version 0.3.4, the Instrument class was reworked

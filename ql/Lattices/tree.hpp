@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! Tree approximating a single-factor diffusion
+    //! %Tree approximating a single-factor diffusion
     class Tree {
       public:
         Tree(Size nColumns) : nColumns_(nColumns) {}

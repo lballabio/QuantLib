@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file shortfloatingcoupon.cpp
-    \brief Short coupon at par on a term structure
-*/
-
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
 #include <ql/Indexes/xibormanager.hpp>
 

@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file parcoupon.cpp
-    \brief Coupon at par on a term structure
-*/
-
 #include <ql/CashFlows/parcoupon.hpp>
 #include <ql/Indexes/xibormanager.hpp>
 

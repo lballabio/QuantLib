@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file blackvariancecurve.cpp
-    \brief Black volatility curve modelled as variance curve
-*/
-
 #include <ql/Volatilities/blackvariancecurve.hpp>
 #include <ql/Math/interpolationtraits.hpp>
 #include <ql/dataformatters.hpp>

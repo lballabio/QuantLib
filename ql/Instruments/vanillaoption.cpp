@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file vanillaoption.cpp
-    \brief Vanilla option on a single asset
-*/
-
 #include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {

@@ -33,6 +33,9 @@ namespace QuantLib {
         a number of risk measures (e.g.: value-at-risk, expected 
         shortfall, etc.) based on the data distribution as reported by
         the underlying tool.
+
+        \todo add historical annualized volatility
+
     */
     template <class S>
     class GenericRiskStatistics : public S {

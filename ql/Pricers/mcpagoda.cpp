@@ -15,15 +15,66 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcpagoda.cpp
-    \brief Roofed multi asset Asian option
-*/
-
 #include <ql/handle.hpp>
 #include <ql/Pricers/mcpagoda.hpp>
-#include <ql/MonteCarlo/pagodapathpricer.hpp>
 
 namespace QuantLib {
+
+    namespace {
+
+        class PagodaPathPricer_old : public PathPricer_old<MultiPath> {
+          public:
+            PagodaPathPricer_old(const std::vector<double>& underlying,
+                                 double roof,
+                                 DiscountFactor discount,
+                                 bool useAntitheticVariance)
+            : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
+              underlying_(underlying), roof_(roof) {}
+
+            double operator()(const MultiPath& multiPath) const {
+                Size numAssets = multiPath.assetNumber();
+                Size numSteps = multiPath.pathSize();
+                QL_REQUIRE(underlying_.size() == numAssets,
+                           "PagodaPathPricer_old: the multi-path must contain "
+                           + IntegerFormatter::toString(underlying_.size()) +
+                           " assets");
+
+                Size i,j;
+                if (useAntitheticVariance_) {
+                    double averageGain = 0.0, averageGain2 = 0.0;
+                    for(i = 0; i < numSteps; i++)
+                        for(j = 0; j < numAssets; j++) {
+                            averageGain += underlying_[j] *
+                                (QL_EXP(multiPath[j].drift()[i]+
+                                        multiPath[j].diffusion()[i])
+                                 -1.0);
+                            averageGain2 += underlying_[j] *
+                                (QL_EXP(multiPath[j].drift()[i]-
+                                        multiPath[j].diffusion()[i])
+                                 -1.0);
+                        }
+                    return discount_ * 0.5 *
+                        (QL_MAX(0.0, QL_MIN(roof_, averageGain))+
+                         QL_MAX(0.0, QL_MIN(roof_, averageGain2)));
+                } else {
+                    double averageGain = 0.0;
+                    for(i = 0; i < numSteps; i++)
+                        for(j = 0; j < numAssets; j++) {
+                            averageGain += underlying_[j] *
+                                (QL_EXP(multiPath[j].drift()[i]+
+                                        multiPath[j].diffusion()[i])
+                                 -1.0);
+                        }
+                    return discount_ * QL_MAX(0.0, QL_MIN(roof_, averageGain));
+                }
+            }
+
+          private:
+            std::vector<double> underlying_;
+            double roof_;
+        };
+
+    }
 
     McPagoda::McPagoda(const std::vector<double>& portfolio, double fraction,
                        double roof, const Array& dividendYield, 
@@ -46,7 +97,7 @@ namespace QuantLib {
         QL_REQUIRE(times.size() >= 1,
                    "McPagoda: you must have at least one time-step");
 
-        //! Initialize the path generator
+        // initialize the path generator
         Array mu(riskFreeRate - dividendYield
                  - 0.5 * covariance.diagonal());
 
@@ -57,13 +108,13 @@ namespace QuantLib {
                 seed));
         double residualTime = times[times.size()-1];
 
-        //! Initialize the pricer on the path pricer
+        // initialize the pricer on the path pricer
         Handle<PathPricer_old<MultiPath> > pathPricer(
             new PagodaPathPricer_old(portfolio, roof,
                     fraction * QL_EXP(-riskFreeRate*residualTime),
                     antitheticVariance));
 
-         //! Initialize the multi-factor Monte Carlo
+         // initialize the multi-factor Monte Carlo
         mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
                                           PseudoRandomSequence_old> > > (
             new MonteCarloModel<MultiAsset_old<

@@ -22,7 +22,7 @@
 #ifndef quantlib_combining_iterator_h
 #define quantlib_combining_iterator_h
 
-#include <iterator>
+#include <ql/qldefines.hpp>
 
 namespace QuantLib {
 

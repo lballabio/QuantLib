@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file affinetermstructure.cpp
-    \brief Affine term-structure
-*/
-
 #include <ql/TermStructures/affinetermstructure.hpp>
 
 namespace QuantLib {

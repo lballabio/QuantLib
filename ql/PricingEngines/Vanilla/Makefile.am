@@ -25,6 +25,7 @@ libVanillaEngines_la_SOURCES = \
     bjerksundstenslandengine.cpp \
     discretizedvanillaoption.cpp \
     integralengine.cpp \
-    jumpdiffusionengine.cpp
+    jumpdiffusionengine.cpp \
+	mcdigitalengine.cpp
 
 noinst_LTLIBRARIES = libVanillaEngines.la

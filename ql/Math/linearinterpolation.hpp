@@ -26,33 +26,42 @@
 
 namespace QuantLib {
 
-    //! linear interpolation between discrete points
+    //! %Linear interpolation between discrete points
     class LinearInterpolation : public Interpolation {
       protected:
-        //! linear interpolation implementation
         template <class I1, class I2>
         class Impl : public Interpolation::templateImpl<I1,I2> {
           public:
             Impl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
-            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin) {}
+            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
+              primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {
+                primitiveConst_[0] = 0.0;
+                for (int i=1; i<xEnd-xBegin; i++) {
+                    double dx = xBegin_[i]-xBegin_[i-1];
+                    s_[i-1] = (yBegin_[i]-yBegin_[i-1])/dx;
+                    primitiveConst_[i] = primitiveConst_[i-1]
+                        + dx*(yBegin_[i-1] +0.5*dx*s_[i-1]);
+                }
+            }
             double value(double x) const {
                 Size i = locate(x);
-                // I2 j = yBegin_+i;
-                return yBegin_[i] + (x-xBegin_[i])*(yBegin_[i+1]-yBegin_[i])/
-                                                   (xBegin_[i+1]-xBegin_[i]);
+                return yBegin_[i] + (x-xBegin_[i])*s_[i];
             }
-            double primitive(double) const {
-                QL_FAIL("LinearInterpolation::primitive(): "
-                        "not implemented");
+            double primitive(double x) const {
+                Size i = locate(x);
+                double dx = x-xBegin_[i];
+                return primitiveConst_[i] +
+                    dx*(yBegin_[i] + 0.5*dx*s_[i]);
             }
-            double derivative(double) const {
-                QL_FAIL("LinearInterpolation::derivative(): "
-                        "not implemented");
+            double derivative(double x) const {
+                Size i = locate(x);
+                return s_[i];
             }
             double secondDerivative(double) const {
-                QL_FAIL("LinearInterpolation::secondDerivative(): "
-                        "not implemented");
+                return 0.0;
             }
+          private:
+            std::vector<double> primitiveConst_, s_;
         };
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */

@@ -27,7 +27,10 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for European vanilla options using integral approach
+    /*! Pricing engine for European vanilla options using integral approach
+
+        \todo define tolerance for calculate()
+    */
     class IntegralEngine : public VanillaEngine {
       public:
         void calculate() const;

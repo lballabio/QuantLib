@@ -16,8 +16,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcengine.hpp
-    \brief base class for Monte Carlo engines
+/*! \file mceuropeanengine.hpp
+    \brief Monte Carlo European option engine
 */
 
 #ifndef quantlib_montecarlo_european_engine_h
@@ -76,6 +76,19 @@ namespace QuantLib {
     };
     #endif
 
+    class EuropeanPathPricer : public PathPricer<Path> {
+      public:
+        EuropeanPathPricer(Option::Type type,
+                           double underlying,
+                           double strike,
+                           const RelinkableHandle<TermStructure>& riskFreeTS);
+        double operator()(const Path& path) const;
+      private:
+        double underlying_;
+        PlainVanillaPayoff payoff_;
+    };
+
+
     // inline definitions
 
     template <class RNG, class S>
@@ -110,8 +123,8 @@ namespace QuantLib {
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
-        return Handle<MCEuropeanEngine<RNG,S>::path_pricer_type>(new
-            EuropeanPathPricer(
+        return Handle<MCEuropeanEngine<RNG,S>::path_pricer_type>(
+            new EuropeanPathPricer(
                 payoff->optionType(),
                 arguments_.blackScholesProcess->stateVariable->value(),
                 payoff->strike(),
@@ -244,6 +257,34 @@ namespace QuantLib {
     }
 
     #endif
+
+
+    inline EuropeanPathPricer::EuropeanPathPricer(
+                            Option::Type type,
+                            double underlying, double strike,
+                            const RelinkableHandle<TermStructure>& riskFreeTS)
+    : PathPricer<Path>(riskFreeTS), underlying_(underlying),
+      payoff_(type, strike) {
+        QL_REQUIRE(underlying>0.0,
+                   "EuropeanPathPricer: "
+                   "underlying less/equal zero not allowed");
+        QL_REQUIRE(strike>=0.0,
+                   "EuropeanPathPricer: "
+                   "strike less than zero not allowed");
+    }
+
+    inline double EuropeanPathPricer::operator()(const Path& path) const {
+        Size n = path.size();
+        QL_REQUIRE(n>0,
+                   "EuropeanPathPricer: the path cannot be empty");
+
+        double log_variation = 0.0;
+        for (Size i = 0; i < n; i++)
+            log_variation += path[i];
+
+        return payoff_(underlying_ * QL_EXP(log_variation)) *
+                       riskFreeTS_->discount(path.timeGrid().back());
+    }
 
 }
 

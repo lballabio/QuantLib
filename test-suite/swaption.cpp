@@ -22,7 +22,7 @@
 #include <ql/Indexes/euribor.hpp>
 #include <ql/DayCounters/actual365.hpp>
 #include <ql/DayCounters/thirty360.hpp>
-#include <ql/Pricers/blackswaption.hpp>
+#include <ql/PricingEngines/Swaption/blackswaption.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 

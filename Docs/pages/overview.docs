@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000-2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,72 +26,461 @@
 
     The %QuantLib project is at this time in <em>beta</em> status.
 
-    The following list is an overview of the goals set for release 1.0.
-    It is open for suggestions, corrections, and additions which can be
-    submitted through the
-    <a href="http://lists.sourceforge.net/lists/listinfo/quantlib-users">
-    QuantLib-users</a> mailing list.
-    Every proposal will be seriously considered.
+    The following list is an overview of the existing code base.
 
-    \section goals Project goals
+    The <a href="http://lists.sourceforge.net/lists/listinfo/quantlib-users">
+    QuantLib-users</a> mailing list is the preferred forum for proposals,
+    suggestions and contributions regarding the future development of the
+    library.
 
-    <strong>Interfaces</strong>
 
-    - yield term structure---done;
-    - financial instrument---done;
-    - deal---to do;
-    - folder/portfolio/book levels of deal aggregation (strict
-      vertical inclusion)---to do;
-    - trade-group deal aggregation (horizontal cross section)---to do;
-    - volatility term structure for cap/floor and swaption---to do;
 
-    <strong>Generic Tools</strong>
 
-    - date/time module---done;
-    - one-dimensional solver---done;
-    - one-dimensional optimizer---to do;
-    - multi-dimensional solver---to do;
-    - multi-dimensional optimizer---in progress;
-    - linear algebra module---in progress;
-    - statistical module---in progress;
-    - PDE framework---in progress;
-    - Monte Carlo framework---in progress;
 
-    <strong>Financial Tools</strong>
 
-    - Black-Scholes analytic implementation---done;
-    - Black-Scholes PDE implementation (for American and exotic
-      options)---done;
-    - Deposits, FRA, futures, swaps---partly done;
-    - Deposit/FRA/futures/swap yield term structure---partly done;
-    - Swaptions---in progress;
-    - Caps/floors---in progress;
-    - Bonds (IRR/duration)---to do;
-    - Treasury yield term structure (Nelson-Siegel/Vasichek-Fong)---to do;
-    - Short-rate models (BDT, BK, HW, etc.)---in progress;
-    - Local volatility models---in progress;
-    - Stochastic volatility---to do.
 
-    <strong>Assorted Possible Milestones</strong>
+    <strong>Date, calendars, and day count conventions</strong>
+    - Date class.
+    - Weekday, month, frequency, time unit enumerations.
+    - Period class (eg. 1y, 30d, 2m, etc.)
+    - Calendars: Budapest, Copenhagen, Frankfurt, Helsinki,
+      Johannesburg, London, Milan, New York, Oslo, Stockholm, Sydney,
+      TARGET, Tokyo, Toronto, Warsaw, Wellington, Zurich.
+    - NullCalendar (no holidays) for theoretical calculations.
+    - Joint calendars made up as holiday union of base calendars.
+    - Rolling conventions: Preceding, ModifiedPreceding, Following,
+      ModifiedFollowing, MonthEndReference.
+    - Schedule class for date stream generation.
+    - Day count conventions: Actual360, Actual365, ActualActual (Bond, ISDA,
+      AFB), 30/360 (US, European, Italian).
 
-    - Moving to the generic option pricing engine (see
-      http://quantlib.org/quep/quep005.html) where each option can be priced
-      with different engines: analytic, trees, Finite Differences, Monte
-      Carlo. Allow everywhere for time varying volatilities and interest rates.
-    - Two dimensions FD framework, with satisfactory solution of the Free
-      Boundary problem (early exercise).
-    - MC path-wise Greek evaluation.
-    - Full coverage of analytic models for option pricing.
-    - Complete coverage of basic Fixed Income instruments (cap/floor, swaption,
-      Bermuda swaption) with all major one-factor models.
-    - Modeling of stochastic process with jumps, reversion, etc.
-    - Extraction of local volatilities surface from Black volatility surface.
-    - Implementation of FI products using FD framework.
-    - Low-discrepancy sequences for MC simulation.
-    - FD solution of weak path-dependent options (Asian, look-back, etc).
-    - Advanced MC variance reduction techniques.
-    - Implementation of Fixed Income products using MC framework.
+    To do:
+    - Differentiate calendars depending on city+exchange, instead of
+      city alone.
 
+
+
+
+
+
+
+
+
+
+
+
+    <strong>Math</strong>
+    - Linear, log-linear, and cubic spline interpolation.
+    - Primitive, first and second derivative functions of cubic and linear
+      interpolators.
+    - Cubic spline end conditions: first derivative value, second derivative
+      value, not-a-knot.
+    - Monotone cubic spline with Hyman non-restrictive filter.
+    - Bicubic spline and bilinear interpolations.
+    - Normal and cumulative normal distributions.
+    - Inverse cumulative normal distribution: Moro and Acklam approximations.
+    - Bivariate cumulative normal distribution.
+	- Binomial coefficients, binomial distribution,
+	  cumulative binomial distribution, and	Peizer-Pratt inversion (method 2.)
+	- Chi square and non-central chi square distributions.
+	- Beta functions.
+	- Poisson and cumulative Poisson distributions.
+	- Incomplete gamma functions.
+	- Gamma distribution.
+	- Factorials.
+    - Integration algorithms: Gauss-Kronrod, Simpson, trapezoid.
+    - Error function.
+    - General 1-D statistics: mean, variance,
+      standard deviation, skewness, kurtosis, error estimation, min, max.
+    - Multi-dimensional (sequence) statistics: all the 1-D methods plus
+      covariance, correlation, L2-discrepancy calculation, etc.
+    - Risk measures for Gaussian and empirical distributions: semi-variance,
+      regret, percentile, top percentile, value-at-risk, upside potential,
+      shorfall, average shorfall, expected shortfall.
+    - Array and matrix classes for algebra.
+    - Singular value decomposition.
+    - Eigenvalues, eigenvectors for symmetric matrices.
+	- Cholesky decomposition.
+	- Schur decomposition.
+	- Spectral rank-reduced square root, spectral pseudo-square root.
+
+    To do:
+    - Periodic and Lagrange end conditions for cubic spline.
+    - Implement convexity-preserving filter for cubic spline.
+    - Log-linear interpolator primitive, first and second derivative functions.
+    - Revise end conditions for bicubic spline.
+    - Trivariate and multi-variate distribution, see Genz, A. (1992)
+      `Numerical Computation of the Multivariate Normal Probabilities',
+      J. Comput. Graph. Stat. 1, pp. 141-150.
+    - Hypersphere decomposition, Higham algorithm for pseudo-square root.
+    - interface with GALib (genetic algorithm)
+    - Add COOOL algorithms
+    - Histogram class
+
+
+    <strong>1-dimensional solvers</strong>
+    - Bisection, false position, Newton, bounded Newton, Ridder, secant,
+      Brent.
+
+    To do:
+    - Clean up the interface so that it is clear whether the accuracy is
+      specified for x or f(x).
+
+
+
+
+
+
+
+    <strong>Optimization</strong>
+	- Conjugate gradient, simplex, steepest descent, line search,
+      Armijo line search, least squares.
+    - Constrained (positive, boundary, etc.) and unconstrained optimization
+
+
+
+
+
+
+
+    <strong>Random-number generation</strong>
+    - Uniform pseudo-random sequences: Knuth, L'Ecuyer, Mersenne twister.
+    - Uniform quasi-random (low-discrepancy) sequences: Halton, Sobol up to
+      dimension 21,200 (8,129,334 if you really want) with unit and Jäckel
+      initialization numbers.
+    - Randomized quasi-random sequences (in progress)
+    - Primitive polynomials modulo 2 up to dimension 18 (available up
+      to dimension 27.)
+    - Gaussian random numbers from uniform random numbers using different
+      algorithms: central limit theorem, Box-Muller, inverse cumulative (Moro
+      and Acklam algorithms)
+
+    To do:
+    - Add Faure low-discrepancy sequence.
+    - Randomized low-discrepancy sequences.
+
+
+    <strong>Patterns</strong>
+	- Bridge, composite, lazy object, observer/observable, strategy,
+      visitor.
+
+
+    <strong>Finite differences</strong>
+    - Mixed theta, implicit, explicit, and Crank-Nicolson 1-dimensional
+      schemes.
+    - Differential operators: \f$ D_{0} \f$, \f$ D_{+} \f$,
+      \f$ D_{-} \f$, \f$ D_{+}D_{-} \f$.
+    - Shout, Bermudan and American exercises.
+
+    To do:
+    - Richardson extrapolation
+    - Introduce variable theta schemes.
+    - Introduce multi time-level schemes.
+    - Enable different solvers (SOR, etc.)
+    - Extend to time-dependant parameters.
+    - Extend to local volatility.
+    - Two-dimension schemes.
+    - Improve boundary conditions.
+    - Adapt to the new pricing engine framework.
+    - Use DiscretisedAsset instead of array?
+    - Use TimeGrid
+    - Use assetGrid
+    - Handle barrier specification
+    - Handle variable asset step size
+    - Check (and improve) vega, rho, dividendRho greeks, solving
+      their own equations
+
+
+    <strong>Lattices</strong>
+    - Binomial trees: Cox-Ross-Rubinstein, Jarrow-Rudd, additive
+      equiprobabilities, Trigeorgis, Tian, Leisen-Reimer.
+    - Trinomial (interest-rate) tree.
+    - Discretized asset.
+    - Richardson extrapolation
+
+    To do:
+    - Merge finite differences with the lattice framework. Use same rollback
+      scheme.
+    - Evaluate proposed templatization
+    - Trinomial trees
+    - Implied trinomial trees
+    - Calculate binomial tree greeks
+
+
+    <strong>Monte Carlo</strong>
+    - One-factor and multi-factor path classes.
+    - Path-generator classes: incremental and Brownian-bridge one-factor
+      path generation, incremental multi-factor path generation.
+    - General-purpose Monte Carlo model based on traits for path
+      samples.
+    - Antithetic variance-reduction technique.
+    - Control variate technique.
+
+    To do:
+    - Use StochasticProcess class instead of DiffusionProcess.
+    - Greeks calculation.
+    - Allow easier selection between Incremental/BrownianBridge path
+      generation.
+    - Review Monte Carlo engine for american options.
+    - Review multi-factor Monte Carlo simulation.
+    - Predictor-corrector scheme.
+    - Add Milstein scheme.
+    - Add Martingale control variate.
+    - Batch samples as N=n_batches*batch_size, and exploit it for randomized
+      low discrepancy sequences (RQMC)
+
+
+
+
+
+    <strong>Pricing engines</strong>
+    - Analytic Black formula (plus greeks) for different payoffs.
+    - Analytic formula for American options with payoff at expiry.
+    - Analytic formula for American options with payoff at hit.
+    - Monte Carlo simulation base engine.
+    - Lattice short rate model base engine.
+    - Engines for options described by "vanilla" set of parameters: analytic
+      digital American, analytic European, Barone-Adesi and Whaley
+      approximation for American, binomial (Cox-Ross-Rubinstein, Jarrow-Rudd,
+      additive equiprobabilities, Trigeorgis, Tian, Leisen-Reimer), Bjerksund
+      and Stensland approximation  for American, integral European, Merton 76
+      jump-diffusion, Monte Carlo digital, Monte Carlo European.
+    - Engines for options described by "barrier" set of parameters: analytic
+      down/up in/out, Monte Carlo down/up in/out
+    - Engines for options described by "discrete Asian" set of parameters:
+      analytic discrete geometric average price
+    - Forward and forward-performance compound engines.
+    - Quanto compound engine.
+    - Basket engine: analytic Stulz engine for max/min on two assets, Monte
+      Carlo engine (in progress).
+    - Black model base class for vanilla interest rate derivatives
+    - Cap/floor pricing engines: analytic Black model, analytic affine models,
+      tree based engine.
+    - Swaption pricing engines: analytic Black model, analytic affine models
+      (Jamshidian), tree based engine.
+
+    To do:
+    - More vanilla engines: Roll-Geske-Whaley American Call, Geske-Johnson
+      American Put, finite differences, Edgeworth expansion binomial tree,
+      etc.
+    - Merge NesQuant SJD engine (http://www.nielses.dk/quantlib/nesquant/)
+    - Continous geometric average-strike.
+    - Ensure all path dependant options allow for evaluation with collected
+      past observations.
+    - Define dividendRho for discrete dividends.
+    - Improve and test compound engines: quanto, forward, etc.
+
+
+    <strong>Pricers</strong>
+    - Cliquet option
+    - Analytic continuous geometric average-price option (European exercise).
+    - Analytic discrete geometric average-price option (European exercise).
+    - Analytic discrete geometric average-strike option (European exercise).
+    - Finite difference American option.
+    - Bermudan option.
+    - Finite difference American option with discrete dividends (buggy).
+    - Finite difference European option with discrete dividends.
+    - Finite difference Shout option with discrete dividends (buggy).
+    - Finite difference European option (Black-Scholes).
+    - Monte Carlo basket option.
+    - Monte Carlo cliquet option.
+    - Monte Carlo discrete arithmetic average-price option.
+    - Monte Carlo discrete arithmetic average-strike option.
+    - Monte Carlo Everest option.
+    - Monte Carlo Himalaya option.
+    - Monte Carlo max basket option.
+    - Monte Carlo pagoda option.
+    - Monte Carlo forward performance option.
+    - Analytic forward performance option.
+
+    To do:
+    - Fix finite difference in presence of dividends
+    - All pricers should be moved to the pricing engine framework.
+
+
+    <strong>Financial Instruments</strong>
+    - Instrument base class: npv(), isExpired(), etc.
+    - Interest-rate swap: simple, normal.
+    - Swaption.
+    - Cap/floor.
+    - Stock.
+    - One-asset option base class.
+    - Asian option.
+    - Barrier option.
+    - Cliquet option.
+    - Forward vanilla option.
+    - Quanto vanilla option.
+    - Quanto-forward vanilla option.
+    - Vanilla option.
+    - Multi-asset option base class.
+    - Basket option.
+
+    To do:
+    - Forward (stock) and FRA (forward-rate agreement).
+    - Bond.
+
+
+    <strong>Yield term structures</strong>
+    - Term structure common interface.
+    - Term structure classes based on discount, zero, or forward
+      underlying description.
+    - Term structure based on linear interpolation of zero yields.
+    - Term structure based on log-linear interpolation of discounts.
+    - Term structure based on constant flat forward.
+    - Term structure based on piecewise-constant flat forwards with
+      libor-futures-swap bootstrapping algorithm.
+    - Spreaded term structures.
+    - Forward-date implied term structure.
+
+    To do:
+    - Future convexity adjustment
+    - End of year effect
+    - Do not require today's date, only the settlement date (when
+      discount==1.0) is necessary
+    - Assume no zero/forward implicit convention on input, specify them for
+      output
+
+
+
+
+
+
+
+
+    <strong>Volatility</strong>
+    - Interface for cap/floor Black volatility term structures (unstable).
+    - Interface for swaption Black volatility term structures (unstable).
+    - Interface for equity Black volatility term structures based on
+      volatility or variance underlying description: constant,
+      time-dependant curve, time-strike surface, forward date implied term
+      structure.
+    - Interface for equity local volatility term structures: constant,
+      time-dependant curve, time-asset level surface (Gatheral's formula).
+
+      To do:
+    - Fix implementation of Gatheral's formula for local volatility.
+
+
+
+
+
+
+    <strong>Short rate models</strong>
+    - Single factor models: Hull-White, Black-Karasinski, Vasichek (untested),
+      CIR (untested), Extended CIR (untested).
+    - Two factor models: G2 (untested).
+
+
+
+
+
+
+
+    <strong>Credit derivatives</strong>
+
+    To do:
+    - Introduce BET and double BET.
+    - Valuation of credit default swap.
+    - Bootstrapping of default probability from bond, CDS, etc.
+
+
+
+
+
+
+    <strong>Test suite</strong>
+
+    More than 100 automated tests covering:
+    - American options.
+    - Asian options.
+    - Barrier options.
+    - Basket options (Stulz two-assets, etc.)
+    - Calendars.
+    - Caps/floors (implied volatility, etc.)
+    - Covariance matrices.
+    - Dates.
+    - Day counters.
+    - Digital options (Monte Carlo American cash-at-hit, etc.)
+    - Distributions.
+    - European options (implied volatility, etc.)
+    - Factorials, gamma, Poisson distribution.
+    - Integration algorithms.
+    - Cubic spline interpolations.
+	- Jump-diffusion engine.
+	- Low-discrepancy sequences.
+	- Quotes.
+	- Matrices (eigenvalues, eigenvectors, pseudo-square root,
+	  singular value decompostion).
+	- Mersenne-twister random-number generator.
+	- Finite-difference operators.
+	- Piecewise flat-forward term structure.
+	- Risk statistics.
+	- 1-dimensional solvers.
+	- Statistics.
+	- Swaps.
+	- Swaptions.
+	- Term structures.
+	- A number of old-style (to be deprecated) pricers.
+
+	To do:
+    - Add tests for quanto and forward engines.
+    - Add covariance/correlation test for SequenceStatistics
+    - Add single factor calibration and bermudan pricing tests
+	- Increase coverage.
+	- Move from cppUnit to boost unit-test framework.
+
+
+
+
+
+
+
+    <strong>Miscellanea</strong>
+    - Index classes for handling of fixed-income libor indexes (fixings,
+      forecasting, etc.): AUD, CAD, CHF, EUR, GBP, JPY, USD, ZAR, generic.
+    - Cash-flow class.
+    - Currency enumeration.
+    - Output data formatters: long integers, Ordinal numerals,
+      power of two, exponential, fixed digit, sequences, dates, etc.
+    - Input data parsers.
+    - Error classes and error handling.
+    - Exercise classes: European, Bermudan, American
+    - Payoff classes: plain, gap, asset-or-nothing, cash-or-nothing
+    - Grid classes for handling of equally and unequally spaced grids.
+    - History class for handling of historical data.
+    - Quote class for mutable data.
+    - Null types.
+
+    To do:
+    - IRR, duration, convexity, etc. for a sequence of cash flows
+    - Currency as class with methods returning related info
+    - Implement currency as per OMG definition
+    - Implement round as per OMG enumeration/definition
+
+
+
+
+
+    <strong>Documentation</strong>
+    - Documentation automatically generated with Doxygen (html, PDF, ps,
+      WinHelp, man pages)
+
+    To do:
+    - Add a "Getting started" page to the site
+    - Enable forums?
+    - Create a FAQ
+
+
+
+
+
+    <strong>Distribution</strong>
+    - Windows installer generated with NSIS.
+    - Included in the Debian distribution.
+    - RPMs available.
+
+    To do:
+    - Fink package
 
 */
 

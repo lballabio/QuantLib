@@ -80,7 +80,6 @@ tex-files: docs-html
            -e "/include{usage}/d" \
            -e "/include{utilities}/d" \
            -e "/include{where}/d" \
-           -e "/include{todo}/d" \
            -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
 	       .refman.tex > latex/refman.tex
 	rm -f .refman.tex
@@ -90,4 +89,7 @@ tex-files: docs-html
 	mv latex/bug.tex .bug.tex
 	$(SED) -e "s/section/chapter/" .bug.tex > latex/bug.tex
 	rm -f .bug.tex
+	mv latex/todo.tex .todo.tex
+	$(SED) -e "s/section/chapter/" .todo.tex > latex/todo.tex
+	rm -f .todo.tex
 

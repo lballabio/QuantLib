@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file jointcalendar.cpp
-    \brief Joint calendar
-*/
-
 #include <ql/Calendars/jointcalendar.hpp>
 
 namespace QuantLib {

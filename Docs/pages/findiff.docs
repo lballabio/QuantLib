@@ -22,7 +22,7 @@
 */
 
 /*! \page findiff The finite differences framework
-    This framework (corresponding to the QuantLib::FiniteDifferences namespace)
+    This framework (corresponding to the ql/FiniteDifferences directory)
     contains basic building blocks for the numerical solution of a generic
     differential equation
     \f[
@@ -35,7 +35,7 @@
     Writing the equation in the above form allows us to implement
     separately the discretization of the differential operator \f$ L \f$
     and the time scheme used for the evolution of the solution. The
-    QuantLib::FiniteDifferences::FiniteDifferenceModel class acts as a glue
+    QuantLib::FiniteDifferenceModel class acts as a glue
     for such two steps---which are outlined in the following sections---and
     provides the interface of the resulting finite difference model for the
     end user. Furthermore, it provides the possibility of checking and
@@ -63,20 +63,20 @@
     the first derivative \f$ \partial/\partial x \f$ is discretized as the
     operator \f$ D_+ \f$, defined as
     \f[ D_{+} u_{i} = \frac{u_{i+1}-u_{i}}{h} \f]
-    and implemented in class QuantLib::FiniteDifferences::DPlus;
+    and implemented in class QuantLib::DPlus;
     the operator \f$ D_- \f$, defined as
     \f[ D_{-} u_{i} = \frac{u_{i}-u_{i-1}}{h} \f]
-    and implemented in class QuantLib::FiniteDifferences::DMinus;
+    and implemented in class QuantLib::DMinus;
     and the operator \f$ D_0 \f$, defined as
     \f[ D_{0} u_{i} = \frac{u_{i+1}-u_{i-1}}{2h} \f]
-    and implemented in class QuantLib::FiniteDifferences::DZero.
+    and implemented in class QuantLib::DZero.
     The discretization error of the above operators is \f$ O(h) \f$ for
     \f$ D_+ \f$ and \f$ D_- \f$ and \f$ O(h^2) \f$ for \f$ D_0 \f$;
 
     the second derivative \f$ \partial^2/\partial x^2 \f$ is
     discretized as the operator \f$ D_+D_- \f$, defined as
     \f[ D_{+}D_{-} u_{i} = \frac{u_{i+1}-2u_{i}+u_{i-1}}{h^2} \f]
-    and implemented in class QuantLib::FiniteDifferences::DPlusDMinus.
+    and implemented in class QuantLib::DPlusDMinus.
     Its discretization error is \f$ O(h^2) \f$.
 
     The boundary condition for the above operators is by default linear
@@ -139,9 +139,9 @@
 
     Each of the above evolvers forces a set of interface requirements upon
     the differential operator which are detailed in the documentation of the
-    corresponding class, namely, QuantLib::FiniteDifferences::ExplicitEuler,
-    QuantLib::FiniteDifferences::ImplicitEuler, and
-    QuantLib::FiniteDifferences::CrankNicolson, respectively.
+    corresponding class, namely, QuantLib::ExplicitEuler,
+    QuantLib::ImplicitEuler, and
+    QuantLib::CrankNicolson, respectively.
 
     A programmer could implement its own evolver, which does not need to
     inherit from any base class.
@@ -176,7 +176,7 @@
     A finite difference model can be passed a step condition to be
     applied at each step during the rollback of the solution (e.g. the early
     exercise American condition). Such condition must be embodied in a class
-    derived from QuantLib::FiniteDifferences::StepCondition and must implement
+    derived from QuantLib::StepCondition and must implement
     the interface of the latter, namely,
     \code
     class MyCondition : public StepCondition<arrayType> {
@@ -309,7 +309,7 @@
     \endcode
 
     Everything is now ready. The model can be created gluing the piece
-    together by means of the QuantLib::FiniteDifferences::FiniteDifferenceModel
+    together by means of the QuantLib::FiniteDifferenceModel
     class. The current value of the option is calculated by rolling back the
     solution to the current time, i.e., \f$ t = 0 \f$, and by taking the value
     corresponding at the current underlying price---which by construction

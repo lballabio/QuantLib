@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discretegeometricaso.cpp
-    \brief Discrete Geometric Average Strike Option
-*/
-
 #include <ql/Pricers/discretegeometricaso.hpp>
 #include <numeric>
 

@@ -21,9 +21,6 @@
 #include <ql/qldefines.hpp>
 #include <ql/Pricers/core.hpp>
 
-#include <ql/Pricers/analyticalcapfloor.hpp>
-#include <ql/Pricers/blackcapfloor.hpp>
-#include <ql/Pricers/blackswaption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>
 #include <ql/Pricers/continuousgeometricapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
@@ -40,7 +37,6 @@
 #include <ql/Pricers/fdmultiperiodoption.hpp>
 #include <ql/Pricers/fdshoutoption.hpp>
 #include <ql/Pricers/fdstepconditionoption.hpp>
-#include <ql/Pricers/jamshidianswaption.hpp>
 #include <ql/Pricers/mcbasket.hpp>
 #include <ql/Pricers/mccliquetoption.hpp>
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
@@ -51,8 +47,6 @@
 #include <ql/Pricers/mcpagoda.hpp>
 #include <ql/Pricers/mcperformanceoption.hpp>
 #include <ql/Pricers/performanceoption.hpp>
-#include <ql/Pricers/treecapfloor.hpp>
-#include <ql/Pricers/treeswaption.hpp>
 
 
 #endif

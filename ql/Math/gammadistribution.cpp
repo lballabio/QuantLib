@@ -15,10 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file gammadistribution.cpp
-    \brief Gamma function
-*/
-
 #include <ql/Math/gammadistribution.hpp>
 
 namespace QuantLib {

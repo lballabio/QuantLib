@@ -31,6 +31,24 @@ namespace QuantLib {
 
         For this implementation see
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
+
+        \todo check accuracy of this algorithm and compare with:
+              1) Drezner, Z, (1978),
+                 Computation of the bivariate normal integral,
+                 Mathematics of Computation 32, pp. 277-279.
+              2) Drezner, Z. and Wesolowsky, G. O. (1990)
+                 `On the Computation of the Bivariate Normal Integral',
+                 Journal of Statistical Computation and Simulation 35, pp. 101-107.
+              3) Drezner, Z (1992)
+                 Computation of the Multivariate Normal Integral,
+                 ACM Transactions on Mathematics Software 18, pp. 450-460.
+              4) Drezner, Z (1994)
+                 Computation of the Trivariate Normal Integral,
+                 Mathematics of Computation 62, pp. 289-294.
+              5) Genz, A. (1992)
+                `Numerical Computation of the Multivariate Normal Probabilities',
+                 J. Comput. Graph. Stat. 1, pp. 141-150.
+
     */
     class BivariateCumulativeNormalDistribution {
       public:

@@ -12,6 +12,7 @@ EXTRA_DIST=makefile.mak
 
 libBasketEngines_la_SOURCES = \
 	mcamericanbasketengine.cpp \
+	mcbasketengine.cpp \
 	stulzengine.cpp
 
 noinst_LTLIBRARIES = libBasketEngines.la
