@@ -1,37 +1,62 @@
 """
-/*
- * Copyright (C) 2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.sourceforge.net/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, contact ferdinando@ametrano.net
- *
- * QuantLib license is also available at:
- * http://quantlib.sourceforge.net/LICENSE.TXT
-*/
+ Copyright (C) 2000-2001 QuantLib Group
+
+ This file is part of QuantLib.
+ QuantLib is a C++ open source library for financial quantitative
+ analysts and developers --- http://quantlib.sourceforge.net/
+
+ QuantLib is free software and you are allowed to use, copy, modify, merge,
+ publish, distribute, and/or sell copies of it under the conditions stated
+ in the QuantLib License.
+
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+
+ You should have received a copy of the license along with this file;
+ if not, contact ferdinando@ametrano.net
+ The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+
+ The members of the QuantLib Group are listed in the Authors.txt file, also
+ available at http://quantlib.sourceforge.net/Authors.txt
+"""
 
 """
     $Id$
     $Source$
     $Log$
-    Revision 1.9  2001/04/20 13:24:39  nando
-    CVS tags
+    Revision 1.10  2001/04/20 13:45:14  nando
+    minor changes
 
 """
 
+import sys
+sys.path.append("./Tests")
+
 from distutils.core import setup, Extension
 from distutils.cmd import Command
+from distutils import sysconfig
+import QuantLibSuite
+
+if sys.platform == 'win32':
+    import win32api
+    quantLibInstallDirectory = win32api.GetEnvironmentVariable('QL_DIR')
+    if len(quantLibInstallDirectory) == 0:
+        raise('Please set environment variable "QL_DIR" to installation directory of QuantLib')
+    include_dirs = [quantLibInstallDirectory + "\\Include"]
+    library_dirs = [quantLibInstallDirectory + '\\lib\\win32\\VisualStudio']
+else:
+    include_dirs = ["/usr/local/include"]
+    library_dirs = None
+    # changes the compiler from gcc to g++
+    save_init_posix = sysconfig._init_posix
+    def my_init_posix():
+        print 'my_init_posix: changing gcc to g++'
+        save_init_posix()
+        g = sysconfig._config_vars
+        g['CC'] = 'g++'
+        g['LDSHARED'] = 'g++ -shared'
+    sysconfig._init_posix = my_init_posix
 
 class test(Command):
     # Original version of this class posted
@@ -123,39 +148,7 @@ class test(Command):
 
 # class test
 
-
-from distutils import sysconfig
-
-# the directory where QL headers have been installed
-import sys
-
-library_dirs = None
-include_dirs = None
-
-if sys.platform == 'win32':
-    import win32api
-    quantLibInstallDirectory = win32api.GetEnvironmentVariable('QL_DIR')
-    if len(quantLibInstallDirectory) > 0:
-        include_dirs = [quantLibInstallDirectory + "\\Include"]
-        library_dirs = [quantLibInstallDirectory + '\\lib\\win32\\VisualStudio']
-    else:
-        raise('Please set environment variable "QL_DIR" to installation directory of QuantLib')
-
-else:
-    include_dirs = ["/usr/local/include"]
-
 cmdclass = {'test': test}
-
-# changes the compiler from gcc to g++
-save_init_posix = sysconfig._init_posix
-def my_init_posix():
-    print 'my_init_posix: changing gcc to g++'
-    save_init_posix()
-    g = sysconfig._config_vars
-    g['CC'] = 'g++'
-    g['LDSHARED'] = 'g++ -shared'
-sysconfig._init_posix = my_init_posix
-
 
 setup ( cmdclass = cmdclass,
         name = "pyQuantLib",
@@ -164,17 +157,12 @@ setup ( cmdclass = cmdclass,
         maintainer_email = "enri@users.sourceforge.net",
         url = "http://quantlib.sourceforge.net",
         py_modules = ["QuantLib"],
-        ext_modules = [
-            Extension ( "QuantLibc",
-                            ["quantlib_wrap.cpp"],
-                            libraries = ["QuantLib"],
-                            include_dirs = include_dirs,
-                            library_dirs = library_dirs
-                        )
-                ]
+        ext_modules = [Extension
+                       ( "QuantLibc",
+                          ["quantlib_wrap.cpp"],
+                          libraries = ["QuantLib"],
+                          include_dirs = include_dirs,
+                          library_dirs = library_dirs
+                          )
+                       ]
         )
-
-
-
-
-
