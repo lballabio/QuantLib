@@ -1,7 +1,6 @@
 
 /*! \example DiscreteHedging.cpp
     This is an example of using the %QuantLib Monte Carlo framework.
-
 */
 
 /*! \example Parities.cpp
@@ -9,3 +8,7 @@
     while testing call-put parity.
 */
 
+/*! \example svapvaluation.cpp
+    This example shows how to set up a Term Structure and then price a simple
+    swap.
+*/

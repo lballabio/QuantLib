@@ -23,7 +23,8 @@
 
 //! $Id$
 
-/*  This example shows how to value a swap.
+/*  This example shows how to set up a Term Structure and then price a simple
+    swap.
 */
 
 // the only header you need to use QuantLib
@@ -70,23 +71,29 @@ int main(int argc, char* argv[])
 
         int swFixedLegFrequency = 1;
         bool swFixedLegIsAdjusted = false;
-        Handle<DayCounter> swFixedLegDayCounter(new Thirty360(Thirty360::European));
+        Handle<DayCounter> swFixedLegDayCounter(new
+            Thirty360(Thirty360::European));
         int swFloatingLegFrequency = 2;
         Handle<RateHelper> s2y(new SwapRateHelper(0.037125, settlementDays,
             2, calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter, swFloatingLegFrequency));
+            swFixedLegIsAdjusted, swFixedLegDayCounter,
+            swFloatingLegFrequency));
         Handle<RateHelper> s3y(new SwapRateHelper(0.0398, settlementDays,
             3, calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter, swFloatingLegFrequency));
+            swFixedLegIsAdjusted, swFixedLegDayCounter,
+            swFloatingLegFrequency));
         Handle<RateHelper> s5y(new SwapRateHelper(0.0443, settlementDays,
             5, calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter, swFloatingLegFrequency));
+            swFixedLegIsAdjusted, swFixedLegDayCounter,
+            swFloatingLegFrequency));
         Handle<RateHelper> s10y(new SwapRateHelper(0.05165, settlementDays,
             10, calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter, swFloatingLegFrequency));
+            swFixedLegIsAdjusted, swFixedLegDayCounter,
+            swFloatingLegFrequency));
         Handle<RateHelper> s15y(new SwapRateHelper(0.055175, settlementDays,
             15, calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter, swFloatingLegFrequency));
+            swFixedLegIsAdjusted, swFixedLegDayCounter,
+            swFloatingLegFrequency));
 
         std::vector<Handle<RateHelper> > instruments;
         instruments.push_back(d1w);
@@ -103,7 +110,7 @@ int main(int argc, char* argv[])
 
         Currency currency = EUR;
         // Any DayCounter would be fine.
-        // ActualActual::ISDA ensures that 30 years is 30.0 
+        // ActualActual::ISDA ensures that 30 years is 30.0
         Handle<DayCounter> termStructureDayCounter(
             new ActualActual(ActualActual::ISDA));
         Date todaysDate(1, October, 2001);
@@ -115,7 +122,7 @@ int main(int argc, char* argv[])
 
 
         // let's start with the swap pricing
-        
+
         // this will be use for discounting and for
         // forward rate forecasting
         // Of course, you're not forced to use the same curve
@@ -131,14 +138,15 @@ int main(int argc, char* argv[])
         int fixedLegFrequency = 1;
         bool fixedLegIsAdjusted = false;
         RollingConvention roll = ModifiedFollowing;
-        Handle<DayCounter> fixedLegDayCounter(new Thirty360(Thirty360::European));
+        Handle<DayCounter> fixedLegDayCounter(new
+            Thirty360(Thirty360::European));
         Rate fixedRate = 0.04; // dummy value
         std::vector<double> couponRates;
         couponRates.push_back(fixedRate);
 
         // floating leg
         int floatingLegFrequency = 2;
-        Handle<Index> euriborIndex(new Euribor(6, Months, 
+        Handle<Index> euriborIndex(new Euribor(6, Months,
             rhTermStructure));
         std::vector<double> spreads;
         spreads.push_back(0.0);
@@ -152,9 +160,10 @@ int main(int argc, char* argv[])
 
         rhTermStructure.linkTo(myTermStructure);
         Rate fairFixedRate = fixedRate-mySwap.NPV()/mySwap.BPS();
-        std::cout << DoubleFormatter::toString(fairFixedRate*100,4) << std::endl;
-        
-       
+        std::cout << DoubleFormatter::toString(fairFixedRate*100,4)
+            << std::endl;
+
+
         // let's price the same swap on a different term structure
         // e.g. Flat Forward at 5.0%
         Handle<TermStructure> newTermStructure(new
@@ -163,8 +172,9 @@ int main(int argc, char* argv[])
 
         rhTermStructure.linkTo(newTermStructure);
         fairFixedRate = fixedRate-mySwap.NPV()/mySwap.BPS();
-        std::cout << DoubleFormatter::toString(fairFixedRate*100,4) << std::endl;
-        
+        std::cout << DoubleFormatter::toString(fairFixedRate*100,4)
+            << std::endl;
+
         return 0;
 
     } catch (std::exception& e) {

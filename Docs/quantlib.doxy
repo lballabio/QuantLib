@@ -68,7 +68,8 @@ EXCLUDE                = ../ql/config.hpp \
 EXCLUDE_PATTERNS       =
 EXAMPLE_PATH           = Examples \
                          ../Examples/DiscreteHedging \
-                         ../Examples/Parities
+                         ../Examples/Parities \
+                         ../Examples/Swap
 EXAMPLE_PATTERNS       = *.cpp
 IMAGE_PATH             =
 INPUT_FILTER           =
@@ -123,7 +124,7 @@ RTF_EXTENSIONS_FILE    =
 GENERATE_MAN           = NO
 MAN_OUTPUT             = man
 MAN_EXTENSION          = .3
-MAN_LINKS              = 
+MAN_LINKS              =
 #---------------------------------------------------------------------------
 # Configuration options related to the preprocessor
 #---------------------------------------------------------------------------
