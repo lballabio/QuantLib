@@ -162,10 +162,12 @@ namespace QuantLib {
 
         \pre n must be odd
     */
-    inline double PeizerPrattMethod2Inversion(double z, unsigned long nn) {
+    inline double PeizerPrattMethod2Inversion(double z, unsigned long n) {
 
-        // n must be odd
-        double n = nn + ((nn+1)%2);
+        QL_REQUIRE(n%2==1,
+            "PeizerPrattMethod2Inversion : "
+            "n must be an odd number" +
+            IntegerFormatter::toString(n) + " not allowed");
 
         double result = (z/(n+1.0/3.0+0.1/(n+1.0)));
         result *= result;
