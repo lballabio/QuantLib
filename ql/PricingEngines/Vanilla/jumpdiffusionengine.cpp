@@ -63,21 +63,35 @@ namespace QuantLib {
             arguments_.exercise->lastDate()))/t;
         Date rateRefDate = jdProcess->riskFreeTS->referenceDate();
 
-
         PoissonDistribution p(lambda*t);
 
+
+        
         baseEngine_->reset();
 
         VanillaOption::arguments* baseArguments =
             dynamic_cast<VanillaOption::arguments*>(baseEngine_->arguments());
-//        *baseArguments = arguments_;
+
+        // *baseArguments = arguments_;
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
-        baseArguments->blackScholesProcess->dividendTS =
-            arguments_.blackScholesProcess->dividendTS;
-        baseArguments->blackScholesProcess->stateVariable =
-            arguments_.blackScholesProcess->stateVariable;
 
+
+        // baseArguments->blackScholesProcess = arguments_.blackScholesProcess;
+
+        // these won't be changed
+        baseArguments->blackScholesProcess->dividendTS =
+            jdProcess->dividendTS;
+        baseArguments->blackScholesProcess->stateVariable =
+            jdProcess->stateVariable;
+
+        // these will be changed: assigned here just for validation
+        baseArguments->blackScholesProcess->volTS =
+            jdProcess->volTS;
+        baseArguments->blackScholesProcess->riskFreeTS =
+            jdProcess->riskFreeTS;
+
+        baseArguments->validate();
 
         const VanillaOption::results* baseResults =
             dynamic_cast<const VanillaOption::results*>(
@@ -99,12 +113,12 @@ namespace QuantLib {
                     Handle<BlackVolTermStructure>(new
                         BlackConstantVol(rateRefDate, v, dc)));
 
-            baseArguments->validate();
 
             baseEngine_->calculate();
 
 
             weight = p(i);
+            weightSum += weight;
             results_.value       += weight * baseResults->value;
             results_.delta       += weight * baseResults->delta;
             results_.gamma       += weight * baseResults->gamma;
