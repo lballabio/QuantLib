@@ -284,6 +284,18 @@ SectionIn 1 2
     File /r "Examples\*.mak"
     File /r "Examples\*.dsw"
 
+    SetOutPath $INSTDIR\Examples\AmericanOption
+    File /r "Examples\AmericanOption\*.cpp"
+    File /r "Examples\AmericanOption\*.dsp"
+    File /r "Examples\AmericanOption\*.txt"
+    File /r "Examples\AmericanOption\*.mak"
+
+    SetOutPath $INSTDIR\Examples\BermudanSwaption
+    File /r "Examples\BermudanSwaption\*.cpp"
+    File /r "Examples\BermudanSwaption\*.dsp"
+    File /r "Examples\BermudanSwaption\*.txt"
+    File /r "Examples\BermudanSwaption\*.mak"
+
     SetOutPath $INSTDIR\Examples\DiscreteHedging
     File /r "Examples\DiscreteHedging\*.cpp"
     File /r "Examples\DiscreteHedging\*.dsp"
@@ -301,12 +313,6 @@ SectionIn 1 2
     File /r "Examples\Swap\*.dsp"
     File /r "Examples\Swap\*.txt"
     File /r "Examples\Swap\*.mak"
-
-    SetOutPath $INSTDIR\Examples\BermudanSwaption
-    File /r "Examples\BermudanSwaption\*.cpp"
-    File /r "Examples\BermudanSwaption\*.dsp"
-    File /r "Examples\BermudanSwaption\*.txt"
-    File /r "Examples\BermudanSwaption\*.mak"
 
     IfFileExists $SMPROGRAMS\QuantLib 0 NoSourceShortCuts
         CreateShortCut "$SMPROGRAMS\QuantLib\Examples workspace.lnk" \
