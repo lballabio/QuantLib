@@ -25,8 +25,10 @@
     \brief Classes used to format data for output
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.9  2001/03/07 17:31:24  nando
+    CVS tag Name removed
+
     Revision 1.8  2001/03/05 12:46:34  lballabio
     Line wraps
 
