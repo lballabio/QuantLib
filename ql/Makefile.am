@@ -11,8 +11,10 @@ SUBDIRS = \
     FiniteDifferences \
     Indexes \
     Instruments \
+    InterestRateModelling \
     Math \
     MonteCarlo \
+    Optimization \
     Patterns \
     Pricers \
     RandomNumbers \
@@ -34,11 +36,13 @@ include_HEADERS = \
 	calendar.hpp \
 	cashflow.hpp \
 	config.hpp \
+    constraint.hpp \
 	currency.hpp \
 	dataformatters.hpp \
 	date.hpp \
 	daycounter.hpp \
 	errors.hpp \
+    exercisetype.hpp \
 	expressiontemplates.hpp \
 	forwardvolsurface.hpp \
 	handle.hpp \
@@ -46,6 +50,7 @@ include_HEADERS = \
 	index.hpp \
 	instrument.hpp \
 	marketelement.hpp \
+    minimizer.hpp \
 	null.hpp \
 	option.hpp \
 	qldefines.hpp \
@@ -54,6 +59,7 @@ include_HEADERS = \
 	riskstatistics.hpp \
 	scheduler.hpp \
 	solver1d.hpp \
+    stochasticprocess.hpp \
 	swaptionvolsurface.hpp \
 	termstructure.hpp \
 	types.hpp
@@ -73,8 +79,12 @@ libQuantLib_la_LIBADD = \
 	FiniteDifferences/libFiniteDifferences.la \
 	Indexes/libIndexes.la \
 	Instruments/libInstruments.la \
+    InterestRateModelling/libInterestRateModelling.la \
+    InterestRateModelling/CalibrationHelpers/libCalibrationHelpers.la \
+    InterestRateModelling/OneFactorModels/libOneFactorModels.la \
 	Math/libMath.la \
 	MonteCarlo/libMonteCarlo.la \
+    Optimization/libOptimization.la \
 	Pricers/libPricers.la \
 	RandomNumbers/libRandomNumbers.la \
 	Solvers1D/libSolvers1D.la \

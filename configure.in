@@ -130,7 +130,11 @@ AC_OUTPUT(Makefile \
     ql/Indexes/Makefile \
     ql/Instruments/Makefile \
     ql/Math/Makefile \
+    ql/InterestRateModelling/Makefile \
+    ql/InterestRateModelling/CalibrationHelpers/Makefile \
+    ql/InterestRateModelling/OneFactorModels/Makefile \
     ql/MonteCarlo/Makefile \
+    ql/Optimization/Makefile \
     ql/Patterns/Makefile \
     ql/Pricers/Makefile \
     ql/RandomNumbers/Makefile \
