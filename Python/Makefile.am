@@ -10,7 +10,7 @@ EXTRA_DIST=	makefile.mak \
     quantlib_wrap.cpp \
     QuantLibc.def \
 	README.txt \
-	setup.py \
+	setup.py 
 
 SWIG_INCLUDEDIR = ../SWIG
 

@@ -19,7 +19,7 @@ EXTRA_DIST=Authors.txt \
 	updateproject.sh \
 	lib/README.txt \
 	lib/Win32/Borland/README.txt \
-	lib/Win32/VisualStudio/README.txt \
+	lib/Win32/VisualStudio/README.txt 
 
 if PYTHON_FOUND
 if SWIG_FOUND
