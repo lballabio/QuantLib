@@ -64,7 +64,7 @@ namespace QuantLib {
 				    (d == 10 && w == Friday)) && m == November)
 				// Thanksgiving Day (fourth Thursday in November)
 				|| ((d >= 22 && d <= 28) && w == Thursday && m == November)
-				// Christmas (moved to Monday if Sunday or Friday if Saturday)
+				// Christmas (Monday if Sunday or Friday if Saturday)
 				|| ((d == 25 || (d == 26 && w == Monday) ||
 				    (d == 24 && w == Friday)) && m == December))
 					return false;

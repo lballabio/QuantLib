@@ -41,18 +41,19 @@ namespace QuantLib {
 			Weekday w = date.weekday();
 			Day d = date.dayOfMonth(), dd = date.dayOfYear();
 			Month m = date.month();
-			Year y = date.year()-1900;
+			Year y = date.year();
+			Day em = easterMonday(y);
 			if ((w == Saturday || w == Sunday)
 				// New Year's Day
 				|| (d == 1 && m == January)
 				// Epiphany
 				|| (d == 6 && m == January)
 				// Good Friday
-				|| (dd == easterMonday[y]-3)
+				|| (dd == em-3)
 				// Easter Monday
-				|| (dd == easterMonday[y])
+				|| (dd == em)
 				// Ascension Thursday
-				|| (dd == easterMonday[y]+38)
+				|| (dd == em+38)
 				// Labour Day
 				|| (d == 1 && m == May)
 				// Midsummer Eve

@@ -92,8 +92,8 @@ namespace QuantLib {
 
     //! Concrete date class
     /*! This class provides methods to inspect dates as well as methods and
-    operators which implement a limited date algebra (increasing and decreasing
-    dates, and calculating their difference).
+        operators which implement a limited date algebra (increasing and 
+        decreasing dates, and calculating their difference).
     */
     class Date {
       public:
@@ -157,18 +157,10 @@ namespace QuantLib {
         //@}
       private:
         int serialNumber_;
-        static const int minimumSerialNumber;
-        static const int maximumSerialNumber;
-        static const Date MinimumDate;
-        static const Date MaximumDate;
-        static const Day  monthOffsetStorage[];
-        static const Day  monthLeapOffsetStorage[];
-        static const Day  monthLengthStorage[];
-        static const Day  monthLeapLengthStorage[];
-        static const Day* monthOffset;
-        static const Day* monthLeapOffset;
-        static const Day* monthLength;
-        static const Day* monthLeapLength;
+        static unsigned int monthLength(Month m, bool leapYear);
+        static unsigned int monthOffset(Month m, bool leapYear);
+        static unsigned int yearOffset(Year y);
+        
     };
 
     /*! \relates Date

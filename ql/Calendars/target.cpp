@@ -42,13 +42,14 @@ namespace QuantLib {
 			Day d = date.dayOfMonth(), dd = date.dayOfYear();
 			Month m = date.month();
 			Year y = date.year();
+			Day em = easterMonday(y);
 			if ((w == Saturday || w == Sunday)
 				// New Year's Day
 				|| (d == 1  && m == January)
 				// Good Friday
-				|| (dd == easterMonday[y-1900]-3)
+				|| (dd == em-3)
 				// Easter Monday
-				|| (dd == easterMonday[y-1900])
+				|| (dd == em)
 				// Labour Day
 				|| (d == 1  && m == May)
 				// Christmas

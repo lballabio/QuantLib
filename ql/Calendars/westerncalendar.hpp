@@ -49,7 +49,7 @@ namespace QuantLib {
             WesternCalendar() {}
           protected:
             //! expressed relative to first day of year
-            static const Day easterMonday[];
+            static Day easterMonday(Year y);
         };
 
     }
