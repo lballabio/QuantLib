@@ -37,8 +37,8 @@ namespace QuantLib {
         FDVanillaEngine(const VanillaOption::arguments* args,
                         Size timeSteps, Size gridPoints,
                         bool timeDependent = false)
-        : timeSteps_(timeSteps), gridPoints_(gridPoints), 
-          timeDependent_(timeDependent), vanillaArguments_(args), 
+        : timeSteps_(timeSteps), gridPoints_(gridPoints),
+          timeDependent_(timeDependent), vanillaArguments_(args),
           grid_(gridPoints), intrinsicValues_(gridPoints), BCs_(2) {}
         virtual ~FDVanillaEngine() {};
         // accessors
@@ -59,8 +59,8 @@ namespace QuantLib {
         mutable Array grid_;
         mutable TridiagonalOperator finiteDifferenceOperator_;
         mutable Array intrinsicValues_;
-        typedef BoundaryCondition<TridiagonalOperator> BoundaryCondition;
-        mutable std::vector<boost::shared_ptr<BoundaryCondition> > BCs_;
+        typedef BoundaryCondition<TridiagonalOperator> bc_type;
+        mutable std::vector<boost::shared_ptr<bc_type> > BCs_;
         // temporaries
         mutable Real sMin_, center_, sMax_;
         const boost::shared_ptr<BlackScholesProcess>& getProcess() const {

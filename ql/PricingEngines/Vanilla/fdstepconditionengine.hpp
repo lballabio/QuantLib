@@ -42,8 +42,7 @@ namespace QuantLib {
         mutable boost::shared_ptr<StandardStepCondition> stepCondition_;
         mutable Array prices_;
         mutable TridiagonalOperator controlOperator_;
-        mutable std::vector<boost::shared_ptr<
-            BoundaryCondition<TridiagonalOperator> > > controlBCs_;
+        mutable std::vector<boost::shared_ptr<bc_type> > controlBCs_;
         mutable Array controlPrices_;
         virtual void initializeStepCondition() const = 0;
         void calculate() const;

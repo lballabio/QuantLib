@@ -86,10 +86,10 @@ namespace QuantLib {
             finiteDifferenceOperator_ = BSMOperator(grid_, getProcess(),
                                                     getResidualTime());
 
-        BCs_[0] = boost::shared_ptr<BoundaryCondition>(new NeumannBC(
+        BCs_[0] = boost::shared_ptr<bc_type>(new NeumannBC(
                                       intrinsicValues_[1]-intrinsicValues_[0],
                                       NeumannBC::Lower));
-        BCs_[1] = boost::shared_ptr<BoundaryCondition>(new NeumannBC(
+        BCs_[1] = boost::shared_ptr<bc_type>(new NeumannBC(
                                       intrinsicValues_[grid_.size()-1] -
                                       intrinsicValues_[grid_.size()-2],
                                       NeumannBC::Upper));
