@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file pagodapathpricer.cpp
     \brief path pricer for pagoda options
 
@@ -27,7 +27,6 @@
 
 #include <ql/MonteCarlo/pagodapathpricer.hpp>
 #include <ql/dataformatters.hpp>
-#include <iostream>
 
 namespace QuantLib {
 
