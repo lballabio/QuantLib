@@ -29,6 +29,7 @@ install : inst
 inst:: quantlib
     if exist "$(QL_DIR)\ql" rmdir /S /Q "$(QL_DIR)\ql"
     xcopy ql\*.hpp "$(QL_DIR)\ql" /S /I
+    xcopy ql\*.h   "$(QL_DIR)\ql" /S /I
 
     if exist "$(QL_DIR)\lib\Win32\VisualStudio" rmdir /S /Q "$(QL_DIR)\lib\Win32\VisualStudio"
     xcopy lib\Win32\VisualStudio\*.lib "$(QL_DIR)\lib\Win32\VisualStudio" /S /I
