@@ -136,8 +136,8 @@ public:
     void compute(int nTimeSteps, int nSamples);
 private:
     Option::Type type_;
-    double s0_, strike_;
     Time maturity_;
+    double strike_, s0_;
     double sigma_;
     Rate r_;
     double vega_;
