@@ -16,7 +16,7 @@
 */
 
 /*! \file randomizedlds.hpp
-    \brief Randomized low discrepancy sequence
+    \brief Randomized low-discrepancy sequence
 */
 
 #ifndef quantlib_randomized_lds_hpp
@@ -29,14 +29,14 @@
 
 namespace QuantLib {
 
-    //! Randomized (random shift) low discrepancy sequence
-    /*! It random shifts a uniform low discrepancy sequence of dimension N
-        adding (modulo 1 component-wise) a pseudo-random uniform deviate in
-        (0, 1)^N
+    //! Randomized (random shift) low-discrepancy sequence
+    /*! Random-shifts a uniform low-discrepancy sequence of dimension
+        \f$ N \f$ by adding (modulo 1 component-wise) a pseudo-random
+        uniform deviate in \f$ (0, 1)^N. \f$
         It is used for implementing Randomized Quasi Monte Carlo.
 
-        The uniform low discrepancy sequence is supplied by LDS, the uniform
-        pseudo-random sequence is supplied by PRS.
+        The uniform low discrepancy sequence is supplied by LDS; the
+        uniform pseudo-random sequence is supplied by PRS.
 
         Both class LDS and PRS must implement the following interface:
         \code
@@ -44,12 +44,11 @@ namespace QuantLib {
             Size LDS::dimension() const;
         \endcode
 
-        \pre LDS and PRS must have the same dimension N
+        \pre LDS and PRS must have the same dimension \f$ N \f$
 
-        \warnig Inverting LDS and PRS is possible, but it doesn't make sense
+        \warning Inverting LDS and PRS is possible, but it doesn't make sense
 
         \todo implement the other randomization algorithms
-
     */
     template <class LDS,
               class PRS = RandomSequenceGenerator<MersenneTwisterUniformRng> >
