@@ -247,7 +247,7 @@ int main(int argc, char* argv[])
             << " spread:               "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
-        fairFixedRate = fixedRate - NPV / spot5YearSwap.fixedLegBPS();
+        fairFixedRate = spot5YearSwap.fairRate();
         std::cout << "5Y fixed rate:                  "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
@@ -268,7 +268,7 @@ int main(int argc, char* argv[])
             << " spread:            "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
-        fairFixedRate = fixedRate - NPV/oneYearForward5YearSwap.fixedLegBPS();
+        fairFixedRate = oneYearForward5YearSwap.fairRate();
         std::cout << "1Yx5Y fixed rate:               "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
@@ -512,7 +512,7 @@ int main(int argc, char* argv[])
             << " spread:               "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
-        fairFixedRate = fixedRate - NPV / spot5YearSwap.fixedLegBPS();
+        fairFixedRate = spot5YearSwap.fairRate();
         std::cout << "5Y fixed rate:                  "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
@@ -533,7 +533,7 @@ int main(int argc, char* argv[])
             << " spread:            "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
-        fairFixedRate = fixedRate - NPV/oneYearForward5YearSwap.fixedLegBPS();
+        fairFixedRate = oneYearForward5YearSwap.fairRate();
         std::cout << "1Yx5Y fixed rate:               "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
@@ -556,7 +556,7 @@ int main(int argc, char* argv[])
             << " spread:               "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
-        fairFixedRate = fixedRate - NPV / spot5YearSwap.fixedLegBPS();
+        fairFixedRate = spot5YearSwap.fairRate();
         std::cout << "5Y fixed rate:                  "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
@@ -577,7 +577,7 @@ int main(int argc, char* argv[])
             << " spread:            "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
-        fairFixedRate = fixedRate - NPV/oneYearForward5YearSwap.fixedLegBPS();
+        fairFixedRate = oneYearForward5YearSwap.fairRate();
         std::cout << "1Yx5Y fixed rate:               "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
@@ -614,7 +614,7 @@ int main(int argc, char* argv[])
             << " spread:               "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
-        fairFixedRate = fixedRate - NPV / spot5YearSwap.fixedLegBPS();
+        fairFixedRate = spot5YearSwap.fairRate();
         std::cout << "5Y fixed rate:                  "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
@@ -634,7 +634,7 @@ int main(int argc, char* argv[])
             << " spread:            "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
-        fairFixedRate = fixedRate - NPV/oneYearForward5YearSwap.fixedLegBPS();
+        fairFixedRate = oneYearForward5YearSwap.fairRate();
         std::cout << "1Yx5Y fixed rate:               "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
@@ -656,7 +656,7 @@ int main(int argc, char* argv[])
             << " spread:               "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
-        fairFixedRate = fixedRate - NPV / spot5YearSwap.fixedLegBPS();
+        fairFixedRate = spot5YearSwap.fairRate();
         std::cout << "5Y fixed rate:                  "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
@@ -676,7 +676,7 @@ int main(int argc, char* argv[])
             << " spread:            "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
-        fairFixedRate = fixedRate - NPV/oneYearForward5YearSwap.fixedLegBPS();
+        fairFixedRate = oneYearForward5YearSwap.fairRate();
         std::cout << "1Yx5Y fixed rate:               "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;

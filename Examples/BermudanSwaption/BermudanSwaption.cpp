@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
 
-        Rate fixedATMRate = dummyFixedRate - swap->NPV()/swap->fixedLegBPS();
+        Rate fixedATMRate = swap->fairRate();
 
         Handle<SimpleSwap> atmSwap(new SimpleSwap(
             payFixedRate, todaysDate.plusYears(1), 5, Years,
