@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2001/01/17 11:54:02  marmar
+	Some documentation added and 80 columns format enforced.
+
 	Revision 1.1  2001/01/04 17:31:22  marmar
 	Alpha version of the Monte Carlo tools.
-
+	
 */
 
 
@@ -39,8 +42,9 @@
 namespace QuantLib {
 
 	namespace MonteCarlo {
-		/*!
-			PG must be a sample generator that returns a path
+		/*! Returns a path generator that gives an antithetic
+		    control variate on the given path generator PG.
+			PG must be have a method average().
 		*/
 		template <class PG>
 		class AntitheticCV {
@@ -57,8 +61,9 @@ namespace QuantLib {
 		};
 
 		template <class PG>
-		inline	AntitheticCV<PG>::AntitheticCV(int dimension, long seed): returnPositive(true), 
-			path_(dimension), rndPath(dimension, seed){}  
+		inline AntitheticCV<PG>::AntitheticCV(int dimension, long seed):
+		            returnPositive(true), path_(dimension), 
+		            rndPath(dimension, seed){}  
 
 		template <class PG>
 		inline const Path& AntitheticCV<PG>::next() const{		

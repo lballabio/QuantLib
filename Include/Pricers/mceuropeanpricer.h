@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/17 11:54:18  marmar
+    Some documentation added and 80 columns format enforced.
+
     Revision 1.2  2001/01/05 11:42:38  lballabio
     Renamed SinglePathEuropeanPricer to EuropeanPathPricer
 
@@ -44,6 +47,7 @@
 namespace QuantLib {
 
     namespace Pricers {
+        //! This is a simple example of Monte Carlo pricer
 
         using MonteCarlo::MonteCarlo1D;
 

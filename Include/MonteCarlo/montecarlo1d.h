@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/17 11:54:02  marmar
+    Some documentation added and 80 columns format enforced.
+
     Revision 1.2  2001/01/05 11:02:37  lballabio
     Renamed SinglePathPricer to PathPricer
 
@@ -52,6 +55,13 @@ namespace QuantLib {
         using Math::Statistics;
 
         //! General purpose 1D Monte Carlo pricer
+        /*! MonteCarlo1D is initialized giving a safe reference, that is
+            an handle, to a PathPricer, some stochastic parameters, the number
+            of time steps, and, possibly, the seed of the path generator.
+            It then can be interrogated for the value obtained from a certain
+            number of samples and for the estimated error.
+    	*/	
+       
         class MonteCarlo1D {
           public:
             MonteCarlo1D(){}
@@ -69,13 +79,13 @@ namespace QuantLib {
         // inline definitions
         
         inline MonteCarlo1D::MonteCarlo1D(Handle<PathPricer> singlePathPricer,
-            Rate underlyingGrowthRate, Rate riskFreeRate, double residualTime,
-            double volatility, int timesteps, long seed) 
-        : sampleAccumulator_() {
+                      Rate underlyingGrowthRate, Rate riskFreeRate, 
+                      double residualTime, double volatility, int timesteps, 
+                      long seed) : sampleAccumulator_() {
 
             double deltaT = residualTime/timesteps;
-            double mu = deltaT * (riskFreeRate - underlyingGrowthRate -
-                0.5 * volatility * volatility);
+            double mu = deltaT * (riskFreeRate - underlyingGrowthRate 
+                                    - 0.5 * volatility * volatility);
             double sigma = volatility*QL_SQRT(deltaT);
 
             StandardPathGenerator pathGenerator(timesteps, mu, sigma, seed);

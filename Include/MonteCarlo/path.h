@@ -26,9 +26,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.5  2001/01/17 11:54:02  marmar
+	Some documentation added and 80 columns format enforced.
+
 	Revision 1.4  2001/01/08 11:44:17  lballabio
 	Array back into QuantLib namespace - Math namespace broke expression templates, go figure
-
+	
 	Revision 1.3  2001/01/08 10:28:16  lballabio
 	Moved Array to Math namespace
 	
@@ -53,7 +56,7 @@ namespace QuantLib {
     	/*!
     	For the time being Path is equivalent to Array.	In the future this 
     	could change and Path might contain more information.
-    	As of today, Path contains the list of continuously-compunded
+    	As of today, Path contains the list of continuously-compounded
     	variations,
     	\f[
     		\log \frac{Y_{i+1}}{Y_i} \mathrm{for} i = 0, \ldots, n-1

@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/17 11:54:02  marmar
+    Some documentation added and 80 columns format enforced.
+
     Revision 1.1  2001/01/05 11:42:37  lballabio
     Renamed SinglePathEuropeanPricer to EuropeanPathPricer
 
@@ -45,18 +48,24 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
+        /*! EuropeanPathPricer evaluates the european-option value on a 
+            single-path. 
+            The public method computePlainVanilla can also be used 
+            in other path pricer that do similar calculations.
+        */
 
         class EuropeanPathPricer : public PathPricer {
           public:
             EuropeanPathPricer() {}
             EuropeanPathPricer(Option::Type type, double underlying, 
                 double strike, double discount);
+            ~EuropeanPathPricer() {}
             double value(const Path &path) const;
+            double computePlainVanilla(Option::Type type, double price, 
+                double strike, double discount) const;
           protected:
             mutable Option::Type type_;
             mutable double underlying_, strike_, discount_;
-            double computePlainVanilla(Option::Type type, double price, 
-                double strike, double discount) const;
         };
 
     }

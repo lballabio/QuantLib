@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/17 11:54:02  marmar
+    Some documentation added and 80 columns format enforced.
+
     Revision 1.1  2001/01/05 12:28:14  lballabio
     Renamed SinglePathControlVariatedPricer to ControlVariatedPathPricer
 
@@ -46,6 +49,10 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
+        /*! ControlVariatedPathPricer combines two PathPricer and a value into a 
+            control variated path pricer. To be used with McPricer, see 
+            McAsianPricer for an example
+        */
 
         class ControlVariatedPathPricer: public PathPricer {
         public:

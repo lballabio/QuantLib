@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/17 11:54:02  marmar
+    Some documentation added and 80 columns format enforced.
+
     Revision 1.2  2001/01/05 11:42:37  lballabio
     Renamed SinglePathEuropeanPricer to EuropeanPathPricer
 
@@ -42,6 +45,16 @@
 namespace QuantLib {
 
     namespace Pricers {
+        //! Base class for one dimensional Monte Carlo pricers
+        /*! McPricer is the base class for one dimensional Monte Carlo pricers.
+            Eventually it might be linked to the general tree of pricers,
+            in order to have available tools like impliedVolaitlity.
+            Also, it will, eventually, implement the calculation of greeks
+            in montecarlo methods.
+            Deriving a class from McPricer gives an easy way to write
+            a Monte Carlo Pricer.
+            See EuropeanPathPricer as an example
+    	*/	
 
         using MonteCarlo::MonteCarlo1D;
 

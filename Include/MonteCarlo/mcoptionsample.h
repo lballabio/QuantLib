@@ -25,21 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2001/01/17 11:54:02  marmar
+	Some documentation added and 80 columns format enforced.
+
 	Revision 1.1  2001/01/04 17:31:22  marmar
 	Alpha version of the Monte Carlo tools.
-
-	Revision 1.5  2001/01/04 15:31:18  marchim
-	EuroSample and AsianSample obsolete: removed
-	
-	Revision 1.4  2001/01/04 12:24:19  marchim
-	MonteCarlo1D is now close to his final form
-	
-	Revision 1.3  2001/01/03 14:12:09  marchim
-	Class Path added instead of Array
-	
-	Revision 1.2  2001/01/03 13:30:28  marchim
-	Still working on MonteCarlo
-		
+			
 */
 
 #ifndef quantlib_montecarlo_option_sample_h
@@ -56,6 +47,8 @@ namespace QuantLib {
 	and a single-path pricer SPP, again with an instance singlepathpricer, 
 	a sample generator OptionSample<PG, SPP> returns at each next a value
 	for the option price.
+
+	Minimal interfaces for PG and SPP:
 
 	class PG{	
 		PATH_TYPE next() const;
@@ -83,8 +76,9 @@ namespace QuantLib {
 		};
 
 		template<class PG, class SPP>
-		inline OptionSample<PG, SPP>::OptionSample(const PG& samplePath, Handle<SPP> singlePathPricer):
-			samplePath_(samplePath),singlePathPricer_(singlePathPricer),weight_(0){}
+		inline OptionSample<PG, SPP>::OptionSample(const PG& samplePath, 
+	           Handle<SPP> singlePathPricer): samplePath_(samplePath), 
+	           singlePathPricer_(singlePathPricer), weight_(0){}
 
 		template<class PG, class SPP>
 		inline double OptionSample<PG, SPP>::next() const{

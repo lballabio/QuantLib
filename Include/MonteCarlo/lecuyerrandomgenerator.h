@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/17 11:54:02  marmar
+    Some documentation added and 80 columns format enforced.
+
     Revision 1.2  2000/12/27 17:56:16  lballabio
     Cleaned up the documentation for use with Doxygen
 
@@ -49,8 +52,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
 	    /*! Random number generator of L'Ecuyer with added Bays-Durham shuffle.
-	        For more details see Section 7.1 of Numerical Recipes in C, 2nd Edition, 
-	        Cambridge University Press (available at http://www.nr.com/)
+	        For more details see Section 7.1 of Numerical Recipes in C, 2nd 
+	        Edition, Cambridge University Press (available at         
+	        http://www.nr.com/)
 		*/
 
         class LecuyerRandomGenerator {

@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2001/01/17 11:54:02  marmar
+	Some documentation added and 80 columns format enforced.
+
 	Revision 1.1  2001/01/04 17:31:22  marmar
 	Alpha version of the Monte Carlo tools.
-
+	
 */
 
 
@@ -40,6 +43,11 @@
 namespace QuantLib {
 
 	namespace MonteCarlo {
+
+    /*! \typedef StandardPathGenerator
+    	The following is the default choice for the standard path generator
+        See the corresponding class for documentation.
+	*/	
 
 		typedef PathGenerator<GaussianRandomGenerator > StandardPathGenerator;
 

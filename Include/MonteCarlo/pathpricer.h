@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/17 11:54:02  marmar
+    Some documentation added and 80 columns format enforced.
+
     Revision 1.2  2001/01/05 11:18:03  lballabio
     Renamed SinglePathGeometricAsianPricer to GeometricAsianPathPricer
 
@@ -45,6 +48,11 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
+
+    //! base class for single-path pricers
+    /*! PathPricer is the base class for an hierarchy of single-path pricers.
+        Given a path the value of an option is returned on that path.        
+	*/	
 
         class PathPricer {
           public:

@@ -26,9 +26,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2001/01/17 11:54:02  marmar
+	Some documentation added and 80 columns format enforced.
+
 	Revision 1.3  2001/01/04 17:31:22  marmar
 	Alpha version of the Monte Carlo tools.
-
+	
 	
 */
 
@@ -43,8 +46,8 @@ namespace QuantLib {
 
 		//! Gaussian random number generator
 		/*! It uses the well-known Box-Muller transformation to return a normal 
-			distributed Gaussian deviate with average 0.0 and standard deviation 1.0, 
-			from a uniform deviate in (0,1) supplied by U.
+			distributed Gaussian deviate with average 0.0 and standard deviation 
+			of 1.0, from a uniform deviate in (0,1) supplied by U.
 		
 			Class U must have, at least, the following interface:
 			\code
