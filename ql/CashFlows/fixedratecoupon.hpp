@@ -40,7 +40,7 @@ namespace QuantLib {
 
     namespace CashFlows {
         
-        //! Coupon paying a fixed interest rate
+        //! %coupon paying a fixed interest rate
         class FixedRateCoupon : public Coupon {
           public:
             FixedRateCoupon(double nominal, Rate rate, 

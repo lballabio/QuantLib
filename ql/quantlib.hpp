@@ -100,6 +100,7 @@
 #include "ql/Indexes/xibor.hpp"
 #include "ql/Indexes/xibormanager.hpp"
 
+#include "ql/Instruments/plainoption.hpp"
 #include "ql/Instruments/simpleswap.hpp"
 #include "ql/Instruments/stock.hpp"
 #include "ql/Instruments/swap.hpp"
@@ -160,6 +161,7 @@
 #include "ql/Pricers/dividendeuropeanoption.hpp"
 #include "ql/Pricers/dividendoption.hpp"
 #include "ql/Pricers/dividendshoutoption.hpp"
+#include "ql/Pricers/europeanengine.hpp"
 #include "ql/Pricers/europeanoption.hpp"
 #include "ql/Pricers/everestoption.hpp"
 #include "ql/Pricers/finitedifferenceeuropean.hpp"

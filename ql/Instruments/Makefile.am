@@ -5,6 +5,7 @@ INCLUDES= -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Instruments
 
 include_HEADERS = \
+	plainoption.hpp \
 	simpleswap.hpp \
 	stock.hpp \
 	swap.hpp
@@ -12,8 +13,9 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libInstruments_la_SOURCES = \
-    simpleswap.cpp \
-    stock.cpp \
-    swap.cpp
+	plainoption.cpp \
+	simpleswap.cpp \
+	stock.cpp \
+	swap.cpp
 
 noinst_LTLIBRARIES = libInstruments.la

@@ -28,6 +28,7 @@ OBJS = averagepriceasian.obj$(_D) \
        dividendeuropeanoption.obj$(_D) \
        dividendoption.obj$(_D) \
        dividendshoutoption.obj$(_D) \
+       everestengine.obj$(_D) \
        everestoption.obj$(_D) \
        finitedifferenceeuropean.obj$(_D) \
        himalaya.obj$(_D) \

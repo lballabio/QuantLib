@@ -18,6 +18,7 @@ include_HEADERS = \
     dividendeuropeanoption.hpp \
     dividendoption.hpp \
     dividendshoutoption.hpp \
+    europeanengine.hpp \
     europeanoption.hpp \
     everestoption.hpp \
     finitedifferenceeuropean.hpp \
@@ -46,6 +47,7 @@ libPricers_la_SOURCES = \
     dividendshoutoption.cpp \
     dividendamericanoption.cpp \
     dividendeuropeanoption.cpp \
+    europeanengine.cpp \
     europeanoption.cpp \
     everestoption.cpp \
     finitedifferenceeuropean.cpp \

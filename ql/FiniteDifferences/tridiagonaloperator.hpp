@@ -44,8 +44,8 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        /*! Base implementation for tridiagonal operator
-            \warning to use real time-dependant algebra, you must overload
+        //! Base implementation for tridiagonal operator
+        /*! \warning to use real time-dependant algebra, you must overload
             the corresponding operators in the inheriting time-dependent class
         */
         class TridiagonalOperator {

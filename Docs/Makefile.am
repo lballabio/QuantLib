@@ -46,9 +46,9 @@ docs-html-online:
 	cp images/*.eps latex
 	cp images/*.pdf latex
 docs-ps: tex-files
-	$(MAKE) -C latex ps
+	extra_mem_top=263000 max_strings=30000 $(MAKE) -C latex ps
 docs-pdf: tex-files pdf-figures
-	$(MAKE) -C latex pdf
+	extra_mem_top=263000 max_strings=30000 $(MAKE) -C latex pdf
 docs-man: docs-html
 docs-clean:
 	rm -Rf man

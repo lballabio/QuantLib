@@ -41,15 +41,13 @@ namespace QuantLib {
     //! base class for generic argument groups
     class Arguments {
       public:
-	//! only here to make the class polymorphic and allow downcasting 
-        virtual void dummy() {}
+        virtual ~Arguments() {}
     };
 
     //! base class for generic result groups
     class Results {
       public:
-	//! only here to make the class polymorphic and allow downcasting 
-        virtual void dummy() {}
+        virtual ~Results() {}
     };
 
 }

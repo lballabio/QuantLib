@@ -42,6 +42,9 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Black-Scholes-Merton European option
+        /*! \ingroup deprecated
+            \deprecated use the PlainOption class with EuropeanEngine instead.
+        */
         class EuropeanOption : public SingleAssetOption {
           public:
             // constructor

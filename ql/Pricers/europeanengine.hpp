@@ -22,36 +22,33 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file option.cpp
-    \brief Base option class
+/*! \file europeanengine.hpp
+    \brief analytic pricing engine for European options
 
     \fullpath
-    ql/%option.cpp
+    ql/Pricers/%europeanengine.hpp
 */
 
 // $Id$
 
-#include "ql/option.hpp"
+#ifndef quantlib_european_engine_h
+#define quantlib_european_engine_h
+
+#include "ql/Instruments/plainoption.hpp"
 
 namespace QuantLib {
 
-    Option::Option(const Handle<OptionPricingEngine>& engine,
-        const std::string& isinCode, const std::string& description)
-    : Instrument(isinCode, description), engine_(engine) {
-        QL_REQUIRE(!engine_.isNull(), "null pricing engine passed");
-    }
+    namespace Pricers {
 
-    Option::~Option() {}
+        //! analytic pricing engine for European options
+        class EuropeanEngine : public PlainOptionEngine {
+          public:
+	    void calculate() const;
+        };
 
-    void Option::performCalculations() const {
-        setupEngine();
-        engine_->validateParameters();
-        engine_->calculate();
-        const OptionValue* results = 
-            dynamic_cast<const OptionValue*>(engine_->results());
-        QL_ENSURE(results != 0, "no results returned from option pricer");
-        NPV_ = results->value;
     }
 
 }
 
+
+#endif

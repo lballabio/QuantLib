@@ -51,27 +51,41 @@ namespace QuantLib {
         Option(const Handle<OptionPricingEngine>& engine,
                const std::string& isinCode = "",
                const std::string& description = "");
+        virtual ~Option();
       protected:
         virtual void setupEngine() const = 0;
-        void performCalculations() const;
+        virtual void performCalculations() const;
         Handle<OptionPricingEngine> engine_;
     };
 
-    //! option pricing results
-    class OptionResults : public virtual Results {
+    //! %option pricing results
+    class OptionValue : public virtual Results {
       public:
-        OptionResults() : value(Null<double>()), isExpired(true) {}
+        OptionValue() : value(Null<double>()) {}
         double value;
-        bool isExpired;
     };
 
-    
+    //! %option pricing results
+    class OptionGreeks : public virtual Results {
+      public:
+        OptionGreeks() : delta(Null<double>()), gamma(Null<double>()),
+                         theta(Null<double>()), vega(Null<double>()),
+                         rho(Null<double>()), dividendRho(Null<double>()) {}
+        double delta, gamma;
+        double theta;
+        double vega;
+        double rho, dividendRho;
+    };
+
+
     //! base class for option pricing engines
     class OptionPricingEngine {
       public:
-        virtual Handle<Arguments> parameters() const = 0;
+        virtual ~OptionPricingEngine() {}
+        virtual Arguments* parameters() = 0;
+        virtual void validateParameters() const = 0;
         virtual void calculate() const = 0;
-        virtual Handle<Results> results() const = 0;
+        virtual const Results* results() const = 0;
     };
 
 }

@@ -17,7 +17,8 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
-OBJS = swap.obj$(_D) \
+OBJS = plainoption.obj$(_D) \
+       swap.obj$(_D) \
        simpleswap.obj$(_D) \
        stock.obj$(_D)
 
@@ -27,9 +28,9 @@ TLIB      = tlib
 
 # Options
 CC_OPTS        = -q -c -tWM -n$(OUTPUT_DIR) \
-    -w-8026 -w-8027 -w-8012 \
-    -I$(INCLUDE_DIR) \
-    -I$(BCC_INCLUDE)
+                 -w-8026 -w-8027 -w-8012 \
+                 -I$(INCLUDE_DIR) \
+                 -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
