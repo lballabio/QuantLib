@@ -118,12 +118,8 @@
 
 #include <ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp>
 #include <ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp>
-#include <ql/InterestRateModelling/OneFactorModels/blackdermantoy.hpp>
 #include <ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp>
-#include <ql/InterestRateModelling/OneFactorModels/coxingersollrossplus.hpp>
-#include <ql/InterestRateModelling/OneFactorModels/holee.hpp>
 #include <ql/InterestRateModelling/OneFactorModels/hullwhite.hpp>
-#include <ql/InterestRateModelling/TwoFactorModels/g2.hpp>
 
 #include <ql/Lattices/node.hpp>
 #include <ql/Lattices/tree.hpp>
