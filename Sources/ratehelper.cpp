@@ -26,6 +26,10 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/03/19 17:52:19  nando
+    introduces DepositRate2.
+    Later this will superseed DepositRate
+
     Revision 1.2  2001/03/14 14:03:45  lballabio
     Fixed Doxygen documentation and makefiles
 
@@ -41,14 +45,14 @@
 
 namespace QuantLib {
 
-    double DepositRate::value() const {
+    double DepositRate2::value() const {
         Time t = dayCounter_->yearFraction(termStructure_->settlementDate(),
             maturity_);
         Rate impliedRate = (1.0/termStructure_->discount(maturity_)-1.0)/t;
         return rate_-impliedRate;
     }
 
-    double DepositRate::guess() const {
+    double DepositRate2::guess() const {
         Time t = dayCounter_->yearFraction(termStructure_->settlementDate(),
             maturity_);
         return 1.0/(1.0+rate_ * t);

@@ -27,6 +27,10 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/03/19 17:52:56  nando
+    introduces DepositRate2.
+    Later this will superseed DepositRate
+
     Revision 1.2  2001/03/14 14:03:44  lballabio
     Fixed Doxygen documentation and makefiles
 
@@ -80,9 +84,9 @@ namespace QuantLib {
 
     
     //! %deposit rate
-    class DepositRate : public RateHelper {
+    class DepositRate2 : public RateHelper {
       public:
-        DepositRate(const Date& maturity,
+        DepositRate2(const Date& maturity,
                     Rate rate,
                     const Handle<DayCounter>& dayCounter);
         double value() const;
@@ -142,7 +146,7 @@ namespace QuantLib {
 
 
 
-    DepositRate::DepositRate(const Date& maturity,
+    DepositRate2::DepositRate2(const Date& maturity,
                              Rate rate,
                              const Handle<DayCounter>& dayCounter)
     : RateHelper(maturity, rate, dayCounter) {}
