@@ -6,14 +6,18 @@
 .silent
 
 # Directories
-OUTPUT_DIR		= .\Release
+!ifdef $d(DEBUG)
+	OUTPUT_DIR	= .\Debug
+!else
+	OUTPUT_DIR	= .\Release
+!endif
 PYTHON_DIR		= ..\Python
 SWIG_DIR		= ..\Swig
 SOURCES_DIR		= ..\Sources
 INCLUDE_DIR		= ..\Include
 BCC_INCLUDE		= $(MAKEDIR)\..\include
 BCC_LIBS		= $(MAKEDIR)\..\lib
-PYTHON_ROOT     = "C:\Python20"
+PYTHON_ROOT     = "C:\Program Files\Python20"
 PYTHON_INCLUDE	= $(PYTHON_ROOT)\include
 PYTHON_LIBS		= $(PYTHON_ROOT)\libs
 
@@ -44,9 +48,15 @@ LATEX		= latex
 PDFLATEX	= pdflatex
 MAKEINDEX	= makeindex
 DVIPS		= dvips
+MAKEEXE		= make
+!ifdef $d(DEBUG)
+	MAKE	= $(MAKEEXE) -DDEBUG
+!else
+	MAKE	= $(MAKEEXE)
+!endif
 
 # Options
-CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
+CC_BASE_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
 	-I$(INCLUDE_DIR) \
 	-I$(INCLUDE_DIR)\Calendars \
 	-I$(INCLUDE_DIR)\Currencies \
@@ -59,7 +69,13 @@ CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
 	-I$(INCLUDE_DIR)\Solvers1D \
 	-I$(INCLUDE_DIR)\TermStructures \
 	-I$(PYTHON_INCLUDE) \
-	-I$(BCC_INCLUDE) 
+	-I$(BCC_INCLUDE)
+!ifdef $d(DEBUG)
+CC_OPTS = $(CC_BASE_OPTS) -v
+!else
+CC_OPTS = $(CC_BASE_OPTS)
+!endif
+
 LINK_OPTS	= -q -x -L$(BCC_LIBS)
 
 # Generic rules
@@ -80,7 +96,9 @@ $(PYTHON_DIR)\QuantLibc.dll:: $(OUTPUT_DIR) $(OUTPUT_DIR)\quantlib_wrap.obj $(OU
 	del $(PYTHON_DIR)\QuantLibc.ild
 	del $(PYTHON_DIR)\QuantLibc.ilf
 	del $(PYTHON_DIR)\QuantLibc.ils
-	del $(PYTHON_DIR)\QuantLibc.tds
+	!ifndef $d(DEBUG)
+		del $(PYTHON_DIR)\QuantLibc.tds
+	!endif
 	echo Build completed
 
 # make sure the output directory exists
