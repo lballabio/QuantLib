@@ -20,6 +20,7 @@ libPricingEngines_la_SOURCES = \
     analyticeuropeanengine.cpp \
     binomialvanillaengine.cpp \
     discretizedvanillaoption.cpp \
-    fdvanillaengine.cpp
+    fdvanillaengine.cpp \
+    integraleuropeanengine.cpp
 
 noinst_LTLIBRARIES = libPricingEngines.la

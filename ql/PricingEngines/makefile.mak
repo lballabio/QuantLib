@@ -18,7 +18,8 @@ OBJS = \
        analyticeuropeanengine.obj$(_D) \
        binomialvanillaengine.obj$(_D) \
        discretizedvanillaoption.obj$(_D) \
-       fdvanillaengine.obj$(_D)
+       fdvanillaengine.obj$(_D) \
+       integraleuropeanengine.obj$(_D)
 
 
 # Tools to be used

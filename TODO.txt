@@ -6,11 +6,13 @@ matrici di covarianza
 FINITE DIFFERENCE FRAMEWORK
 -*use DicretisedAsset instead of array
 -*use TimeGrid
+-*use assetGrid
 -*allow for time dependant parameters
 -*boundary conditions as in Wilmott
 -*Douglas scheme (QuEP)
 -*Richardson extrapolation (QuEP)
 -*SOR rollback for free boundary condition
+-*replace all xxAtCenter with more general not "centered" functions
 - clean up FDMultiPeriodOption
 - check american with discrete dividends
 - merge rollback scheme with tree rollback scheme
@@ -26,6 +28,8 @@ MONTE CARLO FRAMEWORK
 - Hypersphere approximation for non positive semi definite correlation
   matrices
 - use brownian bridge in sequence generation
+- rename MultiPath as MultiAssetPath
+- move all (Multi)PathPricer under a folder (namesapace?) PathPricers
 
 VOLATILITY
 -*local volatility

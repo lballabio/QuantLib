@@ -184,6 +184,8 @@ CLEAN :
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\integraleuropeanengine.obj"
+	-@erase "$(INTDIR)\integraleuropeanengine.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -505,7 +507,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\integraleuropeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -665,7 +668,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\integraleuropeanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -826,6 +830,8 @@ CLEAN :
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\integraleuropeanengine.obj"
+	-@erase "$(INTDIR)\integraleuropeanengine.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -1148,7 +1154,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\integraleuropeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1308,7 +1315,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\integraleuropeanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1469,6 +1477,8 @@ CLEAN :
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\integraleuropeanengine.obj"
+	-@erase "$(INTDIR)\integraleuropeanengine.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -1790,7 +1800,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\integraleuropeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1950,7 +1961,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\integraleuropeanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2111,6 +2123,8 @@ CLEAN :
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\integraleuropeanengine.obj"
+	-@erase "$(INTDIR)\integraleuropeanengine.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -2433,7 +2447,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\integraleuropeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2593,7 +2608,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\integraleuropeanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3306,6 +3322,12 @@ SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
 SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
 
 "$(INTDIR)\fdvanillaengine.obj"	"$(INTDIR)\fdvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\integraleuropeanengine.cpp
+
+"$(INTDIR)\integraleuropeanengine.obj"	"$(INTDIR)\integraleuropeanengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

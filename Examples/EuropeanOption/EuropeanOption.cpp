@@ -32,13 +32,14 @@ using namespace QuantLib::VolTermStructures;
 // This will be included in the library after a bit of redesign
 class Payoff : public QL::ObjectiveFunction{
     public:
-        Payoff(Time maturity,
+        Payoff(Option::Type type,
+               Time maturity,
                double strike,
                double s0,
                double sigma,
                Rate r,
                Rate q)
-        : maturity_(maturity),
+        : type_(type), maturity_(maturity),
         strike_(strike),
         s0_(s0),
         sigma_(sigma),r_(r), q_(q){}
@@ -46,11 +47,12 @@ class Payoff : public QL::ObjectiveFunction{
         double operator()(double x) const {
            double nuT = (r_-q_-0.5*sigma_*sigma_)*maturity_;
            return QL_EXP(-r_*maturity_)
-               *ExercisePayoff(Option::Call, s0_*QL_EXP(x), strike_)
+               *ExercisePayoff(type_, s0_*QL_EXP(x), strike_)
                *QL_EXP(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))
                /QL_SQRT(2.0*M_PI*sigma_*sigma_*maturity_);
         }
 private:
+    Option::Type type_;
     Time maturity_;
     double strike_;
     double s0_;
@@ -67,7 +69,8 @@ int main(int argc, char* argv[])
         std::cout << "Using " << QL_VERSION << std::endl << std::endl;
 
         // our option
-        double underlying = 8;
+        Option::Type type(Option::Call);
+        double underlying = 7;
         double strike = 8;
         Spread dividendYield = 0.05;
         Rate riskFreeRate = 0.05;
@@ -108,7 +111,7 @@ int main(int argc, char* argv[])
 
         // first method: Black Scholes analytic solution
         method ="Black Scholes";
-        value = EuropeanOption(Option::Call, underlying, strike,
+        value = EuropeanOption(type, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility).value();
         double estimatedError = 0.0;
         discrepancy = 0.0;
@@ -130,10 +133,14 @@ int main(int argc, char* argv[])
 
         // second method: Call-Put parity
         method ="Call-Put parity";
-        value = EuropeanOption(Option::Put, underlying, strike,
+        Option::Type reverseType =
+            (type==Option::Call ? Option::Put : Option::Call);
+        double coefficient = 
+            (type==Option::Call ? 1.0 : -1.0);
+        value = EuropeanOption(reverseType, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility).value()
-            + underlying*QL_EXP(-dividendYield*maturity)
-            - strike*QL_EXP(- riskFreeRate*maturity);
+            + coefficient * (underlying*QL_EXP(-dividendYield*maturity)
+            - strike*QL_EXP(- riskFreeRate*maturity));
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
@@ -147,7 +154,7 @@ int main(int argc, char* argv[])
         // third method: Integral
         method ="Integral";
         using QuantLib::Math::SegmentIntegral;
-        Payoff po(maturity, strike, underlying, volatility, riskFreeRate,
+        Payoff po(type, maturity, strike, underlying, volatility, riskFreeRate,
             dividendYield);
         SegmentIntegral integrator(5000);
 
@@ -171,7 +178,7 @@ int main(int argc, char* argv[])
         // fourth method: Finite Differences
         method ="Finite Diff.";
         Size grid = 100;
-        value = FdEuropean(Option::Call, underlying, strike,
+        value = FdEuropean(type, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility, grid).value();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -189,7 +196,7 @@ int main(int argc, char* argv[])
         method ="MC (crude)";
         Size mcSeed = 12345;
         bool antitheticVariance = false;
-        McEuropean mcEur(Option::Call, underlying, strike, dividendYield,
+        McEuropean mcEur(type, underlying, strike, dividendYield,
             riskFreeRate, maturity, volatility, antitheticVariance, mcSeed);
         // let's require a tolerance of 0.002%
         value = mcEur.value(0.02);
@@ -208,7 +215,7 @@ int main(int argc, char* argv[])
         // let's use the same number of samples as in the crude Monte Carlo
         Size nSamples = mcEur.sampleAccumulator().samples();
         antitheticVariance = true;
-        McEuropean mcEur2(Option::Call, underlying, strike, dividendYield,
+        McEuropean mcEur2(type, underlying, strike, dividendYield,
             riskFreeRate, maturity, volatility, antitheticVariance, mcSeed);
         value = mcEur2.valueWithSamples(nSamples);
         estimatedError = mcEur2.errorEstimate();
@@ -278,7 +285,7 @@ int main(int argc, char* argv[])
 
 
         Instruments::VanillaOption option(
-            Option::Call,
+            type,
             underlyingH,
             strike,
             flatDividendTS,
@@ -303,6 +310,22 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
+
+        // method: Integral
+        method = "Integral";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new IntegralEuropeanEngine()));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+        
         Size timeSteps=800;
 
         // Binomial Method (JR)
@@ -471,7 +494,7 @@ int main(int argc, char* argv[])
 
         double correlation = 0.0;
         Instruments::QuantoVanillaOption quantoOption(
-            Option::Call,
+            type,
             underlyingH,
             strike,
             flatDividendTS,
@@ -532,7 +555,7 @@ int main(int argc, char* argv[])
                                             VanillaOptionResults>(baseEngine));
 
         Instruments::ForwardVanillaOption forwardOption(
-            Option::Call,
+            type,
             underlyingH,
             flatDividendTS,
             flatTermStructure,
@@ -620,7 +643,7 @@ int main(int argc, char* argv[])
                                 VanillaOptionResults>(forwardEngine));
 
         Instruments::QuantoForwardVanillaOption quantoForwardOption(
-            Option::Call,
+            type,
             underlyingH,
             strike,
             flatDividendTS,

@@ -119,6 +119,13 @@ namespace QuantLib {
             #endif
         };
 
+        //! Pricing engine for European options using integral approach
+        class IntegralEuropeanEngine : public VanillaEngine {
+          public:
+            void calculate() const;
+          private:
+        };
+
         //! Pricing engine for Vanilla options using Finite Differences
         class FDVanillaEngine : public VanillaEngine {
           public:
