@@ -102,16 +102,6 @@ class Array {
         QL_ENSURE(rhs.size() == j-i, "Arrays are not resizable");
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
-    String __str__() {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-        	if (i != 0)
-        		s += ", ";
-        	s += QuantLib::DoubleFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
     String __repr__() {
         String s = "(";
         for (int i=0; i<self->size(); i++) {
@@ -186,7 +176,7 @@ class ArrayLexicographicalViewColumn {
     ArrayLexicographicalViewColumn __getitem__(int i) {
         return (*self)[i];
     }
-    String __str__() {
+    String __repr__() {
         String s;
         for (int j=0; j<self->ySize(); j++) {
     	    s += "\n";

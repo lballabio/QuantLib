@@ -79,7 +79,7 @@ class MatrixRow {
     Matrix __div__(double x) {
         return *self/x;
     }
-    String __str__() {
+    String __repr__() {
         String s;
         for (int j=0; j<self->rows(); j++) {
     	    s += "\n";

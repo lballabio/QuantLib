@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.4  2001/02/28 11:46:13  lballabio
+    Removed redundant __str__ methods - __repr__ used instead
+
     Revision 1.3  2001/02/22 14:27:26  lballabio
     Implemented new test framework
 
@@ -46,24 +49,24 @@ from TestUnit import TestUnit
 
 class DateTest(TestUnit):
     def doTest(self):
-        try:
-            mindate = Date_minDate().serialNumber()
-            maxdate = Date_maxDate().serialNumber() + 1 #this one is excluded
-            
-            dyold  = DateFromSerialNumber(mindate-1).dayOfYear()
-            dold   = DateFromSerialNumber(mindate-1).dayOfMonth()
-            mold   = DateFromSerialNumber(mindate-1).monthNumber()
-            yold   = DateFromSerialNumber(mindate-1).year()
-            wdnold = DateFromSerialNumber(mindate-1).weekdayNumber()
+        mindate = Date_minDate().serialNumber()
+        maxdate = Date_maxDate().serialNumber() + 1 #this one is excluded
         
-            self.printDetails(
-                "test starts at %s (%d)" %
-                (Date_minDate().__str__(), mindate)
-            )
+        dyold  = DateFromSerialNumber(mindate-1).dayOfYear()
+        dold   = DateFromSerialNumber(mindate-1).dayOfMonth()
+        mold   = DateFromSerialNumber(mindate-1).monthNumber()
+        yold   = DateFromSerialNumber(mindate-1).year()
+        wdnold = DateFromSerialNumber(mindate-1).weekdayNumber()
         
-            for i in range(mindate,maxdate):
+        self.printDetails(
+            "test starts at %s (%d)" %
+            (str(Date_minDate()), mindate)
+        )
+        
+        for i in range(mindate,maxdate):
+            try:
                 t = DateFromSerialNumber(i)
-        
+                
                 # check serial number consistency
                 if (t.serialNumber()!=i):
                     self.printDetails("major problem")
@@ -137,9 +140,9 @@ class DateTest(TestUnit):
                 s = Date(d,m,y)
                 # check serial number consistency
                 if (s.serialNumber()!=i):
-                    self.printDetails("date: %s" % t.__str__())
+                    self.printDetails("date: %s" % str(t))
                     self.printDetails("serial number: %d" % i)
-                    self.printDetails("new date: %s" % s.__str__())
+                    self.printDetails("new date: %s" % str(s))
                     self.printDetails("serial number: %d" % s.serialNumber())
                     raise "new date serial number different from old date"
         
@@ -147,24 +150,24 @@ class DateTest(TestUnit):
                 s = Date(d,mm,y)
                 # check serial number consistency
                 if (s.serialNumber()!=i):
-                    self.printDetails("date: %s" % t.__str__())
+                    self.printDetails("date: %s" % str(t))
                     self.printDetails("serial number: %d" % i)
-                    self.printDetails("new date: %s" % s.__str__())
+                    self.printDetails("new date: %s" % str(s))
                     self.printDetails("serial number: %d" % s.serialNumber())
                     raise "new date serial number different from old date"
-        except Exception, e:
-            t = DateFromSerialNumber(i)
-            self.printDetails("exception thrown at %s" % t.__str__())
-            self.printDetails("serial number: %d" % i)
-            self.printDetails("day of year: %d" % t.dayOfYear())
-            self.printDetails("day of month: %d" % t.dayOfMonth())
-            self.printDetails("month: %s" % t.month())
-            self.printDetails("year: %d" % t.year())
-            raise
+            except Exception, e:
+                t = DateFromSerialNumber(i)
+                self.printDetails("exception thrown at %s" % str(t))
+                self.printDetails("serial number: %d" % i)
+                self.printDetails("day of year: %d" % t.dayOfYear())
+                self.printDetails("day of month: %d" % t.dayOfMonth())
+                self.printDetails("month: %s" % t.month())
+                self.printDetails("year: %d" % t.year())
+                raise
         
         self.printDetails(
             "test ends at %s (%d)" %
-            (t.__str__(), i)
+            (str(t), i)
         )
 
 

@@ -64,11 +64,8 @@ typedef Handle<DayCounter> DayCounterHandle;
         return (*self)->yearFraction(d1,d2);
     }
     #if defined (SWIGPYTHON)
-    String __str__() {
-        return (*self)->name()+" day counter";
-    }
     String __repr__() {
-        return "<"+(*self)->name()+" day counter>";
+        return (*self)->name()+" day counter";
     }
     int __cmp__(const DayCounterHandle& other) {
         return ((*self) == other ? 0 : 1);

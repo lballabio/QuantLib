@@ -48,16 +48,6 @@
 using QuantLib::Instrument;
 using QuantLib::Handle;
 typedef Handle<Instrument> InstrumentHandle;
-
-std::string Representation(const Handle<Instrument>& i) {
-	std::string isin = i->isinCode();
-	if (isin == "")
-		isin = "unknown";
-	std::string desc = i->description();
-	if (desc == "")
-		desc = "no description available";
-	return (isin+" ("+desc+")");
-}
 %}
 
 // Export Handle<Instrument>
@@ -91,11 +81,14 @@ std::string Representation(const Handle<Instrument>& i) {
 		return (*self)->price();
 	}
 	#if defined(SWIGPYTHON)
-	String __str__() {
-		return Representation(*self);
-	}
 	String __repr__() {
-		return "<Handle<Instrument>: "+Representation(*self)+">";
+    	std::string isin = (*self)->isinCode();
+    	if (isin == "")
+    		isin = "unknown";
+    	std::string desc = (*self)->description();
+    	if (desc == "")
+    		desc = "no description available";
+    	return ("Instrument: "+isin+" ("+desc+")");
 	}
 	int __cmp__(const InstrumentHandle& other) {
 		return ((*self) == other ? 0 : 1);

@@ -72,11 +72,8 @@ using QuantLib::IsNull;
         return (*self)->advance(d,n,unit,modified);
     }
     #if defined (SWIGPYTHON)
-    String __str__() {
-        return (*self)->name()+" calendar";
-    }
     String __repr__() {
-        return "<"+(*self)->name()+" calendar>";
+        return (*self)->name()+" calendar";
     }
     int __cmp__(const CalendarHandle& other) {
         return ((*self) == other ? 0 : 1);

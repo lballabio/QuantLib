@@ -68,11 +68,8 @@ typedef Handle<Currency> CurrencyHandle;
         return (*self)->settlementDate(d);
     }
     #if defined (SWIGPYTHON)
-    String __str__() {
-        return (*self)->name()+" currency";
-    }
     String __repr__() {
-        return "<"+(*self)->name()+" currency>";
+        return (*self)->name()+" currency";
     }
     int __cmp__(const CurrencyHandle& other) {
         return ((*self) == other ? 0 : 1);

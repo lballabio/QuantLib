@@ -108,15 +108,10 @@ class History {
     double __getitem__(Date d) {
         return (*self)[d];
     }
-    String __str__() {
+    String __repr__() {
         return "Historical data from " + 
             DateFormatter::toString(self->firstDate()) +
             " to " + DateFormatter::toString(self->lastDate());
-    }
-    String __repr__() {
-        return "<History: historical data from " + 
-            DateFormatter::toString(self->firstDate()) + 
-            " to " + DateFormatter::toString(self->lastDate())+">";
     }
 }
 
@@ -133,7 +128,7 @@ class History {
     int __cmp__(const HistoryIterator& other) {
         return (*self == other ? 0 : -1);
     }
-    String __str__() {
+    String __repr__() {
         return DateFormatter::toString((*self)->date()) + 
         "\t" + (IsNull((*self)->value()) ? String("Null") : 
         DoubleFormatter::toString((*self)->value()));
@@ -153,7 +148,7 @@ class History {
     int __cmp__(const HistoryValidIterator& other) {
         return (*self == other ? 0 : -1);
     }
-    String __str__() {
+    String __repr__() {
         return DateFormatter::toString((*self)->date()) + 
         "\t" + (IsNull((*self)->value()) ? String("Null") : 
         DoubleFormatter::toString((*self)->value()));
@@ -170,7 +165,7 @@ class History {
     int __cmp__(const HistoryDataIterator& other) {
         return (*self == other ? 0 : -1);
     }
-    String __str__() {
+    String __repr__() {
         return (IsNull(**self) ? String("Null") : 
         DoubleFormatter::toString(**self));
     }
@@ -186,7 +181,7 @@ class History {
     int __cmp__(const HistoryValidDataIterator& other) {
         return (*self == other ? 0 : -1);
     }
-    String __str__() {
+    String __repr__() {
         return (IsNull(**self) ? String("Null") : 
         DoubleFormatter::toString(**self));
     }

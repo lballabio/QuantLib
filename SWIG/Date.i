@@ -315,9 +315,6 @@ class Date {
             return 0;
         return 1;
     }
-    String __str__() {
-        return DateFormatter::toString(*self);
-    }
     String __repr__() {
         return DateFormatter::toString(*self);
     }
@@ -409,16 +406,6 @@ class DateVector {
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
 
-    String __str__() {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-                s += ", ";
-            s += DateFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
     String __repr__() {
         String s = "(";
         for (int i=0; i<self->size(); i++) {

@@ -844,16 +844,6 @@ using QuantLib::Instrument;
 using QuantLib::Handle;
 typedef Handle<Instrument> InstrumentHandle;
 
-std::string Representation(const Handle<Instrument>& i) {
-	std::string isin = i->isinCode();
-	if (isin == "")
-		isin = "unknown";
-	std::string desc = i->description();
-	if (desc == "")
-		desc = "no description available";
-	return (isin+" ("+desc+")");
-}
-
 using QuantLib::Instruments::Stock;
 
 InstrumentHandle NewStock(String isinCode = "", String description = "") {
@@ -3795,63 +3785,6 @@ static PyObject *_wrap_Date___cmp__(PyObject *self, PyObject *args, PyObject *kw
 }
 
 
-String  Date___str__(Date *self) {
-    {
-        return DateFormatter::toString(*self);
-    }
-}
-
-
-static PyObject *_wrap_Date___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    Date *arg0 ;
-    Date temp ;
-    PyObject * obj0  = 0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Date___str__",kwnames,&obj0)) return NULL;
-    {
-        Date* x;
-        if (obj0 == Py_None) {
-            temp = Null<Date>();
-            arg0 = &temp;
-        }else if ((SWIG_ConvertPtr(obj0,(void **) &x,
-        (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
-            arg0 = x;
-        }else {
-            PyErr_SetString(PyExc_TypeError,"Date expected");
-            return NULL;
-        }
-    }
-    {
-        try {
-            result = new String (Date___str__(arg0));
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
 String  Date___repr__(Date *self) {
     {
         return DateFormatter::toString(*self);
@@ -4452,86 +4385,6 @@ static PyObject *_wrap_DateVector___setslice__(PyObject *self, PyObject *args, P
 }
 
 
-String  DateVector___str__(DateVector *self) {
-    {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-            s += ", ";
-            s += DateFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
-}
-
-
-static PyObject *_wrap_DateVector___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    DateVector *arg0 ;
-    DateVector temp ;
-    PyObject * obj0  = 0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DateVector___str__",kwnames,&obj0)) return NULL;
-    {
-        DateVector* v;
-        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
-            int size = (PyTuple_Check(obj0) ? 
-            PyTuple_Size(obj0) :
-            PyList_Size(obj0));
-            temp = DateVector(size);
-            arg0 = &temp;
-            for (int i=0; i<size; i++) {
-                Date* x;
-                PyObject* o = PySequence_GetItem(obj0,i);
-                if (o == Py_None) {
-                    (*arg0)[i] = Null<Date>();
-                }else if ((SWIG_ConvertPtr(o,(void **) &x,
-                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
-                    (*arg0)[i] = *x;
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"Dates expected");
-                    return NULL;
-                }
-            }
-        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
-        (swig_type_info *)SWIG_TypeQuery("DateVector *"),0)) != -1) {
-            arg0 = v;
-        }else {
-            PyErr_SetString(PyExc_TypeError,"DateVector expected");
-            return NULL;
-        }
-    }
-    {
-        try {
-            result = new String (DateVector___str__(arg0));
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
 String  DateVector___repr__(DateVector *self) {
     {
         String s = "(";
@@ -4969,53 +4822,9 @@ static PyObject *_wrap_Calendar_advance(PyObject *self, PyObject *args, PyObject
 }
 
 
-String  CalendarHandle___str__(CalendarHandle *self) {
-    {
-        return (*self)->name()+" calendar";
-    }
-}
-
-
-static PyObject *_wrap_Calendar___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    CalendarHandle *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Calendar___str__",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_CalendarHandle,1)) == -1) return NULL;
-    {
-        try {
-            result = new String (CalendarHandle___str__(arg0));
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
 String  CalendarHandle___repr__(CalendarHandle *self) {
     {
-        return "<"+(*self)->name()+" calendar>";
+        return (*self)->name()+" calendar";
     }
 }
 
@@ -5307,53 +5116,9 @@ static PyObject *_wrap_Currency_settlementDate(PyObject *self, PyObject *args, P
 }
 
 
-String  CurrencyHandle___str__(CurrencyHandle *self) {
-    {
-        return (*self)->name()+" currency";
-    }
-}
-
-
-static PyObject *_wrap_Currency___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    CurrencyHandle *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Currency___str__",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_CurrencyHandle,1)) == -1) return NULL;
-    {
-        try {
-            result = new String (CurrencyHandle___str__(arg0));
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
 String  CurrencyHandle___repr__(CurrencyHandle *self) {
     {
-        return "<"+(*self)->name()+" currency>";
+        return (*self)->name()+" currency";
     }
 }
 
@@ -5655,53 +5420,9 @@ static PyObject *_wrap_DayCounter_yearFraction(PyObject *self, PyObject *args, P
 }
 
 
-String  DayCounterHandle___str__(DayCounterHandle *self) {
-    {
-        return (*self)->name()+" day counter";
-    }
-}
-
-
-static PyObject *_wrap_DayCounter___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    DayCounterHandle *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DayCounter___str__",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DayCounterHandle,1)) == -1) return NULL;
-    {
-        try {
-            result = new String (DayCounterHandle___str__(arg0));
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
 String  DayCounterHandle___repr__(DayCounterHandle *self) {
     {
-        return "<"+(*self)->name()+" day counter>";
+        return (*self)->name()+" day counter";
     }
 }
 
@@ -6674,84 +6395,6 @@ static PyObject *_wrap_IntVector___setslice__(PyObject *self, PyObject *args, Py
 }
 
 
-String  IntVector___str__(IntVector *self) {
-    {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-            s += ", ";
-            s += IntegerFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
-}
-
-
-static PyObject *_wrap_IntVector___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    IntVector *arg0 ;
-    IntVector temp ;
-    PyObject * obj0  = 0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:IntVector___str__",kwnames,&obj0)) return NULL;
-    {
-        IntVector* v;
-        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
-            int size = (PyTuple_Check(obj0) ? 
-            PyTuple_Size(obj0) :
-            PyList_Size(obj0));
-            temp = IntVector(size);
-            arg0 = &temp;
-            for (int i=0; i<size; i++) {
-                PyObject* o = PySequence_GetItem(obj0,i);
-                if (o == Py_None) {
-                    (*arg0)[i] = Null<int>();
-                }else if (PyInt_Check(o)) {
-                    (*arg0)[i] = int(PyInt_AsLong(o));
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"ints expected");
-                    return NULL;
-                }
-            }
-        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
-        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
-            arg0 = v;
-        }else {
-            PyErr_SetString(PyExc_TypeError,"IntVector expected");
-            return NULL;
-        }
-    }
-    {
-        try {
-            result = new String (IntVector___str__(arg0));
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
 String  IntVector___repr__(IntVector *self) {
     {
         String s = "(";
@@ -7373,86 +7016,6 @@ static PyObject *_wrap_DoubleVector___setslice__(PyObject *self, PyObject *args,
 }
 
 
-String  DoubleVector___str__(DoubleVector *self) {
-    {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-            s += ", ";
-            s += DoubleFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
-}
-
-
-static PyObject *_wrap_DoubleVector___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    DoubleVector *arg0 ;
-    DoubleVector temp ;
-    PyObject * obj0  = 0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DoubleVector___str__",kwnames,&obj0)) return NULL;
-    {
-        DoubleVector* v;
-        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
-            int size = (PyTuple_Check(obj0) ? 
-            PyTuple_Size(obj0) :
-            PyList_Size(obj0));
-            temp = DoubleVector(size);
-            arg0 = &temp;
-            for (int i=0; i<size; i++) {
-                PyObject* o = PySequence_GetItem(obj0,i);
-                if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
-                }else if (PyFloat_Check(o)) {
-                    (*arg0)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg0)[i] = double(PyInt_AsLong(o));
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"doubles expected");
-                    return NULL;
-                }
-            }
-        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
-        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
-            arg0 = v;
-        }else {
-            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
-            return NULL;
-        }
-    }
-    {
-        try {
-            result = new String (DoubleVector___str__(arg0));
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
 String  DoubleVector___repr__(DoubleVector *self) {
     {
         String s = "(";
@@ -7797,7 +7360,7 @@ static PyObject *_wrap_HistoryIterator___cmp__(PyObject *self, PyObject *args, P
 }
 
 
-String  HistoryIterator___str__(HistoryIterator *self) {
+String  HistoryIterator___repr__(HistoryIterator *self) {
     {
         return DateFormatter::toString((*self)->date()) + 
         "\t"+ (IsNull((*self)->value()) ? String("Null") : 
@@ -7806,7 +7369,7 @@ String  HistoryIterator___str__(HistoryIterator *self) {
 }
 
 
-static PyObject *_wrap_HistoryIterator___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_HistoryIterator___repr__(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     HistoryIterator *arg0 ;
     PyObject * argo0 =0 ;
@@ -7815,11 +7378,11 @@ static PyObject *_wrap_HistoryIterator___str__(PyObject *self, PyObject *args, P
     };
     String *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:HistoryIterator___str__",kwnames,&argo0)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:HistoryIterator___repr__",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_HistoryIterator,1)) == -1) return NULL;
     {
         try {
-            result = new String (HistoryIterator___str__(arg0));
+            result = new String (HistoryIterator___repr__(arg0));
         }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
@@ -8038,7 +7601,7 @@ static PyObject *_wrap_HistoryValidIterator___cmp__(PyObject *self, PyObject *ar
 }
 
 
-String  HistoryValidIterator___str__(HistoryValidIterator *self) {
+String  HistoryValidIterator___repr__(HistoryValidIterator *self) {
     {
         return DateFormatter::toString((*self)->date()) + 
         "\t"+ (IsNull((*self)->value()) ? String("Null") : 
@@ -8047,7 +7610,7 @@ String  HistoryValidIterator___str__(HistoryValidIterator *self) {
 }
 
 
-static PyObject *_wrap_HistoryValidIterator___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_HistoryValidIterator___repr__(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     HistoryValidIterator *arg0 ;
     PyObject * argo0 =0 ;
@@ -8056,11 +7619,11 @@ static PyObject *_wrap_HistoryValidIterator___str__(PyObject *self, PyObject *ar
     };
     String *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:HistoryValidIterator___str__",kwnames,&argo0)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:HistoryValidIterator___repr__",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_HistoryValidIterator,1)) == -1) return NULL;
     {
         try {
-            result = new String (HistoryValidIterator___str__(arg0));
+            result = new String (HistoryValidIterator___repr__(arg0));
         }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
@@ -8240,7 +7803,7 @@ static PyObject *_wrap_HistoryDataIterator___cmp__(PyObject *self, PyObject *arg
 }
 
 
-String  HistoryDataIterator___str__(HistoryDataIterator *self) {
+String  HistoryDataIterator___repr__(HistoryDataIterator *self) {
     {
         return (IsNull(**self) ? String("Null") : 
         DoubleFormatter::toString(**self));
@@ -8248,7 +7811,7 @@ String  HistoryDataIterator___str__(HistoryDataIterator *self) {
 }
 
 
-static PyObject *_wrap_HistoryDataIterator___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_HistoryDataIterator___repr__(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     HistoryDataIterator *arg0 ;
     PyObject * argo0 =0 ;
@@ -8257,11 +7820,11 @@ static PyObject *_wrap_HistoryDataIterator___str__(PyObject *self, PyObject *arg
     };
     String *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:HistoryDataIterator___str__",kwnames,&argo0)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:HistoryDataIterator___repr__",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_HistoryDataIterator,1)) == -1) return NULL;
     {
         try {
-            result = new String (HistoryDataIterator___str__(arg0));
+            result = new String (HistoryDataIterator___repr__(arg0));
         }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
@@ -8441,7 +8004,7 @@ static PyObject *_wrap_HistoryValidDataIterator___cmp__(PyObject *self, PyObject
 }
 
 
-String  HistoryValidDataIterator___str__(HistoryValidDataIterator *self) {
+String  HistoryValidDataIterator___repr__(HistoryValidDataIterator *self) {
     {
         return (IsNull(**self) ? String("Null") : 
         DoubleFormatter::toString(**self));
@@ -8449,7 +8012,7 @@ String  HistoryValidDataIterator___str__(HistoryValidDataIterator *self) {
 }
 
 
-static PyObject *_wrap_HistoryValidDataIterator___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_HistoryValidDataIterator___repr__(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     HistoryValidDataIterator *arg0 ;
     PyObject * argo0 =0 ;
@@ -8458,11 +8021,11 @@ static PyObject *_wrap_HistoryValidDataIterator___str__(PyObject *self, PyObject
     };
     String *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:HistoryValidDataIterator___str__",kwnames,&argo0)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:HistoryValidDataIterator___repr__",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_HistoryValidDataIterator,1)) == -1) return NULL;
     {
         try {
-            result = new String (HistoryValidDataIterator___str__(arg0));
+            result = new String (HistoryValidDataIterator___repr__(arg0));
         }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
@@ -9214,57 +8777,11 @@ static PyObject *_wrap_History___getitem__(PyObject *self, PyObject *args, PyObj
 }
 
 
-String  History___str__(History *self) {
+String  History___repr__(History *self) {
     {
         return "Historical data from " + 
         DateFormatter::toString(self->firstDate()) +
         " to "+ DateFormatter::toString(self->lastDate());
-    }
-}
-
-
-static PyObject *_wrap_History___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    History *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:History___str__",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_History,1)) == -1) return NULL;
-    {
-        try {
-            result = new String (History___str__(arg0));
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
-String  History___repr__(History *self) {
-    {
-        return "<History: historical data from " + 
-        DateFormatter::toString(self->firstDate()) + 
-        " to "+ DateFormatter::toString(self->lastDate())+">";
     }
 }
 
@@ -10333,53 +9850,15 @@ static PyObject *_wrap_Instrument_price(PyObject *self, PyObject *args, PyObject
 }
 
 
-String  InstrumentHandle___str__(InstrumentHandle *self) {
-    {
-        return Representation(*self);
-    }
-}
-
-
-static PyObject *_wrap_Instrument___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    InstrumentHandle *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Instrument___str__",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_InstrumentHandle,1)) == -1) return NULL;
-    {
-        try {
-            result = new String (InstrumentHandle___str__(arg0));
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
 String  InstrumentHandle___repr__(InstrumentHandle *self) {
     {
-        return "<Handle<Instrument>: "+Representation(*self)+">";
+        std::string isin = (*self)->isinCode();
+        if (isin == "")
+        isin = "unknown";
+        std::string desc = (*self)->description();
+        if (desc == "")
+        desc = "no description available";
+        return ("Instrument: "+isin+" ("+desc+")");
     }
 }
 
@@ -10969,85 +10448,6 @@ static PyObject *_wrap_Array___setslice__(PyObject *self, PyObject *args, PyObje
 }
 
 
-String  Array___str__(Array *self) {
-    {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-            s += ", ";
-            s += QuantLib::DoubleFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
-}
-
-
-static PyObject *_wrap_Array___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    Array *arg0 ;
-    Array temp ;
-    PyObject * obj0  = 0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Array___str__",kwnames,&obj0)) return NULL;
-    {
-        Array* v;
-        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
-            int size = (PyTuple_Check(obj0) ? 
-            PyTuple_Size(obj0) :
-            PyList_Size(obj0));
-            temp = Array(size);
-            arg0 = &temp;
-            for (int i=0; i<size; i++) {
-                PyObject* o = PySequence_GetItem(obj0,i);
-                if (PyFloat_Check(o)) {
-                    (*arg0)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg0)[i] = double(PyInt_AsLong(o));
-                }else {
-                    PyErr_SetString(PyExc_TypeError,
-                    "doubles expected");
-                    return NULL;
-                }
-            }
-        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
-        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
-            arg0 = v;
-        }else {
-            PyErr_SetString(PyExc_TypeError,"Array expected");
-            return NULL;
-        }
-    }
-    {
-        try {
-            result = new String (Array___str__(arg0));
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
 String  Array___repr__(Array *self) {
     {
         String s = "(";
@@ -11334,7 +10734,7 @@ static PyObject *_wrap_ArrayLexicographicalView___getitem__(PyObject *self, PyOb
 }
 
 
-String  ArrayLexicographicalView___str__(ArrayLexicographicalView *self) {
+String  ArrayLexicographicalView___repr__(ArrayLexicographicalView *self) {
     {
         String s;
         for (int j=0; j<self->ySize(); j++) {
@@ -11351,7 +10751,7 @@ String  ArrayLexicographicalView___str__(ArrayLexicographicalView *self) {
 }
 
 
-static PyObject *_wrap_ArrayLexicographicalView___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_ArrayLexicographicalView___repr__(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     ArrayLexicographicalView *arg0 ;
     PyObject * argo0 =0 ;
@@ -11360,11 +10760,11 @@ static PyObject *_wrap_ArrayLexicographicalView___str__(PyObject *self, PyObject
     };
     String *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:ArrayLexicographicalView___str__",kwnames,&argo0)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:ArrayLexicographicalView___repr__",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
     {
         try {
-            result = new String (ArrayLexicographicalView___str__(arg0));
+            result = new String (ArrayLexicographicalView___repr__(arg0));
         }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
@@ -11954,7 +11354,7 @@ static PyObject *_wrap_Matrix___div__(PyObject *self, PyObject *args, PyObject *
 }
 
 
-String  Matrix___str__(Matrix *self) {
+String  Matrix___repr__(Matrix *self) {
     {
         String s;
         for (int j=0; j<self->rows(); j++) {
@@ -11971,7 +11371,7 @@ String  Matrix___str__(Matrix *self) {
 }
 
 
-static PyObject *_wrap_Matrix___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_Matrix___repr__(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     Matrix *arg0 ;
     PyObject * argo0 =0 ;
@@ -11980,11 +11380,11 @@ static PyObject *_wrap_Matrix___str__(PyObject *self, PyObject *args, PyObject *
     };
     String *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Matrix___str__",kwnames,&argo0)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Matrix___repr__",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Matrix,1)) == -1) return NULL;
     {
         try {
-            result = new String (Matrix___str__(arg0));
+            result = new String (Matrix___repr__(arg0));
         }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
@@ -18887,7 +18287,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "Date___add__", (PyCFunction) _wrap_Date___add__, METH_VARARGS | METH_KEYWORDS },
 	 { "Date___sub__", (PyCFunction) _wrap_Date___sub__, METH_VARARGS | METH_KEYWORDS },
 	 { "Date___cmp__", (PyCFunction) _wrap_Date___cmp__, METH_VARARGS | METH_KEYWORDS },
-	 { "Date___str__", (PyCFunction) _wrap_Date___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "Date___repr__", (PyCFunction) _wrap_Date___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "Date___nonzero__", (PyCFunction) _wrap_Date___nonzero__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_DateVector", (PyCFunction) _wrap_delete_DateVector, METH_VARARGS | METH_KEYWORDS },
@@ -18896,7 +18295,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "DateVector___setitem__", (PyCFunction) _wrap_DateVector___setitem__, METH_VARARGS | METH_KEYWORDS },
 	 { "DateVector___getslice__", (PyCFunction) _wrap_DateVector___getslice__, METH_VARARGS | METH_KEYWORDS },
 	 { "DateVector___setslice__", (PyCFunction) _wrap_DateVector___setslice__, METH_VARARGS | METH_KEYWORDS },
-	 { "DateVector___str__", (PyCFunction) _wrap_DateVector___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "DateVector___repr__", (PyCFunction) _wrap_DateVector___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "DateVector___nonzero__", (PyCFunction) _wrap_DateVector___nonzero__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_Calendar", (PyCFunction) _wrap_delete_Calendar, METH_VARARGS | METH_KEYWORDS },
@@ -18904,7 +18302,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "Calendar_isHoliday", (PyCFunction) _wrap_Calendar_isHoliday, METH_VARARGS | METH_KEYWORDS },
 	 { "Calendar_roll", (PyCFunction) _wrap_Calendar_roll, METH_VARARGS | METH_KEYWORDS },
 	 { "Calendar_advance", (PyCFunction) _wrap_Calendar_advance, METH_VARARGS | METH_KEYWORDS },
-	 { "Calendar___str__", (PyCFunction) _wrap_Calendar___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "Calendar___repr__", (PyCFunction) _wrap_Calendar___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "Calendar___cmp__", (PyCFunction) _wrap_Calendar___cmp__, METH_VARARGS | METH_KEYWORDS },
 	 { "Calendar___nonzero__", (PyCFunction) _wrap_Calendar___nonzero__, METH_VARARGS | METH_KEYWORDS },
@@ -18912,14 +18309,12 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "Currency_settlementCalendar", (PyCFunction) _wrap_Currency_settlementCalendar, METH_VARARGS | METH_KEYWORDS },
 	 { "Currency_settlementDays", (PyCFunction) _wrap_Currency_settlementDays, METH_VARARGS | METH_KEYWORDS },
 	 { "Currency_settlementDate", (PyCFunction) _wrap_Currency_settlementDate, METH_VARARGS | METH_KEYWORDS },
-	 { "Currency___str__", (PyCFunction) _wrap_Currency___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "Currency___repr__", (PyCFunction) _wrap_Currency___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "Currency___cmp__", (PyCFunction) _wrap_Currency___cmp__, METH_VARARGS | METH_KEYWORDS },
 	 { "Currency___nonzero__", (PyCFunction) _wrap_Currency___nonzero__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_DayCounter", (PyCFunction) _wrap_delete_DayCounter, METH_VARARGS | METH_KEYWORDS },
 	 { "DayCounter_dayCount", (PyCFunction) _wrap_DayCounter_dayCount, METH_VARARGS | METH_KEYWORDS },
 	 { "DayCounter_yearFraction", (PyCFunction) _wrap_DayCounter_yearFraction, METH_VARARGS | METH_KEYWORDS },
-	 { "DayCounter___str__", (PyCFunction) _wrap_DayCounter___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "DayCounter___repr__", (PyCFunction) _wrap_DayCounter___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "DayCounter___cmp__", (PyCFunction) _wrap_DayCounter___cmp__, METH_VARARGS | METH_KEYWORDS },
 	 { "DayCounter___nonzero__", (PyCFunction) _wrap_DayCounter___nonzero__, METH_VARARGS | METH_KEYWORDS },
@@ -18940,7 +18335,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "IntVector___setitem__", (PyCFunction) _wrap_IntVector___setitem__, METH_VARARGS | METH_KEYWORDS },
 	 { "IntVector___getslice__", (PyCFunction) _wrap_IntVector___getslice__, METH_VARARGS | METH_KEYWORDS },
 	 { "IntVector___setslice__", (PyCFunction) _wrap_IntVector___setslice__, METH_VARARGS | METH_KEYWORDS },
-	 { "IntVector___str__", (PyCFunction) _wrap_IntVector___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "IntVector___repr__", (PyCFunction) _wrap_IntVector___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "IntVector___nonzero__", (PyCFunction) _wrap_IntVector___nonzero__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_DoubleVector", (PyCFunction) _wrap_delete_DoubleVector, METH_VARARGS | METH_KEYWORDS },
@@ -18949,7 +18343,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "DoubleVector___setitem__", (PyCFunction) _wrap_DoubleVector___setitem__, METH_VARARGS | METH_KEYWORDS },
 	 { "DoubleVector___getslice__", (PyCFunction) _wrap_DoubleVector___getslice__, METH_VARARGS | METH_KEYWORDS },
 	 { "DoubleVector___setslice__", (PyCFunction) _wrap_DoubleVector___setslice__, METH_VARARGS | METH_KEYWORDS },
-	 { "DoubleVector___str__", (PyCFunction) _wrap_DoubleVector___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "DoubleVector___repr__", (PyCFunction) _wrap_DoubleVector___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "DoubleVector___nonzero__", (PyCFunction) _wrap_DoubleVector___nonzero__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_HistoryIterator", (PyCFunction) _wrap_delete_HistoryIterator, METH_VARARGS | METH_KEYWORDS },
@@ -18957,23 +18350,23 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "HistoryIterator_value", (PyCFunction) _wrap_HistoryIterator_value, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryIterator_advance", (PyCFunction) _wrap_HistoryIterator_advance, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryIterator___cmp__", (PyCFunction) _wrap_HistoryIterator___cmp__, METH_VARARGS | METH_KEYWORDS },
-	 { "HistoryIterator___str__", (PyCFunction) _wrap_HistoryIterator___str__, METH_VARARGS | METH_KEYWORDS },
+	 { "HistoryIterator___repr__", (PyCFunction) _wrap_HistoryIterator___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_HistoryValidIterator", (PyCFunction) _wrap_delete_HistoryValidIterator, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryValidIterator_date", (PyCFunction) _wrap_HistoryValidIterator_date, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryValidIterator_value", (PyCFunction) _wrap_HistoryValidIterator_value, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryValidIterator_advance", (PyCFunction) _wrap_HistoryValidIterator_advance, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryValidIterator___cmp__", (PyCFunction) _wrap_HistoryValidIterator___cmp__, METH_VARARGS | METH_KEYWORDS },
-	 { "HistoryValidIterator___str__", (PyCFunction) _wrap_HistoryValidIterator___str__, METH_VARARGS | METH_KEYWORDS },
+	 { "HistoryValidIterator___repr__", (PyCFunction) _wrap_HistoryValidIterator___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_HistoryDataIterator", (PyCFunction) _wrap_delete_HistoryDataIterator, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryDataIterator___float__", (PyCFunction) _wrap_HistoryDataIterator___float__, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryDataIterator_advance", (PyCFunction) _wrap_HistoryDataIterator_advance, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryDataIterator___cmp__", (PyCFunction) _wrap_HistoryDataIterator___cmp__, METH_VARARGS | METH_KEYWORDS },
-	 { "HistoryDataIterator___str__", (PyCFunction) _wrap_HistoryDataIterator___str__, METH_VARARGS | METH_KEYWORDS },
+	 { "HistoryDataIterator___repr__", (PyCFunction) _wrap_HistoryDataIterator___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_HistoryValidDataIterator", (PyCFunction) _wrap_delete_HistoryValidDataIterator, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryValidDataIterator___float__", (PyCFunction) _wrap_HistoryValidDataIterator___float__, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryValidDataIterator_advance", (PyCFunction) _wrap_HistoryValidDataIterator_advance, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryValidDataIterator___cmp__", (PyCFunction) _wrap_HistoryValidDataIterator___cmp__, METH_VARARGS | METH_KEYWORDS },
-	 { "HistoryValidDataIterator___str__", (PyCFunction) _wrap_HistoryValidDataIterator___str__, METH_VARARGS | METH_KEYWORDS },
+	 { "HistoryValidDataIterator___repr__", (PyCFunction) _wrap_HistoryValidDataIterator___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "new_History", (PyCFunction) _wrap_new_History, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_History", (PyCFunction) _wrap_delete_History, METH_VARARGS | METH_KEYWORDS },
 	 { "History_firstDate", (PyCFunction) _wrap_History_firstDate, METH_VARARGS | METH_KEYWORDS },
@@ -18992,7 +18385,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "History_vdend", (PyCFunction) _wrap_History_vdend, METH_VARARGS | METH_KEYWORDS },
 	 { "History_valid_data_iterator", (PyCFunction) _wrap_History_valid_data_iterator, METH_VARARGS | METH_KEYWORDS },
 	 { "History___getitem__", (PyCFunction) _wrap_History___getitem__, METH_VARARGS | METH_KEYWORDS },
-	 { "History___str__", (PyCFunction) _wrap_History___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "History___repr__", (PyCFunction) _wrap_History___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_TermStructure", (PyCFunction) _wrap_delete_TermStructure, METH_VARARGS | METH_KEYWORDS },
 	 { "TermStructure_clone", (PyCFunction) _wrap_TermStructure_clone, METH_VARARGS | METH_KEYWORDS },
@@ -19019,7 +18411,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "Instrument_termStructure", (PyCFunction) _wrap_Instrument_termStructure, METH_VARARGS | METH_KEYWORDS },
 	 { "Instrument_NPV", (PyCFunction) _wrap_Instrument_NPV, METH_VARARGS | METH_KEYWORDS },
 	 { "Instrument_price", (PyCFunction) _wrap_Instrument_price, METH_VARARGS | METH_KEYWORDS },
-	 { "Instrument___str__", (PyCFunction) _wrap_Instrument___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "Instrument___repr__", (PyCFunction) _wrap_Instrument___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "Instrument___cmp__", (PyCFunction) _wrap_Instrument___cmp__, METH_VARARGS | METH_KEYWORDS },
 	 { "Instrument___nonzero__", (PyCFunction) _wrap_Instrument___nonzero__, METH_VARARGS | METH_KEYWORDS },
@@ -19029,14 +18420,13 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "Array___setitem__", (PyCFunction) _wrap_Array___setitem__, METH_VARARGS | METH_KEYWORDS },
 	 { "Array___getslice__", (PyCFunction) _wrap_Array___getslice__, METH_VARARGS | METH_KEYWORDS },
 	 { "Array___setslice__", (PyCFunction) _wrap_Array___setslice__, METH_VARARGS | METH_KEYWORDS },
-	 { "Array___str__", (PyCFunction) _wrap_Array___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "Array___repr__", (PyCFunction) _wrap_Array___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "Array___nonzero__", (PyCFunction) _wrap_Array___nonzero__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_ArrayLexicographicalView", (PyCFunction) _wrap_delete_ArrayLexicographicalView, METH_VARARGS | METH_KEYWORDS },
 	 { "ArrayLexicographicalView_xSize", (PyCFunction) _wrap_ArrayLexicographicalView_xSize, METH_VARARGS | METH_KEYWORDS },
 	 { "ArrayLexicographicalView_ySize", (PyCFunction) _wrap_ArrayLexicographicalView_ySize, METH_VARARGS | METH_KEYWORDS },
 	 { "ArrayLexicographicalView___getitem__", (PyCFunction) _wrap_ArrayLexicographicalView___getitem__, METH_VARARGS | METH_KEYWORDS },
-	 { "ArrayLexicographicalView___str__", (PyCFunction) _wrap_ArrayLexicographicalView___str__, METH_VARARGS | METH_KEYWORDS },
+	 { "ArrayLexicographicalView___repr__", (PyCFunction) _wrap_ArrayLexicographicalView___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_ArrayLexicographicalViewColumn", (PyCFunction) _wrap_delete_ArrayLexicographicalViewColumn, METH_VARARGS | METH_KEYWORDS },
 	 { "ArrayLexicographicalViewColumn___getitem__", (PyCFunction) _wrap_ArrayLexicographicalViewColumn___getitem__, METH_VARARGS | METH_KEYWORDS },
 	 { "ArrayLexicographicalViewColumn___setitem__", (PyCFunction) _wrap_ArrayLexicographicalViewColumn___setitem__, METH_VARARGS | METH_KEYWORDS },
@@ -19052,7 +18442,7 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "Matrix___sub__", (PyCFunction) _wrap_Matrix___sub__, METH_VARARGS | METH_KEYWORDS },
 	 { "Matrix___mul__", (PyCFunction) _wrap_Matrix___mul__, METH_VARARGS | METH_KEYWORDS },
 	 { "Matrix___div__", (PyCFunction) _wrap_Matrix___div__, METH_VARARGS | METH_KEYWORDS },
-	 { "Matrix___str__", (PyCFunction) _wrap_Matrix___str__, METH_VARARGS | METH_KEYWORDS },
+	 { "Matrix___repr__", (PyCFunction) _wrap_Matrix___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_MatrixRow", (PyCFunction) _wrap_delete_MatrixRow, METH_VARARGS | METH_KEYWORDS },
 	 { "MatrixRow___getitem__", (PyCFunction) _wrap_MatrixRow___getitem__, METH_VARARGS | METH_KEYWORDS },
 	 { "MatrixRow___setitem__", (PyCFunction) _wrap_MatrixRow___setitem__, METH_VARARGS | METH_KEYWORDS },

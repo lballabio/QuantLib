@@ -73,7 +73,6 @@ Date.serialNumber = new.instancemethod(QuantLibc.Date_serialNumber, None, Date)
 Date.monthNumber = new.instancemethod(QuantLibc.Date_monthNumber, None, Date)
 Date.weekdayNumber = new.instancemethod(QuantLibc.Date_weekdayNumber, None, Date)
 Date.__cmp__ = new.instancemethod(QuantLibc.Date___cmp__, None, Date)
-Date.__str__ = new.instancemethod(QuantLibc.Date___str__, None, Date)
 Date.__repr__ = new.instancemethod(QuantLibc.Date___repr__, None, Date)
 Date.__nonzero__ = new.instancemethod(QuantLibc.Date___nonzero__, None, Date)
 
@@ -102,7 +101,6 @@ class DateVectorPtr(DateVector):
 DateVector.__len__ = new.instancemethod(QuantLibc.DateVector___len__, None, DateVector)
 DateVector.__setitem__ = new.instancemethod(QuantLibc.DateVector___setitem__, None, DateVector)
 DateVector.__setslice__ = new.instancemethod(QuantLibc.DateVector___setslice__, None, DateVector)
-DateVector.__str__ = new.instancemethod(QuantLibc.DateVector___str__, None, DateVector)
 DateVector.__repr__ = new.instancemethod(QuantLibc.DateVector___repr__, None, DateVector)
 DateVector.__nonzero__ = new.instancemethod(QuantLibc.DateVector___nonzero__, None, DateVector)
 
@@ -130,7 +128,6 @@ class CalendarPtr(Calendar):
 
 Calendar.isBusinessDay = new.instancemethod(QuantLibc.Calendar_isBusinessDay, None, Calendar)
 Calendar.isHoliday = new.instancemethod(QuantLibc.Calendar_isHoliday, None, Calendar)
-Calendar.__str__ = new.instancemethod(QuantLibc.Calendar___str__, None, Calendar)
 Calendar.__repr__ = new.instancemethod(QuantLibc.Calendar___repr__, None, Calendar)
 Calendar.__cmp__ = new.instancemethod(QuantLibc.Calendar___cmp__, None, Calendar)
 Calendar.__nonzero__ = new.instancemethod(QuantLibc.Calendar___nonzero__, None, Calendar)
@@ -158,7 +155,6 @@ class CurrencyPtr(Currency):
 
 
 Currency.settlementDays = new.instancemethod(QuantLibc.Currency_settlementDays, None, Currency)
-Currency.__str__ = new.instancemethod(QuantLibc.Currency___str__, None, Currency)
 Currency.__repr__ = new.instancemethod(QuantLibc.Currency___repr__, None, Currency)
 Currency.__cmp__ = new.instancemethod(QuantLibc.Currency___cmp__, None, Currency)
 Currency.__nonzero__ = new.instancemethod(QuantLibc.Currency___nonzero__, None, Currency)
@@ -179,7 +175,6 @@ class DayCounterPtr(DayCounter):
 
 DayCounter.dayCount = new.instancemethod(QuantLibc.DayCounter_dayCount, None, DayCounter)
 DayCounter.yearFraction = new.instancemethod(QuantLibc.DayCounter_yearFraction, None, DayCounter)
-DayCounter.__str__ = new.instancemethod(QuantLibc.DayCounter___str__, None, DayCounter)
 DayCounter.__repr__ = new.instancemethod(QuantLibc.DayCounter___repr__, None, DayCounter)
 DayCounter.__cmp__ = new.instancemethod(QuantLibc.DayCounter___cmp__, None, DayCounter)
 DayCounter.__nonzero__ = new.instancemethod(QuantLibc.DayCounter___nonzero__, None, DayCounter)
@@ -265,7 +260,6 @@ IntVector.__len__ = new.instancemethod(QuantLibc.IntVector___len__, None, IntVec
 IntVector.__getitem__ = new.instancemethod(QuantLibc.IntVector___getitem__, None, IntVector)
 IntVector.__setitem__ = new.instancemethod(QuantLibc.IntVector___setitem__, None, IntVector)
 IntVector.__setslice__ = new.instancemethod(QuantLibc.IntVector___setslice__, None, IntVector)
-IntVector.__str__ = new.instancemethod(QuantLibc.IntVector___str__, None, IntVector)
 IntVector.__repr__ = new.instancemethod(QuantLibc.IntVector___repr__, None, IntVector)
 IntVector.__nonzero__ = new.instancemethod(QuantLibc.IntVector___nonzero__, None, IntVector)
 
@@ -291,7 +285,6 @@ DoubleVector.__len__ = new.instancemethod(QuantLibc.DoubleVector___len__, None, 
 DoubleVector.__getitem__ = new.instancemethod(QuantLibc.DoubleVector___getitem__, None, DoubleVector)
 DoubleVector.__setitem__ = new.instancemethod(QuantLibc.DoubleVector___setitem__, None, DoubleVector)
 DoubleVector.__setslice__ = new.instancemethod(QuantLibc.DoubleVector___setslice__, None, DoubleVector)
-DoubleVector.__str__ = new.instancemethod(QuantLibc.DoubleVector___str__, None, DoubleVector)
 DoubleVector.__repr__ = new.instancemethod(QuantLibc.DoubleVector___repr__, None, DoubleVector)
 DoubleVector.__nonzero__ = new.instancemethod(QuantLibc.DoubleVector___nonzero__, None, DoubleVector)
 
@@ -306,8 +299,6 @@ class HistoryIterator:
         val = apply(QuantLibc.HistoryIterator_date,args, kwargs)
         if val: val = DatePtr(val) ; val.thisown = 1
         return val
-    def __repr__(self):
-        return "<C HistoryIterator instance at %s>" % (self.this,)
 class HistoryIteratorPtr(HistoryIterator):
     def __init__(self,this):
         self.this = this
@@ -318,7 +309,7 @@ class HistoryIteratorPtr(HistoryIterator):
 HistoryIterator.value = new.instancemethod(QuantLibc.HistoryIterator_value, None, HistoryIterator)
 HistoryIterator.advance = new.instancemethod(QuantLibc.HistoryIterator_advance, None, HistoryIterator)
 HistoryIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryIterator___cmp__, None, HistoryIterator)
-HistoryIterator.__str__ = new.instancemethod(QuantLibc.HistoryIterator___str__, None, HistoryIterator)
+HistoryIterator.__repr__ = new.instancemethod(QuantLibc.HistoryIterator___repr__, None, HistoryIterator)
 
 class HistoryValidIterator:
     def __init__(self,this):
@@ -331,8 +322,6 @@ class HistoryValidIterator:
         val = apply(QuantLibc.HistoryValidIterator_date,args, kwargs)
         if val: val = DatePtr(val) ; val.thisown = 1
         return val
-    def __repr__(self):
-        return "<C HistoryValidIterator instance at %s>" % (self.this,)
 class HistoryValidIteratorPtr(HistoryValidIterator):
     def __init__(self,this):
         self.this = this
@@ -343,7 +332,7 @@ class HistoryValidIteratorPtr(HistoryValidIterator):
 HistoryValidIterator.value = new.instancemethod(QuantLibc.HistoryValidIterator_value, None, HistoryValidIterator)
 HistoryValidIterator.advance = new.instancemethod(QuantLibc.HistoryValidIterator_advance, None, HistoryValidIterator)
 HistoryValidIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryValidIterator___cmp__, None, HistoryValidIterator)
-HistoryValidIterator.__str__ = new.instancemethod(QuantLibc.HistoryValidIterator___str__, None, HistoryValidIterator)
+HistoryValidIterator.__repr__ = new.instancemethod(QuantLibc.HistoryValidIterator___repr__, None, HistoryValidIterator)
 
 class HistoryDataIterator:
     def __init__(self,this):
@@ -352,8 +341,6 @@ class HistoryDataIterator:
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
             QuantLibc.delete_HistoryDataIterator(self)
-    def __repr__(self):
-        return "<C HistoryDataIterator instance at %s>" % (self.this,)
 class HistoryDataIteratorPtr(HistoryDataIterator):
     def __init__(self,this):
         self.this = this
@@ -364,7 +351,7 @@ class HistoryDataIteratorPtr(HistoryDataIterator):
 HistoryDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryDataIterator___float__, None, HistoryDataIterator)
 HistoryDataIterator.advance = new.instancemethod(QuantLibc.HistoryDataIterator_advance, None, HistoryDataIterator)
 HistoryDataIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryDataIterator___cmp__, None, HistoryDataIterator)
-HistoryDataIterator.__str__ = new.instancemethod(QuantLibc.HistoryDataIterator___str__, None, HistoryDataIterator)
+HistoryDataIterator.__repr__ = new.instancemethod(QuantLibc.HistoryDataIterator___repr__, None, HistoryDataIterator)
 
 class HistoryValidDataIterator:
     def __init__(self,this):
@@ -373,8 +360,6 @@ class HistoryValidDataIterator:
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
             QuantLibc.delete_HistoryValidDataIterator(self)
-    def __repr__(self):
-        return "<C HistoryValidDataIterator instance at %s>" % (self.this,)
 class HistoryValidDataIteratorPtr(HistoryValidDataIterator):
     def __init__(self,this):
         self.this = this
@@ -385,7 +370,7 @@ class HistoryValidDataIteratorPtr(HistoryValidDataIterator):
 HistoryValidDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___float__, None, HistoryValidDataIterator)
 HistoryValidDataIterator.advance = new.instancemethod(QuantLibc.HistoryValidDataIterator_advance, None, HistoryValidDataIterator)
 HistoryValidDataIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___cmp__, None, HistoryValidDataIterator)
-HistoryValidDataIterator.__str__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___str__, None, HistoryValidDataIterator)
+HistoryValidDataIterator.__repr__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___repr__, None, HistoryValidDataIterator)
 
 class History:
     def __init__(self,*args,**kwargs):
@@ -460,7 +445,6 @@ class HistoryPtr(History):
 
 History.size = new.instancemethod(QuantLibc.History_size, None, History)
 History.__getitem__ = new.instancemethod(QuantLibc.History___getitem__, None, History)
-History.__str__ = new.instancemethod(QuantLibc.History___str__, None, History)
 History.__repr__ = new.instancemethod(QuantLibc.History___repr__, None, History)
 
 class TermStructure:
@@ -563,7 +547,6 @@ Instrument.isinCode = new.instancemethod(QuantLibc.Instrument_isinCode, None, In
 Instrument.description = new.instancemethod(QuantLibc.Instrument_description, None, Instrument)
 Instrument.NPV = new.instancemethod(QuantLibc.Instrument_NPV, None, Instrument)
 Instrument.price = new.instancemethod(QuantLibc.Instrument_price, None, Instrument)
-Instrument.__str__ = new.instancemethod(QuantLibc.Instrument___str__, None, Instrument)
 Instrument.__repr__ = new.instancemethod(QuantLibc.Instrument___repr__, None, Instrument)
 Instrument.__cmp__ = new.instancemethod(QuantLibc.Instrument___cmp__, None, Instrument)
 Instrument.__nonzero__ = new.instancemethod(QuantLibc.Instrument___nonzero__, None, Instrument)
@@ -590,7 +573,6 @@ Array.__len__ = new.instancemethod(QuantLibc.Array___len__, None, Array)
 Array.__getitem__ = new.instancemethod(QuantLibc.Array___getitem__, None, Array)
 Array.__setitem__ = new.instancemethod(QuantLibc.Array___setitem__, None, Array)
 Array.__setslice__ = new.instancemethod(QuantLibc.Array___setslice__, None, Array)
-Array.__str__ = new.instancemethod(QuantLibc.Array___str__, None, Array)
 Array.__repr__ = new.instancemethod(QuantLibc.Array___repr__, None, Array)
 Array.__nonzero__ = new.instancemethod(QuantLibc.Array___nonzero__, None, Array)
 
@@ -605,8 +587,6 @@ class ArrayLexicographicalView:
         val = apply(QuantLibc.ArrayLexicographicalView___getitem__,args, kwargs)
         if val: val = ArrayLexicographicalViewColumnPtr(val) ; val.thisown = 1
         return val
-    def __repr__(self):
-        return "<C ArrayLexicographicalView instance at %s>" % (self.this,)
 class ArrayLexicographicalViewPtr(ArrayLexicographicalView):
     def __init__(self,this):
         self.this = this
@@ -616,7 +596,7 @@ class ArrayLexicographicalViewPtr(ArrayLexicographicalView):
 
 ArrayLexicographicalView.xSize = new.instancemethod(QuantLibc.ArrayLexicographicalView_xSize, None, ArrayLexicographicalView)
 ArrayLexicographicalView.ySize = new.instancemethod(QuantLibc.ArrayLexicographicalView_ySize, None, ArrayLexicographicalView)
-ArrayLexicographicalView.__str__ = new.instancemethod(QuantLibc.ArrayLexicographicalView___str__, None, ArrayLexicographicalView)
+ArrayLexicographicalView.__repr__ = new.instancemethod(QuantLibc.ArrayLexicographicalView___repr__, None, ArrayLexicographicalView)
 
 class ArrayLexicographicalViewColumn:
     def __init__(self,this):
@@ -684,8 +664,6 @@ class Matrix:
         val = apply(QuantLibc.Matrix___div__,args, kwargs)
         if val: val = MatrixPtr(val) ; val.thisown = 1
         return val
-    def __repr__(self):
-        return "<C Matrix instance at %s>" % (self.this,)
 class MatrixPtr(Matrix):
     def __init__(self,this):
         self.this = this
@@ -695,7 +673,7 @@ class MatrixPtr(Matrix):
 
 Matrix.rows = new.instancemethod(QuantLibc.Matrix_rows, None, Matrix)
 Matrix.columns = new.instancemethod(QuantLibc.Matrix_columns, None, Matrix)
-Matrix.__str__ = new.instancemethod(QuantLibc.Matrix___str__, None, Matrix)
+Matrix.__repr__ = new.instancemethod(QuantLibc.Matrix___repr__, None, Matrix)
 
 class MatrixRow:
     def __init__(self,this):

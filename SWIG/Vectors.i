@@ -115,16 +115,6 @@ class IntVector {
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
 
-    String __str__() {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-                s += ", ";
-            s += IntegerFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
     String __repr__() {
         String s = "(";
         for (int i=0; i<self->size(); i++) {
@@ -237,16 +227,6 @@ class DoubleVector {
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
 
-    String __str__() {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-                s += ", ";
-            s += DoubleFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
     String __repr__() {
         String s = "(";
         for (int i=0; i<self->size(); i++) {
