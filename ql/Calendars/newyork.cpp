@@ -52,8 +52,8 @@ namespace QuantLib {
                 // Columbus Day (second Monday in October)
                 || ((d >= 8 && d <= 14) && w == Monday && m == October)
                 // Veteran's Day (Monday if Sunday or Friday if Saturday)
-                || ((d == 11 || (d == 12 && w == Monday) ||
-                    (d == 10 && w == Friday)) && m == November)
+                // || ((d == 11 || (d == 12 && w == Monday) ||
+                //    (d == 10 && w == Friday)) && m == November)
                 // Thanksgiving Day (fourth Thursday in November)
                 || ((d >= 22 && d <= 28) && w == Thursday && m == November)
                 // Christmas (Monday if Sunday or Friday if Saturday)
