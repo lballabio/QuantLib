@@ -2,6 +2,10 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.23  2001/08/06 15:43:34  nando
+# BSMOption now is SingleAssetOption
+# BSMEuropeanOption now is EuropeanOption
+#
 # Revision 1.22  2001/05/24 12:52:02  nando
 # smoothing #include xx.hpp
 #
@@ -14,9 +18,9 @@ libPricers_la_SOURCES = \
     barrieroption.cpp \
     binaryoption.cpp \
     bermudanoption.cpp \
-    bsmeuropeanoption.cpp \
+    europeanoption.cpp \
     bsmnumericaloption.cpp \
-    bsmoption.cpp \
+    singleassetoption.cpp \
     cliquetoption.cpp \
     dividendoption.cpp \
     dividendshoutoption.cpp \

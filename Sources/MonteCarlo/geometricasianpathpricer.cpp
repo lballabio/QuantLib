@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.12  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -68,7 +72,7 @@ namespace QuantLib {
             }
             average = QL_EXP(average/n);
 
-            return computePlainVanilla(type_, average, strike_, discount_);
+            return discount_*europeanPayoff(type_, average, strike_);
         }
 
     }

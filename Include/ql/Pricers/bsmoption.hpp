@@ -22,15 +22,19 @@
  * available at http://quantlib.org/Authors.txt
 */
 
-/*! \file bsmoption.hpp
+/*! \file singleassetoption.hpp
     \brief common code for option evaluation
 
     \fullpath
-    Include/ql/Pricers/%bsmoption.hpp
+    Include/ql/Pricers/%singleassetoption.hpp
 */
 
 // $Source$
 // $Log$
+// Revision 1.16  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.15  2001/07/26 13:56:23  nando
 // straddle barrier option handled
 //
@@ -58,13 +62,16 @@ namespace QuantLib {
     //! Pricing models for options
     namespace Pricers {
 
+
+        double europeanPPayoff(Option::Type type, double price, double strike);
+
         //! Black-Scholes-Merton option
-        class BSMOption : public Option {
+        class SingleAssetOption : public Option {
           public:
-            BSMOption(Type type, double underlying, double strike,
+            SingleAssetOption(Type type, double underlying, double strike,
                 Rate dividendYield, Rate riskFreeRate, Time residualTime,
                 double volatility);
-            virtual ~BSMOption() {}    // just in case
+            virtual ~SingleAssetOption() {}    // just in case
             // modifiers
             void setVolatility(double newVolatility) ;
             void setRiskFreeRate(Rate newRate) ;
@@ -79,7 +86,7 @@ namespace QuantLib {
                 double accuracy = 1e-4, int maxEvaluations = 100,
                 double minVol = QL_MIN_VOLATILITY,
                 double maxVol = QL_MAX_VOLATILITY) const ;
-            virtual Handle<BSMOption> clone() const = 0;
+            virtual Handle<SingleAssetOption> clone() const = 0;
           protected:
             // results declared as mutable to preserve the logical
             Type type_;
@@ -100,22 +107,22 @@ namespace QuantLib {
             friend class BSMFunction;
         };
 
-        class BSMOption::BSMFunction : public ObjectiveFunction {
+        class SingleAssetOption::BSMFunction : public ObjectiveFunction {
           public:
-            BSMFunction(const Handle<BSMOption>& tempBSM, double targetPrice);
+            BSMFunction(const Handle<SingleAssetOption>& tempBSM, double targetPrice);
             double operator()(double x) const;
           private:
-            mutable Handle<BSMOption> bsm;
+            mutable Handle<SingleAssetOption> bsm;
             double targetPrice_;
         };
 
-        inline BSMOption::BSMFunction::BSMFunction(
-                const Handle<BSMOption>& tempBSM, double targetPrice) {
+        inline SingleAssetOption::BSMFunction::BSMFunction(
+                const Handle<SingleAssetOption>& tempBSM, double targetPrice) {
             bsm = tempBSM;
             targetPrice_ = targetPrice;
         }
 
-        inline double BSMOption::BSMFunction::operator()(double x) const {
+        inline double SingleAssetOption::BSMFunction::operator()(double x) const {
             bsm -> setVolatility(x);
             return (bsm -> value() - targetPrice_);
         }

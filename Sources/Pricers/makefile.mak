@@ -2,6 +2,10 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.7  2001/08/06 15:43:34  nando
+# BSMOption now is SingleAssetOption
+# BSMEuropeanOption now is EuropeanOption
+#
 # Revision 1.6  2001/05/24 12:52:02  nando
 # smoothing #include xx.hpp
 #
@@ -28,9 +32,9 @@ OBJS = averagepriceasian.obj$(_D) \
        barrieroption.obj$(_D) \
        bermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
-       bsmeuropeanoption.obj$(_D) \
+       europeanoption.obj$(_D) \
        bsmnumericaloption.obj$(_D) \
-       bsmoption.obj$(_D) \
+       singleassetoption.obj$(_D) \
        cliquetoption.obj$(_D) \
        dividendamericanoption.obj$(_D) \
        dividendeuropeanoption.obj$(_D) \

@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.8  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -50,7 +54,7 @@ namespace QuantLib
                                      Rate riskFreeRate,
                                      const std::vector<Time> &dates,
                                      double volatility)
-        : BSMOption(type, underlying, underlying, dividendYield,
+        : SingleAssetOption(type, underlying, underlying, dividendYield,
                     riskFreeRate, dates[dates.size()-1], volatility),
         numPeriods_(dates.size()-1),
         optionlet_(numPeriods_),
@@ -61,8 +65,8 @@ namespace QuantLib
 
             for(int i = 0; i < numPeriods_; i++){
                 weight_[i] = QL_EXP(dividendYield * dates[i]);
-                optionlet_[i] = Handle<BSMEuropeanOption>(
-                    new BSMEuropeanOption(type,
+                optionlet_[i] = Handle<EuropeanOption>(
+                    new EuropeanOption(type,
                                           underlying,
                                           underlying,
                                           dividendYield,
@@ -73,8 +77,8 @@ namespace QuantLib
 
         }
 
-        Handle<BSMOption> CliquetOption::clone() const {
-            return Handle<BSMOption>(new CliquetOption(*this));
+        Handle<SingleAssetOption> CliquetOption::clone() const {
+            return Handle<SingleAssetOption>(new CliquetOption(*this));
         }
 
         double CliquetOption::value() const {

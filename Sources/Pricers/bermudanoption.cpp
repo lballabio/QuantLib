@@ -29,6 +29,10 @@
 */
 
 // $Log$
+// Revision 1.17  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.16  2001/07/27 07:46:01  nando
 // pruned warnings
 //
@@ -49,7 +53,7 @@
 //
 
 #include "ql/Pricers/bermudanoption.hpp"
-#include "ql/Pricers/bsmeuropeanoption.hpp"
+#include "ql/Pricers/europeanoption.hpp"
 
 namespace QuantLib {
 
@@ -76,8 +80,8 @@ namespace QuantLib {
                 prices_[j] = QL_MAX(prices_[j], initialPrices_[j]);
         }
 
-        Handle<BSMOption> BermudanOption::clone() const {
-            return Handle<BSMOption>(new BermudanOption(type_, underlying_,
+        Handle<SingleAssetOption> BermudanOption::clone() const {
+            return Handle<SingleAssetOption>(new BermudanOption(type_, underlying_,
                 strike_, dividendYield_, riskFreeRate_, residualTime_,
                 volatility_, dates_, timeStepPerPeriod_, gridPoints_));
         }

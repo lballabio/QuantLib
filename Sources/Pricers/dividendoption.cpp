@@ -29,6 +29,10 @@
 */
 // $Source$
 // $Log$
+// Revision 1.22  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.21  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -83,7 +87,7 @@ namespace QuantLib {
         }
 
         void DividendOption::initializeControlVariate() const{
-            analytic_ = Handle<BSMOption> (new
+            analytic_ = Handle<SingleAssetOption> (new
                             DividendEuropeanOption (type_,
                                 underlying_ + addElements(dividends_),
                                 strike_,

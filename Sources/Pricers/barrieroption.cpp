@@ -31,6 +31,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.18  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.17  2001/07/26 13:56:23  nando
 // straddle barrier option handled
 //
@@ -63,9 +67,9 @@ namespace QuantLib {
                                      double volatility,
                                      double barrier,
                                      double rebate)
-        : BSMOption(type, underlying, strike, dividendYield, riskFreeRate,
-            residualTime, volatility), barrType_(barrType), barrier_(barrier),
-            rebate_(rebate), f_(){
+        : SingleAssetOption(type, underlying, strike, dividendYield,
+            riskFreeRate, residualTime, volatility), barrType_(barrType),
+            barrier_(barrier), rebate_(rebate), f_() {
 
             QL_REQUIRE(barrier_ > 0,
                 "BarrierOption: barrier must be positive");

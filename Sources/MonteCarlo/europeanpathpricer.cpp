@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.12  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -71,13 +75,13 @@ namespace QuantLib {
             for(int i = 0; i < n; i++)
                 log_price += path[i];
 
-            return computePlainVanilla(type_, underlying_*QL_EXP(log_price),
-                strike_, discount_);
+            return europeanPayoff(type_, underlying_*QL_EXP(log_price),
+                strike_)*discount_;
         }
 
-        double EuropeanPathPricer::computePlainVanilla(
-          Option::Type type, double price, double strike,
-          double discount) const {
+        double EuropeanPathPricer::europeanPayoff(Option::Type type,
+            double price, double strike) const {
+
             double optionPrice;
             switch (type) {
               case Option::Call:
@@ -89,7 +93,7 @@ namespace QuantLib {
               case Option::Straddle:
                     optionPrice = QL_FABS(strike-price);
             }
-            return discount*optionPrice;
+            return optionPrice;
         }
 
     }

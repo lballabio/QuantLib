@@ -28,6 +28,10 @@
 */
 
 // $Log$
+// Revision 1.7  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.6  2001/07/27 17:28:31  nando
 // minor changes
 //
@@ -47,12 +51,16 @@
 
 #include "ql\quantlib.hpp"
 
-using namespace std;
-
-using namespace QuantLib;
-using namespace QuantLib::Pricers;
-using namespace QuantLib::MonteCarlo;
-
+using QuantLib::Rate;
+using QuantLib::Time;
+using QuantLib::Option;
+using QuantLib::Handle;
+using QuantLib::Pricers::EuropeanOption;
+using QuantLib::Math::Statistics;
+using QuantLib::MonteCarlo::Path;
+using QuantLib::MonteCarlo::PathPricer;
+using QuantLib::MonteCarlo::StandardPathGenerator;
+using QuantLib::MonteCarlo::OneFactorMonteCarloOption;
 
 
 class HedgeErrorPathPricer : public PathPricer
@@ -66,9 +74,9 @@ class HedgeErrorPathPricer : public PathPricer
                          Time maturity,
                          double sigma);
     double value(const Path &path) const;
-    double computePlainVanilla(Option::Type type,
-                               double price,
-                               double strike) const;
+    double europeanPayoff(Option::Type type,
+                          double price,
+                          double strike) const;
   protected:
     Option::Type type_;
     Rate r_;
@@ -91,12 +99,12 @@ HedgeErrorPathPricer::HedgeErrorPathPricer(Option::Type type,
         "HedgeErrorPathPricer: underlying must be positive");
     QL_REQUIRE(r_ >= 0.0, "HedgeErrorPathPricer: risk free rate (r) must"
         " be positive or zero");
-   QL_REQUIRE(maturity_ > 0.0,
+    QL_REQUIRE(maturity_ > 0.0,
         "HedgeErrorPathPricer: maturity must be positive");
-   QL_REQUIRE(sigma_ >= 0.0, "HedgeErrorPathPricer: volatility (sigma)"
+    QL_REQUIRE(sigma_ >= 0.0, "HedgeErrorPathPricer: volatility (sigma)"
         " must be positive or zero");
 
-   isInitialized_ = true;
+    isInitialized_ = true;
 }
 
 double HedgeErrorPathPricer::value(const Path & path) const
@@ -120,7 +128,7 @@ double HedgeErrorPathPricer::value(const Path & path) const
     /*** the initial deal ***/
     /************************/
     // option value at the start of the path
-    BSMEuropeanOption option = BSMEuropeanOption(type_, stock, strike_, 0.0, r_,
+    EuropeanOption option = EuropeanOption(type_, stock, strike_, 0.0, r_,
         maturity_, sigma_);
     // sell the option, cash in its premium
     double money_account = option.value();
@@ -144,7 +152,7 @@ double HedgeErrorPathPricer::value(const Path & path) const
         stock = underlying_*QL_EXP(stockLogGrowth);
 
         // recalculate option value
-        BSMEuropeanOption option = BSMEuropeanOption(type_, stock, strike_,
+        EuropeanOption option = EuropeanOption(type_, stock, strike_,
             0.0, r_, maturity_ - dt*(step+1), sigma_);
 
         // recalculate delta
@@ -167,15 +175,15 @@ double HedgeErrorPathPricer::value(const Path & path) const
     stock = underlying_*QL_EXP(stockLogGrowth);
 
     /*** final Profit&Loss valuation ***/
-    double optionPayoff = computePlainVanilla(type_, stock, strike_);
+    double optionPayoff = europeanPayoff(type_, stock, strike_);
     double profitLoss = stockAmount*stock + money_account - optionPayoff;
 
     return profitLoss;
 }
 
-double HedgeErrorPathPricer::computePlainVanilla(Option::Type type,
-                                                 double price,
-                                                 double strike) const
+double HedgeErrorPathPricer::europeanPayoff(Option::Type type,
+                                            double price,
+                                            double strike) const
 {
     double optionPrice;
 
@@ -208,15 +216,17 @@ public:
         s0_ = s0;
         sigma_ = sigma;
         r_ = r;
-    }
 
-    void doTest(int nTimeSteps = 21, int nSamples = 50000)
-    {
-        BSMEuropeanOption option = BSMEuropeanOption(type_, s0_,
+        EuropeanOption option = EuropeanOption(type_, s0_,
             strike_, 0.0, r_, maturity_, sigma_);
 
-        cout << "\n" << "Option value:\t " << option.value() << "\n";
+        std::cout << "\n" << "Option value:\t " << option.value() << "\n";
 
+        vega_ = option.vega();
+    }
+
+    void doTest(int nTimeSteps, int nSamples)
+    {
         // hedging interval
         double tau = maturity_ / nTimeSteps;
 
@@ -232,7 +242,7 @@ public:
             s0_, strike_, r_, maturity_, sigma_));
 
         // a statistic accumulator to accumulate path values
-        Math::Statistics statisticAccumulator;
+        Statistics statisticAccumulator;
 
         // use one factor Montecarlo model
         OneFactorMonteCarloOption myMontecarloSimulation(myPathGenerator,
@@ -242,21 +252,26 @@ public:
         myMontecarloSimulation.addSamples(nSamples);
 
         // get back the value distribution
-        Math::Statistics ProfitLossDistribution =
+        Statistics ProfitLossDistribution =
             myMontecarloSimulation.sampleAccumulator();
 
-        cout << "\n";
-        cout << "Montecarlo simulation: " << nSamples << " samples" << "\n";
-        cout << "Hedging " << nTimeSteps << " times" << "\n";
-        cout << "Mean Profit&Loss: \t" <<ProfitLossDistribution.mean()<< "\n";
-        cout << "Profit&Loss standard deviation (Montecarlo) :\t"
+        std::cout << "\n";
+        std::cout << "Montecarlo simulation: " << nSamples
+            << " samples" << "\n";
+        std::cout << "Hedging " << nTimeSteps << " times" << "\n";
+        std::cout << "Mean Profit&Loss: \t" << ProfitLossDistribution.mean()
+            << "\n";
+        std::cout << "Profit&Loss standard deviation (Montecarlo) :\t"
              << ProfitLossDistribution.standardDeviation() << "\n";
-
         double theoretical_error_sd =
-                QL_SQRT(3.1415926535/4/nTimeSteps)*option.vega()*sigma_;
+                QL_SQRT(3.1415926535/4/nTimeSteps)*vega_*sigma_;
 
-        cout << "Profit&Loss StDev (Derman & Kamal's formula):\t"
+        std::cout << "Profit&Loss StDev (Derman & Kamal's formula):\t"
                 << theoretical_error_sd << "\n";
+
+        std::cout   << ProfitLossDistribution.skewness() << "\n";
+        std::cout << "Profit&Loss excess kurtosis    (Montecarlo) :\t"
+             << ProfitLossDistribution.kurtosis() << "\n";
 
     }
 
@@ -267,6 +282,7 @@ private:
     Time maturity_;
     double sigma_;
     Rate r_;
+    double vega_;
 };
 
 int main(int argc, char* argv[])
@@ -281,7 +297,10 @@ int main(int argc, char* argv[])
     ComputeHedgingError test(Option::Type::Call, maturity, strike, underlying,
         volatility, riskFreeRate);
 
-    test.doTest();
-    test.doTest(84);
+    test.doTest( 1, 50000);
+    test.doTest( 4, 50000);
+    test.doTest(21, 50000);
+    test.doTest(84, 50000);
+
     return 0;
 }

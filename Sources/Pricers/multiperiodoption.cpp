@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.22  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.21  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -46,7 +50,7 @@
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
-#include "ql/Pricers/bsmeuropeanoption.hpp"
+#include "ql/Pricers/europeanoption.hpp"
 #include "ql/Pricers/americancondition.hpp"
 #include "ql/Pricers/multiperiodoption.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
@@ -200,7 +204,7 @@ namespace QuantLib {
         }
 
         void MultiPeriodOption::initializeControlVariate() const{
-            analytic_ = Handle<BSMOption> (new BSMEuropeanOption (
+            analytic_ = Handle<SingleAssetOption> (new EuropeanOption (
                             type_, underlying_, strike_, dividendYield_,
                             riskFreeRate_, residualTime_, volatility_));
         }

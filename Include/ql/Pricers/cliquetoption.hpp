@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.8  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -46,7 +50,7 @@
 #ifndef quantlib_pricers_cliquet_option_h
 #define quantlib_pricers_cliquet_option_h
 
-#include "ql/Pricers/bsmeuropeanoption.hpp"
+#include "ql/Pricers/europeanoption.hpp"
 #include <vector>
 
 namespace QuantLib {
@@ -62,7 +66,7 @@ namespace QuantLib {
             of the option is the same as that of a forward-starting option
             starting at the first date and expiring at the second date.
         */
-        class CliquetOption : public BSMOption {
+        class CliquetOption : public SingleAssetOption {
           public:
             CliquetOption(Type type,
                           double underlying,
@@ -76,10 +80,10 @@ namespace QuantLib {
             double theta() const;
             double vega() const;
             double rho() const;
-            Handle<BSMOption> clone() const;
+            Handle<SingleAssetOption> clone() const;
           private:
             int numPeriods_;
-            std::vector<Handle<BSMEuropeanOption> > optionlet_;
+            std::vector<Handle<EuropeanOption> > optionlet_;
             std::vector<double> weight_;
         };
 

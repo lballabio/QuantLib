@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.10  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -46,7 +50,7 @@
 #ifndef BSM_numerical_option_pricer_h
 #define BSM_numerical_option_pricer_h
 
-#include "ql/Pricers/bsmoption.hpp"
+#include "ql/Pricers/singleassetoption.hpp"
 #include "ql/FiniteDifferences/bsmoperator.hpp"
 
 namespace QuantLib {
@@ -54,7 +58,7 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Black-Scholes-Merton option priced numerically
-        class BSMNumericalOption : public BSMOption {
+        class BSMNumericalOption : public SingleAssetOption {
           public:
             BSMNumericalOption(Type type, double underlying, double strike,
                 Rate dividendYield, Rate riskFreeRate, Time residualTime,

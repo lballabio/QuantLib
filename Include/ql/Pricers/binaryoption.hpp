@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.5  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -43,14 +47,14 @@
 #ifndef quantlib_pricers_binaryoption_h
 #define quantlib_pricers_binaryoption_h
 
-#include "ql/Pricers/bsmoption.hpp"
+#include "ql/Pricers/singleassetoption.hpp"
 
 namespace QuantLib  {
     
     namespace Pricers {
 
         //! Binary (digital) option        
-        class BinaryOption : public BSMOption {
+        class BinaryOption : public SingleAssetOption {
           public:
             BinaryOption(Type type, double underlying, double strike,
                          Rate dividendYield, Rate riskFreeRate, 
@@ -62,7 +66,7 @@ namespace QuantLib  {
             double theta() const;
             double vega() const;
             double rho() const;
-            Handle<BSMOption> clone() const;
+            Handle<SingleAssetOption> clone() const;
         private:
             double cashPayoff_;
             double beta_;

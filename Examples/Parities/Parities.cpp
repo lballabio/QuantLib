@@ -27,6 +27,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.6  2001/07/25 15:47:27  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -107,17 +111,17 @@ public:
 protected:
 	double europeanCallFormula()
 	{
-		//  BSMEuropeanOption(Type type, double underlying, double strike,
+		//  EuropeanOption(Type type, double underlying, double strike,
         //                Rate dividendYield, Rate riskFreeRate,
         //                Time residualTime, double volatility)
 
-		return BSMEuropeanOption(Option::Call, s0_, strike_, 0.0,
+		return EuropeanOption(Option::Call, s0_, strike_, 0.0,
 			r_, maturity_, sigma_).value();
 	}
 
 	double europeanPutFormula()
 	{
-		return BSMEuropeanOption(Option::Put, s0_, strike_, 0.0,
+		return EuropeanOption(Option::Put, s0_, strike_, 0.0,
 			r_, maturity_, sigma_).value();
 	}
 
@@ -173,7 +177,7 @@ protected:
 		double discount = QL_EXP(-r_*t);
 		for(double y = y0; y <= y1; y += dy, ++i) {
 			double s0 = QL_EXP(y);
-			double ds = (BSMEuropeanOption(Option::Call, s0, strike_, 0.0,
+			double ds = (EuropeanOption(Option::Call, s0, strike_, 0.0,
 										r_, t, sigma_).value()
 					 - QL_MAX(s0 - discount*strike_,0.0)
 				   )*dy;

@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.17  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.16  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -44,7 +48,7 @@
 //
 
 #include "ql/Pricers/stepconditionoption.hpp"
-#include "ql/Pricers/bsmeuropeanoption.hpp"
+#include "ql/Pricers/europeanoption.hpp"
 #include "ql/FiniteDifferences/standardfdmodel.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
 
@@ -80,10 +84,8 @@ namespace QuantLib {
 
             // Control-variate variance reduction:
             // 1) calculate value/greeks of the European option analytically
-            BSMEuropeanOption analyticEuro(type_, underlying_,
-                                           strike_, dividendYield_,
-                                           riskFreeRate_, residualTime_,
-                                           volatility_);
+            EuropeanOption analyticEuro(type_, underlying_, strike_,
+                dividendYield_, riskFreeRate_, residualTime_, volatility_);
 
             // 2) Initialize prices on the grid
             Array europeanPrices = initialPrices_;

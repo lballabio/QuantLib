@@ -28,6 +28,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.25  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.24  2001/07/25 15:47:27  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -184,9 +188,9 @@
 #include "ql/Pricers/barrieroption.hpp"
 #include "ql/Pricers/bermudanoption.hpp"
 #include "ql/Pricers/binaryoption.hpp"
-#include "ql/Pricers/bsmeuropeanoption.hpp"
+#include "ql/Pricers/europeanoption.hpp"
 #include "ql/Pricers/bsmnumericaloption.hpp"
-#include "ql/Pricers/bsmoption.hpp"
+#include "ql/Pricers/singleassetoption.hpp"
 #include "ql/Pricers/cliquetoption.hpp"
 #include "ql/Pricers/dividendamericanoption.hpp"
 #include "ql/Pricers/dividendeuropeanoption.hpp"

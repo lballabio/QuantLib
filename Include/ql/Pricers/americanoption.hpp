@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.6  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -61,8 +65,8 @@ namespace QuantLib {
                 void initializeStepCondition() const;
 
             // This method must be implemented to imply volatilities
-            Handle<BSMOption> clone() const{
-                return Handle<BSMOption>(new AmericanOption(*this));
+            Handle<SingleAssetOption> clone() const{
+                return Handle<SingleAssetOption>(new AmericanOption(*this));
             }
         };
 

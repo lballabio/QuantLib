@@ -22,7 +22,7 @@
  * available at http://quantlib.org/Authors.txt
 */
 
-/*! \file bsmoption.cpp
+/*! \file singleassetoption.cpp
     \brief common code for option evaluation
 
     $Id$
@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.39  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.38  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -40,17 +44,36 @@
 // R019-branch-merge4 merged into trunk
 //
 
-#include "ql/Pricers/bsmoption.hpp"
+#include "ql/Pricers/singleassetoption.hpp"
 #include "ql/Solvers1D/brent.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        const double BSMOption::dVolMultiplier_ = 0.0001;
-        const double BSMOption::dRMultiplier_ = 0.0001;
 
-        BSMOption::BSMOption(Type type, double underlying, double strike,
+        double europeanPPayoff(Option::Type type, double price,
+            double strike) {
+
+            double optionPrice;
+            switch (type) {
+              case Option::Call:
+                    optionPrice = QL_MAX(price-strike,0.0);
+                break;
+              case Option::Put:
+                    optionPrice = QL_MAX(strike-price,0.0);
+                break;
+              case Option::Straddle:
+                    optionPrice = QL_FABS(strike-price);
+            }
+            return optionPrice;
+        }
+
+        
+        const double SingleAssetOption::dVolMultiplier_ = 0.0001;
+        const double SingleAssetOption::dRMultiplier_ = 0.0001;
+
+        SingleAssetOption::SingleAssetOption(Type type, double underlying, double strike,
             Rate dividendYield, Rate riskFreeRate, Time residualTime,
             double volatility)
 	    : type_(type), underlying_(underlying),
@@ -58,41 +81,41 @@ namespace QuantLib {
             residualTime_(residualTime), hasBeenCalculated_(false),
             rhoComputed_(false), vegaComputed_(false) {
             QL_REQUIRE(strike > 0.0,
-                "BSMOption::BSMOption : strike must be positive");
+                "SingleAssetOption::SingleAssetOption : strike must be positive");
             QL_REQUIRE(underlying > 0.0,
-                "BSMOption::BSMOption : underlying must be positive");
+                "SingleAssetOption::SingleAssetOption : underlying must be positive");
             QL_REQUIRE(residualTime > 0.0,
-                "BSMOption::BSMOption : residual time must be positive");
+                "SingleAssetOption::SingleAssetOption : residual time must be positive");
             //! Checks on volatility values are in setVolatility
             setVolatility(volatility);
             //! Checks on the risk-free rate are in setRiskFreeRate
             setRiskFreeRate(riskFreeRate);
         }
 
-        void BSMOption::setVolatility(double volatility) {
+        void SingleAssetOption::setVolatility(double volatility) {
             QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
-                 "BSMOption::setVolatility : Volatility to small");
+                 "SingleAssetOption::setVolatility : Volatility to small");
 
             QL_REQUIRE(volatility <= QL_MAX_VOLATILITY,
-                "BSMOption::setVolatility : Volatility to high "
+                "SingleAssetOption::setVolatility : Volatility to high "
                 "for a meaningful result");
 
             volatility_ = volatility;
             hasBeenCalculated_ = false;
         }
 
-        void BSMOption::setRiskFreeRate(Rate newRiskFreeRate) {
+        void SingleAssetOption::setRiskFreeRate(Rate newRiskFreeRate) {
             riskFreeRate_ = newRiskFreeRate;
             hasBeenCalculated_ = false;
         }
 
-        double BSMOption::vega() const {
+        double SingleAssetOption::vega() const {
 
             if(!vegaComputed_){
 
                 double valuePlus = value();
 
-                Handle<BSMOption> brandNewFD = clone();
+                Handle<SingleAssetOption> brandNewFD = clone();
                 double volMinus = volatility_ * (1.0 - dVolMultiplier_);
                 brandNewFD -> setVolatility(volMinus);
                 double valueMinus = brandNewFD -> value();
@@ -104,12 +127,12 @@ namespace QuantLib {
             return vega_;
         }
 
-        double BSMOption::rho() const {
+        double SingleAssetOption::rho() const {
 
             if(!rhoComputed_){
                 double valuePlus = value();
 
-                Handle<BSMOption> brandNewFD = clone();
+                Handle<SingleAssetOption> brandNewFD = clone();
                 Rate rMinus=riskFreeRate_ * (1.0 - dRMultiplier_);
                 brandNewFD -> setRiskFreeRate(rMinus);
                 double valueMinus = brandNewFD -> value();
@@ -121,16 +144,16 @@ namespace QuantLib {
             return rho_;
         }
 
-        double BSMOption::impliedVolatility(double targetValue, double accuracy,
+        double SingleAssetOption::impliedVolatility(double targetValue, double accuracy,
                     int maxEvaluations, double minVol, double maxVol) const {
             // check option targetValue boundary condition
             QL_REQUIRE(targetValue > 0.0,
-             "BSMOption::impliedVol : targetValue must be positive");
+             "SingleAssetOption::impliedVol : targetValue must be positive");
             double optionValue = value();
             if (optionValue == targetValue)
                 return volatility_;
             // clone used for root finding
-            Handle<BSMOption> tempBSM = clone();
+            Handle<SingleAssetOption> tempBSM = clone();
             // objective function
             BSMFunction bsmf(tempBSM, targetValue);
             // solver

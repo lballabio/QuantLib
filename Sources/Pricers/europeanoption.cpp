@@ -22,14 +22,17 @@
  * available at http://quantlib.org/Authors.txt
 */
 
-/*! \file bsmeuropeanoption.cpp
+/*! \file europeanoption.cpp
     \brief european option
 
     $Id$
 */
 
-// $Source$
 // $Log$
+// Revision 1.1  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.29  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -37,14 +40,14 @@
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
-#include "ql/Pricers/bsmeuropeanoption.hpp"
+#include "ql/Pricers/europeanoption.hpp"
 #include "ql/Math/normaldistribution.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        double BSMEuropeanOption::value() const {
+        double EuropeanOption::value() const {
           if(!hasBeenCalculated_) {
             dividendDiscount_ = (QL_EXP(-dividendYield_*residualTime_));
             riskFreeDiscount_ = (QL_EXP(-riskFreeRate_*residualTime_));
@@ -73,7 +76,7 @@ namespace QuantLib {
                   break;
                   default:
                   throw IllegalArgumentError(
-                    "BSMEuropeanOption: invalid option type");
+                    "EuropeanOption: invalid option type");
             }
             hasBeenCalculated_ = true;
             value_ = underlying_ * dividendDiscount_ * alpha_ -
@@ -82,21 +85,21 @@ namespace QuantLib {
             return value_;
         }
 
-        double BSMEuropeanOption::delta() const {
+        double EuropeanOption::delta() const {
           if(!hasBeenCalculated_)
             value();
 
             return dividendDiscount_*alpha_;
         }
 
-        double BSMEuropeanOption::gamma() const {
+        double EuropeanOption::gamma() const {
           if(!hasBeenCalculated_)
             value();
 
             return NID1_*dividendDiscount_/(underlying_*standardDeviation_);
         }
 
-        double BSMEuropeanOption::theta() const {
+        double EuropeanOption::theta() const {
           if(!hasBeenCalculated_)
             value();
 
@@ -106,14 +109,14 @@ namespace QuantLib {
                         riskFreeRate_*strike_*riskFreeDiscount_*beta_;
         }
 
-        double BSMEuropeanOption::rho() const {
+        double EuropeanOption::rho() const {
           if(!hasBeenCalculated_)
             value();
 
             return residualTime_*riskFreeDiscount_*strike_*beta_;
         }
 
-        double BSMEuropeanOption::vega() const {
+        double EuropeanOption::vega() const {
           if(!hasBeenCalculated_)
             value();
 

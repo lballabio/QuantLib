@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.7  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -65,8 +69,8 @@ namespace QuantLib {
                  Time residualTime, double volatility,
                  int timeSteps = 200, int gridPoints = 800);
            	Array getPrices() const;
-            Handle<BSMOption> clone() const{
-                return Handle<BSMOption>(new FiniteDifferenceEuropean(*this));
+            Handle<SingleAssetOption> clone() const{
+                return Handle<SingleAssetOption>(new FiniteDifferenceEuropean(*this));
             }
           protected:
             void calculate() const;

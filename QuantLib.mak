@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\Release
@@ -64,14 +61,10 @@ CLEAN :
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
-	-@erase "$(INTDIR)\bsmeuropeanoption.obj"
-	-@erase "$(INTDIR)\bsmeuropeanoption.sbr"
 	-@erase "$(INTDIR)\bsmnumericaloption.obj"
 	-@erase "$(INTDIR)\bsmnumericaloption.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
-	-@erase "$(INTDIR)\bsmoption.obj"
-	-@erase "$(INTDIR)\bsmoption.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calendar.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
@@ -92,6 +85,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendoption.sbr"
 	-@erase "$(INTDIR)\dividendshoutoption.obj"
 	-@erase "$(INTDIR)\dividendshoutoption.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
 	-@erase "$(INTDIR)\everestoption.obj"
@@ -160,6 +155,8 @@ CLEAN :
 	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
+	-@erase "$(INTDIR)\singleassetoption.obj"
+	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -199,7 +196,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -243,14 +273,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\bsmeuropeanoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
-	"$(INTDIR)\bsmoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
 	"$(INTDIR)\dividendshoutoption.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\everestoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\himalaya.sbr" \
@@ -258,6 +287,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\multiperiodoption.sbr" \
 	"$(INTDIR)\pagodaoption.sbr" \
 	"$(INTDIR)\plainbasketoption.sbr" \
+	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
@@ -327,14 +357,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\bsmeuropeanoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
-	"$(INTDIR)\bsmoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
 	"$(INTDIR)\dividendshoutoption.obj" \
+	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\everestoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\himalaya.obj" \
@@ -342,6 +371,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\multiperiodoption.obj" \
 	"$(INTDIR)\pagodaoption.obj" \
 	"$(INTDIR)\plainbasketoption.obj" \
+	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
@@ -402,14 +432,10 @@ CLEAN :
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
-	-@erase "$(INTDIR)\bsmeuropeanoption.obj"
-	-@erase "$(INTDIR)\bsmeuropeanoption.sbr"
 	-@erase "$(INTDIR)\bsmnumericaloption.obj"
 	-@erase "$(INTDIR)\bsmnumericaloption.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
-	-@erase "$(INTDIR)\bsmoption.obj"
-	-@erase "$(INTDIR)\bsmoption.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calendar.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
@@ -430,6 +456,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendoption.sbr"
 	-@erase "$(INTDIR)\dividendshoutoption.obj"
 	-@erase "$(INTDIR)\dividendshoutoption.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
 	-@erase "$(INTDIR)\everestoption.obj"
@@ -498,6 +526,8 @@ CLEAN :
 	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
+	-@erase "$(INTDIR)\singleassetoption.obj"
+	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -538,7 +568,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -582,14 +645,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\bsmeuropeanoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
-	"$(INTDIR)\bsmoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
 	"$(INTDIR)\dividendshoutoption.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\everestoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\himalaya.sbr" \
@@ -597,6 +659,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\multiperiodoption.sbr" \
 	"$(INTDIR)\pagodaoption.sbr" \
 	"$(INTDIR)\plainbasketoption.sbr" \
+	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
@@ -666,14 +729,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\bsmeuropeanoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
-	"$(INTDIR)\bsmoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
 	"$(INTDIR)\dividendshoutoption.obj" \
+	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\everestoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\himalaya.obj" \
@@ -681,6 +743,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\multiperiodoption.obj" \
 	"$(INTDIR)\pagodaoption.obj" \
 	"$(INTDIR)\plainbasketoption.obj" \
+	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
@@ -741,14 +804,10 @@ CLEAN :
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
-	-@erase "$(INTDIR)\bsmeuropeanoption.obj"
-	-@erase "$(INTDIR)\bsmeuropeanoption.sbr"
 	-@erase "$(INTDIR)\bsmnumericaloption.obj"
 	-@erase "$(INTDIR)\bsmnumericaloption.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
-	-@erase "$(INTDIR)\bsmoption.obj"
-	-@erase "$(INTDIR)\bsmoption.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calendar.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
@@ -769,6 +828,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendoption.sbr"
 	-@erase "$(INTDIR)\dividendshoutoption.obj"
 	-@erase "$(INTDIR)\dividendshoutoption.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
 	-@erase "$(INTDIR)\everestoption.obj"
@@ -837,6 +898,8 @@ CLEAN :
 	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
+	-@erase "$(INTDIR)\singleassetoption.obj"
+	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -877,7 +940,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -921,14 +1017,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\bsmeuropeanoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
-	"$(INTDIR)\bsmoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
 	"$(INTDIR)\dividendshoutoption.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\everestoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\himalaya.sbr" \
@@ -936,6 +1031,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\multiperiodoption.sbr" \
 	"$(INTDIR)\pagodaoption.sbr" \
 	"$(INTDIR)\plainbasketoption.sbr" \
+	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
@@ -1005,14 +1101,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\bsmeuropeanoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
-	"$(INTDIR)\bsmoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
 	"$(INTDIR)\dividendshoutoption.obj" \
+	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\everestoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\himalaya.obj" \
@@ -1020,6 +1115,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\multiperiodoption.obj" \
 	"$(INTDIR)\pagodaoption.obj" \
 	"$(INTDIR)\plainbasketoption.obj" \
+	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
@@ -1080,14 +1176,10 @@ CLEAN :
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
-	-@erase "$(INTDIR)\bsmeuropeanoption.obj"
-	-@erase "$(INTDIR)\bsmeuropeanoption.sbr"
 	-@erase "$(INTDIR)\bsmnumericaloption.obj"
 	-@erase "$(INTDIR)\bsmnumericaloption.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
-	-@erase "$(INTDIR)\bsmoption.obj"
-	-@erase "$(INTDIR)\bsmoption.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calendar.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
@@ -1108,6 +1200,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendoption.sbr"
 	-@erase "$(INTDIR)\dividendshoutoption.obj"
 	-@erase "$(INTDIR)\dividendshoutoption.sbr"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
 	-@erase "$(INTDIR)\everestoption.obj"
@@ -1176,6 +1270,8 @@ CLEAN :
 	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
+	-@erase "$(INTDIR)\singleassetoption.obj"
+	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -1215,7 +1311,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1259,14 +1388,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\bsmeuropeanoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
-	"$(INTDIR)\bsmoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
 	"$(INTDIR)\dividendshoutoption.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\everestoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\himalaya.sbr" \
@@ -1274,6 +1402,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\multiperiodoption.sbr" \
 	"$(INTDIR)\pagodaoption.sbr" \
 	"$(INTDIR)\plainbasketoption.sbr" \
+	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
@@ -1343,14 +1472,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\bsmeuropeanoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
-	"$(INTDIR)\bsmoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
 	"$(INTDIR)\dividendshoutoption.obj" \
+	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\everestoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\himalaya.obj" \
@@ -1358,6 +1486,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\multiperiodoption.obj" \
 	"$(INTDIR)\pagodaoption.obj" \
 	"$(INTDIR)\plainbasketoption.obj" \
+	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
@@ -1385,36 +1514,6 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -1667,21 +1766,9 @@ SOURCE=.\Sources\Pricers\binaryoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\bsmeuropeanoption.cpp
-
-"$(INTDIR)\bsmeuropeanoption.obj"	"$(INTDIR)\bsmeuropeanoption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\Sources\Pricers\bsmnumericaloption.cpp
 
 "$(INTDIR)\bsmnumericaloption.obj"	"$(INTDIR)\bsmnumericaloption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\Sources\Pricers\bsmoption.cpp
-
-"$(INTDIR)\bsmoption.obj"	"$(INTDIR)\bsmoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1712,6 +1799,12 @@ SOURCE=.\Sources\Pricers\dividendoption.cpp
 SOURCE=.\Sources\Pricers\dividendshoutoption.cpp
 
 "$(INTDIR)\dividendshoutoption.obj"	"$(INTDIR)\dividendshoutoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\Pricers\europeanoption.cpp
+
+"$(INTDIR)\europeanoption.obj"	"$(INTDIR)\europeanoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1754,6 +1847,12 @@ SOURCE=.\Sources\Pricers\pagodaoption.cpp
 SOURCE=.\Sources\Pricers\plainbasketoption.cpp
 
 "$(INTDIR)\plainbasketoption.obj"	"$(INTDIR)\plainbasketoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\Pricers\singleassetoption.cpp
+
+"$(INTDIR)\singleassetoption.obj"	"$(INTDIR)\singleassetoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

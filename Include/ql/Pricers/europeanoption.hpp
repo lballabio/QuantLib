@@ -22,14 +22,17 @@
  * available at http://quantlib.org/Authors.txt
 */
 
-/*! \file bsmeuropeanoption.hpp
+/*! \file europeanoption.hpp
     \brief european option
 
     $Id$
 */
 
-// $Source$
 // $Log$
+// Revision 1.1  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.8  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -49,20 +52,20 @@
 #ifndef BSM_european_option_pricer_h
 #define BSM_european_option_pricer_h
 
-#include "ql/Pricers/bsmoption.hpp"
+#include "ql/Pricers/singleassetoption.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
         //! Black-Scholes-Merton European option
-        class BSMEuropeanOption : public BSMOption {
+        class EuropeanOption : public SingleAssetOption {
           public:
               // constructor
-              BSMEuropeanOption(Type type, double underlying, double strike,
+              EuropeanOption(Type type, double underlying, double strike,
                         Rate dividendYield, Rate riskFreeRate,
                         Time residualTime, double volatility)
-              : BSMOption(type, underlying, strike, dividendYield,
+              : SingleAssetOption(type, underlying, strike, dividendYield,
                             riskFreeRate, residualTime, volatility) {}
               // accessors
               double value() const;
@@ -71,8 +74,8 @@ namespace QuantLib {
               double theta() const;
               double vega() const;
               double rho() const;
-            Handle<BSMOption> clone() const {
-                return Handle<BSMOption>(new BSMEuropeanOption(*this)); }
+            Handle<SingleAssetOption> clone() const {
+                return Handle<SingleAssetOption>(new EuropeanOption(*this)); }
           private:
             // declared as mutable to preserve
             // the logical constness (does this word exist?) of value()

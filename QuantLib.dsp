@@ -675,27 +675,11 @@ SOURCE=.\Include\ql\Pricers\binaryoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\bsmeuropeanoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Pricers\bsmeuropeanoption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Sources\Pricers\bsmnumericaloption.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Include\ql\Pricers\bsmnumericaloption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Sources\Pricers\bsmoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Pricers\bsmoption.hpp
 # End Source File
 # Begin Source File
 
@@ -736,6 +720,14 @@ SOURCE=.\Sources\Pricers\dividendshoutoption.cpp
 # Begin Source File
 
 SOURCE=.\Include\ql\Pricers\dividendshoutoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\Pricers\europeanoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\Pricers\europeanoption.hpp
 # End Source File
 # Begin Source File
 
@@ -804,6 +796,14 @@ SOURCE=.\Include\ql\Pricers\shoutcondition.hpp
 # Begin Source File
 
 SOURCE=.\Include\ql\Pricers\shoutoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\Pricers\singleassetoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\Pricers\singleassetoption.hpp
 # End Source File
 # Begin Source File
 

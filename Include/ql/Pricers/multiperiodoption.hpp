@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.15  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.14  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -84,7 +88,7 @@ namespace QuantLib {
             bool firstDateIsZero_;
             double firstNonZeroDate_;
             int firstIndex_;
-            mutable Handle<BSMOption> analytic_;
+            mutable Handle<SingleAssetOption> analytic_;
             mutable Array prices_, controlPrices_;
             mutable Handle<FiniteDifferences::StandardStepCondition>
                                                             stepCondition_;

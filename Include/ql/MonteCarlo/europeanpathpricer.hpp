@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.7  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -54,7 +58,7 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! path pricer for European options
-        /*! The public method computePlainVanilla can also be used
+        /*! The public method europeanPayoff can also be used
             in other path pricer that do similar calculations.
         */
         class EuropeanPathPricer : public PathPricer {
@@ -63,8 +67,8 @@ namespace QuantLib {
             EuropeanPathPricer(Option::Type type, double underlying,
                 double strike, double discount);
             double value(const Path &path) const;
-            double computePlainVanilla(Option::Type type, double price,
-                double strike, double discount) const;
+            double europeanPayoff(Option::Type type, double price,
+                double strike) const;
           protected:
             mutable Option::Type type_;
             mutable double underlying_, strike_, discount_;

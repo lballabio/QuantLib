@@ -31,6 +31,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.7  2001/07/26 13:56:23  nando
 // straddle barrier option handled
 //
@@ -47,7 +51,7 @@
 #ifndef quantlib_barrier_option_pricer_h
 #define quantlib_barrier_option_pricer_h
 
-#include "ql/Pricers/bsmoption.hpp"
+#include "ql/Pricers/singleassetoption.hpp"
 #include "ql/Math/normaldistribution.hpp"
 
 namespace QuantLib {
@@ -61,7 +65,7 @@ namespace QuantLib {
             "Option pricing formulas", E.G. Haug, McGraw-Hill,
             p.69 and following.
         */
-        class BarrierOption : public BSMOption {
+        class BarrierOption : public SingleAssetOption {
           public:
             // constructor
             enum BarrierType { DownIn, UpIn, DownOut, UpOut };
@@ -80,8 +84,8 @@ namespace QuantLib {
             double delta() const;
             double gamma() const;
             double theta() const;
-            Handle<BSMOption> clone() const {
-                return Handle<BSMOption>(new BarrierOption(*this));
+            Handle<SingleAssetOption> clone() const {
+                return Handle<SingleAssetOption>(new BarrierOption(*this));
             }
           protected:
             void calculate_() const;

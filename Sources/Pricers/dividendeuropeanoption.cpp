@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.12  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -54,7 +58,7 @@ namespace QuantLib {
             Rate riskFreeRate, Time residualTime, double volatility,
             const std::vector<double>& dividends,
             const std::vector<Time>& exdivdates):
-            BSMEuropeanOption(type, underlying - riskless(riskFreeRate,
+            EuropeanOption(type, underlying - riskless(riskFreeRate,
                 dividends, exdivdates), strike, dividendYield,
                 riskFreeRate, residualTime, volatility),
                 dividends_(dividends),exDivDates_(exdivdates){
@@ -77,28 +81,28 @@ namespace QuantLib {
 
             }
 
-        Handle<BSMOption> DividendEuropeanOption::clone() const{
-            return Handle<BSMOption>(new DividendEuropeanOption(*this));
+        Handle<SingleAssetOption> DividendEuropeanOption::clone() const{
+            return Handle<SingleAssetOption>(new DividendEuropeanOption(*this));
         }
 
         double DividendEuropeanOption::theta() const{
 
-            double tmp_theta = BSMEuropeanOption::theta();
+            double tmp_theta = EuropeanOption::theta();
             double delta_theta = 0.0;
             for(unsigned int j = 0; j < dividends_.size(); j++)
                 delta_theta -= dividends_[j] * riskFreeRate_ *
                                QL_EXP(-riskFreeRate_ * exDivDates_[j]);
-            return tmp_theta + delta_theta * BSMEuropeanOption::delta();
+            return tmp_theta + delta_theta * EuropeanOption::delta();
         }
 
         double DividendEuropeanOption::rho() const{
 
-            double tmp_rho = BSMEuropeanOption::rho();
+            double tmp_rho = EuropeanOption::rho();
             double delta_rho = 0.0;
             for(unsigned int j = 0; j < dividends_.size(); j++)
                 delta_rho += dividends_[j] * exDivDates_[j] *
                              QL_EXP(-riskFreeRate_ * exDivDates_[j]);
-            return tmp_rho + delta_rho * BSMEuropeanOption::delta();
+            return tmp_rho + delta_rho * EuropeanOption::delta();
         }
 
     }

@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.8  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -49,7 +53,7 @@ namespace QuantLib
                                    riskFreeRate, Time residualTime,
                                    double volatility, double
                                    cashPayoff)
-            : BSMOption(type, underlying, strike, dividendYield,
+            : SingleAssetOption(type, underlying, strike, dividendYield,
                         riskFreeRate, residualTime, volatility),
             cashPayoff_(cashPayoff)
         {
@@ -90,11 +94,11 @@ namespace QuantLib
             }
         }
 
-        Handle<BSMOption> BinaryOption::clone() const {
+        Handle<SingleAssetOption> BinaryOption::clone() const {
 //            QL_REQUIRE(hasBeenInitialized,
             //                     "BinaryOption::clone() : BinaryOption must be initialized");
 
-            return Handle<BSMOption>(new BinaryOption(*this));
+            return Handle<SingleAssetOption>(new BinaryOption(*this));
         }
 
         double BinaryOption::value() const {

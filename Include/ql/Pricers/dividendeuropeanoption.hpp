@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.9  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -50,7 +54,7 @@
 #ifndef BSM_dividend_european_option_pricer_h
 #define BSM_dividend_european_option_pricer_h
 
-#include "ql/Pricers/bsmeuropeanoption.hpp"
+#include "ql/Pricers/europeanoption.hpp"
 #include <vector>
 
 namespace QuantLib {
@@ -58,7 +62,7 @@ namespace QuantLib {
     namespace Pricers {
 
         //! European option with dividends
-        class DividendEuropeanOption : public BSMEuropeanOption    {
+        class DividendEuropeanOption : public EuropeanOption    {
           public:
             DividendEuropeanOption(Type type, double underlying, double strike,
                 Rate dividendYield, Rate riskFreeRate, Time residualTime,
@@ -66,7 +70,7 @@ namespace QuantLib {
                 const std::vector<Time>& exdivdates);
             double theta() const;
             double rho() const;
-            Handle<BSMOption> clone() const;
+            Handle<SingleAssetOption> clone() const;
           private:
             std::vector<double> dividends_;
             std::vector<Time> exDivDates_;

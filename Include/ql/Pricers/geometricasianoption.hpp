@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.7  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -46,21 +50,21 @@
 #ifndef    quantlib_geometric_asian_option_pricer_h
 #define    quantlib_geometric_asian_option_pricer_h
 
-#include "ql/Pricers/bsmeuropeanoption.hpp"
+#include "ql/Pricers/europeanoption.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
         //! geometric Asian option
-        class GeometricAsianOption : public BSMEuropeanOption    {
+        class GeometricAsianOption : public EuropeanOption    {
            public:
             GeometricAsianOption(Type type, double underlying, double    strike,
                 Rate dividendYield, Rate riskFreeRate, Time    residualTime,
                 double volatility);
             double vega() const;
             double rho() const;
-            Handle<BSMOption> clone() const;
+            Handle<SingleAssetOption> clone() const;
         };
 
 
@@ -69,21 +73,21 @@ namespace QuantLib {
         inline GeometricAsianOption::GeometricAsianOption(Type type,
             double underlying, double strike, Rate dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility):
-            BSMEuropeanOption(type, underlying, strike, dividendYield/2,
+            EuropeanOption(type, underlying, strike, dividendYield/2,
             riskFreeRate/2-volatility*volatility/12, residualTime,
             volatility/QL_SQRT(3)){}
 
         inline double GeometricAsianOption::rho() const{
-            return BSMEuropeanOption::rho()/2;
+            return EuropeanOption::rho()/2;
         }
 
         inline double GeometricAsianOption::vega() const{
-            return BSMEuropeanOption::vega()/QL_SQRT(3)
-                -BSMEuropeanOption::rho()*volatility_*volatility_/4;
+            return EuropeanOption::vega()/QL_SQRT(3)
+                -EuropeanOption::rho()*volatility_*volatility_/4;
         }
 
-        inline Handle<BSMOption> GeometricAsianOption::clone() const{
-            return Handle<BSMOption>(new GeometricAsianOption(*this));
+        inline Handle<SingleAssetOption> GeometricAsianOption::clone() const{
+            return Handle<SingleAssetOption>(new GeometricAsianOption(*this));
         }
 
     }

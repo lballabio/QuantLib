@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.47  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.46  2001/07/27 07:46:01  nando
 // pruned warnings
 //
@@ -57,7 +61,7 @@ namespace QuantLib {
             double underlying, double strike, Rate dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             int gridPoints)
-        : BSMOption(type, underlying, strike, dividendYield, riskFreeRate,
+        : SingleAssetOption(type, underlying, strike, dividendYield, riskFreeRate,
             residualTime, volatility),
             gridPoints_(safeGridPoints(gridPoints, residualTime)),
             grid_(gridPoints_), initialPrices_(gridPoints_){

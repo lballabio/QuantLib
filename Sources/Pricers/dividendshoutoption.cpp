@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.9  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -59,8 +63,8 @@ namespace QuantLib {
                                                 riskFreeRate_));
         }
 
-        Handle<BSMOption> DividendShoutOption::clone() const {
-            return Handle<BSMOption>(new DividendShoutOption(*this));
+        Handle<SingleAssetOption> DividendShoutOption::clone() const {
+            return Handle<SingleAssetOption>(new DividendShoutOption(*this));
         }
 
     }

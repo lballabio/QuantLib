@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/08/06 15:43:34  nando
+// BSMOption now is SingleAssetOption
+// BSMEuropeanOption now is EuropeanOption
+//
 // Revision 1.9  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -61,7 +65,7 @@ namespace QuantLib {
                 Time residualTime, double volatility,
                 const std::vector<Time>& dates = std::vector<Time>(),
                 int timeSteps = 100, int gridPoints = 100);
-            Handle<BSMOption> clone() const;
+            Handle<SingleAssetOption> clone() const;
           protected:
             double extraTermInBermudan ;
             void initializeStepCondition() const;
