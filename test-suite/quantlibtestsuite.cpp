@@ -36,6 +36,7 @@
 #include "covariance.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
+#include "digitaloption.hpp"
 #include "distributions.hpp"
 #include "europeanoption.hpp"
 #include "factorial.hpp"
@@ -60,7 +61,8 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
-//    runner.addTest(AmericanOptionTest::suite());
+
+    runner.addTest(AmericanOptionTest::suite());
     runner.addTest(AsianOptionTest::suite());
     runner.addTest(BarrierOptionTest::suite());
     runner.addTest(BinaryBarrierOptionTest::suite());
@@ -70,6 +72,7 @@ int main() {
     runner.addTest(CovarianceTest::suite());
     runner.addTest(new DateTest);
     runner.addTest(DayCounterTest::suite());
+    runner.addTest(DigitalOptionTest::suite());
     runner.addTest(DistributionTest::suite());
     runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(FactorialTest::suite());
