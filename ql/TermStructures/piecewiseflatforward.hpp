@@ -86,6 +86,8 @@ namespace QuantLib {
             in the period \f$t_{i-1} < t \le t_i\f$. Therefore,
             forwards[0] is used only to compute the zero yield for
             \f$t = 0\f$.
+
+            \deprecated use ForwardCurve instead
         */
         PiecewiseFlatForward(const std::vector<Date>& dates,
                              const std::vector<Rate>& forwards,
