@@ -39,11 +39,19 @@ void InstrumentTest::testObservable() {
         CPPUNIT_FAIL("Observer was not notified of instrument change");
 
     f.lower();
-    Handle<MarketElement> me2(new SimpleMarketElement(0.0));
+    Handle<SimpleMarketElement> me2(new SimpleMarketElement(0.0));
     h.linkTo(me2);
     if (!f.isUp())
         CPPUNIT_FAIL("Observer was not notified of instrument change");
 
+    f.lower();
+    s->freeze();
+    me2->setValue(2.71);
+    if (f.isUp())
+        CPPUNIT_FAIL("Observer was notified of frozen instrument change");
+    s->unfreeze();
+    if (!f.isUp())
+        CPPUNIT_FAIL("Observer was not notified of instrument change");
 }
 
 CppUnit::Test* InstrumentTest::suite() {
