@@ -29,9 +29,8 @@ namespace QuantLib {
 
         // critical commodity price
         double Kc(const Handle<StrikedTypePayoff>& payoff,
-            double T,
             double riskFreeDiscount, double dividendDiscount,
-            double variance) {
+            double variance, double tolerance = 1e-6) {
 
             // Calculation of seed value, Si
             double n= 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/(variance);
@@ -45,59 +44,56 @@ namespace QuantLib {
                     Su = payoff->strike() / (1.0 - 1.0/qu);
                     h = -(bT + 2.0*QL_SQRT(variance)) * payoff->strike() / (Su - payoff->strike());
                     Si = payoff->strike() + (Su - payoff->strike()) * (1.0 - QL_EXP(h));
+                    break;
                 case Option::Put:
                     qu = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
                     Su = payoff->strike() / (1.0 - 1.0/qu);
                     h = (bT - 2.0*QL_SQRT(variance)) * payoff->strike() / (payoff->strike() - Su);
                     Si = Su + (payoff->strike() - Su) * QL_EXP(h);
+                    break;
                 default:
                     throw Error("BaroneAdesiWhaleyApproximationEngine::"
                         "calculate() :"
                         "unknown option type");
             }
 
-            double K = -2.0*QL_LOG(riskFreeDiscount)/
-                (variance*(1.0-riskFreeDiscount));
 
+            // Newton Raphson algorithm for finding critical price Si
+            double Q, LHS, RHS, bi;
             double forwardSi = Si * dividendDiscount / riskFreeDiscount;
             double d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance)/QL_SQRT(variance);
-
             CumulativeNormalDistribution CND;
-            BlackFormula black(Si, forwardSi, riskFreeDiscount, variance,
-                payoff);
-
-            double Q, LHS, RHS, bi;
+            double K = -2.0*QL_LOG(riskFreeDiscount)/
+                (variance*(1.0-riskFreeDiscount));
             switch (payoff->optionType()) {
                 case Option::Call:
                     Q = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
                     LHS = Si - payoff->strike();
-                    RHS = black.value() + (1 - dividendDiscount * CND(d1)) * Si / Q;
+                    RHS = BlackFormula(forwardSi, riskFreeDiscount, variance, payoff).value() + (1 - dividendDiscount * CND(d1)) * Si / Q;
                     bi =  dividendDiscount * CND(d1) * (1 - 1/Q) + (1 - dividendDiscount * CND(d1) / QL_SQRT(variance)) / Q;
-                    // Newton Raphson algorithm for finding critical price Si
-                    while (QL_FABS(LHS - RHS)/payoff->strike() > 1e-5) {
+                    while (QL_FABS(LHS - RHS)/payoff->strike() > tolerance) {
                         Si = (payoff->strike() + RHS - bi * Si) / (1 - bi);
                         forwardSi = Si * dividendDiscount / riskFreeDiscount;
-                        black = BlackFormula(Si, forwardSi, riskFreeDiscount, variance, payoff);
                         d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance)/QL_SQRT(variance);
                         LHS = Si - payoff->strike();
-                        RHS = black.value() + (1 - dividendDiscount * CND(d1)) * Si / Q;
+                        RHS = BlackFormula(forwardSi, riskFreeDiscount, variance, payoff).value() + (1 - dividendDiscount * CND(d1)) * Si / Q;
                         bi = dividendDiscount * CND(d1) * (1 - 1 / Q) + (1 - dividendDiscount * CND.derivative(d1) / QL_SQRT(variance)) / Q;
                     }
+                    break;
                 case Option::Put:
                     Q = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
                     LHS = payoff->strike() - Si;
-                    RHS = black.value() - (1 - dividendDiscount * CND(-d1)) * Si / Q;
+                    RHS = BlackFormula(forwardSi, riskFreeDiscount, variance, payoff).value() - (1 - dividendDiscount * CND(-d1)) * Si / Q;
                     bi = -dividendDiscount * CND(-d1) * (1 - 1/Q) - (1 + dividendDiscount * CND.derivative(-d1) / QL_SQRT(variance)) / Q;
-                    // Newton Raphson algorithm for finding critical price Si
-                    while (QL_FABS(LHS - RHS)/payoff->strike() > 1e-5) {
+                    while (QL_FABS(LHS - RHS)/payoff->strike() > tolerance) {
                         Si = (payoff->strike() - RHS + bi * Si) / (1 + bi);
                         forwardSi = Si * dividendDiscount / riskFreeDiscount;
-                        black = BlackFormula(Si, forwardSi, riskFreeDiscount, variance, payoff);
                         d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance)/QL_SQRT(variance);
                         LHS = payoff->strike() - Si;
-                        RHS = black.value() - (1 - dividendDiscount * CND(-d1)) * Si / Q;
+                        RHS = BlackFormula(forwardSi, riskFreeDiscount, variance, payoff).value() - (1 - dividendDiscount * CND(-d1)) * Si / Q;
                         bi = -dividendDiscount * CND(-d1) * (1 - 1 / Q) - (1 + dividendDiscount * CND(-d1) / QL_SQRT(variance)) / Q;
                     }
+                    break;
                 default:
                     throw Error("BaroneAdesiWhaleyApproximationEngine::"
                         "calculate() :"
@@ -143,75 +139,48 @@ namespace QuantLib {
             arguments_.riskFreeTS->discount(ex->lastDate());
         double forwardPrice = arguments_.underlying *
             dividendDiscount / riskFreeDiscount;
+        BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
-        CumulativeNormalDistribution CND;
-        BlackFormula black(arguments_.underlying,
-            forwardPrice, riskFreeDiscount,
-            variance, payoff);
+        if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
+            // early exercise never optimal
+            results_.value        = black.value();
+            results_.delta        = black.delta(arguments_.underlying);
+            results_.deltaForward = black.deltaForward();
+            results_.elasticity   = black.elasticity(arguments_.underlying);
+            results_.gamma        = black.gamma(arguments_.underlying);
 
-        switch (payoff->optionType()) {
-            case Option::Call:
-                results_.value = 0.0;
-                break;
-            case Option::Put:
-                results_.value = 0.0;
-                break;
-            case Option::Straddle:
-                results_.value = 0.0;
-                break;
-            default:
-                throw Error("BaroneAdesiWhaleyApproximationEngine::"
-                    "calculate() :"
-                    "unknown option type");
-        }
+            Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
+                arguments_.riskFreeTS->referenceDate(),
+                arguments_.exercise->lastDate());
+            results_.rho = black.rho(t);
 
+            t = arguments_.dividendTS->dayCounter().yearFraction(
+                arguments_.dividendTS->referenceDate(),
+                arguments_.exercise->lastDate());
+            results_.dividendRho = black.dividendRho(t);
 
-        Time T = arguments_.riskFreeTS->dayCounter().yearFraction(
-            arguments_.riskFreeTS->referenceDate(),
-            arguments_.exercise->lastDate());
-        Rate r = -QL_LOG(riskFreeDiscount)/T;
-        Rate q = -QL_LOG(dividendDiscount)/T;
-        Spread b = QL_LOG(dividendDiscount/riskFreeDiscount)/T;
-        double v = QL_SQRT(variance/T);
-        double Sk = Kc(payoff, T, r, b, v);
+            t = arguments_.volTS->dayCounter().yearFraction(
+                arguments_.volTS->referenceDate(),
+                arguments_.exercise->lastDate());
+            results_.vega        = black.vega(t);
+            results_.theta       = black.theta(arguments_.underlying, t);
+            results_.thetaPerDay = black.thetaPerDay(arguments_.underlying, t);
 
-        double forwardSk = Sk * dividendDiscount / riskFreeDiscount;
-        double d1 = (QL_LOG(forwardSk/payoff->strike()) + 0.5*variance)/QL_SQRT(variance);
-
-        
-        double n = 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/(variance);
-        double K = -2.0*QL_LOG(riskFreeDiscount)/
-            (variance*(1.0-riskFreeDiscount));
-        double Q, a;
-        switch (payoff->optionType()) {
-            case Option::Call:
-                if (dividendDiscount>=1.0) {
-                    results_.value = black.value();
-                    results_.delta = black.delta();
-                    results_.deltaForward = black.deltaForward();
-                    results_.elasticity = black.elasticity();
-                    results_.gamma = black.gamma();
-
-                    Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
-                        arguments_.riskFreeTS->referenceDate(),
-                        arguments_.exercise->lastDate());
-                    results_.rho = black.rho(t);
-
-                    t = arguments_.dividendTS->dayCounter().yearFraction(
-                        arguments_.dividendTS->referenceDate(),
-                        arguments_.exercise->lastDate());
-                    results_.dividendRho = black.dividendRho(t);
-
-                    t = arguments_.volTS->dayCounter().yearFraction(
-                        arguments_.volTS->referenceDate(),
-                        arguments_.exercise->lastDate());
-                    results_.vega = black.vega(t);
-                    results_.theta = black.theta(t);
-                    results_.thetaPerDay = black.thetaPerDay(t);
-
-                    results_.strikeSensitivity = black.strikeSensitivity();
-                    results_.itmProbability = black.itmProbability();
-                } else {
+            results_.strikeSensitivity = black.strikeSensitivity();
+            results_.itmProbability    = black.itmProbability();
+        } else {
+            // early exercise can be optimal 
+            CumulativeNormalDistribution CND;
+            double tolerance = 1e-6;
+            double Sk = Kc(payoff, riskFreeDiscount, dividendDiscount, variance, tolerance);
+            double forwardSk = Sk * dividendDiscount / riskFreeDiscount;
+            double d1 = (QL_LOG(forwardSk/payoff->strike()) + 0.5*variance)/QL_SQRT(variance);
+            double n = 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/(variance);
+            double K = -2.0*QL_LOG(riskFreeDiscount)/
+                (variance*(1.0-riskFreeDiscount));
+            double Q, a;
+            switch (payoff->optionType()) {
+                case Option::Call:
                     Q = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0))+4.0*K))/2.0;
                     a =  (Sk/Q) * (1.0 - dividendDiscount * CND(d1));
                     if (arguments_.underlying<Sk) {
@@ -219,22 +188,22 @@ namespace QuantLib {
                     } else {
                         results_.value = arguments_.underlying - payoff->strike();
                     }
-                }
-                break;
-            case Option::Put:
-                Q = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0))+4.0*K))/2.0;
-                a = -(Sk/Q) * (1.0 - dividendDiscount * CND(-d1));
-                if (arguments_.underlying>Sk) {
-                    results_.value = black.value() + a * QL_POW((arguments_.underlying/Sk), Q);
-                } else {
-                    results_.value = payoff->strike() - arguments_.underlying;
-                }
-                break;
-            default:
-                throw Error("BaroneAdesiWhaleyApproximationEngine::"
-                    "calculate() :"
-                    "unknown option type");
-        }
+                    break;
+                case Option::Put:
+                    Q = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0))+4.0*K))/2.0;
+                    a = -(Sk/Q) * (1.0 - dividendDiscount * CND(-d1));
+                    if (arguments_.underlying>Sk) {
+                        results_.value = black.value() + a * QL_POW((arguments_.underlying/Sk), Q);
+                    } else {
+                        results_.value = payoff->strike() - arguments_.underlying;
+                    }
+                    break;
+                default:
+                    throw Error("BaroneAdesiWhaleyApproximationEngine::"
+                        "calculate() :"
+                        "unknown option type");
+            }
+        } // end of "early exercise can be optimal"
 
 
     }
