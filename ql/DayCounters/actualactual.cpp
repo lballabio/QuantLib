@@ -89,10 +89,13 @@ namespace QuantLib {
 
                     // the last notional payment date
                     Date previousRef = refPeriodStart.plusMonths(-months);
-                    return yearFraction(d1, refPeriodStart, previousRef,
-                                        refPeriodStart) +
-                           yearFraction(refPeriodStart, d2, refPeriodStart,
-                                        refPeriodEnd);
+                    if (d2 > refPeriodStart)
+                        return yearFraction(d1, refPeriodStart, previousRef,
+                                            refPeriodStart) +
+                               yearFraction(refPeriodStart, d2, refPeriodStart,
+                                            refPeriodEnd);
+                    else
+                        return yearFraction(d1,d2,previousRef,refPeriodStart);
                 }
             } else {
                 // here refPeriodEnd is the last (notional?) payment date
