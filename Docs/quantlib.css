@@ -1,0 +1,136 @@
+body {
+  font-family: georgia, verdana, arial, sans-serif;
+  color: #000;
+  background: #fff;
+}
+
+h1 { text-align: center; }
+
+a:active { text-decoration: none }
+a:hover { 
+  text-decoration: none; 
+  background-color: #f2f2ff 
+}
+
+table.layout {
+  width: 100%;
+  padding-left: 1em;
+  padding-right: 1em;
+  border-left: 0;
+  border-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: georgia, verdana, arial, sans-serif;
+}
+
+td.main {
+  font-family: georgia, verdana, arial, sans-serif;
+  vertical-align: top;
+}
+
+td.md { 
+  background-color: #f2f2ff; 
+  font-weight: bold; 
+}
+
+td.mdname1 { 
+  background-color: #f2f2ff; 
+  font-weight: bold; 
+  font-style: italic; 
+}
+
+td.mdname { 
+  background-color: #f2f2ff; 
+  font-weight: bold; 
+  font-style: italic; 
+  width: 600px; 
+}
+
+td.navbar {
+  width: 20%;
+  font-family: verdana, arial, sans-serif;
+  color: #000;
+  background-color: #fea;
+  border-width: 1px;
+  border-color: #000;
+  vertical-align: top;
+  padding: 1em;
+}
+
+.navbartitle { text-align: center }
+
+a.qindex {}
+a.qindexRef {}
+a.el { text-decoration: none; font-weight: bold }
+a.elRef { font-weight: bold }
+a.code { text-decoration: none; font-weight: normal; color: #4444ee }
+a.codeRef { font-weight: normal; color: #4444ee }
+a.navlink { font-weight: normal }
+
+.hide { display: none }
+
+.addtopspace { margin-top: 2em }
+
+.endmatter {
+  font-family: times-new-roman, sans-serif;
+  font-size: 60%;
+  font-style: italic;
+}
+
+.button { border-style: none }
+
+.center { text-align: center }
+
+.right { text-align: right }
+
+ol.navlinklist{
+  line-height: 2.0;
+  list-style-type: decimal;
+}
+	
+pre {
+	margin-left: 10%; 
+	color: green;
+	background: white;
+	font-family: monospace;
+}
+.rule { margin-top: 2em }
+.recom { }
+.rationale { FONT-SIZE: 0.75em }
+
+dl.el { margin-left: -1cm }
+
+div.fragment { 
+  width: 100%; 
+  border: none; 
+  background-color: #eeeeee 
+}
+
+div.ah { 
+  background-color: black; 
+  font-weight: bold; 
+  color: #ffffff; 
+  margin-bottom: 3px; 
+  margin-top: 3px 
+}
+
+div.groupHeader { 
+  margin-left: 16px; 
+  margin-top: 12px; 
+  margin-bottom: 6px; 
+  font-weight: bold 
+}
+
+div.groupText { 
+  margin-left: 16px; 
+  font-style: italic; 
+  font-size: smaller 
+}
+
+font.keyword       { color: #008000 }
+font.keywordtype   { color: #604020 }
+font.keywordflow   { color: #e08000 }
+font.comment       { color: #800000 }
+font.preprocessor  { color: #806020 }
+font.stringliteral { color: #002080 }
+font.charliteral   { color: #008080 }
