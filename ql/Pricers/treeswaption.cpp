@@ -172,10 +172,12 @@ namespace QuantLib {
             tree->rollback(assets, times.back(), 0.0);
             results_.value = swaption->values()[0];
 
+/*
             std::cout << "Discount bond price: " << bond->values()[0]*100.0 << std::endl;
             std::cout << "Theoretical value: " << model->termStructure()->discount(parameters_.floatingPayTimes[0])*100.0 << std::endl;
             std::cout << "Swap price: " << swap->values()[0] << std::endl;
             std::cout << "Swaption price: " << swaption->values()[0] << std::endl;
+            */
         }
 
     }

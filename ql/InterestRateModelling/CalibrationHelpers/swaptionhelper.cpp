@@ -37,6 +37,8 @@
 #include "ql/Pricers/jamshidianswaption.hpp"
 #include "ql/Pricers/treeswaption.hpp"
 
+#include <iostream>
+
 namespace QuantLib {
 
     namespace InterestRateModelling {

@@ -45,60 +45,34 @@ namespace QuantLib {
       public:
         enum Type { American, Bermudan, European };
 
-        Exercise(Type type) : type_(type) {}
+        Exercise(Type type, const std::vector<Date>& dates) 
+        : type_(type), dates_(dates) {}
 
         Type type() const { return type_; }
 
-        virtual Date date(unsigned index = 0) const = 0;
-        virtual std::vector<Date> dates() const = 0;
+        Date date(unsigned index = 0) const { return dates_[index]; }
+        const std::vector<Date>& dates() const { return dates_; }
       private:
         Type type_;
+        std::vector<Date> dates_;
     };
 
     class AmericanExercise : public Exercise {
       public:
         AmericanExercise( Date date) 
-        : Exercise(American), date_(date) {}
-
-        virtual Date date(unsigned index = 0) const { 
-            return date_;
-        }
-        virtual std::vector<Date> dates() const { 
-            return std::vector<Date>(1, date_);
-        }
-      private:
-        Date date_;
+        : Exercise(American, std::vector<Date>(1,date)) {}
     };
 
     class BermudanExercise : public Exercise {
       public:
         BermudanExercise(const std::vector<Date>& dates) 
-        : Exercise(Bermudan), dates_(dates) {}
-        virtual ~BermudanExercise() {}
-
-        virtual Date date(unsigned index = 0) const { 
-            return dates_[index];
-        }
-        virtual std::vector<Date> dates() const { 
-            return dates_;
-        }
-      private:
-        std::vector<Date> dates_;
+        : Exercise(Bermudan, dates) {}
     };
 
     class EuropeanExercise : public Exercise {
       public:
-        EuropeanExercise( Date date) 
-        : Exercise(European), date_(date) {}
-
-        virtual Date date(unsigned index = 0) const { 
-            return date_;
-        }
-        virtual std::vector<Date> dates() const { 
-            return std::vector<Date>(1, date_);
-        }
-      private:
-        Date date_;
+        EuropeanExercise(Date date) 
+        : Exercise(European, std::vector<Date>(1,date)) {}
     };
 
 }

@@ -59,17 +59,23 @@ namespace QuantLib {
 
             Date today = termStructure_->settlementDate();
             DayCounter counter = termStructure_->dayCounter();
-            const std::vector<Handle<CashFlow> >& fixedLeg = swap_.fixedLeg();
-
-            parameters->payFixed = swap_.payFixedRate();
             Size i;
+
+            const std::vector<Handle<CashFlow> >& fixedLeg = swap_.fixedLeg();
+            parameters->payFixed = swap_.payFixedRate();
+            parameters->fixedPayTimes.clear();
+            parameters->fixedCoupons.clear();
             for (i=0; i<fixedLeg.size(); i++) {
                 Time time = counter.yearFraction(today, fixedLeg[i]->date());
                 parameters->fixedPayTimes.push_back(time);
                 parameters->fixedCoupons.push_back(fixedLeg[i]->amount());
             }
 
-            std::vector<Handle<CashFlow> > floatingLeg = swap_.floatingLeg();
+            parameters->floatingResetTimes.clear();
+            parameters->floatingPayTimes.clear();
+            parameters->nominals.clear();
+            const std::vector<Handle<CashFlow> >& floatingLeg = 
+                swap_.floatingLeg();
             std::vector<Handle<CashFlow> >::const_iterator begin, end;
             begin = floatingLeg.begin();
             end   = floatingLeg.end();
@@ -85,10 +91,13 @@ namespace QuantLib {
             }
 
             parameters->exerciseType = exercise_.type();
-            for (i=0; i<exercise_.dates().size(); i++) {
-                Time time = counter.yearFraction(today, exercise_.dates()[i]);
+            parameters->exerciseTimes.clear();
+            const std::vector<Date> dates = exercise_.dates();
+            for (i=0; i<dates.size(); i++) {
+                Time time = counter.yearFraction(today, dates[i]);
                 parameters->exerciseTimes.push_back(time);
             }
+
         }
 
     }

@@ -60,7 +60,7 @@ namespace QuantLib {
           private:
             // parameters
             const SimpleSwap& swap_;
-            const Exercise& exercise_;
+            Exercise exercise_;
             const RelinkableHandle<TermStructure>& termStructure_;
             // helper class for implied volatility calculation
         };
