@@ -26,11 +26,10 @@ EXTRA_DIST=News.txt Contributors.txt History.txt LICENSE.TXT \
 	Mac/QuantLib.prj \
 	Mac/QuantLib.prj.exp \
 	Mac/README.txt \
-	Win/PyQuantLib.dsp \
-	Win/PyQuantLib.dsw \
-	Win/PyWrap.bat \
-	Win/QuantLib.dsp \
 	Win/QuantLib.dsw \
+	Win/QuantLib.dsp \
+	Win/PyQuantLib.dsp \
+	Win/PyWrap.bat \
 	Win/QuantLibc.def \
 	Win/README.txt \
 	Win/makefile.mak \
@@ -52,3 +51,10 @@ endif
 test:
 	$(MAKE) -C Python/Tests test
 
+if DOXYGEN_FOUND
+docs:
+	$(MAKE) -C Docs docs
+else
+docs:
+	echo You do not have doxygen, so you cannot generate docs, sorry.
+endif

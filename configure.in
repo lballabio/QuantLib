@@ -20,6 +20,8 @@ AM_PROG_LIBTOOL
 AC_PATH_PROG(SWIG, swig, notfound)
 AM_CONDITIONAL(SWIG_FOUND, test x$SWIG != xnotfound)
 AC_PATH_PROG(SED, sed)
+AC_PATH_PROG(DOXYGEN, doxygen, notfound)
+AM_CONDITIONAL(DOXYGEN_FOUND, test x$DOXYGEN != xnotfound)
 
 dnl Check for Libraries
 dnl Testing for Python 1.5
@@ -138,4 +140,5 @@ AC_OUTPUT(Makefile Sources/Makefile Sources/FiniteDifferences/Makefile \
 	Include/Solvers1D/Makefile Include/TermStructures/Makefile \
 	Include/MonteCarlo/Makefile \
 	Include/Utilities/Makefile \
-	Python/Makefile Python/Tests/Makefile SWIG/Makefile) 
+	Python/Makefile Python/Tests/Makefile SWIG/Makefile \
+	Docs/Makefile) 
