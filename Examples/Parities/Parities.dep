@@ -1,169 +1,169 @@
 # Microsoft Developer Studio Generated Dependency File, included by Parities.mak
 
 .\Parities.cpp : \
-	"..\..\Include\ql\array.hpp"\
-	"..\..\Include\ql\calendar.hpp"\
-	"..\..\Include\ql\Calendars\frankfurt.hpp"\
-	"..\..\Include\ql\Calendars\helsinki.hpp"\
-	"..\..\Include\ql\Calendars\london.hpp"\
-	"..\..\Include\ql\Calendars\milan.hpp"\
-	"..\..\Include\ql\Calendars\newyork.hpp"\
-	"..\..\Include\ql\Calendars\target.hpp"\
-	"..\..\Include\ql\Calendars\wellington.hpp"\
-	"..\..\Include\ql\Calendars\westerncalendar.hpp"\
-	"..\..\Include\ql\Calendars\zurich.hpp"\
-	"..\..\Include\ql\cashflow.hpp"\
-	"..\..\Include\ql\CashFlows\accruingcoupon.hpp"\
-	"..\..\Include\ql\CashFlows\cashflowvectors.hpp"\
-	"..\..\Include\ql\CashFlows\fixedratecoupon.hpp"\
-	"..\..\Include\ql\CashFlows\floatingratecoupon.hpp"\
-	"..\..\Include\ql\CashFlows\simplecashflow.hpp"\
-	"..\..\Include\ql\config.msvc.hpp"\
-	"..\..\Include\ql\currency.hpp"\
-	"..\..\Include\ql\dataformatters.hpp"\
-	"..\..\Include\ql\date.hpp"\
-	"..\..\Include\ql\daycounter.hpp"\
-	"..\..\Include\ql\DayCounters\actual360.hpp"\
-	"..\..\Include\ql\DayCounters\actual365.hpp"\
-	"..\..\Include\ql\DayCounters\actualactual.hpp"\
-	"..\..\Include\ql\DayCounters\actualactualeuro.hpp"\
-	"..\..\Include\ql\DayCounters\actualactualhistorical.hpp"\
-	"..\..\Include\ql\DayCounters\thirty360.hpp"\
-	"..\..\Include\ql\DayCounters\thirty360european.hpp"\
-	"..\..\Include\ql\DayCounters\thirty360italian.hpp"\
-	"..\..\Include\ql\depositrate.hpp"\
-	"..\..\Include\ql\errors.hpp"\
-	"..\..\Include\ql\expressiontemplates.hpp"\
-	"..\..\Include\ql\FiniteDifferences\backwardeuler.hpp"\
-	"..\..\Include\ql\FiniteDifferences\boundarycondition.hpp"\
-	"..\..\Include\ql\FiniteDifferences\bsmoperator.hpp"\
-	"..\..\Include\ql\FiniteDifferences\cranknicolson.hpp"\
-	"..\..\Include\ql\FiniteDifferences\dminus.hpp"\
-	"..\..\Include\ql\FiniteDifferences\dplus.hpp"\
-	"..\..\Include\ql\FiniteDifferences\dplusdminus.hpp"\
-	"..\..\Include\ql\FiniteDifferences\dzero.hpp"\
-	"..\..\Include\ql\FiniteDifferences\finitedifferencemodel.hpp"\
-	"..\..\Include\ql\FiniteDifferences\forwardeuler.hpp"\
-	"..\..\Include\ql\FiniteDifferences\identity.hpp"\
-	"..\..\Include\ql\FiniteDifferences\operator.hpp"\
-	"..\..\Include\ql\FiniteDifferences\operatortraits.hpp"\
-	"..\..\Include\ql\FiniteDifferences\standardfdmodel.hpp"\
-	"..\..\Include\ql\FiniteDifferences\standardstepcondition.hpp"\
-	"..\..\Include\ql\FiniteDifferences\stepcondition.hpp"\
-	"..\..\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
-	"..\..\Include\ql\FiniteDifferences\valueatcenter.hpp"\
-	"..\..\Include\ql\forwardvolsurface.hpp"\
-	"..\..\Include\ql\handle.hpp"\
-	"..\..\Include\ql\history.hpp"\
-	"..\..\Include\ql\index.hpp"\
-	"..\..\Include\ql\Indexes\euribor.hpp"\
-	"..\..\include\ql\indexes\gbplibor.hpp"\
-	"..\..\Include\ql\Indexes\usdlibor.hpp"\
-	"..\..\Include\ql\Indexes\xibor.hpp"\
-	"..\..\Include\ql\Indexes\xibormanager.hpp"\
-	"..\..\Include\ql\instrument.hpp"\
-	"..\..\Include\ql\Instruments\simpleswap.hpp"\
-	"..\..\Include\ql\Instruments\stock.hpp"\
-	"..\..\Include\ql\Instruments\swap.hpp"\
-	"..\..\include\ql\marketelement.hpp"\
-	"..\..\Include\ql\Math\cubicspline.hpp"\
-	"..\..\Include\ql\Math\interpolation.hpp"\
-	"..\..\Include\ql\Math\lexicographicalview.hpp"\
-	"..\..\Include\ql\Math\linearinterpolation.hpp"\
-	"..\..\Include\ql\Math\matrix.hpp"\
-	"..\..\Include\ql\Math\multivariateaccumulator.hpp"\
-	"..\..\Include\ql\Math\normaldistribution.hpp"\
-	"..\..\Include\ql\Math\riskmeasures.hpp"\
-	"..\..\Include\ql\Math\segmentintegral.hpp"\
-	"..\..\Include\ql\Math\statistics.hpp"\
-	"..\..\Include\ql\Math\symmetriceigenvalues.hpp"\
-	"..\..\Include\ql\Math\symmetricschurdecomposition.hpp"\
-	"..\..\Include\ql\MonteCarlo\antitheticpathgenerator.hpp"\
-	"..\..\Include\ql\MonteCarlo\avgpriceasianpathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\avgstrikeasianpathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\basketpathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\boxmuller.hpp"\
-	"..\..\Include\ql\MonteCarlo\centrallimitgaussian.hpp"\
-	"..\..\Include\ql\MonteCarlo\controlvariatedpathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\europeanpathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\everestpathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\gaussianmultipathgenerator.hpp"\
-	"..\..\Include\ql\MonteCarlo\gaussianpathgenerator.hpp"\
-	"..\..\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp"\
-	"..\..\Include\ql\MonteCarlo\generalmontecarlo.hpp"\
-	"..\..\Include\ql\MonteCarlo\geometricasianpathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\getcovariance.hpp"\
-	"..\..\Include\ql\MonteCarlo\himalayapathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\inversecumulativegaussian.hpp"\
-	"..\..\Include\ql\MonteCarlo\knuthrandomgenerator.hpp"\
-	"..\..\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp"\
-	"..\..\Include\ql\MonteCarlo\mcoptionsample.hpp"\
-	"..\..\Include\ql\MonteCarlo\mcpricer.hpp"\
-	"..\..\include\ql\montecarlo\montecarlomodel.hpp"\
-	"..\..\Include\ql\MonteCarlo\multifactormontecarlooption.hpp"\
-	"..\..\Include\ql\MonteCarlo\multifactorpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\multipath.hpp"\
-	"..\..\Include\ql\MonteCarlo\multipathgenerator.hpp"\
-	"..\..\Include\ql\MonteCarlo\multipathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\onefactormontecarlooption.hpp"\
-	"..\..\Include\ql\MonteCarlo\pagodapathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\path.hpp"\
-	"..\..\Include\ql\MonteCarlo\pathpricer.hpp"\
-	"..\..\Include\ql\MonteCarlo\randomarraygenerator.hpp"\
-	"..\..\Include\ql\MonteCarlo\uniformrandomgenerator.hpp"\
-	"..\..\Include\ql\null.hpp"\
-	"..\..\Include\ql\options.hpp"\
-	"..\..\Include\ql\Patterns\observable.hpp"\
-	"..\..\Include\ql\Pricers\americancondition.hpp"\
-	"..\..\Include\ql\Pricers\americanoption.hpp"\
-	"..\..\Include\ql\Pricers\averagepriceasian.hpp"\
-	"..\..\Include\ql\Pricers\averagestrikeasian.hpp"\
-	"..\..\Include\ql\Pricers\barrieroption.hpp"\
-	"..\..\Include\ql\Pricers\bermudanoption.hpp"\
-	"..\..\Include\ql\Pricers\binaryoption.hpp"\
-	"..\..\Include\ql\Pricers\bsmnumericaloption.hpp"\
-	"..\..\Include\ql\Pricers\cliquetoption.hpp"\
-	"..\..\Include\ql\Pricers\dividendamericanoption.hpp"\
-	"..\..\Include\ql\Pricers\dividendeuropeanoption.hpp"\
-	"..\..\Include\ql\Pricers\dividendoption.hpp"\
-	"..\..\Include\ql\Pricers\dividendshoutoption.hpp"\
-	"..\..\Include\ql\Pricers\europeanoption.hpp"\
-	"..\..\Include\ql\Pricers\everestoption.hpp"\
-	"..\..\Include\ql\Pricers\finitedifferenceeuropean.hpp"\
-	"..\..\Include\ql\Pricers\geometricasianoption.hpp"\
-	"..\..\Include\ql\Pricers\himalaya.hpp"\
-	"..\..\Include\ql\Pricers\mceuropeanpricer.hpp"\
-	"..\..\Include\ql\Pricers\multiperiodoption.hpp"\
-	"..\..\Include\ql\Pricers\pagodaoption.hpp"\
-	"..\..\Include\ql\Pricers\plainbasketoption.hpp"\
-	"..\..\Include\ql\Pricers\shoutcondition.hpp"\
-	"..\..\Include\ql\Pricers\shoutoption.hpp"\
-	"..\..\Include\ql\Pricers\singleassetoption.hpp"\
-	"..\..\Include\ql\Pricers\stepconditionoption.hpp"\
-	"..\..\Include\ql\qldefines.hpp"\
-	"..\..\Include\ql\quantlib.hpp"\
-	"..\..\include\ql\relinkablehandle.hpp"\
-	"..\..\Include\ql\riskstatistics.hpp"\
-	"..\..\Include\ql\scheduler.hpp"\
-	"..\..\Include\ql\solver1d.hpp"\
-	"..\..\Include\ql\Solvers1D\bisection.hpp"\
-	"..\..\Include\ql\Solvers1D\brent.hpp"\
-	"..\..\Include\ql\Solvers1D\falseposition.hpp"\
-	"..\..\Include\ql\Solvers1D\newton.hpp"\
-	"..\..\Include\ql\Solvers1D\newtonsafe.hpp"\
-	"..\..\Include\ql\Solvers1D\ridder.hpp"\
-	"..\..\Include\ql\Solvers1D\secant.hpp"\
-	"..\..\Include\ql\swaptionvolsurface.hpp"\
-	"..\..\Include\ql\termstructure.hpp"\
-	"..\..\Include\ql\TermStructures\flatforward.hpp"\
-	"..\..\Include\ql\TermStructures\piecewiseconstantforwards.hpp"\
-	"..\..\Include\ql\TermStructures\piecewiseflatforward.hpp"\
-	"..\..\Include\ql\TermStructures\ratehelpers.hpp"\
-	"..\..\Include\ql\types.hpp"\
-	"..\..\Include\ql\Utilities\combiningiterator.hpp"\
-	"..\..\Include\ql\Utilities\couplingiterator.hpp"\
-	"..\..\Include\ql\Utilities\filteringiterator.hpp"\
-	"..\..\Include\ql\Utilities\iteratorcategories.hpp"\
-	"..\..\Include\ql\Utilities\processingiterator.hpp"\
-	"..\..\Include\ql\Utilities\steppingiterator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\array.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\calendar.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\calendars\frankfurt.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\calendars\helsinki.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\calendars\london.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\calendars\milan.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\calendars\newyork.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\calendars\target.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\calendars\wellington.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\calendars\westerncalendar.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\calendars\zurich.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\cashflow.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\cashflows\accruingcoupon.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\cashflows\cashflowvectors.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\cashflows\fixedratecoupon.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\cashflows\floatingratecoupon.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\cashflows\simplecashflow.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\config.msvc.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\currency.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\dataformatters.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\date.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\daycounter.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\daycounters\actual360.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\daycounters\actual365.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\daycounters\actualactual.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\daycounters\actualactualeuro.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\daycounters\actualactualhistorical.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\daycounters\thirty360.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\daycounters\thirty360european.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\daycounters\thirty360italian.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\depositrate.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\errors.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\expressiontemplates.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\backwardeuler.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\boundarycondition.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\bsmoperator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\cranknicolson.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\dminus.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\dplus.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\dplusdminus.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\dzero.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\finitedifferencemodel.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\forwardeuler.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\identity.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\operator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\operatortraits.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\standardfdmodel.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\standardstepcondition.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\stepcondition.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\tridiagonaloperator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\finitedifferences\valueatcenter.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\forwardvolsurface.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\handle.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\history.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\index.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\indexes\euribor.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\indexes\gbplibor.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\indexes\usdlibor.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\indexes\xibor.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\indexes\xibormanager.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\instrument.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\instruments\simpleswap.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\instruments\stock.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\instruments\swap.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\marketelement.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\cubicspline.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\interpolation.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\lexicographicalview.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\linearinterpolation.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\matrix.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\multivariateaccumulator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\normaldistribution.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\riskmeasures.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\segmentintegral.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\statistics.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\symmetriceigenvalues.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\math\symmetricschurdecomposition.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\antitheticpathgenerator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\avgpriceasianpathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\avgstrikeasianpathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\basketpathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\boxmuller.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\centrallimitgaussian.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\controlvariatedpathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\europeanpathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\everestpathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\gaussianmultipathgenerator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\gaussianpathgenerator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\gaussianrandomgenerator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\generalmontecarlo.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\geometricasianpathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\getcovariance.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\himalayapathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\inversecumulativegaussian.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\knuthrandomgenerator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\lecuyerrandomgenerator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\mcoptionsample.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\mcpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\montecarlomodel.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\multifactormontecarlooption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\multifactorpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\multipath.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\multipathgenerator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\multipathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\onefactormontecarlooption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\pagodapathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\path.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\pathpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\randomarraygenerator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\montecarlo\uniformrandomgenerator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\null.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\options.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\patterns\observable.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\americancondition.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\americanoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\averagepriceasian.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\averagestrikeasian.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\barrieroption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\bermudanoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\binaryoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\bsmnumericaloption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\cliquetoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\dividendamericanoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\dividendeuropeanoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\dividendoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\dividendshoutoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\europeanoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\everestoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\finitedifferenceeuropean.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\geometricasianoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\himalaya.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\mceuropeanpricer.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\multiperiodoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\pagodaoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\plainbasketoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\shoutcondition.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\shoutoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\singleassetoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\pricers\stepconditionoption.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\qldefines.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\quantlib.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\relinkablehandle.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\riskstatistics.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\scheduler.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\solver1d.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\solvers1d\bisection.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\solvers1d\brent.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\solvers1d\falseposition.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\solvers1d\newton.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\solvers1d\newtonsafe.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\solvers1d\ridder.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\solvers1d\secant.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\swaptionvolsurface.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\termstructure.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\termstructures\flatforward.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\termstructures\piecewiseconstantforwards.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\termstructures\piecewiseflatforward.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\termstructures\ratehelpers.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\types.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\utilities\combiningiterator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\utilities\couplingiterator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\utilities\filteringiterator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\utilities\iteratorcategories.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\utilities\processingiterator.hpp"\
+	"..\..\..\..\program files\quantlib\include\ql\utilities\steppingiterator.hpp"\
 	
