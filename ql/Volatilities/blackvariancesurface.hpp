@@ -46,15 +46,15 @@ namespace QuantLib {
                                      public Patterns::Observer {
           public:
             enum Extrapolation { ConstantExtrapolation,
-                                 DefaultExtrapolation };
+                                 InterpolatorDefaultExtrapolation };
             BlackVarianceSurface(const Date& referenceDate,
                                  const std::vector<Date>& dates,
                                  const std::vector<double>& strikes,
                                  const QuantLib::Math::Matrix& blackVolMatrix,
                                  Extrapolation lowerExtrapolation =
-                                     DefaultExtrapolation,
+                                     InterpolatorDefaultExtrapolation,
                                  Extrapolation upperExtrapolation =
-                                     DefaultExtrapolation,
+                                     InterpolatorDefaultExtrapolation,
                                  const DayCounter& dayCounter =
                                      DayCounters::Actual365());
             Date referenceDate() const { return referenceDate_; }
@@ -98,10 +98,7 @@ namespace QuantLib {
                 "BlackVarianceSurface::BlackVarianceSurface : "
                 "mismatch between money-strike vector and vol matrix rows");
 
-            // cannot have dates[0]==referenceDate, since the
-            // value of the vol at dates[0] would be lost
-            // (variance at referenceDate must be zero)
-            QL_REQUIRE(dates[0]>referenceDate,
+            QL_REQUIRE(dates[0]>=referenceDate,
                 "BlackVarianceSurface::BlackVarianceSurface : "
                 "cannot have dates[0]<=referenceDate");
 
@@ -116,12 +113,15 @@ namespace QuantLib {
                 for (i=0; i<blackVolMatrix.rows(); i++) {
                     variances_[i][j] = times_[j] *
                         blackVolMatrix[i][j]*blackVolMatrix[i][j];
-                    if (j==0) QL_REQUIRE(variances_[i][0]>0.0,
-                        "BlackVarianceCurve::BlackVarianceCurve : "
-                        "variance must be positive");
-                    if (j>0) QL_REQUIRE(variances_[i][j]>=variances_[i][j-1],
-                        "BlackVarianceCurve::BlackVarianceCurve : "
-                        "variance must be and non-decreasing");
+                    if (j==0) {
+                        QL_REQUIRE(variances_[i][0]>0.0 || times_[0]==0.0,
+                            "BlackVarianceCurve::BlackVarianceCurve : "
+                            "variance must be positive");
+                    } else {
+                        QL_REQUIRE(variances_[i][j]>=variances_[i][j-1],
+                            "BlackVarianceCurve::BlackVarianceCurve : "
+                            "variance must be non-decreasing");
+                    }
                 }
             }
             varianceSurface_ = Handle<Interpolator2D> (new
@@ -141,11 +141,11 @@ namespace QuantLib {
             blackVarianceImpl(Time t, double strike, bool extrapolate) const {
 
             // enforce constant extrapolation when required
-            if (strike < strikes_.front()
+            if (strike < strikes_.front() && strikes_.front()<strikes_.back()
                 && extrapolate
                 && lowerExtrapolation_ == ConstantExtrapolation)
                 strike = strikes_.front();
-            if (strike > strikes_.back()
+            if (strike > strikes_.back() && strikes_.back()>strikes_.front()
                 && extrapolate
                 && upperExtrapolation_ == ConstantExtrapolation)
                 strike = strikes_.back();
