@@ -266,7 +266,7 @@ clean::
     $(MAKE) clean
     cd ..
     cd ..
-    if exist *.obj*              del /q *.obj*
-    if exist *.lib               del /q *.lib
-    if exist $(OUTPUT_DIR)\*.lib del /q $(OUTPUT_DIR)\*.lib
+    if exist *.obj*                    del /q *.obj*
+    if exist *.lib                     del /q *.lib
+    if exist $(OUTPUT_DIR)\*-bcb-*.lib del /q $(OUTPUT_DIR)\*-bcb-*.lib
 
