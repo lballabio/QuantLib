@@ -13,6 +13,7 @@ include_HEADERS = \
     discretizedvanillaoption.hpp \
     integralengine.hpp \
     jumpdiffusionengine.hpp \
+    juquadraticengine.hpp \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
     mcvanillaengine.hpp
@@ -28,6 +29,8 @@ libVanillaEngines_la_SOURCES = \
     discretizedvanillaoption.cpp \
     integralengine.cpp \
     jumpdiffusionengine.cpp \
-	mcdigitalengine.cpp
+    juquadraticengine.cpp \
+    mcdigitalengine.cpp
 
 noinst_LTLIBRARIES = libVanillaEngines.la
+
