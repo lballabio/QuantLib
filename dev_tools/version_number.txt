@@ -20,6 +20,7 @@ The version number is in:
     QuantLib-Python/QuantLib/SWIG/ql.i
 
     QuantLib-Ruby/SWIG/ql.i
+    QuantLib-Ruby/makedist.rb
 
     QuantLib-MzScheme/SWIG/ql.i
 
