@@ -43,7 +43,7 @@ namespace QuantLib {
         virtual double secondDerivative(double) const = 0;
     };
 
-    //! abstract base class for 1-D interpolations.
+    //! base class for 1-D interpolations.
     /*! Classes derived from this class will provide interpolated
         values from two sequences of equal length, representing
         discretized values of a variable and a function of the former,

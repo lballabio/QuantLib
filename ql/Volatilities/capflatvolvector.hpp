@@ -62,10 +62,7 @@ namespace QuantLib {
         std::vector<Time> timeLengths_;
         std::vector<double> volatilities_;
         // interpolation
-        typedef Interpolation<
-            std::vector<Time>::iterator,
-            std::vector<double>::iterator> VolInterpolation;
-        Handle<VolInterpolation> interpolation_;
+        Interpolation interpolation_;
         double volatilityImpl(Time length, Rate strike) const;
     };
 
@@ -114,7 +111,7 @@ namespace QuantLib {
 
     inline double CapFlatVolatilityVector::volatilityImpl(
                                                     Time length, Rate) const {
-        return (*interpolation_)(length, false);
+        return interpolation_(length, false);
     }
 
 }
