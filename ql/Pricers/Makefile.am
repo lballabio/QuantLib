@@ -4,7 +4,7 @@ includedir = $(prefix)/include/ql/Pricers
 
 include_HEADERS = \
     analyticalcapfloor.hpp \
-    barrieroption.hpp \
+    barrieroptionpricer.hpp \
     binaryoption.hpp \
     blackcapfloor.hpp \
     blackswaption.hpp \
@@ -47,7 +47,7 @@ EXTRA_DIST=makefile.mak
 
 libPricers_la_SOURCES = \
     analyticalcapfloor.cpp \
-    barrieroption.cpp \
+    barrieroptionpricer.cpp \
     binaryoption.cpp \
     blackcapfloor.cpp \
     blackswaption.cpp \

@@ -15,11 +15,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file barrieroption.cpp
-    \brief barrier option
+/*! \file barrieroptionpricer.cpp
+    \brief barrier option pricer
 */
 
-#include <ql/Pricers/barrieroption.hpp>
+#include <ql/Pricers/barrieroptionpricer.hpp>
 #include <ql/Instruments/barrieroption.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>

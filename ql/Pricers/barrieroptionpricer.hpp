@@ -15,8 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file barrieroption.hpp
-    \brief barrier option
+/*! \file barrieroptionpricer.hpp
+    \brief barrier option pricer
 */
 
 #ifndef quantlib_barrier_option_pricer_h

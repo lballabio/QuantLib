@@ -63,6 +63,8 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\barrieroptionpricer.obj"
+	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -253,7 +255,6 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
-	-@erase "$(INTDIR)\old\vc60.idb"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -356,8 +357,6 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\build\Release\old\barrieroption.obj"
-	-@erase ".\build\Release\old\barrieroption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)" :
@@ -446,7 +445,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	".\build\Release\old\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -522,7 +520,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\barrieroptionpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -611,7 +610,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	".\build\Release\old\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -687,7 +685,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\barrieroptionpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -726,6 +725,8 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\barrieroptionpricer.obj"
+	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -1017,8 +1018,6 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\build\Debug\old\barrieroption.obj"
-	-@erase ".\build\Debug\old\barrieroption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib_d.lib"
@@ -1109,7 +1108,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	".\build\Debug\old\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -1185,7 +1183,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\barrieroptionpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1274,7 +1273,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	".\build\Debug\old\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -1350,7 +1348,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\barrieroptionpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1389,6 +1388,8 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\barrieroptionpricer.obj"
+	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -1579,7 +1580,6 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
-	-@erase "$(INTDIR)\old\vc60.idb"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -1682,8 +1682,6 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\build\OnTheEdgeRelease\old\barrieroption.obj"
-	-@erase ".\build\OnTheEdgeRelease\old\barrieroption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)" :
@@ -1772,7 +1770,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	".\build\OnTheEdgeRelease\old\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -1848,7 +1845,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\barrieroptionpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1937,7 +1935,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	".\build\OnTheEdgeRelease\old\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -2013,7 +2010,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\barrieroptionpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2052,6 +2050,8 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\barrieroptionpricer.obj"
+	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -2343,8 +2343,6 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\build\OnTheEdgeDebug\old\barrieroption.obj"
-	-@erase ".\build\OnTheEdgeDebug\old\barrieroption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib_d.lib"
@@ -2435,7 +2433,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	".\build\OnTheEdgeDebug\old\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -2511,7 +2508,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\barrieroptionpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2600,7 +2598,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	".\build\OnTheEdgeDebug\old\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -2676,7 +2673,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\barrieroptionpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2715,6 +2713,8 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\barrieroptionpricer.obj"
+	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -2905,7 +2905,6 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
-	-@erase "$(INTDIR)\old\vc60.idb"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -3008,8 +3007,6 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\build\OnTheEdgeRelease\old\barrieroption.obj"
-	-@erase ".\build\OnTheEdgeRelease\old\barrieroption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)" :
@@ -3098,7 +3095,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	".\build\OnTheEdgeRelease\old\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -3174,7 +3170,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\barrieroptionpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3263,7 +3260,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	".\build\OnTheEdgeRelease\old\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -3339,7 +3335,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\barrieroptionpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3863,59 +3860,11 @@ SOURCE=.\ql\Pricers\analyticalcapfloor.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\barrieroption.cpp
+SOURCE=.\ql\Pricers\barrieroptionpricer.cpp
 
-!IF  "$(CFG)" == "QuantLib - Win32 Release"
+"$(INTDIR)\barrieroptionpricer.obj"	"$(INTDIR)\barrieroptionpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
 
-CPP_SWITCHES=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\Release\old/" /Fp"build\Release/QuantLib.pch" /YX /Fo"build\Release\old/" /Fd"build\Release\old/" /FD /Oi- /c 
-
-".\build\Release\old\barrieroption.obj"	".\build\Release\old\barrieroption.sbr" : $(SOURCE)
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
-
-CPP_SWITCHES=/nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\Debug\old/" /Fp"build\Debug/QuantLib.pch" /YX /Fo"build\Debug\old/" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-".\build\Debug\old\barrieroption.obj"	".\build\Debug\old\barrieroption.sbr" : $(SOURCE)
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
-
-CPP_SWITCHES=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\OnTheEdgeRelease\old/" /Fp"build\OnTheEdgeRelease/QuantLib.pch" /YX /Fo"build\OnTheEdgeRelease\old/" /Fd"build\OnTheEdgeRelease\old/" /FD /c 
-
-".\build\OnTheEdgeRelease\old\barrieroption.obj"	".\build\OnTheEdgeRelease\old\barrieroption.sbr" : $(SOURCE)
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
-
-CPP_SWITCHES=/nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\OnTheEdgeDebug\old/" /Fp"build\OnTheEdgeDebug/QuantLib.pch" /YX /Fo"build\OnTheEdgeDebug\old/" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-".\build\OnTheEdgeDebug\old\barrieroption.obj"	".\build\OnTheEdgeDebug\old\barrieroption.sbr" : $(SOURCE)
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
-
-CPP_SWITCHES=/nologo /G6 /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\OnTheEdgeRelease\old/" /Fp"build\OnTheEdgeRelease/QuantLib.pch" /YX /Fo"build\OnTheEdgeRelease\old/" /Fd"build\OnTheEdgeRelease\old/" /FD /c 
-
-".\build\OnTheEdgeRelease\old\barrieroption.obj"	".\build\OnTheEdgeRelease\old\barrieroption.sbr" : $(SOURCE)
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ENDIF 
 
 SOURCE=.\ql\Pricers\binaryoption.cpp
 

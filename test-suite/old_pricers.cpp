@@ -16,7 +16,7 @@
 */
 
 #include "old_pricers.hpp"
-#include <ql/Pricers/barrieroption.hpp>
+#include <ql/Pricers/barrieroptionpricer.hpp>
 #include <ql/Pricers/binaryoption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>
 #include <ql/Pricers/fddividendeuropeanoption.hpp>

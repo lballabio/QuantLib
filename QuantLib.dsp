@@ -1144,34 +1144,11 @@ SOURCE=.\ql\Pricers\analyticalcapfloor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\barrieroption.cpp
-
-!IF  "$(CFG)" == "QuantLib - Win32 Release"
-
-# PROP Intermediate_Dir "build\Release\old"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
-
-# PROP Intermediate_Dir "build\Debug\old"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
-
-# PROP Intermediate_Dir "build\OnTheEdgeRelease\old"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
-
-# PROP Intermediate_Dir "build\OnTheEdgeDebug\old"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
-
-# PROP Intermediate_Dir "build\OnTheEdgeRelease\old"
-
-!ENDIF 
-
+SOURCE=.\ql\Pricers\barrieroptionpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\barrieroption.hpp
+SOURCE=.\ql\Pricers\barrieroptionpricer.hpp
 # End Source File
 # Begin Source File
 

@@ -220,7 +220,7 @@
 #include <ql/Patterns/visitor.hpp>
 
 #include <ql/Pricers/analyticalcapfloor.hpp>
-#include <ql/Pricers/barrieroption.hpp>
+#include <ql/Pricers/barrieroptionpricer.hpp>
 #include <ql/Pricers/binaryoption.hpp>
 #include <ql/Pricers/blackcapfloor.hpp>
 #include <ql/Pricers/blackswaption.hpp>
