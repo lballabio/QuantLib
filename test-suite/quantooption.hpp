@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -26,6 +27,7 @@ class QuantoOptionTest {
     static void testGreeks();
     static void testForwardValues();
     static void testForwardGreeks();
+    static void testForwardPerformanceValues();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -22,7 +23,7 @@
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/Quanto/quantoengine.hpp>
-#include <ql/PricingEngines/Forward/forwardengine.hpp>
+#include <ql/PricingEngines/Forward/forwardperformanceengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <map>
@@ -30,9 +31,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
-                       v, fxr, fxv, corr, expected, calculated, \
-                       error, tolerance) \
+#define QUANTO_REPORT_FAILURE(greekName, payoff, exercise, s, q, r, \
+                        today, v, fxr, fxv, corr, expected, \
+                        calculated, error, tolerance) \
     BOOST_FAIL("Quanto " + exerciseTypeToString(exercise) + " " \
                + OptionTypeFormatter::toString(payoff->optionType()) + \
                " option with " \
@@ -49,6 +50,47 @@ using namespace boost::unit_test_framework;
                + RateFormatter::toString(fxr) + "\n" \
                "    reference date:    " \
                + DateFormatter::toString(today) + "\n" \
+               "    maturity:          " \
+               + DateFormatter::toString(exercise->lastDate()) + "\n" \
+               "    volatility:        " \
+               + VolatilityFormatter::toString(v) + "\n" \
+               "    fx volatility:     " \
+               + VolatilityFormatter::toString(fxv) + "\n" \
+               "    correlation:       " \
+               + DecimalFormatter::toString(corr) + "\n\n" \
+               "    expected   " + greekName + ": " \
+               + DecimalFormatter::toString(expected) + "\n" \
+               "    calculated " + greekName + ": " \
+               + DecimalFormatter::toString(calculated) + "\n" \
+               "    error:            " \
+               + DecimalFormatter::toString(error) + "\n" \
+               "    tolerance:        " \
+               + DecimalFormatter::toString(tolerance));
+
+#define QUANTO_FORWARD_REPORT_FAILURE(greekName, payoff, moneyness, \
+                        exercise, s, q, r, \
+                        today, reset, v, fxr, fxv, corr, expected, \
+                        calculated, error, tolerance) \
+    BOOST_FAIL("Quanto " + exerciseTypeToString(exercise) + " " \
+               + OptionTypeFormatter::toString(payoff->optionType()) + \
+               " option with " \
+               + payoffTypeToString(payoff) + " payoff:\n" \
+               "    spot value:        " \
+               + DecimalFormatter::toString(s) + "\n" \
+               "    strike:            " \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
+               "    moneyness:         " \
+               + DecimalFormatter::toString(moneyness) +"\n" \
+               "    dividend yield:    " \
+               + RateFormatter::toString(q) + "\n" \
+               "    risk-free rate:    " \
+               + RateFormatter::toString(r) + "\n" \
+               "    fx risk-free rate: " \
+               + RateFormatter::toString(fxr) + "\n" \
+               "    reference date:    " \
+               + DateFormatter::toString(today) + "\n" \
+               "    reset date:        " \
+               + DateFormatter::toString(reset) + "\n" \
                "    maturity:          " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "    volatility:        " \
@@ -172,7 +214,7 @@ void QuantoOptionTest::testValues() {
         Real error = QL_FABS(calculated-values[i].result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
-            REPORT_FAILURE("value", payoff, exercise, values[i].s,
+            QUANTO_REPORT_FAILURE("value", payoff, exercise, values[i].s,
                            values[i].q, values[i].r, today,
                            values[i].v, values[i].fxr, values[i].fxv,
                            values[i].corr, values[i].result, calculated,
@@ -378,7 +420,7 @@ void QuantoOptionTest::testGreeks() {
                                    tol   = tolerance [greek];
                               Real error = relativeError(expct,calcl,u);
                               if (error>tol) {
-                                  REPORT_FAILURE(greek, payoff, exercise, 
+                                  QUANTO_REPORT_FAILURE(greek, payoff, exercise, 
                                                  u, q, r, today, v, 
                                                  fxr, fxv, corr,
                                                  expct, calcl, error, tol);
@@ -474,11 +516,12 @@ void QuantoOptionTest::testForwardValues() {
         Real error = QL_FABS(calculated-values[i].result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
-            REPORT_FAILURE("value", payoff, exercise, values[i].s,
-                           values[i].q, values[i].r, today,
-                           values[i].v, values[i].fxr, values[i].fxv,
-                           values[i].corr, values[i].result, calculated,
-                           error, tolerance);
+            QUANTO_FORWARD_REPORT_FAILURE("value", payoff, values[i].moneyness,
+                            exercise, values[i].s,
+                            values[i].q, values[i].r, today, reset,
+                            values[i].v, values[i].fxr, values[i].fxv,
+                            values[i].corr, values[i].result, calculated,
+                            error, tolerance);
         }
     }
 
@@ -691,10 +734,10 @@ void QuantoOptionTest::testForwardGreeks() {
                                    tol   = tolerance [greek];
                               Real error = relativeError(expct,calcl,u);
                               if (error>tol) {
-                                  REPORT_FAILURE(greek, payoff, exercise, 
-                                                 u, q, r, today, v, 
-                                                 fxr, fxv, corr,
-                                                 expct, calcl, error, tol);
+                                  QUANTO_FORWARD_REPORT_FAILURE(greek, payoff,
+                                      moneyness[j],
+                                      exercise, u, q, r, today, reset, v, fxr,
+                                      fxv, corr, expct, calcl, error, tol);
                               }
                             }
                           }
@@ -712,12 +755,99 @@ void QuantoOptionTest::testForwardGreeks() {
 }
 
 
+void QuantoOptionTest::testForwardPerformanceValues() {
+
+    BOOST_MESSAGE("Testing quanto-forward-performance option values...");
+
+    QuantoForwardOptionData values[] = {
+        //   type, moneyness,  spot,  div, risk-free rate, reset, maturity,  vol, fx risk-free rate, fx vol, corr,     result, tol
+        // reset=0.0, quanto-(not-forward)-performance options
+        // exactly one hundredth of the non-performance version
+        { Option::Call, 1.05, 100.0, 0.04,           0.08,  0.00,      0.5, 0.20,              0.05,   0.10,  0.3, 5.3280/150, 1.0e-4 },
+        {  Option::Put, 1.05, 100.0, 0.04,           0.08,  0.00,      0.5, 0.20,              0.05,   0.10,  0.3,     0.0816, 1.0e-4 },
+        // reset!=0.0, quanto-forward-performance options (roughly one hundredth of the non-performance version)
+        { Option::Call, 1.05, 100.0, 0.04,           0.08,  0.25,      0.5, 0.20,              0.05,   0.10,  0.3,     0.0201, 1.0e-4 },
+        {  Option::Put, 1.05, 100.0, 0.04,           0.08,  0.25,      0.5, 0.20,              0.05,   0.10,  0.3,     0.0672, 1.0e-4 }
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+
+    boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
+    RelinkableHandle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
+    RelinkableHandle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
+    boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+
+    boost::shared_ptr<VanillaOption::engine> underlyingEngine(
+                                                  new AnalyticEuropeanEngine);
+    boost::shared_ptr<ForwardVanillaOption::engine> forwardPerformanceEngine(
+                 new ForwardPerformanceEngine<VanillaOption::arguments,
+                                              VanillaOption::results>(underlyingEngine));
+    boost::shared_ptr<PricingEngine> engine(
+              new QuantoEngine<ForwardVanillaOption::arguments,
+                               ForwardVanillaOption::results>(forwardPerformanceEngine));
+
+    boost::shared_ptr<BlackScholesProcess> stochProcess(
+            new BlackScholesProcess(
+                 RelinkableHandle<Quote>(spot),
+                 RelinkableHandle<TermStructure>(qTS),
+                 RelinkableHandle<TermStructure>(rTS),
+                 RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+//                               new PercentageStrikePayoff(values[i].type, values[i].moneyness));
+                                 new PlainVanillaPayoff(values[i].type, 0.0));
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        Date reset = today.plusDays(Integer(values[i].start*360+0.5));
+
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        fxRate->setValue(values[i].fxr);
+        fxVol->setValue(values[i].fxv);
+        correlation->setValue(values[i].corr);
+
+        QuantoForwardVanillaOption option(fxrTS, fxVolTS,
+                                          RelinkableHandle<Quote>(correlation),
+                                          values[i].moneyness, reset,
+                                          stochProcess, payoff, exercise, 
+                                          engine);
+
+        Real calculated = option.NPV();
+        Real error = QL_FABS(calculated-values[i].result);
+        Real tolerance = 1e-4;
+        if (error>tolerance) {
+            QUANTO_FORWARD_REPORT_FAILURE("value", payoff, values[i].moneyness,
+                exercise,
+                values[i].s, values[i].q, values[i].r, today, reset,
+                values[i].v, values[i].fxr, values[i].fxv, values[i].corr,
+                values[i].result, calculated, error, tolerance);
+        }
+    }
+
+}
+
 test_suite* QuantoOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Quanto option tests");
     suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testValues));
     suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testGreeks));
     suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testForwardValues));
     suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testForwardGreeks));
+    suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testForwardPerformanceValues));
     return suite;
 }
 

@@ -38,6 +38,8 @@ using namespace boost::unit_test_framework;
                + payoffTypeToString(payoff) + " payoff:\n" \
                "    spot value:        " \
                + DecimalFormatter::toString(s) + "\n" \
+               "    strike:            " \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
                "    moneyness:         " \
                + DecimalFormatter::toString(moneyness) +"\n" \
                "    dividend yield:    " \
