@@ -169,6 +169,7 @@ namespace QuantLib {
             return maturity_;
         }
 
+
         FuturesRateHelper::FuturesRateHelper(
             const RelinkableHandle<MarketElement>& price,
             const Date& ImmDate, int nMonths,
@@ -180,6 +181,17 @@ namespace QuantLib {
           dayCounter_(dayCounter) {
             maturity_ = calendar_.advance(
                 ImmDate_, nMonths_, Months, convention_);
+            yearFraction_ = dayCounter_.yearFraction(ImmDate_, maturity_);
+        }
+
+        FuturesRateHelper::FuturesRateHelper(
+            const RelinkableHandle<MarketElement>& price,
+            const Date& ImmDate, const Date& MatDate,
+            const Calendar& calendar, RollingConvention convention,
+            const DayCounter& dayCounter)
+        : RateHelper(price), ImmDate_(ImmDate),
+          calendar_(calendar), convention_(convention),
+          dayCounter_(dayCounter), maturity_(MatDate) {
             yearFraction_ = dayCounter_.yearFraction(ImmDate_, maturity_);
         }
 

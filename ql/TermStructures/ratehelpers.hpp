@@ -158,6 +158,12 @@ namespace QuantLib {
                               const Calendar& calendar,
                               RollingConvention convention,
                               const DayCounter& dayCounter);
+	    FuturesRateHelper(const RelinkableHandle<MarketElement>& price,
+			      const Date& ImmDate,
+			      const Date& MatDate,
+			      const Calendar& calendar,
+			      RollingConvention convention,
+			      const DayCounter& dayCounter);
             FuturesRateHelper(double price,
                               const Date& ImmDate,
                               int nMonths,
