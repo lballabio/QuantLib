@@ -92,7 +92,7 @@ namespace QuantLib {
             setupExpired();
             calculated_ = true;
         } else {
-            LazyObject::calculate();
+            Patterns::LazyObject::calculate();
         }
     }
 
