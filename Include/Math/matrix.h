@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/02/02 18:06:27  lballabio
+    Cosmetic changes (wrapping and docs)
+
     Revision 1.4  2001/02/02 10:42:24  marmar
     Method added:
        Array diagonal(void) const;
@@ -56,7 +59,7 @@ namespace QuantLib {
     
     namespace Math {
         
-        //! matrix used in linear algebra.
+        //! %matrix used in linear algebra.
         /*! This class implements the concept of vector as used in linear 
             algebra. As such, it is <b>not</b> meant to be used as a 
             container.

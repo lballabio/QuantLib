@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/02/02 18:06:27  lballabio
+    Cosmetic changes (wrapping and docs)
+
     Revision 1.2  2001/01/25 11:57:32  lballabio
     Included outer product and sqrt into matrix.h
 
@@ -48,28 +51,29 @@
 namespace QuantLib {
 
     namespace Math {
-      //! Implementing the symmetric threshold Jacobi algorithm
-      /*! Given a real symmetric matrix S, the Schur decomposition 
-          finds the eigenvalues and eigenvectors of S. If D is the 
-          diagonal matrix formed by the eigenvalues and U the
-          unitarian matrix of th eigenvector we can write the
-          Schur decomposition as 
-          \f[ S = U \cdot D \cdot U^T \, ,\f]
-          where \f$ \cdot \f$ is the standard matrix product 
-          and  \f$ ^T  \f$ is the transpose operator.
-          This class implements the Schur decomposition using the
-          symmetric threshold Jacobi algorithm. For details on the 
-          different Jacobi transfomations you can start from the great book 
-          on matrix computations by Golub and Van Loan: Matrix computation, 
-          second edition The Johns Hopkins University Press
-      */
 
+        //! symmetric threshold Jacobi algorithm.
+        /*! Given a real symmetric matrix S, the Schur decomposition 
+            finds the eigenvalues and eigenvectors of S. If D is the 
+            diagonal matrix formed by the eigenvalues and U the
+            unitarian matrix of th eigenvector we can write the
+            Schur decomposition as 
+            \f[ S = U \cdot D \cdot U^T \, ,\f]
+            where \f$ \cdot \f$ is the standard matrix product 
+            and  \f$ ^T  \f$ is the transpose operator.
+            This class implements the Schur decomposition using the
+            symmetric threshold Jacobi algorithm. For details on the 
+            different Jacobi transfomations you can start from the great book 
+            on matrix computations by Golub and Van Loan: Matrix computation, 
+            second edition The Johns Hopkins University Press
+        */
         class SymmetricSchurDecomposition {
-        public:
-            SymmetricSchurDecomposition(Matrix &s); // s must be symmetric
+          public:
+            /* \pre s must be symmetric */
+            SymmetricSchurDecomposition(Matrix &s);
             Array eigenvalues() const;
             Matrix eigenvectors() const;
-        private:
+          private:
             int size_;
             int maxIterations_;
             double epsPrec_;

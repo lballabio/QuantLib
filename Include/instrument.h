@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/02/02 18:06:27  lballabio
+    Cosmetic changes (wrapping and docs)
+
     Revision 1.10  2001/01/17 14:37:54  nando
     tabs removed
 
@@ -64,10 +67,12 @@ namespace QuantLib {
     */
     class Instrument {
       public:
-        Instrument(const std::string& isinCode = "", const std::string& description = "")
+        Instrument(const std::string& isinCode = "", 
+            const std::string& description = "")
         : theISINCode(isinCode), theDescription(description),
-          termStructureHasChanged(true), swaptionVolHasChanged(true), forwardVolHasChanged(true),
-          theSettlementDate(Date()), theNPV(0.0), expired(false) {}
+          termStructureHasChanged(true), swaptionVolHasChanged(true), 
+          forwardVolHasChanged(true), theSettlementDate(Date()), theNPV(0.0), 
+          expired(false) {}
         virtual ~Instrument();
         //! \name Modifiers
         //@{
@@ -76,9 +81,11 @@ namespace QuantLib {
         //! sets the term structure to be used for pricing.
         virtual void setTermStructure(const Handle<TermStructure>&);
         //! sets the swaption volatility surface to be used for pricing.
-        virtual void setSwaptionVolatility(const Handle<SwaptionVolatilitySurface>&);
+        virtual void setSwaptionVolatility(
+            const Handle<SwaptionVolatilitySurface>&);
         //! sets the forward volatility surface to be used for pricing.
-        virtual void setForwardVolatility(const Handle<ForwardVolatilitySurface>&);
+        virtual void setForwardVolatility(
+            const Handle<ForwardVolatilitySurface>&);
         //@}
 
         //! \name Inspectors
@@ -87,15 +94,15 @@ namespace QuantLib {
         std::string isinCode() const;
         //! returns a brief textual description of the instrument.
         std::string description() const;
-        //! returns <tt>true</tt> iff the instrument needs a term structure for pricing.
+        //! checks whether a term structure is needed for pricing.
         virtual bool useTermStructure() const = 0;
         //! returns the term structure used for pricing.
         Handle<TermStructure> termStructure() const;
-        //! returns <tt>true</tt> iff the instrument needs a swaption volatility surface for pricing.
+        //! checks whether a swaption volatility surface is needed for pricing.
         virtual bool useSwaptionVolatility() const = 0;
         //! returns the swaption volatility surface used for pricing.
         Handle<SwaptionVolatilitySurface> swaptionVolatility() const;
-        //! returns <tt>true</tt> iff the instrument needs a forward volatility surface for pricing.
+        //! checks whether a forward volatility surface is needed for pricing.
         virtual bool useForwardVolatility() const = 0;
         //! returns the forward volatility surface used for pricing.
         Handle<ForwardVolatilitySurface> forwardVolatility() const;
@@ -106,41 +113,55 @@ namespace QuantLib {
         //@}
       protected:
         /*! \name Calculations
-            These methods do not modify the structure of the instrument and are therefore declared
-            as <tt>const</tt>. Temporary variables will be declared as mutable.
+            These methods do not modify the structure of the instrument and are 
+            therefore declared as <tt>const</tt>. Temporary variables will be 
+            declared as mutable.
         */
         //@{
-        /*! This method must implement any calculations which must be (re)done in case
-            the term structure is set or changes. A default is supplied with a null body. */
+        /*! This method must implement any calculations which must be (re)done 
+            in case the term structure is set or changes. A default is supplied 
+            with a null body. 
+        */
         virtual void performTermStructureCalculations() const {}
-        /*! This method must implement any calculations which must be redone in case
-            the swaption volatility surface is set or changes. A default is supplied with a null body. */
+        /*! This method must implement any calculations which must be (re)done 
+            in case the swaption volatility surface is set or changes. A default 
+            is supplied with a null body. 
+        */
         virtual void performSwaptionVolCalculations() const {}
-        /*! This method must implement any calculations which must be redone in case
-            the forward volatility surface is set or changes. A default is supplied with a null body. */
+        /*! This method must implement any calculations which must be (re)done 
+            in case the forward volatility surface is set or changes. A default 
+            is supplied with a null body. 
+        */
         virtual void performForwardVolCalculations() const {}
-        /*! This method must return <tt>true</tt> if any calculations are needed besides
-            the ones implemented in <b>performTermStructureCalculations</b>,
-            <b>performSwaptionVolCalculations</b>, and <b>performForwardVolCalculations</b>. */
+        /*! This method must return <tt>true</tt> if any calculations are needed 
+            besides the ones implemented in 
+            <b>performTermStructureCalculations</b>,
+            <b>performSwaptionVolCalculations</b>, and 
+            <b>performForwardVolCalculations</b>.
+        */
         virtual bool needsFinalCalculations() const;
         /*! This method must implement any calculations which are needed besides
             the ones implemented in <b>performTermStructureCalculations</b>,
-            <b>performSwaptionVolCalculations</b>, and <b>performForwardVolCalculations</b>.
-            A default is supplied with a null body. */
+            <b>performSwaptionVolCalculations</b>, and 
+            <b>performForwardVolCalculations</b>.
+            A default is supplied with a null body. 
+        */
         virtual void performFinalCalculations() const {}
         //@}
 
         //! \name Results
         //@{
-        /*! The value of this attribute must be set by the instrument constructor.
+        /*! The value of this attribute must be set by the instrument 
+            constructor.
         */
         Date theSettlementDate;
-        /*! The value of this attribute must be set by either of the <b>performXxxCalculations</b>
-            methods.
+        /*! The value of this attribute must be set by either of the 
+            <b>performXxxCalculations</b> methods.
         */
         mutable double theNPV;
-        /*! The value of this attribute must be set to <tt>true</tt> by either of the
-            <b>performXxxCalculations</b> methods if the instrument is expired.
+        /*! The value of this attribute must be set to <tt>true</tt> by either 
+            of the <b>performXxxCalculations</b> methods if the instrument is 
+            expired.
         */
         mutable bool expired;
         //@}
@@ -152,7 +173,8 @@ namespace QuantLib {
         Handle<SwaptionVolatilitySurface> theSwaptionVol;
         Handle<ForwardVolatilitySurface> theForwardVol;
         // temporaries
-        mutable bool termStructureHasChanged, swaptionVolHasChanged, forwardVolHasChanged;
+        mutable bool termStructureHasChanged, swaptionVolHasChanged, 
+            forwardVolHasChanged;
         // observers
         // term structure
         class TermStructureObserver;
@@ -214,7 +236,8 @@ namespace QuantLib {
     */
     class PricedInstrument : public Instrument {
       public:
-        PricedInstrument(const std::string& isinCode = "", const std::string& description = "")
+        PricedInstrument(const std::string& isinCode = "", 
+            const std::string& description = "")
         : Instrument(isinCode,description), priceIsSet(false) {}
         void setPrice(double price) { thePrice = price; priceIsSet = true; }
         /*! \pre The price must have been set with <B><I>setPrice()</B></I> */
@@ -227,18 +250,22 @@ namespace QuantLib {
         bool useForwardVolatility() const { return false; }
       private:
         bool needsFinalCalculations() const { return true; }
-        void performFinalCalculations() const { theNPV = price(); }    // it will throw an exception if not set
+        /* this method will throw an exception if not set, thus acting as a 
+           check
+        */
+        void performFinalCalculations() const { theNPV = price(); }
         bool priceIsSet;
         double thePrice;
     };
 
     //! Over-the-counter instrument class
-    /*! It inhibits the <b>setPrice</b> method and redirects the <b>price</b> method to <b>NPV</b>
-        for over-the-counter instruments.
+    /*! It inhibits the <b>setPrice</b> method and redirects the <b>price</b> 
+        method to <b>NPV</b> for over-the-counter instruments.
     */
     class OTCInstrument : public Instrument { // over the counter
       public:
-        OTCInstrument(const std::string& isinCode = "", const std::string& description = "")
+        OTCInstrument(const std::string& isinCode = "", 
+            const std::string& description = "")
         : Instrument(isinCode,description) {}
         void setPrice(double price) { throw Error("Cannot set price"); }
         double price() const { return NPV(); }
@@ -251,7 +278,8 @@ namespace QuantLib {
         unregisterFromTermStructure();
     }
 
-    inline void Instrument::setTermStructure(const Handle<TermStructure>& termStructure) {
+    inline void Instrument::setTermStructure(
+      const Handle<TermStructure>& termStructure) {
         if (useTermStructure()) {
             unregisterFromTermStructure();
             theTermStructure = termStructure;
@@ -273,7 +301,8 @@ namespace QuantLib {
             theTermStructure->unregisterObserver(&theTermStructureObserver);
     }
 
-    inline void Instrument::setSwaptionVolatility(const Handle<SwaptionVolatilitySurface>& vol) {
+    inline void Instrument::setSwaptionVolatility(
+      const Handle<SwaptionVolatilitySurface>& vol) {
         if (useSwaptionVolatility()) {
             unregisterFromSwaptionVol();
             theSwaptionVol = vol;
@@ -294,7 +323,8 @@ namespace QuantLib {
             theSwaptionVol->unregisterObserver(&theSwaptionVolObserver);
     }
 
-    inline void Instrument::setForwardVolatility(const Handle<ForwardVolatilitySurface>& vol) {
+    inline void Instrument::setForwardVolatility(
+      const Handle<ForwardVolatilitySurface>& vol) {
         if (useForwardVolatility()) {
             unregisterFromForwardVol();
             theForwardVol = vol;
@@ -335,13 +365,16 @@ namespace QuantLib {
     }
 
     /*! \pre The swaption volatility surface must have been set */
-    inline Handle<SwaptionVolatilitySurface> Instrument::swaptionVolatility() const {
-        QL_REQUIRE(!IsNull(theSwaptionVol),"swaption volatility surface not set");
+    inline Handle<SwaptionVolatilitySurface> Instrument::swaptionVolatility() 
+    const {
+        QL_REQUIRE(!IsNull(theSwaptionVol),
+            "swaption volatility surface not set");
         return theSwaptionVol;
     }
 
     /*! \pre The forward volatility surface must have been set */
-    inline Handle<ForwardVolatilitySurface> Instrument::forwardVolatility() const {
+    inline Handle<ForwardVolatilitySurface> Instrument::forwardVolatility() 
+    const {
         QL_REQUIRE(!IsNull(theForwardVol),"forward volatility surface not set");
         return theForwardVol;
     }
@@ -355,22 +388,26 @@ namespace QuantLib {
             performForwardVolCalculations();
         if (needsFinalCalculations())
             performFinalCalculations();
-        termStructureHasChanged = swaptionVolHasChanged = forwardVolHasChanged = false;
+        termStructureHasChanged = swaptionVolHasChanged = 
+            forwardVolHasChanged = false;
     }
 
     inline bool Instrument::needsFinalCalculations() const {
-        return (termStructureHasChanged || swaptionVolHasChanged || forwardVolHasChanged);
+        return (termStructureHasChanged || swaptionVolHasChanged || 
+            forwardVolHasChanged);
     }
 
     // comparisons
 
     QL_TEMPLATE_SPECIALIZATION
-    inline bool operator==(const Handle<Instrument>& i, const Handle<Instrument>& j) {
+    inline bool operator==(const Handle<Instrument>& i, 
+      const Handle<Instrument>& j) {
         return (i->isinCode() == j->isinCode());
     }
 
     QL_TEMPLATE_SPECIALIZATION
-    inline bool operator!=(const Handle<Instrument>& i, const Handle<Instrument>& j) {
+    inline bool operator!=(const Handle<Instrument>& i, 
+      const Handle<Instrument>& j) {
         return (i->isinCode() != j->isinCode());
     }
 
