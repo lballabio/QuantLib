@@ -27,13 +27,14 @@
 
 namespace QuantLib {
 
-    //! %Linear interpolation between discrete points
-    class LinearInterpolation : public Interpolation {
-      protected:
+    namespace detail {
+
         template <class I1, class I2>
-        class Impl : public Interpolation::templateImpl<I1,I2> {
+        class LinearInterpolationImpl
+            : public Interpolation::templateImpl<I1,I2> {
           public:
-            Impl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
+            LinearInterpolationImpl(const I1& xBegin, const I1& xEnd,
+                                    const I2& yBegin)
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
               primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {
                 primitiveConst_[0] = 0.0;
@@ -64,13 +65,19 @@ namespace QuantLib {
           private:
             std::vector<Real> primitiveConst_, s_;
         };
+
+    }
+
+    //! %Linear interpolation between discrete points
+    class LinearInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         LinearInterpolation(const I1& xBegin, const I1& xEnd,
                             const I2& yBegin) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(
-                  new LinearInterpolation::Impl<I1,I2>(xBegin, xEnd, yBegin));
+                      new detail::LinearInterpolationImpl<I1,I2>(xBegin, xEnd,
+                                                                 yBegin));
         }
     };
 

@@ -19,8 +19,8 @@
     \brief Beijing calendar
 */
 
-#ifndef quantlib_beijing_calendar_h
-#define quantlib_beijing_calendar_h
+#ifndef quantlib_beijing_calendar_hpp
+#define quantlib_beijing_calendar_hpp
 
 #include <ql/calendar.hpp>
 
@@ -36,10 +36,11 @@ namespace QuantLib {
         <li>National Day, one week from October 1st</li>
         </ul>
 
-        Other holidays for which no rule is given 
-        (data available for 2004 only:)
+        Other holidays for which no rule is given:
         <ul>
-        <li>Lunar New Year</li>
+        <li>Lunar New Year (data available for 2004 only)</li>
+        <li>Spring Festival</li>
+        <li>Last day of Lunar Year</li>
         </ul>
 
         \ingroup calendars
@@ -50,6 +51,8 @@ namespace QuantLib {
           public:
             std::string name() const { return "Beijing"; }
             bool isBusinessDay(const Date&) const;
+            //! expressed relative to first day of year
+            static Day springFestival(Year y);
         };
       public:
         Beijing();

@@ -28,7 +28,6 @@
 #include <boost/shared_ptr.hpp>
 #include <assert.h>
 #include <boost/format.hpp>
-#include <string>
 
 namespace QuantLib {
 

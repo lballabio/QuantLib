@@ -8,10 +8,12 @@ include_HEADERS = \
     asianoption.hpp \
     barrieroption.hpp \
     basketoption.hpp \
+    bond.hpp \
     capfloor.hpp \
     cliquetoption.hpp \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
+    fixedcouponbond.hpp \
     forwardvanillaoption.hpp \
     multiassetoption.hpp \
     oneassetoption.hpp \
@@ -31,10 +33,12 @@ libInstruments_la_SOURCES = \
     asianoption.cpp \
     barrieroption.cpp \
     basketoption.cpp \
+    bond.cpp \
     capfloor.cpp \
     cliquetoption.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
+    fixedcouponbond.cpp \
     forwardvanillaoption.cpp \
     multiassetoption.cpp \
     oneassetoption.cpp \

@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+
+echo "###-###"
+echo "###-### zipping sources: QuantLib-${1}.zip"
+echo "###-###"
+tar xfz QuantLib-$1.tar.gz
+find QuantLib-$1 | grep -v '\.\(\(bmp\)\|\(jpg\)\|\(pdf\)\|\(png\)\|\(gif\)\)$' | xargs todos -o -p
+zip -q -r QuantLib-$1.zip QuantLib-$1
+
+echo "###-###"
+echo "###-### WinHelp man: QuantLib-docs-${1}.chm"
+echo "###-###"
+cd QuantLib-$1
+cd Docs
+tar xfz ../../QuantLib-docs-$1-html.tar.gz
+mv QuantLib-docs-$1-html/ html/
+cd html
+hhc index.hhp
+mv index.chm ../../../QuantLib-docs-$1.chm
+cd ..
+rm -r html/
+mkdir html
+cp ../../QuantLib-docs-$1.chm html/index.chm
+cd ..
+
+echo "###-###"
+echo "###-### Win32 binary installer: QuantLib-${1}-installer.exe"
+echo "###-###"
+makensis /V2 QuantLib.nsi
+cd ..
+rm -r QuantLib-$1
+run QuantLib-$1-installer.exe
+
+echo "###-###"
+echo "###-### zipped pdf: QuantLib-docs-${1}.pdf.zip"
+echo "###-###"
+gunzip QuantLib-docs-$1.pdf.gz
+zip QuantLib-docs-$1.pdf.zip QuantLib-docs-$1.pdf
+gzip QuantLib-docs-$1.pdf
+
+echo "###-###"
+echo "###-### zipped ps: QuantLib-docs-${1}.ps.zip"
+echo "###-###"
+gunzip QuantLib-docs-$1.ps.gz
+zip QuantLib-docs-$1.ps.zip QuantLib-docs-$1.ps
+gzip QuantLib-docs-$1.ps

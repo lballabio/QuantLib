@@ -27,16 +27,14 @@
 
 namespace QuantLib {
 
-    /*! %Log-linear interpolation between discrete points
+    namespace detail {
 
-        \todo implement primitive, derivative, and secondDerivative functions.
-    */
-    class LogLinearInterpolation : public Interpolation {
-      protected:
         template <class I1, class I2>
-        class Impl : public Interpolation::templateImpl<I1,I2> {
+        class LogLinearInterpolationImpl
+            : public Interpolation::templateImpl<I1,I2> {
           public:
-            Impl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
+            LogLinearInterpolationImpl(const I1& xBegin, const I1& xEnd,
+                                       const I2& yBegin)
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
               logY_(xEnd-xBegin) {
                 for (Size i=0; i<logY_.size(); i++) {
@@ -63,14 +61,22 @@ namespace QuantLib {
             std::vector<Real> logY_;
             Interpolation linearInterpolation_;
         };
+
+    }
+
+    /*! %Log-linear interpolation between discrete points
+
+        \todo implement primitive, derivative, and secondDerivative functions.
+    */
+    class LogLinearInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         LogLinearInterpolation(const I1& xBegin, const I1& xEnd,
                                const I2& yBegin) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(
-                  new LogLinearInterpolation::Impl<I1,I2>(xBegin, xEnd,
-                                                          yBegin));
+                   new detail::LogLinearInterpolationImpl<I1,I2>(xBegin, xEnd,
+                                                                 yBegin));
         }
     };
 

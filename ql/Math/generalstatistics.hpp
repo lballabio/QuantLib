@@ -24,7 +24,6 @@
 #define quantlib_general_statistics_hpp
 
 #include <ql/null.hpp>
-#include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <vector>
 #include <utility>

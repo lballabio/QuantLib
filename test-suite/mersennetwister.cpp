@@ -459,6 +459,27 @@ void MersenneTwisterTest::testValues() {
         }
     }
 
+    // check absence of interaction between instances:
+    // a) with sequential use
+    MersenneTwisterUniformRng mt1(init), mt2(init);
+    for (i=0; i<1000; i++)
+        mt1.nextInt32();
+    for (i=0; i<999; i++)
+        mt2.nextInt32();
+    if (referenceLongValues[999] != mt2.nextInt32())
+        BOOST_FAIL("Detected interaction between Mersenne Twister instances "
+                   "during sequential computation");
+
+    // b) with parallel use
+    MersenneTwisterUniformRng mt3(init), mt4(init);
+    for (i=0; i<999; i++) {
+        mt3.nextInt32();
+        mt4.nextInt32();
+    }
+    if (referenceLongValues[999] != mt3.nextInt32() ||
+        referenceLongValues[999] != mt4.nextInt32())
+        BOOST_FAIL("Detected interaction between Mersenne Twister instances "
+                   "during parallel computation");
 }
 
 

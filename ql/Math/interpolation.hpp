@@ -51,11 +51,6 @@ namespace QuantLib {
       public:
         typedef Real argument_type;
         typedef Real result_type;
-      #if defined(QL_PATCH_MSVC6)
-      public:
-      #else
-      protected:
-      #endif
         //! basic template implementation
         template <class I1, class I2>
         class templateImpl : public InterpolationImpl {

@@ -22,16 +22,14 @@
 #ifndef quantlib_multi_cubic_spline_hpp
 #define quantlib_multi_cubic_spline_hpp
 
-#include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/basicdataformatters.hpp>
 #include <functional>
-#include <algorithm>
 #include <vector>
 
 namespace QuantLib {
 
-    namespace MultiSplineDetails {
+    namespace detail {
 
         // data structures
 
@@ -445,7 +443,7 @@ namespace QuantLib {
 
     // Multi-cubic spline
 
-    typedef MultiSplineDetails::SplineGrid SplineGrid;
+    typedef detail::SplineGrid SplineGrid;
 
     //| N-dimensional cubic spline interpolation between discrete points
     /*! \test interpolated values are checked against the original
@@ -459,11 +457,11 @@ namespace QuantLib {
         \bug a) cannot interpolate at the grid points on the boundary surface
                 of the N-dimensional region
              b) it does not compile under Borland
-        
+
     */
     template <Size i> class MultiCubicSpline {
-        typedef typename MultiSplineDetails::Int2Type<i>::c_spline c_spline;
-        typedef typename MultiSplineDetails::Int2Type<i>::c_splint c_splint;
+        typedef typename detail::Int2Type<i>::c_spline c_spline;
+        typedef typename detail::Int2Type<i>::c_splint c_splint;
       public:
         typedef typename c_splint::argument_type argument_type;
         typedef typename c_splint::result_type result_type;

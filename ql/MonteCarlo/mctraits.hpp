@@ -22,7 +22,6 @@
 #ifndef quantlib_mc_traits_h
 #define quantlib_mc_traits_h
 
-#include <ql/MonteCarlo/pathgenerator.hpp>
 #include <ql/MonteCarlo/multipathgenerator.hpp>
 #include <ql/MonteCarlo/pathpricer.hpp>
 #include <ql/RandomNumbers/rngtraits.hpp>

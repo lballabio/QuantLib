@@ -2,11 +2,10 @@
 
 # Run this to generate all the auto-generated files needed by the GNU
 # configure program
-# this is known to work with the following tools:
-#
-# GNU Automake 1.5
-# GNU Autoconf 2.54
-# GNU Libtool 1.4.2
 
 autoreconf --force --install
+
+echo
+echo Run the command './configure --help' for information on options
+echo that can change the behavior of the library.
 

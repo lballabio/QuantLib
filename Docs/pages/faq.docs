@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -53,6 +54,30 @@
 
 
     <strong>
+    \anchor faq_bug_problem_report
+    How should I report a bug?
+    </strong>
+
+    You can file a bug report using SourceForge interface at
+    http://sourceforge.net/tracker/?group_id=12740&atid=112740, or you could
+    write to a QuantLib mailing list.
+
+    In any case please report as much details as possible.
+
+    If it is a compilation problem please state at least:
+    - OS system
+    - compiler (version number, patch level, etc.)
+    - Boost version
+    - the compilation error and the file affected
+
+    If the test suite fails please report the output obtained by executing the
+    test suite with the following command line options:
+    \code
+    --log_level=messages --build_info=yes --result_code=no --report_level=short
+    \endcode
+
+
+    <strong>
     \anchor faq_generic_thanks
     Thanks for this project. How can I give back to it?
     </strong>
@@ -66,9 +91,17 @@
     However, if you made money by using QuantLib and feel that, as
     Christmas is getting near, you want to give us a token of your
     gratitude---well, who am I to discourage you? (for instance,
-    Luigi's wish list on Amazon UK is at
+    &lt; grin &gt; Luigi's wish list on Amazon UK is at
     <http://www.amazon.co.uk/exec/obidos/registry/2PC411P4U28CG/ref=wl_em_to>,
-    and I'm sure that Nando's will soon appear on this FAQ.)
+    and Nando's is at
+    <http://www.amazon.co.uk/exec/obidos/registry/Q94W7HUR49Z5/ref=wl_em_to>.)
+
+    <strong>
+    \anchor faq_generic_ashamed
+    Amazon Wish List? Aren't you ashamed of yourselves?
+    </strong>
+
+    &lt; broad grin &gt; No, we aren't.
 
 
     \section faq_contributing Contributing to the project
@@ -79,14 +112,26 @@
     I do?
     </strong>
 
-    Contact either project administrator. Before doing this, please
-    read the generic information at
-    <http://cvs.sourceforge.net/viewcvs.py/quantlib/QuantLib/dev_tools/newdeveloperintro.txt?view=markup>.
+    Contact either project administrators (Nando
+    <mailto:nando at users.sourceforge.net> and Luigi
+    <mailto:lballabio at users.sourceforge.net>) and describe your experience
+    and interests. Before doing this, please read:
+
+    - the generic introduction for new developers <http://cvs.sourceforge.net/viewcvs.py/quantlib/QuantLib/dev_tools/newdeveloperintro.txt?view=markup>
+    - the project overview <http://www.quantlib.org/reference/overview.html>,
+      with its to-do suggestions
+    - the Developer FAQ
+      <http://www.quantlib.org/developerFAQ.shtml>
+    - The Programming Style Guidelines
+      <http://www.quantlib.org/style.shtml>
+    - the detailed low-level to-do list
+      <http://www.quantlib.org/reference/todo.html>
+
     Also, you might want to specify an area of the library you are
     particularly interested to, or which would be most useful to you.
-    Asking the administrators to choose a task for you is appreciated,
-    but it increases the odds that the chosen task will bore you or
-    otherwise discourage you from completing it.
+    Asking the administrators to choose a task for you is ok,
+    but it might take time to get an answer and it increases the odds that the
+    chosen task will bore you or otherwise discourage you from completing it.
 
     <strong>
     \anchor faq_contributing_code
@@ -96,17 +141,23 @@
     First of all, make sure that contributing code on your part cannot
     result in litigation about intellectual property. If you work at
     some financial institution, ask for permission before contributing
-    any code---and possibly get a statement in print.
+    any relevant portion of code---and get a statement in print.
 
-    As for the mechanics of contribution, the preferred format is a diff
-    file as created by the 'patch' utility.  If possible, send
-    differences against the CVS repository; diff files based on the
-    latest release might not apply to the latest sources.
+    As for the mechanics of contribution, the preferred way is to
+    submit a patch to the SourceForge patch tracker at
+    <http://sourceforge.net/tracker/?group_id=12740&atid=312740>.
+    This will make it less likely that your files are forgotten in the
+    depths of a developer's mailbox.
+
+    The preferred format is a diff file as created by the 'patch'
+    utility.  If possible, send differences against the CVS
+    repository; diff files based on the latest release might not apply
+    to the latest sources.
 
     If 'patch' is not available on your system or you are not familiar
-    with it, send the modified files as a compressed archive. However,
-    keep in mind that integrating such a contribution will require
-    more work and therefore will take longer.
+    with it, submit the modified files. However, keep in mind that
+    integrating such a contribution will require more work and
+    therefore will take longer.
 
     Finally, contributions should be accompanied by one or more test
     cases checking the functionality of the new code. While this is

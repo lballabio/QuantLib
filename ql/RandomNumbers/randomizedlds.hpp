@@ -23,8 +23,6 @@
 #define quantlib_randomized_lds_hpp
 
 #include <ql/basicdataformatters.hpp>
-#include <ql/Math/array.hpp>
-#include <ql/MonteCarlo/sample.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 
 namespace QuantLib {

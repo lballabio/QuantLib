@@ -27,15 +27,16 @@ namespace QuantLib {
         Constraint& constraint = P.constraint();
 
         bool maxIter = false;
-        Real q0 = method.functionValue();
-        Real qp0 = method.gradientNormValue();
-        qt_ = q0;
-        qpt_ = qp0;
         Real qtold, t = t_ini;
         Size loopNumber = 0;
 
         Array& x = method.x();
         Array& d = method.searchDirection();
+        Real q0 = method.functionValue();
+        Real qp0 = method.gradientNormValue();
+
+        qt_ = q0;
+        qpt_ = (gradient_.size() == 0) ? qp0 : -DotProduct(gradient_,d);
 
         // Initialize gradient
         gradient_ = Array(x.size());

@@ -29,7 +29,9 @@
     The following list is an overview of the existing code base.
 
     The <a href="http://lists.sourceforge.net/lists/listinfo/quantlib-users">
-    QuantLib-users</a> mailing list is the preferred forum for proposals,
+    QuantLib-users</a> and <a
+    href="http://lists.sourceforge.net/lists/listinfo/quantlib-dev">
+    QuantLib-dev</a> mailing lists are the preferred forum for proposals,
     suggestions and contributions regarding the future development of the
     library.
 
@@ -40,6 +42,7 @@
     - Date class.
     - Weekday, month, frequency, time unit enumerations.
     - Period class (eg. 1y, 30d, 2m, etc.)
+    - IMM calculation.
     - Calendars: Beijing, Budapest, Copenhagen, Frankfurt, Helsinki,
       Hong Kong, Italy (Settlement, Exchange), Johannesburg, Oslo, Riyadh,
       Seoul, Singapore, Stockholm,
@@ -48,12 +51,13 @@
       United States (Settlement, Exchange, GovermentBond), Xetra,
       Warsaw, Wellington, Zurich.
     - NullCalendar (no holidays) for theoretical calculations.
-    - Joint calendars made up as holiday union of base calendars.
+    - Joint calendars made up as holiday union or intersection of base
+      calendars.
     - Rolling conventions: Preceding, ModifiedPreceding, Following,
       ModifiedFollowing, MonthEndReference.
     - Schedule class for date stream generation.
-    - Day count conventions: Actual360, Actual365, ActualActual (Bond, ISDA,
-      AFB), 30/360 (US, European, Italian).
+    - Day count conventions: Actual360, Actual365Fixed, ActualActual (Bond,
+      ISDA, AFB), 30/360 (US, European, Italian), 1/1.
 
     To do:
     - Differentiate more calendars depending on country or exchange, instead of
@@ -72,6 +76,7 @@
       value, not-a-knot.
     - Monotone cubic spline with Hyman non-restrictive filter.
     - Bicubic spline and bilinear interpolations.
+    - N-dimensional cubic spline interpolation.
     - Normal and cumulative normal distributions.
     - Inverse cumulative normal distribution: Moro and Acklam approximations.
     - Bivariate cumulative normal distribution.
@@ -104,7 +109,7 @@
     - Periodic and Lagrange end conditions for cubic spline.
     - Implement convexity-preserving filter for cubic spline.
     - Log-linear interpolator primitive, first and second derivative functions.
-    - Revise end conditions for bicubic spline.
+    - Revise end conditions for bicubic and N-dimensional spline.
     - Trivariate and multi-variate distribution, see Genz, A. (1992)
       `Numerical Computation of the Multivariate Normal Probabilities',
       J. Comput. Graph. Stat. 1, pp. 141-150.
@@ -135,26 +140,24 @@
 
     <strong>Random-number generation</strong>
     - Uniform pseudo-random sequences: Knuth, L'Ecuyer, Mersenne twister.
-    - Uniform quasi-random (low-discrepancy) sequences: Halton, Sobol up to
-      dimension 21,200 (8,129,334 if you really want) with unit and Jäckel
+    - Uniform quasi-random (low-discrepancy) sequences: Halton, Faure,
+      Sobol up to dimension 21,200 (8,129,334 if you really want) with
+      unit, Jäckel, Bradley-Fox, and Lemieux-Cieslak-Luttmer
       initialization numbers.
     - Randomized quasi-random sequences (in progress)
+    - Randomized (shifted) low-discrepancy sequences.
     - Primitive polynomials modulo 2 up to dimension 18 (available up
-      to dimension 27.)
+      to dimension 27)
     - Gaussian random numbers from uniform random numbers using different
       algorithms: central limit theorem, Box-Muller, inverse cumulative (Moro
       and Acklam algorithms)
-
-    To do:
-    - Add Faure low-discrepancy sequence.
-    - Randomized low-discrepancy sequences.
 
 
 
 
     <strong>Patterns</strong>
-	- Bridge, composite, lazy object, observer/observable, strategy,
-      visitor.
+	- Bridge, composite, lazy object, observer/observable, singleton,
+      strategy, visitor.
 
 
 
@@ -238,15 +241,18 @@
     - Lattice short rate model base engine.
     - Engines for options described by "vanilla" set of parameters: analytic
       digital American, analytic discrete-dividend European,
-      analytic European, Barone-Adesi and Whaley
-      approximation for American, binomial (Cox-Ross-Rubinstein, Jarrow-Rudd,
-      additive equiprobabilities, Trigeorgis, Tian, Leisen-Reimer), Bjerksund
-      and Stensland approximation for American, integral European, Merton 76
+      analytic European, Barone-Adesi and Whaley approximation for
+      American, Ju approximation for American, binomial
+      (Cox-Ross-Rubinstein, Jarrow-Rudd, additive equiprobabilities,
+      Trigeorgis, Tian, Leisen-Reimer), Bjerksund and Stensland
+      approximation for American, integral European, Merton 76
       jump-diffusion, Monte Carlo digital, Monte Carlo European.
     - Engines for options described by "barrier" set of parameters: analytic
       down/up in/out, Monte Carlo down/up in/out
-    - Engines for options described by "discrete Asian" set of parameters:
-      analytic discrete geometric average price
+    - Engines for Asian options:
+      analytic discrete geometric average-price, analytic continuous
+      geometric average-price, Monte Carlo discrete arithmetic
+      average-price, Monte Carlo discrete geometric average-price.
     - Engines for options described by "cliquet" set of parameters:
       analytic, analytic performance.
     - Forward and forward-performance compound engines.
@@ -267,8 +273,8 @@
       American Put, finite differences, Edgeworth expansion binomial tree,
       etc.
     - Merge NesQuant SJD engine (http://www.nielses.dk/quantlib/nesquant/)
-    - Continous geometric average-strike.
-    - Ensure all path dependant options allow for evaluation with collected
+    - Continuous geometric average-strike.
+    - Ensure all path-dependent options allow for evaluation with collected
       past observations.
     - Define dividendRho for discrete dividends.
 
@@ -277,7 +283,6 @@
 
     <strong>Pricers</strong>
     - Cliquet option
-    - Analytic continuous geometric average-price option (European exercise).
     - Analytic discrete geometric average-price option (European exercise).
     - Analytic discrete geometric average-strike option (European exercise).
     - Finite difference American option.
@@ -286,7 +291,6 @@
     - Finite difference European option with discrete dividends.
     - Finite difference Shout option with discrete dividends (buggy).
     - Finite difference European option (Black-Scholes).
-    - Monte Carlo basket option.
     - Monte Carlo cliquet option.
     - Monte Carlo discrete arithmetic average-price option.
     - Monte Carlo discrete arithmetic average-strike option.
@@ -295,7 +299,6 @@
     - Monte Carlo max basket option.
     - Monte Carlo pagoda option.
     - Monte Carlo forward performance option.
-    - Analytic forward performance option.
 
     To do:
     - Fix finite difference in presence of dividends
@@ -309,6 +312,7 @@
     - Interest-rate swap: simple, normal.
     - Swaption.
     - Cap/floor.
+    - Fixed-rate coupon bond.
     - Stock.
     - One-asset option base class.
     - Asian option.
@@ -323,7 +327,7 @@
 
     To do:
     - Forward (stock) and FRA (forward-rate agreement).
-    - Bond.
+    - More bonds.
 
 
 
@@ -343,11 +347,6 @@
     To do:
     - Future convexity adjustment
     - End of year effect
-    - Do not require today's date, only the settlement date (when
-      discount==1.0) is necessary
-    - Assume no zero/forward implicit convention on input, specify them for
-      output
-
 
 
 
@@ -388,7 +387,7 @@
     <strong>Test suite</strong>
 
     Implemented by means of the Boost unit-test framework.
-    More than 120 automated tests.
+    More than 170 automated tests.
     \htmlonly
     An automatically-generated list is available <a href="test.html">here</a>.
     \endhtmlonly
@@ -408,7 +407,8 @@
     - Index classes for handling of fixed-income libor indexes (fixings,
       forecasting, etc.): AUD, CAD, CHF, EUR, GBP, JPY, USD, ZAR, generic.
     - Cash-flow class.
-    - Currency enumeration.
+    - Currency class and enumeration.
+    - Money class with automatic exchange-rate capabilities.
     - Output data formatters: long integers, Ordinal numerals,
       power of two, exponential, fixed digit, sequences, dates, etc.
     - Input data parsers.
@@ -423,9 +423,7 @@
 
     To do:
     - IRR, duration, convexity, etc. for a sequence of cash flows
-    - Currency as class with methods returning related info
     - Implement currency as per OMG definition
-    - Implement round as per OMG enumeration/definition
 
 
 
@@ -436,8 +434,6 @@
 
     To do:
     - Add a "Getting started" page to the site
-    - Enable forums?
-    - Create a FAQ
 
 
 

@@ -32,6 +32,7 @@ QL_TESTS = \
     "asianoptions.obj$(_mt)$(_D)" \
     "barrieroption.obj$(_mt)$(_D)" \
     "basketoption.obj$(_mt)$(_D)" \
+    "bonds.obj$(_mt)$(_D)" \
     "calendars.obj$(_mt)$(_D)" \
     "capfloor.obj$(_mt)$(_D)" \
     "cliquetoption.obj$(_mt)$(_D)" \
@@ -73,6 +74,7 @@ QL_TESTS = \
 
 # Tools to be used
 CC        = bcc32
+TLIB      = tlib
 
 # Options
 CC_OPTS = -vi- -I$(QL_INCLUDE_DIR) -I$(QL_FUN_INCLUDE_DIR)
@@ -95,6 +97,10 @@ CC_OPTS = -vi- -I$(QL_INCLUDE_DIR) -I$(QL_FUN_INCLUDE_DIR)
     CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
+TLIB_OPTS    = /P256
+
+QL_TEST_LIB = all-tests-bcb$(_mt)$(_D)-0_3_8.lib
+
 # Generic rules
 .cpp.obj:
     $(CC) -c -q $(CC_OPTS) $<
@@ -104,15 +110,20 @@ CC_OPTS = -vi- -I$(QL_INCLUDE_DIR) -I$(QL_FUN_INCLUDE_DIR)
 
 # Primary target:
 $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe:: $(EXE_DIR) \
-                                                           $(QL_TESTS)
+                                                          $(QL_TEST_LIB)
     if exist $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.lib \
          del $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.lib
     $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) \
-    -e"$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe" $(QL_TESTS) \
-    libboost_unit_test_framework-bcb$(_mt)$(_D)-1_31.lib
+    -e"$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe" \
+    $(QL_TEST_LIB) libboost_unit_test_framework-bcb$(_mt)$(_D)-1_31.lib
 
 $(EXE_DIR):
     if not exist .\bin md .\bin
+
+$(QL_TEST_LIB): $(QL_TESTS)
+    if exist $(QL_TEST_LIB)     del $(QL_TEST_LIB)
+    $(TLIB) $(TLIB_OPTS) "$(QL_TEST_LIB)" /a $(QL_TESTS)
+
 
 check: $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe
     $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe \

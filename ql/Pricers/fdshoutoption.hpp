@@ -33,7 +33,7 @@ namespace QuantLib {
         FdShoutOption(Option::Type type, Real underlying, Real strike,
                       Spread dividendYield, Rate riskFreeRate,
                       Time residualTime, Volatility volatility,
-                      Size timeSteps, Size gridPoints);
+                      Size timeSteps = 100, Size gridPoints = 100);
         void initializeStepCondition() const;
 
         // This method must be implemented to imply volatilities
@@ -49,7 +49,7 @@ namespace QuantLib {
     inline FdShoutOption::FdShoutOption(
                        Option::Type type, Real underlying,
                        Real strike, Spread dividendYield, Rate riskFreeRate,
-                       Time residualTime, Volatility volatility, 
+                       Time residualTime, Volatility volatility,
                        Size timeSteps, Size gridPoints)
     : FdStepConditionOption(type, underlying, strike, dividendYield,
                             riskFreeRate, residualTime, volatility,
@@ -57,7 +57,7 @@ namespace QuantLib {
 
     inline void FdShoutOption::initializeStepCondition() const {
         stepCondition_ = boost::shared_ptr<StandardStepCondition>(
-                          new ShoutCondition(intrinsicValues_, residualTime_, 
+                          new ShoutCondition(intrinsicValues_, residualTime_,
                                              riskFreeRate_));
     }
 

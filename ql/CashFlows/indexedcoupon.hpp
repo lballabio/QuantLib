@@ -22,7 +22,6 @@
 #ifndef quantlib_indexed_coupon_hpp
 #define quantlib_indexed_coupon_hpp
 
-#include <ql/index.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/Indexes/xibor.hpp>
 

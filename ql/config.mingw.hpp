@@ -56,8 +56,6 @@
 //#define M_SQRT3     1.73205080756887719000
 //#define M_INVLN2    1.4426950408889633870E0  /* 1 / log(2) */
 
-#define HAVE_LIMITS  1
-
 #define HAVE_CTIME   1
 #define QL_TIME_T    std::time_t
 #define QL_TM        std::tm

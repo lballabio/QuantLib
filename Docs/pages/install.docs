@@ -44,21 +44,19 @@
 
     Visual C++ 6.0/7.1 projects files are supplied for building the library.
 
+    Dev-C++ project files are provided in order to make easier the usage of
+    Mingw/GCC under Win32.
+
     If you use Borland command line compiler (5.5.1) the make options are:
     -D_DEBUG (debug), -D_RTLDLL (dynamic linking of runtime library),
     -D_MT__ (multi-thread) as in:
 
     make all
+
     make -D_DEBUG all
-    make -D_RTLDLL all
-    make -D_RTLDLL -D_DEBUG all
-    make -D__MT__ all
-    make -D__MT__ -D_DEBUG all
-    make -D__MT__ -D_RTLDLL all
+
     make -D__MT__ -D_RTLDLL -D_DEBUG all
 
-    Only "make -D_RTLDLL all" does work: any help about the other configurations
-    would be appreciated
+    or any other combination of options.
 
 */
-

@@ -44,6 +44,9 @@ browsed at <http://quantlib.org/reference/history.html>.
 
 Known bugs are listed at <http://quantlib.org/reference/bug.html>.
 
+A (hopefully growing) list of frequently-asked questions is available at
+<http://quantlib.org/reference/faq.html>.
+
 If you are willing to contribute and looking for a task, to-do items
 are listed in <http://quantlib.org/reference/todo.html> and 
 <http://quantlib.org/reference/overview.html>.

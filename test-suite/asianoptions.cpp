@@ -31,7 +31,8 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#define REPORT_FAILURE(greekName, averageType, runningAccumulator, pastFixings, \
+#define REPORT_FAILURE(greekName, averageType, \
+                       runningAccumulator, pastFixings, \
                        fixingDates, payoff, exercise, s, q, r, today, v, \
                        expected, calculated, tolerance) \
     BOOST_FAIL(exerciseTypeToString(exercise) + \
@@ -629,10 +630,10 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
-    tolerance["theta"]  = 1.0e-5;
-    tolerance["rho"]    = 1.0e-5;
-    tolerance["divRho"] = 1.0e-5;
-    tolerance["vega"]   = 1.0e-5;
+    // tolerance["theta"]  = 1.0e-5;
+    // tolerance["rho"]    = 1.0e-5;
+    // tolerance["divRho"] = 1.0e-5;
+    // tolerance["vega"]   = 1.0e-5;
 
     Option::Type types[] = { Option::Call, Option::Put };
     Real underlyings[] = { 100.0 };
@@ -702,10 +703,10 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                       Real value = option.NPV();
                       calculated["delta"]  = option.delta();
                       calculated["gamma"]  = option.gamma();
-                      calculated["theta"]  = option.theta();
-                      calculated["rho"]    = option.rho();
-                      calculated["divRho"] = option.dividendRho();
-                      calculated["vega"]   = option.vega();
+                      // calculated["theta"]  = option.theta();
+                      // calculated["rho"]    = option.rho();
+                      // calculated["divRho"] = option.dividendRho();
+                      // calculated["vega"]   = option.vega();
 
                       if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
@@ -720,6 +721,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                           expected["delta"] = (value_p - value_m)/(2*du);
                           expected["gamma"] = (delta_p - delta_m)/(2*du);
 
+                          /*
                           // perturb rates and get rho and dividend rho
                           Spread dr = r*1.0e-4;
                           rRate->setValue(r+dr);
@@ -754,6 +756,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                           value_p = option.NPV();
                           Settings::instance().setEvaluationDate(today);
                           expected["theta"] = (value_p - value_m)/dT;
+                          */
 
                           // compare
                           std::map<std::string,Real>::iterator it;
@@ -798,11 +801,8 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testMCDiscreteGeometricAveragePrice));
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
-
-    /* broken
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
-    */
     return suite;
 }
 

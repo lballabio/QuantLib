@@ -32,10 +32,14 @@ namespace QuantLib {
         Option", E. Levy (1997) in "Exotic Options: The State of the
         Art", edited by L. Clewlow, C. Strickland, pag 65-97
 
-        \bug calculated Greeks do not match numerical results
+        \todo implement correct theta, rho, dividend-rho, and vega
+              calculation
 
-        \test the correctness of the returned value is tested by
-              reproducing results available in literature.
+        \test a) the correctness of the returned value is tested by
+                 reproducing results available in literature.
+
+        \test b) the correctness of the available greeks is tested
+                 against numerical calculations.
 
         \ingroup asianengines
     */

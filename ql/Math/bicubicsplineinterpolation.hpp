@@ -25,20 +25,20 @@
 
 #include <ql/Math/interpolation2D.hpp>
 #include <ql/Math/cubicspline.hpp>
+#ifdef QL_PATCH_MSVC6
+#include <ql/Math/matrix.hpp>
+#endif
 
 namespace QuantLib {
 
-    /*! bicubic spline interpolation between discrete points
-        \todo revise end conditions
-    */
-    class BicubicSpline : public Interpolation2D {
-      protected:
-        //! bicubic spline implementation
+    namespace detail {
+
         template <class I1, class I2, class M>
-        class Impl : public Interpolation2D::templateImpl<I1,I2,M> {
+        class BicubicSplineImpl
+            : public Interpolation2D::templateImpl<I1,I2,M> {
           public:
-            Impl(const I1& xBegin, const I1& xEnd,
-                 const I2& yBegin, const I2& yEnd, const M& zData)
+            BicubicSplineImpl(const I1& xBegin, const I1& xEnd,
+                              const I2& yBegin, const I2& yEnd, const M& zData)
             : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
                                                      yBegin,yEnd,
                                                      zData) {
@@ -58,16 +58,35 @@ namespace QuantLib {
           private:
             std::vector<Interpolation> splines_;
         };
+
+    }
+
+    /*! bicubic spline interpolation between discrete points
+        \todo revise end conditions
+    */
+    class BicubicSpline : public Interpolation2D {
       public:
         /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */
+        #ifndef QL_PATCH_MSVC6
         template <class I1, class I2, class M>
         BicubicSpline(const I1& xBegin, const I1& xEnd,
                       const I2& yBegin, const I2& yEnd,
                       const M& zData) {
             impl_ = boost::shared_ptr<Interpolation2D::Impl>(
-                  new BicubicSpline::Impl<I1,I2,M>(xBegin, xEnd,
-                                                   yBegin, yEnd, zData));
+                  new detail::BicubicSplineImpl<I1,I2,M>(xBegin, xEnd,
+                                                         yBegin, yEnd, zData));
         }
+        #else
+        template <class I1, class I2>
+        BicubicSpline(const I1& xBegin, const I1& xEnd,
+                      const I2& yBegin, const I2& yEnd,
+                      const Matrix& zData) {
+            impl_ = boost::shared_ptr<Interpolation2D::Impl>(
+                  new detail::BicubicSplineImpl<I1,I2,Matrix>(xBegin, xEnd,
+                                                              yBegin, yEnd,
+                                                              zData));
+        }
+        #endif
     };
 
 }

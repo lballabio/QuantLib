@@ -25,7 +25,6 @@
 
 #include <ql/Math/array.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
-#include <boost/iterator/reverse_iterator.hpp>
 
 namespace QuantLib {
 

@@ -24,7 +24,6 @@
 #define quantlib_asian_option_hpp
 
 #include <ql/Instruments/oneassetstrikedoption.hpp>
-#include <vector>
 
 namespace QuantLib {
 

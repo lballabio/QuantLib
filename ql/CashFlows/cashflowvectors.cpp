@@ -35,9 +35,6 @@ namespace QuantLib {
                    "unspecified coupon rates (size=0)");
         QL_REQUIRE(nominals.size() != 0,
                    "unspecified nominals (size=0)");
-        QL_REQUIRE(paymentAdjustment != Unadjusted,
-                   "invalid business-day convention "
-                   "for payment-date adjustment");
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
         Calendar calendar = schedule.calendar();

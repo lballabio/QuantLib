@@ -112,9 +112,9 @@ void InterestRateTest::testConversions() {
 
         // check that the equivalent InterestRate with *same* daycounter,
         // compounding, and frequency is the *same* InterestRate
-        ir2 = ir.equivalentInterestRate(d1, d2, ir.dayCounter(),
-                                                ir.compounding(),
-                                                ir.frequency());
+        ir2 = ir.equivalentRate(d1, d2, ir.dayCounter(),
+                                ir.compounding(),
+                                ir.frequency());
         error = QL_FABS(ir.rate()-ir2.rate());
         if (error>1e-15)
             BOOST_FAIL("\n    original interest rate: "
@@ -158,8 +158,8 @@ void InterestRateTest::testConversions() {
 
         // check that the equivalent InterestRate with *different*
         // compounding, and frequency is the *expected* InterestRate
-        ir3 = ir.equivalentInterestRate(d1, d2, ir.dayCounter(),
-                                        cases[i].comp2, cases[i].freq2);
+        ir3 = ir.equivalentRate(d1, d2, ir.dayCounter(),
+                                cases[i].comp2, cases[i].freq2);
         expectedIR = InterestRate(cases[i].expected, ir.dayCounter(),
                                   cases[i].comp2, cases[i].freq2);
         r3 = roundingPrecision(ir3.rate());

@@ -23,7 +23,6 @@
 #define quantlib_mersennetwister_uniform_rng_h
 
 #include <ql/MonteCarlo/sample.hpp>
-#include <ql/types.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -56,9 +55,9 @@ namespace QuantLib {
       private:
         void seedInitialization(unsigned long seed);
         mutable std::vector<unsigned long> mt;
+        mutable Size mti;
         static const Size N, M;
         static const unsigned long MATRIX_A, UPPER_MASK, LOWER_MASK;
-        static Size mti;
     };
 
 }

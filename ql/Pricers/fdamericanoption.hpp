@@ -38,8 +38,8 @@ namespace QuantLib {
                          Rate riskFreeRate,
                          Time residualTime,
                          Volatility volatility,
-                         Size timeSteps,
-                         Size gridPoints);
+                         Size timeSteps = 100,
+                         Size gridPoints = 100);
         void initializeStepCondition() const;
 
         // This method must be implemented to imply volatilities
@@ -53,8 +53,8 @@ namespace QuantLib {
     // inline definitions
 
     inline FdAmericanOption::FdAmericanOption(
-                         Option::Type type, Real underlying, Real strike, 
-                         Spread dividendYield, Rate riskFreeRate, 
+                         Option::Type type, Real underlying, Real strike,
+                         Spread dividendYield, Rate riskFreeRate,
                          Time residualTime, Volatility volatility,
                          Size timeSteps, Size gridPoints)
     : FdStepConditionOption(type, underlying, strike, dividendYield,

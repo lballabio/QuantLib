@@ -11,6 +11,7 @@ m4datadir = $(datadir)/aclocal
 dist_m4data_DATA = quantlib.m4
 
 EXTRA_DIST = \
+	Announce.txt \
 	Authors.txt \
 	ChangeLog.txt \
 	Contributors.txt \
@@ -24,7 +25,7 @@ EXTRA_DIST = \
 	QuantLib.vcproj \
 	QuantLib.dev \
 	Readme.txt \
-	bootstrap \
+	autogen.sh \
 	makefile.mak
 
 .PHONY: examples

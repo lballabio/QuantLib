@@ -30,15 +30,15 @@
 
 namespace QuantLib {
 
-    //! bilinear interpolation between discrete points
-    class BilinearInterpolation : public Interpolation2D {
-      protected:
-        //! bilinear interpolation implementation
+    namespace detail {
+
         template <class I1, class I2, class M>
-        class Impl : public Interpolation2D::templateImpl<I1,I2,M> {
+        class BilinearInterpolationImpl
+            : public Interpolation2D::templateImpl<I1,I2,M> {
           public:
-            Impl(const I1& xBegin, const I1& xEnd,
-                 const I2& yBegin, const I2& yEnd, const M& zData)
+            BilinearInterpolationImpl(const I1& xBegin, const I1& xEnd,
+                                      const I2& yBegin, const I2& yEnd,
+                                      const M& zData)
             : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
                                                      yBegin,yEnd,
                                                      zData) {}
@@ -59,6 +59,11 @@ namespace QuantLib {
                      + (1.0-t)*u*z3 + t*u*z4;
             }
         };
+
+    }
+
+    //! bilinear interpolation between discrete points
+    class BilinearInterpolation : public Interpolation2D {
       public:
         /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */
         #ifndef QL_PATCH_MSVC6
@@ -67,9 +72,9 @@ namespace QuantLib {
                               const I2& yBegin, const I2& yEnd,
                               const M& zData) {
             impl_ = boost::shared_ptr<Interpolation2D::Impl>(
-                  new BilinearInterpolation::Impl<I1,I2,M>(xBegin, xEnd,
-                                                           yBegin, yEnd,
-                                                           zData));
+                  new detail::BilinearInterpolationImpl<I1,I2,M>(xBegin, xEnd,
+                                                                 yBegin, yEnd,
+                                                                 zData));
         }
         #else
         template <class I1, class I2>
@@ -77,7 +82,8 @@ namespace QuantLib {
                               const I2& yBegin, const I2& yEnd,
                               const Matrix& zData) {
             impl_ = boost::shared_ptr<Interpolation2D::Impl>(
-                  new BilinearInterpolation::Impl<I1,I2,Matrix>(xBegin, xEnd,
+                  new detail::BilinearInterpolationImpl<I1,I2,Matrix>(
+                                                                xBegin, xEnd,
                                                                 yBegin, yEnd,
                                                                 zData));
         }

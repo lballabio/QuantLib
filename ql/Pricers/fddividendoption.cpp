@@ -18,7 +18,6 @@
 #include <ql/Pricers/fddividendoption.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
-#include <iterator>
 
 namespace QuantLib {
 

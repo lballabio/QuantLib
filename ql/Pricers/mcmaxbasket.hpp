@@ -23,7 +23,6 @@
 #define quantlib_max_basket_pricer_h
 
 #include <ql/Pricers/mcpricer.hpp>
-#include <ql/MonteCarlo/montecarlomodel.hpp>
 
 namespace QuantLib {
 

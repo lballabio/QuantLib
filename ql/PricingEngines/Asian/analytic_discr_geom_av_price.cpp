@@ -108,8 +108,9 @@ namespace QuantLib {
         // results_.deltaForward = black.value();
         results_.gamma = black.gamma(process->stateVariable()->value());
 
+        /*
         Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                   arguments_.exercise->lastDate());
+                              arguments_.exercise->lastDate());
         results_.rho = black.rho(t);
 
         t = divdc.yearFraction(process->dividendYield()->referenceDate(),
@@ -120,6 +121,7 @@ namespace QuantLib {
                                arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
         results_.theta = black.theta(process->stateVariable()->value(), t);
+        */
 
         results_.strikeSensitivity = black.strikeSensitivity();
 

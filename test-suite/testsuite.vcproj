@@ -685,6 +685,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\bonds.cpp">
+			</File>
+			<File
 				RelativePath="calendars.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2523,6 +2526,9 @@
 			</File>
 			<File
 				RelativePath="basketoption.hpp">
+			</File>
+			<File
+				RelativePath=".\bonds.hpp">
 			</File>
 			<File
 				RelativePath="calendars.hpp">

@@ -253,6 +253,10 @@ SOURCE=.\basketoption.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\bonds.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\calendars.cpp
 # End Source File
 # Begin Source File
@@ -422,6 +426,10 @@ SOURCE=.\barrieroption.hpp
 # Begin Source File
 
 SOURCE=.\basketoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\bonds.hpp
 # End Source File
 # Begin Source File
 

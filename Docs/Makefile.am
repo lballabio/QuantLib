@@ -1,6 +1,4 @@
 
-SUBDIRS = pages Examples images
-
 EXTRA_DIST = \
              makefile.mak \
              quantlib.css \
@@ -27,6 +25,14 @@ DOXYGEN_INPUT := $(shell find ${top_srcdir} -name *.hpp) \
 
 .PHONY: docs-all docs-ps docs-pdf docs-html docs-man docs-online docs-clean
 .PHONY: docs-dist docs-ps-dist docs-pdf-dist docs-html-dist docs-man-dist
+
+dist-hook:
+	mkdir -p $(distdir)/pages $(distdir)/Examples $(distdir)/images
+	cp -p $(srcdir)/pages/*.docs $(distdir)/pages
+	cp -p $(srcdir)/Examples/*.cpp $(distdir)/Examples
+	cp -p $(srcdir)/images/*.bmp $(srcdir)/images/*.eps \
+	      $(srcdir)/images/*.jpg $(srcdir)/images/*.png \
+	      $(srcdir)/images/*.pdf $(distdir)/images
 
 docs-all: docs-html docs-ps docs-pdf docs-man
 docs-dist: docs-pdf-dist docs-ps-dist docs-html-dist docs-man-dist

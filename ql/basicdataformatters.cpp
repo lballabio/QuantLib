@@ -93,7 +93,7 @@ namespace QuantLib {
             return std::string("null");
         } else {
             out.str("");
-            std::fixed(out);
+	    out.setf(std::ios::fixed, std::ios::floatfield);
             out << std::setw(digits) << std::setprecision(precision) << x;
             return out.str();
         }
@@ -107,7 +107,7 @@ namespace QuantLib {
             return std::string("null");
         } else {
             out.str("");
-            std::scientific(out);
+	    out.setf(std::ios::scientific, std::ios::floatfield);
             out << std::setw(digits) << std::setprecision(precision) << x;
             return out.str();
         }

@@ -129,7 +129,7 @@ namespace QuantLib {
         */
         Date advance(const Date& date,
                      const Period& period,
-                     BusinessDayConvention convention) const;
+                     BusinessDayConvention convention = Following) const;
         //@}
 
         //! partial calendar implementation

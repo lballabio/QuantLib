@@ -47,8 +47,6 @@
 #define M_1_SQRTPI  0.564189583547756286948
 #define M_SQRTPI    1.77245385090551602792981
 
-#define HAVE_LIMITS  1
-
 #define HAVE_CTIME   1
 #define QL_TIME_T    std::time_t
 #define QL_TM        std::tm

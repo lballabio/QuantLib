@@ -24,7 +24,6 @@
 #define quantlib_incremental_statistics_hpp
 
 #include <ql/null.hpp>
-#include <ql/types.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {

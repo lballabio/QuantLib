@@ -751,6 +751,14 @@ SOURCE=.\ql\Instruments\basketoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\bond.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\bond.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\capfloor.cpp
 # End Source File
 # Begin Source File
@@ -784,6 +792,14 @@ SOURCE=.\ql\Instruments\europeanoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\europeanoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\fixedcouponbond.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\fixedcouponbond.hpp
 # End Source File
 # Begin Source File
 

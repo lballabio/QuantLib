@@ -24,7 +24,6 @@
 #ifndef quantlib_array_h
 #define quantlib_array_h
 
-#include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/disposable.hpp>
 #include <ql/basicdataformatters.hpp>

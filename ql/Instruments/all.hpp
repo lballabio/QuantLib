@@ -23,10 +23,12 @@
 
 #include <ql/Instruments/barrieroption.hpp>
 #include <ql/Instruments/basketoption.hpp>
+#include <ql/Instruments/bond.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/cliquetoption.hpp>
 #include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/Instruments/europeanoption.hpp>
+#include <ql/Instruments/fixedcouponbond.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/Instruments/multiassetoption.hpp>
 #include <ql/Instruments/oneassetoption.hpp>

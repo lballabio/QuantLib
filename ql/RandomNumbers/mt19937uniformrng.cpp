@@ -78,8 +78,6 @@ namespace QuantLib {
     // least significant r bits
     const unsigned long MersenneTwisterUniformRng::LOWER_MASK=0x7fffffffUL;
 
-    Size MersenneTwisterUniformRng::mti;
-
 
     MersenneTwisterUniformRng::MersenneTwisterUniformRng(unsigned long seed)
     : mt(N) {

@@ -44,8 +44,6 @@
 #define QL_MODF      std::modf
 #define QL_FLOOR     std::floor
 
-#define HAVE_LIMITS  1
-
 #define HAVE_CTIME   1
 #define QL_TIME_T    std::time_t
 #define QL_TM        std::tm

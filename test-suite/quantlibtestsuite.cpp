@@ -36,6 +36,7 @@
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
 #include "basketoption.hpp"
+#include "bonds.hpp"
 #include "calendars.hpp"
 #include "capfloor.hpp"
 #include "cliquetoption.hpp"
@@ -115,6 +116,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AsianOptionTest::suite());
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());
+    test->add(BondTest::suite());
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());
     test->add(CliquetOptionTest::suite());

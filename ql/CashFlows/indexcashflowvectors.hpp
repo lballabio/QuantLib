@@ -55,9 +55,6 @@ namespace QuantLib {
                         ) {
 
         QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
-        QL_REQUIRE(paymentAdjustment != Unadjusted,
-                   "invalid business-day convention "
-                   "for payment-date adjustment");
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
         // first period might be short or long

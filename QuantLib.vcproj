@@ -2546,6 +2546,12 @@
 				RelativePath="ql\Instruments\basketoption.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\bond.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\bond.hpp">
+			</File>
+			<File
 				RelativePath="ql\Instruments\capfloor.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -2778,6 +2784,12 @@
 			</File>
 			<File
 				RelativePath="ql\Instruments\europeanoption.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\fixedcouponbond.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\fixedcouponbond.hpp">
 			</File>
 			<File
 				RelativePath="ql\Instruments\forwardvanillaoption.cpp">

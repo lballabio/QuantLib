@@ -43,6 +43,7 @@ SectionIn 1 2
     File "News.txt"
     File "QuantLib.dsw"
     File "QuantLib.sln"
+    File "QuantLib.dev"
 
     File "*.txt"
     File "*.TXT"
@@ -65,6 +66,7 @@ SectionIn 1 2
     File /r "functions\*.cpp"
     File /r "functions\*.hpp"
     File /r "functions\*.dsp"
+    File /r "functions\*.dev"
     File /r "functions\*.vcproj"
 
     SetOutPath $INSTDIR\test-suite
@@ -73,7 +75,9 @@ SectionIn 1 2
     File /r "test-suite\*.cpp"
     File /r "test-suite\*.hpp"
     File /r "test-suite\*.dsp"
+    File /r "test-suite\*.dev"
     File /r "test-suite\*.vcproj"
+    File /r "test-suite\*.bat"
 
     SetOutPath $INSTDIR\Examples
     File /r "Examples\*.cpp"
@@ -132,11 +136,11 @@ SectionEnd
 
 Section "WinHelp documentation"
 SectionIn 1
-  SetOutPath "$INSTDIR\Docs"
+  SetOutPath "$INSTDIR\Docs\html"
   File /nonfatal "Docs\html\index.chm"
-  IfFileExists "$INSTDIR\Docs\index.chm" 0 NoWinHelpDoc
+  IfFileExists "$INSTDIR\Docs\html\index.chm" 0 NoWinHelpDoc
       CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (WinHelp).lnk" \
-                 "$INSTDIR\Docs\index.chm"
+                 "$INSTDIR\Docs\html\index.chm"
   NoWinHelpDoc:
 SectionEnd
 

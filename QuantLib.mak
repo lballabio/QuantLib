@@ -106,6 +106,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
 	-@erase "$(INTDIR)\blackvariancesurface.sbr"
+	-@erase "$(INTDIR)\bond.obj"
+	-@erase "$(INTDIR)\bond.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -196,6 +198,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
+	-@erase "$(INTDIR)\fixedcouponbond.obj"
+	-@erase "$(INTDIR)\fixedcouponbond.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
@@ -594,7 +598,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\bond.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -783,7 +789,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\bond.obj" \
+	"$(INTDIR)\fixedcouponbond.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -867,6 +875,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
 	-@erase "$(INTDIR)\blackvariancesurface.sbr"
+	-@erase "$(INTDIR)\bond.obj"
+	-@erase "$(INTDIR)\bond.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -957,6 +967,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
+	-@erase "$(INTDIR)\fixedcouponbond.obj"
+	-@erase "$(INTDIR)\fixedcouponbond.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
@@ -1356,7 +1368,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\bond.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1545,7 +1559,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\bond.obj" \
+	"$(INTDIR)\fixedcouponbond.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1629,6 +1645,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
 	-@erase "$(INTDIR)\blackvariancesurface.sbr"
+	-@erase "$(INTDIR)\bond.obj"
+	-@erase "$(INTDIR)\bond.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -1719,6 +1737,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
+	-@erase "$(INTDIR)\fixedcouponbond.obj"
+	-@erase "$(INTDIR)\fixedcouponbond.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
@@ -2117,7 +2137,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\bond.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2306,7 +2328,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\bond.obj" \
+	"$(INTDIR)\fixedcouponbond.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2390,6 +2414,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
 	-@erase "$(INTDIR)\blackvariancesurface.sbr"
+	-@erase "$(INTDIR)\bond.obj"
+	-@erase "$(INTDIR)\bond.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -2480,6 +2506,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
+	-@erase "$(INTDIR)\fixedcouponbond.obj"
+	-@erase "$(INTDIR)\fixedcouponbond.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
@@ -2879,7 +2907,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\bond.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3068,7 +3098,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\bond.obj" \
+	"$(INTDIR)\fixedcouponbond.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3152,6 +3184,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
 	-@erase "$(INTDIR)\blackvariancesurface.sbr"
+	-@erase "$(INTDIR)\bond.obj"
+	-@erase "$(INTDIR)\bond.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -3242,6 +3276,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
+	-@erase "$(INTDIR)\fixedcouponbond.obj"
+	-@erase "$(INTDIR)\fixedcouponbond.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
@@ -3640,7 +3676,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\bond.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3829,7 +3867,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\bond.obj" \
+	"$(INTDIR)\fixedcouponbond.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3913,6 +3953,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackvariancecurve.sbr"
 	-@erase "$(INTDIR)\blackvariancesurface.obj"
 	-@erase "$(INTDIR)\blackvariancesurface.sbr"
+	-@erase "$(INTDIR)\bond.obj"
+	-@erase "$(INTDIR)\bond.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -4003,6 +4045,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
+	-@erase "$(INTDIR)\fixedcouponbond.obj"
+	-@erase "$(INTDIR)\fixedcouponbond.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
@@ -4402,7 +4446,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\bond.sbr" \
+	"$(INTDIR)\fixedcouponbond.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4591,7 +4637,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\bond.obj" \
+	"$(INTDIR)\fixedcouponbond.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_9.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4902,6 +4950,12 @@ SOURCE=.\ql\Instruments\basketoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Instruments\bond.cpp
+
+"$(INTDIR)\bond.obj"	"$(INTDIR)\bond.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Instruments\capfloor.cpp
 
 "$(INTDIR)\capfloor.obj"	"$(INTDIR)\capfloor.sbr" : $(SOURCE) "$(INTDIR)"
@@ -4923,6 +4977,12 @@ SOURCE=.\ql\Instruments\dividendvanillaoption.cpp
 SOURCE=.\ql\Instruments\europeanoption.cpp
 
 "$(INTDIR)\europeanoption.obj"	"$(INTDIR)\europeanoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Instruments\fixedcouponbond.cpp
+
+"$(INTDIR)\fixedcouponbond.obj"	"$(INTDIR)\fixedcouponbond.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -18,7 +18,6 @@
 
 #include <ql/RandomNumbers/faurersg.hpp>
 #include <ql/Math/primenumbers.hpp>
-#include <limits>
 
 namespace QuantLib {
 

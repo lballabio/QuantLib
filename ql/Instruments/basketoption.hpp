@@ -24,7 +24,6 @@
 
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/Instruments/multiassetoption.hpp>
-#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 

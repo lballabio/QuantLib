@@ -104,16 +104,13 @@ QL_CHECK_FUNC([clock],[],[$ql_time])
 QL_CHECK_FUNC([time],[0],[$ql_time])
 QL_CHECK_GMTIME
 
-AC_CHECK_HEADERS([limits],,[AC_MSG_WARN([<limits> not found])])
-QL_CHECK_HEADER([limits])
-AC_CHECK_HEADERS([float.h],,[AC_MSG_WARN([<float.h> not found])])
-
 AC_CHECK_HEADERS([algorithm],,[AC_MSG_WARN([<algorithm> not found])])
 QL_CHECK_FUNC([min],[1,2],[algorithm])
 QL_CHECK_FUNC([max],[1,2],[algorithm])
 
 # Check for Boost components
 QL_CHECK_BOOST
+AM_CONDITIONAL(BOOST_UNIT_TEST_FOUND, test "x${BOOST_UNIT_TEST_LIB}" != "x")
 
 # Check for optional features
 QL_CHECK_LONG_LONG
@@ -323,9 +320,6 @@ AC_CONFIG_FILES([
     functions/ql/Functions/Makefile
     man/Makefile
     Docs/Makefile
-    Docs/pages/Makefile
-    Docs/Examples/Makefile
-    Docs/images/Makefile
     Examples/Makefile
     Examples/AmericanOption/Makefile
     Examples/BermudanSwaption/Makefile

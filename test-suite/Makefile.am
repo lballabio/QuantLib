@@ -5,6 +5,7 @@ QL_TESTS = \
 	asianoptions.hpp asianoptions.cpp \
 	barrieroption.hpp barrieroption.cpp \
 	basketoption.hpp basketoption.cpp \
+	bonds.hpp bonds.cpp \
 	calendars.hpp calendars.cpp \
 	capfloor.hpp capfloor.cpp \
 	cliquetoption.hpp cliquetoption.cpp \
@@ -43,6 +44,12 @@ QL_TESTS = \
 	old_pricers.hpp old_pricers.cpp \
 	utilities.hpp utilities.cpp
 
+dist-hook:
+	mkdir -p $(distdir)/bin
+	cp -p $(srcdir)/bin/runtest.bat $(distdir)/bin
+
+if BOOST_UNIT_TEST_FOUND
+
 AM_CPPFLAGS = -I${top_srcdir} -I${top_srcdir}/functions -I${top_builddir}
 
 bin_PROGRAMS = quantlib-test-suite
@@ -63,3 +70,15 @@ EXTRA_DIST = \
 	testsuite.vcproj \
 	QuantLib-test-suite.dev \
 	makefile.mak
+
+else
+
+EXTRA_DIST = \
+	${QL_TESTS} \
+	README.txt \
+	testsuite.dsp \
+	testsuite.vcproj \
+	QuantLib-test-suite.dev \
+	makefile.mak
+
+endif

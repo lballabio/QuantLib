@@ -23,11 +23,8 @@
 #ifndef quantlib_mc_discrete_arithmetic_average_price_asian_engine_h
 #define quantlib_mc_discrete_arithmetic_average_price_asian_engine_h
 
-#include <ql/PricingEngines/Asian/mcdiscreteasianengine.hpp>
 #include <ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp>
 #include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Volatilities/blackvariancecurve.hpp>
 
 namespace QuantLib {
 
