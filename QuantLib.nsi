@@ -1,13 +1,13 @@
 
 # HEADER CONFIGURATION COMMANDS
 Name "QuantLib"
-OutFile "QuantLib-inst.exe"
+OutFile "..\QuantLib-inst.exe"
 SilentInstall normal
 CRCCheck on
 UninstallText "This will uninstall QuantLib. Hit next to continue."
 UninstallExeName "QuantLibUninstall.exe"
 LicenseText "This installer will install QuantLib. Please read the license below."
-LicenseData ..\QuantLib\License.txt
+LicenseData License.txt
 ComponentText "Select which optional components you want installed."
 DirShow show
 DirText "Choose a directory to install into:"
@@ -19,75 +19,75 @@ ShowInstDetails hide
 # INSTALLATION EXECUTION COMMANDS
 Section "-QuantLib"
 SetOutPath $INSTDIR
-File "..\QuantLib\README.txt"
-File "..\QuantLib\LICENSE.txt"
-File "..\QuantLib\Contributors.txt"
-File "..\QuantLib\Authors.txt"
+File "README.txt"
+File "LICENSE.txt"
+File "Contributors.txt"
+File "Authors.txt"
 SetOutPath $INSTDIR\lib\Win32\VisualStudio
-File "..\QuantLib\lib\Win32\VisualStudio\*.lib"
+File "lib\Win32\VisualStudio\*.lib"
 SetOutPath $INSTDIR\lib\Win32\Borland
-File "..\QuantLib\lib\Win32\Borland\*.lib"
+File "lib\Win32\Borland\*.lib"
 SetOutPath  $INSTDIR\Include\ql
-File /r "..\QuantLib\Include\ql\*.hpp"
+File /r "Include\ql\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Calendars
-File /r "..\QuantLib\Include\ql\Calendars\*.hpp"
+File /r "Include\ql\Calendars\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Currencies
-File /r "..\QuantLib\Include\ql\Currencies\*.hpp"
+File /r "Include\ql\Currencies\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\DayCounters
-File /r "..\QuantLib\Include\ql\DayCounters\*.hpp"
+File /r "Include\ql\DayCounters\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\FiniteDifferences
-File /r "..\QuantLib\Include\ql\FiniteDifferences\*.hpp"
+File /r "Include\ql\FiniteDifferences\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Instruments
-File /r "..\QuantLib\Include\ql\Instruments\*.hpp"
+File /r "Include\ql\Instruments\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Math
-File /r "..\QuantLib\Include\ql\Math\*.hpp"
+File /r "Include\ql\Math\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\MonteCarlo
-File /r "..\QuantLib\Include\ql\MonteCarlo\*.hpp"
+File /r "Include\ql\MonteCarlo\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Patterns
-File /r "..\QuantLib\Include\ql\Patterns\*.hpp"
+File /r "Include\ql\Patterns\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Pricers
-File /r "..\QuantLib\Include\ql\Pricers\*.hpp"
+File /r "Include\ql\Pricers\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Solvers1D
-File /r "..\QuantLib\Include\ql\Solvers1D\*.hpp"
+File /r "Include\ql\Solvers1D\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\TermStructures
-File /r "..\QuantLib\Include\ql\TermStructures\*.hpp"
+File /r "Include\ql\TermStructures\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Utilities
-File /r "..\QuantLib\Include\ql\Utilities\*.hpp"
+File /r "Include\ql\Utilities\*.hpp"
 
 Section "SWIG wrapper files"
 SetOutPath $INSTDIR\Swig
-File /r "..\QuantLib\Swig\*.i"
+File /r "Swig\*.i"
 
 Section "Documentation"
 SetOutPath $INSTDIR\Docs\html
-;File "..\QuantLib\Docs\html\*.*"
+;File "Docs\html\*.*"
 SetOutPath $INSTDIR\Docs\pdf
-;File "..\QuantLib\Docs\latex\*.pdf"
+;File "Docs\latex\*.pdf"
 
 ;Section "Examples"
 ;SetOutPath $INSTDIR\Examples
-;File "..\QuantLib\Examples\*.cpp"
-;File "..\QuantLib\Examples\*.hpp"
+;File "Examples\*.cpp"
+;File "Examples\*.hpp"
 
 Section "Sources"
 SetOutPath $INSTDIR\Sources
-File /r "..\QuantLib\Sources\*.cpp"
+File /r "Sources\*.cpp"
 SetOutPath $INSTDIR\Sources\Calendars
-File /r "..\QuantLib\Sources\Calendars\*.cpp"
+File /r "Sources\Calendars\*.cpp"
 SetOutPath $INSTDIR\Sources\DayCounters
-File /r "..\QuantLib\Sources\DayCounters\*.cpp"
+File /r "Sources\DayCounters\*.cpp"
 SetOutPath $INSTDIR\Sources\FiniteDifferences
-File /r "..\QuantLib\Sources\FiniteDifferences\*.cpp"
+File /r "Sources\FiniteDifferences\*.cpp"
 SetOutPath $INSTDIR\Sources\Math
-File /r "..\QuantLib\Sources\Math\*.cpp"
+File /r "Sources\Math\*.cpp"
 SetOutPath $INSTDIR\Sources\MonteCarlo
-File /r "..\QuantLib\Sources\MonteCarlo\*.cpp"
+File /r "Sources\MonteCarlo\*.cpp"
 SetOutPath $INSTDIR\Sources\Pricers
-File /r "..\QuantLib\Sources\Pricers\*.cpp"
+File /r "Sources\Pricers\*.cpp"
 SetOutPath $INSTDIR\Sources\Solvers1D
-File /r "..\QuantLib\Sources\Solvers1D\*.cpp"
+File /r "Sources\Solvers1D\*.cpp"
 SetOutPath $INSTDIR\Sources\TermStructures
-File /r "..\QuantLib\Sources\TermStructures\*.cpp"
+File /r "Sources\TermStructures\*.cpp"
 
 Section "Start Menu Shortcuts"
 CreateDirectory "$SMPROGRAMS\QuantLib"
