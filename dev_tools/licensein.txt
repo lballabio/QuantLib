@@ -1,0 +1,2 @@
+
+the license is contained in all *.hpp, *.cpp, *.i, *.docs, *.py, *.scm, *.rb

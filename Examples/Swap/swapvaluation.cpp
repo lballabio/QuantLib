@@ -1,24 +1,23 @@
-/*!
- * Copyright (C) 2000-2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.org/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, please email quantlib-users@lists.sourceforge.net
- * The license is also available at http://quantlib.org/LICENSE.TXT
- *
- * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/group.html
+/*
+ Copyright (C) 2000, 2001, 2002 RiskMap srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email ferdinando@ametrano.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
 */
 
 //! $Id$
@@ -59,7 +58,7 @@ int main(int argc, char* argv[])
         /*********************
          ***  MARKET DATA  ***
          *********************/
-        
+
         Date todaysDate(6, November, 2001);
 
         // deposits
@@ -89,13 +88,13 @@ int main(int argc, char* argv[])
         double s10yQuote=0.05165;
         double s15yQuote=0.055175;
 
-        
+
 
 
         /*********************
          ***  RATE HELPERS ***
          *********************/
-        
+
         // RateHelpers are built from the above quotes together with other
         // instrument dependant infos.
 
@@ -160,7 +159,7 @@ int main(int argc, char* argv[])
 
         // Any DayCounter would be fine.
         // ActualActual::ISDA ensures that 30 years is 30.0
-        DayCounter termStructureDayCounter = 
+        DayCounter termStructureDayCounter =
             ActualActual(ActualActual::ISDA);
 
         // A depo-swap curve
@@ -191,7 +190,7 @@ int main(int argc, char* argv[])
         // the one used for forward rate forecasting
         RelinkableHandle<TermStructure> forecastingTermStructure;
 
-        
+
         // spot start
         Date spotDate = calendar.advance(todaysDate, settlementDays, Days,
             Following);
@@ -207,7 +206,7 @@ int main(int argc, char* argv[])
         // constant coupon
         std::vector<double> couponRates;
         couponRates.push_back(fixedRate);
-        
+
         // floating leg
         int floatingLegFrequency = 2;
         Handle<Xibor> euriborIndex(new Euribor(6, Months,
@@ -218,7 +217,7 @@ int main(int argc, char* argv[])
 
         int lenghtInYears = 5;
         bool payFixedRate = true;
-        SimpleSwap spot5YearSwap(payFixedRate, spotDate, lenghtInYears, 
+        SimpleSwap spot5YearSwap(payFixedRate, spotDate, lenghtInYears,
             Years, calendar, roll, nominals, fixedLegFrequency, couponRates,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             euriborIndex, fixingDays, spreads,
@@ -246,21 +245,21 @@ int main(int argc, char* argv[])
         forecastingTermStructure.linkTo(depoSwapTermStructure);
         discountingTermStructure.linkTo(depoSwapTermStructure);
         std::cout << "*** using Depo-Fut-Swap term structure:" << std::endl;
-        
+
         NPV = spot5YearSwap.NPV();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " NPV:               " 
+            << " NPV:               "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
         fairFloatingSpread = - NPV / spot5YearSwap.floatingLegBPS();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:               " 
+            << " spread:               "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = fixedRate - NPV / spot5YearSwap.fixedLegBPS();
-        std::cout << "5Y fixed rate:                  " 
+        std::cout << "5Y fixed rate:                  "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
@@ -271,21 +270,21 @@ int main(int argc, char* argv[])
         NPV = oneYearForward5YearSwap.NPV();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " NPV:            " 
+            << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
         fairFloatingSpread = -NPV / spot5YearSwap.floatingLegBPS();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:            " 
+            << " spread:            "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = fixedRate - NPV/oneYearForward5YearSwap.fixedLegBPS();
-        std::cout << "1Yx5Y fixed rate:               " 
+        std::cout << "1Yx5Y fixed rate:               "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
 
-        
+
 
 
 
@@ -295,10 +294,10 @@ int main(int argc, char* argv[])
         /*********************
          ***  MARKET DATA  ***
          *********************/
-        
+
         // market elements are containers for quotes.
         // SimpleMarketElement stores a value which can be manually changed;
-        // other MarketElement subclasses could read the value from a 
+        // other MarketElement subclasses could read the value from a
         // database or some kind of data feed.
 
         // deposits
@@ -328,18 +327,18 @@ int main(int argc, char* argv[])
         Handle<MarketElement> s10yRate(new SimpleMarketElement(s10yQuote));
         Handle<MarketElement> s15yRate(new SimpleMarketElement(s15yQuote));
 
-        
-        
-        
-        
-        
+
+
+
+
+
         /*********************
          ***  RATE HELPERS ***
          *********************/
-        
+
         // RateHelpers are built from the above quotes together with other
         // instrument dependant infos.
-        // This time quotes are passed in relinkable 
+        // This time quotes are passed in relinkable
         // handles which could be relinked to some other data source later.
 
         // setup deposits
@@ -405,7 +404,7 @@ int main(int argc, char* argv[])
             RelinkableHandle<MarketElement>(fra6x12Rate),
             settlementDays, 6, 12, calendar, ModifiedFollowing,
             depositDayCounter));
-        
+
         // setup futures
         int futMonths = 3;
         Handle<RateHelper> fut1(new FuturesRateHelper(
@@ -449,11 +448,11 @@ int main(int argc, char* argv[])
             settlementDays, futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
 
-        
-        
-        
 
-        
+
+
+
+
         /*********************
          **  CURVE BUILDING **
          *********************/
@@ -497,9 +496,9 @@ int main(int argc, char* argv[])
             PiecewiseFlatForward(currency, termStructureDayCounter,
             todaysDate, calendar, settlementDays, depoFRASwapInstruments));
 
-        
 
-        
+
+
 
 
          /***************
@@ -511,21 +510,21 @@ int main(int argc, char* argv[])
         forecastingTermStructure.linkTo(depoFutSwapTermStructure);
         discountingTermStructure.linkTo(depoFutSwapTermStructure);
         std::cout << "*** using Depo-Fut-Swap term structure:" << std::endl;
-        
+
         NPV = spot5YearSwap.NPV();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " NPV:               " 
+            << " NPV:               "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
         fairFloatingSpread = - NPV / spot5YearSwap.floatingLegBPS();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:               " 
+            << " spread:               "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = fixedRate - NPV / spot5YearSwap.fixedLegBPS();
-        std::cout << "5Y fixed rate:                  " 
+        std::cout << "5Y fixed rate:                  "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
@@ -536,17 +535,17 @@ int main(int argc, char* argv[])
         NPV = oneYearForward5YearSwap.NPV();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " NPV:            " 
+            << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
         fairFloatingSpread = -NPV / spot5YearSwap.floatingLegBPS();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:            " 
+            << " spread:            "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = fixedRate - NPV/oneYearForward5YearSwap.fixedLegBPS();
-        std::cout << "1Yx5Y fixed rate:               " 
+        std::cout << "1Yx5Y fixed rate:               "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
 
@@ -555,21 +554,21 @@ int main(int argc, char* argv[])
         forecastingTermStructure.linkTo(depoFRASwapTermStructure);
         discountingTermStructure.linkTo(depoFRASwapTermStructure);
         std::cout << "*** using Depo-FRA-Swap term structure:" << std::endl;
-        
+
         NPV = spot5YearSwap.NPV();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " NPV:               " 
+            << " NPV:               "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
         fairFloatingSpread = - NPV / spot5YearSwap.floatingLegBPS();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:               " 
+            << " spread:               "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = fixedRate - NPV / spot5YearSwap.fixedLegBPS();
-        std::cout << "5Y fixed rate:                  " 
+        std::cout << "5Y fixed rate:                  "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
@@ -580,26 +579,26 @@ int main(int argc, char* argv[])
         NPV = oneYearForward5YearSwap.NPV();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " NPV:            " 
+            << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
         fairFloatingSpread = -NPV / spot5YearSwap.floatingLegBPS();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:            " 
+            << " spread:            "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = fixedRate - NPV/oneYearForward5YearSwap.fixedLegBPS();
-        std::cout << "1Yx5Y fixed rate:               " 
+        std::cout << "1Yx5Y fixed rate:               "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
 
-        
+
         // now let's say that the 5-years swap rate goes up to 4.60%.
-        // A smarter market element--say, connected to a data source-- would 
+        // A smarter market element--say, connected to a data source-- would
         // notice the change itself. Since we're using SimpleMarketElements,
-        // we'll have to change the value manually--which forces us to 
-        // downcast the handle and use the SimpleMarketElement 
+        // we'll have to change the value manually--which forces us to
+        // downcast the handle and use the SimpleMarketElement
         // interface. In any case, the point here is that a change in the
         // value contained in the MarketElement triggers a new bootstrapping
         // of the curve and a repricing of the swap.
@@ -607,27 +606,27 @@ int main(int argc, char* argv[])
         Handle<SimpleMarketElement> fiveYearsRate = s5yRate;
         fiveYearsRate->setValue(0.0460);
         std::cout <<  "*** 5Y swap goes up to 4.60%" << std::endl;
-        
+
 
         // now get the updated results
         forecastingTermStructure.linkTo(depoFutSwapTermStructure);
         discountingTermStructure.linkTo(depoFutSwapTermStructure);
         std::cout << "*** using Depo-Fut-Swap term structure:" << std::endl;
-        
+
         NPV = spot5YearSwap.NPV();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " NPV:               " 
+            << " NPV:               "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
         fairFloatingSpread = - NPV / spot5YearSwap.floatingLegBPS();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:               " 
+            << " spread:               "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = fixedRate - NPV / spot5YearSwap.fixedLegBPS();
-        std::cout << "5Y fixed rate:                  " 
+        std::cout << "5Y fixed rate:                  "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
@@ -637,17 +636,17 @@ int main(int argc, char* argv[])
         NPV = oneYearForward5YearSwap.NPV();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " NPV:            " 
+            << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
         fairFloatingSpread = -NPV / spot5YearSwap.floatingLegBPS();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:            " 
+            << " spread:            "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = fixedRate - NPV/oneYearForward5YearSwap.fixedLegBPS();
-        std::cout << "1Yx5Y fixed rate:               " 
+        std::cout << "1Yx5Y fixed rate:               "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
 
@@ -655,21 +654,21 @@ int main(int argc, char* argv[])
         forecastingTermStructure.linkTo(depoFRASwapTermStructure);
         discountingTermStructure.linkTo(depoFRASwapTermStructure);
         std::cout << "*** using Depo-FRA-Swap term structure:" << std::endl;
-        
+
         NPV = spot5YearSwap.NPV();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " NPV:               " 
+            << " NPV:               "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
         fairFloatingSpread = - NPV / spot5YearSwap.floatingLegBPS();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:               " 
+            << " spread:               "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = fixedRate - NPV / spot5YearSwap.fixedLegBPS();
-        std::cout << "5Y fixed rate:                  " 
+        std::cout << "5Y fixed rate:                  "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
@@ -679,17 +678,17 @@ int main(int argc, char* argv[])
         NPV = oneYearForward5YearSwap.NPV();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " NPV:            " 
+            << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
         fairFloatingSpread = -NPV / spot5YearSwap.floatingLegBPS();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:            " 
+            << " spread:            "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = fixedRate - NPV/oneYearForward5YearSwap.fixedLegBPS();
-        std::cout << "1Yx5Y fixed rate:               " 
+        std::cout << "1Yx5Y fixed rate:               "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
 

@@ -1,6 +1,4 @@
 
-new license in all *.hpp, *.cpp, *.i, *.docs, *.py, *.scm, *.rb
-
 solve copyright issues (COOOL, GAlib, etc.)
 separate SF projects for QuantLib-Python, etc.
 
