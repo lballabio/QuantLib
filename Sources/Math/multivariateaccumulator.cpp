@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/02/22 14:25:41  lballabio
+    Template methods moved to header file
+
     Revision 1.5  2001/02/02 10:44:22  marmar
     MultivariateAccumulator does NOT have to be
     initialized with the size of data
@@ -122,21 +125,6 @@ namespace QuantLib {
           add(arr, wei);
         }
 
-        template <class DataIterator>
-        void MultivariateAccumulator::addSequence(DataIterator begin, 
-            DataIterator end) {
-            for (;begin!=end;++begin)                
-                add(*begin);
-        }
-        
-        template <class DataIterator, class WeightIterator>
-        void MultivariateAccumulator::addSequence(DataIterator begin, 
-                                DataIterator end, WeightIterator wbegin) {
-                                    
-            for(;begin!=end;++begin,++wbegin)
-                add(*begin, *wbegin);
-        }        
-                
     }
 
 }

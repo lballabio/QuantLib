@@ -26,6 +26,9 @@
 
     $Source$
     $Log$
+    Revision 1.7  2001/02/22 14:25:23  lballabio
+    Template methods moved to header file
+
     Revision 1.6  2001/02/20 13:59:00  nando
     added class VarTool.
     RiskStatistics was derived from Statistics:
@@ -98,11 +101,17 @@ namespace QuantLib {
             void add(const std::vector<double> &vec, double weight = 1.0);
             //! adds a sequence of data to the collection
             template <class DataIterator>
-            void addSequence(DataIterator begin, DataIterator end);
+            void addSequence(DataIterator begin, DataIterator end) {
+                for (;begin!=end;++begin)                
+                    add(*begin);
+            }
             //! adds a sequence of data to the collection, each with its weight
             template <class DataIterator, class WeightIterator>
             void addSequence(DataIterator begin, DataIterator end,
-                                                WeightIterator wbegin);
+                WeightIterator wbegin) {
+                    for(;begin!=end;++begin,++wbegin)
+                        add(*begin, *wbegin);
+            }        
             //! resets the data to a null set
             void reset();
             //@}
@@ -113,6 +122,7 @@ namespace QuantLib {
             Array sum_;
             Matrix quadraticSum_;
         };
+
 
         // inline definitions
         inline int MultivariateAccumulator::size() const {
