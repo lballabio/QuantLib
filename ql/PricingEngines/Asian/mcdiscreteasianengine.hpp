@@ -31,8 +31,9 @@ namespace QuantLib {
     //! Monte Carlo pricing engine for discrete average Asians
     /*! \ingroup asianengines */
     template<class RNG = PseudoRandom, class S = Statistics>
-    class MCDiscreteAveragingAsianEngine : public DiscreteAveragingAsianOption::engine,
-                          public McSimulation<SingleAsset<RNG>, S> {
+    class MCDiscreteAveragingAsianEngine :
+                                public DiscreteAveragingAsianOption::engine,
+                                public McSimulation<SingleAsset<RNG>, S> {
       public:
         void calculate() const;
       protected:
