@@ -1,6 +1,8 @@
 Makefile.in
 Makefile
 Makefile.win
+*.user
+QuantLib*.suo
 QuantLib*.ncb
 QuantLib*.opt
 QuantLib.dep

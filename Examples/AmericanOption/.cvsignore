@@ -1,3 +1,4 @@
+*.user
 *.layout
 *_private.*
 Makefile.in

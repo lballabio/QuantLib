@@ -112,8 +112,11 @@
 #elif (_MSC_VER == 1310)
 // move inside here configs specific to VC++ 7.1 (.Net 2003)
 #  define QL_LIB_TOOLSET "vc71"
+#elif (_MSC_VER == 1400)
+// move inside here configs specific to VC++ 8 (2005)
+#  define QL_LIB_TOOLSET "vc8"
 #else
-#  define QL_LIB_TOOLSET "vc" BOOST_STRINGIZE(_MSC_VER)
+#  error "unknown Microsoft compiler"
 #endif
 
 

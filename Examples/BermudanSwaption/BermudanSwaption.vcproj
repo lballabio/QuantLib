@@ -13,8 +13,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug SingleThread|Win32"
-			OutputDirectory=".\build\DebugST"
-			IntermediateDirectory=".\build\DebugST"
+			OutputDirectory=".\build\vc71\DebugST"
+			IntermediateDirectory=".\build\vc71\DebugST"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -33,12 +33,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\DebugST/BermudanSwaption.pch"
-				AssemblerListingLocation=".\build\DebugST/"
-				ObjectFile=".\build\DebugST/"
-				ProgramDataBaseFileName=".\build\DebugST/"
+				PrecompiledHeaderFile=".\build\vc71\DebugST/BermudanSwaption.pch"
+				AssemblerListingLocation=".\build\vc71\DebugST/"
+				ObjectFile=".\build\vc71\DebugST/"
+				ProgramDataBaseFileName=".\build\vc71\DebugST/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\DebugST/"
+				BrowseInformationFile=".\build\vc71\DebugST/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -52,12 +52,12 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\DebugST/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\DebugST/BermudanSwaption.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\DebugST/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\DebugST/BermudanSwaption.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -82,8 +82,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release MTDLL|Win32"
-			OutputDirectory=".\build\ReleaseMTDLL"
-			IntermediateDirectory=".\build\ReleaseMTDLL"
+			OutputDirectory=".\build\vc71\ReleaseMTDLL"
+			IntermediateDirectory=".\build\vc71\ReleaseMTDLL"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -106,12 +106,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\ReleaseMTDLL/BermudanSwaption.pch"
-				AssemblerListingLocation=".\build\ReleaseMTDLL/"
-				ObjectFile=".\build\ReleaseMTDLL/"
-				ProgramDataBaseFileName=".\build\ReleaseMTDLL/"
+				PrecompiledHeaderFile=".\build\vc71\ReleaseMTDLL/BermudanSwaption.pch"
+				AssemblerListingLocation=".\build\vc71\ReleaseMTDLL/"
+				ObjectFile=".\build\vc71\ReleaseMTDLL/"
+				ProgramDataBaseFileName=".\build\vc71\ReleaseMTDLL/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\ReleaseMTDLL/"
+				BrowseInformationFile=".\build\vc71\ReleaseMTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
@@ -123,12 +123,12 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\ReleaseMTDLL/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\ReleaseMTDLL/BermudanSwaption.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\ReleaseMTDLL/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\ReleaseMTDLL/BermudanSwaption.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -153,8 +153,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\build\Release"
-			IntermediateDirectory=".\build\Release"
+			OutputDirectory=".\build\vc71\Release"
+			IntermediateDirectory=".\build\vc71\Release"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -177,12 +177,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\Release/BermudanSwaption.pch"
-				AssemblerListingLocation=".\build\Release/"
-				ObjectFile=".\build\Release/"
-				ProgramDataBaseFileName=".\build\Release/"
+				PrecompiledHeaderFile=".\build\vc71\Release/BermudanSwaption.pch"
+				AssemblerListingLocation=".\build\vc71\Release/"
+				ObjectFile=".\build\vc71\Release/"
+				ProgramDataBaseFileName=".\build\vc71\Release/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\Release/"
+				BrowseInformationFile=".\build\vc71\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
@@ -194,12 +194,12 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\Release/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\Release/BermudanSwaption.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\Release/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\Release/BermudanSwaption.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -224,8 +224,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release SingleThread|Win32"
-			OutputDirectory=".\build\ReleaseST"
-			IntermediateDirectory=".\build\ReleaseST"
+			OutputDirectory=".\build\vc71\ReleaseST"
+			IntermediateDirectory=".\build\vc71\ReleaseST"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -248,12 +248,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\ReleaseST/BermudanSwaption.pch"
-				AssemblerListingLocation=".\build\ReleaseST/"
-				ObjectFile=".\build\ReleaseST/"
-				ProgramDataBaseFileName=".\build\ReleaseST/"
+				PrecompiledHeaderFile=".\build\vc71\ReleaseST/BermudanSwaption.pch"
+				AssemblerListingLocation=".\build\vc71\ReleaseST/"
+				ObjectFile=".\build\vc71\ReleaseST/"
+				ProgramDataBaseFileName=".\build\vc71\ReleaseST/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\ReleaseST/"
+				BrowseInformationFile=".\build\vc71\ReleaseST/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
@@ -265,12 +265,12 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\ReleaseST/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\ReleaseST/BermudanSwaption.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\ReleaseST/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\ReleaseST/BermudanSwaption.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -295,8 +295,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug MTDLL|Win32"
-			OutputDirectory=".\build\DebugMTDLL"
-			IntermediateDirectory=".\build\DebugMTDLL"
+			OutputDirectory=".\build\vc71\DebugMTDLL"
+			IntermediateDirectory=".\build\vc71\DebugMTDLL"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -315,12 +315,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\DebugMTDLL/BermudanSwaption.pch"
-				AssemblerListingLocation=".\build\DebugMTDLL/"
-				ObjectFile=".\build\DebugMTDLL/"
-				ProgramDataBaseFileName=".\build\DebugMTDLL/"
+				PrecompiledHeaderFile=".\build\vc71\DebugMTDLL/BermudanSwaption.pch"
+				AssemblerListingLocation=".\build\vc71\DebugMTDLL/"
+				ObjectFile=".\build\vc71\DebugMTDLL/"
+				ProgramDataBaseFileName=".\build\vc71\DebugMTDLL/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\DebugMTDLL/"
+				BrowseInformationFile=".\build\vc71\DebugMTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -334,12 +334,12 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\DebugMTDLL/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\DebugMTDLL/BermudanSwaption.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\DebugMTDLL/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\DebugMTDLL/BermudanSwaption.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -364,8 +364,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\build\Debug"
-			IntermediateDirectory=".\build\Debug"
+			OutputDirectory=".\build\vc71\Debug"
+			IntermediateDirectory=".\build\vc71\Debug"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -384,12 +384,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\Debug/BermudanSwaption.pch"
-				AssemblerListingLocation=".\build\Debug/"
-				ObjectFile=".\build\Debug/"
-				ProgramDataBaseFileName=".\build\Debug/"
+				PrecompiledHeaderFile=".\build\vc71\Debug/BermudanSwaption.pch"
+				AssemblerListingLocation=".\build\vc71\Debug/"
+				ObjectFile=".\build\vc71\Debug/"
+				ProgramDataBaseFileName=".\build\vc71\Debug/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\Debug/"
+				BrowseInformationFile=".\build\vc71\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -403,12 +403,12 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\Debug/BermudanSwaption.pdb"
+				ProgramDatabaseFile=".\build\vc71\Debug/BermudanSwaption.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\Debug/BermudanSwaption.tlb"
+				TypeLibraryName=".\build\vc71\Debug/BermudanSwaption.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
