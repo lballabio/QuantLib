@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/01/15 13:27:07  aleppo
+    improved Python test
+
     Revision 1.1  2001/01/12 17:35:17  nando
     added RiskTool.
     It offres VAR, shortfall, average shortfall methods.
@@ -49,6 +52,9 @@ print 'Testing RiskTool'
 
 average = 0.0
 sigma = 1.0
+#cannot be changed
+target = average
+
 
 print 'gaussian distribution with average =', average, 'and sigma =', sigma
 
@@ -67,7 +73,7 @@ for i in range(N):
 
 weights = map(lambda x: gaussian(x,average,sigma), data)
 
-s = RiskTool(average/2.0)
+s = RiskTool(target)
 s.addWeightedSequence(data, weights)
 
 print 'samples .......... %9d' % s.samples(),
@@ -130,25 +136,28 @@ if (1):
 else:
     raise 'wrong'
 
-print 'VAR .............. %9.3f' % s.valueAtRisk(0.99),
-if (1):
-    print 'not checked'
+print 'VAR .............. %9.3f' % s.valueAtRisk(0.9772),
+if (abs(s.valueAtRisk(0.9772)-2.0*sigma)<1e-3):
+    print 'OK'
 else:
     raise 'wrong'
 
 print 'shortfall ........ %9.3f' % s.shortfall(),
-if (abs(s.shortfall()-s.weightSum()/2.0)<1e-10):
+if (abs(s.shortfall()-0.5)<1e-15):
     print 'OK'
 else:
     print
-    print 'wrong shortfall %f should be %f' % (s.shortfall(), s.weightSum()/2.0)
+    print 'wrong shortfall %f should be %f' % (s.shortfall(), 0.5)
     raise 'wrong shortfall'
-  
+
 print 'averageShortfall . %9.3f' % s.averageShortfall(),
-if (1):
-    print 'not checked'
+if abs(s.averageShortfall()-sigma/sqrt( 2 * 3.14159265358979323846 ))<1e-7:
+    print 'OK'
 else:
-    raise 'wrong'
+    print
+    print 'wrong average shortfall %f should be %f' % \
+          (s.averageShortfall(), sigma/sqrt( 2 * 3.14159265358979323846 ))
+    raise 'wrong average shortfall'
 
 print
 print 'Test passed (elapsed time', time.time() - startTime, ')'
