@@ -64,7 +64,7 @@ namespace QuantLib {
     
     
     
-    PoissonDistribution::PoissonDistribution(double mu)
+    inline PoissonDistribution::PoissonDistribution(double mu)
     : mu_(mu) {
 
         QL_REQUIRE(mu_>=0.0,
