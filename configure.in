@@ -83,15 +83,15 @@ using namespace std;
 ])
 AC_MSG_RESULT([$ql_string_ok])
 
-AC_CHECK_HEADERS(math.hpp cmath ctype.hpp cctype ctime time.hpp)
-AC_CHECK_HEADERS(limits climits limits.hpp float.hpp)
+AC_CHECK_HEADERS(math.h cmath ctype.h cctype ctime time.h)
+AC_CHECK_HEADERS(limits climits limits.h float.h)
 
 if test $ac_cv_header_cmath = yes ; then
   ql_math=cmath
 elif test $ac_cv_header_math_h = yes ; then
-  ql_math=math.hpp
+  ql_math=math.h
 else
-  AC_ERROR(Could not find cmath nor math.hpp)
+  AC_ERROR(Could not find cmath nor math.h)
 fi
 QL_CHECK_FUNCTION([sqrt],[$ql_math],[2])
 QL_CHECK_FUNCTION([fabs],[$ql_math],[2])
@@ -105,9 +105,9 @@ QL_CHECK_FUNCTION([modf],[$ql_math],[2,&x])
 if test $ac_cv_header_cctype = yes ; then
   ql_ctype=cctype
 elif test $ac_cv_header_ctype_h = yes ; then
-  ql_ctype=ctype.hpp
+  ql_ctype=ctype.h
 else
-  AC_ERROR(Could not find cctype nor ctype.hpp)
+  AC_ERROR(Could not find cctype nor ctype.h)
 fi
 QL_CHECK_FUNCTION([toupper],[$ql_ctype],['c'])
 QL_CHECK_FUNCTION([strlen],[$ql_ctype],["foo"])
@@ -116,9 +116,9 @@ QL_CHECK_FUNCTION([tolower],[$ql_ctype],['c'])
 if test $ac_cv_header_ctime = yes ; then
   ql_time=ctime
 elif test $ac_cv_header_time_h = yes ; then
-  ql_time=time.hpp
+  ql_time=time.h
 else
-  AC_ERROR(Could not find ctime nor time.hpp)
+  AC_ERROR(Could not find ctime nor time.h)
 fi
 QL_CHECK_FUNCTION([clock],[$ql_time],[])
 

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.20  2001/04/04 13:32:54  enri
+    tons of typos fixed
+
     Revision 1.19  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -64,8 +67,8 @@
  */
 
 
-#include "Solvers1d/newton.hpp"
-#include "Solvers1d/newtonsafe.hpp"
+#include "Solvers1D/newton.hpp"
+#include "Solvers1D/newtonsafe.hpp"
 
 namespace QuantLib {
 

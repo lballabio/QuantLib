@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/04/04 13:32:54  enri
+    tons of typos fixed
+
     Revision 1.5  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -54,7 +57,7 @@
 #include "MonteCarlo/standardpathgenerator.hpp"
 #include "Pricers/averagestrikeasian.hpp"
 #include "MonteCarlo/controlvariatedpathpricer.hpp"
-#include "Montecarlo/avgstrikeasianpathpricer.hpp"
+#include "MonteCarlo/avgstrikeasianpathpricer.hpp"
 #include "MonteCarlo/geometricasianpathpricer.hpp"
 #include "Pricers/geometricasianoption.hpp"
 

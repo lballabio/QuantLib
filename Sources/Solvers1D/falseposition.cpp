@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.18  2001/04/04 13:32:54  enri
+    tons of typos fixed
+
     Revision 1.17  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -58,7 +61,7 @@
  */
 
 
-#include "Solvers1d/falseposition.hpp"
+#include "Solvers1D/falseposition.hpp"
 
 namespace QuantLib {
 

@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/04/04 13:32:54  enri
+    tons of typos fixed
+
     Revision 1.5  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -52,7 +55,7 @@
 
 #include "handle.hpp"
 #include "rate.hpp"
-#include "Montecarlo/basketpathpricer.hpp"
+#include "MonteCarlo/basketpathpricer.hpp"
 #include "Pricers/plainbasketoption.hpp"
 
 namespace QuantLib {
