@@ -76,7 +76,7 @@ namespace QuantLib {
 
                     } else {
                         return payoff_->cashPayoff() * 
-                            riskFreeTS_->discount(path.timeGrid()[i]);
+                            riskFreeTS_->discount(path.timeGrid()[i+1]);
                     }
                 }
                 asset_price = new_asset_price;
@@ -102,7 +102,7 @@ namespace QuantLib {
 
                     } else {
                         return payoff_->cashPayoff() 
-                            * riskFreeTS_->discount(path.timeGrid()[i]);
+                            * riskFreeTS_->discount(path.timeGrid()[i+1]);
                     }
                 }
                 asset_price = new_asset_price;
