@@ -40,15 +40,15 @@ namespace QuantLib {
         class VanillaOption : public Option {
           public:
             VanillaOption(Option::Type type,
-                        const RelinkableHandle<MarketElement>& underlying,
-                        double strike,
-                        const RelinkableHandle<TermStructure>& dividendYield,
-                        const RelinkableHandle<TermStructure>& riskFreeRate,
-                        const Date& exerciseDate,
-                        const RelinkableHandle<MarketElement>& volatility,
-                        const Handle<PricingEngine>& engine,
-                        const std::string& isinCode = "",
-                        const std::string& description = "");
+                          const RelinkableHandle<MarketElement>& underlying,
+                          double strike,
+                          const RelinkableHandle<TermStructure>& dividendYield,
+                          const RelinkableHandle<TermStructure>& riskFreeRate,
+                          const Date& exerciseDate,
+                          const RelinkableHandle<MarketElement>& volatility,
+                          const Handle<PricingEngine>& engine,
+                          const std::string& isinCode = "",
+                          const std::string& description = "");
             //! \name greeks
             //@{
             double delta() const;
@@ -78,13 +78,13 @@ namespace QuantLib {
             RelinkableHandle<TermStructure> riskFreeRate_;
             // results
             mutable double delta_, gamma_, theta_, vega_, rho_, dividendRho_;
-          private:
             // arguments
             Option::Type type_;
             RelinkableHandle<MarketElement> underlying_;
             double strike_;
             RelinkableHandle<TermStructure> dividendYield_;
             RelinkableHandle<MarketElement> volatility_;
+          private:
             // helper class for implied volatility calculation
             class ImpliedVolHelper : public ObjectiveFunction {
               public:
