@@ -31,6 +31,8 @@
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "marketelements.hpp"
+#include "matrices.hpp"
+#include "mersennetwister.hpp"
 #include "operators.hpp"
 #include "piecewiseflatforward.hpp"
 #include "riskstats.hpp"
@@ -40,13 +42,13 @@
 #include "swaption.hpp"
 #include "termstructures.hpp"
 #include "old_pricers.hpp"
-#include "mersennetwister.hpp"
 
 int main() {
     CppUnit::TextUi::TestRunner runner;
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+    runner.addTest(new MatricesTest());
     runner.addTest(OldPricerTest::suite());
     runner.addTest(new MersenneTwisterTest());
     runner.addTest(new DistributionTest);

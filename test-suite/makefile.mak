@@ -30,6 +30,7 @@ QL_TESTS = \
     instruments.obj$(_D) \
     integrals.obj$(_D) \
     marketelements.obj$(_D) \
+    matrices.obj$(_D) \
     mersennetwister.obj$(_D) \
     old_pricers.obj$(_D) \
     operators.obj$(_D) \
