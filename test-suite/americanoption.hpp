@@ -23,7 +23,8 @@
 
 class AmericanOptionTest : public CppUnit::TestFixture {
   public:
-    void testBAWValues();
+    void testBaroneAdesiWhaleyValues();
+    void testBjerksundStenslandValues();
     static CppUnit::Test* suite();
 };
 
