@@ -25,6 +25,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.15  2001/04/23 15:54:07  nando
+    fixed linux setup bug
+
     Revision 1.14  2001/04/23 14:52:30  marmar
     Optimization disabled, now psses the tests!
 
@@ -57,6 +60,7 @@ if sys.platform == 'win32':
         raise('Please set environment variable "QL_DIR" to installation directory of QuantLib')
     include_dirs = [quantLibInstallDirectory + "\\Include"]
     library_dirs = [quantLibInstallDirectory + '\\lib\\win32\\VisualStudio']
+    libraries = None
     extra_compile_args = ['/nologo','/MD', '/W3', '/GX', '/Od',
                           '/Fp"..\Release\PyQuantLib.pch"',
                           '/YX','/Fd"..\Release"','/FD']
@@ -69,6 +73,7 @@ if sys.platform == 'win32':
 else:
     include_dirs = ["/usr/local/include"]
     library_dirs = None
+    libraries = ["QuantLib"]
     extra_compile_args = None
     extra_link_args = None
     define_macros = None
@@ -185,7 +190,7 @@ setup ( cmdclass = cmdclass,
         ext_modules = [Extension
                        ("QuantLibc",
                         ["quantlib_wrap.cpp"],
-                        libraries = ["QuantLib"],
+                        libraries = libraries,
                         define_macros = define_macros,
                         include_dirs = include_dirs,
                         library_dirs = library_dirs,
