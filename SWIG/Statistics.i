@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.22  2001/05/15 14:09:27  aleppo
+    down side deviation
+
     Revision 1.21  2001/04/11 17:04:34  lballabio
     Rubified RiskStatistics
 
@@ -53,6 +56,7 @@ class Statistics {
     double mean() const;
     double variance() const;
     double standardDeviation() const;
+    double downsideDeviation() const;
     double errorEstimate() const;
     double skewness() const;
     double kurtosis() const;

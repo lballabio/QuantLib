@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/05/15 14:09:27  aleppo
+    down side deviation
+
     Revision 1.11  2001/04/09 14:13:33  nando
     all the *.hpp moved below the Include/ql level
 
@@ -77,6 +80,7 @@ namespace QuantLib {
             sampleWeight_ = 0.0;
             sum_ = 0.0;
             quadraticSum_ = 0.0;
+            downsideQuadraticSum_ = 0.0;
             cubicSum_ = 0.0;
             fourthPowerSum_ = 0.0;
         }
