@@ -15,8 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capfloorpricer.hpp
-    \brief cap and floor pricer class
+/*! \file discretizedcapfloor.hpp
+    \brief discretized cap/floor
 */
 
 #ifndef quantlib_pricers_capfloor_pricer_h

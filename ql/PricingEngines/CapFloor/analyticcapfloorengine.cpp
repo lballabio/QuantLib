@@ -15,11 +15,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/CapFloor/analyticalcapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/analyticcapfloorengine.hpp>
 
 namespace QuantLib {
 
-    void AnalyticalCapFloor::calculate() const {
+    void AnalyticCapFloorEngine::calculate() const {
         QL_REQUIRE(model_, "null model");
 
         Real value = 0.0;

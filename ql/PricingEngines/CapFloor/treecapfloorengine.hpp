@@ -15,30 +15,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file treecapfloor.hpp
-    \brief Cap/Floor calculated using a tree
+/*! \file treecapfloorengine.hpp
+    \brief Numerical lattice engine for cap/floors
 */
 
 #ifndef quantlib_pricers_tree_cap_floor_h
 #define quantlib_pricers_tree_cap_floor_h
 
-#include <ql/PricingEngines/latticeshortratemodelengine.hpp>
 #include <ql/Instruments/capfloor.hpp>
+#include <ql/PricingEngines/latticeshortratemodelengine.hpp>
 
 namespace QuantLib {
 
-    //! Cap/floor priced on a lattice
+    //! Numerical lattice engine for cap/floors
     /*! \ingroup capfloorengines */
-    class TreeCapFloor 
+    class TreeCapFloorEngine
         : public LatticeShortRateModelEngine<CapFloor::arguments,
                                              CapFloor::results> {
       public:
-        TreeCapFloor(const boost::shared_ptr<ShortRateModel>& model, 
-                     Size timeSteps);
-        TreeCapFloor(const boost::shared_ptr<ShortRateModel>& model, 
-                     const TimeGrid& timeGrid);
+        TreeCapFloorEngine(const boost::shared_ptr<ShortRateModel>& model, 
+                           Size timeSteps);
+        TreeCapFloorEngine(const boost::shared_ptr<ShortRateModel>& model, 
+                           const TimeGrid& timeGrid);
         void calculate() const;
     };
+
+    /*
+    #if !defined(QL_DISABLE_DEPRECATED)
+    //! \deprecated renamed to TreeCapFloorEngine
+    typedef TreeCapFloorEngine TreeCapFloor;
+    #endif
+    */
 
 }
 

@@ -15,23 +15,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/CapFloor/treecapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/treecapfloorengine.hpp>
+#include <ql/PricingEngines/CapFloor/discretizedcapfloor.hpp>
 #include <ql/ShortRateModels/onefactormodel.hpp>
-#include <ql/PricingEngines/CapFloor/capfloorpricer.hpp>
 
 namespace QuantLib {
 
-    TreeCapFloor::TreeCapFloor(const boost::shared_ptr<ShortRateModel>& model, 
+    TreeCapFloorEngine::TreeCapFloorEngine(
+                               const boost::shared_ptr<ShortRateModel>& model,
                                Size timeSteps) 
     : LatticeShortRateModelEngine<CapFloor::arguments, 
                                   CapFloor::results >(model,timeSteps){}
 
-    TreeCapFloor::TreeCapFloor(const boost::shared_ptr<ShortRateModel>& model,
+    TreeCapFloorEngine::TreeCapFloorEngine(
+                               const boost::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid) 
     : LatticeShortRateModelEngine<CapFloor::arguments, 
                                   CapFloor::results>(model,timeGrid) {}
 
-    void TreeCapFloor::calculate() const {
+    void TreeCapFloorEngine::calculate() const {
 
         QL_REQUIRE(model_, "no model specified");
         boost::shared_ptr<Lattice> lattice;

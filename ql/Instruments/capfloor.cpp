@@ -16,7 +16,7 @@
 */
 
 #include <ql/CashFlows/floatingratecoupon.hpp>
-#include <ql/PricingEngines/CapFloor/blackcapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
@@ -163,8 +163,8 @@ namespace QuantLib {
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         RelinkableHandle<Quote> h(vol_);
         boost::shared_ptr<BlackModel> model(new BlackModel(h,termStructure_));
-        engine_ = boost::shared_ptr<PricingEngine>(new BlackCapFloor(model));
-
+        engine_ = boost::shared_ptr<PricingEngine>(
+                                              new BlackCapFloorEngine(model));
         cap.setupArguments(engine_->arguments());
 
         results_ = dynamic_cast<const Value*>(engine_->results());

@@ -40,8 +40,6 @@ namespace QuantLib {
         : model_(model) {
             registerWith(model_);
         }
-        void validateArguments() const { arguments_.validate(); }
-
         void setModel(const boost::shared_ptr<ModelType>& model) {
             unregisterWith(model_);
             model_ = model;

@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/CapFloor/capfloorpricer.hpp>
+#include <ql/PricingEngines/CapFloor/discretizedcapfloor.hpp>
 
 namespace QuantLib {
 

@@ -15,11 +15,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/CapFloor/blackcapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 
 namespace QuantLib {
 
-    void BlackCapFloor::calculate() const {
+    void BlackCapFloorEngine::calculate() const {
         Real value = 0.0;
         CapFloor::Type type = arguments_.type;
 
@@ -57,8 +57,8 @@ namespace QuantLib {
 
     }
 
-    Real BlackCapFloor::capletValue(Time start, Rate forward,
-                                    Rate strike, Volatility vol) const {
+    Real BlackCapFloorEngine::capletValue(Time start, Rate forward,
+                                          Rate strike, Volatility vol) const {
         if (start <= 0.0) {
             // the rate was fixed
             return QL_MAX<Rate>(forward-strike,0.0);
@@ -69,8 +69,9 @@ namespace QuantLib {
         }
     }
 
-    Real BlackCapFloor::floorletValue(Time start, Rate forward,
-                                      Rate strike, Volatility vol) const {
+    Real BlackCapFloorEngine::floorletValue(Time start, Rate forward,
+                                            Rate strike, Volatility vol)
+                                                                       const {
         if (start <= 0.0) {
             // the rate was fixed
             return QL_MAX<Rate>(strike-forward,0.0);

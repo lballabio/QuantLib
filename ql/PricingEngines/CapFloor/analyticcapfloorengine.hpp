@@ -15,33 +15,40 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticalcapfloor.hpp
-    \brief Analytical pricer for caps/floors
+/*! \file analyticcapfloorengine.hpp
+    \brief Analytic engine for caps/floors
 */
 
 #ifndef quantlib_pricers_analytical_cap_floor_h
 #define quantlib_pricers_analytical_cap_floor_h
 
-#include <ql/PricingEngines/CapFloor/capfloorpricer.hpp>
+#include <ql/Instruments/capfloor.hpp>
 #include <ql/PricingEngines/genericmodelengine.hpp>
 #include <ql/ShortRateModels/model.hpp>
 
 namespace QuantLib {
 
-    //! Analytical pricer for cap/floor
+    //! Analytic engine for cap/floor
     /*! \ingroup capfloorengines */
-    class AnalyticalCapFloor 
+    class AnalyticCapFloorEngine
         : public GenericModelEngine<AffineModel, 
                                     CapFloor::arguments,
                                     CapFloor::results > {
       public:
-        AnalyticalCapFloor(const boost::shared_ptr<AffineModel>& model) 
+        AnalyticCapFloorEngine(const boost::shared_ptr<AffineModel>& model) 
         : GenericModelEngine<AffineModel, 
                              CapFloor::arguments,
                              CapFloor::results >(model) 
         {}
         void calculate() const;
     };
+
+    /*
+    #if !defined(QL_DISABLE_DEPRECATED)
+    //! \deprecated renamed to AnalyticCapFloorEngine
+    typedef AnalyticCapFloorEngine AnalyticalCapFloor;
+    #endif
+    */
 
 }
 

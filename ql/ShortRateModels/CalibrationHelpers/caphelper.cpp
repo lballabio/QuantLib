@@ -18,7 +18,7 @@
 #include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/Instruments/swap.hpp>
-#include <ql/PricingEngines/CapFloor/blackcapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 
 namespace QuantLib {
 
@@ -93,7 +93,8 @@ namespace QuantLib {
         boost::shared_ptr<BlackModel> blackModel(
                          new BlackModel(RelinkableHandle<Quote>(vol), 
                                         termStructure_));
-        boost::shared_ptr<PricingEngine> black(new BlackCapFloor(blackModel));
+        boost::shared_ptr<PricingEngine> black(
+                                         new BlackCapFloorEngine(blackModel));
         cap_->setPricingEngine(black);
         Real value = cap_->NPV();
         cap_->setPricingEngine(engine_);

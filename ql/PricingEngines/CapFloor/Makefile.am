@@ -4,17 +4,17 @@ includedir = $(prefix)/include/ql/PricingEngines/CapFloor
 
 include_HEADERS = \
     all.hpp \
-    analyticalcapfloor.hpp \
-    blackcapfloor.hpp \
-    capfloorpricer.hpp \
-    treecapfloor.hpp
+    analyticcapfloorengine.hpp \
+    blackcapfloorengine.hpp \
+    discretizedcapfloor.hpp \
+    treecapfloorengine.hpp
 
 EXTRA_DIST=makefile.mak
 
 libCapFloorEngines_la_SOURCES = \
-    analyticalcapfloor.cpp \
-    blackcapfloor.cpp \
-    capfloorpricer.cpp \
-    treecapfloor.cpp
+    analyticcapfloorengine.cpp \
+    blackcapfloorengine.cpp \
+    discretizedcapfloor.cpp \
+    treecapfloorengine.cpp
 
 noinst_LTLIBRARIES = libCapFloorEngines.la

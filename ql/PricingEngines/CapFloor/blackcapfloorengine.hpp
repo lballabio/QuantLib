@@ -15,26 +15,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file blackcapfloor.hpp
-    \brief CapFloor calculated using the Black formula
+/*! \file blackcapfloorengine.hpp
+    \brief Black-formula cap/floor engine
 */
 
 #ifndef quantlib_pricers_black_capfloor_h
 #define quantlib_pricers_black_capfloor_h
 
+#include <ql/Instruments/capfloor.hpp>
 #include <ql/PricingEngines/blackmodel.hpp>
-#include <ql/PricingEngines/CapFloor/capfloorpricer.hpp>
 #include <ql/PricingEngines/genericmodelengine.hpp>
 
 namespace QuantLib {
 
-    //! Cap/floor priced by means of the Black formula
+    //! Black-formula cap/floor engine
     /*! \ingroup capfloorengines */
-    class BlackCapFloor : public GenericModelEngine<BlackModel, 
-                                                    CapFloor::arguments,
-                                                    CapFloor::results> {
+    class BlackCapFloorEngine : public GenericModelEngine<BlackModel,
+                                                          CapFloor::arguments,
+                                                          CapFloor::results> {
       public:
-        BlackCapFloor(const boost::shared_ptr<BlackModel>& model)
+        BlackCapFloorEngine(const boost::shared_ptr<BlackModel>& model)
         : GenericModelEngine<BlackModel, 
                              CapFloor::arguments,
                              CapFloor::results>(model) {}
@@ -46,6 +46,14 @@ namespace QuantLib {
                            Rate strike, Volatility vol) const;
     };
 
+    /*
+    #if !defined(QL_DISABLE_DEPRECATED)
+    //! \deprecated renamed to BlackCapFloorEngine
+    typedef BlackCapFloorEngine BlackCapFloor;
+    #endif
+    */
+
 }
+
 
 #endif

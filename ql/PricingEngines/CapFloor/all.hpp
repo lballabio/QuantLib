@@ -18,9 +18,10 @@
 #ifndef quantlib_pricing_engines_capfloor_all_hpp
 #define quantlib_pricing_engines_capfloor_all_hpp
 
-#include <ql/PricingEngines/CapFloor/analyticalcapfloor.hpp>
-#include <ql/PricingEngines/CapFloor/blackcapfloor.hpp>
-#include <ql/PricingEngines/CapFloor/capfloorpricer.hpp>
-#include <ql/PricingEngines/CapFloor/treecapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/analyticcapfloorengine.hpp>
+#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
+#include <ql/PricingEngines/CapFloor/discretizedcapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/treecapfloorengine.hpp>
+
 
 #endif

@@ -22,7 +22,7 @@
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>
-#include <ql/PricingEngines/CapFloor/blackcapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -54,9 +54,10 @@ namespace {
     boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
         RelinkableHandle<Quote> vol(
             boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-        boost::shared_ptr<BlackModel> model(new BlackModel(vol,
-                                                           termStructure_));
-        return boost::shared_ptr<PricingEngine>(new BlackCapFloor(model));
+        boost::shared_ptr<BlackModel> model(
+                                         new BlackModel(vol, termStructure_));
+        return boost::shared_ptr<PricingEngine>(
+                                              new BlackCapFloorEngine(model));
     }
 
     boost::shared_ptr<CapFloor> makeCapFloor(
