@@ -44,7 +44,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
             // Day of Goodwill
             || (d == 26 && m == December && y >= 2000)
-            // December 31st, 1998 and 1999 only
+            // December 31st, 1998, 1999, and 2001 only
             || (d == 31 && m == December && 
                 (y == 1998 || y == 1999 || y == 2001)))
             return false;
