@@ -121,17 +121,10 @@ namespace QuantLib {
 
     inline void Instrument::setPricingEngine(const Handle<PricingEngine>& e) {
         QL_REQUIRE(!IsNull(e), "Instrument: null pricing engine");
-        try {
+        if (!IsNull(engine_))
             unregisterWith(engine_);
-        } catch (...) {
-            // null or not observable---never mind
-        }
         engine_ = e;
-        try {
-            registerWith(engine_);
-        } catch (...) {
-            // not observable---never mind
-        }
+        registerWith(engine_);
         // trigger (lazy) recalculation and notify observers
         update();
     }
