@@ -43,7 +43,7 @@ AC_DEFUN(
   ])
 
 
-dnl QL_CHECK_CLASS(foo,bar,arg) tests for the
+dnl QL_CHECK_TYPENAME(foo,bar,arg) tests for the
 dnl   presence of foo in namespace std or in the global
 dnl   namespace.
 dnl
@@ -57,7 +57,7 @@ dnl
 dnl   This macro assumes foo is in standard header <bar> .
 
 AC_DEFUN(
-  [QL_CHECK_CLASS],
+  [QL_CHECK_TYPENAME],
   [
     AC_MSG_CHECKING(if C++ environment has $1)
     AC_TRY_COMPILE(

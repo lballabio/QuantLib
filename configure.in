@@ -80,7 +80,7 @@ elif test $ac_cv_header_stdlib_h = yes ; then
 else
   AC_ERROR(Could not find cstdlib nor stdlib.h)
 fi
-QL_CHECK_CLASS([size_t],[$ql_stdlib],[])
+QL_CHECK_TYPENAME([size_t],[$ql_stdlib],[])
 
 if test $ac_cv_header_cmath = yes ; then
   ql_math=cmath
@@ -117,8 +117,35 @@ elif test $ac_cv_header_time_h = yes ; then
 else
   AC_ERROR(Could not find ctime nor time.h)
 fi
+QL_CHECK_TYPENAME([time_t],[$ql_time],[])
+QL_CHECK_TYPENAME([tm],[$ql_time],[])
 QL_CHECK_FUNCTION([clock],[$ql_time],[])
 QL_CHECK_FUNCTION([time],[$ql_time],[0])
+AC_MSG_CHECKING(if C++ environment has gmtime)
+AC_TRY_COMPILE(
+    [#include<$ql_time>],
+    [
+    std::time_t t;
+    std::time(&t);
+    std::gmtime(&t);
+    ],[
+      result="found in std"
+      AC_DEFINE(QL_GMTIME,[std::gmtime])
+    ],[
+      AC_TRY_COMPILE(
+      [#include<$ql_time>],
+      [
+      time_t t;
+      time(&t);
+      gmtime(&t);
+      ],[
+        result=found
+        AC_DEFINE(QL_GMTIME,[gmtime])
+      ],[
+        result="not found"
+      ])
+    ])
+AC_MSG_RESULT([$result])
 
 if test $ac_cv_header_cstdio = yes ; then
   ql_stdio=cstdio

@@ -11,8 +11,11 @@
 #undef QL_STRLEN
 #undef QL_TOLOWER
 #undef QL_TOUPPER
+#undef QL_TIME_T
+#undef QL_TM
 #undef QL_CLOCK
 #undef QL_TIME
+#undef QL_GMTIME
 #undef QL_SPRINTF
 #undef QL_MAX
 #undef QL_MIN

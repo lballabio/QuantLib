@@ -77,7 +77,7 @@ namespace QuantLib {
         : length_(0), units_(Days) {}
         Period(int n, TimeUnit units)
         : length_(n), units_(units) {}
-       Period(const std::string pstring);
+        Period(const std::string&);
         int length() const { return length_; }
         TimeUnit units() const { return units_; }
       private:
@@ -101,8 +101,6 @@ namespace QuantLib {
         explicit Date(int serialNumber);
         //! More traditional constructor.
         Date(Day d, Month m, Year y);
-       //! Definition of today's Date.
-       static Date TodaysDate();
         //@}
 
         //! \name inspectors
@@ -153,6 +151,8 @@ namespace QuantLib {
         static Date minDate();
         //! latest allowed date
         static Date maxDate();
+        //! today's date.
+        static Date todaysDate();
         //@}
       private:
         int serialNumber_;
