@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.14  2001/05/31 09:00:58  lballabio
+# Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
+#
 # Revision 1.13  2001/05/30 14:50:09  nando
 # debug libraries removed from installer
 #
@@ -47,6 +50,8 @@ SetOutPath  $INSTDIR\Include\ql
 File /r "Include\ql\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Calendars
 File /r "Include\ql\Calendars\*.hpp"
+SetOutPath  $INSTDIR\Include\ql\CashFlows
+File /r "Include\ql\CashFlows\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\DayCounters
 File /r "Include\ql\DayCounters\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\FiniteDifferences

@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.18  2001/05/31 08:56:40  lballabio
+# Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
+#
 # Revision 1.17  2001/05/24 12:52:02  nando
 # smoothing #include xx.hpp
 #
@@ -27,12 +30,15 @@ OUTPUT_DIR     = ..\lib\Win32\Borland
 CORE_OBJS        = calendar.obj$(_D) \
                    dataformatters.obj$(_D) \
                    date.obj$(_D) \
+                   scheduler.obj$(_D) \
                    solver1d.obj$(_D)
 
 CALENDAR_LIB     = Calendars\Calendars$(_D).lib
+CASHFLOWS_LIB    = CashFlows\CashFlows$(_D).lib
 DAYCOUNTER_LIB   = DayCounters\DayCounters$(_D).lib
 FDM_LIB          = FiniteDifferences\FiniteDifferences$(_D).lib
 INDEXES_LIB      = Indexes\Indexes$(_D).lib
+INSTRUMENTS_LIB  = Instruments\Instruments$(_D).lib
 MATH_LIB         = Math\Math$(_D).lib
 MONTECARLO_LIB   = MonteCarlo\MonteCarlo$(_D).lib
 PRICER_LIB       = Pricers\Pricers$(_D).lib
@@ -41,9 +47,11 @@ TERMSTRUCT_LIB   = TermStructures\TermStructures$(_D).lib
 
 QUANTLIB_OBJS    = $(CORE_OBJS) \
                    $(CALENDAR_LIB) \
+                   $(CASHFLOWS_LIB) \
                    $(DAYCOUNTER_LIB) \
                    $(FDM_LIB) \
                    $(INDEXES_LIB) \
+                   $(INSTRUMENTS_LIB) \
                    $(MATH_LIB) \
                    $(MONTECARLO_LIB) \
                    $(PRICER_LIB) \
@@ -89,11 +97,15 @@ $(OUTPUT_DIR)\QuantLib$(_D).lib:: $(CORE_OBJS) SubLibraries
 SubLibraries:
     cd Calendars
     $(MAKE)
+    cd ..\CashFlows
+    $(MAKE)
     cd ..\DayCounters
     $(MAKE)
     cd ..\FiniteDifferences
     $(MAKE)
     cd ..\Indexes
+    $(MAKE)
+    cd ..\Instruments
     $(MAKE)
     cd ..\Math
     $(MAKE)
@@ -112,11 +124,15 @@ SubLibraries:
 clean::
     cd Calendars
     $(MAKE) clean
+    cd ..\CashFlows
+    $(MAKE) clean
     cd ..\DayCounters
     $(MAKE) clean
     cd ..\FiniteDifferences
     $(MAKE) clean
     cd ..\Indexes
+    $(MAKE) clean
+    cd ..\Instruments
     $(MAKE) clean
     cd ..\Math
     $(MAKE) clean

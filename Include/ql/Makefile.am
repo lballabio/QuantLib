@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.10  2001/05/31 08:56:40  lballabio
+# Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
+#
 # Revision 1.9  2001/05/28 14:54:25  lballabio
 # Deposit rates are always adjusted
 #
@@ -9,9 +12,9 @@
 # smoothing #include xx.hpp
 #
 
-SUBDIRS = Calendars DayCounters FiniteDifferences Indexes \
-    Instruments Math MonteCarlo Patterns Pricers Solvers1D \
-    TermStructures Utilities
+SUBDIRS = Calendars CashFlows DayCounters FiniteDifferences \
+    Indexes Instruments Math MonteCarlo Patterns Pricers \
+    Solvers1D TermStructures Utilities
 
 EXTRA_DIST=config.ansi.hpp config.bcc.hpp config.decc.hpp \
 	config.msvc.hpp config.mwcw.hpp
@@ -20,6 +23,7 @@ includedir = $(prefix)/include/ql
 include_HEADERS = \
 	array.hpp \
 	calendar.hpp \
+	cashflow.hpp \
 	config.hpp \
 	currency.hpp \
 	dataformatters.hpp \
@@ -41,6 +45,7 @@ include_HEADERS = \
 	rate.hpp \
 	relinkablehandle.hpp \
 	riskstatistics.hpp \
+	scheduler.hpp \
 	solver1d.hpp spread.hpp \
 	swaptionvolsurface.hpp \
 	termstructure.hpp

@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/05/31 08:56:40  lballabio
+// Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
+//
 // Revision 1.12  2001/05/28 14:54:25  lballabio
 // Deposit rates are always adjusted
 //
@@ -43,6 +46,7 @@
 
 #include "ql/array.hpp"
 #include "ql/calendar.hpp"
+#include "ql/cashflow.hpp"
 #include "ql/currency.hpp"
 #include "ql/dataformatters.hpp"
 #include "ql/date.hpp"
@@ -62,6 +66,7 @@
 #include "ql/rate.hpp"
 #include "ql/relinkablehandle.hpp"
 #include "ql/riskstatistics.hpp"
+#include "ql/scheduler.hpp"
 #include "ql/solver1d.hpp"
 #include "ql/spread.hpp"
 #include "ql/swaptionvolsurface.hpp"
@@ -76,6 +81,12 @@
 #include "ql/Calendars/wellington.hpp"
 #include "ql/Calendars/westerncalendar.hpp"
 #include "ql/Calendars/zurich.hpp"
+
+#include "ql/CashFlows/accruingcoupon.hpp"
+#include "ql/CashFlows/cashflowvectors.hpp"
+#include "ql/CashFlows/fixedratecoupon.hpp"
+#include "ql/CashFlows/indexlinkedcoupon.hpp"
+#include "ql/CashFlows/simplecashflow.hpp"
 
 #include "ql/DayCounters/actual360.hpp"
 #include "ql/DayCounters/actual365.hpp"
@@ -110,6 +121,7 @@
 #include "ql/Indexes/usdlibor.hpp"
 
 #include "ql/Instruments/stock.hpp"
+#include "ql/Instruments/swap.hpp"
 
 #include "ql/Math/cubicspline.hpp"
 #include "ql/Math/interpolation.hpp"
