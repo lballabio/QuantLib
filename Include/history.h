@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/01/09 17:58:38  enri
+    added explicit typedefs to const_iterator
+
     Revision 1.5  2001/01/09 11:51:51  lballabio
     Using FilteringIterator for valid iterators
 
@@ -148,11 +151,14 @@ namespace QuantLib {
         };
 
         //! random access iterator on history entries
-        class const_iterator 
-        : public QL_ITERATOR<std::random_access_iterator_tag, Entry, int, 
-          const Entry QL_PTR_CONST, const Entry &> {
+        class const_iterator {
             friend class History;
           public:
+	    typedef std::random_access_iterator_tag iterator_category;
+	    typedef Entry value_type;
+	    typedef int difference_type;
+	    typedef const Entry QL_PTR_CONST pointer;
+	    typedef const Entry& reference;
             //! \name Dereferencing
             //@{
             const Entry& operator*() const { return theEntry; }
