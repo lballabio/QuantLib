@@ -70,11 +70,11 @@ TLIB_OPTS    = /P64
 
 # Primary target:
 # static library
-$(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-0_3_9.lib:: $(OUTPUT_DIR) $(OBJS)
-    if exist $(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-0_3_9.lib \
-         del $(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-0_3_9.lib
+$(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-$(VERSION_STRING).lib:: $(OUTPUT_DIR) $(OBJS)
+    if exist $(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-$(VERSION_STRING).lib \
+         del $(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-$(VERSION_STRING).lib
     $(TLIB) $(TLIB_OPTS) \
-           "$(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-0_3_9.lib" /a $(OBJS)
+           "$(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-$(VERSION_STRING).lib" /a $(OBJS)
 
 $(OUTPUT_DIR):
     if not exist ..\..\..\lib md ..\..\..\lib

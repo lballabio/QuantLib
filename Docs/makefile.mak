@@ -29,12 +29,12 @@ all:: htmlhelp-config tex-config tex-files
     $(LATEX) $(TEX_OPTS) refman
     $(DVIPS) refman
     cd ..
-    copy latex\refman.pdf QuantLib-docs-0.3.9.pdf
-    copy latex\refman.ps  QuantLib-docs-0.3.9.ps
+    copy latex\refman.pdf QuantLib-docs-$(VERSION).pdf
+    copy latex\refman.ps  QuantLib-docs-$(VERSION).ps
 
 generic-config::
     $(SED) -e "s|ql_basepath|D:/Projects/QuantLib|" \
-           -e "s|ql_version|0.3.9|" \
+           -e "s|ql_version|$(VERSION)|" \
            quantlib.doxy > quantlib.doxy.temp
 
 html-config:: generic-config
@@ -134,7 +134,7 @@ pdf:: tex-files
     $(MAKEINDEX) refman.idx
     $(PDFLATEX) $(TEX_OPTS) refman
     cd ..
-    copy latex\refman.pdf QuantLib-docs-0.3.9.pdf
+    copy latex\refman.pdf QuantLib-docs-$(VERSION).pdf
 
 # PostScript documentation
 ps:: tex-files
@@ -144,7 +144,7 @@ ps:: tex-files
     $(LATEX) $(TEX_OPTS) refman
     $(DVIPS) refman
     cd ..
-    copy latex\refman.ps QuantLib-docs-0.3.9.ps
+    copy latex\refman.ps QuantLib-docs-$(VERSION).ps
 
 
 # Clean up

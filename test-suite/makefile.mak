@@ -109,12 +109,12 @@ QL_TEST_LIB = all-tests-bcb$(_mt)$(_D)-0_3_8.lib
 
 
 # Primary target:
-$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe:: $(EXE_DIR) \
+$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe:: $(EXE_DIR) \
                                                           $(QL_TEST_LIB)
-    if exist $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.lib \
-         del $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.lib
+    if exist $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).lib \
+         del $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).lib
     $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) \
-    -e"$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe" \
+    -e"$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe" \
     $(QL_TEST_LIB) libboost_unit_test_framework-bcb$(_mt)$(_D)-1_31.lib
 
 $(EXE_DIR):
@@ -125,8 +125,8 @@ $(QL_TEST_LIB): $(QL_TESTS)
     $(TLIB) $(TLIB_OPTS) "$(QL_TEST_LIB)" /a $(QL_TESTS)
 
 
-check: $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe
-    $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe \
+check: $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe
+    $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe \
                   --log_level=messages --build_info=yes --report_level=short
     cd ..
 
