@@ -18,18 +18,21 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file westerncalendar.cpp
 	\brief Western calendar
 
 	$Source$
-	$Name$
 	$Log$
+	Revision 1.10  2001/03/26 08:47:00  lballabio
+	Fixed line wrappings
+
 	Revision 1.9  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "westerncalendar.h"
