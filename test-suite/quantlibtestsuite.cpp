@@ -90,6 +90,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     BOOST_MESSAGE(header);
     BOOST_MESSAGE(rule);
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
+
     test->add(AmericanOptionTest::suite());
     test->add(AsianOptionTest::suite());
     test->add(BarrierOptionTest::suite());
@@ -127,6 +128,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TermStructureTest::suite());
     // tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());
+
     return test;
 }
 
