@@ -25,7 +25,7 @@ class FactorialTest : public CppUnit::TestFixture {
   public:
     void testFactorial();
     void testGammaFunction();
-    // add Poisson and Gamma here
+    void testPoissonDistribution();
     static CppUnit::Test* suite();
 };
 

@@ -19,6 +19,7 @@
 #include <ql/Math/factorial.hpp>
 #include <ql/Math/gammadistribution.hpp>
 #include <ql/dataformatters.hpp>
+#include <ql/Math/poissondistribution.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 
@@ -35,6 +36,9 @@ CppUnit::Test* FactorialTest::suite() {
     tests->addTest(new CppUnit::TestCaller<FactorialTest>
                    ("Testing Gamma function",
                     &FactorialTest::testGammaFunction));
+    tests->addTest(new CppUnit::TestCaller<FactorialTest>
+                   ("Testing Poisson Distribution",
+                    &FactorialTest::testPoissonDistribution));
     return tests;
 }
 
@@ -103,6 +107,113 @@ void FactorialTest::testGammaFunction() {
                          "    rel error:   "
                          + DoubleFormatter::toExponential(
                                    QL_FABS(calculated-expected)/expected,16));
+    }
+}
+
+
+
+
+void FactorialTest::testPoissonDistribution() {
+
+    double mean = 0.0;
+    unsigned long i = 0;
+    PoissonDistribution pdf(mean);
+    double calculated = pdf(i);
+    double expected = 1.0;
+    if (calculated!=expected)
+        CPPUNIT_FAIL("Poisson pdf("
+                     + DoubleFormatter::toString(mean) + ")("
+                     + IntegerFormatter::toString(i) + ")\n"
+                     "    calculated: "
+                     + DoubleFormatter::toString(calculated,16) + "\n"
+                     "    expected:   "
+                     + DoubleFormatter::toString(expected,16));
+
+    CumulativePoissonDistribution cdf(mean);
+    double cumCalculated = cdf(i);
+    double cumExpected = 1.0;
+    if (cumCalculated!=cumExpected)
+        CPPUNIT_FAIL("Poisson cdf("
+                     + DoubleFormatter::toString(mean) + ")("
+                     + IntegerFormatter::toString(i) + ")\n"
+                     "    calculated: "
+                     + DoubleFormatter::toString(cumCalculated,16) + "\n"
+                     "    expected:   "
+                     + DoubleFormatter::toString(cumExpected,16));
+
+    for (i=1; i<25; i++) {
+        calculated = pdf(i);
+        expected = 0.0;
+        if (calculated!=expected)
+            CPPUNIT_FAIL("Poisson pdf("
+                         + DoubleFormatter::toString(mean) + ")("
+                         + IntegerFormatter::toString(i) + ")\n"
+                         "    calculated: "
+                         + DoubleFormatter::toString(calculated,16) + "\n"
+                         "    expected:   "
+                         + DoubleFormatter::toString(expected,16));
+        cumCalculated = cdf(i);
+        cumExpected = 1.0;
+        if (cumCalculated!=cumExpected)
+            CPPUNIT_FAIL("Poisson cdf("
+                         + DoubleFormatter::toString(mean) + ")("
+                         + IntegerFormatter::toString(i) + ")\n"
+                         "    calculated: "
+                         + DoubleFormatter::toString(cumCalculated,16) + "\n"
+                         "    expected:   "
+                         + DoubleFormatter::toString(cumExpected,16));
+    }
+
+
+    for (mean=0.5; mean<=10; mean+=0.5) {
+        i = 0;
+        pdf = PoissonDistribution(mean);
+        calculated = pdf(i);
+        double logHelper = -mean;
+        expected = QL_EXP(logHelper);
+        if (calculated!=expected)
+            CPPUNIT_FAIL("Poisson pdf("
+                         + DoubleFormatter::toString(mean) + ")("
+                         + IntegerFormatter::toString(i) + ")\n"
+                         "    calculated: "
+                         + DoubleFormatter::toString(calculated,16) + "\n"
+                         "    expected:   "
+                         + DoubleFormatter::toString(expected,16));
+
+        cdf = CumulativePoissonDistribution(mean);
+        cumCalculated = cdf(i);
+        cumExpected = expected;
+        if (QL_FABS(cumCalculated-cumExpected)>1.0e-13)
+            CPPUNIT_FAIL("Poisson cdf("
+                         + DoubleFormatter::toString(mean) + ")("
+                         + IntegerFormatter::toString(i) + ")\n"
+                         "    calculated: "
+                         + DoubleFormatter::toString(cumCalculated,16) + "\n"
+                         "    expected:   "
+                         + DoubleFormatter::toString(cumExpected,16));
+        for (unsigned long i=1; i<25; i++) {
+            calculated = pdf(i);
+            logHelper = logHelper+QL_LOG(mean)-QL_LOG(i);
+            expected = QL_EXP(logHelper);
+            if (QL_FABS(calculated-expected)>1.0e-13)
+                CPPUNIT_FAIL("Poisson pdf("
+                             + DoubleFormatter::toString(mean) + ")("
+                             + IntegerFormatter::toString(i) + ")\n"
+                             "    calculated: "
+                             + DoubleFormatter::toString(calculated,16) + "\n"
+                             "    expected:   "
+                             + DoubleFormatter::toString(expected,16));
+            cumCalculated = cdf(i);
+            cumExpected += expected;
+            if (QL_FABS(cumCalculated-cumExpected)>1.0e-12)
+                CPPUNIT_FAIL("Poisson cdf("
+                             + DoubleFormatter::toString(mean) + ")("
+                             + IntegerFormatter::toString(i) + ")\n"
+                             "    calculated: "
+                             + DoubleFormatter::toString(cumCalculated,16) + "\n"
+                             "    expected:   "
+                             + DoubleFormatter::toString(cumExpected,16));
+        }
     }
 }
 
