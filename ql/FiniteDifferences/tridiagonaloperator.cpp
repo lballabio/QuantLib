@@ -219,19 +219,25 @@ namespace QuantLib {
 
             // solve tridiagonal system with SOR technique
             Size sorIteration, i;
-            double omega = 1.0;
+            double omega = 1.5;
             double err=2.0*tol;
-            double y, temp;
+            double temp;
             for (sorIteration=0; err>tol ; sorIteration++) {
-                QL_REQUIRE(sorIteration<10000, "too many iterations");
+                QL_REQUIRE(sorIteration<100000,
+                    "TridiagonalOperator::SOR: tolerance ["
+                    + DoubleFormatter::toString(tol) +
+                    "] not reached in "
+                    + IntegerFormatter::toString(sorIteration) +
+                    " iterations. The error still is "
+                    + DoubleFormatter::toString(err));
                 err=0.0;
                 for (i=1; i<size()-2 ; i++) {
-                    y = (rhs[i]     +
-                         aboveDiagonal_[i]   * result[i+1]+
+                    temp = omega * (rhs[i]     -
+                         aboveDiagonal_[i]   * result[i+1]-
+                         diagonal_[i]        * result[i] -
                          belowDiagonal_[i-1] * result[i-1]) / diagonal_[i];
-                    temp = y - result[i];
                     err += temp * temp;
-                    result[i] += omega * temp;
+                    result[i] += temp;
                 }
             }
 

@@ -113,7 +113,7 @@ namespace QuantLib {
                     implicitPart_ = I_+(     theta_  * dt_)*L_;
                 }
                 a = implicitPart_.solveFor(a);
-//                a = implicitPart_.SOR(a, 1e-5);
+//                a = implicitPart_.SOR(a, 1e-8);
             }
         }
 
