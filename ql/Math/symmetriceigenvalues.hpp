@@ -34,7 +34,7 @@ namespace QuantLib {
         Disposable<Array> SymmetricEigenvalues(Matrix &s);
 
         // Eigenvectors of a symmetric matrix
-        Matrix SymmetricEigenvectors(Matrix &s);
+        Disposable<Matrix> SymmetricEigenvectors(Matrix &s);
 
 
         // inline definitions
@@ -44,14 +44,14 @@ namespace QuantLib {
             return result;
         }
 
-        inline Matrix SymmetricEigenvectors(Matrix &s) {
-            return SymmetricSchurDecomposition(s).eigenvectors();
+        inline Disposable<Matrix> SymmetricEigenvectors(Matrix &s) {
+            Matrix result = SymmetricSchurDecomposition(s).eigenvectors();
+            return result;
         }
 
     }
 
 }
 
+
 #endif
-
-

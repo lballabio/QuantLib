@@ -29,30 +29,30 @@ namespace QuantLib {
 
     namespace Math {
 
-        Matrix pseudoSqrt(const Matrix &realSymmMatrix, SalvagingAlgorithm sa) {
+        Disposable<Matrix> pseudoSqrt(const Matrix &realSymmMatrix, 
+                                      SalvagingAlgorithm sa) {
 
-
-           Size size = realSymmMatrix.rows();
-           SymmetricSchurDecomposition jd(realSymmMatrix);
+            Size size = realSymmMatrix.rows();
+            SymmetricSchurDecomposition jd(realSymmMatrix);
 
             double maxEv=0;
             Size i, j;
-            for(i = 0; i < size;i++) {
-                if(jd.eigenvalues()[i] >= maxEv)
+            for (i = 0; i < size;i++) {
+                if (jd.eigenvalues()[i] >= maxEv)
                     maxEv = jd.eigenvalues()[i];
             }
 
             Matrix diagonal(size,size,0);
-            for(i = 0; i < size; i++) {
+            for (i = 0; i < size; i++) {
                 // eigenvalues smaller than relative tolerance
                 // are considered zero
                 double tolerance = 1e-15;
-                if(QL_FABS(jd.eigenvalues()[i]) <= tolerance*maxEv) {
+                if (QL_FABS(jd.eigenvalues()[i]) <= tolerance*maxEv) {
                     diagonal[i][i] = 0.0;
                     continue;
                 }
                 switch (sa) {
-                case None:
+                  case None:
                     QL_REQUIRE(jd.eigenvalues()[i] >=0,
                           "pseudoSqrt: eigenvalues("+
                           IntegerFormatter::toString(i) + ") = " +
@@ -69,14 +69,14 @@ namespace QuantLib {
                     Revised and extended in "Monte Carlo Methods in Finance",
                     by Peter Jäckel, Chapter 6
                 */
-                case Spectral:
-                case Hypersphere:
+                  case Spectral:
+                  case Hypersphere:
                     if (jd.eigenvalues()[i] >=0)
                       diagonal[i][i] = QL_SQRT(jd.eigenvalues()[i]);
                     else
                       diagonal[i][i] = 0.0;
                     break;
-                default:
+                  default:
                     throw Error("unknown matrix pseudo square root "
                             "salvaging algorithm");
                 }
@@ -86,12 +86,12 @@ namespace QuantLib {
                                 transpose(jd.eigenvectors()));
 
             switch (sa) {
-            case Spectral:
-            case Hypersphere:
+              case Spectral:
+              case Hypersphere:
                 // need to normalize the rows
-                for(i = 0; i < size;i++) {
+                for (i = 0; i < size;i++) {
                     double norm = 0.0;
-                    for(j = 0; j < size; j++) {
+                    for (j = 0; j < size; j++) {
                         norm += result[i][j]*result[i][j];
                     }
                     norm = QL_SQRT(norm);
@@ -99,19 +99,19 @@ namespace QuantLib {
                         result[i][j] /= norm;
                     }
                 }
-            default:
+              default:
                 break;
             }
 
             switch (sa) {
-            case Hypersphere:
+              case Hypersphere:
                 throw Error("not implemented yet");
-            default:
+              default:
                 return result;
             }
-
         }
 
     }
 
 }
+

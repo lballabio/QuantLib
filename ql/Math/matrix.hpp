@@ -26,6 +26,7 @@
 #define quantlib_matrix_h
 
 #include <ql/array.hpp>
+#include <ql/disposable.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 
 namespace QuantLib {
@@ -50,8 +51,10 @@ namespace QuantLib {
             //! creates the matrix and fills it with <tt>value</tt>
             Matrix(Size rows, Size columns, double value);
             Matrix(const Matrix&);
+            Matrix(const Disposable<Matrix>&);
             ~Matrix();
             Matrix& operator=(const Matrix&);
+            Matrix& operator=(const Disposable<Matrix>&);
             //@}
 
             //! \name Algebraic operators
@@ -124,10 +127,13 @@ namespace QuantLib {
             Size columns() const;
             //@}
 
+            //! \name Utilities
+            //@{
+            void swap(Matrix&);
+            //@}
           private:
-            void allocate_(Size rows, Size columns);
-            void copy_(const Matrix&);
-          private:
+            void allocate(Size rows, Size columns);
+            void copy(const Matrix&);
             double* pointer_;
             Size rows_, columns_;
         };
@@ -135,15 +141,15 @@ namespace QuantLib {
         // algebraic operators
 
         /*! \relates Matrix */
-        Matrix operator+(const Matrix&, const Matrix&);
+        Disposable<Matrix> operator+(const Matrix&, const Matrix&);
         /*! \relates Matrix */
-        Matrix operator-(const Matrix&, const Matrix&);
+        Disposable<Matrix> operator-(const Matrix&, const Matrix&);
         /*! \relates Matrix */
-        Matrix operator*(const Matrix&, double);
+        Disposable<Matrix> operator*(const Matrix&, double);
         /*! \relates Matrix */
-        Matrix operator*(double, const Matrix&);
+        Disposable<Matrix> operator*(double, const Matrix&);
         /*! \relates Matrix */
-        Matrix operator/(const Matrix&, double);
+        Disposable<Matrix> operator/(const Matrix&, double);
 
 
         // vectorial products
@@ -153,23 +159,20 @@ namespace QuantLib {
         /*! \relates Matrix */
         Disposable<Array> operator*(const Matrix&, const Array&);
         /*! \relates Matrix */
-        Matrix operator*(const Matrix&, const Matrix&);
-
+        Disposable<Matrix> operator*(const Matrix&, const Matrix&);
 
         // misc. operations
 
         /*! \relates Matrix */
-        Matrix transpose(const Matrix&);
+        Disposable<Matrix> transpose(const Matrix&);
 
         /*! \relates Matrix */
-        Matrix outerProduct(const Array &v1, const Array &v2);
+        Disposable<Matrix> outerProduct(const Array& v1, const Array& v2);
 
         /*! \relates Matrix */
-        template<class DataIterator>
-        Matrix outerProduct(DataIterator v1begin,
-                            DataIterator   v1end,
-                            DataIterator v2begin,
-                            DataIterator   v2end);
+        template<class Iterator1, class Iterator2>
+        Disposable<Matrix> outerProduct(Iterator1 v1begin, Iterator1 v1end,
+                                        Iterator2 v2begin, Iterator2 v2end);
 
         enum SalvagingAlgorithm {None, Spectral, Hypersphere};
         //! returns the pseudo square root of a real symmetric matrix
@@ -188,16 +191,15 @@ namespace QuantLib {
             by Peter Jäckel, Chapter 6
                     
             \relates Matrix */
-        Matrix pseudoSqrt(const Matrix &realSymmetricMatrix,
-                          SalvagingAlgorithm sa = None);
+        Disposable<Matrix> pseudoSqrt(const Matrix& realSymmetricMatrix,
+                                      SalvagingAlgorithm sa = None);
+
         //! returns the pseudo square root of a real symmetric matrix
         /*! returns the pseudo square root of a real symmetric matrix.
             
             \deprecate use pseudoSqrt instead
             \relates Matrix */
-        inline Matrix matrixSqrt(const Matrix &realSymmetricMatrix) {
-            return pseudoSqrt(realSymmetricMatrix, None);
-        }
+        Disposable<Matrix> matrixSqrt(const Matrix& realSymmetricMatrix);
 
 
         // inline definitions
@@ -208,7 +210,7 @@ namespace QuantLib {
         inline Matrix::Matrix(Size rows, Size columns)
         : pointer_(0), rows_(0), columns_(0) {
             if (rows > 0 && columns > 0)
-                allocate_(rows,columns);
+                allocate(rows,columns);
         }
 
         inline Matrix::Matrix(Size rows,
@@ -216,16 +218,21 @@ namespace QuantLib {
                               double value)
         : pointer_(0), rows_(0), columns_(0) {
             if (rows > 0 && columns > 0)
-                allocate_(rows,columns);
+                allocate(rows,columns);
             std::fill(begin(),end(),value);
         }
 
         inline Matrix::Matrix(const Matrix& from)
         : pointer_(0), rows_(0), columns_(0) {
-            allocate_(from.rows(), from.columns());
-            copy_(from);
+            allocate(from.rows(), from.columns());
+            copy(from);
         }
 
+        inline Matrix::Matrix(const Disposable<Matrix>& from)
+        : pointer_(0), rows_(0), columns_(0) {
+            swap(const_cast<Disposable<Matrix>&>(from));
+        }
+        
         inline Matrix::~Matrix() {
             if (pointer_ != 0 && rows_ != 0 && columns_ != 0)
                 delete[] pointer_;
@@ -235,13 +242,24 @@ namespace QuantLib {
 
         inline Matrix& Matrix::operator=(const Matrix& from) {
             if (this != &from) {
-                allocate_(from.rows(),from.columns());
-                copy_(from);
+                allocate(from.rows(),from.columns());
+                copy(from);
             }
             return *this;
         }
 
-        inline void Matrix::allocate_(Size rows, Size columns) {
+        inline Matrix& Matrix::operator=(const Disposable<Matrix>& from) {
+            swap(const_cast<Disposable<Matrix>&>(from));
+            return *this;
+        }
+
+        inline void Matrix::swap(Matrix& from) {
+            std::swap(pointer_,from.pointer_);
+            std::swap(rows_,from.rows_);
+            std::swap(columns_,from.columns_);
+        }
+
+        inline void Matrix::allocate(Size rows, Size columns) {
             if (rows_ == rows && columns_ == columns)
                 return;
             if (pointer_ != 0 && rows_ != 0 && columns_ != 0)
@@ -256,24 +274,21 @@ namespace QuantLib {
             }
         }
 
-        inline void Matrix::copy_(const Matrix& from) {
+        inline void Matrix::copy(const Matrix& from) {
             std::copy(from.begin(),from.end(),begin());
         }
 
         inline Matrix& Matrix::operator+=(const Matrix& m) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
-                    "matrices with different sizes cannot be added");
-            #endif
-            std::transform(begin(),end(),m.begin(),begin(),std::plus<double>());
+            QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
+                       "matrices with different sizes cannot be added");
+            std::transform(begin(),end(),m.begin(),
+                           begin(),std::plus<double>());
             return *this;
         }
 
         inline Matrix& Matrix::operator-=(const Matrix& m) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
-                    "matrices with different sizes cannot be subtracted");
-            #endif
+            QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
+                       "matrices with different sizes cannot be subtracted");
             std::transform(begin(),end(),m.begin(),begin(),
                 std::minus<double>());
             return *this;
@@ -421,45 +436,43 @@ namespace QuantLib {
             return columns_;
         }
 
-        inline Matrix operator+(const Matrix& m1, const Matrix& m2) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE(m1.rows() == m2.rows() &&
-                    m1.columns() == m2.columns(),
-                    "matrices with different sizes cannot be added");
-            #endif
+        inline Disposable<Matrix> operator+(const Matrix& m1, 
+                                            const Matrix& m2) {
+            QL_REQUIRE(m1.rows() == m2.rows() &&
+                       m1.columns() == m2.columns(),
+                       "matrices with different sizes cannot be added");
             Matrix temp(m1.rows(),m1.columns());
             std::transform(m1.begin(),m1.end(),m2.begin(),temp.begin(),
                 std::plus<double>());
             return temp;
         }
 
-        inline Matrix operator-(const Matrix& m1, const Matrix& m2) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE(m1.rows() == m2.rows() &&
-                    m1.columns() == m2.columns(),
-                    "matrices with different sizes cannot be subtracted");
-            #endif
+        inline Disposable<Matrix> operator-(const Matrix& m1, 
+                                            const Matrix& m2) {
+            QL_REQUIRE(m1.rows() == m2.rows() &&
+                       m1.columns() == m2.columns(),
+                       "matrices with different sizes cannot be subtracted");
             Matrix temp(m1.rows(),m1.columns());
             std::transform(m1.begin(),m1.end(),m2.begin(),temp.begin(),
                 std::minus<double>());
             return temp;
         }
 
-        inline Matrix operator*(const Matrix& m, double x) {
+        inline Disposable<Matrix> operator*(const Matrix& m, double x) {
             Matrix temp(m.rows(),m.columns());
             std::transform(m.begin(),m.end(),temp.begin(),
                 std::bind2nd(std::multiplies<double>(),x));
             return temp;
         }
 
-        inline Matrix operator*(double x, const Matrix& m) {
+        inline Disposable<Matrix> operator*(double x, const Matrix& m) {
             Matrix temp(m.rows(),m.columns());
             std::transform(m.begin(),m.end(),temp.begin(),
                 std::bind2nd(std::multiplies<double>(),x));
             return temp;
         }
 
-        inline Matrix operator/(const Matrix& m, double x) {
+        inline Disposable<Matrix> operator/(const Matrix& m, double x) {
             Matrix temp(m.rows(),m.columns());
             std::transform(m.begin(),m.end(),temp.begin(),
                 std::bind2nd(std::divides<double>(),x));
@@ -467,24 +480,21 @@ namespace QuantLib {
         }
 
         inline Disposable<Array> operator*(const Array& v, const Matrix& m) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE(v.size() == m.rows(),
-                    "vectors and matrices with different sizes "
-                    "cannot be multiplied");
-            #endif
+            QL_REQUIRE(v.size() == m.rows(),
+                       "vectors and matrices with different sizes "
+                       "cannot be multiplied");
             Array result(m.columns());
             for (Size i=0; i<result.size(); i++)
                 result[i] =
-                    std::inner_product(v.begin(),v.end(),m.column_begin(i),0.0);
+                    std::inner_product(v.begin(),v.end(),
+                                       m.column_begin(i),0.0);
             return result;
         }
 
         inline Disposable<Array> operator*(const Matrix& m, const Array& v) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE(v.size() == m.columns(),
-                    "vectors and matrices with different sizes "
-                    "cannot be multiplied");
-            #endif
+            QL_REQUIRE(v.size() == m.columns(),
+                       "vectors and matrices with different sizes "
+                       "cannot be multiplied");
             Array result(m.rows());
             for (Size i=0; i<result.size(); i++)
                 result[i] =
@@ -492,11 +502,10 @@ namespace QuantLib {
             return result;
         }
 
-        inline Matrix operator*(const Matrix& m1, const Matrix& m2) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE(m1.columns() == m2.rows(),
-                    "matrices with different sizes cannot be multiplied");
-            #endif
+        inline Disposable<Matrix> operator*(const Matrix& m1, 
+                                            const Matrix& m2) {
+            QL_REQUIRE(m1.columns() == m2.rows(),
+                       "matrices with different sizes cannot be multiplied");
             Matrix result(m1.rows(),m2.columns());
             for (Size i=0; i<result.rows(); i++)
                 for (Size j=0; j<result.columns(); j++)
@@ -506,20 +515,23 @@ namespace QuantLib {
             return result;
         }
 
-        inline Matrix transpose(const Matrix& m) {
+        inline Disposable<Matrix> transpose(const Matrix& m) {
             Matrix result(m.columns(),m.rows());
             for (Size i=0; i<m.rows(); i++)
                 std::copy(m.row_begin(i),m.row_end(i),result.column_begin(i));
             return result;
         }
 
-        inline Matrix outerProduct(const Array &v1, const Array &v2){
+        inline Disposable<Matrix> outerProduct(const Array& v1, 
+                                               const Array& v2) {
             return outerProduct(v1.begin(), v1.end(), v2.begin(), v2.end());
         }
 
-        template<class DataIterator>
-        inline Matrix outerProduct(DataIterator v1begin, DataIterator v1end,
-                                   DataIterator v2begin, DataIterator v2end) {
+        template<class Iterator1, class Iterator2>
+        inline Disposable<Matrix> outerProduct(Iterator1 v1begin, 
+                                               Iterator1 v1end,
+                                               Iterator2 v2begin, 
+                                               Iterator2 v2end) {
 
             Size size1 = std::distance(v1begin, v1end);
             QL_REQUIRE(size1>0, "outerProduct: null dimension first vector");
@@ -534,6 +546,10 @@ namespace QuantLib {
                     std::bind1st(std::multiplies<double>(), *v1begin));
 
             return result;
+        }
+
+        inline Disposable<Matrix> matrixSqrt(const Matrix& m) {
+            return pseudoSqrt(m, None);
         }
 
     }

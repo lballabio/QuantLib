@@ -106,8 +106,10 @@ namespace QuantLib {
         const_reverse_iterator rend() const;
         reverse_iterator rend();
         //@}
-      protected:
+        //! \name Utilities
+        //@{
         void swap(Array&);
+        //@}
       private:
         void allocate(Size size);
         void resize(Size size);

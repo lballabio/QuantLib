@@ -137,11 +137,12 @@ namespace QuantLib {
             return result;
         }
 
-        TridiagonalOperator TridiagonalOperator::identity(Size size){
-            return TridiagonalOperator(
-                Array(size-1, 0.0),     // lower diagonal
-                Array(size,   1.0),     // diagonal
-                Array(size-1, 0.0));    // upper diagonal
+        Disposable<TridiagonalOperator>
+        TridiagonalOperator::identity(Size size) {
+            TridiagonalOperator I(Array(size-1, 0.0),     // lower diagonal
+                                  Array(size,   1.0),     // diagonal
+                                  Array(size-1, 0.0));    // upper diagonal
+            return I;
         }
 
     }
