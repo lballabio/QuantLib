@@ -1,0 +1,7 @@
+
+the version number is in:
+    QuantLib/configure.in,
+    QuantLib/QuantLib.nsi,
+    QuantLib/ql/qldefines,
+    QuantLib-Python/setup.py,
+
