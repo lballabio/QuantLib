@@ -58,6 +58,7 @@
 	#define QL_GARBLED_MIN_AND_MAX				1
 	#define QL_GARBLED_REVERSE_ITERATORS		1
 	#define QL_GARBLED_PTR_CONST				1
+	#define QL_INCLUDE_IN_SUBFOLDERS			1
 
 #elif defined(__BORLANDC__)				// Borland C++
 	// set switches
@@ -70,6 +71,7 @@
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
+	#define QL_INCLUDE_IN_SUBFOLDERS			1
 
 #elif defined(__MWERKS__)					// Metrowerks CodeWarrior
 	// set switches
@@ -82,6 +84,7 @@
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
+	#define QL_INCLUDE_IN_SUBFOLDERS			0
 
 #elif defined(__GNUC__)						// GNU C++
 	// set switches
@@ -94,6 +97,7 @@
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
+	#define QL_INCLUDE_IN_SUBFOLDERS			1
 
 #else										// Generic ANSI C++ compliant compiler
 	// set switches
@@ -106,6 +110,7 @@
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
+	#define QL_INCLUDE_IN_SUBFOLDERS			1
 
 #endif
 
@@ -124,6 +129,9 @@
 	are sometimes too advanced for the template implementation of current compilers.
 */
 
+/*! \def QL_INCLUDE_IN_SUBFOLDERS
+	Defined as true if the compiler supports the <path/header.h> syntax, as false otherwise.
+*/
 
 /*! \def QL_CMATH_IN_STD
 	\brief Are math functions defined in the std namespace?
