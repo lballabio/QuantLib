@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/05/29 11:57:49  marmar
+// Error message is now more clear
+//
 // Revision 1.5  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -39,6 +42,7 @@
 
 #include "ql/TermStructures/piecewiseflatforward.hpp"
 #include "ql/Solvers1D/brent.hpp"
+#include "ql/dataformatters.hpp"
 
 namespace QuantLib {
 
@@ -127,7 +131,11 @@ namespace QuantLib {
         int PiecewiseFlatForward::referenceNode(
             const Date& d, bool extrapolate) const {
                 QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
-                    "date outside curve definition");
+                    "date (" +
+					DateFormatter::toString(d) +
+					") outside curve definition [" +
+					DateFormatter::toString(minDate()) + ", " +					
+					DateFormatter::toString(maxDate()) + "]");
                 if (d>=maxDate())
                     return nodes_.size()-1;
                 std::vector<Date>::const_iterator i=nodes_.begin(),
