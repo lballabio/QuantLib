@@ -10,6 +10,7 @@
 # $Id$
 
 
+
 # HEADER CONFIGURATION COMMANDS
 !ifdef LIGHT
     Name "QuantLib Light"
@@ -132,18 +133,19 @@ SectionIn 1 2 3
 SectionEnd
 
 
+
 !ifndef LIGHT
 
 #Function .onInit
 #  SetOutPath $TEMP
-#  File /oname=spltmp.dat "Docs\images\QL-largish.bmp"
-#  ReadRegStr $1 HKLM SOFTWARE\NSIS ""
-#  StrCpy $2 "$1\splash.exe"
-#  File /oname=spltmp.exe $2
-#  File /oname=spltmp.exe "E:\Program Files\NSIS\splash.exe"
-#  ExecWait '"$TEMP\spltmp.exe" 2000 $HWNDPARENT spltmp.dat'
+#  File /oname=spltmp.bmp "Docs\images\QL-largish.bmp"
+## this doesn't work
+##  ReadRegStr $0 HKEY_LOCAL_MACHINE SOFTWARE\NSIS ""
+##  File /oname=spltmp.exe "$0\splash.exe"
+#  File /oname=spltmp.exe "E:\program files\nsis\splash.exe"
+#  ExecWait '"$TEMP\spltmp.exe" 4000 $HWNDPARENT $TEMP\spltmp'
 #  Delete $TEMP\spltmp.exe
-#  Delete $TEMP\spltmp.dat
+#  Delete $TEMP\spltmp.bmp
 #FunctionEnd
 
 #it doesn't work
