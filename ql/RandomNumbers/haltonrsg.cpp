@@ -33,27 +33,51 @@
 // $Id$
 
 #include <ql/RandomNumbers/haltonrsg.hpp>
-#include "ql/Math/primenumbers.hpp"
+#include <ql/RandomNumbers/rngtypedefs.hpp>
+#include <ql/Math/primenumbers.hpp>
+#include <iostream>
 
 namespace QuantLib {
 
     namespace RandomNumbers {
 
+        HaltonRsg::HaltonRsg(Size dimensionality, unsigned long seed,
+            bool randomStart, bool randomShift)
+        : dimensionality_(dimensionality), sequenceCounter_(0),
+          sequence_(Array(dimensionality), 1.0),
+          randomStart_(dimensionality, 0UL),
+          randomShift_(dimensionality, 0.0) {
+
+            if (randomStart || randomShift) {
+                MersenneTwisterUniformRsg uniformRsg(dimensionality_, seed);
+                if (randomStart) {
+                    Array temp = (uniformRsg.nextSequence().value*4294967296.0)+0.5;
+                    for (Size i=0; i<dimensionality_; i++) {
+                        randomStart_[i] = long(temp[i]);
+                    }
+                }
+                if (randomShift)
+                    randomShift_ = uniformRsg.nextSequence().value;
+            }
+
+        }
+
         const HaltonRsg::sample_type& HaltonRsg::nextSequence() const {
             ++sequenceCounter_;
-            Size b,i,k;
+            unsigned long b, k; 
             double f, h;
-            for (i=0; i<dimensionality_; ++i) {
+            for (Size i=0; i<dimensionality_; ++i) {
                 h = 0.0;
                 b = Math::PrimeNumbers::get(i);
                 f = 1.0;
-                k = sequenceCounter_;
+                k = sequenceCounter_+randomStart_[i];
                 while (k) {
                     f /= b;
                     h += (k%b)*f;
                     k /= b;
                 }
-                sequence_.value[i] = h;
+                sequence_.value[i] = h+randomShift_[i];
+                sequence_.value[i] -= long(sequence_.value[i]);
             }
             return sequence_;
         }

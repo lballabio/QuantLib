@@ -5,3 +5,5 @@ testsuite.plg
 test-suite.tds
 quantlib-test-suite
 build
+*Discrepancy.txt
+directionIntegers.txt

@@ -37,6 +37,7 @@
 
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/haltonrsg.hpp>
+#include <ql/RandomNumbers/sobolrsg.hpp>
 
 #include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
 
@@ -122,8 +123,7 @@ namespace QuantLib {
 
 /************* Uniform sequence generators *************/
 
-        // all low discrepancy sequence generators (HaltonRsg
-        // for the time being), plus:
+        // all low discrepancy sequence generators plus:
         typedef RandomSequenceGenerator<LecuyerUniformRng>
             LecuyerUniformRsg;
         typedef RandomSequenceGenerator<KnuthUniformRng>
@@ -135,8 +135,7 @@ namespace QuantLib {
         typedef MersenneTwisterUniformRsg UniformRandomSequenceGenerator;
 
         //! default choice for uniform low discrepancy sequence generator
-        typedef HaltonRsg UniformLowDiscrepancySequenceGenerator;
-        // should be Sobol as soon as it is available in QuantLib
+        typedef SobolRsg UniformLowDiscrepancySequenceGenerator;
 
 
 
@@ -186,14 +185,23 @@ namespace QuantLib {
             QuantLib::Math::InverseCumulativeNormal>
 			InvCumulativeHaltonGaussianRsg;
 
+        // Gaussian low discrepancy sequence generators based on
+        // Sobol uniform low discrepancy sequence generator
+        // 1) Moro
+        typedef ICGaussianRsg<SobolRsg,
+            QuantLib::Math::MoroInverseCumulativeNormal>
+			MoroInvCumulativeSobolGaussianRsg;
+        // 2) Acklam
+        typedef ICGaussianRsg<SobolRsg,
+            QuantLib::Math::InverseCumulativeNormal>
+			InvCumulativeSobolGaussianRsg;
+
         //! default choice for gaussian random sequence generator.
         typedef InvCumulativeMersenneTwisterGaussianRsg
             GaussianRandomSequenceGenerator;
 
         //! default choice for gaussian low discrepancy sequence generator
-        typedef InvCumulativeHaltonGaussianRsg GaussianLowDiscrepancySequenceGenerator;
-        // should be Sobol as soon as it is available in QuantLib
-
+        typedef InvCumulativeSobolGaussianRsg GaussianLowDiscrepancySequenceGenerator;
 
     }
 

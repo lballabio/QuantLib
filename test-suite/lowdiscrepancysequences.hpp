@@ -29,7 +29,14 @@ class LDSTest : public CppUnit::TestFixture {
     void testPolynomialsModuloTwo();
     void testSobol();
     void testHalton();
-    void testDiscrepancy();
+    void testTrueRandomNumberDiscrepancy();
+    void testMersenneTwisterDiscrepancy();
+    void testPlainHaltonDiscrepancy();
+    void testRandomStartHaltonDiscrepancy();
+    void testRandomShiftHaltonDiscrepancy();
+    void testRandomStartRandomShiftHaltonDiscrepancy();
+    void testJackelSobolDiscrepancy();
+    void testUnitSobolDiscrepancy();
     static CppUnit::Test* suite();
 };
 

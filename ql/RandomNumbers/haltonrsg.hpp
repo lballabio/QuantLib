@@ -27,6 +27,7 @@
 #include <ql/array.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 #include <cmath>
+#include <vector>
 
 namespace QuantLib {
 
@@ -39,10 +40,10 @@ namespace QuantLib {
         class HaltonRsg {
           public:
             typedef MonteCarlo::Sample<Array> sample_type;
-            HaltonRsg(Size dimensionality)
-            : dimensionality_(dimensionality), sequenceCounter_(0),
-              sequence_(Array(dimensionality), 1.0) {}
-
+            HaltonRsg(Size dimensionality,
+                      unsigned long seed = 0,
+                      bool randomStart = true,
+                      bool randomShift = false);
             const sample_type& nextSequence() const;
             const sample_type& lastSequence() const {
                 return sequence_;
@@ -50,8 +51,10 @@ namespace QuantLib {
             Size dimension() const {return dimensionality_;}
           private:
             Size dimensionality_;
-            mutable Size sequenceCounter_;
+            mutable unsigned long sequenceCounter_;
             mutable sample_type sequence_;
+            std::vector<unsigned long> randomStart_;
+            Array randomShift_;
         };
     }
 
