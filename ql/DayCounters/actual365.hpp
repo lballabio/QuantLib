@@ -22,7 +22,7 @@
 #ifndef quantlib_actual365_day_counter_h
 #define quantlib_actual365_day_counter_h
 
-#include <ql/daycounter.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 
 namespace QuantLib {
 
@@ -37,7 +37,8 @@ namespace QuantLib {
 
         \ingroup daycounters
     */
-    typedef Actual365 Actual365Fixed;
+    typedef Actual365Fixed Actual365;
   #endif
 
+}
 #endif
