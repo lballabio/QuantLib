@@ -43,16 +43,16 @@ namespace QuantLib {
                                  public Patterns::Observer {
           public:
             // constructors
-            BlackConstantVol(
+            BlackConstantVol(const Date& referenceDate,
                     double volatility,
                     const DayCounter& dayCounter=DayCounters::Actual365());
-            BlackConstantVol(
+            BlackConstantVol(const Date& referenceDate,
                     const RelinkableHandle<MarketElement>& volatility,
                     const DayCounter& dayCounter=DayCounters::Actual365());
             // inspectors
-            Date referenceDate() const { return Date::minDate(); }
-            DayCounter dayCounter() const { return dayCounter_; }
-            Date maxDate() const { return Date::maxDate(); }
+            Date referenceDate() const;
+            DayCounter dayCounter() const;
+            Date maxDate() const;
             // Observer interface
             void update();
           protected:
@@ -66,19 +66,32 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline BlackConstantVol::BlackConstantVol(double volatility,
-            const DayCounter& dayCounter)
-        : dayCounter_(dayCounter) {
+        inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
+            double volatility, const DayCounter& dayCounter)
+        : referenceDate_(referenceDate), dayCounter_(dayCounter) {
             volatility_.linkTo(Handle<MarketElement>(new
                 SimpleMarketElement(volatility)));
             registerWith(volatility_);
         }
 
-        inline BlackConstantVol::BlackConstantVol(
+        inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
             const RelinkableHandle<MarketElement>& volatility,
             const DayCounter& dayCounter)
-        : volatility_(volatility), dayCounter_(dayCounter) {
+        : referenceDate_(referenceDate), volatility_(volatility),
+          dayCounter_(dayCounter) {
             registerWith(volatility_);
+        }
+
+        inline DayCounter BlackConstantVol::dayCounter() const {
+            return dayCounter_;
+        }
+
+        inline Date BlackConstantVol::referenceDate() const {
+            return referenceDate_;
+        }
+
+        inline Date BlackConstantVol::maxDate() const {
+            return Date::maxDate();
         }
 
         inline void BlackConstantVol::update() {

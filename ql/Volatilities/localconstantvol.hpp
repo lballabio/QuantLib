@@ -45,37 +45,40 @@ namespace QuantLib {
           public:
             // constructor
             LocalConstantVol(
+                const Date& referenceDate,
                 double volatility,
                 const DayCounter& dayCounter = DayCounters::Actual365());
             LocalConstantVol(
+                const Date& referenceDate,
                 const RelinkableHandle<MarketElement>& volatility,
                 const DayCounter& dayCounter = DayCounters::Actual365());
             // inspectors
-            Date referenceDate() const { return Date::minDate(); }
+            Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
             Date maxDate() const { return Date::maxDate(); }
             // Observer interface
             void update();
           private:
             double localVolImpl(Time,double,bool extrapolate) const;
+            Date referenceDate_;
             RelinkableHandle<MarketElement> volatility_;
             DayCounter dayCounter_;
         };
 
         // inline definitions
 
-        inline LocalConstantVol::LocalConstantVol(double volatility,
-            const DayCounter& dayCounter)
-        : dayCounter_(dayCounter) {
+        inline LocalConstantVol::LocalConstantVol(const Date& referenceDate, 
+            double volatility, const DayCounter& dayCounter)
+        : referenceDate_(referenceDate), dayCounter_(dayCounter) {
             volatility_.linkTo(
                 Handle<MarketElement>(new SimpleMarketElement(volatility)));
-            registerWith(volatility_);
         }
             
-        inline LocalConstantVol::LocalConstantVol(
+        inline LocalConstantVol::LocalConstantVol(const Date& referenceDate, 
             const RelinkableHandle<MarketElement>& volatility, 
             const DayCounter& dayCounter)
-        : volatility_(volatility), dayCounter_(dayCounter) {
+        : referenceDate_(referenceDate), volatility_(volatility), 
+          dayCounter_(dayCounter) {
             registerWith(volatility_);
         }
 
