@@ -23,6 +23,7 @@
 /* install-hook */
 #define quantlib_defines_hpp
 
+#include <boost/config.hpp>
 #include <boost/version.hpp>
 #if BOOST_VERSION < 103100
     #error using an old version of Boost, please update.
@@ -69,7 +70,10 @@
     #include <ql/config.bcc.hpp>
 #elif defined(__MWERKS__)       // Metrowerks CodeWarrior
     #include <ql/config.mwcw.hpp>
-#elif defined(_MSC_VER)         // Microsoft Visual C++
+/* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
+   for example) also #define _MSC_VER
+*/
+#elif defined(BOOST_MSVC)       // Microsoft Visual C++
     #include <ql/config.msvc.hpp>
 #elif defined(__MINGW32__)      // Minimalistic GNU for Windows
     #include <ql/config.mingw.hpp>

@@ -20,7 +20,6 @@
 #define quantlib_config_msvc_h
 
 #include <ql/userconfig.hpp>
-#include <boost/config.hpp>
 
 /* For Microsoft Visual C++, uncomment the following lines to unmask
    floating-point exceptions. Warning: unpredictable results can arise...
