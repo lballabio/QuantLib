@@ -105,11 +105,10 @@ Changes since Release 0.3.4:
 	  americal barrier, etc.) with different payoffs (cash/asset at
 	  hit/expiry, etc.)
 	- Added engine for Merton 1976 jump-diffusion process.
-	- Added Bjerksund and Stensland approximation for American option
-      (still unstable.)
+	- Added Bjerksund and Stensland approximation for American option.
 	- Added Barone-Adesi and Whaley approximation for American option.
 	- Improved Black formula engine with more greeks added.
-	- Discrete geometric asian option.
+	- Discrete geometric Asian option.
 	- Added Leisen-Reimer binomial tree.
 
     SHORT RATE MODELS
