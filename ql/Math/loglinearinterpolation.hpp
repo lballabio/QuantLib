@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2002 Andre Louw.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file loglinearinterpolation.hpp
     \brief log-linear interpolation between discrete points
 
@@ -38,9 +39,6 @@ namespace QuantLib {
         class LogLinearInterpolation
         : public Interpolation<RandomAccessIterator1,RandomAccessIterator2> {
           public:
-            /*  these typedefs are repeated because Borland C++ won't inherit
-                them from Interpolation - they shouldn't hurt, though.
-            */
             typedef
               typename QL_ITERATOR_TRAITS<RandomAccessIterator1>::value_type
                 argument_type;
@@ -48,9 +46,9 @@ namespace QuantLib {
               typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
                 result_type;
              LogLinearInterpolation(const RandomAccessIterator1& xBegin,
-                 const RandomAccessIterator1& xEnd,
-                 const RandomAccessIterator2& yBegin,
-                 bool allowExtrapolation)
+                                    const RandomAccessIterator1& xEnd,
+                                    const RandomAccessIterator2& yBegin,
+                                    bool allowExtrapolation)
              : Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
                  xBegin,xEnd,yBegin, allowExtrapolation) {}
             result_type operator()(const argument_type& x) const;
@@ -62,7 +60,7 @@ namespace QuantLib {
         template <class I1, class I2>
         inline LogLinearInterpolation<I1,I2>::result_type
         LogLinearInterpolation<I1,I2>::operator()(
-	   const LogLinearInterpolation<I1,I2>::argument_type& x) const {
+            const LogLinearInterpolation<I1,I2>::argument_type& x) const {
                 I1 i;
                 if (x < *xBegin_) {
                     QL_REQUIRE(allowExtrapolation_,
@@ -76,16 +74,12 @@ namespace QuantLib {
                         "extrapolation not allowed "
                         "[x>xMax]");
                     i = xEnd_-2;
-                } else
+                } else {
                     i = std::upper_bound(xBegin_,xEnd_-1,x)-1;
+                }
                 I2 j = yBegin_+(i-xBegin_);
-		// y1 => *j
-		// y2 => *(j+1)
-		// x1 => *i
-		// x2 => *(i+1)
-		// x3 => x
                 return (pow(*j,(x/(*i)*((*(i+1))-x)/((*(i+1))-(*i))))) * 
-		   (pow(*(j+1),(x/(*(i+1))*(x-(*i))/((*(i+1))-(*i)))));
+                    (pow(*(j+1),(x/(*(i+1))*(x-(*i))/((*(i+1))-(*i)))));
         }
 
     }
