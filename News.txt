@@ -1,4 +1,4 @@
-July 2004 Release 0.3.7
+2004-07-23 Release 0.3.7
 Changes since Release 0.3.6:
 
                              IMPORTANT:
