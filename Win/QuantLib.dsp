@@ -80,23 +80,44 @@ LIB32=link.exe -lib
 
 # Name "QuantLib - Win32 Release"
 # Name "QuantLib - Win32 Debug"
-# Begin Group "Sources"
-
-# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Group "Day Counters"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Sources\daycounters\actualactual.cpp
+SOURCE=..\Include\DayCounters\actual360.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\daycounters\thirty360.cpp
+SOURCE=..\Include\DayCounters\actual365.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\DayCounters\actualactual.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\DayCounters\actualactual.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\DayCounters\thirty360.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\DayCounters\thirty360.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\DayCounters\thirty360european.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\DayCounters\thirty360italian.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\DayCounters\thirty360italian.h
 # End Source File
 # End Group
 # Begin Group "Calendars"
@@ -108,7 +129,15 @@ SOURCE=..\Sources\Calendars\frankfurt.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Calendars\frankfurt.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Calendars\london.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Calendars\london.h
 # End Source File
 # Begin Source File
 
@@ -116,7 +145,15 @@ SOURCE=..\Sources\Calendars\milan.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Calendars\milan.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Calendars\newyork.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Calendars\newyork.h
 # End Source File
 # Begin Source File
 
@@ -124,7 +161,15 @@ SOURCE=..\Sources\Calendars\target.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Calendars\target.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Calendars\westerncalendar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Calendars\westerncalendar.h
 # End Source File
 # End Group
 # Begin Group "Term Structures"
@@ -134,17 +179,9 @@ SOURCE=..\Sources\Calendars\westerncalendar.cpp
 
 SOURCE=..\Sources\TermStructures\piecewiseconstantforwards.cpp
 # End Source File
-# End Group
-# Begin Group "Operators"
-
-# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Sources\Operators\blackscholesmerton.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\Operators\tridiagonaloperator.cpp
+SOURCE=..\Include\TermStructures\piecewiseconstantforwards.h
 # End Source File
 # End Group
 # Begin Group "Pricers"
@@ -152,7 +189,15 @@ SOURCE=..\Sources\Operators\tridiagonaloperator.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\Include\Pricers\americancondition.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Pricers\bsmamericanoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\bsmamericanoption.h
 # End Source File
 # Begin Source File
 
@@ -160,11 +205,23 @@ SOURCE=..\Sources\Pricers\bsmeuropeanoption.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Pricers\bsmeuropeanoption.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Pricers\bsmnumericaloption.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Pricers\bsmnumericaloption.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Pricers\bsmoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\bsmoption.h
 # End Source File
 # End Group
 # Begin Group "Solvers1D"
@@ -176,7 +233,15 @@ SOURCE=..\Sources\Solvers1D\bisection.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Solvers1D\bisection.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Solvers1D\brent.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Solvers1D\brent.h
 # End Source File
 # Begin Source File
 
@@ -184,7 +249,15 @@ SOURCE=..\Sources\Solvers1D\falseposition.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Solvers1D\falseposition.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Solvers1D\newton.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Solvers1D\newton.h
 # End Source File
 # Begin Source File
 
@@ -192,11 +265,23 @@ SOURCE=..\Sources\Solvers1D\newtonsafe.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Solvers1D\newtonsafe.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Solvers1D\ridder.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Solvers1D\ridder.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Solvers1D\secant.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Solvers1D\secant.h
 # End Source File
 # End Group
 # Begin Group "Math"
@@ -206,86 +291,126 @@ SOURCE=..\Sources\Solvers1D\secant.cpp
 
 SOURCE=..\Sources\Math\normaldistribution.cpp
 # End Source File
-# End Group
 # Begin Source File
 
-SOURCE=..\Sources\calendar.cpp
+SOURCE=..\Include\Math\normaldistribution.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\dataformatters.cpp
+SOURCE=..\Sources\Math\statistics.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\date.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\solver1d.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\statistics.cpp
+SOURCE=..\Include\Math\statistics.h
 # End Source File
 # End Group
-# Begin Group "Include"
+# Begin Group "Currencies"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Include\actual360.h
+SOURCE=..\Include\Currencies\dem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\actual365.h
+SOURCE=..\Include\Currencies\eur.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\actualactual.h
+SOURCE=..\Include\Currencies\gbp.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\americancondition.h
+SOURCE=..\Include\Currencies\itl.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\Include\Currencies\usd.h
+# End Source File
+# End Group
+# Begin Group "FiniteDifferences"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\backwardeuler.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\boundarycondition.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\FiniteDifferences\bsmoperator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\bsmoperator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\cranknicolson.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\evolver.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\finitedifferencemodel.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\forwardeuler.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\identity.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\operator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\operatortraits.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\stepcondition.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\FiniteDifferences\tridiagonaloperator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\FiniteDifferences\tridiagonaloperator.h
+# End Source File
+# End Group
+# Begin Group "Instruments"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Include\Instruments\stock.h
+# End Source File
+# End Group
+# Begin Group "Patterns"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Include\Patterns\observable.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\Include\array.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\backwardeuler.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\bisection.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\blackscholesmerton.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\boundarycondition.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\brent.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\bsmamericanoption.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\bsmeuropeanoption.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\bsmnumericaloption.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\bsmoption.h
+SOURCE=..\Sources\calendar.cpp
 # End Source File
 # Begin Source File
 
@@ -293,7 +418,11 @@ SOURCE=..\Include\calendar.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\cranknicolson.h
+SOURCE=..\Include\calendars.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\currencies.h
 # End Source File
 # Begin Source File
 
@@ -301,7 +430,15 @@ SOURCE=..\Include\currency.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Sources\dataformatters.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\dataformatters.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\date.cpp
 # End Source File
 # Begin Source File
 
@@ -313,7 +450,7 @@ SOURCE=..\Include\daycounter.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\dem.h
+SOURCE=..\Include\daycounters.h
 # End Source File
 # Begin Source File
 
@@ -325,27 +462,11 @@ SOURCE=..\Include\discountfactor.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\eur.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\evolver.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Include\expressiontemplates.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\falseposition.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\finitedifferencemodel.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\forwardeuler.h
+SOURCE=..\Include\finitedifferences.h
 # End Source File
 # Begin Source File
 
@@ -353,19 +474,7 @@ SOURCE=..\Include\forwardvolsurface.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\frankfurt.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\gbp.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Include\handle.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\identity.h
 # End Source File
 # Begin Source File
 
@@ -373,31 +482,11 @@ SOURCE=..\Include\instrument.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\itl.h
+SOURCE=..\Include\instruments.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\london.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\milan.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\newton.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\newtonsafe.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\newyork.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\normaldistribution.h
+SOURCE=..\Include\mathtools.h
 # End Source File
 # Begin Source File
 
@@ -405,23 +494,15 @@ SOURCE=..\Include\null.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\observable.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\operator.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\operatortraits.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Include\options.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\piecewiseconstantforwards.h
+SOURCE=..\Include\patterns.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\pricers.h
 # End Source File
 # Begin Source File
 
@@ -437,11 +518,7 @@ SOURCE=..\Include\rate.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\ridder.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\secant.h
+SOURCE=..\Sources\solver1d.cpp
 # End Source File
 # Begin Source File
 
@@ -449,19 +526,11 @@ SOURCE=..\Include\solver1d.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\solvers1d.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\spread.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\statistics.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\stepcondition.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\stock.h
 # End Source File
 # Begin Source File
 
@@ -469,36 +538,11 @@ SOURCE=..\Include\swaptionvolsurface.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\target.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Include\termstructure.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\thirty360.h
+SOURCE=..\Include\termstructures.h
 # End Source File
-# Begin Source File
-
-SOURCE=..\Include\thirty360european.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\thirty360italian.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\tridiagonaloperator.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\usd.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\westerncalendar.h
-# End Source File
-# End Group
 # End Target
 # End Project
