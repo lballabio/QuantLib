@@ -37,6 +37,7 @@
 //#include <ql/RandomNumbers/brodasoboluniformlds.hpp>
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
+#include <ql/RandomNumbers/randomarraygenerator.hpp>
 
 namespace QuantLib {
 
@@ -48,12 +49,17 @@ namespace QuantLib {
         //! default choice for Gaussian random number generator.
         typedef BoxMullerGaussianRng<UniformRandomGenerator> GaussianRandomGenerator;
 
+        //! default choice for Gaussian array generator.
+        typedef RandomArrayGenerator<GaussianRandomGenerator> GaussianArrayGenerator;
+
         // default choice for uniform low discepancy sequence generator.
-//        typedef BrodaSobolUniformLds UniformLowDiscrepancy;
+        // typedef BrodaSobolUniformLds UniformLowDiscrepancy;
 
         // default choice for Gaussian low discepancy sequence generator.
-//        typedef BoxMullerGaussianRng<UniformLowDiscrepancy> GaussianLowDiscrepancy;
+	// typedef BoxMullerGaussianRng<UniformLowDiscrepancy> GaussianLowDiscrepancy;
     }
+
 }
+
 
 #endif

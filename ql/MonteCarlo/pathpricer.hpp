@@ -44,20 +44,20 @@ namespace QuantLib {
         //! base class for path pricers
         /*! Given a path the value of an option is returned on that path.
         */
-        template<class P>
-        class PathPricer : public std::unary_function<P, double> {
+        template<class PathType, class ValueType=double>
+        class PathPricer : public std::unary_function<PathType, ValueType> {
           public:
             PathPricer(DiscountFactor discount,
                        bool useAntitheticVariance);
             virtual ~PathPricer() {}
-            virtual double operator()(const P& path) const=0;
+            virtual ValueType operator()(const PathType& path) const=0;
           protected:
             DiscountFactor discount_;
             bool useAntitheticVariance_;
         };
 
-        template<class P>
-        PathPricer<P>::PathPricer(DiscountFactor discount,
+        template<class P,class V>
+        PathPricer<P,V>::PathPricer(DiscountFactor discount,
             bool useAntitheticVariance)
             : discount_(discount),
               useAntitheticVariance_(useAntitheticVariance) {
