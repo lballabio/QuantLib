@@ -42,10 +42,6 @@ namespace QuantLib {
     //! default choice for Gaussian random number generator.
     typedef PseudoRandom::rng_type GaussianRandomGenerator;
 
-    //! default choice for Gaussian array generator.
-    typedef RandomArrayGenerator<GaussianRandomGenerator>
-                                                      GaussianArrayGenerator;
-
     //! default choice for uniform random sequence generator.
     typedef PseudoRandom::ursg_type UniformRandomSequenceGenerator;
 

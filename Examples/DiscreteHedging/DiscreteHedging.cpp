@@ -318,8 +318,10 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // The OneFactorMontecarloModel generates paths using myPathGenerator
     // each path is priced using myPathPricer
     // prices will be accumulated into statisticsAccumulator
-    OneFactorMonteCarloOption_old MCSimulation(myPathGenerator,
-        myPathPricer, statisticsAccumulator, false);
+    OneFactorMonteCarloOption MCSimulation(myPathGenerator,
+                                           myPathPricer, 
+                                           statisticsAccumulator, 
+                                           false);
 
     // the model simulates nSamples paths
     MCSimulation.addSamples(nSamples);

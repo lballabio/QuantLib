@@ -25,7 +25,6 @@
 
 #include <ql/diffusionprocess.hpp>
 #include <ql/MonteCarlo/brownianbridge.hpp>
-#include <ql/RandomNumbers/randomarraygenerator.hpp>
 
 namespace QuantLib {
 

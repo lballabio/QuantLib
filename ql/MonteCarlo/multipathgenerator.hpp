@@ -26,6 +26,7 @@
 #include <ql/diffusionprocess.hpp>
 #include <ql/MonteCarlo/multipath.hpp>
 #include <ql/MonteCarlo/sample.hpp>
+#include <ql/Math/pseudosqrt.hpp>
 
 namespace QuantLib {
 
