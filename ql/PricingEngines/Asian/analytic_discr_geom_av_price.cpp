@@ -53,12 +53,20 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcess;
         Date referenceDate = process->riskFreeRate()->referenceDate();
-        DayCounter dc = process->blackVolatility()->dayCounter();
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
+        DayCounter divdc = process->dividendYield()->dayCounter();
+        DayCounter voldc = process->blackVolatility()->dayCounter();
+        #else
+        DayCounter rfdc  = Settings::instance().dayCounter();
+        DayCounter divdc = Settings::instance().dayCounter();
+        DayCounter voldc = Settings::instance().dayCounter();
+        #endif
         std::vector<Time> fixingTimes;
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {
             if (arguments_.fixingDates[i]>=referenceDate) {
-                Time t = dc.yearFraction(referenceDate,
+                Time t = voldc.yearFraction(referenceDate,
                     arguments_.fixingDates[i]);
                 fixingTimes.push_back(t);
             }
@@ -103,13 +111,6 @@ namespace QuantLib {
         // results_.deltaForward = black.value();
         results_.gamma = black.gamma(process->stateVariable()->value());
 
-        #ifndef QL_DISABLE_DEPRECATED
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        DayCounter divdc = process->dividendYield()->dayCounter();
-        #else
-        DayCounter rfdc = Settings::instance().dayCounter();
-        DayCounter divdc = Settings::instance().dayCounter();
-        #endif
         Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
                                    arguments_.exercise->lastDate());
         results_.rho = black.rho(t);
@@ -118,9 +119,8 @@ namespace QuantLib {
                                arguments_.exercise->lastDate());
         results_.dividendRho = black.dividendRho(t);
 
-        t = process->blackVolatility()->dayCounter().yearFraction(
-                                  process->blackVolatility()->referenceDate(),
-                                  arguments_.exercise->lastDate());
+        t = voldc.yearFraction(process->blackVolatility()->referenceDate(),
+                               arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
         results_.theta = black.theta(process->stateVariable()->value(), t);
 

@@ -83,11 +83,13 @@ namespace QuantLib {
                 weight * black.value();
 
             #ifndef QL_DISABLE_DEPRECATED
-            DayCounter rfdc = process->riskFreeRate()->dayCounter();
+            DayCounter rfdc  = process->riskFreeRate()->dayCounter();
             DayCounter divdc = process->dividendYield()->dayCounter();
+            DayCounter voldc = process->blackVolatility()->dayCounter();
             #else
-            DayCounter rfdc = Settings::instance().dayCounter();
+            DayCounter rfdc  = Settings::instance().dayCounter();
             DayCounter divdc = Settings::instance().dayCounter();
+            DayCounter voldc = Settings::instance().dayCounter();
             #endif
             Time dt = rfdc.yearFraction(resetDates[i-1],resetDates[i]);
             results_.rho += weight * black.rho(dt);
@@ -98,8 +100,7 @@ namespace QuantLib {
             results_.dividendRho += weight * (black.dividendRho(dt) -
                                               t * black.value());
 
-            dt = process->blackVolatility()->dayCounter().yearFraction(
-                                               resetDates[i-1],resetDates[i]);
+            dt = voldc.yearFraction(resetDates[i-1], resetDates[i]);
             results_.vega += weight * black.vega(dt);
         }
 

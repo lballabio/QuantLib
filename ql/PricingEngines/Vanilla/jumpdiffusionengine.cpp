@@ -50,9 +50,13 @@ namespace QuantLib {
         // dummy strike
         Real variance = jdProcess->blackVolatility()->blackVariance(
                                         arguments_.exercise->lastDate(), 1.0);
-        DayCounter dc = jdProcess->blackVolatility()->dayCounter();
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter voldc = jdProcess->blackVolatility()->dayCounter();
+        #else
+        DayCounter voldc = Settings::instance().dayCounter();
+        #endif
         Date volRefDate = jdProcess->blackVolatility()->referenceDate();
-        Time t = dc.yearFraction(volRefDate, arguments_.exercise->lastDate());
+        Time t = voldc.yearFraction(volRefDate, arguments_.exercise->lastDate());
         Rate riskFreeRate = -QL_LOG(jdProcess->riskFreeRate()->discount(
                                           arguments_.exercise->lastDate()))/t;
         Date rateRefDate = jdProcess->riskFreeRate()->referenceDate();
@@ -101,9 +105,9 @@ namespace QuantLib {
             r = riskFreeRate - jdProcess->jumpIntensity()->value()*k
                 + i*muPlusHalfSquareVol/t;
             riskFreeTS.linkTo(boost::shared_ptr<YieldTermStructure>(
-                                   new FlatForward(rateRefDate, r, dc)));
+                                   new FlatForward(rateRefDate, r, voldc)));
             volTS.linkTo(boost::shared_ptr<BlackVolTermStructure>(
-                                   new BlackConstantVol(rateRefDate, v, dc)));
+                                   new BlackConstantVol(rateRefDate, v, voldc)));
 
             baseArguments->validate();
             baseEngine_->calculate();

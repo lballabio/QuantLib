@@ -38,9 +38,11 @@ namespace QuantLib {
         const Date& referenceDate() const {
             return blackVarianceCurve_->referenceDate();
         }
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const {
             return blackVarianceCurve_->dayCounter();
         }
+        #endif
         Date maxDate() const {
             return blackVarianceCurve_->maxDate();
         }

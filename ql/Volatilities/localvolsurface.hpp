@@ -52,9 +52,11 @@ namespace QuantLib {
         const Date& referenceDate() const {
             return blackTS_->referenceDate();
         }
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const {
             return blackTS_->dayCounter();
         }
+        #endif
         Date maxDate() const { return blackTS_->maxDate(); }
         Real minStrike() const { return blackTS_->minStrike(); }
         Real maxStrike() const { return blackTS_->maxStrike(); }

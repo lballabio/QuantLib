@@ -49,7 +49,9 @@ namespace QuantLib {
                          const DayCounter& dayCounter = Actual365Fixed());
         //! \name LocalVolTermStructure interface
         //@{
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
+        #endif
         Date maxDate() const { return Date::maxDate(); }
         Real minStrike() const { return QL_MIN_REAL; }
         Real maxStrike() const { return QL_MAX_REAL; }

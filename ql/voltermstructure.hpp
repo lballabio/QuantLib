@@ -63,7 +63,7 @@ namespace QuantLib {
         BlackVolTermStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~BlackVolTermStructure() {}
-        #ifdef QL_DISABLE_DEPRECATED
+        #ifndef QL_DISABLE_DEPRECATED
         //! the day counter used for date/time conversion
         virtual DayCounter dayCounter() const = 0;
         #endif
@@ -258,7 +258,7 @@ namespace QuantLib {
         LocalVolTermStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~LocalVolTermStructure() {}
-        #ifdef QL_DISABLE_DEPRECATED
+        #ifndef QL_DISABLE_DEPRECATED
         //! the day counter used for date/time conversion
         virtual DayCounter dayCounter() const = 0;
         #endif

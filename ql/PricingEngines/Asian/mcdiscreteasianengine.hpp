@@ -98,12 +98,16 @@ namespace QuantLib {
         boost::shared_ptr<BlackScholesProcess> process =
             arguments_.blackScholesProcess;
         Date referenceDate = process->riskFreeRate()->referenceDate();
-        DayCounter dc = process->blackVolatility()->dayCounter();
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter voldc = process->blackVolatility()->dayCounter();
+        #else
+        DayCounter voldc = Settings::instance().dayCounter();
+        #endif
         std::vector<Time> fixingTimes;
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {
             if (arguments_.fixingDates[i]>=referenceDate) {
-                Time t = dc.yearFraction(referenceDate,
+                Time t = voldc.yearFraction(referenceDate,
                     arguments_.fixingDates[i]);
                 fixingTimes.push_back(t);
             }

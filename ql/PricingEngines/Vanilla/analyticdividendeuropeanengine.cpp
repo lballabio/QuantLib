@@ -61,16 +61,18 @@ namespace QuantLib {
         results_.delta = black.delta(spot);
         results_.gamma = black.gamma(spot);
 
-        Time t = process->blackVolatility()->dayCounter().yearFraction(
-                                  process->blackVolatility()->referenceDate(),
-                                  arguments_.exercise->lastDate());
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
+        DayCounter voldc = process->blackVolatility()->dayCounter();
+        #else
+        DayCounter rfdc  = Settings::instance().dayCounter();
+        DayCounter voldc = Settings::instance().dayCounter();
+        #endif
+        Time t = voldc.yearFraction(
+            process->blackVolatility()->referenceDate(),
+            arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
 
-        #ifndef QL_DISABLE_DEPRECATED
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        #else
-        DayCounter rfdc = Settings::instance().dayCounter();
-        #endif
         Real delta_theta = 0.0, delta_rho = 0.0;
         for (i = 0; i < arguments_.dividends.size(); i++) {
             Date d = arguments_.dividendDates[i];
