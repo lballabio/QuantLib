@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.14  2001/01/11 11:02:37  nando
+    added #include <iterator>
+
     Revision 1.13  2001/01/08 11:47:55  lballabio
     Moved array.h back to Include folder
 
@@ -49,6 +52,7 @@
 #include <algorithm>
 #include <functional>
 #include <numeric>
+#include <iterator>
 
 namespace QuantLib {
 
