@@ -63,6 +63,7 @@ namespace QuantLib {
                     new ShortRateTree(dynamics(), grid, true));
             }
 
+            class Dynamics;
           protected:
             double A(Time t) const;
             double B(Time t) const;
@@ -72,7 +73,6 @@ namespace QuantLib {
             double sigma() const { return sigma_(0.0); }
             double x0() const { return r0_(0.0); }
             
-            class Dynamics;
           private:
             class VolatilityConstraint;
 
