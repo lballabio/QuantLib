@@ -71,7 +71,7 @@ namespace QuantLib {
         Real newSMin = sMin_ + dividends_[step];
         Real newSMax = sMax_ + dividends_[step];
 
-        setGridLimits(center_ + dividends_[step], dates_[step]);
+        setGridLimits(center_ + dividends_[step], residualTime_);
         if (sMin_ < newSMin){
             sMin_ = newSMin;
             sMax_ = center_/(sMin_/center_);
