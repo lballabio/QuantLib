@@ -85,11 +85,11 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # QuantLib library
-QuantLib$(_D).lib:: UpdateSubLibraries
+QuantLib$(_D).lib:: $(CORE_OBJS) SubLibraries
     if exist QuantLib$(_D).lib del QuantLib$(_D).lib
     $(TLIB) $(TLIB_OPTS) QuantLib$(_D).lib /a $(QUANTLIB_OBJS)
 
-UpdateSubLibraries:
+SubLibraries:
     cd Calendars
     $(MAKE)
     cd ..\DayCounters
