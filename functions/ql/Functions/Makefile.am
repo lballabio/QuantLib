@@ -3,9 +3,9 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir} -I${top_srcdir}/functions
 includedir = $(prefix)/include/ql/Functions
 
 include_HEADERS = \
-	all.hpp \
 	daycounters.hpp \
 	mathf.hpp \
+	qlfunctions.hpp \
 	vols.hpp
 
 EXTRA_DIST=makefile.mak

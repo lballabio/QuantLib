@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -23,6 +24,14 @@
 #include <ql/Functions/daycounters.hpp>
 #include <ql/Functions/mathf.hpp>
 #include <ql/Functions/vols.hpp>
+
+
+#define QL_FUN_LIB_NAME "QuantLibFunctions-" QL_LIB_TOOLSET QL_LIB_THREAD_OPT QL_LIB_RT_OPT "-" QL_LIB_VERSION ".lib"
+
+#pragma comment(lib, QL_FUN_LIB_NAME)
+#ifdef BOOST_LIB_DIAGNOSTIC
+#  pragma message(QL_FUN_LIB_NAME)
+#endif
 
 
 #endif
