@@ -15,8 +15,6 @@ QL_INCLUDE_DIR   = "$(QL_DIR)"
 QL_LIB_DIR       = "$(QL_DIR)\lib\Win32\Borland"
 BCC_INCLUDE      = $(MAKEDIR)\..\include
 BCC_LIBS         = $(MAKEDIR)\..\lib
-SRCDIR           = "."
-OBJDIR           = ".\build\Borland"
 
 #Warning W8057 : Parameter 'argc' is never used in function main(int,char * *)
 

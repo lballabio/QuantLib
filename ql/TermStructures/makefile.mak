@@ -10,8 +10,6 @@
 # Directories
 INCLUDE_DIR    = ..\..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
-#SRCDIR         = "."
-#OBJDIR         = "..\..\build\Borland"
 
 # Object files
 OBJS = \

@@ -9,8 +9,6 @@
 
 # Directories
 INCLUDE_DIR    = ..\..
-#SRCDIR         = "."
-#OBJDIR         = "..\..\build\Borland"
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
