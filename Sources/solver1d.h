@@ -5,8 +5,8 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
-#ifndef ql_solver1d_h
-#define ql_solver1d_h
+#ifndef quantlib_solver1d_h
+#define quantlib_solver1d_h
 
 #include "qldefines.h"
 #include "null.h"
@@ -17,8 +17,6 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include <iostream>
 
 QL_BEGIN_NAMESPACE(QuantLib)
-
-QL_BEGIN_NAMESPACE(Solver1D)
 
 #define MAX_FUNCTION_EVALUATIONS 100
 
@@ -73,8 +71,7 @@ inline double Solver1D::enforceBounds(double x) const {
 	return x;
 }
 
-QL_END_NAMESPACE(Solver1D)
-
 QL_END_NAMESPACE(QuantLib)
+
 
 #endif

@@ -14,8 +14,6 @@ QL_USING(QuantLib, DoubleFormat)
 
 QL_BEGIN_NAMESPACE(QuantLib)
 
-QL_BEGIN_NAMESPACE(Solver1D)
-
 const double growthFactor = 1.6;
 
 double Solver1D::solve(const Function& f, double xAccuracy, double guess, double step) const {
@@ -104,7 +102,5 @@ double Solver1D::solve(const Function& f, double xAccuracy, double guess, double
 
   return _solve(f, QL_MAX(QL_FABS(xAccuracy), DBL_EPSILON));
 }
-
-QL_END_NAMESPACE(Solver1D)
 
 QL_END_NAMESPACE(QuantLib)
