@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/01/15 12:41:14  aleppo
+    bug fixed: shortfall(s) were not normalized
+
     Revision 1.1  2001/01/12 17:30:29  nando
     added RiskTool.
     It offres VAR, shortfall, average shortfall methods.
@@ -61,9 +64,13 @@ namespace QuantLib {
             //! returns the Value-At-Risk at a given percentile
             double valueAtRisk(double percentile) const;
             //! returns the Shortfall (observations below target)
-            double shortfall() const { return shortfallCounter_; }
+            double shortfall() const {
+                return shortfallCounter_/weightSum();
+                }
             //! returns the Average Shortfall (averaged shortfallness)
-            double averageShortfall() const { return averageShortfall_; }
+            double averageShortfall() const {
+                return averageShortfall_/weightSum();
+                }
             //@}
             
             //! \name Modifiers
@@ -114,7 +121,10 @@ namespace QuantLib {
     
             Math::InvCumulativeNormalDistribution dist(mean(),
                                              standardDeviation());
-            return QL_MIN(dist(1.0-percentile), 0.0);
+            // VAR must be a loss
+            // this means that it has to be MIN(dist(1.0-percentile), 0.0)
+            // VAR must also be a positive quantity, so -MIN(*)
+            return -QL_MIN(dist(1.0-percentile), 0.0);
         }
     }
 }
