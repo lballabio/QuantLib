@@ -33,24 +33,24 @@ namespace QuantLib {
         void EuropeanAnalyticalEngine::calculate() const {
 
             DiscountFactor dividendDiscount =
-                QL_EXP(-parameters_.dividendYield*parameters_.residualTime);
+                QL_EXP(-arguments_.dividendYield*arguments_.residualTime);
             DiscountFactor riskFreeDiscount =
-                QL_EXP(-parameters_.riskFreeRate*parameters_.residualTime);
+                QL_EXP(-arguments_.riskFreeRate*arguments_.residualTime);
 
-            double stdDev = parameters_.volatility *
-                QL_SQRT(parameters_.residualTime);
+            double stdDev = arguments_.volatility *
+                QL_SQRT(arguments_.residualTime);
 
             static Math::CumulativeNormalDistribution f;
 
             double D1 = 
-                QL_LOG(parameters_.underlying/parameters_.strike)/stdDev +
+                QL_LOG(arguments_.underlying/arguments_.strike)/stdDev +
                 stdDev/2.0 +
-                (parameters_.riskFreeRate-parameters_.dividendYield) *
-                    parameters_.residualTime/stdDev;
+                (arguments_.riskFreeRate-arguments_.dividendYield) *
+                    arguments_.residualTime/stdDev;
             double D2 = D1-stdDev;
 
             double alpha, beta, NID1;
-            switch (parameters_.type) {
+            switch (arguments_.type) {
               case Option::Call:
                 alpha = f(D1);
                 beta  = f(D2);
@@ -73,24 +73,24 @@ namespace QuantLib {
             }
 
             results_.value =
-                parameters_.underlying * dividendDiscount * alpha -
-                    parameters_.strike * riskFreeDiscount * beta;
+                arguments_.underlying * dividendDiscount * alpha -
+                    arguments_.strike * riskFreeDiscount * beta;
             results_.delta = dividendDiscount * alpha;
             results_.gamma = NID1 * dividendDiscount /
-                (parameters_.underlying * stdDev);
-            results_.theta = - parameters_.underlying * NID1 *
-                parameters_.volatility * dividendDiscount /
-                (2.0 * QL_SQRT(parameters_.residualTime)) +
-                parameters_.dividendYield * parameters_.underlying *
+                (arguments_.underlying * stdDev);
+            results_.theta = - arguments_.underlying * NID1 *
+                arguments_.volatility * dividendDiscount /
+                (2.0 * QL_SQRT(arguments_.residualTime)) +
+                arguments_.dividendYield * arguments_.underlying *
                 alpha * dividendDiscount -
-                parameters_.riskFreeRate * parameters_.strike *
+                arguments_.riskFreeRate * arguments_.strike *
                 riskFreeDiscount * beta;
-            results_.rho = parameters_.residualTime * riskFreeDiscount *
-                parameters_.strike * beta;
-            results_.dividendRho = - parameters_.residualTime *
-                dividendDiscount * parameters_.underlying * alpha;
-            results_.vega = parameters_.underlying * NID1 *
-                dividendDiscount * QL_SQRT(parameters_.residualTime);
+            results_.rho = arguments_.residualTime * riskFreeDiscount *
+                arguments_.strike * beta;
+            results_.dividendRho = - arguments_.residualTime *
+                dividendDiscount * arguments_.underlying * alpha;
+            results_.vega = arguments_.underlying * NID1 *
+                dividendDiscount * QL_SQRT(arguments_.residualTime);
         }
 
     }

@@ -33,7 +33,7 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
-        //! Base class for model parameters
+        //! Base class for model arguments
         class Parameter {
           public:
             class ParameterImpl {

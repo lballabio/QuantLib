@@ -32,11 +32,11 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
-        //! parameters for forward (strike-resetting) option calculation
+        //! arguments for forward (strike-resetting) option calculation
         template<class ArgumentsType>
-        class ForwardOptionParameters : public ArgumentsType {
+        class ForwardOptionArguments : public ArgumentsType {
           public:
-            ForwardOptionParameters() : moneyness(Null<double>()),
+            ForwardOptionArguments() : moneyness(Null<double>()),
                                         resetTime(Null<double>()) {}
             void validate() const;
             double moneyness;
@@ -44,36 +44,36 @@ namespace QuantLib {
         };
 
         template<class ArgumentsType>
-        void ForwardOptionParameters<ArgumentsType>::validate() const {
+        void ForwardOptionArguments<ArgumentsType>::validate() const {
             ArgumentsType::validate();
             QL_REQUIRE(moneyness != Null<double>(),
-                       "ForwardOptionParameters::validate() : "
+                       "ForwardOptionArguments::validate() : "
                        "null moneyness given");
             QL_REQUIRE(moneyness > 0.0,
-                       "ForwardOptionParameters::validate() : "
+                       "ForwardOptionArguments::validate() : "
                        "negative or zero moneyness given");
             QL_REQUIRE(resetTime != Null<double>(),
-                       "ForwardOptionParameters::validate() : "
+                       "ForwardOptionArguments::validate() : "
                        "null reset time given");
             QL_REQUIRE(resetTime >= 0.0,
-                       "ForwardOptionParameters::validate() : "
+                       "ForwardOptionArguments::validate() : "
                        "negative reset time given");
             QL_REQUIRE(residualTime >= resetTime,
-                       "ForwardOptionParameters::validate() : "
+                       "ForwardOptionArguments::validate() : "
                        "reset time greater than residual time");
         }
 
         //! Forward engine base class
         template<class ArgumentsType, class ResultsType>
         class ForwardEngine : public
-            GenericEngine<ForwardOptionParameters<ArgumentsType>,
+            GenericEngine<ForwardOptionArguments<ArgumentsType>,
                           ResultsType> {
         public:
             ForwardEngine(const Handle<GenericEngine<ArgumentsType,
                 ResultsType> >&);
         protected:
             Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
-            ArgumentsType* originalParameters_;
+            ArgumentsType* originalArguments_;
             const ResultsType* originalResults_;
         };
 
@@ -87,20 +87,20 @@ namespace QuantLib {
                 "null engine or wrong engine type");
             originalResults_ = dynamic_cast<const ResultsType*>(
                 originalEngine_->results());
-            originalParameters_ = dynamic_cast<ArgumentsType*>(
-                originalEngine_->parameters());
+            originalArguments_ = dynamic_cast<ArgumentsType*>(
+                originalEngine_->arguments());
         }
 
         //! Forward vanilla engine base class
         class ForwardVanillaEngine : public ForwardEngine<
-            VanillaOptionParameters, VanillaOptionResults> {
+            VanillaOptionArguments, VanillaOptionResults> {
         public:
             ForwardVanillaEngine(const Handle<VanillaEngine>& vanillaEngine);
         };
 
         inline ForwardVanillaEngine::ForwardVanillaEngine(const
             Handle<VanillaEngine>& vanillaEngine)
-        : ForwardEngine<VanillaOptionParameters,
+        : ForwardEngine<VanillaOptionArguments,
                         VanillaOptionResults    >(vanillaEngine) {
             QL_REQUIRE(!vanillaEngine.isNull(),
                 "ForwardVanillaEngine::ForwardVanillaEngine : "

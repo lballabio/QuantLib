@@ -34,20 +34,20 @@ namespace QuantLib {
         using CashFlows::FloatingRateCoupon;
 
         void VanillaCapFloor::setupEngine() const {
-            CapFloorParameters* parameters =
-                dynamic_cast<CapFloorParameters*>(
-                    engine_->parameters());
-            QL_REQUIRE(parameters != 0,
-                       "pricing engine does not supply needed parameters");
+            CapFloorArguments* arguments =
+                dynamic_cast<CapFloorArguments*>(
+                    engine_->arguments());
+            QL_REQUIRE(arguments != 0,
+                       "pricing engine does not supply needed arguments");
 
-            parameters->type = type_;
-            parameters->capRates.clear();
-            parameters->floorRates.clear();
-            parameters->startTimes.clear();
-            parameters->endTimes.clear();
-            parameters->accrualTimes.clear();
-            parameters->forwards.clear();
-            parameters->nominals.clear();
+            arguments->type = type_;
+            arguments->capRates.clear();
+            arguments->floorRates.clear();
+            arguments->startTimes.clear();
+            arguments->endTimes.clear();
+            arguments->accrualTimes.clear();
+            arguments->forwards.clear();
+            arguments->nominals.clear();
 
             Date settlement = termStructure_->settlementDate();
             DayCounter counter = termStructure_->dayCounter();
@@ -63,27 +63,27 @@ namespace QuantLib {
                           "VanillaCapFloor::setupEngine Not a floating rate coupon");
                 Date beginDate = coupon->accrualStartDate();
                 Time time = counter.yearFraction(settlement, beginDate);
-                parameters->startTimes.push_back(time);
+                arguments->startTimes.push_back(time);
                 time = counter.yearFraction(settlement, coupon->date());
-                parameters->endTimes.push_back(time);
+                arguments->endTimes.push_back(time);
                 // this is passed explicitly for precision
-                parameters->accrualTimes.push_back(coupon->accrualPeriod());
+                arguments->accrualTimes.push_back(coupon->accrualPeriod());
                 // this is passed explicitly for precision
-                if (parameters->endTimes.back() >= 0.0)  // but only if really needed 
-                    parameters->forwards.push_back(coupon->fixing());
+                if (arguments->endTimes.back() >= 0.0)  // but only if really needed 
+                    arguments->forwards.push_back(coupon->fixing());
                 else
-                    parameters->forwards.push_back(Null<Rate>());
-                parameters->nominals.push_back(coupon->nominal());
+                    arguments->forwards.push_back(Null<Rate>());
+                arguments->nominals.push_back(coupon->nominal());
                 if (caps == capRates_.end()) {
-                    parameters->capRates.push_back(capRates_.back());
+                    arguments->capRates.push_back(capRates_.back());
                 } else {
-                    parameters->capRates.push_back(*caps);
+                    arguments->capRates.push_back(*caps);
                     caps++;
                 }
                 if (floors == floorRates_.end()) {
-                    parameters->floorRates.push_back(floorRates_.back());
+                    arguments->floorRates.push_back(floorRates_.back());
                 } else {
-                    parameters->floorRates.push_back(*floors);
+                    arguments->floorRates.push_back(*floors);
                     floors++;
                 }
 
@@ -102,38 +102,38 @@ namespace QuantLib {
                       "null value returned from cap/floor pricer");
         }
 
-        void CapFloorParameters::validate() const {
+        void CapFloorArguments::validate() const {
             QL_REQUIRE(
                 endTimes.size() == startTimes.size(),
-                "Invalid pricing parameters: size of startTimes (" +
+                "Invalid pricing arguments: size of startTimes (" +
                 IntegerFormatter::toString(startTimes.size()) +
                 ") different from that of endTimes (" +
                 IntegerFormatter::toString(endTimes.size()) +
                 ")");
             QL_REQUIRE(
                 accrualTimes.size() == startTimes.size(),
-                "Invalid pricing parameters: size of startTimes (" +
+                "Invalid pricing arguments: size of startTimes (" +
                 IntegerFormatter::toString(startTimes.size()) +
                 ") different from that of accrualTimes (" +
                 IntegerFormatter::toString(accrualTimes.size()) +
                 ")");
             QL_REQUIRE(
                 capRates.size() == startTimes.size(),
-                "Invalid pricing parameters: size of startTimes (" +
+                "Invalid pricing arguments: size of startTimes (" +
                 IntegerFormatter::toString(startTimes.size()) +
                 ") different from that of capRates (" +
                 IntegerFormatter::toString(capRates.size()) +
                 ")");
             QL_REQUIRE(
                 floorRates.size() == startTimes.size(),
-                "Invalid pricing parameters: size of startTimes (" +
+                "Invalid pricing arguments: size of startTimes (" +
                 IntegerFormatter::toString(startTimes.size()) +
                 ") different from that of floorRates (" +
                 IntegerFormatter::toString(floorRates.size()) +
                 ")");
             QL_REQUIRE(
                 nominals.size() == startTimes.size(),
-                "Invalid pricing parameters: size of startTimes (" +
+                "Invalid pricing arguments: size of startTimes (" +
                 IntegerFormatter::toString(startTimes.size()) +
                 ") different from that of nominals (" +
                 IntegerFormatter::toString(nominals.size()) +

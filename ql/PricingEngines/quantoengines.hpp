@@ -32,11 +32,11 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
-        //! parameters for quanto option calculation
+        //! arguments for quanto option calculation
         template<class ArgumentsType>
-        class QuantoOptionParameters : public ArgumentsType {
+        class QuantoOptionArguments : public ArgumentsType {
           public:
-            QuantoOptionParameters() : foreignRiskFreeRate(Null<double>()),
+            QuantoOptionArguments() : foreignRiskFreeRate(Null<double>()),
                                        exchangeRateVolatility(Null<double>()),
                                        correlation(Null<double>()) {}
             void validate() const;
@@ -46,19 +46,19 @@ namespace QuantLib {
         };
 
         template<class ArgumentsType>
-        void QuantoOptionParameters<ArgumentsType>::validate() const {
+        void QuantoOptionArguments<ArgumentsType>::validate() const {
             ArgumentsType::validate();
             QL_REQUIRE(foreignRiskFreeRate != Null<double>(),
-                       "QuantoOptionParameters::validate() : "
+                       "QuantoOptionArguments::validate() : "
                        "null risk free rate given");
             QL_REQUIRE(exchangeRateVolatility != Null<double>(),
-                       "QuantoOptionParameters::validate() : "
+                       "QuantoOptionArguments::validate() : "
                        "null exchange rate volatility given");
             QL_REQUIRE(exchangeRateVolatility >= 0.0,
-                       "QuantoOptionParameters::validate() : "
+                       "QuantoOptionArguments::validate() : "
                        "negative exchange rate volatility given");
             QL_REQUIRE(correlation != Null<double>(),
-                       "QuantoOptionParameters::validate() : "
+                       "QuantoOptionArguments::validate() : "
                        "null correlation given");
         }
 
@@ -77,14 +77,14 @@ namespace QuantLib {
         //! Quanto engine base class
         template<class ArgumentsType, class ResultsType>
         class QuantoEngine : public
-            GenericEngine<QuantoOptionParameters<ArgumentsType>,
+            GenericEngine<QuantoOptionArguments<ArgumentsType>,
                           QuantoOptionResults<ResultsType> > {
         public:
             QuantoEngine(const Handle<GenericEngine<ArgumentsType,
                 ResultsType> >&);
         protected:
             Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
-            ArgumentsType* originalParameters_;
+            ArgumentsType* originalArguments_;
             const ResultsType* originalResults_;
         };
 
@@ -98,21 +98,21 @@ namespace QuantLib {
                 "null engine or wrong engine type");
             originalResults_ = dynamic_cast<const ResultsType*>(
                 originalEngine_->results());
-            originalParameters_ = dynamic_cast<ArgumentsType*>(
-                originalEngine_->parameters());
+            originalArguments_ = dynamic_cast<ArgumentsType*>(
+                originalEngine_->arguments());
         }
 
 
         //! Quanto vanilla engine base class
         class QuantoVanillaEngine : public QuantoEngine<
-            VanillaOptionParameters, VanillaOptionResults> {
+            VanillaOptionArguments, VanillaOptionResults> {
         public:
             QuantoVanillaEngine(const Handle<VanillaEngine>& vanillaEngine);
         };
 
         inline QuantoVanillaEngine::QuantoVanillaEngine(const
             Handle<VanillaEngine>& vanillaEngine)
-        : QuantoEngine<VanillaOptionParameters,
+        : QuantoEngine<VanillaOptionArguments,
                        VanillaOptionResults    >(vanillaEngine) {
             QL_REQUIRE(!vanillaEngine.isNull(),
                 "QuantoVanillaEngine::QuantoVanillaEngine : "

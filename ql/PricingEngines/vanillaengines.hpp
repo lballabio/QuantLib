@@ -34,10 +34,10 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
-        //! parameters for vanilla option calculation
-        class VanillaOptionParameters : public virtual Arguments {
+        //! arguments for vanilla option calculation
+        class VanillaOptionArguments : public virtual Arguments {
           public:
-            VanillaOptionParameters() : type(Option::Type(-1)),
+            VanillaOptionArguments() : type(Option::Type(-1)),
                                         underlying(Null<double>()),
                                         strike(Null<double>()),
                                         dividendYield(Null<double>()),
@@ -53,29 +53,29 @@ namespace QuantLib {
             double volatility;
         };
 
-        inline void VanillaOptionParameters::validate() const {
+        inline void VanillaOptionArguments::validate() const {
             QL_REQUIRE(type != Option::Type(-1),
-                       "VanillaOptionParameters::validate() : no option type given");
+                       "VanillaOptionArguments::validate() : no option type given");
             QL_REQUIRE(underlying != Null<double>(),
-                       "VanillaOptionParameters::validate() : null underlying given");
+                       "VanillaOptionArguments::validate() : null underlying given");
             QL_REQUIRE(underlying > 0.0,
-                       "VanillaOptionParameters::validate() : negative or zero underlying given");
+                       "VanillaOptionArguments::validate() : negative or zero underlying given");
             QL_REQUIRE(strike != Null<double>(),
-                       "VanillaOptionParameters::validate() : null strike given");
+                       "VanillaOptionArguments::validate() : null strike given");
             QL_REQUIRE(strike >= 0.0,
-                       "VanillaOptionParameters::validate() : negative strike given");
+                       "VanillaOptionArguments::validate() : negative strike given");
             QL_REQUIRE(dividendYield != Null<double>(),
-                       "VanillaOptionParameters::validate() : null dividend yield given");
+                       "VanillaOptionArguments::validate() : null dividend yield given");
             QL_REQUIRE(riskFreeRate != Null<double>(),
-                       "VanillaOptionParameters::validate() : null risk free rate given");
+                       "VanillaOptionArguments::validate() : null risk free rate given");
             QL_REQUIRE(residualTime != Null<double>(),
-                       "VanillaOptionParameters::validate() : null residual time given");
+                       "VanillaOptionArguments::validate() : null residual time given");
             QL_REQUIRE(residualTime >= 0.0,
-                       "VanillaOptionParameters::validate() : negative residual time given");
+                       "VanillaOptionArguments::validate() : negative residual time given");
             QL_REQUIRE(volatility != Null<double>(),
-                       "VanillaOptionParameters::validate() : null volatility given");
+                       "VanillaOptionArguments::validate() : null volatility given");
             QL_REQUIRE(volatility >= 0.0,
-                       "VanillaOptionParameters::validate() : negative volatility given");
+                       "VanillaOptionArguments::validate() : negative volatility given");
         }
 
         //! %results from vanilla option calculation
@@ -83,7 +83,7 @@ namespace QuantLib {
 
 
         //! Vanilla engine base class
-        class VanillaEngine : public GenericEngine<VanillaOptionParameters,
+        class VanillaEngine : public GenericEngine<VanillaOptionArguments,
                                                    VanillaOptionResults> {};
 
         //! European engine base class

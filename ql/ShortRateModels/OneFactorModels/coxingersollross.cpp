@@ -62,8 +62,8 @@ namespace QuantLib {
         CoxIngersollRoss::CoxIngersollRoss(
             Rate r0, double theta, double k, double sigma) 
         : OneFactorAffineModel(4), 
-          theta_(parameters_[0]), k_(parameters_[1]), 
-          sigma_(parameters_[2]), r0_(parameters_[3]) {
+          theta_(arguments_[0]), k_(arguments_[1]), 
+          sigma_(arguments_[2]), r0_(arguments_[3]) {
             theta_ = ConstantParameter(theta, PositiveConstraint());
             k_ = ConstantParameter(k, PositiveConstraint());
             sigma_ = ConstantParameter(sigma, VolatilityConstraint(theta_, k_));

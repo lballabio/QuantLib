@@ -34,7 +34,7 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        class SwaptionParameters;
+        class SwaptionArguments;
 
         //! Swaption class
         class Swaption : public Option {
@@ -47,16 +47,16 @@ namespace QuantLib {
             void performCalculations() const;
             void setupEngine() const;
           private:
-            // parameters
+            // arguments
             Handle<SimpleSwap> swap_;
             Exercise exercise_;
             const RelinkableHandle<TermStructure>& termStructure_;
         };
 
-        //! parameters for swaption calculation
-        class SwaptionParameters : public virtual Arguments {
+        //! arguments for swaption calculation
+        class SwaptionArguments : public virtual Arguments {
           public:
-            SwaptionParameters() : payFixed(false),
+            SwaptionArguments() : payFixed(false),
                                    fairRate(0.0),
                                    fixedRate(0.0),
                                    fixedBPS(0.0),

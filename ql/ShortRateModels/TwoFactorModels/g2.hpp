@@ -64,14 +64,14 @@ namespace QuantLib {
                                       Time maturity,
                                       Time bondMaturity) const;
             double swaption(
-                const Instruments::SwaptionParameters& parameters) const;
+                const Instruments::SwaptionArguments& arguments) const;
 
             DiscountFactor discount(Time t) const {
                 return termStructure()->discount(t);
             }
 
           protected:
-            void generateParameters();
+            void generateArguments();
 
             double A(Time t, Time T) const;
             double B(double x, Time t) const;

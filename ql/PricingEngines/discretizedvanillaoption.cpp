@@ -34,7 +34,7 @@ namespace QuantLib {
         }
 
         void DiscretizedVanillaOption::adjustValues() {
-            if (isOnTime(parameters_.residualTime)) {
+            if (isOnTime(arguments_.residualTime)) {
                 applySpecificCondition();
             }
         }
@@ -45,11 +45,11 @@ namespace QuantLib {
                        "Must use a BlackScholes lattice");
             Handle<Lattices::Tree> tree(lattice->tree());
             Size i = tree->nColumns() - 1;
-            double strike = parameters_.strike;
+            double strike = arguments_.strike;
 
             Array prices(values_.size(), 0.0);
             for (Size j=0; j<values_.size(); j++) {
-                prices[j] = Pricers::ExercisePayoff(parameters_.type,
+                prices[j] = Pricers::ExercisePayoff(arguments_.type,
                     tree->underlying(i, j), strike);
                 values_[j] = QL_MAX(values_[j], prices[j]);
             }

@@ -38,8 +38,8 @@ namespace QuantLib {
             double a, double sigma)
         : Vasicek(termStructure->instantaneousForward(0.0), a, 0.0, sigma), 
           TermStructureConsistentModel(termStructure) {
-            parameters_[1] = NullParameter();
-            generateParameters();
+            arguments_[1] = NullParameter();
+            generateArguments();
         }
 
         Handle<Lattices::Lattice> HullWhite::tree(
@@ -85,7 +85,7 @@ namespace QuantLib {
             return QL_EXP(value)*discount2/discount1;
         }
 
-        void HullWhite::generateParameters() {
+        void HullWhite::generateArguments() {
             phi_ = FittingParameter(termStructure(), a(), sigma());
         }
 

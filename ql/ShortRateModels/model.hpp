@@ -76,10 +76,10 @@ namespace QuantLib {
         class Model : public Patterns::Observer, 
                       public Patterns::Observable {
           public:
-            Model(Size nParameters);
+            Model(Size nArguments);
 
             void update() { 
-                generateParameters();
+                generateArguments();
                 notifyObservers(); 
             }
 
@@ -93,17 +93,17 @@ namespace QuantLib {
 
             const Handle<Optimization::Constraint>& constraint() const;
 
-            //! Returns array of parameters on which calibration is done
+            //! Returns array of arguments on which calibration is done
             Array params();
             void setParams(const Array& params);
           protected:
-            virtual void generateParameters() {}
+            virtual void generateArguments() {}
 
-            std::vector<Parameter> parameters_;
+            std::vector<Parameter> arguments_;
             Handle<Optimization::Constraint> constraint_;
 
           private:
-            //! Constraint imposed on parameters
+            //! Constraint imposed on arguments
             class PrivateConstraint;
             //! Calibration cost function class
             class CalibrationFunction;
@@ -121,26 +121,26 @@ namespace QuantLib {
           public:
             class Implementation :  public Optimization::Constraint::ConstraintImpl {
               public:
-                Implementation(const std::vector<Parameter>& parameters)
-                : parameters_(parameters) {}
+                Implementation(const std::vector<Parameter>& arguments)
+                : arguments_(arguments) {}
                 bool test(const Array& params) const {
                     Size k=0;
-                    for (Size i=0; i<parameters_.size(); i++) {
-                        Size size = parameters_[i].size();
+                    for (Size i=0; i<arguments_.size(); i++) {
+                        Size size = arguments_[i].size();
                         Array testParams(size);
                         for (Size j=0; j<size; j++, k++)
                             testParams[j] = params[k];
-                        if (!parameters_[i].testParams(params))
+                        if (!arguments_[i].testParams(params))
                             return false;
                     }
                     return true;
                 }
               private:
-                const std::vector<Parameter>& parameters_;
+                const std::vector<Parameter>& arguments_;
             };
-            PrivateConstraint(const std::vector<Parameter>& parameters)
+            PrivateConstraint(const std::vector<Parameter>& arguments)
             : Optimization::Constraint(Handle<ConstraintImpl>(
-                new Implementation(parameters)))
+                new Implementation(arguments)))
             {}
         };
 

@@ -31,33 +31,33 @@ namespace QuantLib {
         using Instruments::VanillaCapFloor;
 
         void DiscretizedCapFloor::adjustValues() {
-            for (Size i=0; i<parameters_.startTimes.size(); i++) {
-                if (isOnTime(parameters_.startTimes[i])) {
-                    Time end = parameters_.endTimes[i];
-                    Time tenor = parameters_.accrualTimes[i];
+            for (Size i=0; i<arguments_.startTimes.size(); i++) {
+                if (isOnTime(arguments_.startTimes[i])) {
+                    Time end = arguments_.endTimes[i];
+                    Time tenor = arguments_.accrualTimes[i];
                     Handle<DiscretizedAsset> bond(new 
                         DiscretizedDiscountBond(method()));
                     method()->initialize(bond, end);
                     method()->rollback(bond,time_);
 
-                    VanillaCapFloor::Type type = parameters_.type;
+                    VanillaCapFloor::Type type = arguments_.type;
 
                     if ( (type == VanillaCapFloor::Cap) ||
                          (type == VanillaCapFloor::Collar)) {
-                        double accrual = 1.0 + parameters_.capRates[i]*tenor;
+                        double accrual = 1.0 + arguments_.capRates[i]*tenor;
                         double strike = 1.0/accrual;
                         for (Size j=0; j<values_.size(); j++)
-                            values_[j] += parameters_.nominals[i]*accrual*
+                            values_[j] += arguments_.nominals[i]*accrual*
                                 QL_MAX(strike - bond->values()[j], 0.0);
                     }
 
                     if ( (type == VanillaCapFloor::Floor) ||
                          (type == VanillaCapFloor::Collar)) {
-                        double accrual = 1.0 + parameters_.floorRates[i]*tenor;
+                        double accrual = 1.0 + arguments_.floorRates[i]*tenor;
                         double strike = 1.0/accrual;
                         double mult = (type == VanillaCapFloor::Floor)?1.0:-1.0;
                         for (Size j=0; j<values_.size(); j++)
-                            values_[j] += parameters_.nominals[i]*accrual*mult*
+                            values_[j] += arguments_.nominals[i]*accrual*mult*
                                 QL_MAX(bond->values()[j] - strike, 0.0);
                     }
 

@@ -108,10 +108,10 @@ namespace QuantLib {
             {}
         };
 
-        //! parameters for cap/floor calculation
-        class CapFloorParameters : public virtual Arguments {
+        //! arguments for cap/floor calculation
+        class CapFloorArguments : public virtual Arguments {
           public:
-            CapFloorParameters() : type(VanillaCapFloor::Type(-1)),
+            CapFloorArguments() : type(VanillaCapFloor::Type(-1)),
                                    startTimes(0),
                                    endTimes(0),
                                    accrualTimes(0),

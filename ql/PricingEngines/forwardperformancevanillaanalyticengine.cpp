@@ -31,27 +31,27 @@ namespace QuantLib {
 
         void ForwardPerformanceVanillaAnalyticEngine::calculate() const {
 
-            originalParameters_->type = parameters_.type;
-            originalParameters_->underlying = 1.0;
-            originalParameters_->strike = parameters_.moneyness;
-            originalParameters_->dividendYield = parameters_.dividendYield;
-            originalParameters_->riskFreeRate = parameters_.riskFreeRate;
-            originalParameters_->residualTime = parameters_.residualTime
-                - parameters_.resetTime;
-            originalParameters_->volatility = parameters_.volatility;
+            originalArguments_->type = arguments_.type;
+            originalArguments_->underlying = 1.0;
+            originalArguments_->strike = arguments_.moneyness;
+            originalArguments_->dividendYield = arguments_.dividendYield;
+            originalArguments_->riskFreeRate = arguments_.riskFreeRate;
+            originalArguments_->residualTime = arguments_.residualTime
+                - arguments_.resetTime;
+            originalArguments_->volatility = arguments_.volatility;
 
-            originalParameters_->validate();
+            originalArguments_->validate();
             originalEngine_->calculate();
 
-            double discR = QL_EXP(-parameters_.riskFreeRate *
-                parameters_.resetTime);
+            double discR = QL_EXP(-arguments_.riskFreeRate *
+                arguments_.resetTime);
 
             results_.value = discR * originalResults_->value;
             results_.delta = 0.0;
             results_.gamma = 0.0;
-            results_.theta = parameters_.riskFreeRate * results_.value;
+            results_.theta = arguments_.riskFreeRate * results_.value;
             results_.vega = discR * originalResults_->vega;
-            results_.rho = - parameters_.resetTime * results_.value +
+            results_.rho = - arguments_.resetTime * results_.value +
                 discR * originalResults_->rho;
             results_.dividendRho = discR * originalResults_->dividendRho;
 

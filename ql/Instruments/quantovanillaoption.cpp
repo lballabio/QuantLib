@@ -27,9 +27,9 @@
 
 namespace QuantLib {
 
-    using PricingEngines::VanillaOptionParameters;
+    using PricingEngines::VanillaOptionArguments;
     using PricingEngines::VanillaOptionResults;
-    using PricingEngines::QuantoOptionParameters;
+    using PricingEngines::QuantoOptionArguments;
     using PricingEngines::QuantoOptionResults;
 
     namespace Instruments {
@@ -87,30 +87,30 @@ namespace QuantLib {
 
         void QuantoVanillaOption::setupEngine() const {
             VanillaOption::setupEngine();
-            QuantoOptionParameters<VanillaOptionParameters>* parameters =
+            QuantoOptionArguments<VanillaOptionArguments>* arguments =
                 dynamic_cast
-                <QuantoOptionParameters<VanillaOptionParameters>*>(
-                    engine_->parameters());
-            QL_REQUIRE(parameters != 0,
+                <QuantoOptionArguments<VanillaOptionArguments>*>(
+                    engine_->arguments());
+            QL_REQUIRE(arguments != 0,
                "QuantoVanillaOption::setupEngine() : "
-               "pricing engine does not supply needed parameters");
+               "pricing engine does not supply needed arguments");
 
             if (foreignRiskFreeRate_.isNull())
-                parameters->foreignRiskFreeRate = 0.0;
+                arguments->foreignRiskFreeRate = 0.0;
             else
-                parameters->foreignRiskFreeRate =
+                arguments->foreignRiskFreeRate =
                 foreignRiskFreeRate_->zeroYield(exerciseDate_);
 
             QL_REQUIRE(!exchangeRateVolatility_.isNull(),
                 "QuantoVanillaOption::setupEngine() : "
                 "null exchange rate volatility given");
-            parameters->exchangeRateVolatility =
+            arguments->exchangeRateVolatility =
                 exchangeRateVolatility_->value();
 
             QL_REQUIRE(!correlation_.isNull(),
                 "QuantoVanillaOption::setupEngine() : "
                 "null correlation given");
-            parameters->correlation =
+            arguments->correlation =
                 correlation_->value();
 
         }

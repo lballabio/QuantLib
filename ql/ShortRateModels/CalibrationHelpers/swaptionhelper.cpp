@@ -35,7 +35,7 @@ namespace QuantLib {
 
             using Instruments::SimpleSwap;
             using Instruments::Swaption;
-            using Instruments::SwaptionParameters;
+            using Instruments::SwaptionArguments;
 
             SwaptionHelper::SwaptionHelper(
                 const Period& maturity,
@@ -107,8 +107,8 @@ namespace QuantLib {
             }
 
             void SwaptionHelper::addTimes(std::list<Time>& times) const {
-                SwaptionParameters* params =
-                    dynamic_cast<SwaptionParameters*>(engine_->parameters());
+                SwaptionArguments* params =
+                    dynamic_cast<SwaptionArguments*>(engine_->arguments());
                 Size i;
                 for (i=0; i<params->exerciseTimes.size(); i++)
                     times.push_back(params->exerciseTimes[i]);

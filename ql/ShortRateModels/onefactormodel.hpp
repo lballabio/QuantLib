@@ -36,7 +36,7 @@ namespace QuantLib {
         //! Single-factor short-rate model abstract class
         class OneFactorModel : public Model {
           public:
-            OneFactorModel(Size nParameters);
+            OneFactorModel(Size nArguments);
             virtual ~OneFactorModel() {}
 
             class ShortRateDynamics;
@@ -117,8 +117,8 @@ namespace QuantLib {
         class OneFactorAffineModel : public OneFactorModel,
                                      public AffineModel {
           public:
-            OneFactorAffineModel(Size nParameters) 
-            : OneFactorModel(nParameters) {}
+            OneFactorAffineModel(Size nArguments) 
+            : OneFactorModel(nArguments) {}
 
             double discountBond(Time now, Time maturity, Rate rate) const {
                 return A(now, maturity)*QL_EXP(-B(now, maturity)*rate);

@@ -43,10 +43,10 @@ namespace QuantLib {
         template<class ArgumentsType, class ResultsType>
         class GenericEngine : public PricingEngine {
           public:
-            Arguments* parameters() { return &parameters_; }
+            Arguments* arguments() { return &arguments_; }
             const Results* results() const { return &results_; }
           protected:
-            ArgumentsType parameters_;
+            ArgumentsType arguments_;
             mutable ResultsType results_;
         };
 

@@ -96,7 +96,7 @@ namespace QuantLib {
             const TimeGrid& timeGrid)
         : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {}
 
-        OneFactorModel::OneFactorModel(Size nParameters) : Model(nParameters) {}
+        OneFactorModel::OneFactorModel(Size nArguments) : Model(nArguments) {}
 
         Handle<Lattice> OneFactorModel::tree(const TimeGrid& grid) const {
             Handle<Tree> trinomial(

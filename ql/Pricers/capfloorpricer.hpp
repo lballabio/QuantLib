@@ -34,8 +34,8 @@ namespace QuantLib {
         class DiscretizedCapFloor : public DiscretizedAsset {
           public:
             DiscretizedCapFloor(const Handle<NumericalMethod>& method,
-                                const Instruments::CapFloorParameters& params)
-            : DiscretizedAsset(method), parameters_(params) {}
+                                const Instruments::CapFloorArguments& params)
+            : DiscretizedAsset(method), arguments_(params) {}
 
             void reset(Size size) {
                 values_ = Array(size, 0.0);
@@ -45,14 +45,14 @@ namespace QuantLib {
             virtual void adjustValues();
 
             void addTimes(std::list<Time>& times) const {
-                for (Size i=0; i<parameters_.startTimes.size(); i++) {
-                    times.push_back(parameters_.startTimes[i]);
-                    times.push_back(parameters_.endTimes[i]);
+                for (Size i=0; i<arguments_.startTimes.size(); i++) {
+                    times.push_back(arguments_.startTimes[i]);
+                    times.push_back(arguments_.endTimes[i]);
                 }
             }
 
           private:
-            Instruments::CapFloorParameters parameters_;
+            Instruments::CapFloorArguments arguments_;
         };
 
         //! base class for cap/floor pricing engines
@@ -69,9 +69,9 @@ namespace QuantLib {
             : model_(model) {
                 registerWith(model_);
             }
-            Arguments* parameters() { return &parameters_; }
+            Arguments* arguments() { return &arguments_; }
             const Results* results() const { return &results_; }
-            void validateParameters() const { parameters_.validate(); }
+            void validateArguments() const { arguments_.validate(); }
 
             void setModel(const Handle<ModelType>& model) {
                 unregisterWith(model_);
@@ -84,7 +84,7 @@ namespace QuantLib {
                 notifyObservers();
             }
           protected:
-            Instruments::CapFloorParameters parameters_;
+            Instruments::CapFloorArguments arguments_;
             mutable Instruments::CapFloorResults results_;
             Handle<ModelType> model_;
         };

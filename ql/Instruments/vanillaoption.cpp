@@ -119,44 +119,44 @@ namespace QuantLib {
         }
 
         void VanillaOption::setupEngine() const {
-            PricingEngines::VanillaOptionParameters* parameters =
-                dynamic_cast<PricingEngines::VanillaOptionParameters*>(
-                    engine_->parameters());
-            QL_REQUIRE(parameters != 0,
+            PricingEngines::VanillaOptionArguments* arguments =
+                dynamic_cast<PricingEngines::VanillaOptionArguments*>(
+                    engine_->arguments());
+            QL_REQUIRE(arguments != 0,
                 "VanillaOption::setupEngine : "
-                "pricing engine does not supply needed parameters");
+                "pricing engine does not supply needed arguments");
 
-            parameters->type = type_;
+            arguments->type = type_;
 
             QL_REQUIRE(!underlying_.isNull(),
                 "VanillaOption::setupEngine : "
                 "null underlying price given");
-            parameters->underlying = underlying_->value();
+            arguments->underlying = underlying_->value();
 
-            parameters->strike = strike_;
+            arguments->strike = strike_;
 
             if (dividendYield_.isNull())
-                parameters->dividendYield = 0.0;
+                arguments->dividendYield = 0.0;
             else
-                parameters->dividendYield =
+                arguments->dividendYield =
                 dividendYield_->zeroYield(exerciseDate_);
 
             if (riskFreeRate_.isNull())
-                parameters->riskFreeRate = 0.0;
+                arguments->riskFreeRate = 0.0;
             else
-                parameters->riskFreeRate =
+                arguments->riskFreeRate =
                 riskFreeRate_->zeroYield(exerciseDate_);
 
             // here we should probably use the dayCounter of the
             // volatility term structure
-            parameters->residualTime =
+            arguments->residualTime =
                 riskFreeRate_->dayCounter().yearFraction(
                     riskFreeRate_->settlementDate(), exerciseDate_);
 
             QL_REQUIRE(!volatility_.isNull(),
                 "VanillaOption::setupEngine : "
                 "null volatility given");
-            parameters->volatility = volatility_->value();
+            arguments->volatility = volatility_->value();
         }
 
         void VanillaOption::performCalculations() const {
@@ -196,11 +196,11 @@ namespace QuantLib {
         VanillaOption::ImpliedVolHelper::ImpliedVolHelper(
             const Handle<PricingEngine>& engine, double targetValue)
         : engine_(engine), targetValue_(targetValue) {
-            parameters_ = dynamic_cast<PricingEngines::VanillaOptionParameters*>(
-                engine_->parameters());
-            QL_REQUIRE(parameters_ != 0,
+            arguments_ = dynamic_cast<PricingEngines::VanillaOptionArguments*>(
+                engine_->arguments());
+            QL_REQUIRE(arguments_ != 0,
                 "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "
-                "pricing engine does not supply needed parameters");
+                "pricing engine does not supply needed arguments");
             results_ = dynamic_cast<const OptionValue*>(
                 engine_->results());
             QL_REQUIRE(results_ != 0,
@@ -209,7 +209,7 @@ namespace QuantLib {
         }
 
         double VanillaOption::ImpliedVolHelper::operator()(double x) const {
-            parameters_->volatility = x;
+            arguments_->volatility = x;
             engine_->calculate();
             return results_->value-targetValue_;
         }

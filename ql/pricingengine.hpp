@@ -36,7 +36,7 @@ namespace QuantLib {
     class PricingEngine {
       public:
         virtual ~PricingEngine() {}
-        virtual Arguments* parameters() = 0;
+        virtual Arguments* arguments() = 0;
         virtual const Results* results() const = 0;
         virtual void calculate() const = 0;
     };

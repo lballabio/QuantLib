@@ -59,14 +59,14 @@ namespace QuantLib {
             if (tree_.isNull()) {
                 std::list<Time> times(0);
                 Size i;
-                for (i=0; i<parameters_.exerciseTimes.size(); i++)
-                    times.push_back(parameters_.exerciseTimes[i]);
-                for (i=0; i<parameters_.fixedPayTimes.size(); i++)
-                    times.push_back(parameters_.fixedPayTimes[i]);
-                for (i=0; i<parameters_.floatingResetTimes.size(); i++)
-                    times.push_back(parameters_.floatingResetTimes[i]);
-                for (i=0; i<parameters_.floatingPayTimes.size(); i++)
-                    times.push_back(parameters_.floatingPayTimes[i]);
+                for (i=0; i<arguments_.exerciseTimes.size(); i++)
+                    times.push_back(arguments_.exerciseTimes[i]);
+                for (i=0; i<arguments_.fixedPayTimes.size(); i++)
+                    times.push_back(arguments_.fixedPayTimes[i]);
+                for (i=0; i<arguments_.floatingResetTimes.size(); i++)
+                    times.push_back(arguments_.floatingResetTimes[i]);
+                for (i=0; i<arguments_.floatingPayTimes.size(); i++)
+                    times.push_back(arguments_.floatingPayTimes[i]);
                 times.sort();
                 times.unique();
 
@@ -77,10 +77,10 @@ namespace QuantLib {
             }
 
             Handle<DiscretizedAsset> swaption(
-            new DiscretizedSwaption(tree, parameters_));
+            new DiscretizedSwaption(tree, arguments_));
 
-            tree->initialize(swaption, parameters_.exerciseTimes.back());
-            tree->rollback(swaption, parameters_.exerciseTimes.front());
+            tree->initialize(swaption, arguments_.exerciseTimes.back());
+            tree->rollback(swaption, arguments_.exerciseTimes.front());
 
             results_.value = tree->presentValue(swaption);
         }

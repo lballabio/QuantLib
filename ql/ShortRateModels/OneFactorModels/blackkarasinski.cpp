@@ -69,7 +69,7 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& termStructure,
             double a, double sigma)
         : OneFactorModel(2), TermStructureConsistentModel(termStructure), 
-          a_(parameters_[0]), sigma_(parameters_[1]) {
+          a_(arguments_[0]), sigma_(arguments_[1]) {
             a_ = ConstantParameter(a, PositiveConstraint());
             sigma_ = ConstantParameter(sigma, PositiveConstraint());
         }

@@ -28,9 +28,9 @@
 
 namespace QuantLib {
 
-    using PricingEngines::VanillaOptionParameters;
+    using PricingEngines::VanillaOptionArguments;
     using PricingEngines::VanillaOptionResults;
-    using PricingEngines::ForwardOptionParameters;
+    using PricingEngines::ForwardOptionArguments;
 
     namespace Instruments {
 
@@ -52,15 +52,15 @@ namespace QuantLib {
 
         void ForwardVanillaOption::setupEngine() const {
             VanillaOption::setupEngine();
-            ForwardOptionParameters<VanillaOptionParameters>* parameters =
+            ForwardOptionArguments<VanillaOptionArguments>* arguments =
                 dynamic_cast
-                <ForwardOptionParameters<VanillaOptionParameters> *>(
-                    engine_->parameters());
-            QL_REQUIRE(parameters != 0,
-                       "pricing engine does not supply needed parameters");
+                <ForwardOptionArguments<VanillaOptionArguments> *>(
+                    engine_->arguments());
+            QL_REQUIRE(arguments != 0,
+                       "pricing engine does not supply needed arguments");
 
-            parameters->moneyness = moneyness_;
-            parameters->resetTime = resetTime_;
+            arguments->moneyness = moneyness_;
+            arguments->resetTime = resetTime_;
 
         }
 

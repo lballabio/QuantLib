@@ -34,29 +34,29 @@ namespace QuantLib {
 
         void BlackCapFloor::calculate() const {
             double value = 0.0;
-            VanillaCapFloor::Type type = parameters_.type;
+            VanillaCapFloor::Type type = arguments_.type;
 
-            for (Size i=0; i<parameters_.startTimes.size(); i++) {
-                Time start = parameters_.startTimes[i],
-                     end = parameters_.endTimes[i],
-                     accrualTime = parameters_.accrualTimes[i];
+            for (Size i=0; i<arguments_.startTimes.size(); i++) {
+                Time start = arguments_.startTimes[i],
+                     end = arguments_.endTimes[i],
+                     accrualTime = arguments_.accrualTimes[i];
                 if (end > 0.0) {    // discard expired caplets
-                    double nominal = parameters_.nominals[i];
+                    double nominal = arguments_.nominals[i];
                     DiscountFactor q = model_->termStructure()->discount(end);
-                    Rate forward = parameters_.forwards[i];
+                    Rate forward = arguments_.forwards[i];
                     // try and factorize the code below
                     if ((type == VanillaCapFloor::Cap) ||
                         (type == VanillaCapFloor::Collar)) {
                             value += q * accrualTime * nominal *
                                      capletValue(start,forward,
-                                                 parameters_.capRates[i],
+                                                 arguments_.capRates[i],
                                                  model_->volatility());
                     }
                     if ((type == VanillaCapFloor::Floor) ||
                         (type == VanillaCapFloor::Collar)) {
                             double temp = q * accrualTime * nominal *
                                           floorletValue(start,forward,
-                                                 parameters_.floorRates[i],
+                                                 arguments_.floorRates[i],
                                                  model_->volatility());
                             if (type == VanillaCapFloor::Floor)
                                 value += temp;

@@ -30,11 +30,11 @@ namespace QuantLib {
     namespace Pricers {
 
         using namespace ShortRateModels;
-        using Instruments::SwaptionParameters;
+        using Instruments::SwaptionArguments;
 
         class JamshidianSwaption::rStarFinder : public ObjectiveFunction {
           public:
-            rStarFinder(const SwaptionParameters &params,
+            rStarFinder(const SwaptionArguments &params,
                         const Handle<OneFactorAffineModel>& model,
                         const std::vector<double>& amounts)
             : strike_(params.nominal), maturity_(params.exerciseTimes[0]),
@@ -61,17 +61,17 @@ namespace QuantLib {
 
         void JamshidianSwaption::calculate() const {
             QL_REQUIRE(
-                parameters_.exerciseType == Exercise::European,
+                arguments_.exerciseType == Exercise::European,
                 "Cannot use the Jamshidian decomposition on exotic swaptions");
-            Time maturity = parameters_.exerciseTimes[0];
-            QL_REQUIRE(maturity==parameters_.floatingResetTimes[0],
+            Time maturity = arguments_.exerciseTimes[0];
+            QL_REQUIRE(maturity==arguments_.floatingResetTimes[0],
                 "Maturity must be equal to first reset date");
 
 
-            std::vector<double> amounts(parameters_.fixedCoupons);
-            amounts.back() += parameters_.nominal;
+            std::vector<double> amounts(arguments_.fixedCoupons);
+            amounts.back() += arguments_.nominal;
 
-            rStarFinder finder(parameters_, model_, amounts);
+            rStarFinder finder(arguments_, model_, amounts);
             Solvers1D::Brent s1d = Solvers1D::Brent();
             double minStrike = -10.0;
             double maxStrike = 10.0;
@@ -80,14 +80,14 @@ namespace QuantLib {
             s1d.setUpperBound(maxStrike);
             double rStar = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
 
-            Option::Type type = parameters_.payFixed?Option::Put:Option::Call;
-            Size size = parameters_.fixedCoupons.size();
+            Option::Type type = arguments_.payFixed?Option::Put:Option::Call;
+            Size size = arguments_.fixedCoupons.size();
             double value = 0.0;
             for (Size i=0; i<size; i++) {
                 double strike = model_->discountBond(maturity,
-                    parameters_.fixedPayTimes[i], rStar);
+                    arguments_.fixedPayTimes[i], rStar);
                 double dboValue = model_->discountBondOption(
-                    type, strike, maturity, parameters_.fixedPayTimes[i]);
+                    type, strike, maturity, arguments_.fixedPayTimes[i]);
                 value += amounts[i]*dboValue;
             }
             results_.value = value;

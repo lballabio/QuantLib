@@ -35,8 +35,8 @@ namespace QuantLib {
         class DiscretizedSwap : public DiscretizedAsset {
           public:
             DiscretizedSwap(const Handle<NumericalMethod>& method, 
-                            const Instruments::SwaptionParameters& params)
-            : DiscretizedAsset(method), parameters_(params) {}
+                            const Instruments::SwaptionArguments& params)
+            : DiscretizedAsset(method), arguments_(params) {}
 
             void reset(Size size) {
                 values_ = Array(size, 0.0);
@@ -47,27 +47,27 @@ namespace QuantLib {
 
             void addTimes(std::list<Time>& times) const {
                 Size i;
-                for (i=0; i<parameters_.fixedPayTimes.size(); i++)
-                    times.push_back(parameters_.fixedPayTimes[i]);
-                for (i=0; i<parameters_.floatingResetTimes.size(); i++)
-                    times.push_back(parameters_.floatingResetTimes[i]);
-                for (i=0; i<parameters_.floatingPayTimes.size(); i++)
-                    times.push_back(parameters_.floatingPayTimes[i]);
+                for (i=0; i<arguments_.fixedPayTimes.size(); i++)
+                    times.push_back(arguments_.fixedPayTimes[i]);
+                for (i=0; i<arguments_.floatingResetTimes.size(); i++)
+                    times.push_back(arguments_.floatingResetTimes[i]);
+                for (i=0; i<arguments_.floatingPayTimes.size(); i++)
+                    times.push_back(arguments_.floatingPayTimes[i]);
             }
 
           private:
-            Instruments::SwaptionParameters parameters_;
+            Instruments::SwaptionArguments arguments_;
         };
 
         class DiscretizedSwaption : public DiscretizedAsset {
           public:
             DiscretizedSwaption(
                 const Handle<NumericalMethod>& method,
-                const Instruments::SwaptionParameters& params)
-            : DiscretizedAsset(method), parameters_(params), 
+                const Instruments::SwaptionArguments& params)
+            : DiscretizedAsset(method), arguments_(params), 
               swap_(new DiscretizedSwap(method, params)) {
-                Time lastFixedPay = parameters_.fixedPayTimes.back();
-                Time lastFloatPay = parameters_.floatingPayTimes.back();
+                Time lastFixedPay = arguments_.fixedPayTimes.back();
+                Time lastFloatPay = arguments_.floatingPayTimes.back();
                 Time start = QL_MAX(lastFixedPay, lastFloatPay);
                 method->initialize(swap_, start);
             }
@@ -81,8 +81,8 @@ namespace QuantLib {
 
             void addTimes(std::list<Time>& times) const {
                 swap_->addTimes(times);
-                for (Size i=0; i<parameters_.exerciseTimes.size(); i++)
-                    times.push_back(parameters_.exerciseTimes[i]);
+                for (Size i=0; i<arguments_.exerciseTimes.size(); i++)
+                    times.push_back(arguments_.exerciseTimes[i]);
             }
           private:
             void applySpecificCondition() {
@@ -90,7 +90,7 @@ namespace QuantLib {
                     values_[i] = QL_MAX(swap_->values()[i], values_[i]);
             }
 
-            Instruments::SwaptionParameters parameters_;
+            Instruments::SwaptionArguments arguments_;
             Handle<DiscretizedSwap> swap_;
         };
 
@@ -108,9 +108,9 @@ namespace QuantLib {
             : model_(model) {
                 registerWith(model_);
             }
-            Arguments* parameters() { return &parameters_; }
+            Arguments* arguments() { return &arguments_; }
             const Results* results() const { return &results_; }
-            void validateParameters() const { parameters_.validate(); }
+            void validateArguments() const { arguments_.validate(); }
 
             void setModel(const Handle<ModelType>& model) {
                 unregisterWith(model_);
@@ -123,7 +123,7 @@ namespace QuantLib {
                 notifyObservers();
             }
           protected:
-            Instruments::SwaptionParameters parameters_;
+            Instruments::SwaptionArguments arguments_;
             mutable Instruments::SwaptionResults results_;
             Handle<ModelType> model_;
         };
@@ -135,7 +135,7 @@ namespace QuantLib {
             : SwaptionPricer<ModelType>(model) {}
 
             void calculate() const { 
-                results_.value = model_->swaption(parameters_); 
+                results_.value = model_->swaption(arguments_); 
             }
         };
 

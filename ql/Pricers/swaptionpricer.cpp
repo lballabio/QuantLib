@@ -31,27 +31,27 @@ namespace QuantLib {
         void DiscretizedSwap::adjustValues() {
             Size i;
 
-            for (i=0; i<parameters_.fixedPayTimes.size(); i++) {
-                if (isOnTime(parameters_.fixedPayTimes[i])) {
-                    if (parameters_.payFixed)
-                        values_ -= parameters_.fixedCoupons[i];
+            for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
+                if (isOnTime(arguments_.fixedPayTimes[i])) {
+                    if (arguments_.payFixed)
+                        values_ -= arguments_.fixedCoupons[i];
                     else
-                        values_ += parameters_.fixedCoupons[i];
+                        values_ += arguments_.fixedCoupons[i];
                 }
             }
 
-            for (i=0; i<parameters_.floatingResetTimes.size(); i++) {
-                if (isOnTime(parameters_.floatingResetTimes[i])) {
+            for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
+                if (isOnTime(arguments_.floatingResetTimes[i])) {
                     Handle<DiscretizedAsset> bond(new 
                         DiscretizedDiscountBond(method()));
                     method()->initialize(bond, 
-                        parameters_.floatingPayTimes[i]);
+                        arguments_.floatingPayTimes[i]);
                     method()->rollback(bond,time_);
 
-                    double nominal = parameters_.nominal;
+                    double nominal = arguments_.nominal;
                     for (Size j=0; j<values_.size(); j++) {
                         double coupon = nominal*(1.0 - bond->values()[j]);
-                        if (parameters_.payFixed)
+                        if (arguments_.payFixed)
                             values_[j] += coupon;
                         else
                             values_[j] -= coupon;
@@ -63,16 +63,16 @@ namespace QuantLib {
         void DiscretizedSwaption::adjustValues() {
             method()->rollback(swap_, time());
 
-            if (parameters_.exerciseType != Exercise::American) {
-                for (Size i=0; i<parameters_.exerciseTimes.size(); i++) {
-                    if (isOnTime(parameters_.exerciseTimes[i])) {
+            if (arguments_.exerciseType != Exercise::American) {
+                for (Size i=0; i<arguments_.exerciseTimes.size(); i++) {
+                    if (isOnTime(arguments_.exerciseTimes[i])) {
                         applySpecificCondition();
                     }
                 }
             } else {
                 if (
-                  (time_ >= parameters_.exerciseTimes[0]) &&
-                  (time_ <= parameters_.exerciseTimes[1]))
+                  (time_ >= arguments_.exerciseTimes[0]) &&
+                  (time_ <= arguments_.exerciseTimes[1]))
                     applySpecificCondition();
             }
         }

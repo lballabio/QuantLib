@@ -266,7 +266,7 @@ namespace QuantLib {
             RateHelper::setTermStructure(t);
             settlement_ = calendar_.advance(
                 termStructure_->todaysDate(),settlementDays_,Days);
-            // dummy Libor index with curve/swap parameters
+            // dummy Libor index with curve/swap arguments
             Handle<Xibor> dummyIndex(new Xibor("dummy",
                 12/floatingFrequency_,Months,settlementDays_,
                 EUR, // any would do

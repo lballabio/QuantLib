@@ -48,7 +48,7 @@ namespace QuantLib {
 
     void Option::performCalculations() const {
         setupEngine();
-        engine_->parameters()->validate();
+        engine_->arguments()->validate();
         engine_->calculate();
         const OptionValue* results =
             dynamic_cast<const OptionValue*>(engine_->results());

@@ -38,7 +38,7 @@ namespace QuantLib {
         //! Term-structure implied by an affine model
         /*! This class defines a term-structure that is based on an affine
             model, e.g. Vasicek or Cox-Ingersoll-Ross. It either be instanced
-            using a model with defined parameters, or the model can be
+            using a model with defined arguments, or the model can be
             calibrated to a set of rate helpers. Of course, there is no point
             in using a term-structure consistent affine model, since the
             implied term-structure will just be the initial term-structure on

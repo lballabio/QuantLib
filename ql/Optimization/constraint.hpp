@@ -64,7 +64,7 @@ namespace QuantLib {
             : Constraint(Handle<ConstraintImpl>(new NoConstraintImpl)) {}
         };
 
-        //! Constraint imposing positivity to all parameters
+        //! Constraint imposing positivity to all arguments
         class PositiveConstraint : public Constraint {
           public:
             class PositiveConstraintImpl : public Constraint::ConstraintImpl {
@@ -81,7 +81,7 @@ namespace QuantLib {
             : Constraint(Handle<ConstraintImpl>(new PositiveConstraintImpl)) {}
         };
 
-        //! Constraint imposing all parameters to be in [low,high]
+        //! Constraint imposing all arguments to be in [low,high]
         class BoundaryConstraint : public Constraint {
           public:
             class BoundaryConstraintImpl : public Constraint::ConstraintImpl {

@@ -34,10 +34,10 @@ namespace QuantLib {
     namespace PricingEngines {
 
         void EuropeanBinomialEngine::calculate() const {
-            double v = parameters_.volatility;
-            Time t = parameters_.residualTime;
-            Rate r = parameters_.riskFreeRate;
-            double s0 = parameters_.underlying;
+            double v = arguments_.volatility;
+            Time t = arguments_.residualTime;
+            Rate r = arguments_.riskFreeRate;
+            double s0 = arguments_.underlying;
 
             Handle<Lattices::Tree> tree;
             switch(type_) {
@@ -55,7 +55,7 @@ namespace QuantLib {
                 new Lattices::BlackScholesLattice(tree, r, t, steps_));
 
             Handle<DiscretizedAsset> option(
-            new DiscretizedVanillaOption(lattice, parameters_));
+            new DiscretizedVanillaOption(lattice, arguments_));
 
             lattice->initialize(option, t);
             lattice->rollback(option, 0.0);

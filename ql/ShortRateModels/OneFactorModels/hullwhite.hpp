@@ -54,7 +54,7 @@ namespace QuantLib {
                                       Time bondMaturity) const;
 
           protected:
-            void generateParameters();
+            void generateArguments();
 
             double A(Time t, Time T) const;
 

@@ -88,7 +88,7 @@ namespace QuantLib {
             \warning Instruments cache the results of the previous
             calculation. Such results will be returned upon later
             invocations of <i><b>calculate</b></i>. When the results depend
-            on parameters such as term structures which could change
+            on arguments such as term structures which could change
             between invocations, the instrument must register itself as
             observer of such objects for the calculations to be performed
             again when they change.

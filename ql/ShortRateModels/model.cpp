@@ -28,9 +28,9 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
-        Model::Model(Size nParameters) 
-        : parameters_(nParameters),
-          constraint_(new PrivateConstraint(parameters_)) {}
+        Model::Model(Size nArguments) 
+        : arguments_(nArguments),
+          constraint_(new PrivateConstraint(arguments_)) {}
 
         class Model::CalibrationFunction : public Optimization::CostFunction {
           public:
@@ -75,13 +75,13 @@ namespace QuantLib {
 
         Array Model::params() {
             Size size = 0, i;
-            for (i=0; i<parameters_.size(); i++)
-                size += parameters_[i].size();
+            for (i=0; i<arguments_.size(); i++)
+                size += arguments_[i].size();
             Array params(size);
             Size k = 0;
-            for (i=0; i<parameters_.size(); i++) {
-                for (Size j=0; j<parameters_[i].size(); j++, k++) {
-                    params[k] = parameters_[i].params()[j];
+            for (i=0; i<arguments_.size(); i++) {
+                for (Size j=0; j<arguments_[i].size(); j++, k++) {
+                    params[k] = arguments_[i].params()[j];
                 }
             }
             return params; 
@@ -89,10 +89,10 @@ namespace QuantLib {
 
         void Model::setParams(const Array& params) {
             Array::const_iterator p = params.begin();
-            for (Size i=0; i<parameters_.size(); i++) {
-                for (Size j=0; j<parameters_[i].size(); j++, p++) {
+            for (Size i=0; i<arguments_.size(); i++) {
+                for (Size j=0; j<arguments_[i].size(); j++, p++) {
                     QL_REQUIRE(p!=params.end(),"Parameter array too small");
-                    parameters_[i].setParam(j, *p);
+                    arguments_[i].setParam(j, *p);
                 }
             }
             QL_REQUIRE(p==params.end(),"Parameter array too big!");

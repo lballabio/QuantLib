@@ -30,7 +30,7 @@ namespace QuantLib {
 
         using namespace Lattices;
 
-        TwoFactorModel::TwoFactorModel(Size nParameters) : Model(nParameters) {}
+        TwoFactorModel::TwoFactorModel(Size nArguments) : Model(nArguments) {}
 
         Handle<Lattice> TwoFactorModel::tree(const TimeGrid& grid) const {
             Handle<ShortRateDynamics> dyn = dynamics();

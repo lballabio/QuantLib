@@ -55,11 +55,11 @@ namespace QuantLib {
 
             if (tree_.isNull()) {
                 std::list<Time> times(0);
-                Size nPeriods = parameters_.startTimes.size();
+                Size nPeriods = arguments_.startTimes.size();
                 Size i;
                 for (i=0; i<nPeriods; i++) {
-                    times.push_back(parameters_.startTimes[i]);
-                    times.push_back(parameters_.endTimes[i]);
+                    times.push_back(arguments_.startTimes[i]);
+                    times.push_back(arguments_.endTimes[i]);
                 }
                 times.sort();
                 times.unique();
@@ -71,10 +71,10 @@ namespace QuantLib {
             }
 
             Handle<DiscretizedAsset> capfloor(
-                new DiscretizedCapFloor(tree, parameters_));
+                new DiscretizedCapFloor(tree, arguments_));
 
-            tree->initialize(capfloor, parameters_.endTimes.back());
-            tree->rollback(capfloor, parameters_.startTimes.front());
+            tree->initialize(capfloor, arguments_.endTimes.back());
+            tree->rollback(capfloor, arguments_.startTimes.front());
 
             results_.value = tree->presentValue(capfloor);
         }

@@ -58,7 +58,7 @@ namespace QuantLib {
                                       Time bondMaturity) const;
 
           protected:
-            void generateParameters();
+            void generateArguments();
             double A(Time t, Time T) const;
 
           private:
@@ -148,7 +148,7 @@ namespace QuantLib {
                 new Dynamics(phi_, theta(), k() , sigma(), x0()));
         }
 
-        inline void ExtendedCoxIngersollRoss::generateParameters() {
+        inline void ExtendedCoxIngersollRoss::generateArguments() {
             phi_ = FittingParameter(termStructure(), theta(), k(), sigma(), 
                                     x0());
         }

@@ -38,15 +38,15 @@ namespace QuantLib {
         G2::G2(const RelinkableHandle<TermStructure>& termStructure,
                double a, double sigma, double b, double eta, double rho)
         : TwoFactorModel(5), TermStructureConsistentModel(termStructure),
-          a_(parameters_[0]), sigma_(parameters_[1]), 
-          b_(parameters_[2]), eta_(parameters_[3]),
-          rho_(parameters_[4]) {
+          a_(arguments_[0]), sigma_(arguments_[1]), 
+          b_(arguments_[2]), eta_(arguments_[3]),
+          rho_(arguments_[4]) {
             a_ = ConstantParameter(a, PositiveConstraint());
             sigma_ = ConstantParameter(sigma, PositiveConstraint());
             b_ = ConstantParameter(b, PositiveConstraint());
             eta_ = ConstantParameter(eta, PositiveConstraint());
             rho_ = ConstantParameter(rho, BoundaryConstraint(-1.0, 1.0));
-            generateParameters();
+            generateArguments();
         }
 
         Handle<TwoFactorModel::ShortRateDynamics> G2::dynamics() const {
@@ -54,7 +54,7 @@ namespace QuantLib {
                 Dynamics(phi_, a(), sigma(), b(), eta(), rho()));
         }
 
-        void G2::generateParameters() {
+        void G2::generateArguments() {
             phi_ = FittingParameter(termStructure(), 
                                     a(), sigma(), b(), eta(), rho());
         }
@@ -198,15 +198,15 @@ namespace QuantLib {
         };
 
         double G2::swaption(
-            const Instruments::SwaptionParameters& parameters) const {
-            Time start = parameters.floatingResetTimes[0];
-            double w = (parameters.payFixed ? 1 : -1 );
+            const Instruments::SwaptionArguments& arguments) const {
+            Time start = arguments.floatingResetTimes[0];
+            double w = (arguments.payFixed ? 1 : -1 );
             SwaptionPricingFunction function(
                 a(), sigma(), b(), eta(), rho(), w, start, 
-                parameters.floatingPayTimes, parameters.fixedRate, (*this));
+                arguments.floatingPayTimes, arguments.fixedRate, (*this));
             Math::SegmentIntegral integrator(1000);
 
-            return parameters.nominal*w*termStructure()->discount(start)*
+            return arguments.nominal*w*termStructure()->discount(start)*
                    integrator(function, -10000.0, 10000.0);
         }
 

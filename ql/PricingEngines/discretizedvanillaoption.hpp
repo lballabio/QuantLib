@@ -37,20 +37,20 @@ namespace QuantLib {
         class DiscretizedVanillaOption : public DiscretizedAsset {
           public:
             DiscretizedVanillaOption(const Handle<NumericalMethod>& method,
-                                     const VanillaOptionParameters& params)
-            : DiscretizedAsset(method), parameters_(params) {}
+                                     const VanillaOptionArguments& params)
+            : DiscretizedAsset(method), arguments_(params) {}
 
             void reset(Size size);
 
             void adjustValues();
 
             void addTimes(std::list<Time>& times) const {
-                times.push_back(parameters_.residualTime);
+                times.push_back(arguments_.residualTime);
             }
 
           private:
             void applySpecificCondition();
-            VanillaOptionParameters parameters_;
+            VanillaOptionArguments arguments_;
         };
 
     }

@@ -40,7 +40,7 @@ namespace QuantLib {
             using CashFlows::FixedRateCouponVector;
             using CashFlows::FloatingRateCouponVector;
             using Instruments::VanillaCap;
-            using Instruments::CapFloorParameters;
+            using Instruments::CapFloorArguments;
             using Instruments::Swap;
             using Indexes::Xibor;
 
@@ -103,8 +103,8 @@ namespace QuantLib {
             }
 
             void CapHelper::addTimes(std::list<Time>& times) const {
-                CapFloorParameters* params =
-                    dynamic_cast<CapFloorParameters*>(engine_->parameters());
+                CapFloorArguments* params =
+                    dynamic_cast<CapFloorArguments*>(engine_->arguments());
                 Size nPeriods = params->startTimes.size();
                 for (Size i=0; i<nPeriods; i++) {
                     times.push_back(params->startTimes[i]);

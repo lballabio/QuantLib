@@ -38,7 +38,7 @@ namespace QuantLib {
             double theta, double k, double sigma, double x0)
         : CoxIngersollRoss(theta, k, sigma, x0),
           TermStructureConsistentModel(termStructure) {
-            generateParameters();
+            generateArguments();
         }
 
         Handle<Lattice> ExtendedCoxIngersollRoss::tree(

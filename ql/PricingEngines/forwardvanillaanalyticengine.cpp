@@ -31,31 +31,31 @@ namespace QuantLib {
 
         void ForwardVanillaAnalyticEngine::calculate() const {
 
-            originalParameters_->type = parameters_.type;
-            originalParameters_->underlying = 1.0;
-            originalParameters_->strike = parameters_.moneyness;
-            originalParameters_->dividendYield = parameters_.dividendYield;
-            originalParameters_->riskFreeRate = parameters_.riskFreeRate;
-            originalParameters_->residualTime = parameters_.residualTime
-                - parameters_.resetTime;
-            originalParameters_->volatility = parameters_.volatility;
+            originalArguments_->type = arguments_.type;
+            originalArguments_->underlying = 1.0;
+            originalArguments_->strike = arguments_.moneyness;
+            originalArguments_->dividendYield = arguments_.dividendYield;
+            originalArguments_->riskFreeRate = arguments_.riskFreeRate;
+            originalArguments_->residualTime = arguments_.residualTime
+                - arguments_.resetTime;
+            originalArguments_->volatility = arguments_.volatility;
 
-            originalParameters_->validate();
+            originalArguments_->validate();
             originalEngine_->calculate();
 
-            double discQ = QL_EXP(-parameters_.dividendYield *
-                parameters_.resetTime);
+            double discQ = QL_EXP(-arguments_.dividendYield *
+                arguments_.resetTime);
 
-            results_.value = discQ * parameters_.underlying *
+            results_.value = discQ * arguments_.underlying *
                 originalResults_->value;
             results_.delta = discQ * originalResults_->value;
             results_.gamma = 0.0;
-            results_.theta = parameters_.dividendYield * results_.value;
-            results_.vega = discQ * parameters_.underlying *
+            results_.theta = arguments_.dividendYield * results_.value;
+            results_.vega = discQ * arguments_.underlying *
                 originalResults_->vega;
-            results_.rho = discQ * parameters_.underlying *
+            results_.rho = discQ * arguments_.underlying *
                 originalResults_->rho;
-            results_.dividendRho = - parameters_.resetTime * results_.value
+            results_.dividendRho = - arguments_.resetTime * results_.value
                 + discQ * originalResults_->dividendRho;
 
         }

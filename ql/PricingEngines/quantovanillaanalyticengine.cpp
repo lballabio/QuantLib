@@ -31,18 +31,18 @@ namespace QuantLib {
 
         void QuantoVanillaAnalyticEngine::calculate() const {
 
-            originalParameters_->type = parameters_.type;
-            originalParameters_->underlying = parameters_.underlying;
-            originalParameters_->strike = parameters_.strike;
-            originalParameters_->dividendYield = parameters_.dividendYield
-                + parameters_.riskFreeRate - parameters_.foreignRiskFreeRate
-                + parameters_.correlation *
-                parameters_.volatility * parameters_.exchangeRateVolatility;
-            originalParameters_->riskFreeRate = parameters_.riskFreeRate;
-            originalParameters_->residualTime = parameters_.residualTime;
-            originalParameters_->volatility = parameters_.volatility;
+            originalArguments_->type = arguments_.type;
+            originalArguments_->underlying = arguments_.underlying;
+            originalArguments_->strike = arguments_.strike;
+            originalArguments_->dividendYield = arguments_.dividendYield
+                + arguments_.riskFreeRate - arguments_.foreignRiskFreeRate
+                + arguments_.correlation *
+                arguments_.volatility * arguments_.exchangeRateVolatility;
+            originalArguments_->riskFreeRate = arguments_.riskFreeRate;
+            originalArguments_->residualTime = arguments_.residualTime;
+            originalArguments_->volatility = arguments_.volatility;
 
-            originalParameters_->validate();
+            originalArguments_->validate();
 
             originalEngine_->calculate();
 
@@ -54,15 +54,15 @@ namespace QuantLib {
                 originalResults_->dividendRho;
             results_.dividendRho = originalResults_->dividendRho;
             results_.vega = originalResults_->vega +
-                parameters_.correlation * parameters_.exchangeRateVolatility *
+                arguments_.correlation * arguments_.exchangeRateVolatility *
                 originalResults_->dividendRho;
 
-            results_.qvega = + parameters_.correlation
-                * parameters_.volatility *
+            results_.qvega = + arguments_.correlation
+                * arguments_.volatility *
                 originalResults_->dividendRho;
             results_.qrho = - originalResults_->dividendRho;
-            results_.qlambda = parameters_.exchangeRateVolatility *
-                parameters_.volatility * originalResults_->dividendRho;
+            results_.qlambda = arguments_.exchangeRateVolatility *
+                arguments_.volatility * originalResults_->dividendRho;
         }
 
     }

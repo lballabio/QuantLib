@@ -79,7 +79,7 @@ namespace QuantLib {
             // results
             mutable double delta_, gamma_, theta_, vega_, rho_, dividendRho_;
           private:
-            // parameters
+            // arguments
             Option::Type type_;
             RelinkableHandle<MarketElement> underlying_;
             double strike_;
@@ -94,7 +94,7 @@ namespace QuantLib {
               private:
                 Handle<PricingEngine> engine_;
                 double targetValue_;
-                PricingEngines::VanillaOptionParameters* parameters_;
+                PricingEngines::VanillaOptionArguments* arguments_;
                 const OptionValue* results_;
             };
         };

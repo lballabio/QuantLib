@@ -56,7 +56,7 @@ namespace QuantLib {
             void setupEngine() const;
             void performCalculations() const;
           private:
-            // parameters
+            // arguments
             double moneyness_;
             Time resetTime_;
         };

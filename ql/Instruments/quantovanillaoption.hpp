@@ -64,7 +64,7 @@ namespace QuantLib {
             void setupEngine() const;
             void performCalculations() const;
           private:
-            // parameters
+            // arguments
             RelinkableHandle<TermStructure> foreignRiskFreeRate_;
             RelinkableHandle<MarketElement> exchangeRateVolatility_;
             RelinkableHandle<MarketElement> correlation_;
