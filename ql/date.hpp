@@ -399,7 +399,7 @@ namespace QuantLib {
         return advance(*this,n,units);
     }
     inline Date Date::plus(const Period& p) const {
-        return advance(*this,p);
+        return advance(*this,p.length(),p.units());
     }
     #endif
 
