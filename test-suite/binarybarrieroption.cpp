@@ -57,7 +57,6 @@ namespace {
     }
 
     struct BinaryBarrierOptionData {
-//        BinaryBarrier::Type type;
         Option::Type optionType;
         int years;
         double volatility;
@@ -109,6 +108,7 @@ void BinaryBarrierOptionTest::testValues() {
 
         Date exDate = calendar.advance(today,values[i].years,Years);
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
+        Handle<PricingEngine> engine(new AnalyticEuropeanBinaryBarrierEngine);
 
         Handle<Payoff> payoff(new CashOrNothingPayoff(
             Option::Call, values[i].barrier, values[i].rebate));
@@ -119,7 +119,8 @@ void BinaryBarrierOptionTest::testValues() {
             RelinkableHandle<Quote>(underlyingH),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS));
+            RelinkableHandle<BlackVolTermStructure>(volTS),
+            engine);
 
         double calculated = binaryBarrierOption.NPV();
         double expected = values[i].value;
@@ -193,6 +194,7 @@ void BinaryBarrierOptionTest::testAmericanValues() {
 
         Date exDate = calendar.advance(today,values[i].years,Years);
         Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
+        Handle<PricingEngine> engine(new AnalyticAmericanBinaryBarrierEngine);
 
         Handle<Payoff> payoff(new CashOrNothingPayoff(
             values[i].optionType, values[i].barrier, values[i].rebate));
@@ -203,7 +205,8 @@ void BinaryBarrierOptionTest::testAmericanValues() {
             RelinkableHandle<Quote>(underlyingH),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS));
+            RelinkableHandle<BlackVolTermStructure>(volTS),
+            engine);
 
         double calculated = binaryBarrierOption.NPV();
         double expected = values[i].value;
@@ -556,9 +559,11 @@ CppUnit::Test* BinaryBarrierOptionTest::suite() {
     tests->addTest(new CppUnit::TestCaller<BinaryBarrierOptionTest>
                    ("Testing binary barrier option greeks",
                     &BinaryBarrierOptionTest::testSelfConsistency));
+
     tests->addTest(new CppUnit::TestCaller<BinaryBarrierOptionTest>
                    ("Testing Monte Carlo pricing engine for binary barrier options",
                     &BinaryBarrierOptionTest::testEngineConsistency));
+
     return tests;
 }
 
