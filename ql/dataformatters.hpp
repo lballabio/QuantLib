@@ -33,17 +33,21 @@ namespace QuantLib {
     //! Formats integers for output
     class IntegerFormatter {
       public:
-        static std::string toString(long l, int digits = 0);
+        static std::string toString(long l,
+                                    int digits = 0);
         static std::string toOrdinal(long l);
-        static std::string toPowerOfTwo(unsigned long l, int digits = 0);
+        static std::string toPowerOfTwo(unsigned long l,
+                                        int digits = 0);
     };
 
     //! Formats doubles for output
     class DoubleFormatter {
       public:
-        static std::string toString(double x, int precision = 6,
+        static std::string toString(double x,
+                                    int precision = 6,
                                     int digits = 0);
-        static std::string toExponential(double x, int precision = 6,
+        static std::string toExponential(double x,
+                                         int precision = 6,
                                          int digits = 0);
     };
 
@@ -61,10 +65,10 @@ namespace QuantLib {
             Size n;
             for (i=begin, n=0; i!=end; i++, n++) {
                 if (n == elementsPerRow) {
-                    s += "\n  ";
+                    s += ";\n  ";
                     n = 0;
                 }
-                if (i!=begin)
+                if (n!=0)
                     s += " ; ";
                 s += DoubleFormatter::toString(*i, precision, digits);
             }
@@ -75,10 +79,12 @@ namespace QuantLib {
 
 
     /*! \relates Array */
-    std::ostream& operator<< (std::ostream&, const Array&);
+    std::ostream& operator<< (std::ostream&,
+                              const Array&);
 
     /*! \relates Matrix */
-    std::ostream& operator<< (std::ostream&, const Matrix&);
+    std::ostream& operator<< (std::ostream&,
+                              const Matrix&);
 
     //! Formats amounts in Euro for output
     /*! Formatting follows Euro convention (x,xxx,xxx.xx) */
@@ -91,7 +97,8 @@ namespace QuantLib {
     /*! Formatting is in percentage form (xx.xxxxx%) */
     class RateFormatter {
       public:
-        static std::string toString(double rate, int precision = 5);
+        static std::string toString(double rate,
+                                    int precision = 5);
     };
 
 
@@ -102,11 +109,13 @@ namespace QuantLib {
     class DateFormatter {
       public:
         enum Format { Long, Short, ISO };
-        static std::string toString(const Date& d, Format f = Long);
+        static std::string toString(const Date& d,
+                                    Format f = Long);
     };
 
     /*! \relates Date */
-    std::ostream& operator<< (std::ostream&, const Date&);
+    std::ostream& operator<< (std::ostream&,
+                              const Date&);
 
     //! Formats currencies for output
     class CurrencyFormatter {
