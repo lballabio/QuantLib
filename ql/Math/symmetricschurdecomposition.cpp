@@ -115,15 +115,8 @@ namespace QuantLib {
         std::vector<Real> eigenVector(size);
         Size row, col;
         for (col=0; col<size; col++) {
-            #if defined(QL_PATCH_BORLAND)
-            for (row=0; row<size; row++) {
-                eigenVector[row] = eigenVectors_[row][col];
-            }
-            #else
-            // doesn't work for Borland
             std::copy(eigenVectors_.column_begin(col),
                       eigenVectors_.column_end(col), eigenVector.begin());
-            #endif
             temp[col] = std::make_pair<Real, std::vector<Real> >(
                 diagonal_[col], eigenVector);
         }
