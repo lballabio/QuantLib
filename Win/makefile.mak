@@ -154,12 +154,10 @@ $(PYTHON_DIR)\QuantLibc.dll::   $(OUTPUT_DIR) \
                                 $(PYTHON_BCC_LIB)
     echo Linking Python module...
     $(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj \
-                              $(WIN_OBJS), \
-                              $(PYTHON_DIR)\QuantLibc.dll,, \
-                              $(OUTPUT_DIR)\QuantLib.lib \
-                              $(PYTHON_BCC_LIB) \
-                              $(WIN_LIBS), \
-                              QuantLibc.def
+        $(WIN_OBJS), \
+        $(PYTHON_DIR)\QuantLibc.dll,, \
+        $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB) $(WIN_LIBS), \
+        QuantLibc.def
     del $(PYTHON_DIR)\QuantLibc.ilc
     del $(PYTHON_DIR)\QuantLibc.ild
     del $(PYTHON_DIR)\QuantLibc.ilf
@@ -178,7 +176,8 @@ $(PYTHON_BCC_LIB):
 # Wrapper functions
 $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
     echo Compiling wrappers...
-    $(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT \
+    $(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 \
+    -D__WIN32__ -DMSC_CORE_BC_EXT -DSWIGPYTHON \
     $(PYTHON_DIR)\quantlib_wrap.cpp
 
 $(PYTHON_DIR)\quantlib_wrap.cpp:: \
