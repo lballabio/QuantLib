@@ -44,7 +44,6 @@ namespace QuantLib {
                                     bool monotonicityConstraint,
                                     int derivativeOrder) {
 
-        std::vector<double> result(x_end-x_begin);
         Interpolation f;
 
         switch (interpolationType) {
@@ -64,22 +63,29 @@ namespace QuantLib {
             QL_FAIL("interpolate: invalid interpolation type");
         }
 
+        Size i, n = x_end-x_begin;
+        std::vector<double> result(n);
         switch (derivativeOrder) {
           case -1:
-              // should be f.primitive(.., allowExtrapolation)
-              std::transform(x_begin, x_end, result.begin(), f);
-            break;
+              for (i=0; i<n; i++) {
+                  result[i] = f.primitive(*(x_begin+i),allowExtrapolation);
+              }
+              break;
           case 0:
-              // should be f(.., allowExtrapolation)
-              std::transform(x_begin, x_end, result.begin(), f);
+              for (i=0; i<n; i++) {
+                  result[i] = f(*(x_begin+i),allowExtrapolation);
+              }
             break;
           case 1:
-              // should be f.derivative(.., allowExtrapolation)
-              std::transform(x_begin, x_end, result.begin(), f);
+              for (i=0; i<n; i++) {
+                  result[i] = f.derivative(*(x_begin+i),allowExtrapolation);
+              }
             break;
           case 2:
-              // should be f.secondDerivative(.., allowExtrapolation)
-              std::transform(x_begin, x_end, result.begin(), f);
+              for (i=0; i<n; i++) {
+                  result[i] = f.secondDerivative(*(x_begin+i),
+                      allowExtrapolation); 
+              }
             break;
           default:
               QL_FAIL(IntegerFormatter::toString(derivativeOrder)

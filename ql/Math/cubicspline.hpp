@@ -31,7 +31,21 @@
 
 namespace QuantLib {
 
-    //! cubic spline interpolation between discrete points
+    /*! Cubic spline interpolation between discrete points.
+        It implements different type of end conditions: not-a-knot,
+        first derivative value, second derivative value.
+        
+        It also implements Hyman's monotonicity constraint filter
+        which ensures that the interpolating spline remains monotonic
+        at the expense of the second derivative of the curve which will no
+        longer be continuous where the filter has been applied.
+        If the interpolating spline is already monotonic, the Hyman filter
+        leaves it unchanged.
+
+        See J. M. Hyman, SIAM Journal of Scientific and Statistical Computing,
+        4, No. 4, (December 1983) 645--654.
+        http://math.lanl.gov/~mac/papers/numerics/H83.pdf
+    */
     class CubicSpline : public Interpolation {
       public:
         enum BoundaryCondition { 
