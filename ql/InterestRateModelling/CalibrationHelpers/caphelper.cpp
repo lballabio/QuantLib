@@ -1,27 +1,25 @@
 
 /*
- * Copyright (C) 2000-2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.org/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, please email quantlib-users@lists.sourceforge.net
- * The license is also available at http://quantlib.org/LICENSE.TXT
- *
- * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/group.html
-*/
+ Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
 
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email ferdinando@ametrano.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
 /*! \file caphelper.cpp
     \brief Cap calibration helper
 
@@ -57,7 +55,7 @@ namespace QuantLib {
             CapHelper::CapHelper(
                 const Period& tenor,
                 const Handle<Indexes::Xibor>& index,
-                const RelinkableHandle<TermStructure>& termStructure) 
+                const RelinkableHandle<TermStructure>& termStructure)
             : termStructure_(termStructure) {
 
                 Period indexTenor = index->tenor();
@@ -70,7 +68,7 @@ namespace QuantLib {
                     throw Error("index tenor not valid!");
                 Rate fixedRate = 0.04;//dummy value
                 SimpleSwap swap(
-                  false, 
+                  false,
                   termStructure->settlementDate(),
                   tenor.length(),
                   tenor.units(),
@@ -88,7 +86,7 @@ namespace QuantLib {
                   termStructure);
                 Rate fairFixedRate = fixedRate - swap.NPV()/swap.fixedLegBPS();
                 swap_ = Handle<SimpleSwap>(new SimpleSwap(
-                  false, 
+                  false,
                   termStructure->settlementDate(),
                   tenor.length(),
                   tenor.units(),
@@ -129,7 +127,7 @@ namespace QuantLib {
                 Math::CumulativeNormalDistribution f;
                 double value = 0.0;
 
-                CapFloorParameters* params = 
+                CapFloorParameters* params =
                     dynamic_cast<CapFloorParameters*>(engine_->parameters());
                 for (size_t i=0; i<params->startTimes.size(); i++) {
                     Rate exerciseRate;
@@ -142,7 +140,7 @@ namespace QuantLib {
                     Time end = params->endTimes[i];
                     double tenor = end - start;
                     double p = termStructure_->discount(start);
-                    double forward = 
+                    double forward =
                         QL_LOG(p/termStructure_->discount(end))/tenor;
                     double capletValue;
                     if (start > QL_EPSILON) {

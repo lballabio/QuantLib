@@ -1,27 +1,25 @@
 
 /*
- * Copyright (C) 2000-2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.org/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, please email quantlib-users@lists.sourceforge.net
- * The license is also available at http://quantlib.org/LICENSE.TXT
- *
- * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/group.html
-*/
+ Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
 
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email ferdinando@ametrano.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
 /*! \file timefunction.cpp
     \brief Time function used for term structure fitting
 
@@ -44,7 +42,7 @@ namespace QuantLib {
 
         using namespace FiniteDifferences;
 
-        typedef FiniteDifferenceModel<ExplicitEuler<TridiagonalOperator> > 
+        typedef FiniteDifferenceModel<ExplicitEuler<TridiagonalOperator> >
             CustomFiniteDifferenceModel;
 
         class TimeFunction::FitFunction : public ObjectiveFunction {
@@ -52,10 +50,10 @@ namespace QuantLib {
             FitFunction(
                 double discountBond,
                 const Array& statePrices,
-                std::vector<double>& values, 
-                CustomFiniteDifferenceModel& fd, 
+                std::vector<double>& values,
+                CustomFiniteDifferenceModel& fd,
                 double dt, unsigned nit, const Grid& grid)
-            : discountBond_(discountBond), statePrices_(statePrices), 
+            : discountBond_(discountBond), statePrices_(statePrices),
               values_(values), fd_(fd), nit_(nit), grid_(grid) {
                 from_ = (nit_ - 1)*dt;
                 to_ = nit_*dt;
@@ -83,8 +81,8 @@ namespace QuantLib {
             const Grid& grid_;
             double from_;
             double to_;
-        };      
-            
+        };
+
         void TimeFunction::fitToTermStructure(
             const OneFactorModel& model, size_t timeSteps) {
 
@@ -114,7 +112,7 @@ namespace QuantLib {
                 values_.push_back(0.0);
 
                 double discountBond = model.termStructure()->discount(to);
-                FitFunction finder(discountBond, statePrices, values_, 
+                FitFunction finder(discountBond, statePrices, values_,
                     finiteDifferenceModel, dt, i+1, grid);
                 double accuracy = 1e-10;
                 double initialValue = 0.05;

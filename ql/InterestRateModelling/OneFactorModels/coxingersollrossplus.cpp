@@ -1,27 +1,25 @@
 
 /*
- * Copyright (C) 2000-2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.org/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, please email quantlib-users@lists.sourceforge.net
- * The license is also available at http://quantlib.org/LICENSE.TXT
- *
- * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/group.html
-*/
+ Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
 
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email ferdinando@ametrano.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
 /*! \file coxingersollrossplus.cpp
     \brief CIR++ model
 
@@ -43,18 +41,18 @@ namespace QuantLib {
 
         class CoxIngersollRossPlus::Process : public ShortRateProcess {
           public:
-            Process(CoxIngersollRossPlus * model) 
-            : model_(model), k_(model_->k_), 
+            Process(CoxIngersollRossPlus * model)
+            : model_(model), k_(model_->k_),
               theta_(model_->theta_), sigma_(model_->sigma_), y0_(0.0059379) {}
 
-            virtual double variable(Time t, Rate r) const { 
-                return QL_SQRT(r - model_->phi(t)) - y0_; 
+            virtual double variable(Time t, Rate r) const {
+                return QL_SQRT(r - model_->phi(t)) - y0_;
             }
-            virtual double shortRate(Time t, double y) const { 
-                return (y+y0_)*(y+y0_) + model_->phi(t); 
+            virtual double shortRate(Time t, double y) const {
+                return (y+y0_)*(y+y0_) + model_->phi(t);
             }
             virtual double drift(Time t, double y) const {
-                return (0.5*theta_*k_ + 0.125*sigma_*sigma_)/(y+y0_) - 
+                return (0.5*theta_*k_ + 0.125*sigma_*sigma_)/(y+y0_) -
                     0.5*k_*(y+y0_);
             }
             virtual double diffusion(Time t, double y) const {
@@ -69,7 +67,7 @@ namespace QuantLib {
         };
 
         CoxIngersollRossPlus::CoxIngersollRossPlus(
-            const RelinkableHandle<TermStructure>& termStructure) 
+            const RelinkableHandle<TermStructure>& termStructure)
         : OneFactorModel(3, termStructure), k_(params_[0]),
           theta_(params_[1]), sigma_(params_[2]) {
             process_ = Handle<ShortRateProcess>(new Process(this));
@@ -83,7 +81,7 @@ namespace QuantLib {
             double forwardRate = termStructure()->forward(t);
             double h = QL_SQRT(k_*k_ + 2*sigma_*sigma_);
             double expth = QL_EXP(t*h);
-            double phi = forwardRate - 
+            double phi = forwardRate -
                 k_*sigma_*(expth - 1.0)/(2.0*h + (k_+h)*(expth - 1.0));
             return phi;
         }

@@ -1,27 +1,25 @@
 
 /*
- * Copyright (C) 2000-2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.org/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, please email quantlib-users@lists.sourceforge.net
- * The license is also available at http://quantlib.org/LICENSE.TXT
- *
- * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/group.html
-*/
+ Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
 
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email ferdinando@ametrano.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
 /*! \file blackkarasinski.cpp
     \brief Black-Karasinski model
 
@@ -46,15 +44,15 @@ namespace QuantLib {
         //Short-rate diffusion process
         class BlackKarasinski::Process : public ShortRateProcess {
           public:
-            Process(BlackKarasinski * model) 
+            Process(BlackKarasinski * model)
             :  model_(model), a_(model_->a_), sigma_(model_->sigma_) {}
 
-            virtual double variable(Time t, Rate r) const { 
-                return QL_LOG(r) - model_->alpha(t); 
+            virtual double variable(Time t, Rate r) const {
+                return QL_LOG(r) - model_->alpha(t);
             }
 
-            virtual double shortRate(Time t, double x) const { 
-                return QL_EXP(model_->alpha(t) + x); 
+            virtual double shortRate(Time t, double x) const {
+                return QL_EXP(model_->alpha(t) + x);
             }
 
             virtual double drift(Time t, double lnR) const {
@@ -73,10 +71,10 @@ namespace QuantLib {
         class BlackKarasinski::PrivateFunction : public ObjectiveFunction {
           public:
             PrivateFunction::PrivateFunction( double dt, double dx, int jMin,
-                int jMax, const std::vector<double>& statePrices, 
-                double discountBondPrice) 
-            : dt_(dt), dx_(dx), jMin_(jMin), jMax_(jMax), 
-              statePrices_(statePrices), 
+                int jMax, const std::vector<double>& statePrices,
+                double discountBondPrice)
+            : dt_(dt), dx_(dx), jMin_(jMin), jMax_(jMax),
+              statePrices_(statePrices),
               discountBondPrice_(discountBondPrice) {}
 
             double operator()(double x) const {
@@ -86,22 +84,22 @@ namespace QuantLib {
                     value -= statePrices_[k++]*QL_EXP(-QL_EXP(x + j*dx_)*dt_);
                 return value;
             }
-     
+
           private:
             double dt_, dx_;
             int jMin_, jMax_;
             const std::vector<double>& statePrices_;
             double discountBondPrice_;
             Size nit_;
-        };      
-           
+        };
+
         //Trinomial tree specific to the BK model
         class BlackKarasinski::PrivateTree : public TrinomialTree {
           public:
-            PrivateTree(double a, 
+            PrivateTree(double a,
                         double sigma,
                         const RelinkableHandle<TermStructure>& termStructure,
-                        const Handle<TimeFunction>& alpha, 
+                        const Handle<TimeFunction>& alpha,
                         const TimeGrid& timeGrid) {
 
                 t_ = timeGrid;
@@ -127,7 +125,7 @@ namespace QuantLib {
                     int j;
                     for (j=jMin(i); j<=jMax(i); j++)
                         statePrices.push_back(node(i,j).statePrice());
-                    BlackKarasinski::PrivateFunction finder(dt(i), dx(i), 
+                    BlackKarasinski::PrivateFunction finder(dt(i), dx(i),
                         jMin(i), jMax(i), statePrices, discountBond);
                     // solver
                     Solvers1D::Brent s1d = Solvers1D::Brent();
@@ -155,7 +153,7 @@ namespace QuantLib {
                         node(i,j).setProbability(pMid, 1);
                         node(i,j).setProbability(pDown, 0);
 
-                        double discount = 
+                        double discount =
                             QL_EXP(-QL_EXP(lastValue+j*dx(i))*dt(i));
                         node(i,j).setDiscount(discount);
                     }
@@ -167,7 +165,7 @@ namespace QuantLib {
 
         BlackKarasinski::BlackKarasinski(
             const RelinkableHandle<TermStructure>& termStructure)
-        : OneFactorModel(2, termStructure), alpha_(new TimeFunction()), 
+        : OneFactorModel(2, termStructure), alpha_(new TimeFunction()),
           a_(params_[0]), sigma_(params_[1]) {
 
             process_ = Handle<ShortRateProcess>(new Process(this));
@@ -178,7 +176,7 @@ namespace QuantLib {
 
         Handle<Tree> BlackKarasinski::tree(
             const TimeGrid& timeGrid) const {
-            return Handle<Tree>(new PrivateTree(a_, sigma_, 
+            return Handle<Tree>(new PrivateTree(a_, sigma_,
                                      termStructure(), alpha_, timeGrid));
         }
 

@@ -1,27 +1,25 @@
 
 /*
- * Copyright (C) 2000-2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.org/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, please email quantlib-users@lists.sourceforge.net
- * The license is also available at http://quantlib.org/LICENSE.TXT
- *
- * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/group.html
-*/
+ Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
 
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email ferdinando@ametrano.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
 /*! \file criteria.hpp
     \brief Optimization criteria class
 
@@ -106,13 +104,13 @@ namespace QuantLib {
                 return test;
             }
 
-            //! test if the number of iteration is not too big and if we don't 
+            //! test if the number of iteration is not too big and if we don't
             //  raise a stationnary point
             inline bool operator()(int iteration,
-                                   double fold, 
+                                   double fold,
                                    double normgold,
-                                   double fnew, 
-                                   double normgnew, 
+                                   double fnew,
+                                   double normgnew,
                                    double normdiff);
 
             //! return the end criteria type
@@ -123,7 +121,7 @@ namespace QuantLib {
           protected:
             //! Maximum number of iterations
             int maxIteration_;
-            //! function and gradient epsilons 
+            //! function and gradient epsilons
             double functionEpsilon_, gradientEpsilon_;
             //! Maximun number of iterations in stationnary state
             int maxIterStatPt_, statState_;
@@ -138,15 +136,15 @@ namespace QuantLib {
 
         inline OptimizationEndCriteria::OptimizationEndCriteria(
             int maxIteration, double epsilon)
-        : maxIteration_ (maxIteration), functionEpsilon_ (epsilon), 
-          gradientEpsilon_ (epsilon), maxIterStatPt_(maxIteration/10), 
+        : maxIteration_ (maxIteration), functionEpsilon_ (epsilon),
+          gradientEpsilon_ (epsilon), maxIterStatPt_(maxIteration/10),
           statState_ (0), endCriteria_ (0), positiveOptimization_ (false) {}
 
         inline OptimizationEndCriteria::OptimizationEndCriteria(
             const OptimizationEndCriteria & oec)
-        : maxIteration_ (oec.maxIteration_), 
-          functionEpsilon_(oec.functionEpsilon_), 
-          gradientEpsilon_(oec.gradientEpsilon_), 
+        : maxIteration_ (oec.maxIteration_),
+          functionEpsilon_(oec.functionEpsilon_),
+          gradientEpsilon_(oec.gradientEpsilon_),
           maxIterStatPt_(oec.maxIterStatPt_),
           statState_(oec.statState_), endCriteria_(oec.endCriteria_),
           positiveOptimization_(oec.positiveOptimization_) {
@@ -169,10 +167,10 @@ namespace QuantLib {
             double fnew, double normgnew, double normdiff) {
             return (
                 checkIterationNumber(iteration) ||
-                checkStationnaryValue(fold, fnew) || 
-                checkAccuracyValue(fnew) || 
-                checkAccuracyValue(fold) || 
-                checkAccuracyGradientNorm(normgnew) || 
+                checkStationnaryValue(fold, fnew) ||
+                checkAccuracyValue(fnew) ||
+                checkAccuracyValue(fold) ||
+                checkAccuracyGradientNorm(normgnew) ||
                 checkAccuracyGradientNorm(normgold));
         }
 

@@ -1,27 +1,25 @@
 
 /*
- * Copyright (C) 2000-2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.org/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, please email quantlib-users@lists.sourceforge.net
- * The license is also available at http://quantlib.org/LICENSE.TXT
- *
- * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/group.html
-*/
+ Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
 
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email ferdinando@ametrano.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
 /*! \file swaptionhelper.cpp
     \brief Swaption calibration helper
 
@@ -57,7 +55,7 @@ namespace QuantLib {
                 const Period& maturity,
                 const Period& tenor,
                 const Handle<Indexes::Xibor>& index,
-                const RelinkableHandle<TermStructure>& termStructure) 
+                const RelinkableHandle<TermStructure>& termStructure)
             : termStructure_(termStructure) {
 
                 Period indexTenor = index->tenor();
@@ -88,10 +86,10 @@ namespace QuantLib {
                   0,//FIXME
                   std::vector<double>(1, 0.0),
                   termStructure));
-                Rate fairFixedRate = fixedRate - 
+                Rate fairFixedRate = fixedRate -
                     swap_->NPV()/swap_->fixedLegBPS();
                 swap_ = Handle<SimpleSwap>(new SimpleSwap(
-                  false, 
+                  false,
                   startDate,
                   tenor.length(),
                   tenor.units(),
@@ -112,14 +110,14 @@ namespace QuantLib {
                 engine_ = Handle<SwaptionPricingEngine>(new
                     TreeSwaption(100));
 
-                swaption_ = Handle<Swaption>(new 
+                swaption_ = Handle<Swaption>(new
                     Swaption(*swap_, EuropeanExercise(startDate), termStructure,
                              engine_));
                 swaption_->setPricingEngine(engine_);
             }
 
             double SwaptionHelper::modelValue(const Handle<Model>& model) {
-/*                if (model->hasDiscountBondFormula() && 
+/*                if (model->hasDiscountBondFormula() &&
                     model->hasDiscountBondOptionFormula())
                     engine_ = Handle<SwaptionPricingEngine>(new
                         JamshidianSwaption());
@@ -142,7 +140,7 @@ namespace QuantLib {
                 for (size_t i=0; i<times.size(); i++) {
                     p += termStructure_->discount(times[i]);
                 }
-                double swapRate = 
+                double swapRate =
                     exerciseRate_ - swap_->NPV()/swap_->fixedLegBPS();
                 Time start = params->floatingResetTimes[0];
                 double value;

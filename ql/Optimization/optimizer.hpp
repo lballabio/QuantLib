@@ -1,27 +1,25 @@
 
 /*
- * Copyright (C) 2000-2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.org/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, please email quantlib-users@lists.sourceforge.net
- * The license is also available at http://quantlib.org/LICENSE.TXT
- *
- * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/group.html
-*/
+ Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
 
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email ferdinando@ametrano.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
 /*! \file optimizer.hpp
     \brief Abstract optimization class
 
@@ -50,7 +48,7 @@ namespace QuantLib {
         class OptimizationMethod {
           public:
             explicit OptimizationMethod()
-            : iterationNumber_(0), functionEvaluation_(0), 
+            : iterationNumber_(0), functionEvaluation_(0),
               gradientEvaluation_(0), functionValue_(1), squaredNorm_(1) {}
             virtual ~OptimizationMethod() {}
 
@@ -68,13 +66,13 @@ namespace QuantLib {
             }
 
             //! current iteration number
-            inline int& iterationNumber() { 
-                return iterationNumber_; 
+            inline int& iterationNumber() {
+                return iterationNumber_;
             }
 
             //! optimization end criteria
             inline OptimizationEndCriteria& endCriteria() {
-                return endCriteria_; 
+                return endCriteria_;
             }
 
             //! number of evaluation of cost function
@@ -126,7 +124,7 @@ namespace QuantLib {
                 return costFunction_.value(x);
             }
 
-            //! call cost function gradient computation and increment 
+            //! call cost function gradient computation and increment
             //  evaluation counter
             void gradient(Array& grad_f, const Array& x) {
                 method_.gradientEvaluation()++;
@@ -155,7 +153,7 @@ namespace QuantLib {
             CostFunction& costFunction_;
             //! Unconstrained optimization method
             OptimizationMethod& method_;
- 
+
         };
 
     }

@@ -1,27 +1,25 @@
 
 /*
- * Copyright (C) 2000-2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.org/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, please email quantlib-users@lists.sourceforge.net
- * The license is also available at http://quantlib.org/LICENSE.TXT
- *
- * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.org/group.html
-*/
+ Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
 
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email ferdinando@ametrano.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
 /*! \file hullwhite.cpp
     \brief Hull & White model
 
@@ -42,11 +40,11 @@ namespace QuantLib {
           public:
             Process(HullWhite * model) : model_(model) {}
 
-            virtual double variable(Time t, Rate r) const { 
-                return r - model_->alpha(t); 
+            virtual double variable(Time t, Rate r) const {
+                return r - model_->alpha(t);
             }
-            virtual double shortRate(Time t, double x) const { 
-                return x + model_->alpha(t); 
+            virtual double shortRate(Time t, double x) const {
+                return x + model_->alpha(t);
             }
 
             virtual double drift(Time t, double r) const {
@@ -60,8 +58,8 @@ namespace QuantLib {
         };
 
         HullWhite::HullWhite(
-            const RelinkableHandle<TermStructure>& termStructure) 
-        : OneFactorModel(2, termStructure), a_(params_[0]), 
+            const RelinkableHandle<TermStructure>& termStructure)
+        : OneFactorModel(2, termStructure), a_(params_[0]),
           sigma_(params_[1]) {
             process_ = Handle<ShortRateProcess>(new Process(this));
             constraint_ = Handle<Constraint>(new Constraint(2));
@@ -88,7 +86,7 @@ namespace QuantLib {
             return QL_EXP(lnA(T,s) - B(s-T)*r);
         }
 
-        double HullWhite::discountBondOption(Option::Type type, 
+        double HullWhite::discountBondOption(Option::Type type,
             double strike, Time maturity, Time bondMaturity) {
 
             double discountT = termStructure()->discount(maturity);
@@ -104,7 +102,7 @@ namespace QuantLib {
 
             double sigmaP = sigma_*B(bondMaturity - maturity)
                 *QL_SQRT(0.5*B(2.0*maturity));
-            double d1 = QL_LOG(discountS/(strike*discountT))/sigmaP + 
+            double d1 = QL_LOG(discountS/(strike*discountT))/sigmaP +
                 sigmaP/2.0;
             double d2 = d1 - sigmaP;
             double sFactor;
