@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.21  2001/09/03 13:32:43  lballabio
+# *** empty log message ***
+#
 # Revision 1.20  2001/08/27 11:56:25  nando
 # improved installer
 #
@@ -46,22 +49,15 @@ docs-clean:
 tex-files: docs-html
 	mv latex/refman.tex oldrefman.tex
 	$(SED) -e "/Page Index/d" \
-	-e "/input{pages}/d" \
-	-e "/Page Documentation/d" \
-	-e "/input{index}/d" \
-	-e "/include{install}/d" \
-	-e "/include{license}/d" \
-	-e "/include{platforms}/d" \
-	-e "/include{usage}/d" \
-	-e "/include{where}/d" \
-	-e "/include{todo}/d" \
-	-e "s/i_ndex/index/" \
-	-e "s/w_here/where/" \
-	-e "s/i_nstall/install/" \
-	-e "s/u_sage/usage/" \
-	-e "s/p_latforms/platforms/" \
-	-e "s/t_odo/todo/" \
-	-e "s/l_icense/license/" \
-	oldrefman.tex > latex/refman.tex
+	       -e "/input{pages}/d" \
+	       -e "/Page Documentation/d" \
+	       -e "50,$s/input{index}//" \
+	       -e "50,$s/include{install}//" \
+	       -e "50,$s/include{license}//" \
+	       -e "50,$s/include{platforms}//" \
+	       -e "50,$s/include{usage}//" \
+	       -e "50,$s/include{where}//" \
+	       -e "50,$s/include{todo}//" \
+	       oldrefman.tex > latex/refman.tex
 	rm -f oldrefman.tex
 

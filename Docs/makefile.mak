@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.14  2001/09/03 13:32:43  lballabio
+# *** empty log message ***
+#
 # Revision 1.13  2001/08/23 14:58:53  lballabio
 # Doc fixes
 #
@@ -81,20 +84,13 @@ tex-files:: html
     $(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
-           -e "/input{index}/d" \
-           -e "/include{install}/d" \
-           -e "/include{license}/d" \
-           -e "/include{platforms}/d" \
-           -e "/include{usage}/d" \
-           -e "/include{where}/d" \
-           -e "/include{todo}/d" \
-           -e "s/i_ndex/index/" \
-           -e "s/w_here/where/" \
-           -e "s/i_nstall/install/" \
-           -e "s/u_sage/usage/" \
-           -e "s/p_latforms/platforms/" \
-           -e "s/t_odo/todo/" \
-           -e "s/l_icense/license/" \
+           -e "50,$s/input{index}//" \
+           -e "50,$s/include{install}//" \
+           -e "50,$s/include{license}//" \
+           -e "50,$s/include{platforms}//" \
+           -e "50,$s/include{usage}//" \
+           -e "50,$s/include{where}//" \
+           -e "50,$s/include{todo}//" \
            oldrefman.tex > refman.tex
     del oldrefman.tex
     cd ..

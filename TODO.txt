@@ -27,6 +27,8 @@ COMPILING
     *** check compile success/failure on other platforms/compilers
 
 LIBRARY
+    Actual/actual and 30/360 factory taking conventions
+    Currency as class with methods returning related info
     QuantLib dynamic Win32 library (QuantLib.dll)
     develop C++ unit test suite based on http://sourceforge.net/projects/cppunit
     clean up accuracy definition in solver1D (x or f(x) accuracy ?)
