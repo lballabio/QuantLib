@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file westerncalendar.h
     \brief Western calendar
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.6  2001/03/26 08:38:28  lballabio
+    fixed line wrappings
+
     Revision 1.5  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -46,8 +49,8 @@ namespace QuantLib {
     namespace Calendars {
 
         //! Western calendar
-        /*! This calendar provides derived calendars with the means of determining
-            the Easter Monday for a given year.
+        /*! This calendar provides derived calendars with the means of 
+            determining the Easter Monday for a given year.
         */
         class WesternCalendar : public Calendar {
           public:

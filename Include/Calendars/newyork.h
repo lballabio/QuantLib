@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file newyork.h
     \brief New York calendar
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.5  2001/03/26 08:38:28  lballabio
+    fixed line wrappings
+
     Revision 1.4  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -50,17 +53,20 @@ namespace QuantLib {
             <ul>
             <li>Saturdays</li>
             <li>Sundays</li>
-            <li>New Year's Day, January 1st (possibly moved to Monday if actually on Sunday,
-                or to Friday if on Saturday)</li>
+            <li>New Year's Day, January 1st (possibly moved to Monday if 
+                actually on Sunday, or to Friday if on Saturday)</li>
             <li>Martin Luther King's birthday, third Monday in January</li>
             <li>Washington's birthday, third Monday in February</li>
             <li>Memorial Day, last Monday in May</li>
-            <li>Independence Day, July 4th (moved to Monday if Sunday or Friday if Saturday)</li>
+            <li>Independence Day, July 4th (moved to Monday if Sunday or Friday 
+                if Saturday)</li>
             <li>Labor Day, first Monday in September</li>
             <li>Columbus Day, second Monday in October</li>
-            <li>Veteran's Day, November 11th (moved to Monday if Sunday or Friday if Saturday)</li>
+            <li>Veteran's Day, November 11th (moved to Monday if Sunday or 
+                Friday if Saturday)</li>
             <li>Thanksgiving Day, fourth Thursday in November</li>
-            <li>Christmas, December 25th (moved to Monday if Sunday or Friday if Saturday)</li>
+            <li>Christmas, December 25th (moved to Monday if Sunday or Friday if 
+                Saturday)</li>
             </ul>
         */
         class NewYork : public WesternCalendar {

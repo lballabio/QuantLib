@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file london.h
     \brief London calendar
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.6  2001/03/26 08:38:28  lballabio
+    fixed line wrappings
+
     Revision 1.5  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -56,8 +59,10 @@ namespace QuantLib {
             <li>Bank Holiday, first Monday of May</li>
             <li>Bank Holiday, last Monday of May</li>
             <li>Bank Holiday, last Monday of August</li>
-            <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
-            <li>Boxing Day, December 26th (possibly moved to Monday or Tuesday)</li>
+            <li>Christmas, December 25th (possibly moved to Monday or 
+                Tuesday)</li>
+            <li>Boxing Day, December 26th (possibly moved to Monday or 
+                Tuesday)</li>
             </ul>
         */
         class London : public WesternCalendar {
