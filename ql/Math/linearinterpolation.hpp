@@ -48,27 +48,18 @@ namespace QuantLib {
              : Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
                  xBegin,xEnd,yBegin) {}
             result_type operator()(const argument_type& x,
-                bool allowExtrapolation = false) const;
-        };
-
-
-        // inline definitions
-
-        template <class I1, class I2>
-        inline typename LinearInterpolation<I1,I2>::result_type
-        LinearInterpolation<I1,I2>::operator()(
-            const LinearInterpolation<I1,I2>::argument_type& x,
-                bool allowExtrapolation) const {
+                                   bool allowExtrapolation = false) const {
                 locate(x);
                 if (isOutOfRange_) {
                     QL_REQUIRE(allowExtrapolation,
                         "LinearInterpolation::operator() : "
                         "extrapolation not allowed");
                 }
-                I2 j = yBegin_+(position_-xBegin_);
+                RandomAccessIterator2 j = yBegin_+(position_-xBegin_);
                 return *j + (x-*position_)*double(*(j+1)-*j)/
                     double(*(position_+1)-*position_);
-        }
+            }
+        };
 
     }
 
