@@ -31,7 +31,7 @@ namespace QuantLib {
     //! Base class for options on a single asset with striked payoff
     class OneAssetStrikedOption : public OneAssetOption {
       public:
-        OneAssetStrikedOption(Handle<StrikedTypePayoff> payoff,
+        OneAssetStrikedOption(const Handle<StrikedTypePayoff>& payoff,
                               const RelinkableHandle<Quote>& underlying,
                               const RelinkableHandle<TermStructure>& dividendTS,
                               const RelinkableHandle<TermStructure>& riskFreeTS,

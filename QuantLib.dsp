@@ -619,11 +619,11 @@ SOURCE=.\ql\Instruments\barrieroption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Instruments\binaryoption.cpp
+SOURCE=.\ql\Instruments\binarybarrieroption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Instruments\binaryoption.hpp
+SOURCE=.\ql\Instruments\binarybarrieroption.hpp
 # End Source File
 # Begin Source File
 
@@ -1031,11 +1031,11 @@ SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\binarypathpricer.cpp
+SOURCE=.\ql\MonteCarlo\binarybarrierpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\binarypathpricer.hpp
+SOURCE=.\ql\MonteCarlo\binarybarrierpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -1558,11 +1558,23 @@ SOURCE=.\ql\PricingEngines\Asian\asianengines.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Barrier\analyticamericanbinarybarrierengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Barrier\analyticeuropeanbinarybarrierengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Barrier\barrierengines.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Barrier\binarybarrierengines.hpp
 # End Source File
 # End Group
 # Begin Group "Cliquet"
@@ -1602,19 +1614,7 @@ SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanbinaryengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanbinaryengine.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Vanilla\binaryengines.hpp
 # End Source File
 # Begin Source File
 

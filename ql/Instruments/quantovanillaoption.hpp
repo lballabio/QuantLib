@@ -57,7 +57,7 @@ namespace QuantLib {
         typedef QuantoOptionArguments<VanillaOption::arguments> arguments;
         typedef QuantoOptionResults<VanillaOption::results> results;
         QuantoVanillaOption(
-                 Handle<StrikedTypePayoff> payoff,
+                 const Handle<StrikedTypePayoff>& payoff,
                  const RelinkableHandle<Quote>& underlying,
                  const RelinkableHandle<TermStructure>& dividendTS,
                  const RelinkableHandle<TermStructure>& riskFreeTS,

@@ -22,7 +22,7 @@
 #include <ql/Instruments/core.hpp>
 
 #include <ql/Instruments/barrieroption.hpp>
-#include <ql/Instruments/binaryoption.hpp>
+#include <ql/Instruments/binarybarrieroption.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/Instruments/oneassetoption.hpp>

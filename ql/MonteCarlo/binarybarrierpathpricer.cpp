@@ -16,16 +16,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file binarypathpricer.cpp
-    \brief path pricer for Binary options
+/*! \file binarybarrierpathpricer.cpp
+    \brief path pricer for binary barrier options
 */
 
-#include <ql/MonteCarlo/binarypathpricer.hpp>
+#include <ql/MonteCarlo/binarybarrierpathpricer.hpp>
 
 namespace QuantLib {
 
-    BinaryPathPricer::BinaryPathPricer(
-                            Binary::Type binaryType, 
+    BinaryBarrierPathPricer::BinaryBarrierPathPricer(
+                            BinaryBarrier::Type binaryBarrierType, 
                             double barrier, 
                             double cashPayoff, 
                             Option::Type type,
@@ -34,22 +34,22 @@ namespace QuantLib {
                             const Handle<DiffusionProcess>& diffProcess,
                             UniformRandomSequenceGenerator sequenceGen)
     : PathPricer<Path>(riskFreeTS), 
-      binaryType_(binaryType),
+      binaryBarrierType_(binaryBarrierType),
       barrier_(barrier), cashPayoff_(cashPayoff), 
       type_(type), underlying_(underlying),
       diffProcess_(diffProcess), sequenceGen_(sequenceGen) {
         QL_REQUIRE(underlying>0.0,
-                   "BinaryPathPricer: "
+                   "BinaryBarrierPathPricer: "
                    "underlying less/equal zero not allowed");
         QL_REQUIRE(barrier>0.0,
-                   "BinaryPathPricer: "
+                   "BinaryBarrierPathPricer: "
                    "barrier less/equal zero not allowed");
     }
 
-    double BinaryPathPricer::operator()(const Path& path) const {
+    double BinaryBarrierPathPricer::operator()(const Path& path) const {
         Size i, n = path.size();
         QL_REQUIRE(n>0,
-                   "BinaryPathPricer: the path cannot be empty");
+                   "BinaryBarrierPathPricer: the path cannot be empty");
 
         double asset_price = underlying_;
         double new_asset_price;
@@ -76,17 +76,17 @@ namespace QuantLib {
                 y = asset_price * QL_EXP (y);
                 // cross the barrier
                 if (y >= barrier_) {
-                    if (binaryType_ == Binary::CashAtExpiry) {
+                    if (binaryBarrierType_ == BinaryBarrier::CashAtExpiry) {
                         return cashPayoff_ * 
                             riskFreeTS_->discount(path.timeGrid().back());
 
-                    } else if (binaryType_ == Binary::CashAtHit) {
+                    } else if (binaryBarrierType_ == BinaryBarrier::CashAtHit) {
                         return cashPayoff_ * 
                             riskFreeTS_->discount(path.timeGrid()[i]);
 
                     } else {
-                        throw Error("BinaryPathPricer: "
-                                    "unknown binary type");
+                        throw Error("BinaryBarrierPathPricer: "
+                                    "unknown binaryBarrier type");
                     }
                 }
                 asset_price = new_asset_price;
@@ -106,24 +106,24 @@ namespace QuantLib {
                 y = 0.5*(x - QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG(u[i])));
                 y = asset_price * QL_EXP (y);
                 if (y <= barrier_) {
-                    if (binaryType_ == Binary::CashAtExpiry) {
+                    if (binaryBarrierType_ == BinaryBarrier::CashAtExpiry) {
                         return cashPayoff_ * 
                             riskFreeTS_->discount(path.timeGrid().back());
 
-                    } else if (binaryType_ == Binary::CashAtHit) {
+                    } else if (binaryBarrierType_ == BinaryBarrier::CashAtHit) {
                         return cashPayoff_ 
                             * riskFreeTS_->discount(path.timeGrid()[i]);
 
                     } else {
-                        throw Error("BinaryPathPricer: "
-                                    "unknown binary type");
+                        throw Error("BinaryBarrierPathPricer: "
+                                    "unknown binaryBarrier type");
                     }
                 }
                 asset_price = new_asset_price;
             }
             break;
           default:
-            throw Error("BinaryPathPricer: unknown option type");
+            throw Error("BinaryBarrierPathPricer: unknown option type");
         }
 
         return 0.0;

@@ -18,48 +18,48 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file binaryengines.hpp
-    \brief binary option engines
+/*! \file binarybarrierengines.hpp
+    \brief binary barrier option engines
 
     Based on the Vanilla Engine pattern
 */
 
-#ifndef quantlib_binary_engines_h
-#define quantlib_binary_engines_h
+#ifndef quantlib_binarybarrier_engines_h
+#define quantlib_binarybarrier_engines_h
 
 #include <ql/exercise.hpp>
 #include <ql/handle.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
-#include <ql/MonteCarlo/binarypathpricer.hpp>
+#include <ql/MonteCarlo/binarybarrierpathpricer.hpp>
 #include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
 
 namespace QuantLib {
 
     //! Binary engine base class
-    class BinaryEngine : public GenericEngine<BinaryOption::arguments,
-                                              BinaryOption::results> {};
+    class BinaryBarrierEngine : public GenericEngine<BinaryBarrierOption::arguments,
+                                              BinaryBarrierOption::results> {};
 
-    //! Pricing engine for European binary options using analytic formulae
-    class AnalyticEuropeanBinaryEngine : public BinaryEngine {
+    //! Pricing engine for European binary barrier options using analytic formulae
+    class AnalyticEuropeanBinaryBarrierEngine : public BinaryBarrierEngine {
       public:
         void calculate() const;
     };
 
-    //! Pricing engine for American binary options using analytic formulae
-    class AnalyticAmericanBinaryEngine : public BinaryEngine {
+    //! Pricing engine for American binary barrier options using analytic formulae
+    class AnalyticAmericanBinaryBarrierEngine : public BinaryBarrierEngine {
       public:
         void calculate() const;
     };
 
-    //! Pricing engine for Binary options using Monte Carlo
+    //! Pricing engine for binary barrier options using Monte Carlo
     template<class RNG = PseudoRandom, class S = Statistics>
-    class MCBinaryEngine : public BinaryEngine,
+    class MCBinaryBarrierEngine : public BinaryBarrierEngine,
                            public McSimulation<SingleAsset<RNG>, S> {
       public:
         // constructor
-        MCBinaryEngine(Size maxTimeStepsPerYear,
+        MCBinaryBarrierEngine(Size maxTimeStepsPerYear,
                        bool antitheticVariate = false,
                        bool controlVariate = false,
                        Size requiredSamples = Null<int>(),
@@ -98,7 +98,7 @@ namespace QuantLib {
 
 
     template<class RNG, class S>
-    MCBinaryEngine<RNG,S>::MCBinaryEngine(Size maxTimeStepsPerYear,
+    MCBinaryBarrierEngine<RNG,S>::MCBinaryBarrierEngine(Size maxTimeStepsPerYear,
                                           bool antitheticVariate,
                                           bool controlVariate,
                                           Size requiredSamples,
@@ -117,8 +117,8 @@ namespace QuantLib {
 
 
     template<class RNG, class S>
-    Handle<QL_TYPENAME MCBinaryEngine<RNG,S>::path_generator_type> 
-    MCBinaryEngine<RNG,S>::pathGenerator() const {
+    Handle<QL_TYPENAME MCBinaryBarrierEngine<RNG,S>::path_generator_type> 
+    MCBinaryBarrierEngine<RNG,S>::pathGenerator() const {
 
         Handle<DiffusionProcess> bs(new
             BlackScholesProcess(arguments_.riskFreeTS, 
@@ -138,21 +138,21 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    Handle<QL_TYPENAME MCBinaryEngine<RNG,S>::path_pricer_type>
-    MCBinaryEngine<RNG,S>::pathPricer() const {
+    Handle<QL_TYPENAME MCBinaryBarrierEngine<RNG,S>::path_pricer_type>
+    MCBinaryBarrierEngine<RNG,S>::pathPricer() const {
 
         #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "MCBinaryEngine: non-plain payoff given");
+                   "MCBinaryBarrierEngine: non-plain payoff given");
         #else
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
         // do this with Template Parameters?
         /*if (isBiased_) {
-            return Handle<MCBinaryEngine<RNG,S>::path_pricer_type>(
-                new BiasedBinaryPathPricer(                
+            return Handle<MCBinaryBarrierEngine<RNG,S>::path_pricer_type>(
+                new BiasedBinaryBarrierPathPricer(                
                         arguments_.barrierType, arguments_.barrier, 
                         arguments_.rebate, payoff->optionType(), 
                         payoff->strike(), arguments_.underlying, 
@@ -163,9 +163,9 @@ namespace QuantLib {
         UniformRandomSequenceGenerator 
             sequenceGen(grid.size()-1, UniformRandomGenerator(76));
 
-        return Handle<MCBinaryEngine<RNG,S>::path_pricer_type>(
-            new BinaryPathPricer(
-                    arguments_.binaryType, arguments_.barrier, 
+        return Handle<MCBinaryBarrierEngine<RNG,S>::path_pricer_type>(
+            new BinaryBarrierPathPricer(
+                    arguments_.binaryBarrierType, arguments_.barrier, 
                     arguments_.cashPayoff, payoff->optionType(), 
                     arguments_.underlying, arguments_.riskFreeTS,
                     Handle<DiffusionProcess> (new BlackScholesProcess(
@@ -181,17 +181,17 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    TimeGrid MCBinaryEngine<RNG,S>::timeGrid() const {
+    TimeGrid MCBinaryBarrierEngine<RNG,S>::timeGrid() const {
         return TimeGrid(arguments_.maturity, 
                         Size(arguments_.maturity * maxTimeStepsPerYear_));
     }
 
     template<class RNG, class S>
-    void MCBinaryEngine<RNG,S>::calculate() const {
+    void MCBinaryBarrierEngine<RNG,S>::calculate() const {
 
         QL_REQUIRE(requiredTolerance_ != Null<double>() ||
                    int(requiredSamples_) != Null<int>(),
-                   "MCBinaryEngine::calculate: "
+                   "MCBinaryBarrierEngine::calculate: "
                    "neither tolerance nor number of samples set");
 
         //! Initialize the one-factor Monte Carlo
@@ -199,14 +199,14 @@ namespace QuantLib {
 
             Handle<path_pricer_type> controlPP = controlPathPricer();
             QL_REQUIRE(!IsNull(controlPP),
-                       "MCBinaryEngine::calculate() : "
+                       "MCBinaryBarrierEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
             Handle<PricingEngine> controlPE = controlPricingEngine();
 
             QL_REQUIRE(!IsNull(controlPE),
-                       "MCBinaryEngine::calculate() : "
+                       "MCBinaryBarrierEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");
         } else {

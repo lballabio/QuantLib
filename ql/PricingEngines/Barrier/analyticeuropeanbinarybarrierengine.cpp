@@ -18,25 +18,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticeuropeanbinaryengine.cpp
-    \brief European binary option engine
+/*! \file analyticeuropeanbinarybarrierengine.cpp
+    \brief European binary barrier option engine
 */
 
-#include <ql/PricingEngines/Vanilla/binaryengines.hpp>
+#include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
 
 namespace QuantLib {
 
-    void AnalyticEuropeanBinaryEngine::calculate() const {
+    void AnalyticEuropeanBinaryBarrierEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exerciseType == Exercise::European,
-                   "AnalyticBinaryEngine::calculate() : "
+                   "AnalyticBinaryBarrierEngine::calculate() : "
                    "not an European Option");
 
         #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> plainPayoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(plainPayoff,
-                   "AnalyticEuropeanBinaryEngine: non-plain payoff given");
+                   "AnalyticEuropeanBinaryBarrierEngine: non-plain payoff given");
         #else
         Handle<PlainVanillaPayoff> plainPayoff = arguments_.payoff;
         #endif
@@ -89,7 +89,7 @@ namespace QuantLib {
             inTheMoneyProbability = 1.0;
             break;
           default:
-            throw Error("AnalyticEuropeanBinaryEngine: "
+            throw Error("AnalyticEuropeanBinaryBarrierEngine: "
                         "invalid option type");
         }
 

@@ -31,7 +31,7 @@ namespace QuantLib {
                          Barrier::Type barrierType,
                          double barrier,
                          double rebate,
-                         Handle<StrikedTypePayoff> payoff,
+                         const Handle<StrikedTypePayoff>& payoff,
                          const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
@@ -47,10 +47,6 @@ namespace QuantLib {
         if (IsNull(engine))
             setPricingEngine(Handle<PricingEngine>(new AnalyticBarrierEngine));
 
-        registerWith(underlying_);
-        registerWith(dividendTS_);
-        registerWith(riskFreeTS_);
-        registerWith(volTS_);
     }
 
     void BarrierOption::setupArguments(Arguments* args) const {

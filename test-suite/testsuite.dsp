@@ -149,7 +149,7 @@ SOURCE=.\barrieroption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\binaryoption.cpp
+SOURCE=.\binarybarrieroption.cpp
 # End Source File
 # Begin Source File
 
@@ -269,7 +269,7 @@ SOURCE=.\barrieroption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\binaryoption.hpp
+SOURCE=.\binarybarrieroption.hpp
 # End Source File
 # Begin Source File
 

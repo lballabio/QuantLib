@@ -16,11 +16,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "binaryoption.hpp"
+#include "binarybarrieroption.hpp"
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
-#include <ql/Instruments/binaryoption.hpp>
-#include <ql/PricingEngines/Vanilla/binaryengines.hpp>
+#include <ql/Instruments/binarybarrieroption.hpp>
+#include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 
@@ -56,8 +56,8 @@ namespace {
                                  SimpleDayCounter()));
     }
 
-    struct BinaryOptionData {
-        Binary::Type type;
+    struct BinaryBarrierOptionData {
+        BinaryBarrier::Type type;
         Option::Type optionType;
         int years;
         double volatility;
@@ -77,7 +77,7 @@ namespace {
 
 }
 
-void BinaryOptionTest::testValues() {
+void BinaryBarrierOptionTest::testValues() {
 
     double maxErrorAllowed = 1.0e-4;
     double underlyingPrice = 100.0;
@@ -85,8 +85,8 @@ void BinaryOptionTest::testValues() {
     Rate q = QL_LOG(1.03);
 
 
-    BinaryOptionData values[] = {
-        { Binary::CashAtExpiry, Option::Call, 1, 
+    BinaryBarrierOptionData values[] = {
+        { BinaryBarrier::CashAtExpiry, Option::Call, 1, 
           0.2, 0.05, 0.02, 110, 100.0, 35.283179 }
     };
 
@@ -110,7 +110,7 @@ void BinaryOptionTest::testValues() {
         Date exDate = calendar.advance(today,values[i].years,Years);
         EuropeanExercise exercise(exDate);
 
-        BinaryOption binaryOption(
+        BinaryBarrierOption binaryBarrierOption(
                 values[i].type, 
                 values[i].barrier, 
                 values[i].rebate, 
@@ -121,7 +121,7 @@ void BinaryOptionTest::testValues() {
                 exercise, 
                 RelinkableHandle<BlackVolTermStructure>(volTS));
 
-        double calculated = binaryOption.NPV();
+        double calculated = binaryBarrierOption.NPV();
         double expected = values[i].value;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
             CPPUNIT_FAIL(
@@ -135,7 +135,7 @@ void BinaryOptionTest::testValues() {
     }
 }
 
-void BinaryOptionTest::testAmericanValues() {
+void BinaryBarrierOptionTest::testAmericanValues() {
 
     double maxErrorAllowed = 1.0e-4;
 
@@ -144,30 +144,30 @@ void BinaryOptionTest::testAmericanValues() {
     Rate q = 0.04;
 
 
-    BinaryOptionData values[] = {
-        { Binary::CashAtHit, Option::Call, 1, 
+    BinaryBarrierOptionData values[] = {
+        { BinaryBarrier::CashAtHit, Option::Call, 1, 
           0.11, 0.01, 0.04, 100.5, 100, 94.8825 },
-        { Binary::CashAtHit, Option::Call, 1, 
+        { BinaryBarrier::CashAtHit, Option::Call, 1, 
           0.11, 0.01, 0.00, 100.5, 100, 96.5042 },
-        { Binary::CashAtHit, Option::Call, 1, 
+        { BinaryBarrier::CashAtHit, Option::Call, 1, 
           0.11, 0.01, 0.04, 120,   100, 5.5676 },
-        { Binary::CashAtHit, Option::Call, 1, 
+        { BinaryBarrier::CashAtHit, Option::Call, 1, 
           0.2,  0.01, 0.04, 100.5, 100, 97.3989 },
-        { Binary::CashAtHit, Option::Call, 1, 
+        { BinaryBarrier::CashAtHit, Option::Call, 1, 
           0.11, 0.1,  0.04, 100.5, 100, 97.9405 },
-        { Binary::CashAtHit, Option::Call, 2, 
+        { BinaryBarrier::CashAtHit, Option::Call, 2, 
           0.11, 0.01, 0.04, 100.5, 100, 95.8913 },
-        { Binary::CashAtHit, Option::Put,  1, 
+        { BinaryBarrier::CashAtHit, Option::Put,  1, 
           0.11, 0.01, 0.04, 99.5,  100, 97.7331 },
-        { Binary::CashAtHit, Option::Put,  1, 
+        { BinaryBarrier::CashAtHit, Option::Put,  1, 
           0.11, 0.01, 0.00, 99.5,  100, 96.1715 },
-        { Binary::CashAtHit, Option::Put,  1, 
+        { BinaryBarrier::CashAtHit, Option::Put,  1, 
           0.11, 0.01, 0.04, 80,    100, 8.1172 },
-        { Binary::CashAtHit, Option::Put,  1, 
+        { BinaryBarrier::CashAtHit, Option::Put,  1, 
           0.20, 0.01, 0.04, 99.5,  100, 98.6140 },
-        { Binary::CashAtHit, Option::Put,  1, 
+        { BinaryBarrier::CashAtHit, Option::Put,  1, 
           0.11, 0.10, 0.04, 99.5,  100, 93.6491 },
-        { Binary::CashAtHit, Option::Put,  2, 
+        { BinaryBarrier::CashAtHit, Option::Put,  2, 
           0.11, 0.01, 0.04, 99.5,  100, 98.7776 }
     };
 
@@ -193,7 +193,7 @@ void BinaryOptionTest::testAmericanValues() {
         Date exDate = calendar.advance(today,values[i].years,Years);
         AmericanExercise amExercise(today, exDate);
 
-        BinaryOption binaryOption(
+        BinaryBarrierOption binaryBarrierOption(
                 values[i].type, 
                 values[i].barrier, 
                 values[i].rebate, 
@@ -204,7 +204,7 @@ void BinaryOptionTest::testAmericanValues() {
                 amExercise, 
                 RelinkableHandle<BlackVolTermStructure>(volTS));
 
-        double calculated = binaryOption.NPV();
+        double calculated = binaryBarrierOption.NPV();
         double expected = values[i].value;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
             CPPUNIT_FAIL(
@@ -218,7 +218,7 @@ void BinaryOptionTest::testAmericanValues() {
     }
 }
 
-void BinaryOptionTest::testSelfConsistency() {
+void BinaryBarrierOptionTest::testSelfConsistency() {
 
     std::map<std::string,double> calculated, expected, tolerance;
     tolerance["delta"]  = 5.0e-5;
@@ -229,7 +229,7 @@ void BinaryOptionTest::testSelfConsistency() {
     tolerance["vega"]   = 5.0e-5;
 
     double rebate = 100.0;
-    Binary::Type binaryTypes[] = { Binary::CashAtExpiry, Binary::CashAtHit };
+    BinaryBarrier::Type binaryBarrierTypes[] = { BinaryBarrier::CashAtExpiry, BinaryBarrier::CashAtHit };
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     double underlyings[] = { 100 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
@@ -257,10 +257,10 @@ void BinaryOptionTest::testSelfConsistency() {
     Exercise exercises[] = { exercise, amExercise };
 
     Handle<PricingEngine> euroEngine = Handle<PricingEngine>(
-        new AnalyticEuropeanBinaryEngine());
+        new AnalyticEuropeanBinaryBarrierEngine());
 
     Handle<PricingEngine> amEngine = Handle<PricingEngine>(
-        new AnalyticAmericanBinaryEngine());
+        new AnalyticAmericanBinaryBarrierEngine());
 
     Handle<PricingEngine> engines[] = { euroEngine, amEngine };
 
@@ -294,8 +294,8 @@ void BinaryOptionTest::testSelfConsistency() {
 //                  Spread dQ = q*1.0e-4;
 
                   // reference option
-                  BinaryOption opt(
-                      binaryTypes[j], 
+                  BinaryBarrierOption opt(
+                      binaryBarrierTypes[j], 
                       k, 
                       rebate, 
                       type, 
@@ -327,10 +327,10 @@ void BinaryOptionTest::testSelfConsistency() {
                       underlyingH_SME->setValue(u);
 
                       // NOTE - Theta is more tricky
-                      //BinaryOption optPt(type, u, k, q, r, T+dT, v, 1.0);
+                      //BinaryBarrierOption optPt(type, u, k, q, r, T+dT, v, 1.0);
                       //underlyingH->setValue(u);
                       //double optPtValue = opt.NPV();
-                      //BinaryOption optMt(type, u, k, q, r, T-dT, v, 1.0);
+                      //BinaryBarrierOption optMt(type, u, k, q, r, T-dT, v, 1.0);
 
                       // bump r up
                       rH_SME->setValue(r+dR);
@@ -407,7 +407,7 @@ void BinaryOptionTest::testSelfConsistency() {
     }
 }
 
-void BinaryOptionTest::testEngineConsistency() {
+void BinaryBarrierOptionTest::testEngineConsistency() {
 
     double calcAnalytic, calcMC;
     double tolerance = 1.0e-1;
@@ -422,8 +422,8 @@ void BinaryOptionTest::testEngineConsistency() {
     long seed = 1;
 
     double cashPayoff = 100.0;
-    //Binary::Type binaryTypes[] = { Binary::CashAtExpiry, Binary::CashAtHit};
-    Binary::Type binaryTypes[] = { Binary::CashAtHit };
+    //BinaryBarrier::Type binaryBarrierTypes[] = { BinaryBarrier::CashAtExpiry, BinaryBarrier::CashAtHit};
+    BinaryBarrier::Type binaryBarrierTypes[] = { BinaryBarrier::CashAtHit };
     //Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     Option::Type types[] = { Option::Call };
     double underlyings[] = { 100 };
@@ -455,13 +455,13 @@ void BinaryOptionTest::testEngineConsistency() {
     Exercise exercises[] = {amExercise};
 
     Handle<PricingEngine> euroEngine = Handle<PricingEngine>(
-        new AnalyticEuropeanBinaryEngine());
+        new AnalyticEuropeanBinaryBarrierEngine());
 
     Handle<PricingEngine> amEngine = Handle<PricingEngine>(
-        new AnalyticAmericanBinaryEngine());
+        new AnalyticAmericanBinaryBarrierEngine());
 
     Handle<PricingEngine> mcEngine = Handle<PricingEngine>(
-        new MCBinaryEngine<PseudoRandom, Statistics>
+        new MCBinaryBarrierEngine<PseudoRandom, Statistics>
                   (maxTimeStepsPerYear, antitheticVariate, controlVariate,
                   requiredSamples, requiredTolerance,
                   maxSamples, isBiased, seed));
@@ -492,8 +492,8 @@ void BinaryOptionTest::testEngineConsistency() {
                   volatilityH_SME->setValue(v);
 
                   // reference option
-                  BinaryOption opt(
-                      binaryTypes[j], 
+                  BinaryBarrierOption opt(
+                      binaryBarrierTypes[j], 
                       barrier, 
                       cashPayoff, 
                       type, 
@@ -548,21 +548,21 @@ void BinaryOptionTest::testEngineConsistency() {
 }
 
 
-CppUnit::Test* BinaryOptionTest::suite() {
+CppUnit::Test* BinaryBarrierOptionTest::suite() {
     CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("Binary option tests");
-    tests->addTest(new CppUnit::TestCaller<BinaryOptionTest>
-                   ("Testing European binary option",
-                    &BinaryOptionTest::testValues));
-    tests->addTest(new CppUnit::TestCaller<BinaryOptionTest>
-                   ("Testing American binary option",
-                    &BinaryOptionTest::testAmericanValues));
-    tests->addTest(new CppUnit::TestCaller<BinaryOptionTest>
-                   ("Testing binary option greeks",
-                    &BinaryOptionTest::testSelfConsistency));
-    tests->addTest(new CppUnit::TestCaller<BinaryOptionTest>
-                   ("Testing Monte Carlo pricing engine for binary options",
-                    &BinaryOptionTest::testEngineConsistency));
+        new CppUnit::TestSuite("BinaryBarrier option tests");
+    tests->addTest(new CppUnit::TestCaller<BinaryBarrierOptionTest>
+                   ("Testing European binary barrier option",
+                    &BinaryBarrierOptionTest::testValues));
+    tests->addTest(new CppUnit::TestCaller<BinaryBarrierOptionTest>
+                   ("Testing American binary barrier option",
+                    &BinaryBarrierOptionTest::testAmericanValues));
+    tests->addTest(new CppUnit::TestCaller<BinaryBarrierOptionTest>
+                   ("Testing binary barrier option greeks",
+                    &BinaryBarrierOptionTest::testSelfConsistency));
+    tests->addTest(new CppUnit::TestCaller<BinaryBarrierOptionTest>
+                   ("Testing Monte Carlo pricing engine for binary barrier options",
+                    &BinaryBarrierOptionTest::testEngineConsistency));
     return tests;
 }
 

@@ -37,7 +37,7 @@ namespace QuantLib {
       public:
           DiscreteAveragingAsianOption(
                     Average::Type averageType,
-                    Handle<StrikedTypePayoff> payoff,
+                    const Handle<StrikedTypePayoff>& payoff,
                     const RelinkableHandle<Quote>& underlying,
                     double runningProduct,
                     Size pastFixings,

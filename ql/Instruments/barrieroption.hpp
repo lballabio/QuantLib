@@ -41,7 +41,7 @@ namespace QuantLib {
         BarrierOption(Barrier::Type barrierType,
                       double barrier,
                       double rebate,
-                      Handle<StrikedTypePayoff> payoff,
+                      const Handle<StrikedTypePayoff>& payoff,
                       const RelinkableHandle<Quote>& underlying,
                       const RelinkableHandle<TermStructure>& dividendTS,
                       const RelinkableHandle<TermStructure>& riskFreeTS,

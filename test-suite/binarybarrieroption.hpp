@@ -15,13 +15,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_binary_option_hpp
-#define quantlib_test_binary_option_hpp
+#ifndef quantlib_test_binarybarrier_option_hpp
+#define quantlib_test_binarybarrier_option_hpp
 
 #include <cppunit/TestCase.h>
 #include <cppunit/TestFixture.h>
 
-class BinaryOptionTest : public CppUnit::TestFixture {
+class BinaryBarrierOptionTest : public CppUnit::TestFixture {
   public:
     void testValues();    
     void testAmericanValues();    

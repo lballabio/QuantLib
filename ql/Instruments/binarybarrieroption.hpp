@@ -17,31 +17,31 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file binaryoption.hpp
-    \brief Binary option on a single asset
+/*! \file binarybarrieroption.hpp
+    \brief Binary barrier option on a single asset
 */
 
-#ifndef quantlib_binary_option_h
-#define quantlib_binary_option_h
+#ifndef quantlib_binarybarrier_option_h
+#define quantlib_binarybarrier_option_h
 
-#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/oneassetoption.hpp>
 
 namespace QuantLib {
 
-    //! placeholder for enumerated binary types
-    struct Binary {
+    //! placeholder for enumerated binary barrier types
+    struct BinaryBarrier {
         enum Type { CashAtHit, CashAtExpiry };
     };
 
-    //! Binary option on a single asset.
+    //! Binary barrier option on a single asset.
     /*! Depending on the exercise type, either the European or American
         analytic pricing engine will be used if none is given.
     */
-    class BinaryOption : public Option {
+    class BinaryBarrierOption : public OneAssetOption {
       public:
         class arguments;
         class results;
-        BinaryOption(Binary::Type binaryType,
+        BinaryBarrierOption(BinaryBarrier::Type binaryBarrierType,
                      double barrier,
                      double cashPayoff,
                      Option::Type type,
@@ -54,48 +54,31 @@ namespace QuantLib {
                      Handle<PricingEngine>(),
                      const std::string& isinCode = "",
                      const std::string& description = "");
-        //! \name greeks
-        //@{
-        double delta() const;
-        double gamma() const;
-        double theta() const;
-        double vega() const;
-        double rho() const;
-        double dividendRho() const;
-        double strikeSensitivity() const;
-        //@}
         bool isExpired() const;
         void setupArguments(Arguments*) const;
       protected:
-        void setupExpired() const;
         void performCalculations() const;
         // results
-        mutable double delta_, gamma_, theta_, 
-            vega_, rho_, dividendRho_, strikeSensitivity_;
         // arguments
-        Binary::Type binaryType_;
+        BinaryBarrier::Type binaryBarrierType_;
         double barrier_;
         double cashPayoff_;
         Option::Type type_;
-        RelinkableHandle<Quote> underlying_;
-        Exercise exercise_;
-        RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
-        RelinkableHandle<BlackVolTermStructure> volTS_;
     };
 
-    //! %arguments for binary option calculation
-    class BinaryOption::arguments : public VanillaOption::arguments {
+    //! %arguments for binary barrier option calculation
+    class BinaryBarrierOption::arguments : public OneAssetOption::arguments {
       public:
         arguments() : barrier(Null<double>()), 
                       cashPayoff(Null<double>()) {}
-        Binary::Type binaryType;
+        BinaryBarrier::Type binaryBarrierType;
         double barrier;
         double cashPayoff;
         void validate() const;
     };
 
-    //! %results from binary option calculation
-    class BinaryOption::results : public virtual VanillaOption::results {};
+    //! %results from binary barrier option calculation
+    class BinaryBarrierOption::results : public virtual OneAssetOption::results {};
 
 }
 

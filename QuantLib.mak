@@ -50,14 +50,14 @@ CLEAN :
 	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticamericanbinaryengine.obj"
-	-@erase "$(INTDIR)\analyticamericanbinaryengine.sbr"
+	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.obj"
+	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
-	-@erase "$(INTDIR)\analyticeuropeanbinaryengine.obj"
-	-@erase "$(INTDIR)\analyticeuropeanbinaryengine.sbr"
+	-@erase "$(INTDIR)\analyticeuropeanbinarybarrierengine.obj"
+	-@erase "$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
@@ -80,10 +80,10 @@ CLEAN :
 	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
-	-@erase "$(INTDIR)\binaryoption.obj"
-	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binarypathpricer.obj"
-	-@erase "$(INTDIR)\binarypathpricer.sbr"
+	-@erase "$(INTDIR)\binarybarrieroption.obj"
+	-@erase "$(INTDIR)\binarybarrieroption.sbr"
+	-@erase "$(INTDIR)\binarybarrierpathpricer.obj"
+	-@erase "$(INTDIR)\binarybarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -423,7 +423,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
-	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -459,7 +459,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrierpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
 	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\binarypathpricer.sbr" \
+	"$(INTDIR)\binarybarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
@@ -506,10 +506,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
+	"$(INTDIR)\analyticamericanbinarybarrierengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
-	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
@@ -598,7 +598,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -634,7 +634,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrierpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
 	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\binarypathpricer.obj" \
+	"$(INTDIR)\binarybarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
@@ -681,10 +681,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
+	"$(INTDIR)\analyticamericanbinarybarrierengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\analyticeuropeanbinarybarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
-	"$(INTDIR)\analyticamericanbinaryengine.obj" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
@@ -755,14 +755,14 @@ CLEAN :
 	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticamericanbinaryengine.obj"
-	-@erase "$(INTDIR)\analyticamericanbinaryengine.sbr"
+	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.obj"
+	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
-	-@erase "$(INTDIR)\analyticeuropeanbinaryengine.obj"
-	-@erase "$(INTDIR)\analyticeuropeanbinaryengine.sbr"
+	-@erase "$(INTDIR)\analyticeuropeanbinarybarrierengine.obj"
+	-@erase "$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
@@ -785,10 +785,10 @@ CLEAN :
 	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
-	-@erase "$(INTDIR)\binaryoption.obj"
-	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binarypathpricer.obj"
-	-@erase "$(INTDIR)\binarypathpricer.sbr"
+	-@erase "$(INTDIR)\binarybarrieroption.obj"
+	-@erase "$(INTDIR)\binarybarrieroption.sbr"
+	-@erase "$(INTDIR)\binarybarrierpathpricer.obj"
+	-@erase "$(INTDIR)\binarybarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -1129,7 +1129,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
-	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -1165,7 +1165,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrierpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
 	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\binarypathpricer.sbr" \
+	"$(INTDIR)\binarybarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
@@ -1212,10 +1212,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
+	"$(INTDIR)\analyticamericanbinarybarrierengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
-	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
@@ -1304,7 +1304,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -1340,7 +1340,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrierpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
 	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\binarypathpricer.obj" \
+	"$(INTDIR)\binarybarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
@@ -1387,10 +1387,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
+	"$(INTDIR)\analyticamericanbinarybarrierengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\analyticeuropeanbinarybarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
-	"$(INTDIR)\analyticamericanbinaryengine.obj" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
@@ -1461,14 +1461,14 @@ CLEAN :
 	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticamericanbinaryengine.obj"
-	-@erase "$(INTDIR)\analyticamericanbinaryengine.sbr"
+	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.obj"
+	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
-	-@erase "$(INTDIR)\analyticeuropeanbinaryengine.obj"
-	-@erase "$(INTDIR)\analyticeuropeanbinaryengine.sbr"
+	-@erase "$(INTDIR)\analyticeuropeanbinarybarrierengine.obj"
+	-@erase "$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
@@ -1491,10 +1491,10 @@ CLEAN :
 	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
-	-@erase "$(INTDIR)\binaryoption.obj"
-	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binarypathpricer.obj"
-	-@erase "$(INTDIR)\binarypathpricer.sbr"
+	-@erase "$(INTDIR)\binarybarrieroption.obj"
+	-@erase "$(INTDIR)\binarybarrieroption.sbr"
+	-@erase "$(INTDIR)\binarybarrierpathpricer.obj"
+	-@erase "$(INTDIR)\binarybarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -1834,7 +1834,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
-	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -1870,7 +1870,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrierpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
 	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\binarypathpricer.sbr" \
+	"$(INTDIR)\binarybarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
@@ -1917,10 +1917,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
+	"$(INTDIR)\analyticamericanbinarybarrierengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
-	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
@@ -2009,7 +2009,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -2045,7 +2045,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrierpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
 	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\binarypathpricer.obj" \
+	"$(INTDIR)\binarybarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
@@ -2092,10 +2092,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
+	"$(INTDIR)\analyticamericanbinarybarrierengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\analyticeuropeanbinarybarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
-	"$(INTDIR)\analyticamericanbinaryengine.obj" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
@@ -2166,14 +2166,14 @@ CLEAN :
 	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticamericanbinaryengine.obj"
-	-@erase "$(INTDIR)\analyticamericanbinaryengine.sbr"
+	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.obj"
+	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
-	-@erase "$(INTDIR)\analyticeuropeanbinaryengine.obj"
-	-@erase "$(INTDIR)\analyticeuropeanbinaryengine.sbr"
+	-@erase "$(INTDIR)\analyticeuropeanbinarybarrierengine.obj"
+	-@erase "$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
@@ -2196,10 +2196,10 @@ CLEAN :
 	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
-	-@erase "$(INTDIR)\binaryoption.obj"
-	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binarypathpricer.obj"
-	-@erase "$(INTDIR)\binarypathpricer.sbr"
+	-@erase "$(INTDIR)\binarybarrieroption.obj"
+	-@erase "$(INTDIR)\binarybarrieroption.sbr"
+	-@erase "$(INTDIR)\binarybarrierpathpricer.obj"
+	-@erase "$(INTDIR)\binarybarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -2540,7 +2540,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
-	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -2576,7 +2576,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrierpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
 	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\binarypathpricer.sbr" \
+	"$(INTDIR)\binarybarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
@@ -2623,10 +2623,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
+	"$(INTDIR)\analyticamericanbinarybarrierengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
-	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
@@ -2715,7 +2715,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -2751,7 +2751,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrierpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
 	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\binarypathpricer.obj" \
+	"$(INTDIR)\binarybarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
@@ -2798,10 +2798,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
+	"$(INTDIR)\analyticamericanbinarybarrierengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\analyticeuropeanbinarybarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
-	"$(INTDIR)\analyticamericanbinaryengine.obj" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
@@ -3123,9 +3123,9 @@ SOURCE=.\ql\Instruments\barrieroption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Instruments\binaryoption.cpp
+SOURCE=.\ql\Instruments\binarybarrieroption.cpp
 
-"$(INTDIR)\binaryoption.obj"	"$(INTDIR)\binaryoption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\binarybarrieroption.obj"	"$(INTDIR)\binarybarrieroption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3339,9 +3339,9 @@ SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\MonteCarlo\binarypathpricer.cpp
+SOURCE=.\ql\MonteCarlo\binarybarrierpathpricer.cpp
 
-"$(INTDIR)\binarypathpricer.obj"	"$(INTDIR)\binarypathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\binarybarrierpathpricer.obj"	"$(INTDIR)\binarybarrierpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3659,27 +3659,27 @@ SOURCE=.\ql\PricingEngines\Asian\analyticasianengine.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\PricingEngines\Barrier\analyticamericanbinarybarrierengine.cpp
+
+"$(INTDIR)\analyticamericanbinarybarrierengine.obj"	"$(INTDIR)\analyticamericanbinarybarrierengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.cpp
 
 "$(INTDIR)\analyticbarrierengine.obj"	"$(INTDIR)\analyticbarrierengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\PricingEngines\Barrier\analyticeuropeanbinarybarrierengine.cpp
+
+"$(INTDIR)\analyticeuropeanbinarybarrierengine.obj"	"$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.cpp
 
 "$(INTDIR)\americanmcengines.obj"	"$(INTDIR)\americanmcengines.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanbinaryengine.cpp
-
-"$(INTDIR)\analyticamericanbinaryengine.obj"	"$(INTDIR)\analyticamericanbinaryengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanbinaryengine.cpp
-
-"$(INTDIR)\analyticeuropeanbinaryengine.obj"	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

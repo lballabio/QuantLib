@@ -16,14 +16,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file binarypathpricer.hpp
-    \brief path pricer for Binary options
+/*! \file binarybarrierpathpricer.hpp
+    \brief path pricer for binary barrier options
 */
 
-#ifndef quantlib_montecarlo_binary_path_pricer_h
-#define quantlib_montecarlo_binary_path_pricer_h
+#ifndef quantlib_montecarlo_binarybarrier_path_pricer_h
+#define quantlib_montecarlo_binarybarrier_path_pricer_h
 
-#include <ql/Instruments/binaryoption.hpp>
+#include <ql/Instruments/binarybarrieroption.hpp>
 #include <ql/MonteCarlo/pathpricer.hpp>
 #include <ql/MonteCarlo/path.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
@@ -32,7 +32,7 @@
 
 namespace QuantLib {
 
-    //! %path pricer for Binary options
+    //! %path pricer for binary barrier options
     /*! Uses the Brownian Bridge correction for the barrier found in
         <i>
         Going to Extremes: Correcting Simulation Bias in Exotic
@@ -46,9 +46,9 @@ namespace QuantLib {
         Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
         </i>
     */
-    class BinaryPathPricer : public PathPricer<Path> {
+    class BinaryBarrierPathPricer : public PathPricer<Path> {
       public:
-        BinaryPathPricer(Binary::Type binaryType, 
+        BinaryBarrierPathPricer(BinaryBarrier::Type binaryBarrierType, 
                          double barrier,
                          double cashPayoff,
                          Option::Type type,
@@ -58,7 +58,7 @@ namespace QuantLib {
                          UniformRandomSequenceGenerator sequenceGen);
         double operator()(const Path& path) const;
       private:
-        Binary::Type binaryType_;
+        BinaryBarrier::Type binaryBarrierType_;
         double barrier_;
         double cashPayoff_;
         Option::Type type_;

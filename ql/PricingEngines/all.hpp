@@ -22,12 +22,17 @@
 #include <ql/PricingEngines/core.hpp>
 
 #include <ql/PricingEngines/Asian/asianengines.hpp>
+
 #include <ql/PricingEngines/Barrier/barrierengines.hpp>
+#include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
+
 #include <ql/PricingEngines/Cliquet/cliquetengines.hpp>
+
 #include <ql/PricingEngines/Forward/forwardengines.hpp>
+
 #include <ql/PricingEngines/Quanto/quantoengines.hpp>
+
 #include <ql/PricingEngines/Vanilla/americanmcengines.hpp>
-#include <ql/PricingEngines/Vanilla/binaryengines.hpp>
 #include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>

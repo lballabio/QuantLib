@@ -15,34 +15,34 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticamericanbinaryengine.cpp
-    \brief American binary option engine using analytic formulas
+/*! \file analyticamericanbinarybarrierengine.cpp
+    \brief American binary barrier option engine using analytic formulas
 */
 
-#include <ql/PricingEngines/Vanilla/binaryengines.hpp>
+#include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
 
 namespace QuantLib {
 
-    void AnalyticAmericanBinaryEngine::calculate() const {
+    void AnalyticAmericanBinaryBarrierEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exerciseType == Exercise::American,
-                   "AnalyticAmericanBinaryEngine::calculate() : "
+                   "AnalyticAmericanBinaryBarrierEngine::calculate() : "
                    "not an American Option");
 
-        QL_REQUIRE(arguments_.binaryType == Binary::CashAtHit,
-                   "AnalyticAmericanBinaryEngine::calculate() : "
+        QL_REQUIRE(arguments_.binaryBarrierType == BinaryBarrier::CashAtHit,
+                   "AnalyticAmericanBinaryBarrierEngine::calculate() : "
                    "not a CashAtHit Option");
 
         #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "AnalyticAmericanBinaryEngine: non-plain payoff given");
+                   "AnalyticAmericanBinaryBarrierEngine: non-plain payoff given");
         #else
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
-        // Binary::Type binaryType = arguments_.binaryType;
+        // BinaryBarrier::Type binaryBarrierType = arguments_.binaryBarrierType;
         double barrier = arguments_.barrier;
         double cashPayoff = arguments_.cashPayoff;
 

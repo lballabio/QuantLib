@@ -43,7 +43,7 @@ namespace QuantLib {
         typedef ForwardOptionArguments<VanillaOption::arguments> arguments;
         typedef VanillaOption::results results;
         ForwardVanillaOption(
-                         Handle<StrikedTypePayoff> payoff,
+                         const Handle<StrikedTypePayoff>& payoff,
                          const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
