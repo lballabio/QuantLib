@@ -272,7 +272,7 @@ int main(int argc, char* argv[])
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
 
-        Instruments::Swaption otmBermudanSwaption(swap, 
+        Instruments::Swaption otmBermudanSwaption(otmSwap, 
             BermudanExercise(bermudanDates), rhTermStructure,
             Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
 
