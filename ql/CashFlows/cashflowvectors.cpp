@@ -165,30 +165,14 @@ namespace QuantLib {
 
 
 
-        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
-          const std::vector<double>& nominals,
-          const Date& startDate, const Date& endDate,
-          int frequency, const Calendar& calendar,
-          RollingConvention rollingConvention,
-          const Handle<Xibor>& index, int fixingDays,
-          const std::vector<Spread>& spreads,
-          const Date& stubDate) {
-            QL_REQUIRE(nominals.size() != 0, 
-                       "FloatingRateCouponVector: unspecified nominals");
 
-            Schedule schedule(calendar,startDate,endDate,
-                              frequency,rollingConvention,
-                              true,stubDate);
-            return FloatingRateCouponVector(nominals,index,
-                                            fixingDays,spreads,
-                                            schedule);
-        }
+        std::vector<Handle<CashFlow> > 
+        FloatingRateCouponVector(const Schedule& schedule,
+                                 const std::vector<double>& nominals,
+                                 const Handle<Indexes::Xibor>& index, 
+                                 int fixingDays,
+                                 const std::vector<Spread>& spreads) {
 
-        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
-          const std::vector<double>& nominals,
-          const Handle<Xibor>& index, int fixingDays,
-          const std::vector<Spread>& spreads,
-          const Schedule& schedule) {
             QL_REQUIRE(nominals.size() != 0, 
                        "FloatingRateCouponVector: unspecified nominals");
 
@@ -272,6 +256,35 @@ namespace QuantLib {
             return leg;
         }
 
+
+        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
+          const std::vector<double>& nominals,
+          const Handle<Xibor>& index, int fixingDays,
+          const std::vector<Spread>& spreads,
+          const Schedule& schedule) {
+
+            return FloatingRateCouponVector(schedule,nominals,
+                                            index,fixingDays,spreads);
+        }
+
+
+        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
+          const std::vector<double>& nominals,
+          const Date& startDate, const Date& endDate,
+          int frequency, const Calendar& calendar,
+          RollingConvention rollingConvention,
+          const Handle<Xibor>& index, int fixingDays,
+          const std::vector<Spread>& spreads,
+          const Date& stubDate) {
+
+            Schedule schedule(calendar,startDate,endDate,
+                              frequency,rollingConvention,
+                              true,stubDate);
+            return FloatingRateCouponVector(schedule,nominals,index,
+                                            fixingDays,spreads);
+        }
+
+
         std::vector<Handle<CashFlow> > FloatingRateCouponVector(
           const std::vector<double>& nominals,
           const std::vector<Spread>& spreads,
@@ -279,32 +292,11 @@ namespace QuantLib {
           const Handle<Xibor>& index, int fixingDays,
           const Calendar& calendar,
           RollingConvention roll) {
-            QL_REQUIRE(spreads.size() != 0, "unspecified spread rates");
-            QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
-            QL_REQUIRE(dates.size() > 1, "unspecified dates");
 
-            std::vector<Handle<CashFlow> > leg;
-            Date start, end, paymentDate;
-            Spread spread;
-            double nominal;
-            for (Size i=0; i<dates.size()-1; i++) {
-                start = dates[i];
-                end = dates[i+1];
-                paymentDate = calendar.roll(end,roll);
-                if (i < spreads.size())
-                    spread = spreads[i];
-                else
-                    spread = spreads.back();
-                if (i < nominals.size())
-                    nominal = nominals[i];
-                else
-                    nominal = nominals.back();
-                leg.push_back(Handle<CashFlow>(
-                    new ParCoupon(nominal,paymentDate,index,
-                                  start,end,fixingDays,spread,
-                                  start,end)));
-            }
-            return leg;
+            QL_REQUIRE(dates.size() > 1, "unspecified dates");
+            Schedule schedule(dates,calendar,roll,true);
+            return FloatingRateCouponVector(schedule,nominals,index,
+                                            fixingDays,spreads);
         }
 
     }

@@ -72,10 +72,10 @@ namespace QuantLib {
                                       std::vector<Rate>(1,fixedRate), 
                                       fixedDayCount);
             std::vector<Handle<CashFlow> > floatingLeg =
-                FloatingRateCouponVector(std::vector<double>(1,nominal),
+                FloatingRateCouponVector(floatSchedule,
+                                         std::vector<double>(1,nominal),
                                          index, indexFixingDays, 
-                                         std::vector<Spread>(1,spread),
-                                         floatSchedule);
+                                         std::vector<Spread>(1,spread));
             std::vector<Handle<CashFlow> >::const_iterator i;
             for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
                 registerWith(*i);
@@ -113,10 +113,10 @@ namespace QuantLib {
                                       std::vector<Rate>(1,fixedRate), 
                                       fixedDayCount);
             std::vector<Handle<CashFlow> > floatingLeg =
-                FloatingRateCouponVector(std::vector<double>(1,nominal),
+                FloatingRateCouponVector(floatSchedule,
+                                         std::vector<double>(1,nominal),
                                          index, indexFixingDays, 
-                                         std::vector<Spread>(1,spread),
-                                         floatSchedule);
+                                         std::vector<Spread>(1,spread));
             std::vector<Handle<CashFlow> >::const_iterator i;
             for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
                 registerWith(*i);
@@ -178,10 +178,10 @@ namespace QuantLib {
                                       std::vector<Rate>(1,fixedRate), 
                                       fixedDayCount);
             std::vector<Handle<CashFlow> > floatingLeg =
-                FloatingRateCouponVector(std::vector<double>(1,nominal),
+                FloatingRateCouponVector(floatSchedule,
+                                         std::vector<double>(1,nominal),
                                          index, indexFixingDays, 
-                                         std::vector<Spread>(1,spread),
-                                         floatSchedule);
+                                         std::vector<Spread>(1,spread));
             std::vector<Handle<CashFlow> >::const_iterator i;
             for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
                 registerWith(*i);

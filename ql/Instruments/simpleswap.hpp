@@ -63,10 +63,10 @@ namespace QuantLib {
                        int indexFixingDays,
                        Spread spread,
                        const RelinkableHandle<TermStructure>& termStructure,
-                       Schedule& fixedScheduler, Schedule& floatScheduler,
+                       Schedule& fixedSchedule, Schedule& floatSchedule,
                        const std::string& isinCode = "",
                        const std::string& description = "");
-            /*! \deprecated use the constructor taking two Schedulers */
+            /*! \deprecated use the constructor taking two Schedules */
             SimpleSwap(bool payFixedRate,
                        // dates
                        const Date& startDate, const Date& maturity,

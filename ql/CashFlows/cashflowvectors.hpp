@@ -79,8 +79,16 @@ namespace QuantLib {
             \todo A suitable algorithm should be implemented for the
             calculation of the interpolated index fixing for a
             short/long first coupon.
-            \deprecated use the version taking a Schedule instead.
         */
+        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
+            const Schedule& schedule,
+            const std::vector<double>& nominals,
+            const Handle<Indexes::Xibor>& index, int fixingDays,
+            const std::vector<Spread>& spreads = std::vector<Spread>());
+
+        //! helper function building a sequence of par coupons
+        /*! \deprecated use the version taking a Schedule as first
+                        argument instead */
         std::vector<Handle<CashFlow> > FloatingRateCouponVector(
             const std::vector<double>& nominals,
             const Date& startDate, const Date& endDate,
@@ -92,6 +100,8 @@ namespace QuantLib {
             const Date& stubDate = Date());
 
         //! helper function building a sequence of par coupons
+        /*! \deprecated use the version taking a Schedule as first
+                        argument instead */
         std::vector<Handle<CashFlow> > FloatingRateCouponVector(
             const std::vector<double>& nominals,
             const Handle<Indexes::Xibor>& index, int fixingDays,
@@ -99,6 +109,8 @@ namespace QuantLib {
             const Schedule& schedule);
 
         //! helper function building a sequence of par coupons
+        /*! \deprecated use the version taking a Schedule as first
+                        argument instead */
         std::vector<Handle<CashFlow> > FloatingRateCouponVector(
             const std::vector<double>& nominals,
             const std::vector<Spread>& spreads,

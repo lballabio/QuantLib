@@ -72,11 +72,12 @@ namespace QuantLib {
                     termStructure));
 
                 std::vector<double> nominals(1,1.0);
+                Schedule floatSchedule(index->calendar(), startDate, maturity,
+                                       frequency, index->rollingConvention(),
+                                       true);
                 std::vector<Handle<CashFlow> > floatingLeg = 
-                    FloatingRateCouponVector(nominals, startDate, maturity, 
-                        frequency, index->calendar(), 
-                        index->rollingConvention(), index, 0, 
-                        std::vector<double>(1, 0.0));
+                    FloatingRateCouponVector(floatSchedule, nominals, 
+                                             index, 0);
 
                 Schedule fixedSchedule(index->calendar(), startDate, maturity,
                                        frequency, index->rollingConvention(),
