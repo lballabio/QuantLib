@@ -55,14 +55,14 @@
 using QuantLib::Rate;
 using QuantLib::Time;
 
+// ExercisePayoff is a helper function that calculates option payoff
+using QuantLib::ExercisePayoff;
+
 // Option is a helper class that holds the enumeration {Call, Put, Straddle}
 using QuantLib::Option;
 
 // Handle is the QuantLib way to have reference-counted objects
 using QuantLib::Handle;
-
-// helper function for option payoff: MAX((stike-underlying),0), etc.
-using QuantLib::Pricers::ExercisePayoff;
 
 // the classic Black Scholes analytic solution for European Option
 using QuantLib::Pricers::EuropeanOption;
