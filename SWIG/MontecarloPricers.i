@@ -24,9 +24,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2001/01/15 13:43:20  lballabio
+	Using PyArray typemap
+
 	Revision 1.1  2001/01/04 17:31:23  marmar
 	Alpha version of the Monte Carlo tools.
-
+	
 */
 
 #ifndef shaft_Montecarlo_i
@@ -50,7 +53,7 @@ using QuantLib::MonteCarlo::StandardPathGenerator;
 class StandardPathGenerator{
     public:
 	StandardPathGenerator(int dimension, long seed=0);
-	Array next() const; // Note that currently Path and Array are equivalent
+	PyArray next() const; // Note that currently Path and Array are equivalent
 	double weight() const;
 };
 

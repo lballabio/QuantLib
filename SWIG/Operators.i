@@ -49,11 +49,11 @@ using QuantLib::FiniteDifferences::TridiagonalOperator;
 class TridiagonalOperator {
   public:
     // constructors
-    TridiagonalOperator(Array low, Array mid, Array high);
+    TridiagonalOperator(PyArray low, PyArray mid, PyArray high);
     ~TridiagonalOperator();
     // operator interface
-    Array solveFor(Array rhs) const;
-    Array applyTo(Array v) const;
+    PyArray solveFor(PyArray rhs) const;
+    PyArray applyTo(PyArray v) const;
     // inspectors
     int size() const;
     // modifiers
