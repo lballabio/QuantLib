@@ -80,7 +80,7 @@ namespace QuantLib {
                 typename PG::sample_type path = pathGenerator_->next();
                 double weight = pathGenerator_->weight();
                 typename PP::result_type price = (*pathPricer_)(path);
-                price += cvOptionValue_-(*pathPricer_)(path);
+                price += cvOptionValue_-(*cvPathPricer_)(path);
                 sampleAccumulator_.add(price, weight);
             }
         }

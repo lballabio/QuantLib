@@ -39,6 +39,7 @@
 #include "ql/MonteCarlo/pathgenerator.hpp"
 #include "ql/MonteCarlo/multipathgenerator.hpp"
 #include "ql/MonteCarlo/montecarlomodel.hpp"
+#include "ql/MonteCarlo/montecarlocontrolvariatemodel.hpp"
 #include "ql/MonteCarlo/pathpricer.hpp"
 #include "ql/MonteCarlo/multipathpricer.hpp"
 #include "ql/Math/statistics.hpp"
@@ -71,6 +72,15 @@ namespace QuantLib {
                                 GaussianMultiPathGenerator,
                                 MultiPathPricer> MultiFactorMonteCarloOption;
 
+       //! default choice for one-factor Control Variate Monte Carlo model.
+        typedef MonteCarloControlVariateModel<
+            Math::Statistics, GaussianPathGenerator, PathPricer>
+            OneFactorMonteCarloControlVariateOption;
+
+        //! default choice for multi-factor Monte Carlo model.
+        typedef MonteCarloControlVariateModel<
+            Math::Statistics, GaussianMultiPathGenerator, MultiPathPricer>
+            MultiFactorMonteCarloControlVariateOption;
     }
 
 }

@@ -36,14 +36,14 @@
 
 #include "ql/option.hpp"
 #include "ql/types.hpp"
-#include "ql/MonteCarlo/mcpricer.hpp"
+#include "ql/MonteCarlo/mccontrolvariatepricer.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
         //! example of Monte Carlo pricer using a control variate
-        class AveragePriceAsian : public McPricer {
+        class AveragePriceAsian : public McControlVariatePricer {
           public:
             AveragePriceAsian(Option::Type type,
                               double underlying,

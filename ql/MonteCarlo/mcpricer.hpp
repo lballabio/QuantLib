@@ -51,7 +51,7 @@ namespace QuantLib {
         */
         class McPricer {
           public:
-            virtual ~McPricer(){}
+            virtual ~McPricer() {}
             virtual double value() const;
             virtual double errorEstimate() const;
           protected:

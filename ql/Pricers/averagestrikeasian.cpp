@@ -33,7 +33,6 @@
 
 #include "ql/Pricers/averagestrikeasian.hpp"
 #include "ql/MonteCarlo/mctypedefs.hpp"
-#include "ql/MonteCarlo/controlvariatedpathpricer.hpp"
 #include "ql/MonteCarlo/avgstrikeasianpathpricer.hpp"
 #include "ql/MonteCarlo/geometricasianpathpricer.hpp"
 #include "ql/Pricers/geometricasianoption.hpp"
@@ -42,10 +41,9 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using MonteCarlo::OneFactorMonteCarloOption;
+        using MonteCarlo::OneFactorMonteCarloControlVariateOption;
         using MonteCarlo::PathPricer;
         using MonteCarlo::GaussianPathGenerator;
-        using MonteCarlo::ControlVariatedPathPricer;
         using MonteCarlo::AverageStrikeAsianPathPricer;
         using MonteCarlo::GeometricAsianPathPricer;
 
@@ -53,7 +51,7 @@ namespace QuantLib {
           double underlying, Rate dividendYield, Rate riskFreeRate,
           const std::vector<Time>& times, double volatility,
           unsigned int samples, bool antitheticVariance, long seed)
-        : McPricer(samples, seed) {
+        : McControlVariatePricer(samples, seed) {
             QL_REQUIRE(times.size() >= 1,
                 "AverageStrikeAsian: you must have at least one time-step");
             //! Initialize the path generator
@@ -79,15 +77,11 @@ namespace QuantLib {
                 underlying, underlying, dividendYield, riskFreeRate, 
                 residualTime, volatility).value();
 
-            Handle<PathPricer> controlVariatedPricer(
-                new ControlVariatedPathPricer(spPricer,
-                    controlVariateSpPricer, controlVariatePrice));
-
             //! Initialize the one-dimensional Monte Carlo
-            montecarloPricer_ = Handle<OneFactorMonteCarloOption>(
-                new OneFactorMonteCarloOption(
-                pathGenerator, controlVariatedPricer,
-                Math::Statistics()));
+            montecarloPricer_ = Handle<OneFactorMonteCarloControlVariateOption>(
+                new OneFactorMonteCarloControlVariateOption(
+                pathGenerator, spPricer, controlVariateSpPricer, 
+                controlVariatePrice, Math::Statistics()));
         }
 
     }

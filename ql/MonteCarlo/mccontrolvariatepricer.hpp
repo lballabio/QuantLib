@@ -47,14 +47,15 @@ namespace QuantLib {
         */
         class McControlVariatePricer {
           public:
-            virtual ~McControlVariatePricer(){}
+            virtual ~McControlVariatePricer() {}
             virtual double value() const;
             virtual double errorEstimate() const;
           protected:
             McControlVariatePricer(long samples, long seed=0);
             mutable long samples_;
             long seed_;
-            mutable Handle<MonteCarlo::OneFactorMonteCarloControlVariateOption> montecarloPricer_;
+            mutable Handle<MonteCarlo::OneFactorMonteCarloControlVariateOption>
+                montecarloPricer_;
         };
 
 
