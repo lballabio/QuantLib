@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Math
 
 include_HEADERS = \
+	beta.hpp \
 	bicubicsplineinterpolation.hpp \
 	bilinearinterpolation.hpp \
 	chisquaredistribution.hpp \
@@ -40,6 +41,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libMath_la_SOURCES = \
+	beta.cpp \
 	chisquaredistribution.cpp \
 	discrepancystatistics.cpp \
 	errorfunction.cpp \
