@@ -229,14 +229,6 @@ SOURCE=.\old_pricers.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\ql\Instruments\oneassetoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\ql\Instruments\oneassetstrikedoption.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\operators.cpp
 # End Source File
 # Begin Source File

@@ -16,11 +16,11 @@
 */
 
 #include "americanoption.hpp"
+#include "utilities.hpp"
+
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
 
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
@@ -34,17 +34,17 @@ using namespace QuantLib;
 namespace {
 
     Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward,
-        DayCounter dc) {
+                                        DayCounter dc) {
         Date today = Date::todaysDate();
         return Handle<TermStructure>(new
             FlatForward(today, today, RelinkableHandle<Quote>(forward), dc));
     }
 
-    Handle<BlackVolTermStructure> makeFlatVolatility(
-        const Handle<Quote>& volatility, DayCounter dc) {
+    Handle<BlackVolTermStructure> makeFlatVolatility(const Handle<Quote>& vol,
+                                                     DayCounter dc) {
         Date today = Date::todaysDate();
         return Handle<BlackVolTermStructure>(new
-            BlackConstantVol(today, RelinkableHandle<Quote>(volatility), dc));
+            BlackConstantVol(today, RelinkableHandle<Quote>(vol), dc));
     }
 
     std::string payoffTypeToString(const Handle<Payoff>& payoff) {
@@ -156,42 +156,48 @@ namespace {
     }
 
     void vanillaOptionTestFailed(std::string greekName,
-               const Handle<StrikedTypePayoff>& payoff,
-               const Handle<Exercise>& exercise,
-               double s,
-               double q,
-               double r,
-               Date today,
-               double v,
-               double expected,
-               double calculated,
-               double tolerance = Null<double>()) {
-      CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-          + OptionTypeFormatter::toString(payoff->optionType()) +
-          " option with "
-          + payoffTypeToString(payoff) + ":\n"
-          "    underlying value: "
-          + DoubleFormatter::toString(s) + "\n"
-          "    strike:           "
-          + DoubleFormatter::toString(payoff->strike()) +"\n"
-          "    dividend yield:   "
-          + DoubleFormatter::toString(q) + "\n"
-          "    risk-free rate:   "
-          + DoubleFormatter::toString(r) + "\n"
-          "    reference date:   "
-          + DateFormatter::toString(today) + "\n"
-          "    maturity:         "
-          + DateFormatter::toString(exercise->lastDate()) + "\n"
-          "    volatility:       "
-          + DoubleFormatter::toString(v) + "\n\n"
-          "    expected   " + greekName + ": "
-          + DoubleFormatter::toString(expected) + "\n"
-          "    calculated " + greekName + ": "
-          + DoubleFormatter::toString(calculated) + "\n"
-          "    error:            "
-          + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
-          + (tolerance==Null<double>() ? std::string("") :
-          "    tolerance:        " + DoubleFormatter::toString(tolerance)));
+                                 const Handle<StrikedTypePayoff>& payoff,
+                                 const Handle<Exercise>& exercise,
+                                 double s,
+                                 double q,
+                                 double r,
+                                 Date today,
+                                 DayCounter dc,
+                                 double v,
+                                 double expected,
+                                 double calculated,
+                                 double tolerance = Null<double>()) {
+
+        Time t = dc.yearFraction(today, exercise->lastDate());
+
+        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
+            + OptionTypeFormatter::toString(payoff->optionType()) +
+            " option with "
+            + payoffTypeToString(payoff) + ":\n"
+            "    underlying value: "
+            + DoubleFormatter::toString(s) + "\n"
+            "    strike:           "
+            + DoubleFormatter::toString(payoff->strike()) +"\n"
+            "    dividend yield:   "
+            + DoubleFormatter::toString(q) + "\n"
+            "    risk-free rate:   "
+            + DoubleFormatter::toString(r) + "\n"
+            "    reference date:   "
+            + DateFormatter::toString(today) + "\n"
+            "    maturity:         "
+            + DateFormatter::toString(exercise->lastDate()) + "\n"
+            "    time to expiry:   "
+            + DoubleFormatter::toString(t) + "\n"
+            "    volatility:       "
+            + DoubleFormatter::toString(v) + "\n\n"
+            "    expected   " + greekName + ": "
+            + DoubleFormatter::toString(expected) + "\n"
+            "    calculated " + greekName + ": "
+            + DoubleFormatter::toString(calculated) + "\n"
+            "    error:            "
+            + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
+            + (tolerance==Null<double>() ? std::string("") :
+            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
     }
 
     struct VanillaOptionData {
@@ -304,7 +310,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         double calculated = option.NPV();
         if (QL_FABS(calculated-values[i].result) > values[i].tol) {
             vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
-                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].r, today, dc, values[i].v, values[i].result, calculated,
                 values[i].tol);
         }
     }
@@ -360,7 +366,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         double calculated = option.NPV();
         if (QL_FABS(calculated-values[i].result) > values[i].tol) {
             vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
-                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].r, today, dc, values[i].v, values[i].result, calculated,
                 values[i].tol);
         }
     }

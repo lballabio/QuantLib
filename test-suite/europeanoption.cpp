@@ -280,36 +280,42 @@ namespace {
                                  double q,
                                  double r,
                                  Date today,
+                                 DayCounter dc,
                                  double v,
                                  double expected,
                                  double calculated,
                                  double tolerance = Null<double>()) {
-      CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-          + OptionTypeFormatter::toString(payoff->optionType()) +
-          " option with "
-          + payoffTypeToString(payoff) + ":\n"
-          "    spot value: "
-          + DoubleFormatter::toString(s) + "\n"
-          "    strike:           "
-          + DoubleFormatter::toString(payoff->strike()) +"\n"
-          "    dividend yield:   "
-          + DoubleFormatter::toString(q) + "\n"
-          "    risk-free rate:   "
-          + DoubleFormatter::toString(r) + "\n"
-          "    reference date:   "
-          + DateFormatter::toString(today) + "\n"
-          "    maturity:         "
-          + DateFormatter::toString(exercise->lastDate()) + "\n"
-          "    volatility:       "
-          + DoubleFormatter::toString(v) + "\n\n"
-          "    expected   " + greekName + ": "
-          + DoubleFormatter::toString(expected) + "\n"
-          "    calculated " + greekName + ": "
-          + DoubleFormatter::toString(calculated) + "\n"
-          "    error:            "
-          + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
-          + (tolerance==Null<double>() ? std::string("") :
-          "    tolerance:        " + DoubleFormatter::toString(tolerance)));
+
+        Time t = dc.yearFraction(today, exercise->lastDate());
+
+        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
+            + OptionTypeFormatter::toString(payoff->optionType()) +
+            " option with "
+            + payoffTypeToString(payoff) + ":\n"
+            "    spot value: "
+            + DoubleFormatter::toString(s) + "\n"
+            "    strike:           "
+            + DoubleFormatter::toString(payoff->strike()) +"\n"
+            "    dividend yield:   "
+            + DoubleFormatter::toString(q) + "\n"
+            "    risk-free rate:   "
+            + DoubleFormatter::toString(r) + "\n"
+            "    reference date:   "
+            + DateFormatter::toString(today) + "\n"
+            "    maturity:         "
+            + DateFormatter::toString(exercise->lastDate()) + "\n"
+            "    time to expiry:   "
+            + DoubleFormatter::toString(t) + "\n"
+            "    volatility:       "
+            + DoubleFormatter::toString(v) + "\n\n"
+            "    expected   " + greekName + ": "
+            + DoubleFormatter::toString(expected) + "\n"
+            "    calculated " + greekName + ": "
+            + DoubleFormatter::toString(calculated) + "\n"
+            "    error:            "
+            + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
+            + (tolerance==Null<double>() ? std::string("") :
+            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
     }
 
     struct VanillaOptionData {
@@ -422,7 +428,7 @@ void EuropeanOptionTest::testValues() {
         double calculated = option.NPV();
         if (QL_FABS(calculated-values[i].result) > 1e-4) {
             vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
-                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].r, today, dc, values[i].v, values[i].result, calculated,
                 1e-4);
         }
     }
@@ -501,7 +507,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->delta();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("delta", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
     i++;
@@ -518,7 +524,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->delta();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("delta", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
     i++;
@@ -535,7 +541,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->elasticity();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("elasticity", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
 
@@ -553,7 +559,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->gamma();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("gamma", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
     i++;
@@ -570,7 +576,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->gamma();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("gamma", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
 
@@ -588,7 +594,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->vega();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("vega", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
 
@@ -606,7 +612,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->vega();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("vega", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
 
@@ -624,7 +630,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->theta();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("theta", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
 
@@ -642,7 +648,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->thetaPerDay();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("thetaPerDay", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
 
@@ -660,7 +666,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->rho();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("rho", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
 
@@ -678,7 +684,7 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->dividendRho();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("dividendRho", payoff, exercise, values[i].s, values[i].q,
-            values[i].r, today, values[i].v, values[i].result, calculated,
+            values[i].r, today, dc, values[i].v, values[i].result, calculated,
             1e-4);
 
 }
@@ -823,7 +829,7 @@ void EuropeanOptionTest::testGreeks() {
                                      tol   = tolerance [greek];
                               if (relativeError(expct,calcl,u) > tol) {
                                   vanillaOptionTestFailed(greek, payoff, exercise, u, q, r, today,
-                                      v, expct, calcl, tol);
+                                      dc, v, expct, calcl, tol);
                               }
                           }
                       }

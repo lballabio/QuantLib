@@ -165,24 +165,26 @@ namespace {
             throw Error("unknown averaging");
     }
 
-    void asianOptionTestFailed(
-        std::string greekName,
-        Average::Type averageType,
-        double runningProduct,
-        Size pastFixings,
-        std::vector<Date> fixingDates,
-        const Handle<StrikedTypePayoff>& payoff,
-        const Handle<Exercise>& exercise,
-        double s,
-        double q,
-        double r,
-        Date today,
-        double v,
-        double expected,
-        double calculated,
-        double tolerance = Null<double>()) {
+    void asianOptionTestFailed(std::string greekName,
+                               Average::Type averageType,
+                               double runningProduct,
+                               Size pastFixings,
+                               std::vector<Date> fixingDates,
+                               const Handle<StrikedTypePayoff>& payoff,
+                               const Handle<Exercise>& exercise,
+                               double s,
+                               double q,
+                               double r,
+                               Date today,
+                               DayCounter dc,
+                               double v,
+                               double expected,
+                               double calculated,
+                               double tolerance = Null<double>()) {
+
+        Time t = dc.yearFraction(today, exercise->lastDate());
+
         CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-            + OptionTypeFormatter::toString(payoff->optionType()) +
             " asian option with "
             + averageTypeToString(averageType) + " and "
             + payoffTypeToString(payoff) + ":\n"
@@ -204,6 +206,8 @@ namespace {
             + DateFormatter::toString(today) + "\n"
             "    maturity:         "
             + DateFormatter::toString(exercise->lastDate()) + "\n"
+            "    time to expiry:   "
+            + DoubleFormatter::toString(t) + "\n"
             "    volatility:       "
             + DoubleFormatter::toString(v) + "\n\n"
             "    expected   " + greekName + ": "
@@ -242,61 +246,70 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
         {Average::Geometric, 1.0, 0, 10, Option::Call, 100.0, 100.0, 0.03, 0.06, 1.0, 0.20, 5.3425606635, 1e-10}
     };
 
-    Date today = Date::todaysDate();
-    std::vector<Date> fixingDates(values[0].futureFixings);
-    Size dt = Size(values[0].t*360/values[0].futureFixings+0.5);
-    fixingDates[0]=today.plusDays(dt);
-    for (Size i=1; i<values[0].futureFixings; i++)
-        fixingDates[i]=fixingDates[i-1].plusDays(dt);
-
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
 
-    Handle<SimpleQuote> underlying(new SimpleQuote(values[0].s));
-
-    Handle<SimpleQuote> qRate(new SimpleQuote(values[0].q));
-    Handle<TermStructure> divCurve(new FlatForward(today,today,
-        RelinkableHandle<Quote>(qRate), dc));
-
-    Handle<SimpleQuote> rRate(new SimpleQuote(values[0].r));
-    Handle<TermStructure> rfCurve(new FlatForward(today,today,
-        RelinkableHandle<Quote>(rRate), dc));
-
-    Handle<SimpleQuote> volatility(new SimpleQuote(values[0].v));
-    Handle<BlackVolTermStructure> volCurve(new BlackConstantVol(today,
-        RelinkableHandle<Quote>(volatility), dc));
+    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
 
     Handle<BlackScholesStochasticProcess> stochProcess(new
         BlackScholesStochasticProcess(
-            RelinkableHandle<Quote>(underlying),
-            RelinkableHandle<TermStructure>(divCurve),
-            RelinkableHandle<TermStructure>(rfCurve),
-            RelinkableHandle<BlackVolTermStructure>(volCurve)));
-
-    Handle<StrikedTypePayoff> payoff(new
-        PlainVanillaPayoff(values[0].type, values[0].strike));
-
-    Date exDate = today.plusDays(360);
-    Handle<Exercise> exercise(new EuropeanExercise(exDate));
+            RelinkableHandle<Quote>(spot),
+            RelinkableHandle<TermStructure>(qTS),
+            RelinkableHandle<TermStructure>(rTS),
+            RelinkableHandle<BlackVolTermStructure>(volTS)));
 
     Handle<PricingEngine> engine(new AnalyticDiscreteAveragingAsianEngine);
 
-    DiscreteAveragingAsianOption pricer(
-        values[0].averageType,
-        values[0].runningProduct,
-        values[0].pastFixings,
-        fixingDates,
-        stochProcess,
-        payoff,
-        exercise,
-        engine);
+    for (Size i=0; i<LENGTH(values); i++) {
 
-    if (QL_FABS(pricer.NPV()-values[0].result) > values[0].tol)
-        CPPUNIT_FAIL(
-            "Batch 1, case 1:\n"
-            "    calculated value: "
-            + DoubleFormatter::toString(pricer.NPV(),10) + "\n"
-            "    expected:         "
-            + DoubleFormatter::toString(values[0].result,10));
+        Handle<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(values[i].type, values[i].strike));
+
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+
+        std::vector<Date> fixingDates(values[i].futureFixings);
+        Size dt = Size(values[i].t*360/values[i].futureFixings+0.5);
+        fixingDates[0]=today.plusDays(dt);
+        for (Size j=1; j<values[i].futureFixings; j++)
+            fixingDates[j]=fixingDates[j-1].plusDays(dt);
+
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        DiscreteAveragingAsianOption pricer(
+            values[i].averageType,
+            values[i].runningProduct,
+            values[i].pastFixings,
+            fixingDates,
+            stochProcess,
+            payoff,
+            exercise,
+            engine);
+
+        double calculated = pricer.NPV();
+        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
+            asianOptionTestFailed("value",
+                                  values[i].averageType,
+                                  values[i].runningProduct,
+                                  values[i].pastFixings,
+                                  fixingDates,
+                                  payoff, exercise,
+                                  values[i].s, values[i].q, values[i].r,
+                                  today, dc,
+                                  values[i].v,
+                                  values[i].result, calculated,
+                                  values[i].tol);
+        }
+    }
 }
 
 

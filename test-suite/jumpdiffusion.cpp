@@ -155,20 +155,20 @@ namespace {
         throw Error("exerciseTypeToString : unknown exercise type");
     }
 
-    void vanillaOptionTestFailed(std::string greekName,
-                                 const Handle<StrikedTypePayoff>& payoff,
-                                 const Handle<Exercise>& exercise,
-                                 double s,
-                                 double q,
-                                 double r,
-                                 Date today,
-                                 DayCounter dc,
-                                 double v,
-                                 double intensity,
-                                 double gamma,
-                                 double expected,
-                                 double calculated,
-                                 double tolerance = Null<double>()) {
+    void jumpOptionTestFailed(std::string greekName,
+                              const Handle<StrikedTypePayoff>& payoff,
+                              const Handle<Exercise>& exercise,
+                              double s,
+                              double q,
+                              double r,
+                              Date today,
+                              DayCounter dc,
+                              double v,
+                              double intensity,
+                              double gamma,
+                              double expected,
+                              double calculated,
+                              double tolerance = Null<double>()) {
 
         Time t = dc.yearFraction(today, exercise->lastDate());
 
@@ -465,7 +465,7 @@ void JumpDiffusionTest::testMerton76() {
 
         double calculated = option.NPV();
         if (QL_FABS(calculated-values[i].result) > values[i].tol) {
-            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
+            jumpOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
                 values[i].r, today, dc, values[i].v,
                 values[i].jumpIntensity, values[i].gamma,
                 values[i].result, calculated,
