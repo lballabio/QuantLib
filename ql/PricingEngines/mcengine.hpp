@@ -201,11 +201,6 @@ namespace QuantLib {
                                     arguments_.volTS, 
                                     arguments_.underlying));
 
-
-//            return Handle<MonteCarlo::PathGenerator<RandomNumbers::GaussianRandomGenerator> >(
-//                new MonteCarlo::PathGenerator<RandomNumbers::GaussianRandomGenerator>(mu,
-//                    volatility*volatility, residualTime, 1, seed_));
-
             return Handle<MonteCarlo::PathGenerator2<SG> >(
                 new MonteCarlo::PathGenerator2<SG>(bs, timeGrid_, sequenceGenerator_));
 
