@@ -186,15 +186,8 @@ void CompoundForwardTest::testConvertedRates() {
                         schedule,index,fixingDays,0.0,
                         liborHandle);
         DayCounter tsdc  = termStructure->dayCounter();
-        #ifdef QL_DISABLE_DEPRECATED
-        Rate expectedRate = termStructure->forwardRate(
-                                             swap.maturity(), swap.maturity(),
-                                             tsdc, SimpleThenCompounded,
-                                             Frequency(frequency));
-        #else
         Rate expectedRate = termStructure->compoundForward(swap.maturity(),
                                                            frequency);
-        #endif
         Rate estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
