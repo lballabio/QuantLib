@@ -37,6 +37,15 @@ namespace QuantLib {
     */
     class StochasticProcess : public Observer, public Observable {
       public:
+        //! discretization of a stochastic process over a given time interval
+        class discretization {
+          public:
+            virtual ~discretization() {}
+            virtual Real expectation(const StochasticProcess&,
+                                     Time t0, Real x0, Time dt) const = 0;
+            virtual Real variance(const StochasticProcess&,
+                                  Time t0, Real x0, Time dt) const = 0;
+        };
         virtual ~StochasticProcess() {}
         //! returns the initial value of the state variable
         virtual Real x0() const = 0;
@@ -46,24 +55,47 @@ namespace QuantLib {
             \f$ \sigma(t, x_t) \f$
         */
         virtual Real diffusion(Time t, Real x) const = 0;
-        //! returns the expectation of the process after a time interval
-        /*! returns \f$ E(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$.
-            By default, it returns the Euler approximation defined by
-            \f$ x_0 + \mu(t_0, x_0) \Delta t \f$.
+        /*! returns the expectation 
+            \f$ E(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$
+            of the process after a time interval \f$ \Delta t \f$ 
+            according to the given discretization. This method can be
+            overridden in derived classes which want to hard-code a 
+            particular discretization.
         */
         virtual Real expectation(Time t0, Real x0, Time dt) const;
-        //! returns the variance of the process after a time interval
-        /*! returns \f$ Var(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$.
-            By default, it returns the Euler approximation defined by
-            \f$ \sigma(t_0, x_0)^2 \Delta t \f$.
+        /*! returns the variance
+            \f$ V(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$
+            of the process after a time interval \f$ \Delta t \f$ 
+            according to the given discretization.This method can be
+            overridden in derived classes which want to hard-code a
+            particular discretization.
         */
         virtual Real variance(Time t0, Real x0, Time dt) const;
         //! \name Observer interface
         //@{
         void update();
         //@}
+      protected:
+        StochasticProcess();
+        StochasticProcess(const boost::shared_ptr<discretization>&);
+        boost::shared_ptr<discretization> discretization_;
     };
 
+
+    //! Euler discretization for stochastic processes
+    class EulerDiscretization : public StochasticProcess::discretization {
+      public:
+        /*! Returns an approximation of the expected value defined as
+            \f$ x_0 + \mu(t_0, x_0) \Delta t \f$.
+        */
+        Real expectation(const StochasticProcess&,
+                         Time t0, Real x0, Time dt) const;
+        /*! Returns an approximation of the variance defined as
+            \f$ \sigma(t_0, x_0)^2 \Delta t \f$.
+        */
+        Real variance(const StochasticProcess&,
+                      Time t0, Real x0, Time dt) const;
+    };
 
     //! Black-Scholes stochastic process
     /*! This class describes the stochastic process governed by
@@ -77,7 +109,10 @@ namespace QuantLib {
             const RelinkableHandle<Quote>& x0,
             const RelinkableHandle<TermStructure>& dividendTS,
             const RelinkableHandle<TermStructure>& riskFreeTS,
-            const RelinkableHandle<BlackVolTermStructure>& blackVolTS);
+            const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
+            const boost::shared_ptr<StochasticProcess::discretization>& d =
+                    boost::shared_ptr<StochasticProcess::discretization>(
+                                                    new EulerDiscretization));
         //! \name StochasticProcess interface
         //@{
         Real x0() const;
@@ -116,13 +151,17 @@ namespace QuantLib {
     //! Merton-76 jump-diffusion process
     class Merton76Process : public BlackScholesProcess {
       public:
-        Merton76Process(const RelinkableHandle<Quote>& stateVariable,
-                        const RelinkableHandle<TermStructure>& dividendTS,
-                        const RelinkableHandle<TermStructure>& riskFreeTS,
-                        const RelinkableHandle<BlackVolTermStructure>& volTS,
-                        const RelinkableHandle<Quote>& jumpInt,
-                        const RelinkableHandle<Quote>& logJMean,
-                        const RelinkableHandle<Quote>& logJVol);
+        Merton76Process(
+            const RelinkableHandle<Quote>& stateVariable,
+            const RelinkableHandle<TermStructure>& dividendTS,
+            const RelinkableHandle<TermStructure>& riskFreeTS,
+            const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
+            const RelinkableHandle<Quote>& jumpInt,
+            const RelinkableHandle<Quote>& logJMean,
+            const RelinkableHandle<Quote>& logJVol,
+            const boost::shared_ptr<StochasticProcess::discretization>& d =
+                    boost::shared_ptr<StochasticProcess::discretization>(
+                                                    new EulerDiscretization));
         //! \name StochasticProcess interface
         //@{
         Real drift(Time, Real) const { QL_FAIL("not implemented"); }
@@ -161,8 +200,8 @@ namespace QuantLib {
         Real x0() const;
         Real drift(Time t, Real x) const;
         Real diffusion(Time t, Real x) const;
-        Real expectation(Time t, Real x0, Time dt) const;
-        Real variance(Time t, Real x0, Time dt) const;
+        Real expectation(Time t0, Real x0, Time dt) const;
+        Real variance(Time t0, Real x0, Time dt) const;
         //@}
       private:
         Real x0_, speed_;
@@ -178,10 +217,11 @@ namespace QuantLib {
     */
     class SquareRootProcess : public StochasticProcess {
       public:
-        SquareRootProcess(Real b,
-                          Real a,
-                          Volatility sigma,
-                          Real x0 = 0.0);
+        SquareRootProcess(
+            Real b, Real a, Volatility sigma, Real x0 = 0.0,
+            const boost::shared_ptr<StochasticProcess::discretization>& d =
+                    boost::shared_ptr<StochasticProcess::discretization>(
+                                                    new EulerDiscretization));
         //! \name StochasticProcess interface
         //@{
         Real x0() const;

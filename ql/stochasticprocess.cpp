@@ -24,13 +24,20 @@
 
 namespace QuantLib {
 
+    // base class 
+
+    StochasticProcess::StochasticProcess() {}
+
+    StochasticProcess::StochasticProcess(
+             const boost::shared_ptr<StochasticProcess::discretization>& disc)
+    : discretization_(disc) {}
+
     Real StochasticProcess::expectation(Time t0, Real x0, Time dt) const {
-        return x0 + drift(t0, x0)*dt;
+        return discretization_->expectation(*this, t0, x0, dt);
     }
 
     Real StochasticProcess::variance(Time t0, Real x0, Time dt) const {
-        Real sigma = diffusion(t0, x0);
-        return sigma*sigma*dt;
+        return discretization_->variance(*this, t0, x0, dt);
     }
 
     void StochasticProcess::update() {
@@ -38,13 +45,31 @@ namespace QuantLib {
     }
 
 
+    // Euler discretization
+
+    Real EulerDiscretization::expectation(const StochasticProcess& process,
+                                          Time t0, Real x0, Time dt) const {
+        return x0 + process.drift(t0, x0)*dt;
+    }
+
+    Real EulerDiscretization::variance(const StochasticProcess& process,
+                                       Time t0, Real x0, Time dt) const {
+        Real sigma = process.diffusion(t0, x0);
+        return sigma*sigma*dt;
+    }
+
+
+    // Black-Scholes process
+
     BlackScholesProcess::BlackScholesProcess(
-                    const RelinkableHandle<Quote>& x0,
-                    const RelinkableHandle<TermStructure>& dividendTS,
-                    const RelinkableHandle<TermStructure>& riskFreeTS,
-                    const RelinkableHandle<BlackVolTermStructure>& blackVolTS)
-    : x0_(x0), riskFreeRate_(riskFreeTS), dividendYield_(dividendTS),
-      blackVolatility_(blackVolTS), updated_(false) {
+             const RelinkableHandle<Quote>& x0,
+             const RelinkableHandle<TermStructure>& dividendTS,
+             const RelinkableHandle<TermStructure>& riskFreeTS,
+             const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
+             const boost::shared_ptr<StochasticProcess::discretization>& disc)
+    : StochasticProcess(disc), x0_(x0), riskFreeRate_(riskFreeTS), 
+      dividendYield_(dividendTS), blackVolatility_(blackVolTS), 
+      updated_(false) {
         registerWith(x0_);
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
@@ -142,16 +167,19 @@ namespace QuantLib {
     }
 
 
+    // Merton 76 process
 
     Merton76Process::Merton76Process(
-                         const RelinkableHandle<Quote>& stateVariable,
-                         const RelinkableHandle<TermStructure>& dividendTS,
-                         const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const RelinkableHandle<BlackVolTermStructure>& volTS,
-                         const RelinkableHandle<Quote>& jumpInt,
-                         const RelinkableHandle<Quote>& logJMean,
-                         const RelinkableHandle<Quote>& logJVol)
-    : BlackScholesProcess(stateVariable, dividendTS, riskFreeTS, volTS),
+             const RelinkableHandle<Quote>& stateVariable,
+             const RelinkableHandle<TermStructure>& dividendTS,
+             const RelinkableHandle<TermStructure>& riskFreeTS,
+             const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
+             const RelinkableHandle<Quote>& jumpInt,
+             const RelinkableHandle<Quote>& logJMean,
+             const RelinkableHandle<Quote>& logJVol,
+             const boost::shared_ptr<StochasticProcess::discretization>& disc)
+    : BlackScholesProcess(stateVariable, dividendTS, riskFreeTS, 
+                          blackVolTS, disc),
       jumpIntensity_(jumpInt), logMeanJump_(logJMean),
       logJumpVolatility_(logJVol) {
         registerWith(jumpIntensity_);
@@ -173,6 +201,8 @@ namespace QuantLib {
     }
 
 
+    // Ornstein-Uhlenbeck process
+
     OrnsteinUhlenbeckProcess::OrnsteinUhlenbeckProcess(Real speed,
                                                        Volatility vol,
                                                        Real x0)
@@ -190,22 +220,24 @@ namespace QuantLib {
         return volatility_;
     }
 
-    Real OrnsteinUhlenbeckProcess::expectation(Time, Real x0, 
+    Real OrnsteinUhlenbeckProcess::expectation(Time, Real x0,
                                                Time dt) const {
         return x0*QL_EXP(-speed_*dt);
     }
 
     Real OrnsteinUhlenbeckProcess::variance(Time, Real, Time dt) const {
         return 0.5*volatility_*volatility_/speed_*
-               (1.0 - QL_EXP(-2.0*speed_*dt));
+            (1.0 - QL_EXP(-2.0*speed_*dt));
     }
 
 
-    SquareRootProcess::SquareRootProcess(Real b,
-                                         Real a,
-                                         Volatility sigma,
-                                         Real x0)
-    : x0_(x0), mean_(b), speed_(a), volatility_(sigma) {}
+    // square-root process
+
+    SquareRootProcess::SquareRootProcess(
+             Real b, Real a, Volatility sigma, Real x0,
+             const boost::shared_ptr<StochasticProcess::discretization>& disc)
+    : StochasticProcess(disc), x0_(x0), mean_(b), speed_(a), 
+      volatility_(sigma) {}
 
     Real SquareRootProcess::x0() const {
         return x0_;
