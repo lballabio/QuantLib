@@ -1,3 +1,4 @@
+verify drop in polinomils' files
 make unit tests out of examples
 cliquet move forward
 optimize PathPricer
