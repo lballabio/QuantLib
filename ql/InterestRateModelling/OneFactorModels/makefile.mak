@@ -17,7 +17,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 # Object files
 OBJS = \
        blackkarasinski.obj$(_D) \
-       coxingersollrossplus.obj$(_D) \
+       coxingersollross.obj$(_D) \
        hullwhite.obj$(_D)
 
 # Tools to be used

@@ -17,10 +17,9 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 # Object files
 OBJS = \
        calibrationhelper.obj$(_D) \
-       grid.obj$(_D) \
        model.obj$(_D) \
-       timefunction.obj$(_D) \
-       trinomialtree.obj$(_D)
+       onefactormodel.obj$(_D) \
+       timefunction.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
