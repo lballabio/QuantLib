@@ -47,16 +47,13 @@ namespace QuantLib {
             return conv_;
         }
         void update();
-        #ifndef QL_DISABLE_DEPRECATED
         Rate compoundForward(const Date& d1,
                              Integer f,
                              bool extrapolate = false) const;
         Rate compoundForward(Time t1,
                              Integer f,
                              bool extrapolate = false) const;
-        #endif
       protected:
-        #ifndef QL_DISABLE_DEPRECATED
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
@@ -65,7 +62,6 @@ namespace QuantLib {
             from the discount.
         */
         Rate zeroYieldImpl(Time) const;
-        #endif
         void calibrateNodes() const;
         boost::shared_ptr<CompoundForward> reversebootstrap(Integer) const;
         boost::shared_ptr<CompoundForward> forwardCurve(Integer) const;
@@ -78,7 +74,6 @@ namespace QuantLib {
 
     // inline definitions
 
-    #ifndef QL_DISABLE_DEPRECATED
     inline Rate ExtendedDiscountCurve::compoundForward(const Date& d,
                                                        Integer f,
                                                        bool extrapolate)
@@ -110,7 +105,6 @@ namespace QuantLib {
                    DecimalFormatter::toString(maxTime()) + ")");
         return compoundForwardImpl(t,f);
     }
-    #endif
 
     inline void ExtendedDiscountCurve::update() {
         forwardCurveMap_.clear();

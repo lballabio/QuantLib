@@ -39,10 +39,6 @@ namespace QuantLib {
         \bug swap rates are not reproduced exactly when using indexed
              coupons. Apparently, some assumption about the swap
              fixings is hard-coded into the bootstrapping algorithm.
-
-        \bug the class does not operate correctly when
-             QL_DISABLE_DEPRECATED is defined. Investigation is
-             required.
     */
     class CompoundForward : public ForwardRateStructure {
       public:
@@ -64,14 +60,12 @@ namespace QuantLib {
         const std::vector<Date>& dates() const;
         const std::vector<Rate>& forwards() const;
         boost::shared_ptr<ExtendedDiscountCurve> discountCurve() const;
-        #ifndef QL_DISABLE_DEPRECATED
         Rate compoundForward(const Date& d1,
                              Integer f,
                              bool extrapolate = false) const;
         Rate compoundForward(Time t1,
                              Integer f,
                              bool extrapolate = false) const;
-        #endif
       protected:
         // methods
         void calibrateNodes() const;
@@ -80,9 +74,7 @@ namespace QuantLib {
         DiscountFactor discountImpl(Time) const;
         Size referenceNode(Time) const;
         Rate forwardImpl(Time) const;
-        #ifndef QL_DISABLE_DEPRECATED
         Rate compoundForwardImpl(Time, Integer) const;
-        #endif
       private:
         // data members
         DayCounter dayCounter_;
@@ -119,7 +111,6 @@ namespace QuantLib {
         return forwards_;
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
     inline Rate CompoundForward::compoundForward(const Date& d,
                                                  Integer f,
                                                  bool extrapolate) const {
@@ -149,7 +140,6 @@ namespace QuantLib {
                    DecimalFormatter::toString(maxTime()) + ")");
         return compoundForwardImpl(t,f);
     }
-    #endif
 
 }
 

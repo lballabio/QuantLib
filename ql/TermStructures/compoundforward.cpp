@@ -182,7 +182,6 @@ namespace QuantLib {
         QL_DUMMY_RETURN(Rate());
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
     Rate CompoundForward::compoundForwardImpl(Time t, Integer f) const {
         if (f == compounding_)
             return forwardImpl(t);
@@ -190,7 +189,6 @@ namespace QuantLib {
             bootstrap();
         return discountCurve()->compoundForward(t,f,true);
     }
-    #endif
 
     boost::shared_ptr<ExtendedDiscountCurve>
     CompoundForward::discountCurve() const {

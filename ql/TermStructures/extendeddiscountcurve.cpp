@@ -108,7 +108,6 @@ namespace QuantLib {
                                             dayCounter()));
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
     Rate ExtendedDiscountCurve::compoundForwardImpl(Time t,
                                                     Integer f) const {
         if (f == 0) {
@@ -119,13 +118,7 @@ namespace QuantLib {
                 return (std::exp(zy*t)-1.0)/t;
             return (std::exp(zy*(1.0/f))-1.0)*f;
         }
-        #ifdef QL_DISABLE_DEPRECATED
-        return forwardCurve(f)->forwardRate(t, t,
-                                            SimpleThenCompounded,
-                                            Frequency(f), true);
-        #else
         return forwardCurve(f)->compoundForward(t,f);
-        #endif
     }
 
     Rate ExtendedDiscountCurve::zeroYieldImpl(Time t) const {
@@ -139,7 +132,6 @@ namespace QuantLib {
             return Rate(-std::log(df)/t);
         }
     }
-    #endif
 
     boost::shared_ptr<CompoundForward>
     ExtendedDiscountCurve::forwardCurve(Integer compounding) const {
