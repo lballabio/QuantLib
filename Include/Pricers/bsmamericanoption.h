@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/03/01 13:57:36  marmar
+    theTimeSteps changed in timeSteps_
+
     Revision 1.6  2001/02/13 10:02:17  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -55,17 +58,20 @@ namespace QuantLib {
         class BSMAmericanOption : public BSMNumericalOption {
           public:
             // constructor
-            BSMAmericanOption(Type type, double underlying, double strike, Rate dividendYield,
-              Rate riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
-            : BSMNumericalOption(type,underlying,strike,dividendYield,riskFreeRate,residualTime,volatility,
-              gridPoints), theTimeSteps(timeSteps) {}
+            BSMAmericanOption(Type type, double underlying, double strike, 
+                Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+                double volatility, int timeSteps, int gridPoints)
+            : BSMNumericalOption(type, underlying, strike, dividendYield, 
+                riskFreeRate, residualTime, volatility, gridPoints), 
+                timeSteps_(timeSteps) {}
             // accessors
             double value() const;
-            Handle<BSMOption> clone() const{    // This method must be implemented to calculate implied volatility
+            // This method must be implemented to imply volatilities
+            Handle<BSMOption> clone() const{    
                 return Handle<BSMOption>(new BSMAmericanOption(*this));
             }
           private:
-            int theTimeSteps;
+            int timeSteps_;
         };
 
     }
