@@ -94,7 +94,7 @@ namespace QuantLib {
         boost::shared_ptr<Lattice> lattice(
             new BlackScholesLattice(tree, r, maturity, timeSteps_));
 
-        DiscretizedVanillaOption option(lattice, arguments_);
+        DiscretizedVanillaOption option(arguments_);
 
         option.initialize(lattice, maturity);
         option.rollback(0.0);

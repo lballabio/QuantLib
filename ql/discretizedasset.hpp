@@ -34,7 +34,8 @@ namespace QuantLib {
         #ifndef QL_DISABLE_DEPRECATED
         /*! \deprecated use the constructor with no arguments */
         DiscretizedAsset(const boost::shared_ptr<NumericalMethod>& method)
-        : method_(method), latestPreAdjustment_(QL_MAX_REAL),
+        : method_(method),
+          latestPreAdjustment_(QL_MAX_REAL),
           latestPostAdjustment_(QL_MAX_REAL) {}
         #endif
 
@@ -140,25 +141,31 @@ namespace QuantLib {
     //! Useful discretized discount bond asset
     class DiscretizedDiscountBond : public DiscretizedAsset {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor with no arguments */
         DiscretizedDiscountBond(
                              const boost::shared_ptr<NumericalMethod>& method)
         : DiscretizedAsset(method) {}
+        #endif
+        DiscretizedDiscountBond() {}
         void reset(Size size) {
             values_ = Array(size, 1.0);
         }
     };
 
 
-    //! Discretized option on another asset
-    /*! \pre The underlying asset must be initialized */
+    //! Discretized option on a given asset
+    /*! \warning it is advised that derived classes take care of
+                 creating and initializing themselves an instance of
+                 the underlying.
+    */
     class DiscretizedOption : public DiscretizedAsset {
       public:
         DiscretizedOption(
                       const boost::shared_ptr<DiscretizedAsset>& underlying,
                       Exercise::Type exerciseType,
                       const std::vector<Time>& exerciseTimes)
-        : DiscretizedAsset(underlying->method()),
-          underlying_(underlying), exerciseType_(exerciseType),
+        : underlying_(underlying), exerciseType_(exerciseType),
           exerciseTimes_(exerciseTimes) {}
         void reset(Size size);
         void addTimesTo(std::list<Time>& times) const;
@@ -215,6 +222,9 @@ namespace QuantLib {
 
 
     inline void DiscretizedOption::reset(Size size) {
+        QL_REQUIRE(method() == underlying_->method(),
+                   "option and underlying were initialized on "
+                   "different methods");
         values_ = Array(size, 0.0);
         adjustValues();
     }

@@ -53,7 +53,7 @@ namespace QuantLib {
             lattice = lattice_;
         }
 
-        DiscretizedCapFloor capfloor(lattice, arguments_);
+        DiscretizedCapFloor capfloor(arguments_);
 
         capfloor.initialize(lattice, arguments_.endTimes.back());
         capfloor.rollback(arguments_.startTimes.front());

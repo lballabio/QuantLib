@@ -25,7 +25,7 @@ namespace QuantLib {
             if (isOnTime(arguments_.startTimes[i])) {
                 Time end = arguments_.endTimes[i];
                 Time tenor = arguments_.accrualTimes[i];
-                DiscretizedDiscountBond bond(method());
+                DiscretizedDiscountBond bond;
                 bond.initialize(method(), end);
                 bond.rollback(time_);
 

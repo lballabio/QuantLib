@@ -30,9 +30,15 @@ namespace QuantLib {
 
     class DiscretizedSwap : public DiscretizedAsset {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor with a single argument */
         DiscretizedSwap(const boost::shared_ptr<NumericalMethod>& method,
-                        const SimpleSwap::arguments& params)
-        : DiscretizedAsset(method), arguments_(params) {}
+                        const SimpleSwap::arguments& args)
+        : DiscretizedAsset(method), arguments_(args) {}
+        #endif
+
+        DiscretizedSwap(const SimpleSwap::arguments& args)
+        : arguments_(args) {}
 
         void reset(Size size) {
             values_ = Array(size, 0.0);
@@ -67,11 +73,25 @@ namespace QuantLib {
 
     class DiscretizedSwaption : public DiscretizedOption {
       public:
-        DiscretizedSwaption(const boost::shared_ptr<DiscretizedSwap>& swap,
-                            const Swaption::arguments& params)
-        : DiscretizedOption(swap,
-                            params.exercise->type(),
-                            params.stoppingTimes) {}
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor with a single argument */
+        DiscretizedSwaption(const boost::shared_ptr<DiscretizedSwap>&,
+                            const Swaption::arguments& args)
+        : DiscretizedOption(boost::shared_ptr<DiscretizedAsset>(
+                                                   new DiscretizedSwap(args)),
+                            args.exercise->type(),
+                            args.stoppingTimes),
+          arguments_(args) {}
+        #endif
+        DiscretizedSwaption(const Swaption::arguments& args)
+        : DiscretizedOption(boost::shared_ptr<DiscretizedAsset>(
+                                                   new DiscretizedSwap(args)),
+                            args.exercise->type(),
+                            args.stoppingTimes),
+          arguments_(args) {}
+        void reset(Size size);
+      private:
+        Swaption::arguments arguments_;
     };
 
 }

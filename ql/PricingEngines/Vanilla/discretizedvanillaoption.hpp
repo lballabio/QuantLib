@@ -32,10 +32,16 @@ namespace QuantLib {
 
     class DiscretizedVanillaOption : public DiscretizedAsset {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor with a single argument */
         DiscretizedVanillaOption(
                              const boost::shared_ptr<NumericalMethod>& method,
-                             const VanillaOption::arguments& arguments)
-        : DiscretizedAsset(method), arguments_(arguments) {}
+                             const VanillaOption::arguments& args)
+        : DiscretizedAsset(method), arguments_(args) {}
+        #endif
+
+        DiscretizedVanillaOption(const VanillaOption::arguments& args)
+        : arguments_(args) {}
 
         void reset(Size size);
 

@@ -24,7 +24,7 @@ namespace QuantLib {
         for (Size i=0; i<arguments_.floatingResetTimes.size(); i++) {
             Time t = arguments_.floatingResetTimes[i];
             if (t >= 0.0 && isOnTime(t)) {
-                DiscretizedDiscountBond bond(method());
+                DiscretizedDiscountBond bond;
                 bond.initialize(method(), arguments_.floatingPayTimes[i]);
                 bond.rollback(time_);
 
@@ -51,6 +51,14 @@ namespace QuantLib {
                     values_ += fixedCoupon;
             }
         }
+    }
+
+
+    void DiscretizedSwaption::reset(Size size) {
+        Time lastFixedPay = arguments_.fixedPayTimes.back();
+        Time lastFloatPay = arguments_.floatingPayTimes.back();
+        underlying_->initialize(method(),QL_MAX(lastFixedPay,lastFloatPay));
+        DiscretizedOption::reset(size);
     }
 
 }
