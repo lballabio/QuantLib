@@ -26,6 +26,10 @@
 
     $Source$
     $Log$
+    Revision 1.4  2001/03/21 11:31:55  marmar
+    Main loop tranfered from method value to method calculate.
+    Methods vega and rho belong now to class BSMOption
+
     Revision 1.3  2001/03/21 10:48:08  marmar
     valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
     are no longer methods of BSMNumericalOption but separate
@@ -62,32 +66,29 @@ namespace QuantLib {
             timeSteps_(timeSteps), euroPrices_(gridPoints_){}
 
 
-        double FiniteDifferenceEuropean::value() const {
-            if (!hasBeenCalculated_) {
-                setGridLimits();
-                initializeGrid();
-                initializeInitialCondition();
-                initializeOperator();
+        void FiniteDifferenceEuropean::calculate() const {
+            setGridLimits();
+            initializeGrid();
+            initializeInitialCondition();
+            initializeOperator();
 
-                FiniteDifferences::StandardFiniteDifferenceModel
-                                    model(finiteDifferenceOperator_);
+            FiniteDifferences::StandardFiniteDifferenceModel
+                                model(finiteDifferenceOperator_);
 
-                euroPrices_ = initialPrices_;
+            euroPrices_ = initialPrices_;
 
-                model.rollback(euroPrices_, residualTime_, 0, timeSteps_);
+            model.rollback(euroPrices_, residualTime_, 0, timeSteps_);
 
-                value_ = valueAtCenter(euroPrices_);
-                delta_ = firstDerivativeAtCenter(euroPrices_, grid_);
-                gamma_ = secondDerivativeAtCenter(euroPrices_, grid_);
+            value_ = valueAtCenter(euroPrices_);
+            delta_ = firstDerivativeAtCenter(euroPrices_, grid_);
+            gamma_ = secondDerivativeAtCenter(euroPrices_, grid_);
 
-                double dt = residualTime_/timeSteps_;
-                model.rollback(euroPrices_, 0.0, -dt, 1);
-                double valueMinus = valueAtCenter(euroPrices_);
-                theta_ = (value_ - valueMinus) / dt;
+            double dt = residualTime_/timeSteps_;
+            model.rollback(euroPrices_, 0.0, -dt, 1);
+            double valueMinus = valueAtCenter(euroPrices_);
+            theta_ = (value_ - valueMinus) / dt;
 
-                hasBeenCalculated_ = true;
-            }
-            return value_;
+            hasBeenCalculated_ = true;
         }
 
     }

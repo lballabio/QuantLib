@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.34  2001/03/21 11:31:55  marmar
+    Main loop tranfered from method value to method calculate.
+    Methods vega and rho belong now to class BSMOption
+
     Revision 1.33  2001/03/21 10:48:08  marmar
     valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
     are no longer methods of BSMNumericalOption but separate
@@ -103,64 +107,41 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
         
-        const double BSMNumericalOption::dVolMultiplier_ = 0.0001; 
-        const double BSMNumericalOption::dRMultiplier_ = 0.0001; 
-        
         BSMNumericalOption::BSMNumericalOption(BSMNumericalOption::Type type,
             double underlying, double strike, Rate dividendYield, 
             Rate riskFreeRate, Time residualTime, double volatility, 
             int gridPoints)
         : BSMOption(type, underlying, strike, dividendYield, riskFreeRate,
-            residualTime, volatility), rhoComputed_(false),
-            vegaComputed_(false),
+            residualTime, volatility),
             gridPoints_(safeGridPoints(gridPoints, residualTime)),
             grid_(gridPoints_), initialPrices_(gridPoints_){
                 hasBeenCalculated_ = false;
         }
         
+        double BSMNumericalOption::value() const {
+            if (!hasBeenCalculated_)  
+                calculate();
+            return value_;
+        }
+        
         double BSMNumericalOption::delta() const {
             if (!hasBeenCalculated_)  
-                value();
+                calculate();
             return delta_;
         }
         
         double BSMNumericalOption::gamma() const {
             if(!hasBeenCalculated_) 
-                value();
+                calculate();
             return gamma_;
         }
         
         double BSMNumericalOption::theta() const {
             if(!hasBeenCalculated_) 
-                value();
+                calculate();
             return theta_;
         }
 
-        double BSMNumericalOption::vega() const {
-        
-            if(!vegaComputed_){
-                Handle<BSMOption> brandNewFD = clone();
-                double volMinus = volatility_ * (1.0 - dVolMultiplier_);
-                brandNewFD -> setVolatility(volMinus);        
-                vega_ = (value() - brandNewFD -> value()) / 
-                    (volatility_ * dVolMultiplier_);          
-                vegaComputed_ = true;
-            }
-            return vega_;
-        }
-        
-        double BSMNumericalOption::rho() const {
-        
-            if(!rhoComputed_){
-                Handle<BSMOption> brandNewFD = clone();
-                Rate rMinus=riskFreeRate_ * (1.0 - dRMultiplier_);        
-                brandNewFD -> setRiskFreeRate(rMinus);
-                rho_=(value() - brandNewFD -> value()) / 
-                    (riskFreeRate_ * dRMultiplier_);
-                rhoComputed_  = true;
-            }
-            return rho_;
-        }
          
         void BSMNumericalOption::setGridLimits() const {
             // correction for small volatilities

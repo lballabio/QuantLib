@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.23  2001/03/21 11:31:55  marmar
+    Main loop tranfered from method value to method calculate.
+    Methods vega and rho belong now to class BSMOption
+
     Revision 1.22  2001/02/19 12:19:29  marmar
     Added trailing _ to protected and private members
 
@@ -66,10 +70,14 @@ namespace QuantLib {
 
     namespace Pricers {
 
+        const double BSMOption::dVolMultiplier_ = 0.0001; 
+        const double BSMOption::dRMultiplier_ = 0.0001; 
+        
         BSMOption::BSMOption(Type type, double underlying, double strike,
             Rate dividendYield, Rate riskFreeRate, Time residualTime,
             double volatility): type_(type), underlying_(underlying), 
             strike_(strike), dividendYield_(dividendYield), 
+            rhoComputed_(false), vegaComputed_(false), 
             residualTime_(residualTime), hasBeenCalculated_(false) {
             QL_REQUIRE(strike > 0.0,
                 "BSMOption::BSMOption : strike must be positive");
@@ -99,6 +107,33 @@ namespace QuantLib {
             riskFreeRate_ = newRiskFreeRate;
             hasBeenCalculated_ = false;
         }
+
+        double BSMOption::vega() const {
+        
+            if(!vegaComputed_){
+                Handle<BSMOption> brandNewFD = clone();
+                double volMinus = volatility_ * (1.0 - dVolMultiplier_);
+                brandNewFD -> setVolatility(volMinus);        
+                vega_ = (value() - brandNewFD -> value()) / 
+                    (volatility_ * dVolMultiplier_);          
+                vegaComputed_ = true;
+            }
+            return vega_;
+        }
+        
+        double BSMOption::rho() const {
+        
+            if(!rhoComputed_){
+                Handle<BSMOption> brandNewFD = clone();
+                Rate rMinus=riskFreeRate_ * (1.0 - dRMultiplier_);        
+                brandNewFD -> setRiskFreeRate(rMinus);
+                rho_=(value() - brandNewFD -> value()) / 
+                    (riskFreeRate_ * dRMultiplier_);
+                rhoComputed_  = true;
+            }
+            return rho_;
+        }
+
 
         double BSMOption::impliedVolatility(double targetValue, double accuracy, 
                     int maxEvaluations, double minVol, double maxVol) const {

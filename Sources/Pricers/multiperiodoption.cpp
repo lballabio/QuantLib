@@ -27,6 +27,10 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/03/21 11:31:55  marmar
+    Main loop tranfered from method value to method calculate.
+    Methods vega and rho belong now to class BSMOption
+
     Revision 1.2  2001/03/21 10:48:08  marmar
     valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
     are no longer methods of BSMNumericalOption but separate
@@ -77,72 +81,68 @@ namespace QuantLib {
 
         }
 
-        double MultiPeriodOption::value() const {
+        void MultiPeriodOption::calculate() const {
 
-            if (!hasBeenCalculated_) {
+            Time beginDate, endDate;
+            setGridLimits();
+            initializeGrid();
+            initializeInitialCondition();
+            initializeOperator();
+            prices_ = initialPrices_;
+            controlPrices_ = initialPrices_;
 
-                Time beginDate, endDate;
-                setGridLimits();
-                initializeGrid();
-                initializeInitialCondition();
-                initializeOperator();
-                prices_ = initialPrices_;
-                controlPrices_ = initialPrices_;
+            int j = dateNumber_ - 1;
+            do{
+                initializeStepCondition();
+                initializeModel();
 
-                int j = dateNumber_ - 1;
-                do{
-                    initializeStepCondition();
-                    initializeModel();
-
-                    if (j == dateNumber_ - 1)
-                        beginDate = residualTime_;
-                    else
-                        beginDate = dates_[j+1];
-
-                    if (j >= 0)
-                        endDate = dates_[j];
-                    else
-                        endDate = 0;
-
-                    model_ -> rollback(prices_, beginDate, endDate,
-                                      timeStepPerPeriod_, stepCondition_);
-
-                    model_ -> rollback(controlPrices_, beginDate, endDate,
-                                      timeStepPerPeriod_);
-
-                    if (j >= 0)
-                        executeIntermediateStep(j);
-                } while (--j >= -1);
-
-                // Option price and greeks are computed
-                value_ = valueAtCenter(prices_) -
-                         valueAtCenter(controlPrices_) + analitic_ -> value();
-
-                delta_ = firstDerivativeAtCenter(prices_, grid_) -
-                         firstDerivativeAtCenter(controlPrices_, grid_) +
-                         analitic_ -> delta();
-
-                gamma_ = secondDerivativeAtCenter(prices_, grid_) -
-                         secondDerivativeAtCenter(controlPrices_, grid_) +
-                         analitic_ -> gamma();
-
-                // calculating theta_
-                double dt;
-                if (dateNumber_ > 0)                
-                    dt = residualTime_/(timeStepPerPeriod_ * dateNumber_ * 100);
+                if (j == dateNumber_ - 1)
+                    beginDate = residualTime_;
                 else
-                    dt = residualTime_/(timeStepPerPeriod_ * 100);
+                    beginDate = dates_[j+1];
 
-                model_ -> rollback(controlPrices_, 0, -dt, 1);
-                model_ -> rollback(prices_,        0, -dt, 1, stepCondition_);
+                if (j >= 0)
+                    endDate = dates_[j];
+                else
+                    endDate = 0;
 
-                double valueMinus = valueAtCenter(prices_) -
-                                    valueAtCenter(controlPrices_);
+                model_ -> rollback(prices_, beginDate, endDate,
+                                  timeStepPerPeriod_, stepCondition_);
 
-                theta_ = (value_ - valueMinus)/dt + analitic_ -> theta();
-                hasBeenCalculated_ = true;
-            }
-            return value_;
+                model_ -> rollback(controlPrices_, beginDate, endDate,
+                                  timeStepPerPeriod_);
+
+                if (j >= 0)
+                    executeIntermediateStep(j);
+            } while (--j >= -1);
+
+            // Option price and greeks are computed
+            value_ = valueAtCenter(prices_) -
+                     valueAtCenter(controlPrices_) + analitic_ -> value();
+
+            delta_ = firstDerivativeAtCenter(prices_, grid_) -
+                     firstDerivativeAtCenter(controlPrices_, grid_) +
+                     analitic_ -> delta();
+
+            gamma_ = secondDerivativeAtCenter(prices_, grid_) -
+                     secondDerivativeAtCenter(controlPrices_, grid_) +
+                     analitic_ -> gamma();
+
+            // calculating theta_
+            double dt;
+            if (dateNumber_ > 0)                
+                dt = residualTime_/(timeStepPerPeriod_ * dateNumber_ * 100);
+            else
+                dt = residualTime_/(timeStepPerPeriod_ * 100);
+
+            model_ -> rollback(controlPrices_, 0, -dt, 1);
+            model_ -> rollback(prices_,        0, -dt, 1, stepCondition_);
+
+            double valueMinus = valueAtCenter(prices_) -
+                                valueAtCenter(controlPrices_);
+
+            theta_ = (value_ - valueMinus)/dt + analitic_ -> theta();
+            hasBeenCalculated_ = true;
         }
 
 
