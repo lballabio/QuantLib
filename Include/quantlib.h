@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.14  2001/01/15 17:06:20  lballabio
+	Added MappingIterator class
+
 	Revision 1.13  2001/01/15 13:40:32  lballabio
 	Added new files
-
+	
 	Revision 1.12  2001/01/11 11:51:58  lballabio
 	Added QLUTL alias for QuantLib::Utilities::
 	
@@ -206,6 +209,9 @@
 #include "handle.h"
 #include "null.h"
 #include "dataformatters.h"
+#include "steppingiterator.h"
+#include "filteringiterator.h"
+#include "mappingiterator.h"
 
 
 /*** shortcuts for the full namespaces 
