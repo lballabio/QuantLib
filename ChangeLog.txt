@@ -105,13 +105,13 @@
 
 2002-01-11 14:25  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* dev_tools/version_number.txt (1.12): version number up to 0.3.0a4
+	* dev_tools/version_number.txt (1.12): version number up to 0.3.0a5
 
 2002-01-11 12:21  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
 	* QuantLib.nsi (1.58), configure.in (1.65), Docs/quantlib.doxy
 	(1.43), dev_tools/version_number.txt (1.11), ql/qldefines.hpp
-	(1.28): version number up to 0.3.0a4
+	(1.28): version number up to 0.3.0a5
 
 2002-01-11 10:39  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
