@@ -69,7 +69,10 @@ namespace QuantLib {
                 // this is passed explicitly for precision
                 parameters->accrualTimes.push_back(coupon->accrualPeriod());
                 // this is passed explicitly for precision
-                parameters->forwards.push_back(coupon->fixing());
+                if (parameters->endTimes.back() >= 0.0)  // but only if really needed 
+                    parameters->forwards.push_back(coupon->fixing());
+                else
+                    parameters->forwards.push_back(Null<Rate>());
                 parameters->nominals.push_back(coupon->nominal());
                 if (caps == capRates_.end()) {
                     parameters->capRates.push_back(capRates_.back());

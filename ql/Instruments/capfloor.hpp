@@ -48,8 +48,13 @@ namespace QuantLib {
                 const Handle<OptionPricingEngine>& engine)
             : Option(engine), type_(type), floatingLeg_(floatingLeg),
               capRates_(capRates), floorRates_(floorRates),
-              termStructure_(termStructure) {}
-            virtual ~VanillaCapFloor() {}
+              termStructure_(termStructure) {
+                std::vector<Handle<CashFlow> >::const_iterator i;
+                for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
+                    registerWith(*i);
+                registerWith(termStructure);
+                registerWith(engine);
+            }
           protected:
             void performCalculations() const;
             void setupEngine() const;

@@ -41,29 +41,52 @@ namespace QuantLib {
                 Time start = parameters_.startTimes[i],
                      end = parameters_.endTimes[i],
                      accrualTime = parameters_.accrualTimes[i];
-                double nominal = parameters_.nominals[i];
-                DiscountFactor q = model_->termStructure()->discount(end);
-                Rate forward = parameters_.forwards[i];
-                if ((type == Instruments::VanillaCapFloor::Cap) ||
-                    (type == Instruments::VanillaCapFloor::Collar)) {
-                    value += q * accrualTime * nominal *
-                        BlackModel::formula(
-                            parameters_.capRates[i], forward, 
-                            model_->volatility()*QL_SQRT(start), 1);
-
-                }
-                if (type == Instruments::VanillaCapFloor::Floor) {
-                    value += q * accrualTime * nominal *
-                        BlackModel::formula(
-                            parameters_.floorRates[i], forward, 
-                            model_->volatility()*QL_SQRT(start), -1);
-                }
-                // a collar is long a cap and short a floor
-                if (type == Instruments::VanillaCapFloor::Collar) {
-                    value -= q * accrualTime * nominal *
-                        BlackModel::formula(
-                            parameters_.floorRates[i], forward, 
-                            model_->volatility()*QL_SQRT(start), -1);
+                if (end > 0.0) {    // discard expired caplets
+                    double nominal = parameters_.nominals[i];
+                    DiscountFactor q = model_->termStructure()->discount(end);
+                    Rate forward = parameters_.forwards[i];
+                    // try and factorize the code below
+                    if ((type == Instruments::VanillaCapFloor::Cap) ||
+                        (type == Instruments::VanillaCapFloor::Collar)) {
+                        if (start <= 0.0) {
+                            // the rate was fixed
+                            value += q * accrualTime * nominal * 
+                                QL_MAX(forward-parameters_.capRates[i],0.0);
+                        } else {
+                            // forecast
+                            value += q * accrualTime * nominal *
+                                BlackModel::formula(
+                                    parameters_.capRates[i], forward, 
+                                    model_->volatility()*QL_SQRT(start), 1);
+                        }
+                    }
+                    if (type == Instruments::VanillaCapFloor::Floor) {
+                        if (start <= 0.0) {
+                            // the rate was fixed
+                            value += q * accrualTime * nominal * 
+                                QL_MAX(parameters_.floorRates[i]-forward,0.0);
+                        } else {
+                            // forecast
+                            value += q * accrualTime * nominal *
+                                BlackModel::formula(
+                                    parameters_.floorRates[i], forward, 
+                                    model_->volatility()*QL_SQRT(start), -1);
+                        }
+                    }
+                    // a collar is long a cap and short a floor
+                    if (type == Instruments::VanillaCapFloor::Collar) {
+                        if (start <= 0.0) {
+                            // the rate was fixed
+                            value -= q * accrualTime * nominal * 
+                                QL_MAX(parameters_.floorRates[i]-forward,0.0);
+                        } else {
+                            // forecast
+                            value -= q * accrualTime * nominal *
+                                BlackModel::formula(
+                                    parameters_.floorRates[i], forward, 
+                                    model_->volatility()*QL_SQRT(start), -1);
+                        }
+                    }
                 }
             }
             results_.value = value;
