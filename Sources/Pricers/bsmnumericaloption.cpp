@@ -136,7 +136,7 @@ namespace QuantLib {
 					theInitialPrices[j] = QL_FABS(theStrike-theGrid[j]);
 				break;
 			  default:
-				throw IllegalArgumentError("BSMEuropeanOption: invalid option type");  
+				throw IllegalArgumentError("BSMNumericalOption: invalid option type");  
 			}
 		}
 		
