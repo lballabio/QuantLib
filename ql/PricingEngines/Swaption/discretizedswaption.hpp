@@ -68,12 +68,7 @@ namespace QuantLib {
 
     class DiscretizedSwaption : public DiscretizedOption {
       public:
-        DiscretizedSwaption(const Swaption::arguments& args)
-        : DiscretizedOption(boost::shared_ptr<DiscretizedAsset>(
-                                                   new DiscretizedSwap(args)),
-                            args.exercise->type(),
-                            args.stoppingTimes),
-          arguments_(args) {}
+        DiscretizedSwaption(const Swaption::arguments& args);
         void reset(Size size);
       private:
         Swaption::arguments arguments_;

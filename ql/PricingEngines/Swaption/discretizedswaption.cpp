@@ -68,6 +68,45 @@ namespace QuantLib {
     }
 
 
+    namespace {
+
+        bool withinPreviousWeek(Time t1, Time t2) {
+            static const Time dt = 1.0/52;
+            return t1-dt <= t2 && t2 <= t1;
+        }
+
+        bool withinNextWeek(Time t1, Time t2) {
+            static const Time dt = 1.0/52;
+            return t1 <= t2 && t2 <= t1+dt;
+        }
+
+    }
+
+    DiscretizedSwaption::DiscretizedSwaption(const Swaption::arguments& args)
+    : DiscretizedOption(boost::shared_ptr<DiscretizedAsset>(),
+                        args.exercise->type(),
+                        args.stoppingTimes),
+      arguments_(args) {
+
+        // Date adjustments can get time vectors out of synch.
+        // Here, we try and collapse similar dates.
+        for (Size i=0; i<arguments_.stoppingTimes.size(); i++) {
+            Time exercise = arguments_.stoppingTimes[i];
+            for (Size j=0; j<arguments_.fixedPayTimes.size(); j++) {
+                if (withinNextWeek(exercise, arguments_.fixedPayTimes[j]))
+                    arguments_.fixedPayTimes[j] = exercise;
+            }
+            for (Size k=0; k<arguments_.floatingResetTimes.size(); k++) {
+                if (withinPreviousWeek(exercise,
+                                       arguments_.floatingResetTimes[k]))
+                    arguments_.floatingResetTimes[k] = exercise;
+            }
+        }
+
+        underlying_ = boost::shared_ptr<DiscretizedAsset>(
+                                             new DiscretizedSwap(arguments_));
+    }
+
     void DiscretizedSwaption::reset(Size size) {
         Time lastFixedPay = arguments_.fixedPayTimes.back();
         Time lastFloatPay = arguments_.floatingPayTimes.back();
