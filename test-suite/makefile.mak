@@ -79,7 +79,7 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 test-suite$(_D).exe: $(QL_TESTS)
     $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BOOST_LIB_DIR) \
     -etest-suite$(_D).exe $(QL_TESTS) \
-    QuantLib$(_D).lib
+    QuantLib$(_D).lib libboost_unit_test_framework-bcb-s$(_bc5D)-1_31.lib
 
 # Clean up
 clean::
