@@ -32,78 +32,12 @@
 
 using namespace QuantLib;
 
-namespace {
-
-    void vanillaOptionTestFailed(std::string greekName,
-                                 const Handle<StrikedTypePayoff>& payoff,
-                                 const Handle<Exercise>& exercise,
-                                 double s,
-                                 double q,
-                                 double r,
-                                 Date today,
-                                 DayCounter dc,
-                                 double v,
-                                 double expected,
-                                 double calculated,
-                                 double error, 
-                                 double tolerance) {
-
-        Time t = dc.yearFraction(today, exercise->lastDate());
-
-        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-            + OptionTypeFormatter::toString(payoff->optionType()) +
-            " option with "
-            + payoffTypeToString(payoff) + " payoff:\n"
-            "    underlying value: "
-            + DoubleFormatter::toString(s) + "\n"
-            "    strike:           "
-            + DoubleFormatter::toString(payoff->strike()) +"\n"
-            "    dividend yield:   "
-            + DoubleFormatter::toString(q) + "\n"
-            "    risk-free rate:   "
-            + DoubleFormatter::toString(r) + "\n"
-            "    reference date:   "
-            + DateFormatter::toString(today) + "\n"
-            "    maturity:         "
-            + DateFormatter::toString(exercise->lastDate()) + "\n"
-            "    time to expiry:   "
-            + DoubleFormatter::toString(t) + "\n"
-            "    volatility:       "
-            + DoubleFormatter::toString(v) + "\n\n"
-            "    expected   " + greekName + ": "
-            + DoubleFormatter::toString(expected) + "\n"
-            "    calculated " + greekName + ": "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    error:            "
-            + DoubleFormatter::toString(error) + "\n"
-            + (tolerance==Null<double>() ? std::string("") :
-            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
-    }
-
-    struct DigitalOptionData {
-        Option::Type type;
-        double strike;
-        double extraParameter;
-        double s;      // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        double v;      // volatility
-        double result; // expected result
-        double tol;    // tolerance
-    };
-
-}
-
 void DigitalOptionTest::testCashOrNothingEuropeanValues() {
 
-    DigitalOptionData values[] = {
-        //        type, strike, payoff,  spot,            q,            r,    t,  vol,     value, tol
-        // unknow source
-        { Option::Call, 110.00, 100.00, 100.0,     0.029559,     0.086178, 1.00, 0.20, 35.283179, 1e-4 },
-        { Option::Call, 110.00, 100.00, 100.0, QL_LOG(1.03), QL_LOG(1.09), 1.00, 0.20, 35.283179, 1e-4 },
+    VanillaOptionData values[] = {
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 88
-        { Option::Put,   80.00,  10.00, 100.0,         0.06,         0.06, 0.75, 0.35,    2.6710, 1e-4 }
+        //        type, strike,  spot,    q,    r,    t,  vol,  value, tol
+        { Option::Put,   80.00, 100.0, 0.06, 0.06, 0.75, 0.35, 2.6710, 1e-4 }
     };
 
     DayCounter dc = Actual360();
@@ -121,7 +55,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
     for (Size i=0; i<LENGTH(values); i++) {
 
         Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
-            values[i].type, values[i].strike, values[i].extraParameter));
+            values[i].type, values[i].strike, 10.0));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
@@ -153,9 +87,9 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
 void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
 
     // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 90
-    DigitalOptionData values[] = {
-        //        type, strike, unused,  spot,    q,    r,    t,  vol,   value, tol
-        { Option::Put,   65.00,   0.00,  70.0, 0.05, 0.07, 0.50, 0.27, 20.2069, 1e-4 }
+    VanillaOptionData values[] = {
+        //        type, strike, spot,    q,    r,    t,  vol,   value, tol
+        { Option::Put,   65.00, 70.0, 0.05, 0.07, 0.50, 0.27, 20.2069, 1e-4 }
     };
 
     DayCounter dc = Actual360();
@@ -205,9 +139,9 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
 void DigitalOptionTest::testGapEuropeanValues() {
 
     // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 88
-    DigitalOptionData values[] = {
-        //        type, strike, strikePayoff,  spot,    q,    r,    t,  vol,   value, tol
-        { Option::Call,  50.00,        57.00,  50.0, 0.00, 0.09, 0.50, 0.20, -0.0053, 1e-4 }
+    VanillaOptionData values[] = {
+        //        type, strike, spot,    q,    r,    t,  vol,   value, tol
+        { Option::Call,  50.00, 50.0, 0.00, 0.09, 0.50, 0.20, -0.0053, 1e-4 }
     };
 
     DayCounter dc = Actual360();
@@ -225,7 +159,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
     for (Size i=0; i<LENGTH(values); i++) {
 
         Handle<StrikedTypePayoff> payoff(new GapPayoff(
-            values[i].type, values[i].strike, values[i].extraParameter));
+            values[i].type, values[i].strike, 57.00));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
@@ -256,49 +190,21 @@ void DigitalOptionTest::testGapEuropeanValues() {
 
 void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
 
-    DigitalOptionData values[] = {
-        //        type, strike, payoff,   spot,    q,    r,   t,  vol,   value, tol
+    VanillaOptionData values[] = {
+        //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 1,2
-        { Option::Put,  100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.7264, 1e-4 },
-        { Option::Call, 100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.6553, 1e-4 },
+        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.7264, 1e-4 },
+        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.6553, 1e-4 },
 
         // the following cases are not taken from a reference paper or book
         // in the money options (guaranteed immediate payoff)
-        { Option::Call, 100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000, 1e-16},
-        { Option::Put,  100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000, 1e-16},
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000, 1e-16},
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000, 1e-16},
         // non null dividend (cross-tested with MC simulation)
-        { Option::Put,  100.00,  15.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 1e-4 },
-        { Option::Call, 100.00,  15.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 1e-4 },
-        { Option::Call, 100.00,  15.00, 105.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16},
-        { Option::Put,  100.00,  15.00,  95.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16},
-
-        // unknown source - null dividend
-        { Option::Call, 100.50, 100.00, 100.00, 0.00, 0.01, 1.0, 0.11, 96.5042, 1e-4 },
-        { Option::Put,   99.50, 100.00, 100.00, 0.00, 0.01, 1.0, 0.11, 96.1715, 1e-4 },
-
-        //        type, strike, payoff,   spot,    q,    r,   t,  vol,   value, tol
-        // unknown source - non-null dividend right values
-        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11, 94.7499, 1e-4 },
-        { Option::Call, 120.00, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11,  5.4164, 1e-4 },
-        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.20, 97.3228, 1e-4 },
-        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.10, 1.0, 0.11, 97.8101, 1e-4 },
-        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.01, 2.0, 0.11, 95.7033, 1e-4 },
-        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11, 97.5959, 1e-4 },
-        { Option::Put,   80.00, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11,  7.8776, 1e-4 },
-        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.20, 98.5366, 1e-4 },
-        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.10, 1.0, 0.11, 93.5238, 1e-4 },
-        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 2.0, 0.11, 98.5831, 1e-4 }
-        // unknown source - non-null dividend wrong values
-//        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11, 94.8825, 1e-4 },
-//        { Option::Call, 120.00, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11,  5.5676, 1e-4 },
-//        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.20, 97.3989, 1e-4 },
-//        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.10, 1.0, 0.11, 97.9405, 1e-4 },
-//        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.01, 2.0, 0.11, 95.8913, 1e-4 },
-//        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11, 97.7331, 1e-4 },
-//        { Option::Put,   80.00, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11,  8.1172, 1e-4 },
-//        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.20, 98.6140, 1e-4 },
-//        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.10, 1.0, 0.11, 93.6491, 1e-4 },
-//        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 2.0, 0.11, 98.7776, 1e-4 }
+        { Option::Put,  100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 1e-4 },
+        { Option::Call, 100.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 1e-4 },
+        { Option::Call, 100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16},
+        { Option::Put,  100.00,  95.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16}
     };
 
     DayCounter dc = Actual360();
@@ -316,7 +222,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
     for (Size i=0; i<LENGTH(values); i++) {
 
         Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
-            values[i].type, values[i].strike, values[i].extraParameter));
+            values[i].type, values[i].strike, 15.00));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
@@ -348,19 +254,19 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
 
 void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
 
-    DigitalOptionData values[] = {
-        //        type, strike, payoff,   spot,    q,    r,   t,  vol,   value, tol
+    VanillaOptionData values[] = {
+        //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 3,4
-        { Option::Put,  100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20, 64.8426, 1e-04 }, // Haug value is wrong here, Haug VBA code is right
-        { Option::Call, 100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 77.7017, 1e-04 }, // Haug value is wrong here, Haug VBA code is right
+        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 64.8426, 1e-04 }, // Haug value is wrong here, Haug VBA code is right
+        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 77.7017, 1e-04 }, // Haug value is wrong here, Haug VBA code is right
         // data from Haug VBA code results
-//        { Option::Put,  100.00,  15.00, 105.00, 0.01, 0.10, 0.5, 0.20, 65.7811, 1e-04 },
-//        { Option::Call, 100.00,  15.00,  95.00, 0.01, 0.10, 0.5, 0.20, 76.8858, 1e-04 },
+        { Option::Put,  100.00, 105.00, 0.01, 0.10, 0.5, 0.20, 65.7811, 1e-04 },
+        { Option::Call, 100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 76.8858, 1e-04 },
         // in the money options  (guaranteed immediate payoff = spot)
-        { Option::Call, 100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-16 },
-        { Option::Put,  100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-16 },
-        { Option::Call, 100.00,  15.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000, 1e-16 },
-        { Option::Put,  100.00,  15.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000, 1e-16 }
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-16 },
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-16 },
+        { Option::Call, 100.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000, 1e-16 },
+        { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000, 1e-16 }
     };
 
     DayCounter dc = Actual360();
@@ -410,14 +316,14 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
 
 void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
 
-    DigitalOptionData values[] = {
-        //        type, strike, payoff,   spot,    q,    r,   t,  vol,   value, tol
+    VanillaOptionData values[] = {
+        //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 1,2
-        { Option::Put,  100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.3604, 1e-4 },
-        { Option::Call, 100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.2223, 1e-4 },
+        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.3604, 1e-4 },
+        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.2223, 1e-4 },
         // in the money options (guaranteed discounted payoff)
-        { Option::Call, 100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000*QL_EXP(-0.05), 1e-16 },
-        { Option::Put,  100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000*QL_EXP(-0.05), 1e-16 }
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000*QL_EXP(-0.05), 1e-16 },
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000*QL_EXP(-0.05), 1e-16 }
     };
 
     DayCounter dc = Actual360();
@@ -435,7 +341,7 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
     for (Size i=0; i<LENGTH(values); i++) {
 
         Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
-            values[i].type, values[i].strike, values[i].extraParameter));
+            values[i].type, values[i].strike, 15.0));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> amExercise(new AmericanExercise(today, exDate, true));
@@ -467,20 +373,20 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
 
 void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
 
-    DigitalOptionData values[] = {
-        //        type, strike, payoff,   spot,    q,    r,   t,  vol,   value, tol
+    VanillaOptionData values[] = {
+        //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 3,4
-        { Option::Put,  100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20, 64.8426, 1e-04 },
-        { Option::Call, 100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 77.7017, 1e-04 },
+        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 64.8426, 1e-04 },
+        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 77.7017, 1e-04 },
         // data from Haug VBA code results
-        { Option::Put,  100.00,  15.00, 105.00, 0.01, 0.10, 0.5, 0.20, 65.5291, 1e-04 },
-        { Option::Call, 100.00,  15.00,  95.00, 0.01, 0.10, 0.5, 0.20, 76.5951, 1e-04 },
+        { Option::Put,  100.00, 105.00, 0.01, 0.10, 0.5, 0.20, 65.5291, 1e-04 },
+        { Option::Call, 100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 76.5951, 1e-04 },
         // in the money options (guaranteed discounted payoff = forward * riskFreeDiscount
         //                                                    = spot * dividendDiscount)
-        { Option::Call, 100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-16 },
-        { Option::Put,  100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-16 },
-        { Option::Call, 100.00,  15.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000*QL_EXP(-0.005), 1e-16 },
-        { Option::Put,  100.00,  15.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000*QL_EXP(-0.005), 1e-16 }
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-16 },
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-16 },
+        { Option::Call, 100.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000*QL_EXP(-0.005), 1e-16 },
+        { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000*QL_EXP(-0.005), 1e-16 }
     };
 
     DayCounter dc = Actual360();
@@ -697,12 +603,12 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 
 void DigitalOptionTest::testMCCashAtHit() {
 
-    DigitalOptionData values[] = {
-        //        type, strike, payoff,   spot,    q,    r,   t,  vol,   value, tol
-        { Option::Put,  100.00,  15.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 5e-3 },
-        { Option::Call, 100.00,  15.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 5e-3 }
-//        { Option::Call, 100.00,  15.00, 105.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16},
-//        { Option::Put,  100.00,  15.00,  95.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16}
+    VanillaOptionData values[] = {
+        //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
+        { Option::Put,  100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 5e-3 },
+        { Option::Call, 100.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 5e-3 }
+//        { Option::Call, 100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16},
+//        { Option::Put,  100.00,  95.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16}
     };
 
     DayCounter dc = Actual360();
@@ -724,7 +630,7 @@ void DigitalOptionTest::testMCCashAtHit() {
     for (Size i=0; i<LENGTH(values); i++) {
 
         Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
-            values[i].type, values[i].strike, values[i].extraParameter));
+            values[i].type, values[i].strike, 15.0));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
