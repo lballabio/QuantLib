@@ -1,0 +1,698 @@
+
+/*
+ Copyright (C) 2004 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it under the
+ terms of the QuantLib license.  You should have received a copy of the
+ license along with this program; if not, please email quantlib-dev@lists.sf.net
+ The license is also available online at http://quantlib.org/html/license.html
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \file europe.hpp
+    \brief European currencies
+
+    Data from http://fx.sauder.ubc.ca/currency_table.html
+    and http://www.thefinancials.com/vortex/CurrencyFormats.html
+*/
+
+#ifndef quantlib_european_currencies_hpp
+#define quantlib_european_currencies_hpp
+
+#include <ql/currency.hpp>
+
+namespace QuantLib {
+
+    //! Bulgarian lev
+    /*! The ISO three-letter code is BGL; the numeric code is 100.
+        It is divided in 100 stotinki.
+
+        ingroup currencies
+    */
+    class BGLCurrency : public Currency {
+      public:
+        BGLCurrency()
+        : Currency("Bulgarian lev",
+                   "BGL",
+                   100,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Belarussian ruble
+    /*! The ISO three-letter code is BYR; the numeric code is 974.
+        It has no subdivisions.
+
+        ingroup currencies
+    */
+    class BYRCurrency : public Currency {
+      public:
+        BYRCurrency()
+        : Currency("Belarussian ruble",
+                   "BYR",
+                   974,
+                   "BR",
+                   "",
+                   1,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Swiss franc
+    /*! The ISO three-letter code is CHF; the numeric code is 756.
+        It is divided into 100 cents.
+
+        \ingroup currencies
+    */
+    class CHFCurrency : public Currency {
+      public:
+        CHFCurrency()
+        : Currency("Swiss franc",
+                   "CHF",
+                   756,
+                   "SwF",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Cyprus pound
+    /*! The ISO three-letter code is CYP; the numeric code is 196.
+        It is divided in 100 cents.
+
+        ingroup currencies
+    */
+    class CYPCurrency : public Currency {
+      public:
+        CYPCurrency()
+        : Currency("Cyprus pound",
+                   "CYP",
+                   196,
+                   "\xA3" "C",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Czech koruna
+    /*! The ISO three-letter code is CZK; the numeric code is 203.
+        It is divided in 100 haleru.
+
+        ingroup currencies
+    */
+    class CZKCurrency : public Currency {
+      public:
+        CZKCurrency()
+        : Currency("Czech koruna",
+                   "CZK",
+                   203,
+                   "Kc",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Danish krone
+    /*! The ISO three-letter code is DKK; the numeric code is 208.
+        It is divided in 100 øre.
+
+        ingroup currencies
+    */
+    class DKKCurrency : public Currency {
+      public:
+        DKKCurrency()
+        : Currency("Danish krone",
+                   "DKK",
+                   208,
+                   "Dkr",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Estonian kroon
+    /*! The ISO three-letter code is EEK; the numeric code is 233.
+        It is divided in 100 senti.
+
+        ingroup currencies
+    */
+    class EEKCurrency : public Currency {
+      public:
+        EEKCurrency()
+        : Currency("Estonian kroon",
+                   "EEK",
+                   233,
+                   "KR",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! European Euro
+    /*! The ISO three-letter code is EUR; the numeric code is 978.
+        It is divided into 100 cents.
+
+        \ingroup currencies
+    */
+    class EURCurrency : public Currency {
+      public:
+        EURCurrency()
+        : Currency("European Euro",
+                   "EUR",
+                   978,
+                   "",
+                   "",
+                   100,
+                   ClosestRounding(2),
+                   Currency())
+        {}
+    };
+
+    //! British pound sterling
+    /*! The ISO three-letter code is GBP; the numeric code is 826.
+        It is divided into 100 pence.
+
+        \ingroup currencies
+    */
+    class GBPCurrency : public Currency {
+      public:
+        GBPCurrency()
+        : Currency("British pound sterling",
+                   "GBP",
+                   826,
+                   "\xA3",
+                   "p",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Hungarian forint
+    /*! The ISO three-letter code is HUF; the numeric code is 348.
+        It has no subdivisions.
+
+        ingroup currencies
+    */
+    class HUFCurrency : public Currency {
+      public:
+        HUFCurrency()
+        : Currency("Hungarian forint",
+                   "HUF",
+                   348,
+                   "Ft",
+                   "",
+                   1,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Iceland krona
+    /*! The ISO three-letter code is ISK; the numeric code is 352.
+        It is divided in 100 aurar.
+
+        ingroup currencies
+    */
+    class ISKCurrency : public Currency {
+      public:
+        ISKCurrency()
+        : Currency("Iceland krona",
+                   "ISK",
+                   352,
+                   "IKr",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Lithuanian litas
+    /*! The ISO three-letter code is LTL; the numeric code is 440.
+        It is divided in 100 centu.
+
+        ingroup currencies
+    */
+    class LTLCurrency : public Currency {
+      public:
+        LTLCurrency()
+        : Currency("Lithuanian litas",
+                   "LTL",
+                   440,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Latvian lat
+    /*! The ISO three-letter code is LVL; the numeric code is 428.
+        It is divided in 100 santims.
+
+        ingroup currencies
+    */
+    class LVLCurrency : public Currency {
+      public:
+        LVLCurrency()
+        : Currency("Latvian lat",
+                   "LVL",
+                   428,
+                   "Ls",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Maltese lira
+    /*! The ISO three-letter code is MTL; the numeric code is 470.
+        It is divided in 100 cents.
+
+        ingroup currencies
+    */
+    class MTLCurrency : public Currency {
+      public:
+        MTLCurrency()
+        : Currency("Maltese lira",
+                   "MTL",
+                   470,
+                   "Lm",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Norwegian krone
+    /*! The ISO three-letter code is NOK; the numeric code is 578.
+        It is divided in 100 øre.
+
+        ingroup currencies
+    */
+    class NOKCurrency : public Currency {
+      public:
+        NOKCurrency()
+        : Currency("Norwegian krone",
+                   "NOK",
+                   578,
+                   "NKr",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Polish zloty
+    /*! The ISO three-letter code is PLN; the numeric code is 985.
+        It is divided in 100 groszy.
+
+        ingroup currencies
+    */
+    class PLNCurrency : public Currency {
+      public:
+        PLNCurrency()
+        : Currency("Polish zloty",
+                   "PLN",
+                   985,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Romanian leu
+    /*! The ISO three-letter code is ROL; the numeric code is 642.
+        It is divided in 100 bani.
+
+        ingroup currencies
+    */
+    class ROLCurrency : public Currency {
+      public:
+        ROLCurrency()
+        : Currency("Romanian leu",
+                   "ROL",
+                   642,
+                   "L",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Swedish krona
+    /*! The ISO three-letter code is SEK; the numeric code is 752.
+        It is divided in 100 öre.
+
+        ingroup currencies
+    */
+    class SEKCurrency : public Currency {
+      public:
+        SEKCurrency()
+        : Currency("Swedish krona",
+                   "SEK",
+                   752,
+                   "kr",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Slovenian tolar
+    /*! The ISO three-letter code is SIT; the numeric code is 705.
+        It is divided in 100 stotinov.
+
+        ingroup currencies
+    */
+    class SITCurrency : public Currency {
+      public:
+        SITCurrency()
+        : Currency("Slovenian tolar",
+                   "SIT",
+                   705,
+                   "SlT",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Slovak koruna
+    /*! The ISO three-letter code is SKK; the numeric code is 703.
+        It is divided in 100 halierov.
+
+        ingroup currencies
+    */
+    class SKKCurrency : public Currency {
+      public:
+        SKKCurrency()
+        : Currency("Slovak koruna",
+                   "SKK",
+                   703,
+                   "Sk",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! Turkish lira
+    /*! The ISO three-letter code is TRL; the numeric code is 792.
+        It is divided in 100 kurus.
+
+        ingroup currencies
+    */
+    class TRLCurrency : public Currency {
+      public:
+        TRLCurrency()
+        : Currency("Turkish lira",
+                   "TRL",
+                   792,
+                   "TL",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+
+    // currencies obsoleted by Euro
+
+    //! Austrian shilling
+    /*! The ISO three-letter code was ATS; the numeric code was 40.
+        It was divided in 100 groschen.
+
+        ingroup currencies
+    */
+    class ATSCurrency : public Currency {
+      public:
+        ATSCurrency()
+        : Currency("Austrian shilling",
+                   "ATS",
+                   40,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! Belgian franc
+    /*! The ISO three-letter code is BEF; the numeric code is 56.
+        It has no subdivisions.
+
+        ingroup currencies
+    */
+    class BEFCurrency : public Currency {
+      public:
+        BEFCurrency()
+        : Currency("Belgian franc",
+                   "BEF",
+                   56,
+                   "",
+                   "",
+                   1,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! Deutsche mark
+    /*! The ISO three-letter code was DEM; the numeric code was 276.
+        It was divided into 100 pfennig.
+
+        \ingroup currencies
+    */
+    class DEMCurrency : public Currency {
+      public:
+        DEMCurrency()
+        : Currency("Deutsche mark",
+                   "DEM",
+                   276,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! Spanish peseta
+    /*! The ISO three-letter code is ESP; the numeric code is 724.
+        It is divided in 100 centimos.
+
+        ingroup currencies
+    */
+    class ESPCurrency : public Currency {
+      public:
+        ESPCurrency()
+        : Currency("Spanish peseta",
+                   "ESP",
+                   724,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! Finnish markka
+    /*! The ISO three-letter code is FIM; the numeric code is 246.
+        It is divided in 100 penniä.
+
+        ingroup currencies
+    */
+    class FIMCurrency : public Currency {
+      public:
+        FIMCurrency()
+        : Currency("Finnish markka",
+                   "FIM",
+                   246,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! French franc
+    /*! The ISO three-letter code is FRF; the numeric code is 250.
+        It is divided in 100 centimes.
+
+        ingroup currencies
+    */
+    class FRFCurrency : public Currency {
+      public:
+        FRFCurrency()
+        : Currency("French franc",
+                   "FRF",
+                   250,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! Greek drachma
+    /*! The ISO three-letter code is GRD; the numeric code is 300.
+        It is divided in 100 lepta.
+
+        ingroup currencies
+    */
+    class GRDCurrency : public Currency {
+      public:
+        GRDCurrency()
+        : Currency("Greek drachma",
+                   "GRD",
+                   300,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! Irish punt
+    /*! The ISO three-letter code is IEP; the numeric code is 372.
+        It is divided in 100 pence.
+
+        ingroup currencies
+    */
+    class IEPCurrency : public Currency {
+      public:
+        IEPCurrency()
+        : Currency("Irish punt",
+                   "IEP",
+                   372,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! Italian lira
+    /*! The ISO three-letter code was ITL; the numeric code was 380.
+        It had no subdivisions.
+
+        \ingroup currencies
+    */
+    class ITLCurrency : public Currency {
+      public:
+        ITLCurrency()
+        : Currency("Italian lira",
+                   "ITL",
+                   380,
+                   "L",
+                   "",
+                   1,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! Luxembourg franc
+    /*! The ISO three-letter code is LUF; the numeric code is 442.
+        It is divided in 100 centimes.
+
+        ingroup currencies
+    */
+    class LUFCurrency : public Currency {
+      public:
+        LUFCurrency()
+        : Currency("Luxembourg franc",
+                   "LUF",
+                   442,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! Dutch guilder
+    /*! The ISO three-letter code is NLG; the numeric code is 528.
+        It is divided in 100 cents.
+
+        ingroup currencies
+    */
+    class NLGCurrency : public Currency {
+      public:
+        NLGCurrency()
+        : Currency("Dutch guilder",
+                   "NLG",
+                   528,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+    //! Portuguese escudo
+    /*! The ISO three-letter code is PTE; the numeric code is 620.
+        It is divided in 100 centavos.
+
+        ingroup currencies
+    */
+    class PTECurrency : public Currency {
+      public:
+        PTECurrency()
+        : Currency("Portuguese escudo",
+                   "PTE",
+                   620,
+                   "",
+                   "",
+                   100,
+                   Rounding(),
+                   EURCurrency())
+        {}
+    };
+
+}
+
+
+#endif

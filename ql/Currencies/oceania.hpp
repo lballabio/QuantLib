@@ -15,12 +15,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file audcurrency.hpp
-    \brief Australian dollar
+/*! \file oceania.hpp
+    \brief Oceanian currencies
+
+    Data from http://fx.sauder.ubc.ca/currency_table.html
+    and http://www.thefinancials.com/vortex/CurrencyFormats.html
 */
 
-#ifndef quantlib_aud_currency_hpp
-#define quantlib_aud_currency_hpp
+#ifndef quantlib_oceanian_currencies_hpp
+#define quantlib_oceanian_currencies_hpp
 
 #include <ql/currency.hpp>
 
@@ -35,14 +38,34 @@ namespace QuantLib {
     class AUDCurrency : public Currency {
       public:
         AUDCurrency()
-        : Currency("Australian dollar", // name
-                   "AUD",               // ISO 4217 code
-                   36,                  // ISO 4217 numeric code
-                   "A$",                // symbol
-                   "",                  // fraction symbol
-                   100,                 // fractions per unit
-                   Rounding(),          // preferred rounding
-                   Currency())          // triangulation currency
+        : Currency("Australian dollar",
+                   "AUD",
+                   36,
+                   "A$",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
+        {}
+    };
+
+    //! New Zealand dollar
+    /*! The ISO three-letter code is NZD; the numeric code is 554.
+        It is divided in 100 cents.
+
+        ingroup currencies
+    */
+    class NZDCurrency : public Currency {
+      public:
+        NZDCurrency()
+        : Currency("New Zealand dollar",
+                   "NZD",
+                   554,
+                   "NZ$",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
         {}
     };
 

@@ -15,34 +15,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cadcurrency.hpp
-    \brief Canadian dollar
+/*! \file africa.hpp
+    \brief African currencies
+
+    Data from http://fx.sauder.ubc.ca/currency_table.html
+    and http://www.thefinancials.com/vortex/CurrencyFormats.html
 */
 
-#ifndef quantlib_cad_currency_hpp
-#define quantlib_cad_currency_hpp
+#ifndef quantlib_african_currencies_hpp
+#define quantlib_african_currencies_hpp
 
 #include <ql/currency.hpp>
 
 namespace QuantLib {
 
-    //! Canadian dollar
-    /*! The ISO three-letter code is CAD; the numeric code is 124.
+    //! South-African rand
+    /*! The ISO three-letter code is ZAR; the numeric code is 710.
         It is divided into 100 cents.
 
         \ingroup currencies
     */
-    class CADCurrency : public Currency {
+    class ZARCurrency : public Currency {
       public:
-        CADCurrency()
-        : Currency("Canadian dollar", // name
-                   "CAD",             // ISO 4217 code
-                   124,               // ISO 4217 numeric code
-                   "Can$",            // symbol
-                   "",                // fraction symbol
-                   100,               // fractions per unit
-                   Rounding(),        // preferred rounding
-                   Currency())        // triangulation currency
+        ZARCurrency()
+        : Currency("South-African rand",
+                   "ZAR",
+                   710,
+                   "R",
+                   "",
+                   100,
+                   Rounding(),
+                   Currency())
         {}
     };
 

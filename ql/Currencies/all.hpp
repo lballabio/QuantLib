@@ -20,16 +20,11 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/Currencies/audcurrency.hpp>
-#include <ql/Currencies/cadcurrency.hpp>
-#include <ql/Currencies/chfcurrency.hpp>
-#include <ql/Currencies/demcurrency.hpp>
-#include <ql/Currencies/eurcurrency.hpp>
-#include <ql/Currencies/gbpcurrency.hpp>
-#include <ql/Currencies/itlcurrency.hpp>
-#include <ql/Currencies/jpycurrency.hpp>
-#include <ql/Currencies/usdcurrency.hpp>
-#include <ql/Currencies/zarcurrency.hpp>
+#include <ql/Currencies/africa.hpp>
+#include <ql/Currencies/america.hpp>
+#include <ql/Currencies/asia.hpp>
+#include <ql/Currencies/europe.hpp>
+#include <ql/Currencies/oceania.hpp>
 
 
 #endif
