@@ -23,67 +23,13 @@
 */
 
 /*! \file piecewiseflatforward.cpp
-
-    \fullpath
-    Sources/TermStructures/%piecewiseflatforward.cpp
     \brief piecewise flat forward term structure
 
+    \fullpath
+    ql/TermStructures/%piecewiseflatforward.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:08:42  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.19  2001/08/31 15:23:48  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.18  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.17  2001/08/08 11:07:50  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.16  2001/08/07 11:25:56  sigmud
-// copyright header maintenance
-//
-// Revision 1.15  2001/07/25 15:47:30  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.14  2001/07/13 14:23:11  sigmud
-// removed a few gcc compile warnings
-//
-// Revision 1.13  2001/07/02 12:36:18  sigmud
-// pruned redundant header inclusions
-//
-// Revision 1.12  2001/06/13 16:18:23  lballabio
-// Polished rate helper interfaces
-//
-// Revision 1.11  2001/06/12 13:43:04  lballabio
-// Today's date is back into term structures
-// Instruments are now constructed with settlement days instead of settlement date
-//
-// Revision 1.10  2001/06/04 08:32:31  lballabio
-// Set extrapolated discount as next guess
-//
-// Revision 1.9  2001/06/01 16:50:17  lballabio
-// Term structure on deposits and swaps
-//
-// Revision 1.8  2001/05/29 15:12:48  lballabio
-// Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
-//
-// Revision 1.7  2001/05/29 12:04:16  lballabio
-// Temporarily forced extrapolation
-//
-// Revision 1.6  2001/05/29 11:57:49  marmar
-// Error message is now more clear
-//
-// Revision 1.5  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.4  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/TermStructures/piecewiseflatforward.hpp"
 #include "ql/Solvers1D/brent.hpp"

@@ -6,7 +6,7 @@
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.org/
  *
- * QuantLib is free software and you are allowed to use, copy_, modify, merge,
+ * QuantLib is free software and you are allowed to use, copy, modify, merge,
  * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
@@ -23,57 +23,13 @@
 */
 
 /*! \file array.hpp
-
-    \fullpath
-    Include/ql/%array.hpp
     \brief 1-D array used in linear algebra.
 
+    \fullpath
+    ql/%array.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:54:20  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.16  2001/08/31 15:23:44  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.15  2001/08/28 12:16:38  nando
-// unsigned int size() instead of int size()
-//
-// Revision 1.14  2001/08/28 10:22:01  nando
-// added trailing underscore to private members
-//
-// Revision 1.13  2001/08/22 13:58:37  nando
-// typo fixed
-//
-// Revision 1.12  2001/08/09 14:59:45  sigmud
-// header modification
-//
-// Revision 1.11  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.10  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.9  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.8  2001/07/09 16:29:27  lballabio
-// Some documentation and market element
-//
-// Revision 1.7  2001/07/05 15:57:22  lballabio
-// Collected typedefs in a single file
-//
-// Revision 1.6  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.5  2001/06/15 13:52:06  lballabio
-// Reworked indexes
-//
-// Revision 1.4  2001/05/24 15:38:07  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_array_h
 #define quantlib_array_h
@@ -89,8 +45,9 @@
 namespace QuantLib {
 
     //! 1-D array used in linear algebra.
-    /*! This class implements the concept of vector as used in linear algebra.
-        As such, it is <b>not</b> meant to be used as a container -
+    /*! This class implements the concept of vector as used in linear 
+        algebra. 
+        As such, it is <b>not</b> meant to be used as a container - 
         <tt>std::vector</tt> should be used instead.
     */
     class Array {

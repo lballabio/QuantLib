@@ -23,12 +23,13 @@
 */
 
 /*! \file simpleswap.hpp
-
-    \fullpath
-    Include/ql/Instruments/%simpleswap.hpp
     \brief Simple fixed-rate vs Libor swap
 
+    \fullpath
+    ql/Instruments/%simpleswap.hpp
 */
+
+// $Id$
 
 #ifndef quantlib_simple_swap_h
 #define quantlib_simple_swap_h

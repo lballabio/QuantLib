@@ -23,15 +23,13 @@
 */
 
 /*! \file normaldistribution.cpp
-
-    \fullpath
-    Sources/Math/%normaldistribution.cpp
     \brief normal, cumulative and inverse cumulative distributions
 
+    \fullpath
+    ql/Math/%normaldistribution.cpp
 */
 
 // $Id$
-
 
 #include "ql/Math/normaldistribution.hpp"
 

@@ -23,55 +23,13 @@
 */
 
 /*! \file ratehelpers.hpp
-
-    \fullpath
-    Include/ql/TermStructures/%ratehelpers.hpp
     \brief rate helpers
 
+    \fullpath
+    ql/TermStructures/%ratehelpers.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:08:42  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.20  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.19  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.18  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.17  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.16  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.15  2001/07/24 08:49:32  sigmud
-// pruned redundant header inclusions
-//
-// Revision 1.14  2001/07/02 12:36:18  sigmud
-// pruned redundant header inclusions
-//
-// Revision 1.13  2001/06/18 08:05:59  lballabio
-// Reworked indexes and floating rate coupon
-//
-// Revision 1.12  2001/06/13 16:18:23  lballabio
-// Polished rate helper interfaces
-//
-// Revision 1.11  2001/06/12 13:43:04  lballabio
-// Today's date is back into term structures
-// Instruments are now constructed with settlement days instead of settlement date
-//
-// Revision 1.10  2001/06/08 13:34:46  lballabio
-// Typedef DepositRateHelper to FraRateHelper
-//
-// Revision 1.9  2001/06/01 16:50:16  lballabio
-// Term structure on deposits and swaps
-//
 
 #ifndef quantlib_ratehelper_h
 #define quantlib_ratehelper_h
@@ -88,9 +46,9 @@ namespace QuantLib {
             It is advised that a rate helper for an instrument contain an 
             instance of the actual instrument class to ensure consistancy 
             between the algorithms used during bootstrapping and later 
-            instrument pricing. This is not yet fully enforced in the available 
-            rate helpers, though - only SwapRateHelper contains a Swap 
-            instrument for the time being. 
+            instrument pricing. This is not yet fully enforced in the 
+            available rate helpers, though - only SwapRateHelper contains a 
+            Swap instrument for the time being. 
             
             \todo Futures rate helper should be implemented. */
         class RateHelper {
@@ -100,12 +58,13 @@ namespace QuantLib {
             virtual double rateError() const = 0;
             virtual double discountGuess() const { return Null<double>(); }
             //! sets the term structure to be used for pricing
-            /*! \warning Being a pointer and not a Handle, the term structure is
-                not guaranteed to remain allocated for the whole life of the
-                rate helper. It is responsibility of the programmer to ensure
-                that the pointer remains valid. It is advised that rate helpers
-                be used only in term structure constructors, setting the term
-                structure to <b>this</b>, i.e., the one being constructed.
+            /*! \warning Being a pointer and not a Handle, the term structure 
+                is not guaranteed to remain allocated for the whole life of 
+                the rate helper. It is responsibility of the programmer to 
+                ensure that the pointer remains valid. It is advised that 
+                rate helpers be used only in term structure constructors, 
+                setting the term structure to <b>this</b>, i.e., the one 
+                being constructed.
             */
             virtual void setTermStructure(TermStructure*);
             //! maturity date

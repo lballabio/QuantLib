@@ -23,55 +23,13 @@
 */
 
 /*! \file bsmnumericaloption.hpp
-
-    \fullpath
-    Include/ql/Pricers/%bsmnumericaloption.hpp
     \brief common code for numerical option evaluation
 
+    \fullpath
+    ql/Pricers/%bsmnumericaloption.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.18  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.17  2001/08/28 14:47:46  nando
-// unsigned int instead of int
-//
-// Revision 1.16  2001/08/21 16:42:12  nando
-// european option optimization
-//
-// Revision 1.15  2001/08/13 15:06:17  nando
-// added dividendRho method
-//
-// Revision 1.14  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.13  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.12  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.11  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.10  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.9  2001/07/09 16:29:27  lballabio
-// Some documentation and market element
-//
-// Revision 1.8  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.7  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef BSM_numerical_option_pricer_h
 #define BSM_numerical_option_pricer_h
@@ -99,7 +57,8 @@ namespace QuantLib {
 
           protected:
             // methods
-            virtual void setGridLimits(double center, double timeDelay) const;
+            virtual void setGridLimits(double center, 
+                                       double timeDelay) const;
             virtual void initializeGrid() const;
             virtual void initializeInitialCondition() const;
             virtual void initializeOperator() const;
@@ -116,7 +75,8 @@ namespace QuantLib {
           private:
             // temporaries
             mutable double gridLogSpacing_;
-            unsigned int safeGridPoints(unsigned int gridPoints, Time residualTime);
+            unsigned int safeGridPoints(unsigned int gridPoints, 
+            Time residualTime);
         };
 
         //! This is a safety check to be sure we have enough grid points.
@@ -126,11 +86,13 @@ namespace QuantLib {
 
         // The following is a safety check to be sure we have enough grid
         // points.
-        inline unsigned int BSMNumericalOption::safeGridPoints(unsigned int gridPoints,
-                                                      Time residualTime) {
+        inline unsigned int BSMNumericalOption::safeGridPoints(
+            unsigned int gridPoints, Time residualTime) {
             return QL_MAX(gridPoints, residualTime>1.0 ?
                 static_cast<unsigned int>(
-                (QL_NUM_OPT_MIN_GRID_POINTS +(residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR))
+                    (QL_NUM_OPT_MIN_GRID_POINTS + 
+                    (residualTime-1.0) * 
+                    QL_NUM_OPT_GRID_POINTS_PER_YEAR))
                 : QL_NUM_OPT_MIN_GRID_POINTS);
         }
 

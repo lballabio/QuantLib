@@ -23,63 +23,13 @@
 */
 
 /*! \file handle.hpp
-
-    \fullpath
-    Include/ql/%handle.hpp
     \brief Reference-counted pointer
 
+    \fullpath
+    ql/%handle.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:54:20  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.19  2001/08/31 15:23:44  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.18  2001/08/09 14:59:45  sigmud
-// header modification
-//
-// Revision 1.17  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.16  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.15  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.14  2001/07/05 15:57:22  lballabio
-// Collected typedefs in a single file
-//
-// Revision 1.13  2001/06/21 14:30:43  lballabio
-// Observability is back
-//
-// Revision 1.12  2001/06/19 15:01:33  lballabio
-// Handle can be downcasted to non-const pointer
-//
-// Revision 1.11  2001/06/01 16:50:16  lballabio
-// Term structure on deposits and swaps
-//
-// Revision 1.10  2001/05/31 14:48:10  lballabio
-// Worked around Visual C++ deficiencies
-//
-// Revision 1.9  2001/05/31 13:54:29  lballabio
-// Rewritten Handle downcast to be gcc-compatible
-//
-// Revision 1.8  2001/05/28 13:21:45  lballabio
-// Trying to get g++ to compile
-//
-// Revision 1.7  2001/05/28 12:52:58  lballabio
-// Simplified Instrument interface
-//
-// Revision 1.6  2001/05/24 17:50:23  nando
-// no message
-//
-// Revision 1.5  2001/05/24 15:38:07  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_handle_h
 #define quantlib_handle_h

@@ -26,7 +26,7 @@
     \brief 30/360 day counter
 
     \fullpath
-    Sources/DayCounters/%thirty360.cpp
+    ql/DayCounters/%thirty360.cpp
 */
 
 // $Id$

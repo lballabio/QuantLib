@@ -23,49 +23,13 @@
 */
 
 /*! \file relinkablehandle.hpp
-
-    \fullpath
-    Include/ql/%relinkablehandle.hpp
     \brief Globally accessible relinkable pointer
 
+    \fullpath
+    ql/%relinkablehandle.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:54:20  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.10  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.9  2001/08/09 14:59:45  sigmud
-// header modification
-//
-// Revision 1.8  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.7  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.6  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.5  2001/07/02 12:36:17  sigmud
-// pruned redundant header inclusions
-//
-// Revision 1.4  2001/06/21 14:30:43  lballabio
-// Observability is back
-//
-// Revision 1.3  2001/06/20 11:52:29  lballabio
-// Some observability is back
-//
-// Revision 1.2  2001/05/29 09:24:06  lballabio
-// Using relinkable handle to term structure
-//
-// Revision 1.1  2001/05/28 14:54:25  lballabio
-// Deposit rates are always adjusted
-//
-//
 
 #ifndef quantlib_relinkable_handle_h
 #define quantlib_relinkable_handle_h
@@ -76,8 +40,8 @@
 namespace QuantLib {
 
     //! Globally accessible relinkable pointer
-    /*! This class acts as a proxy to a pointer referenced through a pointer to 
-        pointer to Handle . An instance can be relinked to another 
+    /*! This class acts as a proxy to a pointer referenced through a 
+        pointer to pointer to Handle. An instance can be relinked to another 
         Handle: such change will be propagated to all the copies of the 
         instance.
         \pre Class "Type" must inherit from Observable

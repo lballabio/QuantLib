@@ -26,7 +26,7 @@
     \brief \f$ D_{+}D_{-} \f$ matricial representation
 
     \fullpath
-    Include/ql/FiniteDifferences/%dplusdminus.hpp
+    ql/FiniteDifferences/%dplusdminus.hpp
 */
 
 // $Id$

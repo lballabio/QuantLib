@@ -23,58 +23,16 @@
 */
 
 /*! \file riskstatistics.hpp
-
-    \fullpath
-    Include/ql/%riskstatistics.hpp
     \brief Normal distribution risk analysis tool: VAR, (average) shortfall
 
+    \fullpath
+    ql/%riskstatistics.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:54:20  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.14  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.13  2001/08/09 14:59:45  sigmud
-// header modification
-//
-// Revision 1.12  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.11  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.10  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.9  2001/07/04 12:00:37  uid40428
-// Array of random numbers built with an array of dates
-//
-// Revision 1.8  2001/07/02 12:36:17  sigmud
-// pruned redundant header inclusions
-//
-// Revision 1.7  2001/06/11 16:00:23  nando
-// potentialUpFront is now potentialUpSide.
-// Few typos fixed
-//
-// Revision 1.6  2001/06/11 13:51:16  aleppo
-// Potential  Up Front added
-//
-// Revision 1.5  2001/06/05 09:35:13  lballabio
-// Updated docs to use Doxygen 1.2.8
-//
-// Revision 1.4  2001/05/28 13:09:55  nando
-// R019-branch-merge3 merged into trunk
-//
-// Revision 1.3  2001/05/24 15:38:07  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
-#ifndef quantlib_riskstatistics_h
-#define quantlib_riskstatistics_h
+#ifndef quantlib_risk_statistics_h
+#define quantlib_risk_statistics_h
 
 #include "ql/Math/statistics.hpp"
 #include "ql/Math/riskmeasures.hpp"

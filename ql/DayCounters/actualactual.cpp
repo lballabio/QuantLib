@@ -26,7 +26,7 @@
     \brief act/act day counter
 
     \fullpath
-    Sources/DayCounters/%actualactual.cpp
+    ql/DayCounters/%actualactual.cpp
 */
 
 // $Id$

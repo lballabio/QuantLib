@@ -23,45 +23,13 @@
 */
 
 /*! \file swap.hpp
-
-    \fullpath
-    Include/ql/Instruments/%swap.hpp
     \brief Interest rate swap
 
+    \fullpath
+    ql/Instruments/%swap.hpp
 */
 
 // $Id$
-//  $Log$
-//  Revision 1.1  2001/09/03 13:58:05  nando
-//  source (*.hpp and *.cpp) moved under topdir/ql
-//
-//  Revision 1.9  2001/08/31 15:23:45  sigmud
-//  refining fullpath entries for doxygen documentation
-//
-//  Revision 1.8  2001/08/09 14:59:46  sigmud
-//  header modification
-//
-//  Revision 1.7  2001/08/08 11:07:48  sigmud
-//  inserting \fullpath for doxygen
-//
-//  Revision 1.6  2001/08/07 11:25:53  sigmud
-//  copyright header maintenance
-//
-//  Revision 1.5  2001/07/25 15:47:27  sigmud
-//  Change from quantlib.sourceforge.net to quantlib.org
-//
-//  Revision 1.4  2001/07/02 12:36:18  sigmud
-//  pruned redundant header inclusions
-//
-//  Revision 1.3  2001/06/21 14:30:43  lballabio
-//  Observability is back
-//
-//  Revision 1.2  2001/05/31 13:17:36  lballabio
-//  Added SimpleSwap
-//
-//  Revision 1.1  2001/05/31 08:56:40  lballabio
-//  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
-//
 
 #ifndef quantlib_swap_h
 #define quantlib_swap_h

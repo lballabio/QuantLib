@@ -23,46 +23,13 @@
 */
 
 /*! \file piecewiseflatforward.hpp
-
-    \fullpath
-    Include/ql/TermStructures/%piecewiseflatforward.hpp
     \brief piecewise flat forward term structure
 
+    \fullpath
+    ql/TermStructures/%piecewiseflatforward.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:08:42  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.12  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.11  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.10  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.9  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.8  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.7  2001/06/13 16:18:23  lballabio
-// Polished rate helper interfaces
-//
-// Revision 1.6  2001/06/12 13:43:04  lballabio
-// Today's date is back into term structures
-// Instruments are now constructed with settlement days instead of settlement date
-//
-// Revision 1.5  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.4  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_piecewise_flat_forward_curve_h
 #define quantlib_piecewise_flat_forward_curve_h
@@ -84,11 +51,11 @@ namespace QuantLib {
             sequentially starting from the earliest period to the latest.
             
             The value for each segment is chosen so that the instrument whose 
-            maturity marks the end of such segment is correctly repriced on the 
-            curve.
+            maturity marks the end of such segment is correctly repriced on 
+            the curve.
             
-            \warning The bootstrapping algorithm will raise an exception if any 
-            two instruments have the same maturity date.
+            \warning The bootstrapping algorithm will raise an exception if 
+            any two instruments have the same maturity date.
         */
         /* This class is derived directly from term structure since we are 
            rewriting all of forward, discount and zeroYield to take advantage 

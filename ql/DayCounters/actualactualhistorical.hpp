@@ -26,7 +26,7 @@
     \brief act/act historical day count convention
 
     \fullpath
-    Include/ql/DayCounters/%actualactualhistorical.hpp
+    ql/DayCounters/%actualactualhistorical.hpp
 */
 
 // $Id$

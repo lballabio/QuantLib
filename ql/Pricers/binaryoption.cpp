@@ -22,44 +22,14 @@
  * available at http://quantlib.org/group.html
 */
 
-/*!  \file binaryoption.cpp
+/*! \file binaryoption.cpp
+    \brief European style cash-or-nothing option.
 
     \fullpath
-    Sources/Pricers/%binaryoption.cpp
-   \brief European style cash-or-nothing option.
-
+    ql/Pricers/%binaryoption.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.14  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.13  2001/08/13 15:06:17  nando
-// added dividendRho method
-//
-// Revision 1.12  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.11  2001/08/08 11:07:50  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.10  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.9  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.8  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.7  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/Pricers/binaryoption.hpp"
 #include "ql/Math/normaldistribution.hpp"

@@ -23,36 +23,13 @@
 */
 
 /*! \file solver1d.cpp
-
-    \fullpath
-    Sources/%solver1d.cpp
     \brief Abstract 1-D solver class
 
+    \fullpath
+    ql/%solver1d.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:54:20  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.27  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.26  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.25  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.24  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.23  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.22  2001/05/24 15:40:09  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/solver1d.hpp"
 

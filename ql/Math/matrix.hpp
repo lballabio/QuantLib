@@ -23,24 +23,13 @@
 */
 
 /*! \file matrix.hpp
-
-    \fullpath
-    Include/ql/Math/%matrix.hpp
     \brief matrix used in linear algebra.
 
+    \fullpath
+    ql/Math/%matrix.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:57:12  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.12  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.11  2001/08/28 12:30:14  nando
-// unsigned int instead of int
-//
 
 #ifndef quantlib_matrix_h
 #define quantlib_matrix_h

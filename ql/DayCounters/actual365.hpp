@@ -26,7 +26,7 @@
     \brief act/365 day counter
 
     \fullpath
-    Include/ql/DayCounters/%actual365.hpp
+    ql/DayCounters/%actual365.hpp
 */
 
 // $Id$

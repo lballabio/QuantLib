@@ -23,39 +23,13 @@
 */
 
 /*! \file lexicographicalview.hpp
-
-    \fullpath
-    Include/ql/Math/%lexicographicalview.hpp
     \brief Lexicographical 2-D view of a contiguous set of data.
 
+    \fullpath
+    ql/Math/%lexicographicalview.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:57:12  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.10  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.9  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.8  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.7  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.6  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.5  2001/07/06 07:46:59  lballabio
-// Fixed typo excaped until now because the method wasn't instantiated
-//
-// Revision 1.4  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_lexicographical_view_h
 #define quantlib_lexicographical_view_h
@@ -80,14 +54,14 @@ namespace QuantLib {
             typedef RandomAccessIterator x_iterator;
             //! iterates backwards over \f$ v_{ij} \f$ with \f$ j \f$ fixed.
             typedef QL_REVERSE_ITERATOR(RandomAccessIterator,
-                typename QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type)
+              typename QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type)
                     reverse_x_iterator;
             //! iterates over \f$ v_{ij} \f$ with \f$ i \f$ fixed.
             typedef Utilities::stepping_iterator<RandomAccessIterator>
                 y_iterator;
             //! iterates backwards over \f$ v_{ij} \f$ with \f$ i \f$ fixed.
             typedef QL_REVERSE_ITERATOR(y_iterator,
-                typename QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type)
+              typename QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type)
                     reverse_y_iterator;
 
             //! \name Element access
@@ -123,10 +97,13 @@ namespace QuantLib {
         // inline definitions
 
         template <class RandomAccessIterator>
-        inline LexicographicalView<RandomAccessIterator>::LexicographicalView(
-            const RandomAccessIterator& begin, const RandomAccessIterator& end,
+        inline 
+        LexicographicalView<RandomAccessIterator>::LexicographicalView(
+            const RandomAccessIterator& begin, 
+            const RandomAccessIterator& end,
             int xSize)
-        : begin_(begin), end_(end), xSize_(xSize), ySize_((end-begin)/xSize) {
+        : begin_(begin), end_(end), xSize_(xSize), 
+          ySize_((end-begin)/xSize) {
             #ifdef QL_DEBUG
                 QL_REQUIRE((end_-begin_) % xSize_ == 0,
                     "The x size of the view is not an exact divisor"

@@ -26,34 +26,10 @@
     \brief common code for option evaluation
 
     \fullpath
-    Include/ql/Pricers/%singleassetoption.hpp
+    ql/Pricers/%singleassetoption.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.6  2001/08/28 14:47:46  nando
-// unsigned int instead of int
-//
-// Revision 1.5  2001/08/21 16:42:12  nando
-// european option optimization
-//
-// Revision 1.4  2001/08/13 15:06:17  nando
-// added dividendRho method
-//
-// Revision 1.3  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.2  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.1  2001/08/07 07:49:45  nando
-// forgot to add the singleassetoption.* files
-//
-// Revision 1.15  2001/07/26 13:56:23  nando
-// straddle barrier option handled
 
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h

@@ -26,7 +26,7 @@
     \brief L'Ecuyer uniform random number generator
 
     \fullpath
-    Sources/MonteCarlo/%lecuyerrandomgenerator.cpp
+    ql/MonteCarlo/%lecuyerrandomgenerator.cpp
 */
 
 // $Id$

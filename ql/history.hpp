@@ -23,61 +23,13 @@
 */
 
 /*! \file history.hpp
-
-    \fullpath
-    Include/ql/%history.hpp
     \brief history class
     
+    \fullpath
+    ql/%history.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:54:20  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.16  2001/08/31 15:23:44  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.15  2001/08/28 12:17:20  nando
-// nothing relevant (spaces added)
-//
-// Revision 1.14  2001/08/09 14:59:45  sigmud
-// header modification
-//
-// Revision 1.13  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.12  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.11  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.10  2001/07/10 09:28:39  sigmud
-// no message
-//
-// Revision 1.9  2001/07/09 16:29:27  lballabio
-// Some documentation and market element
-//
-// Revision 1.8  2001/07/05 12:35:09  enri
-// - added some static_cast<int>() to prevent gcc warnings
-// - added some virtual constructor (same reason)
-//
-// Revision 1.7  2001/07/05 08:16:28  enri
-// * history.cpp (History) typo fixed
-//
-// Revision 1.6  2001/07/04 16:27:46  uid38474
-// * history.hpp (History(const Date& firstDate, const Date& lastDate, const std::vector<double>& values)): added static_cast<unsigned int> to prevent gcc compiler warning
-//
-// Revision 1.5  2001/07/04 16:23:39  uid38474
-// * history.hpp (History(const Date& firstDate, const Date& lastDate, Iterator begin, Iterator end)): added static_cast to prevent gcc warning
-//
-// Revision 1.4  2001/05/25 08:12:11  lballabio
-// Fixed bug in docs
-//
-// Revision 1.3  2001/05/24 15:38:07  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_history_h
 #define quantlib_history_h
@@ -94,8 +46,8 @@ namespace QuantLib {
         Single data can be accessed through their date, while sets of
         consecutive data can be accessed through iterators.
 
-        A history can contain null data, which can either be returned or skipped
-        according to the chosen iterator type.
+        A history can contain null data, which can either be returned or 
+        skipped according to the chosen iterator type.
             
         <b>Example: </b>
         \link history_iterators.cpp
@@ -110,9 +62,9 @@ namespace QuantLib {
             values, corresponding to the date range between
             <b><i>firstDate</i></b> and <b><i>lastDate</i></b> included.
 
-            \pre <b><i>begin</i></b>-<b><i>end</i></b> must equal the number of
-            days from <b><i>firstDate</i></b> to <b><i>lastDate</i></b>
-            included.
+            \pre <b><i>begin</i></b>-<b><i>end</i></b> must equal the 
+            number of days from <b><i>firstDate</i></b> to 
+            <b><i>lastDate</i></b> included.
         */
         template <class Iterator>
         History(const Date& firstDate, const Date& lastDate,

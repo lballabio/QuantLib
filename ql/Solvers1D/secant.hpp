@@ -23,39 +23,13 @@
 */
 
 /*! \file secant.hpp
-
-    \fullpath
-    Include/ql/Solvers1D/%secant.hpp
     \brief secant 1-D solver
 
+    \fullpath
+    ql/Solvers1D/%secant.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:53:18  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.11  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.10  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.9  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.8  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.7  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.6  2001/06/22 16:38:16  lballabio
-// Improved documentation
-//
-// Revision 1.5  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_solver1d_secant_h
 #define quantlib_solver1d_secant_h

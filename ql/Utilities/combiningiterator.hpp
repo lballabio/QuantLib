@@ -23,39 +23,13 @@
 */
 
 /*! \file combiningiterator.hpp
-
-    \fullpath
-    Include/ql/Utilities/%combiningiterator.hpp
     \brief Iterator mapping a function to a set of underlying sequences
 
+    \fullpath
+    ql/Utilities/%combiningiterator.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:47:13  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.9  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.8  2001/08/28 12:34:04  nando
-// nothing relevant (spaces added)
-//
-// Revision 1.7  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.6  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.5  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.4  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.3  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_combining_iterator_h
 #define quantlib_combining_iterator_h
@@ -85,8 +59,8 @@ namespace QuantLib {
             const typename Function::result_type&>
         {
           public:
-            /* These typedefs are needed even though inherited from QL_ITERATOR
-               (see 14.6.2.3 of the standard).  */
+            /* These typedefs are needed even though inherited from 
+               QL_ITERATOR (see 14.6.2.3 of the standard).  */
             typedef typename Function::result_type value_type;
             typedef typename QL_ITERATOR_TRAITS<Iterator>::difference_type
                 difference_type;

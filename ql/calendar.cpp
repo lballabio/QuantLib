@@ -26,7 +26,7 @@
     \brief Abstract calendar class
 
     \fullpath
-    Sources/%calendar.cpp
+    ql/%calendar.cpp
 */
 
 // $Id$

@@ -23,11 +23,10 @@
 */
 
 /*! \file normaldistribution.hpp
-
-    \fullpath
-    Include/ql/Math/%normaldistribution.hpp
     \brief normal, cumulative and inverse cumulative distributions
 
+    \fullpath
+    ql/Math/%normaldistribution.hpp
 */
 
 // $Id$

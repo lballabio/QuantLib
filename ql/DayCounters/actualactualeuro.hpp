@@ -26,7 +26,7 @@
     \brief act/act euro day count convention
 
     \fullpath
-    Include/ql/DayCounters/%actualactualeuro.hpp
+    ql/DayCounters/%actualactualeuro.hpp
 */
 
 // $Id$

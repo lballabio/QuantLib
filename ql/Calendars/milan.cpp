@@ -25,28 +25,11 @@
 /*! \file milan.cpp
   	\brief Milan calendar
 
-
     \fullpath
-    Sources/Calendars/%milan.cpp
+    ql/Calendars/%milan.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:02:31  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.22  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.21  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.20  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.19  2001/05/24 15:40:09  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/Calendars/milan.hpp"
 

@@ -26,30 +26,10 @@
     \brief piecewise constant forward rate term structure
 
     \fullpath
-    Include/ql/TermStructures/%piecewiseconstantforwards.hpp
+    ql/TermStructures/%piecewiseconstantforwards.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:08:42  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.13  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.12  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.11  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.10  2001/07/24 16:59:34  nando
-// documentation revised
-//
-// Revision 1.9  2001/06/25 10:04:01  nando
-// R019-branch-merge5 merged into trunk
-//
-
 
 #ifndef quantlib_piecewise_constant_forward_curve_h
 #define quantlib_piecewise_constant_forward_curve_h
@@ -61,9 +41,7 @@ namespace QuantLib {
 
     namespace TermStructures {
 
-        /*!
-        \class PiecewiseConstantForwards \
-            ql/TermStructures/piecewiseconstantforwards.hpp
+        /*! 
         \ingroup deprecated
 
         \deprecated

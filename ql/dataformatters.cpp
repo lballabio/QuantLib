@@ -25,37 +25,11 @@
 /*! \file dataformatters.cpp
     \brief classes used to format data for output
 
-
     \fullpath
-    Sources/%dataformatters.cpp
+    ql/%dataformatters.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:54:20  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.26  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.25  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.24  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.23  2001/07/27 07:46:01  nando
-// pruned warnings
-//
-// Revision 1.22  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.21  2001/06/04 10:47:47  lballabio
-// Added a truckload of currencies
-//
-// Revision 1.20  2001/05/24 15:40:09  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/dataformatters.hpp"
 #include "ql/null.hpp"

@@ -23,46 +23,13 @@
 */
 
 /*! \file cliquetoption.hpp
-
-    \fullpath
-    Include/ql/Pricers/%cliquetoption.hpp
     \brief Textbook example of european-style multi-period option.
 
+    \fullpath
+    ql/Pricers/%cliquetoption.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.13  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.12  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.11  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.10  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.9  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.8  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.7  2001/07/06 18:24:17  nando
-// slight modifications to avoid VisualStudio warnings
-//
-// Revision 1.6  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.5  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_pricers_cliquet_option_h
 #define quantlib_pricers_cliquet_option_h
@@ -79,9 +46,10 @@ namespace QuantLib {
             of forward-starting options where the strike for the next
             exercize date is set to the spot price at the beginning of each 
             period.
-            In the particular case in which only two dates are given the price
-            of the option is the same as that of a forward-starting option
-            starting at the first date and expiring at the second date.
+            In the particular case in which only two dates are given the 
+            price of the option is the same as that of a forward-starting 
+            option starting at the first date and expiring at the second 
+            date.
         */
         class CliquetOption : public SingleAssetOption {
           public:

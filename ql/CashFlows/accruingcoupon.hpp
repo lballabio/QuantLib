@@ -25,38 +25,11 @@
 /*! \file accruingcoupon.hpp
     \brief Coupon accruing over a fixed period
 
-
     \fullpath
-    Include/ql/CashFlows/%accruingcoupon.hpp
+    ql/CashFlows/%accruingcoupon.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:01:51  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.10  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.9  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.8  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.7  2001/07/27 16:39:28  nando
-// template of the doxygen header
-//
-// Revision 1.6  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.5  2001/07/24 16:59:34  nando
-// documentation revised
-//
-//    Revision 1.4  2001/07/05 12:31:32  enri
-//    - added some casts to prevent gcc warning
-//    - added some virtual constructors (same reason)
-
 
 #ifndef quantlib_accruing_coupon_hpp
 #define quantlib_accruing_coupon_hpp

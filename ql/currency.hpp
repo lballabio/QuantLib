@@ -23,39 +23,13 @@
 */
 
 /*! \file currency.hpp
-
-    \fullpath
-    Include/ql/%currency.hpp
     \brief Known currencies
 
+    \fullpath
+    ql/%currency.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:54:20  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.11  2001/08/31 15:23:44  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.10  2001/08/09 14:59:45  sigmud
-// header modification
-//
-// Revision 1.9  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.8  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.7  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.6  2001/06/04 10:47:47  lballabio
-// Added a truckload of currencies
-//
-// Revision 1.5  2001/05/24 15:38:07  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_currency_h
 #define quantlib_currency_h

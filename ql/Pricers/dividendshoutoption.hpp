@@ -23,46 +23,13 @@
 */
 
 /*! \file dividendshoutoption.hpp
-
-    \fullpath
-    Include/ql/Pricers/%dividendshoutoption.hpp
     \brief base class for shout option with dividends
 
+    \fullpath
+    ql/Pricers/%dividendshoutoption.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.13  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.12  2001/08/13 15:06:17  nando
-// added dividendRho method
-//
-// Revision 1.11  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.10  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.9  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.8  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.7  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.6  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.5  2001/06/05 12:45:27  nando
-// R019-branch-merge4 merged into trunk
-//
 
 #ifndef quantlib_dividend_shout_option_pricer_h
 #define quantlib_dividend_shout_option_pricer_h

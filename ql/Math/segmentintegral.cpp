@@ -23,27 +23,13 @@
 */
 
 /*! \file segmentintegral.cpp
-
-    \fullpath
-    Sources/Math/%segmentintegral.cpp
     \brief Integral of a function over a segment
 
+    \fullpath
+    ql/Math/%segmentintegral.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:57:12  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.3  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.2  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.1  2001/08/08 15:47:11  marmar
-// Class SegmentIntegral computes the integral of a function over an interval
-//
 
 #include "ql/Math/segmentintegral.hpp"
 

@@ -26,7 +26,7 @@
     \brief Custom types
 
     \fullpath 
-    Include/ql/%types.hpp
+    ql/%types.hpp
 */
 
 // $Id$

@@ -23,11 +23,10 @@
 */
 
 /*! \file actualactual.hpp
-
-    \fullpath
-    Include/ql/DayCounters/%actualactual.hpp
     \brief act/act day counter
 
+    \fullpath
+    ql/DayCounters/%actualactual.hpp
 */
 
 // $Id$

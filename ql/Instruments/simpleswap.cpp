@@ -23,23 +23,13 @@
 */
 
 /*! \file simpleswap.cpp
-
-    \fullpath
-    Sources/Instruments/%simpleswap.cpp
     \brief Simple fixed-rate vs Libor swap
 
+    \fullpath
+    ql/Instruments/%simpleswap.cpp
 */
+
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:58:05  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.14  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.13  2001/08/09 14:59:48  sigmud
-// header modification
-//
 
 #include "ql/Instruments/simpleswap.hpp"
 #include "ql/CashFlows/fixedratecoupon.hpp"

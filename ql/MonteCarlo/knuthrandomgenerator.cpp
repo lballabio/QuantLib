@@ -23,48 +23,13 @@
 */
 
 /*! \file knuthrandomgenerator.cpp
-
-    \fullpath
-    Sources/MonteCarlo/%knuthrandomgenerator.cpp
     \brief Knuth uniform random number generator
 
+    \fullpath
+    ql/MonteCarlo/%knuthrandomgenerator.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.10  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.9  2001/08/30 17:24:37  nando
-// clock substitued by time
-//
-// Revision 1.8  2001/08/30 16:51:08  nando
-// clock substitued by time
-//
-// Revision 1.7  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.6  2001/08/08 11:07:50  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.5  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.4  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.3  2001/07/19 16:40:11  lballabio
-// Improved docs a bit
-//
-// Revision 1.2  2001/07/04 08:05:15  uid37043
-// Worked around Visual C++ being off-standard again
-//
-// Revision 1.1  2001/07/03 13:19:38  lballabio
-// Added Knuth random generator after doubts were casted on the NR one
-//
 
 #include "ql/MonteCarlo/knuthrandomgenerator.hpp"
 

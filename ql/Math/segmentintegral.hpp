@@ -26,7 +26,7 @@
     \brief Integral of a one-dimensional function
 
     \fullpath
-    Include/ql/Math/%integral.hpp
+    ql/Math/%integral.hpp
 */
 
 // $Id$

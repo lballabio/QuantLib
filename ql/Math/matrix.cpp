@@ -23,42 +23,13 @@
 */
 
 /*! \file matrix.cpp
-
-    \fullpath
-    Sources/Math/%matrix.cpp
     \brief matrix used in linear algebra.
 
+    \fullpath
+    ql/Math/%matrix.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:57:12  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.16  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.15  2001/08/28 12:30:51  nando
-// unsigned int instead of int
-//
-// Revision 1.14  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.13  2001/08/08 11:07:50  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.12  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.11  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.10  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.9  2001/05/24 15:40:09  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/Math/symmetricschurdecomposition.hpp"
 #include "ql/dataformatters.hpp"

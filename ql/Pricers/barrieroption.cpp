@@ -26,39 +26,10 @@
     \brief barrier option
 
     \fullpath
-    Sources/Pricers/%barrieroption.cpp
+    ql/Pricers/%barrieroption.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.20  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.19  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.18  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.17  2001/07/26 13:56:23  nando
-// straddle barrier option handled
-//
-// Revision 1.16  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.15  2001/07/24 16:59:34  nando
-// documentation revised
-//
-// Revision 1.14  2001/07/24 11:26:25  sigmud
-// removed a pedantic warning
-//
-// Revision 1.13  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/Pricers/barrieroption.hpp"
 

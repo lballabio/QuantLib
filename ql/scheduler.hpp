@@ -23,51 +23,13 @@
 */
 
 /*! \file scheduler.hpp
-
-    \fullpath
-    Include/ql/%scheduler.hpp
     \brief date scheduler
 
+    \fullpath
+    ql/%scheduler.hpp
 */
 
 // $Id$
-//  $Log$
-//  Revision 1.1  2001/09/03 13:54:20  nando
-//  source (*.hpp and *.cpp) moved under topdir/ql
-//
-//  Revision 1.12  2001/08/31 15:23:45  sigmud
-//  refining fullpath entries for doxygen documentation
-//
-//  Revision 1.11  2001/08/09 14:59:45  sigmud
-//  header modification
-//
-//  Revision 1.10  2001/08/08 11:07:48  sigmud
-//  inserting \fullpath for doxygen
-//
-//  Revision 1.9  2001/08/07 11:25:53  sigmud
-//  copyright header maintenance
-//
-//  Revision 1.8  2001/07/25 15:47:27  sigmud
-//  Change from quantlib.sourceforge.net to quantlib.org
-//
-//  Revision 1.7  2001/07/19 14:27:27  sigmud
-//  warnings purged
-//
-//  Revision 1.6  2001/07/13 14:39:52  nando
-//  warning pruning action ....
-//
-//  Revision 1.5  2001/07/13 14:29:07  sigmud
-//  removed a few gcc compile warnings
-//
-//  Revision 1.4  2001/07/06 18:24:17  nando
-//  slight modifications to avoid VisualStudio warnings
-//
-//  Revision 1.3  2001/07/02 12:36:17  sigmud
-//  pruned redundant header inclusions
-//
-//  Revision 1.2  2001/06/05 09:35:13  lballabio
-//  Updated docs to use Doxygen 1.2.8
-//
 
 #ifndef quantlib_scheduler_hpp
 #define quantlib_scheduler_hpp

@@ -26,8 +26,7 @@
     \brief multipath pricer for European-type Himalaya option
 
     \fullpath
-    Sources/MonteCarlo/%himalayapathpricer.cpp
-
+    ql/MonteCarlo/%himalayapathpricer.cpp
 */
 
 // $Id$

@@ -23,40 +23,13 @@
 */
 
 /*! \file solver1d.hpp
-
-    \fullpath
-    Include/ql/%solver1d.hpp
     \brief Abstract 1-D solver class
 
+    \fullpath
+    ql/%solver1d.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:54:20  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.8  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.7  2001/08/09 14:59:45  sigmud
-// header modification
-//
-// Revision 1.6  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.5  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.4  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.3  2001/05/24 15:38:07  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-
-/*! \namespace QuantLib::Solvers1D
-    \brief Concrete implementations of the Solver1D interface
-*/
 
 #ifndef quantlib_solver1d_h
 #define quantlib_solver1d_h
@@ -66,6 +39,10 @@
 
 namespace QuantLib {
 
+    /*! \namespace QuantLib::Solvers1D
+        \brief Concrete implementations of the Solver1D interface
+    */
+    
     #define MAX_FUNCTION_EVALUATIONS 100
 
     //! Objective function for 1-D solvers
@@ -84,37 +61,38 @@ namespace QuantLib {
     class Solver1D {
       public:
         Solver1D()
-        : maxEvaluations_(MAX_FUNCTION_EVALUATIONS), lowBoundEnforced_(false),
-          hiBoundEnforced_(false) {}
+        : maxEvaluations_(MAX_FUNCTION_EVALUATIONS), 
+          lowBoundEnforced_(false), hiBoundEnforced_(false) {}
         virtual ~Solver1D() {}
         //! \name Modifiers
         //@{
         /*! This method returns the zero of the ObjectiveFunction f,
-            determined with the given accuracy (i.e., \f$ x \f$ is considered a
-            zero if \f$ |f(x)| < accuracy \f$).
-            This method contains a bracketing routine to which an initial guess
-            must be supplied as well as a step used to scan the range of the
-            possible bracketing values.
+            determined with the given accuracy (i.e., \f$ x \f$ is considered 
+            a zero if \f$ |f(x)| < accuracy \f$).
+            This method contains a bracketing routine to which an initial 
+            guess must be supplied as well as a step used to scan the range 
+            of the possible bracketing values.
         */
         double solve(const ObjectiveFunction& f,
                      double xAccuracy,
                      double guess,
                      double step) const;
         /*! This method returns the zero of the ObjectiveFunction f,
-            determined with the given accuracy (i.e., \f$ x \f$ is considered a
-            zero if \f$ |f(x)| < accuracy \f$). An initial guess must be
-            supplied, as well as two values which must bracket the zero (i.e.,
-            either \f$ f(x_{min}) > 0 \f$ && \f$ f(x_{max}) < 0 \f$, or \f$
-            f(x_{min}) < 0 \f$ && \f$ f(x_{max}) > 0 \f$ must be true).
+            determined with the given accuracy (i.e., \f$ x \f$ is considered 
+            a zero if \f$ |f(x)| < accuracy \f$). An initial guess must be
+            supplied, as well as two values which must bracket the zero 
+            (i.e., either \f$ f(x_{min}) > 0 \f$ && \f$ f(x_{max}) < 0 \f$, 
+            or \f$ f(x_{min}) < 0 \f$ && \f$ f(x_{max}) > 0 \f$ must be 
+            true).
         */
         double solve(const ObjectiveFunction& f,
                      double xAccuracy,
                      double guess,
                      double xMin,
                      double xMax) const;
-        /*! This method sets the maximum number of function evaluations for the
-            bracketing routine. An Error is thrown if a bracket is not found
-            after this number of evaluations.
+        /*! This method sets the maximum number of function evaluations for 
+            the bracketing routine. An Error is thrown if a bracket is not 
+            found after this number of evaluations.
         */
         void setMaxEvaluations(int evaluations);
         //! sets the lower bound for the function domain
@@ -133,8 +111,8 @@ namespace QuantLib {
             the actual code which searches for the zeroes of the
             ObjectiveFunction. It assumes that:
             - <b>xMin_</b> and  <b>xMax_</b> form a valid bracket;
-            - <b>fxMin_</b> and <b>fxMax_</b> contain the values of the function
-              in <b>xMin_</b> and  <b>xMax_</b>;
+            - <b>fxMin_</b> and <b>fxMax_</b> contain the values of the 
+              function in <b>xMin_</b> and  <b>xMax_</b>;
             - <b>root_</b> was initialized to a valid initial guess.
         */
         virtual double solve_(const ObjectiveFunction& f,

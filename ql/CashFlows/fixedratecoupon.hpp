@@ -23,48 +23,13 @@
 */
 
 /*! \file fixedratecoupon.hpp
-
-    \fullpath
-    Include/ql/CashFlows/%fixedratecoupon.hpp
     \brief Coupon paying a fixed annual rate
 
+    \fullpath
+    ql/CashFlows/%fixedratecoupon.hpp
 */
 
 // $Id$
-//  $Log$
-//  Revision 1.1  2001/09/03 14:01:51  nando
-//  source (*.hpp and *.cpp) moved under topdir/ql
-//
-//  Revision 1.10  2001/08/31 15:23:45  sigmud
-//  refining fullpath entries for doxygen documentation
-//
-//  Revision 1.9  2001/08/09 14:59:46  sigmud
-//  header modification
-//
-//  Revision 1.8  2001/08/08 11:07:48  sigmud
-//  inserting \fullpath for doxygen
-//
-//  Revision 1.7  2001/08/07 11:25:53  sigmud
-//  copyright header maintenance
-//
-//  Revision 1.6  2001/07/25 15:47:27  sigmud
-//  Change from quantlib.sourceforge.net to quantlib.org
-//
-//  Revision 1.5  2001/07/24 08:49:32  sigmud
-//  pruned redundant header inclusions
-//
-//  Revision 1.4  2001/07/05 15:57:22  lballabio
-//  Collected typedefs in a single file
-//
-//  Revision 1.3  2001/06/15 13:52:07  lballabio
-//  Reworked indexes
-//
-//  Revision 1.2  2001/05/31 13:17:36  lballabio
-//  Added SimpleSwap
-//
-//  Revision 1.1  2001/05/31 08:56:40  lballabio
-//  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
-//
 
 #ifndef quantlib_fixed_rate_coupon_hpp
 #define quantlib_fixed_rate_coupon_hpp

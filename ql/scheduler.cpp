@@ -23,39 +23,13 @@
 */
 
 /*! \file scheduler.cpp
-
-    \fullpath
-    Sources/%scheduler.cpp
     \brief date scheduler
 
+    \fullpath
+    ql/%scheduler.cpp
 */
 
 // $Id$
-//  $Log$
-//  Revision 1.1  2001/09/03 13:54:20  nando
-//  source (*.hpp and *.cpp) moved under topdir/ql
-//
-//  Revision 1.7  2001/08/31 15:23:46  sigmud
-//  refining fullpath entries for doxygen documentation
-//
-//  Revision 1.6  2001/08/09 14:59:47  sigmud
-//  header modification
-//
-//  Revision 1.5  2001/08/08 11:07:49  sigmud
-//  inserting \fullpath for doxygen
-//
-//  Revision 1.4  2001/08/07 11:25:54  sigmud
-//  copyright header maintenance
-//
-//  Revision 1.3  2001/07/25 15:47:28  sigmud
-//  Change from quantlib.sourceforge.net to quantlib.org
-//
-//  Revision 1.2  2001/07/13 14:39:52  nando
-//  warning pruning action ....
-//
-//  Revision 1.1  2001/05/31 08:56:40  lballabio
-//  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
-//
 
 #include "ql/scheduler.hpp"
 #include "ql/dataformatters.hpp"

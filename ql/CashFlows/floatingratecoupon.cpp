@@ -26,27 +26,10 @@
     \brief Coupon at par on a term structure
 
     \fullpath
-    Sources/CashFlows/%floatingratecoupon.cpp
+    ql/CashFlows/%floatingratecoupon.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:01:51  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.8  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.7  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.6  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.5  2001/07/24 16:59:34  nando
-// documentation revised
-//
-
 
 #include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/Indexes/xibormanager.hpp"
