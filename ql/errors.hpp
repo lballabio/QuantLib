@@ -44,7 +44,7 @@ namespace QuantLib {
     class Error : public std::exception {
       public:
         explicit Error(const std::string& what = "") : message(what) {}
-	~Error() throw() {}
+    ~Error() throw() {}
         //! returns the error message.
         const char* what() const throw () { return message.c_str(); }
       private:

@@ -54,7 +54,7 @@ namespace QuantLib {
           Array evalues(jd.eigenvalues());
 
           double maxEv=0;
-		  size_t i;
+          size_t i;
           for(i = 0; i < size;i++)
               if(evalues[i] >= maxEv)
                   maxEv = evalues[i];

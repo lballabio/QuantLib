@@ -23,7 +23,7 @@
 */
 
 /*! \file zurich.cpp
-	\brief Zurich calendar
+    \brief Zurich calendar
 
     \fullpath
     ql/Calendars/%zurich.cpp
@@ -35,40 +35,40 @@
 
 namespace QuantLib {
 
-	namespace Calendars {
+    namespace Calendars {
 
-		bool Zurich::ZurCalendarImpl::isBusinessDay(const Date& date) const {
-			Weekday w = date.weekday();
-			Day d = date.dayOfMonth(), dd = date.dayOfYear();
-			Month m = date.month();
-			Year y = date.year();
-			Day em = easterMonday(y);
-			if ((w == Saturday || w == Sunday)
-				// New Year's Day
-				|| (d == 1  && m == January)
-				// Berchtoldstag
-				|| (d == 2  && m == January)
-				// Good Friday
-				|| (dd == em-3)
-				// Easter Monday
-				|| (dd == em)
-				// Ascension Day
-				|| (d == em+38)
-				// Whit Monday
-				|| (d == em+49)
-				// Labour Day
-				|| (d == 1  && m == May)
-				// National Day
-				|| (d == 1  && m == August)
-				// Christmas
-				|| (d == 25 && m == December)
-				// St. Stephen's Day
-				|| (d == 26 && m == December))
-					return false;
-			return true;
-		}
+        bool Zurich::ZurCalendarImpl::isBusinessDay(const Date& date) const {
+            Weekday w = date.weekday();
+            Day d = date.dayOfMonth(), dd = date.dayOfYear();
+            Month m = date.month();
+            Year y = date.year();
+            Day em = easterMonday(y);
+            if ((w == Saturday || w == Sunday)
+                // New Year's Day
+                || (d == 1  && m == January)
+                // Berchtoldstag
+                || (d == 2  && m == January)
+                // Good Friday
+                || (dd == em-3)
+                // Easter Monday
+                || (dd == em)
+                // Ascension Day
+                || (d == em+38)
+                // Whit Monday
+                || (d == em+49)
+                // Labour Day
+                || (d == 1  && m == May)
+                // National Day
+                || (d == 1  && m == August)
+                // Christmas
+                || (d == 25 && m == December)
+                // St. Stephen's Day
+                || (d == 26 && m == December))
+                    return false;
+            return true;
+        }
 
-	}
+    }
 
 }
 

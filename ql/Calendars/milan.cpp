@@ -23,7 +23,7 @@
 */
 
 /*! \file milan.cpp
-  	\brief Milan calendar
+      \brief Milan calendar
 
     \fullpath
     ql/Calendars/%milan.cpp
@@ -35,44 +35,44 @@
 
 namespace QuantLib {
 
-	namespace Calendars {
+    namespace Calendars {
 
-		bool Milan::MilCalendarImpl::isBusinessDay(const Date& date) const {
-			Weekday w = date.weekday();
-			Day d = date.dayOfMonth(), dd = date.dayOfYear();
-			Month m = date.month();
-			Year y = date.year();
-			Day em = easterMonday(y);
-			if ((w == Saturday || w == Sunday)
-				// New Year's Day
-				|| (d == 1 && m == January)
-				// Epiphany
-				|| (d == 6 && m == January)
-				// Easter Monday
-				|| (dd == em)
-				// Liberation Day
-				|| (d == 25 && m == April)
-				// Labour Day
-				|| (d == 1 && m == May)
-				// Republic Day
-				|| (d == 2 && m == June && y >= 2000)
-				// Assumption
-				|| (d == 15 && m == August)
-				// All Saints' Day
-				|| (d == 1 && m == November)
-				// Immaculate Conception
-				|| (d == 8 && m == December)
-				// Christmas
-				|| (d == 25 && m == December)
-				// St. Stephen
-				|| (d == 26 && m == December)
-				// December 31st, 1999 only
-				|| (d == 31 && m == December && y == 1999))
-					return false;
-			return true;
-		}
+        bool Milan::MilCalendarImpl::isBusinessDay(const Date& date) const {
+            Weekday w = date.weekday();
+            Day d = date.dayOfMonth(), dd = date.dayOfYear();
+            Month m = date.month();
+            Year y = date.year();
+            Day em = easterMonday(y);
+            if ((w == Saturday || w == Sunday)
+                // New Year's Day
+                || (d == 1 && m == January)
+                // Epiphany
+                || (d == 6 && m == January)
+                // Easter Monday
+                || (dd == em)
+                // Liberation Day
+                || (d == 25 && m == April)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Republic Day
+                || (d == 2 && m == June && y >= 2000)
+                // Assumption
+                || (d == 15 && m == August)
+                // All Saints' Day
+                || (d == 1 && m == November)
+                // Immaculate Conception
+                || (d == 8 && m == December)
+                // Christmas
+                || (d == 25 && m == December)
+                // St. Stephen
+                || (d == 26 && m == December)
+                // December 31st, 1999 only
+                || (d == 31 && m == December && y == 1999))
+                    return false;
+            return true;
+        }
 
-	}
+    }
 
 }
 

@@ -78,7 +78,7 @@ private:
     Time maturity_;
     double strike_;
     double s0_;
-	double sigma_;
+    double sigma_;
     Rate r_;
 };
 
@@ -97,12 +97,12 @@ int main(int argc, char* argv[])
                   << std::endl;
         std::cout << "Underlying price = "        << underlying
                   << std::endl;
-	    std::cout << "Strike = "                  << strike
-	              << std::endl;
+        std::cout << "Strike = "                  << strike
+                  << std::endl;
         std::cout << "Risk-free interest rate = " << riskFreeRate
                   << std::endl;
-	    std::cout << "Volatility = "              << volatility
-	              << std::endl;
+        std::cout << "Volatility = "              << volatility
+                  << std::endl;
         std::cout << std::endl;
 
         // write column headings
@@ -194,7 +194,7 @@ int main(int argc, char* argv[])
         int nSamples = 200000;
         // this causes the actual seed to change randomly at each run
         long seed = 0;
-	    double drift = riskFreeRate - 0.5*volatility*volatility;
+        double drift = riskFreeRate - 0.5*volatility*volatility;
         Statistics samples;
         Handle<GaussianPathGenerator> myPathGenerator(
             new GaussianPathGenerator(drift, volatility*volatility,
@@ -212,8 +212,8 @@ int main(int argc, char* argv[])
         // The OneFactorMontecarloModel generates paths using myPathGenerator
         // each path is priced using myPathPricer
         // prices will be accumulated into samples
-	    OneFactorMonteCarloOption mc(myPathGenerator, myEuropeanPathPricer,
-		    samples);
+        OneFactorMonteCarloOption mc(myPathGenerator, myEuropeanPathPricer,
+            samples);
         // the model simulates nSamples paths
         mc.addSamples(nSamples);
         // the sampleAccumulator method of OneFactorMonteCarloOption
@@ -240,8 +240,8 @@ int main(int argc, char* argv[])
             antitheticVariance));
         // reset the statistic accumulator
         samples.reset();
-	    mc = OneFactorMonteCarloOption(myPathGenerator, myEuropeanPathPricer,
-		    samples);
+        mc = OneFactorMonteCarloOption(myPathGenerator, myEuropeanPathPricer,
+            samples);
         mc.addSamples(nSamples);
         value = mc.sampleAccumulator().mean();
         estimatedError = mc.sampleAccumulator().errorEstimate();
@@ -255,7 +255,7 @@ int main(int argc, char* argv[])
              << std::endl;
 
 
-	    return 0;
+        return 0;
     } catch (std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

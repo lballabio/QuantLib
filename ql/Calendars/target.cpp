@@ -23,7 +23,7 @@
 */
 
 /*! \file target.cpp
-	\brief TARGET calendar
+    \brief TARGET calendar
 
     \fullpath
     ql/Calendars/%target.cpp
@@ -35,34 +35,34 @@
 
 namespace QuantLib {
 
-	namespace Calendars {
+    namespace Calendars {
 
-		bool TARGET::EurCalendarImpl::isBusinessDay(const Date& date) const {
-			Weekday w = date.weekday();
-			Day d = date.dayOfMonth(), dd = date.dayOfYear();
-			Month m = date.month();
-			Year y = date.year();
-			Day em = easterMonday(y);
-			if ((w == Saturday || w == Sunday)
-				// New Year's Day
-				|| (d == 1  && m == January)
-				// Good Friday
-				|| (dd == em-3)
-				// Easter Monday
-				|| (dd == em)
-				// Labour Day
-				|| (d == 1  && m == May)
-				// Christmas
-				|| (d == 25 && m == December)
-				// Day of Goodwill
-				|| (d == 26 && m == December)
-				// December 31st, 1998 and 1999 only
-				|| (d == 31 && m == December && (y == 1998 || y == 1999)))
-					return false;
-			return true;
-		}
+        bool TARGET::EurCalendarImpl::isBusinessDay(const Date& date) const {
+            Weekday w = date.weekday();
+            Day d = date.dayOfMonth(), dd = date.dayOfYear();
+            Month m = date.month();
+            Year y = date.year();
+            Day em = easterMonday(y);
+            if ((w == Saturday || w == Sunday)
+                // New Year's Day
+                || (d == 1  && m == January)
+                // Good Friday
+                || (dd == em-3)
+                // Easter Monday
+                || (dd == em)
+                // Labour Day
+                || (d == 1  && m == May)
+                // Christmas
+                || (d == 25 && m == December)
+                // Day of Goodwill
+                || (d == 26 && m == December)
+                // December 31st, 1998 and 1999 only
+                || (d == 31 && m == December && (y == 1998 || y == 1999)))
+                    return false;
+            return true;
+        }
 
-	}
+    }
 
 }
 

@@ -37,7 +37,7 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        Handle<DayCounter::DayCounterImpl> 
+        Handle<DayCounter::DayCounterImpl>
         ActualActual::implementation(ActualActual::Convention c) {
             switch (c) {
               case ISMA:
@@ -73,9 +73,9 @@ namespace QuantLib {
             double period = double(months)/12.0;
 
             if (d2 <= refPeriodEnd) {
-                // here refPeriodEnd is a future (notional?) payment date 
+                // here refPeriodEnd is a future (notional?) payment date
                 if (d1 >= refPeriodStart)
-                    // here refPeriodStart is the last (maybe notional) 
+                    // here refPeriodStart is the last (maybe notional)
                     // payment date.
                     // refPeriodStart <= d1 <= d2 <= refPeriodEnd
                     // [maybe the equality should be enforced, since
@@ -84,22 +84,22 @@ namespace QuantLib {
                     return period*double(dayCount(d1,d2)) /
                         dayCount(refPeriodStart,refPeriodEnd);
                 else {
-                    // here refPeriodStart is the next (maybe notional) 
-                    // payment date and refPeriodEnd is the second next 
+                    // here refPeriodStart is the next (maybe notional)
+                    // payment date and refPeriodEnd is the second next
                     // (maybe notional) payment date.
-                    // d1 < refPeriodStart < refPeriodEnd 
+                    // d1 < refPeriodStart < refPeriodEnd
                     // AND d2 <= refPeriodEnd
                     // this case is long first coupon
 
                     // the last notional payment date
                     Date previousRef = refPeriodStart.plusMonths(-months);
-                    return yearFraction(d1, refPeriodStart, previousRef, 
+                    return yearFraction(d1, refPeriodStart, previousRef,
                                         refPeriodStart) +
-                           yearFraction(refPeriodStart, d2, refPeriodStart, 
+                           yearFraction(refPeriodStart, d2, refPeriodStart,
                                         refPeriodEnd);
                 }
             } else {
-                // here refPeriodEnd is the last (notional?) payment date 
+                // here refPeriodEnd is the last (notional?) payment date
                 // d1 < refPeriodEnd < d2 AND refPeriodStart < refPeriodEnd
                 QL_REQUIRE(refPeriodStart<=d1,
                     "invalid dates: "
@@ -108,7 +108,7 @@ namespace QuantLib {
 
                 // the part from d1 to refPeriodEnd
                 double sum =
-                    yearFraction(d1, refPeriodEnd, refPeriodStart, 
+                    yearFraction(d1, refPeriodEnd, refPeriodStart,
                                  refPeriodEnd);
 
                 // the part from refPeriodEnd to d2
@@ -138,14 +138,14 @@ namespace QuantLib {
             if (d1 == d2)
                 return 0.0;
 
-	        int y1 = d1.year(), y2 = d2.year();
-	        double dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
-		           dib2 = (Date::isLeap(y2) ? 366.0 : 365.0);
+            int y1 = d1.year(), y2 = d2.year();
+            double dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
+                   dib2 = (Date::isLeap(y2) ? 366.0 : 365.0);
 
-	        double sum = y2 - y1 - 1;
-	        sum += dayCount(d1, Date(1,(Month)1,y1+1))/dib1;
-	        sum += dayCount(Date(1,(Month)1,y2),d2)/dib2;
-	        return sum;
+            double sum = y2 - y1 - 1;
+            sum += dayCount(d1, Date(1,(Month)1,y1+1))/dib1;
+            sum += dayCount(Date(1,(Month)1,y2),d2)/dib2;
+            return sum;
         }
 
         Time ActualActual::ActActAFBImpl::yearFraction(
@@ -170,7 +170,7 @@ namespace QuantLib {
             }
 
             double den = 365.0;
-            if ((Date::isLeap(newD2.year()) && 
+            if ((Date::isLeap(newD2.year()) &&
                     newD2>Date(29, (Month)2, newD2.year()))
                 || (Date::isLeap(d1.year()) &&
                     d1<=Date(29, (Month)2, d1.year()))) {

@@ -23,7 +23,7 @@
 */
 
 /*! \file london.cpp
-	\brief London calendar
+    \brief London calendar
 
     \fullpath
     Calendars/%london.cpp
@@ -35,39 +35,39 @@
 
 namespace QuantLib {
 
-	namespace Calendars {
+    namespace Calendars {
 
-		bool London::LonCalendarImpl::isBusinessDay(const Date& date) const {
-			Weekday w = date.weekday();
-			Day d = date.dayOfMonth(), dd = date.dayOfYear();
-			Month m = date.month();
-			Year y = date.year();
-			Day em = easterMonday(y);
-			if ((w == Saturday || w == Sunday)
-				// New Year's Day (possibly moved to Monday)
-				|| ((d == 1 || ((d == 2 || d == 3) && w == Monday)) &&
-				    m == January)
-				// Good Friday
-				|| (dd == em-3)
-				// Easter Monday
-				|| (dd == em)
-				// first Monday of May (Bank Holiday)
-				|| (d <= 7 && w == Monday && m == May)
-				// last Monday of May or August (Bank Holidays)
-				|| (d >= 25 && w == Monday && (m == May || m == August))
-				// Christmas (possibly moved to Monday or Tuesday)
-				|| ((d == 25 || (d == 27 && (w == Monday || w == Tuesday))) 
-				    && m == December)
-				// Boxing Day (possibly moved to Monday or Tuesday)
-				|| ((d == 26 || (d == 28 && (w == Monday || w == Tuesday))) 
-				    && m == December)
-				// December 31st, 1999 only
-				|| (d == 31 && m == December && y == 1999))
-					return false;
-			return true;
-		}
+        bool London::LonCalendarImpl::isBusinessDay(const Date& date) const {
+            Weekday w = date.weekday();
+            Day d = date.dayOfMonth(), dd = date.dayOfYear();
+            Month m = date.month();
+            Year y = date.year();
+            Day em = easterMonday(y);
+            if ((w == Saturday || w == Sunday)
+                // New Year's Day (possibly moved to Monday)
+                || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) &&
+                    m == January)
+                // Good Friday
+                || (dd == em-3)
+                // Easter Monday
+                || (dd == em)
+                // first Monday of May (Bank Holiday)
+                || (d <= 7 && w == Monday && m == May)
+                // last Monday of May or August (Bank Holidays)
+                || (d >= 25 && w == Monday && (m == May || m == August))
+                // Christmas (possibly moved to Monday or Tuesday)
+                || ((d == 25 || (d == 27 && (w == Monday || w == Tuesday)))
+                    && m == December)
+                // Boxing Day (possibly moved to Monday or Tuesday)
+                || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday)))
+                    && m == December)
+                // December 31st, 1999 only
+                || (d == 31 && m == December && y == 1999))
+                    return false;
+            return true;
+        }
 
-	}
+    }
 
 }
 

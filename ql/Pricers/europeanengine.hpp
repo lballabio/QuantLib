@@ -43,7 +43,7 @@ namespace QuantLib {
         //! analytic pricing engine for European options
         class EuropeanEngine : public PlainOptionEngine {
           public:
-	    void calculate() const;
+        void calculate() const;
         };
 
     }

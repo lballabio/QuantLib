@@ -44,8 +44,8 @@ namespace QuantLib {
 
     SymmetricSchurDecomposition::SymmetricSchurDecomposition(Matrix & s)
           : s_(s), size_(s.rows()), diagonal_(s.rows()),
-	  eigenVectors_(s.rows(),s.columns(),0), hasBeenComputed_(false),
-	  maxIterations_(100), epsPrec_(1e-15) {
+      eigenVectors_(s.rows(),s.columns(),0), hasBeenComputed_(false),
+      maxIterations_(100), epsPrec_(1e-15) {
 
       QL_REQUIRE(s.rows() == s.columns(),
         "SymmetricSchurDecomposition: input matrix must be square");
@@ -86,7 +86,7 @@ namespace QuantLib {
           else
             threshold = 0;
 
-		  int j;
+          int j;
           for (j = 0; j < size_-1; j++) {
             for (int k = j+1; k < size_; k++) {
 
@@ -95,15 +95,15 @@ namespace QuantLib {
               if( ite > 5 &&
                   smll < epsPrec_ * QL_FABS(diagonal_[j]) &&
                   smll < epsPrec_ * QL_FABS(diagonal_[k]))
-    	          s[j][k] = 0;
+                  s[j][k] = 0;
               else if (QL_FABS(s[j][k]) > threshold) {
                 heig = diagonal_[k]-diagonal_[j];
                 if ( smll < epsPrec_ * QL_FABS(heig) )
-    	            tang = s[j][k]/heig;
+                    tang = s[j][k]/heig;
                 else {
-    	            beta = 0.5*heig/s[j][k];
-    	            tang = 1/(QL_FABS(beta)+QL_SQRT(1+beta*beta));
-    	            if(beta < 0) tang = -tang;
+                    beta = 0.5*heig/s[j][k];
+                    tang = 1/(QL_FABS(beta)+QL_SQRT(1+beta*beta));
+                    if(beta < 0) tang = -tang;
                 }
                 cosin = 1/QL_SQRT(1+tang*tang);
                 sine = tang*cosin;
@@ -114,18 +114,18 @@ namespace QuantLib {
                 diagonal_[j] -= heig;
                 diagonal_[k] += heig;
                 s[j][k] = 0;
-				int l;
+                int l;
                 for (l = 0; l <= j-1; l++) {
-    	            jacobiRotate(s,rho,sine,l,j,l,k);
+                    jacobiRotate(s,rho,sine,l,j,l,k);
                 }
                 for (l = j+1; l <= k-1; l++) {
-    	            jacobiRotate(s,rho,sine,j,l,l,k);
+                    jacobiRotate(s,rho,sine,j,l,l,k);
                 }
                 for (l = k+1; l < size_; l++) {
-    	            jacobiRotate(s,rho,sine,j,l,k,l);
+                    jacobiRotate(s,rho,sine,j,l,k,l);
                 }
                 for (l = 0; l < size_; l++) {
-    	            jacobiRotate(eigenVectors_,rho,sine,l,j,l,k);
+                    jacobiRotate(eigenVectors_,rho,sine,l,j,l,k);
                 }
               }
             }

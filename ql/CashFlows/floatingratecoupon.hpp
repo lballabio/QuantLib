@@ -45,7 +45,7 @@ namespace QuantLib {
         /*! \warning This class does not perform any date adjustment,
             i.e., the start and end date passed upon construction
             should be already rolled to a business day.
-	    */
+        */
         class FloatingRateCoupon : public Coupon,
                                    public Patterns::Observer {
           public:

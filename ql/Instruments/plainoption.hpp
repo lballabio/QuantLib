@@ -43,12 +43,12 @@ namespace QuantLib {
 
     namespace Instruments {
 
-	class PlainOptionParameters;
+    class PlainOptionParameters;
 
         //! Plain (no dividends, no barriers) option on a single asset
         class PlainOption : public Option {
           public:
-            PlainOption(Option::Type type, 
+            PlainOption(Option::Type type,
                         const RelinkableHandle<MarketElement>& underlying,
                         double strike,
                         const RelinkableHandle<TermStructure>& dividendYield,
@@ -68,7 +68,7 @@ namespace QuantLib {
             double rho() const;
             double dividendRho() const;
             //@}
-            double impliedVolatility(double targetValue, 
+            double impliedVolatility(double targetValue,
                                      double accuracy = 1.0e-4,
                                      size_t maxEvaluations = 100,
                                      double minVol = 1.0e-4,
@@ -89,7 +89,7 @@ namespace QuantLib {
             // helper class for implied volatility calculation
             class ImpliedVolHelper : public ObjectiveFunction {
               public:
-                ImpliedVolHelper(const Handle<OptionPricingEngine>& engine, 
+                ImpliedVolHelper(const Handle<OptionPricingEngine>& engine,
                                  double targetValue);
                 double operator()(double x) const;
               private:

@@ -36,7 +36,7 @@ LIBRARY
     what about barrier or FD with dividends ???
     revisite model/slice interface
 
-    add futures (and convexity adjustment) to the bootstrapping method
+    add futures convexity adjustment
     cash flow stream for IRR, duration
     QuantLib dynamic Win32 library (QuantLib.dll)
     develop C++ unit test suite based on boost

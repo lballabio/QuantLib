@@ -23,7 +23,7 @@
 */
 
 /*! \file helsinki.cpp
-	\brief Helsinki calendar
+    \brief Helsinki calendar
 
     \fullpath
     Calendars/%helsinki.cpp
@@ -35,43 +35,43 @@
 
 namespace QuantLib {
 
-	namespace Calendars {
+    namespace Calendars {
 
-		bool Helsinki::HSKCalendarImpl::isBusinessDay(
-		  const Date& date) const {
-			Weekday w = date.weekday();
-			Day d = date.dayOfMonth(), dd = date.dayOfYear();
-			Month m = date.month();
-			Year y = date.year();
-			Day em = easterMonday(y);
-			if ((w == Saturday || w == Sunday)
-				// New Year's Day
-				|| (d == 1 && m == January)
-				// Epiphany
-				|| (d == 6 && m == January)
-				// Good Friday
-				|| (dd == em-3)
-				// Easter Monday
-				|| (dd == em)
-				// Ascension Thursday
-				|| (dd == em+38)
-				// Labour Day
-				|| (d == 1 && m == May)
-				// Midsummer Eve
-				|| (d == 21 && m == June)
-				// Independence Day
-				|| (d == 6 && m == December)
-				// Christmas Eve
-				|| (d == 24 && m == December)
-				// Christmas
-				|| (d == 25 && m == December)
-				// Boxing Day
-				|| (d == 26 && m == December))
-					return false;
-			return true;
-		}
+        bool Helsinki::HSKCalendarImpl::isBusinessDay(
+          const Date& date) const {
+            Weekday w = date.weekday();
+            Day d = date.dayOfMonth(), dd = date.dayOfYear();
+            Month m = date.month();
+            Year y = date.year();
+            Day em = easterMonday(y);
+            if ((w == Saturday || w == Sunday)
+                // New Year's Day
+                || (d == 1 && m == January)
+                // Epiphany
+                || (d == 6 && m == January)
+                // Good Friday
+                || (dd == em-3)
+                // Easter Monday
+                || (dd == em)
+                // Ascension Thursday
+                || (dd == em+38)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Midsummer Eve
+                || (d == 21 && m == June)
+                // Independence Day
+                || (d == 6 && m == December)
+                // Christmas Eve
+                || (d == 24 && m == December)
+                // Christmas
+                || (d == 25 && m == December)
+                // Boxing Day
+                || (d == 26 && m == December))
+                    return false;
+            return true;
+        }
 
-	}
+    }
 
 }
 

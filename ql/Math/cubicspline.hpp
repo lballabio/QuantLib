@@ -59,7 +59,7 @@ namespace QuantLib {
                 const RandomAccessIterator1& xEnd,
                 const RandomAccessIterator2& yBegin);
             result_type operator()(const argument_type& x) const;
-	    virtual ~CubicSpline() {}
+        virtual ~CubicSpline() {}
           private:
             std::vector<result_type> d2y_;
         };
