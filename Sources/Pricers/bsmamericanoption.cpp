@@ -66,8 +66,8 @@ namespace QuantLib {
 				double numericAmericanValue = valueAtCenter(thePrices);
 				double numericAmericanDelta = firstDerivativeAtCenter(thePrices,theGrid);
 				double numericAmericanGammma = secondDerivativeAtCenter(thePrices,theGrid);
-				model.rollback(thePrices,0.0,-smallDt , 1,americanCondition);
-				double numericAmericanTheta = (numericAmericanValue-valueAtCenter(theEuroPrices))/smallDt;
+				model.rollback(thePrices,0.0,-smallDt, 1);
+				double numericAmericanTheta = (numericAmericanValue-valueAtCenter(thePrices))/smallDt;
 		
 				// 4) combine the results
 				theValue = numericAmericanValue - numericEuroValue + analyticEuroValue;
