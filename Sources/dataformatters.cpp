@@ -25,11 +25,13 @@
 /*! \file dataformatters.cpp
     \brief classes used to format data for output
 
-    $Id$
+    \fullpath Sources/%dataformatters.cpp
 */
 
-// $Source$
 // $Log$
+// Revision 1.23  2001/07/27 07:46:01  nando
+// pruned warnings
+//
 // Revision 1.22  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -58,7 +60,7 @@ namespace QuantLib {
         if (x == Null<double>())
 	    return std::string("null");
         char s[64];
-        sprintf(s,"%*.*lf",(digits>64?64:digits),(precision>64?64:precision),x);
+        sprintf(s,"%*.*f",(digits>64?64:digits),(precision>64?64:precision),x);
         return std::string(s);
     }
 

@@ -25,11 +25,13 @@
 /*! \file bermudanoption.cpp
     \brief Finite-difference evaluation of Bermudan option
 
-    $Id$
+    \fullpath Sources/Pricers/%bermudanoption.cpp
 */
 
-// $Source$
 // $Log$
+// Revision 1.16  2001/07/27 07:46:01  nando
+// pruned warnings
+//
 // Revision 1.15  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -67,10 +69,8 @@ namespace QuantLib {
             stepCondition_ = Handle<StandardStepCondition> ();
         }
 
-        void BermudanOption::executeIntermediateStep(int step) const{
+        void BermudanOption::executeIntermediateStep(int) const{
 
-            // to avoid warning
-            step;
             int size = initialPrices_.size();
             for(int j = 0; j < size; j++)
                 prices_[j] = QL_MAX(prices_[j], initialPrices_[j]);

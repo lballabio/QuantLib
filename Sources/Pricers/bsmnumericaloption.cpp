@@ -25,11 +25,14 @@
 /*! \file bsmnumericaloption.cpp
     \brief common code for numerical option evaluation
 
-    $Id$
+    \fullpath Sources/Pricers/%bsmnumericaloption.cpp
 */
 
 // $Source$
 // $Log$
+// Revision 1.46  2001/07/27 07:46:01  nando
+// pruned warnings
+//
 // Revision 1.45  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -85,7 +88,8 @@ namespace QuantLib {
             return theta_;
         }
 
-        void BSMNumericalOption::setGridLimits(double center, double timeDelay) const {
+        void BSMNumericalOption::setGridLimits(double center,
+                                               double timeDelay) const {
 
             center_ = center;
             double volSqrtTime = volatility_*QL_SQRT(timeDelay);
@@ -133,8 +137,7 @@ namespace QuantLib {
                     initialPrices_[j] = QL_FABS(strike_-grid_[j]);
                 break;
               default:
-                QL_REQUIRE(1 == 0,
-                           "BSMNumericalOption: invalid option type");
+                throw Error("BSMNumericalOption: invalid option type");
             }
         }
 
