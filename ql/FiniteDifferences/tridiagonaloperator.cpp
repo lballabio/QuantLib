@@ -32,12 +32,12 @@ namespace QuantLib {
 
             if (size>=3) {
                 diagonal_      = Array(size);
-                belowDiagonal_ = Array(size-1);
-                aboveDiagonal_ = Array(size-1);
+                lowerDiagonal_ = Array(size-1);
+                upperDiagonal_ = Array(size-1);
             } else if (size==0) {
                 diagonal_      = Array(0);
-                belowDiagonal_ = Array(0);
-                aboveDiagonal_ = Array(0);
+                lowerDiagonal_ = Array(0);
+                upperDiagonal_ = Array(0);
             } else {
                 throw Error("invalid size for tridiagonal operator "
                             "(must be null or >= 3)");
@@ -46,7 +46,7 @@ namespace QuantLib {
 
         TridiagonalOperator::TridiagonalOperator(
             const Array& low, const Array& mid, const Array& high)
-        : diagonal_(mid), belowDiagonal_(low), aboveDiagonal_(high) {
+        : diagonal_(mid), lowerDiagonal_(low), upperDiagonal_(high) {
             QL_ENSURE(low.size() == mid.size()-1,
                 "wrong size for lower diagonal vector");
             QL_ENSURE(high.size() == mid.size()-1,
@@ -61,11 +61,11 @@ namespace QuantLib {
             Array result(size());
 
             // matricial product
-            result[0] = diagonal_[0]*v[0] + aboveDiagonal_[0]*v[1];
+            result[0] = diagonal_[0]*v[0] + upperDiagonal_[0]*v[1];
             for (Size j=1;j<=size()-2;j++)
-                result[j] = belowDiagonal_[j-1]*v[j-1]+ diagonal_[j]*v[j] +
-                    aboveDiagonal_[j]*v[j+1];
-            result[size()-1] = belowDiagonal_[size()-2]*v[size()-2] +
+                result[j] = lowerDiagonal_[j-1]*v[j-1]+ diagonal_[j]*v[j] +
+                    upperDiagonal_[j]*v[j+1];
+            result[size()-1] = lowerDiagonal_[size()-2]*v[size()-2] +
                 diagonal_[size()-1]*v[size()-1];
 
             return result;
@@ -84,11 +84,11 @@ namespace QuantLib {
             result[0] = rhs[0]/bet;
             Size j;
             for (j=1;j<=size()-1;j++){
-                tmp[j]=aboveDiagonal_[j-1]/bet;
-                bet=diagonal_[j]-belowDiagonal_[j-1]*tmp[j];
+                tmp[j]=upperDiagonal_[j-1]/bet;
+                bet=diagonal_[j]-lowerDiagonal_[j-1]*tmp[j];
                 QL_ENSURE(bet != 0.0,
                     "TridiagonalOperator::solveFor: division by zero");
-                result[j] = (rhs[j]-belowDiagonal_[j-1]*result[j-1])/bet;
+                result[j] = (rhs[j]-lowerDiagonal_[j-1]*result[j-1])/bet;
             }
             // cannot be j>=0 with Size j
             for (j=size()-2;j>0;j--)
@@ -124,9 +124,9 @@ namespace QuantLib {
                 err=0.0;
                 for (i=1; i<size()-2 ; i++) {
                     temp = omega * (rhs[i]     -
-                         aboveDiagonal_[i]   * result[i+1]-
+                         upperDiagonal_[i]   * result[i+1]-
                          diagonal_[i]        * result[i] -
-                         belowDiagonal_[i-1] * result[i-1]) / diagonal_[i];
+                         lowerDiagonal_[i-1] * result[i-1]) / diagonal_[i];
                     err += temp * temp;
                     result[i] += temp;
                 }
