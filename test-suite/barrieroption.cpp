@@ -78,7 +78,6 @@ namespace {
 void BarrierOptionTest::testHaugValues() {
 
     double maxErrorAllowed = 1.0e-4;
-    double maxMCErrorAllowed = 1.0e-1;
     double maxStraddleErrorAllowed = 5.0e-2;
 
     double underlyingPrice = 100.0;
@@ -86,13 +85,6 @@ void BarrierOptionTest::testHaugValues() {
     Rate r = 0.08;
     Rate q = 0.04;
     
-    Size timeSteps = 5;
-    bool antitheticVariate = false;
-    bool controlVariate = false;
-    Size requiredSamples = 10000;     
-    double requiredTolerance = 0.02;
-    Size maxSamples = 1000000; 
-    bool isBiased = false;                    
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -283,7 +275,6 @@ void BarrierOptionTest::testBabsiriValues() {
 
     double maxErrorAllowed = 1.0e-5;
     double maxMCErrorAllowed = 1.0e-1;
-    double maxStraddleErrorAllowed = 5.0e-3;
 
     double underlyingPrice = 100.0;
     double rebate = 0.0;
@@ -388,7 +379,6 @@ void BarrierOptionTest::testBeagleholeValues() {
 
     double maxErrorAllowed = 1.0e-3;
     double maxMCErrorAllowed = 1.0e-1;
-    double maxStraddleErrorAllowed = 5.0e-3;
 
     double underlyingPrice = 50.0;
     double rebate = 0.0;

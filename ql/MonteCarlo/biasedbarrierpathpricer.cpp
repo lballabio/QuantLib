@@ -60,7 +60,7 @@ namespace QuantLib {
            
             bool isOptionActive = false;
             double asset_price = underlying_;
-            double log_drift = 0.0, log_random = 0.0;
+            double log_drift, log_random;
             Size i;
 
             switch (barrierType_) {

@@ -65,13 +65,11 @@ namespace QuantLib {
             
             bool isOptionActive = false;
            double asset_price = underlying_;
-            double new_asset_price = 0.0;
-            double x = 0.0;
-            double y = 0.0;            
-            double vol = 0.0;
+            double new_asset_price;
+            double x, y, vol;
             TimeGrid timeGrid = path.timeGrid();
-            Time dt = 0.0;
-            double log_drift = 0.0, log_random = 0.0;            
+            Time dt;
+            double log_drift, log_random;            
             Array u = sequenceGen_.nextSequence().value;
             Size i;
 
