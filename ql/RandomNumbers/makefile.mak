@@ -32,7 +32,7 @@ CC_OPTS        = -vi- -q -c -tWM -n$(OUTPUT_DIR) \
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
 
-TLIB_OPTS    = /P32
+TLIB_OPTS    = /P128
 !ifdef DEBUG
 TLIB_OPTS    = /P128
 !endif

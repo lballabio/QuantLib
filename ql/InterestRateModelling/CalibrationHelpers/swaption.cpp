@@ -60,7 +60,7 @@ namespace QuantLib {
                 else if (indexTenor.units() == Years)
                     frequency = 1/indexTenor.length();
                 else
-                    QL_REQUIRE(0, "index tenor not valid!");
+                    throw Error("index tenor not valid!");
                 Date startDate = termStructure->settlementDate().plus(
                     tenorPeriod.length(),
                     tenorPeriod.units());
@@ -119,7 +119,7 @@ namespace QuantLib {
                     p += termStructure_->discount(endTimes_[i]);
                 Time start = startTimes_[0];
                 double swapRate = exerciseRate_ - swap_->NPV()/swap_->fixedLegBPS();
-                double value = 0.0;
+                double value;
                 if (start>0.0) {
                     Math::CumulativeNormalDistribution f;
                     double d1 = (QL_LOG(swapRate/exerciseRate_)+0.5*sigma*sigma*start)/(sigma*QL_SQRT(start));

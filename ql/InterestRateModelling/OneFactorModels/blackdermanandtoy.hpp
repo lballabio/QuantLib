@@ -40,11 +40,11 @@ namespace QuantLib {
    
     namespace InterestRateModelling { 
 
-        using std::vector;
-
         class BlackDermanAndToy : public OneFactorModel {
           public:
-            BlackDermanAndToy(const RelinkableHandle<TermStructure>& termStructure, unsigned int timeSteps = 1000);
+            BlackDermanAndToy(
+                const RelinkableHandle<TermStructure>& termStructure, 
+                unsigned int timeSteps = 1000);
             virtual ~BlackDermanAndToy() {}
 
             virtual void setParameters(const Array& params) {
@@ -56,8 +56,8 @@ namespace QuantLib {
 
             virtual double discountBond(Time now, Time maturity, Rate r) const;
 
-            virtual double discountBondOption(Option::Type type, double strike,
-                Time maturity, Time bondMaturity) const;
+            virtual double discountBondOption(Option::Type type, 
+                double strike, Time maturity, Time bondMaturity) const;
 
             virtual double stateVariable(Rate r) const {
                 return QL_LOG(r);
@@ -79,8 +79,8 @@ namespace QuantLib {
             class PrivateFunction;
             friend class PrivateFunction;
 
-            vector<double> theta_, u_;
-            vector<vector<double> > statePrices_, discountFactors_;
+            std::vector<double> theta_, u_;
+            std::vector<std::vector<double> > statePrices_, discountFactors_;
             double sigma_;
             double dt_;
             unsigned int timeSteps_;

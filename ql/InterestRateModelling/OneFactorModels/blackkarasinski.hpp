@@ -59,8 +59,8 @@ namespace QuantLib {
             virtual double discountBond(Time now, Time maturity, Rate r) const;
 
             virtual double discountBondOption(Option::Type type, double strike, Time maturity, Time bondMaturity) const {
-                QL_REQUIRE(0, "Not implemented");
-                return 0.0;
+                throw("Not yet implemented");
+                QL_DUMMY_RETURN(0.0);
             }
 
             virtual double stateVariable(Rate r) const {

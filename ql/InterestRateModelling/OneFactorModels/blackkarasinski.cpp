@@ -141,7 +141,7 @@ namespace QuantLib {
                 for (signed j=jMin; j<=jMax; j++) {
                     double x = j*dx;
                     double m = x*QL_EXP(-alpha_*dt_);
-                    k[index] = (signed)round(m/dx);
+                    k[index] = int(m/dx + 0.5);
                     double e = m - k[index]*dx;
                     double e2 = e*e;
 
@@ -207,7 +207,7 @@ namespace QuantLib {
                 for (signed j=jMin; j<=jMax; j++) {
                     double x = j*dx;
                     double m = x*QL_EXP(-alpha_*dt);
-                    k[index] = (signed)round(m/dx);
+                    k[index] = int(m/dx + 0.5);
                     double e = m - k[index]*dx;
                     double e2 = e*e;
 

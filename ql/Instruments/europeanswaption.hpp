@@ -35,7 +35,7 @@
 #define quantlib_instruments_european_swaption_h
 
 #include <vector>
-#include "instrument.hpp"
+#include "ql/instrument.hpp"
 #include "ql/Instruments/simpleswap.hpp"
 #include "ql/InterestRateModelling/model.hpp"
 

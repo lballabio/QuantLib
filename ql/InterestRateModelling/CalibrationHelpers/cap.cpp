@@ -61,7 +61,7 @@ namespace QuantLib {
                 else if (indexTenor.units() == Years)
                     frequency = 1/indexTenor.length();
                 else
-                    QL_REQUIRE(0, "index tenor not valid!");
+                    throw Error("index tenor not valid!");
                 Rate fixedRate = 0.04;//dummy value
                 SimpleSwap swap(
                   false, 
@@ -139,7 +139,7 @@ namespace QuantLib {
                     double tenor = end - start;
                     double p = termStructure_->discount(start);
                     double forward = QL_LOG(p/termStructure_->discount(end))/tenor;
-                    double capletValue = 0.0;
+                    double capletValue;
                     if (start > QL_EPSILON) {
                         double d1 = (QL_LOG(forward/exerciseRate_)+0.5*sigma*sigma*start)/(sigma*QL_SQRT(start));
                         double d2 = d1 - sigma*QL_SQRT(start);

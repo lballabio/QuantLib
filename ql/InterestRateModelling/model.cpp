@@ -19,7 +19,8 @@ namespace QuantLib {
             : model_(model), instruments_(instruments), 
               prices_(instruments.size()) {
                 for (unsigned i=0; i<instruments_.size(); i++)
-                    prices_[i] = instruments_[i]->blackPrice(volatilities[i]);
+                    prices_[i] = 
+                        instruments_[i]->blackPrice(volatilities[i]);
             }
             //! Destructor
             virtual ~CalibrationProblem() {}
@@ -71,7 +72,7 @@ namespace QuantLib {
         };
 
         void Model::calibrate( 
-            const Handle<Minimizer>& minimizer,
+            const Handle<Minimizer>&,
             std::vector<Handle<CalibrationHelper> > instruments,
             std::vector<double> volatilities) {
 

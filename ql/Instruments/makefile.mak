@@ -18,7 +18,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = capfloor.obj$(_D) \
-       europeanoption.obj$(_D) \
+       europeanswaption.obj$(_D) \
        plainoption.obj$(_D) \
        simpleswap.obj$(_D) \
        stock.obj$(_D) \
@@ -37,7 +37,7 @@ CC_OPTS        = -vi- -q -c -tWM -n$(OUTPUT_DIR) \
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
 
-TLIB_OPTS    = /P32
+TLIB_OPTS    = /P128
 !ifdef DEBUG
 TLIB_OPTS    = /P128
 !endif

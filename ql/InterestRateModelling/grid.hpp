@@ -71,7 +71,7 @@ namespace QuantLib {
                 dx_ = (xMax - xMin)/(size()-1);
                 for (unsigned j=0; j<size(); j++)
                     (*this)[j] = xMin + j*dx_;
-                index_ = (unsigned int)round((initialCenter - xMin)/dx_);
+                index_ = (unsigned int)((initialCenter - xMin)/dx_ + 0.5);
             }
             double xMin() {return (*this)[0];}
             double xMax() {return (*this)[size()-1];}

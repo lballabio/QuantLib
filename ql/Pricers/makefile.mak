@@ -21,6 +21,7 @@ OBJS = \
        binaryoption.obj$(_D) \
        bsmnumericaloption.obj$(_D) \
        cliquetoption.obj$(_D) \
+       couponbondoption.obj$(_D) \
        discretegeometricaso.obj$(_D) \
        discretegeometricapo.obj$(_D) \
        dividendamericanoption.obj$(_D) \
@@ -30,9 +31,9 @@ OBJS = \
        europeanengine.obj$(_D) \
        europeanoption.obj$(_D) \
        finitedifferenceeuropean.obj$(_D) \
+       mcbasket.obj$(_D) \
        mcdiscretearithmeticapo.obj$(_D) \
        mcdiscretearithmeticaso.obj$(_D) \
-       mcbasket.obj$(_D) \
        mceuropean.obj$(_D) \
        mceverest.obj$(_D) \
        mchimalaya.obj$(_D) \
@@ -55,7 +56,7 @@ CC_OPTS        = -vi- -q -c -tWM -n$(OUTPUT_DIR) \
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
 
-TLIB_OPTS    = /P32
+TLIB_OPTS    = /P128
 !ifdef DEBUG
 TLIB_OPTS    = /P128
 !endif

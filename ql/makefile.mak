@@ -29,8 +29,12 @@ DAYCOUNTER_LIB   = DayCounters\DayCounters$(_D).lib
 FDM_LIB          = FiniteDifferences\FiniteDifferences$(_D).lib
 INDEXES_LIB      = Indexes\Indexes$(_D).lib
 INSTRUMENTS_LIB  = Instruments\Instruments$(_D).lib
+IRMODELING_LIB   = InterestRateModelling\IRModelling$(_D).lib
+CALIBRATION_LIB  = InterestRateModelling\CalibrationHelpers\CalibrationHelpers$(_D).lib
+ONEFACTOR_LIB    = InterestRateModelling\OneFactorModels\OneFactorModels$(_D).lib
 MATH_LIB         = Math\Math$(_D).lib
 MONTECARLO_LIB   = MonteCarlo\MonteCarlo$(_D).lib
+OPTIMIZATION_LIB = Optimization\Optimization$(_D).lib
 PRICER_LIB       = Pricers\Pricers$(_D).lib
 RNG_LIB          = RandomNumbers\RandomNumbers$(_D).lib
 SOLVER1D_LIB     = Solvers1D\Solvers1D$(_D).lib
@@ -43,8 +47,12 @@ QUANTLIB_OBJS    = $(CORE_OBJS) \
                    $(FDM_LIB) \
                    $(INDEXES_LIB) \
                    $(INSTRUMENTS_LIB) \
+                   $(IRMODELING_LIB) \
+                   $(CALIBRATION_LIB) \
+                   $(ONEFACTOR_LIB) \
                    $(MATH_LIB) \
                    $(MONTECARLO_LIB) \
+                   $(OPTIMIZATION_LIB) \
                    $(PRICER_LIB) \
                    $(RNG_LIB) \
                    $(SOLVER1D_LIB) \
@@ -69,7 +77,7 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
 !endif
 
-TLIB_OPTS    = /P64
+TLIB_OPTS    = /P128
 !ifdef DEBUG
 TLIB_OPTS    = /P256
 !endif
@@ -99,9 +107,17 @@ SubLibraries:
     $(MAKE)
     cd ..\Instruments
     $(MAKE)
-    cd ..\Math
+    cd ..\InterestRateModelling
+    $(MAKE)
+    cd CalibrationHelpers
+    $(MAKE)
+    cd ..\OneFactorModels
+    $(MAKE)
+    cd ..\..\Math
     $(MAKE)
     cd ..\MonteCarlo
+    $(MAKE)
+    cd ..\Optimization
     $(MAKE)
     cd ..\Pricers
     $(MAKE)
@@ -128,9 +144,17 @@ clean::
     $(MAKE) clean
     cd ..\Instruments
     $(MAKE) clean
-    cd ..\Math
+    cd ..\InterestRateModelling
+    $(MAKE) clean
+    cd CalibrationHelpers
+    $(MAKE) clean
+    cd ..\OneFactorModels
+    $(MAKE) clean
+    cd ..\..\Math
     $(MAKE) clean
     cd ..\MonteCarlo
+    $(MAKE) clean
+    cd ..\Optimization
     $(MAKE) clean
     cd ..\Pricers
     $(MAKE) clean

@@ -98,7 +98,7 @@ namespace QuantLib {
                 switch(type) {
                     case Option::Call: return QL_MAX(discountS - strike, 0.0);
                     case Option::Put:  return QL_MAX(strike - discountS, 0.0);
-                    default: QL_REQUIRE(false, "unsupported option type");
+                    default: throw Error("unsupported option type");
                 }
             }
 
@@ -106,8 +106,8 @@ namespace QuantLib {
                 *QL_SQRT(0.5*B(2.0*maturity));
             double d1 = QL_LOG(discountS/(strike*discountT))/sigmaP + sigmaP/2.0;
             double d2 = d1 - sigmaP;
-            double sFactor = 0.0;
-            double tFactor = 0.0;
+            double sFactor;
+            double tFactor;
             Math::CumulativeNormalDistribution f;
             switch(type) {
               case Option::Call:
@@ -119,7 +119,7 @@ namespace QuantLib {
                 tFactor = f(-d2);
                 break;
               default:
-                QL_REQUIRE(false,"Option type not supported");
+                throw Error("unsupported option type");
             }
             return discountS*sFactor + strike*discountT*tFactor;
         }
