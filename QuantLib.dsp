@@ -1900,6 +1900,14 @@ SOURCE=.\ql\diffusionprocess.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\discretizedasset.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\discretizedasset.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\disposable.hpp
 # End Source File
 # Begin Source File
