@@ -178,12 +178,16 @@ namespace QuantLib {
             if (i == 1)
                 return finalIsRegular_;
             else if (i == size()-1)
-                return (stubDate_ == Date());;
+                return (stubDate_ == Date());
+            else
+                return true;
         } else {
             if (i == 1)
                 return (stubDate_ == Date());
             else if (i == size()-1)
                 return finalIsRegular_;
+            else
+                return true;
         }
         QL_DUMMY_RETURN(true);
     }

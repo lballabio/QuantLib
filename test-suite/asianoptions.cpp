@@ -31,7 +31,6 @@
 
 using namespace QuantLib;
 
-
 void AsianOptionTest::testGeometricDiscreteAverage() {
 
     // data from "Implementing Derivatives Model",
@@ -65,7 +64,7 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
         RelinkableHandle<Quote>(rRate), dc));
 
     Handle<PricingEngine> engine(new AnalyticDiscreteAveragingAsianEngine);
-            
+
     Date exDate = reference+360;
     Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
