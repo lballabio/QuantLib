@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.9  2001/06/05 10:53:48  lballabio
+# tab fixed
+#
 # Revision 1.8  2001/06/05 09:35:13  lballabio
 # Updated docs to use Doxygen 1.2.8
 #
@@ -23,4 +26,5 @@ docs-pdf: docs-html
 	$(MAKE) -C latex pdf
 docs-man: docs-html
 docs-clean:
-    rm -Rf html latex man
+	rm -Rf html latex man
+
