@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.11  2001/01/04 11:58:10  lballabio
+	Differential operators added
+
 	Revision 1.10  2000/12/28 15:25:38  marmar
 	QLMNT QuantLib::MonteCarlo::
-
+	
 	Revision 1.9  2000/12/27 17:18:35  lballabio
 	Changes for compiling under Linux and Alpha Linux
 	
@@ -144,11 +147,15 @@
 #include "uniformrandomgenerator.h"
 
 
-// finite difference methods
+// finite difference tools
 #include "backwardeuler.h"
 #include "bsmoperator.h"
 #include "boundarycondition.h"
 #include "cranknicolson.h"
+#include "dminus.h"
+#include "dplus.h"
+#include "dplusdminus.h"
+#include "dzero.h"
 #include "finitedifferencemodel.h"
 #include "forwardeuler.h"
 #include "identity.h"
@@ -193,7 +200,8 @@
 #include "dataformatters.h"
 
 
-/*** shortcuts for the full namespaces - just to get us up and running quickly ***/
+/*** shortcuts for the full namespaces 
+     - just to get us up and running quickly ***/
 
 #define QL    QuantLib::
 #define QLCAL QuantLib::Calendars::

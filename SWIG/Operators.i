@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -47,21 +48,54 @@ using QuantLib::FiniteDifferences::TridiagonalOperator;
 
 class TridiagonalOperator {
   public:
-	// constructors
-	TridiagonalOperator(Array low, Array mid, Array high);
-	// operator interface
-	Array solveFor(Array rhs) const;
-	Array applyTo(Array v) const;
-	// inspectors
-	int size() const;
-	// modifiers
-	void setLowerBC(BoundaryCondition bc);
-	void setHigherBC(BoundaryCondition bc);
-	void setFirstRow(double, double);
-	void setMidRow(int, double, double, double);
-	void setMidRows(double, double, double);
-	void setLastRow(double, double);
+    // constructors
+    TridiagonalOperator(Array low, Array mid, Array high);
+    ~TridiagonalOperator();
+    // operator interface
+    Array solveFor(Array rhs) const;
+    Array applyTo(Array v) const;
+    // inspectors
+    int size() const;
+    // modifiers
+    void setLowerBC(BoundaryCondition bc);
+    void setHigherBC(BoundaryCondition bc);
+    void setFirstRow(double, double);
+    void setMidRow(int, double, double, double);
+    void setMidRows(double, double, double);
+    void setLastRow(double, double);
 };
+
+%{
+using QuantLib::FiniteDifferences::DPlus;
+using QuantLib::FiniteDifferences::DMinus;
+using QuantLib::FiniteDifferences::DZero;
+using QuantLib::FiniteDifferences::DPlusDMinus;
+%}
+
+class DPlus : public TridiagonalOperator {
+  public:
+    DPlus(int gridPoints, double h);
+    ~DPlus();
+};
+
+class DMinus : public TridiagonalOperator {
+  public:
+    DMinus(int gridPoints, double h);
+    ~DMinus();
+};
+
+class DZero : public TridiagonalOperator {
+  public:
+    DZero(int gridPoints, double h);
+    ~DZero();
+};
+
+class DPlusDMinus : public TridiagonalOperator {
+  public:
+    DPlusDMinus(int gridPoints, double h);
+    ~DPlusDMinus();
+};
+
 
 
 #endif
