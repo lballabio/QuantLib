@@ -3,6 +3,7 @@ config.h is installed?
 installer splash screen
 MonteCarloModel refactoring (remove old classes)
 review QuantLib.org
+rename Parities to EuropeanOption
 
 DISTRIBUTING
     RPM package
