@@ -3,3 +3,4 @@ Changes since latest release:
 
 - Added pricing engine for American options with Ju quadratic approximation
 - Reworked the DiscretizedAsset interface
+- Added current coupon to discretized swap and cap/floor
