@@ -35,7 +35,7 @@ namespace QuantLib {
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCBasketEngine  : public BasketEngine,
                             public McSimulation<MultiAsset<RNG>, S> {
-      public:        
+      public:
         // constructor
         MCBasketEngine(Size maxTimeStepsPerYear,
                         bool antitheticVariate = false,
@@ -44,15 +44,15 @@ namespace QuantLib {
                         double requiredTolerance = Null<double>(),
                         Size maxSamples = Null<int>(),
                         long seed = 0);
-            
+
         typedef typename McSimulation<MultiAsset<RNG>,S>::path_generator_type
             path_generator_type;
         typedef typename McSimulation<MultiAsset<RNG>,S>::path_pricer_type
             path_pricer_type;
         typedef typename McSimulation<MultiAsset<RNG>,S>::stats_type
-            stats_type;        
-      
-        void calculate() const;      
+            stats_type;
+
+        void calculate() const;
 
       protected:
         // McSimulation implementation
@@ -94,8 +94,7 @@ namespace QuantLib {
         Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "StulzEngine: "
-                   "non-plain payoff given");
+                   "MCBasketEngineEngine: non-plain payoff given");
         #else
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
@@ -106,43 +105,36 @@ namespace QuantLib {
                         ->zeroYield(arguments_.exercise->lastDate());
         drifts[1] = arguments_.blackScholesProcesses[0]->riskFreeTS
                         ->zeroYield(arguments_.exercise->lastDate());
-        
-        double drift1 = drifts[0];
-        double drift2 = drifts[1];
-
-        double vol2_1 = arguments_.blackScholesProcesses[0]->volTS
-                    ->blackVariance(0.5, strike);
 
         double variance1 = arguments_.blackScholesProcesses[0]->volTS
                     ->blackVariance(arguments_.exercise->lastDate(), strike);
         double variance2 = arguments_.blackScholesProcesses[1]->volTS
-                    ->blackVariance(arguments_.exercise->lastDate(), strike);            
+                    ->blackVariance(arguments_.exercise->lastDate(), strike);
         Size numAssets = 2;
-        Matrix covariance(2,2);       
+        Matrix covariance(2,2);
         covariance[0][0] = variance1;
         covariance[1][1] = variance2;
-        covariance[0][1] = arguments_.correlation * QL_SQRT(variance1) * QL_SQRT(variance2);
+        covariance[0][1] = arguments_.correlation * 
+            QL_SQRT(variance1) * QL_SQRT(variance2);
         covariance[1][0] = covariance[0][1];
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
-        // BB here
 
-
-        std::vector<Handle<DiffusionProcess> >& diffusionProcs =
-                std::vector<Handle<DiffusionProcess> >();        
+        std::vector<Handle<DiffusionProcess> > diffusionProcs;
         for (Size j = 0; j < numAssets; j++) { 
             Handle<DiffusionProcess> bs(new
-                BlackScholesProcess(
-                    arguments_.blackScholesProcesses[j]->riskFreeTS,
-                    arguments_.blackScholesProcesses[j]->dividendTS,
-                    arguments_.blackScholesProcesses[j]->volTS,
-                    arguments_.blackScholesProcesses[j]->stateVariable->value()));
+              BlackScholesProcess(
+                arguments_.blackScholesProcesses[j]->riskFreeTS,
+                arguments_.blackScholesProcesses[j]->dividendTS,
+                arguments_.blackScholesProcesses[j]->volTS,
+                arguments_.blackScholesProcesses[j]->stateVariable->value()));
             diffusionProcs.push_back(bs);
         }
 
         return Handle<path_generator_type>(new
-            path_generator_type(diffusionProcs, drifts, covariance, grid, gen));
+            path_generator_type(diffusionProcs, drifts, 
+                                covariance, grid, gen));
     }
 
     //  MCSimulation interface implementation of 
@@ -164,13 +156,14 @@ namespace QuantLib {
         Size numAssets = 2;
         Array underlying(numAssets, 0.0);
         for (Size i = 0; i < numAssets; i++) {
-            underlying[i] = arguments_.blackScholesProcesses[i]->stateVariable->value();
+            underlying[i] = arguments_.blackScholesProcesses[i]
+                ->stateVariable->value();
         }
 
         return Handle<MCBasketEngine<RNG,S>::path_pricer_type>(new
             EuropeanMultiPathPricer(
                 arguments_.basketType,
-                payoff->optionType(),                
+                payoff->optionType(),
                 payoff->strike(),
                 underlying,
                 arguments_.blackScholesProcesses[0]->riskFreeTS));
@@ -184,9 +177,10 @@ namespace QuantLib {
 
         Time t = arguments_.blackScholesProcesses[0]->riskFreeTS
             ->dayCounter().yearFraction(
-                arguments_.blackScholesProcesses[0]->riskFreeTS->referenceDate(),
+                arguments_.blackScholesProcesses[0]
+                    ->riskFreeTS->referenceDate(),
                 arguments_.exercise->lastDate());
-                
+
         return TimeGrid(t, maxTimeStepsPerYear_);
     }
 
@@ -260,7 +254,6 @@ namespace QuantLib {
             results_.errorEstimate =
                 mcModel_->sampleAccumulator().errorEstimate();
     }
-
 
 }
 

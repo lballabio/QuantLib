@@ -12,8 +12,9 @@ include_HEADERS = \
 	biasedbarrierpathpricer.hpp \
 	binarybarrierpathpricer.hpp \
 	brownianbridge.hpp \
-    cliquetoptionpathpricer.hpp \
+	cliquetoptionpathpricer.hpp \
 	digitalpathpricer.hpp \
+	europeanmultipathpricer.hpp \
 	europeanpathpricer.hpp \
 	everestpathpricer.hpp \
 	geometricapopathpricer.hpp \
@@ -22,7 +23,7 @@ include_HEADERS = \
 	himalayapathpricer.hpp \
 	mctypedefs.hpp \
 	maxbasketpathpricer.hpp \
-    mctraits.hpp \
+	mctraits.hpp \
 	montecarlomodel.hpp \
 	multipath.hpp \
 	multipathgenerator.hpp \
@@ -37,14 +38,15 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libMonteCarlo_la_SOURCES = \
-    arithmeticapopathpricer.cpp \
-    arithmeticasopathpricer.cpp \
+	arithmeticapopathpricer.cpp \
+	arithmeticasopathpricer.cpp \
 	barrierpathpricer.cpp \
 	basketpathpricer.cpp \
 	biasedbarrierpathpricer.cpp \
 	binarybarrierpathpricer.cpp \
-    cliquetoptionpathpricer.cpp \
+	cliquetoptionpathpricer.cpp \
 	digitalpathpricer.cpp \
+	europeanmultipathpricer.cpp \
 	europeanpathpricer.cpp \
 	everestpathpricer.cpp \
 	geometricapopathpricer.cpp \
