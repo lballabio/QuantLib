@@ -28,9 +28,6 @@
 
 namespace QuantLib {
 
-    /*! \bug floating coupons which have already fixed are not included
-             during rollback
-    */
     class DiscretizedSwap : public DiscretizedAsset {
       public:
         DiscretizedSwap(const SimpleSwap::arguments& args)
