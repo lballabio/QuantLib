@@ -172,8 +172,7 @@ namespace QuantLib {
                    ") out of range [0.9, 1.0)");
 
         Real result = gaussianPercentile(percentile);
-        // PotenzialUpSide must be a gain
-        // this means that it has to be MAX(dist(percentile), 0.0)
+        // potential upside must be a gain, i.e., floored at 0.0
         return QL_MAX<Real>(result, 0.0);
     }
 

@@ -168,8 +168,8 @@ namespace QuantLib {
                    DecimalFormatter::toString(centile) +
                    ") out of range [0.9, 1.0)");
 
-        // must be a gain, i.e., floored at 0.0
-        return QL_MAX<Real>(this->topPercentile(1.0-centile), 0.0);
+        // potential upside must be a gain, i.e., floored at 0.0
+        return QL_MAX<Real>(this->percentile(centile), 0.0);
     }
 
     /*! \pre percentile must be in range [90%-100%) */
