@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /Od /Ob2 /I "..\Sources\Math" /I "..\Sources" /I "..\Sources\PDE" /I "..\Sources\Opeators" /I "..\Sources\Solvers1D" /I "..\Sources\Patterns" /I "..\Sources\Pricers" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "QL_RELEASE" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /Od /Ob2 /I "..\Sources" /I "..\Sources\PDE" /I "..\Sources\Operators" /I "..\Sources\Solvers1D" /I "..\Sources\Patterns" /I "..\Sources\Pricers" /I "..\Sources\Math" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "QL_RELEASE" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\Sources" /I "..\Sources\PDE" /I "..\Sources\Opeators" /I "..\Sources\Solvers1D" /I "..\Sources\Patterns" /I "..\Sources\Pricers" /I "..\Sources\Math" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\Sources" /I "..\Sources\PDE" /I "..\Sources\Operators" /I "..\Sources\Solvers1D" /I "..\Sources\Patterns" /I "..\Sources\Pricers" /I "..\Sources\Math" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -311,6 +311,102 @@ SOURCE=..\Sources\Solvers1D\secant.cpp
 SOURCE=..\Sources\Solvers1D\secant.h
 # End Source File
 # End Group
+# Begin Group "Math"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Sources\Math\normaldistribution.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Math\normaldistribution.h
+# End Source File
+# End Group
+# Begin Group "Currencies"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Sources\Currencies\dem.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Currencies\eur.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Currencies\gbp.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Currencies\itl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Currencies\usd.h
+# End Source File
+# End Group
+# Begin Group "Instruments"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Sources\Instruments\stock.h
+# End Source File
+# End Group
+# Begin Group "Patterns"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Sources\Patterns\observable.h
+# End Source File
+# End Group
+# Begin Group "PDE"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Sources\PDE\backwardeuler.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\PDE\boundarycondition.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\PDE\cranknicolson.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\PDE\evolver.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\PDE\finitedifferencemodel.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\PDE\forwardeuler.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\PDE\identity.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\PDE\operator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\PDE\operatortraits.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\PDE\stepcondition.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\Sources\array.h
@@ -329,6 +425,14 @@ SOURCE=..\Sources\currency.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Sources\dataformatters.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\dataformatters.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\date.cpp
 # End Source File
 # Begin Source File
@@ -341,15 +445,15 @@ SOURCE=..\Sources\daycounter.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Sources\deposit.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\discountfactor.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\expressiontemplates.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\formats.h
 # End Source File
 # Begin Source File
 
@@ -365,19 +469,7 @@ SOURCE=..\Sources\instrument.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\normaldistribution.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\normaldistribution.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Sources\null.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\observable.h
 # End Source File
 # Begin Source File
 
@@ -390,6 +482,10 @@ SOURCE=..\Sources\qldefines.h
 # Begin Source File
 
 SOURCE=..\Sources\qlerrors.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\rate.h
 # End Source File
 # Begin Source File
 
@@ -413,19 +509,11 @@ SOURCE=..\Sources\statistics.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\stringconverters.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Sources\swaptionvolsurface.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\termstructure.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\yield.h
 # End Source File
 # End Group
 # End Target
