@@ -126,18 +126,24 @@ namespace QuantLib {
             }
 #else
             // doesn't work for Borland
-            std::copy(eigenVectors_.column_begin(col), eigenVectors_.column_end(col), eigenVector.begin());
+            std::copy(eigenVectors_.column_begin(col),
+                eigenVectors_.column_end(col), eigenVector.begin());
 #endif
             temp[col] = std::make_pair<double, std::vector<double> >(
                 diagonal_[col], eigenVector);
         }
-        std::sort(temp.begin(), temp.end(), std::greater<std::pair<double, std::vector<double> > >());
+        std::sort(temp.begin(), temp.end(),
+            std::greater<std::pair<double, std::vector<double> > >());
         for (col=0; col<size; col++) {
             diagonal_[col] = temp[col].first;
+            double sign = 1.0;
+            if (temp[col].second[0]<0.0)
+                sign = -1.0;
             // doesn't work at all :(
-            // std::copy(eigenVector.begin(), eigenVector.end(), eigenVectors_.column_begin(col));
+            // std::copy(eigenVector.begin(), eigenVector.end(),
+            //    eigenVectors_.column_begin(col));
             for (row=0; row<size; row++) {
-                eigenVectors_[row][col] = temp[col].second[row];
+                eigenVectors_[row][col] = sign * temp[col].second[row];
             }
         }
     }
