@@ -1,7 +1,7 @@
 
 /*
- Copyright (C) 2002 Ferdinando Ametrano
- Copyright (C) 2002 Sad Rejeb
+ Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003 Sad Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

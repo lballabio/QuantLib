@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,7 +41,7 @@ namespace QuantLib {
             <li>Easter Monday</li>
             <li>Ascension</li>
             <li>Whit(Pentecost) Monday </li>
-            <li>Midsummer Day</li>            
+            <li>Midsummer Eve (Friday between June 18-24)</li>            
             <li>New Year's Day, January 1st</li>
             <li>Epiphany, January 6th</li>
             <li>May Day, May 1st</li>

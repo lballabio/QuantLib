@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,14 +44,12 @@ namespace QuantLib {
             <li>Easter Monday</li>
             <li>Ascension Thursday</li>
             <li>Labour Day, May 1st</li>
-            <li>Midsummer Eve, June 21st</li>
+            <li>Midsummer Eve (Friday between June 18-24)</li>
             <li>Independence Day, December 6th</li>
             <li>Christmas Eve, December 24th</li>
             <li>Christmas, December 25th</li>
             <li>Boxing Day, December 26th</li>
             </ul>
-            \note The holiday rules for Wellington were documented by
-            Veli-Pekka Mattila for IDB (http://www.jrefinery.com/ibd/)
         */
         class Helsinki : public Calendar {
           private:

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,26 +44,34 @@ namespace QuantLib {
                 // Family Day 
                 || (dd == em)
                 // Human Rights Day, March 21st (possibly moved to Monday)
-                || ((d == 21 || (d == 22 && w == Monday)) && m == March)
+                || ((d == 21 || ((d == 22 || d == 23) && w == Monday)) 
+                    && m == March)
                 // Freedom Day, April 27th (possibly moved to Monday)
-                || ((d == 27 || (d == 28 && w == Monday)) && m == April)
+                || ((d == 27 || ((d == 28 || d == 29) && w == Monday)) 
+                    && m == April)
                 // Workers Day, May 1st (possibly moved to Monday)
-                || ((d == 1 || (d == 2 && w == Monday)) && m == May)
+                || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) 
+                    && m == May)
                 // Youth Day, June 16th (possibly moved to Monday)
-                || ((d == 16 || (d == 17 && w == Monday)) && m == June)
+                || ((d == 16 || ((d == 17 || d == 18) && w == Monday)) 
+                    && m == June)
                 // National Women's Day, August 9th (possibly moved to Monday)
-                || ((d == 9 || (d == 10 && w == Monday)) && m == August)
+                || ((d == 9 || ((d == 10 || d == 11) && w == Monday)) 
+                    && m == August)
                 // Heritage Day, September 24th (possibly moved to Monday)
-                || ((d == 24 || (d == 25 && w == Monday)) && m == September)
+                || ((d == 24 || ((d == 25 || d == 26) && w == Monday)) 
+                    && m == September)
                 // Day of Reconciliation, December 16th 
                 // (possibly moved to Monday)
-                || ((d == 16 || (d == 17 && w == Monday)) && m == December)
+                || ((d == 16 || ((d == 17 || d == 18) && w == Monday)) 
+                    && m == December)
                 // Christmas 
                 || (d == 25 && m == December)
                 // Day of Goodwill (possibly moved to Monday)
-                || ((d == 26 || (d == 27 && w == Monday)) && m == December)
+                || ((d == 26 || ((d == 27 || d == 28) && w == Monday)) 
+                    && m == December)
                 )
-                    return false;
+                return false;
             return true;
         }
 

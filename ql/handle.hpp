@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,9 +50,14 @@ namespace QuantLib {
                 // cast to the new type - the resulting pointer will
                 // be null if the two types are not compatible
                 to.ptr_  = dynamic_cast<U*>(from.ptr_);
-                to.n_    = from.n_;
-                to.owns_ = from.owns_;
-                (*to.n_)++;
+                if (to.ptr_ != 0) {
+                    to.n_    = from.n_;
+                    to.owns_ = from.owns_;
+                    (*to.n_)++;
+                } else {
+                    to.n_ = new int(1);
+                    to.owns_ = true;
+                }
             }
         }
     };

@@ -1,6 +1,6 @@
 
 /*
-  Copyright (C) 2002 Andre Louw.
+  Copyright (C) 2002, 2003 Andre Louw.
 
   This file is part of QuantLib, a free-software/open-source library
   for financial quantitative analysts and developers - http://quantlib.org/

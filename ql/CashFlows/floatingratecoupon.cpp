@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,8 +52,7 @@ namespace QuantLib {
                        "null term structure set to par coupon");
             Date today = termStructure->todaysDate();
             Date fixingDate = index_->calendar().advance(
-                accrualStartDate_, -fixingDays_, Days,
-                Preceding);
+                accrualStartDate_, -fixingDays_, Days, Preceding);
             if (fixingDate < today) {
                 // must have been fixed
                 Rate pastFixing = XiborManager::getHistory(

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000-2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -67,7 +67,9 @@
     - Caps/floors---in progress;
     - Bonds (IRR/duration)---to do;
     - Treasury yield term structure (Nelson-Siegel/Vasichek-Fong)---to do;
-    - Short-rate models (BDT, BK, HW, etc.)---in progress.
+    - Short-rate models (BDT, BK, HW, etc.)---in progress;
+    - Local volatility models---in progress;
+    - Stochastic volatility---to do.
 
 */
 

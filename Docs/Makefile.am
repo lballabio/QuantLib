@@ -14,7 +14,7 @@ EXTRA_DIST = \
              userman.tex \
              README.txt
 
-TEX_PARAMETERS = buf_size=500000 pool_size=512000 extra_mem_top=263000 extra_mem_bot=263000 max_strings=30000 hash_extra=10000
+TEX_PARAMETERS = buf_size=500000 pool_size=512000 extra_mem_top=512000 extra_mem_bot=512000 max_strings=30000 hash_extra=10000
 
 docs-all: docs-ps docs-pdf
 docs-html: docs-html-offline
@@ -45,6 +45,7 @@ docs-ps: tex-files
 	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
 	cd latex && $(MAKEINDEX) refman
 	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
+	cd latex && $(DVIPS) refman
 docs-man: docs-html
 docs-clean:
 	rm -Rf man

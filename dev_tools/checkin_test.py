@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Copyright (C) 2001 Vladimir Prus. Permission to copy, use, modify, sell and
+# Copyright (C) 2001, 2002, 2003 Vladimir Prus. Permission to copy, use, modify, sell and
 # distribute this software is granted, provided this copyright notice appears
 # in all copies and modified versions are clearly marked as such. This software
 # is provided "as is" without express or implied warranty, and with no claim as

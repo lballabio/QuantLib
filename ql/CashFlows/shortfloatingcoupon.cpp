@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,7 +48,7 @@ namespace QuantLib {
                 "null term structure set to par coupon");
             Date today = index()->termStructure()->todaysDate();
             Date fixingDate = index()->calendar().advance(
-                accrualStartDate_, -fixingDays(), Days);
+                accrualStartDate_, -fixingDays(), Days, Preceding);
             QL_REQUIRE(fixingDate >= today,
                        // must have been fixed
                        // but we have no way to interpolate the fixing yet

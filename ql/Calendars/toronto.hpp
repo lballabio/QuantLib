@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,16 +39,18 @@ namespace QuantLib {
             <li>Saturdays</li>
             <li>Sundays</li>
             <li>New Year's Day, January 1st (possibly moved to Monday)</li>
-            <li>Good Friday</li>            
+            <li>Good Friday</li>
             <li>Easter Monday</li>
             <li>Victoria Day, The Monday on or preceding 24 May</li>
-            <li>Canada Day, July 1st </li>            
+            <li>Canada Day, July 1st (possibly moved to Monday)</li>
             <li>Provincial Holiday, first Monday of August</li>
             <li>Labour Day, first Monday of September</li>
             <li>Thanksgiving Day, second Monday of October</li>
-            <li>Remembrance Day, November 11th </li>
-            <li>Christmas, December 25th </li>
-            <li>Boxing Day, December 26th </li>
+            <li>Remembrance Day, November 11th</li>
+            <li>Christmas, December 25th (possibly moved to Monday or
+                Tuesday)</li>
+            <li>Boxing Day, December 26th (possibly moved to Monday or
+                Tuesday)</li>
             </ul>
         */
         class Toronto : public Calendar {

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,8 +38,7 @@ namespace QuantLib {
             Day em = easterMonday(y);
             if ((w == Saturday || w == Sunday)
                 // New Year's Day (possibly moved to Monday)
-                || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) &&
-                    m == January)
+                || (d == 1  && m == January)
                 // Australia Day, January 26th (possibly moved to Monday)
                 || ((d == 26 || ((d == 27 || d == 28) && w == Monday)) &&
                     m == January)

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,7 +40,7 @@ namespace QuantLib {
                 // New Year's Day (possibly moved to Monday or Tuesday)
                 || ((d == 1 || (d == 3 && (w == Monday || w == Tuesday))) &&
                     m == January)
-                // Day after New Year's Day (possibly Monday or Tuesday)
+                // Day after New Year's Day (possibly moved to Mon or Tuesday)
                 || ((d == 2 || (d == 4 && (w == Monday || w == Tuesday))) &&
                     m == January)
                 // Anniversary Day, Monday nearest January 22nd

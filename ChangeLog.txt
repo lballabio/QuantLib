@@ -1,6 +1,396 @@
+2003-01-01 12:25  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/pages/overview.docs (1.5.2.1), dev_tools/releaseprocess.txt
+	(1.12.10.1): doc review
+
+2002-12-31 19:02  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Volatilities/localvolcurve.hpp (1.1.2.3): fixed typo
+
+2002-12-31 18:54  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* configure.ac (1.4.2.2), dev_tools/version_number.txt (1.26.10.2):
+	updated copyright years fixed version number
+
+2002-12-31 18:40  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* LICENSE.TXT (1.13.22.1),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.25.2.1),
+	Examples/DiscreteHedging/DiscreteHedging.cpp (1.12.8.1),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.27.8.1),
+	Examples/Swap/swapvaluation.cpp (1.33.2.1), ql/argsandresults.hpp
+	(1.7.8.1), ql/array.hpp (1.11.8.1), ql/blackmodel.hpp (1.6.10.1),
+	ql/calendar.cpp (1.10.8.1), ql/calendar.hpp (1.18.8.1),
+	ql/capvolstructures.hpp (1.3.10.1), ql/cashflow.hpp (1.7.26.1),
+	ql/config.ansi.hpp (1.11.4.1), ql/config.bcc.hpp (1.10.4.1),
+	ql/config.msvc.hpp (1.21.4.1), ql/config.mwcw.hpp (1.10.4.1),
+	ql/currency.hpp (1.6.4.1), ql/dataformatters.cpp (1.12.4.1),
+	ql/dataformatters.hpp (1.9.8.1), ql/dataparsers.cpp (1.3.8.1),
+	ql/dataparsers.hpp (1.3.8.1), ql/date.cpp (1.20.10.1), ql/date.hpp
+	(1.17.10.1), ql/daycounter.hpp (1.16.8.1), ql/diffusionprocess.hpp
+	(1.14.10.1), ql/errors.hpp (1.8.26.1), ql/exercise.hpp (1.15.12.1),
+	ql/expressiontemplates.hpp (1.5.26.1), ql/grid.hpp (1.6.8.1),
+	ql/handle.hpp (1.10.8.1), ql/history.hpp (1.11.4.1), ql/index.hpp
+	(1.9.8.1), ql/instrument.hpp (1.11.8.1), ql/marketelement.hpp
+	(1.8.16.1), ql/null.hpp (1.5.26.1), ql/numericalmethod.hpp
+	(1.5.8.1), ql/option.cpp (1.15.8.1), ql/option.hpp (1.11.8.1),
+	ql/pricingengine.hpp (1.3.8.1), ql/qldefines.hpp (1.45.4.2),
+	ql/quantlib.hpp (1.71.2.1), ql/relinkablehandle.hpp (1.10.8.1),
+	ql/riskstatistics.hpp (1.9.8.1), ql/scheduler.cpp (1.9.8.1),
+	ql/scheduler.hpp (1.8.26.1), ql/solver1d.cpp (1.8.10.1),
+	ql/solver1d.hpp (1.8.10.1), ql/swaptionvolstructure.hpp (1.3.10.1),
+	ql/termstructure.hpp (1.27.2.1), ql/types.hpp (1.6.26.1),
+	ql/voltermstructure.cpp (1.4.2.1), ql/voltermstructure.hpp
+	(1.9.2.1), ql/Calendars/budapest.cpp (1.1.6.2),
+	ql/Calendars/budapest.hpp (1.1.6.1), ql/Calendars/frankfurt.cpp
+	(1.10.8.1), ql/Calendars/frankfurt.hpp (1.10.8.1),
+	ql/Calendars/helsinki.cpp (1.9.8.1), ql/Calendars/helsinki.hpp
+	(1.10.8.1), ql/Calendars/johannesburg.cpp (1.3.8.1),
+	ql/Calendars/johannesburg.hpp (1.2.8.2), ql/Calendars/london.cpp
+	(1.10.8.1), ql/Calendars/london.hpp (1.10.8.2),
+	ql/Calendars/milan.cpp (1.9.8.1), ql/Calendars/milan.hpp
+	(1.10.8.1), ql/Calendars/newyork.cpp (1.9.8.1),
+	ql/Calendars/newyork.hpp (1.11.8.1), ql/Calendars/oslo.cpp
+	(1.1.6.1), ql/Calendars/oslo.hpp (1.1.6.1),
+	ql/Calendars/stockholm.cpp (1.1.6.1), ql/Calendars/stockholm.hpp
+	(1.1.6.1), ql/Calendars/sydney.cpp (1.2.8.1),
+	ql/Calendars/sydney.hpp (1.2.8.1), ql/Calendars/target.cpp
+	(1.10.4.1), ql/Calendars/target.hpp (1.11.4.1),
+	ql/Calendars/tokyo.cpp (1.3.8.1), ql/Calendars/tokyo.hpp (1.2.8.1),
+	ql/Calendars/toronto.cpp (1.2.8.2), ql/Calendars/toronto.hpp
+	(1.2.8.2), ql/Calendars/warsaw.cpp (1.1.6.1),
+	ql/Calendars/warsaw.hpp (1.1.6.1), ql/Calendars/wellington.cpp
+	(1.10.8.2), ql/Calendars/wellington.hpp (1.10.8.1),
+	ql/Calendars/zurich.cpp (1.9.8.1), ql/Calendars/zurich.hpp
+	(1.10.8.1), ql/CashFlows/cashflowvectors.cpp (1.16.8.1),
+	ql/CashFlows/cashflowvectors.hpp (1.12.14.1),
+	ql/CashFlows/coupon.hpp (1.10.10.1),
+	ql/CashFlows/fixedratecoupon.hpp (1.12.10.1),
+	ql/CashFlows/floatingratecoupon.cpp (1.14.2.1),
+	ql/CashFlows/floatingratecoupon.hpp (1.20.10.1),
+	ql/CashFlows/shortfloatingcoupon.cpp (1.6.2.1),
+	ql/CashFlows/shortfloatingcoupon.hpp (1.5.10.1),
+	ql/CashFlows/simplecashflow.hpp (1.5.26.1),
+	ql/DayCounters/actual360.hpp (1.10.8.1),
+	ql/DayCounters/actual365.hpp (1.10.8.1),
+	ql/DayCounters/actualactual.cpp (1.16.8.1),
+	ql/DayCounters/actualactual.hpp (1.14.8.1),
+	ql/DayCounters/thirty360.cpp (1.9.8.1),
+	ql/DayCounters/thirty360.hpp (1.13.8.1),
+	ql/FiniteDifferences/americancondition.hpp (1.4.26.1),
+	ql/FiniteDifferences/boundarycondition.cpp (1.1.8.1),
+	ql/FiniteDifferences/boundarycondition.hpp (1.6.8.1),
+	ql/FiniteDifferences/bsmoperator.cpp (1.9.26.1),
+	ql/FiniteDifferences/bsmoperator.hpp (1.9.26.1),
+	ql/FiniteDifferences/cranknicolson.hpp (1.13.8.1),
+	ql/FiniteDifferences/dminus.hpp (1.8.26.1),
+	ql/FiniteDifferences/dplus.hpp (1.8.26.1),
+	ql/FiniteDifferences/dplusdminus.hpp (1.9.26.1),
+	ql/FiniteDifferences/dzero.hpp (1.8.26.1),
+	ql/FiniteDifferences/expliciteuler.hpp (1.9.8.1),
+	ql/FiniteDifferences/fdtypedefs.hpp (1.5.26.1),
+	ql/FiniteDifferences/finitedifferencemodel.hpp (1.13.8.1),
+	ql/FiniteDifferences/impliciteuler.hpp (1.8.8.1),
+	ql/FiniteDifferences/mixedscheme.hpp (1.4.8.1),
+	ql/FiniteDifferences/onefactoroperator.cpp (1.11.14.1),
+	ql/FiniteDifferences/onefactoroperator.hpp (1.11.14.1),
+	ql/FiniteDifferences/shoutcondition.hpp (1.4.26.1),
+	ql/FiniteDifferences/stepcondition.hpp (1.5.26.1),
+	ql/FiniteDifferences/tridiagonaloperator.cpp (1.15.8.1),
+	ql/FiniteDifferences/tridiagonaloperator.hpp (1.17.8.1),
+	ql/FiniteDifferences/valueatcenter.cpp (1.9.26.1),
+	ql/FiniteDifferences/valueatcenter.hpp (1.5.26.1),
+	ql/Indexes/audlibor.hpp (1.5.8.1), ql/Indexes/cadlibor.hpp
+	(1.5.14.1), ql/Indexes/chflibor.hpp (1.3.14.1),
+	ql/Indexes/euribor.hpp (1.9.14.1), ql/Indexes/gbplibor.hpp
+	(1.9.14.1), ql/Indexes/jpylibor.hpp (1.4.14.1),
+	ql/Indexes/usdlibor.hpp (1.9.14.1), ql/Indexes/xibor.cpp
+	(1.10.2.1), ql/Indexes/xibor.hpp (1.13.8.1),
+	ql/Indexes/xibormanager.cpp (1.9.4.1), ql/Indexes/xibormanager.hpp
+	(1.9.4.1), ql/Indexes/zarlibor.hpp (1.3.14.1),
+	ql/Instruments/capfloor.cpp (1.27.2.1), ql/Instruments/capfloor.hpp
+	(1.29.8.1), ql/Instruments/forwardvanillaoption.cpp (1.4.2.1),
+	ql/Instruments/forwardvanillaoption.hpp (1.2.8.1),
+	ql/Instruments/quantovanillaoption.cpp (1.6.2.1),
+	ql/Instruments/quantovanillaoption.hpp (1.2.8.1),
+	ql/Instruments/simpleswap.cpp (1.19.8.1),
+	ql/Instruments/simpleswap.hpp (1.23.14.1), ql/Instruments/stock.cpp
+	(1.6.16.1), ql/Instruments/stock.hpp (1.6.16.1),
+	ql/Instruments/swap.cpp (1.14.2.1), ql/Instruments/swap.hpp
+	(1.10.8.1), ql/Instruments/swaption.cpp (1.23.2.1),
+	ql/Instruments/swaption.hpp (1.21.8.1),
+	ql/Instruments/vanillaoption.cpp (1.7.2.1),
+	ql/Instruments/vanillaoption.hpp (1.6.8.1),
+	ql/Lattices/binomialtree.cpp (1.4.12.1),
+	ql/Lattices/binomialtree.hpp (1.4.12.1), ql/Lattices/bsmlattice.cpp
+	(1.3.8.1), ql/Lattices/bsmlattice.hpp (1.1.12.1),
+	ql/Lattices/lattice.cpp (1.2.8.1), ql/Lattices/lattice.hpp
+	(1.2.10.1), ql/Lattices/lattice2d.cpp (1.1.12.1),
+	ql/Lattices/lattice2d.hpp (1.1.12.1), ql/Lattices/tree.hpp
+	(1.15.10.1), ql/Lattices/trinomialtree.cpp (1.13.4.1),
+	ql/Lattices/trinomialtree.hpp (1.6.12.1),
+	ql/Math/bilinearinterpolation.hpp (1.9.10.1),
+	ql/Math/chisquaredistribution.cpp (1.3.14.1),
+	ql/Math/chisquaredistribution.hpp (1.2.10.1),
+	ql/Math/cubicspline.hpp (1.15.8.1), ql/Math/gammadistribution.cpp
+	(1.2.14.1), ql/Math/gammadistribution.hpp (1.2.10.1),
+	ql/Math/interpolation.hpp (1.12.8.1), ql/Math/interpolation2D.hpp
+	(1.8.10.1), ql/Math/lexicographicalview.hpp (1.6.8.1),
+	ql/Math/linearinterpolation.hpp (1.10.8.1),
+	ql/Math/loglinearinterpolation.hpp (1.11.8.1), ql/Math/matrix.cpp
+	(1.8.26.1), ql/Math/matrix.hpp (1.8.26.1),
+	ql/Math/multivariateaccumulator.cpp (1.13.8.1),
+	ql/Math/multivariateaccumulator.hpp (1.11.24.1),
+	ql/Math/normaldistribution.cpp (1.13.8.1),
+	ql/Math/normaldistribution.hpp (1.10.10.1),
+	ql/Math/riskmeasures.hpp (1.7.10.1), ql/Math/segmentintegral.hpp
+	(1.13.8.1), ql/Math/statistics.cpp (1.5.26.1),
+	ql/Math/statistics.hpp (1.13.8.1), ql/Math/symmetriceigenvalues.hpp
+	(1.5.26.1), ql/Math/symmetricschurdecomposition.cpp (1.6.26.1),
+	ql/Math/symmetricschurdecomposition.hpp (1.5.26.1),
+	ql/MonteCarlo/arithmeticapopathpricer.cpp (1.5.26.1),
+	ql/MonteCarlo/arithmeticapopathpricer.hpp (1.4.26.1),
+	ql/MonteCarlo/arithmeticasopathpricer.cpp (1.5.26.1),
+	ql/MonteCarlo/arithmeticasopathpricer.hpp (1.5.10.1),
+	ql/MonteCarlo/basketpathpricer.cpp (1.17.14.1),
+	ql/MonteCarlo/basketpathpricer.hpp (1.11.26.1),
+	ql/MonteCarlo/cliquetoptionpathpricer.cpp (1.1.8.1),
+	ql/MonteCarlo/cliquetoptionpathpricer.hpp (1.1.8.1),
+	ql/MonteCarlo/europeanpathpricer.cpp (1.12.26.1),
+	ql/MonteCarlo/europeanpathpricer.hpp (1.10.26.1),
+	ql/MonteCarlo/everestpathpricer.cpp (1.13.26.1),
+	ql/MonteCarlo/everestpathpricer.hpp (1.11.26.1),
+	ql/MonteCarlo/geometricapopathpricer.cpp (1.7.26.1),
+	ql/MonteCarlo/geometricapopathpricer.hpp (1.4.26.1),
+	ql/MonteCarlo/geometricasopathpricer.cpp (1.8.26.1),
+	ql/MonteCarlo/geometricasopathpricer.hpp (1.5.10.1),
+	ql/MonteCarlo/getcovariance.cpp (1.8.26.1),
+	ql/MonteCarlo/getcovariance.hpp (1.6.26.1),
+	ql/MonteCarlo/himalayapathpricer.cpp (1.15.26.1),
+	ql/MonteCarlo/himalayapathpricer.hpp (1.11.8.1),
+	ql/MonteCarlo/maxbasketpathpricer.cpp (1.5.26.1),
+	ql/MonteCarlo/maxbasketpathpricer.hpp (1.4.26.1),
+	ql/MonteCarlo/mctypedefs.hpp (1.10.26.1),
+	ql/MonteCarlo/montecarlomodel.hpp (1.17.26.1),
+	ql/MonteCarlo/multipath.hpp (1.11.10.1),
+	ql/MonteCarlo/multipathgenerator.hpp (1.27.8.1),
+	ql/MonteCarlo/pagodapathpricer.cpp (1.12.14.1),
+	ql/MonteCarlo/pagodapathpricer.hpp (1.12.26.1),
+	ql/MonteCarlo/path.hpp (1.9.26.1), ql/MonteCarlo/pathgenerator.hpp
+	(1.21.8.1), ql/MonteCarlo/pathpricer.hpp (1.11.16.1),
+	ql/MonteCarlo/performanceoptionpathpricer.cpp (1.2.8.1),
+	ql/MonteCarlo/performanceoptionpathpricer.hpp (1.1.8.1),
+	ql/MonteCarlo/sample.hpp (1.4.26.1), ql/Optimization/armijo.cpp
+	(1.12.8.1), ql/Optimization/armijo.hpp (1.13.8.1),
+	ql/Optimization/conjugategradient.cpp (1.13.8.1),
+	ql/Optimization/conjugategradient.hpp (1.11.8.1),
+	ql/Optimization/constraint.hpp (1.7.8.1),
+	ql/Optimization/costfunction.hpp (1.14.8.1),
+	ql/Optimization/criteria.hpp (1.10.8.1),
+	ql/Optimization/leastsquare.hpp (1.18.8.1),
+	ql/Optimization/linesearch.hpp (1.12.8.1),
+	ql/Optimization/method.hpp (1.3.8.1), ql/Optimization/problem.hpp
+	(1.4.8.1), ql/Optimization/simplex.cpp (1.6.8.1),
+	ql/Optimization/simplex.hpp (1.8.8.1),
+	ql/Optimization/steepestdescent.cpp (1.11.8.1),
+	ql/Optimization/steepestdescent.hpp (1.13.8.1),
+	ql/Patterns/bridge.hpp (1.1.8.1), ql/Patterns/observable.hpp
+	(1.11.8.1), ql/Pricers/analyticalcapfloor.cpp (1.14.8.1),
+	ql/Pricers/analyticalcapfloor.hpp (1.9.8.1),
+	ql/Pricers/barrieroption.cpp (1.7.26.1),
+	ql/Pricers/barrieroption.hpp (1.7.26.1),
+	ql/Pricers/binaryoption.cpp (1.8.26.1), ql/Pricers/binaryoption.hpp
+	(1.7.26.1), ql/Pricers/blackcapfloor.cpp (1.8.8.1),
+	ql/Pricers/blackcapfloor.hpp (1.5.8.1),
+	ql/Pricers/blackswaption.cpp (1.6.8.1),
+	ql/Pricers/blackswaption.hpp (1.3.8.1),
+	ql/Pricers/capfloorpricer.cpp (1.4.8.1),
+	ql/Pricers/capfloorpricer.hpp (1.5.8.1),
+	ql/Pricers/cliquetoption.cpp (1.11.8.1),
+	ql/Pricers/cliquetoption.hpp (1.9.8.1),
+	ql/Pricers/continuousgeometricapo.hpp (1.6.4.1),
+	ql/Pricers/discretegeometricapo.cpp (1.7.10.1),
+	ql/Pricers/discretegeometricapo.hpp (1.5.26.1),
+	ql/Pricers/discretegeometricaso.cpp (1.7.10.1),
+	ql/Pricers/discretegeometricaso.hpp (1.5.26.1),
+	ql/Pricers/europeanoption.cpp (1.10.4.1),
+	ql/Pricers/europeanoption.hpp (1.11.4.1),
+	ql/Pricers/fdamericanoption.hpp (1.5.8.1),
+	ql/Pricers/fdbermudanoption.cpp (1.3.26.1),
+	ql/Pricers/fdbermudanoption.hpp (1.3.26.1),
+	ql/Pricers/fdbsmoption.cpp (1.6.8.1), ql/Pricers/fdbsmoption.hpp
+	(1.7.8.1), ql/Pricers/fddividendamericanoption.cpp (1.3.26.1),
+	ql/Pricers/fddividendamericanoption.hpp (1.3.26.1),
+	ql/Pricers/fddividendeuropeanoption.cpp (1.4.26.1),
+	ql/Pricers/fddividendeuropeanoption.hpp (1.4.26.1),
+	ql/Pricers/fddividendoption.cpp (1.5.10.1),
+	ql/Pricers/fddividendoption.hpp (1.3.26.1),
+	ql/Pricers/fddividendshoutoption.cpp (1.5.26.1),
+	ql/Pricers/fddividendshoutoption.hpp (1.5.26.1),
+	ql/Pricers/fdeuropean.cpp (1.8.8.1), ql/Pricers/fdeuropean.hpp
+	(1.7.8.1), ql/Pricers/fdmultiperiodoption.cpp (1.9.8.1),
+	ql/Pricers/fdmultiperiodoption.hpp (1.4.26.1),
+	ql/Pricers/fdshoutoption.hpp (1.4.26.1),
+	ql/Pricers/fdstepconditionoption.cpp (1.6.8.1),
+	ql/Pricers/fdstepconditionoption.hpp (1.3.26.1),
+	ql/Pricers/jamshidianswaption.cpp (1.12.8.1),
+	ql/Pricers/jamshidianswaption.hpp (1.9.8.1),
+	ql/Pricers/mcbasket.cpp (1.5.26.1), ql/Pricers/mcbasket.hpp
+	(1.5.26.1), ql/Pricers/mccliquetoption.cpp (1.1.8.1),
+	ql/Pricers/mccliquetoption.hpp (1.1.8.1),
+	ql/Pricers/mcdiscretearithmeticapo.cpp (1.5.26.1),
+	ql/Pricers/mcdiscretearithmeticapo.hpp (1.5.26.1),
+	ql/Pricers/mcdiscretearithmeticaso.cpp (1.6.26.1),
+	ql/Pricers/mcdiscretearithmeticaso.hpp (1.6.26.1),
+	ql/Pricers/mceuropean.cpp (1.6.26.1), ql/Pricers/mceuropean.hpp
+	(1.8.26.1), ql/Pricers/mceverest.cpp (1.9.26.1),
+	ql/Pricers/mceverest.hpp (1.5.26.1), ql/Pricers/mchimalaya.cpp
+	(1.8.26.1), ql/Pricers/mchimalaya.hpp (1.5.26.1),
+	ql/Pricers/mcmaxbasket.cpp (1.5.26.1), ql/Pricers/mcmaxbasket.hpp
+	(1.4.26.1), ql/Pricers/mcpagoda.cpp (1.8.26.1),
+	ql/Pricers/mcpagoda.hpp (1.6.26.1),
+	ql/Pricers/mcperformanceoption.cpp (1.1.8.1),
+	ql/Pricers/mcperformanceoption.hpp (1.1.8.1),
+	ql/Pricers/mcpricer.hpp (1.16.26.1),
+	ql/Pricers/performanceoption.cpp (1.2.8.1),
+	ql/Pricers/performanceoption.hpp (1.1.8.1),
+	ql/Pricers/singleassetoption.cpp (1.16.8.1),
+	ql/Pricers/singleassetoption.hpp (1.16.8.1),
+	ql/Pricers/swaptionpricer.cpp (1.4.8.1),
+	ql/Pricers/swaptionpricer.hpp (1.6.8.1),
+	ql/Pricers/treecapfloor.cpp (1.18.8.1), ql/Pricers/treecapfloor.hpp
+	(1.13.8.1), ql/Pricers/treeswaption.cpp (1.23.8.1),
+	ql/Pricers/treeswaption.hpp (1.16.8.1),
+	ql/PricingEngines/discretizedvanillaoption.cpp (1.3.8.1),
+	ql/PricingEngines/discretizedvanillaoption.hpp (1.3.8.1),
+	ql/PricingEngines/europeananalyticalengine.cpp (1.4.8.1),
+	ql/PricingEngines/europeanbinomialengine.cpp (1.2.8.1),
+	ql/PricingEngines/forwardengines.hpp (1.4.8.1),
+	ql/PricingEngines/forwardperformancevanillaanalyticengine.cpp
+	(1.2.8.1), ql/PricingEngines/forwardvanillaanalyticengine.cpp
+	(1.2.8.1), ql/PricingEngines/genericengine.hpp (1.4.8.1),
+	ql/PricingEngines/latticeshortratemodelengine.hpp (1.1.8.1),
+	ql/PricingEngines/quantoengines.hpp (1.5.8.1),
+	ql/PricingEngines/quantovanillaanalyticengine.cpp (1.5.8.1),
+	ql/PricingEngines/vanillaengines.hpp (1.4.8.1),
+	ql/RandomNumbers/boxmullergaussianrng.hpp (1.6.8.1),
+	ql/RandomNumbers/centrallimitgaussianrng.hpp (1.6.8.1),
+	ql/RandomNumbers/inversecumgaussianrng.hpp (1.3.8.1),
+	ql/RandomNumbers/knuthuniformrng.cpp (1.5.14.1),
+	ql/RandomNumbers/knuthuniformrng.hpp (1.8.14.1),
+	ql/RandomNumbers/lecuyeruniformrng.cpp (1.4.26.1),
+	ql/RandomNumbers/lecuyeruniformrng.hpp (1.5.26.1),
+	ql/RandomNumbers/randomarraygenerator.hpp (1.10.8.1),
+	ql/RandomNumbers/rngtypedefs.hpp (1.10.8.1),
+	ql/ShortRateModels/calibrationhelper.cpp (1.1.14.1),
+	ql/ShortRateModels/calibrationhelper.hpp (1.5.8.1),
+	ql/ShortRateModels/model.cpp (1.8.8.1),
+	ql/ShortRateModels/model.hpp (1.11.4.1),
+	ql/ShortRateModels/onefactormodel.cpp (1.6.8.1),
+	ql/ShortRateModels/onefactormodel.hpp (1.7.8.1),
+	ql/ShortRateModels/parameter.hpp (1.5.8.1),
+	ql/ShortRateModels/twofactormodel.cpp (1.3.8.1),
+	ql/ShortRateModels/twofactormodel.hpp (1.3.12.1),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.7.2.1),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.hpp (1.1.14.1),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.7.2.1),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp
+	(1.1.14.1), ql/ShortRateModels/OneFactorModels/blackkarasinski.cpp
+	(1.5.8.1), ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp
+	(1.4.8.1), ql/ShortRateModels/OneFactorModels/coxingersollross.cpp
+	(1.10.8.1), ql/ShortRateModels/OneFactorModels/coxingersollross.hpp
+	(1.7.12.1),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp
+	(1.6.8.1),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
+	(1.9.8.1), ql/ShortRateModels/OneFactorModels/hullwhite.cpp
+	(1.7.8.1), ql/ShortRateModels/OneFactorModels/hullwhite.hpp
+	(1.9.8.1), ql/ShortRateModels/OneFactorModels/vasicek.cpp
+	(1.4.8.1), ql/ShortRateModels/OneFactorModels/vasicek.hpp
+	(1.4.14.1), ql/ShortRateModels/TwoFactorModels/g2.cpp (1.4.8.1),
+	ql/ShortRateModels/TwoFactorModels/g2.hpp (1.7.8.1),
+	ql/Solvers1D/bisection.cpp (1.6.10.1), ql/Solvers1D/bisection.hpp
+	(1.6.10.1), ql/Solvers1D/brent.cpp (1.7.10.1),
+	ql/Solvers1D/brent.hpp (1.6.10.1), ql/Solvers1D/falseposition.cpp
+	(1.6.10.1), ql/Solvers1D/falseposition.hpp (1.6.10.1),
+	ql/Solvers1D/newton.cpp (1.6.10.1), ql/Solvers1D/newton.hpp
+	(1.6.10.1), ql/Solvers1D/newtonsafe.cpp (1.7.10.1),
+	ql/Solvers1D/newtonsafe.hpp (1.7.10.1), ql/Solvers1D/ridder.cpp
+	(1.6.10.1), ql/Solvers1D/ridder.hpp (1.6.10.1),
+	ql/Solvers1D/secant.cpp (1.6.10.1), ql/Solvers1D/secant.hpp
+	(1.6.10.1), ql/TermStructures/affinetermstructure.cpp (1.8.2.1),
+	ql/TermStructures/affinetermstructure.hpp (1.10.2.1),
+	ql/TermStructures/compoundforward.cpp (1.18.2.1),
+	ql/TermStructures/compoundforward.hpp (1.12.2.1),
+	ql/TermStructures/discountcurve.cpp (1.15.2.1),
+	ql/TermStructures/discountcurve.hpp (1.12.2.1),
+	ql/TermStructures/flatforward.hpp (1.18.2.1),
+	ql/TermStructures/impliedtermstructure.hpp (1.9.2.1),
+	ql/TermStructures/piecewiseflatforward.cpp (1.25.2.1),
+	ql/TermStructures/piecewiseflatforward.hpp (1.23.2.1),
+	ql/TermStructures/ratehelpers.cpp (1.28.2.1),
+	ql/TermStructures/ratehelpers.hpp (1.24.2.1),
+	ql/TermStructures/zerospreadedtermstructure.hpp (1.10.2.1),
+	ql/Utilities/combiningiterator.hpp (1.6.8.1),
+	ql/Utilities/couplingiterator.hpp (1.5.26.1),
+	ql/Utilities/filteringiterator.hpp (1.5.8.1),
+	ql/Utilities/iteratorcategories.hpp (1.5.26.1),
+	ql/Utilities/processingiterator.hpp (1.5.8.1),
+	ql/Utilities/steppingiterator.hpp (1.5.8.1),
+	ql/Volatilities/blackconstantvol.hpp (1.3.8.1),
+	ql/Volatilities/blackvariancecurve.hpp (1.7.8.1),
+	ql/Volatilities/blackvariancesurface.hpp (1.7.8.1),
+	ql/Volatilities/capflatvolvector.hpp (1.3.2.1),
+	ql/Volatilities/localconstantvol.hpp (1.3.2.1),
+	ql/Volatilities/localvolcurve.hpp (1.1.2.2),
+	ql/Volatilities/swaptionvolmatrix.hpp (1.6.10.1),
+	ql/functions/daycounters.cpp (1.3.22.1),
+	ql/functions/daycounters.hpp (1.3.22.1), ql/functions/mathf.cpp
+	(1.9.10.1), ql/functions/mathf.hpp (1.6.10.1),
+	ql/functions/vols.cpp (1.12.2.1), ql/functions/vols.hpp (1.2.8.1):
+	updated copyright years
+
+2002-12-31 18:27  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.nsi (1.75.2.1), Docs/quantlib.doxy (1.55.2.1),
+	dev_tools/version_number.txt (1.26.10.1), ql/Calendars/budapest.cpp
+	(1.1.6.1), ql/Calendars/johannesburg.hpp (1.2.8.1),
+	ql/Calendars/london.hpp (1.10.8.1), ql/Calendars/toronto.cpp
+	(1.2.8.1), ql/Calendars/toronto.hpp (1.2.8.1),
+	ql/Calendars/wellington.cpp (1.10.8.1),
+	ql/Volatilities/localvolcurve.hpp (1.1.2.1): updated/fixed
+	calendars fixed bug in localVolCurve fixed version number
+
+2002-12-19 17:16  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* configure.ac (1.5), ql/qldefines.hpp (1.46): Updated version
+
+2002-12-19 17:02  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* configure.ac (1.4.2.1), ql/qldefines.hpp (1.45.4.1): Updated
+	version
+
+2002-12-19 11:21  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Instruments/swap.cpp (1.14): [no log message]
+
+2002-12-18 12:09  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Volatilities/capflatvolvector.hpp (1.3): Flat backwards
+	extension to t=0
+
+2002-12-16 15:38  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/pages/: authors.docs (1.16), datetime.docs (1.4),
+	findiff.docs (1.6), fixedincome.docs (1.7), index.docs (1.5),
+	install.docs (1.6), instruments.docs (1.6), lattices.docs (1.2),
+	license.docs (1.13), math.docs (1.7), mcarlo.docs (1.10),
+	overview.docs (1.5), usage.docs (1.8), where.docs (1.5): [no log
+	message]
+
 2002-12-16 11:34  Ferdinando Ametrano <ferdinando@ametrano.net>
 
-	* ChangeLog.txt (1.27): updated
+	* ChangeLog.txt (1.27), ChangeLog.txt (1.28): updated
 
 2002-12-16 09:45  Luigi Ballabio <luigi.ballabio@riskmap.net>
 

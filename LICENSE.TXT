@@ -1,7 +1,7 @@
-Copyright (c) 2002 Ferdinando Ametrano
-Copyright (c) 2001, 2002 Nicolas Di Césaré
-Copyright (c) 2001, 2002 Sadruddin Rejeb
-Copyright (c) 2000, 2001, 2002 RiskMap srl
+Copyright (c) 2002, 2003 Ferdinando Ametrano
+Copyright (c) 2001, 2002, 2003 Nicolas Di Césaré
+Copyright (c) 2001, 2002, 2003 Sadruddin Rejeb
+Copyright (c) 2000, 2001, 2002, 2003 RiskMap srl
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

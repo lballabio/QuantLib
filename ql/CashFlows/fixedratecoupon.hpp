@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -79,7 +79,7 @@ namespace QuantLib {
         }
 
         inline double FixedRateCoupon::accruedAmount(const Date& d) const {
-            if (d <= accrualStartDate_ || d >= paymentDate_) {
+            if (d <= accrualStartDate_ || d > paymentDate_) {
                 return 0.0;
             } else {
                 return nominal()*rate_*

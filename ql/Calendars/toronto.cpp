@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,15 +46,15 @@ namespace QuantLib {
                 // The Monday on or preceding 24 May (Victoria Day)
                 || (d > 17 && d <= 24 && w == Monday && m == May)
                 // July 1st, possibly moved to Monday (Canada Day)
-                || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) &&  m == July)
+                || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m==July)
                 // first Monday of August (Provincial Holiday)
                 || (d <= 7 && w == Monday && m == August)
                 // first Monday of September (Labor Day)
                 || (d <= 7 && w == Monday && m == September)
                 // second Monday of October (Thanksgiving Day)
                 || (d > 7 && d <= 14 && w == Monday && m == October)
-                // November 11th (Remembrance Day)
-                || ((d == 11 || (d == 12 && w == Monday)) && m == November)
+                // November 11th
+                || (d == 11 && m == November)
                 // Christmas (possibly moved to Monday or Tuesday)
                 || ((d == 25 || (d == 27 && (w == Monday || w == Tuesday)))
                     && m == December)

@@ -1,12 +1,14 @@
 
-    merge relevant branches, if any
+merge relevant branches, if any
+    review home page
+    Quantlib based extension
     purge headers
     purge warnings
     check for tab
     first ChangeLog update (also python and ruby)
     first update of news and history (also python and ruby)
-    check version number (e.g. 000300f0 and 0.3.0 - no trailing f0 in the latter)
-    branch out of the trunk (also python and ruby)
+check version number (e.g. 000300f0 and 0.3.0 - no trailing f0 in the latter)
+branch out of the trunk (also swig, site, and xl)
     update version number on the trunk
     update QuantLib-site repository (nextrelease, download, etc.)
     update nextrelease.html
@@ -29,8 +31,6 @@
     email quantlib-users, quantlib-announce
     email python-announce
     email math-finance newsletter
-    email python-finance
-    email quantitative finance
     update freshmeat
     update Vault Of Parnassus (http://www.vex.net/parnassus/)
     email finance-and-physics

@@ -8,7 +8,7 @@ AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([ql/config.hpp])
 AM_INIT_AUTOMAKE([foreign])
 
-AC_COPYRIGHT([Copyright (C) 2000, 2001, 2002 RiskMap srl
+AC_COPYRIGHT([Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -106,10 +106,10 @@ esac
 # site configuration
 AC_ARG_ENABLE([early-payments],
               AC_HELP_STRING([--enable-early-payments],
-                             [If enabled (the default), payments are 
-                              considered to be settled at the beginning 
-                              of the day. Therefore, payments occurring 
-                              at today's date are not included in the NPV 
+                             [If enabled (the default), payments are
+                              considered to be settled at the beginning
+                              of the day. Therefore, payments occurring
+                              at today's date are not included in the NPV
                               of an instrument.]),
               [ql_early_payments=$enableval],
               [ql_early_payments=yes])
@@ -119,7 +119,7 @@ if test "$ql_early_payments" = "no" ; then
               of an instrument.])
 else
    AC_DEFINE([QL_EARLY_PAYMENTS],[1],
-             [Define this if payments occurring today should not enter 
+             [Define this if payments occurring today should not enter
               the NPV of an instrument.])
 fi
 

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,8 +49,8 @@ namespace QuantLib {
                 || (dd == em+38)
                 // Labour Day
                 || (d == 1 && m == May)
-                // Midsummer Eve
-                || (d == 21 && m == June)
+                // Midsummer Eve (Friday between June 18-24)
+                || (w == Friday && (d >= 18 && d <= 24) && m == June)
                 // Independence Day
                 || (d == 6 && m == December)
                 // Christmas Eve

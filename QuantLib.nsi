@@ -9,8 +9,7 @@
 
 # $Id$
 
-
-!define VER_NUMBER "0.3.1a1-cvs"
+!define VER_NUMBER "0.3.2a1-cvs"
 
 # HEADER CONFIGURATION COMMANDS
 !ifdef LIGHT
@@ -326,7 +325,6 @@ Section "HTML documentation"
 SectionIn 1 2
   SetOutPath "$INSTDIR\Docs\html"
   File "Docs\html\*.css"
-  File "Docs\html\*.gif"
   File "Docs\html\*.hhc"
   File "Docs\html\*.hhk"
   File "Docs\html\*.hhp"

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000-2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +22,48 @@
 */
 
 /*! \page history Version history
+
+    <strong>Release 0.3.1 - February 4th, 2003</strong>
+
+    FINITE DIFFERENCE FRAMEWORK
+    - partially implemented QuEP 2 (http://quantlib.org/quep.html)
+
+    VOLATILITY FRAMEWORK
+    - added Black and local volatility interface
+
+    PRICING ENGINES FRAMEWORK
+    - partially implemented QuEP 5 (http://quantlib.org/quep.html)
+
+    YIELD TERM STRUCTURE
+    - interface revisited
+    - added discrete time forward methods
+    - added DiscountCurve (loglinear interpolated) and CompoundForward term
+      structures
+    - ForwardSpreadedTermStructure moved under QuantLib::TermStructures
+      namespace
+
+    FIXED INCOME
+    - Modified coupons so that the payment date can be after the end of the
+      accrual period
+
+    MISCELLANEA
+	- added/verified holidays of many calendars
+	- added new calendars
+	- added new currencies
+	- more date formatters
+    - added Period(std::string&)
+    - it is now possible to advance a calandar using a Period
+    - added LogLinear Interpolation
+    - the allowExtrapolation boolean in interpolation classes has been removed
+      from constructors and added to the operator()
+    - Renamed Solver1D::lowBound and hiBound
+    - bug fixes
+
+    BUILD PROCESS
+    - More autoconfiscated time functions and types
+    - Migrated to latest autotools
+    - added patches for Darwin and Solaris
+
 
     <strong>Release 0.3.0 - May 6th, 2002</strong>
 

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002 Ferdinando Ametrano
+ Copyright (C) 2002, 2003 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,7 +33,7 @@ namespace QuantLib {
     namespace VolTermStructures {
 
         //! Local volatility curve derived from a Black curve
-        /*! A LocalVarianceSurface class will be developed in the 
+        /*! A LocalVarianceSurface class will be developed in the
             future with time/asset dependence.
         */
         template<class Interpolator1D>
@@ -44,11 +44,11 @@ namespace QuantLib {
             LocalVolCurve(const Handle<BlackVarianceCurve<
                 Interpolator1D> >& blackVarianceCurve);
             // inspectors
-            Date referenceDate() const { 
-                return blackVarianceCurve_->referenceDate(); 
+            Date referenceDate() const {
+                return blackVarianceCurve_->referenceDate();
             }
-            DayCounter dayCounter() const { 
-                return blackVarianceCurve_->dayCounter(); 
+            DayCounter dayCounter() const {
+                return blackVarianceCurve_->dayCounter();
             }
             Date maxDate() const { return blackVarianceCurve_->maxDate(); }
             // Observer interface
@@ -62,7 +62,7 @@ namespace QuantLib {
 
         template<class Interpolator1D>
         LocalVolCurve<Interpolator1D>::LocalVolCurve(
-            const Handle<BlackVarianceCurve<Interpolator1D> >& 
+            const Handle<BlackVarianceCurve<Interpolator1D> >&
                 blackVarianceCurve)
         : blackVarianceCurve_(blackVarianceCurve) {}
 
@@ -72,7 +72,7 @@ namespace QuantLib {
             notifyObservers();
         }
 
-        /*! The relation 
+        /*! The relation
             \f[
             \int_0^T \sigma_L^2(t)dt = \sigma_B^2 T
             \f]
@@ -86,12 +86,14 @@ namespace QuantLib {
         */
         template<class Interpolator1D>
         double LocalVolCurve<Interpolator1D>::localVolImpl(
-            Time t, double, bool extrapolate) const {
-            
-            double dt = (1.0/365.0),
-                   var1 = blackVarianceCurve_->blackVariance(t,extrapolate),
-                   var2 = blackVarianceCurve_->blackVariance(t+dt,true),
-                   derivative = (var2-var1)/dt;
+            Time t, double strike, bool extrapolate) const {
+
+            double dt = (1.0/365.0);
+            double var1 = blackVarianceCurve_->blackVariance(t, strike,
+                extrapolate);
+            double var2 = blackVarianceCurve_->blackVariance(t+dt, strike,
+                true);
+            double derivative = (var2-var1)/dt;
             return QL_SQRT(derivative);
         }
 

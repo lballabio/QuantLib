@@ -1,13 +1,20 @@
 
-2002-XX-XX Release 0.3.1
+2002-02-04 Release 0.3.1
 Changes since Release 0.3.0:
-- Library:
+    FINITE DIFFERENCE FRAMEWORK
+    - partially implemented QuEP 2 (http://quantlib.org/quep.html)
+
+    VOLATILITY FRAMEWORK
+    - added Black and local volatility interface
+
+    PRICING ENGINES FRAMEWORK
+    - partially implemented QuEP 5 (http://quantlib.org/quep.html)
+
     YIELD TERM STRUCTURE
+    - interface revisited
     - added discrete time forward methods
-    - added DiscountCurve (loglinear interpolated) and CoumpondForward term
+    - added DiscountCurve (loglinear interpolated) and CompoundForward term
       structures
-    - the pair {calendar, settlementDays} has been replaced by settlementDate
-      in the constructors
     - ForwardSpreadedTermStructure moved under QuantLib::TermStructures
       namespace
 
@@ -15,15 +22,23 @@ Changes since Release 0.3.0:
     - Modified coupons so that the payment date can be after the end of the
       accrual period
 
-	 MISCELLANEA
+    MISCELLANEA
+	- added/verified holidays of many calendars
+	- added new calendars
+	- added new currencies
+	- more date formatters
     - added Period(std::string&)
     - it is now possible to advance a calandar using a Period
     - added LogLinear Interpolation
-    - the allowExtrapolation boolen in interpolation classes has been removed
-      from constructirs and added to the operator()
-    - More autoconfiscated time functions and types
+    - the allowExtrapolation boolean in interpolation classes has been removed
+      from constructors and added to the operator()
     - Renamed Solver1D::lowBound and hiBound
     - bug fixes
+
+    BUILD PROCESS
+    - More autoconfiscated time functions and types
+    - Migrated to latest autotools
+    - added patches for Darwin and Solaris
 
 
 2002-05-06 Release 0.3.0

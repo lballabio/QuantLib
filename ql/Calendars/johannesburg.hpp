@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,6 +36,7 @@ namespace QuantLib {
         //! %Johannesburg calendar
         /*! Holidays:
             <ul>
+            <li>Saturdays</li>
             <li>Sundays</li>
             <li>New Year's Day, January 1st (possibly moved to Monday)</li>
             <li>Good Friday</li>
@@ -44,10 +45,10 @@ namespace QuantLib {
             <li>Freedom Day, April 27th (possibly moved to Monday)</li>
             <li>Workers Day, May 1st (possibly moved to Monday)</li>
             <li>Youth Day, June 16th (possibly moved to Monday)</li>
-            <li>National Women's Day, August 9th 
+            <li>National Women's Day, August 9th
                 (possibly moved to Monday)</li>
             <li>Heritage Day, September 24th (possibly moved to Monday)</li>
-            <li>Day of Reconciliation, December 16th 
+            <li>Day of Reconciliation, December 16th
                 (possibly moved to Monday)</li>
             <li>Christmas December 25th </li>
             <li>Day of Goodwill December 26th (possibly moved to Monday)</li>

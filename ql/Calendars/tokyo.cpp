@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000-2003 RiskMap srl
  Copyright (C) 2003 Kawanishi Tomoya
 
  This file is part of QuantLib, a free-software/open-source library
@@ -88,7 +88,8 @@ namespace QuantLib {
                     && y < 2003)
                 // If a single day falls between Respect for the Aged Day
                 // and the Autumnal Equinox, it is holiday
-                || (w == Tuesday && d+1 == ae && d >= 16 && d <= 22 && m == September && y >= 2003)
+                || (w == Tuesday && d+1 == ae && d >= 16 && d <= 22 
+                    && m == September && y >= 2003)
                 // Autumnal Equinox 
                 || ((d == ae || (d == ae+1 && w == Monday)) && m == September)
                 // Health and Sports Day (2nd Monday in October),
