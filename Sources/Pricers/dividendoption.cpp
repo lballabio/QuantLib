@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.12  2001/05/22 13:30:37  marmar
+    sMin_ and sMax_ are computed in a different way now
+
     Revision 1.11  2001/04/26 16:05:42  marmar
     underlying_ not mutable anymore, setGridLimits accepts the value for center
 
@@ -76,6 +79,7 @@
 #include "ql/Pricers/dividendeuropeanoption.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
 #include "ql/dataformatters.hpp"
+#include <vector>
 
 namespace QuantLib {
 
@@ -123,21 +127,15 @@ namespace QuantLib {
         }
 
         void DividendOption::executeIntermediateStep(int step) const{
+
+            double newSMin = sMin_ + dividends_[step];
+            setGridLimits(center_ + dividends_[step], dates_[step]);
+            if (newSMin > sMin_){
+                sMin_ = newSMin;
+                sMax_ = center_/(sMin_/center_);
+            }
             Array oldGrid = grid_ + dividends_[step];
             
-            double center = underlying_;
-            for (int k = step; k < dividends_.size(); k++)
-                center += dividends_[k];
-            /*
-            Here something wierd happens: if residualTime_ is updated,
-            >>> residualTime_ = dates_[step];            
-            the new grid should be superior. However, it can be shown
-            that this extra step degrades the option price. The reason
-            for this is still unclear.  
-            Is it because of the special choices made in setGridLimits(),
-            i.e. beacuse of the variable "prefactor" introduced?
-            */
-            setGridLimits(center);
             initializeGrid();    
             initializeInitialCondition();
             // This operation was faster than the obvious:
@@ -151,15 +149,37 @@ namespace QuantLib {
             stepCondition_ -> applyTo(prices_, dates_[step]);
         }
 
-        void DividendOption::movePricesBeforeExDiv(Array& prices,
-                                                   const Array& newGrid, 
-                                                   const Array& oldGrid) const {
-            Array vOldGrid(oldGrid);
-            CubicSpline<Array::iterator, Array::iterator> priceSpline(
-                vOldGrid.begin(), vOldGrid.end(), prices.begin());
+        void DividendOption::movePricesBeforeExDiv(
+                Array& prices, const Array& newGrid, 
+                               const Array& oldGrid) const {
 
-            for (int j = 0; j < prices.size(); j++)
-                prices[j] = priceSpline(newGrid[j]);
+            int j, gridSize = oldGrid.size();
+
+            std::vector<double> logOldGrid(0);
+            std::vector<double> tmpPrices(0);
+
+            for(j = 0; j<gridSize; j++){
+                double p = prices[j];
+                double g = oldGrid[j];
+                if (g > 0){
+                    logOldGrid.push_back(QL_LOG(g));
+                    tmpPrices.push_back(p);
+                }
+            }
+
+            CubicSpline<Array::iterator, Array::iterator> priceSpline(
+                logOldGrid.begin(), logOldGrid.end(), tmpPrices.begin());
+
+            int jGrid;
+            for (j = 0; j < gridSize; j++){
+                if (newGrid[j] >= oldGrid[gridSize-2] )
+                    jGrid = gridSize-2;
+                else 
+                    jGrid = j;
+                double logNewGridPoint = QL_LOG(newGrid[jGrid]);                
+                prices[j] = priceSpline(logNewGridPoint);
+            }
+
         }
 
     }
