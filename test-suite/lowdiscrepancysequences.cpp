@@ -309,20 +309,20 @@ void LDSTest::testHalton() {
 
 void LDSTest::testDiscrepancy() {
 
-    const double discrRandDim2[]   = { 0.0116518781661380};
-    const double discrRandDim3[]   = {0.00927283};
-    const double discrRandDim5[]   = {0.00515021};
-    const double discrRandDim10[]  = {0.000968531};
-    const double discrRandDim15[]  = {0.000172521};
-    const double discrRandDim30[]  = {9.54138e-007};
-    const double discrRandDim50[]  = {9.31778e-010};
-    const double discrRandDim100[] = {2.77691e-017};
+    const double discrRandDim2[]   = { 0.0116519,  0.00823711, 0.0058238,  0.0041178,  0.00291164, 0.00205881, 0.00145578};
+    const double discrRandDim3[]   = { 0.00927283, 0.00655528, 0.00463471, 0.00327704, 0.00231714, 0.00163844};
+    const double discrRandDim5[]   = { 0.00515021};
+    const double discrRandDim10[]  = { 0.000968531};
+    const double discrRandDim15[]  = { 0.000172521};
+    const double discrRandDim30[]  = { 9.54138e-007};
+    const double discrRandDim50[]  = { 9.31778e-010};
+    const double discrRandDim100[] = { 2.77691e-017};
     const double * const discrRand[8] = { discrRandDim2,  discrRandDim3,
         discrRandDim5,  discrRandDim10, discrRandDim15, discrRandDim30,
         discrRandDim50, discrRandDim100 };
 
-    const double discrMersDim2[]   = { 0.00884306};
-    const double discrMersDim3[]   = { 0.00701655};
+    const double discrMersDim2[]   = { 0.00884306, 0.00542034, 0.00522887, 0.00447229, 0.00475131, 0.00310862, 0.00297139};
+    const double discrMersDim3[]   = { 0.00701655, 0.00494472, 0.00482102, 0.00490607, 0.00333076, 0.00279909};
     const double discrMersDim5[]   = { 0.00428155};
     const double discrMersDim10[]  = { 0.000883079};
     const double discrMersDim15[]  = { 0.000163131};
@@ -333,8 +333,8 @@ void LDSTest::testDiscrepancy() {
         discrMersDim5,  discrMersDim10, discrMersDim15, discrMersDim30,
         discrMersDim50, discrMersDim100 };
 
-    const double discrHaltDim2[]   = { 0.00125753};
-    const double discrHaltDim3[]   = { 0.00162592};
+    const double discrHaltDim2[]   = { 0.00125753, 0.000673163, 0.000334633, 0.000190806, 0.000111483, 5.05162e-005, 2.42083e-005};
+    const double discrHaltDim3[]   = { 0.00162592, 0.000961606, 0.00048284,  0.000266769, 0.000140542, 7.63577e-005};
     const double discrHaltDim5[]   = { 0.00193329};
     const double discrHaltDim10[]  = { 0.00123382};
     const double discrHaltDim15[]  = { 0.000574585};
@@ -345,8 +345,8 @@ void LDSTest::testDiscrepancy() {
         discrHaltDim5,  discrHaltDim10, discrHaltDim15, discrHaltDim30,
         discrHaltDim50, discrHaltDim100 };
 
-    const double discrSoboDim2[]   = { 0.000832648};
-    const double discrSoboDim3[]   = { 0.00120968};
+    const double discrSoboDim2[]   = { 0.000832648, 0.000431559, 0.000223876, 0.000111926, 5.69138e-005, 2.14101e-005}; // the last one is -1.#IND ???
+    const double discrSoboDim3[]   = { 0.00120968,  0.00063685,  0.000339578, 0.000174813, 9.21381e-005, 4.79305e-005};
     const double discrSoboDim5[]   = { 0.0201095};
     const double discrSoboDim10[]  = { 0.00167361};
     const double discrSoboDim15[]  = { 0.000315283};
@@ -357,8 +357,8 @@ void LDSTest::testDiscrepancy() {
         discrSoboDim5,  discrSoboDim10, discrSoboDim15, discrSoboDim30,
         discrSoboDim50, discrSoboDim100 };
 
-    const double discrUnSoDim2[]   = { 0.000832648};
-    const double discrUnSoDim3[]   = { 0.00120968};
+    const double discrUnSoDim2[]   = { 0.000832648, 0.000431559, 0.000223876, 0.000111926, 5.69138e-005, 2.14101e-005}; // the last one is -1.#IND ???
+    const double discrUnSoDim3[]   = { 0.00120968,  0.00063685,  0.000339578, 0.000174813, 9.21381e-005, 4.79305e-005};
     const double discrUnSoDim5[]   = { 0.0119804};
     const double discrUnSoDim10[]  = { 0.00124387};
     const double discrUnSoDim15[]  = { 0.0001963648626249};
@@ -376,7 +376,7 @@ void LDSTest::testDiscrepancy() {
     unsigned long seed = 123456;
     double trueRandomFactor;
 
-    std::ofstream outStream("discrepancy.txt");
+    std::ofstream outStream("discrepancyDim100.txt");
     for (int i = 0; i<8; i++) {
         dim = dimensionality[i];
         trueRandomFactor = (1.0/QL_POW(2.0, int(dim))
@@ -397,10 +397,10 @@ void LDSTest::testDiscrepancy() {
         double tolerance=1e-4;
 
         Size k = 0;
-        Size jMin = 10;
+        Size sampleLoops, jMin = 10;
         // it would take too long for usual/frequent test running
-//        Size sampleLoops = 7;
-        Size sampleLoops = 1;
+//        sampleLoops = 7;
+        sampleLoops = 1;
         for (int j=jMin; j<jMin+sampleLoops; j++) {
             Size points = Size(QL_POW(2.0, j))-1;
             for (; k<points; k++) {
@@ -413,6 +413,7 @@ void LDSTest::testDiscrepancy() {
                 point = unS.nextSequence().value;
                 unSStat.add(point);
             }
+
             ranDiscr = QL_SQRT(trueRandomFactor/points);
             if (QL_FABS(ranDiscr-discrRand[i][j-jMin])>tolerance*ranDiscr) {
                 CPPUNIT_FAIL("True random discrepancy dimension " +
