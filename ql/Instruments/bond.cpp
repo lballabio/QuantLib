@@ -18,6 +18,7 @@
 #include <ql/Instruments/bond.hpp>
 #include <ql/settings.hpp>
 #include <ql/CashFlows/coupon.hpp>
+#include <ql/TermStructures/flatforward.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
@@ -28,8 +29,15 @@ namespace QuantLib {
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
                    const boost::shared_ptr<CashFlow>& redemption,
                    Rate yield,
+                   Compounding compounding,
+                   Frequency frequency,
                    const DayCounter& dayCounter,
                    const Date& settlement) {
+
+            if (frequency == NoFrequency || frequency == Once)
+                frequency = Annual;
+
+            InterestRate y(yield, dayCounter, compounding, frequency);
 
             Real price = 0.0;
             DiscountFactor discount = 1.0;
@@ -44,9 +52,8 @@ namespace QuantLib {
                 #endif
                     continue;
 
-                Date nextDate = cashflows[i]->date();
+                Date couponDate = cashflows[i]->date();
                 Real amount = cashflows[i]->amount();
-                Time t1, t2;
                 if (lastDate == Date()) {
                     // first not-expired coupon
                     if (i > 0) {
@@ -57,34 +64,36 @@ namespace QuantLib {
                         if (coupon)
                             lastDate = coupon->accrualStartDate();
                         else
-                            lastDate = nextDate - 1*Years;
+                            lastDate = couponDate - 1*Years;
                     }
-                    t1 = dayCounter.yearFraction(settlement, nextDate,
-                                                 lastDate, nextDate);
-                    t2 = dayCounter.yearFraction(lastDate, nextDate);
+                    discount *= y.discountFactor(settlement,couponDate,
+                                                 lastDate, couponDate);
                 } else  {
-                    t1 = t2 = dayCounter.yearFraction(lastDate, nextDate);
+                    discount *= y.discountFactor(lastDate, couponDate);
+                }
+                lastDate = couponDate;
+
+                price += amount * discount;
+            }
+
+            #if QL_TODAYS_PAYMENTS
+            if (redemption->date() >= settlement) {
+            #else
+            if (redemption->date() > settlement) {
+            #endif
+                Date redemptionDate = redemption->date();
+                Real amount = redemption->amount();
+                if (lastDate == Date()) {
+                    // no coupons
+                    lastDate = redemptionDate - 1*Years;
+                    discount *= y.discountFactor(settlement,redemptionDate,
+                                                 lastDate, redemptionDate);
+                } else {
+                    discount *= y.discountFactor(lastDate, redemptionDate);
                 }
 
-                discount /= std::pow(1 + yield*t2, t1/t2);
                 price += amount * discount;
-                lastDate = nextDate;
             }
-
-            Date nextDate = redemption->date();
-            Real amount = redemption->amount();
-            Time t1, t2;
-            if (lastDate == Date()) {
-                // no coupons
-                lastDate = nextDate - 1*Years;
-                t1 = dayCounter.yearFraction(settlement, nextDate,
-                                             lastDate, nextDate);
-                t2 = dayCounter.yearFraction(lastDate, nextDate);
-            } else {
-                t1 = t2 = dayCounter.yearFraction(lastDate, nextDate);
-            }
-            discount /= std::pow(1 + yield*t2, t1/t2);
-            price += amount * discount;
 
             return price;
         }
@@ -96,14 +105,17 @@ namespace QuantLib {
                    const boost::shared_ptr<CashFlow>& redemption,
                    Real dirtyPrice,
                    const DayCounter& dayCounter,
+                   Frequency frequency,
                    const Date& settlement)
             : cashflows_(cashflows), redemption_(redemption),
               dirtyPrice_(dirtyPrice), dayCounter_(dayCounter),
-              settlement_(settlement) {}
+              frequency_(frequency), settlement_(settlement) {}
             Real operator()(Real yield) const {
                 return dirtyPrice_ - dirtyPriceFromYield(cashflows_,
                                                          redemption_,
                                                          yield,
+                                                         Compounded,
+                                                         frequency_,
                                                          dayCounter_,
                                                          settlement_);
             }
@@ -112,6 +124,7 @@ namespace QuantLib {
             boost::shared_ptr<CashFlow> redemption_;
             Real dirtyPrice_;
             DayCounter dayCounter_;
+            Frequency frequency_;
             Date settlement_;
         };
 
@@ -145,7 +158,8 @@ namespace QuantLib {
         if (settlement == Date())
             settlement = settlementDate();
         return dirtyPriceFromYield(cashFlows_, redemption_, yield,
-                                   dayCount_, settlement);
+                                   Compounded, frequency_, dayCount_,
+                                   settlement);
     }
 
     Real Bond::yield(Real cleanPrice, Date settlement,
@@ -156,7 +170,7 @@ namespace QuantLib {
         solver.setMaxEvaluations(maxEvaluations);
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
         YieldFinder objective(cashFlows_, redemption_, dirtyPrice,
-                              dayCount_, settlement);
+                              dayCount_, frequency_, settlement);
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
 

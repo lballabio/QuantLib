@@ -78,8 +78,10 @@ namespace QuantLib {
         }
 
         //! discount factor implied by the rate compounded between two dates
-        DiscountFactor discountFactor(const Date& d1, const Date& d2) const {
-            Time t = dc_.yearFraction(d1, d2);
+        DiscountFactor discountFactor(const Date& d1, const Date& d2,
+                                      const Date& refStart = Date(),
+                                      const Date& refEnd = Date()) const {
+            Time t = dc_.yearFraction(d1, d2, refStart, refEnd);
             return discountFactor(t);
         }
 
@@ -96,8 +98,10 @@ namespace QuantLib {
         /*! returns the compound (a.k.a capitalization) factor
             implied by the rate compounded between two dates.
         */
-        Real compoundFactor(const Date& d1, const Date& d2) const {
-            Time t = dc_.yearFraction(d1, d2);
+        Real compoundFactor(const Date& d1, const Date& d2,
+                            const Date& refStart = Date(),
+                            const Date& refEnd = Date()) const {
+            Time t = dc_.yearFraction(d1, d2, refStart, refEnd);
             return compoundFactor(t);
         }
         //@}
