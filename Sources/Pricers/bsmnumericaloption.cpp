@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.50  2001/08/28 14:47:46  nando
+// unsigned int instead of int
+//
 // Revision 1.49  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -66,7 +69,7 @@ namespace QuantLib {
         BSMNumericalOption::BSMNumericalOption(BSMNumericalOption::Type type,
             double underlying, double strike, Rate dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
-            int gridPoints)
+            unsigned int gridPoints)
         : SingleAssetOption(type, underlying, strike, dividendYield, riskFreeRate,
             residualTime, volatility),
             gridPoints_(safeGridPoints(gridPoints, residualTime)),
@@ -126,13 +129,13 @@ namespace QuantLib {
             gridLogSpacing_ = (QL_LOG(sMax_)-QL_LOG(sMin_))/(gridPoints_-1);
             double edx = QL_EXP(gridLogSpacing_);
             grid_[0] = sMin_;
-            int j;
+            unsigned int j;
             for (j=1; j<gridPoints_; j++)
                 grid_[j] = grid_[j-1]*edx;
         }
 
         void BSMNumericalOption::initializeInitialCondition() const {
-            int j;
+            unsigned int j;
             switch (type_) {
               case Call:
                 for(j = 0; j < gridPoints_; j++)

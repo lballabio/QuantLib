@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.17  2001/08/28 14:47:46  nando
+// unsigned int instead of int
+//
 // Revision 1.16  2001/08/21 16:42:12  nando
 // european option optimization
 //
@@ -77,7 +80,7 @@ namespace QuantLib {
           public:
             BSMNumericalOption(Type type, double underlying, double strike,
                 Rate dividendYield, Rate riskFreeRate, Time residualTime,
-                double volatility, int gridPoints);
+                double volatility, unsigned int gridPoints);
             // accessors
             virtual void calculate() const = 0;
             double value() const;
@@ -93,7 +96,7 @@ namespace QuantLib {
             virtual void initializeInitialCondition() const;
             virtual void initializeOperator() const;
             // input data
-            int gridPoints_;
+            unsigned int gridPoints_;
             // results
             mutable double value_, delta_, gamma_, theta_;
 
@@ -105,7 +108,7 @@ namespace QuantLib {
           private:
             // temporaries
             mutable double gridLogSpacing_;
-            int safeGridPoints(int gridPoints, Time residualTime);
+            unsigned int safeGridPoints(unsigned int gridPoints, Time residualTime);
         };
 
         //! This is a safety check to be sure we have enough grid points.
@@ -115,12 +118,12 @@ namespace QuantLib {
 
         // The following is a safety check to be sure we have enough grid
         // points.
-        inline int BSMNumericalOption::safeGridPoints(int gridPoints,
+        inline unsigned int BSMNumericalOption::safeGridPoints(unsigned int gridPoints,
                                                       Time residualTime) {
-            return QL_MAX(gridPoints,
-              residualTime>1.0 ? int(QL_NUM_OPT_MIN_GRID_POINTS +
-              (residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR) :
-              QL_NUM_OPT_MIN_GRID_POINTS);
+            return QL_MAX(gridPoints, residualTime>1.0 ?
+                static_cast<unsigned int>(
+                (QL_NUM_OPT_MIN_GRID_POINTS +(residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR))
+                : QL_NUM_OPT_MIN_GRID_POINTS);
         }
 
     }

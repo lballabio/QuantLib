@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/28 14:47:46  nando
+// unsigned int instead of int
+//
 // Revision 1.11  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -73,10 +76,14 @@ namespace QuantLib {
         class FiniteDifferenceEuropean : public BSMNumericalOption {
           public:
             FiniteDifferenceEuropean(Type type,
-                 double underlying, double strike,
-                 Rate dividendYield, Rate riskFreeRate,
-                 Time residualTime, double volatility,
-                 int timeSteps = 200, int gridPoints = 800);
+                                     double underlying,
+                                     double strike,
+                                     Rate dividendYield,
+                                     Rate riskFreeRate,
+                                     Time residualTime,
+                                     double volatility,
+                                     unsigned int timeSteps = 200,
+                                     unsigned int gridPoints = 800);
            	Array getPrices() const;
             Handle<SingleAssetOption> clone() const{
                 return Handle<SingleAssetOption>(new FiniteDifferenceEuropean(*this));
@@ -84,7 +91,7 @@ namespace QuantLib {
           protected:
             void calculate() const;
           private:
-            int timeSteps_;
+            unsigned int timeSteps_;
             mutable Array euroPrices_;
         };
 

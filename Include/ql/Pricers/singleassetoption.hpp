@@ -31,6 +31,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.6  2001/08/28 14:47:46  nando
+// unsigned int instead of int
+//
 // Revision 1.5  2001/08/21 16:42:12  nando
 // european option optimization
 //
@@ -87,7 +90,7 @@ namespace QuantLib {
             virtual double rho() const;
             virtual double dividendRho() const;
             double impliedVolatility(double targetValue,
-                double accuracy = 1e-4, int maxEvaluations = 100,
+                double accuracy = 1e-4, unsigned int maxEvaluations = 100,
                 double minVol = QL_MIN_VOLATILITY,
                 double maxVol = QL_MAX_VOLATILITY) const ;
             virtual Handle<SingleAssetOption> clone() const = 0;

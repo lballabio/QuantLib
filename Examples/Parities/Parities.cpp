@@ -28,6 +28,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.21  2001/08/28 14:47:46  nando
+// unsigned int instead of int
+//
 // Revision 1.20  2001/08/28 14:46:01  enri
 // .am files for examples added, minor changes to permit compilation on unixes
 //
@@ -249,7 +252,7 @@ int main(int argc, char* argv[])
 
         // fourth method: Finite Differences
         method ="Finite Diff.";
-        int grid = 100;
+        unsigned int grid = 100;
         value = FiniteDifferenceEuropean(Option::Call, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility, grid).value();
         discrepancy = QL_FABS(value-rightValue);

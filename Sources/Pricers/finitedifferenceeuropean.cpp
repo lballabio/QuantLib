@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.19  2001/08/28 14:47:46  nando
+// unsigned int instead of int
+//
 // Revision 1.18  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -63,10 +66,10 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        FiniteDifferenceEuropean::FiniteDifferenceEuropean(
-            Type type, double underlying, double strike,
-            Rate dividendYield, Rate riskFreeRate, Time residualTime,
-            double volatility, int timeSteps, int gridPoints)
+        FiniteDifferenceEuropean::FiniteDifferenceEuropean(Type type,
+            double underlying, double strike, Rate dividendYield,
+            Rate riskFreeRate, Time residualTime, double volatility,
+            unsigned int timeSteps, unsigned int gridPoints)
             : BSMNumericalOption(type, underlying, strike, dividendYield,
                                  riskFreeRate, residualTime, volatility,
                                  gridPoints),

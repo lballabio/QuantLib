@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.8  2001/08/28 14:47:46  nando
+// unsigned int instead of int
+//
 // Revision 1.7  2001/08/20 14:55:15  nando
 // typo fixed
 //
@@ -194,7 +197,7 @@ namespace QuantLib {
         }
 
         double SingleAssetOption::impliedVolatility(double targetValue, double accuracy,
-                    int maxEvaluations, double minVol, double maxVol) const {
+                    unsigned int maxEvaluations, double minVol, double maxVol) const {
             // check option targetValue boundary condition
             QL_REQUIRE(targetValue > 0.0,
              "SingleAssetOption::impliedVol : targetValue must be positive");
