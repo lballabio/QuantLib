@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.9  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -41,7 +44,7 @@
 #define BSM_option_pricer_h
 
 #include "ql/options.hpp"
-#include "ql/rate.hpp"
+#include "ql/types.hpp"
 #include "ql/handle.hpp"
 #include "ql/solver1d.hpp"
 

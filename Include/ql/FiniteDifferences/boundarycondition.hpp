@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.4  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -41,7 +44,7 @@
 #define quantlib_boundary_condition
 
 #include "ql/null.hpp"
-#include "ql/qlerrors.hpp"
+#include "ql/errors.hpp"
 
 namespace QuantLib {
 

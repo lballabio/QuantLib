@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -43,7 +46,7 @@
 #ifndef quantlib_array_h
 #define quantlib_array_h
 
-#include "ql/qlerrors.hpp"
+#include "ql/errors.hpp"
 #if QL_EXPRESSION_TEMPLATES_WORK
 #include "ql/expressiontemplates.hpp"
 #endif

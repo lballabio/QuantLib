@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.5  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -40,7 +43,7 @@
 #define quantlib_pricers_average_price_asian_h
 
 #include "ql/options.hpp"
-#include "ql/rate.hpp"
+#include "ql/types.hpp"
 #include "ql/MonteCarlo/mcpricer.hpp"
 
 namespace QuantLib {

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -37,7 +40,7 @@
 #ifndef quantlib_interpolation_h
 #define quantlib_interpolation_h
 
-#include "ql/qlerrors.hpp"
+#include "ql/errors.hpp"
 
 namespace QuantLib {
 

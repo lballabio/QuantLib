@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.5  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -43,13 +46,11 @@
 #ifndef quantlib_date_h
 #define quantlib_date_h
 
-#include "ql/qlerrors.hpp"
+#include "ql/errors.hpp"
+#include "ql/types.hpp"
 #include <utility>
 
 namespace QuantLib {
-
-    //! Continuous quantity with 1-year units
-    typedef double Time;
 
     //! Day number
     typedef int Day;

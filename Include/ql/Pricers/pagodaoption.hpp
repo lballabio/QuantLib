@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/05 15:57:23  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -41,7 +44,7 @@
 #ifndef quantlib_pagoda_option_pricer_h
 #define quantlib_pagoda_option_pricer_h
 
-#include "ql/rate.hpp"
+#include "ql/types.hpp"
 #include "ql/MonteCarlo/multifactorpricer.hpp"
 
 namespace QuantLib {

@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.20  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.19  2001/07/03 13:19:38  lballabio
 // Added Knuth random generator after doubts were casted on the NR one
 //
@@ -58,7 +61,7 @@
 #include "ql/date.hpp"
 #include "ql/daycounter.hpp"
 #include "ql/depositrate.hpp"
-#include "ql/discountfactor.hpp"
+#include "ql/errors.hpp"
 #include "ql/expressiontemplates.hpp"
 #include "ql/forwardvolsurface.hpp"
 #include "ql/handle.hpp"
@@ -67,15 +70,13 @@
 #include "ql/instrument.hpp"
 #include "ql/null.hpp"
 #include "ql/options.hpp"
-#include "ql/qlerrors.hpp"
-#include "ql/rate.hpp"
 #include "ql/relinkablehandle.hpp"
 #include "ql/riskstatistics.hpp"
 #include "ql/scheduler.hpp"
 #include "ql/solver1d.hpp"
-#include "ql/spread.hpp"
 #include "ql/swaptionvolsurface.hpp"
 #include "ql/termstructure.hpp"
+#include "ql/types.hpp"
 
 #include "ql/Calendars/frankfurt.hpp"
 #include "ql/Calendars/helsinki.hpp"

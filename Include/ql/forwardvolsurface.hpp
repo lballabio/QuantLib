@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.5  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -41,8 +44,7 @@
 #define quantlib_forward_volatility_surface_h
 
 #include "ql/date.hpp"
-#include "ql/rate.hpp"
-#include "ql/spread.hpp"
+#include "ql/types.hpp"
 #include "ql/handle.hpp"
 
 namespace QuantLib {

@@ -22,30 +22,39 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*! \file discountfactor.hpp
-    \brief discount factor type
+/*! \file types.hpp
+    \brief Custom types
 
     $Id$
 */
 
 // $Source$
 // $Log$
-// Revision 1.3  2001/05/24 15:38:07  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.1  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
 //
 
-#ifndef quantlib_discount_factor_h
-#define quantlib_discount_factor_h
+#ifndef quantlib_types_hpp
+#define quantlib_types_hpp
 
 #include "ql/qldefines.hpp"
 
 namespace QuantLib {
 
+    //! continuous quantity with 1-year units
+    typedef double Time;
+
     //! used to describe discount factors between dates.
     typedef double DiscountFactor;
+
+    //! used to describe interest rates.
+    typedef double Rate;
+
+    //! used to describe spreads on interest rates.
+    typedef double Spread;
+
 
 }
 
 
 #endif
-

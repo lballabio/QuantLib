@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.11  2001/07/05 15:57:22  lballabio
+# Collected typedefs in a single file
+#
 # Revision 1.10  2001/05/31 08:56:40  lballabio
 # Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 #
@@ -30,7 +33,7 @@ include_HEADERS = \
 	date.hpp \
 	daycounter.hpp \
 	depositrate.hpp \
-	discountfactor.hpp \
+	errors.hpp \
 	expressiontemplates.hpp \
 	forwardvolsurface.hpp \
 	handle.hpp \
@@ -40,15 +43,14 @@ include_HEADERS = \
 	null.hpp \
 	options.hpp \
 	qldefines.hpp \
-	qlerrors.hpp \
 	quantlib.hpp \
-	rate.hpp \
 	relinkablehandle.hpp \
 	riskstatistics.hpp \
 	scheduler.hpp \
-	solver1d.hpp spread.hpp \
+	solver1d.hpp \
 	swaptionvolsurface.hpp \
-	termstructure.hpp
+	termstructure.hpp \
+	types.hpp
 
 install-data-hook:
 	$(SED) -e 's/HAVE_CONFIG_H/QL_HAVE_CONFIG_H/;/#ifndef quantlib_defines_h/{G;s/$$/#define QL_HAVE_CONFIG_H/;}' $(includedir)/qldefines.hpp > .qldefines.hpp

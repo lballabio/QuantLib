@@ -1068,7 +1068,7 @@ SOURCE=.\Include\ql\depositrate.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\discountfactor.hpp
+SOURCE=.\Include\ql\errors.hpp
 # End Source File
 # Begin Source File
 
@@ -1108,15 +1108,7 @@ SOURCE=.\Include\ql\qldefines.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\qlerrors.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Include\ql\quantlib.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\rate.hpp
 # End Source File
 # Begin Source File
 
@@ -1140,15 +1132,15 @@ SOURCE=.\Include\ql\solver1d.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\spread.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Include\ql\swaptionvolsurface.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Include\ql\termstructure.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\types.hpp
 # End Source File
 # End Target
 # End Project

@@ -30,13 +30,16 @@
 
 // $Source$
 // $Log$
+// Revision 1.17  2001/07/05 15:57:23  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.16  2001/05/24 15:40:09  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
 #include "ql/FiniteDifferences/tridiagonaloperator.hpp"
 #include "ql/dataformatters.hpp"
-#include "ql/qlerrors.hpp"
+#include "ql/errors.hpp"
 
 namespace QuantLib {
 

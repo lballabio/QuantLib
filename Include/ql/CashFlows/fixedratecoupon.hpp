@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.4  2001/07/05 15:57:22  lballabio
+//  Collected typedefs in a single file
+//
 //  Revision 1.3  2001/06/15 13:52:07  lballabio
 //  Reworked indexes
 //
@@ -44,7 +47,7 @@
 #define quantlib_fixed_rate_coupon_hpp
 
 #include "ql/CashFlows/accruingcoupon.hpp"
-#include "ql/rate.hpp"
+#include "ql/types.hpp"
 
 namespace QuantLib {
 

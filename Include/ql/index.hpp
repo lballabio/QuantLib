@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.7  2001/06/15 13:52:06  lballabio
 // Reworked indexes
 //
@@ -49,7 +52,7 @@
 #include "ql/calendar.hpp"
 #include "ql/currency.hpp"
 #include "ql/daycounter.hpp"
-#include "ql/rate.hpp"
+#include "ql/types.hpp"
 
 namespace QuantLib {
 

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.13  2001/06/21 14:30:43  lballabio
 // Observability is back
 //
@@ -61,7 +64,7 @@
 #ifndef quantlib_handle_h
 #define quantlib_handle_h
 
-#include "ql/qlerrors.hpp"
+#include "ql/errors.hpp"
 
 // The implementation of this class is taken from
 // "The C++ Programming Language", 3rd edition, B.Stroustrup

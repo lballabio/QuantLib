@@ -22,7 +22,7 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*! \file qlerrors.hpp
+/*! \file errors.hpp
     \brief Classes and functions for error handling.
 
     $Id$
@@ -30,15 +30,12 @@
 
 // $Source$
 // $Log$
-// Revision 1.5  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.4  2001/05/24 15:38:07  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.1  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
 //
 
-#ifndef quantlib_error_h
-#define quantlib_error_h
+#ifndef quantlib_errors_hpp
+#define quantlib_errors_hpp
 
 #include "ql/qldefines.hpp"
 #include <exception>

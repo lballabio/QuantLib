@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/07/05 15:57:22  lballabio
+// Collected typedefs in a single file
+//
 // Revision 1.11  2001/07/02 12:36:17  sigmud
 // pruned redundant header inclusions
 //
@@ -54,9 +57,7 @@
 #define quantlib_term_structure_h
 
 #include "ql/calendar.hpp"
-#include "ql/rate.hpp"
-#include "ql/spread.hpp"
-#include "ql/discountfactor.hpp"
+#include "ql/types.hpp"
 #include "ql/currency.hpp"
 #include "ql/relinkablehandle.hpp"
 #include <vector>
