@@ -59,11 +59,12 @@ double swaptionVols[] = {
 void calibrateModel(const Handle<Model>& model,
                     CalibrationSet& calibs,
                     double lambda) {
-    Handle<Optimization::Method> om(new Optimization::Simplex(lambda, 1e-9));
 
+    Handle<Optimization::Method> om(new Optimization::Simplex(lambda, 1e-9));
     om->setEndCriteria(Optimization::EndCriteria(10000, 1e-7));
     model->calibrate(calibs, om);
 
+    //Output the implied Black volatilities
     Size i;
     for (i=0; i<numRows; i++) {
         std::cout << IntegerFormatter::toString(swaptionLengths[i],2) << "y|";
@@ -151,12 +152,6 @@ int main(int argc, char* argv[])
         RelinkableHandle<TermStructure > rhTermStructure;
         rhTermStructure.linkTo(myTermStructure);
 
-
-
-
-
-
-
         //Define the ATM/OTM/ITM swaps
         int fixedLegFrequency = 1;
         bool fixedLegIsAdjusted = false;
@@ -202,11 +197,6 @@ int main(int argc, char* argv[])
 
         std::cout << itmSwap->NPV() << std::endl;
 
-
-
-
-
-
         std::vector<Period> swaptionMaturities;
         swaptionMaturities.push_back(Period(1, Months));
         swaptionMaturities.push_back(Period(3, Months));
@@ -221,6 +211,7 @@ int main(int argc, char* argv[])
 
         CalibrationSet swaptions;
 
+        //List of times that have to be included in the timegrid
         std::list<Time> times;
 
         for (i=0; i<numRows; i++) {
@@ -242,6 +233,7 @@ int main(int argc, char* argv[])
             times.push_back(termTimes[i]);
         times.sort();
         times.unique();
+        //Building time-grid
         TimeGrid grid(times, 30);
 
         Handle<Model> modelHW(new HullWhite(rhTermStructure));
@@ -282,7 +274,6 @@ int main(int argc, char* argv[])
                   << ArrayFormatter::toString(modelBK->params())
                   << std::endl
                   << std::endl;
-
 /*
         std::cout << "Cox-Ingersoll-Ross: " << std::endl;
         swaptions.setPricingEngine(
@@ -290,7 +281,6 @@ int main(int argc, char* argv[])
         calibrateModel(modelCIR, swaptions, 0.25);
         std::cout << "calibrated to " << modelCIR->params() << std::endl;
 */
-
         std::cout << "Pricing an ATM bermudan swaption" << std::endl;
 
         //Define the bermudan swaption
@@ -301,7 +291,7 @@ int main(int argc, char* argv[])
             bermudanDates.push_back(coupon->accrualStartDate());
         }
 
-        Instruments::Swaption bermudanSwaption(swap,
+        Instruments::Swaption bermudanSwaption(atmSwap,
             BermudanExercise(bermudanDates), rhTermStructure,
             Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
 
@@ -309,18 +299,19 @@ int main(int argc, char* argv[])
         bermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
         std::cout << "HW:       " << bermudanSwaption.NPV() << std::endl;
+
         bermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelHW2, 100)));
         std::cout << "HW (num): " << bermudanSwaption.NPV() << std::endl;
+
         bermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << bermudanSwaption.NPV() << std::endl;
 /*
         bermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, 100)));
-        std::cout << "CIR:     " << bermudanSwaption.NPV() << std::endl;
+        std::cout << "CIR:      " << bermudanSwaption.NPV() << std::endl;
 */
-
         std::cout << "Pricing an OTM bermudan swaption" << std::endl;
 
         Instruments::Swaption otmBermudanSwaption(otmSwap,
@@ -331,18 +322,19 @@ int main(int argc, char* argv[])
         otmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
         std::cout << "HW:       " << otmBermudanSwaption.NPV() << std::endl;
+
         otmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelHW2, 100)));
         std::cout << "HW (num): " << otmBermudanSwaption.NPV() << std::endl;
+
         otmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << otmBermudanSwaption.NPV() << std::endl;
 /*
         otmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, 100)));
-        std::cout << "CIR:     " << otmBermudanSwaption.NPV() << std::endl;
+        std::cout << "CIR:      " << otmBermudanSwaption.NPV() << std::endl;
 */
-
         std::cout << "Pricing an ITM bermudan swaption" << std::endl;
 
         Instruments::Swaption itmBermudanSwaption(itmSwap,
