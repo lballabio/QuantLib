@@ -221,8 +221,8 @@ namespace QuantLib {
             VanillaOption::arguments* arguments_ = 
                 dynamic_cast<VanillaOption::arguments*>(engine_->arguments());
             QL_REQUIRE(arguments_ != 0,
-                "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "
-                "pricing engine does not supply needed arguments");
+                       "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "
+                       "pricing engine does not supply needed arguments");
             vol_ = Handle<SimpleMarketElement>(new SimpleMarketElement(0.0));
             arguments_->volTS = RelinkableHandle<BlackVolTermStructure>(
                 Handle<BlackVolTermStructure>(
@@ -231,8 +231,8 @@ namespace QuantLib {
                         RelinkableHandle<MarketElement>(vol_))));
             results_ = dynamic_cast<const Value*>(engine_->results());
             QL_REQUIRE(results_ != 0,
-                "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "
-                "pricing engine does not supply needed results");
+                       "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "
+                       "pricing engine does not supply needed results");
         }
 
         double VanillaOption::ImpliedVolHelper::operator()(double x) const {

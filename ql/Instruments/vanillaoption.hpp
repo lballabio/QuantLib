@@ -71,7 +71,7 @@ namespace QuantLib {
                 targetValue that is not attainable with any volatility, e.g.
                 a targetValue lower than the intrinsic value in the case of
                 American options. */
-            double impliedVolatility(double targetValue,
+            double impliedVolatility(double price,
                                      double accuracy = 1.0e-4,
                                      Size maxEvaluations = 100,
                                      double minVol = 1.0e-4,
