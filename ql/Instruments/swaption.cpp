@@ -135,12 +135,12 @@ namespace QuantLib {
                 Option::performCalculations();
             }
             QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
-                      "null value returned from cap/floor pricer");
+                      "null value returned from swaption pricer");
         }
 
         void SwaptionArguments::validate() const {
             QL_REQUIRE(fixedPayTimes.size() == fixedCoupons.size(), 
-                       "Invalid pricing arguments");
+                       "SwaptionArguments: Invalid pricing arguments");
         }
     
     }
