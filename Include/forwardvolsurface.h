@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/02/19 12:22:17  marmar
+    Added trailing _ to protected and private members
+
     Revision 1.12  2001/01/17 14:37:54  nando
     tabs removed
 
@@ -97,7 +100,7 @@ namespace QuantLib {
         //! returns the given volatility regardless of date and strike
         Rate vol(const Date& d, Rate strike) const;
       private:
-        Rate theVolatility;
+        Rate volatility_;
     };
 
     //! Forward volatility surface with an added spread
@@ -135,17 +138,17 @@ namespace QuantLib {
 
     inline ConstantForwardVolatilitySurface::ConstantForwardVolatilitySurface(
         Rate volatility)
-    : theVolatility(volatility) {}
+    : volatility_(volatility) {}
 
     inline Handle<ForwardVolatilitySurface>
     ConstantForwardVolatilitySurface::clone() const {
         return Handle<ForwardVolatilitySurface>(
-            new ConstantForwardVolatilitySurface(theVolatility));
+            new ConstantForwardVolatilitySurface(volatility_));
     }
 
     inline Rate ConstantForwardVolatilitySurface::vol(const Date& d,
         Rate strike) const {
-        return theVolatility;
+        return volatility_;
     }
 
     // spreaded surface

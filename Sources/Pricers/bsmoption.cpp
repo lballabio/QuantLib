@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.22  2001/02/19 12:19:29  marmar
+    Added trailing _ to protected and private members
+
     Revision 1.21  2001/02/15 15:57:41  marmar
     Defined QL_MIN_VOLATILITY 0.0005 and
     QL_MAX_VOLATILITY 3.0
@@ -65,21 +68,36 @@ namespace QuantLib {
 
         BSMOption::BSMOption(Type type, double underlying, double strike,
             Rate dividendYield, Rate riskFreeRate, Time residualTime,
-            double volatility)
-        : theType(type), theUnderlying(underlying), theStrike(strike),
-            dividendYield_(dividendYield),
-          theRiskFreeRate(riskFreeRate), theResidualTime(residualTime),
-            theVolatility(volatility), hasBeenCalculated(false) {
+            double volatility): type_(type), underlying_(underlying), 
+            strike_(strike), dividendYield_(dividendYield), 
+            residualTime_(residualTime), hasBeenCalculated_(false) {
             QL_REQUIRE(strike > 0.0,
                 "BSMOption::BSMOption : strike must be positive");
             QL_REQUIRE(underlying > 0.0,
                 "BSMOption::BSMOption : underlying must be positive");
             QL_REQUIRE(residualTime > 0.0,
                 "BSMOption::BSMOption : residual time must be positive");
+            //! Checks on volatility values are in setVolatility
+            setVolatility(volatility); 
+            //! Checks on the risk-free rate are in setRiskFreeRate
+            setRiskFreeRate(riskFreeRate);
+        }
+
+        void BSMOption::setVolatility(double volatility) {
             QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
-                 "BSMOption: Volatility to small");
+                 "BSMOption::setVolatility : Volatility to small");
+
             QL_REQUIRE(volatility <= QL_MAX_VOLATILITY, 
-                "BSMOption: Volatility to high");
+                "BSMOption::setVolatility : Volatility to high "
+                "for a meaningful result");
+ 
+            volatility_ = volatility;
+            hasBeenCalculated_=false;
+        }
+
+        void BSMOption::setRiskFreeRate(Rate newRiskFreeRate) {
+            riskFreeRate_ = newRiskFreeRate;
+            hasBeenCalculated_ = false;
         }
 
         double BSMOption::impliedVolatility(double targetValue, double accuracy, 
@@ -88,28 +106,28 @@ namespace QuantLib {
             QL_REQUIRE(targetValue > 0.0,
              "BSMOption::impliedVol : targetValue must be positive");
             // the following checks may be improved
-             switch (theType) {
+             switch (type_) {
               case Call:
-                QL_REQUIRE(targetValue <= theUnderlying,
+                QL_REQUIRE(targetValue <= underlying_,
                   "BSMOption::impliedVol : call option targetValue (" +
                   DoubleFormatter::toString(targetValue) +
                   ") > underlying value (" +
-                  DoubleFormatter::toString(theUnderlying) + ") not allowed");
+                  DoubleFormatter::toString(underlying_) + ") not allowed");
                 break;
               case Put:
-                QL_REQUIRE(targetValue <= theStrike,
+                QL_REQUIRE(targetValue <= strike_,
                   "BSMOption::impliedVol : put option targetValue (" +
                   DoubleFormatter::toString(targetValue) +
-                  ") > strike value (" + DoubleFormatter::toString(theStrike) +
+                  ") > strike value (" + DoubleFormatter::toString(strike_) +
                   ") not allowed");
                 break;
               case Straddle:
                 // to be verified
-                QL_REQUIRE(targetValue < theUnderlying+theStrike,
+                QL_REQUIRE(targetValue < underlying_+strike_,
                   "BSMOption::impliedFlatVol : straddle option targetValue (" +
                   DoubleFormatter::toString(targetValue) +
                   ") >= (underlying+strike) value (" +
-                  DoubleFormatter::toString(theUnderlying+theStrike) +
+                  DoubleFormatter::toString(underlying_+strike_) +
                   ") not allowed");
                 break;
               default:
@@ -125,7 +143,7 @@ namespace QuantLib {
             s1d.setLowBound(minVol);
             s1d.setHiBound(maxVol);
 
-            return s1d.solve(bsmf, accuracy, theVolatility, 0.05);
+            return s1d.solve(bsmf, accuracy, volatility_, 0.05);
         }
 
     }

@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/02/19 12:20:21  marmar
+    Added trailing _ to protected and private members
+
     Revision 1.3  2001/02/13 10:02:17  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -73,7 +76,7 @@ namespace QuantLib {
 
         inline double GeometricAsianOption::vega() const{
             return BSMEuropeanOption::vega()/QL_SQRT(3)
-                -BSMEuropeanOption::rho()*theVolatility*theVolatility/4;
+                -BSMEuropeanOption::rho()*volatility_*volatility_/4;
         }
 
         inline Handle<BSMOption> GeometricAsianOption::clone() const{

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/02/19 12:19:29  marmar
+    Added trailing _ to protected and private members
+
     Revision 1.1  2001/02/14 13:51:38  marmar
     default  constructor has been moved to the cpp file
 
@@ -71,7 +74,7 @@ namespace QuantLib {
             double delta_rho = 0.0;
             for(int j = 0; j < theDividends.size();j++)
                 delta_rho += theExDivDates[j]*theDividends[j]*
-                            QL_EXP(-theRiskFreeRate*theExDivDates[j]);
+                            QL_EXP(-riskFreeRate_*theExDivDates[j]);
             return tmp_rho + delta_rho*BSMEuropeanOption::delta();
         }
         

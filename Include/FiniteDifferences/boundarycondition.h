@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/02/19 12:21:40  marmar
+    Added trailing _ to protected and private members
+
     Revision 1.5  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -59,16 +62,16 @@ namespace QuantLib {
             enum Type { None, Neumann, Dirichlet };
             // constructors
             BoundaryCondition(Type type = None, double value = Null<double>())
-            : theType(type), theValue(value) {
-                if (theType != None)
+            : type_(type), value_(value) {
+                if (type_ != None)
                     QL_REQUIRE(!IsNull(value), "A value must be supplied for this type of boundary condition");
             }
             // access methods
-            Type type() const { return theType; }
-            double value() const { return theValue; }
+            Type type() const { return type_; }
+            double value() const { return value_; }
           private:
-            Type theType;
-            double theValue;
+            Type type_;
+            double value_;
         };
 
     }

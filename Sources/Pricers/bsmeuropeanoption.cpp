@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.21  2001/02/19 12:19:29  marmar
+    Added trailing _ to protected and private members
+
     Revision 1.20  2001/02/13 10:02:57  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -47,17 +50,17 @@ namespace QuantLib {
     namespace Pricers {
 
         double BSMEuropeanOption::value() const {
-          if(!hasBeenCalculated) {
-            growthDiscount = (QL_EXP(-dividendYield_*theResidualTime));
-            riskFreeDiscount = (QL_EXP(-theRiskFreeRate*theResidualTime));
-              standardDeviation = theVolatility*QL_SQRT(theResidualTime);
+          if(!hasBeenCalculated_) {
+            growthDiscount = (QL_EXP(-dividendYield_*residualTime_));
+            riskFreeDiscount = (QL_EXP(-riskFreeRate_*residualTime_));
+              standardDeviation = volatility_*QL_SQRT(residualTime_);
               Math::CumulativeNormalDistribution f;
-              double D1 = QL_LOG(theUnderlying/theStrike)/standardDeviation + 
-                    standardDeviation/2.0 + (theRiskFreeRate - dividendYield_)* 
-                                            theResidualTime/standardDeviation;
+              double D1 = QL_LOG(underlying_/strike_)/standardDeviation + 
+                    standardDeviation/2.0 + (riskFreeRate_ - dividendYield_)* 
+                                            residualTime_/standardDeviation;
               double D2 = D1 - standardDeviation;
               double fD1 = f(D1), fD2 = f(D2);
-              switch (theType) {
+              switch (type_) {
                   case Call:
                   alpha = fD1;
                   beta = fD2;
@@ -77,49 +80,49 @@ namespace QuantLib {
                   throw IllegalArgumentError(
                     "BSMEuropeanOption: invalid option type");
             }
-            hasBeenCalculated = true;
-            theValue = theUnderlying * growthDiscount * alpha - 
-                                    theStrike * riskFreeDiscount * beta;
+            hasBeenCalculated_ = true;
+            value_ = underlying_ * growthDiscount * alpha - 
+                                    strike_ * riskFreeDiscount * beta;
           }
-            return theValue;
+            return value_;
         }
 
         double BSMEuropeanOption::delta() const {
-          if(!hasBeenCalculated)
+          if(!hasBeenCalculated_)
             value();
 
             return growthDiscount*alpha;
         }
 
         double BSMEuropeanOption::gamma() const {
-          if(!hasBeenCalculated)
+          if(!hasBeenCalculated_)
             value();
 
-            return NID1*growthDiscount/(theUnderlying*standardDeviation);
+            return NID1*growthDiscount/(underlying_*standardDeviation);
         }
 
         double BSMEuropeanOption::theta() const {
-          if(!hasBeenCalculated)
+          if(!hasBeenCalculated_)
             value();
 
-            return -theUnderlying * NID1 * theVolatility * 
-                growthDiscount/(2.0*QL_SQRT(theResidualTime)) +
-                  dividendYield_*theUnderlying*alpha*growthDiscount - 
-                        theRiskFreeRate*theStrike*riskFreeDiscount*beta;
+            return -underlying_ * NID1 * volatility_ * 
+                growthDiscount/(2.0*QL_SQRT(residualTime_)) +
+                  dividendYield_*underlying_*alpha*growthDiscount - 
+                        riskFreeRate_*strike_*riskFreeDiscount*beta;
         }
 
         double BSMEuropeanOption::rho() const {
-          if(!hasBeenCalculated)
+          if(!hasBeenCalculated_)
             value();
 
-            return theResidualTime*riskFreeDiscount*theStrike*beta;
+            return residualTime_*riskFreeDiscount*strike_*beta;
         }
 
         double BSMEuropeanOption::vega() const {
-          if(!hasBeenCalculated)
+          if(!hasBeenCalculated_)
             value();
 
-            return theUnderlying*NID1*growthDiscount*QL_SQRT(theResidualTime);
+            return underlying_*NID1*growthDiscount*QL_SQRT(residualTime_);
         }
 
     }

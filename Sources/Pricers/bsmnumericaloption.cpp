@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.27  2001/02/19 12:19:29  marmar
+    Added trailing _ to protected and private members
+
     Revision 1.26  2001/02/15 15:57:41  marmar
     Defined QL_MIN_VOLATILITY 0.0005 and
     QL_MAX_VOLATILITY 3.0
@@ -81,23 +84,23 @@ namespace QuantLib {
             residualTime, volatility), rhoComputed(false), vegaComputed(false),
             theGridPoints(safeGridPoints(gridPoints, residualTime)),
             theGrid(theGridPoints), theInitialPrices(theGridPoints){
-                hasBeenCalculated = false;
+                hasBeenCalculated_ = false;
         }
         
         double BSMNumericalOption::delta() const {
-            if (!hasBeenCalculated)  
+            if (!hasBeenCalculated_)  
                 value();
             return theDelta;
         }
         
         double BSMNumericalOption::gamma() const {
-            if(!hasBeenCalculated) 
+            if(!hasBeenCalculated_) 
                 value();
             return theGamma;
         }
         
         double BSMNumericalOption::theta() const {
-            if(!hasBeenCalculated) 
+            if(!hasBeenCalculated_) 
                 value();
             return theTheta;
         }
@@ -105,13 +108,13 @@ namespace QuantLib {
         double BSMNumericalOption::vega() const {
         
             if(!vegaComputed){
-                if(!hasBeenCalculated) 
+                if(!hasBeenCalculated_) 
                     value();
                 Handle<BSMOption> brandNewFD = clone();
-                double volMinus = theVolatility * (1.0 - dVolMultiplier);
+                double volMinus = volatility_ * (1.0 - dVolMultiplier);
                 brandNewFD -> setVolatility(volMinus);        
                 theVega = (value() - brandNewFD -> value()) / 
-                    (theVolatility * dVolMultiplier);          
+                    (volatility_ * dVolMultiplier);          
                 vegaComputed = true;
             }
             return theVega;
@@ -120,13 +123,13 @@ namespace QuantLib {
         double BSMNumericalOption::rho() const {
         
             if(!rhoComputed){
-                if(!hasBeenCalculated) 
+                if(!hasBeenCalculated_) 
                     value();
                 Handle<BSMOption> brandNewFD = clone();
-                Rate rMinus=theRiskFreeRate * (1.0 - dRMultiplier);        
+                Rate rMinus=riskFreeRate_ * (1.0 - dRMultiplier);        
                 brandNewFD -> setRiskFreeRate(rMinus);
                 theRho=(value() - brandNewFD -> value()) / 
-                    (theRiskFreeRate * dRMultiplier);
+                    (riskFreeRate_ * dRMultiplier);
                 rhoComputed  = true;
             }
             return theRho;
@@ -134,22 +137,22 @@ namespace QuantLib {
         
         void BSMNumericalOption::setGridLimits() const {
             // correction for small volatilities
-            double prefactor = 1.0 + 0.05/theVolatility;
+            double prefactor = 1.0 + 0.05/volatility_;
             double minMaxFactor = 
-                QL_EXP(4.0*prefactor*theVolatility*QL_SQRT(theResidualTime));
-            sMin = theUnderlying/minMaxFactor;  // underlying grid min value
-            sMax = theUnderlying*minMaxFactor;  // underlying grid max value
+                QL_EXP(4.0*prefactor*volatility_*QL_SQRT(residualTime_));
+            sMin = underlying_/minMaxFactor;  // underlying grid min value
+            sMax = underlying_*minMaxFactor;  // underlying grid max value
             // insure strike is included in the grid
             double safetyZoneFactor = 1.1;                    
-            if(sMin > theStrike/safetyZoneFactor){
-                sMin = theStrike/safetyZoneFactor;
+            if(sMin > strike_/safetyZoneFactor){
+                sMin = strike_/safetyZoneFactor;
                 // enforce central placement of the underlying
-                sMax = theUnderlying/(sMin/theUnderlying);    
+                sMax = underlying_/(sMin/underlying_);    
             }
-            if(sMax < theStrike*safetyZoneFactor){
-                sMax = theStrike*safetyZoneFactor;
+            if(sMax < strike_*safetyZoneFactor){
+                sMax = strike_*safetyZoneFactor;
                 // enforce central placement of the underlying
-                sMin = theUnderlying/(sMax/theUnderlying);    
+                sMin = underlying_/(sMax/underlying_);    
             }
         }
 
@@ -164,18 +167,18 @@ namespace QuantLib {
         
         void BSMNumericalOption::initializeInitialCondition() const {
             int j;
-            switch (theType) {
+            switch (type_) {
               case Call:
                 for(j=0; j<theGridPoints; j++)
-                    theInitialPrices[j] = QL_MAX(theGrid[j]-theStrike,0.0);
+                    theInitialPrices[j] = QL_MAX(theGrid[j]-strike_,0.0);
                 break;
               case Put:
                 for(j=0; j<theGridPoints; j++)
-                    theInitialPrices[j] = QL_MAX(theStrike-theGrid[j],0.0);
+                    theInitialPrices[j] = QL_MAX(strike_-theGrid[j],0.0);
                 break;
               case Straddle:
                 for(j=0; j<theGridPoints; j++)
-                    theInitialPrices[j] = QL_FABS(theStrike-theGrid[j]);
+                    theInitialPrices[j] = QL_FABS(strike_-theGrid[j]);
                 break;
               default:
                 throw IllegalArgumentError(
@@ -185,7 +188,7 @@ namespace QuantLib {
         
         void BSMNumericalOption::initializeOperator() const {
             theOperator = BSMOperator(theGridPoints, theGridLogSpacing, 
-                theRiskFreeRate, dividendYield_, theVolatility);
+                riskFreeRate_, dividendYield_, volatility_);
                 
             theOperator.setLowerBC(
                 BoundaryCondition(BoundaryCondition::Neumann,

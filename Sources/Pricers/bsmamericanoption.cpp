@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.21  2001/02/19 12:19:29  marmar
+    Added trailing _ to protected and private members
+
     Revision 1.20  2001/02/13 10:02:57  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -61,7 +64,7 @@ namespace QuantLib {
         using FiniteDifferences::TridiagonalOperator;
 
         double BSMAmericanOption::value() const {
-            if (!hasBeenCalculated) {
+            if (!hasBeenCalculated_) {
                 setGridLimits();
                 initializeGrid();
                 initializeInitialCondition();
@@ -70,13 +73,13 @@ namespace QuantLib {
                    BackwardEuler or ForwardEuler instead of CrankNicolson */
                 FiniteDifferenceModel<CrankNicolson<TridiagonalOperator> >
                         model(theOperator);
-                double dt = theResidualTime/theTimeSteps;
+                double dt = residualTime_/theTimeSteps;
                 // Control-variate variance reduction:
 
                 // 1) calculate value/greeks of the European option analytically
-                BSMEuropeanOption analyticEuro(theType, theUnderlying,
-                            theStrike, dividendYield_,
-                            theRiskFreeRate, theResidualTime, theVolatility);
+                BSMEuropeanOption analyticEuro(type_, underlying_,
+                            strike_, dividendYield_,
+                            riskFreeRate_, residualTime_, volatility_);
                 double analyticEuroValue = analyticEuro.value();
                 double analyticEuroDelta = analyticEuro.delta();
                 double analyticEuroGamma = analyticEuro.gamma();
@@ -85,7 +88,7 @@ namespace QuantLib {
                 // 2) calculate value/greeks of the European option numerically
                 Array theEuroPrices = theInitialPrices;
                 // rollback until dt
-                model.rollback(theEuroPrices,theResidualTime,dt,theTimeSteps-1);
+                model.rollback(theEuroPrices,residualTime_,dt,theTimeSteps-1);
                 double numericEuroValuePlus = valueAtCenter(theEuroPrices);
                 // complete rollback
                 model.rollback(theEuroPrices,dt,0.0,1);
@@ -105,7 +108,7 @@ namespace QuantLib {
                 Handle<StepCondition<Array> >
                   americanCondition(new BSMAmericanCondition(theInitialPrices));
                 // rollback until dt
-                model.rollback(thePrices, theResidualTime, dt, theTimeSteps -1,
+                model.rollback(thePrices, residualTime_, dt, theTimeSteps -1,
                                                             americanCondition);
                 double numericAmericanValuePlus = valueAtCenter(thePrices);
                 // complete rollback
@@ -123,7 +126,7 @@ namespace QuantLib {
                                                                     (2.0*dt);
 
                 // 4) combine the results
-                theValue = numericAmericanValue - numericEuroValue +
+                value_ = numericAmericanValue - numericEuroValue +
                                                         analyticEuroValue;
                 theDelta = numericAmericanDelta - numericEuroDelta +
                                                         analyticEuroDelta;
@@ -131,9 +134,9 @@ namespace QuantLib {
                                                         analyticEuroGamma;
                 theTheta = numericAmericanTheta - numericEuroTheta +
                                                         analyticEuroTheta;
-                hasBeenCalculated = true;
+                hasBeenCalculated_ = true;
             }
-            return theValue;
+            return value_;
         }
 
     }

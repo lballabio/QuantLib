@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.17  2001/02/19 12:19:29  marmar
+    Added trailing _ to protected and private members
+
     Revision 1.16  2001/02/15 15:31:40  marmar
     Some beauty added to the files
 
@@ -109,8 +112,8 @@ namespace QuantLib {
 
         double DividendAmericanOption::value() const {
 
-            if (!hasBeenCalculated)    {
-                double dt = theResidualTime/timeStepPerDiv;              
+            if (!hasBeenCalculated_)    {
+                double dt = residualTime_/timeStepPerDiv;              
             
                 optionIsAmerican_ = true;
                 setGridLimits();
@@ -120,7 +123,7 @@ namespace QuantLib {
                 Array prices = theInitialPrices;
                 Array controlPrices = theInitialPrices;
 
-                Time beginDate = theResidualTime;
+                Time beginDate = residualTime_;
                 int j=theNumberOfDivs-1;
                 do {
                     Handle<StepCondition<Array> > americanCondition(
@@ -169,12 +172,12 @@ namespace QuantLib {
                             model.rollback(prices,dt,0,1);            
                         model.rollback(controlPrices,dt,0,1);
                       
-                        DividendEuropeanOption analitic(theType, 
-                            theUnderlying+addElements(theDividends), theStrike, 
-                            dividendYield_, theRiskFreeRate, 
-                            theResidualTime, theVolatility, theDividends, 
+                        DividendEuropeanOption analitic(type_, 
+                            underlying_+addElements(theDividends), strike_, 
+                            dividendYield_, riskFreeRate_, 
+                            residualTime_, volatility_, theDividends, 
                             theExDivDates);
-                        theValue = valueAtCenter(prices) - 
+                        value_ = valueAtCenter(prices) - 
                             valueAtCenter(controlPrices) + analitic.value();
                         theDelta = firstDerivativeAtCenter(prices,theGrid) - 
                             firstDerivativeAtCenter(controlPrices,theGrid) + 
@@ -195,9 +198,9 @@ namespace QuantLib {
                             (2*dt) + analitic.theta();                                            
                     }
                 } while (--j >= -1);                            
-                hasBeenCalculated = true;
+                hasBeenCalculated_ = true;
             }
-            return theValue;
+            return value_;
         }
 
         void DividendAmericanOption::movePricesBeforeExDiv(double Div, 
