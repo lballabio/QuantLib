@@ -3,6 +3,7 @@ $Id$
 
 The documentation is automatically extracted from the source code using
 DoxyGen (http://www.stack.nl/~dimitri/doxygen/).
+The current version we're using is 1.2.11.1
 
 The basic requirement to produce html documentation are:
 1) DoxyGen (latest release at
