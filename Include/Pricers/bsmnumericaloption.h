@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/02/14 10:11:05  marmar
+    BSMNumericalOption has  a cleaner constructor
+
     Revision 1.10  2001/02/13 10:02:17  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -58,15 +61,11 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! This is a safety check to be sure we have enough grid points.
-        #define QL_NUM_OPT_MIN_GRID_POINTS            100
-        //! This is a safety check to be sure we have enough grid points.
-        #define QL_NUM_OPT_GRID_POINTS_PER_YEAR        50
-
         class BSMNumericalOption : public BSMOption {
           public:
-                BSMNumericalOption(Type type, double underlying, double strike, Rate dividendYield,
-                  Rate riskFreeRate, Time residualTime, double volatility, int gridPoints);
+                BSMNumericalOption(Type type, double underlying, double strike, 
+                    Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+                    double volatility, int gridPoints);
                 // accessors
                 double delta() const;
                 double gamma() const;
@@ -77,8 +76,10 @@ namespace QuantLib {
           protected:
             // methods
             double valueAtCenter(const Array& a) const;
-            double firstDerivativeAtCenter(const Array& a, const Array& g) const;
-            double secondDerivativeAtCenter(const Array& a, const Array& g) const;
+            double firstDerivativeAtCenter(const Array& a, 
+                    const Array& g) const;
+            double secondDerivativeAtCenter(const Array& a, 
+                    const Array& g) const;
             void setGridLimits() const;
             void initializeGrid() const;
             void initializeInitialCondition() const;
@@ -99,8 +100,24 @@ namespace QuantLib {
             // temporaries
             mutable double theGridLogSpacing;
             static double dVolMultiplier, dRMultiplier;
+            int safeGridPoints(int gridPoints, Time residualTime);
         };
 
+        //! This is a safety check to be sure we have enough grid points.
+        #define QL_NUM_OPT_MIN_GRID_POINTS            100
+        //! This is a safety check to be sure we have enough grid points.
+        #define QL_NUM_OPT_GRID_POINTS_PER_YEAR        50
+
+            // The following is a safety check to be sure we have enough grid 
+            // points.
+        inline int BSMNumericalOption::safeGridPoints(int gridPoints, 
+                                                        Time residualTime){
+            return QL_MAX(gridPoints, 
+              residualTime>1.0 ? (int)(QL_NUM_OPT_MIN_GRID_POINTS + 
+              (residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR) :
+              QL_NUM_OPT_MIN_GRID_POINTS);
+        }
+        
     }
 
 }

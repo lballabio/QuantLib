@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ *  http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file bsmnumericaloption.cpp
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.24  2001/02/14 10:11:25  marmar
+    BSMNumericalOption has  a cleaner constructor
+
     Revision 1.23  2001/02/13 10:02:57  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -65,21 +69,11 @@ namespace QuantLib {
             double underlying, double strike, Rate dividendYield, 
             Rate riskFreeRate, Time residualTime, double volatility, 
             int gridPoints)
-        : BSMOption(type,underlying,strike,dividendYield,riskFreeRate,
-            residualTime,volatility),rhoComputed(false), vegaComputed(false){
-            theGridPoints=gridPoints;
-            // The following is a safety check to be sure we have enough grid 
-            // points.
-            #if defined(QL_NUM_OPT_MIN_GRID_POINTS) && \
-                defined(QL_NUM_OPT_GRID_POINTS_PER_YEAR)
-                theGridPoints = QL_MAX(gridPoints, 
-                  residualTime>1.0 ? (int)(QL_NUM_OPT_MIN_GRID_POINTS + 
-                  (residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR) :
-                  QL_NUM_OPT_MIN_GRID_POINTS);
-            #endif
-            theGrid = Array(theGridPoints);
-            theInitialPrices = Array(theGridPoints);
-            hasBeenCalculated = false;
+        : BSMOption(type, underlying, strike, dividendYield, riskFreeRate,
+            residualTime, volatility), rhoComputed(false), vegaComputed(false),
+            theGridPoints(safeGridPoints(gridPoints, residualTime)),
+            theGrid(theGridPoints), theInitialPrices(theGridPoints){
+                hasBeenCalculated = false;
         }
         
         double BSMNumericalOption::delta() const {
