@@ -9,6 +9,7 @@ include_HEADERS = americancondition.h \
 	dividendamericanoption.h \
 	dividendeuropeanoption.h \
 	geometricasianoption.h \
+	himalaya.h  \
 	mceuropeanpricer.h  \
 	plainbasketoption.h
 	

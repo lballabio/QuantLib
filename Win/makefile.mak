@@ -54,6 +54,7 @@ MONTECARLO_OBJS  = $(OUTPUT_DIR)\averagepriceasianpathpricer.obj \
                    $(OUTPUT_DIR)\controlvariatedpathpricer.obj \
                    $(OUTPUT_DIR)\europeanpathpricer.obj        \
                    $(OUTPUT_DIR)\geometricasianpathpricer.obj  \
+                   $(OUTPUT_DIR)\himalayapathpricer.obj  \
                    $(OUTPUT_DIR)\lecuyerrandomgenerator.obj                    
 
 FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
@@ -66,6 +67,7 @@ PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\bsmeuropeanoption.obj \
                    $(OUTPUT_DIR)\bsmamericanoption.obj \
                    $(OUTPUT_DIR)\dividendamericanoption.obj \
+                   $(OUTPUT_DIR)\himalaya.obj \
                    $(OUTPUT_DIR)\mceuropeanpricer.obj \
                    $(OUTPUT_DIR)\plainbasketoption.obj 
 
@@ -273,12 +275,15 @@ $(OUTPUT_DIR)\basketpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\basketpathpricer.cpp    
 $(OUTPUT_DIR)\controlvariatedpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\controlvariatedpathpricer.cpp
-$(OUTPUT_DIR)\lecuyerrandomgenerator.obj: \
-    $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
 $(OUTPUT_DIR)\europeanpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\europeanpathpricer.cpp
 $(OUTPUT_DIR)\geometricasianpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\geometricasianpathpricer.cpp
+$(OUTPUT_DIR)\himalayapathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\himalayapathpricer.cpp
+$(OUTPUT_DIR)\lecuyerrandomgenerator.obj: \
+    $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
+
 
 # Pricers
 Pricers: $(OUTPUT_DIR) $(PRICER_OBJS)
@@ -295,6 +300,8 @@ $(OUTPUT_DIR)\bsmamericanoption.obj: \
                 $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp
 $(OUTPUT_DIR)\dividendamericanoption.obj: \
                 $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
+$(OUTPUT_DIR)\himalaya.obj: \
+                $(SOURCES_DIR)\Pricers\himalaya.cpp
 $(OUTPUT_DIR)\mceuropeanpricer.obj: \
                 $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp
 $(OUTPUT_DIR)\plainbasketoption.obj: \
