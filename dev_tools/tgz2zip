@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# 'tgz2zip Foo' converts Foo.tar.gz into Foo.zip converting Unix end-of-line
+# to DOS in the process.
+
+tar xfz $1.tar.gz
+find $1 | grep -v '\.\(bmp\)\|\(jpg\)\|\(pdf\)\|\(png\)$' | xargs todos -o -p
+zip -q -r $1.zip $1
+rm -r $1
+
