@@ -4363,6 +4363,9 @@
 				RelativePath="ql\Math\errorfunction.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Math\extrapolation.hpp">
+			</File>
+			<File
 				RelativePath="ql\Math\factorial.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
