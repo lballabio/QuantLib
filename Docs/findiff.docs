@@ -250,7 +250,8 @@
 
     Now the differential operator can be initialized. Also, Neumann 
     initial conditions are set which correspond to the initial value 
-    of the derivatives at the boundaries.
+    of the derivatives at the boundaries (see the BoundaryCondition 
+    class documentation for details).
     \code
     double nu = riskFreeRate - dividendYield - volatility*volatility/2.0;
     TridiagonalOperator L = BlackScholesOperator(volatility, nu, 
