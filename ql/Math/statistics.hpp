@@ -185,14 +185,13 @@ namespace QuantLib {
         RISKMEASURE_PROXY_DOUBLE_RESULT_DOUBLE_ARG(gaussianAverageShortfall)
         #undef RISKMEASURE_PROXY_DOUBLE_RESULT_DOUBLE_ARG
 
-        /*
+
         #define RISKMEASURE_PROXY_DOUBLE_RESULT_ITERATOR_ARGS(METHOD) \
         inline double Statistics::METHOD(double y) const { \
             return rm_.METHOD(y, samples_.begin(), samples_.end()); \
         }
-        RISKMEASURE_PROXY_DOUBLE_RESULT_ITERATOR_ARGS(percentile)
+//        RISKMEASURE_PROXY_DOUBLE_RESULT_ITERATOR_ARGS(percentile)
         #undef RISKMEASURE_PROXY_DOUBLE_RESULT_ITERATOR_ARGS
-        */
 
 
     }
