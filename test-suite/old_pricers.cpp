@@ -1111,7 +1111,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
                    "McEverest");
 
     // McBasket
-    Array sameAssetValues(4,25.0);
+    std::vector<double> sameAssetValues(4,25.0);
     Option::Type type = Option::Call;
     double strike = 100.0;
     testMcMFPricer(McBasket(type, sameAssetValues, strike, sameAssetDividend,

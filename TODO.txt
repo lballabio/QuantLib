@@ -1,3 +1,8 @@
+cliquet move forward
+ottimizzazione PathPricer
+MultiPath e MultiPathPricer
+matrici di covarianza
+
 FINITE DIFFERENCE FRAMEWORK
 -*use DicretisedAsset instead of array
 -*use TimeGrid

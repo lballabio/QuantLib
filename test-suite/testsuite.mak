@@ -63,6 +63,7 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\marketelements.obj"
+	-@erase "$(INTDIR)\matrices.obj"
 	-@erase "$(INTDIR)\mersennetwister.obj"
 	-@erase "$(INTDIR)\old_pricers.obj"
 	-@erase "$(INTDIR)\operators.obj"
@@ -111,6 +112,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
+	"$(INTDIR)\matrices.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -151,6 +153,7 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\marketelements.obj"
+	-@erase "$(INTDIR)\matrices.obj"
 	-@erase "$(INTDIR)\mersennetwister.obj"
 	-@erase "$(INTDIR)\old_pricers.obj"
 	-@erase "$(INTDIR)\operators.obj"
@@ -202,6 +205,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
+	"$(INTDIR)\matrices.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -242,6 +246,7 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\marketelements.obj"
+	-@erase "$(INTDIR)\matrices.obj"
 	-@erase "$(INTDIR)\mersennetwister.obj"
 	-@erase "$(INTDIR)\old_pricers.obj"
 	-@erase "$(INTDIR)\operators.obj"
@@ -293,6 +298,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
+	"$(INTDIR)\matrices.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -333,6 +339,7 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\marketelements.obj"
+	-@erase "$(INTDIR)\matrices.obj"
 	-@erase "$(INTDIR)\mersennetwister.obj"
 	-@erase "$(INTDIR)\old_pricers.obj"
 	-@erase "$(INTDIR)\operators.obj"
@@ -381,6 +388,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
+	"$(INTDIR)\matrices.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -479,6 +487,11 @@ SOURCE=.\integrals.cpp
 SOURCE=.\marketelements.cpp
 
 "$(INTDIR)\marketelements.obj" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=.\matrices.cpp
+
+"$(INTDIR)\matrices.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\mersennetwister.cpp
