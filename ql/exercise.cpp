@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     AmericanExercise::AmericanExercise(Date earliest, Date latest,
-        bool payoffAtExpiry)
+                                       bool payoffAtExpiry)
     : EarlyExercise(payoffAtExpiry) {
 
         // American exercise cannot degenerate into European exercise
@@ -35,13 +35,13 @@ namespace QuantLib {
     }
 
     BermudanExercise::BermudanExercise(const std::vector<Date>& dates,
-        bool payoffAtExpiry)
+                                       bool payoffAtExpiry)
     : EarlyExercise(payoffAtExpiry) {
 
+        QL_REQUIRE(!dates.empty(), "no exercise date given");
         type_ = Bermudan;
-		dates_ = dates;
+        dates_ = dates;
         std::sort(dates_.begin(), dates_.end());
-
     }
 
     EuropeanExercise::EuropeanExercise(Date date)
@@ -49,7 +49,5 @@ namespace QuantLib {
         type_ = European;
         dates_ = std::vector<Date>(1,date);
     }
-
-
 
 }
