@@ -33,16 +33,9 @@ namespace QuantLib {
 
         Matrix pseudoSqrt(const Matrix &realSymmMatrix, SalvagingAlgorithm sa) {
 
-            //! eigenvalues smaller than relative tolerance are considered zero
-            const double tolerance = 1e-15;
 
-            Matrix inputMatrix(realSymmMatrix);
-            Size size = inputMatrix.rows();
-
-            QL_REQUIRE(size == inputMatrix.columns(),
-                "sqrt input matrix must be square");
-
-            SymmetricSchurDecomposition jd(inputMatrix);
+           Size size = realSymmMatrix.rows();
+           SymmetricSchurDecomposition jd(realSymmMatrix);
 
             double maxEv=0;
             Size i, j;
@@ -53,6 +46,9 @@ namespace QuantLib {
 
             Matrix diagonal(size,size,0);
             for(i = 0; i < size; i++) {
+                // eigenvalues smaller than relative tolerance
+                // are considered zero
+                double tolerance = 1e-15;
                 if(QL_FABS(jd.eigenvalues()[i]) <= tolerance*maxEv) {
                     diagonal[i][i] = 0.0;
                     continue;

@@ -35,7 +35,7 @@ namespace QuantLib {
 
   namespace Math {
 
-    SymmetricSchurDecomposition::SymmetricSchurDecomposition(Matrix & s)
+    SymmetricSchurDecomposition::SymmetricSchurDecomposition(const Matrix & s)
           : s_(s), size_(s.rows()), diagonal_(s.rows()),
       eigenVectors_(s.rows(),s.columns(),0), hasBeenComputed_(false),
       maxIterations_(100), epsPrec_(1e-15) {
@@ -50,12 +50,11 @@ namespace QuantLib {
 
     }
 
-    void SymmetricSchurDecomposition::compute() const{
+    void SymmetricSchurDecomposition::compute() const {
 
       double threshold;
       Array tmpDiag(diagonal_);
       Array tmpAccumulate(size_,0);
-      Matrix s(s_);
       bool keeplooping = true;
 
       int ite = 1;
@@ -63,7 +62,7 @@ namespace QuantLib {
         double sum = 0;
         for (int j = 0; j < size_-1; j++) {
             for (int k = j + 1; k < size_; k++){
-                sum += QL_FABS(s[j][k]);
+                sum += QL_FABS(s_[j][k]);
             }
         }
 
@@ -84,38 +83,38 @@ namespace QuantLib {
             for (int k = j+1; k < size_; k++) {
 
               double sine,rho,cosin,heig,tang,beta;
-              double smll = QL_FABS(s[j][k]);
+              double smll = QL_FABS(s_[j][k]);
               if( ite > 5 &&
                   smll < epsPrec_ * QL_FABS(diagonal_[j]) &&
                   smll < epsPrec_ * QL_FABS(diagonal_[k]))
-                  s[j][k] = 0;
-              else if (QL_FABS(s[j][k]) > threshold) {
+                  s_[j][k] = 0;
+              else if (QL_FABS(s_[j][k]) > threshold) {
                 heig = diagonal_[k]-diagonal_[j];
                 if ( smll < epsPrec_ * QL_FABS(heig) )
-                    tang = s[j][k]/heig;
+                    tang = s_[j][k]/heig;
                 else {
-                    beta = 0.5*heig/s[j][k];
+                    beta = 0.5*heig/s_[j][k];
                     tang = 1/(QL_FABS(beta)+QL_SQRT(1+beta*beta));
                     if(beta < 0) tang = -tang;
                 }
                 cosin = 1/QL_SQRT(1+tang*tang);
                 sine = tang*cosin;
                 rho = sine/(1+cosin);
-                heig=tang*s[j][k];
+                heig=tang*s_[j][k];
                 tmpAccumulate[j] -= heig;
                 tmpAccumulate[k] += heig;
                 diagonal_[j] -= heig;
                 diagonal_[k] += heig;
-                s[j][k] = 0;
+                s_[j][k] = 0;
                 int l;
                 for (l = 0; l <= j-1; l++) {
-                    jacobiRotate(s,rho,sine,l,j,l,k);
+                    jacobiRotate(s_,rho,sine,l,j,l,k);
                 }
                 for (l = j+1; l <= k-1; l++) {
-                    jacobiRotate(s,rho,sine,j,l,l,k);
+                    jacobiRotate(s_,rho,sine,j,l,l,k);
                 }
                 for (l = k+1; l < size_; l++) {
-                    jacobiRotate(s,rho,sine,j,l,k,l);
+                    jacobiRotate(s_,rho,sine,j,l,k,l);
                 }
                 for (l = 0; l < size_; l++) {
                     jacobiRotate(eigenVectors_,rho,sine,l,j,l,k);

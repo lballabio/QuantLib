@@ -50,11 +50,11 @@ namespace QuantLib {
         class SymmetricSchurDecomposition {
           public:
             /* \pre s must be symmetric */
-            SymmetricSchurDecomposition(Matrix &s);
+            SymmetricSchurDecomposition(const Matrix &s);
             const Array& eigenvalues() const;
             const Matrix& eigenvectors() const;
           private:
-            Matrix s_;
+            mutable Matrix s_;
             int size_;
             mutable Array diagonal_;
             mutable Matrix eigenVectors_;
