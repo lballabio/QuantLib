@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.16  2001/01/18 15:51:37  nando
+    bug fixed.
+    Out of bound array access in case of extrapolation
+
     Revision 1.15  2001/01/18 14:36:47  nando
     80 columns enforced
     private members with trailing underscore
@@ -137,7 +141,7 @@ namespace QuantLib {
                                                 bool extrapolate) const {
 
             if (extrapolate && d>maxDate())
-                return nodesNumber_;
+                return nodesNumber_-1;
 
             QL_REQUIRE(d>=minDate() && d<=maxDate(),
                     "date outside curve definition");
