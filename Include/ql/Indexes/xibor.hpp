@@ -23,6 +23,7 @@
 */
 
 /*! \file xibor.hpp
+    \fullpath Include/ql/Indexes/%xibor.hpp
     \brief purely virtual base class for libor indexes
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/08/08 11:07:48  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.10  2001/08/07 11:25:53  sigmud
 // copyright header maintenance
 //

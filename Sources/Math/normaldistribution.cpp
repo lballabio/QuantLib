@@ -23,6 +23,7 @@
 */
 
 /*! \file normaldistribution.cpp
+    \fullpath Sources/Math/%normaldistribution.cpp
     \brief normal, cumulative and inverse cumulative distributions
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.21  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.20  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

@@ -23,6 +23,7 @@
 */
 
 /*! \file geometricasianpathpricer.hpp
+    \fullpath Include/ql/MonteCarlo/%geometricasianpathpricer.hpp
     \brief path pricer for geometric Asian options
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.9  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

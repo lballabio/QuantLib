@@ -23,6 +23,7 @@
 */
 
 /*! \file normaldistribution.hpp
+    \fullpath Include/ql/Math/%normaldistribution.hpp
     \brief normal, cumulative and inverse cumulative distributions
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/08/08 11:07:48  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.9  2001/08/07 17:33:03  nando
 // 1) StandardPathGenerator now is GaussianPathGenerator;
 // 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;

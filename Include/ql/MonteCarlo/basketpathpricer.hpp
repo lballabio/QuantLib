@@ -23,6 +23,7 @@
 */
 
 /*! \file basketpathpricer.hpp
+    \fullpath Include/ql/MonteCarlo/%basketpathpricer.hpp
     \brief multipath pricer for European-type basket option
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/08/08 11:07:48  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.11  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

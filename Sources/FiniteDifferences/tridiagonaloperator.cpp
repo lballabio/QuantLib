@@ -23,6 +23,7 @@
 */
 
 /*! \file tridiagonaloperator.cpp
+    \fullpath Sources/FiniteDifferences/%tridiagonaloperator.cpp
     \brief tridiagonal operator
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.20  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.19  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

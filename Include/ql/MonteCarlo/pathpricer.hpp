@@ -23,6 +23,7 @@
 */
 
 /*! \file pathpricer.hpp
+    \fullpath Include/ql/MonteCarlo/%pathpricer.hpp
     \brief base class for single-path pricers
     
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.10  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

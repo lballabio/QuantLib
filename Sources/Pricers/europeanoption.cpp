@@ -23,12 +23,16 @@
 */
 
 /*! \file europeanoption.cpp
+    \fullpath Sources/Pricers/%europeanoption.cpp
     \brief european option
 
     $Id$
 */
 
 // $Log$
+// Revision 1.3  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.2  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

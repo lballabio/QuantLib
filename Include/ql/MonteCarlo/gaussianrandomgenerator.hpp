@@ -23,6 +23,7 @@
 */
 
 /*! \file gaussianrandomgenerator.hpp
+    \fullpath Include/ql/MonteCarlo/%gaussianrandomgenerator.hpp
     \brief Default choice for Gaussian random number generator
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.10  2001/08/07 17:33:03  nando
 // 1) StandardPathGenerator now is GaussianPathGenerator;
 // 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;

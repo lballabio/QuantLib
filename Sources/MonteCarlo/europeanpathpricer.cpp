@@ -23,6 +23,7 @@
 */
 
 /*! \file europeanpathpricer.cpp
+    \fullpath Sources/MonteCarlo/%europeanpathpricer.cpp
     \brief path pricer for European options
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.16  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.15  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

@@ -23,6 +23,7 @@
 */
 
 /*! \file fixedratecoupon.hpp
+    \fullpath Include/ql/CashFlows/%fixedratecoupon.hpp
     \brief Coupon paying a fixed annual rate
 
     $Id$
@@ -30,6 +31,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.8  2001/08/08 11:07:48  sigmud
+//  inserting \fullpath for doxygen
+//
 //  Revision 1.7  2001/08/07 11:25:53  sigmud
 //  copyright header maintenance
 //

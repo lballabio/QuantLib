@@ -23,12 +23,16 @@
 */
 
 /*! \file europeanoption.hpp
+    \fullpath Include/ql/Pricers/%europeanoption.hpp
     \brief european option
 
     $Id$
 */
 
 // $Log$
+// Revision 1.3  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.2  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

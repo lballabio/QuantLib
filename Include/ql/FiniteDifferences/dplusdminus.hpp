@@ -23,6 +23,7 @@
 */
 
 /*! \file dplusdminus.hpp
+    \fullpath Include/ql/FiniteDifferences/%dplusdminus.hpp
     \brief \f$ D_{+}D_{-} \f$ matricial representation
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/08/08 11:07:48  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.5  2001/08/07 11:25:53  sigmud
 // copyright header maintenance
 //

@@ -23,6 +23,7 @@
 */
 
 /*! \file thirty360.cpp
+    \fullpath Sources/DayCounters/%thirty360.cpp
     \brief 30/360 day counter
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.19  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.18  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

@@ -23,6 +23,7 @@
 */
 
 /*! \file floatingratecoupon.hpp
+    \fullpath Include/ql/CashFlows/%floatingratecoupon.hpp
     \brief Coupon at par on a term structure
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/08/08 11:07:48  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.10  2001/08/07 11:25:53  sigmud
 // copyright header maintenance
 //

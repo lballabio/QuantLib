@@ -23,6 +23,7 @@
 */
 
 /*! \file multiperiodoption.cpp
+    \fullpath Sources/Pricers/%multiperiodoption.cpp
     \brief base class for option with events happening at different periods
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.24  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.23  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

@@ -23,6 +23,7 @@
 */
 
 /*! \file processingiterator.hpp
+    \fullpath Include/ql/Utilities/%processingiterator.hpp
     \brief Iterator mapping a unary function to an underlying sequence
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.5  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

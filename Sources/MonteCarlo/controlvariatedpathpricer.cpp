@@ -23,6 +23,7 @@
 */
 
 /*! \file controlvariatedpathpricer.cpp
+    \fullpath Sources/MonteCarlo/%controlvariatedpathpricer.cpp
     \brief generic control variated path pricer
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.11  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

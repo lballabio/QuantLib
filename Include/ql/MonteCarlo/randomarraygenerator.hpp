@@ -22,6 +22,7 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file randomarraygenerator.hpp
+    \fullpath Include/ql/MonteCarlo/%randomarraygenerator.hpp
     \brief Generates random arrays from a random number generator
 
     $Id$
@@ -29,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.16  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.15  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

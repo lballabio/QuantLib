@@ -23,6 +23,7 @@
 */
 
 /*! \file linearinterpolation.hpp
+    \fullpath Include/ql/Math/%linearinterpolation.hpp
     \brief linear interpolation between discrete points
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/08/08 11:07:48  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.7  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

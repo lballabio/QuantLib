@@ -23,6 +23,7 @@
 */
 
 /*! \file knuthrandomgenerator.hpp
+    \fullpath Include/ql/MonteCarlo/%knuthrandomgenerator.hpp
     \brief Knuth uniform random number generator
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.5  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

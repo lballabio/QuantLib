@@ -23,6 +23,7 @@
 */
 
 /*! \file zurich.cpp
+    \fullpath Sources/Calendars/%zurich.cpp
 	\brief Zurich calendar
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.15  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.14  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

@@ -23,6 +23,7 @@
 */
 
 /*! \file solver1d.cpp
+    \fullpath Sources/%solver1d.cpp
     \brief Abstract 1-D solver class
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.25  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.24  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

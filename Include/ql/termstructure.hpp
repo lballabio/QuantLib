@@ -23,6 +23,7 @@
 */
 
 /*! \file termstructure.hpp
+    \fullpath Include/ql/%termstructure.hpp
     \brief Term structure
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.17  2001/08/08 11:07:48  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.16  2001/08/07 11:25:53  sigmud
 // copyright header maintenance
 //

@@ -23,6 +23,7 @@
 */
 
 /*! \file simpleswap.cpp
+    \fullpath Sources/Instruments/%simpleswap.cpp
     \brief Simple fixed-rate vs Libor swap
 
     $Id$

@@ -23,6 +23,7 @@
 */
 
 /*! \file mceuropeanpricer.cpp
+    \fullpath Sources/Pricers/%mceuropeanpricer.cpp
     \brief simple example of Monte Carlo pricer
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.19  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.18  2001/08/07 17:33:03  nando
 // 1) StandardPathGenerator now is GaussianPathGenerator;
 // 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;

@@ -23,6 +23,7 @@
 */
 
 /*! \file dividendeuropeanoption.cpp
+    \fullpath Sources/Pricers/%dividendeuropeanoption.cpp
     \brief european option with discrete deterministic dividends
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.15  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.14  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

@@ -23,6 +23,7 @@
 */
 
 /*! \file tridiagonaloperator.hpp
+    \fullpath Include/ql/FiniteDifferences/%tridiagonaloperator.hpp
     \brief tridiagonal operator
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/08/08 11:07:48  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.6  2001/08/07 11:25:53  sigmud
 // copyright header maintenance
 //

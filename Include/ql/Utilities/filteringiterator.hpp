@@ -23,6 +23,7 @@
 */
 
 /*! \file filteringiterator.hpp
+    \fullpath Include/ql/Utilities/%filteringiterator.hpp
     \brief Iterator filtering undesired data
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.7  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

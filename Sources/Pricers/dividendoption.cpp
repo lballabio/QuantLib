@@ -23,12 +23,16 @@
 */
 
 /*! \file dividendoption.cpp
+    \fullpath Sources/Pricers/%dividendoption.cpp
     \brief base class for options with dividends
 
     $Id$
 */
 // $Source$
 // $Log$
+// Revision 1.24  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.23  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

@@ -23,6 +23,7 @@
 */
 
 /*! \file piecewiseflatforward.cpp
+    \fullpath Sources/TermStructures/%piecewiseflatforward.cpp
     \brief piecewise flat forward term structure
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.17  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.16  2001/08/07 11:25:56  sigmud
 // copyright header maintenance
 //

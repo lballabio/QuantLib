@@ -23,6 +23,7 @@
 */
 
 /*! \file matrix.cpp
+    \fullpath Sources/Math/%matrix.cpp
     \brief matrix used in linear algebra.
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.12  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

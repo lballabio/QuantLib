@@ -23,6 +23,7 @@
 */
 
 /*! \file finitedifferenceeuropean.cpp
+    \fullpath Sources/Pricers/%finitedifferenceeuropean.cpp
     \brief Example of European option calculated using finite differences
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.17  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.16  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

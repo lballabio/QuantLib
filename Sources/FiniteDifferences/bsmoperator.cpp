@@ -23,6 +23,7 @@
 */
 
 /*! \file bsmoperator.cpp
+    \fullpath Sources/FiniteDifferences/%bsmoperator.cpp
     \brief differential operator for Black-Scholes-Merton equation
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.13  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

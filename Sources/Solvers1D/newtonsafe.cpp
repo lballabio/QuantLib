@@ -23,6 +23,7 @@
 */
 
 /*! \file newtonsafe.cpp
+    \fullpath Sources/Solvers1D/%newtonsafe.cpp
     \brief safe Newton 1-D solver
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.28  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.27  2001/08/07 11:25:56  sigmud
 // copyright header maintenance
 //

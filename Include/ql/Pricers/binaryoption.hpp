@@ -23,6 +23,7 @@
 */
 
 /*!  \file binaryoption.hpp
+    \fullpath Include/ql/Pricers/%binaryoption.hpp
    \brief European style cash-or-nothing option.
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/08/08 11:07:49  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.7  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

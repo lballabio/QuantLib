@@ -23,6 +23,7 @@
 */
 
 /*! \file stepconditionoption.cpp
+    \fullpath Sources/Pricers/%stepconditionoption.cpp
     \brief Option requiring additional code to be executed at each time step
 
     $Id$
@@ -30,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.19  2001/08/08 11:07:50  sigmud
+// inserting \fullpath for doxygen
+//
 // Revision 1.18  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //
