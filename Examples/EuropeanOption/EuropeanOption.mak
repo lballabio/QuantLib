@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "EuropeanOption - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -35,10 +38,21 @@ INTDIR=.\build\Release
 OutDir=.\build\Release
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : "$(OUTDIR)\EuropeanOption.exe" "$(OUTDIR)\EuropeanOption.bsc"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 Release" "$(OUTDIR)\EuropeanOption.exe" "$(OUTDIR)\EuropeanOption.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 ReleaseCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\EuropeanOption.obj"
 	-@erase "$(INTDIR)\EuropeanOption.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -48,40 +62,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /I "$(QL_DIR)" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\EuropeanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\EuropeanOption.bsc" 
 BSC32_SBRS= \
@@ -95,7 +76,8 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\EuropeanOption.pdb" /machine:I386 /out:"$(OUTDIR)\EuropeanOption.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
-	"$(INTDIR)\EuropeanOption.obj"
+	"$(INTDIR)\EuropeanOption.obj" \
+	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\EuropeanOption.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -110,10 +92,21 @@ INTDIR=.\build\Debug
 OutDir=.\build\Debug
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : "$(OUTDIR)\EuropeanOption.exe" "$(OUTDIR)\EuropeanOption.bsc"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 Debug" "$(OUTDIR)\EuropeanOption.exe" "$(OUTDIR)\EuropeanOption.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 DebugCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\EuropeanOption.obj"
 	-@erase "$(INTDIR)\EuropeanOption.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -126,40 +119,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QL_DIR)" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\EuropeanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\EuropeanOption.bsc" 
 BSC32_SBRS= \
@@ -173,7 +133,8 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\EuropeanOption.pdb" /debug /machine:I386 /out:"$(OUTDIR)\EuropeanOption.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
-	"$(INTDIR)\EuropeanOption.obj"
+	"$(INTDIR)\EuropeanOption.obj" \
+	"..\..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\EuropeanOption.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -188,10 +149,21 @@ INTDIR=.\build\OnTheEdgeRelease
 OutDir=.\build\OnTheEdgeRelease
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : "$(OUTDIR)\EuropeanOption.exe" "$(OUTDIR)\EuropeanOption.bsc"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 OnTheEdgeRelease" "$(OUTDIR)\EuropeanOption.exe" "$(OUTDIR)\EuropeanOption.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 OnTheEdgeReleaseCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\EuropeanOption.obj"
 	-@erase "$(INTDIR)\EuropeanOption.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -201,40 +173,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /I "..\..\\" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\EuropeanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\EuropeanOption.bsc" 
 BSC32_SBRS= \
@@ -248,7 +187,8 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\EuropeanOption.pdb" /machine:I386 /out:"$(OUTDIR)\EuropeanOption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
-	"$(INTDIR)\EuropeanOption.obj"
+	"$(INTDIR)\EuropeanOption.obj" \
+	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\EuropeanOption.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -263,10 +203,21 @@ INTDIR=.\build\OnTheEdgeDebug
 OutDir=.\build\OnTheEdgeDebug
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : "$(OUTDIR)\EuropeanOption.exe" "$(OUTDIR)\EuropeanOption.bsc"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 OnTheEdgeDebug" "$(OUTDIR)\EuropeanOption.exe" "$(OUTDIR)\EuropeanOption.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 OnTheEdgeDebugCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\EuropeanOption.obj"
 	-@erase "$(INTDIR)\EuropeanOption.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -279,8 +230,29 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\EuropeanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\EuropeanOption.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\EuropeanOption.sbr"
+
+"$(OUTDIR)\EuropeanOption.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\EuropeanOption.pdb" /debug /machine:I386 /out:"$(OUTDIR)\EuropeanOption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
+LINK32_OBJS= \
+	"$(INTDIR)\EuropeanOption.obj" \
+	"..\..\lib\Win32\VisualStudio\QuantLib_d.lib"
+
+"$(OUTDIR)\EuropeanOption.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -311,29 +283,6 @@ CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\\" /D "_DEBUG" /D "QL_DE
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
-
-RSC=rc.exe
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\EuropeanOption.bsc" 
-BSC32_SBRS= \
-	"$(INTDIR)\EuropeanOption.sbr"
-
-"$(OUTDIR)\EuropeanOption.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
-    $(BSC32) @<<
-  $(BSC32_FLAGS) $(BSC32_SBRS)
-<<
-
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\EuropeanOption.pdb" /debug /machine:I386 /out:"$(OUTDIR)\EuropeanOption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
-LINK32_OBJS= \
-	"$(INTDIR)\EuropeanOption.obj"
-
-"$(OUTDIR)\EuropeanOption.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -350,6 +299,56 @@ SOURCE=.\EuropeanOption.cpp
 
 "$(INTDIR)\EuropeanOption.obj"	"$(INTDIR)\EuropeanOption.sbr" : $(SOURCE) "$(INTDIR)"
 
+
+!IF  "$(CFG)" == "EuropeanOption - Win32 Release"
+
+"QuantLib - Win32 Release" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
+   cd ".\Examples\EuropeanOption"
+
+"QuantLib - Win32 ReleaseCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
+   cd ".\Examples\EuropeanOption"
+
+!ELSEIF  "$(CFG)" == "EuropeanOption - Win32 Debug"
+
+"QuantLib - Win32 Debug" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
+   cd ".\Examples\EuropeanOption"
+
+"QuantLib - Win32 DebugCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
+   cd ".\Examples\EuropeanOption"
+
+!ELSEIF  "$(CFG)" == "EuropeanOption - Win32 OnTheEdgeRelease"
+
+"QuantLib - Win32 OnTheEdgeRelease" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" 
+   cd ".\Examples\EuropeanOption"
+
+"QuantLib - Win32 OnTheEdgeReleaseCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" RECURSE=1 CLEAN 
+   cd ".\Examples\EuropeanOption"
+
+!ELSEIF  "$(CFG)" == "EuropeanOption - Win32 OnTheEdgeDebug"
+
+"QuantLib - Win32 OnTheEdgeDebug" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" 
+   cd ".\Examples\EuropeanOption"
+
+"QuantLib - Win32 OnTheEdgeDebugCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" RECURSE=1 CLEAN 
+   cd ".\Examples\EuropeanOption"
+
+!ENDIF 
 
 
 !ENDIF 

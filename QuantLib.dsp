@@ -1347,6 +1347,10 @@ SOURCE=.\ql\functions\mathf.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Volatilities\capflatvolvector.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Volatilities\swaptionvolmatrix.hpp
 # End Source File
 # End Group
@@ -1365,6 +1369,10 @@ SOURCE=.\ql\calendar.cpp
 # Begin Source File
 
 SOURCE=.\ql\calendar.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\capvolstructures.hpp
 # End Source File
 # Begin Source File
 
@@ -1429,10 +1437,6 @@ SOURCE=.\ql\exercise.hpp
 # Begin Source File
 
 SOURCE=.\ql\expressiontemplates.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\forwardvolsurface.hpp
 # End Source File
 # Begin Source File
 
@@ -1508,7 +1512,7 @@ SOURCE=.\ql\solver1d.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\swaptionvolsurface.hpp
+SOURCE=.\ql\swaptionvolstructure.hpp
 # End Source File
 # Begin Source File
 
