@@ -47,7 +47,7 @@ docs-ps: tex-files
 	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
 	cd latex && $(MAKEINDEX) refman
 	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
-	cd latex && $(DVIPS) refman
+	cd latex && $(DVIPS) -o refman.ps refman
 docs-man: docs-html
 docs-clean:
 	rm -Rf man
