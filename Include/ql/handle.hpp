@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/06/19 15:01:33  lballabio
+// Handle can be downcasted to non-const pointer
+//
 // Revision 1.11  2001/06/01 16:50:16  lballabio
 // Term structure on deposits and swaps
 //
@@ -78,7 +81,7 @@ namespace QuantLib {
         "The C++ Programming Language", 3rd ed., B.Stroustrup, Addison-Wesley,
         1997.
 
-        \warning This mechanism will broke and result in untimely deallocation
+        \warning This mechanism will break and result in untimely deallocation
         of the pointer (and very possible death of your executable) if two
         handles are explicitly initialized with the same pointer, as in
         \code
@@ -145,8 +148,8 @@ namespace QuantLib {
             allocated and should be discarded immediately after being used */
         #if QL_ALLOW_TEMPLATE_METHOD_CALLS
         template <class Type2>
-        const Type2* downcast() const {
-            return dynamic_cast<const Type2*>(ptr_);
+        Type2* downcast() const {
+            return dynamic_cast<Type2*>(ptr_);
         }
         #endif
         //@}
@@ -156,10 +159,10 @@ namespace QuantLib {
         //! Checks if the contained pointer is actually allocated
         bool isNull() const;
         #if !QL_ALLOW_TEMPLATE_METHOD_CALLS
-        /*! This is here only because MSVC won't compile downcast().
+        /*! \warning This is here only because MSVC won't compile downcast().
             I know it is dangerous. Avoid using it if you can. 
             Blame Microsoft if you can't. */
-        const Type* pointer() const { return ptr_; }
+        Type* pointer() const { return ptr_; }
         #endif
         //@}
       private:
