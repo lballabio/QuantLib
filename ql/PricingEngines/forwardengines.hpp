@@ -104,9 +104,11 @@ namespace QuantLib {
             // if so the hierarchy of Payoff should be modified
             Handle<PlainVanillaPayoff> argumentsPayoff(arguments_.payoff);
 
-            originalArguments_->payoff=
-                new PlainVanillaPayoff(argumentsPayoff->optionType(),
-                                arguments_.moneyness * arguments_.underlying);
+            originalArguments_->payoff = Handle<Payoff>(
+                new PlainVanillaPayoff(
+                    argumentsPayoff->optionType(),
+                    arguments_.moneyness * arguments_.underlying));
+
             // maybe the forward value is "better", in some fashion
             // the right level is needed in order to interpolate
             // the vol 
