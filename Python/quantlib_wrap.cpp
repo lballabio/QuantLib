@@ -17090,6 +17090,40 @@ static PyObject *_wrap_RiskStatistics_valueAtRisk(PyObject *self, PyObject *args
 }
 
 
+static PyObject *_wrap_RiskStatistics_expectedShortfall(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskStatistics *arg0 ;
+    double arg1 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","percentile", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:RiskStatistics_expectedShortfall",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->expectedShortfall(arg1);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
 static PyObject *_wrap_RiskStatistics_shortfall(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     RiskStatistics *arg0 ;
@@ -19382,6 +19416,7 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "RiskStatistics_min", (PyCFunction) _wrap_RiskStatistics_min, METH_VARARGS | METH_KEYWORDS },
 	 { "RiskStatistics_max", (PyCFunction) _wrap_RiskStatistics_max, METH_VARARGS | METH_KEYWORDS },
 	 { "RiskStatistics_valueAtRisk", (PyCFunction) _wrap_RiskStatistics_valueAtRisk, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_expectedShortfall", (PyCFunction) _wrap_RiskStatistics_expectedShortfall, METH_VARARGS | METH_KEYWORDS },
 	 { "RiskStatistics_shortfall", (PyCFunction) _wrap_RiskStatistics_shortfall, METH_VARARGS | METH_KEYWORDS },
 	 { "RiskStatistics_averageShortfall", (PyCFunction) _wrap_RiskStatistics_averageShortfall, METH_VARARGS | METH_KEYWORDS },
 	 { "RiskStatistics_add", (PyCFunction) _wrap_RiskStatistics_add, METH_VARARGS | METH_KEYWORDS },

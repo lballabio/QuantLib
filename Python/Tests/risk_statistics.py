@@ -2,6 +2,10 @@
 """
     $Source$
     $Log$
+    Revision 1.2  2001/03/05 10:31:30  nando
+    Expected Shortfall added to classes HVarTool and HRiskStatistics.
+    Expected Shortfall included in python test.
+
     Revision 1.1  2001/02/22 14:43:36  lballabio
     Renamed test script to follow a single naming scheme
 
@@ -157,6 +161,8 @@ class RiskStatisticsTest(TestUnit):
                     )
                     raise Exception('wrong kurtosis')
                 
+
+
                 rightVAR = -min(average-2.0*sigma, 0.0)
                 VAR = s.valueAtRisk(0.9772)
                 if rightVAR == 0.0:
@@ -171,6 +177,26 @@ class RiskStatisticsTest(TestUnit):
                     )
                     raise Exception('wrong valueAtRisk')
                 
+
+
+                tempVAR = average-2.0*sigma
+                rightExShortfall = average - sigma*sigma*gaussian(tempVAR, average, sigma)/(1.0-0.9772)
+                rightExShortfall = -min(rightExShortfall, 0.0)
+                exShortfall = s.expectedShortfall(0.9772)
+                if rightExShortfall == 0.0:
+                    check = abs(exShortfall)
+                else:
+                    check = abs(exShortfall-rightExShortfall)/rightExShortfall
+                self.printDetails('\texpectedShortfall:  %9.3f' % exShortfall)
+                if (check>1e-3):
+                    self.printDetails(
+                        'wrong expectedShortfall (%f): should be %f' % 
+                        (exShortfall, rightExShortfall)
+                    )
+                    raise Exception('wrong expectedShortfall')
+
+
+
                 rightShortfall = 0.5
                 shortfall = s.shortfall(target)
                 self.printDetails('\tshortfall:          %9.3f' % shortfall)

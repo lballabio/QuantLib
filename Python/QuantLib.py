@@ -1243,6 +1243,7 @@ RiskStatistics.kurtosis = new.instancemethod(QuantLibc.RiskStatistics_kurtosis, 
 RiskStatistics.min = new.instancemethod(QuantLibc.RiskStatistics_min, None, RiskStatistics)
 RiskStatistics.max = new.instancemethod(QuantLibc.RiskStatistics_max, None, RiskStatistics)
 RiskStatistics.valueAtRisk = new.instancemethod(QuantLibc.RiskStatistics_valueAtRisk, None, RiskStatistics)
+RiskStatistics.expectedShortfall = new.instancemethod(QuantLibc.RiskStatistics_expectedShortfall, None, RiskStatistics)
 RiskStatistics.shortfall = new.instancemethod(QuantLibc.RiskStatistics_shortfall, None, RiskStatistics)
 RiskStatistics.averageShortfall = new.instancemethod(QuantLibc.RiskStatistics_averageShortfall, None, RiskStatistics)
 RiskStatistics.add = new.instancemethod(QuantLibc.RiskStatistics_add, None, RiskStatistics)
