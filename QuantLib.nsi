@@ -1,6 +1,11 @@
 
 # $Id$
 # $Source$
+# $Log$
+# Revision 1.7  2001/05/11 07:29:56  nando
+# added CVS tag.
+# Swig files are back (for a while)
+#
 
 # HEADER CONFIGURATION COMMANDS
 Name "QuantLib"
@@ -57,6 +62,10 @@ SetOutPath  $INSTDIR\Include\ql\TermStructures
 File /r "Include\ql\TermStructures\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Utilities
 File /r "Include\ql\Utilities\*.hpp"
+
+Section "SWIG wrapper files"
+SetOutPath $INSTDIR\Swig
+File /r "Swig\*.i"
 
 Section "Documentation"
 SetOutPath $INSTDIR\Docs\html
