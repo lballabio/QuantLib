@@ -33,7 +33,7 @@ namespace QuantLib {
         QL_REQUIRE(serialNumber >= minimumSerialNumber() &&
                    serialNumber <= maximumSerialNumber(),
                    "Date " + IntegerFormatter::toString(serialNumber) +
-                   "outside allowed range [" +
+                   " outside allowed range [" +
                    DateFormatter::toString(minDate()) + "-" +
                    DateFormatter::toString(maxDate()) + "]");
     }
