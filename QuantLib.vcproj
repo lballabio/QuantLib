@@ -10315,9 +10315,6 @@
 			RelativePath="ql\instrument.hpp">
 		</File>
 		<File
-			RelativePath="ql\marketelement.hpp">
-		</File>
-		<File
 			RelativePath="ql\null.hpp">
 		</File>
 		<File
@@ -10339,70 +10336,16 @@
 			RelativePath="ql\quantlib.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\quote.hpp">
+		</File>
+		<File
 			RelativePath="ql\relinkablehandle.hpp">
 		</File>
 		<File
-			RelativePath="ql\scheduler.cpp">
-			<FileConfiguration
-				Name="Debug MTDLL|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release SingleThread|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release MTDLL|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug SingleThread|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
+			RelativePath=".\ql\schedule.cpp">
 		</File>
 		<File
-			RelativePath="ql\scheduler.hpp">
+			RelativePath=".\ql\schedule.hpp">
 		</File>
 		<File
 			RelativePath="ql\solver1d.hpp">

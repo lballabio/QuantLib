@@ -33,7 +33,7 @@ CORE_OBJS = \
     "errors.obj$(_mt)$(_D)" \
     "exercise.obj$(_mt)$(_D)" \
     "grid.obj$(_mt)$(_D)" \
-    "scheduler.obj$(_mt)$(_D)" \
+    "schedule.obj$(_mt)$(_D)" \
     "stochasticprocess.obj$(_mt)$(_D)" \
     "voltermstructure.obj$(_mt)$(_D)"
 
