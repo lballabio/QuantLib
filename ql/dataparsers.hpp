@@ -30,10 +30,10 @@
 
 namespace QuantLib {
 
-   class PeriodParser {
-   public:
-      static Period parse(const std::string& str);
-   };
+    class PeriodParser {
+      public:
+        static Period parse(const std::string& str);
+    };
 }
 
 

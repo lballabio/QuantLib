@@ -32,163 +32,149 @@
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 
-namespace QuantLib
-{
+namespace QuantLib {
 
-   namespace TermStructures
-   {
+    namespace TermStructures {
 
-      class CompoundForward:public DiscountStructure
-      {
-       public:
-         // constructor
-         CompoundForward(const std::vector < Date > &inpDates,
-                         const std::vector < Rate > &inpFwdRates,
-                         const Currency currency,
-                         const DayCounter & dayCounter,
-                         const Date & todaysDate,
-                         const Calendar & calendar,
-                         const int settlementDays,
-                         const RollingConvention roll,
-                         const int compoundFrequency);
-	 CompoundForward(const std::vector < std::string > &inpPeriods,
-			 const std::vector < Rate > &inpFwdRates,
-			 const Currency currency,
-			 const DayCounter & dayCounter,
-			 const Date & todaysDate,
-			 const Calendar & calendar,
-			 const int settlementDays,
-			 const RollingConvention roll,
-			 const int compoundFrequency);
-	 CompoundForward(const std::vector < Period> &inpPeriods,
-			 const std::vector < Rate > &inpFwdRates,
-			 const Currency currency,
-			 const DayCounter & dayCounter,
-			 const Date & todaysDate,
-			 const Calendar & calendar,
-			 const int settlementDays,
-			 const RollingConvention roll,
-			 const int compoundFrequency);
-         Currency currency() const;
-         DayCounter dayCounter() const;
-         Date todaysDate() const;
-         Calendar calendar() const;
-         int settlementDays() const;
-         Date settlementDate() const;
-         RollingConvention roll() const;
-         int compoundFrequency() const;
-         const std::vector < Date > &dates() const;
-         Date maxDate() const;
-         Date minDate() const;
-         const std::vector < Time > &times() const;
-         Time maxTime() const;
-         Time minTime() const;
-         //@}
-       protected:
-         void validateInputs() const;
-         DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-       private:
-         // methods
-         int referenceNode(Time t, bool extrapolate) const;
-         void bootstrap() const;
-         // data members
-         Currency currency_;
-         DayCounter dayCounter_;
-         Date todaysDate_;
-         Calendar calendar_;
-         int settlementDays_;
-         Date settlementDate_;
-         RollingConvention roll_;
-         int compoundFrequency_;
-         mutable bool needsBootstrap_;
-         mutable std::vector < Date > inputDates_;
-         mutable std::vector < Date > dates_;
-         mutable std::vector < Rate > forwards_;
-         mutable std::vector < Time > times_;
-         mutable std::vector < DiscountFactor > discounts_;
-         typedef Math::LinearInterpolation <
-            std::vector < Time >::const_iterator,
-            std::vector < Rate >::const_iterator > FwdInterpolation;
-         typedef Math::LogLinearInterpolation <
-            std::vector < Time >::const_iterator,
-            std::vector < DiscountFactor >::const_iterator > DfInterpolation;
-         mutable Handle < FwdInterpolation > fwdinterp_;
-         mutable Handle < DfInterpolation > dfinterp_;
-      };
+        class CompoundForward : public DiscountStructure {
+          public:
+          // constructor
+            CompoundForward(const std::vector<Date>& inpDates,
+                            const std::vector<Rate>& inpFwdRates,
+                            const Currency currency,
+                            const DayCounter& dayCounter,
+                            const Date& todaysDate,
+                            const Calendar& calendar,
+                            const int settlementDays,
+                            const RollingConvention roll,
+                            const int compoundFrequency);
 
-      // inline definitions
+            CompoundForward(const std::vector<std::string>& inpPeriods,
+                            const std::vector<Rate>& inpFwdRates,
+                            const Currency currency,
+                            const DayCounter& dayCounter,
+                            const Date& todaysDate,
+                            const Calendar& calendar,
+                            const int settlementDays,
+                            const RollingConvention roll,
+                            const int compoundFrequency);
 
-      inline Currency CompoundForward::currency() const
-      {
-         return currency_;
-      }
+            CompoundForward(const std::vector<Period>& inpPeriods,
+                            const std::vector<Rate>& inpFwdRates,
+                            const Currency currency,
+                            const DayCounter& dayCounter,
+                            const Date& todaysDate,
+                            const Calendar& calendar,
+                            const int settlementDays,
+                            const RollingConvention roll,
+                            const int compoundFrequency);
 
-      inline DayCounter CompoundForward::dayCounter() const
-      {
-         return dayCounter_;
-      }
+            Currency currency() const;
+            DayCounter dayCounter() const;
+            Date todaysDate() const;
+            Calendar calendar() const;
+            int settlementDays() const;
+            Date settlementDate() const;
+            RollingConvention roll() const;
+            int compoundFrequency() const;
+            const std::vector<Date>& dates() const;
+            Date maxDate() const;
+            Date minDate() const;
+            const std::vector<Time>& times() const;
+            Time maxTime() const;
+            Time minTime() const;
+            //@}
+          protected:
+            void validateInputs() const;
+            DiscountFactor discountImpl(Time, bool extrapolate = false) const;
+          private:
+            // methods
+            int referenceNode(Time t, bool extrapolate) const;
+            void bootstrap() const;
+            // data members
+            Currency currency_;
+            DayCounter dayCounter_;
+            Date todaysDate_;
+            Calendar calendar_;
+            int settlementDays_;
+            Date settlementDate_;
+            RollingConvention roll_;
+            int compoundFrequency_;
+            mutable bool needsBootstrap_;
+            mutable std::vector<Date> inputDates_;
+            mutable std::vector<Date> dates_;
+            mutable std::vector<Rate> forwards_;
+            mutable std::vector<Time> times_;
+            mutable std::vector<DiscountFactor> discounts_;
+            typedef Math::LinearInterpolation<
+                std::vector<Time>::const_iterator,
+                std::vector<Rate>::const_iterator> FwdInterpolation;
+            typedef Math::LogLinearInterpolation<
+                std::vector<Time>::const_iterator,
+                std::vector<DiscountFactor>::const_iterator> DfInterpolation;
+            mutable Handle<FwdInterpolation> fwdinterp_;
+            mutable Handle<DfInterpolation>dfinterp_;
+        };
 
-      inline Date CompoundForward::todaysDate() const
-      {
-         return todaysDate_;
-      }
+        // inline definitions
 
-      inline Calendar CompoundForward::calendar() const
-      {
-         return calendar_;
-      }
+        inline Currency CompoundForward::currency() const {
+            return currency_;
+        }
 
-      inline int CompoundForward::settlementDays() const
-      {
-         return settlementDays_;
-      }
+        inline DayCounter CompoundForward::dayCounter() const {
+            return dayCounter_;
+        }
 
-      inline Date CompoundForward::settlementDate() const
-      {
-         return settlementDate_;
-      }
+        inline Date CompoundForward::todaysDate() const {
+            return todaysDate_;
+        }
 
-      inline RollingConvention CompoundForward::roll() const
-      {
-         return roll_;
-      }
+        inline Calendar CompoundForward::calendar() const {
+            return calendar_;
+        }
 
-      inline int CompoundForward::compoundFrequency() const
-      {
-         return compoundFrequency_;
-      }
+        inline int CompoundForward::settlementDays() const {
+            return settlementDays_;
+        }
 
-      inline const std::vector < Date > &CompoundForward::dates() const
-      {
-         return inputDates_;
-      }
+        inline Date CompoundForward::settlementDate() const {
+            return settlementDate_;
+        }
 
-      inline Date CompoundForward::maxDate() const
-      {
-         return dates_.back();
-      }
+        inline RollingConvention CompoundForward::roll() const {
+            return roll_;
+        }
 
-      inline Date CompoundForward::minDate() const
-      {
-         return settlementDate_;
-      }
+        inline int CompoundForward::compoundFrequency() const {
+            return compoundFrequency_;
+        }
 
-      inline const std::vector < Time > &CompoundForward::times() const
-      {
-         return times_;
-      }
+        inline const std::vector<Date>& CompoundForward::dates() const {
+            return inputDates_;
+        }
 
-      inline Time CompoundForward::maxTime() const
-      {
-         return times_.back();
-      }
+        inline Date CompoundForward::maxDate() const {
+            return dates_.back();
+        }
 
-      inline Time CompoundForward::minTime() const
-      {
-         return 0.0;
-      }
+        inline Date CompoundForward::minDate() const {
+            return settlementDate_;
+        }
 
-   }
+        inline const std::vector<Time>& CompoundForward::times() const {
+            return times_;
+        }
+
+        inline Time CompoundForward::maxTime() const {
+            return times_.back();
+        }
+
+        inline Time CompoundForward::minTime() const {
+            return 0.0;
+        }
+
+    }
 
 }
 

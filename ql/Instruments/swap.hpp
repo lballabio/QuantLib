@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -48,16 +47,15 @@ namespace QuantLib {
             // added interface
             double firstLegBPS() const;
             double secondLegBPS() const;
-	    void linkTermStructure(Handle<TermStructure> ts) const;
+            void linkTermStructure(Handle<TermStructure> ts) const;
           protected:
             // methods
             void performCalculations() const;
             // data members
             std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
-	    mutable RelinkableHandle<TermStructure> termStructure_;
+            mutable RelinkableHandle<TermStructure> termStructure_;
             mutable double firstLegBPS_, secondLegBPS_;
         };
-
 
         // inline definitions
 
@@ -72,9 +70,9 @@ namespace QuantLib {
         }
 
         inline void Swap::linkTermStructure(Handle<TermStructure> ts) const {
-	   termStructure_.linkTo(ts);
-	}
-					    
+            termStructure_.linkTo(ts);
+        }
+
     }
 
 }

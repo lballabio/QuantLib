@@ -28,20 +28,19 @@
 
 namespace QuantLib {
 
-   Period PeriodParser::parse(const std::string& str)
-   {
-      TimeUnit units = Days;
-      
-      QL_REQUIRE(str.length()>1, "Argument needs length of at least 2");
-      Size iPos = str.find_first_of("DdWwMmYy");
-      if (iPos != str.length()-1)
-	 throw Error("Unknown units");
-      char abbr = QL_TOUPPER(str[iPos]);
-      if (abbr == 'D')      units = Days;
-      else if (abbr == 'W') units = Weeks;
-      else if (abbr == 'M') units = Months;
-      else if (abbr == 'Y') units = Years;
-      return Period(QL_ATOI(str.c_str()), units);
-   }
+    Period PeriodParser::parse(const std::string& str) {
+        TimeUnit units = Days;
+
+        QL_REQUIRE(str.length()>1, "Argument needs length of at least 2");
+        Size iPos = str.find_first_of("DdWwMmYy");
+        if (iPos != str.length()-1)
+            throw Error("Unknown units");
+        char abbr = QL_TOUPPER(str[iPos]);
+        if (abbr == 'D')      units = Days;
+        else if (abbr == 'W') units = Weeks;
+        else if (abbr == 'M') units = Months;
+        else if (abbr == 'Y') units = Years;
+        return Period(QL_ATOI(str.c_str()), units);
+    }
 
 }

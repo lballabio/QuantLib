@@ -59,7 +59,7 @@ namespace QuantLib {
         // inline definitions
 
         template <class I1, class I2>
-        inline LinearInterpolation<I1,I2>::result_type
+        inline typename LinearInterpolation<I1,I2>::result_type
         LinearInterpolation<I1,I2>::operator()(
             const LinearInterpolation<I1,I2>::argument_type& x,
                 bool allowExtrapolation) const {

@@ -160,19 +160,19 @@ namespace QuantLib {
         }
 
         template<class RandomAccessIterator>
-        inline stepping_iterator<RandomAccessIterator>::reference
+        inline typename stepping_iterator<RandomAccessIterator>::reference
         stepping_iterator<RandomAccessIterator>::operator*() const {
             return *it_;
         }
 
         template<class RandomAccessIterator>
-        inline stepping_iterator<RandomAccessIterator>::pointer
+        inline typename stepping_iterator<RandomAccessIterator>::pointer
         stepping_iterator<RandomAccessIterator>::operator->() const {
             return it_;
         }
 
         template<class RandomAccessIterator>
-        inline stepping_iterator<RandomAccessIterator>::reference
+        inline typename stepping_iterator<RandomAccessIterator>::reference
         stepping_iterator<RandomAccessIterator>::operator[](int i) const {
             return it_[i*dn_];
         }
@@ -192,7 +192,7 @@ namespace QuantLib {
         }
 
         template<class RandomAccessIterator>
-        inline stepping_iterator<RandomAccessIterator>::difference_type
+        inline typename stepping_iterator<RandomAccessIterator>::difference_type
         stepping_iterator<RandomAccessIterator>::operator-(
           const stepping_iterator<RandomAccessIterator>& i) {
             #ifdef QL_DEBUG

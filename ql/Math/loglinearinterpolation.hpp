@@ -58,7 +58,7 @@ namespace QuantLib {
         // inline definitions
 
         template <class I1, class I2>
-        inline LogLinearInterpolation<I1,I2>::result_type
+        inline typename LogLinearInterpolation<I1,I2>::result_type
         LogLinearInterpolation<I1,I2>::operator()(
             const LogLinearInterpolation<I1,I2>::argument_type& x,
             bool allowExtrapolation) const {

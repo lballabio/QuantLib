@@ -28,7 +28,6 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
-
         void DiscretizedVanillaOption::reset(Size size) {
             values_ = Array(size, 0.0);
             adjustValues();

@@ -155,7 +155,7 @@ namespace QuantLib {
         }
 
         template<class Iterator, class UnaryPredicate>
-        inline filtering_iterator<Iterator,UnaryPredicate>::pointer
+        inline typename filtering_iterator<Iterator,UnaryPredicate>::pointer
         filtering_iterator<Iterator,UnaryPredicate>::operator->() const {
             return it_.operator->();
         }

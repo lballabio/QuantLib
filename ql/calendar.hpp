@@ -100,8 +100,8 @@ namespace QuantLib {
             returns the result.
             \note The input date is not modified.
         */
-       Date advance(const Date & d,
-		    const Period & p, RollingConvention c) const;
+       Date advance(const Date& date, const Period& period, 
+                    RollingConvention convention) const;
 
         //! abstract base class for calendar implementations
         class CalendarImpl {

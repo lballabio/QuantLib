@@ -120,7 +120,7 @@ namespace QuantLib {
         }
 
         template <class I1, class I2>
-        CubicSpline<I1,I2>::result_type
+        typename CubicSpline<I1,I2>::result_type
         CubicSpline<I1,I2>::operator()(
             const CubicSpline<I1,I2>::argument_type& x,
             bool allowExtrapolation) const {
