@@ -25,12 +25,14 @@
 /*! \file symmetricschurdecomposition.cpp
     \brief Gives the eigenvalues and eigenvectors of a real symmetric matrix
 
-    $Source$
-    $Log$
-    Revision 1.8  2001/05/24 13:57:52  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.9  2001/05/24 15:40:09  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 /*
     Note: because of the many levels of indentation required,

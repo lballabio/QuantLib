@@ -25,38 +25,14 @@
 /*! \file dataformatters.cpp
     \brief classes used to format data for output
 
-    $Source$
-    $Log$
-    Revision 1.19  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
-
-    Revision 1.18  2001/05/09 11:06:19  nando
-    A few comments modified/removed
-
-    Revision 1.17  2001/04/10 07:54:33  lballabio
-    Ruby histories (the Ruby way)
-
-    Revision 1.16  2001/04/09 14:13:33  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.15  2001/04/06 18:46:21  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.14  2001/04/04 11:07:24  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.13  2001/03/12 17:35:11  lballabio
-    Removed global IsNull function - could have caused very vicious loops
-
-    Revision 1.12  2001/02/23 17:24:45  lballabio
-    Allow formatting of null dates
-
-    Revision 1.11  2001/01/17 14:37:56  nando
-    tabs removed
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.20  2001/05/24 15:40:09  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/dataformatters.hpp"
 #include "ql/null.hpp"

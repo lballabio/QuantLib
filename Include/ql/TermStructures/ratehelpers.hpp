@@ -25,15 +25,14 @@
 /*! \file ratehelpers.hpp
     \brief rate helpers
 
-    $Source$
-    $Log$
-    Revision 1.5  2001/05/24 12:52:02  nando
-    smoothing #include xx.hpp
-
-    Revision 1.4  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.6  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_ratehelper_h
 #define quantlib_ratehelper_h

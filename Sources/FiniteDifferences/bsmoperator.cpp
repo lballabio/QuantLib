@@ -25,12 +25,14 @@
 /*! \file bsmoperator.cpp
     \brief differential operator for Black-Scholes-Merton equation
 
-    $Source$
-    $Log$
-    Revision 1.10  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.11  2001/05/24 15:40:09  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/FiniteDifferences/bsmoperator.hpp"
 

@@ -25,12 +25,14 @@
 /*! \file date.cpp
     \brief date- and time-related classes, typedefs and enumerations
 
-    $Source$
-    $Log$
-    Revision 1.20  2001/05/24 12:52:02  nando
-    smoothing #include xx.hpp
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.21  2001/05/24 15:40:09  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/dataformatters.hpp"
 

@@ -22,18 +22,17 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*
-    $Id$
-    $Source$
-    $Log$
-    Revision 1.3  2001/05/24 12:52:01  nando
-    smoothing #include xx.hpp
-
-*/
-
 /*! \file instrument.hpp
     \brief Abstract instrument class
+
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.4  2001/05/24 15:38:07  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_financial_instrument_h
 #define quantlib_financial_instrument_h

@@ -25,18 +25,14 @@
 /*! \file bsmoption.hpp
     \brief common code for option evaluation
 
-    $Source$
-    $Log$
-    Revision 1.7  2001/05/24 12:52:02  nando
-    smoothing #include xx.hpp
-
-    Revision 1.6  2001/05/23 19:30:27  nando
-    smoothing #include xx.hpp
-
-    Revision 1.5  2001/05/22 13:18:35  marmar
-    Volatility limits change to [0.0001, 1.0]
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.8  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h

@@ -25,44 +25,14 @@
 /*! \file steppingiterator.hpp
     \brief Iterator advancing in constant steps
 
-    $Source$
-    $Log$
-    Revision 1.2  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
-    Revision 1.1  2001/04/09 14:07:00  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.2  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.1  2001/04/04 11:07:23  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.11  2001/02/21 15:44:19  nando
-    fixed missing ;
-
-    Revision 1.10  2001/02/16 15:33:03  lballabio
-    Used QL_ITERATOR_TRAITS macro
-
-    Revision 1.9  2001/02/14 10:38:28  lballabio
-    Found out what 14.6.2.3 of the standard means
-
-    Revision 1.8  2001/02/13 09:58:23  lballabio
-    Some more work on iterators
-
-    Revision 1.7  2001/02/12 19:00:39  lballabio
-    Some more work on iterators
-
-    Revision 1.6  2001/02/12 18:34:49  lballabio
-    Some work on iterators
-
-    Revision 1.5  2001/01/25 15:11:55  lballabio
-    Added helper functions to make iterators
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.3  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_stepping_iterator_h
 #define quantlib_stepping_iterator_h

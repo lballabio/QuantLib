@@ -25,12 +25,14 @@
 /*! \file bsmoption.cpp
     \brief common code for option evaluation
 
-    $Source$
-    $Log$
-    Revision 1.34  2001/05/24 13:57:52  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.35  2001/05/24 15:40:10  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/Pricers/bsmoption.hpp"
 #include "ql/Solvers1D/brent.hpp"

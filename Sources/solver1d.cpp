@@ -25,26 +25,14 @@
 /*! \file solver1d.cpp
     \brief Abstract 1-D solver class
 
-    $Source$
-    $Log$
-    Revision 1.21  2001/05/16 09:57:27  lballabio
-    Added indexes and piecewise flat forward curve
-
-    Revision 1.20  2001/05/09 11:06:19  nando
-    A few comments modified/removed
-
-    Revision 1.19  2001/04/09 14:13:33  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.18  2001/04/06 18:46:21  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.17  2001/04/04 11:07:24  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.22  2001/05/24 15:40:09  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/solver1d.hpp"
 

@@ -25,25 +25,14 @@
 /*! \file multivariateaccumulator.hpp
     \brief A simple accumulator for vector-type samples
 
-    $Source$
-    $Log$
-    Revision 1.2  2001/05/24 11:34:07  nando
-    smoothing #include xx.hpp
-
-    Revision 1.1  2001/04/09 14:05:48  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.3  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.2  2001/04/04 12:13:23  nando
-    Headers policy part 2:
-    The Include directory is added to the compiler's include search path.
-    Then both your code and user code specifies the sub-directory in
-    #include directives, as in
-    #include <Solvers1d/newton.hpp>
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.3  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_math_multivariate_accumulator_h
 #define quantlib_math_multivariate_accumulator_h

@@ -25,24 +25,14 @@
 /*! \file brent.hpp
     \brief Brent 1-D solver
 
-    $Source$
-    $Log$
-    Revision 1.4  2001/05/24 11:34:07  nando
-    smoothing #include xx.hpp
-
-    Revision 1.3  2001/05/15 12:39:38  lballabio
-    Removed unnecessary constructors
-
-    Revision 1.2  2001/05/09 11:06:18  nando
-    A few comments modified/removed
-
-    Revision 1.1  2001/04/09 14:05:49  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.2  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.5  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_solver1d_brent_h
 #define quantlib_solver1d_brent_h

@@ -25,18 +25,14 @@
 /*! \file piecewiseflatforward.hpp
     \brief piecewise flat forward term structure
 
-    $Source$
-    $Log$
-    Revision 1.3  2001/05/24 12:52:02  nando
-    smoothing #include xx.hpp
-
-    Revision 1.2  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
-
-    Revision 1.1  2001/05/16 09:57:27  lballabio
-    Added indexes and piecewise flat forward curve
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.4  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_piecewise_flat_forward_curve_h
 #define quantlib_piecewise_flat_forward_curve_h

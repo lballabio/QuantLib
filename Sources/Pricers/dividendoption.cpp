@@ -25,18 +25,14 @@
 /*! \file dividendoption.cpp
     \brief base class for options with dividends
 
-    $Source$
-    $Log$
-    Revision 1.14  2001/05/24 14:03:08  marmar
-    New grid is always within previous one
-
-    Revision 1.13  2001/05/24 13:57:52  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
-    Revision 1.12  2001/05/22 13:30:37  marmar
-    sMin_ and sMax_ are computed in a different way now
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.15  2001/05/24 15:40:10  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/Pricers/dividendoption.hpp"
 #include "ql/Math/cubicspline.hpp"
@@ -116,7 +112,7 @@ namespace QuantLib {
             initializeOperator();
             initializeModel();
             initializeStepCondition();
-            
+
             stepCondition_ -> applyTo(prices_, dates_[step]);
 
            }

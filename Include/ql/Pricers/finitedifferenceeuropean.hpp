@@ -25,12 +25,14 @@
 /*! \file finitedifferenceeuropean.hpp
     \brief Simple example of european option calculated using finite differences
 
-    $Source$
-    $Log$
-    Revision 1.2  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.3  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_pricers_finite_difference_european_option_h
 #define quantlib_pricers_finite_difference_european_option_h

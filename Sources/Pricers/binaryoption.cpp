@@ -25,13 +25,14 @@
 /*!  \file binaryoption.cpp
    \brief European style cash-or-nothing option.
 
-  $Source$
-
-  $Log$
-  Revision 1.6  2001/05/24 13:57:52  nando
-  smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.7  2001/05/24 15:40:10  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/Pricers/binaryoption.hpp"
 #include "ql/Math/normaldistribution.hpp"

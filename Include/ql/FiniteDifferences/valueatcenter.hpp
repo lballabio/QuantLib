@@ -25,29 +25,14 @@
 /*! \file valueatcenter.hpp
     \brief compute value, first, and second derivatives at grid center
 
-    $Source$
-    $Log$
-    Revision 1.2  2001/05/23 19:30:27  nando
-    smoothing #include xx.hpp
-
-    Revision 1.1  2001/04/09 14:05:47  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.2  2001/04/06 18:46:19  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.1  2001/04/04 11:07:22  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.1  2001/03/21 10:47:08  marmar
-    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
-    are no longer methods of BSMNumericalOption but separate
-    functions
-
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.3  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_finite_difference_value_at_center_h
 #define quantlib_finite_difference_value_at_center_h

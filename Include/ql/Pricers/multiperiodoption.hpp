@@ -25,12 +25,14 @@
 /*! \file multiperiodoption.hpp
     \brief base class for option with events happening at different periods
 
-    $Source$
-    $Log$
-    Revision 1.5  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.6  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef shaft_multi_period_option_pricer_h
 #define shaft_multi_period_option_pricer_h

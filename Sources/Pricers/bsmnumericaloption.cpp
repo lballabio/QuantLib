@@ -25,30 +25,14 @@
 /*! \file bsmnumericaloption.cpp
     \brief common code for numerical option evaluation
 
-    $Source$
-    $Log$
-    Revision 1.43  2001/05/24 13:57:52  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
-    Revision 1.42  2001/05/24 12:52:02  nando
-    smoothing #include xx.hpp
-
-    Revision 1.41  2001/05/22 13:25:28  marmar
-    setGridLimits interface changed
-
-    Revision 1.40  2001/04/26 16:05:42  marmar
-    underlying_ not mutable anymore, setGridLimits accepts the value for center
-
-    Revision 1.39  2001/04/23 14:20:34  marmar
-    Cosmetic changes
-
-    Revision 1.38  2001/04/09 14:13:34  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.37  2001/04/06 18:46:22  nando
-    changed Authors, Contributors, Licence and copyright header
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.44  2001/05/24 15:40:10  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/Pricers/bsmnumericaloption.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"

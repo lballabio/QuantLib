@@ -25,12 +25,14 @@
 /*! \file multiperiodoption.cpp
     \brief base class for option with events happening at different periods
 
-    $Source$
-    $Log$
-    Revision 1.16  2001/05/24 13:57:52  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.17  2001/05/24 15:40:10  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/Pricers/bsmeuropeanoption.hpp"
 #include "ql/Pricers/americancondition.hpp"

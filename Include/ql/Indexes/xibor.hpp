@@ -26,15 +26,13 @@
     \brief purely virtual base class for libor indexes
 
     $Id$
-    $Source$
-    $Log$
-    Revision 1.2  2001/05/24 11:34:07  nando
-    smoothing #include xx.hpp
-
-    Revision 1.1  2001/05/16 09:57:27  lballabio
-    Added indexes and piecewise flat forward curve
-
 */
+
+// $Source$
+// $Log$
+// Revision 1.3  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_xibor_hpp
 #define quantlib_xibor_hpp

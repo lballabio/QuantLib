@@ -25,47 +25,14 @@
 /*! \file calendar.cpp
     \brief Abstract calendar class
 
-    $Source$
-    $Log$
-    Revision 1.20  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
-    Revision 1.19  2001/05/08 17:23:47  lballabio
-    removed unnecessary if branch (although more convoluted, it had the same effect of the else branch
-
-    Revision 1.18  2001/04/09 14:13:33  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.17  2001/04/06 18:46:21  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.16  2001/04/04 11:07:24  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.15  2001/03/02 15:43:36  lballabio
-    Fixed a bug in advance() with a negative number of days
-
-    Revision 1.14  2001/03/01 11:37:07  lballabio
-    Fixed bug in advance(...,Days)
-
-    Revision 1.13  2001/01/24 13:17:46  marmar
-    style redefined
-
-    Revision 1.12  2001/01/17 14:37:56  nando
-    tabs removed
-
-    Revision 1.11  2000/12/20 18:26:15  enri
-    test
-
-    Revision 1.10  2000/12/20 16:42:38  enri
-    commit test
-
-    Revision 1.9  2000/12/14 12:32:31  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.21  2001/05/24 15:40:09  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/calendar.hpp"
 

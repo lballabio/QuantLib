@@ -22,21 +22,17 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*
-    $Id$
-    $Source$
-    $Log$
-    Revision 1.3  2001/05/24 12:52:01  nando
-    smoothing #include xx.hpp
-
-    Revision 1.2  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
-
-*/
-
 /*! \file dataformatters.hpp
     \brief Classes used to format data for output
+
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.4  2001/05/24 15:38:07  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_data_formatters_h
 #define quantlib_data_formatters_h

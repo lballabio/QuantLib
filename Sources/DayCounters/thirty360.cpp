@@ -25,12 +25,14 @@
 /*! \file thirty360.cpp
     \brief 30/360 day counter
 
-    $Source$
-    $Log$
-    Revision 1.15  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.16  2001/05/24 15:40:09  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/DayCounters/thirty360.hpp"
 

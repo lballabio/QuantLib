@@ -24,16 +24,13 @@
 
 /*
     $Id$
-    $Source$
-    $Log$
-    Revision 1.9  2001/05/24 12:52:01  nando
-    smoothing #include xx.hpp
-
-    Revision 1.8  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
-
 */
 
+// $Source$
+// $Log$
+// Revision 1.10  2001/05/24 15:38:07  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_h
 #define quantlib_h

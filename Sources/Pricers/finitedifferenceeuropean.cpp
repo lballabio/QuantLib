@@ -25,12 +25,14 @@
 /*! \file finitedifferenceeuropean.cpp
     \brief Example of european option calculated using finite differences
 
-    $Source$
-    $Log$
-    Revision 1.11  2001/05/24 13:57:52  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.12  2001/05/24 15:40:10  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/Pricers/finitedifferenceeuropean.hpp"
 #include "ql/Pricers/bsmnumericaloption.hpp"

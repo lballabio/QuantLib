@@ -24,22 +24,15 @@
 
 /*! \file ratehelpers.cpp
     \brief rate helpers
-    
-    $Source$
-    $Log$
-    Revision 1.4  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
 
-    Revision 1.3  2001/05/17 15:33:30  lballabio
-    Deposit rate helpers now use conventions in Currency
-
-    Revision 1.2  2001/05/16 15:45:56  lballabio
-    Fixed typo in docs
-
-    Revision 1.1  2001/05/16 09:57:27  lballabio
-    Added indexes and piecewise flat forward curve
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.5  2001/05/24 15:40:10  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/TermStructures/ratehelpers.hpp"
 #include "ql/dataformatters.hpp"
@@ -53,32 +46,32 @@ namespace QuantLib {
             termStructure_ = t;
         }
 
-        
-        DepositRateHelper::DepositRateHelper(Rate rate, const Date& settlement, 
-            int n, TimeUnit units, const Handle<Calendar>& calendar, 
-            bool isAdjusted, bool isModifiedFollowing, 
+
+        DepositRateHelper::DepositRateHelper(Rate rate, const Date& settlement,
+            int n, TimeUnit units, const Handle<Calendar>& calendar,
+            bool isAdjusted, bool isModifiedFollowing,
             const Handle<DayCounter>& dayCounter)
-        : rate_(rate), settlement_(settlement), n_(n), units_(units), 
-          calendar_(calendar), isAdjusted_(isAdjusted), 
+        : rate_(rate), settlement_(settlement), n_(n), units_(units),
+          calendar_(calendar), isAdjusted_(isAdjusted),
           isModified_(isModifiedFollowing), dayCounter_(dayCounter) {
             maturity_ = settlement_.plus(n_,units_);
             if (isAdjusted_)
                 maturity_ = calendar_->roll(maturity_,isModified_);
             yearFraction_ = dayCounter_->yearFraction(settlement_,maturity_);
         }
-        
+
         double DepositRateHelper::rateError() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
-            Rate impliedRate = (1.0/termStructure_->discount(maturity_)-1.0) / 
+            Rate impliedRate = (1.0/termStructure_->discount(maturity_)-1.0) /
                 yearFraction_;
             return rate_-impliedRate;
         }
-    
+
         double DepositRateHelper::discountGuess() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
             return 1.0/(1.0+rate_*yearFraction_);
         }
-    
+
         Date DepositRateHelper::maturity() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
             return maturity_;

@@ -1,3 +1,13 @@
+/*
+    $Id$
+*/
+
+// $Source$
+// $Log$
+// Revision 1.6  2001/05/24 15:38:07  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
+
 
 #ifndef quantlib_config_msvc_h
 #define quantlib_config_msvc_h

@@ -26,16 +26,13 @@
     \brief 1-D array used in linear algebra.
 
     $Id$
-    $Source$
-    $Log$
-    Revision 1.3  2001/05/24 13:57:50  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
-    Revision 1.2  2001/05/23 19:30:27  nando
-    smoothing #include xx.hpp
-
 */
 
+// $Source$
+// $Log$
+// Revision 1.4  2001/05/24 15:38:07  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_array_h
 #define quantlib_array_h

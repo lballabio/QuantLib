@@ -22,24 +22,17 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*
-    $Id$
-    $Source$
-    $Log$
-    Revision 1.2  2001/05/23 19:30:27  nando
-    smoothing #include xx.hpp
-
-    Revision 1.1  2001/04/09 14:05:47  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.2  2001/04/06 18:46:19  nando
-    changed Authors, Contributors, Licence and copyright header
-
-*/
-
 /*! \file stepcondition.hpp
     \brief conditions to be applied at every time step
+
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.3  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_step_condition_h
 #define quantlib_step_condition_h

@@ -22,21 +22,17 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*
-    $Id$
-    $Source$
-    $Log$
-    Revision 1.3  2001/05/24 12:52:01  nando
-    smoothing #include xx.hpp
-
-    Revision 1.2  2001/04/24 08:56:31  marmar
-    QL_MIN_POSITIVE_DOUBLE added
-
-*/
-
 /*! \file qldefines.hpp
     \brief Global definitions and compiler switches.
+
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.4  2001/05/24 15:38:07  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 /*! \mainpage
 

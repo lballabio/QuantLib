@@ -22,20 +22,17 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*
-    $Id$
-    $Source$
-    $Log$
-    Revision 1.5  2001/05/24 12:52:01  nando
-    smoothing #include xx.hpp
-
-*/
-
-
 /*! \file termstructure.hpp
     \brief Term structure
+
+    $Id$
 */
 
+// $Source$
+// $Log$
+// Revision 1.6  2001/05/24 15:38:07  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_term_structure_h
 #define quantlib_term_structure_h

@@ -26,15 +26,13 @@
     \brief purely virtual base class for libor indexes
 
     $Id$
-    $Source$
-    $Log$
-    Revision 1.2  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
-
-    Revision 1.1  2001/05/16 09:57:27  lballabio
-    Added indexes and piecewise flat forward curve
-
 */
+
+// $Source$
+// $Log$
+// Revision 1.3  2001/05/24 15:40:09  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/Indexes/xibor.hpp"
 #include "ql/Indexes/libormanager.hpp"
@@ -43,23 +41,23 @@ namespace QuantLib {
 
     namespace Indexes {
 
-        Rate Xibor::fixing(const Date& fixingDate, 
+        Rate Xibor::fixing(const Date& fixingDate,
           int n, TimeUnit unit) const {
             Date settlementDate = termStructure()->settlementDate();
             if (fixingDate < settlementDate) {
                 // must have been fixed
-                Rate pastFixing = 
+                Rate pastFixing =
                     LiborManager::getHistory(currency(),n,unit)[fixingDate];
                 QL_REQUIRE(pastFixing != Null<double>(),
                     "Missing " + CurrencyFormatter::toString(currency()) +
-                        " Libor fixing for " + 
+                        " Libor fixing for " +
                         DateFormatter::toString(fixingDate));
                 return pastFixing;
             }
             if (fixingDate == settlementDate) {
                 // might have been fixed
                 try {
-                    Rate pastFixing = 
+                    Rate pastFixing =
                         LiborManager::getHistory(currency(),n,unit)[fixingDate];
                     if (pastFixing != Null<double>())
                         return pastFixing;
@@ -72,11 +70,11 @@ namespace QuantLib {
             Date endDate = fixingDate.plus(n,unit);
             if (isAdjusted())
                 endDate = calendar()->roll(endDate,isModifiedFollowing());
-            DiscountFactor fixingDiscount = 
+            DiscountFactor fixingDiscount =
                 termStructure()->discount(fixingDate);
-            DiscountFactor endDiscount = 
+            DiscountFactor endDiscount =
                 termStructure()->discount(endDate);
-            double fixingPeriod = 
+            double fixingPeriod =
                 dayCounter()->yearFraction(fixingDate, endDate);
             return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
         }

@@ -25,12 +25,14 @@
 /*!  \file cliquetoption.cpp
    \brief Textbook example of european-style multi-period option.
 
-  $Source$
-  $Log$
-  Revision 1.6  2001/05/24 13:57:52  nando
-  smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.7  2001/05/24 15:40:10  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/Pricers/cliquetoption.hpp"
 #include "ql/Math/normaldistribution.hpp"

@@ -25,21 +25,14 @@
 /*! \file flatforward.hpp
     \brief flat forward rate term structure
 
-    $Source$
-    $Log$
-    Revision 1.5  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
-    Revision 1.4  2001/05/24 11:34:07  nando
-    smoothing #include xx.hpp
-
-    Revision 1.3  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
-
-    Revision 1.2  2001/05/14 17:09:47  lballabio
-    Went for simplicity and removed Observer-Observable relationships from Instrument
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.6  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_flat_forward_curve_h
 #define quantlib_flat_forward_curve_h

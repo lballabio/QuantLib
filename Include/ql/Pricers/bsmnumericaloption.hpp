@@ -25,30 +25,14 @@
 /*! \file bsmnumericaloption.hpp
     \brief common code for numerical option evaluation
 
-    $Source$
-    $Log$
-    Revision 1.6  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
-    Revision 1.5  2001/05/24 12:52:02  nando
-    smoothing #include xx.hpp
-
-    Revision 1.4  2001/05/23 19:30:27  nando
-    smoothing #include xx.hpp
-
-    Revision 1.3  2001/05/22 13:23:04  marmar
-    Method controlVariateCorrection added
-
-    Revision 1.2  2001/04/26 16:04:52  marmar
-    underlying_ not mutable anymore
-
-    Revision 1.1  2001/04/09 14:05:48  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.3  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.7  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef BSM_numerical_option_pricer_h
 #define BSM_numerical_option_pricer_h

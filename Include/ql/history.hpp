@@ -22,24 +22,16 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*
-    $Id$
-    $Source$
-    $Log$
-    Revision 1.2  2001/05/24 12:52:01  nando
-    smoothing #include xx.hpp
-
-    Revision 1.1  2001/04/09 14:03:54  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.3  2001/04/06 18:46:19  nando
-    changed Authors, Contributors, Licence and copyright header
-
-*/
-
 /*! \file history.hpp
     \brief history class
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.3  2001/05/24 15:38:07  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef quantlib_history_h
 #define quantlib_history_h

@@ -25,12 +25,14 @@
 /*! \file bermudanoption.cpp
     \brief  class for finite-difference evaluation of bermudan option
 
-    $Source$
-    $Log$
-    Revision 1.10  2001/05/24 13:57:52  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.11  2001/05/24 15:40:10  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/Pricers/bermudanoption.hpp"
 #include "ql/Pricers/bsmeuropeanoption.hpp"

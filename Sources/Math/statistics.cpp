@@ -25,12 +25,14 @@
 /*! \file statistics.cpp
     \brief statistic tools
 
-    $Source$
-    $Log$
-    Revision 1.13  2001/05/24 13:57:52  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.14  2001/05/24 15:40:09  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/Math/statistics.hpp"
 

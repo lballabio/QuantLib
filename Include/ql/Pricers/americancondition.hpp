@@ -25,12 +25,14 @@
 /*! \file americancondition.hpp
     \brief american option exercise condition
 
-    $Source$
-    $Log$
-    Revision 1.3  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.4  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef BSM_american_condition_h
 #define BSM_american_condition_h

@@ -25,12 +25,14 @@
 /*! \file actualactual.cpp
     \brief act/act day counter
 
-    $Source$
-    $Log$
-    Revision 1.21  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.22  2001/05/24 15:40:09  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #include "ql/DayCounters/actualactual.hpp"
 #include "ql/DayCounters/thirty360european.hpp"

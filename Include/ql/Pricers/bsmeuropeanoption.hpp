@@ -25,39 +25,14 @@
 /*! \file bsmeuropeanoption.hpp
     \brief european option
 
-    $Source$
-    $Log$
-    Revision 1.3  2001/05/24 13:57:51  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
-    Revision 1.2  2001/05/23 19:30:27  nando
-    smoothing #include xx.hpp
-
-    Revision 1.1  2001/04/09 14:05:48  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.2  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.1  2001/04/04 11:07:23  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.7  2001/02/20 11:14:37  marmar
-    "growth" replaced with dividend
-
-    Revision 1.6  2001/02/13 10:02:17  marmar
-    Ambiguous variable name underlyingGrowthRate changed in
-    unambiguos dividendYield
-
-    Revision 1.5  2001/01/16 11:23:27  nando
-    removed tabs and enforced 80 columns
-
-    Revision 1.4  2000/12/14 12:40:13  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.4  2001/05/24 15:38:08  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 #ifndef BSM_european_option_pricer_h
 #define BSM_european_option_pricer_h

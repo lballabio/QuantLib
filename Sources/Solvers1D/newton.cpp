@@ -25,12 +25,14 @@
 /*! \file newton.cpp
     \brief Newton 1-D solver
 
-    $Source$
-    $Log$
-    Revision 1.24  2001/05/24 13:57:52  nando
-    smoothing #include xx.hpp and cutting old Log messages
-
+    $Id$
 */
+
+// $Source$
+// $Log$
+// Revision 1.25  2001/05/24 15:40:10  nando
+// smoothing #include xx.hpp and cutting old Log messages
+//
 
 /* The implementation of the algorithm was inspired by
  * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
