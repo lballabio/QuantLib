@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002 Ferdinando Ametrano
 
@@ -36,19 +35,28 @@ using QuantLib::Math::LinearInterpolation;
 namespace QuantLib {
 
     namespace Functions {
-		double interpolate2D(std::vector<double>& x_values,
-            std::vector<double>& y_values, Matrix& dataMatrix,
-            double x, double y) {
-			return BilinearInterpolation<std::vector<double>::iterator, std::vector<double>::iterator>(
-                x_values.begin(), y_values.begin(), dataMatrix)(x,y);
-        }
 
-		double interpolate(std::vector<double>& x_values,
-            std::vector<double>& y_values, double x) {
-			return LinearInterpolation<std::vector<double>::iterator, std::vector<double>::iterator>(
+		double interpolate(
+		    const std::vector<double>& x_values,
+            const std::vector<double>& y_values, double x) {
+                
+			return LinearInterpolation<std::vector<double>::const_iterator, 
+			                           std::vector<double>::const_iterator>(
                 x_values.begin(), x_values.end(), y_values.begin())(x);
         }
 
+		double interpolate2D(
+		    const std::vector<double>& x_values,
+            const std::vector<double>& y_values, 
+            const Matrix& dataMatrix,
+            double x, double y) {
+                
+			return BilinearInterpolation<std::vector<double>::const_iterator, 
+			                             std::vector<double>::const_iterator,
+			                             Matrix>(
+                x_values.begin(), x_values.end(), 
+                y_values.begin(), y_values.end(), dataMatrix)(x,y);
+        }
 
     }
 

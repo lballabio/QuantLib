@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002 Ferdinando Ametrano
 
@@ -33,14 +32,19 @@
 namespace QuantLib {
 
     namespace Functions {
-        double interpolate2D(std::vector<double>& x_values,
-            std::vector<double>& y_values,
-            Math::Matrix& dataMatrix,
-            double x,
-            double y);
-        double interpolate(std::vector<double>& x_values,
-            std::vector<double>& y_values,
+        
+        double interpolate(
+            const std::vector<double>& x_values,
+            const std::vector<double>& y_values,
             double x);
+
+        double interpolate2D(
+            const std::vector<double>& x_values,
+            const std::vector<double>& y_values,
+            const Math::Matrix& dataMatrix,
+            double x, 
+            double y);
+
     }
 
 }
