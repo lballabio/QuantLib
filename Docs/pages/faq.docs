@@ -58,8 +58,8 @@
     How should I report a bug?
     </strong>
 
-    You can file a bug report using SourceForge interface at
-    http://sourceforge.net/tracker/?group_id=12740&atid=112740, or you could
+    You can file a bug report using the SourceForge interface at
+    <http://sourceforge.net/tracker/?group_id=12740&atid=112740>, or you could
     write to a QuantLib mailing list.
 
     In any case please report as much details as possible.
@@ -113,12 +113,13 @@
     </strong>
 
     Contact either project administrators (Nando
-    <mailto:nando at users.sourceforge.net> and Luigi
-    <mailto:luigi.ballabio at gmail.com>) and describe your experience
+    <nando at users.sourceforge.net> or Luigi
+    <luigi.ballabio at gmail.com>) and describe your experience
     and interests. Before doing this, please read:
 
-    - the generic introduction for new developers <http://cvs.sourceforge.net/viewcvs.py/quantlib/QuantLib/dev_tools/newdeveloperintro.txt?view=markup>
-    - the project overview <http://www.quantlib.org/reference/overview.html>,
+    - the generic introduction for new developers
+      <http://quantlib.org/newdeveloper.shtml>
+    - the project overview <http://quantlib.org/reference/overview.html>,
       with its to-do suggestions
     - the Developer FAQ
       <http://www.quantlib.org/developerFAQ.shtml>
