@@ -38,11 +38,10 @@ namespace QuantLib {
     //! Base constraint class
     class Constraint : public Bridge<Constraint,ConstraintImpl> {
       public:
-        typedef ConstraintImpl Impl;
         bool test(const Array& p) const { return impl_->test(p); }
         Real update(Array& p, const Array& direction, Real beta);
-        Constraint(const boost::shared_ptr<Constraint::Impl>& impl =
-                                      boost::shared_ptr<Constraint::Impl>());
+        Constraint(const boost::shared_ptr<ConstraintImpl>& impl =
+                                      boost::shared_ptr<ConstraintImpl>());
     };
 
     //! No constraint
@@ -125,7 +124,7 @@ namespace QuantLib {
     // inline definitions
 
     inline Constraint::Constraint(
-                              const boost::shared_ptr<Constraint::Impl>& impl)
+                              const boost::shared_ptr<ConstraintImpl>& impl)
     : Bridge<Constraint,ConstraintImpl>(impl) {}
 
     inline Real Constraint::update(Array& params, const Array& direction,
