@@ -148,7 +148,7 @@ namespace QuantLib {
             double x = result.first;
             Size N = result.second;
             QL_REQUIRE(N > 1,
-                       "RiskStatistics::regret() : "
+                       "GenericRiskStatistics::regret() : "
                        "samples under target <= 1, unsufficient");
             return (N/(N-1.0))*x;
         }
@@ -158,7 +158,7 @@ namespace QuantLib {
         double GenericRiskStatistics<S>::potentialUpside(double centile)
                                                                       const {
             QL_REQUIRE(centile>=0.9 && centile<1.0,
-                       "RiskStatistics::potentialUpside() : "
+                       "GenericRiskStatistics::potentialUpside() : "
                        "percentile (" +
                         DoubleFormatter::toString(centile) +
                        ") must be in [0.9,1.0)");
@@ -172,7 +172,7 @@ namespace QuantLib {
         double GenericRiskStatistics<S>::valueAtRisk(double centile) const {
 
             QL_REQUIRE(centile>=0.9 && centile<1.0,
-                       "RiskStatistics::valueAtRisk() : "
+                       "GenericRiskStatistics::valueAtRisk() : "
                        "percentile (" +
                         DoubleFormatter::toString(centile) +
                        ") must be in [0.9,1.0)");
@@ -186,7 +186,7 @@ namespace QuantLib {
         double GenericRiskStatistics<S>::expectedShortfall(double centile) 
                                                                        const {
             QL_REQUIRE(centile>=0.9 && centile<1.0,
-                       "RiskStatistics::expectedShortfall() : "
+                       "GenericRiskStatistics::expectedShortfall() : "
                        "percentile (" +
                         DoubleFormatter::toString(centile) +
                        ") must be in [0.9,1.0)");
@@ -201,7 +201,7 @@ namespace QuantLib {
             double x = result.first;
             Size N = result.second;
             QL_ENSURE(N != 0,
-                      "RiskStatistics::expectedShortfall() : "
+                      "GenericRiskStatistics::expectedShortfall() : "
                       "no data below the target");
             // must be a loss, i.e., capped at 0.0 and negated
             return -QL_MIN(x, 0.0);
@@ -210,7 +210,7 @@ namespace QuantLib {
         template <class S>
         double GenericRiskStatistics<S>::shortfall(double target) const {
             QL_ENSURE(samples() != 0,
-                      "RiskStatistics::shortfall() : "
+                      "GenericRiskStatistics::shortfall() : "
                       "empty sample set");
             return expectationValue(clip(constant<double,double>(1.0),
                                          std::bind2nd(std::less<double>(),
@@ -221,19 +221,18 @@ namespace QuantLib {
         template <class S>
         double GenericRiskStatistics<S>::averageShortfall(double target) 
                                                                      const {
-            /* THIS DOES NOT REFLECT THE DEFINITION!
-               it should be deleted and replaced with the code
-               commented out below when the correct expected values
-               are inserted in the riskstats test */
             QL_ENSURE(samples() != 0,
-                      "RiskStatistics::shortfall() : "
+                      "GenericRiskStatistics::averageShortfall() : "
                       "empty sample set");
+            /* we don't want to integrate between [-infty, +infty] as below,
+               but [-infty, target], so we need to normalize appropriately
+
             return expectationValue(clip(std::bind1st(std::minus<double>(),
                                                       target),
                                          std::bind2nd(std::less<double>(),
                                                       target)),
                                     everywhere()).first;
-            /*
+            */
             std::pair<double,Size> result = 
                 expectationValue(std::bind1st(std::minus<double>(),
                                               target),
@@ -242,10 +241,9 @@ namespace QuantLib {
             double x = result.first;
             Size N = result.second;
             QL_ENSURE(N != 0,
-                      "RiskStatistics::averageShortfall() : "
+                      "GenericRiskStatistics::averageShortfall() : "
                       "no data below the target");
             return x;
-            */
         }
 
     }

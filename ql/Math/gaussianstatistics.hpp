@@ -217,7 +217,7 @@ namespace QuantLib {
             double std = standardDeviation();
             Math::CumulativeNormalDistribution gIntegral(m, std);
             Math::NormalDistribution g(m, std);
-            return ( (target-m)*gIntegral(target) + std*std*g(target) );
+            return ( (target-m) + std*std*g(target)/gIntegral(target) );
         }
 
 
