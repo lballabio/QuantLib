@@ -555,11 +555,19 @@ SOURCE=.\ql\MonteCarlo\lecuyerrandomgenerator.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\mccontrolvariatepricer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\mcpricer.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\mctypedefs.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\montecarlocontrolvariatemodel.hpp
 # End Source File
 # Begin Source File
 
