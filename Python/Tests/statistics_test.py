@@ -39,8 +39,8 @@ if (s.samples()==10):
 else:
   print 'wrong'
 
-print 'sample Weight', s.sampleWeight(),
-if (s.sampleWeight()==10):
+print 'Sum of the weights', s.weightSum(),
+if (s.weightSum()==10):
   print 'OK'
 else:
   print 'wrong'
