@@ -1679,6 +1679,10 @@ SOURCE=.\ql\PricingEngines\all.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\americanpayoffathit.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\blackformula.hpp
 # End Source File
 # Begin Source File

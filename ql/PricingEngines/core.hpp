@@ -20,6 +20,7 @@
 
 #include <ql/qldefines.hpp>
 
+#include <ql/PricingEngines/americanpayoffathit.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/PricingEngines/genericmodelengine.hpp>
 #include <ql/PricingEngines/latticeshortratemodelengine.hpp>

@@ -6,6 +6,7 @@ SUBDIRS = Asian Barrier Cliquet Forward Quanto Vanilla
 
 include_HEADERS = \
     all.hpp \
+    americanpayoffathit.hpp \
     blackformula.hpp \
     core.hpp \
     genericmodelengine.hpp \

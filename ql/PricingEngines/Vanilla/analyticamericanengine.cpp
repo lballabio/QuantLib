@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2003 Neil Firth
 
  This file is part of QuantLib, a free-software/open-source library
@@ -20,6 +21,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
+#include <ql/PricingEngines/americanpayoffathit.hpp>
 
 namespace QuantLib {
 
@@ -32,8 +34,7 @@ namespace QuantLib {
         #if defined(HAVE_BOOST)
         Handle<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
-        QL_REQUIRE(ex,
-                   "AnalyticAmericanEngine: non-American exercise given");
+        QL_REQUIRE(ex, "AnalyticAmericanEngine: non-American exercise given");
         #else
         Handle<AmericanExercise> ex = arguments_.exercise;
         #endif
@@ -41,104 +42,40 @@ namespace QuantLib {
                    "AnalyticAmericanEngine::calculate() : "
                    "payoff at expiry not handled yet");
 
+        QL_REQUIRE(ex->dates()[0]<=
+            arguments_.blackScholesProcess->volTS->referenceDate(),
+                   "AnalyticAmericanEngine::calculate() : "
+                   "American option with window exercise not handled yet");
+
+
         #if defined(HAVE_BOOST)
-        Handle<CashOrNothingPayoff> payoff = 
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
+        Handle<StrikedTypePayoff> payoff =
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "AnalyticAmericanEngine: the payoff given is not Cash-Or-Nothing");
+                   "AnalyticEuropeanEngine: non-striked payoff given");
         #else
-        Handle<CashOrNothingPayoff> payoff = arguments_.payoff;
+        Handle<StrikedTypePayoff> payoff = arguments_.payoff;
         #endif
 
-        double cashPayoff = payoff->cashPayoff();
-
-        double underlying = arguments_.blackScholesProcess->stateVariable->value();
-
-        double strike = payoff->strike();
+        double spot = arguments_.blackScholesProcess->stateVariable->value();
         double variance = arguments_.blackScholesProcess->volTS->blackVariance(
-            ex->lastDate(), strike);
-
+            ex->lastDate(), payoff->strike());
         Rate dividendDiscount = arguments_.blackScholesProcess->dividendTS->discount(
             ex->lastDate());
-
         Rate riskFreeDiscount = arguments_.blackScholesProcess->riskFreeTS->discount(
             ex->lastDate());
 
-        double b_temp = QL_LOG(dividendDiscount/riskFreeDiscount) - 0.5*variance;
-        double mu = b_temp/variance;
-        // numerically is this the best way to calculate the square root.
-        // check in Numerical Recipes.            
-        double lambda = QL_SQRT(mu*mu+2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/variance);
-        double l_plus = mu + lambda;
-        double l_minus = mu - lambda;
-        double root_two_pi = M_SQRT2 * M_SQRTPI;
-        double log_H_S = QL_LOG (payoff->strike()/underlying);
-        double z_temp = lambda*QL_SQRT(variance);
-        double z = (log_H_S/QL_SQRT(variance)) + z_temp;
-        double zbar = z - 2*z_temp; 
+        AmericanPayoffAtHit pricer(spot, riskFreeDiscount, dividendDiscount, variance, payoff);
 
-        double pow_plus = QL_POW (payoff->strike()/underlying, l_plus);
-        double pow_minus = QL_POW (payoff->strike()/underlying, l_minus);
+        results_.value = pricer.value();
+        results_.delta = pricer.delta();
+        results_.gamma = pricer.gamma();
 
-        CumulativeNormalDistribution f;
+        Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
+            arguments_.exercise->lastDate());
+        results_.rho = pricer.rho(t);
 
-        // up option, or call
-        if (arguments_.blackScholesProcess->stateVariable->value() < payoff->strike()) {
-            double f_minus_z = f(-z);
-            double f_minus_zbar = f(-zbar);
-            double mod_exp_z2 = QL_EXP(-z*z/2);
-            double mod_exp_zbar2 = QL_EXP(-zbar*zbar/2); 
-            double denom_delta = underlying * QL_SQRT(variance) * root_two_pi;
-
-            results_.value = cashPayoff*(pow_plus *f_minus_z 
-                                         + pow_minus *f_minus_zbar);
-
-            results_.delta = 
-                cashPayoff*(pow_minus*((QL_EXP(-zbar*zbar/2)) / denom_delta -
-                                       l_minus * f_minus_zbar / underlying)
-                            + pow_plus * ((QL_EXP(-z*z/2)) / denom_delta -
-                                          l_plus * f_minus_z / underlying));
-
-            Time tRho = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-                arguments_.exercise->lastDate());
-            double denom_rho = lambda*QL_SQRT(variance/tRho)*root_two_pi;
-            results_.rho = cashPayoff*
-                (pow_plus * (-QL_SQRT(tRho)*(mu+1)*mod_exp_z2/denom_rho +
-                ((1+((mu+1)/lambda))*log_H_S * f_minus_z / (variance/tRho)))
-                +pow_minus*(QL_SQRT(tRho)*(mu+1)*mod_exp_zbar2/denom_rho
-                + ((1-((mu+1)/lambda))*log_H_S 
-                * f_minus_zbar / (variance/tRho))));
-
-
-            // down option, or put
-        } else {
-            double f_z = f(z);
-            double f_zbar = f(zbar);
-            double mod_exp_z2 = QL_EXP(-z*z/2);
-            double mod_exp_zbar2 = QL_EXP(-zbar*zbar/2);
-            double denom_delta = underlying*QL_SQRT(variance)*root_two_pi;
-
-            results_.value = cashPayoff*(pow_plus * f_z + pow_minus * f_zbar);
-
-            results_.delta = 
-                cashPayoff*(-pow_minus*(mod_exp_zbar2/denom_delta
-                                        + l_minus * f_zbar / underlying)
-                            -pow_plus * (mod_exp_z2/denom_delta
-                                         + l_plus * f_z / underlying));
-
-            Time tRho = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-                arguments_.exercise->lastDate());
-            double denom_rho = lambda*QL_SQRT(variance/tRho)*root_two_pi;
-            results_.rho = 
-                cashPayoff*(pow_plus*(-QL_SQRT(tRho)*(mu+1)*mod_exp_z2/denom_rho
-                                      + ((1+((mu+1)/lambda))*log_H_S 
-                                         * f_z / (variance/tRho)))
-                            +pow_minus*(QL_SQRT(tRho)*(mu+1)*mod_exp_zbar2/denom_rho
-                                        + ((1-((mu+1)/lambda))*log_H_S 
-                                           * f_zbar / (variance/tRho)))); 
-        }
     }
 
 }

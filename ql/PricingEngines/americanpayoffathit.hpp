@@ -1,0 +1,287 @@
+
+/*
+ Copyright (C) 2004 Ferdinando Ametrano
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it under the
+ terms of the QuantLib license.  You should have received a copy of the
+ license along with this program; if not, please email quantlib-dev@lists.sf.net
+ The license is also available online at http://quantlib.org/html/license.html
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \file americanpayoffathit.hpp
+    \brief Analytical formulae for american exercise with payoff at hit
+*/
+
+#ifndef quantlib_americanpayoffathit_h
+#define quantlib_americanpayoffathit_h
+
+#include <ql/Instruments/payoffs.hpp>
+#include <ql/Math/normaldistribution.hpp>
+
+namespace QuantLib {
+
+    class AmericanPayoffAtHit {
+    public:
+        AmericanPayoffAtHit(double spot,
+                            double discount,
+                            double dividendDiscount,
+                            double variance,
+                            const Handle<StrikedTypePayoff>& payoff);
+        double value() const;
+        double delta() const;
+        double gamma() const;
+        double rho(double maturity) const;
+    private:
+        double spot_, discount_, dividendDiscount_, variance_, stdDev_;
+        
+        double strike_, K_, DKDstrike_;
+
+        double mu_, lambda_, muPlusLambda_, muMinusLambda_, log_H_S_;
+        
+        double D1_, D2_, cum_d1_, cum_d2_;
+
+        double alpha_, beta_, DalphaDd1_, DbetaDd2_;
+
+        bool inTheMoney_;
+        double forward_, X_, DXDstrike_;
+    };
+
+
+    inline AmericanPayoffAtHit::AmericanPayoffAtHit(double spot,
+        double discount, double dividendDiscount, double variance,
+        const Handle<StrikedTypePayoff>& payoff)
+    : spot_(spot), discount_(discount), dividendDiscount_(dividendDiscount),
+      variance_(variance) {
+
+        QL_REQUIRE(spot_>0.0,
+            "AmericanPayoffAtHit::AmericanPayoffAtHit : "
+            "positive spot_ value required");
+
+        QL_REQUIRE(discount_>0.0,
+            "AmericanPayoffAtHit::AmericanPayoffAtHit : "
+            "positive discount_ required");
+
+        QL_REQUIRE(dividendDiscount_>0.0,
+            "AmericanPayoffAtHit::AmericanPayoffAtHit : "
+            "positive dividend discount_ required");
+
+        QL_REQUIRE(variance_>=0.0,
+            "AmericanPayoffAtHit::AmericanPayoffAtHit : "
+            "negative variance_ not allowed");
+
+        stdDev_ = QL_SQRT(variance_);
+
+        Option::Type type   = payoff->optionType();
+        strike_ = payoff->strike();
+
+        // Binary Cash-Or-Nothing payoff?
+        Handle<CashOrNothingPayoff> coo;
+        #if defined(HAVE_BOOST)
+        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
+        #else
+        try {
+            coo = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(coo)) {
+            K_ = coo->cashPayoff();
+            DKDstrike_ = 0.0;
+        }
+
+        // Binary Asset-Or-Nothing payoff?
+        Handle<AssetOrNothingPayoff> aoo;
+        #if defined(HAVE_BOOST)
+        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
+        #else
+        try {
+            aoo = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(aoo)) {
+//            K_ = aoo->strike_();
+//            DKDstrike_ = 1.0;
+            K_ = spot_;
+            DKDstrike_ = 0.0;
+        }
+
+
+        mu_ = QL_LOG(dividendDiscount_/discount_)/variance_ - 0.5;
+        // lambda_ in Haug is different 
+        lambda_ = QL_SQRT(mu_*mu_+2.0*QL_LOG(dividendDiscount_/discount_)/variance_);
+        muPlusLambda_  = mu_ + lambda_;
+        muMinusLambda_ = mu_ - lambda_;
+        log_H_S_ = QL_LOG (strike_/spot_);
+
+        double n_d1, n_d2;
+        double cum_d1_, cum_d2_;
+        if (variance_>=QL_EPSILON) {
+            D1_ = log_H_S_/stdDev_ + lambda_*stdDev_;
+            D2_ = D1_ - 2.0*lambda_*stdDev_; 
+            CumulativeNormalDistribution f;
+            cum_d1_ = f(D1_);
+            cum_d2_ = f(D2_);
+            n_d1 = f.derivative(D1_);
+            n_d2 = f.derivative(D2_);
+        } else {
+            if (log_H_S_>0) {
+                cum_d1_= 1.0;
+                cum_d2_= 1.0;
+            } else {
+                cum_d1_= 0.0;
+                cum_d2_= 0.0;
+            }
+            n_d1 = 0.0;
+            n_d2 = 0.0;
+        }
+
+
+        switch (type) {
+            // up-and-in cash-(at-hit)-or-nothing option
+            // a.k.a. american call with cash-or-nothing payoff
+            case Option::Call:
+                if (strike_>spot_) {
+                    alpha_     = 1.0-cum_d1_;//  N(-d1)
+                    DalphaDd1_ =    -  n_d1;// -n( d1)
+                    beta_      = 1.0-cum_d2_;//  N(-d2)
+                    DbetaDd2_  =    -  n_d2;// -n( d2)
+                } else {
+                    alpha_     = 0.5;
+                    DalphaDd1_ = 0.0;
+                    beta_      = 0.5;
+                    DbetaDd2_  = 0.0;
+                }
+                break;
+            // down-and-in cash-(at-hit)-or-nothing option
+            // a.k.a. american put with cash-or-nothing payoff
+            case Option::Put:
+                if (strike_<spot_) {
+                    alpha_     =     cum_d1_;//  N(d1)
+                    DalphaDd1_ =       n_d1;//  n(d1)
+                    beta_      =     cum_d2_;//  N(d2)
+                    DbetaDd2_  =       n_d2;//  n(d2)
+                } else {
+                    alpha_     = 0.5;
+                    DalphaDd1_ = 0.0;
+                    beta_      = 0.5;
+                    DbetaDd2_  = 0.0;
+                }
+                break;
+            case Option::Straddle:
+                // incorporating the linear effect of call + put
+                alpha_     = 1.0; //  N(-d1) + N(d1)
+                DalphaDd1_ = 0.0; // -n( d1) + n(d1)
+                beta_      = 1.0; //  N(-d2) + N(d2)
+                DbetaDd2_  = 0.0; // -n( d2) + n(d2)
+                break;
+            default:
+                throw IllegalArgumentError(
+                    "AnalyticAmericanEngine::calculate() :"
+                    "invalid option type");
+         }
+
+
+        inTheMoney_ = (type==Option::Call && strike_<spot_) ||
+                      (type==Option::Put  && strike_>spot_);
+        if (inTheMoney_) {
+            forward_   = 1.0;
+            X_         = 1.0;
+            DXDstrike_ = 0.0;
+        } else {
+            forward_   = QL_POW(strike_/spot_, muPlusLambda_);
+            X_         = QL_POW(strike_/spot_, muMinusLambda_);
+//            DXDstrike_ = ......;
+        }
+
+}
+
+   
+    inline double AmericanPayoffAtHit::value() const {
+        return K_ * (forward_ * alpha_ + X_ * beta_);
+    }
+
+    inline double AmericanPayoffAtHit::delta() const {
+        double tempDelta = - spot_ * stdDev_;
+        double DalphaDs = DalphaDd1_/tempDelta;
+        double DbetaDs  = DbetaDd2_/tempDelta;
+
+        double DforwardDs, DXDs;
+        if (inTheMoney_) {
+            DforwardDs = 0.0;
+            DXDs       = 0.0;
+        } else {
+            DforwardDs = -muPlusLambda_  * forward_ / spot_;
+            DXDs       = -muMinusLambda_ * X_       / spot_;
+        }
+
+        return K_ * (
+              DalphaDs * forward_ + alpha_ * DforwardDs
+            + DbetaDs  * X_       + beta_  * DXDs
+            );
+    }
+
+    inline double AmericanPayoffAtHit::gamma() const {
+        double tempDelta = - spot_ * stdDev_;
+        double DalphaDs = DalphaDd1_/tempDelta;
+        double DbetaDs  = DbetaDd2_/tempDelta;
+        double D2alphaDs2 = -DalphaDs/spot_*(1-D1_/stdDev_);
+        double D2betaDs2  = -DbetaDs /spot_*(1-D2_/stdDev_);
+
+        double DforwardDs, DXDs, D2forwardDs2, D2XDs2;
+        if (inTheMoney_) {
+            DforwardDs = 0.0;
+            DXDs       = 0.0;
+            D2forwardDs2 = 0.0;
+            D2XDs2       = 0.0;
+        } else {
+            DforwardDs = -muPlusLambda_  * forward_ / spot_;
+            DXDs       = -muMinusLambda_ * X_       / spot_;
+            D2forwardDs2 = muPlusLambda_  * forward_ / (spot_*spot_)*(1+muPlusLambda_);
+            D2XDs2       = muMinusLambda_ * X_       / (spot_*spot_)*(1+muMinusLambda_);
+        }
+
+        return K_ * (
+              D2alphaDs2 * forward_   + DalphaDs * DforwardDs
+            + DalphaDs   * DforwardDs + alpha_   * D2forwardDs2
+            + D2betaDs2  * X_         + DbetaDs  * DXDs
+            + DbetaDs    * DXDs       + beta_    * D2XDs2
+            );
+
+    }
+
+    inline double AmericanPayoffAtHit::rho(double maturity) const {
+        QL_REQUIRE(maturity>=0.0,
+            "AmericanPayoffAtHit::rho : "
+            "negative maturity not allowed");
+
+        // actually D.Dr / T
+        double DalphaDr = -DalphaDd1_/(lambda_*stdDev_) * (1.0 + mu_);
+        double DbetaDr  =  DbetaDd2_ /(lambda_*stdDev_) * (1.0 + mu_);
+        double DforwardDr, DXDr;
+        if (inTheMoney_) {
+            DforwardDr = 0.0;
+            DXDr       = 0.0;
+        } else {
+            DforwardDr = forward_ * (1.0+(1.0+mu_)/lambda_) * log_H_S_ / variance_;
+            DXDr       = X_       * (1.0-(1.0+mu_)/lambda_) * log_H_S_ / variance_;
+        }
+
+        return maturity * K_ * (
+              DalphaDr * forward_
+            + alpha_   * DforwardDr
+            + DbetaDr  * X_       
+            + beta_    * DXDr
+            );
+    }
+
+
+}
+
+
+#endif
