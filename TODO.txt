@@ -24,6 +24,7 @@ VOLATILITY
 - investigate extrapolation effect, consider one side differences,
   instead of central, when on the border
 - visitor pattern
+- blackSurface: check time extrapolation
 
 PRICING ENGINE FRAMEWORK
 -*create vanilla FD example
@@ -34,6 +35,10 @@ PRICING ENGINE FRAMEWORK
 - add integral engine
 - create Arguments class not including strike and use it in forward options
 - deprecate old pricers
+
+MATH
+- fix cubic spline
+- have Interpolator to check for sorted arrays
 
 MISCELLANEA
 -*make unit test to work under Borland
