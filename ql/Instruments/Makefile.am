@@ -10,6 +10,7 @@ include_HEADERS = \
     basketoption.hpp \
     capfloor.hpp \
     cliquetoption.hpp \
+    europeanoption.hpp \
     forwardvanillaoption.hpp \
     multiassetoption.hpp \
     oneassetoption.hpp \
@@ -30,6 +31,7 @@ libInstruments_la_SOURCES = \
     barrieroption.cpp \
     basketoption.cpp \
     capfloor.cpp \
+    europeanoption.cpp \
     forwardvanillaoption.cpp \
     multiassetoption.cpp \
     oneassetoption.cpp \

@@ -18,7 +18,7 @@
 #include "jumpdiffusion.hpp"
 #include "utilities.hpp"
 #include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/europeanoption.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
@@ -362,10 +362,7 @@ void JumpDiffusionTest::testMerton76() {
             "" + DoubleFormatter::toString(volError) +
             " mismatch");
 
-        VanillaOption option(stochProcess,
-                             payoff,
-                             exercise,
-                             engine);
+        EuropeanOption option(stochProcess, payoff, exercise, engine);
 
         double calculated = option.NPV();
         double error = QL_FABS(calculated-values[i].result);
@@ -466,17 +463,14 @@ void JumpDiffusionTest::testGreeks() {
                   payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     GapPayoff(types[i], strikes[j], 100.0));
               }
-              boost::shared_ptr<VanillaOption> option(new
-                  VanillaOption(stochProcess, payoff, exercise, engine));
+              EuropeanOption option(stochProcess, payoff, exercise, engine);
               // time-shifted exercise dates and options
               boost::shared_ptr<Exercise> exerciseP(new 
                   EuropeanExercise(exDateP));
-              boost::shared_ptr<VanillaOption> optionP(new
-                  VanillaOption(stochProcess, payoff, exerciseP, engine));
+              EuropeanOption optionP(stochProcess, payoff, exerciseP, engine);
               boost::shared_ptr<Exercise> exerciseM(new 
                   EuropeanExercise(exDateM));
-              boost::shared_ptr<VanillaOption> optionM(new
-                  VanillaOption(stochProcess, payoff, exerciseM, engine));
+              EuropeanOption optionM(stochProcess, payoff, exerciseM, engine);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
                 double u = underlyings[l];
@@ -491,23 +485,23 @@ void JumpDiffusionTest::testGreeks() {
                       rRate->setValue(r);
                       vol->setValue(v);
 
-                      double value         = option->NPV();
-                      calculated["delta"]  = option->delta();
-                      calculated["gamma"]  = option->gamma();
-//                      calculated["theta"]  = option->theta();
-                      calculated["rho"]    = option->rho();
-                      calculated["divRho"] = option->dividendRho();
-//                      calculated["vega"]   = option->vega();
+                      double value         = option.NPV();
+                      calculated["delta"]  = option.delta();
+                      calculated["gamma"]  = option.gamma();
+//                      calculated["theta"]  = option.theta();
+                      calculated["rho"]    = option.rho();
+                      calculated["divRho"] = option.dividendRho();
+//                      calculated["vega"]   = option.vega();
 
                       if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
                           double du = u*1.0e-5;
                           spot->setValue(u+du);
-                          double value_p = option->NPV(),
-                                 delta_p = option->delta();
+                          double value_p = option.NPV(),
+                                 delta_p = option.delta();
                           spot->setValue(u-du);
-                          double value_m = option->NPV(),
-                                 delta_m = option->delta();
+                          double value_m = option.NPV(),
+                                 delta_m = option.delta();
                           spot->setValue(u);
                           expected["delta"] = (value_p - value_m)/(2*du);
                           expected["gamma"] = (delta_p - delta_m)/(2*du);
@@ -515,31 +509,31 @@ void JumpDiffusionTest::testGreeks() {
                           // perturb rates and get rho and dividend rho
                           double dr = 1.0e-5;
                           rRate->setValue(r+dr);
-                          value_p = option->NPV();
+                          value_p = option.NPV();
                           rRate->setValue(r-dr);
-                          value_m = option->NPV();
+                          value_m = option.NPV();
                           rRate->setValue(r);
                           expected["rho"] = (value_p - value_m)/(2*dr);
 
                           double dq = 1.0e-5;
                           qRate->setValue(q+dq);
-                          value_p = option->NPV();
+                          value_p = option.NPV();
                           qRate->setValue(q-dq);
-                          value_m = option->NPV();
+                          value_m = option.NPV();
                           qRate->setValue(q);
                           expected["divRho"] = (value_p - value_m)/(2*dq);
 
                           // perturb volatility and get vega
                           double dv = v*1.0e-4;
                           vol->setValue(v+dv);
-                          // value_p = option->NPV();
+                          // value_p = option.NPV();
                           vol->setValue(v-dv);
-                          // value_m = option->NPV();
+                          // value_m = option.NPV();
                           vol->setValue(v);
                           // expected["vega"] = (value_p - value_m)/(2*dv);
 
                           // get theta from time-shifted options
-                          // expected["theta"] = (optionM->NPV() - optionP->NPV())/dT;
+                          // expected["theta"] = (optionM.NPV() - optionP.NPV())/dT;
 
                           // compare
                           std::map<std::string,double>::iterator it;

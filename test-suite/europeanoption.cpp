@@ -19,7 +19,7 @@
 #include "europeanoption.hpp"
 #include "utilities.hpp"
 #include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/europeanoption.hpp>
 #include <ql/RandomNumbers/rngtraits.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>
@@ -158,7 +158,7 @@ namespace {
                 RelinkableHandle<BlackVolTermStructure>(vol)));
 
         return boost::shared_ptr<VanillaOption>(new
-            VanillaOption(stochProcess, payoff, exercise, engine));
+            EuropeanOption(stochProcess, payoff, exercise, engine));
     }
 
     std::string engineTypeToString(EngineType type) {
@@ -283,7 +283,7 @@ void EuropeanOptionTest::testValues() {
                  RelinkableHandle<TermStructure>(rTS),
                  RelinkableHandle<BlackVolTermStructure>(volTS)));
 
-        VanillaOption option(stochProcess, payoff, exercise, engine);
+        EuropeanOption option(stochProcess, payoff, exercise, engine);
 
         double calculated = option.NPV();
         double error = QL_FABS(calculated-values[i].result);
@@ -368,7 +368,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->delta();
     double error = QL_FABS(calculated-values[i].result);
@@ -388,7 +388,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->delta();
     error = QL_FABS(calculated-values[i].result);
@@ -407,7 +407,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->elasticity();
     error = QL_FABS(calculated-values[i].result);
@@ -427,7 +427,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->gamma();
     error = QL_FABS(calculated-values[i].result);
@@ -446,7 +446,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->gamma();
     error = QL_FABS(calculated-values[i].result);
@@ -466,7 +466,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->vega();
     error = QL_FABS(calculated-values[i].result);
@@ -486,7 +486,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->vega();
     error = QL_FABS(calculated-values[i].result);
@@ -506,7 +506,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->theta();
     error = QL_FABS(calculated-values[i].result);
@@ -526,7 +526,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->thetaPerDay();
     error = QL_FABS(calculated-values[i].result);
@@ -546,7 +546,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->rho();
     error = QL_FABS(calculated-values[i].result);
@@ -566,7 +566,7 @@ void EuropeanOptionTest::testGreekValues() {
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->dividendRho();
     error = QL_FABS(calculated-values[i].result);
@@ -642,13 +642,11 @@ void EuropeanOptionTest::testGreeks() {
               boost::shared_ptr<Exercise> exerciseP(
                                                new EuropeanExercise(exDateP));
               boost::shared_ptr<VanillaOption> optionP =
-                  makeOption(payoff,exerciseP, spot,
-                                     qTS,rTS,volTS);
+                  makeOption(payoff,exerciseP, spot, qTS,rTS,volTS);
               boost::shared_ptr<Exercise> exerciseM(
                                                new EuropeanExercise(exDateM));
               boost::shared_ptr<VanillaOption> optionM =
-                  makeOption(payoff, exerciseM, spot,
-                                     qTS, rTS, volTS);
+                  makeOption(payoff, exerciseM, spot, qTS, rTS, volTS);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
                 for (Size m=0; m<LENGTH(qRates); m++) {

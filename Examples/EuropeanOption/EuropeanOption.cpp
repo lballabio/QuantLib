@@ -163,8 +163,7 @@ int main(int, char* [])
                 //  blackSurface
                 flatVolTS));
 
-        VanillaOption option(stochasticProcess, payoff, exercise,
-            boost::shared_ptr<PricingEngine>(new AnalyticEuropeanEngine()));
+        EuropeanOption option(stochasticProcess, payoff, exercise);
 
 
         std::string method;
