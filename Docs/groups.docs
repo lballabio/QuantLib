@@ -1,0 +1,7 @@
+
+/*! \defgroup deprecated Deprecated classes
+
+    The use of the above classes is deprecated since they will be
+    removed in future releases.
+*/
+

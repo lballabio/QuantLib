@@ -26,30 +26,14 @@
     \brief Coupon at par on a term structure
 
     $Id$
-    $Source$
-    $Log$
-    Revision 1.7  2001/07/19 14:27:27  sigmud
-    warnings purged
-
-    Revision 1.6  2001/07/16 16:07:42  lballabio
-    Market elements and stuff
-
-    Revision 1.5  2001/07/02 12:36:18  sigmud
-    pruned redundant header inclusions
-
-    Revision 1.4  2001/06/22 16:38:15  lballabio
-    Improved documentation
-
-    Revision 1.3  2001/06/21 11:34:23  lballabio
-    Ensured that floating rate coupon index stays alive
-
-    Revision 1.2  2001/06/18 11:51:38  lballabio
-    Fixed cash flow date
-
-    Revision 1.1  2001/06/18 08:10:00  lballabio
-    Reworked indexes and floating rate coupon
-
 */
+
+// $Source$
+// $Log$
+// Revision 1.8  2001/07/24 16:59:34  nando
+// documentation revised
+//
+
 
 #ifndef quantlib_floating_rate_coupon_hpp
 #define quantlib_floating_rate_coupon_hpp
@@ -61,18 +45,18 @@
 namespace QuantLib {
 
     namespace CashFlows {
-        
+
         //! Coupon at par on a term structure
-        /*! \warning This class does not perform any date adjustment, 
+        /*! \warning This class does not perform any date adjustment,
             i.e., the start and end date passed upon construction
             should be already rolled to a business day.
 	    */
         class FloatingRateCoupon : public CashFlow,
                                    public Patterns::Observer {
           public:
-            FloatingRateCoupon(double nominal,  
+            FloatingRateCoupon(double nominal,
                 const RelinkableHandle<TermStructure>& termStructure,
-                const Date& startDate, const Date& endDate, 
+                const Date& startDate, const Date& endDate,
                 const Date& refPeriodStart = Date(),
                 const Date& refPeriodEnd = Date(),
                 const Handle<Index>& index = Handle<Index>(),

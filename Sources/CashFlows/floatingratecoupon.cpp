@@ -25,22 +25,16 @@
 /*! \file floatingratecoupon.cpp
     \brief Coupon at par on a term structure
 
-    $Id$
-    $Source$
-    $Log$
-    Revision 1.4  2001/07/16 16:07:42  lballabio
-    Market elements and stuff
-
-    Revision 1.3  2001/07/02 12:36:18  sigmud
-    pruned redundant header inclusions
-
-    Revision 1.2  2001/06/21 11:34:23  lballabio
-    Ensured that floating rate coupon index stays alive
-
-    Revision 1.1  2001/06/18 08:11:06  lballabio
-    Reworked indexes and floating rate coupon
-
+    \fullpath
+    Sources/CashFlows/%floatingratecoupon.cpp
 */
+
+// $Source$
+// $Log$
+// Revision 1.5  2001/07/24 16:59:34  nando
+// documentation revised
+//
+
 
 #include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/Indexes/xibormanager.hpp"
@@ -49,17 +43,17 @@ namespace QuantLib {
 
     using Indexes::Xibor;
     using Indexes::XiborManager;
-    
+
     namespace CashFlows {
-        
-        FloatingRateCoupon::FloatingRateCoupon(double nominal, 
+
+        FloatingRateCoupon::FloatingRateCoupon(double nominal,
           const RelinkableHandle<TermStructure>& termStructure,
-          const Date& startDate, const Date& endDate, 
+          const Date& startDate, const Date& endDate,
           const Date& refPeriodStart, const Date& refPeriodEnd,
-          const Handle<Index>& index, Spread spread) 
+          const Handle<Index>& index, Spread spread)
         : nominal_(nominal), termStructure_(termStructure),
-          startDate_(startDate), endDate_(endDate), 
-          refPeriodStart_(refPeriodStart), 
+          startDate_(startDate), endDate_(endDate),
+          refPeriodStart_(refPeriodStart),
           refPeriodEnd_(refPeriodEnd), spread_(spread) {
 
             termStructure_.registerObserver(this);
@@ -78,7 +72,7 @@ namespace QuantLib {
         FloatingRateCoupon::~FloatingRateCoupon() {
             termStructure_.unregisterObserver(this);
         }
-        
+
         double FloatingRateCoupon::amount() const {
             QL_REQUIRE(!termStructure_.isNull(),
                 "null term structure set to par coupon");

@@ -2,6 +2,9 @@
 ******************************************************
  $Source$
  $Log$
+ Revision 1.11  2001/07/24 16:59:33  nando
+ documentation revised
+
  Revision 1.10  2001/07/11 16:43:38  benin
  added a note about MikTek on Win32
 
@@ -44,10 +47,9 @@ To produce HTML documentation:
 1) Install Doxygen. You will also need to add to your PATH doxygen-x.x.x\bin.
 2) Install Graphviz. Add to your PATH Graphviz\bin
 3) Install Ghostscript. Add to your path gs\gsx.xx\bin
-4) a) Borland user: make HTML
+4) a) Borland user: type 'make html'
    b) VC user: go to the QuantLib\Docs directory and type:
-        doxygen quantlib.doxy
-Just ignore TeX/LaTeX warning/error.
+        doxygen quantlib.win32.doxy
 
 If you want to produce TeX/PDF/PS documentation:
 5) install MiKTeX 2 or higher from http://www.miktex.org
@@ -60,3 +62,14 @@ downloaded from http://toocool.calpoly.edu/latex/fancy_header.html)
 and copy it into a directory on your path
 8) Open MikTeX Option panel from Programs/MiKTeX 2 list and click on the
 "Refresh Now" button in the "General" folder.
+9) a) Borland users: type 'make ps' or 'make pdf'
+   b) VC user: go to the QuantLib\Docs\latex directory and type:
+        latex refman
+        makeindex refman.idx
+        latex refman
+      for PostScript output or
+        pdflatex refman
+        makeindex refman.idx
+        pdflatex refman
+      for PDF output.
+Just ignore TeX/LaTeX warning/error.

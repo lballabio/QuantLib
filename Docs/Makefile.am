@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.15  2001/07/24 16:59:33  nando
+# documentation revised
+#
 # Revision 1.14  2001/07/23 08:30:05  lballabio
 # Fixed indentation
 #
@@ -24,6 +27,9 @@ EXTRA_DIST = makefile.mak \
 
 docs-html:
 	$(DOXYGEN) quantlib.linux.doxy
+	cp *.jpg html
+	cp *.eps latex
+	cp *.pdf latex
 docs-ps: docs-html
 	$(MAKE) -C latex ps
 docs-pdf: docs-html
@@ -31,17 +37,6 @@ docs-pdf: docs-html
 docs-man: docs-html
 docs-clean:
 	rm -Rf man
-	rm -f html/*.html
-	rm -f html/*.gif
-	rm -f html/index.*
-	rm -f html/doxygen.css
-	rm -f html/formula.repository
-	rm -f html/graph_legend.dot
-	rm -f latex/*.tex
-	rm -f latex/*.aux
-	rm -f latex/a*.eps
-	rm -f latex/a*.pdf
-	rm -f latex/refman.*
-	rm -f latex/doxygen.sty
-	rm -f latex/Makefile
+	rm -Rf html
+	rm -Rf latex
 

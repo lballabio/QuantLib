@@ -25,23 +25,19 @@
 /*! \file accruingcoupon.hpp
     \brief Coupon accruing over a fixed period
 
-    $Id$
-    $Source$
-    $Log$
-    Revision 1.4  2001/07/05 12:31:32  enri
-    - added some casts to prevent gcc warning
-    - added some virtual constructors (same reason)
-
-    Revision 1.3  2001/07/02 12:36:18  sigmud
-    pruned redundant header inclusions
-
-    Revision 1.2  2001/06/15 13:52:06  lballabio
-    Reworked indexes
-
-    Revision 1.1  2001/05/31 08:56:40  lballabio
-    Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
-
+    \fullpath
+    Include/ql/CashFlows/%accruingcoupon.hpp
 */
+
+// $Source$
+// $Log$
+// Revision 1.5  2001/07/24 16:59:34  nando
+// documentation revised
+//
+//    Revision 1.4  2001/07/05 12:31:32  enri
+//    - added some casts to prevent gcc warning
+//    - added some virtual constructors (same reason)
+
 
 #ifndef quantlib_accruing_coupon_hpp
 #define quantlib_accruing_coupon_hpp
@@ -53,26 +49,28 @@
 namespace QuantLib {
 
     namespace CashFlows {
-        
-        //! Coupon accruing over a fixed period
-        /*! This class implements part of the CashFlow interface but it 
-            is still abstract and provides derived classes with methods for 
-            accrual period calculations. 
+
+        /*! \class AccruingCoupon ql/CashFlows/accruingcoupon.hpp
+            \brief coupon accruing over a fixed period
+
+            This class implements part of the CashFlow interface but it
+            is still abstract and provides derived classes with methods for
+            accrual period calculations.
         */
         class AccruingCoupon : public CashFlow {
           public:
-            AccruingCoupon(const Handle<Calendar>& calendar, 
-                RollingConvention rollingConvention, 
+            AccruingCoupon(const Handle<Calendar>& calendar,
+                RollingConvention rollingConvention,
                 const Handle<DayCounter>& dayCounter,
                 const Date& startDate, const Date& endDate,
                 const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date()) : 
-                startDate_(startDate), 
-                endDate_(endDate), 
-                refPeriodStart_(refPeriodStart), 
+                const Date& refPeriodEnd = Date()) :
+                startDate_(startDate),
+                endDate_(endDate),
+                refPeriodStart_(refPeriodStart),
                 refPeriodEnd_(refPeriodEnd),
-                calendar_(calendar), 
-                rollingConvention_(rollingConvention), 
+                calendar_(calendar),
+                rollingConvention_(rollingConvention),
                 dayCounter_(dayCounter)
                 {}
             //! \name Partial CashFlow interface

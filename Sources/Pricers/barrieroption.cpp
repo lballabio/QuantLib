@@ -25,11 +25,15 @@
 /*! \file barrieroption.cpp
     \brief barrier option
 
-    $Id$
+    \fullpath
+    Sources/Pricers/%barrieroption.cpp
 */
 
 // $Source$
 // $Log$
+// Revision 1.15  2001/07/24 16:59:34  nando
+// documentation revised
+//
 // Revision 1.14  2001/07/24 11:26:25  sigmud
 // removed a pedantic warning
 //
@@ -133,7 +137,7 @@ namespace QuantLib {
                 }
                 break;
               case Straddle:
-                // Actually, because of a previous QL_REQUIRE statement, 
+                // Actually, because of a previous QL_REQUIRE statement,
                 // this code is unreachable, but it avoids a warning
                 throw Error("BarrierOption: Straddle is meaningless for barrier"
                             " options");

@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.11  2001/07/24 16:59:33  nando
+# documentation revised
+#
 # Revision 1.10  2001/07/19 16:40:10  lballabio
 # Improved docs a bit
 #
@@ -31,8 +34,7 @@ TEX_OPTS     = --quiet --pool-size=1000000
 
 # Primary target:
 # all docs
-all::
-    $(DOXYGEN) quantlib.win32.doxy
+all:: html
     cd latex
     $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
@@ -46,10 +48,12 @@ all::
 # HTML documentation only
 html::
     $(DOXYGEN) quantlib.win32.doxy
+    copy images\*.jpg html
+    copy images\*.pdf latex
+    copy images\*.eps latex
 
 # PDF documentation
-pdf::
-    $(DOXYGEN) quantlib.win32.doxy
+pdf:: html
     cd latex
     $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
@@ -57,8 +61,7 @@ pdf::
     cd ..
 
 # PostScript documentation
-ps::
-    $(DOXYGEN) quantlib.win32.doxy
+ps:: html
     cd latex
     $(LATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
@@ -68,19 +71,5 @@ ps::
 
 # Clean up
 clean::
-    cd html
-    del /q *.html
-    del /q *.gif
-    del /q index.*
-    del doxygen.css
-    del formula.repository
-    del graph_legend.dot
-    cd ..\latex
-    del /q *.tex
-    del /q *.aux
-    del /q a*.eps
-    del /q a*.pdf
-    del /q refman.*
-    del doxygen.sty
-    del Makefile
-    cd ..
+    if exist html  rmdir /S /Q html
+    if exist latex rmdir /S /Q latex

@@ -37,7 +37,8 @@ ENABLED_SECTIONS       =
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
-ALIASES                =
+ALIASES                = "deprecated=\par Deprecated:"
+ALIASES               += "fullpath=\par Full path:"
 MAX_INITIALIZER_LINES  = 30
 OPTIMIZE_OUTPUT_FOR_C  = NO
 SHOW_USED_FILES        = YES
@@ -46,15 +47,17 @@ SHOW_USED_FILES        = YES
 #---------------------------------------------------------------------------
 QUIET                  = YES
 WARNINGS               = YES
-WARN_IF_UNDOCUMENTED   = NO
+WARN_IF_UNDOCUMENTED   = YES
 WARN_FORMAT            = "$file:$line: $text"
-WARN_LOGFILE           =
+WARN_LOGFILE           = docswarnings.txt
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../Include/ql \
+INPUT                  = . \
+                         ../Include/ql \
                          ../Sources
-FILE_PATTERNS          = *.hpp \
+FILE_PATTERNS          = *.docs \
+                         *.hpp \
                          *.cpp
 RECURSIVE              = YES
 EXCLUDE                = ../Include/ql/config.hpp \

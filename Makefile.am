@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.34  2001/07/24 16:59:33  nando
+# documentation revised
+#
 # Revision 1.33  2001/07/19 16:40:10  lballabio
 # Improved docs a bit
 #
@@ -51,12 +54,11 @@ dist-hook:
 	cp -p $(srcdir)/lib/Win32/VisualStudio/README.txt $(distdir)/lib/Win32/VisualStudio/README.txt
 	mkdir $(distdir)/Docs/Examples
 	cp $(srcdir)/Docs/Examples/*.cpp $(distdir)/Docs/Examples/
-	mkdir $(distdir)/Docs/html
-	cp $(srcdir)/Docs/html/QL-largish.jpg $(distdir)/Docs/html/
-	cp $(srcdir)/Docs/html/QL-small-notitle.jpg $(distdir)/Docs/html/
-	mkdir $(distdir)/Docs/latex
-	cp $(srcdir)/Docs/latex/QL-largish.eps $(distdir)/Docs/latex/
-	cp $(srcdir)/Docs/latex/QL-largish.pdf $(distdir)/Docs/latex/
+	mkdir $(distdir)/Docs/images
+	cp $(srcdir)/Docs/images/QL-largish.jpg $(distdir)/Docs/images/
+	cp $(srcdir)/Docs/images/QL-small-notitle.jpg $(distdir)/Docs/images/
+	cp $(srcdir)/Docs/images/QL-largish.eps $(distdir)/Docs/images/
+	cp $(srcdir)/Docs/images/QL-largish.pdf $(distdir)/Docs/images/
 
 if DOXYGEN_FOUND
 docs-html:

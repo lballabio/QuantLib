@@ -25,11 +25,15 @@
 /*! \file piecewiseconstantforwards.hpp
     \brief piecewise constant forward rate term structure
 
-    $Id$
+    \fullpath
+    Include/ql/TermStructures/%piecewiseconstantforwards.hpp
 */
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/24 16:59:34  nando
+// documentation revised
+//
 // Revision 1.9  2001/06/25 10:04:01  nando
 // R019-branch-merge5 merged into trunk
 //
@@ -45,15 +49,13 @@ namespace QuantLib {
 
     namespace TermStructures {
 
-        /*! \defgroup deprecated Deprecated classes
+        /*!
+        \class PiecewiseConstantForwards \
+            ql/TermStructures/piecewiseconstantforwards.hpp
+        \ingroup deprecated
 
-            The use of the following classes is deprecated since they will be
-            removed in future releases.
-        */
-
-        /*! \ingroup deprecated
-            \deprecated
-            the PiecewiseFlatForward class should be used instead.
+        \deprecated
+        the PiecewiseFlatForward class should be used instead.
         */
         class PiecewiseConstantForwards : public TermStructure {
           public:

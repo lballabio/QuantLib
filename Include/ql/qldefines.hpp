@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/24 16:59:34  nando
+// documentation revised
+//
 // Revision 1.9  2001/07/19 16:40:10  lballabio
 // Improved docs a bit
 //
@@ -45,51 +48,6 @@
 // Revision 1.5  2001/05/31 14:48:10  lballabio
 // Worked around Visual C++ deficiencies
 //
-
-/*! \mainpage
-
-    \htmlonly
-    <center>
-    <img src="QL-largish.jpg" alt="QuantLib">
-    <h2>A C++ open source library for quantitative finance</h2>
-    </center>
-    \endhtmlonly
-    
-    \latexonly
-    \begin{center}
-    \includegraphics[width=10cm]{QL-largish} \\
-    {\Large \bf A C++ open source library for quantitative finance}
-    \end{center}
-    \endlatexonly
-    
-    \section copyright Copyright
-    Copyright (C) 2000-2001 --- The %QuantLib Group
-
-    \section introduction Introduction
-    %QuantLib is a C++ open source library for financial quantitative
-    analysts and developers --- http://quantlib.sourceforge.net/
-
-    %QuantLib is free software and you are allowed to use, copy, modify, merge,
-    publish, distribute, and/or sell copies of it under the conditions stated
-    in the %QuantLib License available at
-    http://quantlib.sourceforge.net/LICENSE.TXT
-
-    %QuantLib and its documentation are distributed in the hope that they will
-    be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the license for
-    more details.
-
-    \section disclaimer Disclaimer
-    At this time, this documentation is widely incomplete and must be regarded
-    as a work in progress. Eventually, all %QuantLib classes will be documented.
-    However, no date is currently set for this goal.
-    Join the mailing lists (http://sourceforge.net/mail/?group_id=12740) for the
-    latest updates.
-
-    \section download Download
-    If you want to download the documentation, source code, modules, etc. go to
-    http://sourceforge.net/project/showfiles.php?group_id=12740
-*/
 
 /*! \namespace QuantLib
     \brief a.k.a. the %QuantLib Foundation
