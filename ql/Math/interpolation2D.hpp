@@ -37,7 +37,8 @@ namespace QuantLib {
             provide interpolated values from two sequences of length N and M,
             representing the discretized values of the x,y variables,
             and a NxM matrix representing the function tabulated z values.
-        */
+
+            \todo Bicubic interpolation and bicubic spline */
         template <class RandomAccessIteratorX, 
                   class RandomAccessIteratorY,
                   class MatricialData>

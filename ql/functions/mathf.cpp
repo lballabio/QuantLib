@@ -24,13 +24,17 @@
 // $Id$
 
 #include <ql/functions/mathf.hpp>
-#include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/linearinterpolation.hpp>
+#include <ql/Math/cubicspline.hpp>
+#include <ql/Math/bilinearinterpolation.hpp>
 
 using QuantLib::Array;
 using QuantLib::Math::Matrix;
-using QuantLib::Math::BilinearInterpolation;
+using QuantLib::Math::Interpolation;
 using QuantLib::Math::LinearInterpolation;
+using QuantLib::Math::CubicSpline;
+using QuantLib::Math::Interpolation2D;
+using QuantLib::Math::BilinearInterpolation;
 
 namespace QuantLib {
 
@@ -38,24 +42,57 @@ namespace QuantLib {
 
 		double interpolate(
 		    const std::vector<double>& x_values,
-            const std::vector<double>& y_values, double x) {
+            const std::vector<double>& y_values, double x,
+            int interpolationType,
+            bool allowExtrapolation) {
+
+            double result = 0.0;
+            
+            
+            switch (interpolationType) {
+                case 1:
+                    result = LinearInterpolation<
+                        std::vector<double>::const_iterator, 
+			            std::vector<double>::const_iterator>(
+                        x_values.begin(), x_values.end(),
+                        y_values.begin())(x);
+                    break;
+                case 2:
+                    result = CubicSpline<
+                        std::vector<double>::const_iterator, 
+			            std::vector<double>::const_iterator>(
+                        x_values.begin(), x_values.end(),
+                        y_values.begin())(x);
+                    break;
+                default:
+                    throw IllegalArgumentError(
+                        "interpolate: invalid interpolation type");
+            }
                 
-			return LinearInterpolation<std::vector<double>::const_iterator, 
-			                           std::vector<double>::const_iterator>(
-                x_values.begin(), x_values.end(), y_values.begin())(x);
+			return result;
         }
 
-		double interpolate2D(
-		    const std::vector<double>& x_values,
-            const std::vector<double>& y_values, 
-            const Matrix& dataMatrix,
-            double x, double y) {
-                
-			return BilinearInterpolation<std::vector<double>::const_iterator, 
-			                             std::vector<double>::const_iterator,
-			                             Matrix>(
-                x_values.begin(), x_values.end(), 
-                y_values.begin(), y_values.end(), dataMatrix)(x,y);
+		double interpolate2D(const std::vector<double>& x_values,
+            const std::vector<double>& y_values, const Matrix& dataMatrix,
+            double x, double y, int interpolation2DType,
+            bool allowExtrapolation) {
+
+            double result = 0.0;
+
+            switch (interpolation2DType) {
+                case 1:
+                    result = BilinearInterpolation<
+                        std::vector<double>::const_iterator,
+			            std::vector<double>::const_iterator,
+                        Matrix>(x_values.begin(), x_values.end(),
+                        y_values.begin(), y_values.end(), dataMatrix)(x,y);
+                    break;
+                default:
+                    throw IllegalArgumentError(
+                        "interpolate2D: invalid interpolation type");
+            }
+
+            return result;
         }
 
     }

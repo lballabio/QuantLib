@@ -36,14 +36,18 @@ namespace QuantLib {
         double interpolate(
             const std::vector<double>& x_values,
             const std::vector<double>& y_values,
-            double x);
+            double x,
+            int interpolationType,
+            bool allowExtrapolation);
 
         double interpolate2D(
             const std::vector<double>& x_values,
             const std::vector<double>& y_values,
             const Math::Matrix& dataMatrix,
             double x, 
-            double y);
+            double y,
+            int interpolation2DType,
+            bool allowExtrapolation);
 
     }
 
