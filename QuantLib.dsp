@@ -1063,6 +1063,10 @@ SOURCE=.\ql\Math\matrix.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\multicubicspline.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\multivariateaccumulator.hpp
 # End Source File
 # Begin Source File
@@ -1895,11 +1899,23 @@ SOURCE=.\ql\RandomNumbers\primitivepolynomials.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\RandomNumbers\randomizedlds.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\RandomNumbers\randomsequencegenerator.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\rngtraits.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\seedgenerator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\seedgenerator.hpp
 # End Source File
 # Begin Source File
 
@@ -2261,6 +2277,10 @@ SOURCE=.\ql\Currencies\oceania.hpp
 # Begin Source File
 
 SOURCE=.\ql\argsandresults.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\basetermstructure.hpp
 # End Source File
 # Begin Source File
 

@@ -320,6 +320,8 @@ CLEAN :
 	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\schedule.obj"
 	-@erase "$(INTDIR)\schedule.sbr"
+	-@erase "$(INTDIR)\seedgenerator.obj"
+	-@erase "$(INTDIR)\seedgenerator.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -518,6 +520,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -591,10 +597,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
-	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
-	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
-	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	"$(INTDIR)\seedgenerator.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -707,6 +710,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -780,10 +787,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mc_discr_geom_av_price.obj" \
-	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
-	"$(INTDIR)\mc_discr_arith_av_price.obj" \
-	"$(INTDIR)\analytic_cont_geom_av_price.obj"
+	"$(INTDIR)\seedgenerator.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1081,6 +1085,8 @@ CLEAN :
 	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\schedule.obj"
 	-@erase "$(INTDIR)\schedule.sbr"
+	-@erase "$(INTDIR)\seedgenerator.obj"
+	-@erase "$(INTDIR)\seedgenerator.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -1280,6 +1286,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -1353,10 +1363,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
-	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
-	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
-	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	"$(INTDIR)\seedgenerator.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1469,6 +1476,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -1542,10 +1553,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mc_discr_geom_av_price.obj" \
-	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
-	"$(INTDIR)\mc_discr_arith_av_price.obj" \
-	"$(INTDIR)\analytic_cont_geom_av_price.obj"
+	"$(INTDIR)\seedgenerator.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1843,6 +1851,8 @@ CLEAN :
 	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\schedule.obj"
 	-@erase "$(INTDIR)\schedule.sbr"
+	-@erase "$(INTDIR)\seedgenerator.obj"
+	-@erase "$(INTDIR)\seedgenerator.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -2041,6 +2051,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -2114,10 +2128,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
-	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
-	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
-	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	"$(INTDIR)\seedgenerator.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2230,6 +2241,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -2303,10 +2318,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mc_discr_geom_av_price.obj" \
-	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
-	"$(INTDIR)\mc_discr_arith_av_price.obj" \
-	"$(INTDIR)\analytic_cont_geom_av_price.obj"
+	"$(INTDIR)\seedgenerator.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2604,6 +2616,8 @@ CLEAN :
 	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\schedule.obj"
 	-@erase "$(INTDIR)\schedule.sbr"
+	-@erase "$(INTDIR)\seedgenerator.obj"
+	-@erase "$(INTDIR)\seedgenerator.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -2803,6 +2817,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -2876,10 +2894,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
-	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
-	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
-	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	"$(INTDIR)\seedgenerator.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2992,6 +3007,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -3065,10 +3084,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mc_discr_geom_av_price.obj" \
-	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
-	"$(INTDIR)\mc_discr_arith_av_price.obj" \
-	"$(INTDIR)\analytic_cont_geom_av_price.obj"
+	"$(INTDIR)\seedgenerator.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3366,6 +3382,8 @@ CLEAN :
 	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\schedule.obj"
 	-@erase "$(INTDIR)\schedule.sbr"
+	-@erase "$(INTDIR)\seedgenerator.obj"
+	-@erase "$(INTDIR)\seedgenerator.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -3564,6 +3582,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -3637,10 +3659,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
-	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
-	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
-	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	"$(INTDIR)\seedgenerator.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3753,6 +3772,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -3826,10 +3849,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mc_discr_geom_av_price.obj" \
-	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
-	"$(INTDIR)\mc_discr_arith_av_price.obj" \
-	"$(INTDIR)\analytic_cont_geom_av_price.obj"
+	"$(INTDIR)\seedgenerator.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4127,6 +4147,8 @@ CLEAN :
 	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\schedule.obj"
 	-@erase "$(INTDIR)\schedule.sbr"
+	-@erase "$(INTDIR)\seedgenerator.obj"
+	-@erase "$(INTDIR)\seedgenerator.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -4326,6 +4348,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -4399,10 +4425,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
-	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
-	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
-	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	"$(INTDIR)\seedgenerator.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4515,6 +4538,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -4588,10 +4615,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mc_discr_geom_av_price.obj" \
-	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
-	"$(INTDIR)\mc_discr_arith_av_price.obj" \
-	"$(INTDIR)\analytic_cont_geom_av_price.obj"
+	"$(INTDIR)\seedgenerator.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -5487,6 +5511,12 @@ SOURCE=.\ql\RandomNumbers\mt19937uniformrng.cpp
 SOURCE=.\ql\RandomNumbers\primitivepolynomials.c
 
 "$(INTDIR)\primitivepolynomials.obj"	"$(INTDIR)\primitivepolynomials.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\RandomNumbers\seedgenerator.cpp
+
+"$(INTDIR)\seedgenerator.obj"	"$(INTDIR)\seedgenerator.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
