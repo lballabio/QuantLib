@@ -33,7 +33,6 @@
 #ifndef quantlib_basket_pricer_h
 #define quantlib_basket_pricer_h
 
-#include "ql/types.hpp"
 #include "ql/Pricers/mcpricer.hpp"
 #include "ql/Math/matrix.hpp"
 

@@ -34,7 +34,6 @@
 #ifndef quantlib_multi_period_option_pricer_h
 #define quantlib_multi_period_option_pricer_h
 
-#include "ql/handle.hpp"
 #include "ql/Pricers/bsmnumericaloption.hpp"
 #include "ql/FiniteDifferences/fdtypedefs.hpp"
 #include <vector>
