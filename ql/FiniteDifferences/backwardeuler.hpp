@@ -96,7 +96,7 @@ namespace QuantLib {
         template <class Operator>
         inline void BackwardEuler<Operator>::step(arrayType& a, Time t) {
             if (L_.isTimeDependent()) {
-                L_.setTime(t);
+                L_.setTime(t-dt_);
                 implicitPart_ = I_+dt_*L_;
             }
             a = implicitPart_.solveFor(a);

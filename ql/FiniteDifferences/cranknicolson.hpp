@@ -104,6 +104,7 @@ namespace QuantLib {
             if (L_.isTimeDependent()) {
                 L_.setTime(t);
                 explicitPart_ = I_-(dt_/2)*L_;
+                L_.setTime(t-dt_);
                 implicitPart_ = I_+(dt_/2)*L_;
             }
             a = implicitPart_.solveFor(explicitPart_.applyTo(a));
