@@ -5,6 +5,10 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
+// The implementation of the algorithm was inspired from
+// "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
+// Chapter 9
+
 #include "brent.h"
 
 QL_USING(QuantLib, Error)
@@ -41,7 +45,7 @@ double Brent::_solve(const Function& f, double xAccuracy) const {
 		xMid=(xMax-root)/2.0;
   	if (QL_FABS(xMid) <= xAcc1 || froot == 0.0)		return root;
 		if (QL_FABS(e) >= xAcc1 && QL_FABS(fxMin) > QL_FABS(froot)) {
-			s=froot/fxMin;                              // Attempt inverse quadratic interpolation.
+			s=froot/fxMin;                   // Attempt inverse quadratic interpolation.
 			if (xMin == xMax) {
 				p=2.0*xMid*s;
 				q=1.0-s;
@@ -51,18 +55,18 @@ double Brent::_solve(const Function& f, double xAccuracy) const {
 				p=s*(2.0*xMid*q*(q-r)-(root-xMin)*(r-1.0));
 				q=(q-1.0)*(r-1.0)*(s-1.0);
 			}
-			if (p > 0.0) q = -q;                  // Check whether in bounds.
+			if (p > 0.0) q = -q;  // Check whether in bounds.
 			p=QL_FABS(p);
 			min1=3.0*xMid*q-QL_FABS(xAcc1*q);
 			min2=QL_FABS(e*q);
 			if (2.0*p < (min1 < min2 ? min1 : min2)) {
-				e=d;                                // Accept interpolation.
+				e=d;                // Accept interpolation.
 				d=p/q;
 			} else {
-				d=xMid;                               // Interpolation failed, use bisection.
+				d=xMid;             // Interpolation failed, use bisection.
 				e=d;
 			}
-		} else {                                // Bounds decreasing too slowly, use bisection.
+		} else {                // Bounds decreasing too slowly, use bisection.
 			d=xMid;
 			e=d;
 		}

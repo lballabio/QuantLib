@@ -5,6 +5,10 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
+// The implementation of the algorithm was inspired from
+// "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
+// Chapter 9
+
 #include "newtonsafe.h"
 
 QL_USING(QuantLib, Error)
