@@ -2,6 +2,9 @@
 ******************************************************
  $Source$
  $Log$
+ Revision 1.8  2001/03/28 13:08:50  nando
+ better numbering
+
  Revision 1.7  2001/03/15 16:08:15  nando
  doxy config file renamed and unified (Win32 and Linux)
  html doc footer modified
@@ -41,12 +44,12 @@ To produce HTML documentation:
 Just ignore TeX/LaTeX warning/error.
 
 If you want to produce TeX/PDF/PS documentation:
-4) install MiKTeX from http://www.miktex.org
+5) install MiKTeX from http://www.miktex.org
 Choose to create your "Local TEXMF Tree".
 Add texmf\miktex\bin to your PATH.
-5) under your "Local TEXMF Tree" create a folder \tex\latex\fancyhdr
+6) under your "Local TEXMF Tree" create a folder \tex\latex\fancyhdr
 that includes fancyhdr.sty, extramarks.sty and fixmarks.sty (the 3 files can be
 downloaded from http://toocool.calpoly.edu/latex/fancy_header.html)
-6) download http://www.tex.ac.uk/tex-archive/support/epstopdf/epstopdf.exe
+7) download http://www.tex.ac.uk/tex-archive/support/epstopdf/epstopdf.exe
 and copy it into a directory on your path
 
