@@ -28,6 +28,11 @@
 
 namespace QuantLib {
 
+	//! helper function building a sequence of floating coupons (namely ParCoupon, UpFrontIndexedCoupon and InArrearIndexedCoupon) 
+    /*! \todo the dayCounter argument should be useless, the floating coupon "IndexedCouponType" should 
+		contain the dayCounter information : ParCoupon (TermStructure dayCounter) and IndexedCoupon (Xibor dayCounter)
+		\bug The last argument is used due to msvc6 bug with function template
+    */
     template <class IndexedCouponType>
     std::vector<boost::shared_ptr<CashFlow> > 
     IndexedCouponVector(const Schedule& schedule,
@@ -36,7 +41,8 @@ namespace QuantLib {
                         const boost::shared_ptr<Xibor>& index,
                         Integer fixingDays,
                         const std::vector<Spread>& spreads,
-                        const DayCounter& dayCounter = DayCounter()) {
+                        const DayCounter& dayCounter = DayCounter(),
+						const IndexedCouponType* msvc6_bug = 0) {
 
         QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
         QL_REQUIRE(paymentAdjustment != Unadjusted,
