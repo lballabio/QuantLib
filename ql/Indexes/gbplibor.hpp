@@ -23,7 +23,7 @@
 #define quantlib_gbp_libor_hpp
 
 #include <ql/Indexes/xibor.hpp>
-#include <ql/Calendars/london.hpp>
+#include <ql/Calendars/unitedkingdom.hpp>
 #include <ql/DayCounters/actual365.hpp>
 
 namespace QuantLib {
@@ -35,7 +35,8 @@ namespace QuantLib {
                  const RelinkableHandle<TermStructure>& h,
                  const DayCounter& dc = Actual365())
         : Xibor("GBPLibor", n, units, 0, GBP,
-                GreatBritain(), true, ModifiedFollowing, dc, h) {}
+                UnitedKingdom(UnitedKingdom::Exchange), true, 
+                ModifiedFollowing, dc, h) {}
     };
 
 }
