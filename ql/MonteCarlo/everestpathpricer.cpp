@@ -39,8 +39,9 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        EverestPathPricer::EverestPathPricer(double discount)
-        : discount_(discount) {
+        EverestPathPricer::EverestPathPricer(double discount,
+            bool antitheticVariance)
+        : discount_(discount), antitheticVariance_(antitheticVariance) {
             QL_REQUIRE(discount_ > 0.0,
                 "EverestPathPricer: discount must be positive");
             isInitialized_ = true;
@@ -54,17 +55,33 @@ namespace QuantLib {
                 "EverestPathPricer: pricer not initialized");
 
             double log_drift, log_diffusion;
-            double minPrice = QL_MAX_DOUBLE;
-            for(int j = 0; j < numAssets; j++) {
-                log_drift = log_diffusion = 0.0;
-                for(unsigned int i = 0; i < numSteps; i++) {
-                    log_drift += multiPath[j].drift()[i];
-                    log_diffusion += multiPath[j].diffusion()[i];
+            if (antitheticVariance_) {
+                double minPrice = QL_MAX_DOUBLE, minPrice2 = QL_MAX_DOUBLE;
+                for(int j = 0; j < numAssets; j++) {
+                    log_drift = log_diffusion = 0.0;
+                    for(unsigned int i = 0; i < numSteps; i++) {
+                        log_drift += multiPath[j].drift()[i];
+                        log_diffusion += multiPath[j].diffusion()[i];
+                    }
+                    minPrice  = QL_MIN(minPrice,  QL_EXP(log_drift+log_diffusion));
+                    minPrice2 = QL_MIN(minPrice2, QL_EXP(log_drift-log_diffusion));
                 }
-                minPrice = QL_MIN(minPrice, QL_EXP(log_drift+log_diffusion));
+
+                return discount_ * 0.5 * (minPrice+minPrice2);
+            } else {
+                double minPrice = QL_MAX_DOUBLE;
+                for(int j = 0; j < numAssets; j++) {
+                    log_drift = log_diffusion = 0.0;
+                    for(unsigned int i = 0; i < numSteps; i++) {
+                        log_drift += multiPath[j].drift()[i];
+                        log_diffusion += multiPath[j].diffusion()[i];
+                    }
+                    minPrice = QL_MIN(minPrice, QL_EXP(log_drift+log_diffusion));
+                }
+
+                return discount_ * minPrice;
             }
 
-            return discount_ * minPrice;
         }
 
     }

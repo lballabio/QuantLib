@@ -75,14 +75,14 @@ namespace QuantLib {
                 new GaussianMultiPathGenerator(mu,
                                                covariance,
                                                times,
-                                               antitheticVariance,
                                                seed));
             double residualTime = times[times.size()-1];
 
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(
                 new PagodaPathPricer(portfolio, roof,
-                        fraction * QL_EXP(-riskFreeRate*residualTime)));
+                        fraction * QL_EXP(-riskFreeRate*residualTime),
+                        antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
             montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(

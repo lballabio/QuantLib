@@ -575,18 +575,6 @@ SOURCE=.\ql\MonteCarlo\lecuyerrandomgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\makefile.mak
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\mcoptionsample.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\mcpricer.hpp
 # End Source File
 # Begin Source File
@@ -612,10 +600,6 @@ SOURCE=.\ql\MonteCarlo\multipathgenerator.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\multipathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\onefactormontecarlooption.hpp
 # End Source File
 # Begin Source File
 
@@ -648,10 +632,6 @@ SOURCE=.\ql\MonteCarlo\singleassetpathpricer.cpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\singleassetpathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\uniformrandomgenerator.hpp
 # End Source File
 # End Group
 # Begin Group "Patterns"

@@ -40,8 +40,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         BasketPathPricer::BasketPathPricer(const Array &underlying,
-            double discount)
-        : underlying_(underlying), discount_(discount) {
+            double discount, bool antitheticVariance)
+        : underlying_(underlying), discount_(discount),
+          antitheticVariance_(antitheticVariance) {
             QL_REQUIRE(discount_ > 0.0,
                 "BasketPathPricer: discount must be positive");
             isInitialized_ = true;
@@ -57,17 +58,34 @@ namespace QuantLib {
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
             double log_drift, log_diffusion;
-            double maxPrice = -QL_MAX_DOUBLE;
-            for(unsigned int j = 0; j < numAssets; j++) {
-                log_drift = log_diffusion = 0.0;
-                for(unsigned int i = 0; i < numSteps; i++) {
-                    log_drift += multiPath[j].drift()[i];
-                    log_diffusion += multiPath[j].diffusion()[i];
+            if (antitheticVariance_) {
+                double maxPrice = -QL_MAX_DOUBLE, maxPrice2 = -QL_MAX_DOUBLE;
+                for(unsigned int j = 0; j < numAssets; j++) {
+                    log_drift = log_diffusion = 0.0;
+                    for(unsigned int i = 0; i < numSteps; i++) {
+                        log_drift += multiPath[j].drift()[i];
+                        log_diffusion += multiPath[j].diffusion()[i];
+                    }
+                    maxPrice = QL_MAX(maxPrice,
+                        underlying_[j]*QL_EXP(log_drift+log_diffusion));
+                    maxPrice2 = QL_MAX(maxPrice2,
+                        underlying_[j]*QL_EXP(log_drift-log_diffusion));
                 }
-                maxPrice = QL_MAX(maxPrice,
-                    underlying_[j]*QL_EXP(log_drift+log_diffusion));
+                return discount_*0.5*(maxPrice+maxPrice2);
+            } else {
+                double maxPrice = -QL_MAX_DOUBLE;
+                for(unsigned int j = 0; j < numAssets; j++) {
+                    log_drift = log_diffusion = 0.0;
+                    for(unsigned int i = 0; i < numSteps; i++) {
+                        log_drift += multiPath[j].drift()[i];
+                        log_diffusion += multiPath[j].diffusion()[i];
+                    }
+                    maxPrice = QL_MAX(maxPrice,
+                        underlying_[j]*QL_EXP(log_drift+log_diffusion));
+                }
+                return discount_*maxPrice;
             }
-            return discount_*maxPrice;
+
         }
 
     }

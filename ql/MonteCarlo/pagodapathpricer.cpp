@@ -41,8 +41,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         PagodaPathPricer::PagodaPathPricer(const Array &underlying,
-            double roof, double discount)
-        : underlying_(underlying), roof_(roof), discount_(discount) {
+            double roof, double discount, bool antitheticVariance)
+        : underlying_(underlying), roof_(roof), discount_(discount),
+          antitheticVariance_(antitheticVariance) {
             isInitialized_ = true;
         }
 
@@ -55,15 +56,35 @@ namespace QuantLib {
                 "PagodaPathPricer: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
-            double averageGain = 0.0;
-            for(unsigned int i = 0; i < numSteps; i++)
-                for(unsigned int j = 0; j < numAssets; j++) {
-                    averageGain += underlying_[j] * (QL_EXP(multiPath[j].drift()[i]+
-                                    multiPath[j].diffusion()[i])-1.0);
 
-                }
+            if (antitheticVariance_) {
+                double averageGain = 0.0, averageGain2 = 0.0;
+                for(unsigned int i = 0; i < numSteps; i++)
+                    for(unsigned int j = 0; j < numAssets; j++) {
+                        averageGain += underlying_[j] *
+                            (QL_EXP(multiPath[j].drift()[i]+
+                                    multiPath[j].diffusion()[i])
+                             -1.0);
+                        averageGain2 += underlying_[j] *
+                            (QL_EXP(multiPath[j].drift()[i]-
+                                    multiPath[j].diffusion()[i])
+                             -1.0);
+                    }
+                return discount_ * 0.5 *
+                    (QL_MAX(0.0, QL_MIN(roof_, averageGain))+
+                     QL_MAX(0.0, QL_MIN(roof_, averageGain2)));
+            } else {
+                double averageGain = 0.0;
+                for(unsigned int i = 0; i < numSteps; i++)
+                    for(unsigned int j = 0; j < numAssets; j++) {
+                        averageGain += underlying_[j] *
+                            (QL_EXP(multiPath[j].drift()[i]+
+                                    multiPath[j].diffusion()[i])
+                             -1.0);
+                    }
+                return discount_ * QL_MAX(0.0, QL_MIN(roof_, averageGain));
+            }
 
-            return discount_ * QL_MAX(0.0, QL_MIN(roof_, averageGain));
         }
 
     }
