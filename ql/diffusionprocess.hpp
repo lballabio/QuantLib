@@ -28,12 +28,12 @@
 
 #include <ql/types.hpp>
 #include <ql/termstructure.hpp>
-#include <ql/voltermstructure.hpp>
+#include <ql/Volatilities/localvolsurface.hpp>
 
 namespace QuantLib {
 
     //! Diffusion process class
-    /*! This class describes a stochastic process governed by 
+    /*! This class describes a stochastic process governed by
         \f[
             dx_t = \mu(t, x_t)dt + \sigma(t, x_t)dW_t.
         \f]
@@ -53,8 +53,8 @@ namespace QuantLib {
         virtual double diffusion(Time t, double x) const = 0;
 
         //! returns the expectation of the process after a time interval
-        /*! returns \f$ E(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$. 
-            By default, it returns the Euler approximation defined by 
+        /*! returns \f$ E(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$.
+            By default, it returns the Euler approximation defined by
             \f$ x_0 + \mu(t_0, x_0) \Delta t \f$.
         */
         virtual double expectation(Time t0, double x0, Time dt) const {
@@ -62,8 +62,8 @@ namespace QuantLib {
         }
 
         //! returns the variance of the process after a time interval
-        /*! returns \f$ Var(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$. 
-            By default, it returns the Euler approximation defined by 
+        /*! returns \f$ Var(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$.
+            By default, it returns the Euler approximation defined by
             \f$ \sigma(t_0, x_0)^2 \Delta t \f$.
         */
         virtual double variance(Time t0, double x0, Time dt) const {
@@ -75,7 +75,7 @@ namespace QuantLib {
     };
 
     //! Black-Scholes diffusion process class
-    /*! This class describes the stochastic process governed by 
+    /*! This class describes the stochastic process governed by
         \f[
             dS(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
         \f]
@@ -86,35 +86,18 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& riskFreeTS,
             const RelinkableHandle<TermStructure>& dividendTS,
             const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
-            double s0 = 0.0)
-        : DiffusionProcess(s0), riskFreeTS_(riskFreeTS),
-          dividendTS_(dividendTS), blackVolTS_(blackVolTS)  {}
-
-        double drift(Time t, double x) const {
-            // we could be more anticipatory if we know the right dt
-            // for which the drift will be used
-            double t1 = t + 0.0001;
-
-            // this is wrong if the vol is really asset dependant
-            // we'll switch to local volatility here as soon as possible
-            double sigma = blackVolTS_->blackForwardVol(t, t1, x);
-            return riskFreeTS_->forward(t, t1)
-                - dividendTS_->forward(t, t1)
-                - 0.5 * sigma * sigma;
-        }
+            double s0);
+        double drift(Time t, double x) const ;
         double diffusion(Time t, double x) const {
-            double t1 = t + 0.0001;
-            // this is wrong if the vol is really asset dependant
-            // we'll switch to local volatility here as soon as possible
-            return blackVolTS_->blackForwardVol(t, t1, x);
+            return localVolTS_->localVol(t, x);
         }
       private:
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
-        RelinkableHandle<BlackVolTermStructure> blackVolTS_;
+        RelinkableHandle<LocalVolTermStructure> localVolTS_;
     };
 
     //! Ornstein-Uhlenbeck process class
-    /*! This class describes the Ornstein-Uhlenbeck process governed by 
+    /*! This class describes the Ornstein-Uhlenbeck process governed by
         \f[
             dx = -a x_t dt + \sigma dW_t.
         \f]
@@ -144,7 +127,7 @@ namespace QuantLib {
     };
 
     //! Square-root process class
-    /*! This class describes a square-root process governed by 
+    /*! This class describes a square-root process governed by
         \f[
             dx = a (b - x_t) dt + \sigma \sqrt{x_t} dW_t.
         \f]

@@ -19,6 +19,7 @@ CORE_OBJS        = calendar.obj$(_D) \
                    dataformatters.obj$(_D) \
                    dataparsers.obj$(_D) \
                    date.obj$(_D) \
+                   diffusionprocess.obj$(_D) \
                    exercise.obj$(_D) \
                    grid.obj$(_D) \
                    option.obj$(_D) \

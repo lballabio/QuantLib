@@ -109,6 +109,7 @@ libQuantLib_la_SOURCES = \
     dataformatters.cpp \
     dataparsers.cpp \
     date.cpp \
+	diffusionprocess.cpp \
 	exercise.cpp \
     grid.cpp \
     option.cpp \
