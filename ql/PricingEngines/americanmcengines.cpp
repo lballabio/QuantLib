@@ -24,15 +24,16 @@ namespace QuantLib {
         // calculate
         void AmericanMCVanillaEngine::calculate() const {
             // get the parameters
-            Option::Type    type    = arguments_.type;
+            Handle<PlainVanillaPayoff> arg_payoff = arguments_.payoff;
+            Option::Type    type    = arg_payoff->optionType();
             double          s0      = arguments_.underlying;
-            double          strike  = arguments_.strike;
+            double          strike  = arg_payoff->strike();
             Time            T       = arguments_.maturity;
             double          vol     = arguments_.volTS->blackVol(T, s0);
             Rate            r       = arguments_.riskFreeTS->zeroYield(T);            
             Rate            q       = arguments_.dividendTS->zeroYield(T);
             //unsigned long   seed    = 1000L;
-            PlainPayoff     payoff  = PlainPayoff(type, strike);
+            PlainVanillaPayoff payoff(type, strike);
 
             // counter
             Size i = 0;
@@ -136,15 +137,16 @@ namespace QuantLib {
             }
 
             // LOOP
-            for (int timeLoop = timeSteps-2; timeLoop>=0; timeLoop--) {
+            int timeLoop;
+            for (timeLoop = timeSteps-2; timeLoop>=0; timeLoop--) {
                 timeStep = timeLoop;
                 
 
   //              std::cout << "\n PROCESS TIME STEP " << timeStep << "\n\n";
 
-                MonteCarlo::EuropeanSubPathPricer* pathPricer = 
-                    new MonteCarlo::EuropeanSubPathPricer(
-                    type, s0, strike, arguments_.riskFreeTS);
+                //MonteCarlo::EuropeanSubPathPricer* pathPricer = 
+                //    new MonteCarlo::EuropeanSubPathPricer(
+                //    type, s0, strike, arguments_.riskFreeTS);
 
                 // select in the money paths
                 vector<int> itmPaths;
@@ -302,7 +304,7 @@ namespace QuantLib {
 */
             double total = 0.0;
             // discount paths using stopping rule
-            for (int timeLoop = timeSteps-1; timeLoop>=0; timeLoop--) {
+            for (timeLoop = timeSteps-1; timeLoop>=0; timeLoop--) {
                 // sum column - may well be more efficient to 
                 // discount each path separately
                 for (j=0; j<N; j++) {                    
