@@ -48,9 +48,13 @@ namespace QuantLib {
         Exiting int Foo::bar(int)
         Exiting int main()
         \endcode
+        Of course, a word of warning must be added: adding so much
+        tracing to your code might degrade its readability, at least
+        until we devise an Emacs macro to hide trace statements with a
+        couple of keystrokes.
     */
 
-    //! tracing class
+    //! %tracing class
     /*! <b>Example: </b>
         \link tracing_example.cpp
         tracing code execution
@@ -120,8 +124,7 @@ namespace QuantLib {
     tracing was disabled during configuration, such statements are
     removed by the preprocessor for maximum performance; if it was
     enabled, whether and where the message is output depends on the
-    current settings. See \link tracing_example.cpp here \endlink
-    for an example of usage.
+    current settings.
 */
 
 /*! \def QL_TRACE_ENTER_FUNCTION
@@ -132,10 +135,11 @@ namespace QuantLib {
     QL_TRACE_ENTER_FUNCTION(level);
     \endcode
     can be used at the beginning of a function to trace the fact that
-    the program execution is entering such function. Such statement
-    might be ignored; refer to QL_TRACE for details. Also, function
-    information might not be available depending on the compiler. See
-    \link tracing_example.cpp here \endlink for an example of usage.
+    the program execution is entering such function. It should be
+    paired with a corresponding QL_TRACE_EXIT_FUNCTION call. Such
+    statement might be ignored; refer to QL_TRACE for details. Also,
+    function information might not be available depending on the
+    compiler.
 */
 
 /*! \def QL_TRACE_EXIT_FUNCTION
@@ -146,11 +150,11 @@ namespace QuantLib {
     QL_TRACE_EXIT_FUNCTION(level);
     \endcode
     can be used before returning from a function to trace the fact
-    that the program execution is exiting such function. Such
+    that the program execution is exiting such function. It should be
+    paired with a corresponding QL_TRACE_ENTER_FUNCTION call. Such
     statement might be ignored; refer to QL_TRACE for details. Also,
     function information might not be available depending on the
-    compiler. See \link tracing_example.cpp here \endlink for an
-    example of usage.
+    compiler.
 */
 
 /*! \def QL_TRACE_LOCATION
@@ -161,8 +165,7 @@ namespace QuantLib {
     QL_TRACE_LOCATION(level);
     \endcode
     can be used to trace the current file and line. Such statement
-    might be ignored; refer to QL_TRACE for details. See
-    \link tracing_example.cpp here \endlink for an example of usage.
+    might be ignored; refer to QL_TRACE for details.
 */
 
 /*! \def QL_TRACE_VARIABLE
@@ -174,8 +177,7 @@ namespace QuantLib {
     \endcode
     can be used to trace the current value of a variable. Such
     statement might be ignored; refer to QL_TRACE for details. Also,
-    the variable type must allow sending it to an output stream. See
-    \link tracing_example.cpp here \endlink for an example of usage.
+    the variable type must allow sending it to an output stream.
 */
 
 /*! @} */
