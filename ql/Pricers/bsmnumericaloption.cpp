@@ -25,41 +25,11 @@
 /*! \file bsmnumericaloption.cpp
     \brief common code for numerical option evaluation
 
-
     \fullpath
-    Sources/Pricers/%bsmnumericaloption.cpp
+    Pricers/%bsmnumericaloption.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.51  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.50  2001/08/28 14:47:46  nando
-// unsigned int instead of int
-//
-// Revision 1.49  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.48  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.47  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.46  2001/07/27 07:46:01  nando
-// pruned warnings
-//
-// Revision 1.45  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.44  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/Pricers/bsmnumericaloption.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
@@ -78,8 +48,8 @@ namespace QuantLib {
             double underlying, double strike, Rate dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             unsigned int gridPoints)
-        : SingleAssetOption(type, underlying, strike, dividendYield, riskFreeRate,
-            residualTime, volatility),
+        : SingleAssetOption(type, underlying, strike, dividendYield, 
+            riskFreeRate, residualTime, volatility),
             gridPoints_(safeGridPoints(gridPoints, residualTime)),
             grid_(gridPoints_), initialPrices_(gridPoints_){
                 hasBeenCalculated_ = false;
@@ -170,7 +140,7 @@ namespace QuantLib {
                 BoundaryCondition(BoundaryCondition::Neumann,
                     initialPrices_[1]-initialPrices_[0]));
 
-            finiteDifferenceOperator_.setHigherBC(
+            finiteDifferenceOperator_.setUpperBC(
                 BoundaryCondition(BoundaryCondition::Neumann,
                     initialPrices_[gridPoints_-1] -
                         initialPrices_[gridPoints_-2]));

@@ -58,7 +58,7 @@ namespace QuantLib {
             unsigned int size() const { return diagonal_.size(); }
             // modifiers
             void setLowerBC(const BoundaryCondition& bc);
-            void setHigherBC(const BoundaryCondition& bc);
+            void setUpperBC(const BoundaryCondition& bc);
             void setFirstRow(double, double);
             void setMidRow(unsigned int, double, double, double);
             void setMidRows(double, double, double);
@@ -66,7 +66,7 @@ namespace QuantLib {
             void setTime(Time t) {}
           protected:
             Array diagonal_, belowDiagonal_, aboveDiagonal_;
-            BoundaryCondition lowerBC_, higherBC_;
+            BoundaryCondition lowerBC_, upperBC_;
         };
 
         // derived classes
@@ -98,27 +98,28 @@ namespace QuantLib {
           public:
             // constructors
             TridiagonalOperator() : TridiagonalOperatorCommon() {}
-            TridiagonalOperator(unsigned int size) : TridiagonalOperatorCommon(size) {}
+            TridiagonalOperator(unsigned int size) 
+            : TridiagonalOperatorCommon(size) {}
             TridiagonalOperator(const Array& low, const Array& mid,
                 const Array& high)
             : TridiagonalOperatorCommon(low,mid,high) {}
             #if defined(QL_PATCH_MICROSOFT_BUGS)
             /* This copy constructor and assignment operator are here because
-               somehow Visual C++ is not able to generate working ones. They are
-               _not_ to be defined for other compilers which are able to
+               somehow Visual C++ is not able to generate working ones. They 
+               are _not_ to be defined for other compilers which are able to
                generate correct ones.   */
                 TridiagonalOperator(const TridiagonalOperator& op)
                 : TridiagonalOperatorCommon(op.belowDiagonal_, op.diagonal_,
                     op.aboveDiagonal_) {
-                        lowerBC_  = op.lowerBC_;
-                        higherBC_ = op.higherBC_;
+                        lowerBC_ = op.lowerBC_;
+                        upperBC_ = op.upperBC_;
                 }
                 TridiagonalOperator& operator=(const TridiagonalOperator& op) {
                     belowDiagonal_ = op.belowDiagonal_;
                     diagonal_      = op.diagonal_;
                     aboveDiagonal_ = op.aboveDiagonal_;
                     lowerBC_       = op.lowerBC_;
-                    higherBC_      = op.higherBC_;
+                    upperBC_       = op.upperBC_;
                     return *this;
                 }
             #endif
@@ -132,8 +133,8 @@ namespace QuantLib {
             // constructors
             TimeDependentTridiagonalOperator(unsigned int size = 0)
             : TridiagonalOperatorCommon(size) {}
-            TimeDependentTridiagonalOperator(const Array& low, const Array& mid,
-                const Array& high)
+            TimeDependentTridiagonalOperator(const Array& low, 
+                const Array& mid, const Array& high)
             : TridiagonalOperatorCommon(low,mid,high) {}
         };
 
@@ -146,8 +147,8 @@ namespace QuantLib {
             aboveDiagonal_[0] = valC;
         }
 
-        inline void TridiagonalOperatorCommon::setMidRow(unsigned int i, double valA,
-          double valB, double valC) {
+        inline void TridiagonalOperatorCommon::setMidRow(unsigned int i, 
+          double valA, double valB, double valC) {
             QL_REQUIRE(i>=1 && i<=size()-2,
                 "out of range in TridiagonalSystem::setMidRow");
             belowDiagonal_[i-1] = valA;
@@ -181,7 +182,7 @@ namespace QuantLib {
                 high = -D.aboveDiagonal_;
             TridiagonalOperator result(low,mid,high);
             result.setLowerBC(D.lowerBC_);
-            result.setHigherBC(D.higherBC_);
+            result.setUpperBC(D.upperBC_);
             return result;
         }
 
@@ -191,7 +192,7 @@ namespace QuantLib {
                 high = D.aboveDiagonal_*a;
             TridiagonalOperator result(low,mid,high);
             result.setLowerBC(D.lowerBC_);
-            result.setHigherBC(D.higherBC_);
+            result.setUpperBC(D.upperBC_);
             return result;
         }
 
@@ -201,7 +202,7 @@ namespace QuantLib {
                 high = D.aboveDiagonal_*a;
             TridiagonalOperator result(low,mid,high);
             result.setLowerBC(D.lowerBC_);
-            result.setHigherBC(D.higherBC_);
+            result.setUpperBC(D.upperBC_);
             return result;
         }
 
@@ -211,7 +212,7 @@ namespace QuantLib {
                 high = D.aboveDiagonal_/a;
             TridiagonalOperator result(low,mid,high);
             result.setLowerBC(D.lowerBC_);
-            result.setHigherBC(D.higherBC_);
+            result.setUpperBC(D.upperBC_);
             return result;
         }
 
@@ -236,27 +237,30 @@ namespace QuantLib {
         inline TridiagonalOperator operator+(const TridiagonalOperator& D,
           const Identity<Array>& I) {
             Array mid = D.diagonal_+1.0;
-            TridiagonalOperator result(D.belowDiagonal_,mid,D.aboveDiagonal_);
+            TridiagonalOperator result(D.belowDiagonal_, mid, 
+                D.aboveDiagonal_);
             result.setLowerBC(D.lowerBC_);
-            result.setHigherBC(D.higherBC_);
+            result.setUpperBC(D.upperBC_);
             return result;
         }
 
         inline TridiagonalOperator operator+(const Identity<Array>& I,
           const TridiagonalOperator& D) {
             Array mid = D.diagonal_+1.0;
-            TridiagonalOperator result(D.belowDiagonal_,mid,D.aboveDiagonal_);
+            TridiagonalOperator result(D.belowDiagonal_, mid, 
+                D.aboveDiagonal_);
             result.setLowerBC(D.lowerBC_);
-            result.setHigherBC(D.higherBC_);
+            result.setUpperBC(D.upperBC_);
             return result;
         }
 
         inline TridiagonalOperator operator-(const TridiagonalOperator& D,
           const Identity<Array>& I) {
             Array mid = D.diagonal_-1.0;
-            TridiagonalOperator result(D.belowDiagonal_,mid,D.aboveDiagonal_);
+            TridiagonalOperator result(D.belowDiagonal_, mid, 
+                D.aboveDiagonal_);
             result.setLowerBC(D.lowerBC_);
-            result.setHigherBC(D.higherBC_);
+            result.setUpperBC(D.upperBC_);
             return result;
         }
 
@@ -266,7 +270,7 @@ namespace QuantLib {
                 high = -D.aboveDiagonal_;
             TridiagonalOperator result(low,mid,high);
             result.setLowerBC(D.lowerBC_);
-            result.setHigherBC(D.higherBC_);
+            result.setUpperBC(D.upperBC_);
             return result;
         }
 

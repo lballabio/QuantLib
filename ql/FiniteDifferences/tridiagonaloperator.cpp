@@ -23,45 +23,13 @@
 */
 
 /*! \file tridiagonaloperator.cpp
-
-    \fullpath
-    Sources/FiniteDifferences/%tridiagonaloperator.cpp
     \brief tridiagonal operator
 
+    \fullpath
+    FiniteDifferences/%tridiagonaloperator.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:00:08  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.24  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.23  2001/08/28 17:23:30  nando
-// unsigned int instead of int
-//
-// Revision 1.22  2001/08/28 13:37:35  nando
-// unsigned int instead of int
-//
-// Revision 1.21  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.20  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.19  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.18  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.17  2001/07/05 15:57:23  lballabio
-// Collected typedefs in a single file
-//
-// Revision 1.16  2001/05/24 15:40:09  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/FiniteDifferences/tridiagonaloperator.hpp"
 #include "ql/dataformatters.hpp"
@@ -112,10 +80,10 @@ namespace QuantLib {
             }
         }
 
-        void TridiagonalOperatorCommon::setHigherBC(
+        void TridiagonalOperatorCommon::setUpperBC(
           const BoundaryCondition& bc) {
-            higherBC_ = bc;
-            switch (higherBC_.type()) {
+            upperBC_ = bc;
+            switch (upperBC_.type()) {
               case BoundaryCondition::None:
                 // does nothing
                 break;
@@ -158,16 +126,16 @@ namespace QuantLib {
                 break;
             }
 
-            // apply higher boundary condition
-            switch (higherBC_.type()) {
+            // apply upper boundary condition
+            switch (upperBC_.type()) {
               case BoundaryCondition::None:
                 // does nothing
                 break;
               case BoundaryCondition::Neumann:
-                result[size()-1] = result[size()-2] + higherBC_.value();
+                result[size()-1] = result[size()-2] + upperBC_.value();
                 break;
               case BoundaryCondition::Dirichlet:
-                result[size()-1] = higherBC_.value();
+                result[size()-1] = upperBC_.value();
                 break;
             }
 
@@ -191,14 +159,14 @@ namespace QuantLib {
                 break;
             }
 
-            // apply higher boundary condition
-            switch (higherBC_.type()) {
+            // apply upper boundary condition
+            switch (upperBC_.type()) {
               case BoundaryCondition::None:
                 // does nothing
                 break;
               case BoundaryCondition::Neumann:
               case BoundaryCondition::Dirichlet:
-                bcRhs[size()-1] = higherBC_.value();
+                bcRhs[size()-1] = upperBC_.value();
                 break;
             }
 

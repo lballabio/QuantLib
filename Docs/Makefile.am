@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.23  2001/09/11 15:26:33  lballabio
+# Finite differences docs enhanced
+#
 # Revision 1.22  2001/09/04 15:15:28  lballabio
 # Finite difference docs updated
 #
@@ -25,6 +28,9 @@ EXTRA_DIST = makefile.mak \
              platforms.docs \
              usage.docs \
              where.docs \
+             core.docs \
+             findiff.docs \
+             mcarlo.docs \
              quantlib.doxy \
              quantlib.linux.doxy \
              quantlib.win32.doxy \
