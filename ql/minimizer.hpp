@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000-2001 QuantLib Group
  *

@@ -12,6 +12,7 @@ include_HEADERS = \
     binaryoption.hpp \
     bsmnumericaloption.hpp \
     cliquetoption.hpp \
+    couponbondoption.hpp \
     continuousgeometricapo.hpp \
     discretegeometricaso.hpp \
     discretegeometricapo.hpp \
@@ -21,6 +22,9 @@ include_HEADERS = \
     dividendshoutoption.hpp \
     europeanengine.hpp \
     europeanoption.hpp \
+    fddiscountbond.hpp \
+    fddiscountbondoption.hpp \
+    fdeuropeanswaption.hpp \
     finitedifferenceeuropean.hpp \
     mcbasket.hpp \
     mcdiscretearithmeticapo.hpp \
@@ -45,6 +49,7 @@ libPricers_la_SOURCES = \
     binaryoption.cpp \
     bsmnumericaloption.cpp \
     cliquetoption.cpp \
+    couponbondoption.cpp \
     discretegeometricaso.cpp \
     discretegeometricapo.cpp \
     dividendamericanoption.cpp \
@@ -53,6 +58,9 @@ libPricers_la_SOURCES = \
     dividendshoutoption.cpp \
     europeanengine.cpp \
     europeanoption.cpp \
+    fddiscountbond.cpp \
+    fddiscountbondoption.cpp \
+    fdeuropeanswaption.cpp \
     finitedifferenceeuropean.cpp \
     mcbasket.cpp \
     mcdiscretearithmeticapo.cpp \
