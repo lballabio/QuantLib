@@ -529,11 +529,11 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     // there is no cycling on different residual times
     Date exDate = today.plusDays(360);
@@ -542,51 +542,27 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                                                                 exDate, 
                                                                 false));
     boost::shared_ptr<Exercise> exercises[] = { exercise, amExercise };
-    // time-shifted exercise dates
-    Date exDateP = exDate.plusDays(1),
-         exDateM = exDate.plusDays(-1);
-    Time dT = Actual360().yearFraction(today, exDateP) -
-              Actual360().yearFraction(today, exDateM);
-    boost::shared_ptr<Exercise> exerciseP(new EuropeanExercise(exDateP));
-    boost::shared_ptr<Exercise> amExerciseP(
-                                 new AmericanExercise(today, exDateP, false));
-    boost::shared_ptr<Exercise> exercisesP[] = { exerciseP, amExerciseP };
-    boost::shared_ptr<Exercise> exerciseM(new EuropeanExercise(exDateM));
-    boost::shared_ptr<Exercise> amExerciseM(
-                                 new AmericanExercise(today, exDateM, false));
-    boost::shared_ptr<Exercise> exercisesM[] = { exerciseP, amExerciseM };
 
-    boost::shared_ptr<PricingEngine> euroEngine(
-        new AnalyticEuropeanEngine());
+    boost::shared_ptr<PricingEngine> euroEngine(new AnalyticEuropeanEngine());
 
     boost::shared_ptr<PricingEngine> amEngine(
-        new AnalyticDigitalAmericanEngine());
+                                         new AnalyticDigitalAmericanEngine());
 
     boost::shared_ptr<PricingEngine> engines[] = { euroEngine, amEngine };
 
     for (Size j=0; j<LENGTH(engines); j++) {
       for (Size i1=0; i1<LENGTH(types); i1++) {
         for (Size i6=0; i6<LENGTH(strikes); i6++) {
-            boost::shared_ptr<StrikedTypePayoff> payoff(
+          boost::shared_ptr<StrikedTypePayoff> payoff(
                             new CashOrNothingPayoff(types[i1],
                                                     strikes[i6], cashPayoff));
 
-            boost::shared_ptr<BlackScholesProcess> stochProcess(new
+          boost::shared_ptr<BlackScholesProcess> stochProcess(new
                 BlackScholesProcess(
-                    RelinkableHandle<Quote>(spot),
-                    RelinkableHandle<TermStructure>(qTS),
-                    RelinkableHandle<TermStructure>(rTS),
-                    RelinkableHandle<BlackVolTermStructure>(volTS)));
+                    RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
 
-            // reference option
-            VanillaOption opt(stochProcess, payoff, exercises[j],
-                              engines[j]);
-            // reference option with shifted exercise date
-            VanillaOption optP(stochProcess, payoff, exercisesP[j],
-                               engines[j]);
-            // reference option with shifted exercise date
-            VanillaOption optM(stochProcess, payoff, exercisesM[j],
-                               engines[j]);
+          VanillaOption opt(stochProcess, payoff, exercises[j], engines[j]);
+
           for (Size i2=0; i2<LENGTH(underlyings); i2++) {
             for (Size i4=0; i4<LENGTH(qRates); i4++) {
               for (Size i3=0; i3<LENGTH(rRates); i3++) {
@@ -651,12 +627,25 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                       vol->setValue(v);
                       expected["vega"] = (value_p - value_m)/(2*dv);
 
-                      // get theta from time-shifted options
-                      expected["theta"] = (optM.NPV() - optP.NPV())/dT;
+                      // perturb date and get theta
+                      double dT = 1.0/360;
+                      qTS.linkTo(flatRate(today-1,qRate,dc));
+                      rTS.linkTo(flatRate(today-1,rRate,dc));
+                      volTS.linkTo(flatVol(today-1,vol,dc));
+                      value_m = opt.NPV();
+                      qTS.linkTo(flatRate(today+1,qRate,dc));
+                      rTS.linkTo(flatRate(today+1,rRate,dc));
+                      volTS.linkTo(flatVol(today+1,vol,dc));
+                      value_p = opt.NPV();
+                      qTS.linkTo(flatRate(today,qRate,dc));
+                      rTS.linkTo(flatRate(today,rRate,dc));
+                      volTS.linkTo(flatVol(today,vol,dc));
+                      expected["theta"] = (value_p - value_m)/(2*dT);
 
                       // check
                       std::map<std::string,double>::iterator it;
-                      for (it = calculated.begin(); it != calculated.end(); ++it) {
+                      for (it = calculated.begin(); 
+                           it != calculated.end(); ++it) {
                           std::string greek = it->first;
                           double expct = expected  [greek],
                                  calcl = calculated[greek],

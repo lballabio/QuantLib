@@ -600,11 +600,11 @@ void EuropeanOptionTest::testGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
 
@@ -613,9 +613,6 @@ void EuropeanOptionTest::testGreeks() {
         for (Size k=0; k<LENGTH(residualTimes); k++) {
           Date exDate = today.plusDays(timeToDays(residualTimes[k]));
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-          Date exDateP = exDate.plusDays(1),
-               exDateM = exDate.plusDays(-1);
-          Time dT = (exDateP-exDateM)/360.0;
           for (Size kk=0; kk<4; kk++) {
               // option to check
               if (kk==0) {
@@ -632,17 +629,12 @@ void EuropeanOptionTest::testGreeks() {
                   payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     GapPayoff(types[i], strikes[j], 100.0));
               }
-              boost::shared_ptr<VanillaOption> option = 
-                  makeOption(payoff, exercise, spot, qTS, rTS, volTS);
-              // time-shifted exercise dates and options
-              boost::shared_ptr<Exercise> exerciseP(
-                                               new EuropeanExercise(exDateP));
-              boost::shared_ptr<VanillaOption> optionP =
-                  makeOption(payoff,exerciseP, spot, qTS,rTS,volTS);
-              boost::shared_ptr<Exercise> exerciseM(
-                                               new EuropeanExercise(exDateM));
-              boost::shared_ptr<VanillaOption> optionM =
-                  makeOption(payoff, exerciseM, spot, qTS, rTS, volTS);
+
+              boost::shared_ptr<BlackScholesProcess> stochProcess(
+                      new BlackScholesProcess(
+                             RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
+
+              EuropeanOption option(stochProcess, payoff, exercise);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
                 for (Size m=0; m<LENGTH(qRates); m++) {
@@ -657,23 +649,23 @@ void EuropeanOptionTest::testGreeks() {
                       rRate->setValue(r);
                       vol->setValue(v);
 
-                      double value         = option->NPV();
-                      calculated["delta"]  = option->delta();
-                      calculated["gamma"]  = option->gamma();
-                      calculated["theta"]  = option->theta();
-                      calculated["rho"]    = option->rho();
-                      calculated["divRho"] = option->dividendRho();
-                      calculated["vega"]   = option->vega();
+                      double value         = option.NPV();
+                      calculated["delta"]  = option.delta();
+                      calculated["gamma"]  = option.gamma();
+                      calculated["theta"]  = option.theta();
+                      calculated["rho"]    = option.rho();
+                      calculated["divRho"] = option.dividendRho();
+                      calculated["vega"]   = option.vega();
 
                       if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
                           double du = u*1.0e-4;
                           spot->setValue(u+du);
-                          double value_p = option->NPV(),
-                                 delta_p = option->delta();
+                          double value_p = option.NPV(),
+                                 delta_p = option.delta();
                           spot->setValue(u-du);
-                          double value_m = option->NPV(),
-                                 delta_m = option->delta();
+                          double value_m = option.NPV(),
+                                 delta_m = option.delta();
                           spot->setValue(u);
                           expected["delta"] = (value_p - value_m)/(2*du);
                           expected["gamma"] = (delta_p - delta_m)/(2*du);
@@ -681,32 +673,43 @@ void EuropeanOptionTest::testGreeks() {
                           // perturb rates and get rho and dividend rho
                           double dr = r*1.0e-4;
                           rRate->setValue(r+dr);
-                          value_p = option->NPV();
+                          value_p = option.NPV();
                           rRate->setValue(r-dr);
-                          value_m = option->NPV();
+                          value_m = option.NPV();
                           rRate->setValue(r);
                           expected["rho"] = (value_p - value_m)/(2*dr);
 
                           double dq = q*1.0e-4;
                           qRate->setValue(q+dq);
-                          value_p = option->NPV();
+                          value_p = option.NPV();
                           qRate->setValue(q-dq);
-                          value_m = option->NPV();
+                          value_m = option.NPV();
                           qRate->setValue(q);
                           expected["divRho"] = (value_p - value_m)/(2*dq);
 
                           // perturb volatility and get vega
                           double dv = v*1.0e-4;
                           vol->setValue(v+dv);
-                          value_p = option->NPV();
+                          value_p = option.NPV();
                           vol->setValue(v-dv);
-                          value_m = option->NPV();
+                          value_m = option.NPV();
                           vol->setValue(v);
                           expected["vega"] = (value_p - value_m)/(2*dv);
 
-                          // get theta from time-shifted options
-                          expected["theta"] =
-                              (optionM->NPV() - optionP->NPV())/dT;
+                          // perturb date and get theta
+                          double dT = 1.0/360;
+                          qTS.linkTo(flatRate(today-1,qRate,dc));
+                          rTS.linkTo(flatRate(today-1,rRate,dc));
+                          volTS.linkTo(flatVol(today-1,vol,dc));
+                          value_m = option.NPV();
+                          qTS.linkTo(flatRate(today+1,qRate,dc));
+                          rTS.linkTo(flatRate(today+1,rRate,dc));
+                          volTS.linkTo(flatVol(today+1,vol,dc));
+                          value_p = option.NPV();
+                          qTS.linkTo(flatRate(today,qRate,dc));
+                          rTS.linkTo(flatRate(today,rRate,dc));
+                          volTS.linkTo(flatVol(today,vol,dc));
+                          expected["theta"] = (value_p - value_m)/(2*dT);
 
                           // compare
                           std::map<std::string,double>::iterator it;

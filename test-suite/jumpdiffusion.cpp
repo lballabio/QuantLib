@@ -403,24 +403,21 @@ void JumpDiffusionTest::testGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-        new Merton76Process(RelinkableHandle<Quote>(spot),
-                            RelinkableHandle<TermStructure>(qTS),
-                            RelinkableHandle<TermStructure>(rTS),
-                            RelinkableHandle<BlackVolTermStructure>(volTS),
-                            RelinkableHandle<Quote>(jumpIntensity),
-                            RelinkableHandle<Quote>(meanLogJump),
-                            RelinkableHandle<Quote>(jumpVol)));
+          new Merton76Process(RelinkableHandle<Quote>(spot), qTS, rTS, volTS,
+                              RelinkableHandle<Quote>(jumpIntensity),
+                              RelinkableHandle<Quote>(meanLogJump),
+                              RelinkableHandle<Quote>(jumpVol)));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
 
@@ -440,9 +437,6 @@ void JumpDiffusionTest::testGreeks() {
         for (Size k=0; k<LENGTH(residualTimes); k++) {
           Date exDate = today.plusDays(int(residualTimes[k]*360+0.5));
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-          Date exDateP = exDate.plusDays(1),
-               exDateM = exDate.plusDays(-1);
-          // Time dT = (exDateP-exDateM)/360.0;
           for (Size kk=0; kk<1; kk++) {
               // option to check
               if (kk==0) {
@@ -460,13 +454,6 @@ void JumpDiffusionTest::testGreeks() {
                     GapPayoff(types[i], strikes[j], 100.0));
               }
               EuropeanOption option(stochProcess, payoff, exercise, engine);
-              // time-shifted exercise dates and options
-              boost::shared_ptr<Exercise> exerciseP(new 
-                  EuropeanExercise(exDateP));
-              EuropeanOption optionP(stochProcess, payoff, exerciseP, engine);
-              boost::shared_ptr<Exercise> exerciseM(new 
-                  EuropeanExercise(exDateM));
-              EuropeanOption optionM(stochProcess, payoff, exerciseM, engine);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
                 double u = underlyings[l];
