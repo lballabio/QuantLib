@@ -38,7 +38,7 @@
 
 namespace QuantLib {
 
-    //! purely purely virtual base class for market observables
+    //! purely virtual base class for market observables
     class MarketElement : public Patterns::Observable {
       public:
         virtual ~MarketElement() {}
@@ -143,7 +143,7 @@ namespace QuantLib {
     template <class UnaryFunction>
     inline double DerivedMarketElement<UnaryFunction>::value() const {
         QL_REQUIRE(!element_.isNull(),
-            "null market element set");
+            "DerivedMarketElement: null market element set");
         return f_(element_->value());
     }
 
