@@ -105,6 +105,7 @@ SectionIn 1 2 3
 
     SetOutPath  $INSTDIR\ql\RandomNumbers
     File /r "ql\RandomNumbers\*.hpp"
+    File /r "ql\RandomNumbers\*.h"
 
     SetOutPath  $INSTDIR\ql\ShortRateModels
     File /r "ql\ShortRateModels\*.hpp"
@@ -242,6 +243,7 @@ SectionIn 1
 
   SetOutPath  $INSTDIR\ql\RandomNumbers
   File /r "ql\RandomNumbers\*.cpp"
+  File /r "ql\RandomNumbers\*.c"
   File /r "ql\RandomNumbers\makefile.mak"
 
   SetOutPath  $INSTDIR\ql\ShortRateModels
@@ -260,9 +262,9 @@ SectionIn 1
   File /r "ql\ShortRateModels\TwoFactorModels\*.cpp"
   File /r "ql\ShortRateModels\TwoFactorModels\makefile.mak"
 
-  SetOutPath  $INSTDIR\ql\Solvers1D
-  File /r "ql\Solvers1D\*.cpp"
-  File /r "ql\Solvers1D\makefile.mak"
+#  SetOutPath  $INSTDIR\ql\Solvers1D
+#  File /r "ql\Solvers1D\*.cpp"
+#  File /r "ql\Solvers1D\makefile.mak"
 
   SetOutPath  $INSTDIR\ql\TermStructures
   File /r "ql\TermStructures\*.cpp"
@@ -322,6 +324,17 @@ SectionEnd
 
 
 
+Section "test-suite"
+SectionIn 1 2
+    SetOutPath $INSTDIR\test-suite
+    File /r "test-suite\*.txt"
+    File /r "test-suite\*.mak"
+    File /r "test-suite\*.cpp"
+    File /r "test-suite\*.hpp"
+    File /r "test-suite\*.dsp"
+    File /r "test-suite\CPPUNIT-COPYING"
+
+SectionEnd
 
 SectionDivider
 
@@ -389,11 +402,11 @@ SectionEnd
 Function .onInit
 
   SetOutPath $TEMP
-  File /oname=spltmp.bmp "Docs\images\QL-largish.bmp"
-  #the following line depends on NSIS being installed under D:\programs
+  File /oname=spltmp.bmp "Docs\images\QL.bmp"
+  #the following line depends on NSIS being installed under C:\programs
   #sorry, but no better solution available yet
-  IfFileExists "D:\programs\NSIS\splash.exe" 0 NoSplashExecutable
-      File /oname=spltmp.exe "D:\programs\NSIS\splash.exe"
+  IfFileExists "C:\Programs\NSIS\splash.exe" 0 NoSplashExecutable
+      File /oname=spltmp.exe "C:\programs\NSIS\splash.exe"
       ExecWait '"$TEMP\spltmp.exe" 4000 $HWNDPARENT $TEMP\spltmp'
       Delete $TEMP\spltmp.exe
       Delete $TEMP\spltmp.bmp

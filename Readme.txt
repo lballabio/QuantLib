@@ -23,7 +23,8 @@ request features using the Feature Request Tracker at
 <http://sourceforge.net/tracker/?group_id=12740&atid=362740>.
 
 You can also use the mailing list <quantlib-users@lists.sourceforge.net> for
-feedback, questions, etc.
+feedback, questions, etc. The mailing list is only for subscribers, so please
+subscribe before posting
 
 If you are interested in participating in QuantLib development, please send
 mail to Ferdinando Ametrano -- ferdinando@ametrano.net -- describing your
@@ -71,7 +72,7 @@ The file INSTALL.txt contains more detailed instructions.
 
 ============= WIN32 USERS =================
 
-QuantLib.dsw and QuantLib.dsp are MS VC++ workspace and project files.
+QuantLib.dsw and QuantLib.dsp are MS VC++ 6 workspace and project files.
 
 QuantLib.mak is the MS VC++ command line makefile to be used with NMAKE, as in:
 NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Release"

@@ -1,7 +1,7 @@
 
 QL_TESTS = calendars.hpp calendars.cpp \
            capfloor.hpp capfloor.cpp \
-	   compoundforward.hpp compoundforward.cpp \
+           compoundforward.hpp compoundforward.cpp \
            covariance.hpp covariance.cpp \
            dates.hpp dates.cpp \
            daycounters.hpp daycounters.cpp \
@@ -38,7 +38,12 @@ EXTRA_DIST = README.txt CPPUNIT-COPYING
 
 else
 
-EXTRA_DIST = ${QL_TESTS} README.txt CPPUNIT-COPYING
+EXTRA_DIST = \
+    ${QL_TESTS} \
+    README.txt \
+    CPPUNIT-COPYING \
+    testsuite.dsp \
+    makefile.mak
 
 endif
 
