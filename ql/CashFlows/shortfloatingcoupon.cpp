@@ -59,7 +59,9 @@ namespace QuantLib {
             if (fixingValueDate < settlementDate) {
                 // must have been fixed
                 // but we have no way to interpolate the fixing yet
-                throw Error("short/long floating coupons not supported yet");
+                throw Error("short/long floating coupons not supported yet"
+                    " (start = " + DateFormatter::toString(startDate_) +
+                    ", end = " + DateFormatter::toString(endDate_) + ")");
             }
             if (fixingValueDate == settlementDate) {
                 // might have been fixed
