@@ -271,7 +271,6 @@ int main(int argc, char* argv[])
             bermudanDates));
 
         Swaption bermudanSwaption(atmSwap,
-            Handle<Payoff>(),
             bermudaExercise,
             rhTermStructure,
             Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
@@ -292,7 +291,6 @@ int main(int argc, char* argv[])
         std::cout << "Pricing an OTM bermudan swaption" << std::endl;
 
         Swaption otmBermudanSwaption(otmSwap,
-            Handle<Payoff>(),
             bermudaExercise,
             rhTermStructure,
             Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
@@ -313,7 +311,6 @@ int main(int argc, char* argv[])
         std::cout << "Pricing an ITM bermudan swaption" << std::endl;
 
         Swaption itmBermudanSwaption(itmSwap,
-            Handle<Payoff>(),
             bermudaExercise,
             rhTermStructure,
             Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
