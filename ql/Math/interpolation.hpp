@@ -53,10 +53,14 @@ namespace QuantLib {
       public:
         typedef double argument_type;
         typedef double result_type;
+      #if defined(QL_PATCH_MICROSOFT)
+      public:
+      #else
       protected:
+      #endif
         //! basic template implementation
         template <class I1, class I2>
-        class templateImpl : public Impl {
+        class templateImpl : public InterpolationImpl {
           public:
             templateImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
             : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin) {
