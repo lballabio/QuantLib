@@ -79,7 +79,7 @@ namespace QuantLib {
                 for (i=0; i<size(); i++)
                     fct2fit[i] = instruments_[i]->modelValue(model_);
 
-                for (size_t j=0; j<params.size(); j++) {
+                for (Size j=0; j<params.size(); j++) {
                     double off = 1e-6;
                     newParams[j] -= off;
                     model_->setParams(newParams);

@@ -41,7 +41,7 @@ namespace QuantLib {
         double Tree::presentValue(const Handle<Asset>& asset) const {
             Size i = t_.findIndex(asset->time());
             double value = 0.0;
-            size_t l = 0;
+            Size l = 0;
             for (int j=jMin(i); j<=jMax(i); j++, l++) {
                 value += asset->values()[l]*node(i,j).statePrice();
             }
@@ -57,7 +57,7 @@ namespace QuantLib {
             Size iFrom = t_.findIndex(from);
             Size iTo = t_.findIndex(to);
 
-            size_t width = jMax(iFrom) - jMin(iFrom) + 1;
+            Size width = jMax(iFrom) - jMin(iFrom) + 1;
             std::vector<Handle<Asset> >::const_iterator begin;
             for (begin = assets.begin(); begin != assets.end(); ++begin) {
                 (*begin)->setTime(t(iFrom));
@@ -68,11 +68,11 @@ namespace QuantLib {
                 for (begin = assets.begin(); begin != assets.end(); ++begin) {
                     width = jMax(i) - jMin(i) + 1;
                     (*begin)->newValues() = Array(width);
-                    size_t l = 0;
+                    Size l = 0;
                     for (int j=jMin(i); j<=jMax(i); j++, l++) {
                         double value = 0.0;
                         for (Size k=0; k<n_; k++) {
-                            size_t index = node(i,j).descendant(k).j() -
+                            Size index = node(i,j).descendant(k).j() -
                                 jMin(i+1);
                             value += node(i,j).probability(k)
                                 *(*begin)->values()[index];

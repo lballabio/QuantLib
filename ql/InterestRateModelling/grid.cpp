@@ -40,7 +40,7 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        Grid::Grid(size_t gridPoints,
+        Grid::Grid(Size gridPoints,
                           double initialCenter,
                           double strikeCenter,
                           Time residualTime,
@@ -63,13 +63,13 @@ namespace QuantLib {
             dx_ = (xMax - xMin)/(size()-1);
             for (Size j=0; j<size(); j++)
                 (*this)[j] = xMin + j*dx_;
-            index_ = size_t(((initialCenter - xMin)/dx_ + 0.5));
+            index_ = Size(((initialCenter - xMin)/dx_ + 0.5));
         }
 
-        size_t Grid::safeGridPoints(size_t gridPoints,
+        Size Grid::safeGridPoints(Size gridPoints,
                                            Time residualTime) const {
             return QL_MAX(gridPoints, residualTime>1.0 ?
-                static_cast<size_t>(
+                static_cast<Size>(
                     (QL_NUM_OPT_MIN_GRID_POINTS +
                     (residualTime-1.0) *
                     QL_NUM_OPT_GRID_POINTS_PER_YEAR))

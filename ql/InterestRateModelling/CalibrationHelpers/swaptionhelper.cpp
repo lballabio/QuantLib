@@ -137,7 +137,7 @@ namespace QuantLib {
                 QL_REQUIRE(params!=0, "These are not swaption parameters");
                 const std::vector<Time>& times = params->fixedPayTimes;
                 double p = 0.0;
-                for (size_t i=0; i<times.size(); i++) {
+                for (Size i=0; i<times.size(); i++) {
                     p += termStructure_->discount(times[i]);
                 }
                 double swapRate =

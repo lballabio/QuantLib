@@ -48,7 +48,7 @@ namespace QuantLib {
                                     Time maturity, 
                                     double strike) 
             : type_(type), maturity_(maturity), strike_(strike) {}
-            void reset(size_t size) {
+            void reset(Size size) {
                 values_ = Array(size, 1.0);
             }
             virtual void applyCondition() {
@@ -82,8 +82,8 @@ namespace QuantLib {
             Handle<OneFactorModel> model(model_);
 
             std::list<Time> times(0);
-            size_t nPeriods = parameters_.startTimes.size();
-            size_t i;
+            Size nPeriods = parameters_.startTimes.size();
+            Size i;
             for (i=0; i<nPeriods; i++)
                 times.push_back(parameters_.startTimes[i]);
             for (i=0; i<nPeriods; i++)

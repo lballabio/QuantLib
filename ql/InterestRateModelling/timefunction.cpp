@@ -59,7 +59,7 @@ namespace QuantLib {
                 to_ = nit_*dt;
             }
             double operator()(double x) const {
-                size_t index = grid_.index();
+                Size index = grid_.index();
                 values_.back() = x;
 
                 Array prices(statePrices_);
@@ -84,7 +84,7 @@ namespace QuantLib {
         };
 
         void TimeFunction::fitToTermStructure(
-            const OneFactorModel& model, size_t timeSteps) {
+            const OneFactorModel& model, Size timeSteps) {
 
             reset();
             double dt = model.termStructure()->maxTime()/timeSteps;
@@ -104,7 +104,7 @@ namespace QuantLib {
             double maxStrike = 0.10;
             s1d.setMaxEvaluations(1000);
 
-            for (size_t i=0; i<timeSteps; i++) {
+            for (Size i=0; i<timeSteps; i++) {
                 Time from = i*dt;
                 Time to = (i+1)*dt;
 

@@ -45,7 +45,7 @@ namespace QuantLib {
         Time time() const { return time_; }
         void setTime(Time t) { time_ = t; }
 
-        virtual void reset(size_t size) = 0;
+        virtual void reset(Size size) = 0;
 
         const Array& values() { return values_; }
         Array& newValues() { return newValues_; }

@@ -48,9 +48,9 @@ namespace QuantLib {
                 optionType = Option::Call;
 
             double value = 0.0;
-            size_t nPeriods = parameters_.endTimes.size();
+            Size nPeriods = parameters_.endTimes.size();
             const std::vector<Rate>& exerciseRates = parameters_.exerciseRates;
-            for (size_t i=0; i<nPeriods; i++) {
+            for (Size i=0; i<nPeriods; i++) {
                 Rate exerciseRate;
                 if (i<exerciseRates.size())
                     exerciseRate = exerciseRates[i];

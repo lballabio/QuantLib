@@ -42,10 +42,10 @@ namespace QuantLib {
         class TreeCapFloor : public CapFloorPricingEngine {
           public:
             TreeCapFloor() {}
-            TreeCapFloor(size_t timeSteps) : timeSteps_(timeSteps) {}
+            TreeCapFloor(Size timeSteps) : timeSteps_(timeSteps) {}
             void calculate() const;
           private:
-            size_t timeSteps_;
+            Size timeSteps_;
         };
 
     }

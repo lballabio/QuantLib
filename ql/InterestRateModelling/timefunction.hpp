@@ -66,7 +66,7 @@ namespace QuantLib {
             }
             double operator()(Time t) {
                 if (!updated_) {
-                    for (size_t i=0; i<times_.size(); i++)
+                    for (Size i=0; i<times_.size(); i++)
                         if (times_[i] == t)
                             return values_[i];
                     std::cout << "interpolating at time " << t << std::endl;
@@ -75,7 +75,7 @@ namespace QuantLib {
                 return (*interpolation_)(t);
             }
             void fitToTermStructure(const OneFactorModel& model,
-                                    size_t timeSteps);
+                                    Size timeSteps);
           private:
             class FitFunction;
 

@@ -129,7 +129,7 @@ namespace QuantLib {
 
                 CapFloorParameters* params =
                     dynamic_cast<CapFloorParameters*>(engine_->parameters());
-                for (size_t i=0; i<params->startTimes.size(); i++) {
+                for (Size i=0; i<params->startTimes.size(); i++) {
                     Rate exerciseRate;
                     if (i<params->exerciseRates.size())
                         exerciseRate = params->exerciseRates[i];

@@ -51,7 +51,7 @@ namespace QuantLib {
 
             double impliedVolatility(double targetValue,
                                      double accuracy,
-                                     size_t maxEvaluations,
+                                     Size maxEvaluations,
                                      double minVol,
                                      double maxVol) const;
 

@@ -59,7 +59,7 @@ namespace QuantLib {
                 dx_[i+1] = v*QL_SQRT(3);
             }
 
-            size_t nTimeSteps = t_.size() - 1;
+            Size nTimeSteps = t_.size() - 1;
 
             std::cout << nTimeSteps << std::endl;
             for (i=0; i<nTimeSteps; i++) {

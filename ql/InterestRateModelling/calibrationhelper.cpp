@@ -52,7 +52,7 @@ namespace QuantLib {
         };
 
         double CalibrationHelper::impliedVolatility(double targetValue,
-            double accuracy, size_t maxEvaluations,
+            double accuracy, Size maxEvaluations,
             double minVol, double maxVol) const {
 
             ImpliedVolatilityHelper f(*this,targetValue);
