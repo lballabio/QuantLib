@@ -22,7 +22,8 @@
 #ifndef quantlib_forward_engines_h
 #define quantlib_forward_engines_h
 
-#include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/Instruments/forwardvanillaoption.hpp>
+#include <ql/PricingEngines/genericengine.hpp>
 #include <ql/Volatilities/impliedvoltermstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
 
@@ -30,51 +31,18 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
-        //! arguments for forward (strike-resetting) option calculation
-        template<class ArgumentsType>
-        class ForwardOptionArguments : public ArgumentsType {
-          public:
-            ForwardOptionArguments() : moneyness(Null<double>()),
-                                       resetDate(Null<Date>()) {}
-            void validate() const;
-            double moneyness;
-            Date resetDate;
-        };
-
-        template<class ArgumentsType>
-        void ForwardOptionArguments<ArgumentsType>::validate() const {
-            ArgumentsType::validate();
-            QL_REQUIRE(moneyness != Null<double>(),
-                       "ForwardOptionArguments::validate() : "
-                       "null moneyness given");
-            QL_REQUIRE(moneyness > 0.0,
-                       "ForwardOptionArguments::validate() : "
-                       "negative or zero moneyness given");
-            QL_REQUIRE(resetDate != Null<Date>(),
-                       "ForwardOptionArguments::validate() : "
-                       "null reset date given");
-            Time resetTime = riskFreeTS->dayCounter().yearFraction(
-                riskFreeTS->referenceDate(), resetDate);
-            QL_REQUIRE(resetTime >=0,
-                       "ForwardOptionArguments::validate() : "
-                       "negative reset time given");
-            QL_REQUIRE(maturity >= resetTime,
-                       "ForwardOptionArguments::validate() : "
-                       "reset time greater than maturity");
-        }
-
         //! Forward engine base class
         template<class ArgumentsType, class ResultsType>
         class ForwardEngine : public
-            GenericEngine<ForwardOptionArguments<ArgumentsType>,
+            GenericEngine<Instruments::ForwardOptionArguments<ArgumentsType>,
                           ResultsType> {
-        public:
+          public:
             ForwardEngine(const Handle<GenericEngine<ArgumentsType,
-                ResultsType> >&);
+                                                     ResultsType> >&);
             void setOriginalArguments() const;
             void calculate() const;
             void getOriginalResults() const;
-        protected:
+          protected:
             Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
             ArgumentsType* originalArguments_;
             const ResultsType* originalResults_;
@@ -95,10 +63,9 @@ namespace QuantLib {
         }
 
 
-
-
         template<class ArgumentsType, class ResultsType>
-        void ForwardEngine<ArgumentsType, ResultsType>::setOriginalArguments() const {
+        void ForwardEngine<ArgumentsType, ResultsType>::setOriginalArguments()
+                                                                        const {
 
             // Should this be valid also for other types of payoffs?
             // if so the hierarchy of Payoff should be modified
@@ -154,7 +121,8 @@ namespace QuantLib {
         }
 
         template<class ArgumentsType, class ResultsType>
-        void ForwardEngine<ArgumentsType, ResultsType>::getOriginalResults() const {
+        void ForwardEngine<ArgumentsType, ResultsType>::getOriginalResults() 
+                                                                      const {
 
             Time resetTime = arguments_.riskFreeTS->dayCounter().yearFraction(
                 arguments_.riskFreeTS->referenceDate(), arguments_.resetDate);
@@ -177,19 +145,14 @@ namespace QuantLib {
 
 
 
-        
-        
-        
-        
-        
-        
-        
+
         //! Forward Performance engine base class
         template<class ArgumentsType, class ResultsType>
-        class ForwardPerformanceEngine : public ForwardEngine<ArgumentsType, ResultsType> {
-        public:
-            ForwardPerformanceEngine(const Handle<GenericEngine<ArgumentsType,
-                ResultsType> >&);
+        class ForwardPerformanceEngine 
+        : public ForwardEngine<ArgumentsType, ResultsType> {
+          public:
+            ForwardPerformanceEngine(
+                const Handle<GenericEngine<ArgumentsType,ResultsType> >&);
             void calculate() const;
             void getOriginalResults() const;
         };
@@ -228,11 +191,11 @@ namespace QuantLib {
                 discR * originalResults_->rho;
             results_.dividendRho = discR * originalResults_->dividendRho;
 
-        
         }
 
     }
 
 }
+
 
 #endif

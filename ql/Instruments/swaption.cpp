@@ -28,8 +28,7 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        using CashFlows::Coupon;
-        using CashFlows::FixedRateCoupon;
+        using namespace CashFlows;
 
         Swaption::Swaption(
             const Handle<SimpleSwap>& swap, const Exercise& exercise,
@@ -46,8 +45,8 @@ namespace QuantLib {
         }
 
         void Swaption::setupArguments(Arguments* args) const {
-            SwaptionArguments* arguments =
-                dynamic_cast<SwaptionArguments*>(args);
+            Swaption::arguments* arguments =
+                dynamic_cast<Swaption::arguments*>(args);
                 
             QL_REQUIRE(arguments != 0, 
                        "Swaption::setupArguments : "
@@ -124,9 +123,9 @@ namespace QuantLib {
                       "null value returned from swaption pricer");
         }
 
-        void SwaptionArguments::validate() const {
+        void Swaption::arguments::validate() const {
             QL_REQUIRE(fixedPayTimes.size() == fixedCoupons.size(), 
-                       "SwaptionArguments: Invalid pricing arguments");
+                       "Swaption::arguments: Invalid pricing arguments");
         }
     
     }

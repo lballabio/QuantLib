@@ -22,69 +22,17 @@
 #ifndef quantlib_cliquet_engines_h
 #define quantlib_cliquet_engines_h
 
+#include <ql/Instruments/cliquetoption.hpp>
 #include <ql/PricingEngines/mcengine.hpp>
 
 namespace QuantLib {
 
     namespace PricingEngines {
 
-        //! arguments for cliquet option calculation
-        // should inherit from a strikeless version of VanillaOptionArguments
-        class CliquetOptionArguments : public VanillaOptionArguments {
-          public:
-            CliquetOptionArguments() : moneyness(Null<double>()),
-                                       accruedCoupon(Null<double>()),
-                                       lastFixing(Null<double>()),
-                                       localCap(Null<double>()),
-                                       localFloor(Null<double>()),
-                                       globalCap(Null<double>()),
-                                       globalFloor(Null<double>()),
-                                       resetDates() {}
-            void validate() const;
-            double moneyness, accruedCoupon, lastFixing;
-            double localCap, localFloor, globalCap, globalFloor;
-            std::vector<Date> resetDates;
-        };
-
-        inline void CliquetOptionArguments::validate() const {
-            VanillaOptionArguments::validate();
-            QL_REQUIRE(moneyness != Null<double>(),
-                       "CliquetOptionArguments::validate() : "
-                       "null moneyness given");
-            QL_REQUIRE(moneyness > 0.0,
-                       "CliquetOptionArguments::validate() : "
-                       "negative or zero moneyness given");
-            QL_REQUIRE(accruedCoupon == Null<double>() || accruedCoupon >= 0.0,
-                       "CliquetOptionArguments::validate() : "
-                       "negative accrued coupon");
-            QL_REQUIRE(localCap == Null<double>() || localCap >= 0.0,
-                       "CliquetOptionArguments::validate() : "
-                       "negative local cap");
-            QL_REQUIRE(localFloor == Null<double>() || localFloor >= 0.0,
-                       "CliquetOptionArguments::validate() : "
-                       "negative local floor");
-            QL_REQUIRE(globalCap == Null<double>() || globalCap >= 0.0,
-                       "CliquetOptionArguments::validate() : "
-                       "negative global cap");
-            QL_REQUIRE(globalFloor == Null<double>() || globalFloor >= 0.0,
-                       "CliquetOptionArguments::validate() : "
-                       "negative global floor");
-            QL_REQUIRE(resetDates.size()>0,
-                       "CliquetOptionArguments::validate() : "
-                       "no reset dates given");
-            // sort resetDates here ???
-            for (Size i = 0; i < resetDates.size(); i++) {
-                Time resetTime = riskFreeTS->dayCounter().yearFraction(
-                    riskFreeTS->referenceDate(), resetDates[i]);
-                QL_REQUIRE(maturity >= resetTime,
-                           "CliquetOptionArguments::validate() : "
-                           "reset time greater than maturity");
-            }
-        }
-
         //! Cliquet engine base class
-        class CliquetEngine : public GenericEngine<CliquetOptionArguments,
-                                                   VanillaOptionResults> {};
+        class CliquetEngine 
+        : public GenericEngine<Instruments::CliquetOption::arguments,
+                               Instruments::VanillaOption::results> {};
 
         /*
         //! Monte Carlo cliquet engine
@@ -188,14 +136,14 @@ namespace QuantLib {
                            "engine does not provide "
                            "control variation pricing engine");
 
-                CliquetOptionArguments* controlArguments =
-                    dynamic_cast<CliquetOptionArguments*>(
+                CliquetOption::arguments* controlArguments =
+                    dynamic_cast<CliquetOption::arguments*>(
                         controlPE->arguments());
                 *controlArguments = arguments_;
                 controlPE->calculate();
 
-                const VanillaOptionResults* controlResults =
-                    dynamic_cast<const VanillaOptionResults*>(
+                const VanillaOption::results* controlResults =
+                    dynamic_cast<const VanillaOption::results*>(
                         controlPE->results());
                 double controlVariateValue = controlResults->value;
 

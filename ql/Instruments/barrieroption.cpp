@@ -114,8 +114,8 @@ namespace QuantLib {
         }
 
         void BarrierOption::setupArguments(Arguments* args) const {
-            BarrierOptionArguments* arguments =
-                dynamic_cast<BarrierOptionArguments*>(args);
+            BarrierOption::arguments* arguments =
+                dynamic_cast<BarrierOption::arguments*>(args);
             QL_REQUIRE(arguments != 0,
                        "BarrierOption::setupArguments : "
                        "wrong argument type");

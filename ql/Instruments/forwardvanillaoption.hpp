@@ -22,16 +22,28 @@
 #ifndef quantlib_forward_vanilla_option_h
 #define quantlib_forward_vanilla_option_h
 
-#include <ql/PricingEngines/forwardengines.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {
 
     namespace Instruments {
 
+        //! arguments for forward (strike-resetting) option calculation
+        template <class ArgumentsType> 
+        class ForwardOptionArguments {
+          public:
+            ForwardOptionArguments() : moneyness(Null<double>()),
+                                       resetDate(Null<Date>()) {}
+            void validate() const;
+            double moneyness;
+            Date resetDate;
+        };
+
         //! Forward version of a vanilla option
         class ForwardVanillaOption : public VanillaOption {
           public:
+            typedef ForwardOptionArguments<VanillaOption::arguments> arguments;
+            typedef VanillaOption::results results;
             ForwardVanillaOption(
                 Option::Type type,
                 const RelinkableHandle<MarketElement>& underlying,
@@ -53,8 +65,31 @@ namespace QuantLib {
             Date resetDate_;
         };
 
-    }
 
+
+        template <class ArgumentsType> 
+        void ForwardOptionArguments<ArgumentsType>::validate() const {
+            ArgumentsType::validate();
+            QL_REQUIRE(moneyness != Null<double>(),
+                       "ForwardOption::arguments::validate() : "
+                       "null moneyness given");
+            QL_REQUIRE(moneyness > 0.0,
+                       "ForwardOption::arguments::validate() : "
+                       "negative or zero moneyness given");
+            QL_REQUIRE(resetDate != Null<Date>(),
+                       "ForwardOption::arguments::validate() : "
+                       "null reset date given");
+            Time resetTime = riskFreeTS->dayCounter().yearFraction(
+                                      riskFreeTS->referenceDate(), resetDate);
+            QL_REQUIRE(resetTime >=0,
+                       "ForwardOption::arguments::validate() : "
+                       "negative reset time given");
+            QL_REQUIRE(maturity >= resetTime,
+                       "ForwardOption::arguments::validate() : "
+                       "reset time greater than maturity");
+        }
+
+    }
 
 }
 

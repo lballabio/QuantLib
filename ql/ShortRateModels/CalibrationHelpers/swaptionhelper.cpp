@@ -29,9 +29,7 @@ namespace QuantLib {
 
         namespace CalibrationHelpers {
 
-            using Instruments::SimpleSwap;
-            using Instruments::Swaption;
-            using Instruments::SwaptionArguments;
+            using namespace Instruments;
 
             SwaptionHelper::SwaptionHelper(
                 const Period& maturity,
@@ -104,8 +102,8 @@ namespace QuantLib {
             }
 
             void SwaptionHelper::addTimesTo(std::list<Time>& times) const {
-                SwaptionArguments* params =
-                    dynamic_cast<SwaptionArguments*>(engine_->arguments());
+                Swaption::arguments* params =
+                    dynamic_cast<Swaption::arguments*>(engine_->arguments());
                 swaption_->setupArguments(params);
                 Size i;
                 for (i=0; i<params->exerciseTimes.size(); i++)

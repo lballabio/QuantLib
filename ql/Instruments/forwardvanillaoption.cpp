@@ -23,10 +23,6 @@
 
 namespace QuantLib {
 
-    using PricingEngines::VanillaOptionArguments;
-    using PricingEngines::VanillaOptionResults;
-    using PricingEngines::ForwardOptionArguments;
-
     namespace Instruments {
 
         ForwardVanillaOption::ForwardVanillaOption(Option::Type type,
@@ -46,9 +42,8 @@ namespace QuantLib {
 
         void ForwardVanillaOption::setupArguments(Arguments* args) const {
             VanillaOption::setupArguments(args);
-            ForwardOptionArguments<VanillaOptionArguments>* arguments =
-                dynamic_cast
-                <ForwardOptionArguments<VanillaOptionArguments> *>(args);
+            ForwardVanillaOption::arguments* arguments =
+                dynamic_cast<ForwardVanillaOption::arguments*>(args);
             QL_REQUIRE(arguments != 0,
                        "ForwardVanillaOption::setupArguments :"
                        "wrong argument type");
@@ -65,17 +60,17 @@ namespace QuantLib {
             } else {
                 Option::performCalculations();
 
-                const VanillaOptionResults* vanillaResults =
-                    dynamic_cast<const VanillaOptionResults*>(
-                    engine_->results());
-                QL_ENSURE(vanillaResults != 0,
-                          "no vanilla results returned from pricing engine");
-                delta_       = vanillaResults->delta;
-                gamma_       = vanillaResults->gamma;
-                theta_       = vanillaResults->theta;
-                vega_        = vanillaResults->vega;
-                rho_         = vanillaResults->rho;
-                dividendRho_ = vanillaResults->dividendRho;
+                const ForwardVanillaOption::results* results =
+                    dynamic_cast<const ForwardVanillaOption::results*>(
+                        engine_->results());
+                QL_ENSURE(results != 0,
+                          "no results returned from pricing engine");
+                delta_       = results->delta;
+                gamma_       = results->gamma;
+                theta_       = results->theta;
+                vega_        = results->vega;
+                rho_         = results->rho;
+                dividendRho_ = results->dividendRho;
 
             }
             QL_ENSURE(NPV_ != Null<double>(),

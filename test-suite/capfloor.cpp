@@ -68,19 +68,19 @@ namespace {
         return Handle<PricingEngine>(new BlackCapFloor(model));
     }
 
-    Handle<Instrument> makeCapFloor(VanillaCapFloor::Type type,
+    Handle<Instrument> makeCapFloor(CapFloor::Type type,
                                     const std::vector<Handle<CashFlow> >& leg,
                                     Rate strike, 
                                     double volatility) {
         switch (type) {
-          case VanillaCapFloor::Cap:
+          case CapFloor::Cap:
             return Handle<Instrument>(
-               new VanillaCap(leg, std::vector<Rate>(1, strike),
-                              termStructure_, makeEngine(volatility)));
-          case VanillaCapFloor::Floor:
+               new Cap(leg, std::vector<Rate>(1, strike),
+                       termStructure_, makeEngine(volatility)));
+          case CapFloor::Floor:
             return Handle<Instrument>(
-                new VanillaFloor(leg, std::vector<Rate>(1, strike),
-                                 termStructure_, makeEngine(volatility)));
+                new Floor(leg, std::vector<Rate>(1, strike),
+                          termStructure_, makeEngine(volatility)));
           default:
             throw Error("unknown cap/floor type");
         }
@@ -120,11 +120,11 @@ void CapFloorTest::testStrikeDependency() {
                 std::vector<Handle<CashFlow> > leg = 
                     makeLeg(startDate,lengths[i]);
                 Handle<Instrument> cap = 
-                    makeCapFloor(VanillaCapFloor::Cap,leg,
+                    makeCapFloor(CapFloor::Cap,leg,
                                  strikes[k],vols[j]);
                 cap_values.push_back(cap->NPV());
                 Handle<Instrument> floor = 
-                    makeCapFloor(VanillaCapFloor::Floor,leg,
+                    makeCapFloor(CapFloor::Floor,leg,
                                  strikes[k],vols[j]);
                 floor_values.push_back(floor->NPV());
             }
@@ -190,14 +190,14 @@ void CapFloorTest::testConsistency() {
               std::vector<Handle<CashFlow> > leg = 
                   makeLeg(startDate,lengths[i]);
               Handle<Instrument> cap = 
-                  makeCapFloor(VanillaCapFloor::Cap,leg,
+                  makeCapFloor(CapFloor::Cap,leg,
                                cap_rates[j],vols[l]);
               Handle<Instrument> floor = 
-                  makeCapFloor(VanillaCapFloor::Floor,leg,
+                  makeCapFloor(CapFloor::Floor,leg,
                                floor_rates[k],vols[l]);
-              VanillaCollar collar(leg,std::vector<Rate>(1,cap_rates[j]),
-                                   std::vector<Rate>(1,floor_rates[k]),
-                                   termStructure_,makeEngine(vols[l]));
+              Collar collar(leg,std::vector<Rate>(1,cap_rates[j]),
+                            std::vector<Rate>(1,floor_rates[k]),
+                            termStructure_,makeEngine(vols[l]));
               
               if (QL_FABS((cap->NPV()-floor->NPV())-collar.NPV()) > 1.0e-10) {
                   CPPUNIT_FAIL(
@@ -238,10 +238,10 @@ void CapFloorTest::testParity() {
             std::vector<Handle<CashFlow> > leg = 
                 makeLeg(startDate,lengths[i]);
             Handle<Instrument> cap = 
-                makeCapFloor(VanillaCapFloor::Cap,leg,
+                makeCapFloor(CapFloor::Cap,leg,
                              strikes[j],vols[k]);
             Handle<Instrument> floor = 
-                makeCapFloor(VanillaCapFloor::Floor,leg,
+                makeCapFloor(CapFloor::Floor,leg,
                              strikes[j],vols[k]);
             SimpleSwap swap(true,startDate,lengths[i],Years,
                             calendar_,rollingConvention_,
@@ -279,9 +279,9 @@ void CapFloorTest::testCachedValue() {
                                               0.05, Actual360())));
     Date startDate = termStructure_->referenceDate();
     std::vector<Handle<CashFlow> > leg = makeLeg(startDate,20);
-    Handle<Instrument> cap = makeCapFloor(VanillaCapFloor::Cap,leg,
+    Handle<Instrument> cap = makeCapFloor(CapFloor::Cap,leg,
                                           0.07,0.20);
-    Handle<Instrument> floor = makeCapFloor(VanillaCapFloor::Floor,leg,
+    Handle<Instrument> floor = makeCapFloor(CapFloor::Floor,leg,
                                             0.03,0.20);
     double cachedCapNPV   = 6.960233718984,
            cachedFloorNPV = 2.701296290808;

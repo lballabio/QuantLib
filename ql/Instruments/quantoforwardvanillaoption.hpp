@@ -23,6 +23,7 @@
 #define quantlib_quanto_forward_vanilla_option_h
 
 #include <ql/Instruments/quantovanillaoption.hpp>
+#include <ql/Instruments/forwardvanillaoption.hpp>
 
 namespace QuantLib {
 
@@ -31,6 +32,10 @@ namespace QuantLib {
         //! Quanto version of a forward vanilla option
         class QuantoForwardVanillaOption : public QuantoVanillaOption {
           public:
+            typedef QuantoOptionArguments<ForwardVanillaOption::arguments>
+                arguments;
+            typedef QuantoOptionResults<ForwardVanillaOption::arguments>
+                results;
             QuantoForwardVanillaOption(
                 Option::Type type,
                 const RelinkableHandle<MarketElement>& underlying,

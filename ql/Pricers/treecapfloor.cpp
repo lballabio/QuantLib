@@ -33,14 +33,13 @@ namespace QuantLib {
         using namespace PricingEngines;
 
         TreeCapFloor::TreeCapFloor(const Handle<Model>& model, Size timeSteps) 
-        : LatticeShortRateModelEngine<CapFloorArguments, CapFloorResults >
-                (model, timeSteps){}
+        : LatticeShortRateModelEngine<CapFloor::arguments, 
+                                      CapFloor::results >(model,timeSteps){}
 
         TreeCapFloor::TreeCapFloor(const Handle<Model>& model,
                                    const TimeGrid& timeGrid) 
-        : LatticeShortRateModelEngine<CapFloorArguments, CapFloorResults >(model, timeGrid)
-        {
-        }
+        : LatticeShortRateModelEngine<CapFloor::arguments, 
+                                      CapFloor::results>(model,timeGrid) {}
 
         void TreeCapFloor::calculate() const {
 

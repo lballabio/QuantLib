@@ -46,8 +46,8 @@ namespace QuantLib {
 
         //! Barrier engine base class
         class BarrierEngine 
-        : public GenericEngine<Instruments::BarrierOptionArguments,
-                               Instruments::BarrierOptionResults> {};
+        : public GenericEngine<Instruments::BarrierOption::arguments,
+                               Instruments::BarrierOption::results> {};
         
         //! Pricing engine for Barrier options using analytical formulae
         class AnalyticBarrierEngine : public BarrierEngine {
@@ -278,14 +278,14 @@ namespace QuantLib {
                         "engine does not provide "
                         "control variation pricing engine");
                 /*
-                BarrierOptionArguments* controlArguments =
-                    dynamic_cast<BarrierOptionArguments*>(
+                BarrierOption::arguments* controlArguments =
+                    dynamic_cast<BarrierOption::arguments*>(
                         controlPE->arguments());
                 *controlArguments = arguments_;
                 controlPE->calculate();
 
-                const BarrierOptionResults* controlResults =
-                    dynamic_cast<const BarrierOptionResults*>(
+                const BarrierOption::results* controlResults =
+                    dynamic_cast<const BarrierOption::results*>(
                         controlPE->results());
                 double controlVariateValue = controlResults->value;
 

@@ -20,15 +20,9 @@
 */
 
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
-#include <ql/PricingEngines/forwardengines.hpp>
+#include <ql/Instruments/forwardvanillaoption.hpp>
 
 namespace QuantLib {
-
-    using PricingEngines::VanillaOptionArguments;
-    using PricingEngines::ForwardOptionArguments;
-    using PricingEngines::QuantoOptionArguments;
-    using PricingEngines::VanillaOptionResults;
-    using PricingEngines::QuantoOptionResults;
 
     namespace Instruments {
 
@@ -60,11 +54,8 @@ namespace QuantLib {
         void QuantoForwardVanillaOption::setupArguments(Arguments* args) 
                                                                     const {
             VanillaOption::setupArguments(args);
-            QuantoOptionArguments<ForwardOptionArguments<
-                VanillaOptionArguments> >* arguments =
-                dynamic_cast
-                <QuantoOptionArguments<ForwardOptionArguments<
-                VanillaOptionArguments> >*>(args);
+            QuantoForwardVanillaOption::arguments* arguments =
+                dynamic_cast<QuantoForwardVanillaOption::arguments*>(args);
             QL_REQUIRE(arguments != 0,
                "QuantoForwardVanillaOption::setupArguments() : "
                "pricing engine does not supply needed arguments");

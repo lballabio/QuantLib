@@ -102,7 +102,7 @@ libQuantLib_la_LIBADD = \
     ShortRateModels/OneFactorModels/libOneFactorModels.la \
     ShortRateModels/TwoFactorModels/libTwoFactorModels.la \
     TermStructures/libTermStructures.la \
-    Volatilities/libVolatilities.la \
+    Volatilities/libVolatilities.la
 
 libQuantLib_la_SOURCES = \
     calendar.cpp \

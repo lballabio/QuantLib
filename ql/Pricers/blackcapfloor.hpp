@@ -33,14 +33,14 @@ namespace QuantLib {
         class BlackCapFloor : 
             public PricingEngines::GenericModelEngine<
                 BlackModel, 
-                Instruments::CapFloorArguments,
-                Instruments::CapFloorResults > {
+                Instruments::CapFloor::arguments,
+                Instruments::CapFloor::results> {
           public:
             BlackCapFloor(const Handle<BlackModel>& mod)
             : PricingEngines::GenericModelEngine<
                 BlackModel, 
-                Instruments::CapFloorArguments,
-                Instruments::CapFloorResults > (mod) {}
+                Instruments::CapFloor::arguments,
+                Instruments::CapFloor::results>(mod) {}
             void calculate() const;
           private:
             double capletValue(Time start, Rate forward,

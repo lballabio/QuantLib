@@ -30,12 +30,8 @@ namespace QuantLib {
 
         namespace CalibrationHelpers {
 
-            using CashFlows::FloatingRateCoupon;
-            using CashFlows::FixedRateCouponVector;
-            using CashFlows::FloatingRateCouponVector;
-            using Instruments::VanillaCap;
-            using Instruments::CapFloorArguments;
-            using Instruments::Swap;
+            using namespace CashFlows;
+            using namespace Instruments;
             using Indexes::Xibor;
 
             CapHelper::CapHelper(
@@ -93,16 +89,16 @@ namespace QuantLib {
                     swap->NPV()/swap->secondLegBPS();
                 engine_  = Handle<PricingEngine>( 
                     new Pricers::BlackCapFloor(blackModel_));
-                cap_ = Handle<VanillaCap>(
-                    new VanillaCap(floatingLeg, 
-                                   std::vector<Rate>(1, fairRate), 
-                                   termStructure, engine_));
+                cap_ = Handle<Cap>(
+                    new Cap(floatingLeg, 
+                            std::vector<Rate>(1, fairRate), 
+                            termStructure, engine_));
                 marketValue_ = blackPrice(volatility_->value());
             }
 
             void CapHelper::addTimesTo(std::list<Time>& times) const {
-                CapFloorArguments* params =
-                    dynamic_cast<CapFloorArguments*>(engine_->arguments());
+                CapFloor::arguments* params =
+                    dynamic_cast<CapFloor::arguments*>(engine_->arguments());
                 cap_->setupArguments(params);
                 Size nPeriods = params->startTimes.size();
                 for (Size i=0; i<nPeriods; i++) {

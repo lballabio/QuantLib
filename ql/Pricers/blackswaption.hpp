@@ -33,14 +33,14 @@ namespace QuantLib {
         class BlackSwaption : 
             public PricingEngines::GenericModelEngine<
                         BlackModel, 
-                        Instruments::SwaptionArguments,
-                        Instruments::SwaptionResults > {
+                        Instruments::Swaption::arguments,
+                        Instruments::Swaption::results> {
           public:
             BlackSwaption(const Handle<BlackModel>& mod)
             : PricingEngines::GenericModelEngine<
                         BlackModel, 
-                        Instruments::SwaptionArguments,
-                        Instruments::SwaptionResults >(mod) {}
+                        Instruments::Swaption::arguments,
+                        Instruments::Swaption::results>(mod) {}
             void calculate() const;
         };
 

@@ -28,8 +28,9 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
-        using Optimization::PositiveConstraint;
-        using Optimization::BoundaryConstraint;
+        using namespace Instruments;
+        using namespace Math;
+        using namespace Optimization;
 
         G2::G2(const RelinkableHandle<TermStructure>& termStructure,
                double a, double sigma, double b, double eta, double rho)
@@ -89,11 +90,11 @@ namespace QuantLib {
             double expbt = QL_EXP(-b()*t);
             double cx = sigma()/a();
             double cy = eta()/b();
-            double valuex = cx*cx*(t + (2.0*expat - 0.5*expat*expat - 1.5)/a());
-            double valuey = cy*cy*(t + (2.0*expbt - 0.5*expbt*expbt - 1.5)/b());
+            double valuex = cx*cx*(t + (2.0*expat-0.5*expat*expat-1.5)/a());
+            double valuey = cy*cy*(t + (2.0*expbt-0.5*expbt*expbt-1.5)/b());
             double value = 2.0*rho()*cx*cy* (t + (expat - 1.0)/a() 
                                                + (expbt - 1.0)/b() 
-                                               - (expat*expbt - 1.0)/(a()+b()));
+                                               - (expat*expbt-1.0)/(a()+b()));
             return valuex + valuey + value;
         }
 
@@ -124,7 +125,8 @@ namespace QuantLib {
                 double temp = sigma_*sigma_/(a_*a_);
                 mux_ = (temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - QL_EXP(-a*T_)) -
                        0.5*temp*(1.0 - QL_EXP(-2.0*a_*T_)) -
-                       rho_*sigma_*eta_/(b_*(a_+b_))*(1.0- QL_EXP(-(b_+a_)*T_));
+                       rho_*sigma_*eta_/(b_*(a_+b_))*
+                                        (1.0- QL_EXP(-(b_+a_)*T_));
 
                   for (Size i=0; i<size_; i++) {
                       A_[i] = model.A(T_, t_[i]);
@@ -157,9 +159,9 @@ namespace QuantLib {
                 for (i=0; i<size_; i++) {
                     double h2 = h1 + 
                                 Bb_[i]*sigmay_*QL_SQRT(1.0-rhoxy_*rhoxy_);
-                    double kappa = - Bb_[i]*(muy_ - 
-                                            0.5*txy*txy*sigmay_*sigmay_*Bb_[i] +
-                                            rhoxy_*sigmay_*(x-mux_)/sigmax_);
+                    double kappa = - Bb_[i] *
+                                   (muy_ - 0.5*txy*txy*sigmay_*sigmay_*Bb_[i] +
+                                    rhoxy_*sigmay_*(x-mux_)/sigmax_);
                     value -= lambda[i] *QL_EXP(kappa)*phi(-w_*h2);
                 }
                 return QL_EXP(-0.5*temp*temp*value/
@@ -194,13 +196,13 @@ namespace QuantLib {
         };
 
         double G2::swaption(
-            const Instruments::SwaptionArguments& arguments) const {
+            const Swaption::arguments& arguments) const {
             Time start = arguments.floatingResetTimes[0];
             double w = (arguments.payFixed ? 1 : -1 );
             SwaptionPricingFunction function(
                 a(), sigma(), b(), eta(), rho(), w, start, 
                 arguments.floatingPayTimes, arguments.fixedRate, (*this));
-            Math::SegmentIntegral integrator(1000);
+            SegmentIntegral integrator(1000);
 
             return arguments.nominal*w*termStructure()->discount(start)*
                    integrator(function, -10000.0, 10000.0);

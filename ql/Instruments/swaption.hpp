@@ -30,11 +30,11 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        class SwaptionArguments;
-
         //! Swaption class
         class Swaption : public Option {
           public:
+            class arguments;
+            class results;
             Swaption(const Handle<SimpleSwap>& swap,
                      const Exercise& exercise,
                      const RelinkableHandle<TermStructure>& termStructure,
@@ -51,21 +51,14 @@ namespace QuantLib {
         };
 
         //! arguments for swaption calculation
-        class SwaptionArguments : public virtual Arguments {
+        class Swaption::arguments : public virtual Arguments {
           public:
-            SwaptionArguments() : payFixed(false),
-                                   fairRate(0.0),
-                                   fixedRate(0.0),
-                                   fixedBPS(0.0),
-                                   fixedResetTimes(0),
-                                   fixedPayTimes(0),
-                                   fixedCoupons(0),
-                                   floatingAccrualTimes(0),
-                                   floatingResetTimes(0),
-                                   floatingPayTimes(0),
-                                   nominal(0.0),
-                                   exerciseType(Exercise::Type(-1)),
-                                   exerciseTimes(0) {}
+            arguments() : payFixed(false),
+                          fairRate(0.0),
+                          fixedRate(0.0),
+                          fixedBPS(0.0),
+                          nominal(0.0),
+                          exerciseType(Exercise::Type(-1)) {}
             bool payFixed;
             Rate fairRate;
             Rate fixedRate;
@@ -83,7 +76,7 @@ namespace QuantLib {
         };
 
         //! %results from swaption calculation
-        class SwaptionResults : public Value {};
+        class Swaption::results : public Value {};
 
     }
 
@@ -91,4 +84,3 @@ namespace QuantLib {
 
 
 #endif
-

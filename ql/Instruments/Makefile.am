@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/Instruments
 include_HEADERS = \
     barrieroption.hpp \
     capfloor.hpp \
+    cliquetoption.hpp \
     forwardvanillaoption.hpp \
     quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \

@@ -27,11 +27,11 @@ namespace QuantLib {
     namespace Pricers {
 
         using namespace ShortRateModels;
-        using Instruments::SwaptionArguments;
+        using namespace Instruments;
 
         class JamshidianSwaption::rStarFinder {
           public:
-            rStarFinder(const SwaptionArguments &params,
+            rStarFinder(const Swaption::arguments &params,
                         const Handle<OneFactorAffineModel>& model,
                         const std::vector<double>& amounts)
             : strike_(params.nominal), maturity_(params.exerciseTimes[0]),

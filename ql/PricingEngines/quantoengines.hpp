@@ -22,62 +22,24 @@
 #ifndef quantlib_quanto_engines_h
 #define quantlib_quanto_engines_h
 
-#include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/Instruments/quantovanillaoption.hpp>
+#include <ql/PricingEngines/genericengine.hpp>
 #include <ql/TermStructures/quantotermstructure.hpp>
 
 namespace QuantLib {
 
     namespace PricingEngines {
 
-        //! arguments for quanto option calculation
-        template<class ArgumentsType>
-        class QuantoOptionArguments : public ArgumentsType {
-          public:
-            QuantoOptionArguments() : correlation(Null<double>()) {}
-            void validate() const;
-            double correlation;
-            RelinkableHandle<TermStructure> foreignRiskFreeTS;
-            RelinkableHandle<BlackVolTermStructure> exchRateVolTS;
-        };
-
-        template<class ArgumentsType>
-        void QuantoOptionArguments<ArgumentsType>::validate() const {
-            ArgumentsType::validate();
-            QL_REQUIRE(!foreignRiskFreeTS.isNull(),
-                       "QuantoOptionArguments::validate() : "
-                       "null foreign risk free term structure");
-            QL_REQUIRE(!exchRateVolTS.isNull(),
-                       "QuantoOptionArguments::validate() : "
-                       "null exchange rate vol term structure");
-            QL_REQUIRE(correlation != Null<double>(),
-                       "QuantoOptionArguments::validate() : "
-                       "null correlation given");
-        }
-
-        //! %results from quanto option calculation
-        template<class ResultsType>
-        class QuantoOptionResults : public ResultsType {
-          public:
-            QuantoOptionResults() { reset() ;}
-            void reset() { 
-                ResultsType::reset();
-                qvega = qrho = qlambda = Null<double>();
-            }
-            double qvega;
-            double qrho;
-            double qlambda;
-        };
-
         //! Quanto engine base class
         template<class ArgumentsType, class ResultsType>
         class QuantoEngine : public
-            GenericEngine<QuantoOptionArguments<ArgumentsType>,
-                          QuantoOptionResults<ResultsType> > {
-        public:
+            GenericEngine<Instruments::QuantoOptionArguments<ArgumentsType>,
+                          Instruments::QuantoOptionResults<ResultsType> > {
+          public:
             QuantoEngine(const Handle<GenericEngine<ArgumentsType,
-                ResultsType> >&);
+                                                    ResultsType> >&);
             void calculate() const;
-        protected:
+          protected:
             Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
             ArgumentsType* originalArguments_;
             const ResultsType* originalResults_;
@@ -158,5 +120,5 @@ namespace QuantLib {
 
 }
 
-#endif
 
+#endif

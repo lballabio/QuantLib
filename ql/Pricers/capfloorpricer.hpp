@@ -33,7 +33,7 @@ namespace QuantLib {
         class DiscretizedCapFloor : public DiscretizedAsset {
           public:
             DiscretizedCapFloor(const Handle<NumericalMethod>& method,
-                                const Instruments::CapFloorArguments& params)
+                                const Instruments::CapFloor::arguments& params)
             : DiscretizedAsset(method), arguments_(params) {}
 
             void reset(Size size) {
@@ -51,7 +51,7 @@ namespace QuantLib {
             }
 
           private:
-            Instruments::CapFloorArguments arguments_;
+            Instruments::CapFloor::arguments arguments_;
         };
 
     }

@@ -1,4 +1,4 @@
 
 EXTRA_DIST = QL.bmp QL.eps QL.jpg QL.pdf QL-small.jpg sfnetlogo.png \
-             instrument.eps instruments.pdf instruments.png
+             instrument.eps instrument.pdf instrument.png
 

@@ -25,7 +25,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Instruments::VanillaCapFloor;
+        using Instruments::CapFloor;
 
         void DiscretizedCapFloor::preAdjustValues() {
             for (Size i=0; i<arguments_.startTimes.size(); i++) {
@@ -37,10 +37,10 @@ namespace QuantLib {
                     method()->initialize(bond, end);
                     method()->rollback(bond,time_);
 
-                    VanillaCapFloor::Type type = arguments_.type;
+                    CapFloor::Type type = arguments_.type;
 
-                    if ( (type == VanillaCapFloor::Cap) ||
-                         (type == VanillaCapFloor::Collar)) {
+                    if ( (type == CapFloor::Cap) ||
+                         (type == CapFloor::Collar)) {
                         double accrual = 1.0 + arguments_.capRates[i]*tenor;
                         double strike = 1.0/accrual;
                         for (Size j=0; j<values_.size(); j++)
@@ -48,11 +48,11 @@ namespace QuantLib {
                                 QL_MAX(strike - bond->values()[j], 0.0);
                     }
 
-                    if ( (type == VanillaCapFloor::Floor) ||
-                         (type == VanillaCapFloor::Collar)) {
+                    if ( (type == CapFloor::Floor) ||
+                         (type == CapFloor::Collar)) {
                         double accrual = 1.0 + arguments_.floorRates[i]*tenor;
                         double strike = 1.0/accrual;
-                        double mult = (type == VanillaCapFloor::Floor)?1.0:-1.0;
+                        double mult = (type == CapFloor::Floor)?1.0:-1.0;
                         for (Size j=0; j<values_.size(); j++)
                             values_[j] += arguments_.nominals[i]*accrual*mult*
                                 QL_MAX(bond->values()[j] - strike, 0.0);

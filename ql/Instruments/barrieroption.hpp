@@ -25,7 +25,7 @@
 #define quantlib_barrier_option_h
 
 #include <ql/option.hpp>
-#include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {
 
@@ -39,6 +39,8 @@ namespace QuantLib {
         //! Barrier option on a single asset
         class BarrierOption : public Option {
           public:
+            class arguments;
+            class results;
             BarrierOption(Barrier::Type barrierType,
                           double barrier,
                           double rebate,
@@ -86,8 +88,10 @@ namespace QuantLib {
         };
 
         //! arguments for barrier option calculation
-        class BarrierOptionArguments 
-                        : public PricingEngines::VanillaOptionArguments {
+        class BarrierOption::arguments : public VanillaOption::arguments {
+          protected:
+            // needed to avoid VC++6 hiccups
+            typedef VanillaOption::arguments super;
           public:
             Barrier::Type barrierType;
             double barrier;
@@ -95,8 +99,8 @@ namespace QuantLib {
             void validate() const;
         };
 
-        inline void BarrierOptionArguments::validate() const {
-            VanillaOptionArguments::validate();
+        inline void BarrierOption::arguments::validate() const {
+            super::validate();
         
             switch (barrierType) {
                 case Barrier::DownIn:
@@ -133,14 +137,12 @@ namespace QuantLib {
         }
 
         //! %results from barrier option calculation
-        class BarrierOptionResults 
-                : public virtual PricingEngines::VanillaOptionResults {};
+        class BarrierOption::results 
+        : public virtual VanillaOption::results {};
 
     }
-
 
 }
 
 
 #endif
-

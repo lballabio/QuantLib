@@ -47,7 +47,7 @@ namespace QuantLib {
                 virtual double blackPrice(double volatility) const;
 
               private:
-                Handle<Instruments::VanillaCap> cap_;
+                Handle<Instruments::Cap> cap_;
             };
         }
 

@@ -25,7 +25,6 @@
 #include <ql/Solvers1D/brent.hpp>
 
 using QuantLib::VolTermStructures::BlackConstantVol;
-using QuantLib::PricingEngines::VanillaOptionArguments;
 
 namespace QuantLib {
 
@@ -127,8 +126,8 @@ namespace QuantLib {
         }
 
         void VanillaOption::setupArguments(Arguments* args) const {
-            VanillaOptionArguments* arguments =
-                dynamic_cast<VanillaOptionArguments*>(args);
+            VanillaOption::arguments* arguments =
+                dynamic_cast<VanillaOption::arguments*>(args);
             QL_REQUIRE(arguments != 0,
                        "VanillaOption::setupArguments : "
                        "wrong argument type");
@@ -187,11 +186,40 @@ namespace QuantLib {
                       "null value returned from option pricer");
         }
 
+
+        void VanillaOption::arguments::validate() const {
+            QL_REQUIRE(!payoff.isNull(),
+                       "VanillaOption::arguments::validate() : "
+                       "null payoff given");
+            QL_REQUIRE(underlying != Null<double>(),
+                       "VanillaOption::arguments::validate() : "
+                       "no underlying given");
+            QL_REQUIRE(underlying > 0.0,
+                       "VanillaOption::arguments::validate() : "
+                       "negative or zero underlying given");
+            QL_REQUIRE(!dividendTS.isNull(),
+                       "VanillaOption::arguments::validate() : "
+                       "no dividend term structure given");
+            QL_REQUIRE(!riskFreeTS.isNull(),
+                       "VanillaOption::arguments::validate() : "
+                       "no risk free term structure given");
+            QL_REQUIRE(maturity != Null<double>(),
+                       "VanillaOption::arguments::validate() : "
+                       "no maturity given");
+            QL_REQUIRE(maturity>=0.0,
+                       "VanillaOption::arguments::validate() : "
+                       "negative maturity");
+            QL_REQUIRE(!volTS.isNull(),
+                       "VanillaOption::arguments::validate() : "
+                       "no vol term structure given");
+        }
+
+
         VanillaOption::ImpliedVolHelper::ImpliedVolHelper(
             const Handle<PricingEngine>& engine, double targetValue)
         : engine_(engine), targetValue_(targetValue) {
-            VanillaOptionArguments* arguments_ = 
-                dynamic_cast<VanillaOptionArguments*>(engine_->arguments());
+            VanillaOption::arguments* arguments_ = 
+                dynamic_cast<VanillaOption::arguments*>(engine_->arguments());
             QL_REQUIRE(arguments_ != 0,
                 "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "
                 "pricing engine does not supply needed arguments");

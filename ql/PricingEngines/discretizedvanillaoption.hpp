@@ -33,8 +33,9 @@ namespace QuantLib {
 
         class DiscretizedVanillaOption : public DiscretizedAsset {
           public:
-            DiscretizedVanillaOption(const Handle<NumericalMethod>& method,
-                                     const VanillaOptionArguments& arguments)
+            DiscretizedVanillaOption(
+                const Handle<NumericalMethod>& method,
+                const Instruments::VanillaOption::arguments& arguments)
             : DiscretizedAsset(method), arguments_(arguments) {}
 
             void reset(Size size);
@@ -48,7 +49,7 @@ namespace QuantLib {
 
           private:
             void applySpecificCondition();
-            VanillaOptionArguments arguments_;
+            Instruments::VanillaOption::arguments arguments_;
         };
 
     }

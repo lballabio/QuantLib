@@ -31,10 +31,12 @@ namespace QuantLib {
     namespace Instruments {
 
         //! Base class for cap-like instruments
-        class VanillaCapFloor : public Instrument {
+        class CapFloor : public Instrument {
           public:
             enum Type { Cap, Floor, Collar };
-            VanillaCapFloor(Type type,
+            class arguments;
+            class results;
+            CapFloor(Type type,
                             const std::vector<Handle<CashFlow> >& floatingLeg,
                             const std::vector<Rate>& capRates,
                             const std::vector<Rate>& floorRates,
@@ -68,52 +70,59 @@ namespace QuantLib {
         };
 
         //! Concrete cap class
-        class VanillaCap : public VanillaCapFloor {
+        class Cap : public CapFloor {
           public:
-            VanillaCap(
-                const std::vector<Handle<CashFlow> >& floatingLeg,
+            Cap(const std::vector<Handle<CashFlow> >& floatingLeg,
                 const std::vector<Rate>& exerciseRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<PricingEngine>& engine)
-            : VanillaCapFloor(Cap, floatingLeg, 
-                              exerciseRates, std::vector<Rate>(),
-                              termStructure, engine)
-            {}
+            : CapFloor(CapFloor::Cap, floatingLeg, 
+                       exerciseRates, std::vector<Rate>(),
+                       termStructure, engine) {}
         };
 
         //! Concrete floor class
-        class VanillaFloor : public VanillaCapFloor {
+        class Floor : public CapFloor {
           public:
-            VanillaFloor(
-                const std::vector<Handle<CashFlow> >& floatingLeg,
-                const std::vector<Rate>& exerciseRates,
-                const RelinkableHandle<TermStructure>& termStructure,
-                const Handle<PricingEngine>& engine)
-            : VanillaCapFloor(Floor, floatingLeg, 
-                              std::vector<Rate>(), exerciseRates,
-                              termStructure, engine)
-            {}
+            Floor(const std::vector<Handle<CashFlow> >& floatingLeg,
+                  const std::vector<Rate>& exerciseRates,
+                  const RelinkableHandle<TermStructure>& termStructure,
+                  const Handle<PricingEngine>& engine)
+            : CapFloor(CapFloor::Floor, floatingLeg, 
+                       std::vector<Rate>(), exerciseRates,
+                       termStructure, engine) {}
         };
 
         //! Concrete cap class
-        class VanillaCollar : public VanillaCapFloor {
+        class Collar : public CapFloor {
           public:
-            VanillaCollar(
-                const std::vector<Handle<CashFlow> >& floatingLeg,
-                const std::vector<Rate>& capRates,
-                const std::vector<Rate>& floorRates,
-                const RelinkableHandle<TermStructure>& termStructure,
-                const Handle<PricingEngine>& engine)
-            : VanillaCapFloor(Collar, floatingLeg, capRates, floorRates,
-                              termStructure, engine)
-            {}
+            Collar(const std::vector<Handle<CashFlow> >& floatingLeg,
+                   const std::vector<Rate>& capRates,
+                   const std::vector<Rate>& floorRates,
+                   const RelinkableHandle<TermStructure>& termStructure,
+                   const Handle<PricingEngine>& engine)
+            : CapFloor(CapFloor::Collar, floatingLeg, capRates, floorRates,
+                       termStructure, engine) {}
         };
 
+        /*! \deprecated use CapFloor instead */
+        typedef CapFloor VanillaCapFloor;
+
+        /*! \deprecated use Cap instead */
+        typedef Cap VanillaCap;
+
+        /*! \deprecated use Floor instead */
+        typedef Floor VanillaFloor;
+
+        /*! \deprecated use Collar instead */
+        typedef Collar VanillaCollar;
+
+
         //! arguments for cap/floor calculation
-        class CapFloorArguments : public virtual Arguments {
+        class CapFloor::arguments : public virtual Arguments {
           public:
-            CapFloorArguments() : type(VanillaCapFloor::Type(-1)) {}
-            VanillaCapFloor::Type type;
+            arguments() : type(CapFloor::Type(-1)) {}
+            CapFloor::Type type;
             std::vector<Time> startTimes;
             std::vector<Time> fixingTimes;
             std::vector<Time> endTimes;
@@ -126,10 +135,11 @@ namespace QuantLib {
         };
 
         //! %results from cap/floor calculation
-        class CapFloorResults : public Value {};
+        class CapFloor::results : public Value {};
 
     }
 
 }
+
 
 #endif

@@ -30,14 +30,13 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Cap/Floor priced in a tree
-        class TreeCapFloor : public
-            PricingEngines::LatticeShortRateModelEngine<
-                Instruments::CapFloorArguments,
-                Instruments::CapFloorResults > {
+        class TreeCapFloor 
+        : public PricingEngines::LatticeShortRateModelEngine<
+                                       Instruments::CapFloor::arguments,
+                                       Instruments::CapFloor::results> {
           public:
             TreeCapFloor(const Handle<ShortRateModels::Model>& model,
                          Size timeSteps);
-
             TreeCapFloor(const Handle<ShortRateModels::Model>& model,
                          const TimeGrid& timeGrid);
             void calculate() const;
@@ -46,5 +45,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

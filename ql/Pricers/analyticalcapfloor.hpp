@@ -33,15 +33,15 @@ namespace QuantLib {
         class AnalyticalCapFloor 
         : public PricingEngines::GenericModelEngine<
                 ShortRateModels::AffineModel, 
-                Instruments::CapFloorArguments,
-                Instruments::CapFloorResults > {
+                Instruments::CapFloor::arguments,
+                Instruments::CapFloor::results > {
           public:
             AnalyticalCapFloor(
                 const Handle<ShortRateModels::AffineModel>& model) 
             : PricingEngines::GenericModelEngine<
                 ShortRateModels::AffineModel, 
-                Instruments::CapFloorArguments,
-                Instruments::CapFloorResults >(model) 
+                Instruments::CapFloor::arguments,
+                Instruments::CapFloor::results >(model) 
             {}
             void calculate() const;
         };

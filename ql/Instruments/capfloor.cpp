@@ -28,8 +28,8 @@ namespace QuantLib {
 
         using CashFlows::FloatingRateCoupon;
 
-        VanillaCapFloor::VanillaCapFloor(
-                VanillaCapFloor::Type type,
+        CapFloor::CapFloor(
+                CapFloor::Type type,
                 const std::vector<Handle<CashFlow> >& floatingLeg,
                 const std::vector<Rate>& capRates,
                 const std::vector<Rate>& floorRates,
@@ -41,13 +41,13 @@ namespace QuantLib {
             setPricingEngine(engine);
             if (type_ == Cap || type_ == Collar) {
                 QL_REQUIRE(!capRates_.empty(),
-                           "VanillaCapFloor: no cap rates given");
+                           "CapFloor: no cap rates given");
                 while (capRates_.size() < floatingLeg_.size())
                     capRates_.push_back(capRates_.back());
             }
             if (type_ == Floor || type_ == Collar) {
                 QL_REQUIRE(!floorRates_.empty(),
-                           "VanillaCapFloor: no floor rates given");
+                           "CapFloor: no floor rates given");
                 while (floorRates_.size() < floatingLeg_.size())
                     floorRates_.push_back(floorRates_.back());
             }
@@ -57,18 +57,18 @@ namespace QuantLib {
             registerWith(termStructure);
         }
 
-        bool VanillaCapFloor::isExpired() const {
+        bool CapFloor::isExpired() const {
             Date lastFixing = Date::minDate();
             for (Size i=0; i<floatingLeg_.size(); i++)
                 lastFixing = QL_MAX(lastFixing, floatingLeg_[i]->date());
             return lastFixing < termStructure_->referenceDate();
         }
 
-        void VanillaCapFloor::setupArguments(Arguments* args) const {
-            CapFloorArguments* arguments =
-                dynamic_cast<CapFloorArguments*>(args);
+        void CapFloor::setupArguments(Arguments* args) const {
+            CapFloor::arguments* arguments =
+                dynamic_cast<CapFloor::arguments*>(args);
             QL_REQUIRE(arguments != 0,
-                       "VanillaCapFloor::setupArguments :"
+                       "CapFloor::setupArguments :"
                        "wrong argument type");
 
             arguments->type = type_;
@@ -110,7 +110,7 @@ namespace QuantLib {
             }
         }
 
-        void CapFloorArguments::validate() const {
+        void CapFloor::arguments::validate() const {
             QL_REQUIRE(endTimes.size() == startTimes.size(),
                        "Invalid pricing arguments: size of startTimes (" +
                        IntegerFormatter::toString(startTimes.size()) +
@@ -123,14 +123,14 @@ namespace QuantLib {
                        ") different from that of accrualTimes (" +
                        IntegerFormatter::toString(accrualTimes.size()) +
                        ")");
-            QL_REQUIRE(type == VanillaCapFloor::Floor || 
+            QL_REQUIRE(type == CapFloor::Floor || 
                        capRates.size() == startTimes.size(),
                        "Invalid pricing arguments: size of startTimes (" +
                        IntegerFormatter::toString(startTimes.size()) +
                        ") different from that of capRates (" +
                        IntegerFormatter::toString(capRates.size()) +
                        ")");
-            QL_REQUIRE(type == VanillaCapFloor::Cap ||
+            QL_REQUIRE(type == CapFloor::Cap ||
                        floorRates.size() == startTimes.size(),
                        "Invalid pricing arguments: size of startTimes (" +
                        IntegerFormatter::toString(startTimes.size()) +

@@ -25,11 +25,11 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Instruments::VanillaCapFloor;
+        using Instruments::CapFloor;
 
         void BlackCapFloor::calculate() const {
             double value = 0.0;
-            VanillaCapFloor::Type type = arguments_.type;
+            CapFloor::Type type = arguments_.type;
 
             for (Size i=0; i<arguments_.startTimes.size(); i++) {
                 Time fixing = arguments_.fixingTimes[i],
@@ -40,20 +40,20 @@ namespace QuantLib {
                     DiscountFactor q = model_->termStructure()->discount(end);
                     Rate forward = arguments_.forwards[i];
                     // try and factorize the code below
-                    if ((type == VanillaCapFloor::Cap) ||
-                        (type == VanillaCapFloor::Collar)) {
+                    if ((type == CapFloor::Cap) ||
+                        (type == CapFloor::Collar)) {
                             value += q * accrualTime * nominal *
                                      capletValue(fixing,forward,
                                                  arguments_.capRates[i],
                                                  model_->volatility());
                     }
-                    if ((type == VanillaCapFloor::Floor) ||
-                        (type == VanillaCapFloor::Collar)) {
+                    if ((type == CapFloor::Floor) ||
+                        (type == CapFloor::Collar)) {
                             double temp = q * accrualTime * nominal *
                                           floorletValue(fixing,forward,
                                                  arguments_.floorRates[i],
                                                  model_->volatility());
-                            if (type == VanillaCapFloor::Floor)
+                            if (type == CapFloor::Floor)
                                 value += temp;
                             else
                                 // a collar is long a cap and short a floor

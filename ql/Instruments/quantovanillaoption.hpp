@@ -22,16 +22,42 @@
 #ifndef quantlib_quanto_vanilla_option_h
 #define quantlib_quanto_vanilla_option_h
 
-#include <ql/PricingEngines/quantoengines.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {
 
     namespace Instruments {
 
-        //! Quanto version of a vanilla option
+        //! arguments for quanto option calculation
+        template<class ArgumentsType>
+        class QuantoOptionArguments : public ArgumentsType {
+          public:
+            QuantoOptionArguments() : correlation(Null<double>()) {}
+            void validate() const;
+            double correlation;
+            RelinkableHandle<TermStructure> foreignRiskFreeTS;
+            RelinkableHandle<BlackVolTermStructure> exchRateVolTS;
+        };
+
+        //! %results from quanto option calculation
+        template<class ResultsType>
+        class QuantoOptionResults : public ResultsType {
+          public:
+            QuantoOptionResults() { reset() ;}
+            void reset() { 
+                ResultsType::reset();
+                qvega = qrho = qlambda = Null<double>();
+            }
+            double qvega;
+            double qrho;
+            double qlambda;
+        };
+
+        //! quanto version of a vanilla option
         class QuantoVanillaOption : public VanillaOption {
           public:
+            typedef QuantoOptionArguments<VanillaOption::arguments> arguments;
+            typedef QuantoOptionResults<VanillaOption::results> results;
             QuantoVanillaOption(
                 Option::Type type,
                 const RelinkableHandle<MarketElement>& underlying,
@@ -64,11 +90,26 @@ namespace QuantLib {
             mutable double qvega_, qrho_, qlambda_;
         };
 
-    }
 
+        // template definitions
+
+        template<class ArgumentsType>
+        void QuantoOptionArguments<ArgumentsType>::validate() const {
+            ArgumentsType::validate();
+            QL_REQUIRE(!foreignRiskFreeTS.isNull(),
+                       "QuantoOption::arguments::validate() : "
+                       "null foreign risk free term structure");
+            QL_REQUIRE(!exchRateVolTS.isNull(),
+                       "QuantoOption::arguments::validate() : "
+                       "null exchange rate vol term structure");
+            QL_REQUIRE(correlation != Null<double>(),
+                       "QuantoOption::arguments::validate() : "
+                       "null correlation given");
+        }
+
+    }
 
 }
 
 
 #endif
-
