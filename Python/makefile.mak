@@ -1,6 +1,6 @@
 
+# $Id$
 # $Source$
-
 #
 # makefile for QuantLib Python module under Borland C++
 #
@@ -34,7 +34,7 @@ PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 WIN_OBJS        = c0d32.obj
 
 # Libraries
-QUANTLIB_LIB     = ..\lib\Win32\Borland\QuantLib$(_D).lib
+QUANTLIB_LIB     = "$(QL_DIR)\lib\Win32\Borland\QuantLib$(_D).lib
 QUANTLIB_DLL     = QuantLibc$(_D).dll
 WIN_LIBS         = import32.lib cw32mt.lib
 PYTHON_BCC_LIB   = bccpython.lib
@@ -55,6 +55,9 @@ CC_OPTS        = -q -c -tWM -vi- \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
+!endif
+!ifdef SAFE
+CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
 !endif
 
 LINK_OPTS    = -q -x -L$(BCC_LIBS) -Tpd
@@ -125,9 +128,9 @@ quantlib_wrap.cpp:: \
     $(SWIG_DIR)\TermStructures.i \
     $(SWIG_DIR)\Vectors.i
     echo Generating wrappers...
-    $(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) \
+    $(SWIG) -python -c++ -shadow -keyword -opt \
+            -I$(SWIG_DIR) \
             -o quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
-
 
 # Clean up
 clean::
@@ -141,7 +144,6 @@ clean::
     if exist QuantLibc_d.dll        del QuantLibc_d.dll
     if exist QuantLibc.tds          del QuantLibc.tds
     if exist QuantLibc_d.tds        del QuantLibc_d.tds
-
 
 # Install Python module
 install::

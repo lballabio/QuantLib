@@ -59,6 +59,9 @@ CC_OPTS        = -q -c -tWM \
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
+!ifdef SAFE
+CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
+!endif
 
 TLIB_OPTS    = /P32
 !ifdef DEBUG
@@ -118,5 +121,5 @@ clean::
     cd ..
     if exist *.obj      del /q *.obj
     if exist *.obj_d    del /q *.obj
-    if exist ..\lib\*.lib  del /q ..\lib\*.lib
+    if exist ..\lib\Win32\Borland\*.lib  del /q ..\lib\Win32\Borland\*.lib
 
