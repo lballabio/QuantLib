@@ -47,7 +47,7 @@ namespace QuantLib {
             RandomArrayGenerator(const Math::Matrix& covariance,
                                  long seed = 0);
             const sample_type& next() const;
-            int size() const { return average_.size(); }
+            int size() const { return next_.size(); }
           private:
             mutable sample_type next_;
             RNG generator_;
