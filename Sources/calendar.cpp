@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.19  2001/05/08 17:23:47  lballabio
+    removed unnecessary if branch (although more convoluted, it had the same effect of the else branch
+
     Revision 1.18  2001/04/09 14:13:33  nando
     all the *.hpp moved below the Include/ql level
 
@@ -102,18 +105,7 @@ namespace QuantLib {
             return d1;
         } else {
             Date d1 = d.plus(n,unit);
-            if (modified && d.month() != roll(d.plusDays(1)).month() // EOM
-              && (unit == Months || unit == Years)) {
-                Month m = d1.month();
-                Date firstOfNextMonth = (m == December ?
-                    Date(1,January,d1.year()+1) : Date(1,Month(m+1),d1.year()));
-                Date d1 = firstOfNextMonth.plusDays(-1);    // last of month
-                while (isHoliday(d1))
-                    d1--;
-            } else {
-                d1 = roll(d1,modified);
-            }
-            return d1;
+            return roll(d1,modified);
         }
         QL_DUMMY_RETURN(Date());
     }
