@@ -49,27 +49,28 @@ namespace QuantLib {
               case Barrier::DownIn:
                 QL_REQUIRE(underlying_ >= barrier_, "underlying (" +
                     DoubleFormatter::toString(underlying_) +
-                    ")< barrier(" +
+                    ") < barrier (" +
                     DoubleFormatter::toString(barrier_) +
                     "): down-and-in barrier undefined");
                 break;
               case Barrier::UpIn:
                 QL_REQUIRE(underlying_ <= barrier_, "underlying ("+
                     DoubleFormatter::toString(underlying_) +
-                    ")> barrier("+
+                    ") > barrier ("+
                     DoubleFormatter::toString(barrier_) +
                     "): up-and-in barrier undefined");
                 break;
               case Barrier::DownOut:
                 QL_REQUIRE(underlying_ >= barrier_, "underlying ("+
                     DoubleFormatter::toString(underlying_) +
-                    ")< barrier("+
+                    ") < barrier ("+
+                    DoubleFormatter::toString(barrier_) +
                     "): down-and-out barrier undefined");
                 break;
               case Barrier::UpOut:
                 QL_REQUIRE(underlying_ <= barrier_, "underlying ("+
                     DoubleFormatter::toString(underlying_) +
-                    ")> barrier("+
+                    ") > barrier ("+
                     DoubleFormatter::toString(barrier_) +
                     "): up-and-out barrier undefined");
                 break;
