@@ -83,6 +83,7 @@ tex-files:: html
            -e "/include{index}/d" \
            -e "/include{install}/d" \
            -e "/include{instruments}/d" \
+           -e "/include{lattices}/d" \
            -e "/include{license}/d" \
            -e "/include{math}/d" \
            -e "/include{mcarlo}/d" \

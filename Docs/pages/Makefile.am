@@ -14,6 +14,7 @@ EXTRA_DIST = \
              index.docs \
              install.docs \
              instruments.docs \
+             lattices.docs \
              license.docs \
              math.docs \
              mcarlo.docs \
