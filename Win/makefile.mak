@@ -164,21 +164,25 @@ $(PYTHON_BCC_LIB):
 $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
     echo Compiling wrappers...
     $(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT $(PYTHON_DIR)\quantlib_wrap.cpp
-$(PYTHON_DIR)\quantlib_wrap.cpp:: $(SWIG_DIR)\QuantLib.i \
+$(PYTHON_DIR)\quantlib_wrap.cpp:: \
+    $(SWIG_DIR)\QuantLib.i \
     $(SWIG_DIR)\BoundaryConditions.i \
     $(SWIG_DIR)\Calendars.i \
     $(SWIG_DIR)\Currencies.i \
     $(SWIG_DIR)\Date.i \
     $(SWIG_DIR)\DayCounters.i \
+    $(SWIG_DIR)\Distributions.i \
     $(SWIG_DIR)\Financial.i \
     $(SWIG_DIR)\History.i \
     $(SWIG_DIR)\Instruments.i \
     $(SWIG_DIR)\MontecarloPricers.i \
-    $(SWIG_DIR)\Options.i \
     $(SWIG_DIR)\Operators.i \
+    $(SWIG_DIR)\Options.i \
     $(SWIG_DIR)\Pricers.i \
+    $(SWIG_DIR)\RandomGenerators.i \
     $(SWIG_DIR)\Solvers1D.i \
     $(SWIG_DIR)\Statistics.i \
+    $(SWIG_DIR)\String.i \
     $(SWIG_DIR)\TermStructures.i \
     $(SWIG_DIR)\Vectors.i 
     echo Generating wrappers...
