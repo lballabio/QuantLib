@@ -38,7 +38,8 @@ namespace QuantLib {
                        double y2a,
                        double y1b,
                        double y2b,
-                       bool monotonicityConstraint) {
+                       bool monotonicityConstraint,
+                       int derivativeOrder) {
 
         double result = 0.0;
 
@@ -51,12 +52,43 @@ namespace QuantLib {
                     y_values.begin())(x, allowExtrapolation);
             break;
           case 2:
-            result = CubicSplineInterpolation<
-                        std::vector<double>::const_iterator,
-			            std::vector<double>::const_iterator>(
-                    x_values.begin(), x_values.end(),
-                    y_values.begin(), y1a, y2a, y1b, y2b,
-                    monotonicityConstraint)(x, allowExtrapolation);
+            switch (derivativeOrder) {
+              case -1:
+                result = CubicSplineInterpolation<
+                            std::vector<double>::const_iterator,
+			                std::vector<double>::const_iterator>(
+                        x_values.begin(), x_values.end(),
+                        y_values.begin(), y1a, y2a, y1b, y2b,
+                        monotonicityConstraint).primitive(x, allowExtrapolation);
+                break;
+              case 0:
+                result = CubicSplineInterpolation<
+                            std::vector<double>::const_iterator,
+			                std::vector<double>::const_iterator>(
+                        x_values.begin(), x_values.end(),
+                        y_values.begin(), y1a, y2a, y1b, y2b,
+                        monotonicityConstraint)(x, allowExtrapolation);
+                break;
+              case 1:
+                result = CubicSplineInterpolation<
+                            std::vector<double>::const_iterator,
+			                std::vector<double>::const_iterator>(
+                        x_values.begin(), x_values.end(),
+                        y_values.begin(), y1a, y2a, y1b, y2b,
+                        monotonicityConstraint).derivative(x, allowExtrapolation);
+                break;
+              case 2:
+                result = CubicSplineInterpolation<
+                            std::vector<double>::const_iterator,
+			                std::vector<double>::const_iterator>(
+                        x_values.begin(), x_values.end(),
+                        y_values.begin(), y1a, y2a, y1b, y2b,
+                        monotonicityConstraint).secondDerivative(x, allowExtrapolation);
+                break;
+              default:
+                  QL_FAIL(IntegerFormatter::toString(derivativeOrder)
+                      + " is an invalid derivative order");
+            }
             break;
           case 3:
             result = LogLinearInterpolation<

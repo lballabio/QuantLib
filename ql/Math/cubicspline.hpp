@@ -67,7 +67,7 @@ namespace QuantLib {
         //           a[i]*(x-x[i]) +
         //           b[i]*(x-x[i])^2 +
         //           c[i]*(x-x[i])^3
-        std::vector<result_type> a_, b_, c_;
+        std::vector<result_type> primitiveConst_, a_, b_, c_;
         bool monotonicityCorrectionApplied_;
     };
 
@@ -79,8 +79,8 @@ namespace QuantLib {
         const I1& xBegin, const I1& xEnd, const I2& yBegin,
         result_type y1a, result_type y2a, result_type y1b, result_type y2b,
         bool monotonicityConstraint)
-    : Interpolation<I1,I2>(xBegin,xEnd,yBegin), a_(xEnd-xBegin-1),
-      b_(xEnd-xBegin-1), c_(xEnd-xBegin-1),
+    : Interpolation<I1,I2>(xBegin,xEnd,yBegin), primitiveConst_(xEnd-xBegin-1),
+      a_(xEnd-xBegin-1), b_(xEnd-xBegin-1), c_(xEnd-xBegin-1),
       monotonicityCorrectionApplied_(false) {
 
         TridiagonalOperator L(n_);
@@ -199,6 +199,15 @@ namespace QuantLib {
             b_[i] = (3.0*S[i] - tmp[i+1] - 2.0*tmp[i])/dx[i];
             c_[i] = (tmp[i+1] + tmp[i] - 2.0*S[i])/(dx[i]*dx[i]);
         }
+
+        primitiveConst_[0] = 0.0;
+        for (i=1; i<n_-1; i++) {
+            primitiveConst_[i] = primitiveConst_[i-1]
+                              + dx[i-1] *(yBegin_[i-1]
+                              + dx[i-1] *(a_[i-1]/2.0
+                              + dx[i-1] *(b_[i-1]/3.0
+                              + dx[i-1] * c_[i-1]/4.0)));
+        }
     }
 
     template <class I1, class I2>
@@ -246,7 +255,8 @@ namespace QuantLib {
 
         Size j = position_-xBegin_;
         argument_type dx = x-xBegin_[j];
-        return dx*(yBegin_[j] + dx*(a_[j]/2.0 + dx*(b_[j]/3.0 + dx*c_[j]/4.0)));
+        return primitiveConst_[j] + dx*(yBegin_[j] + dx*(a_[j]/2.0 
+                                  + dx*(b_[j]/3.0 + dx*c_[j]/4.0)));
     }
 
     template <class I1, class I2>

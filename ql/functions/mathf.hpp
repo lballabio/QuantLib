@@ -36,7 +36,8 @@ namespace QuantLib {
                        double y2a,
                        double y1b,
                        double y2b,
-                       bool monotonicityConstraint);
+                       bool monotonicityConstraint,
+                       int derivativeOrder);
 
     double interpolate2D(const std::vector<double>& x_values,
                          const std::vector<double>& y_values,
