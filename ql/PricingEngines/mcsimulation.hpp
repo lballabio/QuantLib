@@ -100,7 +100,6 @@ namespace QuantLib {
 
         Size nextBatch;
         Real order;
-        Real result = mcModel_->sampleAccumulator().mean();
         Real error = mcModel_->sampleAccumulator().errorEstimate();
         while (error > tolerance) {
             QL_REQUIRE(sampleNumber<maxSamples,
@@ -121,11 +120,10 @@ namespace QuantLib {
             nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
             sampleNumber += nextBatch;
             mcModel_->addSamples(nextBatch);
-            result = mcModel_->sampleAccumulator().mean();
             error = mcModel_->sampleAccumulator().errorEstimate();
         }
 
-        return result;
+        return mcModel_->sampleAccumulator().mean();
     }
 
 
