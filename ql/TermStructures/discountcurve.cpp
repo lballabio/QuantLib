@@ -47,12 +47,13 @@ namespace QuantLib
          times_.resize(dates.size());
          for(unsigned int i = 0; i < dates.size(); i++)
             times_[i] = dayCounter_.yearFraction(settlementDate(), dates_[i]);
-         interpolation_ =
-            Handle < DfInterpolation >
-            (new DfInterpolation(times_.begin(),
-                                 times_.end(), discounts.begin(), true));
+            interpolation_ = Handle < DfInterpolation >
+                (new DfInterpolation(times_.begin(), times_.end(),
+                discounts.begin(), true));
       }
-      DiscountFactor DiscountCurve::discountImpl(Time t, bool extrapolate) const
+
+      DiscountFactor DiscountCurve::discountImpl(Time t,
+        bool extrapolate) const
       {
          QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
                     "DiscountCurve: time (" +
@@ -62,19 +63,6 @@ namespace QuantLib
                     DoubleFormatter::toString(times_.back()) + "]");
          return (*interpolation_) (t);
       }
-      Rate DiscountCurve::forwardImpl(Time t, bool extrapolate) const
-      {
-         QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
-                    "DiscountCurve: time (" +
-                    DoubleFormatter::toString(t) +
-                    ") outside curve definition [" +
-                    DoubleFormatter::toString(0.0) + ", " +
-                    DoubleFormatter::toString(times_.back()) + "]");
-         return *discounts_.begin() / discountImpl(t, extrapolate) * t;
-      }
-      Rate DiscountCurve::zeroYieldImpl(Time t, bool extrapolate) const
-      {
-         return forwardImpl(t, extrapolate);
-      }
+
    }
 }

@@ -8,9 +8,12 @@ include_HEADERS = \
     affinetermstructure.hpp \
     compoundforward.hpp \
     discountcurve.hpp \
+    flatforward.hpp \
+    forwardspreadedtermstructure.hpp \
+    impliedtermstructure.hpp \
     piecewiseflatforward.hpp \
     ratehelpers.hpp \
-    flatforward.hpp
+    zerospreadedtermstructure.hpp
 
 EXTRA_DIST=makefile.mak
 

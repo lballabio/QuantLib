@@ -1,4 +1,10 @@
 
+
+Louw copyright and cygwin compilation
+
+add solver's target value (now the target value is 0.0)
+check american with discrete dividends
+
 DISTRIBUTING
     RPM package
 

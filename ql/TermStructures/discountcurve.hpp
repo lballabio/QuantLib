@@ -61,8 +61,6 @@ namespace QuantLib
          Time minTime() const;
          Time maxTime() const;
          DiscountFactor discountImpl(Time t, bool extrapolate = false) const;
-         Rate forwardImpl(Time t, bool extrapolate = false) const;
-         Rate zeroYieldImpl(Time t, bool extrapolate = false) const;
        private:
          const Date todaysDate_;
          const Calendar calendar_;
@@ -71,11 +69,11 @@ namespace QuantLib
          Currency currency_;
          const std::vector < Date > &dates_;
          const std::vector < DiscountFactor > discounts_;
-	 std::vector < Time > times_;
+         std::vector < Time > times_;
          typedef LogLinearInterpolation <
             std::vector < Time >::const_iterator,
             std::vector < double >::const_iterator > DfInterpolation;
-	 Handle < DfInterpolation > interpolation_;
+         Handle < DfInterpolation > interpolation_;
       };
 
       // inline definitions

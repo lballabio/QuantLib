@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -44,6 +43,14 @@ namespace QuantLib {
     //! Term structure
     /*! This abstract class defines the interface of concrete
         rate structures which will be derived from this one.
+
+        Rates are assumed to be annual continuos compounding.
+
+        \todo add derived class ParSwapTermStructure similar to
+              ZeroYieldTermStructure, DiscountStructure, ForwardRateStructure
+
+        \todo allow for different compounding rules and compounding
+              frequencies
     */
     class TermStructure : public Patterns::Observable {
       public:
@@ -62,6 +69,10 @@ namespace QuantLib {
         Rate forward(const Date&, bool extrapolate = false) const;
         //! instantaneous forward rate at a given time from settlement
         Rate forward(Time, bool extrapolate = false) const;
+        //! discrete forward rate between two dates
+        Rate forward(const Date&, const Date&, bool extrapolate = false) const;
+        //! discrete forward rate between two times
+        Rate forward(Time, Time, bool extrapolate = false) const;
         //@}
 
         //! \name Dates
@@ -106,8 +117,10 @@ namespace QuantLib {
 
     //! Zero yield term structure
     /*! This abstract class acts as an adapter to TermStructure allowing the
-        programmer to implement only the <tt>zeroYield(Time)</tt> method in
-        derived classes.
+        programmer to implement only the
+        <tt>zeroYieldImpl(Time, bool)</tt> method in derived classes.
+
+        Rates are assumed to be annual continuos compounding.
     */
     class ZeroYieldStructure : public TermStructure {
       public:
@@ -125,8 +138,10 @@ namespace QuantLib {
 
     //! Discount factor term structure
     /*! This abstract class acts as an adapter to TermStructure allowing the
-        programmer to implement only the <tt>discount(const Date&)</tt>
-        method in derived classes.
+        programmer to implement only the
+        <tt>discountImpl(const Date&, bool)</tt> method in derived classes.
+
+        Rates are assumed to be annual continuos compounding.
     */
     class DiscountStructure : public TermStructure {
       public:
@@ -144,8 +159,10 @@ namespace QuantLib {
 
     //! Forward rate term structure
     /*! This abstract class acts as an adapter to TermStructure allowing the
-        programmer to implement only the <tt>forward(const Date&)</tt> method
-        in derived classes.
+        programmer to implement only the
+        <tt>forwardImpl(const Date&, bool)</tt> method in derived classes.
+
+        Rates are assumed to be annual continuos compounding.
     */
     class ForwardRateStructure : public TermStructure {
       public:
@@ -162,120 +179,6 @@ namespace QuantLib {
             from the instantaneous forward rate.
         */
         DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-    };
-
-    //! Implied term structure at a given date in the future
-    /*! The given date will be the implied today's date.
-        \note This term structure will remain linked to the original
-            structure, i.e., any changes in the latter will be reflected in
-            this structure as well.
-    */
-    class ImpliedTermStructure : public DiscountStructure,
-                                 public Patterns::Observer {
-      public:
-        ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
-            const Date& todaysDate);
-        //! \name TermStructure interface
-        //@{
-        Currency currency() const;
-        Date todaysDate() const;
-        int settlementDays() const;
-        Calendar calendar() const;
-        DayCounter dayCounter() const;
-        Date settlementDate() const;
-        Date maxDate() const;
-        Date minDate() const;
-        Time maxTime() const;
-        Time minTime() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
-        //@}
-      protected:
-        //! returns the discount factor as seen from the evaluation date
-        DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-      private:
-        RelinkableHandle<TermStructure> originalCurve_;
-        Date todaysDate_;
-    };
-
-    //! Term structure with an added spread on the zero yield rate
-    /*! \note This term structure will remain linked to the original
-            structure, i.e., any changes in the latter will be reflected in
-            this structure as well.
-    */
-    class ZeroSpreadedTermStructure : public ZeroYieldStructure,
-                                      public Patterns::Observer {
-      public:
-        ZeroSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
-            const RelinkableHandle<MarketElement>& spread);
-        //! \name TermStructure interface
-        //@{
-        Currency currency() const;
-        Date todaysDate() const;
-        int settlementDays() const;
-        Calendar calendar() const;
-        DayCounter dayCounter() const;
-        Date settlementDate() const;
-        Date maxDate() const;
-        Date minDate() const;
-        Time maxTime() const;
-        Time minTime() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
-        //@}
-      protected:
-        //! returns the spreaded zero yield rate
-        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
-        //! returns the spreaded forward rate
-        /*! \warning This method must disappear should the spread become a curve */
-        Rate forwardImpl(Time, bool extrapolate = false) const;
-      private:
-        RelinkableHandle<TermStructure> originalCurve_;
-        RelinkableHandle<MarketElement> spread_;
-    };
-
-
-
-    //! Term structure with an added spread on the instantaneous forward rate
-    /*! \note This term structure will remain linked to the original
-            structure, i.e., any changes in the latter will be reflected in
-            this structure as well.
-    */
-    class ForwardSpreadedTermStructure : public ForwardRateStructure,
-                                         public Patterns::Observer {
-      public:
-        ForwardSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
-            const RelinkableHandle<MarketElement>& spread);
-        //! \name TermStructure interface
-        //@{
-        Currency currency() const;
-        Date todaysDate() const;
-        int settlementDays() const;
-        Calendar calendar() const;
-        DayCounter dayCounter() const;
-        Date settlementDate() const;
-        Date maxDate() const;
-        Date minDate() const;
-        Time maxTime() const;
-        Time minTime() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
-        //@}
-      protected:
-        //! returns the spreaded forward rate
-        Rate forwardImpl(Time, bool extrapolate = false) const;
-        //! returns the spreaded zero yield rate
-        /*! \warning This method must disappear should the spread become a curve */
-        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
-      private:
-        RelinkableHandle<TermStructure> originalCurve_;
-        RelinkableHandle<MarketElement> spread_;
     };
 
 
@@ -314,6 +217,19 @@ namespace QuantLib {
         return forwardImpl(t,extrapolate);
     }
 
+    inline Rate TermStructure::forward(const Date& d1,
+        const Date& d2, bool extrapolate) const {
+            Time t1 = dayCounter().yearFraction(settlementDate(),d1);
+            Time t2 = dayCounter().yearFraction(settlementDate(),d2);
+            return QL_LOG( discountImpl(t1,extrapolate)/
+                           discountImpl(t2,extrapolate)  ) / (t2-t1);
+    }
+
+    inline Rate TermStructure::forward(Time t1, Time t2,
+        bool extrapolate) const {
+            return QL_LOG( discountImpl(t1,extrapolate)/
+                           discountImpl(t2,extrapolate)  ) / (t2-t1);
+    }
 
     // curve deriving discount and forward from zero yield
 
@@ -325,6 +241,7 @@ namespace QuantLib {
 
     inline Rate ZeroYieldStructure::forwardImpl(Time t,
         bool extrapolate) const {
+            // less than half day
             Time dt = 0.001;
             Rate r1 = zeroYieldImpl(t, extrapolate),
                  r2 = zeroYieldImpl(t+dt, true);
@@ -342,6 +259,7 @@ namespace QuantLib {
 
     inline Rate DiscountStructure::forwardImpl(Time t,
         bool extrapolate) const {
+            // less than half day
             Time dt = 0.001;
             DiscountFactor f1 = discountImpl(t, extrapolate),
                            f2 = discountImpl(t+dt, true);
@@ -368,205 +286,6 @@ namespace QuantLib {
         bool extrapolate) const {
             Rate r = zeroYieldImpl(t, extrapolate);
             return DiscountFactor(QL_EXP(-r*t));
-    }
-
-
-
-    // time-shifted curve
-
-    inline ImpliedTermStructure::ImpliedTermStructure(
-        const RelinkableHandle<TermStructure>& h, const Date& todaysDate)
-    : originalCurve_(h), todaysDate_(todaysDate) {
-        registerWith(originalCurve_);
-    }
-
-    inline Currency ImpliedTermStructure::currency() const {
-        return originalCurve_->currency();
-    }
-
-    inline Date ImpliedTermStructure::todaysDate() const {
-        return todaysDate_;
-    }
-
-    inline int ImpliedTermStructure::settlementDays() const {
-        return originalCurve_->settlementDays();
-    }
-
-    inline Calendar ImpliedTermStructure::calendar() const {
-        return originalCurve_->calendar();
-    }
-
-    inline DayCounter ImpliedTermStructure::dayCounter() const {
-        return originalCurve_->dayCounter();
-    }
-
-    inline Date ImpliedTermStructure::settlementDate() const {
-        return calendar().advance(
-            todaysDate_,settlementDays(),Days);
-    }
-
-    inline Date ImpliedTermStructure::maxDate() const {
-        return originalCurve_->maxDate();
-    }
-
-    inline Date ImpliedTermStructure::minDate() const {
-        return settlementDate();
-    }
-
-    inline Time ImpliedTermStructure::maxTime() const {
-        return dayCounter().yearFraction(
-            settlementDate(),originalCurve_->maxDate());
-    }
-
-    inline Time ImpliedTermStructure::minTime() const {
-        return 0.0;
-    }
-
-    inline void ImpliedTermStructure::update() {
-        notifyObservers();
-    }
-
-    inline DiscountFactor ImpliedTermStructure::discountImpl(Time t,
-        bool extrapolate) const {
-            /* t is relative to the current settlement date
-               and needs to be converted to the time relative
-               to the settlement date of the original curve */
-            Time originalTime = t + dayCounter().yearFraction(
-                originalCurve_->settlementDate(),settlementDate());
-            // evaluationDate cannot be an extrapolation
-            /* discount at evaluation date cannot be cached
-               since the original curve could change between
-               invocations of this method */
-            return originalCurve_->discount(originalTime, extrapolate) /
-                   originalCurve_->discount(settlementDate(),false);
-    }
-
-
-    // zero-yield spreaded curves
-    inline ZeroSpreadedTermStructure::ZeroSpreadedTermStructure(
-        const RelinkableHandle<TermStructure>& h, 
-        const RelinkableHandle<MarketElement>& spread)
-    : originalCurve_(h), spread_(spread) {
-        registerWith(originalCurve_);
-        registerWith(spread_);
-    }
-
-    inline Currency ZeroSpreadedTermStructure::currency() const {
-        return originalCurve_->currency();
-    }
-
-    inline Date ZeroSpreadedTermStructure::todaysDate() const {
-        return originalCurve_->todaysDate();
-    }
-
-    inline int ZeroSpreadedTermStructure::settlementDays() const {
-        return originalCurve_->settlementDays();
-    }
-
-    inline Calendar ZeroSpreadedTermStructure::calendar() const {
-        return originalCurve_->calendar();
-    }
-
-    inline DayCounter ZeroSpreadedTermStructure::dayCounter() const {
-        return originalCurve_->dayCounter();
-    }
-
-    inline Date ZeroSpreadedTermStructure::settlementDate() const {
-        return originalCurve_->settlementDate();
-    }
-
-    inline Date ZeroSpreadedTermStructure::maxDate() const {
-        return originalCurve_->maxDate();
-    }
-
-    inline Date ZeroSpreadedTermStructure::minDate() const {
-        return originalCurve_->minDate();
-    }
-
-    inline Time ZeroSpreadedTermStructure::maxTime() const {
-        return originalCurve_->maxTime();
-    }
-
-    inline Time ZeroSpreadedTermStructure::minTime() const {
-        return originalCurve_->minTime();
-    }
-
-    inline void ZeroSpreadedTermStructure::update() {
-        notifyObservers();
-    }
-
-    inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t,
-        bool extrapolate) const {
-            return originalCurve_->zeroYield(t, extrapolate) + spread_->value();
-    }
-
-    inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t,
-        bool extrapolate) const {
-            return originalCurve_->forward(t, extrapolate) + spread_->value();
-    }
-
-
-    // forward spreaded curves
-    inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(
-        const RelinkableHandle<TermStructure>& h, 
-        const RelinkableHandle<MarketElement>& spread)
-    : originalCurve_(h), spread_(spread) {
-        registerWith(originalCurve_);
-        registerWith(spread_);
-    }
-
-    inline Currency ForwardSpreadedTermStructure::currency() const {
-        return originalCurve_->currency();
-    }
-
-    inline Date ForwardSpreadedTermStructure::todaysDate() const {
-        return originalCurve_->todaysDate();
-    }
-
-    inline int ForwardSpreadedTermStructure::settlementDays() const {
-        return originalCurve_->settlementDays();
-    }
-
-    inline Calendar ForwardSpreadedTermStructure::calendar() const {
-        return originalCurve_->calendar();
-    }
-
-    inline DayCounter ForwardSpreadedTermStructure::dayCounter() const {
-        return originalCurve_->dayCounter();
-    }
-
-    inline Date ForwardSpreadedTermStructure::settlementDate() const {
-        return originalCurve_->settlementDate();
-    }
-
-    inline Date ForwardSpreadedTermStructure::maxDate() const {
-        return originalCurve_->maxDate();
-    }
-
-    inline Date ForwardSpreadedTermStructure::minDate() const {
-        return originalCurve_->minDate();
-    }
-
-    inline Time ForwardSpreadedTermStructure::maxTime() const {
-        return originalCurve_->maxTime();
-    }
-
-    inline Time ForwardSpreadedTermStructure::minTime() const {
-        return originalCurve_->minTime();
-    }
-
-    inline void ForwardSpreadedTermStructure::update() {
-        notifyObservers();
-    }
-
-    inline Rate ForwardSpreadedTermStructure::forwardImpl(Time t,
-        bool extrapolate) const {
-            return originalCurve_->forward(t, extrapolate) + spread_->value();
-    }
-
-    inline Rate ForwardSpreadedTermStructure::zeroYieldImpl(Time t,
-        bool extrapolate) const {
-            return originalCurve_->zeroYield(t, extrapolate) + spread_->value();
     }
 
 }

@@ -1151,6 +1151,14 @@ SOURCE=.\ql\TermStructures\flatforward.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\TermStructures\forwardspreadedtermstructure.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\impliedtermstructure.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\TermStructures\piecewiseflatforward.cpp
 # End Source File
 # Begin Source File
@@ -1164,6 +1172,10 @@ SOURCE=.\ql\TermStructures\ratehelpers.cpp
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\ratehelpers.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\zerospreadedtermstructure.hpp
 # End Source File
 # End Group
 # Begin Group "Utilities"

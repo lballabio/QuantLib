@@ -246,8 +246,11 @@
 #include <ql/TermStructures/compoundforward.hpp>
 #include <ql/TermStructures/discountcurve.hpp>
 #include <ql/TermStructures/flatforward.hpp>
+#include <ql/TermStructures/forwardspreadedtermstructure.hpp>
+#include <ql/TermStructures/impliedtermstructure.hpp>
 #include <ql/TermStructures/piecewiseflatforward.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>
+#include <ql/TermStructures/zerospreadedtermstructure.hpp>
 
 #include <ql/Utilities/combiningiterator.hpp>
 #include <ql/Utilities/couplingiterator.hpp>
