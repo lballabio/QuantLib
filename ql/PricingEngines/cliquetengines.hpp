@@ -99,7 +99,7 @@ namespace QuantLib {
             MCCliquetEngine(bool antitheticVariance,
                             bool controlVariate,
                             const Handle<TimeGrid>& timeGrid,
-                            SG sequenceGenerator) 
+                            SG sequenceGenerator)
             : antitheticVariance_(antitheticVariance),
               controlVariate_(controlVariate), timeGrid_(timeGrid),
               sequenceGenerator_(sequenceGenerator) {}
@@ -114,14 +114,13 @@ namespace QuantLib {
         };
 
         template<class S, class SG, class PG, class PP>
-        inline 
+        inline
         Handle<PP> MCCliquetEngine<S, SG, PG, PP>::pathPricer() const {
             //! Initialize the path pricer
             return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(
                 new MonteCarlo::EuropeanPathPricer(arguments_.type,
                 arguments_.underlying, arguments_.strike,
-                arguments_.riskFreeTS->discount(arguments_.maturity),
-                antitheticVariance_));
+                arguments_.riskFreeTS));
         }
 
     }

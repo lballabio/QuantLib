@@ -280,8 +280,7 @@ namespace QuantLib {
             return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(
                 new MonteCarlo::EuropeanPathPricer(arguments_.type,
                 arguments_.underlying, arguments_.strike,
-                arguments_.riskFreeTS->discount(arguments_.maturity),
-                antitheticVariance_));
+                arguments_.riskFreeTS));
         }
 
     }
