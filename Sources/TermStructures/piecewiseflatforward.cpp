@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/05/29 12:04:16  lballabio
+// Temporarily forced extrapolation
+//
 // Revision 1.6  2001/05/29 11:57:49  marmar
 // Error message is now more clear
 //
@@ -130,7 +133,7 @@ namespace QuantLib {
 
         int PiecewiseFlatForward::referenceNode(
             const Date& d, bool extrapolate) const {
-                QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
+                QL_REQUIRE(d>=minDate(), // && (d<=maxDate() || extrapolate),
                     "date (" +
 					DateFormatter::toString(d) +
 					") outside curve definition [" +
