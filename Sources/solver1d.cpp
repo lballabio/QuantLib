@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.15  2001/03/15 15:31:26  aleppo
+    Minimum at boudaries compatible with accuracy required.
+
     Revision 1.14  2001/03/02 14:01:36  aleppo
     Bug Fixed
 
@@ -140,11 +143,11 @@ namespace QuantLib {
                 DoubleFormatter::toString(hiBound_) + ")");
 
         fxMin_ = f.value(xMin_);
-        if (fxMin_ == 0.0)
+        if (QL_FABS(fxMin_) < xAccuracy)
             return xMin_;
 
         fxMax_ = f.value(xMax_);
-        if (fxMax_ == 0.0)
+        if (QL_FABS(fxMax_) < xAccuracy)
             return xMax_;
 
         evaluationNumber_ = 2;
@@ -152,8 +155,8 @@ namespace QuantLib {
         QL_REQUIRE((fxMin_*fxMax_ < 0.0),  "root not bracketed: f[" +
                     DoubleFormatter::toString(xMin_) + "," +
                     DoubleFormatter::toString(xMax_) + "] -> [" +
-                    DoubleFormatter::toString(fxMin_) + "," +
-                    DoubleFormatter::toString(fxMax_) + "]");
+                    DoubleFormatter::toString(fxMin_,20) + "," +
+                    DoubleFormatter::toString(fxMax_,20) + "]");
 
 
         QL_REQUIRE(guess > xMin_, "Solver1D: guess (" +
