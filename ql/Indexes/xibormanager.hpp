@@ -30,6 +30,7 @@
 #include <ql/history.hpp>
 #include <ql/termstructure.hpp>
 #include <map>
+#include <vector>
 
 namespace QuantLib {
 
@@ -43,6 +44,7 @@ namespace QuantLib {
                 const History&);
             static const History& getHistory(const std::string& name);
             static bool hasHistory(const std::string& name);
+            static std::vector<std::string> histories();
           private:
             typedef std::map<std::string,History> HistoryMap;
             static HistoryMap historyMap_;

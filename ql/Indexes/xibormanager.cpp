@@ -38,15 +38,23 @@ namespace QuantLib {
         }
 
         const History& XiborManager::getHistory(const std::string& name) {
-                XiborManager::HistoryMap::const_iterator i =
-                    historyMap_.find(name);
-                QL_REQUIRE(i != historyMap_.end(),
-                    name + " history not loaded");
-                return i->second;
+            XiborManager::HistoryMap::const_iterator i =
+                historyMap_.find(name);
+            QL_REQUIRE(i != historyMap_.end(),
+                name + " history not loaded");
+            return i->second;
         }
 
         bool XiborManager::hasHistory(const std::string& name) {
-                return (historyMap_.find(name) != historyMap_.end());
+            return (historyMap_.find(name) != historyMap_.end());
+        }
+
+        std::vector<std::string> XiborManager::histories() {
+            std::vector<std::string> temp;
+            XiborManager::HistoryMap::const_iterator i;
+            for (i = historyMap_.begin(); i != historyMap_.end(); i++)
+                temp.push_back(i->first);
+            return temp;
         }
 
     }
