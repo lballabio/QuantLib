@@ -7,7 +7,7 @@
     first update of news and history (also python and ruby)
     branch out of the trunk (also python and ruby)
     update version number on the trunk
-    update web-site
+    update QuantLib-site repository (nextrelease, download, etc.)
     test and bug fixing on the branch
     review documentation
     create hidden sourceforge.net release
@@ -15,19 +15,21 @@
     update news, changelog and date on the SF release page
     upload files on sourceforge.net
     alert Dirk, our Debian packager
-fill in the files' size on the download page
-upload new version of quantlib.org
-unhide new release, send a notice to the SF users monitoring the packages
-news on sourceforge.net
-email quantlib-users, quantlib-announce
+    fill in the files' size on the download page
+    check that the new files download correctly
+    upload new version of quantlib.org
+    update documentation linked by quantlib.org
+    unhide new release, send a notice to the SF users monitoring the packages
+    news on sourceforge.net
+    email quantlib-users, quantlib-announce
+    email python-announce
+    email math-finance newsletter
+    email python-finance
+    email quantitative finance
 update freshmeat
-email python-announce
 email comp-finance
 email AllAboutDerivatives
 email finance-and-physics
-email math-finance newsletter
-email python-finance
-email quantitative finance
 email ffts
 wilmott
 press release

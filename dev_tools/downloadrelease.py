@@ -13,16 +13,22 @@ def printstar(a,b,c):
 
 if __name__=='__main__':
     print 'Hi - you are about to download a QuantLib release'
-    releaseName = "0.2.0"
+    releaseName = "0.2.1"
     fromUrl = "http://prdownloads.sourceforge.net/quantlib/"
     toUrl = "Y:/backed_up/QuantLibRelease/"
     url_names=[
-               "QuantLib-"+releaseName+"-debug.zip",
-               "QuantLib-"+releaseName+"-full-inst.exe",
                "QuantLib-"+releaseName+"-light-inst.exe",
                "QuantLib-"+releaseName+"-src.tar.bz2",
                "QuantLib-"+releaseName+"-src.tar.gz",
                "QuantLib-"+releaseName+"-src.zip",
+               "QuantLib-"+releaseName+"-full-inst.exe",
+               "QuantLib-"+releaseName+"-debug.zip",
+               "QuantLib-Python-"+releaseName+".linux-i686.tar.bz2",
+               "QuantLib-Python-"+releaseName+".linux-i686.tar.gz",
+               "QuantLib-Python-"+releaseName+".tar.bz2",
+               "QuantLib-Python-"+releaseName+".tar.gz",
+               "QuantLib-Python-"+releaseName+".win32-py2.1.exe",
+               "QuantLib-Python-"+releaseName+".zip",
                "QuantLib-"+releaseName+"-docs-html.tar.bz2",
                "QuantLib-"+releaseName+"-docs-html.tar.gz",
                "QuantLib-"+releaseName+"-docs-html.zip",
@@ -42,12 +48,6 @@ if __name__=='__main__':
                "QuantLib-"+releaseName+"-docs-refman.ps.bz2",
                "QuantLib-"+releaseName+"-docs-refman.ps.gz",
                "QuantLib-"+releaseName+"-docs-refman.ps.zip",
-               "QuantLib-Python-"+releaseName+".linux-i686.tar.bz2",
-               "QuantLib-Python-"+releaseName+".linux-i686.tar.gz",
-               "QuantLib-Python-"+releaseName+".tar.bz2",
-               "QuantLib-Python-"+releaseName+".tar.gz",
-               "QuantLib-Python-"+releaseName+".win32-py2.1.exe",
-               "QuantLib-Python-"+releaseName+".zip",
                "QuantLib-Ruby-"+releaseName+".i386-linux.tar.gz",
                "QuantLib-Ruby-"+releaseName+".tar.gz"
               ]
