@@ -20,11 +20,14 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file singlepathaveragepriceasianpricer.cpp
+/*! \file averageasianpathpricer.cpp
     
     $Source$
     $Name$
     $Log$
+    Revision 1.1  2001/01/05 11:52:12  lballabio
+    Renamed SinglePathAveragePriceAsianPricer to AverageAsianPathPricer
+
     Revision 1.2  2001/01/05 11:42:38  lballabio
     Renamed SinglePathEuropeanPricer to EuropeanPathPricer
 
@@ -33,25 +36,24 @@
     
 */
 
-#include "singlepathaveragepriceasianpricer.h"
+#include "averageasianpathpricer.h"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        SinglePathAveragePriceAsianPricer::SinglePathAveragePriceAsianPricer(
+        AverageAsianPathPricer::AverageAsianPathPricer(
           Option::Type type, double underlying, double strike, double discount)
         : EuropeanPathPricer(type, underlying, strike, discount) {
             isInitialized_=true;
         }
 
-        double SinglePathAveragePriceAsianPricer::value(const Path & path)
-          const {
+        double AverageAsianPathPricer::value(const Path & path) const {
 
             int n = path.size();
             QL_REQUIRE(n>0,"the path cannot be empty");
             QL_REQUIRE(isInitialized_,
-                "SinglePathAveragePriceAsianPricer: pricer not initialized");
+                "AverageAsianPathPricer: pricer not initialized");
 
             double price = underlying_;
             double averagePrice = 0.0;

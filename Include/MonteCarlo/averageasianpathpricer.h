@@ -20,11 +20,14 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file singlepathaveragepriceasianpricer.h
+/*! \file averageasianpathpricer.h
     
     $Source$
     $Name$
     $Log$
+    Revision 1.1  2001/01/05 11:52:12  lballabio
+    Renamed SinglePathAveragePriceAsianPricer to AverageAsianPathPricer
+
     Revision 1.2  2001/01/05 11:42:37  lballabio
     Renamed SinglePathEuropeanPricer to EuropeanPathPricer
 
@@ -33,8 +36,8 @@
     
 */
 
-#ifndef quantlib_montecarlo_average_price_asian_path_pricer_h
-#define quantlib_montecarlo_average_price_asian_path_pricer_h
+#ifndef quantlib_montecarlo_average_asian_path_pricer_h
+#define quantlib_montecarlo_average_asian_path_pricer_h
 
 #include "qldefines.h"
 #include "europeanpathpricer.h"
@@ -43,10 +46,10 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        class SinglePathAveragePriceAsianPricer : public EuropeanPathPricer {
+        class AverageAsianPathPricer : public EuropeanPathPricer {
         public:
-            SinglePathAveragePriceAsianPricer() {}
-            SinglePathAveragePriceAsianPricer(Option::Type type, 
+            AverageAsianPathPricer() {}
+            AverageAsianPathPricer(Option::Type type, 
                 double underlying, double strike, double discount);
             virtual double value(const Path &path) const;
         };
