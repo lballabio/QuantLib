@@ -190,7 +190,7 @@
             // build the operator by adding basic ones
             - (sigma*sigma/2.0) * DPlusDMinus(points,h)
             - nu * DZero(points,h)
-            + r * Identity<Array>(points)
+            + r * TridiagonalOperator::identity(points)
         ) {}
     };
     \endcode

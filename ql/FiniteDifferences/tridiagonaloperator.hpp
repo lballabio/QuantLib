@@ -37,6 +37,7 @@
 #include "ql/FiniteDifferences/boundarycondition.hpp"
 #include "ql/array.hpp"
 #include "ql/date.hpp"
+#include "ql/handle.hpp"
 
 namespace QuantLib {
 
@@ -73,23 +74,9 @@ namespace QuantLib {
                    because somehow Visual C++ is not able to generate working 
                    ones. They are _not_ to be defined for other compilers 
                    which are able to generate correct ones.   */
-                TridiagonalOperator(const TridiagonalOperator& L) {
-                    belowDiagonal_ = L.belowDiagonal_;
-                    diagonal_      = L.diagonal_;
-                    aboveDiagonal_ = L.aboveDiagonal_;
-                    lowerBC_       = L.lowerBC_;
-                    upperBC_       = L.upperBC_;
-                }
-                TridiagonalOperator& operator=(const TridiagonalOperator& L){
-                    belowDiagonal_ = L.belowDiagonal_;
-                    diagonal_      = L.diagonal_;
-                    aboveDiagonal_ = L.aboveDiagonal_;
-                    lowerBC_       = L.lowerBC_;
-                    upperBC_       = L.upperBC_;
-                    return *this;
-                }
+                TridiagonalOperator(const TridiagonalOperator& L);
+                TridiagonalOperator& operator=(const TridiagonalOperator& L);
             #endif
-            virtual ~TridiagonalOperator() {}
             //! \name Operator interface
             //@{
             //! apply operator to a given array
@@ -101,7 +88,8 @@ namespace QuantLib {
             //@}
             //! \name Inspectors
             //@{
-            unsigned int size() const { return diagonal_.size(); }
+            unsigned int size() const;
+            bool isTimeDependent();
             //@}
             //! \name Modifiers
             //@{
@@ -111,16 +99,53 @@ namespace QuantLib {
             void setMidRow(unsigned int, double, double, double);
             void setMidRows(double, double, double);
             void setLastRow(double, double);
-            virtual bool isTimeDependent() {return false;}
-            virtual void setTime(Time t) {}
+            void setTime(Time t);
             //@}
+            //! encapsulation of time-setting logic
+            class TimeSetter {
+              public:
+                virtual ~TimeSetter() {}
+                virtual void setTime(Time t, 
+                                     TridiagonalOperator& L) const = 0;
+            };
           protected:
             Array diagonal_, belowDiagonal_, aboveDiagonal_;
             BoundaryCondition lowerBC_, upperBC_;
+            Handle<TimeSetter> timeSetter_;
         };
 
 
         // inline definitions
+
+        #if defined(QL_PATCH_MICROSOFT_BUGS)
+            TridiagonalOperator::TridiagonalOperator(
+                const TridiagonalOperator& L) {
+                    belowDiagonal_ = L.belowDiagonal_;
+                    diagonal_      = L.diagonal_;
+                    aboveDiagonal_ = L.aboveDiagonal_;
+                    lowerBC_       = L.lowerBC_;
+                    upperBC_       = L.upperBC_;
+                    timeSetter_    = L.timeSetter_;
+            }
+            TridiagonalOperator& TridiagonalOperator::operator=(
+                const TridiagonalOperator& L){
+                    belowDiagonal_ = L.belowDiagonal_;
+                    diagonal_      = L.diagonal_;
+                    aboveDiagonal_ = L.aboveDiagonal_;
+                    lowerBC_       = L.lowerBC_;
+                    upperBC_       = L.upperBC_;
+                    timeSetter_    = L.timeSetter_;
+                    return *this;
+            }
+        #endif
+
+        inline unsigned int TridiagonalOperator::size() const { 
+            return diagonal_.size(); 
+        }
+
+        inline bool TridiagonalOperator::isTimeDependent() {
+            return !timeSetter_.isNull();
+        }
 
         inline void TridiagonalOperator::setFirstRow(double valB,
           double valC) {
@@ -151,6 +176,12 @@ namespace QuantLib {
             belowDiagonal_[size()-2] = valA;
             diagonal_[size()-1]      = valB;
         }
+
+        inline void TridiagonalOperator::setTime(Time t) {
+            if (!timeSetter_.isNull())
+                timeSetter_->setTime(t,*this);
+        }
+
 
         // Time constant algebra
 

@@ -78,14 +78,14 @@ namespace QuantLib {
             typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            ForwardEuler(Operator& L) 
-            : D_(L), I_(L.identity(L.size())), dt_(0.0) {}
+            ForwardEuler(const Operator& L) 
+            : L_(L), I_(Operator::identity(L.size())), dt_(0.0) {}
             void step(arrayType& a, Time t);
             void setStep(Time dt) {
                 dt_ = dt;
-                explicitPart_ = I_-dt_*D_;
+                explicitPart_ = I_-dt_*L_;
             }
-            Operator& D_;
+            Operator L_;
             Operator I_;
             Operator explicitPart_;
             Time dt_;
@@ -95,9 +95,9 @@ namespace QuantLib {
 
         template <class Operator>
         inline void ForwardEuler<Operator>::step(arrayType& a, Time t) {
-            if (D_.isTimeDependent()) {
-                D_.setTime(t);
-                explicitPart_ = I_-dt_*D_;
+            if (L_.isTimeDependent()) {
+                L_.setTime(t);
+                explicitPart_ = I_-dt_*L_;
             }
             a = explicitPart_.applyTo(a);
         }

@@ -83,15 +83,15 @@ namespace QuantLib {
             typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            CrankNicolson(Operator& L) 
-            : D_(L), I_(Operator::identity(L.size())), dt_(0.0) {}
+            CrankNicolson(const Operator& L) 
+            : L_(L), I_(Operator::identity(L.size())), dt_(0.0) {}
             void step(arrayType& a, Time t);
             void setStep(Time dt) {
                 dt_ = dt;
-                explicitPart_ = I_-(dt_/2)*D_;
-                implicitPart_ = I_+(dt_/2)*D_;
+                explicitPart_ = I_-(dt_/2)*L_;
+                implicitPart_ = I_+(dt_/2)*L_;
             }
-            Operator& D_;
+            Operator L_;
             Operator I_;
             Operator explicitPart_, implicitPart_;
             Time dt_;
@@ -101,10 +101,10 @@ namespace QuantLib {
 
         template <class Operator>
         inline void CrankNicolson<Operator>::step(arrayType& a, Time t) {
-            if (D_.isTimeDependent()) {
-                D_.setTime(t);
-                explicitPart_ = I_-(dt_/2)*D_;
-                implicitPart_ = I_+(dt_/2)*D_;
+            if (L_.isTimeDependent()) {
+                L_.setTime(t);
+                explicitPart_ = I_-(dt_/2)*L_;
+                implicitPart_ = I_+(dt_/2)*L_;
             }
             a = implicitPart_.solveFor(explicitPart_.applyTo(a));
         }
