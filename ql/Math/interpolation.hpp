@@ -76,8 +76,7 @@ namespace QuantLib {
         inline Interpolation<I1,I2>::Interpolation(const I1& xBegin,
             const I1& xEnd, const I2& yBegin)
         : isOutOfRange_(false), position_(xBegin),
-          xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin),
-          {
+          xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(xEnd_-xBegin_ >= 2,
                     "not enough points to interpolate");
