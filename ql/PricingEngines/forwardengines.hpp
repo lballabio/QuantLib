@@ -28,7 +28,7 @@
 #define quantlib_forward_engines_h
 
 #include <ql/PricingEngines/vanillaengines.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/Volatilities/impliedvoltermstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
 
 namespace QuantLib {
@@ -101,37 +101,33 @@ namespace QuantLib {
         void ForwardEngine<ArgumentsType, ResultsType>::setOriginalArguments() const {
 
             originalArguments_->type = arguments_.type;
-            originalArguments_->underlying = 1.0;
-            originalArguments_->strike = arguments_.moneyness;
+            // maybe the forward value is "better", in some fashion
+            // the right level is needed in order to interpolate
+            // the vol 
+            originalArguments_->underlying = arguments_.underlying;
+            originalArguments_->strike = arguments_.moneyness *
+                                            arguments_.underlying;
             originalArguments_->dividendTS = RelinkableHandle<TermStructure>(
-                Handle<TermStructure>(
-                new TermStructures::ImpliedTermStructure(
-                        arguments_.dividendTS,
-                        arguments_.resetDate, 
+                Handle<TermStructure>(new
+                    TermStructures::ImpliedTermStructure(
+                        arguments_.dividendTS, arguments_.resetDate,
                         arguments_.resetDate)));
             originalArguments_->riskFreeTS = RelinkableHandle<TermStructure>(
-                Handle<TermStructure>(
-                new TermStructures::ImpliedTermStructure(
-                    arguments_.riskFreeTS,
-                    arguments_.resetDate, 
-                    arguments_.resetDate)));
+                Handle<TermStructure>(new
+                    TermStructures::ImpliedTermStructure(
+                        arguments_.riskFreeTS, arguments_.resetDate,
+                        arguments_.resetDate)));
 
-            // The following approach is plain wrong.
-            // The right solution would be stochastic volatility or
-            // at least local volatility
-            // As a bare minimum one could extract from the Black vol surface
-            // the implied vol at moneyness% of the forward value,
-            // istead of the moneyness% of the spot value
-            originalArguments_->volTS = 
+            // The following approach is ok if the vol is at most
+            // time dependant. It is plain wrong if it is asset dependant.
+            // In the latter case the right solution would be stochastic
+            // volatility or at least local volatility (which unfortunately
+            // implies an unrealistic time-decreasing smile)
+            originalArguments_->volTS =
                 RelinkableHandle<BlackVolTermStructure>(
-                    Handle<BlackVolTermStructure>(
-                    new VolTermStructures::BlackConstantVol(
-                            arguments_.resetDate,
-                            arguments_.volTS->blackForwardVol(
-                                arguments_.resetDate,
-                                arguments_.exercise.lastDate(),
-                                arguments_.moneyness*arguments_.underlying),
-                            arguments_.volTS->dayCounter())));
+                    Handle<BlackVolTermStructure>(new
+                        VolTermStructures::ImpliedVolTermStructure(
+                            arguments_.volTS, arguments_.resetDate)));
 
             originalArguments_->exercise = arguments_.exercise;
 
@@ -157,19 +153,17 @@ namespace QuantLib {
             double discQ = arguments_.dividendTS->discount(
                 arguments_.resetDate);
 
-            results_.value = discQ * arguments_.underlying *
-                originalResults_->value;
-            results_.delta = discQ * originalResults_->value;
+            results_.value = discQ * originalResults_->value;
+            // I need the strike derivative here ...
+            results_.delta = discQ * (originalResults_->delta +
+                arguments_.moneyness * originalResults_->strikeSensitivity);
             results_.gamma = 0.0;
             results_.theta = arguments_.dividendTS->zeroYield(
-                arguments_.resetDate) 
-                * results_.value;
-            results_.vega = discQ * arguments_.underlying *
-                originalResults_->vega;
-            results_.rho = discQ * arguments_.underlying *
-                originalResults_->rho;
+                arguments_.resetDate) * results_.value;
+            results_.vega  = discQ * originalResults_->vega;
+            results_.rho   = discQ *  originalResults_->rho;
             results_.dividendRho = - resetTime * results_.value
-                + discQ * originalResults_->dividendRho;
+                           + discQ * originalResults_->dividendRho;
 
         }
 
@@ -188,6 +182,7 @@ namespace QuantLib {
         public:
             ForwardPerformanceEngine(const Handle<GenericEngine<ArgumentsType,
                 ResultsType> >&);
+            void calculate() const;
             void getOriginalResults() const;
         };
 
@@ -198,13 +193,24 @@ namespace QuantLib {
         : ForwardEngine<ArgumentsType, ResultsType>(originalEngine) {}
 
         template<class ArgumentsType, class ResultsType>
+        void ForwardPerformanceEngine<ArgumentsType, ResultsType>::calculate() const {
+
+            setOriginalArguments();
+            originalEngine_->calculate();
+            getOriginalResults();
+        }
+
+        template<class ArgumentsType, class ResultsType>
         void ForwardPerformanceEngine<ArgumentsType, ResultsType>::getOriginalResults() const {
 
             Time resetTime = arguments_.riskFreeTS->dayCounter().yearFraction(
                 arguments_.riskFreeTS->referenceDate(), arguments_.resetDate);
             double discR = arguments_.riskFreeTS->discount(arguments_.resetDate);
+            // it's a performance option
+            discR /= arguments_.underlying;
 
-            results_.value = discR * originalResults_->value;
+            double temp = originalResults_->value;
+            results_.value = discR * temp;
             results_.delta = 0.0;
             results_.gamma = 0.0;
             results_.theta = arguments_.riskFreeTS->zeroYield(
@@ -214,6 +220,7 @@ namespace QuantLib {
                 discR * originalResults_->rho;
             results_.dividendRho = discR * originalResults_->dividendRho;
 
+        
         }
 
     }

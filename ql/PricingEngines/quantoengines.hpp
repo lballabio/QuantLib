@@ -102,6 +102,9 @@ namespace QuantLib {
         template<class ArgumentsType, class ResultsType>
         void QuantoEngine<ArgumentsType, ResultsType>::calculate() const {
 
+            // ATM exchangeRate level needed here
+            double exchangeRateATMlevel = 1.0;
+
             originalArguments_->type = arguments_.type;
             originalArguments_->underlying = arguments_.underlying;
             originalArguments_->strike = arguments_.strike;
@@ -112,8 +115,8 @@ namespace QuantLib {
                         arguments_.dividendTS,
                         arguments_.riskFreeTS, 
                         arguments_.foreignRiskFreeTS,
-                        arguments_.volTS, 
-                        arguments_.exchRateVolTS,
+                        arguments_.volTS, arguments_.strike,
+                        arguments_.exchRateVolTS, exchangeRateATMlevel,
                         arguments_.correlation)));
             originalArguments_->riskFreeTS = arguments_.riskFreeTS;
             originalArguments_->volTS = arguments_.volTS;
@@ -129,9 +132,8 @@ namespace QuantLib {
             results_.rho = originalResults_->rho +
                 originalResults_->dividendRho;
             results_.dividendRho = originalResults_->dividendRho;
-            // exchangeRate level needed here!!!!!
             double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
-                arguments_.exercise.lastDate(), arguments_.underlying);
+                arguments_.exercise.lastDate(), exchangeRateATMlevel);
             results_.vega = originalResults_->vega +
                 arguments_.correlation * exchangeRateFlatVol *
                 originalResults_->dividendRho;
