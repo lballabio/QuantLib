@@ -63,21 +63,35 @@ namespace QuantLib {
     void ForwardEngine<ArgumentsType, ResultsType>::setOriginalArguments()
                                                                         const {
 
-        // Should this be valid also for other types of payoffs?
-        // if so the hierarchy of Payoff should be modified
+
+/*
         #if defined(HAVE_BOOST)
-        Handle<PlainVanillaPayoff> argumentsPayoff = 
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        Handle<TypePayoff> argumentsPayoff = 
+            boost::dynamic_pointer_cast<TypePayoff>(arguments_.payoff);
         QL_REQUIRE(argumentsPayoff,
-                   "ForwardEngine: non-plain payoff given");
+                   "ForwardEngine: wrong payoff given");
         #else
-        Handle<PlainVanillaPayoff> argumentsPayoff = arguments_.payoff;
+        Handle<TypePayoff> argumentsPayoff = arguments_.payoff;
         #endif
 
-        originalArguments_->payoff = Handle<Payoff>(
-            new PlainVanillaPayoff(
+        originalArguments_->payoff = Handle<StrikedTypePayoff>(
+            new StrikedTypePayoff(
                 argumentsPayoff->optionType(),
                 arguments_.moneyness * arguments_.underlying));
+*/
+
+        #if defined(HAVE_BOOST)
+        Handle<StrikedTypePayoff> argumentsPayoff = 
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(argumentsPayoff,
+                   "ForwardEngine: wrong payoff given");
+        #else
+        Handle<StrikedTypePayoff> argumentsPayoff = arguments_.payoff;
+        #endif
+
+        argumentsPayoff->setStrike(arguments_.moneyness*arguments_.underlying);
+        originalArguments_->payoff = argumentsPayoff;
+
 
         // maybe the forward value is "better", in some fashion
         // the right level is needed in order to interpolate

@@ -68,7 +68,7 @@ namespace QuantLib {
         Handle<StrikedTypePayoff> payoff = 
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "QuantoEngine: non-plain payoff given");
+                   "QuantoEngine: non-striked payoff given");
         #else
         Handle<StrikedTypePayoff> payoff = arguments_.payoff;
         #endif

@@ -31,12 +31,12 @@ namespace QuantLib {
                    "not an European Option");
 
         #if defined(HAVE_BOOST)
-        Handle<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        Handle<StrikedTypePayoff> payoff =
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "AnalyticEuropeanEngine: non-plain payoff given");
+                   "AnalyticEuropeanEngine: non-striked payoff given");
         #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
+        Handle<StrikedTypePayoff> payoff = arguments_.payoff;
         #endif
 
         double variance = arguments_.volTS->blackVariance(arguments_.maturity,
