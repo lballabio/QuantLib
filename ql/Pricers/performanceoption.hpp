@@ -19,10 +19,10 @@
     \brief Performance option
 */
 
-#ifndef quantlib_pricers_performance_option_h
-#define quantlib_pricers_performance_option_h
+#ifndef quantlib_pricers_performance_option_hpp
+#define quantlib_pricers_performance_option_hpp
 
-#include <ql/Pricers/europeanoption.hpp>
+#include <ql/option.hpp>
 
 namespace QuantLib {
 
@@ -40,20 +40,19 @@ namespace QuantLib {
                           const std::vector<Rate>& riskFreeRate,
                           const std::vector<Time>& times,
                           const std::vector<double>& volatility);
-        double value() const;
-        double delta() const;
-        double gamma() const;
-        double theta() const;
-        double vega() const;
-        double rho() const;
-        double dividendRho() const;
+        double value() const { return value_; }
+        double delta() const { return delta_; }
+        double gamma() const { return gamma_; }
+        double theta() const { return theta_; }
+        double vega() const { return vega_; }
+        double rho() const { return rho_; }
+        double dividendRho() const { return dividendRho_; }
       private:
-        double moneyness_;
-        std::vector<Rate> riskFreeRate_;
-        std::vector<Time> times_;
-        Size numOptions_;
-        std::vector<boost::shared_ptr<EuropeanOption> > optionlet_;
-        std::vector<DiscountFactor> discounts_;
+        double value_;
+        double delta_, gamma_;
+        double theta_;
+        double vega_;
+        double rho_, dividendRho_;
     };
 
 }

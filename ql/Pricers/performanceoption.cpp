@@ -16,6 +16,7 @@
 */
 
 #include <ql/Pricers/performanceoption.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {
 
@@ -24,97 +25,42 @@ namespace QuantLib {
                        const std::vector<Spread>& dividendYield,
                        const std::vector<Rate>& riskFreeRate,
                        const std::vector<Time>& times,
-                       const std::vector<double>& volatility)
-    : moneyness_(moneyness), riskFreeRate_(riskFreeRate), times_(times),
-      numOptions_(times.size()), optionlet_(numOptions_),
-      discounts_(numOptions_) {
+                       const std::vector<double>& volatility) {
 
-        QL_REQUIRE(numOptions_ > 0,
+        QL_REQUIRE(times.size() > 0,
                    "At least one option is required for performance options");
-        QL_REQUIRE(dividendYield.size()==numOptions_,
+        QL_REQUIRE(dividendYield.size()==times.size(),
                    "PerformanceOption: dividendYield vector of wrong size");
-        QL_REQUIRE(riskFreeRate.size()==numOptions_,
+        QL_REQUIRE(riskFreeRate.size()==times.size(),
                    "PerformanceOption: riskFreeRate vector of wrong size");
-        QL_REQUIRE(volatility.size()==numOptions_,
+        QL_REQUIRE(volatility.size()==times.size(),
                    "PerformanceOption: volatility vector of wrong size");
 
-        discounts_[0] = QL_EXP(-riskFreeRate[0] * times[0]);
-        double dummyStrike = underlying * moneyness_;
-        optionlet_[0] = boost::shared_ptr<EuropeanOption>(
-            new EuropeanOption(type,
-            underlying, dummyStrike,
-            dividendYield[0],
-            riskFreeRate[0], times[0], volatility[0]));
+        double discount = QL_EXP(-riskFreeRate[0] * times[0]);
 
-        for(Size i = 1; i < numOptions_; i++) {
-            discounts_[i] = discounts_[i-1]*
-                QL_EXP(-riskFreeRate[i] * (times[i] - times[i-1]));
-            optionlet_[i] = boost::shared_ptr<EuropeanOption>(
-                new EuropeanOption(type,
-                1.0/moneyness, 1.0,
-                dividendYield[i],
-                riskFreeRate[i], times[i] - times[i-1], volatility[i]));
-        }
-    }
+        value_ = delta_ = gamma_ = theta_ =
+            rho_ = dividendRho_ = vega_ = 0.0;
 
-    double PerformanceOption::value() const {
-        double result = 0.0 * optionlet_[0] -> value();
-        for(Size i = 1; i < numOptions_; i++)
-            result += discounts_[i-1] * 
-                moneyness_ * optionlet_[i] -> value();
-        return result;
-    }
-
-    double PerformanceOption::delta() const {
-        double result = 0.0 * 
-            moneyness_ * optionlet_[0] -> delta();
-        return result;
-    }
-
-    double PerformanceOption::gamma() const {
-        double result = 0.0 * 
-            moneyness_ * optionlet_[0] -> gamma();
-        return result;
-    }
-
-    double PerformanceOption::theta() const {
-        double result = 0.0*optionlet_[0] -> theta();
-        for(Size i = 1; i < numOptions_; i++)
-            result += riskFreeRate_[i-1] * discounts_[i-1] * 
-                moneyness_ * optionlet_[i] -> value();
-        return result;
-    }
-
-    double PerformanceOption::rho() const {
-        double result = 0.0*optionlet_[0] -> rho();
-        for(Size i = 1; i < numOptions_; i++)
-            result += discounts_[i-1] * 
-                moneyness_ * (optionlet_[i] -> rho()
-                              - times_[i-1] * optionlet_[i] -> value());
-        return result;
-    }
-
-    double PerformanceOption::dividendRho() const {
-        double result = 0.0*optionlet_[0] -> dividendRho();
-        for(Size i = 1; i < numOptions_; i++)
-            result += discounts_[i-1] * 
-                moneyness_ * optionlet_[i] -> dividendRho();
-        return result;
-    }
-
-    double PerformanceOption::vega() const {
-        double result = 0.0*optionlet_[0] -> vega();
-        for(Size i = 1; i < numOptions_; i++)
-            result += discounts_[i-1] *
-                moneyness_ * optionlet_[i] -> vega();
-        return result;
+        for (Size i = 1; i < times.size(); i++) {
+            Time dt = times[i] - times[i-1];
+            double rDiscount = QL_EXP(-riskFreeRate[i] * dt);
+            double qDiscount = QL_EXP(-dividendYield[i] * dt);
+            double forward = (1.0/moneyness)*qDiscount/rDiscount;
+            double variance = volatility[i]*volatility[i]*dt;
+            Handle<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type,1.0));
+            BlackFormula black(forward, rDiscount, variance, payoff);
+            value_ += discount * moneyness * black.value();
+            delta_ += 0.0;
+            gamma_ += 0.0;
+            theta_ += riskFreeRate[i-1] * discount * moneyness * black.value();
+            rho_ += discount * moneyness * 
+                (black.rho(dt) - times[i-1] * black.value());
+            dividendRho_ += discount * moneyness * black.dividendRho(dt);
+            vega_ += discount * moneyness * black.vega(dt);
+ 
+            discount *= QL_EXP(-riskFreeRate[i] * dt);
+       }
     }
 
 }
-
-
-
-
-
-
 
