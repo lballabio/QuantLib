@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.25  2001/03/06 16:59:52  marmar
+    First, simplified version, of everest option
+
     Revision 1.24  2001/03/02 08:36:44  enri
     Shout options added:
     	* BSMAmericanOption is now AmericanOption, same interface
@@ -155,9 +158,12 @@
 // Monte Carlo tools
 #include "boxmuller.h"
 #include "centrallimitgaussian.h"
+#include "gaussianarraygenerator.h"
 #include "gaussianrandomgenerator.h"
 #include "lecuyerrandomgenerator.h"
 #include "uniformrandomgenerator.h"
+#include "standardmultipathgenerator.h"
+#include "standardpathgenerator.h"
 
 // finite difference tools
 #include "backwardeuler.h"
@@ -195,19 +201,27 @@
 
 /*** pricers ***/
 
-#include "options.h"
+#include "americancondition.h"
+#include "americanoption.h"
+#include "averagepriceasian.h"
+#include "averagestrikeasian.h"
+#include "binaryoption.h"
 #include "barrieroption.h"
 #include "bsmoption.h"
 #include "bsmeuropeanoption.h"
 #include "bsmnumericaloption.h"
-#include "americancondition.h"
+#include "dividendeuropeanoption.h"
+#include "dividendamericanoption.h"
+#include "everestoption.h"
+#include "geometricasianoption.h"
+#include "himalaya.h"
+#include "mceuropeanpricer.h"
+#include "options.h"
+#include "plainbasketoption.h"
 #include "shoutcondition.h"
 #include "stepconditionoption.h"
 #include "shoutoption.h"
-#include "americanoption.h"
-#include "dividendeuropeanoption.h"
-#include "dividendamericanoption.h"
-#include "binaryoption.h"
+
 
 
 /*** utilities ***/

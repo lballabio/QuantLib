@@ -8,6 +8,7 @@ libMonteCarlo_la_SOURCES = \
     avgpriceasianpathpricer.cpp \
     basketpathpricer.cpp    \
 	controlvariatedpathpricer.cpp \
+	everestpathpricer.cpp \
 	europeanpathpricer.cpp \
 	geometricasianpathpricer.cpp \
 	himalayapathpricer.cpp \

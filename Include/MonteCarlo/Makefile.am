@@ -7,6 +7,7 @@ include_HEADERS = antitheticcv.h \
 	centrallimitgaussian.h \
 	controlvariatedpathpricer.h \
 	europeanpathpricer.h \
+	everestpathpricer.h \
 	gaussianrandomgenerator.h \
 	gaussianarraygenerator.h \
 	generalmontecarlo.h \
@@ -28,3 +29,4 @@ include_HEADERS = antitheticcv.h \
 	standardmultipathgenerator.h \
 	standardpathgenerator.h \
 	uniformrandomgenerator.h
+
