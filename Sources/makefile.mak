@@ -65,7 +65,7 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
 !endif
 
-TLIB_OPTS    = /P32
+TLIB_OPTS    = /P64
 !ifdef DEBUG
 TLIB_OPTS    = /P128
 !endif
