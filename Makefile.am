@@ -3,7 +3,7 @@
 
 #AUTOMAKE_OPTIONS=foreign dist-bzip2
 AUTOMAKE_OPTIONS=foreign
-SUBDIRS=ql Docs Examples
+SUBDIRS=ql Examples
 CFLAGS=-Wall
 
 EXTRA_DIST = \
@@ -38,30 +38,4 @@ dist-hook:
 	cp $(srcdir)/Docs/images/QL-small-notitle.jpg $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.eps $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.pdf $(distdir)/Docs/images/
-
-if DOXYGEN_FOUND
-docs-all:
-	$(MAKE) -C Docs docs-all
-docs-html:
-	$(MAKE) -C Docs docs-html
-docs-ps:
-	$(MAKE) -C Docs docs-ps
-docs-pdf:
-	$(MAKE) -C Docs docs-pdf
-docs-man:
-	$(MAKE) -C Docs docs-man
-else
-docs-all:
-	echo You need to install doxygen in order to generate documentation.
-docs-html:
-	echo You need to install doxygen in order to generate documentation.
-docs-ps:
-	echo You need to install doxygen in order to generate documentation.
-docs-pdf:
-	echo You need to install doxygen in order to generate documentation.
-docs-man:
-	echo You need to install doxygen in order to generate documentation.
-endif
-docs-clean:
-	$(MAKE) -C Docs docs-clean
 
