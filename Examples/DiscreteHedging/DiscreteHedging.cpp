@@ -68,7 +68,7 @@ using QuantLib::Handle;
 using QuantLib::Pricers::EuropeanOption;
 
 // class for statistical analysis
-using QuantLib::Math::Statistics;
+using QuantLib::Math::Statistic;
 
 // single Path of a random variable
 // It contains the list of variations
@@ -337,7 +337,7 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
                 payoff_.strike(), r_, maturity_, sigma_));
 
     // a statistic accumulator for the path-dependant Profit&Loss values
-    Statistics statisticAccumulator;
+    Statistic statisticAccumulator;
 
     // The OneFactorMontecarloModel generates paths using myPathGenerator
     // each path is priced using myPathPricer
