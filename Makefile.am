@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS=foreign
 
-SUBDIRS=Sources Include Docs SWIG Python Examples
+SUBDIRS=Sources Include Docs SWIG Python Ruby Examples
 
 EXTRA_DIST=News.txt Authors.txt Contributors.txt \
 	History.txt LICENSE.TXT Readme.txt \
@@ -34,15 +34,13 @@ endif
 if RUBY_FOUND
 if SWIG_FOUND
 ruby:
-	$(SWIG) -ruby -c++ -ISWIG -o Ruby/quantlib_wrap.cpp SWIG/QuantLib.i
-	$(RUBY) -CRuby extconf.rb
-	$(MAKE) -C Ruby
+	$(MAKE) -C Ruby ruby
 else
 ruby:
 	echo You need to install swig in order to generate wrappers
 endif
 ruby-install:
-	$(MAKE) -C Ruby install
+	$(MAKE) -C Ruby ruby-install
 ruby-test:
 	$(MAKE) -C Ruby/Tests ruby-test
 else

@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.17  2001/03/28 13:33:51  lballabio
+   Generated distribution almost complete (and added random generators to Ruby module)
+
    Revision 1.16  2001/03/21 14:25:27  lballabio
    Fixed %include (linux is case-sensitive, Nando)
 
@@ -39,8 +42,10 @@
 #ifndef quantlib_statistics_i
 #define quantlib_statistics_i
 
+#if defined (SWIGPYTHON)
 %include QLArray.i
 %include Vectors.i
+#endif
 
 %{
 using QuantLib::Math::Statistics;
@@ -67,14 +72,17 @@ class Statistics {
 };
 
 %addmethods Statistics {
-	void addSequence(DoubleVector values) {
-	  self->addSequence(values.begin(), values.end());
-	}
-	void addWeightedSequence(DoubleVector values, DoubleVector weights) {
-	  self->addSequence(values.begin(), values.end(), weights.begin());
-	}
+    #if defined(SWIGPYTHON)
+    void addSequence(DoubleVector values) {
+        self->addSequence(values.begin(), values.end());
+    }
+    void addWeightedSequence(DoubleVector values, DoubleVector weights) {
+        self->addSequence(values.begin(), values.end(), weights.begin());
+    }
+    #endif
 }
 
+#if defined(SWIGPYTHON)
 %include Matrix.i
 
 %{
@@ -91,6 +99,8 @@ class MultivariateAccumulator {
     void add(const Array& a, double weight = 1.0);
     void reset();
 };
+#endif
 
 
 #endif
+

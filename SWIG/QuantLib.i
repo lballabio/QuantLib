@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.29  2001/03/28 13:33:51  lballabio
+   Generated distribution almost complete (and added random generators to Ruby module)
+
    Revision 1.28  2001/03/27 17:39:39  lballabio
    Making sure dist target is complete (and added distributions to Ruby module)
 
@@ -91,6 +94,8 @@ using QuantLib::IndexError;
 %include Calendars.i
 %include Date.i
 %include Distributions.i
+%include RandomGenerators.i
+%include Statistics.i
 %include String.i
 #else
 // PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE

@@ -145,7 +145,8 @@ AC_OUTPUT(Makefile Sources/Makefile Sources/FiniteDifferences/Makefile \
 	Include/MonteCarlo/Makefile \
 	Include/Utilities/Makefile \
 	Python/Makefile Python/Tests/Makefile Python/COM/Makefile \
-	Ruby/Tests/Makefile SWIG/Makefile \
+	Ruby/Makefile Ruby/Tests/Makefile \
+	SWIG/Makefile \
 	Examples/Makefile \
 	Docs/Makefile) 
 

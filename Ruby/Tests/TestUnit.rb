@@ -22,6 +22,9 @@
 
  $Source$
  $Log$
+ Revision 1.2  2001/03/28 13:33:51  lballabio
+ Generated distribution almost complete (and added random generators to Ruby module)
+
  Revision 1.1  2001/03/22 18:07:35  lballabio
  Framework for Ruby tests
 
@@ -50,7 +53,7 @@ class TestUnit
             @@verbose = true if s == '-v'
             @@batch = true   if s == '-b'
         }
-        print "Testing #{description}..."
+        print "Testing #{description}... "
         $stdout.flush
         print "\n" if @@verbose
         startTime = Time.now
