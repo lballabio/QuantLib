@@ -329,6 +329,10 @@ SOURCE=.\ql\Calendars\zurich.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\CashFlows\basispointsensitivity.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\CashFlows\basispointsensitivity.hpp
 # End Source File
 # Begin Source File
@@ -386,6 +390,14 @@ SOURCE=.\ql\CashFlows\shortindexedcoupon.hpp
 # Begin Source File
 
 SOURCE=.\ql\CashFlows\simplecashflow.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\timebasket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\timebasket.hpp
 # End Source File
 # Begin Source File
 

@@ -71,6 +71,8 @@ CLEAN :
 	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
+	-@erase "$(INTDIR)\basispointsensitivity.obj"
+	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
@@ -329,6 +331,8 @@ CLEAN :
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\timebasket.obj"
+	-@erase "$(INTDIR)\timebasket.sbr"
 	-@erase "$(INTDIR)\tokyo.obj"
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
@@ -536,7 +540,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\timebasket.sbr" \
+	"$(INTDIR)\basispointsensitivity.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -706,7 +712,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\timebasket.obj" \
+	"$(INTDIR)\basispointsensitivity.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -756,6 +764,8 @@ CLEAN :
 	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
+	-@erase "$(INTDIR)\basispointsensitivity.obj"
+	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
@@ -1014,6 +1024,8 @@ CLEAN :
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\timebasket.obj"
+	-@erase "$(INTDIR)\timebasket.sbr"
 	-@erase "$(INTDIR)\tokyo.obj"
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
@@ -1222,7 +1234,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\timebasket.sbr" \
+	"$(INTDIR)\basispointsensitivity.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1392,7 +1406,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\timebasket.obj" \
+	"$(INTDIR)\basispointsensitivity.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1442,6 +1458,8 @@ CLEAN :
 	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
+	-@erase "$(INTDIR)\basispointsensitivity.obj"
+	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
@@ -1700,6 +1718,8 @@ CLEAN :
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\timebasket.obj"
+	-@erase "$(INTDIR)\timebasket.sbr"
 	-@erase "$(INTDIR)\tokyo.obj"
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
@@ -1907,7 +1927,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\timebasket.sbr" \
+	"$(INTDIR)\basispointsensitivity.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2077,7 +2099,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\timebasket.obj" \
+	"$(INTDIR)\basispointsensitivity.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2127,6 +2151,8 @@ CLEAN :
 	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
+	-@erase "$(INTDIR)\basispointsensitivity.obj"
+	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
@@ -2385,6 +2411,8 @@ CLEAN :
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\timebasket.obj"
+	-@erase "$(INTDIR)\timebasket.sbr"
 	-@erase "$(INTDIR)\tokyo.obj"
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
@@ -2593,7 +2621,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\timebasket.sbr" \
+	"$(INTDIR)\basispointsensitivity.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2763,7 +2793,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\timebasket.obj" \
+	"$(INTDIR)\basispointsensitivity.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2813,6 +2845,8 @@ CLEAN :
 	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
+	-@erase "$(INTDIR)\basispointsensitivity.obj"
+	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
@@ -3071,6 +3105,8 @@ CLEAN :
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\timebasket.obj"
+	-@erase "$(INTDIR)\timebasket.sbr"
 	-@erase "$(INTDIR)\tokyo.obj"
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
@@ -3278,7 +3314,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\timebasket.sbr" \
+	"$(INTDIR)\basispointsensitivity.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3448,7 +3486,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\timebasket.obj" \
+	"$(INTDIR)\basispointsensitivity.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -3603,6 +3643,12 @@ SOURCE=.\ql\Calendars\zurich.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\CashFlows\basispointsensitivity.cpp
+
+"$(INTDIR)\basispointsensitivity.obj"	"$(INTDIR)\basispointsensitivity.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\CashFlows\cashflowvectors.cpp
 
 "$(INTDIR)\cashflowvectors.obj"	"$(INTDIR)\cashflowvectors.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3618,6 +3664,12 @@ SOURCE=.\ql\CashFlows\parcoupon.cpp
 SOURCE=.\ql\CashFlows\shortfloatingcoupon.cpp
 
 "$(INTDIR)\shortfloatingcoupon.obj"	"$(INTDIR)\shortfloatingcoupon.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\CashFlows\timebasket.cpp
+
+"$(INTDIR)\timebasket.obj"	"$(INTDIR)\timebasket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
