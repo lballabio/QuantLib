@@ -14,6 +14,7 @@ include_HEADERS = \
     forwardstructure.hpp \
     impliedtermstructure.hpp \
     piecewiseflatforward.hpp \
+    piecewiseyieldcurve.hpp \
     quantotermstructure.hpp \
     ratehelpers.hpp \
     zerocurve.hpp \

@@ -31,6 +31,7 @@ QL_TESTS = \
 	money.hpp money.cpp \
 	operators.hpp operators.cpp \
 	piecewiseflatforward.hpp piecewiseflatforward.cpp \
+	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
 	quantooption.hpp quantooption.cpp \
 	quotes.hpp quotes.cpp \
 	riskstats.hpp riskstats.cpp \

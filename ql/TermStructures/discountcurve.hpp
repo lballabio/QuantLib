@@ -49,11 +49,17 @@ namespace QuantLib {
         const std::vector<DiscountFactor>& discounts() const;
         //@}
       protected:
-        InterpolatedDiscountCurve(const DayCounter&);
+        InterpolatedDiscountCurve(const DayCounter&,
+                                  const Interpolator& interpolator
+                                                            = Interpolator());
         InterpolatedDiscountCurve(const Date& referenceDate,
-                                  const DayCounter&);
+                                  const DayCounter&,
+                                  const Interpolator& interpolator
+                                                            = Interpolator());
         InterpolatedDiscountCurve(Integer settlementDays, const Calendar&,
-                                  const DayCounter&);
+                                  const DayCounter&,
+                                  const Interpolator& interpolator
+                                                            = Interpolator());
         DiscountFactor discountImpl(Time) const;
         Size referenceNode(Time) const;
         DayCounter dayCounter_;
@@ -110,21 +116,26 @@ namespace QuantLib {
 
     template <class T>
     inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
-                                                 const DayCounter& dayCounter)
-    : dayCounter_(dayCounter) {}
+                                                 const DayCounter& dayCounter,
+                                                 const T& interpolator)
+    : dayCounter_(dayCounter), interpolator_(interpolator) {}
 
     template <class T>
     inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
                                                  const Date& referenceDate,
-                                                 const DayCounter& dayCounter)
-    : YieldTermStructure(referenceDate), dayCounter_(dayCounter) {}
+                                                 const DayCounter& dayCounter,
+                                                 const T& interpolator)
+    : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
+      interpolator_(interpolator) {}
 
     template <class T>
     inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
                                                  Integer settlementDays,
                                                  const Calendar& calendar,
-                                                 const DayCounter& dayCounter)
-    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter) {}
+                                                 const DayCounter& dayCounter,
+                                                 const T& interpolator)
+    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter),
+      interpolator_(interpolator) {}
 
 
     // template definitions

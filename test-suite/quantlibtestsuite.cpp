@@ -22,7 +22,6 @@
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
-
 */
 #ifdef BOOST_MSVC
 #  define BOOST_LIB_DIAGNOSTIC
@@ -62,6 +61,7 @@
 #include "money.hpp"
 #include "operators.hpp"
 #include "piecewiseflatforward.hpp"
+#include "piecewiseyieldcurve.hpp"
 #include "quantooption.hpp"
 #include "quotes.hpp"
 #include "riskstats.hpp"
@@ -154,6 +154,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MoneyTest::suite());
     test->add(OperatorTest::suite());
     test->add(PiecewiseFlatForwardTest::suite());
+    test->add(PiecewiseYieldCurveTest::suite());
     test->add(QuantoOptionTest::suite());
     test->add(QuoteTest::suite());
     test->add(RiskStatisticsTest::suite());
