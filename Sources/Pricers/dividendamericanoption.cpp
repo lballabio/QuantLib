@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.16  2001/02/15 15:31:40  marmar
+    Some beauty added to the files
+
     Revision 1.15  2001/02/13 11:32:41  marmar
     Efficency improved. Also, dividends do not have to be positive
     to allow for negative cash flows
@@ -129,11 +132,13 @@ namespace QuantLib {
                         endDate = theExDivDates[j];
                     else
                         endDate = dt;
+
                     if (optionIsAmerican_)
                         model.rollback(prices, beginDate, endDate, 
                             timeStepPerDiv, americanCondition);
                     else
                         model.rollback(prices,beginDate,endDate,timeStepPerDiv);
+
                     model.rollback(controlPrices, beginDate, endDate, 
                         timeStepPerDiv);
                     beginDate = endDate;
@@ -143,8 +148,8 @@ namespace QuantLib {
                         double centre = valueAtCenter(theGrid);
                         double mltp = centre/theGrid[0];
                         double newMltp = mltp / (1 + (mltp - 1) * 
-                        theDividends[j] / (centre + theDividends[j]));
-                        QL_ENSURE(newMltp>1,"Dividends are to big");
+                            theDividends[j] / (centre + theDividends[j]));
+                        QL_ENSURE(newMltp > 1,"Dividends are to big");
                         sMin = (centre + theDividends[j])/newMltp;
                         sMax = (centre + theDividends[j])*newMltp;
                         initializeGrid();
