@@ -30,6 +30,7 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
+        /*! \todo Unify the intrinsicValues/Payoff thing */
         class AmericanCondition
         : public FiniteDifferences::StandardStepCondition {
           public:
@@ -42,7 +43,7 @@ namespace QuantLib {
           private:
             Array intrinsicValues_;
             // it would be easy to generalize to more exotic payoffs
-            PlainPayoff payoff_;
+            Handle<Payoff> payoff_;
         };
 
 
@@ -50,7 +51,7 @@ namespace QuantLib {
 
         inline AmericanCondition::AmericanCondition(Option::Type type,
             double strike)
-        : intrinsicValues_(), payoff_(type, strike) {}
+        : payoff_(new PlainPayoff(type, strike)) {}
 
         inline AmericanCondition::AmericanCondition(
             const Array& intrinsicValues)
@@ -66,7 +67,7 @@ namespace QuantLib {
                     a[i] = QL_MAX(a[i], intrinsicValues_[i]);
             } else {
                 for (Size i = 0; i < a.size(); i++)
-                    a[i] = QL_MAX(a[i], payoff_(a[i]));
+                    a[i] = QL_MAX(a[i], (*payoff_)(a[i]));
             }
        
         }
@@ -84,7 +85,7 @@ namespace QuantLib {
             } else {
                 for (Size i = 0; i < asset->values().size(); i++)
                     asset->values()[i] = QL_MAX(asset->values()[i],
-                        payoff_(asset->values()[i]));
+                        (*payoff_)(asset->values()[i]));
             }
         }
     }
