@@ -70,6 +70,7 @@ QL_TESTS = \
     "swap.obj$(_mt)$(_D)" \
     "swaption.obj$(_mt)$(_D)" \
     "termstructures.obj$(_mt)$(_D)" \
+    "tracing.obj$(_mt)$(_D)" \
     "utilities.obj$(_mt)$(_D)"
 
 # Tools to be used

@@ -37,6 +37,7 @@ CORE_OBJS = \
     "interestrate.obj$(_mt)$(_D)" \
     "money.obj$(_mt)$(_D)" \
     "schedule.obj$(_mt)$(_D)" \
+    "settings.obj$(_mt)$(_D)" \
     "stochasticprocess.obj$(_mt)$(_D)" \
     "voltermstructure.obj$(_mt)$(_D)"
 
