@@ -681,7 +681,7 @@ namespace QuantLib {
 
 	#else
 	
-		Array operator+(const Array& v1, const Array& v2) {
+		inline Array operator+(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
 				Require(v1.size() == v2.size(), "adding arrays with different sizes");
 			#endif
@@ -690,13 +690,13 @@ namespace QuantLib {
 			return result;
 		}
 			
-		Array operator+(const Array& v1, double a) {
+		inline Array operator+(const Array& v1, double a) {
 			Array result(v1.size());
 			std::transform(v1.begin(),v1.end(),result.begin(),std::bind2nd(std::plus<double>(),a));
 			return result;
 		}
 					
-		Array operator+(double a, const Array& v2) {
+		inline Array operator+(double a, const Array& v2) {
 			Array result(v2.size());
 			std::transform(v2.begin(),v2.end(),result.begin(),std::bind1st(std::plus<double>(),a));
 			return result;
@@ -775,7 +775,7 @@ namespace QuantLib {
 
 	#else
 	
-		Array operator-(const Array& v1, const Array& v2) {
+		inline Array operator-(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
 				Require(v1.size() == v2.size(), "subtracting arrays with different sizes");
 			#endif
@@ -784,13 +784,13 @@ namespace QuantLib {
 			return result;
 		}
 			
-		Array operator-(const Array& v1, double a) {
+		inline Array operator-(const Array& v1, double a) {
 			Array result(v1.size());
 			std::transform(v1.begin(),v1.end(),result.begin(),std::bind2nd(std::minus<double>(),a));
 			return result;
 		}
 					
-		Array operator-(double a, const Array& v2) {
+		inline Array operator-(double a, const Array& v2) {
 			Array result(v2.size());
 			std::transform(v2.begin(),v2.end(),result.begin(),std::bind1st(std::minus<double>(),a));
 			return result;
@@ -869,7 +869,7 @@ namespace QuantLib {
 
 	#else
 	
-		Array operator*(const Array& v1, const Array& v2) {
+		inline Array operator*(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
 				Require(v1.size() == v2.size(), "multiplying arrays with different sizes");
 			#endif
@@ -878,13 +878,13 @@ namespace QuantLib {
 			return result;
 		}
 		
-		Array operator*(const Array& v1, double a) {
+		inline Array operator*(const Array& v1, double a) {
 			Array result(v1.size());
 			std::transform(v1.begin(),v1.end(),result.begin(),std::bind2nd(std::multiplies<double>(),a));
 			return result;
 		}
 		
-		Array operator*(double a, const Array& v2) {
+		inline Array operator*(double a, const Array& v2) {
 			Array result(v2.size());
 			std::transform(v2.begin(),v2.end(),result.begin(),std::bind1st(std::multiplies<double>(),a));
 			return result;
@@ -963,7 +963,7 @@ namespace QuantLib {
 
 	#else
 	
-		Array operator/(const Array& v1, const Array& v2) {
+		inline Array operator/(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
 				Require(v1.size() == v2.size(), "dividing arrays with different sizes");
 			#endif
@@ -972,13 +972,13 @@ namespace QuantLib {
 			return result;
 		}
 		
-		Array operator/(const Array& v1, double a) {
+		inline Array operator/(const Array& v1, double a) {
 			Array result(v1.size());
 			std::transform(v1.begin(),v1.end(),result.begin(),std::bind2nd(std::divides<double>(),a));
 			return result;
 		}
 		
-		Array operator/(double a, const Array& v2) {
+		inline Array operator/(double a, const Array& v2) {
 			Array result(v2.size());
 			std::transform(v2.begin(),v2.end(),result.begin(),std::bind1st(std::divides<double>(),a));
 			return result;
