@@ -163,6 +163,14 @@ SOURCE=.\ql\Calendars\budapest.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\copenhagen.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\copenhagen.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\frankfurt.cpp
 # End Source File
 # Begin Source File

@@ -57,6 +57,7 @@
 #include <ql/voltermstructure.hpp>
 
 #include <ql/Calendars/budapest.hpp>
+#include <ql/Calendars/copenhagen.hpp>
 #include <ql/Calendars/frankfurt.hpp>
 #include <ql/Calendars/helsinki.hpp>
 #include <ql/Calendars/johannesburg.hpp>
