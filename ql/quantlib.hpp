@@ -269,6 +269,7 @@
 #include <ql/TermStructures/forwardspreadedtermstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
 #include <ql/TermStructures/piecewiseflatforward.hpp>
+#include <ql/TermStructures/quantotermstructure.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/TermStructures/zerospreadedtermstructure.hpp>
 #include <ql/TermStructures/zerocurve.hpp>
