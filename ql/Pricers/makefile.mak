@@ -27,7 +27,6 @@ OBJS = \
     "cliquetoption.obj$(_mt)$(_D)" \
     "discretegeometricapo.obj$(_mt)$(_D)" \
     "discretegeometricaso.obj$(_mt)$(_D)" \
-    "europeanoption.obj$(_mt)$(_D)" \
     "fdbermudanoption.obj$(_mt)$(_D)" \
     "fdbsmoption.obj$(_mt)$(_D)" \
     "fddividendamericanoption.obj$(_mt)$(_D)" \
