@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.3  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_boundary_condition
@@ -55,7 +58,7 @@ namespace QuantLib {
 			BoundaryCondition(Type type = None, double value = Null<double>())
 			: theType(type), theValue(value) {
 				if (theType != None)
-					Require(!IsNull(value), "A value must be supplied for this type of boundary condition");
+					QL_REQUIRE(!IsNull(value), "A value must be supplied for this type of boundary condition");
 			}
 			// access methods
 			Type type() const { return theType; }

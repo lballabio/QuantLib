@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.16  2000/12/27 14:05:57  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.15  2000/12/20 17:00:59  enri
 	modified to use new macros
-
+	
 	Revision 1.14  2000/12/14 12:40:14  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -44,22 +47,22 @@ namespace QuantLib {
 	
 		double BSMOption::impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const {
 			// check option targetValue boundary condition
-			Require(targetValue>=0.0, "BSMOption::impliedVol : negative option targetValue not allowed");
+			QL_REQUIRE(targetValue>=0.0, "BSMOption::impliedVol : negative option targetValue not allowed");
 			// the following checks may be improved
 		 	switch (theType) {
 			  case Call:
-				QuantLib::Require(targetValue <= theUnderlying, 
+				QL_REQUIRE(targetValue <= theUnderlying, 
 				  "BSMOption::impliedVol : call option targetValue (" + DoubleFormatter::toString(targetValue) +
 				  ") > underlying value (" + DoubleFormatter::toString(theUnderlying) + ") not allowed");
 				break;
 			  case Put:
-				QuantLib::Require(targetValue <= theStrike, 
+				QL_REQUIRE(targetValue <= theStrike, 
 				  "BSMOption::impliedVol : put option targetValue (" + DoubleFormatter::toString(targetValue) +
 				  ") > strike value (" + DoubleFormatter::toString(theStrike) + ") not allowed");
 				break;
 			  case Straddle:
 				// to be verified
-				QuantLib::Require(targetValue < theUnderlying+theStrike,
+				QL_REQUIRE(targetValue < theUnderlying+theStrike,
 				  "BSMOption::impliedFlatVol : straddle option targetValue (" + DoubleFormatter::toString(targetValue) +
 				  ") >= (underlying+strike) value (" + DoubleFormatter::toString(theUnderlying+theStrike) + ") not allowed");
 				break;

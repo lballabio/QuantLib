@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.3  2000/12/14 12:40:13  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_flat_forward_curve_h
@@ -108,19 +111,22 @@ namespace QuantLib {
 			return settlementDate();
 		}
 		
+		/*! \pre the given date must be in the range of definition of the term structure */
 		inline Rate FlatForward::zeroYield(const Date& d) const {
-			Require(d>=minDate() && d<=maxDate(), "date outside curve definition");
+			QL_REQUIRE(d>=minDate() && d<=maxDate(), "date outside curve definition");
 			return theForward;
 		}
 		
+		/*! \pre the given date must be in the range of definition of the term structure */
 		inline DiscountFactor FlatForward::discount(const Date& d) const {
-			Require(d>=minDate() && d<=maxDate(), "date outside curve definition");
+			QL_REQUIRE(d>=minDate() && d<=maxDate(), "date outside curve definition");
 			double t = theDayCounter->yearFraction(settlementDate(),d);
 			return DiscountFactor(QL_EXP(-theForward*t));
 		}
 		
+		/*! \pre the given date must be in the range of definition of the term structure */
 		inline Rate FlatForward::forward(const Date& d) const {
-			Require(d>=minDate() && d<=maxDate(), "date outside curve definition");
+			QL_REQUIRE(d>=minDate() && d<=maxDate(), "date outside curve definition");
 			return theForward;
 		}
 

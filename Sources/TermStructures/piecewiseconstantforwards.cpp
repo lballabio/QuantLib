@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.12  2000/12/27 14:05:58  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.11  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "piecewiseconstantforwards.h"
@@ -41,7 +44,7 @@ namespace QuantLib {
 		PiecewiseConstantForwards::PiecewiseConstantForwards(Handle<Currency> currency, Handle<DayCounter> dayCounter, const Date& today, 
 		  const std::vector<Deposit>& deposits)
 		: theCurrency(currency), theDayCounter(dayCounter), today(today), theDeposits(deposits) {
-			Require(theDeposits.size()>0,"No deposits given");
+			QL_REQUIRE(theDeposits.size()>0,"No deposits given");
 			int N = theDeposits.size()+1;
 			theNodes.resize(N);
 			theTimes.resize(N);
@@ -106,7 +109,7 @@ namespace QuantLib {
 		}
 		
 		int PiecewiseConstantForwards::nextNode(const Date& d) const {
-			Require(d>=minDate() && d<=maxDate(), "date outside curve definition");
+			QL_REQUIRE(d>=minDate() && d<=maxDate(), "date outside curve definition");
 			std::vector<Date>::const_iterator i=theNodes.begin(), j=theNodes.end(), k;
 			while (j-i > 1) {
 				k = i+(j-i)/2;

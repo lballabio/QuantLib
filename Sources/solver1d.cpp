@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.10  2000/12/27 14:05:57  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.9  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "solver1d.h"
@@ -97,12 +100,12 @@ namespace QuantLib {
 	
 	  xMin = xMin_;
 	  xMax = xMax_;
-	  Require(xMin < xMax, "invalid range: xMin (" + DoubleFormatter::toString(xMin)
+	  QL_REQUIRE(xMin < xMax, "invalid range: xMin (" + DoubleFormatter::toString(xMin)
 	  	+ ") >= xMax (" + DoubleFormatter::toString(xMax) + ")");
 	
-	  Require(!lowBoundEnforced || xMin >= theLowBound, "xMin (" + DoubleFormatter::toString(xMin) +
+	  QL_REQUIRE(!lowBoundEnforced || xMin >= theLowBound, "xMin (" + DoubleFormatter::toString(xMin) +
 	    ") < enforced low bound (" + DoubleFormatter::toString(theLowBound) + ")");
-	  Require(!hiBoundEnforced || xMax <= theHiBound, "xMax (" + DoubleFormatter::toString(xMax) +
+	  QL_REQUIRE(!hiBoundEnforced || xMax <= theHiBound, "xMax (" + DoubleFormatter::toString(xMax) +
 	    ") > enforced hi bound (" + DoubleFormatter::toString(theHiBound) + ")");
 	
 	  fxMin = f.value(xMin);
@@ -111,14 +114,14 @@ namespace QuantLib {
 	  if (fxMax == 0.0)    return xMax;
 	  evaluationNumber = 2;
 	
-	  Require((fxMin*fxMax < 0.0),
+	  QL_REQUIRE((fxMin*fxMax < 0.0),
 	  	"root not bracketed: f["+DoubleFormatter::toString(xMin)+","+DoubleFormatter::toString(xMax)+"] -> ["
 		  +DoubleFormatter::toString(fxMin)+","+DoubleFormatter::toString(fxMax)+"]");
 	
 	
-	  Require(guess > xMin, "Solver1D: guess (" + DoubleFormatter::toString(guess) + 
+	  QL_REQUIRE(guess > xMin, "Solver1D: guess (" + DoubleFormatter::toString(guess) + 
 		  ") < xMin (" + DoubleFormatter::toString(xMin) + ")");
-	  Require(guess < xMax, "Solver1D: guess (" + DoubleFormatter::toString(guess) +
+	  QL_REQUIRE(guess < xMax, "Solver1D: guess (" + DoubleFormatter::toString(guess) +
 		  ") > xMax (" + DoubleFormatter::toString(xMax) + ")");
 	  root = guess;
 	

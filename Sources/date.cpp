@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.9  2000/12/27 14:05:57  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.8  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "date.h"
@@ -76,15 +79,15 @@ namespace QuantLib {
 	Date::Date(int serialNumber)
 	: theSerialNumber(serialNumber) {
 		#ifdef QL_DEBUG
-			Require(*this >= minDate() && *this <= maxDate(), "Date outside allowed range");
+			QL_REQUIRE(*this >= minDate() && *this <= maxDate(), "Date outside allowed range");
 		#endif
 	}
 	
 	Date::Date(Day d, Month m, Year y) {
-		Require(y >= 1900 && y <= 2100, "Date outside allowed range");
+		QL_REQUIRE(y >= 1900 && y <= 2100, "Date outside allowed range");
 		theSerialNumber = yearOffset[y-1900]+(isLeap(y) ? monthLeapOffset[m] : monthOffset[m])+d-1;
 		#ifdef QL_DEBUG
-			Require(*this >= minDate() && *this <= maxDate(), "Date outside allowed range");
+			QL_REQUIRE(*this >= minDate() && *this <= maxDate(), "Date outside allowed range");
 		#endif
 	}
 	
@@ -183,7 +186,7 @@ namespace QuantLib {
 			y -= 1;
 		}
 	
-		Ensure(y >= 1900 && y <= 2099, "Date::plusMonths() : result must be between Jan. 1st, 1901 and Dec. 31, 2099");
+		QL_ENSURE(y >= 1900 && y <= 2099, "Date::plusMonths() : result must be between Jan. 1st, 1901 and Dec. 31, 2099");
 	
 		int length = (isLeap(y) ? monthLeapLength[m] : monthLength[m]);
 		if (d > length)
@@ -196,7 +199,7 @@ namespace QuantLib {
 		Month m = month();
 		Year y = year()+years;
 	
-		Ensure(y >= 1900 && y <= 2099, "Date::plusYears() : result must be between Jan. 1st, 1901 and Dec. 31, 2099");
+		QL_ENSURE(y >= 1900 && y <= 2099, "Date::plusYears() : result must be between Jan. 1st, 1901 and Dec. 31, 2099");
 	
 		if (d == 29 && m == February && !isLeap(y))
 			d = 28;
@@ -254,7 +257,7 @@ namespace QuantLib {
 			false, false,  true, false, false, false,  true, false, false, false,	// 2070-2079
 			 true, false, false, false,  true, false, false, false,  true, false,	// 2080-2089
 			false, false,  true, false, false, false,  true, false, false, false,	// 2090-2099
-			 true };																// 2100
+			false };																// 2100
 		return YearIsLeap[y-1900];
 	}
 	

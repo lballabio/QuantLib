@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.8  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.7  2000/12/15 09:17:56  nando
 	removed unnecessary variable token
-
+	
 	Revision 1.6  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -99,13 +102,13 @@ namespace QuantLib {
 		    //! adds a sequence of data to the set
 		    template <class DataIterator>
 		    void addSequence(DataIterator begin, DataIterator end) {
-		      for (;begin!=end;begin++)
+		      for (;begin!=end;++begin)
 		        add(*begin);
 		    }
 		    //! adds a sequence of data to the set, each with its weight
 		    template <class DataIterator, class WeightIterator>
 		    void addSequence(DataIterator begin, DataIterator end, WeightIterator wbegin) {
-		      for (;begin!=end;begin++,wbegin++)
+		      for (;begin!=end;++begin,++wbegin)
 		        add(*begin, *wbegin);
 		    }
 		    //! resets the data to a null set
@@ -118,9 +121,11 @@ namespace QuantLib {
 		    double theMin, theMax;
 		};
 		
-		// inline
+		// inline definitions
+		
+		/*! \pre weights must be positive or null */
 		inline void Statistics::add(double value, double weight) {
-		  Require(weight>=0.0, "Statistics::add : negative weight not allowed");
+		  QL_REQUIRE(weight>=0.0, "Statistics::add : negative weight not allowed");
 		  theSampleNumber += 1;
 		  theSampleWeight += weight;
 		  double temp = weight*value;		  
@@ -144,14 +149,13 @@ namespace QuantLib {
 		}
 		
 		inline double Statistics::mean() const {
-		  Require(theSampleWeight>0.0, "Stat::mean() : theSampleWeight=0, unsufficient");
-		
+		  QL_REQUIRE(theSampleWeight>0.0, "Stat::mean() : theSampleWeight=0, unsufficient");
 		  return theSum/theSampleWeight;
 		}
 		
 		inline double Statistics::variance() const {
-		  Require(theSampleWeight>0.0, "Stat::variance() : theSampleWeight=0, unsufficient");
-		  Require(theSampleNumber>1, "Stat::variance() : sample number <=1, unsufficient");
+		  QL_REQUIRE(theSampleWeight>0.0, "Stat::variance() : theSampleWeight=0, unsufficient");
+		  QL_REQUIRE(theSampleNumber>1, "Stat::variance() : sample number <=1, unsufficient");
 		  double m = mean();
 		
 		  return (theSampleNumber/(theSampleNumber-1.0))*
@@ -168,9 +172,9 @@ namespace QuantLib {
 		}
 		
 		inline double Statistics::skewness() const {
-		  Require(theSampleNumber>2, "Stat::skewness() : sample number <=2, unsufficient");
+		  QL_REQUIRE(theSampleNumber>2, "Stat::skewness() : sample number <=2, unsufficient");
 		  double s = standardDeviation();
-		  Require(s>0.0, "Stat::skewness() : standard_dev=0.0, skew undefined");
+		  QL_ENSURE(s>0.0, "Stat::skewness() : standard_dev=0.0, skew undefined");
 		  double m = mean();
 		
 		  return theSampleNumber*theSampleNumber/
@@ -179,10 +183,10 @@ namespace QuantLib {
 		}
 		
 		inline double Statistics::kurtosis() const {
-		  Require(theSampleNumber>3, "Stat::kurtosis() : sample number <=3, unsufficient");
+		  QL_REQUIRE(theSampleNumber>3, "Stat::kurtosis() : sample number <=3, unsufficient");
 		  double m = mean();
 		  double v = variance();
-		  Require(v>0.0, "Stat::kurtosis() : variance=0.0, kurtosis undefined");
+		  QL_ENSURE(v>0.0, "Stat::kurtosis() : variance=0.0, kurtosis undefined");
 		
 		  return theSampleNumber*theSampleNumber*(theSampleNumber+1.0)/
 		    ((theSampleNumber-1.0)*(theSampleNumber-2.0)*(theSampleNumber-3.0)*v*v)*
@@ -192,12 +196,12 @@ namespace QuantLib {
 		}
 		
 		inline double Statistics::min() const {
-		  Require(theSampleNumber>=0, "Stat::min() : empty sample");
+		  QL_REQUIRE(theSampleNumber>=0, "Stat::min() : empty sample");
 		  return theMin;
 		}
 		
 		inline double Statistics::max() const {
-		  Require(theSampleNumber>=0, "Stat::max() : empty sample");
+		  QL_REQUIRE(theSampleNumber>=0, "Stat::max() : empty sample");
 		  return theMax;
 		}
 

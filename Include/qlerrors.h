@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.6  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.5  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_error_h
@@ -50,20 +53,6 @@ namespace QuantLib {
 	  private:
 		std::string message;
 	};
-	
-	/*! It throws an error if the given condition is not verified
-		\relates Error
-	*/
-	void Assert(bool condition, const std::string& description);
-	/*! It throws an error if the given pre-condition is not verified
-		\relates Error
-	*/
-	void Require(bool condition, const std::string& description);
-	/*! It throws an error if the given post-condition is not verified
-		\relates Error
-	*/
-	void Ensure(bool condition, const std::string& description);
-	
 	
 	//! Specialized error
 	/*! Thrown upon a failed assertion.
@@ -101,25 +90,31 @@ namespace QuantLib {
 		: Error(whatClass+": out of memory") {}
 	};
 	
-	
-	// inline definitions
-	
-	inline void Assert(bool condition, const std::string& description) {
-		if (!condition)
-			throw AssertionFailedError(description);
-	}
-	
-	inline void Require(bool condition, const std::string& description) {
-		if (!condition)
-			throw IllegalArgumentError(description);
-	}
-	
-	inline void Ensure(bool condition, const std::string& description) {
-		if (!condition)
-			throw IllegalResultError(description);
-	}
-
 }
+
+/*! \def QL_ASSERT
+	\brief it throws an error if the given condition is not verified
+	\relates Error
+*/
+#define QL_ASSERT(condition,description) \
+	if (!(condition)) \
+		throw QuantLib::AssertionFailedError(description)
+
+/*! \def QL_REQUIRE
+	\brief it throws an error if the given pre-condition is not verified
+	\relates Error
+*/
+#define QL_REQUIRE(condition,description) \
+	if (!(condition)) \
+		throw QuantLib::IllegalArgumentError(description)
+
+/*! \def QL_ENSURE
+	\brief it throws an error if the given post-condition is not verified
+	\relates Error
+*/
+#define QL_ENSURE(condition,description) \
+	if (!(condition)) \
+		throw QuantLib::IllegalResultError(description)
 
 
 #endif

@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.10  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.9  2000/12/22 15:13:45  aleppo
 	Included spread.h
-
+	
 	Revision 1.8  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -44,6 +47,7 @@
 #include "spread.h"
 #include "handle.h"
 #include "observable.h"
+#include "spread.h"
 
 namespace QuantLib {
 

@@ -31,9 +31,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.19  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.18  2000/12/20 15:27:02  lballabio
 	Added new defines for helping Linux port
-
+	
 	Revision 1.17  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -204,7 +207,7 @@
 	#define QL_MODF	modf
 #endif
 
-/*! \def QL_CCHAR_IN_STD
+/*! \def QL_CCTYPE_IN_STD
 	\brief Are string functions defined in the std namespace?
 	
 	Some compilers still define them in the global namespace.

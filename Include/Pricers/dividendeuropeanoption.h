@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.7  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.6  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef	BSM_dividend_european_option_pricer_h
@@ -52,14 +55,14 @@ namespace QuantLib {
         			BSMEuropeanOption(type, underlying - riskless(riskFreeRate, residualTime,dividends,exdivdates),
         			strike, underlyingGrowthRate,riskFreeRate,residualTime,volatility){
         			    
-		    		QuantLib::Require(theDividends.size()==theExDivDates.size(),"the	number of dividends	is different from	that of	dates");				        			     
+		    		QL_REQUIRE(theDividends.size()==theExDivDates.size(),"the number of dividends is different from that of dates");
         			for(unsigned int j=0; j<theDividends.size();j++){
-    					QuantLib::Require(theExDivDates[j]>0, "The "	+ IntegerFormatter::toString(j)	+ "-th"	+
+    					QL_REQUIRE(theExDivDates[j]>0, "The "	+ IntegerFormatter::toString(j)	+ "-th"	+
     				        "dividend date is not positive"	+ "(" +	DoubleFormatter::toString(theExDivDates[j]) + ")");
-    			        QuantLib::Require(theExDivDates[j]<residualTime,"The " + IntegerFormatter::toString(j) + "-th" +
+    			        QL_REQUIRE(theExDivDates[j]<residualTime,"The " + IntegerFormatter::toString(j) + "-th" +
     				        "dividend date is greater than residual	time" +	"("	+
     				        DoubleFormatter::toString(theExDivDates[j]) + ">" + DoubleFormatter::toString(residualTime)	+ ")");
-    					    QuantLib::Require(theDividends[j]>=0,"The	" +	IntegerFormatter::toString(j) +	"-th" +
+    					QL_REQUIRE(theDividends[j]>=0,"The	" +	IntegerFormatter::toString(j) +	"-th" +
     				        "dividend is negative" + "(" + DoubleFormatter::toString(theDividends[j]) +	")");
     		        }
         		}

@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.3  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.2  2000/12/20 15:19:56  lballabio
 	Removed History:: scopes not digestible by VC++
-
+	
 	Revision 1.1  2000/12/18 18:37:34  lballabio
 	Added to CVS
 	
@@ -67,8 +70,8 @@ namespace QuantLib {
 		template <class Iterator>
 		History(const Date& firstDate, const Date& lastDate, Iterator begin, Iterator end)
 		: theFirstDate(firstDate), theLastDate(lastDate), theValues(end-begin) {
-			Require(lastDate >= firstDate, "invalid date range for history");
-			Require(values.size() == (lastDate-firstDate)+1, "history size incompatible with date range");
+			QL_REQUIRE(lastDate >= firstDate, "invalid date range for history")
+			QL_REQUIRE(values.size() == (lastDate-firstDate)+1, "history size incompatible with date range")
 			std::copy(begin,end,theValues.begin());
 		}
 		/*! This constructor initializes the history with the given set of values, corresponding to the
@@ -121,10 +124,15 @@ namespace QuantLib {
 			Date theDate;
 			std::vector<double>::const_iterator theValue;
 		};
-		//! const iterator on history entries
-		class const_iterator : public std::iterator<std::random_access_iterator_tag,Entry> {
+		//! random access iterator on history entries
+		class const_iterator {
 			friend class History;
 		  public:
+			typedef std::random_access_iterator_tag iterator_category;
+			typedef Entry                           value_type;
+			typedef int                             difference_type;
+			typedef const Entry QL_PTR_CONST        pointer;
+			typedef const Entry &                   reference;
 			//! \name Dereferencing
 			//@{
 			const Entry& operator*() const { return theEntry; }
@@ -190,10 +198,15 @@ namespace QuantLib {
 			Entry theEntry;
 		};
 		
-		//! const iterator on non-null history entries
-		class const_valid_iterator : public std::iterator<std::bidirectional_iterator_tag,Entry> {
+		//! bidirectional iterator on non-null history entries
+		class const_valid_iterator {
 			friend class History;
 		  public:
+			typedef std::bidirectional_iterator_tag iterator_category;
+			typedef Entry                           value_type;
+			typedef int                             difference_type;
+			typedef const Entry QL_PTR_CONST        pointer;
+			typedef const Entry &                   reference;
 			//! \name Dereferencing
 			//@{
 			const Entry& operator*() const { return theEntry; }
@@ -245,12 +258,18 @@ namespace QuantLib {
 			Entry theEntry;
 		};
 
+		//! random access iterator on historical data
 		typedef std::vector<double>::const_iterator const_data_iterator;
 		
-		//! const iterator on non-null history entries
-		class const_valid_data_iterator : public std::iterator<std::bidirectional_iterator_tag,double> {
+		//! bidirectional iterator on non-null historical data
+		class const_valid_data_iterator {
 			friend class History;
 		  public:
+			typedef std::bidirectional_iterator_tag iterator_category;
+			typedef double                          value_type;
+			typedef int                             difference_type;
+			typedef const double QL_PTR_CONST       pointer;
+			typedef const double &                  reference;
 			//! \name Dereferencing
 			//@{
 			double operator*() const { return *iter; }
@@ -341,22 +360,22 @@ namespace QuantLib {
 
 	inline History::History(const Date& firstDate, const Date& lastDate, const std::vector<double>& values)
 	: theFirstDate(firstDate), theLastDate(lastDate), theValues(values) {
-		Require(lastDate >= firstDate, "invalid date range for history");
-		Require(values.size() == (lastDate-firstDate)+1, "history size incompatible with date range");
+		QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
+		QL_REQUIRE(values.size() == (lastDate-firstDate)+1, "history size incompatible with date range");
 	}
 
 	inline History::History(const std::vector<Date>& dates, const std::vector<double>& values) {
-		Require(dates.size() == values.size(),"different size for date and value vectors");
-		Require(dates.size() >= 1,"null history given");
+		QL_REQUIRE(dates.size() == values.size(),"different size for date and value vectors");
+		QL_REQUIRE(dates.size() >= 1,"null history given");
 		theFirstDate = theLastDate = dates[0];
 		double lastValue = values[0];
 		theValues = std::vector<double>(1,lastValue);
 		for (int i=1; i<dates.size(); i++) {
 			Date d = dates[i];
 			double x = values[i];
-			Require(d>=theLastDate,"unsorted date after "+DateFormatter::toString(theLastDate));
+			QL_REQUIRE(d>=theLastDate,"unsorted date after "+DateFormatter::toString(theLastDate));
 			if (d == theLastDate) {
-				Require(x==lastValue,"different values in history for "+DateFormatter::toString(theLastDate));
+				QL_REQUIRE(x==lastValue,"different values in history for "+DateFormatter::toString(theLastDate));
 			} else {
 				while (d-theLastDate > 1) {
 					theLastDate = theLastDate.plusDays(1);

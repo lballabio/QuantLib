@@ -58,22 +58,20 @@ class ObjectiveFunction {
 }
 
 %{
-using QuantLib::Ensure;
-
 // its C++ container
 class PyObjectiveFunction : public ObjectiveFunction {
   public:
 	PyObjectiveFunction(PyObject *pyFunction) : thePyFunction(pyFunction) {}
 	double value(double x) const {
 		PyObject* pyResult = PyObject_CallMethod(thePyFunction,"value","d",x);
-		Ensure(pyResult != NULL, "failed to call value() on Python object");
+		QL_ENSURE(pyResult != NULL, "failed to call value() on Python object");
 		double result = PyFloat_AsDouble(pyResult);
 		Py_XDECREF(pyResult);
 		return result;
 	}
 	double derivative(double x) const {
 		PyObject* pyResult = PyObject_CallMethod(thePyFunction,"derivative","d",x);
-		Ensure(pyResult != NULL, "failed to call derivative() on Python object");
+		QL_ENSURE(pyResult != NULL, "failed to call derivative() on Python object");
 		double result = PyFloat_AsDouble(pyResult);
 		Py_XDECREF(pyResult);
 		return result;

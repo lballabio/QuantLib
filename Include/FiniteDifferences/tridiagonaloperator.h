@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.3  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_tridiagonal_operator_h
@@ -113,7 +116,7 @@ namespace QuantLib {
 		
 		inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(int size) 
 		: theSize(size) {
-			Require(theSize >= 3, "invalid size for tridiagonal operator (must be >= 3)");
+			QL_REQUIRE(theSize >= 3, "invalid size for tridiagonal operator (must be >= 3)");
 			belowDiagonal = Array(theSize-1);
 			diagonal = Array(theSize);
 			aboveDiagonal = Array(theSize-1);
@@ -121,8 +124,8 @@ namespace QuantLib {
 		
 		inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(const Array& low, const Array& mid, const Array& high)
 		: diagonal(mid), belowDiagonal(low), aboveDiagonal(high), theSize(mid.size()) {
-			Require(belowDiagonal.size() == theSize-1, "wrong size for lower diagonal vector");
-			Require(aboveDiagonal.size() == theSize-1, "wrong size for upper diagonal vector");
+			QL_REQUIRE(belowDiagonal.size() == theSize-1, "wrong size for lower diagonal vector");
+			QL_REQUIRE(aboveDiagonal.size() == theSize-1, "wrong size for upper diagonal vector");
 		}
 		
 		inline void TridiagonalOperatorCommon::setFirstRow(double valB, double valC){
@@ -131,7 +134,7 @@ namespace QuantLib {
 		}
 		
 		inline void TridiagonalOperatorCommon::setMidRow(int i, double valA, double valB, double valC){
-			Require(i>=1 && i<=theSize-2, "out of range in TridiagonalSystem::setMidRow");
+			QL_REQUIRE(i>=1 && i<=theSize-2, "out of range in TridiagonalSystem::setMidRow");
 			belowDiagonal[i-1] = valA;
 			diagonal[i]        = valB;
 			aboveDiagonal[i]   = valC;

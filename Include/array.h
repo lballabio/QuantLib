@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.10  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.9  2000/12/18 18:26:39  lballabio
 	Corrected Doxygen grouping
-
+	
 	Revision 1.8  2000/12/14 12:32:28  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -94,6 +97,8 @@ namespace QuantLib {
 
 			<tt>v *= w</tt> and similar operation involving two vectors are shortcuts for
 			\f$ \forall i : v_i = v_i \times w_i \f$
+			
+			\pre all arrays involved in an algebraic expression must have the same size
 		*/
 		//@{
 		Array& operator+=(const Array&);
@@ -107,7 +112,7 @@ namespace QuantLib {
 		#if QL_EXPRESSION_TEMPLATES_WORK
 		template <class Iter> Array& operator+=(const VectorialExpression<Iter>& e) {
 			#ifdef QL_DEBUG
-				Require(size() == e.size(), "adding arrays with different sizes");
+				QL_REQUIRE(size() == e.size(), "adding arrays with different sizes")
 			#endif
 			iterator i = begin(), j = end();
 			while (i != j) { *i += *e; ++i; ++e; }
@@ -115,7 +120,7 @@ namespace QuantLib {
 		}
 		template <class Iter> Array& operator-=(const VectorialExpression<Iter>& e) {
 			#ifdef QL_DEBUG
-				Require(size() == e.size(), "subtracting arrays with different sizes");
+				QL_REQUIRE(size() == e.size(), "subtracting arrays with different sizes")
 			#endif
 			iterator i = begin(), j = end();
 			while (i != j) { *i -= *e; ++i; ++e; }
@@ -123,7 +128,7 @@ namespace QuantLib {
 		}
 		template <class Iter> Array& operator*=(const VectorialExpression<Iter>& e) {
 			#ifdef QL_DEBUG
-				Require(size() == e.size(), "multiplying arrays with different sizes");
+				QL_REQUIRE(size() == e.size(), "multiplying arrays with different sizes")
 			#endif
 			iterator i = begin(), j = end();
 			while (i != j) { *i *= *e; ++i; ++e; }
@@ -131,7 +136,7 @@ namespace QuantLib {
 		}
 		template <class Iter> Array& operator/=(const VectorialExpression<Iter>& e) {
 			#ifdef QL_DEBUG
-				Require(size() == e.size(), "dividing arrays with different sizes");
+				QL_REQUIRE(size() == e.size(), "dividing arrays with different sizes")
 			#endif
 			iterator i = begin(), j = end();
 			while (i != j) { *i /= *e; ++i; ++e; }
@@ -437,7 +442,9 @@ namespace QuantLib {
 	}
 	
 	inline Array& Array::operator+=(const Array& v) {
-		Require(n == v.n, "arrays with different sizes cannot be added");
+		#ifdef QL_DEBUG
+			QL_REQUIRE(n == v.n, "arrays with different sizes cannot be added");
+		#endif
 		std::transform(begin(),end(),v.begin(),begin(),std::plus<double>());
 		return *this;
 	}
@@ -448,7 +455,9 @@ namespace QuantLib {
 	}
 	
 	inline Array& Array::operator-=(const Array& v) {
-		Require(n == v.n, "arrays with different sizes cannot be subtracted");
+		#ifdef QL_DEBUG
+			QL_REQUIRE(n == v.n, "arrays with different sizes cannot be subtracted");
+		#endif
 		std::transform(begin(),end(),v.begin(),begin(),std::minus<double>());
 		return *this;
 	}
@@ -459,7 +468,9 @@ namespace QuantLib {
 	}
 	
 	inline Array& Array::operator*=(const Array& v) {
-		Require(n == v.n, "arrays with different sizes cannot be multiplied");
+		#ifdef QL_DEBUG
+			QL_REQUIRE(n == v.n, "arrays with different sizes cannot be multiplied");
+		#endif
 		std::transform(begin(),end(),v.begin(),begin(),std::multiplies<double>());
 		return *this;
 	}
@@ -470,7 +481,9 @@ namespace QuantLib {
 	}
 	
 	inline Array& Array::operator/=(const Array& v) {
-		Require(n == v.n, "arrays with different sizes cannot be divided");
+		#ifdef QL_DEBUG
+			QL_REQUIRE(n == v.n, "arrays with different sizes cannot be divided");
+		#endif
 		std::transform(begin(),end(),v.begin(),begin(),std::divides<double>());
 		return *this;
 	}
@@ -482,14 +495,14 @@ namespace QuantLib {
 	
 	inline double Array::operator[](int i) const {
 		#ifdef QL_DEBUG
-			Require(i>=0 && i<n, "array cannot be accessed out of range");
+			QL_REQUIRE(i>=0 && i<n, "array cannot be accessed out of range");
 		#endif
 		return pointer[i];
 	}
 	
 	inline double& Array::operator[](int i) {
 		#ifdef QL_DEBUG
-			Require(i>=0 && i<n, "array cannot be accessed out of range");
+			QL_REQUIRE(i>=0 && i<n, "array cannot be accessed out of range");
 		#endif
 		return pointer[i];
 	}
@@ -628,7 +641,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Add> >
 		operator+(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == v2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(v1.size() == v2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Add> Iter;
 			return VectorialExpression<Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
@@ -650,7 +663,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Add> >
 		operator+(const Array& v1, const VectorialExpression<Iter2>& e2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == e2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(v1.size() == e2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Add> Iter;
 			return VectorialExpression<Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
@@ -660,7 +673,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Add> >
 		operator+(const VectorialExpression<Iter1>& e1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(e1.size() == v2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(e1.size() == v2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Add> Iter;
 			return VectorialExpression<Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
@@ -670,7 +683,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Add> >
 		operator+(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2) {
 			#ifdef QL_DEBUG
-				Require(e1.size() == e2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(e1.size() == e2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Add> Iter;
 			return VectorialExpression<Iter>(Iter(e1,e2,e1.size()),e1.size());
@@ -694,7 +707,7 @@ namespace QuantLib {
 	
 		inline Array operator+(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == v2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(v1.size() == v2.size(), "adding arrays with different sizes");
 			#endif
 			Array result(v1.size());
 			std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),std::plus<double>());
@@ -722,7 +735,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Subtract> >
 		operator-(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == v2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(v1.size() == v2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Subtract> Iter;
 			return VectorialExpression<Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
@@ -744,7 +757,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Subtract> >
 		operator-(const Array& v1, const VectorialExpression<Iter2>& e2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == e2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(v1.size() == e2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Subtract> Iter;
 			return VectorialExpression<Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
@@ -754,7 +767,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Subtract> >
 		operator-(const VectorialExpression<Iter1>& e1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(e1.size() == v2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(e1.size() == v2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Subtract> Iter;
 			return VectorialExpression<Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
@@ -764,7 +777,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Subtract> >
 		operator-(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2) {
 			#ifdef QL_DEBUG
-				Require(e1.size() == e2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(e1.size() == e2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Subtract> Iter;
 			return VectorialExpression<Iter>(Iter(e1,e2,e1.size()),e1.size());
@@ -788,7 +801,7 @@ namespace QuantLib {
 	
 		inline Array operator-(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == v2.size(), "subtracting arrays with different sizes");
+				QL_REQUIRE(v1.size() == v2.size(), "subtracting arrays with different sizes");
 			#endif
 			Array result(v1.size());
 			std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),std::minus<double>());
@@ -816,7 +829,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Multiply> >
 		operator*(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == v2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(v1.size() == v2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Multiply> Iter;
 			return VectorialExpression<Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
@@ -838,7 +851,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Multiply> >
 		operator*(const Array& v1, const VectorialExpression<Iter2>& e2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == e2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(v1.size() == e2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Multiply> Iter;
 			return VectorialExpression<Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
@@ -848,7 +861,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Multiply> >
 		operator*(const VectorialExpression<Iter1>& e1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(e1.size() == v2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(e1.size() == v2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Multiply> Iter;
 			return VectorialExpression<Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
@@ -858,7 +871,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Multiply> >
 		operator*(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2) {
 			#ifdef QL_DEBUG
-				Require(e1.size() == e2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(e1.size() == e2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Multiply> Iter;
 			return VectorialExpression<Iter>(Iter(e1,e2,e1.size()),e1.size());
@@ -882,7 +895,7 @@ namespace QuantLib {
 	
 		inline Array operator*(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == v2.size(), "multiplying arrays with different sizes");
+				QL_REQUIRE(v1.size() == v2.size(), "multiplying arrays with different sizes");
 			#endif
 			Array result(v1.size());
 			std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),std::multiplies<double>());
@@ -910,7 +923,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Divide> >
 		operator/(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == v2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(v1.size() == v2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Divide> Iter;
 			return VectorialExpression<Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
@@ -932,7 +945,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Divide> >
 		operator/(const Array& v1, const VectorialExpression<Iter2>& e2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == e2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(v1.size() == e2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Divide> Iter;
 			return VectorialExpression<Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
@@ -942,7 +955,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Divide> >
 		operator/(const VectorialExpression<Iter1>& e1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(e1.size() == v2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(e1.size() == v2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Divide> Iter;
 			return VectorialExpression<Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
@@ -952,7 +965,7 @@ namespace QuantLib {
 		inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Divide> >
 		operator/(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2) {
 			#ifdef QL_DEBUG
-				Require(e1.size() == e2.size(), "adding arrays with different sizes");
+				QL_REQUIRE(e1.size() == e2.size(), "adding arrays with different sizes");
 			#endif
 			typedef BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Divide> Iter;
 			return VectorialExpression<Iter>(Iter(e1,e2,e1.size()),e1.size());
@@ -976,7 +989,7 @@ namespace QuantLib {
 	
 		inline Array operator/(const Array& v1, const Array& v2) {
 			#ifdef QL_DEBUG
-				Require(v1.size() == v2.size(), "dividing arrays with different sizes");
+				QL_REQUIRE(v1.size() == v2.size(), "dividing arrays with different sizes");
 			#endif
 			Array result(v1.size());
 			std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),std::divides<double>());
@@ -1000,7 +1013,9 @@ namespace QuantLib {
 	// dot product
 	
 	inline double DotProduct(const Array& v1, const Array& v2) {
-		Require(v1.size() == v2.size(), "arrays with different sizes cannot be multiplied");
+		#ifdef QL_DEBUG
+			QL_REQUIRE(v1.size() == v2.size(), "arrays with different sizes cannot be multiplied");
+		#endif
 		return std::inner_product(v1.begin(),v1.end(),v2.begin(),0.0);
 	}
 	

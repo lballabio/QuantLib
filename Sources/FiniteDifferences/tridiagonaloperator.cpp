@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.6  2000/12/27 14:05:57  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.5  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "tridiagonaloperator.h"
@@ -72,7 +75,7 @@ namespace QuantLib {
 		
 		
 		Array TridiagonalOperatorCommon::applyTo(const Array& v) const {
-			QuantLib::Require(v.size()==theSize, "TridiagonalOperator::applyTo: vector of the wrong size (" +
+			QL_REQUIRE(v.size()==theSize, "TridiagonalOperator::applyTo: vector of the wrong size (" +
 	        	IntegerFormatter::toString(v.size()) + "instead of "+ IntegerFormatter::toString(theSize) + ")"  );
 			Array result(theSize);
 		
@@ -112,7 +115,7 @@ namespace QuantLib {
 		}
 		
 		Array TridiagonalOperatorCommon::solveFor(const Array& rhs) const {
-			Require(rhs.size()==theSize,"TridiagonalOperator::solveFor: rhs vector has the wrong size");
+			QL_REQUIRE(rhs.size()==theSize,"TridiagonalOperator::solveFor: rhs vector has the wrong size");
 			Array bcRhs = rhs;
 		
 			// apply lower boundary condition
@@ -141,13 +144,13 @@ namespace QuantLib {
 			Array result(theSize), tmp(theSize);
 		
 			double bet=diagonal[0];
-			Require(bet != 0.0, "TridiagonalOperator::solveFor: division by zero"); 
+			QL_REQUIRE(bet != 0.0, "TridiagonalOperator::solveFor: division by zero"); 
 			result[0] = bcRhs[0]/bet;
 			int j;
 			for (j=1;j<=theSize-1;j++){
 				tmp[j]=aboveDiagonal[j-1]/bet;
 				bet=diagonal[j]-belowDiagonal[j-1]*tmp[j];
-				Require(bet != 0.0, "TridiagonalOperator::solveFor: division by zero"); 
+				QL_ENSURE(bet != 0.0, "TridiagonalOperator::solveFor: division by zero"); 
 				result[j] = (bcRhs[j]-belowDiagonal[j-1]*result[j-1])/bet;
 			}
 			for (j=theSize-2;j>=0;j--) 

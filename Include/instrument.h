@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.9  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.8  2000/12/20 15:26:29  lballabio
 	#included null.h
-
+	
 	Revision 1.7  2000/12/15 10:00:38  enri
 	Instrument interface slightly changed. PricedInstrument added.
 	
@@ -211,7 +214,11 @@ namespace QuantLib {
 		PricedInstrument(const std::string& isinCode = "", const std::string& description = "")
 		: Instrument(isinCode,description), priceIsSet(false) {}
 		void setPrice(double price) { thePrice = price; priceIsSet = true; }
-		double price() const { Require(priceIsSet, "price not set"); return thePrice; }
+		/*! \pre The price must have been set with <B><I>setPrice()</B></I> */
+		double price() const {
+			QL_REQUIRE(priceIsSet, "price not set");
+			return thePrice;
+		}
 		bool useTermStructure() const { return false; }
 		bool useSwaptionVolatility() const { return false; }
 		bool useForwardVolatility() const { return false; }
@@ -318,18 +325,21 @@ namespace QuantLib {
 		return (expired ? 0.0 : theNPV); 
 	}
 	
+	/*! \pre The term structure must have been set */
 	inline Handle<TermStructure> Instrument::termStructure() const {
-		Require(!IsNull(theTermStructure),"term structure not set");
+		QL_REQUIRE(!IsNull(theTermStructure),"term structure not set");
 		return theTermStructure;
 	}
 	
+	/*! \pre The swaption volatility surface must have been set */
 	inline Handle<SwaptionVolatilitySurface> Instrument::swaptionVolatility() const { 
-		Require(!IsNull(theSwaptionVol),"swaption volatility matrix not set");
+		QL_REQUIRE(!IsNull(theSwaptionVol),"swaption volatility surface not set");
 		return theSwaptionVol; 
 	}
 	
+	/*! \pre The forward volatility surface must have been set */
 	inline Handle<ForwardVolatilitySurface> Instrument::forwardVolatility() const { 
-		Require(!IsNull(theForwardVol),"forward volatility matrix not set");
+		QL_REQUIRE(!IsNull(theForwardVol),"forward volatility surface not set");
 		return theForwardVol; 
 	}
 	

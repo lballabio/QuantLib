@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.9  2000/12/27 14:05:57  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.8  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "dividendamericanoption.h"
@@ -52,15 +55,15 @@ namespace QuantLib {
 			BSMNumericalOption(type, underlying-addElements(dividends), strike,underlyingGrowthRate,
 			riskFreeRate,residualTime,volatility,gridPoints){
 
-				Require(theNumberOfDivs==theExDivDates.size(),"the number of dividends is diffrent from	that of	dates");
-				Require(theNumberOfDivs>=1,"the	number of dividends must be at least one");
-				Require(underlying-addElements(dividends)>0,"Dividends cannot exceed underlying");
-				Require(theExDivDates[0]>0,"The	ex dividend dates must be positive");
-				Require(theExDivDates[theExDivDates.size()-1]<residualTime,"The	ex dividend dates must be within the residual time");
-				Require(theDividends[0]>=0,"Dividends cannot be	negative");
+				QL_REQUIRE(theNumberOfDivs==theExDivDates.size(),"the number of dividends is diffrent from	that of	dates");
+				QL_REQUIRE(theNumberOfDivs>=1,"the	number of dividends must be at least one");
+				QL_REQUIRE(underlying-addElements(dividends)>0,"Dividends cannot exceed underlying");
+				QL_REQUIRE(theExDivDates[0]>0,"The	ex dividend dates must be positive");
+				QL_REQUIRE(theExDivDates[theExDivDates.size()-1]<residualTime,"The	ex dividend dates must be within the residual time");
+				QL_REQUIRE(theDividends[0]>=0,"Dividends cannot be	negative");
 				for(unsigned int j=1; j<theNumberOfDivs;j++){
-                    QuantLib::Require(theExDivDates[j-1]<theExDivDates[j],"Dividend dates must be in increasing order");
-					QuantLib::Require(theDividends[j]>=0,"DividendAmericanOption: Dividends cannot be	negative");
+                    QL_REQUIRE(theExDivDates[j-1]<theExDivDates[j],"Dividend dates must be in increasing order");
+					QL_REQUIRE(theDividends[j]>=0,"DividendAmericanOption: Dividends cannot be	negative");
 				}
 		}
 
@@ -100,7 +103,7 @@ namespace QuantLib {
 						double centre =	valueAtCenter(theGrid);
 						double mltp = centre/theGrid[0];
 						double newMltp = mltp/(1+(mltp-1)*theDividends[j]/(centre+theDividends[j]));
-						Require(newMltp>1,"Dividends are to big");
+						QL_ENSURE(newMltp>1,"Dividends are to big");
 						sMin =	(centre+theDividends[j])/newMltp;
 						sMax =	(centre+theDividends[j])*newMltp;
 						initializeGrid();

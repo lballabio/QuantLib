@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.3  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef BSM_option_pricer_h
@@ -53,10 +56,10 @@ namespace QuantLib {
 			: theType(type), theUnderlying(underlying), theStrike(strike), theUnderlyingGrowthRate(underlyingGrowthRate),
 			  theRiskFreeRate(riskFreeRate), theResidualTime(residualTime), theVolatility(volatility),
 			  hasBeenCalculated(false) {
-				Require(strike > 0.0, "BSMOption::BSMOption : strike must be positive");
-				Require(underlying > 0.0, "BSMOption::BSMOption : underlying must be positive");
-				Require(residualTime > 0.0, "BSMOption::BSMOption : residual time must be positive");
-				Require(volatility > 0.0, "BSMOption::BSMOption : volatility must be positive");
+				QL_REQUIRE(strike > 0.0, "BSMOption::BSMOption : strike must be positive");
+				QL_REQUIRE(underlying > 0.0, "BSMOption::BSMOption : underlying must be positive");
+				QL_REQUIRE(residualTime > 0.0, "BSMOption::BSMOption : residual time must be positive");
+				QL_REQUIRE(volatility > 0.0, "BSMOption::BSMOption : volatility must be positive");
 			}
 			virtual ~BSMOption() {}	// just in case
 			// modifiers
@@ -106,7 +109,7 @@ namespace QuantLib {
 		};
 		
 		inline void BSMOption::setVolatility(double volatility) {
-			Require(volatility>=0.0,"BSMOption::setVolatility : Volatility must be positive");
+			QL_REQUIRE(volatility>=0.0,"BSMOption::setVolatility : Volatility must be positive");
 			theVolatility = volatility;
 			hasBeenCalculated=false;
 		}

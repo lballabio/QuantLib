@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.9  2000/12/27 14:05:56  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.8  2000/12/20 17:00:57  enri
 	modified to use new macros
-
+	
 	Revision 1.7  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -113,7 +116,7 @@ namespace QuantLib {
 	// inline definitions
 	
 	inline void Solver1D::setMaxEvaluations(int evaluations) {
-		Require(evaluations > 0, "negative or null evaluations number");
+		QL_REQUIRE(evaluations > 0, "negative or null evaluations number");
 		maxEvaluations = evaluations;
 	}
 	

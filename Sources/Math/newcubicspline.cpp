@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.5  2000/12/27 14:05:57  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.4  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "newcubicspline.h"
@@ -38,11 +41,11 @@ namespace QuantLib{
 
 	NewCubicSpline::NewCubicSpline( Array xvalues,  Array yvalues, double dy1, double dyn)
 	  :xValues(xvalues), yValues(yvalues),coeffs(yvalues){
-	   Require(xValues.size()==yValues.size(),"NewCubicSpline, dimension of x and y arrays must match");
+	   QL_REQUIRE(xValues.size()==yValues.size(),"NewCubicSpline, dimension of x and y arrays must match");
 
 	  int i, n = xValues.size();	
-	   Require(n >= 3,"cubic spline: less than three data points");
-	   Require(isStrictlyAscending(xValues),"interpolation: x values must be strictly ascending");
+	   QL_REQUIRE(n >= 3,"cubic spline: less than three data points");
+	   QL_REQUIRE(isStrictlyAscending(xValues),"interpolation: x values must be strictly ascending");
 	   Array u(n-1);
 	  if (dy1 > 0.99e+30) {
 		  coeffs[0] = u[0] = 0.0;
@@ -83,7 +86,7 @@ namespace QuantLib{
 		if (i >= n-1)
 			i = n-2;
 		double h = double(xValues[i+1]-xValues[i]);
-		 Require(h != 0.0,"interpolation: data points must have different x values");
+		 QL_REQUIRE(h != 0.0,"interpolation: data points must have different x values");
 		double a = double(xValues[i+1]-x)/h, b = 1.0-a;
 		return a*yValues[i]+b*yValues[i+1]+((a*a*a-a)*coeffs[i]+(b*b*b-b)*coeffs[i+1])*(h*h)/6;
 	}
@@ -99,7 +102,7 @@ namespace QuantLib{
 		if (i >= n-1)
 			i = n-2;
 		double h = double(xValues[i+1]-xValues[i]);
-		 Require(h != 0.0,"interpolation: data points must have different x values");
+		 QL_REQUIRE(h != 0.0,"interpolation: data points must have different x values");
 		double a = double(xValues[i+1]-x)/h, b = 1.0-a;
 		return (yValues[i+1]-yValues[i])/h - ((3*a*a-1)*coeffs[i] - (3*b*b-1)*coeffs[i+1])*h/6;
 	}

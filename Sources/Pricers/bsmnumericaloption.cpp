@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.19  2000/12/27 14:05:57  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.18  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "bsmnumericaloption.h"
@@ -44,7 +47,7 @@ namespace QuantLib {
 		double BSMNumericalOption::dVolMultiplier=0.0001; 
 		double BSMNumericalOption::dRMultiplier=0.0001; 
 		
-		BSMNumericalOption::BSMNumericalOption(BSMOption::Type type, double underlying, double strike, 
+		BSMNumericalOption::BSMNumericalOption(BSMNumericalOption::Type type, double underlying, double strike, 
 		  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility, int gridPoints)
 		: BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility), 
 		  theGridPoints(gridPoints),rhoComputed(false), vegaComputed(false),
@@ -168,8 +171,8 @@ namespace QuantLib {
 		}
 			
 		double BSMNumericalOption::firstDerivativeAtCenter(const Array& a, const Array& g) const{
-			Require(a.size()==g.size(),"BSMNumericalOption::firstDerivativeAtCenter, a and g must be of the same size");
-			Require(a.size()>=3,"BSMNumericalOption::firstDerivativeAtCenter, the size of the two vectors must be at least 3");
+			QL_REQUIRE(a.size()==g.size(),"BSMNumericalOption::firstDerivativeAtCenter, a and g must be of the same size");
+			QL_REQUIRE(a.size()>=3,"BSMNumericalOption::firstDerivativeAtCenter, the size of the two vectors must be at least 3");
 			int jmid = a.size()/2;
 			if(a.size() % 2 == 1)
 				return (a[jmid+1]-a[jmid-1])/(g[jmid+1]-g[jmid-1]);
@@ -178,8 +181,8 @@ namespace QuantLib {
 		}
 		
 		double BSMNumericalOption::secondDerivativeAtCenter(const Array& a, const Array& g) const{
-			Require(a.size()==g.size(),"BSMNumericalOption::secondDerivativeAtCenter, a and g must be of the same size");
-			Require(a.size()>=4,"BSMNumericalOption::secondDerivativeAtCenter, the size of the two vectors must be at least 4");
+			QL_REQUIRE(a.size()==g.size(),"BSMNumericalOption::secondDerivativeAtCenter, a and g must be of the same size");
+			QL_REQUIRE(a.size()>=4,"BSMNumericalOption::secondDerivativeAtCenter, the size of the two vectors must be at least 4");
 			int jmid = a.size()/2;
 			if(a.size() % 2 == 1){
 				double deltaPlus = (a[jmid+1]-a[jmid])/(g[jmid+1]-g[jmid]);

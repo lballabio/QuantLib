@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.14  2000/12/27 14:05:57  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.13  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 // The implementation of the algorithm was inspired by
@@ -63,7 +66,7 @@ namespace QuantLib {
 		
 			froot = f.value(root);
 			dfroot = f.derivative(root);
-			Require(!IsNull(dfroot), "NewtonSafe requires function's derivative");
+			QL_REQUIRE(!IsNull(dfroot), "NewtonSafe requires function's derivative");
 			evaluationNumber++;
 		
 			while (evaluationNumber<=maxEvaluations) {

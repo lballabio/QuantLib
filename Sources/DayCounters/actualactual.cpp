@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.10  2000/12/27 14:05:57  lballabio
+	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
 	Revision 1.9  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "actualactual.h"
@@ -43,12 +46,12 @@ namespace QuantLib {
 	
 		Time ActualActual::yearFraction(const Date& d1, const Date& d2, const Date& refPeriodStart, 
 		  const Date& refPeriodEnd) const {
-			Require(!IsNull(refPeriodStart) && !IsNull(refPeriodEnd) && refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
+			QL_REQUIRE(!IsNull(refPeriodStart) && !IsNull(refPeriodEnd) && refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
 				"Invalid reference period");
 			double period = Thirty360European().yearFraction(refPeriodStart,refPeriodEnd);
 			int months;
 			double temp;
-			Ensure(QL_FABS(QL_MODF(period*12.0, &temp)) <= 1.0e-10,"non-integer number of months");
+			QL_ENSURE(QL_FABS(QL_MODF(period*12.0, &temp)) <= 1.0e-10,"non-integer number of months");
 			months = (int)temp;
 		
 			if (d2 <= refPeriodEnd) {
