@@ -127,12 +127,13 @@ namespace QuantLib {
                 double valuePlus = value();
 
                 Handle<SingleAssetOption> brandNewFD = clone();
-                Rate dMinus = dividendYield_ * (1.0 - dRMultiplier_);
+                Rate dMinus = (dividendYield_ ?
+                    dividendYield_ * (1.0 - dRMultiplier_) : 0.0001);
                 brandNewFD -> setDividendYield(dMinus);
                 double valueMinus = brandNewFD -> value();
 
                 dividendRho_=(valuePlus - valueMinus) /
-                    (dividendYield_ * dRMultiplier_);
+                    (dividendYield_ - dMinus);
                 dividendRhoComputed_ = true;
             }
             return dividendRho_;
@@ -144,12 +145,13 @@ namespace QuantLib {
                 double valuePlus = value();
 
                 Handle<SingleAssetOption> brandNewFD = clone();
-                Rate rMinus=riskFreeRate_ * (1.0 - dRMultiplier_);
+                Rate rMinus= (riskFreeRate_ ?
+                    riskFreeRate_ * (1.0 - dRMultiplier_) : 0.0001);
                 brandNewFD -> setRiskFreeRate(rMinus);
                 double valueMinus = brandNewFD -> value();
 
                 rho_=(valuePlus - valueMinus) /
-                    (riskFreeRate_ * dRMultiplier_);
+                    (riskFreeRate_ - rMinus);
                 rhoComputed_  = true;
             }
             return rho_;
