@@ -17,6 +17,8 @@ The version number is in:
     QuantLib/ql/qldefines.hpp,
     QuantLib-Python/setup.py
     QuantLib-Python/QuantLib/SWIG/ql.i
+    QuantLib-Ruby/SWIG/ql.i
+    QuantLib-MzScheme/SWIG/ql.i
 
 It's also in some script used by RiskMap for automatic building:
     release-job.sh
