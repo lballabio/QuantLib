@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.2  2001/07/09 16:29:27  lballabio
+// Some documentation and market element
+//
 // Revision 1.1  2001/07/05 15:57:22  lballabio
 // Collected typedefs in a single file
 //
@@ -41,6 +44,15 @@
 
 namespace QuantLib {
 
+    //! integer number
+    typedef int Integer;
+    
+    //! real number
+    typedef double Real;
+    
+    //! size of a container
+    typedef unsigned int Size;
+    
     //! continuous quantity with 1-year units
     typedef double Time;
 

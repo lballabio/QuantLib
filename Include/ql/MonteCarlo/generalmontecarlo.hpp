@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/09 16:29:27  lballabio
+// Some documentation and market element
+//
 // Revision 1.7  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -46,6 +49,34 @@
 
 namespace QuantLib {
 
+    //! Framework for %MonteCarlo models
+    /*! \htmlonly
+        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr><td width="50%">&nbsp</td>
+        <td>Anyone attempting to generate random numbers by 
+        deterministic means is, of course, living in a state of sin.</td></tr>
+        <tr><td width="50%">&nbsp</td>
+        <td align="right">John von Neumann</td></tr>
+        </table>
+        \endhtmlonly
+        
+        \latexonly
+        \begin{quotation}
+            \small Anyone attempting to generate random numbers by 
+            deterministic means is, of course, living in a state of sin. 
+            \hfill --- John Von Neumann
+        \end{quotation}
+        \endlatexonly
+        
+        This namespace contains basic building blocks for the construction 
+        of MonteCarlo models, namely,
+        
+        - a generic model, GeneralMonteCarlo,
+        - a number of uniform and Gaussian random number and array generators,
+        - a Path class which represents a random path,
+        
+        as well as more specialized classes.
+    */
     namespace MonteCarlo {
 
         //! generic %MonteCarlo model

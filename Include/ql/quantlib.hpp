@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.22  2001/07/09 16:29:27  lballabio
+// Some documentation and market element
+//
 // Revision 1.21  2001/07/06 18:24:17  nando
 // slight modifications to avoid VisualStudio warnings
 //
@@ -58,6 +61,7 @@
 #include "ql/history.hpp"
 #include "ql/index.hpp"
 #include "ql/instrument.hpp"
+#include "ql/marketelement.hpp"
 #include "ql/null.hpp"
 #include "ql/options.hpp"
 #include "ql/relinkablehandle.hpp"

@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/07/09 16:29:27  lballabio
+// Some documentation and market element
+//
 // Revision 1.11  2001/07/06 09:15:36  nando
 // style enforced
 //
@@ -75,7 +78,7 @@ namespace QuantLib {
                                  long seed=0);
             Array next() const;
             double weight() const{return weight_;}
-            int size() const{return size_;}
+            int size() const{ return size_; }
           private:
             int size_;
             std::vector<Time> timeDelays_;

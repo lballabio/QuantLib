@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/09 16:29:27  lballabio
+// Some documentation and market element
+//
 // Revision 1.7  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -55,12 +58,29 @@ namespace QuantLib {
     namespace FiniteDifferences {
 
         //! Backward Euler scheme for finite difference methods
-        /*! Differential operators must be derived from either 
-            TimeConstantOperator or TimeDependentOperator.
-            They must also implement at least the following interface:
+        /*! This class implements the implicit backward Euler scheme for the 
+            discretization in time of the differential equation
+            \f[ 
+                \frac{\partial f}{\partial t} = Lf.
+            \f]
+            In this scheme, the above equation is discretized as
+            \f[ 
+                \frac{f^{(k)}-f^{(k-1)}}{\Delta t} = Lf^{(k-1)}
+            \f]
+            hence
+            \f[
+                \left( I + \Delta t L \right) f^{(k-1)} = f^{(k)}
+            \f]
+            from which \f$f^{(k-1)}\f$ can be obtained.
+            
+            \par
+            In this implementation, the operator \f$L\f$ must be derived 
+            from either TimeConstantOperator or TimeDependentOperator.
+            Also, it must implement at least the following interface:
 
             \code
-            // copy constructor/assignment (might be provided by the compiler)
+            // copy constructor/assignment
+            // (these will be provided by the compiler if none is defined)
             Operator(const Operator&);
             Operator& operator=(const Operator&);
 
@@ -84,13 +104,13 @@ namespace QuantLib {
             typedef typename OperatorTraits<Operator>::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            BackwardEuler(const operatorType& D) : D(D), dt(0.0) {}
+            BackwardEuler(const operatorType& L) : L(L), dt(0.0) {}
             void step(arrayType& a, Time t) const;
             void setStep(Time dt) {
                 this->dt = dt;
-                implicitPart = Identity<arrayType>()+dt*D;
+                implicitPart = Identity<arrayType>()+dt*L;
             }
-            operatorType D, implicitPart;
+            operatorType L, implicitPart;
             Time dt;
             #if QL_TEMPLATE_METAPROGRAMMING_WORKS
                 // a bit of template metaprogramming to relax interface 
@@ -105,7 +125,7 @@ namespace QuantLib {
                 template<>
                 class BackwardEulerTimeSetter<0> {
                   public:
-                    static inline void setTime(Operator& D, 
+                    static inline void setTime(Operator& L, 
                     Operator& implicitPart, Time t, Time dt) {}
                 };
                 // the following specialization will be instantiated if 
@@ -117,10 +137,10 @@ namespace QuantLib {
                     typedef typename OperatorTraits<Operator>::arrayType 
                         arrayType;
                   public:
-                    static inline void setTime(Operator& D, 
+                    static inline void setTime(Operator& L, 
                       Operator& implicitPart, Time t, Time dt) {
-                        D.setTime(t);
-                        implicitPart = Identity<arrayType>()+dt*D;
+                        L.setTime(t);
+                        implicitPart = Identity<arrayType>()+dt*L;
                     }
                 };
             #endif
@@ -132,11 +152,11 @@ namespace QuantLib {
         inline void BackwardEuler<Operator>::step(arrayType& a, Time t) const {
             #if QL_TEMPLATE_METAPROGRAMMING_WORKS
                 BackwardEulerTimeSetter<Operator::isTimeDependent>::setTime(
-                    D,implicitPart,t,dt);
+                    L,implicitPart,t,dt);
             #else
                 if (Operator::isTimeDependent) {
-                    D.setTime(t);
-                    implicitPart = Identity<arrayType>()+dt*D;
+                    L.setTime(t);
+                    implicitPart = Identity<arrayType>()+dt*L;
                 }
             #endif
             a = implicitPart.solveFor(a);

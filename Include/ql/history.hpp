@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/09 16:29:27  lballabio
+// Some documentation and market element
+//
 // Revision 1.8  2001/07/05 12:35:09  enri
 // - added some static_cast<int>() to prevent gcc warnings
 // - added some virtual constructor (same reason)
@@ -67,6 +70,11 @@ namespace QuantLib {
 
         A history can contain null data, which can either be returned or skipped
         according to the chosen iterator type.
+            
+        <b>Example: </b>
+        \link history_iterators.cpp
+        uses of history iterators
+        \endlink
     */
     class History {
       public:
@@ -85,9 +93,12 @@ namespace QuantLib {
             Iterator begin, Iterator end)
         : firstDate_(firstDate), lastDate_(lastDate), values_(begin,end) {
             QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
-            QL_ENSURE(values_.size() == static_cast<unsigned int>((lastDate-firstDate))+1,
+            QL_ENSURE(values_.size() == unsigned int(lastDate-firstDate+1),
                 "history size incompatible with date range");
         }
+        History(const Date& firstDate, const std::vector<double>& values) 
+        : firstDate_(firstDate), lastDate_(firstDate + values.size()),
+          values_(values) {}
         /*! This constructor initializes the history with the given set of
             values, corresponding to the date range between
             <b><i>firstDate</i></b> and <b><i>lastDate</i></b> included.
@@ -95,12 +106,6 @@ namespace QuantLib {
             \pre The size of <b><i>values</i></b> must equal the number of days
             from <b><i>firstDate</i></b> to <b><i>lastDate</i></b> included.
         */
-        History(const Date& firstDate, 
-                const std::vector<double>& values) : 
-            firstDate_(firstDate), 
-            lastDate_(firstDate + values.size()),
-            values_(values) {};
-        
         History(const Date& firstDate, const Date& lastDate,
             const std::vector<double>& values);
         /*! This constructor initializes the history with the given set of

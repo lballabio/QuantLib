@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.12  2001/07/09 16:29:27  lballabio
+# Some documentation and market element
+#
 # Revision 1.11  2001/07/05 15:57:22  lballabio
 # Collected typedefs in a single file
 #
@@ -40,6 +43,7 @@ include_HEADERS = \
 	history.hpp \
 	index.hpp \
 	instrument.hpp \
+	marketelement.hpp \
 	null.hpp \
 	options.hpp \
 	qldefines.hpp \

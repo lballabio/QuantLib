@@ -22,31 +22,24 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-// print out the mean value and its standard deviation.
+// Simple definition of the discretized Black-Scholes operator.
+// A more suitable one is available in the library as BSMOperator.
 
-Statistics s;
-s.addSequence(h.vdbegin(),h.vdend());
-cout << "Historical mean: " << s.mean() << endl;
-cout << "Std. deviation:  " << s.standardDeviation() << endl;
+class BlackScholesOperator : public TridiagonalOperator {
+  public:
+    BlackScholesOperator(
+        double sigma, double nu,    // parameters of the
+        Rate r,                     // Black-Scholes equation
+        int points,                 // number of discretized points
+        double h)                   // grid spacing
+    : TridiagonalOperator(
+        // build the operator by adding basic ones
+        - (sigma*sigma/2.0) * DPlusDMinus(points,h)
+        - nu * DZero(points,h)
+        + r * Identity<Array>(points)
+    ) {}
+};
 
-// Another possibility: print out the maximum value.
+// instantiate the operator with the given parameters
+TridiagonalOperator L = BlackScholesOperator(sigma, nu, r, points, h);
 
-History::const_valid_iterator max = h.vbegin(), i=max, end = h.vend();
-for (i++; i!=end; i++)
-    if (i->value() > max->value())
-        max = i;
-cout << "Maximum value: " << max->value()
-     << " assumed " << DateFormatter::toString(max->date()) << endl;
-
-// or the minimum, this time the STL way:
-
-bool lessthan(const History::Entry& i, const History::Entry& j) {
-    return i.value() < j.value();
-}
-
-History::const_valid_iterator min =
-    std::min_element(h.vbegin(),h.vend(),lessthan);
-cout << "Minimum value: " << min->value()
-     << " assumed " << DateFormatter::toString(min->date()) << endl;
-
-    

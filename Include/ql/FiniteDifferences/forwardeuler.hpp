@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/07/09 16:29:27  lballabio
+// Some documentation and market element
+//
 // Revision 1.4  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -49,12 +52,29 @@ namespace QuantLib {
     namespace FiniteDifferences {
 
         //! Forward Euler scheme for finite difference methods
-        /*! Differential operators must be derived from either 
-            TimeConstantOperator or TimeDependentOperator.
-            They must also implement at least the following interface:
+        /*! This class implements the explicit forward Euler scheme for the 
+            discretization in time of the differential equation
+            \f[ 
+                \frac{\partial f}{\partial t} = Lf.
+            \f]
+            In this scheme, the above equation is discretized as
+            \f[ 
+                \frac{f^{(k)}-f^{(k-1)}}{\Delta t} = Lf^{(k)}
+            \f]
+            hence
+            \f[
+                f^{(k-1)} = \left( I - \Delta t L \right) f^{(k)}
+            \f]
+            from which \f$f^{(k-1)}\f$ can be obtained directly.
+            
+            \par
+            In this implementation, the operator \f$L\f$ must be derived 
+            from either TimeConstantOperator or TimeDependentOperator.
+            Also, it must implement at least the following interface:
 
             \code
-            // copy constructor (might be provided by the compiler)
+            // copy constructor/assignment
+            // (these will be provided by the compiler if none is defined)
             Operator(const Operator&);
 
             // modifiers

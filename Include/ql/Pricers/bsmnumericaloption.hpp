@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/09 16:29:27  lballabio
+// Some documentation and market element
+//
 // Revision 1.8  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -50,16 +53,16 @@ namespace QuantLib {
         //! Black-Scholes-Merton option priced numerically
         class BSMNumericalOption : public BSMOption {
           public:
-                BSMNumericalOption(Type type, double underlying, double strike,
-                    Rate dividendYield, Rate riskFreeRate, Time residualTime,
-                    double volatility, int gridPoints);
-                // accessors
-                virtual void calculate() const = 0;
-                double value() const;
-                double delta() const;
-                double gamma() const;
-                double theta() const;
-                Array getGrid() const{return grid_;}
+            BSMNumericalOption(Type type, double underlying, double strike,
+                Rate dividendYield, Rate riskFreeRate, Time residualTime,
+                double volatility, int gridPoints);
+            // accessors
+            virtual void calculate() const = 0;
+            double value() const;
+            double delta() const;
+            double gamma() const;
+            double theta() const;
+            Array getGrid() const{return grid_;}
 
           protected:
             // methods
@@ -93,7 +96,7 @@ namespace QuantLib {
         inline int BSMNumericalOption::safeGridPoints(int gridPoints,
                                                         Time residualTime){
             return QL_MAX(gridPoints,
-              residualTime>1.0 ? (int)(QL_NUM_OPT_MIN_GRID_POINTS +
+              residualTime>1.0 ? int(QL_NUM_OPT_MIN_GRID_POINTS +
               (residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR) :
               QL_NUM_OPT_MIN_GRID_POINTS);
         }
