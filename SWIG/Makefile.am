@@ -1,4 +1,8 @@
-EXTRA_DIST=README.txt \
+includedir = $(prefix)/include/ql/SWIG
+
+EXTRA_DIST = README.txt
+
+include_HEADERS = \
 	Barrier.i BoundaryConditions.i Calendars.i Currencies.i \
 	Date.i DayCounters.i Distributions.i Financial.i History.i \
 	Instruments.i Interpolation.i Matrix.i MontecarloPricers.i \
