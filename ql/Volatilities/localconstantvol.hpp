@@ -44,25 +44,42 @@ namespace QuantLib {
                                  public Patterns::Observer {
           public:
             // constructor
-            LocalConstantVol(const Handle<BlackConstantVol>& blackConstantVol);
+            LocalConstantVol(
+                const Date& referenceDate,
+                double volatility,
+                const DayCounter& dayCounter = DayCounters::Actual365());
+            LocalConstantVol(
+                const Date& referenceDate,
+                const RelinkableHandle<MarketElement>& volatility,
+                const DayCounter& dayCounter = DayCounters::Actual365());
             // inspectors
-            Date referenceDate() const { return blackConstantVol_->referenceDate(); }
-            DayCounter dayCounter() const { return blackConstantVol_->dayCounter(); }
-            Date maxDate() const { return blackConstantVol_->maxDate(); }
+            Date referenceDate() const { return referenceDate_; }
+            DayCounter dayCounter() const { return dayCounter_; }
+            Date maxDate() const { return Date::maxDate(); }
             // Observer interface
             void update();
-          protected:
-            double localVolImpl(Time t1, Time t2, double, bool extrapolate) const;
           private:
-            Handle<BlackConstantVol> blackConstantVol_;
+            double localVolImpl(Time,Time,double,bool extrapolate) const;
+            Date referenceDate_;
+            RelinkableHandle<MarketElement> volatility_;
+            DayCounter dayCounter_;
         };
 
         // inline definitions
 
-        inline LocalConstantVol::LocalConstantVol(
-            const Handle<BlackConstantVol>& blackConstantVol)
-        : blackConstantVol_(blackConstantVol) {
-            registerWith(blackConstantVol_);
+        inline LocalConstantVol::LocalConstantVol(const Date& referenceDate, 
+            double volatility, const DayCounter& dayCounter)
+        : referenceDate_(referenceDate), dayCounter_(dayCounter) {
+            volatility_.linkTo(
+                Handle<MarketElement>(new SimpleMarketElement(volatility)));
+        }
+            
+        inline LocalConstantVol::LocalConstantVol(const Date& referenceDate, 
+            const RelinkableHandle<MarketElement>& volatility, 
+            const DayCounter& dayCounter)
+        : referenceDate_(referenceDate), volatility_(volatility), 
+          dayCounter_(dayCounter) {
+            registerWith(volatility_);
         }
 
         inline void LocalConstantVol::update() {
@@ -70,11 +87,14 @@ namespace QuantLib {
         }
 
         inline double LocalConstantVol::localVolImpl(Time t1, Time t2,
-            double, bool extrapolate) const {
-            return blackConstantVol_->blackForwardVol(t1, t2, 0.0, extrapolate);
+                                        double, bool extrapolate) const {
+            QL_REQUIRE(t1 >= 0.0, "LocalConstantVol: negative time given");
+            QL_REQUIRE(t2 > t1, "LocalConstantVol: t1 later than t2");
+            return volatility_->value();
         }
     }
 
 }
+
 
 #endif
