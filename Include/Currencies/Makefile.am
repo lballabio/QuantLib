@@ -1,12 +1,12 @@
 includedir = $(prefix)/include/QuantLib/Currencies
-include_HEADERS = aud.h \
-	cad.h \
-	chf.h \
-	dem.h \
-	dkk.h \
-	eur.h \
-	gbp.h \
-	itl.h \
-	jpy.h \
-	sek.h \
-	usd.h
+include_HEADERS = aud.hpp \
+	cad.hpp \
+	chf.hpp \
+	dem.hpp \
+	dkk.hpp \
+	eur.hpp \
+	gbp.hpp \
+	itl.hpp \
+	jpy.hpp \
+	sek.hpp \
+	usd.hpp

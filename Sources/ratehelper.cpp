@@ -26,6 +26,11 @@
 
     $Source$
     $Log$
+    Revision 1.5  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.4  2001/03/19 18:39:10  nando
     conflict resolved
 
@@ -44,7 +49,7 @@
 
 */
 
-#include "ratehelper.h"
+#include "ratehelper.hpp"
 
 
 namespace QuantLib {

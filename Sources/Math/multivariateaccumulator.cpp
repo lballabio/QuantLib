@@ -26,6 +26,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.6  2001/02/22 14:25:41  lballabio
     Template methods moved to header file
 
@@ -49,7 +54,7 @@
 
 */
 
-#include "multivariateaccumulator.h"
+#include "multivariateaccumulator.hpp"
 
 namespace QuantLib {
 

@@ -1,34 +1,34 @@
 includedir = $(prefix)/include/QuantLib/MonteCarlo
-include_HEADERS = antitheticcv.h \
-	avgpriceasianpathpricer.h \
-	avgstrikeasianpathpricer.h \
-	basketpathpricer.h \
-	boxmuller.h \
-	centrallimitgaussian.h \
-	controlvariatedpathpricer.h \
-	europeanpathpricer.h \
-	everestpathpricer.h \
-	gaussianrandomgenerator.h \
-	gaussianarraygenerator.h \
-	generalmontecarlo.h \
-	geometricasianpathpricer.h \
-	getcovariance.h \
-	himalayapathpricer.h \
-	lecuyerrandomgenerator.h \
-	mcoptionsample.h \
-	mcpricer.h \
-	multifactormontecarlooption.h \
-	multifactorpricer.h \
-	multipath.h \
-	multipathgenerator.h \
-	multipathpricer.h \
-	pagodapathpricer.h \
-	onefactormontecarlooption.h \
-	path.h \
-	pathmontecarlo.h \
-	pathpricer.h \
-	randomarraygenerator.h \
-	standardmultipathgenerator.h \
-	standardpathgenerator.h \
-	uniformrandomgenerator.h
+include_HEADERS = antitheticcv.hpp \
+	avgpriceasianpathpricer.hpp \
+	avgstrikeasianpathpricer.hpp \
+	basketpathpricer.hpp \
+	boxmuller.hpp \
+	centrallimitgaussian.hpp \
+	controlvariatedpathpricer.hpp \
+	europeanpathpricer.hpp \
+	everestpathpricer.hpp \
+	gaussianrandomgenerator.hpp \
+	gaussianarraygenerator.hpp \
+	generalmontecarlo.hpp \
+	geometricasianpathpricer.hpp \
+	getcovariance.hpp \
+	himalayapathpricer.hpp \
+	lecuyerrandomgenerator.hpp \
+	mcoptionsample.hpp \
+	mcpricer.hpp \
+	multifactormontecarlooption.hpp \
+	multifactorpricer.hpp \
+	multipath.hpp \
+	multipathgenerator.hpp \
+	multipathpricer.hpp \
+	pagodapathpricer.hpp \
+	onefactormontecarlooption.hpp \
+	path.hpp \
+	pathmontecarlo.hpp \
+	pathpricer.hpp \
+	randomarraygenerator.hpp \
+	standardmultipathgenerator.hpp \
+	standardpathgenerator.hpp \
+	uniformrandomgenerator.hpp
 

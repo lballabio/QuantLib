@@ -1,20 +1,20 @@
 includedir = $(prefix)/include/QuantLib/FiniteDifferences
-include_HEADERS = backwardeuler.h \
-	boundarycondition.h \
-	bsmoperator.h \
-	cranknicolson.h \
-	dminus.h \
-	dplus.h \
-	dplusdminus.h \
-	dzero.h \
-	finitedifferencemodel.h \
-	forwardeuler.h \
-	identity.h \
-	operator.h \
-	operatortraits.h \
-	stepcondition.h \
-	standardstepcondition.h \
-	standardfdmodel.h \
-	tridiagonaloperator.h \
-	valueatcenter.h
+include_HEADERS = backwardeuler.hpp \
+	boundarycondition.hpp \
+	bsmoperator.hpp \
+	cranknicolson.hpp \
+	dminus.hpp \
+	dplus.hpp \
+	dplusdminus.hpp \
+	dzero.hpp \
+	finitedifferencemodel.hpp \
+	forwardeuler.hpp \
+	identity.hpp \
+	operator.hpp \
+	operatortraits.hpp \
+	stepcondition.hpp \
+	standardstepcondition.hpp \
+	standardfdmodel.hpp \
+	tridiagonaloperator.hpp \
+	valueatcenter.hpp
 

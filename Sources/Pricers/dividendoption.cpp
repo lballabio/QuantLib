@@ -26,6 +26,11 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.2  2001/03/21 10:48:08  marmar
     valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
     are no longer methods of BSMNumericalOption but separate
@@ -37,10 +42,10 @@
 
 */
 
-#include "dividendoption.h"
-#include "cubicspline.h"
-#include "dividendeuropeanoption.h"
-#include "valueatcenter.h"
+#include "dividendoption.hpp"
+#include "cubicspline.hpp"
+#include "dividendeuropeanoption.hpp"
+#include "valueatcenter.hpp"
 
 namespace QuantLib {
 

@@ -28,6 +28,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.10  2001/02/26 17:00:07  lballabio
     Moved constructor to .cpp - inlined constructors raising exceptions are bad medicine
 
@@ -48,9 +53,9 @@
     
 */
 
-#include "tridiagonaloperator.h"
-#include "dataformatters.h"
-#include "qlerrors.h"
+#include "tridiagonaloperator.hpp"
+#include "dataformatters.hpp"
+#include "qlerrors.hpp"
 
 namespace QuantLib {
 

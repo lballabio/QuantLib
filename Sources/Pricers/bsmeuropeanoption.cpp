@@ -27,6 +27,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.23  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.22  2001/02/20 11:14:19  marmar
     "growth" replaced with dividend
 
@@ -45,8 +50,8 @@
 
 */
 
-#include "bsmeuropeanoption.h"
-#include "normaldistribution.h"
+#include "bsmeuropeanoption.hpp"
+#include "normaldistribution.hpp"
 
 namespace QuantLib {
 

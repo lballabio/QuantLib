@@ -27,6 +27,11 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.2  2001/02/19 12:19:29  marmar
     Added trailing _ to protected and private members
 
@@ -35,7 +40,7 @@
 
 */
 
-#include "dividendeuropeanoption.h"
+#include "dividendeuropeanoption.hpp"
 
 namespace QuantLib {
 

@@ -27,6 +27,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.10  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -35,7 +40,7 @@
 
 */
 
-#include "thirty360italian.h"
+#include "thirty360italian.hpp"
 
 namespace QuantLib {
 

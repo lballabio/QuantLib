@@ -27,13 +27,18 @@
   
   $Source$
   $Log$
+  Revision 1.2  2001/04/04 11:07:24  nando
+  Headers policy part 1:
+  Headers should have a .hpp (lowercase) filename extension
+  All *.h renamed to *.hpp
+
   Revision 1.1  2001/04/04 09:37:04  marmar
   introducing cliquet option
 
 */
 
-#include "cliquetoption.h"
-#include "normaldistribution.h"
+#include "cliquetoption.hpp"
+#include "normaldistribution.hpp"
 
 namespace QuantLib
 {

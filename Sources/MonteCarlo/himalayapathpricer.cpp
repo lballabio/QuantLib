@@ -25,6 +25,11 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.2  2001/03/06 15:13:36  marmar
     Himalaya option now can handle any number of time steps
 
@@ -33,9 +38,9 @@
 
 */
 
-#include "himalayapathpricer.h"
-#include "qlerrors.h"
-#include "dataformatters.h"
+#include "himalayapathpricer.hpp"
+#include "qlerrors.hpp"
+#include "dataformatters.hpp"
 
 namespace QuantLib {
 

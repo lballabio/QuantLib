@@ -1,2 +1,2 @@
 includedir = $(prefix)/include/QuantLib/Patterns
-include_HEADERS = observable.h 
+include_HEADERS = observable.hpp

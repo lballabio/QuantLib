@@ -25,6 +25,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.7  2001/02/13 10:02:57  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -50,9 +55,9 @@
     
 */
 
-#include "mceuropeanpricer.h"
-#include "handle.h"
-#include "europeanpathpricer.h"
+#include "mceuropeanpricer.hpp"
+#include "handle.hpp"
+#include "europeanpathpricer.hpp"
 
 namespace QuantLib {
 

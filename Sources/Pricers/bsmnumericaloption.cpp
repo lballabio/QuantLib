@@ -28,6 +28,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.35  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.34  2001/03/21 11:31:55  marmar
     Main loop tranfered from method value to method calculate.
     Methods vega and rho belong now to class BSMOption
@@ -94,8 +99,8 @@
     
 */
 
-#include "bsmnumericaloption.h"
-#include "valueatcenter.h"
+#include "bsmnumericaloption.hpp"
+#include "valueatcenter.hpp"
 
 namespace QuantLib {
 

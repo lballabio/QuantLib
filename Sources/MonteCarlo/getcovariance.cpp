@@ -25,12 +25,17 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.1  2001/03/15 13:48:00  marmar
     getCovariance function added
 
 */
 
-#include "getcovariance.h"
+#include "getcovariance.hpp"
 
 namespace QuantLib {
 

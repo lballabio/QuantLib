@@ -27,6 +27,11 @@
 
     $Source$
     $Log$
+    Revision 1.14  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.13  2001/03/12 17:35:11  lballabio
     Removed global IsNull function - could have caused very vicious loops
 
@@ -44,7 +49,7 @@
 
 */
 
-#include "dataformatters.h"
+#include "dataformatters.hpp"
 #include <stdio.h>
 
 namespace QuantLib {

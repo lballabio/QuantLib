@@ -25,6 +25,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.2  2001/01/05 15:58:27  lballabio
     Fixed Doxygen documentation
 
@@ -39,7 +44,7 @@
             
 */
 
-#include "controlvariatedpathpricer.h"
+#include "controlvariatedpathpricer.hpp"
 
 namespace QuantLib {
 

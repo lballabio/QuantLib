@@ -26,13 +26,18 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.1  2001/03/20 15:27:38  marmar
     DividendOption and DividendShoutOption are examples of
      MultiPeriodOption's
 
 */
 
-#include "dividendshoutoption.h"
+#include "dividendshoutoption.hpp"
 
 namespace QuantLib {
 

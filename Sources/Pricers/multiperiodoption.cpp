@@ -27,6 +27,11 @@
 
     $Source$
     $Log$
+    Revision 1.5  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.4  2001/04/03 17:05:33  marmar
     Error messages are now more clear
 
@@ -44,9 +49,9 @@
 
 */
 
-#include "americancondition.h"
-#include "multiperiodoption.h"
-#include "valueatcenter.h"
+#include "americancondition.hpp"
+#include "multiperiodoption.hpp"
+#include "valueatcenter.hpp"
 
 namespace QuantLib {
 

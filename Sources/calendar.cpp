@@ -27,6 +27,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.16  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.15  2001/03/02 15:43:36  lballabio
     Fixed a bug in advance() with a negative number of days
 
@@ -50,7 +55,7 @@
 
 */
 
-#include "calendar.h"
+#include "calendar.hpp"
 
 namespace QuantLib {
 

@@ -26,6 +26,11 @@
 
     $Source$
     $Log$
+    Revision 1.5  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.4  2001/03/21 11:31:55  marmar
     Main loop tranfered from method value to method calculate.
     Methods vega and rho belong now to class BSMOption
@@ -50,11 +55,11 @@
 
 */
 
-#include "stepconditionoption.h"
-#include "bsmeuropeanoption.h"
-#include "standardfdmodel.h"
-#include "standardstepcondition.h"
-#include "valueatcenter.h"
+#include "stepconditionoption.hpp"
+#include "bsmeuropeanoption.hpp"
+#include "standardfdmodel.hpp"
+#include "standardstepcondition.hpp"
+#include "valueatcenter.hpp"
 
 namespace QuantLib {
     namespace Pricers {

@@ -1,8 +1,8 @@
 
 #include <stdio.h>
 #include <iostream>
-#include "helloworld.h"
-#include "dataformatters.h"
+#include "helloworld.hpp"
+#include "dataformatters.hpp"
 
 
 void HelloWorld() {

@@ -1,3 +1,3 @@
 includedir = $(prefix)/include/QuantLib/TermStructures
-include_HEADERS = flatforward.h \
-	piecewiseconstantforwards.h
+include_HEADERS = flatforward.hpp \
+	piecewiseconstantforwards.hpp

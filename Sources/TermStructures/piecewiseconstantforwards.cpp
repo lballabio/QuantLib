@@ -28,6 +28,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.18  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.17  2001/01/18 16:22:28  nando
     deposit file and class renamed to DepositRate
 
@@ -53,7 +58,7 @@
 
 */
 
-#include "piecewiseconstantforwards.h"
+#include "piecewiseconstantforwards.hpp"
 
 namespace QuantLib {
 

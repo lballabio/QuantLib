@@ -27,6 +27,11 @@
 
     $Source$
     $Log$
+    Revision 1.18  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.17  2001/04/02 10:59:49  lballabio
     Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
 
@@ -52,8 +57,8 @@
  */
 
 
-#include "newton.h"
-#include "newtonsafe.h"
+#include "newton.hpp"
+#include "newtonsafe.hpp"
 
 namespace QuantLib {
 

@@ -27,9 +27,14 @@
 
 	$Source$
 	$Log$
+	Revision 1.14  2001/04/04 11:07:24  nando
+	Headers policy part 1:
+	Headers should have a .hpp (lowercase) filename extension
+	All *.h renamed to *.hpp
+
 	Revision 1.13  2001/03/26 08:51:49  lballabio
 	really fixed line wrappings
-
+	
 	Revision 1.12  2001/03/26 08:47:00  lballabio
 	Fixed line wrappings
 	
@@ -41,7 +46,7 @@
 	
 */
 
-#include "newyork.h"
+#include "newyork.hpp"
 
 namespace QuantLib {
 

@@ -25,14 +25,19 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.1  2001/03/22 12:12:52  marmar
     Introducing pagoda options
 
 */
 
-#include "pagodapathpricer.h"
-#include "qlerrors.h"
-#include "dataformatters.h"
+#include "pagodapathpricer.hpp"
+#include "qlerrors.hpp"
+#include "dataformatters.hpp"
 #include <iostream>
 
 namespace QuantLib {

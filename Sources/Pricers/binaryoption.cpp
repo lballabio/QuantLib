@@ -28,13 +28,18 @@
   $Source$
 
   $Log$
+  Revision 1.2  2001/04/04 11:07:24  nando
+  Headers policy part 1:
+  Headers should have a .hpp (lowercase) filename extension
+  All *.h renamed to *.hpp
+
   Revision 1.1  2001/03/01 12:57:39  enri
   class BinaryOption added, test it with binary_option.py
 
 */
 
-#include "binaryoption.h"
-#include "normaldistribution.h"
+#include "binaryoption.hpp"
+#include "normaldistribution.hpp"
 
 namespace QuantLib
 {

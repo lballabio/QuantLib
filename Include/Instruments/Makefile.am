@@ -1,2 +1,2 @@
 includedir = $(prefix)/include/QuantLib/Instruments
-include_HEADERS = stock.h 
+include_HEADERS = stock.hpp

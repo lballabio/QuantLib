@@ -27,6 +27,11 @@
 
     $Source$
     $Log$
+    Revision 1.5  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.4  2001/03/28 12:40:42  lballabio
     Added constness to initialize() and mutableness to data members (how did this compile before?)
 
@@ -41,7 +46,7 @@
 
 */
 
-#include "barrieroption.h"
+#include "barrieroption.hpp"
 
 namespace QuantLib {
 

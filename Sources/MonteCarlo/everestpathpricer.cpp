@@ -25,6 +25,11 @@
 
     $Sourc$
     $Log$
+    Revision 1.3  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.2  2001/03/07 09:33:08  marmar
     Spot prices not necessary for evaluation of everest option
 
@@ -33,9 +38,9 @@
 
 */
 
-#include "everestpathpricer.h"
-#include "qlerrors.h"
-#include "dataformatters.h"
+#include "everestpathpricer.hpp"
+#include "qlerrors.hpp"
+#include "dataformatters.hpp"
 
 namespace QuantLib {
 

@@ -27,15 +27,20 @@
 
 	$Source$
 	$Log$
+	Revision 1.11  2001/04/04 11:07:24  nando
+	Headers policy part 1:
+	Headers should have a .hpp (lowercase) filename extension
+	All *.h renamed to *.hpp
+
 	Revision 1.10  2001/03/26 08:47:00  lballabio
 	Fixed line wrappings
-
+	
 	Revision 1.9  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
 */
 
-#include "westerncalendar.h"
+#include "westerncalendar.hpp"
 
 namespace QuantLib {
 

@@ -26,6 +26,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.3  2001/02/13 15:05:24  lballabio
     Trimmed a couple of long file names for Mac compatibility
 
@@ -38,13 +43,13 @@
 
 */
 
-#include "handle.h"
-#include "standardpathgenerator.h"
-#include "averagestrikeasian.h"
-#include "controlvariatedpathpricer.h"
-#include "avgstrikeasianpathpricer.h"
-#include "geometricasianpathpricer.h"
-#include "geometricasianoption.h"
+#include "handle.hpp"
+#include "standardpathgenerator.hpp"
+#include "averagestrikeasian.hpp"
+#include "controlvariatedpathpricer.hpp"
+#include "avgstrikeasianpathpricer.hpp"
+#include "geometricasianpathpricer.hpp"
+#include "geometricasianoption.hpp"
 
 namespace QuantLib {
 

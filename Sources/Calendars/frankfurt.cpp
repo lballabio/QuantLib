@@ -27,9 +27,14 @@
 
 	$Source$
 	$Log$
+	Revision 1.12  2001/04/04 11:07:24  nando
+	Headers policy part 1:
+	Headers should have a .hpp (lowercase) filename extension
+	All *.h renamed to *.hpp
+
 	Revision 1.11  2001/03/26 08:47:00  lballabio
 	Fixed line wrappings
-
+	
 	Revision 1.10  2001/01/04 20:09:31  nando
 	few changes: enumerations, tab/spaces, more checks, python test, bug fixed
 	
@@ -38,7 +43,7 @@
 	
 */
 
-#include "frankfurt.h"
+#include "frankfurt.hpp"
 
 namespace QuantLib {
 

@@ -25,6 +25,11 @@
     
     $Source$
     $Log$
+    Revision 1.6  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.5  2001/03/28 13:40:52  marmar
     MultiPathGenerator now has a default for mean
 
@@ -43,9 +48,9 @@
 
 */
 
-#include "handle.h"
-#include "himalayapathpricer.h"
-#include "himalaya.h"
+#include "handle.hpp"
+#include "himalayapathpricer.hpp"
+#include "himalaya.hpp"
 
 namespace QuantLib {
 

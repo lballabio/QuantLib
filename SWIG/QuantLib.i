@@ -23,6 +23,11 @@
 
 /* $Source$
    $Log$
+   Revision 1.32  2001/04/04 11:07:24  nando
+   Headers policy part 1:
+   Headers should have a .hpp (lowercase) filename extension
+   All *.h renamed to *.hpp
+
    Revision 1.31  2001/04/02 14:10:44  lballabio
    Added Brent solver to Ruby module
 
@@ -56,7 +61,7 @@
 %module QuantLib
 
 %{
-#include "quantlib.h"
+#include "quantlib.hpp"
 %}
 
 %{

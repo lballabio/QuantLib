@@ -27,6 +27,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.3  2001/02/16 15:14:07  lballabio
     renamed sqrt to matrixSqrt
 
@@ -47,7 +52,7 @@
     only 2 spaces are used for each indentation
 */
 
-#include "symmetricschurdecomposition.h"
+#include "symmetricschurdecomposition.hpp"
 
 namespace QuantLib {
   

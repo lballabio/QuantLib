@@ -1,7 +1,7 @@
 
-#include "history.h"
-#include "statistics.h"
-#include "qlerrors.h"
+#include "history.hpp"
+#include "statistics.hpp"
+#include "qlerrors.hpp"
 #include <iostream>
 #include <algorithm>
 

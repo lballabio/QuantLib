@@ -27,6 +27,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/04/04 11:07:24  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
+
     Revision 1.10  2001/01/11 18:06:22  nando
     generalized to sigma<>1 and average<>0
     Also added NormalDistribution.derivative().
@@ -41,9 +46,9 @@
     
 */
 
-#include "normaldistribution.h"
-#include "qlerrors.h"
-#include "dataformatters.h"
+#include "normaldistribution.hpp"
+#include "qlerrors.hpp"
+#include "dataformatters.hpp"
 
 namespace QuantLib {
 
