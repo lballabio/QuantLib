@@ -32,6 +32,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.34  2001/02/19 12:05:03  lballabio
+    Corrected documentation
+
     Revision 1.33  2001/02/19 11:04:40  lballabio
     Refined a few macros
 
@@ -374,6 +377,11 @@
     For the code to be portable this macro should be used instead of the actual 
     struct.
 */
+/*! \def QL_SPECIALIZE_ITERATOR_TRAITS
+    When using the QuantLib implementation of iterator_traits, this macro might 
+    be needed to specialize QL_ITERATOR_TRAITS for a pointer to a user-defined 
+    type.
+*/
 #if !defined(QL_ITERATOR_TRAITS)
     template <class Iterator>
     struct __quantlib_iterator_traits {
@@ -384,10 +392,6 @@
         typedef typename Iterator::iterator_category    iterator_category;
     };
     #define QL_ITERATOR_TRAITS  __quantlib_iterator_traits
-    /*! \def QL_SPECIALIZE_ITERATOR_TRAITS
-        This macro can be used to specialize QL_ITERATOR_TRAITS for a pointer to 
-        a user-defined type.
-    */
     #define QL_SPECIALIZE_ITERATOR_TRAITS(T) \
     template<> \
     struct QL_ITERATOR_TRAITS<T*> { \
