@@ -20,7 +20,7 @@ OBJS = \
        blackswaption.obj$(_D) \
        fdbermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
-       binomialplainoption.obj$(_D) \
+       binomialvanillaengine.obj$(_D) \
        capfloorpricer.obj$(_D) \
        cliquetoption.obj$(_D) \
        discretegeometricapo.obj$(_D) \
@@ -49,7 +49,8 @@ OBJS = \
        performanceoption.obj$(_D) \
        singleassetoption.obj$(_D) \
        swaptionpricer.obj$(_D) \
-       treeswaption.obj$(_D)
+       treeswaption.obj$(_D) \
+       vanillaoptionengine.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

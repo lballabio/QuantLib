@@ -94,7 +94,7 @@ namespace QuantLib {
                     new Swap(floatingLeg, fixedLeg, termStructure));
                 Rate fairRate = fixedRate - 
                     swap->NPV()/swap->secondLegBPS();
-                engine_  = Handle<OptionPricingEngine>( 
+                engine_  = Handle<PricingEngine>( 
                     new Pricers::BlackCapFloor(blackModel_));
                 cap_ = Handle<VanillaCap>(
                     new VanillaCap(floatingLeg, std::vector<Rate>(1, fairRate), 
@@ -121,7 +121,7 @@ namespace QuantLib {
                 Handle<MarketElement> vol(new SimpleMarketElement(sigma));
                 Handle<BlackModel> blackModel(
                     new BlackModel(vol, termStructure_));
-                Handle<OptionPricingEngine> black(
+                Handle<PricingEngine> black(
                     new Pricers::BlackCapFloor(blackModel));
                 cap_->setPricingEngine(black);
                 double value = cap_->NPV();

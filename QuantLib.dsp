@@ -1636,6 +1636,10 @@ SOURCE=.\ql\option.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\pricingengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\qldefines.hpp
 # End Source File
 # Begin Source File

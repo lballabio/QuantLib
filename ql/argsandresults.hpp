@@ -28,6 +28,7 @@
 #define quantlib_args_and_results_h
 
 #include <ql/qldefines.hpp>
+#include <ql/null.hpp>
 
 namespace QuantLib {
 
@@ -42,6 +43,75 @@ namespace QuantLib {
       public:
         virtual ~Results() {}
     };
+
+
+
+    //! %option pricing results
+    /*! It must be noted that there's no result data specifying
+        whether the option is expired. The expiry condition should be 
+        checked before calling the engine.
+    */
+    class OptionValue : public virtual Results {
+      public:
+        OptionValue() : value(Null<double>()) {}
+        double value;
+    };
+
+    //! %option pricing results
+    class OptionDelta : public virtual Results {
+      public:
+        OptionDelta() : delta(Null<double>()) {}
+        double delta;
+    };
+
+    //! %option pricing results
+    class OptionGamma : public virtual Results {
+      public:
+        OptionGamma() : gamma(Null<double>()) {}
+        double gamma;
+    };
+
+    //! %option pricing results
+    class OptionTheta : public virtual Results {
+      public:
+        OptionTheta() : theta(Null<double>()) {}
+        double theta;
+    };
+
+    //! %option pricing results
+    class OptionVega : public virtual Results {
+      public:
+        OptionVega() : vega(Null<double>()) {}
+        double vega;
+    };
+
+    //! %option pricing results
+    class OptionRho : public virtual Results {
+      public:
+        OptionRho() : rho(Null<double>()) {}
+        double rho;
+    };
+
+    //! %option pricing results
+    class OptionDividendRho : public virtual Results {
+      public:
+        OptionDividendRho() : dividendRho(Null<double>()) {}
+        double dividendRho;
+    };
+
+    //! %option pricing results
+    class OptionGreeks : public virtual Results {
+      public:
+        OptionGreeks() : delta(Null<double>()), gamma(Null<double>()),
+                         theta(Null<double>()), vega(Null<double>()),
+                         rho(Null<double>()), dividendRho(Null<double>()) {}
+        double delta, gamma;
+        double theta;
+        double vega;
+        double rho, dividendRho;
+    };
+
+
 
 }
 

@@ -69,7 +69,7 @@ namespace QuantLib {
             //! Black price given a volatility
             virtual double blackPrice(double volatility) const = 0;
 
-            void setPricingEngine(const Handle<OptionPricingEngine>& engine) {
+            void setPricingEngine(const Handle<PricingEngine>& engine) {
                 engine_ = engine;
             }
 
@@ -77,7 +77,7 @@ namespace QuantLib {
             double marketValue_;
             RelinkableHandle<MarketElement> volatility_;
             Handle<BlackModel> blackModel_;
-            Handle<OptionPricingEngine> engine_;
+            Handle<PricingEngine> engine_;
 
           private:
             class ImpliedVolatilityHelper;
@@ -89,7 +89,7 @@ namespace QuantLib {
         */
         class CalibrationSet : public std::vector<Handle<CalibrationHelper> > {
           public:
-            void setPricingEngine(const Handle<OptionPricingEngine>& engine) {
+            void setPricingEngine(const Handle<PricingEngine>& engine) {
                 for (Size i=0; i<size(); i++)
                     (*this)[i]->setPricingEngine(engine);
             }

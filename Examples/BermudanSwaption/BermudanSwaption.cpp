@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
 
         std::cout << "Hull-White (analytic formulae):" << std::endl;
         swaptions.setPricingEngine(
-            Handle<OptionPricingEngine>(new JamshidianSwaption(modelHW)));
+            Handle<PricingEngine>(new JamshidianSwaption(modelHW)));
 
 
         calibrateModel(modelHW, swaptions, 0.25);
@@ -249,7 +249,7 @@ int main(int argc, char* argv[])
 
         std::cout << "Hull-White (numerical calibration):" << std::endl;
         swaptions.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelHW2, grid)));
+            Handle<PricingEngine>(new TreeSwaption(modelHW2, grid)));
 
 
         calibrateModel(modelHW2, swaptions, 0.25);
@@ -260,7 +260,7 @@ int main(int argc, char* argv[])
 
         std::cout << "Black-Karasinski: " << std::endl;
         swaptions.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelBK, grid)));
+            Handle<PricingEngine>(new TreeSwaption(modelBK, grid)));
         calibrateModel(modelBK, swaptions, 0.25);
         std::cout << "calibrated to "
                   << ArrayFormatter::toString(modelBK->params())
@@ -279,55 +279,55 @@ int main(int argc, char* argv[])
 
         Instruments::Swaption bermudanSwaption(atmSwap,
             BermudanExercise(bermudanDates), rhTermStructure,
-            Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
         //Do the pricing for each model
         bermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
         std::cout << "HW:       " << bermudanSwaption.NPV() << std::endl;
 
         bermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelHW2, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelHW2, 100)));
         std::cout << "HW (num): " << bermudanSwaption.NPV() << std::endl;
 
         bermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << bermudanSwaption.NPV() << std::endl;
 
         std::cout << "Pricing an OTM bermudan swaption" << std::endl;
 
         Instruments::Swaption otmBermudanSwaption(otmSwap,
             BermudanExercise(bermudanDates), rhTermStructure,
-            Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
         //Do the pricing for each model
         otmBermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
         std::cout << "HW:       " << otmBermudanSwaption.NPV() << std::endl;
 
         otmBermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelHW2, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelHW2, 100)));
         std::cout << "HW (num): " << otmBermudanSwaption.NPV() << std::endl;
 
         otmBermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << otmBermudanSwaption.NPV() << std::endl;
 
         std::cout << "Pricing an ITM bermudan swaption" << std::endl;
 
         Instruments::Swaption itmBermudanSwaption(itmSwap,
             BermudanExercise(bermudanDates), rhTermStructure,
-            Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
         //Do the pricing for each model
         itmBermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
         std::cout << "HW:       " << itmBermudanSwaption.NPV() << std::endl;
         itmBermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelHW2, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelHW2, 100)));
         std::cout << "HW (num): " << itmBermudanSwaption.NPV() << std::endl;
         itmBermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
+            Handle<PricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << itmBermudanSwaption.NPV() << std::endl;
 
         return 0;

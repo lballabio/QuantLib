@@ -15,30 +15,30 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file plainoption.cpp
+/*! \file vanillaoption.cpp
     \brief Plain (no dividends, no barriers) option on a single asset
 
     \fullpath
-    ql/Instruments/%plainoption.cpp
+    ql/Instruments/%vanillaoption.cpp
 */
 
 // $Id$
 
-#include <ql/Instruments/plainoption.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
     namespace Instruments {
 
-        PlainOption::PlainOption(Option::Type type,
+        VanillaOption::VanillaOption(Option::Type type,
             const RelinkableHandle<MarketElement>& underlying,
             double strike,
             const RelinkableHandle<TermStructure>& dividendYield,
             const RelinkableHandle<TermStructure>& riskFreeRate,
             const Date& exerciseDate,
             const RelinkableHandle<MarketElement>& volatility,
-            const Handle<OptionPricingEngine>& engine,
+            const Handle<PricingEngine>& engine,
             const std::string& isinCode, const std::string& description)
         : Option(engine, isinCode, description), type_(type),
           underlying_(underlying), strike_(strike),
@@ -50,49 +50,49 @@ namespace QuantLib {
             registerWith(volatility_);
         }
 
-        double PlainOption::delta() const {
+        double VanillaOption::delta() const {
             calculate();
             QL_REQUIRE(delta_ != Null<double>(),
                        "delta calculation failed");
             return delta_;
         }
 
-        double PlainOption::gamma() const {
+        double VanillaOption::gamma() const {
             calculate();
             QL_REQUIRE(gamma_ != Null<double>(),
                        "gamma calculation failed");
             return gamma_;
         }
 
-        double PlainOption::theta() const {
+        double VanillaOption::theta() const {
             calculate();
             QL_REQUIRE(theta_ != Null<double>(),
                        "theta calculation failed");
             return theta_;
         }
 
-        double PlainOption::vega() const {
+        double VanillaOption::vega() const {
             calculate();
             QL_REQUIRE(vega_ != Null<double>(),
                        "vega calculation failed");
             return vega_;
         }
 
-        double PlainOption::rho() const {
+        double VanillaOption::rho() const {
             calculate();
             QL_REQUIRE(rho_ != Null<double>(),
                        "rho calculation failed");
             return rho_;
         }
 
-        double PlainOption::dividendRho() const {
+        double VanillaOption::dividendRho() const {
             calculate();
             QL_REQUIRE(dividendRho_ != Null<double>(),
                        "dividend rho calculation failed");
             return dividendRho_;
         }
 
-        double PlainOption::impliedVolatility(double targetValue,
+        double VanillaOption::impliedVolatility(double targetValue,
           double accuracy, Size maxEvaluations,
           double minVol, double maxVol) const {
             double value = NPV(), vol = volatility_->value();
@@ -107,9 +107,9 @@ namespace QuantLib {
             }
         }
 
-        void PlainOption::setupEngine() const {
-            PlainOptionParameters* parameters =
-                dynamic_cast<PlainOptionParameters*>(
+        void VanillaOption::setupEngine() const {
+            Pricers::VanillaOptionParameters* parameters =
+                dynamic_cast<Pricers::VanillaOptionParameters*>(
                     engine_->parameters());
             QL_REQUIRE(parameters != 0,
                        "pricing engine does not supply needed parameters");
@@ -139,7 +139,7 @@ namespace QuantLib {
             parameters->volatility = volatility_->value();
         }
 
-        void PlainOption::performCalculations() const {
+        void VanillaOption::performCalculations() const {
             if (exerciseDate_ <= riskFreeRate_->settlementDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ = theta_ =
@@ -171,10 +171,10 @@ namespace QuantLib {
         }
 
 
-        PlainOption::ImpliedVolHelper::ImpliedVolHelper(
-            const Handle<OptionPricingEngine>& engine, double targetValue)
+        VanillaOption::ImpliedVolHelper::ImpliedVolHelper(
+            const Handle<PricingEngine>& engine, double targetValue)
         : engine_(engine), targetValue_(targetValue) {
-            parameters_ = dynamic_cast<PlainOptionParameters*>(
+            parameters_ = dynamic_cast<Pricers::VanillaOptionParameters*>(
                 engine_->parameters());
             QL_REQUIRE(parameters_ != 0,
                        "pricing engine does not supply needed parameters");
@@ -184,7 +184,7 @@ namespace QuantLib {
                        "pricing engine does not supply needed results");
         }
 
-        double PlainOption::ImpliedVolHelper::operator()(double x) const {
+        double VanillaOption::ImpliedVolHelper::operator()(double x) const {
             parameters_->volatility = x;
             engine_->calculate();
             return results_->value-targetValue_;
@@ -192,42 +192,6 @@ namespace QuantLib {
 
     }
 
-    namespace Pricers {
-
-        Arguments* PlainOptionEngine::parameters() {
-            return &parameters_;
-        }
-
-        void PlainOptionEngine::validateParameters() const {
-            QL_REQUIRE(parameters_.type != Option::Type(-1),
-                       "no option type given");
-            QL_REQUIRE(parameters_.underlying != Null<double>(),
-                       "null underlying given");
-            QL_REQUIRE(parameters_.underlying > 0.0,
-                       "negative or zero underlying given");
-            QL_REQUIRE(parameters_.strike != Null<double>(),
-                       "null strike given");
-            QL_REQUIRE(parameters_.strike > 0.0,
-                       "negative or zero strike given");
-            QL_REQUIRE(parameters_.dividendYield != Null<double>(),
-                       "null dividend yield given");
-            QL_REQUIRE(parameters_.riskFreeRate != Null<double>(),
-                       "null risk free rate given");
-            QL_REQUIRE(parameters_.residualTime != Null<double>(),
-                       "null residual time given");
-            QL_REQUIRE(parameters_.residualTime > 0.0,
-                       "negative or zero residual time given");
-            QL_REQUIRE(parameters_.volatility != Null<double>(),
-                       "null volatility given");
-            QL_REQUIRE(parameters_.volatility > 0.0,
-                       "negative or zero volatility given");
-        }
-
-        const Results* PlainOptionEngine::results() const {
-            return &results_;
-        }
-
-    }
 
 }
 

@@ -205,7 +205,7 @@ int main(int argc, char* argv[])
             TermStructures::FlatForward(currency, depositDayCounter, todaysDate,
                                    todaysDate, riskFreeRate));
 
-        Instruments::PlainOption option(
+        Instruments::VanillaOption option(
             Option::Call,
             Handle<MarketElement>(new SimpleMarketElement(underlying)),
             strike,
@@ -213,14 +213,14 @@ int main(int argc, char* argv[])
             flatTermStructure,
             todaysDate.plus(3, Months),
             Handle<MarketElement>(new SimpleMarketElement(volatility)),
-            Handle<OptionPricingEngine>(new Pricers::BinomialPlainOption(
-                Pricers::BinomialPlainOption::JarrowRudd, 100)));
+            Handle<PricingEngine>(new Pricers::BinomialVanillaEngine(
+                Pricers::BinomialVanillaEngine::JarrowRudd, 100)));
             
         // seventh method: Binomial Method (JR)
         method = "Binomial (JR)";
-        option.setPricingEngine(Handle<OptionPricingEngine>(
-            new Pricers::BinomialPlainOption(
-                Pricers::BinomialPlainOption::JarrowRudd, 800)));
+        option.setPricingEngine(Handle<PricingEngine>(
+            new Pricers::BinomialVanillaEngine(
+                Pricers::BinomialVanillaEngine::JarrowRudd, 800)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -233,9 +233,9 @@ int main(int argc, char* argv[])
 
         // eigth method: Binomial Method (CRR)
         method = "Binomial (CRR)";
-        option.setPricingEngine(Handle<OptionPricingEngine>(
-            new Pricers::BinomialPlainOption(
-                Pricers::BinomialPlainOption::CoxRossRubinstein, 800)));
+        option.setPricingEngine(Handle<PricingEngine>(
+            new Pricers::BinomialVanillaEngine(
+                Pricers::BinomialVanillaEngine::CoxRossRubinstein, 800)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;

@@ -28,22 +28,19 @@
 #define quantlib_option_h
 
 #include <ql/instrument.hpp>
-#include <ql/argsandresults.hpp>
-#include <ql/null.hpp>
+#include <ql/pricingengine.hpp>
 
 namespace QuantLib {
-
-    class OptionPricingEngine;
 
     //! base option class
     class Option : public Instrument {
       public:
         enum Type { Call, Put, Straddle };
-        Option(const Handle<OptionPricingEngine>& engine,
+        Option(const Handle<PricingEngine>& engine,
                const std::string& isinCode = "",
                const std::string& description = "");
         virtual ~Option();
-        void setPricingEngine(const Handle<OptionPricingEngine>&);
+        void setPricingEngine(const Handle<PricingEngine>&);
       protected:
         virtual void setupEngine() const = 0;
         /*! \warning this method simply launches the engine and copies the 
@@ -53,42 +50,9 @@ namespace QuantLib {
                 checking for validity and only if the check succeeded.
         */
         virtual void performCalculations() const;
-        Handle<OptionPricingEngine> engine_;
+        Handle<PricingEngine> engine_;
     };
 
-    //! %option pricing results
-    /*! It must be noted that there's no result data specifying
-        whether the option is expired. The expiry condition should be 
-        checked before calling the engine.
-    */
-    class OptionValue : public virtual Results {
-      public:
-        OptionValue() : value(Null<double>()) {}
-        double value;
-    };
-
-    //! %option pricing results
-    class OptionGreeks : public virtual Results {
-      public:
-        OptionGreeks() : delta(Null<double>()), gamma(Null<double>()),
-                         theta(Null<double>()), vega(Null<double>()),
-                         rho(Null<double>()), dividendRho(Null<double>()) {}
-        double delta, gamma;
-        double theta;
-        double vega;
-        double rho, dividendRho;
-    };
-
-
-    //! base class for option pricing engines
-    class OptionPricingEngine {
-      public:
-        virtual ~OptionPricingEngine() {}
-        virtual Arguments* parameters() = 0;
-        virtual void validateParameters() const = 0;
-        virtual void calculate() const = 0;
-        virtual const Results* results() const = 0;
-    };
 
 }
 

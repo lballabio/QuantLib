@@ -60,8 +60,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binomialplainoption.obj"
-	-@erase "$(INTDIR)\binomialplainoption.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
@@ -234,8 +234,8 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\plainoption.obj"
-	-@erase "$(INTDIR)\plainoption.sbr"
+	-@erase "$(INTDIR)\vanillaoption.obj"
+	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -337,7 +337,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\plainoption.sbr" \
+	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -352,6 +352,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
@@ -360,10 +361,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\performanceoptionpathpricer.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\binomialplainoption.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -383,6 +385,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
@@ -390,6 +393,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\mchimalaya.sbr" \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
+	"$(INTDIR)\mcperformanceoption.sbr" \
+	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
@@ -437,12 +442,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\performanceoptionpathpricer.sbr" \
-	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
-	"$(INTDIR)\mcperformanceoption.sbr" \
-	"$(INTDIR)\mccliquetoption.sbr" \
-	"$(INTDIR)\performanceoption.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -476,7 +476,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\plainoption.obj" \
+	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -491,6 +491,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
@@ -499,10 +500,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\performanceoptionpathpricer.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\binomialplainoption.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -522,6 +524,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdstepconditionoption.obj" \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceuropean.obj" \
@@ -529,6 +532,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\mchimalaya.obj" \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
+	"$(INTDIR)\mcperformanceoption.obj" \
+	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
@@ -576,12 +581,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\performanceoptionpathpricer.obj" \
-	"$(INTDIR)\cliquetoptionpathpricer.obj" \
-	"$(INTDIR)\mcperformanceoption.obj" \
-	"$(INTDIR)\mccliquetoption.obj" \
-	"$(INTDIR)\performanceoption.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -618,8 +618,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binomialplainoption.obj"
-	-@erase "$(INTDIR)\binomialplainoption.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
@@ -792,8 +792,8 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\plainoption.obj"
-	-@erase "$(INTDIR)\plainoption.sbr"
+	-@erase "$(INTDIR)\vanillaoption.obj"
+	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -896,7 +896,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\plainoption.sbr" \
+	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -911,6 +911,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
@@ -919,10 +920,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\performanceoptionpathpricer.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\binomialplainoption.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -942,6 +944,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
@@ -949,6 +952,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\mchimalaya.sbr" \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
+	"$(INTDIR)\mcperformanceoption.sbr" \
+	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
@@ -996,12 +1001,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\performanceoptionpathpricer.sbr" \
-	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
-	"$(INTDIR)\mcperformanceoption.sbr" \
-	"$(INTDIR)\mccliquetoption.sbr" \
-	"$(INTDIR)\performanceoption.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1035,7 +1035,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\plainoption.obj" \
+	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -1050,6 +1050,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
@@ -1058,10 +1059,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\performanceoptionpathpricer.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\binomialplainoption.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -1081,6 +1083,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdstepconditionoption.obj" \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceuropean.obj" \
@@ -1088,6 +1091,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\mchimalaya.obj" \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
+	"$(INTDIR)\mcperformanceoption.obj" \
+	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
@@ -1135,12 +1140,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\performanceoptionpathpricer.obj" \
-	"$(INTDIR)\cliquetoptionpathpricer.obj" \
-	"$(INTDIR)\mcperformanceoption.obj" \
-	"$(INTDIR)\mccliquetoption.obj" \
-	"$(INTDIR)\performanceoption.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1177,8 +1177,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binomialplainoption.obj"
-	-@erase "$(INTDIR)\binomialplainoption.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
@@ -1351,8 +1351,8 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\plainoption.obj"
-	-@erase "$(INTDIR)\plainoption.sbr"
+	-@erase "$(INTDIR)\vanillaoption.obj"
+	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -1454,7 +1454,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\plainoption.sbr" \
+	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -1469,6 +1469,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
@@ -1477,10 +1478,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\performanceoptionpathpricer.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\binomialplainoption.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -1500,6 +1502,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
@@ -1507,6 +1510,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\mchimalaya.sbr" \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
+	"$(INTDIR)\mcperformanceoption.sbr" \
+	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
@@ -1554,12 +1559,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\performanceoptionpathpricer.sbr" \
-	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
-	"$(INTDIR)\mcperformanceoption.sbr" \
-	"$(INTDIR)\mccliquetoption.sbr" \
-	"$(INTDIR)\performanceoption.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1593,7 +1593,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\plainoption.obj" \
+	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -1608,6 +1608,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
@@ -1616,10 +1617,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\performanceoptionpathpricer.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\binomialplainoption.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -1639,6 +1641,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdstepconditionoption.obj" \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceuropean.obj" \
@@ -1646,6 +1649,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\mchimalaya.obj" \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
+	"$(INTDIR)\mcperformanceoption.obj" \
+	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
@@ -1693,12 +1698,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\performanceoptionpathpricer.obj" \
-	"$(INTDIR)\cliquetoptionpathpricer.obj" \
-	"$(INTDIR)\mcperformanceoption.obj" \
-	"$(INTDIR)\mccliquetoption.obj" \
-	"$(INTDIR)\performanceoption.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1735,8 +1735,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binomialplainoption.obj"
-	-@erase "$(INTDIR)\binomialplainoption.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
@@ -1909,8 +1909,8 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\plainoption.obj"
-	-@erase "$(INTDIR)\plainoption.sbr"
+	-@erase "$(INTDIR)\vanillaoption.obj"
+	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -2013,7 +2013,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\plainoption.sbr" \
+	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -2028,6 +2028,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
@@ -2036,10 +2037,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\performanceoptionpathpricer.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\binomialplainoption.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -2059,6 +2061,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
@@ -2066,6 +2069,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\mchimalaya.sbr" \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
+	"$(INTDIR)\mcperformanceoption.sbr" \
+	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
@@ -2113,12 +2118,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\performanceoptionpathpricer.sbr" \
-	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
-	"$(INTDIR)\mcperformanceoption.sbr" \
-	"$(INTDIR)\mccliquetoption.sbr" \
-	"$(INTDIR)\performanceoption.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2152,7 +2152,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\plainoption.obj" \
+	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -2167,6 +2167,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
@@ -2175,10 +2176,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\performanceoptionpathpricer.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\binomialplainoption.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -2198,6 +2200,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdstepconditionoption.obj" \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceuropean.obj" \
@@ -2205,6 +2208,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\mchimalaya.obj" \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
+	"$(INTDIR)\mcperformanceoption.obj" \
+	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
@@ -2252,12 +2257,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\performanceoptionpathpricer.obj" \
-	"$(INTDIR)\cliquetoptionpathpricer.obj" \
-	"$(INTDIR)\mcperformanceoption.obj" \
-	"$(INTDIR)\mccliquetoption.obj" \
-	"$(INTDIR)\performanceoption.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2451,9 +2451,9 @@ SOURCE=.\ql\Instruments\capfloor.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Instruments\plainoption.cpp
+SOURCE=.\ql\Instruments\vanillaoption.cpp
 
-"$(INTDIR)\plainoption.obj"	"$(INTDIR)\plainoption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\vanillaoption.obj"	"$(INTDIR)\vanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2619,9 +2619,9 @@ SOURCE=.\ql\Pricers\binaryoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\binomialplainoption.cpp
+SOURCE=.\ql\Pricers\binomialvanillaengine.cpp
 
-"$(INTDIR)\binomialplainoption.obj"	"$(INTDIR)\binomialplainoption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\binomialvanillaengine.obj"	"$(INTDIR)\binomialvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

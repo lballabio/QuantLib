@@ -95,7 +95,7 @@ namespace QuantLib {
                   0.0,
                   termStructure));
                 exerciseRate_ = fairFixedRate;
-                engine_  = Handle<OptionPricingEngine>( 
+                engine_  = Handle<PricingEngine>( 
                     new Pricers::BlackSwaption(blackModel_));
                 Date exerciseDate = index->calendar().roll(
                     startDate, index->rollingConvention());
@@ -129,7 +129,7 @@ namespace QuantLib {
                 Handle<MarketElement> vol(new SimpleMarketElement(sigma));
                 Handle<BlackModel> blackModel(
                     new BlackModel(vol, termStructure_));
-                Handle<OptionPricingEngine> black(
+                Handle<PricingEngine> black(
                     new Pricers::BlackSwaption(blackModel));
                 swaption_->setPricingEngine(black);
                 double value = swaption_->NPV();

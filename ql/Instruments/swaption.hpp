@@ -42,7 +42,7 @@ namespace QuantLib {
             Swaption(const Handle<SimpleSwap>& swap,
                      const Exercise& exercise,
                      const RelinkableHandle<TermStructure>& termStructure,
-                     const Handle<OptionPricingEngine>& engine);
+                     const Handle<PricingEngine>& engine);
           protected:
             void performCalculations() const;
             void setupEngine() const;

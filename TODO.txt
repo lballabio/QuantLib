@@ -23,7 +23,7 @@ LIBRARY
     MONTE CARLO FRAMEWORK
         add example of Martingale control variate
         add examples of Montecarlo internal and Montecarlo convergence
-        have random generator as input
+        replace all instance of seed with a random generator
         have statistics class as input
         add Milstein Scheme
         make drift and diffusion time dependant
@@ -97,6 +97,6 @@ VARIUOS
     PRMIA
     Broda
 
-    chech disable warning 4786 better
+    check disable warning 4786 better
     understand difference between multi-threaded and multi-threaded dll
     && (_MSC_VER >= 1200)

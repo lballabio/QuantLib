@@ -26,14 +26,13 @@
 #define quantlib_pricers_binomial_plain_option_h
 
 #include <ql/numericalmethod.hpp>
-//#include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Pricers/vanillaoptionengine.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! analytic pricing engine for European options
+        //! binomial pricing engine for European options
         class BinomialVanillaEngine : public VanillaOptionEngine {
           public:
             enum Type { CoxRossRubinstein, JarrowRudd, LeisenReimer };

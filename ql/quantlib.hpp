@@ -46,6 +46,7 @@
 #include <ql/null.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
+#include <ql/pricingengine.hpp>
 #include <ql/relinkablehandle.hpp>
 #include <ql/riskstatistics.hpp>
 #include <ql/scheduler.hpp>
@@ -112,7 +113,7 @@
 #include <ql/Indexes/xibormanager.hpp>
 
 #include <ql/Instruments/capfloor.hpp>
-#include <ql/Instruments/plainoption.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/Instruments/stock.hpp>
 #include <ql/Instruments/swap.hpp>
@@ -182,7 +183,7 @@
 #include <ql/Pricers/analyticalcapfloor.hpp>
 #include <ql/Pricers/barrieroption.hpp>
 #include <ql/Pricers/binaryoption.hpp>
-#include <ql/Pricers/binomialplainoption.hpp>
+#include <ql/Pricers/binomialvanillaengine.hpp>
 #include <ql/Pricers/blackcapfloor.hpp>
 #include <ql/Pricers/blackswaption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>
@@ -218,6 +219,7 @@
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/Pricers/treecapfloor.hpp>
 #include <ql/Pricers/treeswaption.hpp>
+#include <ql/Pricers/vanillaoptionengine.hpp>
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>

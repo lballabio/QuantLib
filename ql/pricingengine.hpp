@@ -1,6 +1,6 @@
 
-
 /*
+ Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -15,31 +15,32 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file europeanengine.hpp
-    \brief analytic pricing engine for European options
+/*! \file pricingengine.hpp
+    \brief Base class for pricing engines
 
     \fullpath
-    ql/Pricers/%europeanengine.hpp
+    ql/%pricingengine.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_european_engine_h
-#define quantlib_european_engine_h
+#ifndef quantlib_pricingengine_h
+#define quantlib_pricingengine_h
 
-#include <ql/Pricers/vanillaoptionengine.hpp>
+#include <ql/argsandresults.hpp>
+#include <ql/null.hpp>
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! analytic pricing engine for European options
-        class EuropeanEngine : public VanillaOptionEngine {
-          public:
-        void calculate() const;
-        };
-
-    }
+    //! base class for pricing engines
+    class PricingEngine {
+      public:
+        virtual ~PricingEngine() {}
+        virtual Arguments* parameters() = 0;
+        virtual void validateParameters() const = 0;
+        virtual void calculate() const = 0;
+        virtual const Results* results() const = 0;
+    };
 
 }
 

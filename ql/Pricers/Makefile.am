@@ -8,7 +8,7 @@ include_HEADERS = \
     analyticalcapfloor.hpp \
     barrieroption.hpp \
     binaryoption.hpp \
-    binomialplainoption.hpp \
+    binomialvanillaengine.hpp \
     blackcapfloor.hpp \
     blackswaption.hpp \
     capfloorpricer.hpp \
@@ -45,14 +45,15 @@ include_HEADERS = \
     singleassetoption.hpp \
     swaptionpricer.hpp \
     treecapfloor.hpp \
-    treeswaption.hpp
+    treeswaption.hpp \
+    vanillaoptionengine.hpp
 
 EXTRA_DIST=makefile.mak
 
 libPricers_la_SOURCES = \
     analyticalcapfloor.cpp \
     barrieroption.cpp \
-    binomialplainoption.cpp \
+    binomialvanillaengine.cpp \
     blackcapfloor.cpp \
     blackswaption.cpp \
     capfloorpricer.cpp \
@@ -86,6 +87,8 @@ libPricers_la_SOURCES = \
     singleassetoption.cpp \
     swaptionpricer.cpp \
     treecapfloor.cpp \
-    treeswaption.cpp
+    treeswaption.cpp \
+    vanillaoptionengine.cpp
+
 
 noinst_LTLIBRARIES = libPricers.la

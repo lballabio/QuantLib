@@ -6,7 +6,7 @@ includedir = $(prefix)/include/ql/Instruments
 
 include_HEADERS = \
     capfloor.hpp \
-	plainoption.hpp \
+	vanillaoption.hpp \
 	simpleswap.hpp \
 	stock.hpp \
 	swap.hpp \
@@ -18,7 +18,7 @@ libInstruments_la_SOURCES = \
     capfloor.cpp \
     simpleswap.cpp \
     stock.cpp \
-	plainoption.cpp \
+	vanillaoption.cpp \
 	swap.cpp \
     swaption.cpp
 

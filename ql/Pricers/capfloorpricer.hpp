@@ -60,7 +60,7 @@ namespace QuantLib {
             method
         */
         template<class ModelType>
-        class CapFloorPricer : public OptionPricingEngine,
+        class CapFloorPricer : public PricingEngine,
                                public Patterns::Observer,
                                public Patterns::Observable {
           public:

@@ -15,11 +15,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file plainoption.hpp
+/*! \file vanillaoption.hpp
     \brief Plain (no discrete dividends, no barriers) option on a single asset
 
     \fullpath
-    ql/Instruments/%plainoption.hpp
+    ql/Instruments/%vanillaoption.hpp
 */
 
 // $Id$
@@ -30,24 +30,23 @@
 #include <ql/option.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/solver1d.hpp>
+#include <ql/Pricers/vanillaoptionengine.hpp>
 
 namespace QuantLib {
 
     namespace Instruments {
 
-    class PlainOptionParameters;
-
         //! Plain (no discrete dividends, no barriers) option on a single asset
-        class PlainOption : public Option {
+        class VanillaOption : public Option {
           public:
-            PlainOption(Option::Type type,
+            VanillaOption(Option::Type type,
                         const RelinkableHandle<MarketElement>& underlying,
                         double strike,
                         const RelinkableHandle<TermStructure>& dividendYield,
                         const RelinkableHandle<TermStructure>& riskFreeRate,
                         const Date& exerciseDate,
                         const RelinkableHandle<MarketElement>& volatility,
-                        const Handle<OptionPricingEngine>& engine,
+                        const Handle<PricingEngine>& engine,
                         const std::string& isinCode = "",
                         const std::string& description = "");
             //! \name greeks
@@ -88,57 +87,19 @@ namespace QuantLib {
             // helper class for implied volatility calculation
             class ImpliedVolHelper : public ObjectiveFunction {
               public:
-                ImpliedVolHelper(const Handle<OptionPricingEngine>& engine,
+                ImpliedVolHelper(const Handle<PricingEngine>& engine,
                                  double targetValue);
                 double operator()(double x) const;
               private:
-                Handle<OptionPricingEngine> engine_;
+                Handle<PricingEngine> engine_;
                 double targetValue_;
-                PlainOptionParameters* parameters_;
+                Pricers::VanillaOptionParameters* parameters_;
                 const OptionValue* results_;
             };
         };
 
-        //! parameters for plain option calculation
-        class PlainOptionParameters : public virtual Arguments {
-          public:
-            PlainOptionParameters() : type(Option::Type(-1)),
-                                      underlying(Null<double>()),
-                                      strike(Null<double>()),
-                                      dividendYield(Null<double>()),
-                                      riskFreeRate(Null<double>()),
-                                      residualTime(Null<double>()),
-                                      volatility(Null<double>()) {}
-            Option::Type type;
-            double underlying, strike;
-            Spread dividendYield;
-            Rate riskFreeRate;
-            Time residualTime;
-            double volatility;
-        };
-
-        //! %results from plain option calculation
-        class PlainOptionResults : public OptionValue, public OptionGreeks {};
-
     }
 
-    namespace Pricers {
-
-        //! base class for plain option pricing engines
-        /*! Derived engines only need to implement the <tt>calculate()</tt>
-            method
-        */
-        class PlainOptionEngine : public OptionPricingEngine {
-          public:
-            Arguments* parameters();
-            void validateParameters() const;
-            const Results* results() const;
-          protected:
-            Instruments::PlainOptionParameters parameters_;
-            mutable Instruments::PlainOptionResults results_;
-        };
-
-    }
 
 }
 

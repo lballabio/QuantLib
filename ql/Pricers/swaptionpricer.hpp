@@ -99,7 +99,7 @@ namespace QuantLib {
             method
         */
         template<class ModelType>
-        class SwaptionPricer : public OptionPricingEngine,
+        class SwaptionPricer : public PricingEngine,
                                public Patterns::Observer,
                                public Patterns::Observable {
           public:
