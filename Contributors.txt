@@ -13,3 +13,4 @@ Peter Schmitteckert
 Bernd Johannes Wuebben
 Jon Davidson - UK bank holidays fix
 Tomoya Kawanishi - Japan holidays fix
+David Schwartz - fixes for VC7

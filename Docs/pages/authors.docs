@@ -225,6 +225,13 @@
     <td>Japan holidays fix</td>
     </tr>
 
+    <tr>
+    <td><em>David Schwartz</em></td>
+    <td> </td>
+    <td> </td>
+    <td>fixes for VC7</td>
+    </tr>
+
     </table>
     \endhtmlonly
 
@@ -245,6 +252,7 @@
         \item Maxim Sokolov (maxim\_sokolov@rambler.ru): examples
         \item Niels Elken Sønderby: Gauss-Kronrod algorithm (nielsx@bigfoot.com)
         \item Tomoya Kawanishi: Japan holidays fix
+        \item David Schwartz: fixes for VC7
         \item Bernd Johannes Wuebben
     \end{itemize}
     \endlatexonly
