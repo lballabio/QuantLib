@@ -33,9 +33,7 @@ class InterpolationTest {
     static void testSplineOnRPN15AValues();
     static void testSplineOnGaussianValues();
     static void testSplineErrorOnGaussianValues();
-    #ifndef QL_PATCH_BORLAND
     static void testMultiSpline();
-    #endif
     static boost::unit_test_framework::test_suite* suite();
 };
 
