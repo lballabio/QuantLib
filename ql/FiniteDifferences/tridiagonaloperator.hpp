@@ -118,7 +118,7 @@ namespace QuantLib {
         // inline definitions
 
         #if defined(QL_PATCH_MICROSOFT_BUGS)
-            TridiagonalOperator::TridiagonalOperator(
+            inline TridiagonalOperator::TridiagonalOperator(
                 const TridiagonalOperator& L) {
                     belowDiagonal_ = L.belowDiagonal_;
                     diagonal_      = L.diagonal_;
@@ -127,7 +127,7 @@ namespace QuantLib {
                     upperBC_       = L.upperBC_;
                     timeSetter_    = L.timeSetter_;
             }
-            TridiagonalOperator& TridiagonalOperator::operator=(
+            inline TridiagonalOperator& TridiagonalOperator::operator=(
                 const TridiagonalOperator& L){
                     belowDiagonal_ = L.belowDiagonal_;
                     diagonal_      = L.diagonal_;
