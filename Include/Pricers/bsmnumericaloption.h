@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.14  2001/03/12 12:59:53  marmar
+    Public method getGrid added
+
     Revision 1.13  2001/03/01 14:20:51  marmar
     Private-member syntax changed
 
@@ -79,6 +82,7 @@ namespace QuantLib {
                 double theta() const;
                 double rho()   const;
                 double vega()  const;
+                Array getGrid() const{return grid_;}
 
           protected:
             // methods
@@ -87,10 +91,10 @@ namespace QuantLib {
                     const Array& g) const;
             double secondDerivativeAtCenter(const Array& a, 
                     const Array& g) const;
-            void setGridLimits() const;
-            void initializeGrid() const;
-            void initializeInitialCondition() const;
-            void initializeOperator() const;
+            virtual void setGridLimits() const;
+            virtual void initializeGrid() const;
+            virtual void initializeInitialCondition() const;
+            virtual void initializeOperator() const;
             // input data
             int gridPoints_;
             // results
