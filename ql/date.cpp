@@ -25,6 +25,7 @@
 // $Id$
 
 #include <ql/dataformatters.hpp>
+#include <time.h>
 #include <iostream>
 
 namespace QuantLib {
@@ -68,6 +69,18 @@ namespace QuantLib {
         #endif
     }
 
+   Date Date::TodaysDate()
+   {
+      time_t t;
+
+      if (time(&t) == time_t(-1)) // time_t(-1) means time() didn't work
+	 return Date();
+      tm *gt = gmtime(&t);
+      return Date((Day)gt->tm_mday,
+		  (Month)(gt->tm_mon+1),
+		  (Year)(gt->tm_year+1900));
+   }
+   
     Month Date::month() const {
         Day d = dayOfYear(); // dayOfYear is 1 based
         int m = d/30 + 1;
@@ -287,4 +300,23 @@ namespace QuantLib {
         return 73050;    // Dec 31st, 2099
     }
 
+   // Period constructor
+   Period::Period(const std::string pstring)
+      :length_(0),units_(Days)
+   {
+      char abbr;
+
+      QL_REQUIRE(pstring.length() > 1,
+                 "Argument needs length of at least 2");
+      abbr = pstring.c_str()[pstring.length()-1];
+      if(toupper(abbr) == 'D')
+         units_ = Days;
+      else if(toupper(abbr) == 'W')
+         units_ = Weeks;
+      else if(toupper(abbr) == 'M')
+         units_ = Months;
+      else if(toupper(abbr) == 'Y')
+         units_ = Years;
+      length_ = atoi(pstring.c_str());
+   }
 }
