@@ -44,7 +44,7 @@ namespace QuantLib {
         //! base class for single-path pricers
         /*! Given a path the value of an option is returned on that path.
         */
-        class PathPricer : unary_function<Path, double> {
+        class PathPricer : public std::unary_function<Path, double> {
           public:
             virtual ~PathPricer() {}
             virtual double operator()(const Path &path) const=0;

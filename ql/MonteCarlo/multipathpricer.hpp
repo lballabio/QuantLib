@@ -45,7 +45,7 @@ namespace QuantLib {
         /*! Given a multi-path the value of an option is returned on
             that path.
         */
-        class MultiPathPricer : unary_function<MultiPath, double> {
+        class MultiPathPricer : public std::unary_function<MultiPath, double> {
           public:
             MultiPathPricer() : isInitialized_(false) {}
             virtual ~MultiPathPricer() {}

@@ -94,8 +94,8 @@ namespace QuantLib {
         inline void MonteCarloModel<S, PG, PP>::
                     addSamples(long samples){
             for(long j = 1; j <= samples; j++) {
-                typename PG::sample_type a = pathGenerator_->next();
-                typename PP::result_type price = (*pathPricer_)(a);
+                typename PG::sample_type path = pathGenerator_->next();
+                typename PP::result_type price = (*pathPricer_)(path);
                 double weight = pathGenerator_->weight();
                 sampleAccumulator_.add(price, weight);
             }
