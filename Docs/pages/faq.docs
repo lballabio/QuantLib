@@ -129,4 +129,13 @@
     QuantLib-vcX-xx-xxx-a_b_c.lib yet.  Note that each build
     configuration produces a different library.
 
+
+    \section faq_features QuantLib features
+
+    <strong>
+    Why is feature X missing from QuantLib? It would be a very useful one.
+    </strong>
+
+    See the section '\ref faq_contributing' above.
+
 */
