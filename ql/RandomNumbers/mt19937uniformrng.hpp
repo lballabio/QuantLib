@@ -45,10 +45,13 @@ namespace QuantLib {
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
             explicit MersenneTwisterUniformRng(unsigned long seed = 0);
+            explicit MersenneTwisterUniformRng(
+                const std::vector<unsigned long>& seeds);
             /*! returns a sample with weight 1.0 containing a random number
                 uniformly chosen from (0.0,1.0) */
             sample_type next() const;
           private:
+            void seedInitialization(unsigned long seed);
             mutable std::vector<unsigned long> mt;
             static const Size N, M;
             static const unsigned long MATRIX_A, UPPER_MASK, LOWER_MASK;
@@ -58,6 +61,11 @@ namespace QuantLib {
         inline MersenneTwisterUniformRng::MersenneTwisterUniformRng(
             unsigned long seed)
         : mt(N) {
+            seedInitialization(seed);
+        }
+
+        inline void MersenneTwisterUniformRng::seedInitialization(
+            unsigned long seed) {
             /* initializes mt with a seed */
             unsigned long s = (seed != 0 ? seed : long(QL_TIME(0)));
             mt[0]= s & 0xffffffffUL;
@@ -73,7 +81,31 @@ namespace QuantLib {
             }
         }
 
+        inline MersenneTwisterUniformRng::MersenneTwisterUniformRng(
+            const std::vector<unsigned long>& seeds)
+        : mt(N) {
+            seedInitialization(19650218UL);
+            int i=1, j=0, k = (N>seeds.size() ? N : seeds.size());
+            for (; k; k--) {
+                mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))
+                  + seeds[j] + j; /* non linear */
+                mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
+                i++; j++;
+                if (i>=N) { mt[0] = mt[N-1]; i=1; }
+                if (j>=seeds.size()) j=0;
+            }
+            for (k=N-1; k; k--) {
+                mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL))
+                  - i; /* non linear */
+                mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
+                i++;
+                if (i>=N) { mt[0] = mt[N-1]; i=1; }
+            }
 
+            mt[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
+        }
+
+        
         /* generates a random number on (0,1)-real-interval */
         inline MersenneTwisterUniformRng::sample_type
         MersenneTwisterUniformRng::next() const {
@@ -106,7 +138,7 @@ namespace QuantLib {
             y ^= (y << 7) & 0x9d2c5680UL;
             y ^= (y << 15) & 0xefc60000UL;
             y ^= (y >> 18);
-            double result = (double(y)+ 0.5)*(1.0/4294967296.0);
+            double result = (double(y)+ 0.5)/4294967296.0;
             /* divided by 2^32 */
             return sample_type(result,1.0);
         }
