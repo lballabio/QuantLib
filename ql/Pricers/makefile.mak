@@ -24,7 +24,7 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "cliquetoption.obj$(_mt)$(_D)" \
+    "cliquetoptionpricer.obj$(_mt)$(_D)" \
     "discretegeometricapo.obj$(_mt)$(_D)" \
     "discretegeometricaso.obj$(_mt)$(_D)" \
     "dividendeuropeanoption.obj$(_mt)$(_D)" \

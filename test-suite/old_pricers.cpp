@@ -17,7 +17,7 @@
 
 #include "old_pricers.hpp"
 #include "utilities.hpp"
-#include <ql/Pricers/cliquetoption.hpp>
+#include <ql/Pricers/cliquetoptionpricer.hpp>
 #include <ql/Pricers/dividendeuropeanoption.hpp>
 #include <ql/Pricers/fdeuropean.hpp>
 #include <ql/Pricers/fdamericanoption.hpp>

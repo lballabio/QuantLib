@@ -21,7 +21,7 @@
 #include <ql/qldefines.hpp>
 #include <ql/Pricers/core.hpp>
 
-#include <ql/Pricers/cliquetoption.hpp>
+#include <ql/Pricers/cliquetoptionpricer.hpp>
 #include <ql/Pricers/continuousgeometricapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>

@@ -261,6 +261,10 @@ SOURCE=.\capfloor.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\cliquetoption.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\compoundforward.cpp
 # End Source File
 # Begin Source File
@@ -398,6 +402,10 @@ SOURCE=.\calendars.hpp
 # Begin Source File
 
 SOURCE=.\capfloor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cliquetoption.hpp
 # End Source File
 # Begin Source File
 

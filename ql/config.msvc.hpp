@@ -140,6 +140,7 @@
 #  define QL_LIB_TOOLSET "vc6"
 #  define GARBLED_REVERSE_ITERATOR
 #  define CHOKES_ON_TYPENAME
+#  define QL_PATCH_MICROSOFT_SIX
 #elif (_MSC_VER == 1300)
 // move inside here configs specific to VC++ .Net
 #  define QL_LIB_TOOLSET "vc7"

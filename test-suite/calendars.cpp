@@ -79,6 +79,8 @@ void CalendarTest::testModifiedCalendars() {
     if (c1.isHoliday(d2))
         BOOST_FAIL(DateFormatter::toString(d2) + " still a holiday");
 
+    #if !defined(QL_PATCH_MICROSOFT_SIX)
+
     // repeat, loading from file
 
     std::ofstream f1("calendars.dat");
@@ -118,6 +120,8 @@ void CalendarTest::testModifiedCalendars() {
         BOOST_FAIL(DateFormatter::toString(d1) + " business day for TARGET");
     if (c1.isHoliday(d2))
         BOOST_FAIL(DateFormatter::toString(d2) + " holiday for TARGET");
+
+    #endif
 }
 
 

@@ -17,9 +17,11 @@
 */
 
 #include <ql/calendar.hpp>
+#if !defined(QL_PATCH_MICROSOFT_SIX)
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <fstream>
+#endif
 
 namespace QuantLib {
 
@@ -40,6 +42,8 @@ namespace QuantLib {
         if (!impl_->isBusinessDay(d))
             impl_->removedHolidays.insert(d);
     }
+
+    #if !defined(QL_PATCH_MICROSOFT_SIX)
 
     void Calendar::load(const std::string& filename) {
         std::ifstream file(filename.c_str());
@@ -74,6 +78,8 @@ namespace QuantLib {
             }
         }
     }
+
+    #endif
 
     Date Calendar::roll(const Date& d ,
                         RollingConvention c,

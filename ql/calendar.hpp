@@ -98,6 +98,7 @@ namespace QuantLib {
         void addHoliday(const Date&);
         /*! Removes a date from the set of holidays for the given calendar. */
         void removeHoliday(const Date&);
+        #if !defined(QL_PATCH_MICROSOFT_SIX)
         /*! Modifies the set of holidays as specified by a data file.
 
             Each line in the file must have the following format:
@@ -121,6 +122,7 @@ namespace QuantLib {
             of the instance will be considered.
         */
         void load(const std::string& filename);
+        #endif
         /*! Returns the next business day on the given market with respect to
             the given date and convention.
         */

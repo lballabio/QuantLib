@@ -7,23 +7,23 @@
 CFG=QuantLib - Win32 Debug SingleThread
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLib.mak".
-!MESSAGE
+!MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Debug SingleThread"
-!MESSAGE
+!MESSAGE 
 !MESSAGE Possible choices for configuration are:
-!MESSAGE
+!MESSAGE 
 !MESSAGE "QuantLib - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Release MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Release SingleThread" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug SingleThread" (based on "Win32 (x86) Static Library")
-!MESSAGE
+!MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -200,7 +200,7 @@ PreLink_Desc=Make build directory
 PreLink_Cmds=if not exist lib mkdir lib
 # End Special Build Tool
 
-!ENDIF
+!ENDIF 
 
 # Begin Target
 
@@ -213,6 +213,14 @@ PreLink_Cmds=if not exist lib mkdir lib
 # Begin Group "Calendars"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Calendars\beijing.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\beijing.hpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\ql\Calendars\budapest.cpp
@@ -244,6 +252,14 @@ SOURCE=.\ql\Calendars\helsinki.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\helsinki.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\hongkong.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\hongkong.hpp
 # End Source File
 # Begin Source File
 
@@ -299,6 +315,30 @@ SOURCE=.\ql\Calendars\oslo.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\riyadh.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\riyadh.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\seoul.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\seoul.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\singapore.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\singapore.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\stockholm.cpp
 # End Source File
 # Begin Source File
@@ -312,6 +352,14 @@ SOURCE=.\ql\Calendars\sydney.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\sydney.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\taiwan.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\taiwan.hpp
 # End Source File
 # Begin Source File
 
@@ -664,6 +712,10 @@ SOURCE=.\ql\Instruments\capfloor.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\capfloor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\cliquetoption.cpp
 # End Source File
 # Begin Source File
 
@@ -1203,11 +1255,11 @@ SOURCE=.\ql\Patterns\visitor.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\Pricers\cliquetoption.cpp
+SOURCE=.\ql\Pricers\cliquetoptionpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\cliquetoption.hpp
+SOURCE=.\ql\Pricers\cliquetoptionpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -1333,7 +1385,7 @@ SOURCE=.\ql\Pricers\mcbasket.cpp
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
 
-!ENDIF
+!ENDIF 
 
 # End Source File
 # Begin Source File
@@ -1433,11 +1485,23 @@ SOURCE=.\ql\Pricers\singleassetoption.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Asian\analyticasianengine.cpp
+SOURCE=.\ql\PricingEngines\Asian\all.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Asian\analyticasianengine.hpp
+SOURCE=.\ql\PricingEngines\Asian\analyticcontinuousasianengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Asian\analyticcontinuousasianengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Asian\analyticdiscreteasianengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Asian\analyticdiscreteasianengine.hpp
 # End Source File
 # End Group
 # Begin Group "Barrier"
@@ -1670,6 +1734,30 @@ SOURCE=.\ql\PricingEngines\Swaption\treeswaption.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Swaption\treeswaption.hpp
+# End Source File
+# End Group
+# Begin Group "Cliquet"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Cliquet\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Cliquet\analyticcliquetengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Cliquet\analyticcliquetengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.hpp
 # End Source File
 # End Group
 # Begin Source File
@@ -2179,10 +2267,6 @@ SOURCE=.\ql\daycounter.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\diffusionprocess.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\diffusionprocess.hpp
 # End Source File
 # Begin Source File
@@ -2284,6 +2368,10 @@ SOURCE=.\ql\scheduler.hpp
 # Begin Source File
 
 SOURCE=.\ql\solver1d.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\stochasticprocess.cpp
 # End Source File
 # Begin Source File
 

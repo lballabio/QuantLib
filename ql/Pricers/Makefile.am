@@ -5,7 +5,7 @@ includedir = $(prefix)/include/ql/Pricers
 include_HEADERS = \
     all.hpp \
     core.hpp \
-    cliquetoption.hpp \
+    cliquetoptionpricer.hpp \
     continuousgeometricapo.hpp \
     discretegeometricapo.hpp \
     discretegeometricaso.hpp \
@@ -36,7 +36,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libPricers_la_SOURCES = \
-    cliquetoption.cpp \
+    cliquetoptionpricer.cpp \
     discretegeometricapo.cpp \
     discretegeometricaso.cpp \
     dividendeuropeanoption.cpp \

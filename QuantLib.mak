@@ -61,16 +61,22 @@ CLEAN :
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticasianengine.obj"
-	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcliquetengine.obj"
+	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
+	-@erase "$(INTDIR)\analyticperformanceengine.obj"
+	-@erase "$(INTDIR)\analyticperformanceengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
@@ -85,6 +91,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
 	-@erase "$(INTDIR)\basketoption.sbr"
+	-@erase "$(INTDIR)\beijing.obj"
+	-@erase "$(INTDIR)\beijing.sbr"
 	-@erase "$(INTDIR)\beta.obj"
 	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -131,6 +139,8 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
+	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -145,8 +155,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\diffusionprocess.obj"
-	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -209,6 +217,8 @@ CLEAN :
 	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
+	-@erase "$(INTDIR)\hongkong.obj"
+	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
@@ -303,8 +313,12 @@ CLEAN :
 	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
+	-@erase "$(INTDIR)\riyadh.obj"
+	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\seoul.obj"
+	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpledaycounter.obj"
@@ -313,12 +327,16 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
 	-@erase "$(INTDIR)\simplex.sbr"
+	-@erase "$(INTDIR)\singapore.obj"
+	-@erase "$(INTDIR)\singapore.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\sobolrsg.obj"
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
+	-@erase "$(INTDIR)\stochasticprocess.obj"
+	-@erase "$(INTDIR)\stochasticprocess.sbr"
 	-@erase "$(INTDIR)\stock.obj"
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
@@ -339,6 +357,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
+	-@erase "$(INTDIR)\taiwan.obj"
+	-@erase "$(INTDIR)\taiwan.sbr"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
@@ -488,7 +508,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -545,13 +564,24 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\diffusionprocess.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\stochasticprocess.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\beijing.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
+	"$(INTDIR)\taiwan.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -659,7 +689,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -716,13 +745,24 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\diffusionprocess.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\stochasticprocess.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\beijing.obj" \
+	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -762,16 +802,22 @@ CLEAN :
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticasianengine.obj"
-	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcliquetengine.obj"
+	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
+	-@erase "$(INTDIR)\analyticperformanceengine.obj"
+	-@erase "$(INTDIR)\analyticperformanceengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
@@ -786,6 +832,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
 	-@erase "$(INTDIR)\basketoption.sbr"
+	-@erase "$(INTDIR)\beijing.obj"
+	-@erase "$(INTDIR)\beijing.sbr"
 	-@erase "$(INTDIR)\beta.obj"
 	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -832,6 +880,8 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
+	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -846,8 +896,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\diffusionprocess.obj"
-	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -910,6 +958,8 @@ CLEAN :
 	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
+	-@erase "$(INTDIR)\hongkong.obj"
+	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
@@ -1004,8 +1054,12 @@ CLEAN :
 	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
+	-@erase "$(INTDIR)\riyadh.obj"
+	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\seoul.obj"
+	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpledaycounter.obj"
@@ -1014,12 +1068,16 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
 	-@erase "$(INTDIR)\simplex.sbr"
+	-@erase "$(INTDIR)\singapore.obj"
+	-@erase "$(INTDIR)\singapore.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\sobolrsg.obj"
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
+	-@erase "$(INTDIR)\stochasticprocess.obj"
+	-@erase "$(INTDIR)\stochasticprocess.sbr"
 	-@erase "$(INTDIR)\stock.obj"
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
@@ -1040,6 +1098,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
+	-@erase "$(INTDIR)\taiwan.obj"
+	-@erase "$(INTDIR)\taiwan.sbr"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
@@ -1081,14 +1141,14 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_6.idb"
-	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_6.pdb"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_7.idb"
 	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_7.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_6" /FD /GZ /c 
+CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_7" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1190,7 +1250,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -1247,13 +1306,24 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\diffusionprocess.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\stochasticprocess.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\beijing.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
+	"$(INTDIR)\taiwan.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1361,7 +1431,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -1418,13 +1487,24 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\diffusionprocess.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\stochasticprocess.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\beijing.obj" \
+	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1464,16 +1544,22 @@ CLEAN :
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticasianengine.obj"
-	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcliquetengine.obj"
+	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
+	-@erase "$(INTDIR)\analyticperformanceengine.obj"
+	-@erase "$(INTDIR)\analyticperformanceengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
@@ -1488,6 +1574,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
 	-@erase "$(INTDIR)\basketoption.sbr"
+	-@erase "$(INTDIR)\beijing.obj"
+	-@erase "$(INTDIR)\beijing.sbr"
 	-@erase "$(INTDIR)\beta.obj"
 	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -1534,6 +1622,8 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
+	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -1548,8 +1638,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\diffusionprocess.obj"
-	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -1612,6 +1700,8 @@ CLEAN :
 	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
+	-@erase "$(INTDIR)\hongkong.obj"
+	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
@@ -1706,8 +1796,12 @@ CLEAN :
 	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
+	-@erase "$(INTDIR)\riyadh.obj"
+	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\seoul.obj"
+	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpledaycounter.obj"
@@ -1716,12 +1810,16 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
 	-@erase "$(INTDIR)\simplex.sbr"
+	-@erase "$(INTDIR)\singapore.obj"
+	-@erase "$(INTDIR)\singapore.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\sobolrsg.obj"
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
+	-@erase "$(INTDIR)\stochasticprocess.obj"
+	-@erase "$(INTDIR)\stochasticprocess.sbr"
 	-@erase "$(INTDIR)\stock.obj"
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
@@ -1742,6 +1840,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
+	-@erase "$(INTDIR)\taiwan.obj"
+	-@erase "$(INTDIR)\taiwan.sbr"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
@@ -1891,7 +1991,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -1948,13 +2047,24 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\diffusionprocess.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\stochasticprocess.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\beijing.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
+	"$(INTDIR)\taiwan.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2062,7 +2172,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -2119,13 +2228,24 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\diffusionprocess.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\stochasticprocess.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\beijing.obj" \
+	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2165,16 +2285,22 @@ CLEAN :
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticasianengine.obj"
-	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcliquetengine.obj"
+	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
+	-@erase "$(INTDIR)\analyticperformanceengine.obj"
+	-@erase "$(INTDIR)\analyticperformanceengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
@@ -2189,6 +2315,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
 	-@erase "$(INTDIR)\basketoption.sbr"
+	-@erase "$(INTDIR)\beijing.obj"
+	-@erase "$(INTDIR)\beijing.sbr"
 	-@erase "$(INTDIR)\beta.obj"
 	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -2235,6 +2363,8 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
+	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -2249,8 +2379,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\diffusionprocess.obj"
-	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -2313,6 +2441,8 @@ CLEAN :
 	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
+	-@erase "$(INTDIR)\hongkong.obj"
+	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
@@ -2407,8 +2537,12 @@ CLEAN :
 	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
+	-@erase "$(INTDIR)\riyadh.obj"
+	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\seoul.obj"
+	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpledaycounter.obj"
@@ -2417,12 +2551,16 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
 	-@erase "$(INTDIR)\simplex.sbr"
+	-@erase "$(INTDIR)\singapore.obj"
+	-@erase "$(INTDIR)\singapore.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\sobolrsg.obj"
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
+	-@erase "$(INTDIR)\stochasticprocess.obj"
+	-@erase "$(INTDIR)\stochasticprocess.sbr"
 	-@erase "$(INTDIR)\stock.obj"
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
@@ -2443,6 +2581,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
+	-@erase "$(INTDIR)\taiwan.obj"
+	-@erase "$(INTDIR)\taiwan.sbr"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
@@ -2484,14 +2624,14 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_6.idb"
-	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_6.pdb"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_7.idb"
 	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_7.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_6" /FD /GZ /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_7" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2593,7 +2733,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -2650,13 +2789,24 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\diffusionprocess.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\stochasticprocess.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\beijing.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
+	"$(INTDIR)\taiwan.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2764,7 +2914,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -2821,13 +2970,24 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\diffusionprocess.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\stochasticprocess.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\beijing.obj" \
+	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2867,16 +3027,22 @@ CLEAN :
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticasianengine.obj"
-	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcliquetengine.obj"
+	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
+	-@erase "$(INTDIR)\analyticperformanceengine.obj"
+	-@erase "$(INTDIR)\analyticperformanceengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
@@ -2891,6 +3057,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
 	-@erase "$(INTDIR)\basketoption.sbr"
+	-@erase "$(INTDIR)\beijing.obj"
+	-@erase "$(INTDIR)\beijing.sbr"
 	-@erase "$(INTDIR)\beta.obj"
 	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -2937,6 +3105,8 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
+	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -2951,8 +3121,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\diffusionprocess.obj"
-	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -3015,6 +3183,8 @@ CLEAN :
 	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
+	-@erase "$(INTDIR)\hongkong.obj"
+	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
@@ -3109,8 +3279,12 @@ CLEAN :
 	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
+	-@erase "$(INTDIR)\riyadh.obj"
+	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\seoul.obj"
+	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpledaycounter.obj"
@@ -3119,12 +3293,16 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
 	-@erase "$(INTDIR)\simplex.sbr"
+	-@erase "$(INTDIR)\singapore.obj"
+	-@erase "$(INTDIR)\singapore.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\sobolrsg.obj"
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
+	-@erase "$(INTDIR)\stochasticprocess.obj"
+	-@erase "$(INTDIR)\stochasticprocess.sbr"
 	-@erase "$(INTDIR)\stock.obj"
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
@@ -3145,6 +3323,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
+	-@erase "$(INTDIR)\taiwan.obj"
+	-@erase "$(INTDIR)\taiwan.sbr"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
@@ -3294,7 +3474,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -3351,13 +3530,24 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\diffusionprocess.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\stochasticprocess.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\beijing.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
+	"$(INTDIR)\taiwan.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3465,7 +3655,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -3522,13 +3711,24 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\diffusionprocess.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\stochasticprocess.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\beijing.obj" \
+	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3568,16 +3768,22 @@ CLEAN :
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticasianengine.obj"
-	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticcliquetengine.obj"
+	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
+	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
+	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
+	-@erase "$(INTDIR)\analyticperformanceengine.obj"
+	-@erase "$(INTDIR)\analyticperformanceengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
@@ -3592,6 +3798,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
 	-@erase "$(INTDIR)\basketoption.sbr"
+	-@erase "$(INTDIR)\beijing.obj"
+	-@erase "$(INTDIR)\beijing.sbr"
 	-@erase "$(INTDIR)\beta.obj"
 	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -3638,6 +3846,8 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
+	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -3652,8 +3862,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\diffusionprocess.obj"
-	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -3716,6 +3924,8 @@ CLEAN :
 	-@erase "$(INTDIR)\haltonrsg.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
+	-@erase "$(INTDIR)\hongkong.obj"
+	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
@@ -3810,8 +4020,12 @@ CLEAN :
 	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
+	-@erase "$(INTDIR)\riyadh.obj"
+	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\seoul.obj"
+	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpledaycounter.obj"
@@ -3820,12 +4034,16 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
 	-@erase "$(INTDIR)\simplex.sbr"
+	-@erase "$(INTDIR)\singapore.obj"
+	-@erase "$(INTDIR)\singapore.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\sobolrsg.obj"
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
+	-@erase "$(INTDIR)\stochasticprocess.obj"
+	-@erase "$(INTDIR)\stochasticprocess.sbr"
 	-@erase "$(INTDIR)\stock.obj"
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
@@ -3846,6 +4064,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
+	-@erase "$(INTDIR)\taiwan.obj"
+	-@erase "$(INTDIR)\taiwan.sbr"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
@@ -3887,14 +4107,14 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-sgd-0_3_6.idb"
-	-@erase ".\lib\QuantLib-vc6-sgd-0_3_6.pdb"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_7.idb"
 	-@erase ".\lib\QuantLib-vc6-sgd-0_3_7.lib"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_7.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_6" /FD /GZ /c 
+CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_7" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -3996,7 +4216,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -4053,13 +4272,24 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\diffusionprocess.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\stochasticprocess.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\beijing.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
+	"$(INTDIR)\taiwan.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4167,7 +4397,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -4224,13 +4453,24 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\diffusionprocess.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\stochasticprocess.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\beijing.obj" \
+	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4284,6 +4524,12 @@ SOURCE="$(InputPath)"
 
 
 !IF "$(CFG)" == "QuantLib - Win32 Release" || "$(CFG)" == "QuantLib - Win32 Debug" || "$(CFG)" == "QuantLib - Win32 Release MTDLL" || "$(CFG)" == "QuantLib - Win32 Debug MTDLL" || "$(CFG)" == "QuantLib - Win32 Release SingleThread" || "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
+SOURCE=.\ql\Calendars\beijing.cpp
+
+"$(INTDIR)\beijing.obj"	"$(INTDIR)\beijing.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Calendars\budapest.cpp
 
 "$(INTDIR)\budapest.obj"	"$(INTDIR)\budapest.sbr" : $(SOURCE) "$(INTDIR)"
@@ -4305,6 +4551,12 @@ SOURCE=.\ql\Calendars\frankfurt.cpp
 SOURCE=.\ql\Calendars\helsinki.cpp
 
 "$(INTDIR)\helsinki.obj"	"$(INTDIR)\helsinki.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\hongkong.cpp
+
+"$(INTDIR)\hongkong.obj"	"$(INTDIR)\hongkong.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -4344,6 +4596,24 @@ SOURCE=.\ql\Calendars\oslo.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Calendars\riyadh.cpp
+
+"$(INTDIR)\riyadh.obj"	"$(INTDIR)\riyadh.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\seoul.cpp
+
+"$(INTDIR)\seoul.obj"	"$(INTDIR)\seoul.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\singapore.cpp
+
+"$(INTDIR)\singapore.obj"	"$(INTDIR)\singapore.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Calendars\stockholm.cpp
 
 "$(INTDIR)\stockholm.obj"	"$(INTDIR)\stockholm.sbr" : $(SOURCE) "$(INTDIR)"
@@ -4353,6 +4623,12 @@ SOURCE=.\ql\Calendars\stockholm.cpp
 SOURCE=.\ql\Calendars\sydney.cpp
 
 "$(INTDIR)\sydney.obj"	"$(INTDIR)\sydney.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\taiwan.cpp
+
+"$(INTDIR)\taiwan.obj"	"$(INTDIR)\taiwan.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -4503,6 +4779,12 @@ SOURCE=.\ql\Instruments\basketoption.cpp
 SOURCE=.\ql\Instruments\capfloor.cpp
 
 "$(INTDIR)\capfloor.obj"	"$(INTDIR)\capfloor.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Instruments\cliquetoption.cpp
+
+"$(INTDIR)\cliquetoption.obj"	"$(INTDIR)\cliquetoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -4734,9 +5016,9 @@ SOURCE=.\ql\Optimization\steepestdescent.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\cliquetoption.cpp
+SOURCE=.\ql\Pricers\cliquetoptionpricer.cpp
 
-"$(INTDIR)\cliquetoption.obj"	"$(INTDIR)\cliquetoption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\cliquetoptionpricer.obj"	"$(INTDIR)\cliquetoptionpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -4820,7 +5102,7 @@ CPP_SWITCHES=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_6" /FD /GZ /c 
+CPP_SWITCHES=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_7" /FD /GZ /c 
 
 "$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -4840,7 +5122,7 @@ CPP_SWITCHES=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_6" /FD /GZ /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_7" /FD /GZ /c 
 
 "$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -4860,7 +5142,7 @@ CPP_SWITCHES=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
 
-CPP_SWITCHES=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_6" /FD /GZ /c 
+CPP_SWITCHES=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_7" /FD /GZ /c 
 
 "$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -4930,9 +5212,15 @@ SOURCE=.\ql\Pricers\singleassetoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Asian\analyticasianengine.cpp
+SOURCE=.\ql\PricingEngines\Asian\analyticcontinuousasianengine.cpp
 
-"$(INTDIR)\analyticasianengine.obj"	"$(INTDIR)\analyticasianengine.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\analyticcontinuousasianengine.obj"	"$(INTDIR)\analyticcontinuousasianengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Asian\analyticdiscreteasianengine.cpp
+
+"$(INTDIR)\analyticdiscreteasianengine.obj"	"$(INTDIR)\analyticdiscreteasianengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -5065,6 +5353,18 @@ SOURCE=.\ql\PricingEngines\Swaption\swaptionpricer.cpp
 SOURCE=.\ql\PricingEngines\Swaption\treeswaption.cpp
 
 "$(INTDIR)\treeswaption.obj"	"$(INTDIR)\treeswaption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Cliquet\analyticcliquetengine.cpp
+
+"$(INTDIR)\analyticcliquetengine.obj"	"$(INTDIR)\analyticcliquetengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.cpp
+
+"$(INTDIR)\analyticperformanceengine.obj"	"$(INTDIR)\analyticperformanceengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -5346,12 +5646,6 @@ SOURCE=.\ql\date.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\diffusionprocess.cpp
-
-"$(INTDIR)\diffusionprocess.obj"	"$(INTDIR)\diffusionprocess.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\discretizedasset.cpp
 
 "$(INTDIR)\discretizedasset.obj"	"$(INTDIR)\discretizedasset.sbr" : $(SOURCE) "$(INTDIR)"
@@ -5379,6 +5673,12 @@ SOURCE=.\ql\grid.cpp
 SOURCE=.\ql\scheduler.cpp
 
 "$(INTDIR)\scheduler.obj"	"$(INTDIR)\scheduler.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\stochasticprocess.cpp
+
+"$(INTDIR)\stochasticprocess.obj"	"$(INTDIR)\stochasticprocess.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

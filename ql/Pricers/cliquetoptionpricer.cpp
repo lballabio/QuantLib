@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Pricers/cliquetoption.hpp>
+#include <ql/Pricers/cliquetoptionpricer.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {
