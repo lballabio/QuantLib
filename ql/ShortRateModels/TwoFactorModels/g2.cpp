@@ -26,26 +26,27 @@ namespace QuantLib {
     G2::G2(const RelinkableHandle<TermStructure>& termStructure,
            Real a, Real sigma, Real b, Real eta, Real rho)
     : TwoFactorModel(5), TermStructureConsistentModel(termStructure),
-      a_(arguments_[0]), sigma_(arguments_[1]), 
-      b_(arguments_[2]), eta_(arguments_[3]),
-      rho_(arguments_[4]) {
-        a_     = ConstantParameter(a, PositiveConstraint());
+      a_(arguments_[0]), sigma_(arguments_[1]), b_(arguments_[2]),
+      eta_(arguments_[3]), rho_(arguments_[4]) {
+
+        a_     = ConstantParameter(a,     PositiveConstraint());
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
-        b_     = ConstantParameter(b, PositiveConstraint());
-        eta_   = ConstantParameter(eta, PositiveConstraint());
-        rho_   = ConstantParameter(rho, BoundaryConstraint(-1.0, -0.65));
+        b_     = ConstantParameter(b,     PositiveConstraint());
+        eta_   = ConstantParameter(eta,   PositiveConstraint());
+        rho_   = ConstantParameter(rho,   BoundaryConstraint(-1.0, 1.0));
+
         generateArguments();
     }
 
     boost::shared_ptr<TwoFactorModel::ShortRateDynamics> G2::dynamics() const {
-        return boost::shared_ptr<ShortRateDynamics>(
-                         new Dynamics(phi_, a(), sigma(), b(), eta(), rho()));
+        return boost::shared_ptr<ShortRateDynamics>(new
+            Dynamics(phi_, a(), sigma(), b(), eta(), rho()));
     }
 
     void G2::generateArguments() {
         
-        phi_ = FittingParameter(termStructure(), 
-                                a(), sigma(), b(), eta(), rho());
+        phi_ = FittingParameter(termStructure(),
+            a(), sigma(), b(), eta(), rho());
     }
 
     Real G2::sigmaP(Time t, Time s) const {
@@ -64,8 +65,8 @@ namespace QuantLib {
         return QL_SQRT(value);
     }
 
-    Real G2::discountBondOption(Option::Type type, Real strike, 
-                                  Time maturity, Time bondMaturity) const {
+    Real G2::discountBondOption(Option::Type type, Real strike, Time maturity,
+        Time bondMaturity) const {
 
         Real v = sigmaP(maturity, bondMaturity);
         Real f = termStructure()->discount(bondMaturity);
@@ -100,8 +101,8 @@ namespace QuantLib {
 
     class G2::SwaptionPricingFunction {
       public:
-        SwaptionPricingFunction(Real a, Real sigma, Real b, 
-                                Real eta, Real rho, 
+        SwaptionPricingFunction(Real a, Real sigma,
+                                Real b, Real eta, Real rho, 
                                 Real w, Real start, 
                                 const std::vector<Time>& payTimes, 
                                 Rate fixedRate, const G2& model)
