@@ -25,6 +25,9 @@
     
     $Source$
     $Log$
+    Revision 1.3  2001/03/06 15:13:50  marmar
+    Himalaya option now can handle any number of time steps
+
     Revision 1.2  2001/02/13 10:02:57  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -61,8 +64,8 @@ namespace QuantLib {
             QL_REQUIRE(dividendYield.size() == n,
                 "Himalaya: dividendYield size does not match"
                 " that of covariance matrix");
-            QL_REQUIRE(timeDelays.size() == n,
-                "Himalaya: size of time-stpes diffrent form that of assets");
+            QL_REQUIRE(timeDelays.size() >= 1,
+                "Himalaya: you must have at least one time-step");
                 
             //! Initialize the path generator
             Array mu(riskFreeRate - dividendYield
