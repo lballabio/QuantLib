@@ -72,7 +72,6 @@ namespace QuantLib {
             static const int bits_;
             static const double normalizationFactor_;
             unsigned long dimensionality_;
-            bool unitInitialization_;
             mutable unsigned long sequenceCounter_;
             mutable bool firstDraw_;
             mutable sample_type sequence_;

@@ -141,7 +141,7 @@ namespace QuantLib {
         SobolRsg::SobolRsg(Size dimensionality, unsigned long seed,
             bool unitInitialization)
         : dimensionality_(dimensionality),
-          unitInitialization_(unitInitialization), sequenceCounter_(0), 
+          sequenceCounter_(0), 
           firstDraw_(true), sequence_(Array(dimensionality), 1.0),
           integerSequence_(dimensionality, 0),
           directionIntegers_(dimensionality,std::vector<unsigned long>(bits_))
@@ -191,7 +191,7 @@ namespace QuantLib {
                 j = 0;
                 // 0UL marks the end of the coefficients for a given dimension
                 while (initializers[k-1][j] != 0UL) {
-                    if (unitInitialization_) {
+                    if (unitInitialization) {
                         directionIntegers_[k][j] = 1UL;
                     } else {
                         directionIntegers_[k][j] = initializers[k-1][j];
@@ -206,7 +206,7 @@ namespace QuantLib {
                 MersenneTwisterUniformRng uniformRng(seed);
                 for (k=maxTabulated; k<dimensionality_; k++) {
                     for (Size l=1; l<=degree[k]; l++) {
-                        if (unitInitialization_)
+                        if (unitInitialization)
                             directionIntegers_[k][l-1] = 1UL;
                         else {
                             do {
