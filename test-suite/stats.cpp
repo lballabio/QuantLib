@@ -39,7 +39,9 @@ void StatisticsTest::runTest() {
     std::vector<std::vector<double > > sequenceData(LENGTH(data));
     SequenceStatistics<> ss(dimension);
     SequenceStatistics<HStatistics> hss(dimension);
-    for (Size i = 0; i<LENGTH(data); i++) {
+
+    Size i;
+    for (i = 0; i<LENGTH(data); i++) {
         std::vector<double> temp(dimension, data[i]);
         ss.add(temp, weights[i]);
         hss.add(temp, weights[i]);
