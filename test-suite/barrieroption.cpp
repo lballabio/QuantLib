@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2003 Neil Firth
  Copyright (C) 2003 RiskMap srl
 
@@ -18,6 +19,7 @@
 
 #include "barrieroption.hpp"
 #include <ql/Calendars/nullcalendar.hpp>
+#include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Instruments/barrieroption.hpp>
 #include <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
@@ -34,29 +36,198 @@ using namespace QuantLib;
 
 namespace {
 
-    Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward) {
+    Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward,
+                                        DayCounter dc = SimpleDayCounter()) {
         Date today = Date::todaysDate();
-        Calendar calendar = NullCalendar();
-        //Date reference = calendar.advance(today,2,Days);        
-        Date reference = today;
-        return Handle<TermStructure>(
-            new FlatForward(today,reference,
-                            RelinkableHandle<Quote>(forward),
-                            SimpleDayCounter()));
+        return Handle<TermStructure>(new
+            FlatForward(today, today, RelinkableHandle<Quote>(forward), dc));
     }
 
-    Handle<BlackVolTermStructure> makeFlatVolatility(
-                                     const Handle<Quote>& volatility) {
+    Handle<BlackVolTermStructure> makeFlatVolatility(const Handle<Quote>& vol,
+                                                     DayCounter dc = SimpleDayCounter()) {
         Date today = Date::todaysDate();
-        Calendar calendar = NullCalendar();
-        //Date reference = calendar.advance(today,2,Days);        
-        Date reference = today;
-        return Handle<BlackVolTermStructure>(
-            new BlackConstantVol(reference,
-                                 RelinkableHandle<Quote>(volatility),
-                                 SimpleDayCounter()));
+        return Handle<BlackVolTermStructure>(new
+            BlackConstantVol(today, RelinkableHandle<Quote>(vol), dc));
+    }
+    
+    
+    std::string payoffTypeToString(const Handle<Payoff>& payoff) {
+
+        // PlainVanillaPayoff?
+        Handle<PlainVanillaPayoff> pv;
+        #if defined(HAVE_BOOST)
+        pv = boost::dynamic_pointer_cast<PlainVanillaPayoff>(payoff);
+        #else
+        try {
+            pv = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(pv)) {
+            // ok, the payoff is PlainVanillaPayoff
+            return "PlainVanillaPayoff";
+        }
+
+        // CashOrNothingPayoff?
+        Handle<CashOrNothingPayoff> coo;
+        #if defined(HAVE_BOOST)
+        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
+        #else
+        try {
+            coo = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(coo)) {
+            // ok, the payoff is CashOrNothingPayoff
+            return "Cash ("
+                + DoubleFormatter::toString(coo->cashPayoff())
+                + ") or Nothing Payoff";
+        }
+
+        // AssetOrNothingPayoff?
+        Handle<AssetOrNothingPayoff> aoo;
+        #if defined(HAVE_BOOST)
+        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
+        #else
+        try {
+            aoo = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(aoo)) {
+            // ok, the payoff is AssetOrNothingPayoff
+            return "AssetOrNothingPayoff";
+        }
+
+        // SuperSharePayoff?
+        Handle<SuperSharePayoff> ss;
+        #if defined(HAVE_BOOST)
+        ss = boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
+        #else
+        try {
+            ss = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(ss)) {
+            // ok, the payoff is SuperSharePayoff
+            return "SuperSharePayoff";
+        }
+
+        throw Error("payoffTypeToString : unknown payoff type");
     }
 
+
+    std::string exerciseTypeToString(const Handle<Exercise>& exercise) {
+
+        // EuropeanExercise?
+        Handle<EuropeanExercise> european;
+        #if defined(HAVE_BOOST)
+        european = boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+        #else
+        try {
+            european = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(european)) {
+            return "European";
+        }
+
+        // AmericanExercise?
+        Handle<AmericanExercise> american;
+        #if defined(HAVE_BOOST)
+        american = boost::dynamic_pointer_cast<AmericanExercise>(exercise);
+        #else
+        try {
+            american = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(american)) {
+            return "American";
+        }
+
+        // BermudanExercise?
+        Handle<BermudanExercise> bermudan;
+        #if defined(HAVE_BOOST)
+        bermudan = boost::dynamic_pointer_cast<BermudanExercise>(exercise);
+        #else
+        try {
+            bermudan = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(bermudan)) {
+            return "Bermudan";
+        }
+
+        throw Error("exerciseTypeToString : unknown exercise type");
+    }
+
+    std::string barrierTypeToString(Barrier::Type type) {
+
+        switch(type){
+        case Barrier::DownIn:
+            return std::string("Down-and-in");
+        case Barrier::UpIn:
+            return std::string("Up-and-in");
+        case Barrier::DownOut:
+            return std::string("Down-and-out");
+        case Barrier::UpOut:
+            return std::string("Up-and-out");
+        default:
+            throw Error("exerciseTypeToString : unknown exercise type");
+        }
+    }
+
+    void barrierOptionTestFailed(std::string greekName,
+                                 Barrier::Type barrierType,
+                                 double barrier,
+                                 double rebate,
+                                 const Handle<StrikedTypePayoff>& payoff,
+                                 const Handle<Exercise>& exercise,
+                                 double s,
+                                 double q,
+                                 double r,
+                                 Date today,
+                                 DayCounter dc,
+                                 double v,
+                                 double expected,
+                                 double calculated,
+                                 double error,
+                                 double tolerance = Null<double>()) {
+
+        Time t = dc.yearFraction(today, exercise->lastDate());
+
+        CPPUNIT_FAIL(barrierTypeToString(barrierType) + " " +
+            exerciseTypeToString(exercise) + " "
+            + OptionTypeFormatter::toString(payoff->optionType()) +
+            " option with "
+            + payoffTypeToString(payoff) + ":\n"
+            "    underlying value: "
+            + DoubleFormatter::toString(s) + "\n"
+            "    strike:           "
+            + DoubleFormatter::toString(payoff->strike()) +"\n"
+            "    barrier:          "
+            + DoubleFormatter::toString(barrier) +"\n"
+            "    rebate:           "
+            + DoubleFormatter::toString(rebate) +"\n"
+            "    dividend yield:   "
+            + DoubleFormatter::toString(q) + "\n"
+            "    risk-free rate:   "
+            + DoubleFormatter::toString(r) + "\n"
+            "    reference date:   "
+            + DateFormatter::toString(today) + "\n"
+            "    maturity:         "
+            + DateFormatter::toString(exercise->lastDate()) + "\n"
+            "    time to expiry:   "
+            + DoubleFormatter::toString(t) + "\n"
+            "    volatility:       "
+            + DoubleFormatter::toString(v) + "\n\n"
+            "    expected   " + greekName + ": "
+            + DoubleFormatter::toString(expected) + "\n"
+            "    calculated " + greekName + ": "
+            + DoubleFormatter::toString(calculated) + "\n"
+            "    error:            "
+            + DoubleFormatter::toString(error) + "\n"
+            + (tolerance==Null<double>() ? std::string("") :
+            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
+    }
 
     struct BarrierOptionData {
         Barrier::Type type;
@@ -67,154 +238,185 @@ namespace {
         double putValue;
     };
 
+    struct NewBarrierOptionData {
+        Barrier::Type barrierType;
+        double barrier;
+        double rebate;
+        Option::Type type;
+        double strike;
+        double s;      // spot
+        double q;      // dividend
+        double r;      // risk-free rate
+        Time t;        // time to maturity
+        double v;      // volatility
+        double result; // result
+        double tol;    // tolerance
+    };
+
 }
 
 void BarrierOptionTest::testHaugValues() {
 
-    double maxErrorAllowed = 1.0e-4;
-    double maxStraddleErrorAllowed = 5.0e-2;
+    NewBarrierOptionData values[] = {
+        /* The data below are from
+          "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 pag. 72
+        */
+        //     barrierType, barrier, rebate,         type, strike,     s,    q,    r,    t,    v,  result, tol
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,     90, 100.0, 0.04, 0.08, 0.50, 0.25,  9.0246, 1.0e-4},
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,    100, 100.0, 0.04, 0.08, 0.50, 0.25,  6.7924, 1.0e-4},
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,    110, 100.0, 0.04, 0.08, 0.50, 0.25,  4.8759, 1.0e-4},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,     90, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,    100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,    110, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,     90, 100.0, 0.04, 0.08, 0.50, 0.25,  2.6789, 1.0e-4},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,    100, 100.0, 0.04, 0.08, 0.50, 0.25,  2.3580, 1.0e-4},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,    110, 100.0, 0.04, 0.08, 0.50, 0.25,  2.3453, 1.0e-4},
 
-    double underlyingPrice = 100.0;
-    double rebate = 3.0;
-    Rate r = 0.08;
-    Rate q = 0.04;
-    
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.25,  7.7627, 1.0e-4},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.25,  4.0109, 1.0e-4},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.25,  2.0576, 1.0e-4},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.25, 13.8333, 1.0e-4},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.25,  7.8494, 1.0e-4},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.25,  3.9795, 1.0e-4},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.25, 14.1112, 1.0e-4},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.25,  8.4482, 1.0e-4},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.25,  4.5910, 1.0e-4},
 
-    /* The data below are from
-       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
-       pag. 72 */
-    BarrierOptionData values[] = {
-        { Barrier::DownOut, 0.25,    90,      95,  9.0246,  2.2798 },
-        { Barrier::DownOut, 0.25,   100,      95,  6.7924,  2.2947 },
-        { Barrier::DownOut, 0.25,   110,      95,  4.8759,  2.6252 },
-        { Barrier::DownOut, 0.25,    90,     100,  3.0000,  3.0000 },
-        { Barrier::DownOut, 0.25,   100,     100,  3.0000,  3.0000 },
-        { Barrier::DownOut, 0.25,   110,     100,  3.0000,  3.0000 },
-        { Barrier::UpOut,   0.25,    90,     105,  2.6789,  3.7760 },
-        { Barrier::UpOut,   0.25,   100,     105,  2.3580,  5.4932 },
-        { Barrier::UpOut,   0.25,   110,     105,  2.3453,  7.5187 },
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30,  8.8334, 1.0e-4},
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  7.0285, 1.0e-4},
+        { Barrier::DownOut,    95.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.30,  5.4137, 1.0e-4},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30,  3.0000, 1.0e-4},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  3.0000, 1.0e-4},
+        { Barrier::DownOut,   100.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.30,  3.0000, 1.0e-4},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30,  2.6341, 1.0e-4},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  2.4389, 1.0e-4},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.30,  2.4315, 1.0e-4},
 
-        { Barrier::DownIn,  0.25,    90,      95,  7.7627,  2.9586 },
-        { Barrier::DownIn,  0.25,   100,      95,  4.0109,  6.5677 },
-        { Barrier::DownIn,  0.25,   110,      95,  2.0576, 11.9752 },
-        { Barrier::DownIn,  0.25,    90,     100, 13.8333,  2.2845 },
-        { Barrier::DownIn,  0.25,   100,     100,  7.8494,  5.9085 },
-        { Barrier::DownIn,  0.25,   110,     100,  3.9795, 11.6465 },
-        { Barrier::UpIn,    0.25,    90,     105, 14.1112,  1.4653 },
-        { Barrier::UpIn,    0.25,   100,     105,  8.4482,  3.3721 },
-        { Barrier::UpIn,    0.25,   110,     105,  4.5910,  7.0846 },
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30,  9.0093, 1.0e-4},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  5.1370, 1.0e-4},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.30,  2.8517, 1.0e-4},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30, 14.8816, 1.0e-4},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  9.2045, 1.0e-4},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.30,  5.3043, 1.0e-4},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,    90, 100.0, 0.04, 0.08, 0.50, 0.30, 15.2098, 1.0e-4},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  9.7278, 1.0e-4},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call,   110, 100.0, 0.04, 0.08, 0.50, 0.30,  5.8350, 1.0e-4},
 
-        { Barrier::DownOut, 0.30,    90,      95,  8.8334,  2.4170 },
-        { Barrier::DownOut, 0.30,   100,      95,  7.0285,  2.4258 },
-        { Barrier::DownOut, 0.30,   110,      95,  5.4137,  2.6246 },
-        { Barrier::DownOut, 0.30,    90,     100,  3.0000,  3.0000 },
-        { Barrier::DownOut, 0.30,   100,     100,  3.0000,  3.0000 },
-        { Barrier::DownOut, 0.30,   110,     100,  3.0000,  3.0000 },
-        { Barrier::UpOut,   0.30,    90,     105,  2.6341,  4.2293 },
-        { Barrier::UpOut,   0.30,   100,     105,  2.4389,  5.8032 },
-        { Barrier::UpOut,   0.30,   110,     105,  2.4315,  7.5649 },
 
-        { Barrier::DownIn,  0.30,    90,      95,  9.0093,  3.8769 },
-        { Barrier::DownIn,  0.30,   100,      95,  5.1370,  7.7989 },
-        { Barrier::DownIn,  0.30,   110,      95,  2.8517, 13.3078 },
-        { Barrier::DownIn,  0.30,    90,     100, 14.8816,  3.3328 },
-        { Barrier::DownIn,  0.30,   100,     100,  9.2045,  7.2636 },
-        { Barrier::DownIn,  0.30,   110,     100,  5.3043, 12.9713 },
-        { Barrier::UpIn,    0.30,    90,     105, 15.2098,  2.0658 },
-        { Barrier::UpIn,    0.30,   100,     105,  9.7278,  4.4226 },
-        { Barrier::UpIn,    0.30,   110,     105,  5.8350,  8.3686 }
+
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25,  2.2798, 1.0e-4 },
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25,  2.2947, 1.0e-4 },
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25,  2.6252, 1.0e-4 },
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4 },
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4 },
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4 },
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25,  3.7760, 1.0e-4 },
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25,  5.4932, 1.0e-4 },
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25,  7.5187, 1.0e-4 },
+
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25,  2.9586, 1.0e-4 },
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25,  6.5677, 1.0e-4 },
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25, 11.9752, 1.0e-4 },
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25,  2.2845, 1.0e-4 },
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25,  5.9085, 1.0e-4 },
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25, 11.6465, 1.0e-4 },
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.25,  1.4653, 1.0e-4 },
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.3721, 1.0e-4 },
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.25,  7.0846, 1.0e-4 },
+
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30,  2.4170, 1.0e-4 },
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  2.4258, 1.0e-4 },
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30,  2.6246, 1.0e-4 },
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30,  3.0000, 1.0e-4 },
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  3.0000, 1.0e-4 },
+        { Barrier::DownOut,   100.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30,  3.0000, 1.0e-4 },
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30,  4.2293, 1.0e-4 },
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  5.8032, 1.0e-4 },
+        { Barrier::UpOut,     105.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30,  7.5649, 1.0e-4 },
+
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30,  3.8769, 1.0e-4 },
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  7.7989, 1.0e-4 },
+        { Barrier::DownIn,     95.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30, 13.3078, 1.0e-4 },
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30,  3.3328, 1.0e-4 },
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  7.2636, 1.0e-4 },
+        { Barrier::DownIn,    100.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30, 12.9713, 1.0e-4 },
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,    90, 100.0, 0.04, 0.08, 0.50, 0.30,  2.0658, 1.0e-4 },
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,   100, 100.0, 0.04, 0.08, 0.50, 0.30,  4.4226, 1.0e-4 },
+        { Barrier::UpIn,      105.0,    3.0,  Option::Put,   110, 100.0, 0.04, 0.08, 0.50, 0.30,  8.3686, 1.0e-4 }
+
+        /*
+            Data from "Going to Extreme: Correcting Simulation Bias in Exotic
+            Option Valuation"
+            D.R. Beaglehole, P.H. Dybvig and G. Zhou
+            Financial Analysts Journal; Jan / Feb 1997; 53, 1
+        */
+        //    barrierType, barrier, rebate,         type, strike,     s,    q,    r,    t,    v,  result, tol
+        // { Barrier::DownOut,    45.0,    0.0,  Option::Put,     50,  50.0,-0.05, 0.10, 0.25, 0.50,   4.032, 1.0e-3 },
+        // { Barrier::DownOut,    45.0,    0.0,  Option::Put,     50,  50.0,-0.05, 0.10, 1.00, 0.50,   5.477, 1.0e-3 }
+
     };
 
 
-    Handle<SimpleQuote> underlying(new SimpleQuote(underlyingPrice));
-    Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
-    Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
-    Handle<SimpleQuote> volatility(new SimpleQuote(0.25));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatility);
+    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
 
     Date today = Date::todaysDate();
-    Calendar calendar = NullCalendar();
-    Date exDate = calendar.advance(today,6,Months);
-    Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
     for (Size i=0; i<LENGTH(values); i++) {
-        volatility->setValue(values[i].volatility);
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+        Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
-        Handle<StrikedTypePayoff> callPayoff(new
-            PlainVanillaPayoff(Option::Call, values[i].strike));
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        Handle<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(values[i].type, values[i].strike));
 
         Handle<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
-                RelinkableHandle<Quote>(underlying), 
-                RelinkableHandle<TermStructure>(qTS), 
+                RelinkableHandle<Quote>(spot),
+                RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS)));
 
-        BarrierOption barrierCallOption(
-                values[i].type, 
-                values[i].barrier, 
-                rebate,
+        BarrierOption barrierOption(
+                values[i].barrierType,
+                values[i].barrier,
+                values[i].rebate,
                 stochProcess,
-                callPayoff, 
+                payoff,
                 exercise);
-        double calculated = barrierCallOption.NPV();
-        double expected = values[i].callValue;
-        if (QL_FABS(calculated-expected) > maxErrorAllowed) {
-            CPPUNIT_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
-                "Call option:\n"
-                    "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DoubleFormatter::toString(expected));
+        double calculated = barrierOption.NPV();
+        double expected = values[i].result;
+        double error = QL_FABS(calculated-expected);
+        if (error>values[i].tol) {
+            barrierOptionTestFailed("value",
+                                    values[i].barrierType,
+                                    values[i].barrier,
+                                    values[i].rebate,
+                                    payoff,
+                                    exercise,
+                                    values[i].s,
+                                    values[i].q,
+                                    values[i].r,
+                                    today,
+                                    dc,
+                                    values[i].v,
+                                    expected,
+                                    calculated,
+                                    error,
+                                    values[i].tol);
         }
 
-        Handle<StrikedTypePayoff> putPayoff(new
-            PlainVanillaPayoff(Option::Put, values[i].strike));
-
-        BarrierOption barrierPutOption(
-                values[i].type, 
-                values[i].barrier, 
-                rebate, 
-                stochProcess,
-                putPayoff, 
-                exercise);
-        calculated = barrierPutOption.NPV();
-        expected = values[i].putValue;
-        if (QL_FABS(calculated-expected) > maxErrorAllowed) {
-            CPPUNIT_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
-                "Put option:\n"
-                    "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DoubleFormatter::toString(expected));
-        }
-
-        Handle<StrikedTypePayoff> straddlePayoff(new
-            PlainVanillaPayoff(Option::Straddle, values[i].strike));
-
-        BarrierOption barrierStraddleOption(
-                values[i].type, 
-                values[i].barrier, 
-                rebate, 
-                stochProcess,
-                straddlePayoff, 
-                exercise);
-        calculated = barrierStraddleOption.NPV();
-        expected = values[i].callValue+values[i].putValue;
-        if (QL_FABS(calculated-expected) > maxStraddleErrorAllowed) {
-            CPPUNIT_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
-                "Straddle option:\n"
-                    "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DoubleFormatter::toString(expected));
-        }
     }
 }
 
@@ -233,11 +435,11 @@ void BarrierOptionTest::testBabsiriValues() {
     bool controlVariate = false;
     Size requiredSamples = 10000;
     double requiredTolerance = 0.02;
-    Size maxSamples = 1000000; 
+    Size maxSamples = 1000000;
     bool isBiased = false;
 
     /*
-        Data from 
+        Data from
         "Simulating Path-Dependent Options: A New Approach"
           - M. El Babsiri and G. Noel
             Journal of Derivatives; Winter 1998; 6, 2
@@ -270,7 +472,7 @@ void BarrierOptionTest::testBabsiriValues() {
     Handle<PricingEngine> mcEngine(
         new MCBarrierEngine<PseudoRandom>(timeSteps, antitheticVariate,
                                           controlVariate, requiredSamples,
-                                          requiredTolerance, maxSamples, 
+                                          requiredTolerance, maxSamples,
                                           isBiased, 5));
 
     Date today = Date::todaysDate();
@@ -286,19 +488,19 @@ void BarrierOptionTest::testBabsiriValues() {
 
         Handle<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
-                RelinkableHandle<Quote>(underlying), 
-                RelinkableHandle<TermStructure>(qTS), 
+                RelinkableHandle<Quote>(underlying),
+                RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS)));
 
         // analytic
         BarrierOption barrierCallOption(
-                values[i].type, 
-                values[i].barrier, 
+                values[i].type,
+                values[i].barrier,
                 rebate,
                 stochProcess,
-                callPayoff, 
-                exercise, 
+                callPayoff,
+                exercise,
                 engine);
         double calculated = barrierCallOption.NPV();
         double expected = values[i].callValue;
@@ -342,12 +544,12 @@ void BarrierOptionTest::testBeagleholeValues() {
     bool controlVariate = false;
     Size requiredSamples = 10000;
     double requiredTolerance = 0.02;
-    Size maxSamples = 1000000; 
+    Size maxSamples = 1000000;
     bool isBiased = false;
 
     /*
-        Data from 
-        "Going to Extreme: Correcting Simulation Bias in Exotic 
+        Data from
+        "Going to Extreme: Correcting Simulation Bias in Exotic
          Option Valuation"
           - D.R. Beaglehole, P.H. Dybvig and G. Zhou
             Financial Analysts Journal; Jan / Feb 1997; 53, 1
@@ -369,9 +571,9 @@ void BarrierOptionTest::testBeagleholeValues() {
 
     Handle<PricingEngine> engine(new AnalyticBarrierEngine);
     Handle<PricingEngine> mcEngine(
-        new MCBarrierEngine<PseudoRandom>(timeSteps, antitheticVariate, 
+        new MCBarrierEngine<PseudoRandom>(timeSteps, antitheticVariate,
                                           controlVariate, requiredSamples,
-                                          requiredTolerance, maxSamples, 
+                                          requiredTolerance, maxSamples,
                                           isBiased, 10));
 
     Date today = Date::todaysDate();
@@ -387,19 +589,19 @@ void BarrierOptionTest::testBeagleholeValues() {
 
         Handle<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
-                RelinkableHandle<Quote>(underlying), 
-                RelinkableHandle<TermStructure>(qTS), 
+                RelinkableHandle<Quote>(underlying),
+                RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS)));
 
         // analytic
         BarrierOption barrierCallOption(
-                values[i].type, 
-                values[i].barrier, 
+                values[i].type,
+                values[i].barrier,
                 rebate,
                 stochProcess,
-                callPayoff, 
-                exercise, 
+                callPayoff,
+                exercise,
                 engine);
         double calculated = barrierCallOption.NPV();
         double expected = values[i].callValue;
@@ -439,6 +641,7 @@ CppUnit::Test* BarrierOptionTest::suite() {
     tests->addTest(new CppUnit::TestCaller<BarrierOptionTest>
                    ("Testing barrier options against Beaglehole's values",
                    &BarrierOptionTest::testBeagleholeValues));
+
     return tests;
 }
 
