@@ -29,9 +29,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -211,6 +208,8 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
+	-@erase "$(INTDIR)\g2swaptionengine.obj"
+	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -412,13 +411,47 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
 	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
+	"$(INTDIR)\germany.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\italy.sbr" \
@@ -590,7 +623,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\germany.sbr"
+	"$(INTDIR)\g2swaptionengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -603,6 +636,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
+	"$(INTDIR)\germany.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\italy.obj" \
@@ -774,7 +808,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\germany.obj" \
+	"$(INTDIR)\g2swaptionengine.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -964,6 +998,8 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
+	-@erase "$(INTDIR)\g2swaptionengine.obj"
+	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -1166,13 +1202,47 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_7" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
 	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
+	"$(INTDIR)\germany.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\italy.sbr" \
@@ -1344,7 +1414,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\germany.sbr"
+	"$(INTDIR)\g2swaptionengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1357,6 +1427,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
+	"$(INTDIR)\germany.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\italy.obj" \
@@ -1528,7 +1599,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\germany.obj" \
+	"$(INTDIR)\g2swaptionengine.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1718,6 +1789,8 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
+	-@erase "$(INTDIR)\g2swaptionengine.obj"
+	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -1919,13 +1992,47 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
 	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
+	"$(INTDIR)\germany.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\italy.sbr" \
@@ -2097,7 +2204,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\germany.sbr"
+	"$(INTDIR)\g2swaptionengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2110,6 +2217,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
+	"$(INTDIR)\germany.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\italy.obj" \
@@ -2281,7 +2389,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\germany.obj" \
+	"$(INTDIR)\g2swaptionengine.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2471,6 +2579,8 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
+	-@erase "$(INTDIR)\g2swaptionengine.obj"
+	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -2673,13 +2783,47 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_7" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
 	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
+	"$(INTDIR)\germany.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\italy.sbr" \
@@ -2851,7 +2995,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\germany.sbr"
+	"$(INTDIR)\g2swaptionengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2864,6 +3008,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
+	"$(INTDIR)\germany.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\italy.obj" \
@@ -3035,7 +3180,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\germany.obj" \
+	"$(INTDIR)\g2swaptionengine.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3225,6 +3370,8 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
+	-@erase "$(INTDIR)\g2swaptionengine.obj"
+	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -3426,13 +3573,47 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
 	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
+	"$(INTDIR)\germany.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\italy.sbr" \
@@ -3604,7 +3785,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\germany.sbr"
+	"$(INTDIR)\g2swaptionengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3617,6 +3798,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
+	"$(INTDIR)\germany.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\italy.obj" \
@@ -3788,7 +3970,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\germany.obj" \
+	"$(INTDIR)\g2swaptionengine.obj" \
 	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3978,6 +4160,8 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
+	-@erase "$(INTDIR)\g2swaptionengine.obj"
+	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -4180,13 +4364,47 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_7" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
 	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
+	"$(INTDIR)\germany.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\italy.sbr" \
@@ -4358,7 +4576,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\germany.sbr"
+	"$(INTDIR)\g2swaptionengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4371,6 +4589,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
+	"$(INTDIR)\germany.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\italy.obj" \
@@ -4542,7 +4761,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\germany.obj" \
+	"$(INTDIR)\g2swaptionengine.obj" \
 	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4554,36 +4773,6 @@ LIB32_OBJS= \
 SOURCE="$(InputPath)"
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -5419,6 +5608,12 @@ SOURCE=.\ql\PricingEngines\Swaption\blackswaptionengine.cpp
 SOURCE=.\ql\PricingEngines\Swaption\discretizedswaption.cpp
 
 "$(INTDIR)\discretizedswaption.obj"	"$(INTDIR)\discretizedswaption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Swaption\g2swaptionengine.cpp
+
+"$(INTDIR)\g2swaptionengine.obj"	"$(INTDIR)\g2swaptionengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
