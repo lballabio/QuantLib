@@ -37,4 +37,5 @@ Changes since release 0.3.8:
 
   Global interpolations such as cubic splines are not yet supported.
 
+- Added Bratislava and Prague calendars.
 
