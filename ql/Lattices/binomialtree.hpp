@@ -69,12 +69,6 @@ namespace QuantLib {
             double up_;
         };
 
-        inline double EqualProbabilitiesBinomialTree::underlying(Size i,
-            Size index) const {
-            int j = (2*index - i);
-            return x0_*QL_EXP(i*driftPerStep_ + j*up_);
-        }
-
         
 
         //! base class for equal jumps binomial tree
@@ -89,21 +83,6 @@ namespace QuantLib {
           protected:
             double dx_, pu_, pd_;
         };
-
-        inline double EqualJumpsBinomialTree::underlying(Size i,
-            Size index) const {
-            int j = (2*index - i);
-            return x0_*QL_EXP(j*dx_);
-        }
-
-        inline double EqualJumpsBinomialTree::probability(Size,
-            Size, Size branch) const {
-            if (branch == 1)
-                return pu_;
-            else
-                return pd_;
-        }
-
 
         
         
@@ -138,6 +117,20 @@ namespace QuantLib {
             Trigeorgis(const Handle<DiffusionProcess>& process,
                        Time end,
                        Size steps);
+        };
+
+
+        //! Tian tree: third moment matching, multiplicative approach
+        class Tian : public BinomialTree {
+          public:
+            Tian(const Handle<DiffusionProcess>& process,
+                 Time end,
+                 Size steps);
+            double underlying(Size i, Size index) const;
+            double probability(Size, Size, Size) const;
+          protected:
+            double up_, down_, pu_, pd_;
+//            double treeCentering_;
         };
 
 
