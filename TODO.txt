@@ -1,6 +1,8 @@
-compile example after QuantLib in MS VC++
-set QL_DIR environment variable in the Win32 binary installer
+
+update automated build to take care of docs installer
 compile with gcc 3.0
+compile examples under linux
+check installers
 
 quantlib.hpp is enough
 cash flow stream for IRR, duration
@@ -22,9 +24,7 @@ COMPILING
 
 LIBRARY
     QuantLib dynamic Win32 library (QuantLib.dll)
-    write examples of QuantLib use
-    *** Examples: port to Linux and Borland, make a separate CVS module ?
-    develop C++ unit test suite based on ttp://sourceforge.net/projects/cppunit
+    develop C++ unit test suite based on http://sourceforge.net/projects/cppunit
     clean up accuracy definition in solver1D (x or f(x) accuracy ?)
     implement currency as per OMG definition
     implement round as per OMG enumeration/definition
