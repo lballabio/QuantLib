@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2004, 2005 Ferdinando Ametrano
  Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -45,7 +45,14 @@ namespace QuantLib {
                    Wednesday = 4,
                    Thursday  = 5,
                    Friday    = 6,
-                   Saturday  = 7
+                   Saturday  = 7,
+                   Sun = 1,
+                   Mon = 2,
+                   Tue = 3,
+                   Wed = 4,
+                   Thu = 5,
+                   Fri = 6,
+                   Sat = 7
     };
 
     //! Month names
@@ -61,7 +68,18 @@ namespace QuantLib {
                  September = 9,
                  October   = 10,
                  November  = 11,
-                 December  = 12
+                 December  = 12,
+                 Jan = 1,
+                 Feb = 2,
+                 Mar = 3,
+                 Apr = 4,
+                 Jun = 6,
+                 Jul = 7,
+                 Aug = 8,
+                 Sep = 9,
+                 Oct = 10,
+                 Nov = 11,
+                 Dec = 12
     };
 
     //! Main cycle of the International Money Market (a.k.a. IMM) Months
