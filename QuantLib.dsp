@@ -1497,82 +1497,102 @@ SOURCE=.\ql\Pricers\treeswaption.hpp
 # Begin Group "PricingEngines"
 
 # PROP Default_Filter ""
+# Begin Group "Asian"
+
+# PROP Default_Filter ""
+# End Group
+# Begin Group "Barrier"
+
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\americanmcengines.cpp
+SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\americanmcengines.hpp
+SOURCE=.\ql\PricingEngines\Barrier\barrierengines.hpp
+# End Source File
+# End Group
+# Begin Group "Cliquet"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Cliquet\cliquetengines.hpp
+# End Source File
+# End Group
+# Begin Group "Forward"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Forward\forwardengines.hpp
+# End Source File
+# End Group
+# Begin Group "Lookback"
+
+# PROP Default_Filter ""
+# End Group
+# Begin Group "Quanto"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Quanto\quantoengines.hpp
+# End Source File
+# End Group
+# Begin Group "Vanilla"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\analyticamericanbinaryengine.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\analyticbarrierengine.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanbinaryengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\analyticeuropeanbinaryengine.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanbinaryengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\analyticeuropeanengine.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\barrierengines.hpp
+SOURCE=.\ql\PricingEngines\Vanilla\binaryengines.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\binaryengines.hpp
+SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\cliquetengines.hpp
+SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\integralengines.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\discretizedvanillaoption.hpp
+SOURCE=.\ql\PricingEngines\Vanilla\mceuropeanengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\forwardengines.hpp
+SOURCE=.\ql\PricingEngines\Vanilla\mcvanillaengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\genericmodelengine.hpp
+SOURCE=.\ql\PricingEngines\Vanilla\vanillaengines.hpp
 # End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\integralengines.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\latticeshortratemodelengine.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\mcengine.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\mceuropeanengine.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\quantoengines.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\vanillaengines.hpp
-# End Source File
+# End Group
 # End Group
 # Begin Group "RandomNumbers"
 

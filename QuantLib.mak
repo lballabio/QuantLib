@@ -494,9 +494,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
-	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
@@ -665,9 +665,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanbinaryengine.obj" \
-	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
@@ -1184,9 +1184,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
-	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
@@ -1355,9 +1355,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanbinaryengine.obj" \
-	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
@@ -1873,9 +1873,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
-	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
@@ -2044,9 +2044,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanbinaryengine.obj" \
-	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
@@ -2563,9 +2563,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
-	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
@@ -2734,9 +2734,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanbinaryengine.obj" \
-	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
@@ -3571,43 +3571,43 @@ SOURCE=.\ql\Pricers\treeswaption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\americanmcengines.cpp
-
-"$(INTDIR)\americanmcengines.obj"	"$(INTDIR)\americanmcengines.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\analyticamericanbinaryengine.cpp
-
-"$(INTDIR)\analyticamericanbinaryengine.obj"	"$(INTDIR)\analyticamericanbinaryengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\analyticbarrierengine.cpp
+SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.cpp
 
 "$(INTDIR)\analyticbarrierengine.obj"	"$(INTDIR)\analyticbarrierengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\analyticeuropeanbinaryengine.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.cpp
+
+"$(INTDIR)\americanmcengines.obj"	"$(INTDIR)\americanmcengines.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanbinaryengine.cpp
+
+"$(INTDIR)\analyticamericanbinaryengine.obj"	"$(INTDIR)\analyticamericanbinaryengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanbinaryengine.cpp
 
 "$(INTDIR)\analyticeuropeanbinaryengine.obj"	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\analyticeuropeanengine.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanengine.cpp
 
 "$(INTDIR)\analyticeuropeanengine.obj"	"$(INTDIR)\analyticeuropeanengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.cpp
 
 "$(INTDIR)\discretizedvanillaoption.obj"	"$(INTDIR)\discretizedvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\integralengines.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\integralengines.cpp
 
 "$(INTDIR)\integralengines.obj"	"$(INTDIR)\integralengines.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)

@@ -263,18 +263,24 @@
 #include <ql/Pricers/treecapfloor.hpp>
 #include <ql/Pricers/treeswaption.hpp>
 
-#include <ql/PricingEngines/americanmcengines.hpp>
-#include <ql/PricingEngines/barrierengines.hpp>
-#include <ql/PricingEngines/binaryengines.hpp>
-#include <ql/PricingEngines/cliquetengines.hpp>
-#include <ql/PricingEngines/discretizedvanillaoption.hpp>
-#include <ql/PricingEngines/forwardengines.hpp>
 #include <ql/PricingEngines/genericmodelengine.hpp>
 #include <ql/PricingEngines/latticeshortratemodelengine.hpp>
-#include <ql/PricingEngines/mcengine.hpp>
-#include <ql/PricingEngines/mceuropeanengine.hpp>
-#include <ql/PricingEngines/quantoengines.hpp>
-#include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/PricingEngines/mcsimulation.hpp>
+
+#include <ql/PricingEngines/Barrier/barrierengines.hpp>
+
+#include <ql/PricingEngines/Cliquet/cliquetengines.hpp>
+
+#include <ql/PricingEngines/Forward/forwardengines.hpp>
+
+#include <ql/PricingEngines/Quanto/quantoengines.hpp>
+
+#include <ql/PricingEngines/Vanilla/americanmcengines.hpp>
+#include <ql/PricingEngines/Vanilla/binaryengines.hpp>
+#include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
+#include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
+#include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>

@@ -17,7 +17,7 @@
 
 #include "europeanoption.hpp"
 #include <ql/Instruments/vanillaoption.hpp>
-#include <ql/PricingEngines/mceuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Calendars/target.hpp>

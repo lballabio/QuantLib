@@ -20,7 +20,7 @@
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Instruments/binaryoption.hpp>
-#include <ql/PricingEngines/binaryengines.hpp>
+#include <ql/PricingEngines/Vanilla/binaryengines.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 

@@ -20,7 +20,7 @@
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Instruments/barrieroption.hpp>
-#include <ql/PricingEngines/barrierengines.hpp>
+#include <ql/PricingEngines/Barrier/barrierengines.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <cppunit/TestSuite.h>

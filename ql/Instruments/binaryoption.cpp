@@ -23,7 +23,7 @@
 
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Instruments/binaryoption.hpp>
-#include <ql/PricingEngines/binaryengines.hpp>
+#include <ql/PricingEngines/Vanilla/binaryengines.hpp>
 
 namespace QuantLib {
 

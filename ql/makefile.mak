@@ -38,7 +38,8 @@ MATH_LIB            = Math\Math$(_D).lib
 MONTECARLO_LIB      = MonteCarlo\MonteCarlo$(_D).lib
 OPTIMIZATION_LIB    = Optimization\Optimization$(_D).lib
 PRICER_LIB          = Pricers\Pricers$(_D).lib
-PRICING_ENGINES_LIB = PricingEngines\PricingEngines$(_D).lib
+BARRIER_ENGINES_LIB = PricingEngines\Barrier\BarrierEngines$(_D).lib
+VANILLA_ENGINES_LIB = PricingEngines\Vanilla\VanillaEngines$(_D).lib
 RNG_LIB             = RandomNumbers\RandomNumbers$(_D).lib
 SHORTRATEMODELS_LIB = ShortRateModels\ShortRateModels$(_D).lib
 CALIBRATION_LIB     = \
@@ -65,7 +66,8 @@ QUANTLIB_OBJS = \
     $(ONEFACTOR_LIB) \
     $(OPTIMIZATION_LIB) \
     $(PRICER_LIB) \
-    $(PRICING_ENGINES_LIB) \
+    $(BARRIER_ENGINES_LIB) \
+    $(VANILLA_ENGINES_LIB) \
     $(RNG_LIB) \
     $(TERMSTRUCT_LIB) \
     $(TWOFACTOR_LIB) \
@@ -143,8 +145,11 @@ SubLibraries:
     cd ..\Pricers
     $(MAKE)
     cd ..\PricingEngines
+    cd Barrier
     $(MAKE)
-    cd ..\RandomNumbers
+    cd ..\Vanilla
+    $(MAKE)
+    cd ..\..\RandomNumbers
     $(MAKE)
     cd ..\Lattices
     $(MAKE)
