@@ -76,6 +76,7 @@ namespace QuantLib {
             Date todaysDate() const;
             int settlementDays() const;
             Handle<Calendar> calendar() const;
+            Handle<DayCounter> dayCounter() const;
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
@@ -86,6 +87,14 @@ namespace QuantLib {
                 bool extrapolate = false) const;
             // forward (instantaneous)
             Rate forward(const Date&, bool extrapolate = false) const;
+            // zero yield
+            Rate zeroYield(Time, bool extrapolate = false) const;
+            // discount
+            DiscountFactor discount(Time,
+                bool extrapolate = false) const;
+            // forward (instantaneous)
+            Rate forward(Time, bool extrapolate = false) const;
+
           private:
             // inner classes
             // objective function for solver
@@ -109,6 +118,7 @@ namespace QuantLib {
             };
             // methods
             int referenceNode(const Date& d, bool extrapolate) const;
+            int referenceNode(Time t, bool extrapolate) const;
             // data members
             Currency currency_;
             Handle<DayCounter> dayCounter_;
@@ -139,6 +149,10 @@ namespace QuantLib {
 
         inline Handle<Calendar> PiecewiseFlatForward::calendar() const {
             return calendar_;
+        }
+
+        inline Handle<DayCounter> PiecewiseFlatForward::dayCounter() const {
+            return dayCounter_;
         }
 
         inline int PiecewiseFlatForward::settlementDays() const {

@@ -158,6 +158,64 @@ namespace QuantLib {
                 return (j-nodes_.begin());
         }
 
+        Rate PiecewiseFlatForward::zeroYield(
+            Time t, bool extrapolate) const {
+                if (t == 0.0) {
+                    return zeroYields_[0];
+                } else {
+                    int n = referenceNode(t, extrapolate);
+                    if (t == times_[n]) {
+                        return zeroYields_[n];
+                    } else {
+                        Time tn = times_[n-1];
+                        return (zeroYields_[n-1]*tn+forwards_[n]*(t-tn))/t;
+                    }
+                }
+                QL_DUMMY_RETURN(Rate());
+        }
+
+        DiscountFactor PiecewiseFlatForward::discount(
+            Time t, bool extrapolate) const {
+                if (t == 0.0) {
+                    return discounts_[0];
+                } else {
+                    int n = referenceNode(t, extrapolate);
+                    if (t == times_[n]) {
+                        return discounts_[n];
+                    } else {
+                        return discounts_[n-1] *
+                            QL_EXP(-forwards_[n] * (t-times_[n-1]));
+                    }
+                }
+                QL_DUMMY_RETURN(DiscountFactor());
+        }
+
+        Rate PiecewiseFlatForward::forward(
+            Time t, bool extrapolate) const {
+                if (t == 0.0) {
+                    return forwards_[0];
+                } else {
+                    return forwards_[referenceNode(t, extrapolate)];
+                }
+                QL_DUMMY_RETURN(Rate());
+        }
+
+        int PiecewiseFlatForward::referenceNode(
+            Time t, bool extrapolate) const {
+                if (t>=times_[times_.size() - 1])
+                    return times_.size()-1;
+                std::vector<Time>::const_iterator i=times_.begin(),
+                    j=times_.end(), k;
+                while (j-i > 1) {
+                    k = i+(j-i)/2;
+                    if (t <= *k)
+                        j = k;
+                    else
+                        i = k;
+                }
+                return (j-times_.begin());
+        }
+
         PiecewiseFlatForward::FFObjFunction::FFObjFunction(
             PiecewiseFlatForward* curve, const Handle<RateHelper>& rateHelper,
             int segment)

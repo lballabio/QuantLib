@@ -74,6 +74,19 @@ namespace QuantLib {
             bool extrapolate = false) const;
         //@}
 
+        //! \name Rates (using Time interface)
+        //@{
+        //! zero yield rate for a given time
+        virtual Rate zeroYield(Time,
+            bool extrapolate = false) const = 0;
+        //! discount factor for a given time
+        virtual DiscountFactor discount(Time,
+            bool extrapolate = false) const = 0;
+        //! instantaneous forward rate for a given time
+        virtual Rate forward(Time,
+            bool extrapolate = false) const = 0;
+        //@}
+
         //! \name Dates
         //@{
         //! returns today's date
@@ -82,6 +95,9 @@ namespace QuantLib {
         virtual int settlementDays() const = 0;
         //! returns the calendar for settlement calculation
         virtual Handle<Calendar> calendar() const = 0;
+        //! returns the day counter
+        virtual Handle<DayCounter> dayCounter() const = 0;
+
         //! returns the settlement date
         virtual Date settlementDate() const = 0;
         //! returns the earliest date for which the curve can return rates
@@ -113,6 +129,9 @@ namespace QuantLib {
             calculating it from the zero yield.
         */
         Rate forward(const Date&, bool extrapolate = false) const;
+        DiscountFactor discount(Time, bool extrapolate = false) const;
+        Rate forward(Time, bool extrapolate = false) const;
+
     };
 
     //! Discount factor term structure
@@ -131,6 +150,9 @@ namespace QuantLib {
             calculating it from the discount.
         */
         Rate forward(const Date&, bool extrapolate = false) const;
+        Rate zeroYield(Time, bool extrapolate = false) const;
+        Rate forward(Time, bool extrapolate = false) const;
+
     };
 
     //! Forward rate term structure
@@ -149,6 +171,8 @@ namespace QuantLib {
             the instantaneous forward rate.
         */
         DiscountFactor discount(const Date&, bool extrapolate = false) const;
+        Rate zeroYield(Time, bool extrapolate = false) const;
+        DiscountFactor discount(Time, bool extrapolate = false) const;
     };
 
     //! Implied term structure at a given date in the future
@@ -170,11 +194,13 @@ namespace QuantLib {
         Date todaysDate() const;
         int settlementDays() const;
         Handle<Calendar> calendar() const;
+        Handle<DayCounter> dayCounter() const;
         Date settlementDate() const;
         Date maxDate() const;
         Date minDate() const;
         //! returns the discount factor as seen from the evaluation date
         DiscountFactor discount(const Date&, bool extrapolate = false) const;
+        DiscountFactor discount(Time, bool extrapolate = false) const;
         //@}
 
         //! \name Observer interface
@@ -203,11 +229,13 @@ namespace QuantLib {
         Date todaysDate() const;
         int settlementDays() const;
         Handle<Calendar> calendar() const;
+        Handle<DayCounter> dayCounter() const;
         Date settlementDate() const;
         Date maxDate() const;
         Date minDate() const;
         //! returns the spreaded zero yield rate
         Rate zeroYield(const Date&, bool extrapolate = false) const;
+        Rate zeroYield(Time, bool extrapolate = false) const;
         //@}
 
         //! \name Observer interface
@@ -267,6 +295,18 @@ namespace QuantLib {
             return r1+(d-settlementDate())*double(r2-r1);
     }
 
+    inline DiscountFactor ZeroYieldStructure::discount(Time t,
+        bool extrapolate) const {
+            Rate r = zeroYield(t, extrapolate);
+            return DiscountFactor(QL_EXP(-r*t));
+    }
+
+    inline Rate ZeroYieldStructure::forward(Time t,
+        bool extrapolate) const {
+            Rate r1 = zeroYield(t, extrapolate), r2 = zeroYield(t + 0.001, true);
+            return r1+t*double(r2-r1);
+    }
+
 
     // curve deriving zero yield and forward from discount
 
@@ -283,6 +323,20 @@ namespace QuantLib {
                            f2 = discount(d+1, true);
             // log(f1/f2)/dt = log(f1/f2)/(1/365)
             return Rate(QL_LOG(f1/f2)*365);
+    }
+
+    inline Rate DiscountStructure::zeroYield(Time t,
+        bool extrapolate) const {
+            DiscountFactor f = discount(t, extrapolate);
+            return Rate(-QL_LOG(f)/t);
+    }
+
+    inline Rate DiscountStructure::forward(Time t,
+        bool extrapolate) const {
+            DiscountFactor f1 = discount(t, extrapolate),
+                           f2 = discount(t + 0.001, true);
+            // log(f1/f2)/dt = log(f1/f2)/(1/365)
+            return Rate(QL_LOG(f1/f2)/0.001);
     }
 
 
@@ -307,6 +361,27 @@ namespace QuantLib {
             double t = double(d-settlementDate())/365;
             return DiscountFactor(QL_EXP(-r*t));
     }
+
+    inline Rate ForwardRateStructure::zeroYield(Time t,
+        bool extrapolate) const {
+            // This is just a default, highly inefficient implementation.
+            // Derived classes should implement their own zeroYield method.
+            if (t == 0.0)
+                return forward(0.0);
+            double sum = 0.5*forward(0.0);
+            double dt = t/1000.0;
+            for (Time i=t+dt; i<t; i+=dt)
+                sum += forward(i, extrapolate);
+            sum += 0.5*forward(t, extrapolate);
+            return Rate(sum/1000.0);
+    }
+
+    inline DiscountFactor ForwardRateStructure::discount(Time t,
+        bool extrapolate) const {
+            Rate r = zeroYield(t, extrapolate);
+            return DiscountFactor(QL_EXP(-r*t));
+    }
+
 
 
     // time-shifted curve
@@ -339,6 +414,10 @@ namespace QuantLib {
         return originalCurve_->calendar();
     }
 
+    inline Handle<DayCounter> ImpliedTermStructure::dayCounter() const {
+        return originalCurve_->dayCounter();
+    }
+
     inline Date ImpliedTermStructure::settlementDate() const {
         return calendar()->advance(
             todaysDate_,settlementDays(),Days);
@@ -360,6 +439,15 @@ namespace QuantLib {
                invocations of this method */
             return originalCurve_->discount(d, extrapolate) /
                 originalCurve_->discount(settlementDate());
+    }
+
+    inline DiscountFactor ImpliedTermStructure::discount(Time t,
+        bool extrapolate) const {
+            // evaluationDate cannot be an extrapolation
+            /* discount at evaluation date cannot be cached
+               since the original curve could change between
+               invocations of this method */
+            return originalCurve_->discount(t, extrapolate) / originalCurve_->discount(settlementDate());
     }
 
     inline void ImpliedTermStructure::update() {
@@ -397,6 +485,10 @@ namespace QuantLib {
         return originalCurve_->calendar();
     }
 
+    inline Handle<DayCounter> SpreadedTermStructure::dayCounter() const {
+        return originalCurve_->dayCounter();
+    }
+
     inline Date SpreadedTermStructure::settlementDate() const {
         return originalCurve_->settlementDate();
     }
@@ -413,6 +505,12 @@ namespace QuantLib {
         bool extrapolate) const {
             return originalCurve_->zeroYield(d, extrapolate)+spread_;
     }
+
+    inline Rate SpreadedTermStructure::zeroYield(Time t,
+        bool extrapolate) const {
+            return originalCurve_->zeroYield(t, extrapolate)+spread_;
+    }
+
 
     inline void SpreadedTermStructure::update() {
         notifyObservers();

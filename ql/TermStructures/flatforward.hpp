@@ -54,6 +54,7 @@ namespace QuantLib {
             Date todaysDate() const;
             int settlementDays() const;
             Handle<Calendar> calendar() const;
+            Handle<DayCounter> dayCounter() const;
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
@@ -64,6 +65,15 @@ namespace QuantLib {
                                     bool extrapolate = false) const;
             // forward (instantaneous)
             Rate forward(const Date&, bool extrapolate = false) const;
+
+            // zero yield
+            Rate zeroYield(Time, bool extrapolate = false) const;
+            // discount
+            DiscountFactor discount(Time,
+                                    bool extrapolate = false) const;
+            // forward (instantaneous)
+            Rate forward(Time, bool extrapolate = false) const;
+
           private:
             Currency currency_;
             Handle<DayCounter> dayCounter_;
@@ -101,6 +111,10 @@ namespace QuantLib {
 
         inline Handle<Calendar> FlatForward::calendar() const {
             return calendar_;
+        }
+
+        inline Handle<DayCounter> FlatForward::dayCounter() const {
+            return dayCounter_;
         }
 
         inline int FlatForward::settlementDays() const {
@@ -158,6 +172,22 @@ namespace QuantLib {
                 DateFormatter::toString(maxDate()) + "]");
             return forward_;
         }
+
+        inline Rate FlatForward::zeroYield(Time t,
+                                           bool extrapolate) const {
+            return forward_;
+        }
+        
+        inline DiscountFactor FlatForward::discount(Time t,
+                                                    bool extrapolate) const {
+            return DiscountFactor(QL_EXP(-forward_*t));
+        }
+
+        inline Rate FlatForward::forward(Time t,
+                                         bool extrapolate) const {
+            return forward_;
+        }
+
 
     }
 
