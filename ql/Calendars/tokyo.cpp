@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2003 Kawanishi Tomoya
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,7 +35,20 @@ namespace QuantLib {
             Weekday w = date.weekday();
             Day d = date.dayOfMonth();
             Month m = date.month();
-//            Year y = date.year();
+            Year y = date.year();
+            // equinox calculation
+            const double exact_vernal_equinox_time = 20.69115;
+            const double exact_autumnal_equinox_time = 23.09;
+            const double diff_per_year = 0.242194;
+            double moving_amount = (y-2000)*diff_per_year;
+            int number_of_leap_years = (y-2000)/4+(y-2000)/100-(y-2000)/400;
+            Day ve =    // vernal equinox day
+                Day(exact_vernal_equinox_time  
+                    + moving_amount - number_of_leap_years);
+            Day ae =    // autumnal equinox day
+                Day(exact_autumnal_equinox_time
+                    + moving_amount - number_of_leap_years);
+            // checks
             if ((w == Saturday || w == Sunday)
                 // New Year's Day
                 || (d == 1  && m == January)
@@ -47,8 +61,7 @@ namespace QuantLib {
                 // National Foundation Day
                 || ((d == 11 || (d == 12 && w == Monday)) && m == February)
                 // Vernal Equinox 
-                // it is not really fixed - this should be corrected!
-                || ((d == 21 || (d == 22 && w == Monday)) && m == March)
+                || ((d == ve || (d == ve+1 && w == Monday)) && m == March)
                 // Greenery Day
                 || ((d == 29 || (d == 30 && w == Monday)) && m == April)
                 // Constitution Memorial Day
@@ -62,8 +75,7 @@ namespace QuantLib {
                 // Respect for the Aged Day
                 || ((d == 15 || (d == 16 && w == Monday)) && m == September)
                 // Autumnal Equinox 
-                // it is not really fixed - this should be corrected!
-                || ((d == 23 || (d == 24 && w == Monday)) && m == September)
+                || ((d == ae || (d == ae+1 && w == Monday)) && m == September)
                 // Health and Sports Day (2nd Monday in October)
                 || (w == Monday && (d >= 8 && d <= 14) && m == October)
                 // National Culture Day
