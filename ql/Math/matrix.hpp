@@ -25,6 +25,7 @@
 
 #include <ql/Math/array.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
+#include <boost/iterator/reverse_iterator.hpp>
 
 namespace QuantLib {
 
@@ -63,22 +64,19 @@ namespace QuantLib {
 
         typedef Real* iterator;
         typedef const Real* const_iterator;
-        typedef QL_REVERSE_ITERATOR(iterator,Real) reverse_iterator;
-        typedef QL_REVERSE_ITERATOR(const_iterator,Real)
-            const_reverse_iterator;
+        typedef boost::reverse_iterator<iterator> reverse_iterator;
+        typedef boost::reverse_iterator<const_iterator> const_reverse_iterator;
         typedef Real* row_iterator;
         typedef const Real* const_row_iterator;
-        typedef QL_REVERSE_ITERATOR(row_iterator,Real)
-            reverse_row_iterator;
-        typedef QL_REVERSE_ITERATOR(const_row_iterator,Real)
-            const_reverse_row_iterator;
-        typedef stepping_iterator<Real*> column_iterator;
-        typedef stepping_iterator<const Real*>
-        const_column_iterator;
-        typedef QL_REVERSE_ITERATOR(column_iterator,Real)
-            reverse_column_iterator;
-        typedef QL_REVERSE_ITERATOR(const_column_iterator,Real)
-            const_reverse_column_iterator;
+        typedef boost::reverse_iterator<row_iterator> reverse_row_iterator;
+        typedef boost::reverse_iterator<const_row_iterator>
+                                                const_reverse_row_iterator;
+        typedef step_iterator<Real*> column_iterator;
+        typedef step_iterator<const Real*> const_column_iterator;
+        typedef boost::reverse_iterator<column_iterator>
+                                                   reverse_column_iterator;
+        typedef boost::reverse_iterator<const_column_iterator>
+                                             const_reverse_column_iterator;
         //! \name Iterator access
         //@{
         const_iterator begin() const;
@@ -407,7 +405,8 @@ namespace QuantLib {
         QL_REQUIRE(i<columns_,
                    "matrix cannot be accessed out of range");
         #endif
-        return column_begin(i)+rows_;
+        //return column_begin(i)+rows_;
+        return const_column_iterator(pointer_+i+rows_*columns_,columns_);
     }
 
     inline Matrix::column_iterator Matrix::column_end(Size i) {
@@ -415,7 +414,8 @@ namespace QuantLib {
         QL_REQUIRE(i<columns_,
                    "matrix cannot be accessed out of range");
         #endif
-        return column_begin(i)+rows_;
+        //return column_begin(i)+rows_;
+        return column_iterator(pointer_+i+rows_*columns_,columns_);
     }
 
     inline Matrix::const_reverse_column_iterator

@@ -26,6 +26,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! Iterator mapping a function to a set of underlying sequences
     /*! This iterator advances a set of underlying iterators and
         returns the values obtained by applying a function to the sets
@@ -36,6 +38,9 @@ namespace QuantLib {
         in the proceedings of the First Workshop on C++ Template
         Programming, Erfurt, Germany, 2000
         (http://www.oonumerics.org/tmpw00/)
+
+        \deprecated use a combination of boost::zip_iterator and
+                    boost::transform_iterator instead
     */
     template <class Iterator, class Function>
     class combining_iterator : public QL_ITERATOR<
@@ -46,7 +51,7 @@ namespace QuantLib {
         const typename Function::result_type&>
     {
       public:
-        /* These typedefs are needed even though inherited from 
+        /* These typedefs are needed even though inherited from
            QL_ITERATOR (see 14.6.2.3 of the standard).  */
         typedef typename Function::result_type value_type;
         typedef typename QL_ITERATOR_TRAITS<Iterator>::difference_type
@@ -226,6 +231,8 @@ namespace QuantLib {
         typedef typename QL_ITERATOR_TRAITS<I>::value_type Iterator;
         return combining_iterator<Iterator,F>(it1,it2,f);
     }
+
+    #endif
 
 }
 

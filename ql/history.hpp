@@ -24,7 +24,7 @@
 
 #include <ql/null.hpp>
 #include <ql/date.hpp>
-#include <ql/Utilities/filteringiterator.hpp>
+#include <boost/iterator/filter_iterator.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -56,7 +56,7 @@ namespace QuantLib {
         */
         template <class Iterator>
         History(const Date& firstDate, const Date& lastDate,
-            Iterator begin, Iterator end)
+                Iterator begin, Iterator end)
         : firstDate_(firstDate), lastDate_(lastDate)
         #if defined(QL_FULL_ITERATOR_SUPPORT)
         , values_(begin,end) {
@@ -149,103 +149,56 @@ namespace QuantLib {
         };
 
         //! random access iterator on history entries
-        class const_iterator : public QL_ITERATOR<
-            std::random_access_iterator_tag, Entry,
-            BigInteger, const Entry*, const Entry&>
-        {
+        class const_iterator
+            : public boost::iterator_facade<const_iterator,
+                                            Entry,
+                                            std::random_access_iterator_tag,
+                                            const Entry&,
+                                            BigInteger> {
             friend class History;
-          public:
-            /* These typedefs are needed even though inherited from
-               QL_ITERATOR (see 14.6.2.3 of the standard).  */
-            typedef Entry                           value_type;
-            typedef BigInteger                      difference_type;
-            typedef const Entry*                    pointer;
-            typedef const Entry&                    reference;
-            //! \name Dereferencing
-            //@{
-            reference operator*() const  { return entry_; }
-            pointer   operator->() const { return &entry_; }
-            //@}
-            //! \name Random access
-            //@{
-            value_type operator[](difference_type i) const {
-                return Entry(entry_.date_+i,entry_.value_+i);
-            }
-            //@}
-            //! \name Increment and decrement
-            //@{
-            const_iterator& operator++() {
-                entry_.date_++; entry_.value_++;
-                return *this;
-            }
-            const_iterator operator++(int ) {
-                const_iterator temp = *this;
-                entry_.date_++; entry_.value_++;
-                return temp;
-            }
-            const_iterator& operator--() {
-                entry_.date_--; entry_.value_--;
-                return *this;
-            }
-            const_iterator operator--(int ) {
-                const_iterator temp = *this;
-                entry_.date_--; entry_.value_--;
-                return temp;
-            }
-            const_iterator& operator+=(difference_type i) {
-                entry_.date_+=i; entry_.value_+=i;
-                return *this;
-            }
-            const_iterator& operator-=(difference_type i) {
-                entry_.date_-=i; entry_.value_-=i;
-                return *this;
-            }
-            const_iterator operator+(difference_type i) {
-                return const_iterator(entry_.date_+i,entry_.value_+i);
-            }
-            const_iterator operator-(difference_type i) {
-                return const_iterator(entry_.date_-i,entry_.value_-i);
-            }
-            //@}
-            //! \name Difference
-            //@{
-            difference_type operator-(const const_iterator& i) {
-                return entry_.date_-i.entry_.date_; }
-            //@}
-            //! \name Comparisons
-            //@{
-            bool operator==(const const_iterator& i) {
-                return entry_.date_ == i.entry_.date_; }
-            bool operator!=(const const_iterator& i) {
-                return entry_.date_ != i.entry_.date_; }
-            bool operator<(const const_iterator& i) {
-                return entry_.date_ < i.entry_.date_; }
-            bool operator>(const const_iterator& i) {
-                return entry_.date_ > i.entry_.date_; }
-            bool operator<=(const const_iterator& i) {
-                return entry_.date_ <= i.entry_.date_; }
-            bool operator>=(const const_iterator& i) {
-                return entry_.date_ >= i.entry_.date_; }
-            //@}
           private:
+            // only histories can build them
             const_iterator(const Date& d,
                            const std::vector<Real>::const_iterator& v)
             : entry_(d,v) {}
             Entry entry_;
+          public:
+            // iterator_facade interface
+            const Entry& dereference() const {
+                return entry_;
+            }
+            bool equal(const const_iterator& i) const {
+                return entry_.date_ == i.entry_.date_;
+            }
+            void increment() {
+                entry_.date_++;
+                entry_.value_++;
+            }
+            void decrement() {
+                entry_.date_--;
+                entry_.value_--;
+            }
+            void advance(BigInteger n) {
+                entry_.date_ += n;
+                entry_.value_ += n;
+            }
+            BigInteger distance_to(const const_iterator& i) const {
+                return i.entry_.date_ - entry_.date_;
+            }
         };
 
       private:
         class DataValidator;
       public:
         //! bidirectional iterator on non-null history entries
-        typedef filtering_iterator<const_iterator,DataValidator>
+        typedef boost::filter_iterator<DataValidator,const_iterator>
             const_valid_iterator;
 
         //! random access iterator on historical data
         typedef std::vector<Real>::const_iterator const_data_iterator;
 
         //! bidirectional iterator on non-null historical data
-        typedef filtering_iterator<const_data_iterator,DataValidator>
+        typedef boost::filter_iterator<DataValidator,const_data_iterator>
             const_valid_data_iterator;
 
         /*! \name Iterator access
@@ -273,16 +226,13 @@ namespace QuantLib {
 
         // valid entry iterators
         const_valid_iterator vbegin() const {
-            return const_valid_iterator(begin(),DataValidator(),
-                begin()-1,end());
+            return const_valid_iterator(DataValidator(),begin(),end());
         }
         const_valid_iterator vend() const {
-            return const_valid_iterator(end(),DataValidator(),
-                begin()-1,end());
+            return const_valid_iterator(DataValidator(),end(),end());
         }
         const_valid_iterator valid_iterator(const Date& d) const {
-            return const_valid_iterator(iterator(d),DataValidator(),
-                begin()-1,end());
+            return const_valid_iterator(DataValidator(),iterator(d),end());
         }
 
         // data iterators
@@ -293,14 +243,14 @@ namespace QuantLib {
 
         // valid data iterators
         const_valid_data_iterator vdbegin() const {
-            return const_valid_data_iterator(dbegin(),DataValidator(),
-                dbegin()-1,dend()); }
+            return const_valid_data_iterator(DataValidator(),dbegin(),dend());
+        }
         const_valid_data_iterator vdend() const {
-            return const_valid_data_iterator(dend(),DataValidator(),
-                dbegin()-1,dend()); }
+            return const_valid_data_iterator(DataValidator(),dend(),dend());
+        }
         const_valid_data_iterator valid_data_iterator(const Date& d) const {
-            return const_valid_data_iterator(data_iterator(d),
-                DataValidator(), dbegin()-1,dend());
+            return const_valid_data_iterator(DataValidator(),
+                                             data_iterator(d),dend());
         }
         //@}
       private:

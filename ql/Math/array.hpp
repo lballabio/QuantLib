@@ -28,6 +28,7 @@
 #include <ql/errors.hpp>
 #include <ql/disposable.hpp>
 #include <ql/basicdataformatters.hpp>
+#include <boost/iterator/reverse_iterator.hpp>
 #include <functional>
 #include <numeric>
 
@@ -92,9 +93,8 @@ namespace QuantLib {
         //@}
         typedef Real* iterator;
         typedef const Real* const_iterator;
-        typedef QL_REVERSE_ITERATOR(iterator,Real) reverse_iterator;
-        typedef QL_REVERSE_ITERATOR(const_iterator,Real)
-            const_reverse_iterator;
+        typedef boost::reverse_iterator<iterator> reverse_iterator;
+        typedef boost::reverse_iterator<const_iterator> const_reverse_iterator;
         //! \name Iterator access
         //@{
         const_iterator begin() const;

@@ -19,19 +19,19 @@
     \brief Global definitions and compiler switches.
 */
 
-#ifndef quantlib_defines_h
+#ifndef quantlib_defines_hpp
 /* install-hook */
-#define quantlib_defines_h
+#define quantlib_defines_hpp
 
 #include <boost/version.hpp>
-#if BOOST_VERSION < 103002
+#if BOOST_VERSION < 103100
     #error using an old version of Boost, please update.
 #endif
 #if !defined(BOOST_ENABLE_ASSERT_HANDLER)
     #define BOOST_ENABLE_ASSERT_HANDLER
 #endif
 
-/* these will go into userconfig.hpp some time.
+/* eventually these will go into userconfig.hpp.
    For the time being, we hard code them here.
 */
 #define QL_INTEGER int
@@ -396,9 +396,12 @@
 
     @{
 */
+#ifndef QL_DISABLE_DEPRECATED
 /*! \def QL_ITERATOR
     Custom iterators should be derived from this struct for the code to be
     portable.
+
+    \deprecated use the Boost iterator library instead
 */
 #include <iterator>
 #if !defined(QL_ITERATOR)
@@ -413,15 +416,21 @@
     };
     #define QL_ITERATOR     quantlib_iterator__
 #endif
+#endif
 
+#ifndef QL_DISABLE_DEPRECATED
 /*! \def QL_ITERATOR_TRAITS
     For the code to be portable this macro should be used instead of
     the actual struct.
+
+    \deprecated use the Boost iterator library instead
 */
 /*! \def QL_SPECIALIZE_ITERATOR_TRAITS
     When using the %QuantLib implementation of iterator_traits or
     Visual C++ .Net, this macro might be needed to specialize
     QL_ITERATOR_TRAITS for a pointer to a user-defined type.
+
+    \deprecated no longer needed for the Boost iterator library
 */
 #if !defined(QL_ITERATOR_TRAITS)
     template <class Iterator>
@@ -484,6 +493,7 @@ QL_SPECIALIZE_ITERATOR_TRAITS(float)
 QL_SPECIALIZE_ITERATOR_TRAITS(double)
 QL_SPECIALIZE_ITERATOR_TRAITS(long double)
 #endif
+#endif
 
 /*! \def QL_REVERSE_ITERATOR
     \brief Blame Microsoft for this one...
@@ -491,6 +501,8 @@ QL_SPECIALIZE_ITERATOR_TRAITS(long double)
     They decided that <code>std::reverse_iterator<iterator></code>
     needed an extra template argument.  For the code to be portable
     this macro should be used instead of the actual class.
+
+    \deprecated use boost::reverse_iterator instead
 */
 #if defined(GARBLED_REVERSE_ITERATOR)
     #define QL_REVERSE_ITERATOR(iterator,type)    \

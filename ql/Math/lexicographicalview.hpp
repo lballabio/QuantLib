@@ -23,6 +23,7 @@
 #define quantlib_lexicographical_view_h
 
 #include <ql/Utilities/steppingiterator.hpp>
+#include <boost/iterator/reverse_iterator.hpp>
 
 namespace QuantLib {
 
@@ -39,19 +40,12 @@ namespace QuantLib {
         //! iterates over \f$ v_{ij} \f$ with \f$ j \f$ fixed.
         typedef RandomAccessIterator x_iterator;
         //! iterates backwards over \f$ v_{ij} \f$ with \f$ j \f$ fixed.
-        typedef 
-            QL_REVERSE_ITERATOR(
-                RandomAccessIterator,
-                typename QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type)
-            reverse_x_iterator;
+        typedef boost::reverse_iterator<RandomAccessIterator>
+                                                         reverse_x_iterator;
         //! iterates over \f$ v_{ij} \f$ with \f$ i \f$ fixed.
-        typedef stepping_iterator<RandomAccessIterator> y_iterator;
+        typedef step_iterator<RandomAccessIterator> y_iterator;
         //! iterates backwards over \f$ v_{ij} \f$ with \f$ i \f$ fixed.
-        typedef 
-            QL_REVERSE_ITERATOR(
-                y_iterator,
-                typename QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type)
-            reverse_y_iterator;
+        typedef boost::reverse_iterator<y_iterator> reverse_y_iterator;
 
         //! \name Element access
         //@{
@@ -111,14 +105,14 @@ namespace QuantLib {
     }
 
     template <class RandomAccessIterator>
-    inline 
+    inline
     typename LexicographicalView<RandomAccessIterator>::reverse_x_iterator
     LexicographicalView<RandomAccessIterator>::rxbegin(Size j) {
         return reverse_x_iterator(xend(j));
     }
 
     template <class RandomAccessIterator>
-    inline 
+    inline
     typename LexicographicalView<RandomAccessIterator>::reverse_x_iterator
     LexicographicalView<RandomAccessIterator>::rxend(Size j) {
         return reverse_x_iterator(xbegin(j));
@@ -137,14 +131,14 @@ namespace QuantLib {
     }
 
     template <class RandomAccessIterator>
-    inline 
+    inline
     typename LexicographicalView<RandomAccessIterator>::reverse_y_iterator
     LexicographicalView<RandomAccessIterator>::rybegin(Size i) {
         return reverse_y_iterator(yend(i));
     }
 
     template <class RandomAccessIterator>
-    inline 
+    inline
     typename LexicographicalView<RandomAccessIterator>::reverse_y_iterator
     LexicographicalView<RandomAccessIterator>::ryend(Size i) {
         return reverse_y_iterator(ybegin(i));

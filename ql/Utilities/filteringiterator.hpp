@@ -26,6 +26,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     template <class IteratorTag>
     struct filtering_iterator_tag {
         typedef IteratorTag iterator_category;
@@ -38,8 +40,10 @@ namespace QuantLib {
 
     //! Iterator filtering undesired data
     /*! This iterator advances an underlying iterator
-      returning only those data satisfying a given
-      condition.
+        returning only those data satisfying a given
+        condition.
+
+        \deprecated use boost::filter_iterator instead
     */
     template <class Iterator, class UnaryPredicate>
     class filtering_iterator : public QL_ITERATOR<
@@ -172,6 +176,8 @@ namespace QuantLib {
         return filtering_iterator<Iterator,UnaryPredicate>(
                                                         it,p,beforeBegin,end);
     }
+
+    #endif
 
 }
 

@@ -26,10 +26,15 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! Iterator mapping a function to a pair of underlying sequences
     /*! This iterator advances two underlying iterators and returns
         the values obtained by applying a function to the two values
         such iterators point to.
+
+        \deprecated use a combination of boost::zip_iterator and
+                    boost::transform_iterator instead
     */
     template <class Iterator1, class Iterator2, class Function>
     class coupling_iterator : public QL_ITERATOR<
@@ -142,6 +147,8 @@ namespace QuantLib {
     make_coupling_iterator(It1 it1, It2 it2, Function f) {
         return coupling_iterator<It1,It2,Function>(it1,it2,f);
     }
+
+    #endif
 
 }
 

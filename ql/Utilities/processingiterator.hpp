@@ -26,6 +26,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! Iterator mapping a unary function to an underlying sequence
     /*! This iterator advances an underlying iterator and returns the
         values obtained by applying a unary function to the values
@@ -35,6 +37,8 @@ namespace QuantLib {
         Becker, <i>Custom Iterators for the STL</i>, included in the
         proceedings of the First Workshop on C++ Template Programming,
         Erfurt, Germany, 2000 (http://www.oonumerics.org/tmpw00/)
+
+        \deprecated use boost::transform_iterator instead
     */
     template <class Iterator, class UnaryFunction>
     class processing_iterator : public QL_ITERATOR<
@@ -45,7 +49,7 @@ namespace QuantLib {
         const typename UnaryFunction::result_type&>
     {
       public:
-        /* These typedefs are needed even though inherited from 
+        /* These typedefs are needed even though inherited from
            QL_ITERATOR (see 14.6.2.3 of the standard).  */
         typedef typename UnaryFunction::result_type value_type;
         typedef typename QL_ITERATOR_TRAITS<Iterator>::difference_type
@@ -105,12 +109,12 @@ namespace QuantLib {
     // inline definitions
 
     template <class I, class F>
-    inline processing_iterator<I,F>::processing_iterator(const I& it, 
+    inline processing_iterator<I,F>::processing_iterator(const I& it,
                                                          const F& f)
     : it_(it), f_(f) {}
 
     template <class I, class F>
-    inline processing_iterator<I,F>& 
+    inline processing_iterator<I,F>&
     processing_iterator<I,F>::operator++() {
         ++it_;
         return *this;
@@ -237,6 +241,8 @@ namespace QuantLib {
     make_processing_iterator(I it, F p) {
         return processing_iterator<I,F>(it,p);
     }
+
+    #endif
 
 }
 

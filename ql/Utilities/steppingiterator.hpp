@@ -19,17 +19,69 @@
     \brief Iterator advancing in constant steps
 */
 
-#ifndef quantlib_stepping_iterator_h
-#define quantlib_stepping_iterator_h
+#ifndef quantlib_stepping_iterator_hpp
+#define quantlib_stepping_iterator_hpp
 
 #include <ql/qldefines.hpp>
+#include <boost/iterator/iterator_adaptor.hpp>
 
 namespace QuantLib {
 
     //! Iterator advancing in constant steps
+    /*! This iterator advances an underlying random-access iterator in
+        steps of \f$ n \f$ positions, where \f$ n \f$ is a positive
+        integer given upon construction.
+    */
+    template <class Iterator>
+    class step_iterator :
+        public boost::iterator_adaptor<step_iterator<Iterator>, Iterator> {
+      private:
+        typedef boost::iterator_adaptor<step_iterator<Iterator>, Iterator>
+                                                                      super_t;
+        // a Size would mess up integer division in distance_to
+        BigInteger step_;
+      public:
+        step_iterator() {}
+        explicit step_iterator(const Iterator& base, Size step)
+        : super_t(base), step_(static_cast<BigInteger>(step)) {}
+        template <class OtherIterator>
+        step_iterator(const step_iterator<OtherIterator>& i,
+                      typename boost::enable_if_convertible
+                      <OtherIterator,Iterator>::type* = 0)
+        : super_t(i.base()), step_(static_cast<BigInteger>(i.step())) {}
+        // inspector
+        Size step() const { return static_cast<Size>(this->step_); }
+        // iterator adapter interface
+        void increment() {
+            std::advance(this->base_reference(), step_);
+        }
+        void decrement() {
+            std::advance(this->base_reference(), -step_);
+        }
+        void advance(typename super_t::difference_type n) {
+            this->base_reference() += n*(this->step_);
+        }
+        typename super_t::difference_type
+        distance_to(const step_iterator& i) const {
+            return (i.base()-this->base())/(this->step_);
+        }
+    };
+
+    //! helper function to create step iterators
+    /*! \relates step_iterator */
+    template <class Iterator>
+    step_iterator<Iterator> make_step_iterator(Iterator it, Size step) {
+        return step_iterator<Iterator>(it,step);
+    }
+
+
+    #ifndef QL_DISABLE_DEPRECATED
+    //! Iterator advancing in constant steps
     /*! This iterator advances an underlying random access
         iterator in steps of \f$ n \f$ positions, where
         \f$ n \f$ is an integer given upon construction.
+
+        \deprecated use step_iterator instead
     */
     template <class RandomAccessIterator>
     class stepping_iterator : public QL_ITERATOR<
@@ -41,7 +93,7 @@ namespace QuantLib {
         typename QL_ITERATOR_TRAITS<RandomAccessIterator>::reference>
     {
       public:
-        /* These typedefs are needed even though inherited from 
+        /* These typedefs are needed even though inherited from
            QL_ITERATOR (see 14.6.2.3 of the standard).  */
         typedef typename QL_ITERATOR_TRAITS<
             RandomAccessIterator>::difference_type difference_type;
@@ -146,6 +198,7 @@ namespace QuantLib {
                  typename stepping_iterator<Iterator>::difference_type step) {
         return stepping_iterator<Iterator>(it,step);
     }
+    #endif
 
 }
 
