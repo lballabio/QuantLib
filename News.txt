@@ -4,6 +4,7 @@
 Changes since Release 0.2.1:
 - Library:
     MONTE CARLO FRAMEWORK
+    - Path and MultiPath are time-aware
 
     FINITE DIFFERENCE FRAMEWORK
 
