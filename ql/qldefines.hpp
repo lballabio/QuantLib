@@ -295,13 +295,13 @@
 /*! \def QL_MAX \brief maximum between two elements */
 #include <algorithm>
 #if !defined(QL_MIN)
-    template <class T> T __quantlib_min(const T& x, const T& y) {
+    template <class T> inline const T& __quantlib_min(const T& x, const T& y) {
         return x < y ? x : y;
     }
     #define QL_MIN  __quantlib_min
 #endif
 #if !defined(QL_MAX)
-    template <class T> T __quantlib_max(const T& x, const T& y) {
+    template <class T> inline const T& __quantlib_max(const T& x, const T& y) {
         return x > y ? x : y;
     }
     #define QL_MAX  __quantlib_max
