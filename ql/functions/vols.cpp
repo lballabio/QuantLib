@@ -28,7 +28,7 @@
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Volatilities/localconstantvol.hpp>
 #include <ql/Volatilities/blackvariancecurve.hpp>
-#include <ql/Volatilities/localvariancecurve.hpp>
+#include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/blackvariancesurface.hpp>
 
 using QuantLib::Date;

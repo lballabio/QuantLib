@@ -40,7 +40,7 @@ namespace QuantLib {
             volatility is at most time dependent, so this class is
             basically a proxy for BlackVolatilityTermStructure.
         */
-        class LocalConstantVol : public LocalVolatilityTermStructure,
+        class LocalConstantVol : public LocalVolTermStructure,
                                  public Patterns::Observer {
           public:
             // constructor
@@ -59,7 +59,7 @@ namespace QuantLib {
             // Observer interface
             void update();
           private:
-            double localVolImpl(Time,Time,double,bool extrapolate) const;
+            double localVolImpl(Time,double,bool extrapolate) const;
             Date referenceDate_;
             RelinkableHandle<MarketElement> volatility_;
             DayCounter dayCounter_;
@@ -86,10 +86,9 @@ namespace QuantLib {
             notifyObservers();
         }
 
-        inline double LocalConstantVol::localVolImpl(Time t1, Time t2,
+        inline double LocalConstantVol::localVolImpl(Time t, 
                                         double, bool extrapolate) const {
-            QL_REQUIRE(t1 >= 0.0, "LocalConstantVol: negative time given");
-            QL_REQUIRE(t2 > t1, "LocalConstantVol: t1 later than t2");
+            QL_REQUIRE(t >= 0.0, "LocalConstantVol: negative time given");
             return volatility_->value();
         }
     }

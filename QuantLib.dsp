@@ -1455,7 +1455,7 @@ SOURCE=.\ql\Volatilities\localconstantvol.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Volatilities\localvariancecurve.hpp
+SOURCE=.\ql\Volatilities\localvolcurve.hpp
 # End Source File
 # Begin Source File
 

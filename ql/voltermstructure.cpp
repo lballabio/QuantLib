@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2002 Ferdinando Ametrano
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file voltermstructure.cpp
     \brief Volatility term structures
 
@@ -22,15 +24,12 @@
 
 // $Id$
 
-
-#include "ql/voltermstructure.hpp"
+#include <ql/voltermstructure.hpp>
 
 namespace QuantLib {
 
 	const double BlackVolTermStructure::dT = 1.0/365.0;
 
-	BlackVolTermStructure::~BlackVolTermStructure() {}
-        
 	double BlackVolTermStructure::maxTime() const {
         return dayCounter().yearFraction(referenceDate(), maxDate());
     }
@@ -156,53 +155,23 @@ namespace QuantLib {
         return QL_SQRT(var/nonZeroMaturity);
     }
 
-    LocalVolTermStructure::~LocalVolTermStructure() {}
 
 
     double LocalVolTermStructure::maxTime() const {
         return dayCounter().yearFraction(referenceDate(), maxDate());
     }
 
-    double LocalVolTermStructure::localVol(const Date& date1,
-        const Date& date2, double underlyingLevel, bool extrapolate) const {
-
-        Time t1 = dayCounter().yearFraction(referenceDate(), date1);
-        Time t2 = dayCounter().yearFraction(referenceDate(), date2);
-        return localVolImpl(t1, t2, underlyingLevel, extrapolate);
-    }
-
-    double LocalVolTermStructure::localVol(Time t1, Time t2,
+    double LocalVolTermStructure::localVol(const Date& d,
         double underlyingLevel, bool extrapolate) const {
 
-        return localVolImpl(t1, t2, underlyingLevel, extrapolate);
+        Time t = dayCounter().yearFraction(referenceDate(), d);
+        return localVolImpl(t, underlyingLevel, extrapolate);
     }
 
-    double LocalVolTermStructure::localVariance(const Date& date1,
-        const Date& date2, double underlyingLevel, bool extrapolate) const {
-
-        Time t1 = dayCounter().yearFraction(referenceDate(), date1);
-        Time t2 = dayCounter().yearFraction(referenceDate(), date2);
-        return localVarianceImpl(t1, t2, underlyingLevel, extrapolate);
-    }
-
-    double LocalVolTermStructure::localVariance(Time t1, Time t2,
+    double LocalVolTermStructure::localVol(Time t,
         double underlyingLevel, bool extrapolate) const {
 
-        return localVarianceImpl(t1, t2, underlyingLevel, extrapolate);
-    }
-	     
-    double LocalVolatilityTermStructure ::localVarianceImpl(Time t1, Time t2,
-		double underlyingLevel, bool extrapolate) const {
-
-        double vol = localVolImpl(t1, t2, underlyingLevel, extrapolate);
-        return vol*vol*(t2-t1);
-    }
-
-    double LocalVarianceTermStructure ::localVolImpl(Time t1, Time t2,
-		double underlyingLevel, bool extrapolate) const {
-
-        double var = localVarianceImpl(t1, t2, underlyingLevel, extrapolate);
-        return QL_SQRT(var/(t2-t1));
+        return localVolImpl(t, underlyingLevel, extrapolate);
     }
 
 }
