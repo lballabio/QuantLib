@@ -131,6 +131,11 @@ namespace QuantLib {
         class Entry {
             friend class const_iterator;
           public:
+            Entry() {
+                static std::vector<double> v(1,Null<double>());
+                date_ = Date();
+                value_ = v.begin();
+            }
             const Date& date() const { return date_; }
             double value() const { return *value_; }
           private:
