@@ -77,8 +77,9 @@ Date.__repr__ = new.instancemethod(QuantLibc.Date___repr__, None, Date)
 Date.__nonzero__ = new.instancemethod(QuantLibc.Date___nonzero__, None, Date)
 
 class DateVector:
-    def __init__(self,this):
-        self.this = this
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_DateVector,args,kwargs)
+        self.thisown = 1
 
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
@@ -239,8 +240,9 @@ class InvCumulativeNormalDistributionPtr(InvCumulativeNormalDistribution):
 InvCumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.InvCumulativeNormalDistribution___call__, None, InvCumulativeNormalDistribution)
 
 class IntVector:
-    def __init__(self,this):
-        self.this = this
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_IntVector,args,kwargs)
+        self.thisown = 1
 
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
@@ -264,8 +266,9 @@ IntVector.__repr__ = new.instancemethod(QuantLibc.IntVector___repr__, None, IntV
 IntVector.__nonzero__ = new.instancemethod(QuantLibc.IntVector___nonzero__, None, IntVector)
 
 class DoubleVector:
-    def __init__(self,this):
-        self.this = this
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_DoubleVector,args,kwargs)
+        self.thisown = 1
 
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
@@ -552,8 +555,9 @@ Instrument.__cmp__ = new.instancemethod(QuantLibc.Instrument___cmp__, None, Inst
 Instrument.__nonzero__ = new.instancemethod(QuantLibc.Instrument___nonzero__, None, Instrument)
 
 class Array:
-    def __init__(self,this):
-        self.this = this
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_Array,args,kwargs)
+        self.thisown = 1
 
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
