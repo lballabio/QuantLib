@@ -49,7 +49,7 @@ class DigitalOptionTest : public CppUnit::TestFixture {
 //    void testCashAtExpiryOrNothingAmericanGreeks();
 //    void testAssetAtExpiryOrNothingAmericanGreeks();
 
-    void testEngineConsistency();
+    void testMCCashAtHit();
     static CppUnit::Test* suite();
 };
 
