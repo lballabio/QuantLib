@@ -25,12 +25,13 @@
 /*! \file accruingcoupon.hpp
     \brief Coupon accruing over a fixed period
 
-    \fullpath
-    Include/ql/CashFlows/%accruingcoupon.hpp
+    \fullpath Include/ql/CashFlows/%accruingcoupon.hpp
 */
 
-// $Source$
 // $Log$
+// Revision 1.7  2001/07/27 16:39:28  nando
+// template of the doxygen header
+//
 // Revision 1.6  2001/07/25 15:47:27  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
