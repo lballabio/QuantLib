@@ -48,21 +48,29 @@ namespace QuantLib {
             RandomSequenceGenerator(Size dimensionality,
                                     const RNG& rng)
             : dimensionality_(dimensionality), rng_(rng),
-              sequence_(Array(dimensionality), 1.0) {}
+              sequence_(Array(dimensionality), 1.0),
+              int32Sequence_(dimensionality) {}
 
             RandomSequenceGenerator(Size dimensionality,
                                     long seed = 0)
             : dimensionality_(dimensionality), rng_(seed),
-              sequence_(Array(dimensionality), 1.0) {}
+              sequence_(Array(dimensionality), 1.0),
+              int32Sequence_(dimensionality) {}
 
             const sample_type& nextSequence() const {
                 sequence_.weight = 1.0;
-                for (Size i=0; i<dimensionality_; ++i) {
+                for (Size i=0; i<dimensionality_; i++) {
                     typename RNG::sample_type x(rng_.next());
                     sequence_.value[i] = x.value;
                     sequence_.weight  *= x.weight;
                 }
                 return sequence_;
+            }
+            std::vector<unsigned long> nextInt32Sequence() const {
+                for (Size i=0; i<dimensionality_; i++) {
+                    int32Sequence_[i] = rng_.nextInt32();
+                }
+                return int32Sequence_;
             }
             const sample_type& lastSequence() const {
                 return sequence_;
@@ -72,6 +80,7 @@ namespace QuantLib {
             Size dimensionality_;
             RNG rng_;
             mutable sample_type sequence_;
+            mutable std::vector<unsigned long> int32Sequence_;
         };
     }
 

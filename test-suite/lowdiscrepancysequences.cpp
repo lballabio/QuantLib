@@ -340,8 +340,8 @@ namespace {
         1.11e-004, 5.05e-005, 2.42e-005
     };
     const double dim002DiscrRShiftHalton[] = {1.32e-003, 7.25e-004};
-    const double dim002DiscrRStRShHalton[] = {1.40e-003, 9.29e-004};
-    const double dim002DiscrRStartHalton[] = {1.15e-003, 6.13e-004};
+    const double dim002DiscrRStRShHalton[] = {1.35e-003, 9.43e-004};
+    const double dim002DiscrRStartHalton[] = {1.08e-003, 6.40e-004};
     const double dim002Discr_True_Random[] = {
         1.17e-002, 8.24e-003, 5.82e-003, 4.12e-003, 
         2.91e-003, 2.06e-003, 1.46e-003
@@ -364,8 +364,8 @@ namespace {
         1.41e-004, 7.64e-005, 3.93e-005
     };
     const double dim003DiscrRShiftHalton[] = {1.96e-003, 1.03e-003};
-    const double dim003DiscrRStRShHalton[] = {2.52e-003, 1.75e-003};
-    const double dim003DiscrRStartHalton[] = {1.56e-003, 7.93e-004};
+    const double dim003DiscrRStRShHalton[] = {2.17e-003, 1.54e-003};
+    const double dim003DiscrRStartHalton[] = {1.48e-003, 7.77e-004};
     const double dim003Discr_True_Random[] = {
         9.27e-003, 6.56e-003, 4.63e-003, 3.28e-003, 
         2.32e-003, 1.64e-003, 1.16e-003
@@ -388,8 +388,8 @@ namespace {
         2.13e-004, 1.25e-004, 7.17e-005
     };
     const double dim005DiscrRShiftHalton[] = {2.02e-003, 1.36e-003};
-    const double dim005DiscrRStRShHalton[] = {2.12e-003, 1.26e-003};
-    const double dim005DiscrRStartHalton[] = {1.73e-003, 1.08e-003};
+    const double dim005DiscrRStRShHalton[] = {2.11e-003, 1.25e-003};
+    const double dim005DiscrRStartHalton[] = {1.74e-003, 1.08e-003};
     const double dim005Discr_True_Random[] = {
         5.15e-003, 3.64e-003, 2.57e-003, 1.82e-003, 
         1.29e-003, 9.10e-004, 6.43e-004
@@ -413,7 +413,7 @@ namespace {
     };
     const double dim010DiscrRShiftHalton[] = {9.25e-004, 6.40e-004};
     const double dim010DiscrRStRShHalton[] = {8.41e-004, 5.42e-004};
-    const double dim010DiscrRStartHalton[] = {7.87e-004, 5.34e-004};
+    const double dim010DiscrRStartHalton[] = {7.89e-004, 5.33e-004};
     const double dim010Discr_True_Random[] = {
         9.69e-004, 6.85e-004, 4.84e-004, 3.42e-004, 
         2.42e-004, 1.71e-004, 1.21e-004

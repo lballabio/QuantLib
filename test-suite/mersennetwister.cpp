@@ -440,10 +440,8 @@ void MersenneTwisterTest::runTest() {
     init[3]=0x456;
     MersenneTwisterUniformRng mt19937(init);
 
-    // discard first 1000 sample
     for (i=0; i<1000; i++) {
-        double e = QL_FABS((double(referenceLongValues[i])+ 0.5)/4294967296.0-
-            mt19937.next().value);
+        double e = QL_FABS(referenceLongValues[i]-mt19937.nextInt32());
         if (e > 1.0e-8) {
             char s[10];
             QL_SPRINTF(s,"%5.2e",e);
