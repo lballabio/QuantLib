@@ -23,7 +23,6 @@
 #ifndef quantlib_vanilla_option_h
 #define quantlib_vanilla_option_h
 
-#include <ql/option.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/exercise.hpp>

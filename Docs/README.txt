@@ -1,17 +1,17 @@
 
 The documentation is automatically extracted from the source code using
-Doxygen (http://www.doxygen.org). The suggested version is 1.3; versions 
+Doxygen (http://www.doxygen.org). The suggested version is 1.3.4; versions
 as back as 1.2.14 should still work.
 
 The basic requirement to produce html documentation are:
-1) Doxygen 
+1) Doxygen
 2) Graphviz (http://www.research.att.com/sw/tools/graphviz/)
 3) Aladdin Ghostscript (http://www.ghostscript.com/)
 
 If you want to produce PDF and/or PS documentation you will need also:
 4) TeX/LaTeX
 5) LaTeX Fancy Header package
-6) LaTeX pxfonts 
+6) LaTeX pxfonts
 7) epstopdf. It's available as Perl script (you will also need Perl, of
    course), C source to be compiled or Windows executable.
 The above are available through the CTAN (http://www.ctan.org/)

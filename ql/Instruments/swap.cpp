@@ -20,7 +20,6 @@
 */
 
 #include <ql/Instruments/swap.hpp>
-#include <ql/CashFlows/coupon.hpp>
 #include <ql/CashFlows/basispointsensitivity.hpp>
 
 namespace QuantLib {

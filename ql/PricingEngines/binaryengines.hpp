@@ -29,11 +29,8 @@
 
 #include <ql/exercise.hpp>
 #include <ql/handle.hpp>
-#include <ql/payoff.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
-#include <ql/Instruments/binaryoption.hpp>
-#include <ql/Math/normaldistribution.hpp>
 #include <ql/MonteCarlo/binarypathpricer.hpp>
 #include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/PricingEngines/genericengine.hpp>

@@ -24,7 +24,6 @@
 #ifndef quantlib_binary_option_h
 #define quantlib_binary_option_h
 
-#include <ql/option.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {

@@ -19,7 +19,6 @@
     \brief European cap and floor class
 */
 
-#include <ql/Instruments/capfloor.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/Pricers/blackcapfloor.hpp>
 #include <ql/Solvers1D/brent.hpp>

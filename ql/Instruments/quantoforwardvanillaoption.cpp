@@ -20,7 +20,6 @@
 */
 
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
-#include <ql/Instruments/forwardvanillaoption.hpp>
 
 namespace QuantLib {
 
