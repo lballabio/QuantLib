@@ -31,9 +31,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.18  2000/12/20 15:27:02  lballabio
+	Added new defines for helping Linux port
+
 	Revision 1.17  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 /*! \mainpage
@@ -85,8 +88,10 @@
 	#pragma warning(disable: 4786)  // identifier truncated in debug info
 	// set switches
 	#define QL_CMATH_IN_STD						0
-	#define QL_CCHAR_IN_STD						0
+	#define QL_CCTYPE_IN_STD					0
 	#define QL_CTIME_IN_STD						0
+	#define QL_HAS_LIMITS						1
+	#define QL_HAS_SSTREAM						1
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_REQUIRES_DUMMY_RETURN			1
@@ -98,8 +103,10 @@
 #elif defined(__BORLANDC__)				// Borland C++
 	// set switches
 	#define QL_CMATH_IN_STD						1
-	#define QL_CCHAR_IN_STD						1
+	#define QL_CCTYPE_IN_STD					1
 	#define QL_CTIME_IN_STD						1
+	#define QL_HAS_LIMITS						1
+	#define QL_HAS_SSTREAM						1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	0
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			0
@@ -111,8 +118,10 @@
 #elif defined(__MWERKS__)				// Metrowerks CodeWarrior
 	// set switches
 	#define QL_CMATH_IN_STD						1
-	#define QL_CCHAR_IN_STD						1
+	#define QL_CCTYPE_IN_STD					1
 	#define QL_CTIME_IN_STD						1
+	#define QL_HAS_LIMITS						1
+	#define QL_HAS_SSTREAM						1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			1
@@ -124,9 +133,11 @@
 #elif defined(__GNUC__)					// GNU C++
 	// set switches
 	#define QL_CMATH_IN_STD						0
-	#define QL_CCHAR_IN_STD						0
+	#define QL_CCTYPE_IN_STD					0
 	#define QL_CTIME_IN_STD						0
-	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
+	#define QL_HAS_LIMITS						0
+	#define QL_HAS_SSTREAM						0
+	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	0
 	#define QL_EXPRESSION_TEMPLATES_WORK		0
 	#define QL_REQUIRES_DUMMY_RETURN			0
 	#define QL_BROKEN_TEMPLATE_SPECIALIZATION	0
@@ -137,8 +148,10 @@
 #else									// Generic ANSI C++ compliant compiler
 	// set switches
 	#define QL_CMATH_IN_STD						1
-	#define QL_CCHAR_IN_STD						1
+	#define QL_CCTYPE_IN_STD					1
 	#define QL_CTIME_IN_STD						1
+	#define QL_HAS_LIMITS						1
+	#define QL_HAS_SSTREAM						1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			0
@@ -169,6 +182,8 @@
 	
 	Some compilers still define them in the global namespace.
 */
+
+#include <cmath>
 #if QL_CMATH_IN_STD
 	#define QL_SQRT	std::sqrt
 	#define QL_FABS	std::fabs
@@ -194,7 +209,8 @@
 	
 	Some compilers still define them in the global namespace.
 */
-#if QL_CCHAR_IN_STD
+#include <cctype>
+#if QL_CCTYPE_IN_STD
 	#define QL_STRLEN	std::strlen
 	#define QL_TOLOWER	std::tolower
 	#define QL_TOUPPER	std::toupper
@@ -209,10 +225,48 @@
 	
 	Some compilers still define them in the global namespace.
 */
+#include <ctime>
 #if QL_CTIME_IN_STD
 	#define QL_CLOCK	std::clock
 #else
 	#define QL_CLOCK	clock
+#endif
+
+/*! \def QL_HAS_LIMITS
+	\brief Does the <limits> header exist?
+	
+	Some compilers do not give an implementation of it yet
+*/
+#if QL_HAS_LIMITS
+	#include <limits>
+	#define QL_MIN_INT		std::numeric_limits<int>::min()
+	#define QL_MAX_INT		std::numeric_limits<int>::max()
+	#define QL_MIN_DOUBLE	std::numeric_limits<double>::min()
+	#define QL_MAX_DOUBLE	std::numeric_limits<double>::max()
+	#define QL_EPSILON		std::numeric_limits<double>::epsilon()
+#else
+	#include <limits.h>
+	#include <float.h>
+	#define QL_MIN_INT		INT_MIN
+	#define QL_MAX_INT		INT_MAX
+	#define QL_MIN_DOUBLE	DBL_MIN
+	#define QL_MAX_DOUBLE	DBL_MAX
+	#define QL_EPSILON		DBL_EPSILON
+#endif
+
+/*! \def QL_HAS_SSTREAM
+	\brief Does the <sstream> header exist?
+	
+	Some compilers do not give an implementation of it yet
+*/
+#if QL_HAS_SSTREAM
+	#include <sstream>
+	#define QL_ISSTREAM		std::istringstream
+	#define QL_OSSTREAM		std::ostringstream
+#else
+	#include <strstream>
+	#define QL_ISSTREAM		std::istrstream
+	#define QL_OSSTREAM		std::ostrstream
 #endif
 
 /*! \def QL_REQUIRES_DUMMY_RETURN
@@ -253,6 +307,7 @@
 	They decided to call them <tt>std::_cpp_min</tt> and <tt>std::_cpp_max</tt> to avoid
 	the hassle of rewriting their code.
 */
+#include <algorithm>
 #if QL_GARBLED_MIN_AND_MAX
 	#define QL_MIN	std::_cpp_min
 	#define QL_MAX	std::_cpp_max
@@ -267,6 +322,7 @@
 	They decided that <tt>std::reverse_iterator<iterator></tt> needed an extra 
 	template argument.
 */
+#include <iterator>
 #if QL_GARBLED_REVERSE_ITERATORS
 	#define QL_REVERSE_ITERATOR(iterator,type)	std::reverse_iterator< iterator , type >
 #else
