@@ -72,8 +72,8 @@ namespace QuantLib {
                    "null reset date given");
 
         Time resetTime =
-            blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-                blackScholesProcess->riskFreeTS->referenceDate(), resetDate);
+            blackScholesProcess->riskFreeRate()->dayCounter().yearFraction(
+                blackScholesProcess->riskFreeRate()->referenceDate(), resetDate);
 
         QL_REQUIRE(resetTime >=0,
                    "negative reset time given");
