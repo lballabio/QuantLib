@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/02/14 13:54:23  marmar
+    Some spaces have been added
+
     Revision 1.7  2001/02/14 10:57:57  marmar
     BSMOption has  a cleaner constructor
 
@@ -100,13 +103,13 @@ namespace QuantLib {
                     thePrice = price;
                 }
                 double value(double x) const {
-                    bsm->setVolatility(x);
-                    return (bsm->value()-thePrice);
+                    bsm -> setVolatility(x);
+                    return (bsm -> value() - thePrice);
                 }
                 double derivative(double x) const {
         // assuming that derivative(x) is always called after value(x)
         // so that setVolatility unnecessary
-                    return bsm->vega();
+                    return bsm -> vega();
                 }
               private:
                 mutable Handle<BSMOption> bsm;
@@ -115,7 +118,7 @@ namespace QuantLib {
         };
 
         inline void BSMOption::setVolatility(double volatility) {
-            QL_REQUIRE(volatility>=0.0,
+            QL_REQUIRE(volatility >= 0.0,
                  "BSMOption::setVolatility : Volatility must be positive");
             theVolatility = volatility;
             hasBeenCalculated=false;
@@ -123,7 +126,7 @@ namespace QuantLib {
 
         inline void BSMOption::setRiskFreeRate(Rate newRiskFreeRate) {
             theRiskFreeRate = newRiskFreeRate;
-            hasBeenCalculated=false;
+            hasBeenCalculated = false;
         }
 
     }
