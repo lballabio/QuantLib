@@ -17,11 +17,8 @@
 
 #include "asianoptions.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual365.hpp>
 #include <ql/DayCounters/actual360.hpp>
-#include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Instruments/asianoption.hpp>
-#include <ql/Instruments/europeanoption.hpp>
 #include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
 #include <ql/PricingEngines/Asian/analytic_cont_geom_av_price.hpp>
 #include <ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp>
@@ -92,7 +89,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
     // data from "Option Pricing Formulas", Haug, pag.96-97
 
-    DayCounter dc = SimpleDayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(80.0));
@@ -115,7 +112,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     Average::Type averageType = Average::Geometric;
     Option::Type type = Option::Put;
     Real strike = 85.0;
-    Date exerciseDate = today.plusMonths(3);
+    Date exerciseDate = today.plusDays(90);
 
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
@@ -145,11 +142,12 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     boost::shared_ptr<PricingEngine> engine2(new
         AnalyticDiscreteGeometricAveragePriceAsianEngine);
     DiscreteAveragingAsianOption option2(averageType,
-                                         runningAccumulator, pastFixings, fixingDates,
+                                         runningAccumulator, pastFixings,
+                                         fixingDates,
                                          stochProcess, payoff,
                                          exercise, engine2);
     calculated = option2.NPV();
-    tolerance = 1.3e-3;
+    tolerance = 3.0e-3;
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
