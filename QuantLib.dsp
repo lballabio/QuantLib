@@ -21,6 +21,7 @@ CFG=QuantLib - Win32 OnTheEdgeDebug
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Static Library")
+!MESSAGE "QuantLib - Win32 Intel OnTheEdgeRelease" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -122,6 +123,29 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
 # ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
 
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
+CPP=xicl6.exe
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "QuantLib___Win32_Intel_OnTheEdgeRelease"
+# PROP BASE Intermediate_Dir "QuantLib___Win32_Intel_OnTheEdgeRelease"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "build\OnTheEdgeRelease"
+# PROP Intermediate_Dir "build\OnTheEdgeRelease"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /G6 /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr /YX /FD /c
+# ADD CPP /nologo /G6 /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr /YX /FD /c
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=xilink6.exe -lib
+# ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib.lib"
+# ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib.lib"
+
 !ENDIF 
 
 # Begin Target
@@ -130,6 +154,7 @@ LIB32=link.exe -lib
 # Name "QuantLib - Win32 Debug"
 # Name "QuantLib - Win32 OnTheEdgeRelease"
 # Name "QuantLib - Win32 OnTheEdgeDebug"
+# Name "QuantLib - Win32 Intel OnTheEdgeRelease"
 # Begin Group "Calendars"
 
 # PROP Default_Filter ""
@@ -1234,6 +1259,8 @@ SOURCE=.\ql\Pricers\mcbasket.cpp
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
 
 !ENDIF 
 
