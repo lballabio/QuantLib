@@ -3,6 +3,7 @@
 #define quantlib_config_msvc_h
 
 #pragma warning(disable: 4786)  // identifier truncated in debug info
+#pragma warning(disable: 4190)  // C-linkage of SWIG wrappers
 
 #define REQUIRES_DUMMY_RETURN
 
