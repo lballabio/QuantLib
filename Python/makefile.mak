@@ -15,10 +15,8 @@
 
 # Directories
 !if "$(QL_DIR)" == ""
-!message Either set the QL_DIR environment variable to the absolute
-!message path of your QuantLib installation or pass it to $(MAKE) as in
-!message
-!message $(MAKE) -DQL_DIR="your\QuantLib\path".
+!message Set the QL_DIR environment variable to the absolute
+!message path of your QuantLib installation before running $(MAKE).
 !message
 !error terminated
 !endif
@@ -29,10 +27,8 @@ BCC_INCLUDE = $(MAKEDIR)\..\include
 BCC_LIBS    = $(MAKEDIR)\..\lib
 
 !if "$(PYTHON_HOME)" == ""
-!message Either set the PYTHON_HOME environment variable to the absolute
-!message path of your Python installation or pass it to $(MAKE) as in
-!message
-!message $(MAKE) -DPYTHON_HOME="your\Python\path".
+!message Set the PYTHON_HOME environment variable to the absolute
+!message path of your Python installation before running $(MAKE).
 !message
 !error terminated
 !endif
