@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/13 15:01:41  marmar
+// Virtual destructor added
+//
 // Revision 1.5  2001/05/29 15:12:47  lballabio
 // Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
 //
@@ -52,6 +55,7 @@ namespace QuantLib {
       public:
         //! \name inspectors
         //@{
+        virtual ~Index() {}
         virtual Currency currency() const = 0;
         virtual Handle<Calendar> calendar() const = 0;
         virtual bool isAdjusted() const = 0;
