@@ -59,15 +59,15 @@
 #ifndef _MT
     #ifndef _DLL 
         #ifdef _DEBUG
-            #pragma message("Warning: Set 'C/C++ | Code Generation | Debug Multithreaded DLL'")
+            #error Set 'C/C++ | Code Generation | Debug Multithreaded DLL'
         #else
-            #pragma message("Warning: Set 'C/C++ | Code Generation | Multithreaded DLL'")
+            #error Set 'C/C++ | Code Generation | Multithreaded DLL'
         #endif
     #endif
 #endif
 
 #ifndef _CPPRTTI
-    #pragma message("Warning: check the 'C/C++ | C++ Language | Use RTTI' option")
+    #error Check the 'C/C++ | C++ Language | Use RTTI' option
 #endif
 
 #endif

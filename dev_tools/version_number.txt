@@ -15,6 +15,7 @@ The version number is in:
     QuantLib/Docs/quantlib.doxy,
     QuantLib/ql/qldefines.hpp,
     QuantLib-Python/setup.py
+    QuantLib-Python/QuantLib/SWIG/ql.i
 
 It's also in some script used for automatic building:
     release-job.sh

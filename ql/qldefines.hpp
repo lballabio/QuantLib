@@ -47,7 +47,7 @@
 */
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x000303a3
+#define QL_HEX_VERSION 0x000300a3
 
 //! version string
 #define QL_VERSION "0.3.0a3"
