@@ -24,7 +24,6 @@
 #define quantlib_factorial_h
 
 #include <ql/types.hpp>
-#include <vector>
 
 namespace QuantLib {
 
@@ -34,12 +33,13 @@ namespace QuantLib {
      */
     class Factorial {
       public:
-        static double get(Size absoluteIndex);
-        static double ln(Size absoluteIndex);
+        static double get(unsigned int n);
+        static double ln(unsigned int n);
       private:
         Factorial() {}
     };
 
 }
+
 
 #endif

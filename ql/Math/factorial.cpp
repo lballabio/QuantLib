@@ -45,11 +45,12 @@ namespace QuantLib {
          403291461126605635584000000.0,       10888869450418352160768000000.0
         };
 
-        const int tabulated = sizeof(firstFactorials)/sizeof(firstFactorials[0])-1;
+        const int tabulated = 
+            sizeof(firstFactorials)/sizeof(firstFactorials[0])-1;
 
     }
 
-    double Factorial::get(Size i) {
+    double Factorial::get(unsigned int i) {
         if (i<=tabulated) {
             return firstFactorials[i];
         } else {
@@ -57,7 +58,7 @@ namespace QuantLib {
         }
     }
 
-    double Factorial::ln(Size i) {
+    double Factorial::ln(unsigned int i) {
         if (i<=tabulated) {
             return QL_LOG(firstFactorials[i]);
         } else {
