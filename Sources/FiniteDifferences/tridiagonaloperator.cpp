@@ -22,6 +22,7 @@
 */
 
 #include "finitedifferences.h"
+#include "dataformatters.h"
 
 namespace QuantLib {
 
@@ -59,7 +60,8 @@ namespace QuantLib {
 		
 		
 		Array TridiagonalOperatorCommon::applyTo(const Array& v) const {
-			Require(v.size()==theSize,"TridiagonalOperator::applyTo: vector of the wrong size");
+			Require(v.size()==theSize, "TridiagonalOperator::applyTo: vector of the wrong size (" +
+        IntegerFormatter::toString(v.size()) + "instead of "+ IntegerFormatter::toString(theSize) + ")"  );
 			Array result(theSize);
 		
 			// matricial product
