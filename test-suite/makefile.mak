@@ -103,19 +103,19 @@ CC_OPTS = -vi- -I$(QL_INCLUDE_DIR) -I$(QL_FUN_INCLUDE_DIR)
 
 
 # Primary target:
-$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_8.exe:: $(EXE_DIR) \
+$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe:: $(EXE_DIR) \
                                                            $(QL_TESTS)
-    if exist $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_8.lib \
-         del $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_8.lib
+    if exist $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.lib \
+         del $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.lib
     $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) \
-    -e"$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_8.exe" $(QL_TESTS) \
+    -e"$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe" $(QL_TESTS) \
     libboost_unit_test_framework-bcb$(_mt)$(_D)-1_31.lib
 
 $(EXE_DIR):
     if not exist .\bin md .\bin
 
-check: $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_8.exe
-    $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_8.exe \
+check: $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe
+    $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_9.exe \
                   --log_level=messages --build_info=yes --report_level=short
     cd ..
 

@@ -243,8 +243,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"..\lib\QuantLib-vc6-mt-s-0_3_8.lib" \
-	"..\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib"
+	"..\lib\QuantLib-vc6-mt-s-0_3_9.lib" \
+	"..\lib\QuantLibFunctions-vc6-mt-s-0_3_9.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -481,8 +481,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"..\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" \
-	"..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
+	"..\lib\QuantLib-vc6-mt-sgd-0_3_9.lib" \
+	"..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_9.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -718,8 +718,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"..\lib\QuantLib-vc6-mt-0_3_8.lib" \
-	"..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
+	"..\lib\QuantLib-vc6-mt-0_3_9.lib" \
+	"..\lib\QuantLibFunctions-vc6-mt-0_3_9.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -956,8 +956,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"..\lib\QuantLib-vc6-mt-gd-0_3_8.lib" \
-	"..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
+	"..\lib\QuantLib-vc6-mt-gd-0_3_9.lib" \
+	"..\lib\QuantLibFunctions-vc6-mt-gd-0_3_9.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -1191,8 +1191,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"..\lib\QuantLib-vc6-s-0_3_8.lib" \
-	"..\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
+	"..\lib\QuantLib-vc6-s-0_3_9.lib" \
+	"..\lib\QuantLibFunctions-vc6-s-0_3_9.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -1429,8 +1429,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"..\lib\QuantLib-vc6-sgd-0_3_8.lib" \
-	"..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
+	"..\lib\QuantLib-vc6-sgd-0_3_9.lib" \
+	"..\lib\QuantLibFunctions-vc6-sgd-0_3_9.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
