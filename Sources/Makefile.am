@@ -4,8 +4,6 @@ SUBDIRS = FiniteDifferences Calendars Solvers1D TermStructures \
 
 EXTRA_DIST=makefile.mak
 
-INCLUDES = -I$(top_srcdir)/Include
-
 libQuantLib_la_LIBADD = ./Calendars/libCalendars.la \
 	DayCounters/libDayCounters.la \
 	FiniteDifferences/libFiniteDifferences.la \

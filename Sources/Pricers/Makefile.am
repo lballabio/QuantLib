@@ -1,8 +1,6 @@
 
 EXTRA_DIST=makefile.mak
 
-INCLUDES = -I$(top_srcdir)/Include
-
 libPricers_la_SOURCES = \
     averagepriceasian.cpp \
     averagestrikeasian.cpp \
@@ -24,6 +22,6 @@ libPricers_la_SOURCES = \
     multiperiodoption.cpp \
     plainbasketoption.cpp \
     pagodaoption.cpp \
-    stepconditionoption.cpp 
+    stepconditionoption.cpp
 
 noinst_LTLIBRARIES = libPricers.la

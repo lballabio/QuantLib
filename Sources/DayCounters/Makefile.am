@@ -1,8 +1,6 @@
 
 EXTRA_DIST=makefile.mak
 
-INCLUDES = -I$(top_srcdir)/Include
-
 libDayCounters_la_SOURCES = actualactual.cpp thirty360.cpp thirty360italian.cpp
 
 #lib_LTLIBRARIES = libfoo.la

@@ -88,7 +88,8 @@ using namespace std;
   AC_ERROR(C++ compilers string support does not work)
 ])
 AC_MSG_RESULT([$ql_string_ok])
-
+INCLUDES="-I`pwd`/Include"
+AC_SUBST(INCLUDES)
 AC_CHECK_HEADERS(math.h cmath ctype.h cctype ctime time.h)
 AC_CHECK_HEADERS(limits climits limits.h float.h)
 
