@@ -144,6 +144,8 @@ clean::
     if exist QuantLibc_d.dll        del QuantLibc_d.dll
     if exist QuantLibc.tds          del QuantLibc.tds
     if exist QuantLibc_d.tds        del QuantLibc_d.tds
+    cd Tests
+    if exist *.pyc              del *.pyc
 
 # Install Python module
 install::
