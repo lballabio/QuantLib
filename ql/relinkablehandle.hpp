@@ -56,7 +56,8 @@ namespace QuantLib {
         RelinkableHandle(const Handle<Type>& h = Handle<Type>(),
             bool registerAsObserver = true);
         //! Copy constructor
-        RelinkableHandle(const RelinkableHandle& from);
+        RelinkableHandle(const RelinkableHandle&);
+        RelinkableHandle& operator=(const RelinkableHandle&);
         ~RelinkableHandle();
 
         //! \name Linking
@@ -75,6 +76,16 @@ namespace QuantLib {
                 pointed object does.
         */
         void linkTo(const Handle<Type>& h, bool registerAsObserver = true);
+        //@}
+        
+        //! \name Locking
+        //@{
+        /*! Locking a relinkable handle inhibits reassignment, i.e., the
+            locked instance cannot be used on the left hand side of an 
+            assignment. It does not (and does not intend to) prevent 
+            relinking.
+        */
+        void lock();
         //@}
 
         //! \name Dereferencing
@@ -103,11 +114,6 @@ namespace QuantLib {
       private:
         Handle<Type>** ptr_;
         int* n_;
-        // assignment would join two handle groups -
-        // inhibit it until we found out if we really want this.
-        // It doesn't seem a good idea right now.
-        RelinkableHandle& operator=(const RelinkableHandle& from) {
-            return *this; }
         class InnerObserver : public Patterns::Observable,
                               public Patterns::Observer {
           public:
@@ -116,6 +122,7 @@ namespace QuantLib {
         };
         InnerObserver* observer_;
         bool *registeredAsObserver_;
+        bool locked_;
     };
 
 
@@ -125,7 +132,8 @@ namespace QuantLib {
     inline RelinkableHandle<Type>::RelinkableHandle(const Handle<Type>& h,
         bool registerAsObserver)
     : ptr_(new Handle<Type>*(new Handle<Type>)), n_(new int(1)),
-      observer_(new InnerObserver), registeredAsObserver_(new bool(false)) {
+      observer_(new InnerObserver), registeredAsObserver_(new bool(false)),
+      locked_(false) {
         linkTo(h,registerAsObserver);
     }
 
@@ -133,10 +141,36 @@ namespace QuantLib {
     inline RelinkableHandle<Type>::RelinkableHandle(
         const RelinkableHandle<Type>& from)
     : ptr_(from.ptr_), n_(from.n_), observer_(from.observer_),
-      registeredAsObserver_(from.registeredAsObserver_) {
+      registeredAsObserver_(from.registeredAsObserver_), locked_(false) {
         (*n_)++;
     }
 
+    template <class Type>
+    inline RelinkableHandle<Type>& 
+    RelinkableHandle<Type>::operator=(const RelinkableHandle<Type>& from) {
+        QL_REQUIRE(!locked_,
+            "trying to reassign to a locked relinkable handle");
+        if (this != &from) {
+            // decrease count and delete if last
+            if (--(*n_) == 0) {
+                if (!isNull() && *registeredAsObserver_)
+                    (**ptr_)->unregisterObserver(observer_);
+                delete *ptr_;
+                delete ptr_;
+                delete n_;
+                delete observer_;
+            }
+            // assign
+            ptr_ = from.ptr_;
+            n_ = from.n_;
+            observer_ = from.observer_;
+            registeredAsObserver_ = from.registeredAsObserver_;
+            // locked_ is already false and remains so
+            (*n_)++;
+        }
+        return *this;
+    }
+    
     template <class Type>
     inline RelinkableHandle<Type>::~RelinkableHandle() {
         if (--(*n_) == 0) {
@@ -160,6 +194,11 @@ namespace QuantLib {
         if (!isNull() && registerAsObserver)
             (**ptr_)->registerObserver(observer_);
         observer_->notifyObservers();
+    }
+
+    template <class Type>
+    inline void RelinkableHandle<Type>::lock() {
+        locked_ = true;
     }
 
     template <class Type>
