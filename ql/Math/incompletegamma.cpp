@@ -30,13 +30,9 @@ namespace QuantLib {
     double incompleteGammaFunction(double a, double x, double accuracy,
         int maxIteration) {
 
-        QL_REQUIRE(a>0.0,
-            "incompleteGammaFunction :"
-            "non-positive a is not allowed");
+        QL_REQUIRE(a>0.0, "non-positive a is not allowed");
 
-        QL_REQUIRE(x>=0.0,
-            "incompleteGammaFunction :"
-            "negative x non allowed");
+        QL_REQUIRE(x>=0.0, "negative x non allowed");
 
         if (x < (a+1.0)) {
             // Use the series representation
@@ -68,8 +64,7 @@ namespace QuantLib {
                 return sum*QL_EXP(-x+a*QL_LOG(x)-gln);
             }
         }
-        QL_FAIL("incompleteGammaFunctionSeriesRepr : "
-                "accuracy not reached with maxIteration.");
+        QL_FAIL("accuracy not reached");
     }
 
     double incompleteGammaFunctionContinuedFractionRepr(double a, double x,
@@ -97,8 +92,7 @@ namespace QuantLib {
             }
         }
 
-        QL_FAIL("incompleteGammaFunctionContinuedFractionRepr : "
-                "accuracy not reached with maxIteration.");
+        QL_FAIL("accuracy not reached");
     }
 
 

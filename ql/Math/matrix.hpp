@@ -531,10 +531,10 @@ namespace QuantLib {
                                                  Iterator2 v2end) {
 
         Size size1 = std::distance(v1begin, v1end);
-        QL_REQUIRE(size1>0, "outerProduct: null dimension first vector");
+        QL_REQUIRE(size1>0, "null first vector");
 
         Size size2 = std::distance(v2begin, v2end);
-        QL_REQUIRE(size2>0, "outerProduct: null dimension second vector");
+        QL_REQUIRE(size2>0, "null second vector");
 
         Matrix result(size1, size2);
 

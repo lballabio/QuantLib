@@ -144,16 +144,14 @@ namespace QuantLib {
     : tolerance_(tolerance),
       maxFunctionEvaluations_(maxFunctionEvaluations) {
         QL_REQUIRE(tolerance > QL_EPSILON,
-            "KronrodIntegral::KronrodIntegral : "
-            "required tolerance ("
-            + DoubleFormatter::toExponential(tolerance) +
-            ") not allowed. It must be > "
-            + DoubleFormatter::toExponential(QL_EPSILON));
+                   "required tolerance ("
+                   + DoubleFormatter::toExponential(tolerance) +
+                   ") not allowed. It must be > "
+                   + DoubleFormatter::toExponential(QL_EPSILON));
         QL_REQUIRE(maxFunctionEvaluations >= 15,
-            "KronrodIntegral::KronrodIntegral : "
-            "required maxFunctionEvaluations ("
-            + DoubleFormatter::toExponential(maxFunctionEvaluations) +
-            ") not allowed. It must be >= 15");
+                   "required maxFunctionEvaluations ("
+                   + DoubleFormatter::toExponential(maxFunctionEvaluations) +
+                   ") not allowed. It must be >= 15");
     }
 
 }

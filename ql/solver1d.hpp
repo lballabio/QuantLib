@@ -188,11 +188,11 @@ namespace QuantLib {
                        DoubleFormatter::toExponential(fxMax_) + "]");
 
             QL_REQUIRE(guess > xMin_, 
-                       "Solver1D: guess (" +
+                       "guess (" +
                        DoubleFormatter::toString(guess) + ") < xMin_ (" +
                        DoubleFormatter::toString(xMin_) + ")");
             QL_REQUIRE(guess < xMax_, 
-                       "Solver1D: guess (" +
+                       "guess (" +
                        DoubleFormatter::toString(guess) + ") > xMax_ (" +
                        DoubleFormatter::toString(xMax_) + ")");
 

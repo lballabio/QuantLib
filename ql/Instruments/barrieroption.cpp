@@ -44,18 +44,14 @@ namespace QuantLib {
 
         BarrierOption::arguments* moreArgs =
             dynamic_cast<BarrierOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0,
-                   "BarrierOption::setupArguments : "
-                   "wrong argument type");
+        QL_REQUIRE(moreArgs != 0, "wrong argument type");
         moreArgs->barrierType = barrierType_;
         moreArgs->barrier = barrier_;
         moreArgs->rebate = rebate_;
 
         OneAssetStrikedOption::arguments* arguments =
             dynamic_cast<OneAssetStrikedOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0,
-                   "BarrierOption::setupArguments : "
-                   "wrong argument type");
+        QL_REQUIRE(arguments != 0, "wrong argument type");
         OneAssetStrikedOption::setupArguments(arguments);
 
     }
@@ -111,7 +107,7 @@ namespace QuantLib {
                 "): up-and-out barrier undefined");
             break;
           default:
-            QL_FAIL("Barrier Option: unknown type");
+            QL_FAIL("unknown type");
         }
     }
 

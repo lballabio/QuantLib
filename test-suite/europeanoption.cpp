@@ -146,7 +146,7 @@ namespace {
             #endif
             break;
           default:
-            QL_FAIL("Unknown engine type");
+            QL_FAIL("unknown engine type");
         }
 
 

@@ -48,7 +48,7 @@ namespace QuantLib {
                                                    strike, allowExtrapolation);
             break;
           default:
-            QL_FAIL("interpolate2D: invalid interpolation type");
+            QL_FAIL("invalid interpolation type");
         }
 
         return result;

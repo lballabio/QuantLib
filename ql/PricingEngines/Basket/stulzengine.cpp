@@ -97,24 +97,18 @@ namespace QuantLib {
             arguments_.blackScholesProcesses;
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "StulzEngine::calculate() : "
                    "not an European Option");
 
         QL_REQUIRE(procs.size() == 2,
-                   "StulzEngine::calculate() : "
                    "not a basket of two stocks");
 
         boost::shared_ptr<EuropeanExercise> exercise = 
             boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
-        QL_REQUIRE(exercise,
-                   "StulzEngine::calculate() : "
-                   "not an European Option");
+        QL_REQUIRE(exercise, "not an European Option");
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "StulzEngine: "
-                   "non-plain payoff given");
+        QL_REQUIRE(payoff, "non-plain payoff given");
 
         double strike = payoff->strike();
 
@@ -161,9 +155,9 @@ namespace QuantLib {
                                               variance1, variance2, rho);
                 break;
               case Option::Straddle:
-                QL_FAIL("BasketOption: unsupported option type");
+                QL_FAIL("unsupported option type");
               default:
-                QL_FAIL("BasketOption: unknown option type");
+                QL_FAIL("unknown option type");
             }
             break;
           case BasketOption::Min:
@@ -186,13 +180,13 @@ namespace QuantLib {
                                               variance1, variance2, rho);
                 break;
               case Option::Straddle:
-                QL_FAIL("BasketOption: unsupported option type");
+                QL_FAIL("unsupported option type");
               default:
-                QL_FAIL("BasketOption: unknown option type");
+                QL_FAIL("unknown option type");
             }
             break;
           default:
-            QL_FAIL("BasketOption: unknown type");
+            QL_FAIL("unknown type");
         }
 
     }

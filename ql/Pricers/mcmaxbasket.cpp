@@ -30,7 +30,6 @@ namespace QuantLib {
               underlying_(underlying) {
                 for (Size i=0; i<underlying_.size(); i++) {
                     QL_REQUIRE(underlying_[i]>0.0,
-                               "MaxBasketPathPricer: "
                                "underlying less/equal zero not allowed");
                 }
             }
@@ -39,7 +38,6 @@ namespace QuantLib {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
-                           "MaxBasketPathPricer: "
                            "the multi-path must contain "
                            + SizeFormatter::toString(underlying_.size()) + 
                            " assets");
@@ -77,15 +75,15 @@ namespace QuantLib {
                long seed) {
 
         QL_REQUIRE(correlation.rows() == correlation.columns(),
-                   "McMaxBasket: correlation matrix not square");
+                   "correlation matrix not square");
         QL_REQUIRE(correlation.rows() == underlying.size(),
-                   "McMaxBasket: underlying size does not match that of"
+                   "underlying size does not match that of"
                    " correlation matrix");
         QL_REQUIRE(correlation.rows() == dividendYield.size(),
-                   "McMaxBasket: dividendYield size does not match"
+                   "dividendYield size does not match"
                    " that of correlation matrix");
         QL_REQUIRE(residualTime > 0,
-                   "McMaxBasket: residual time must be positive");
+                   "residual time must be positive");
 
         // initialize the path generator
         Size n = underlying.size();

@@ -61,22 +61,21 @@ namespace QuantLib {
       private:
         double mu_;
     };
-    
-    
-    
+
+
+
+    // inline definitions
+
     inline PoissonDistribution::PoissonDistribution(double mu)
     : mu_(mu) {
 
         QL_REQUIRE(mu_>=0.0,
-                   "PoissonDistribution: mu must be non negative (" +
+                   "mu must be non negative (" +
                    DoubleFormatter::toString(mu_) + " not allowed)");
 
         if (mu_!=0.0) logMu_ = QL_LOG(mu_);
     }
 
-
-    // inline
-    
     inline double PoissonDistribution::operator()(unsigned long k) const {
         if (mu_==0.0) {
             if (k==0) return 1.0;

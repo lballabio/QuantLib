@@ -40,14 +40,12 @@ namespace QuantLib {
 
     void IncrementalStatistics::add(double value, double weight) {
         QL_REQUIRE(weight>=0.0,
-                   "IncrementalStatistics::add : "
                    "negative weight (" +
                    DoubleFormatter::toString(weight) + ") not allowed");
 
         Size oldSamples = sampleNumber_;
         sampleNumber_++;
         QL_ENSURE(sampleNumber_ > oldSamples,
-                  "IncrementalStatistics::add : "
                   "maximum number of samples reached");
 
         sampleWeight_ += weight;
@@ -76,10 +74,8 @@ namespace QuantLib {
 
     double IncrementalStatistics::variance() const {
         QL_REQUIRE(sampleWeight_>0.0,
-                   "IncrementalStatistics::variance() : "
                    "sampleWeight_=0, unsufficient");
         QL_REQUIRE(sampleNumber_>1,
-                   "IncrementalStatistics::variance() : "
                    "sample number <=1, unsufficient");
 
         double m = mean();
@@ -89,7 +85,6 @@ namespace QuantLib {
 
 
         QL_ENSURE(v >= 0.0,
-                  "IncrementalStatistics::variance :"
                   "negative variance (" +
                   DoubleFormatter::toString(v,20) + ")");
 
@@ -99,13 +94,11 @@ namespace QuantLib {
     double IncrementalStatistics::downsideVariance() const {
         if (downsideSampleWeight_==0.0) {
             QL_REQUIRE(sampleWeight_>0.0,
-                       "IncrementalStatistics::downsideVariance() : "
                        "sampleWeight_=0, unsufficient");
             return 0.0;
         }
 
         QL_REQUIRE(downsideSampleNumber_>1,
-                   "IncrementalStatistics::downsideVariance() : "
                    "sample number below zero <=1, unsufficient");
 
         return (downsideSampleNumber_/(downsideSampleNumber_-1.0))*
@@ -114,7 +107,6 @@ namespace QuantLib {
 
     double IncrementalStatistics::skewness() const {
         QL_REQUIRE(sampleNumber_>2,
-                   "IncrementalStatistics::skewness() : "
                    "sample number <=2, unsufficient");
         double s = standardDeviation();
 
@@ -133,7 +125,6 @@ namespace QuantLib {
 
     double IncrementalStatistics::kurtosis() const {
         QL_REQUIRE(sampleNumber_>3,
-                   "IncrementalStatistics::kurtosis() : "
                    "sample number <=3, unsufficient");
 
         double m = mean();

@@ -43,9 +43,7 @@ namespace QuantLib {
         Swaption::arguments* arguments =
             dynamic_cast<Swaption::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, 
-                   "Swaption::setupArguments : "
-                   "wrong argument type");
+        QL_REQUIRE(arguments != 0, "wrong argument type");
 
         Date settlement = termStructure_->referenceDate();
         DayCounter counter = termStructure_->dayCounter();
@@ -73,12 +71,6 @@ namespace QuantLib {
         }
     }
 
-    void Swaption::performCalculations() const {
-        Option::performCalculations();
-        QL_ENSURE(NPV_ != Null<double>(),
-                  "null value returned from swaption pricer");
-    }
-
     void Swaption::arguments::validate() const {
         #if defined(QL_PATCH_MICROSOFT)
         SimpleSwap::arguments copy = *this;
@@ -88,13 +80,10 @@ namespace QuantLib {
         #endif
 
         QL_REQUIRE(fixedRate != Null<double>(), 
-                   "Swaption::arguments: "
                    "fixed swap rate null or not set");
         QL_REQUIRE(fairRate != Null<double>(), 
-                   "Swaption::arguments: "
                    "fair swap rate null or not set");
         QL_REQUIRE(fixedBPS != Null<double>(), 
-                   "Swaption::arguments: "
                    "fixed swap BPS null or not set");
     }
 

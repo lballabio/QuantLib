@@ -113,7 +113,6 @@ namespace QuantLib {
             // do not exceed maxSamples
             nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
             QL_REQUIRE(nextBatch>0,
-                       "McSimulation::value : "
                        "max number of samples exceeded");
 
             sampleNumber += nextBatch;
@@ -131,7 +130,6 @@ namespace QuantLib {
     inline double McSimulation<MC,S>::valueWithSamples(Size samples) const {
 
         QL_REQUIRE(samples>=minSample_,
-                   "McSimulation::valueWithSamples : "
                    "number of requested samples ("
                    + SizeFormatter::toString(samples) +
                    ") lower than minSample_ ("
@@ -141,7 +139,6 @@ namespace QuantLib {
         Size sampleNumber = mcModel_->sampleAccumulator().samples();
 
         QL_REQUIRE(samples>=sampleNumber,
-                   "McSimulation::valueWithSamples : "
                    "number of already simulated samples ("
                    + SizeFormatter::toString(sampleNumber) +
                    ") greater than requested samples ("
@@ -160,7 +157,6 @@ namespace QuantLib {
         Size sampleNumber = mcModel_->sampleAccumulator().samples();
 
         QL_REQUIRE(sampleNumber>=minSample_,
-                   "McSimulation::errorEstimate : "
                    "number of simulated samples lower than minSample_");
 
         return mcModel_->sampleAccumulator().errorEstimate();

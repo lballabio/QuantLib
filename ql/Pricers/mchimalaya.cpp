@@ -32,10 +32,8 @@ namespace QuantLib {
               underlying_(underlying), strike_(strike) {
                 for (Size j=0; j<underlying_.size(); j++) {
                     QL_REQUIRE(underlying_[j]>0.0,
-                               "HimalayaPathPricer: "
                                "underlying less/equal zero not allowed");
                     QL_REQUIRE(strike>=0.0,
-                               "HimalayaPathPricer: "
                                "strike less than zero not allowed");
                 }
             }
@@ -44,12 +42,10 @@ namespace QuantLib {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
-                           "HimalayaPathPricer: "
                            "the multi-path must contain "
                            + SizeFormatter::toString(underlying_.size()) + 
                            " assets");
-                QL_REQUIRE(numAssets>0,
-                           "HimalayaPathPricer: no asset given");
+                QL_REQUIRE(numAssets>0, "no asset given");
 
                 std::vector<double> prices(underlying_);
                 double averagePrice = 0;
@@ -116,15 +112,15 @@ namespace QuantLib {
 
         Size  n = correlation.rows();
         QL_REQUIRE(correlation.columns() == n,
-                   "McHimalaya: correlation matrix not square");
+                   "correlation matrix not square");
         QL_REQUIRE(underlying.size() == n,
-                   "McHimalaya: underlying size does not match that of"
+                   "underlying size does not match that of"
                    " correlation matrix");
         QL_REQUIRE(dividendYield.size() == n,
-                   "McHimalaya: dividendYield size does not match"
+                   "dividendYield size does not match"
                    " that of correlation matrix");
         QL_REQUIRE(times.size() >= 1,
-                   "McHimalaya: you must have at least one time-step");
+                   "you must have at least one time-step");
 
         // initialize the path generator
         std::vector<boost::shared_ptr<DiffusionProcess> > processes(n);

@@ -32,8 +32,7 @@ namespace QuantLib {
 
     void TreeSwaption::calculate() const {
 
-        QL_REQUIRE(model_,
-                   "TreeSwaption: No model was specified");
+        QL_REQUIRE(model_, "no model specified");
         boost::shared_ptr<Lattice> lattice;
 
         if (!lattice_) {

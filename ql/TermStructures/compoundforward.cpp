@@ -33,13 +33,10 @@ namespace QuantLib {
       compounding_(compounding), needsBootstrap_(true),
       dates_(dates), forwards_(forwards) {
         QL_REQUIRE(dates_.size() > 0, 
-                   "CompoundForward::CompoundForward : "
                    "no input dates given");
         QL_REQUIRE(forwards_.size() > 0, 
-                   "CompoundForward::CompoundForward : "
                    "no input rates given");
         QL_REQUIRE(dates_.size() == forwards_.size(),
-                   "CompoundForward::CompoundForward : "
                    "inconsistent number of dates/forward rates");
         calibrateNodes();
     }
@@ -92,7 +89,7 @@ namespace QuantLib {
     boost::shared_ptr<TermStructure> CompoundForward::bootstrap() const {
         needsBootstrap_ = false;
         QL_REQUIRE(compounding_ > 0,
-                   "Continuous compounding needs no bootstrap.");
+                   "continuous compounding needs no bootstrap.");
         try {
             std::vector<DiscountFactor> discounts;
             Date compoundDate = calendar_.advance(referenceDate_,
@@ -131,12 +128,11 @@ namespace QuantLib {
                      new ExtendedDiscountCurve(todaysDate_, dates_, discounts,
                                                calendar_, roll_, dayCounter_));
         }
-        catch(std::exception& e) {
+        catch (std::exception& e) {
             // signal incomplete state
             needsBootstrap_ = true;
             // rethrow
-            QL_FAIL("Could not bootstrap curve." +
-                    std::string(e.what()));
+            throw;
         }
         return discountCurve_;
     }
@@ -160,7 +156,7 @@ namespace QuantLib {
 
     Size CompoundForward::referenceNode(Time t, bool extrapolate) const {
         QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
-                   "CompoundForward: time (" +
+                   "time (" +
                    DoubleFormatter::toString(t) +
                    ") outside curve definition [" +
                    DoubleFormatter::toString(0.0) + ", " +
@@ -204,7 +200,7 @@ namespace QuantLib {
 
     boost::shared_ptr<TermStructure> CompoundForward::discountCurve() const {
         QL_REQUIRE(compounding_ > 0,
-                   "Continuous compounding needs no bootstrap.");
+                   "continuous compounding needs no bootstrap.");
         if (needsBootstrap_)
             bootstrap();
         return discountCurve_;

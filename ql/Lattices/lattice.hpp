@@ -36,7 +36,7 @@ namespace QuantLib {
         Lattice(const TimeGrid& timeGrid,
                 Size n)
         : NumericalMethod(timeGrid), n_(n) {
-            QL_REQUIRE(n>0, "There is no zeronomial lattice!");
+            QL_REQUIRE(n>0, "there is no zeronomial lattice!");
             statePrices_ = std::vector<Array>(1, Array(1, 1.0));
             statePricesLimit_ = 0;
         }

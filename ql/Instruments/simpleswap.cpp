@@ -123,9 +123,7 @@ namespace QuantLib {
         SimpleSwap::arguments* arguments =
             dynamic_cast<SimpleSwap::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, 
-                   "SimpleSwap::setupArguments : "
-                   "wrong argument type");
+        QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->payFixed = payFixedRate_;
         arguments->nominal = nominal_;
@@ -180,26 +178,20 @@ namespace QuantLib {
 
     void SimpleSwap::arguments::validate() const {
         QL_REQUIRE(nominal != Null<double>(),
-                   "SimpleSwap::arguments: "
                    "nominal null or not set");
         QL_REQUIRE(fixedResetTimes.size() == fixedPayTimes.size(), 
-                   "SimpleSwap::arguments: "
                    "number of fixed start times different from "
                    "number of fixed payment times");
         QL_REQUIRE(fixedPayTimes.size() == fixedCoupons.size(), 
-                   "SimpleSwap::arguments: "
                    "number of fixed payment times different from "
                    "number of fixed coupon amounts");
         QL_REQUIRE(floatingResetTimes.size() == floatingPayTimes.size(), 
-                   "SimpleSwap::arguments: "
                    "number of floating start times different from "
                    "number of floating payment times");
         QL_REQUIRE(floatingAccrualTimes.size() == floatingPayTimes.size(), 
-                   "SimpleSwap::arguments: "
                    "number of floating accrual times different from "
                    "number of floating payment times");
         QL_REQUIRE(floatingSpreads.size() == floatingPayTimes.size(), 
-                   "SimpleSwap::arguments: "
                    "number of floating spreads different from "
                    "number of floating payment times");
     }

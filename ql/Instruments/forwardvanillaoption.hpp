@@ -65,13 +65,10 @@ namespace QuantLib {
     void ForwardOptionArguments<ArgumentsType>::validate() const {
         ArgumentsType::validate();
         QL_REQUIRE(moneyness != Null<double>(),
-                   "ForwardOption::arguments::validate() : "
                    "null moneyness given");
         QL_REQUIRE(moneyness > 0.0,
-                   "ForwardOption::arguments::validate() : "
                    "negative or zero moneyness given");
         QL_REQUIRE(resetDate != Null<Date>(),
-                   "ForwardOption::arguments::validate() : "
                    "null reset date given");
 
         Time resetTime =
@@ -79,10 +76,8 @@ namespace QuantLib {
                 blackScholesProcess->riskFreeTS->referenceDate(), resetDate);
 
         QL_REQUIRE(resetTime >=0,
-                   "ForwardOption::arguments::validate() : "
                    "negative reset time given");
         QL_REQUIRE(exercise->lastDate() >= resetDate,
-                   "ForwardOption::arguments::validate() : "
                    "reset time greater than maturity");
     }
 

@@ -33,10 +33,8 @@ namespace QuantLib {
               underlying_(underlying), payoff_(type, strike) {
                 for (Size j=0; j<underlying_.size(); j++) {
                     QL_REQUIRE(underlying_[j]>0.0,
-                               "BasketPathPricer: "
                                "underlying less/equal zero not allowed");
                     QL_REQUIRE(strike>=0.0,
-                               "BasketPathPricer: "
                                "strike less than zero not allowed");
                 }
             }
@@ -46,12 +44,11 @@ namespace QuantLib {
                 Size numSteps = multiPath.pathSize();
                 Size numAssets = multiPath.assetNumber();
                 QL_REQUIRE(underlying_.size() == numAssets,
-                           "BasketPathPricer: the multi-path must contain "
+                           "the multi-path must contain "
                            + SizeFormatter::toString(underlying_.size()) 
                            + " assets");
 
-                QL_REQUIRE(numSteps>0,
-                           "BasketPathPricer: the path cannot be empty");
+                QL_REQUIRE(numSteps>0, "the path cannot be empty");
 
                 // start the simulation
                 std::vector<double> log_variation(numAssets, 0.0);
@@ -90,15 +87,15 @@ namespace QuantLib {
                  long seed) {
 
         QL_REQUIRE(correlation.rows() == correlation.columns(),
-                   "McBasket: correlation matrix not square");
+                   "correlation matrix not square");
         QL_REQUIRE(correlation.rows() == underlying.size(),
-                   "McBasket: underlying size does not match that of"
+                   "underlying size does not match that of"
                    " correlation matrix");
         QL_REQUIRE(correlation.rows() == dividendYield.size(),
-                   "McBasket: dividendYield size does not match"
+                   "dividendYield size does not match"
                    " that of correlation matrix");
         QL_REQUIRE(residualTime > 0,
-                   "McBasket: residual time must be positive");
+                   "residual time must be positive");
 
         // initialize the path generator
         Size n = underlying.size();

@@ -99,7 +99,7 @@ namespace QuantLib {
     DiscountFactor AffineTermStructure::discountImpl(Time t, bool) const {
         if (needsRecalibration_) calibrate();
         QL_REQUIRE(t >= 0.0,
-                   "AffineTermStructure: discount undefined for time (" +
+                   "discount undefined for time (" +
                    DoubleFormatter::toString(t) + ")");
         return model_->discount(t);
     }

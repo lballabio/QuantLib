@@ -23,18 +23,14 @@ namespace QuantLib {
     void AnalyticDiscreteAveragingAsianEngine::calculate() const {
 
         QL_REQUIRE(arguments_.averageType == Average::Geometric,
-                   "AnalyticDiscreteAveragingAsianEngine::calculate() : "
                    "not a geometric average option");
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "AnalyticDiscreteAveragingAsianEngine::calculate() : "
                    "not an European Option");
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "AnalyticDiscreteAveragingAsianEngine: "
-                   "non-plain payoff given");
+        QL_REQUIRE(payoff, "non-plain payoff given");
 
         boost::shared_ptr<BlackScholesStochasticProcess> process =
             arguments_.blackScholesProcess;

@@ -31,21 +31,14 @@ namespace QuantLib {
     : MultiAssetOption(stochProcs, payoff, exercise, correlation, engine), 
       basketType_(basketType) {}
 
-    void BasketOption::performCalculations() const {
-        // enforce in this class any check on engine/payoff
-        MultiAssetOption::performCalculations();
-    }
-
     void BasketOption::setupArguments(Arguments* args) const {
+        MultiAssetOption::setupArguments(args);
+
         BasketOption::arguments* arguments =
             dynamic_cast<BasketOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0,
-                   "BasketOption::setupArguments : "
-                   "wrong argument type");
+        QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->basketType = basketType_;
-
-        MultiAssetOption::setupArguments(args);
     }
 
     void BasketOption::arguments::validate() const {

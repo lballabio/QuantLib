@@ -146,7 +146,6 @@ namespace QuantLib {
 
     inline double IncrementalStatistics::mean() const {
         QL_REQUIRE(sampleWeight_>0.0,
-                   "IncrementalStatistics::mean() : "
                    "sampleWeight_=0, unsufficient");
         return sum_/sampleWeight_;
     }
@@ -161,21 +160,17 @@ namespace QuantLib {
 
     inline double IncrementalStatistics::errorEstimate() const {
         double var = variance();
-        QL_REQUIRE(samples() > 0,
-                   "IncrementalStatistics::errorEstimate : "
-                   "zero samples are not sufficient");
+        QL_REQUIRE(samples() > 0, "empty sample set");
         return QL_SQRT(var/samples());
     }
 
     inline double IncrementalStatistics::min() const {
-        QL_REQUIRE(samples() > 0,
-                   "IncrementalStatistics::min() : empty sample set");
+        QL_REQUIRE(samples() > 0, "empty sample set");
         return min_;
     }
 
     inline double IncrementalStatistics::max() const {
-        QL_REQUIRE(samples() > 0,
-                   "IncrementalStatistics::max() : empty sample set");
+        QL_REQUIRE(samples() > 0, "empty sample set");
         return max_;
     }
 

@@ -33,11 +33,9 @@ namespace QuantLib {
         // check underlying is not zero
         for (Size i = 0; i < underlying.size(); i++) {
             QL_REQUIRE(underlying[i]>0.0,
-                   "EuropeanMultiPathPricer: "
-                   "underlying less/equal zero not allowed");
+                       "underlying less/equal zero not allowed");
         }
         QL_REQUIRE(strike>=0.0,
-                   "EuropeanMultiPathPricer: "
                    "strike less than zero not allowed");
     }
 
@@ -45,12 +43,10 @@ namespace QuantLib {
                                                                       const {
 
         Size n = multiPath.pathSize();
-        QL_REQUIRE(n>0,
-                   "EuropeanMultiPathPricer: the path cannot be empty");
+        QL_REQUIRE(n>0, "the path cannot be empty");
 
         Size numAssets = multiPath.assetNumber();
-        QL_REQUIRE(numAssets>0,
-                   "EuropeanMultiPathPricer: there must be some paths");
+        QL_REQUIRE(numAssets>0, "there must be some paths");
 
         Array log_drift(numAssets, 0.0);
         Array log_random(numAssets, 0.0);

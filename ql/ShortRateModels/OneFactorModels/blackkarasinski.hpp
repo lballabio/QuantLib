@@ -40,7 +40,7 @@ namespace QuantLib {
                         double a = 0.1, double sigma = 0.1);
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const {
-            QL_FAIL("No defined process for Black-Karasinski");
+            QL_FAIL("no defined process for Black-Karasinski");
         }
 
         boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;

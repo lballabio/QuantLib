@@ -33,14 +33,12 @@ namespace QuantLib {
       termStructure_(termStructure) {
         setPricingEngine(engine);
         if (type_ == Cap || type_ == Collar) {
-            QL_REQUIRE(!capRates_.empty(),
-                       "CapFloor: no cap rates given");
+            QL_REQUIRE(!capRates_.empty(), "no cap rates given");
             while (capRates_.size() < floatingLeg_.size())
                 capRates_.push_back(capRates_.back());
         }
         if (type_ == Floor || type_ == Collar) {
-            QL_REQUIRE(!floorRates_.empty(),
-                       "CapFloor: no floor rates given");
+            QL_REQUIRE(!floorRates_.empty(), "no floor rates given");
             while (floorRates_.size() < floatingLeg_.size())
                 floorRates_.push_back(floorRates_.back());
         }
@@ -60,9 +58,7 @@ namespace QuantLib {
     void CapFloor::setupArguments(Arguments* args) const {
         CapFloor::arguments* arguments =
             dynamic_cast<CapFloor::arguments*>(args);
-        QL_REQUIRE(arguments != 0,
-                   "CapFloor::setupArguments :"
-                   "wrong argument type");
+        QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->type = type_;
         arguments->capRates.clear();
@@ -82,8 +78,7 @@ namespace QuantLib {
             boost::shared_ptr<FloatingRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                              floatingLeg_[i]);
-            QL_REQUIRE(coupon,
-                       "CapFloor: non-floating coupon given");
+            QL_REQUIRE(coupon, "non-floating coupon given");
             Date beginDate = coupon->accrualStartDate();
             Time time = counter.yearFraction(settlement, beginDate);
             arguments->startTimes.push_back(time);
@@ -148,8 +143,7 @@ namespace QuantLib {
                                        double minVol,
                                        double maxVol) const {
         calculate();
-        QL_REQUIRE(!isExpired(),
-                   "CapFloor::impliedVolatility : instrument expired");
+        QL_REQUIRE(!isExpired(), "instrument expired");
 
         double guess = 0.10;   // no way we can get a more accurate one
 

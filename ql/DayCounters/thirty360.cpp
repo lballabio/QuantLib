@@ -29,7 +29,7 @@ namespace QuantLib {
           case Italian:
             return boost::shared_ptr<DayCounter::Impl>(new IT_Impl);
           default:
-            QL_FAIL("Unknown 30/360 convention");
+            QL_FAIL("unknown 30/360 convention");
         }
     }
 

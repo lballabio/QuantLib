@@ -85,9 +85,7 @@ namespace QuantLib {
                                                 double strike, 
                                                 Time t, Time s) const {
 
-        QL_REQUIRE(strike>0.0,
-            "CoxIngersollRoss::discountBondOption :"
-            "strike must be positive");
+        QL_REQUIRE(strike>0.0, "strike must be positive");
         double discountT = discountBond(0.0, t, x0());
         double discountS = discountBond(0.0, s, x0());
 

@@ -66,11 +66,9 @@ namespace QuantLib {
     : rho_(rho), rho2_(rho*rho) {
 
         QL_REQUIRE(rho>=-1.0,
-                   "BivariateCumulativeNormalDistribution: "
                    "rho must be >= -1.0 (" +
                    DoubleFormatter::toString(rho) + " not allowed)");
         QL_REQUIRE(rho<=1.0,
-                   "BivariateCumulativeNormalDistribution: "
                    "rho must be <= 1.0 (" +
                    DoubleFormatter::toString(rho) + " not allowed)");
     }

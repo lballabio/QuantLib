@@ -51,8 +51,7 @@ namespace QuantLib {
         const boost::shared_ptr<GenericEngine<ArgumentsType, ResultsType> >&
             originalEngine)
     : originalEngine_(originalEngine) {
-        QL_REQUIRE(originalEngine_,
-                   "QuantoEngine::QuantoEngine : null engine");
+        QL_REQUIRE(originalEngine_, "null engine");
         originalResults_ = dynamic_cast<const ResultsType*>(
             originalEngine_->results());
         originalArguments_ = dynamic_cast<ArgumentsType*>(
@@ -70,8 +69,7 @@ namespace QuantLib {
         // determine strike from payoff
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "QuantoEngine: non-striked payoff given");
+        QL_REQUIRE(payoff, "non-striked payoff given");
         double strike = payoff->strike();
 
         originalArguments_->payoff = arguments_.payoff;

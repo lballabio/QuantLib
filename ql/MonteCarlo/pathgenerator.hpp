@@ -77,7 +77,6 @@ namespace QuantLib {
       next_(Path(timeGrid_),1.0),
       bb_(diffProcess_, timeGrid_, generator_) {
         QL_REQUIRE(dimension_==timeSteps,
-                   "PathGenerator::PathGenerator :"
                    "sequence generator dimensionality ("
                    + IntegerFormatter::toString(dimension_) +
                    ") != timeSteps ("
@@ -97,7 +96,6 @@ namespace QuantLib {
       next_(Path(timeGrid_),1.0),
       bb_(diffProcess_, timeGrid_, generator_) {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
-                   "PathGenerator::PathGenerator :"
                    "sequence generator dimensionality ("
                    + SizeFormatter::toString(dimension_) +
                    ") != timeSteps ("

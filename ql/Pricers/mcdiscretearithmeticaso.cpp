@@ -31,7 +31,6 @@ namespace QuantLib {
             : PathPricer<Path>(discountTS), 
               type_(type), underlying_(underlying) {
                 QL_REQUIRE(underlying>0.0,
-                           "ArithmeticASOPathPricer: "
                            "underlying less/equal zero not allowed");
             }
 
@@ -39,7 +38,6 @@ namespace QuantLib {
 
                 Size n = path.size();
                 QL_REQUIRE(n > 0,
-                           "ArithmeticASOPathPricer: "
                            "the path cannot be empty");
 
                 double price1 = underlying_;
@@ -74,7 +72,6 @@ namespace QuantLib {
             : PathPricer<Path>(discountTS), 
               type_(type), underlying_(underlying) {
                 QL_REQUIRE(underlying>0.0,
-                           "GeometricASOPathPricer: "
                            "underlying less/equal zero not allowed");
             }
 
@@ -82,7 +79,6 @@ namespace QuantLib {
 
                 Size n = path.size();
                 QL_REQUIRE(n>0,
-                           "GeometricASOPathPricer: "
                            "the path cannot be empty");
 
                 double logVariation = 0.0;
@@ -122,7 +118,6 @@ namespace QuantLib {
                     long seed) {
 
         QL_REQUIRE(times.size() >= 2,
-                   "McDiscreteArithmeticASO: "
                    "you must have at least 2 time-steps");
 
         // initialize the path generator

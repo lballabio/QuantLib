@@ -24,13 +24,11 @@ namespace QuantLib {
         Size i, j, size = S.rows();
 
         QL_REQUIRE(size == S.columns(),
-                   "CholeskyDecomposition : "
                    "input matrix is not a square matrix");
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         for (i=0; i<matrix.rows(); i++)
             for (j=0; j<i; j++)
                 QL_REQUIRE(S[i][j] == S[j][i],
-                           "CholeskyDecomposition : "
                            "input matrix is not symmetric");
         #endif
 
@@ -44,8 +42,7 @@ namespace QuantLib {
                 }
                 if (i == j) {
                     QL_REQUIRE(flexible || sum > 0.0,
-                        "CholeskyDecomposition : "
-                        "input matrix is not positive definite");
+                               "input matrix is not positive definite");
                     // To handle positive semi-definite matrices take the
                     // square root of sum if positive, else zero.
                     result[i][i] = QL_SQRT(QL_MAX(sum, 0.0));

@@ -33,7 +33,7 @@ namespace QuantLib {
           case Euro:
             return boost::shared_ptr<DayCounter::Impl>(new AFB_Impl);
           default:
-            QL_FAIL("Unknown act/act convention");
+            QL_FAIL("unknown act/act convention");
         }
     }
 

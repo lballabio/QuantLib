@@ -31,15 +31,13 @@ namespace QuantLib {
       maxDate_(dates.back()) {
 
         QL_REQUIRE(dates.size()==blackVolCurve.size(),
-            "BlackVarianceCurve::BlackVarianceCurve : "
-            "mismatch between date vector and black vol vector");
+                   "mismatch between date vector and black vol vector");
 
         // cannot have dates[0]==referenceDate, since the
         // value of the vol at dates[0] would be lost
         // (variance at referenceDate must be zero)
         QL_REQUIRE(dates[0]>referenceDate,
-            "BlackVarianceCurve::BlackVarianceCurve : "
-            "cannot have dates[0]<=referenceDate");
+                   "cannot have dates[0] <= referenceDate");
 
         variances_ = std::vector<double>(dates.size()+1);
         times_ = std::vector<Time>(dates.size()+1);
@@ -49,13 +47,11 @@ namespace QuantLib {
         for (j=1; j<=blackVolCurve.size(); j++) {
             times_[j] = dayCounter_.yearFraction(referenceDate, dates[j-1]);
             QL_REQUIRE(times_[j]>times_[j-1],
-                "BlackVarianceCurve::BlackVarianceCurve : "
-                "dates must be sorted unique!");
+                       "dates must be sorted unique!");
             variances_[j] = times_[j] *
                 blackVolCurve[j-1]*blackVolCurve[j-1];
             QL_REQUIRE(variances_[j]>=variances_[j-1],
-                "BlackVarianceCurve::BlackVarianceCurve : "
-                "variance must be non-decreasing");
+                       "variance must be non-decreasing");
         }
 
         // default: linear interpolation
@@ -70,22 +66,19 @@ namespace QuantLib {
                                                  bool extrapolate) const {
 
         QL_REQUIRE(t>=0.0,
-                   "BlackVarianceCurve::blackVarianceImpl :"
                    "negative time (" + DoubleFormatter::toString(t) +
                    ") not allowed");
 
-        if (t<=times_.back())
+        if (t<=times_.back()) {
             return varianceCurve_(t, extrapolate);
         // for later times extrapolate with flat vol
-        else { // t>times_.back() || extrapolate
+        } else { // t>times_.back() || extrapolate
             QL_REQUIRE(extrapolate,
-                       "ConstantVol::blackVolImpl : "
                        "time (" + DoubleFormatter::toString(t) +
                        ") greater than max time (" +
                        DoubleFormatter::toString(times_.back()) +
                        ")");
-            return varianceCurve_(times_.back(), extrapolate)*
-                t/times_.back();
+            return varianceCurve_(times_.back(), extrapolate)*t/times_.back();
         }
     }
 

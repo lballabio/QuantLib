@@ -85,12 +85,8 @@ namespace QuantLib {
         pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
         pd_ = 1.0 - pu_;
 
-        QL_REQUIRE(pu_<=1.0,
-                   "CoxRossRubinstein::CoxRossRubinstein : "
-                   "negative probability");
-        QL_REQUIRE(pu_>=0.0,
-                   "CoxRossRubinstein::CoxRossRubinstein : "
-                   "negative probability");
+        QL_REQUIRE(pu_<=1.0, "negative probability");
+        QL_REQUIRE(pu_>=0.0, "negative probability");
     }
 
 
@@ -103,10 +99,8 @@ namespace QuantLib {
         pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
         pd_ = 1.0 - pu_;
 
-        QL_REQUIRE(pu_<=1.0,
-                   "Trigeorgis::Trigeorgis : negative probability");
-        QL_REQUIRE(pu_>=0.0,
-                   "Trigeorgis::Trigeorgis : negative probability");
+        QL_REQUIRE(pu_<=1.0, "negative probability");
+        QL_REQUIRE(pu_>=0.0, "negative probability");
     }
 
 
@@ -127,10 +121,8 @@ namespace QuantLib {
         //     treeCentering_ = (up_+down_)/2.0;
         //     up_ = up_-treeCentering_;
 
-        QL_REQUIRE(pu_<=1.0,
-                   "Tian::Tian : negative probability");
-        QL_REQUIRE(pu_>=0.0,
-                   "Tian::Tian : negative probability");
+        QL_REQUIRE(pu_<=1.0, "negative probability");
+        QL_REQUIRE(pu_>=0.0, "negative probability");
     }
 
     double Tian::underlying(Size i, Size index) const {
@@ -151,9 +143,7 @@ namespace QuantLib {
                            Time end, unsigned long steps, double strike)
     : BinomialTree(process, end, (steps%2 ? steps : steps+1)) {
 
-        QL_REQUIRE(strike>0.0,
-            "LeisenReimer::LeisenReimer : "
-            "strike must be positive");
+        QL_REQUIRE(strike>0.0, "strike must be positive");
         unsigned long oddSteps = (steps%2 ? steps : steps+1);
         double variance = process->variance(0.0, x0_, end);
         double ermqdt = QL_EXP(driftPerStep_ + 0.5*variance/oddSteps);

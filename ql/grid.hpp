@@ -59,7 +59,7 @@ namespace QuantLib {
             // Let's enforce the assumption for the time being
             // (even though I'm not sure that I agree.)
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
-                       "TimeGrid: negative times not allowed");
+                       "negative times not allowed");
             std::vector<Time>::iterator e = 
                 std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end());
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
@@ -94,7 +94,7 @@ namespace QuantLib {
             // Let's enforce the assumption for the time being
             // (even though I'm not sure that I agree.)
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
-                       "TimeGrid: negative times not allowed");
+                       "negative times not allowed");
             std::vector<Time>::iterator e = 
                 std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end());
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
@@ -115,7 +115,7 @@ namespace QuantLib {
             } else {
                 dtMax = last/steps;
             }
-            
+
             Time periodBegin = 0.0;
             push_back(periodBegin);
             for (std::vector<Time>::const_iterator t=mandatoryTimes_.begin(); 
@@ -156,7 +156,7 @@ namespace QuantLib {
             result[i] = center + (i - steps/2.0)*dx;
         return result;
     }
-    
+
     inline Disposable<Array> BoundedGrid(double xMin, double xMax, 
                                          Size steps) {
         Array result(steps+1);
@@ -172,7 +172,7 @@ namespace QuantLib {
         // Let's enforce the assumption for the time being
         // (even though I'm not sure that I agree.)
         QL_REQUIRE(end > 0.0,
-                   "TimeGrid: negative times not allowed");
+                   "negative times not allowed");
         Time dt = end/steps;
         for (Size i=0; i<=steps; i++)
             push_back(dt*i);

@@ -27,7 +27,7 @@ namespace QuantLib {
 
         Size size = s.rows();
         QL_REQUIRE(size==s.columns(),
-            "SymmetricSchurDecomposition: input matrix must be square");
+                   "input matrix must be square");
 
         for (Size q=0; q<size; q++) {
             diagonal_[q] = s[q][q];
@@ -108,8 +108,7 @@ namespace QuantLib {
         } while (++ite<=maxIterations && keeplooping);
 
         QL_REQUIRE(ite<=maxIterations,
-            "SymmetricSchurDecomposition::SymmetricSchurDecomposition: "
-            "Too many iterations reached");
+                   "Too many iterations reached");
 
 
         // sort (eigenvalues, eigenvectors)

@@ -23,15 +23,13 @@ namespace QuantLib {
     TimeBasket::TimeBasket(const std::vector<Date>& dates,
                            const std::vector<double>& values) {
         QL_REQUIRE(dates.size() == values.size(),
-                   "TimeBasket: number of dates differs from"
-                   "number of values");
+                   "number of dates differs from number of values");
         for (Size i = 0; i < dates.size(); i++)
             (*this)[dates[i]] = values[i];
     }
 
     TimeBasket TimeBasket::rebin(const std::vector<Date>& buckets) const {
-        QL_REQUIRE(buckets.size() > 0,
-                   "TimeBasket: empty bucket structure");
+        QL_REQUIRE(buckets.size() > 0, "empty bucket structure");
 
         std::vector<Date> sbuckets = buckets;
         std::sort(sbuckets.begin(), sbuckets.end());

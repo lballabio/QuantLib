@@ -45,8 +45,7 @@ namespace QuantLib {
         void setModel(const boost::shared_ptr<ModelType>& model) {
             unregisterWith(model_);
             model_ = model;
-            QL_REQUIRE(!model_.isNull(),
-                       "GenericModelEngine: Not an adequate model given");
+            QL_REQUIRE(!model_.isNull(), "no adequate model given");
             registerWith(model_);
             update();
         }

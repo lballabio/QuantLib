@@ -34,7 +34,7 @@ namespace QuantLib {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
-                           "PagodaPathPricer: the multi-path must contain "
+                           "the multi-path must contain "
                            + SizeFormatter::toString(underlying_.size()) +
                            " assets");
 
@@ -70,19 +70,19 @@ namespace QuantLib {
                  long seed) {
 
         QL_REQUIRE(correlation.rows() == correlation.columns(),
-                   "McPagoda: correlation matrix not square");
+                   "correlation matrix not square");
         QL_REQUIRE(correlation.rows() == underlying.size(),
-                   "McPagoda: underlying size does not match that of"
+                   "underlying size does not match that of"
                    " correlation matrix");
         QL_REQUIRE(correlation.rows() == dividendYield.size(),
-                   "McPagoda: dividendYield size does not match"
+                   "dividendYield size does not match"
                    " that of correlation matrix");
         QL_REQUIRE(fraction > 0,
-                   "McPagoda: option fraction must be positive");
+                   "option fraction must be positive");
         QL_REQUIRE(roof > 0,
-                   "McPagoda: roof must be positive");
+                   "roof must be positive");
         QL_REQUIRE(times.size() >= 1,
-                   "McPagoda: you must have at least one time-step");
+                   "you must have at least one time-step");
 
         // initialize the path generator
         Size n = underlying.size();

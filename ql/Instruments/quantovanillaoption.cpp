@@ -30,9 +30,7 @@ namespace QuantLib {
     : VanillaOption(stochProc, payoff, exercise, engine), 
       foreignRiskFreeTS_(foreignRiskFreeTS),
       exchRateVolTS_(exchRateVolTS), correlation_(correlation) {
-        QL_REQUIRE(engine,
-                   "QuantoVanillaOption::QuantoVanillaOption : "
-                   "null engine or wrong engine type");
+        QL_REQUIRE(engine, "null engine or wrong engine type");
         registerWith(foreignRiskFreeTS_);
         registerWith(exchRateVolTS_);
         registerWith(correlation_);
@@ -41,7 +39,6 @@ namespace QuantLib {
     double QuantoVanillaOption::qvega() const {
         calculate();
         QL_REQUIRE(qvega_ != Null<double>(),
-                   "QuantoVanillaOption::qvega() : "
                    "exchange rate vega calculation failed");
         return qvega_;
     }
@@ -49,7 +46,6 @@ namespace QuantLib {
     double QuantoVanillaOption::qrho() const {
         calculate();
         QL_REQUIRE(qrho_ != Null<double>(),
-                   "QuantoVanillaOption::qrho() : "
                    "foreign interest rate rho calculation failed");
         return qrho_;
     }
@@ -57,7 +53,6 @@ namespace QuantLib {
     double QuantoVanillaOption::qlambda() const {
         calculate();
         QL_REQUIRE(qlambda_ != Null<double>(),
-                   "QuantoVanillaOption::qlambda() : "
                    "quanto correlation sensitivity calculation failed");
         return qlambda_;
     }
@@ -71,19 +66,14 @@ namespace QuantLib {
         VanillaOption::setupArguments(args);
         QuantoVanillaOption::arguments* arguments =
             dynamic_cast<QuantoVanillaOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0,
-                   "QuantoVanillaOption::setupArguments() : "
-                   "wrong argument type");
+        QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
 
         arguments->exchRateVolTS = exchRateVolTS_;
 
-        QL_REQUIRE(correlation_,
-                   "QuantoVanillaOption::setupArguments() : "
-                   "null correlation given");
-        arguments->correlation =
-            correlation_->value();
+        QL_REQUIRE(correlation_, "null correlation given");
+        arguments->correlation = correlation_->value();
 
     }
 
@@ -93,7 +83,6 @@ namespace QuantLib {
         const VanillaOption::results* vanillaResults =
             dynamic_cast<const VanillaOption::results*>(engine_->results());
         QL_ENSURE(vanillaResults != 0,
-                  "QuantoVanillaOption::performCalculations() : "
                   "no vanilla results returned from pricing engine");
         delta_       = vanillaResults->delta;
         gamma_       = vanillaResults->gamma;
@@ -106,15 +95,10 @@ namespace QuantLib {
             dynamic_cast<const QuantoVanillaOption::results*>(
                                                           engine_->results());
         QL_ENSURE(quantoResults != 0,
-                  "QuantoVanillaOption::performCalculations() : "
                   "no quanto results returned from pricing engine");
         qrho_        = quantoResults->qrho;
         qvega_       = quantoResults->qvega;
         qlambda_     = quantoResults->qlambda;
-
-        QL_ENSURE(NPV_ != Null<double>(),
-                  "QuantoVanillaOption::performCalculations() : "
-                  "null value returned from option pricer");
     }
 
 }

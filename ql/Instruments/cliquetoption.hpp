@@ -68,36 +68,25 @@ namespace QuantLib {
         #endif
 
         QL_REQUIRE(moneyness != Null<double>(),
-                   "CliquetOption::arguments::validate() : "
                    "null moneyness given");
         QL_REQUIRE(moneyness > 0.0,
-                   "CliquetOption::arguments::validate() : "
                    "negative or zero moneyness given");
         QL_REQUIRE(accruedCoupon == Null<double>() || accruedCoupon >= 0.0,
-                   "CliquetOption::arguments::validate() : "
                    "negative accrued coupon");
         QL_REQUIRE(localCap == Null<double>() || localCap >= 0.0,
-                   "CliquetOption::arguments::validate() : "
                    "negative local cap");
         QL_REQUIRE(localFloor == Null<double>() || localFloor >= 0.0,
-                   "CliquetOption::arguments::validate() : "
                    "negative local floor");
         QL_REQUIRE(globalCap == Null<double>() || globalCap >= 0.0,
-                   "CliquetOption::arguments::validate() : "
                    "negative global cap");
         QL_REQUIRE(globalFloor == Null<double>() || globalFloor >= 0.0,
-                   "CliquetOption::arguments::validate() : "
                    "negative global floor");
         QL_REQUIRE(resetDates.size()>0,
-                   "CliquetOption::arguments::validate() : "
                    "no reset dates given");
         // sort resetDates here ???
-        for (Size i = 0; i < resetDates.size(); i++) {
-
+        for (Size i = 0; i < resetDates.size(); i++)
             QL_REQUIRE(exercise->lastDate() >= resetDates[i],
-                       "CliquetOption::arguments::validate() : "
                        "reset date greater than exercise last date");
-        }
     }
 
 }

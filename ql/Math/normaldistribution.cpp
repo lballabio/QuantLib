@@ -23,7 +23,7 @@ namespace QuantLib {
     double CumulativeNormalDistribution::operator()(double z) const {
         /// ???
         QL_REQUIRE(!(z >= average_ && 2.0*average_-z > average_),
-                   "CumulativeNormalDistribution: not a real number. ");
+                   "not a real number. ");
         z = (z - average_) / sigma_;
 
         double result = 0.5 * ( 1 + errorFunction_( z*M_SQRT_2 ) );

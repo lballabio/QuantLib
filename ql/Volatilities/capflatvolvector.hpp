@@ -79,7 +79,6 @@ namespace QuantLib {
       lengths_(lengths), timeLengths_(lengths.size()+1), 
       volatilities_(vols.size()+1) {
         QL_REQUIRE(lengths.size() == vols.size(),
-                   "CapFlatVolatilityVector::CapFlatVolatilityVector : "
                    "mismatch between number of cap lengths "
                    "and cap volatilities");
         settlementDate_ = calendar_.advance(today,settlementDays,Days);

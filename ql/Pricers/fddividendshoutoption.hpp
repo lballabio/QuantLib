@@ -41,7 +41,7 @@ namespace QuantLib {
 
         boost::shared_ptr<SingleAssetOption> clone() const;
         double dividendRho() const {
-            QL_FAIL("FdDividendOption::dividendRho not implemented yet");
+            QL_FAIL("not implemented");
         }
       protected:
         void initializeStepCondition() const;

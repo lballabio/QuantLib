@@ -207,7 +207,7 @@ namespace QuantLib {
         if (v1 != 0)
             v1->visit(*this);
         else
-            QL_FAIL("Not a Black-volatility term structure visitor");
+            QL_FAIL("not a Black-volatility term structure visitor");
     }
 
     inline void BlackVolatilityTermStructure::accept(AcyclicVisitor& v) {
@@ -234,7 +234,7 @@ namespace QuantLib {
         if (v1 != 0)
             v1->visit(*this);
         else
-            QL_FAIL("Not a local-volatility term structure visitor");
+            QL_FAIL("not a local-volatility term structure visitor");
     }
 
 }

@@ -103,7 +103,7 @@ namespace QuantLib {
 
     inline void Instrument::setPricingEngine(
                                   const boost::shared_ptr<PricingEngine>& e) {
-        QL_REQUIRE(e, "Instrument: null pricing engine");
+        QL_REQUIRE(e, "null pricing engine");
         if (engine_)
             unregisterWith(engine_);
         engine_ = e;
@@ -130,14 +130,14 @@ namespace QuantLib {
     }
 
     inline void Instrument::performCalculations() const {
-        QL_REQUIRE(engine_, "Instrument: null pricing engine");
+        QL_REQUIRE(engine_, "null pricing engine");
         engine_->reset();
         setupArguments(engine_->arguments());
         engine_->arguments()->validate();
         engine_->calculate();
         const Value* results = dynamic_cast<const Value*>(engine_->results());
         QL_ENSURE(results != 0,
-                  "Instrument: no results returned from pricing engine");
+                  "no results returned from pricing engine");
         NPV_ = results->value;
         errorEstimate_ = results->errorEstimate;
     }

@@ -359,8 +359,8 @@ void JumpDiffusionTest::testMerton76() {
                                   diffusionVol*diffusionVol);
         double volError = QL_FABS(totalVol-values[i].v);
         QL_REQUIRE(volError<1e-13,
-            "" + DoubleFormatter::toString(volError) +
-            " mismatch");
+                   DoubleFormatter::toString(volError) +
+                   " mismatch");
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);
 

@@ -33,23 +33,18 @@ namespace QuantLib {
             : underlying_(underlying), discounts_(discounts), 
               payoff_(type, moneyness) {
                 QL_REQUIRE(underlying>0.0,
-                           "PerformanceOptionPathPricer: "
                            "underlying less/equal zero not allowed");
                 QL_REQUIRE(moneyness>0.0,
-                           "PerformanceOptionPathPricer: "
                            "moneyness less/equal zero not allowed");
             }
 
             double operator()(const Path& path) const {
                 Size n = path.size();
                 QL_REQUIRE(n>0,
-                           "PerformanceOptionPathPricer: "
                            "at least one option is required");
                 QL_REQUIRE(n==2,
-                           "PerformanceOptionPathPricer: "
                            "only one option for the time being");
                 QL_REQUIRE(n==discounts_.size(),
-                           "PerformanceOptionPathPricer: "
                            "discounts/options mismatch");
 
                 std::vector<double> result(n);

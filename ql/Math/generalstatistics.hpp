@@ -200,23 +200,20 @@ namespace QuantLib {
     }
 
     inline double GeneralStatistics::min() const {
-        QL_REQUIRE(samples() > 0,
-                   "GeneralStatistics::min : empty sample set");
+        QL_REQUIRE(samples() > 0, "empty sample set");
         return std::min_element(samples_.begin(), 
                                 samples_.end())->first;
     }
 
     inline double GeneralStatistics::max() const {
-        QL_REQUIRE(samples() > 0,
-                   "GeneralStatistics::min : empty sample set");
+        QL_REQUIRE(samples() > 0, "empty sample set");
         return std::max_element(samples_.begin(), 
                                 samples_.end())->first;
     }
 
     /*! \pre weights must be positive or null */
     inline void GeneralStatistics::add(double value, double weight) {
-        QL_REQUIRE(weight>=0.0,
-                   "GeneralStatistics::add : negative weight not allowed");
+        QL_REQUIRE(weight>=0.0, "negative weight not allowed");
         samples_.push_back(std::make_pair(value,weight));
         sorted_ = false;
     }

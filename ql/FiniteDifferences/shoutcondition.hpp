@@ -70,8 +70,7 @@ namespace QuantLib {
 
         if (intrinsicValues_.size()!=0) {
             QL_REQUIRE(intrinsicValues_.size() == a.size(),
-                       "AmericanCondition::applyTo : "
-                       " size mismatch");
+                       "size mismatch");
             for (Size i = 0; i < a.size(); i++)
                 a[i] = QL_MAX(a[i],
                               disc * intrinsicValues_[i] );
@@ -88,8 +87,7 @@ namespace QuantLib {
 
         if (intrinsicValues_.size()!=0) {
             QL_REQUIRE(intrinsicValues_.size() == asset->values().size(),
-                       "AmericanCondition::applyTo : "
-                       " size mismatch");
+                       "size mismatch");
             for (Size i = 0; i < asset->values().size(); i++)
                 asset->values()[i] = QL_MAX(asset->values()[i],
                                             disc * intrinsicValues_[i] );

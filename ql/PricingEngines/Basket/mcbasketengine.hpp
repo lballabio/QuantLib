@@ -107,8 +107,7 @@ namespace QuantLib {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "MCBasketEngineEngine: non-plain payoff given");
+        QL_REQUIRE(payoff, "non-plain payoff given");
 
         Size numAssets = arguments_.blackScholesProcesses.size();
 
@@ -141,8 +140,7 @@ namespace QuantLib {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "MCBasketEngine: non-plain payoff given");
+        QL_REQUIRE(payoff, "non-plain payoff given");
 
         Size numAssets = arguments_.blackScholesProcesses.size();
         Array underlying(numAssets, 0.0);
@@ -179,11 +177,9 @@ namespace QuantLib {
 
         QL_REQUIRE(requiredTolerance_ != Null<double>() ||
                    int(requiredSamples_) != Null<int>(),
-                   "MCBasketEngine::calculate: "
                    "neither tolerance nor number of samples set");
 /*
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "MCBasketEngine::calculate() : "
                    "not an European Option");
 */
         //! Initialize the multi-factor Monte Carlo
@@ -192,7 +188,6 @@ namespace QuantLib {
             boost::shared_ptr<path_pricer_type> controlPP = 
                 controlPathPricer();
             QL_REQUIRE(controlPP,
-                       "MCBasketEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
@@ -200,7 +195,6 @@ namespace QuantLib {
                 controlPricingEngine();
 
             QL_REQUIRE(controlPE,
-                       "MCBasketEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");
 

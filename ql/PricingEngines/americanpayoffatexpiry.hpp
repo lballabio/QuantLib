@@ -64,22 +64,18 @@ namespace QuantLib {
       variance_(variance) {
 
         QL_REQUIRE(spot_>0.0,
-            "AmericanPayoffAtExpiry::AmericanPayoffAtExpiry : "
-            "positive spot_ value required");
+                   "positive spot_ value required");
 
         forward_ = spot_ * dividendDiscount_ / discount_;
 
         QL_REQUIRE(discount_>0.0,
-            "AmericanPayoffAtExpiry::AmericanPayoffAtExpiry : "
-            "positive discount required");
+                   "positive discount required");
 
         QL_REQUIRE(dividendDiscount_>0.0,
-            "AmericanPayoffAtExpiry::AmericanPayoffAtExpiry : "
-            "positive dividend discount_ required");
+                   "positive dividend discount_ required");
 
         QL_REQUIRE(variance_>=0.0,
-            "AmericanPayoffAtExpiry::AmericanPayoffAtExpiry : "
-            "negative variance_ not allowed");
+                   "negative variance_ not allowed");
 
         stdDev_ = QL_SQRT(variance_);
 
@@ -171,8 +167,7 @@ namespace QuantLib {
                 DbetaDd2_  = 0.0; // -n( d1) + n(d1)
                 break;
             default:
-                QL_FAIL("AnalyticAmericanEngine::calculate() :"
-                        "invalid option type");
+                QL_FAIL("invalid option type");
          }
 
 

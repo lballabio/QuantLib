@@ -93,11 +93,11 @@ namespace QuantLib {
         Array::const_iterator p = params.begin();
         for (Size i=0; i<arguments_.size(); i++) {
             for (Size j=0; j<arguments_[i].size(); j++, p++) {
-                QL_REQUIRE(p!=params.end(),"Parameter array too small");
+                QL_REQUIRE(p!=params.end(),"parameter array too small");
                 arguments_[i].setParam(j, *p);
             }
         }
-        QL_REQUIRE(p==params.end(),"Parameter array too big!");
+        QL_REQUIRE(p==params.end(),"parameter array too big!");
         update();
     }
 

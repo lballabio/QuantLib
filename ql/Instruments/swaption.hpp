@@ -40,8 +40,6 @@ namespace QuantLib {
                  const boost::shared_ptr<PricingEngine>& engine);
         bool isExpired() const;
         void setupArguments(Arguments*) const;
-      protected:
-        void performCalculations() const;
       private:
         // arguments
         boost::shared_ptr<SimpleSwap> swap_;

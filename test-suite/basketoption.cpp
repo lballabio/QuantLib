@@ -122,7 +122,7 @@ namespace {
             return "Basket::Max";
         }
 
-        QL_FAIL("basketTypeToString : unknown basket option type");
+        QL_FAIL("unknown basket option type");
     }
 
     struct BasketOptionOneData {

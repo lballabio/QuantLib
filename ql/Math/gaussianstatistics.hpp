@@ -126,12 +126,10 @@ namespace QuantLib {
                                                      double percentile) const {
 
         QL_REQUIRE(percentile>0.0,
-                   "GaussianStatistics::gaussianPercentile() : "
                    "percentile (" +
                    DoubleFormatter::toString(percentile) +
                    ") must be >= 0.0");
         QL_REQUIRE(percentile<1.0,
-                   "GaussianStatistics::gaussianPercentile() : "
                    "percentile (" +
                    DoubleFormatter::toString(percentile) +
                    ") must be < 1.0");
@@ -148,12 +146,10 @@ namespace QuantLib {
                                                     double percentile) const {
 
         QL_REQUIRE(percentile>=0.9,
-                   "GaussianStatistics::gaussianPotentialUpside() : "
                    "percentile (" +
                    DoubleFormatter::toString(percentile) +
                    ") must be >= 0.90");
         QL_REQUIRE(percentile<1.0,
-                   "GaussianStatistics::gaussianPotentialUpside() : "
                    "percentile (" +
                    DoubleFormatter::toString(percentile) +
                    ") must be < 1.0");
@@ -171,12 +167,10 @@ namespace QuantLib {
                                                     double percentile) const {
 
         QL_REQUIRE(percentile>=0.9,
-                   "GaussianStatistics::gaussianValueAtRisk() : "
                    "percentile (" +
                    DoubleFormatter::toString(percentile) +
                    ") must be >= 0.90");
         QL_REQUIRE(percentile<1.0,
-                   "GaussianStatistics::gaussianValueAtRisk() : "
                    "percentile (" +
                    DoubleFormatter::toString(percentile) +
                    ") must be < 1.0");
@@ -194,7 +188,7 @@ namespace QuantLib {
     inline double GaussianStatistics<Stat>::gaussianExpectedShortfall(
                                                     double percentile) const {
         QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                   "GaussianStatistics::expectedShortfall : percentile (" +
+                   "percentile (" +
                    DoubleFormatter::toString(percentile) +
                    ") out of range 90%-100%");
 

@@ -38,28 +38,16 @@ namespace QuantLib {
 
     void DiscreteAveragingAsianOption::setupArguments(Arguments* args) const {
 
+        OneAssetStrikedOption::setupArguments(args);
+
         DiscreteAveragingAsianOption::arguments* moreArgs =
             dynamic_cast<DiscreteAveragingAsianOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0,
-                   "DiscreteAveragingAsianOption::setupArguments : "
-                   "wrong argument type");
+        QL_REQUIRE(moreArgs != 0, "wrong argument type");
         moreArgs->averageType = averageType_;
         moreArgs->runningProduct = runningProduct_;
         moreArgs->pastFixings = pastFixings_;
         moreArgs->fixingDates = fixingDates_;
 
-        OneAssetStrikedOption::arguments* arguments =
-            dynamic_cast<OneAssetStrikedOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0,
-                   "DiscreteAveragingAsianOption::setupArguments : "
-                   "wrong argument type");
-        OneAssetStrikedOption::setupArguments(arguments);
-
-    }
-
-    void DiscreteAveragingAsianOption::performCalculations() const {
-        // enforce in this class any check on engine/payoff coupling
-        OneAssetStrikedOption::performCalculations();
     }
 
     void DiscreteAveragingAsianOption::arguments::validate() const {
@@ -72,7 +60,6 @@ namespace QuantLib {
         #endif
 
         QL_REQUIRE(runningProduct >= 0.0,
-                   "DiscreteAveragingAsianOption::arguments::validate() : "
                    "negative running product");
 
         // check fixingTimes_ here

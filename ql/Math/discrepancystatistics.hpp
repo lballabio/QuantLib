@@ -106,7 +106,6 @@ namespace QuantLib {
         if (dimension == 0)           // if no size given,
             dimension = dimension_;   // keep the current one
         QL_REQUIRE(dimension != 1,
-                   "DiscrepancyStatistics::reset : "
                    "dimension==1 not allowed");
 
         SequenceStatistics<Statistics>::reset(dimension);

@@ -107,8 +107,7 @@ namespace QuantLib {
         //@{
         difference_type operator-(const stepping_iterator& i) {
             QL_REQUIRE((it_-i.it_)%dn_ == 0,
-                       "stepping_iterator::difference_type : "
-                       "Cannot subtract stepping iterators "
+                       "cannot subtract stepping iterators "
                        "not reachable from each other");
             return (it_-i.it_)/dn_;
         }

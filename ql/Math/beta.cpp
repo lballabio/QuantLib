@@ -58,8 +58,7 @@ namespace QuantLib {
     		if (QL_FABS(del-1.0) < accuracy)
             	return result;
     	}
-    	QL_FAIL("betaContinuedFraction : "
-                "a or b too big, or maxIteration too small in betacf");
+    	QL_FAIL("a or b too big, or maxIteration too small in betacf");
     }
 
 
@@ -67,13 +66,8 @@ namespace QuantLib {
                                   double x, double accuracy,
                                   int maxIteration) {
 
-    	QL_REQUIRE(a > 0.0,
-    	    "betaIncompleteFunction : "
-    	    "a must be greater than zero");
-
-    	QL_REQUIRE(b > 0.0,
-    	    "betaIncompleteFunction : "
-    	    "b must be greater than zero");
+    	QL_REQUIRE(a > 0.0, "a must be greater than zero");
+    	QL_REQUIRE(b > 0.0, "b must be greater than zero");
 
 
     	if (x == 0.0)
@@ -81,9 +75,7 @@ namespace QuantLib {
     	else if (x == 1.0)
     	    return 1.0;
     	else
-    	    QL_REQUIRE(x>0.0 && x<1.0,
-                "betaIncompleteFunction : "
-    	        "x must be in [0,1]");
+    	    QL_REQUIRE(x>0.0 && x<1.0, "x must be in [0,1]");
 
     	double result = QL_EXP(GammaFunction().logValue(a+b) -
     		GammaFunction().logValue(a) - GammaFunction().logValue(b) +

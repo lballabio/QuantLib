@@ -58,9 +58,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const {
-            QL_REQUIRE(payoff,
-                       "Option::arguments::validate() : "
-                       "no payoff given");
+            QL_REQUIRE(payoff, "no payoff given");
         }
         boost::shared_ptr<Payoff> payoff;
         boost::shared_ptr<Exercise> exercise;

@@ -32,19 +32,19 @@ namespace QuantLib {
     double OneAssetStrikedOption::strikeSensitivity() const {
         calculate();
         QL_REQUIRE(strikeSensitivity_ != Null<double>(),
-                   "OneAssetStrikedOption: strike sensitivity not provided");
+                   "strike sensitivity not provided");
         return strikeSensitivity_;
     }
 
     void OneAssetStrikedOption::setupArguments(Arguments* args) const {
+
+        OneAssetOption::setupArguments(args);
+
         OneAssetStrikedOption::arguments* moreArgs =
             dynamic_cast<OneAssetStrikedOption::arguments*>(args);
         QL_REQUIRE(moreArgs != 0,
-                   "OneAssetStrikedOption::setupArguments : "
                    "wrong argument type");
         moreArgs->payoff = payoff_;
-
-        OneAssetOption::setupArguments(args);
     }
 
     void OneAssetStrikedOption::performCalculations() const {
@@ -52,7 +52,6 @@ namespace QuantLib {
         const MoreGreeks* results =
             dynamic_cast<const MoreGreeks*>(engine_->results());
         QL_ENSURE(results != 0,
-                  "OneAssetStrikedOption::performCalculations : "
                   "no more-greeks returned from pricing engine");
         /* no check on null values - just copy.
            this allows:

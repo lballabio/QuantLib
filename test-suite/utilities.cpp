@@ -36,7 +36,7 @@ namespace QuantLib {
         CHECK_DOWNCAST(SuperSharePayoff, "super-share");
         CHECK_DOWNCAST(GapPayoff, "gap");
 
-        QL_FAIL("payoffTypeToString : unknown payoff type");
+        QL_FAIL("unknown payoff type");
     }
 
 
@@ -46,7 +46,7 @@ namespace QuantLib {
         CHECK_DOWNCAST(AmericanExercise, "American");
         CHECK_DOWNCAST(BermudanExercise, "Bermudan");
 
-        QL_FAIL("exerciseTypeToString : unknown exercise type");
+        QL_FAIL("unknown exercise type");
     }
 
 

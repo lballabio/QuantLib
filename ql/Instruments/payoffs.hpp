@@ -43,7 +43,7 @@ namespace QuantLib {
                           double strike)
         : TypePayoff(type), strike_(strike) {
             QL_REQUIRE(strike >= 0.0,
-                       "StrikedTypePayoff: negative strike given");
+                       "negative strike given");
         }
         double strike() const { return strike_; };
         void setStrike(double strike) { strike_ = strike; };
@@ -70,7 +70,7 @@ namespace QuantLib {
           case Option::Straddle:
             return QL_FABS(strike_-price);
           default:
-            QL_FAIL("Unknown/Illegal option type");
+            QL_FAIL("unknown/illegal option type");
         }
     }
 
@@ -82,8 +82,7 @@ namespace QuantLib {
                                double moneyness)
         : StrikedTypePayoff(type, moneyness) {
             QL_REQUIRE(moneyness>=0.0,
-            "PercentageStrikePayoff::PercentageStrikePayoff :"
-            "negative moneyness not allowed");
+                       "negative moneyness not allowed");
         }
         double operator()(double price) const;
     };
@@ -97,7 +96,7 @@ namespace QuantLib {
           case Option::Straddle:
             return price*QL_FABS(strike_-1.0);
           default:
-            QL_FAIL("Unknown/Illegal option type");
+            QL_FAIL("unknown/illegal option type");
         }
     }
 
@@ -124,7 +123,7 @@ namespace QuantLib {
           case Option::Straddle:
             return cashPayoff_;
           default:
-            QL_FAIL("Unknown/Illegal option type");
+            QL_FAIL("unknown/illegal option type");
         }
     }
 
@@ -147,7 +146,7 @@ namespace QuantLib {
           case Option::Straddle:
             return price;
           default:
-            QL_FAIL("Unknown/Illegal option type");
+            QL_FAIL("unknown/illegal option type");
         }
     }
 
@@ -174,7 +173,7 @@ namespace QuantLib {
           case Option::Straddle:
             return 0.0;
           default:
-            QL_FAIL("Unknown/Illegal option type");
+            QL_FAIL("unknown/illegal option type");
         }
     }
 
@@ -204,7 +203,7 @@ namespace QuantLib {
           case Option::Straddle:
             return -1.0;
           default:
-            QL_FAIL("Unknown/Illegal option type");
+            QL_FAIL("unknown/illegal option type");
         }
     }
 

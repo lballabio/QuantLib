@@ -136,7 +136,6 @@ namespace QuantLib {
     inline void McCliquetEngine<S, SG, PG>::calculate() const {
 
         QL_REQUIRE(arguments_.exerciseType == Exercise::European,
-                   "MCCliquetEngine::calculate() : "
                    "not an European Option");
 
         //! Initialize the one-factor Monte Carlo
@@ -145,7 +144,6 @@ namespace QuantLib {
             boost::shared_ptr<PathPricer<Path> >
                 controlPP = controlPathPricer();
             QL_REQUIRE(!controlPP.isNull(),
-                       "MCCliquetEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
@@ -153,7 +151,6 @@ namespace QuantLib {
                 controlPricingEngine();
 
             QL_REQUIRE(!controlPE.isNull(),
-                       "MCCliquetEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");
 

@@ -59,42 +59,42 @@ namespace QuantLib {
     double MultiAssetOption::delta() const {
         calculate();
         QL_REQUIRE(delta_ != Null<double>(),
-                   "MultiAssetOption: delta not provided");
+                   "delta not provided");
         return delta_;
     }
 
     double MultiAssetOption::gamma() const {
         calculate();
         QL_REQUIRE(gamma_ != Null<double>(),
-                   "MultiAssetOption: gamma not provided");
+                   "gamma not provided");
         return gamma_;
     }
 
     double MultiAssetOption::theta() const {
         calculate();
         QL_REQUIRE(theta_ != Null<double>(),
-                   "MultiAssetOption: theta not provided");
+                   "theta not provided");
         return theta_;
     }
 
     double MultiAssetOption::vega() const {
         calculate();
         QL_REQUIRE(vega_ != Null<double>(),
-                   "MultiAssetOption: vega not provided");
+                   "vega not provided");
         return vega_;
     }
 
     double MultiAssetOption::rho() const {
         calculate();
         QL_REQUIRE(rho_ != Null<double>(),
-                   "MultiAssetOption: rho not provided");
+                   "rho not provided");
         return rho_;
     }
 
     double MultiAssetOption::dividendRho() const {
         calculate();
         QL_REQUIRE(dividendRho_ != Null<double>(),
-                   "MultiAssetOption: dividend rho not provided");
+                   "dividend rho not provided");
         return dividendRho_;
     }
 
@@ -106,16 +106,13 @@ namespace QuantLib {
     void MultiAssetOption::setupArguments(Arguments* args) const {
         MultiAssetOption::arguments* arguments =
             dynamic_cast<MultiAssetOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0,
-                   "MultiAssetOption::setupArguments : "
-                   "wrong argument type");
+        QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->payoff = payoff_;
 
 
 /*
         QL_REQUIRE(blackScholesProcess_->stateVariable->value(),
-                   "MultiAssetOption::setupArguments : "
                    "null underlying price given");
 */
 
@@ -150,7 +147,6 @@ namespace QuantLib {
         const Greeks* results =
             dynamic_cast<const Greeks*>(engine_->results());
         QL_ENSURE(results != 0,
-                  "MultiAssetOption::performCalculations : "
                   "no greeks returned from pricing engine");
         /* no check on null values - just copy.
            this allows:
@@ -166,10 +162,6 @@ namespace QuantLib {
         vega_           = results->vega;
         rho_            = results->rho;
         dividendRho_    = results->dividendRho;
-
-        QL_ENSURE(NPV_ != Null<double>(),
-                  "MultiAssetOption::performCalculations : "
-                  "null value returned from option pricer");
     }
 
 
@@ -182,16 +174,13 @@ namespace QuantLib {
         #endif
         /*
         QL_REQUIRE(blackScholesProcess->stateVariable != Null<double>(),
-                   "MultiAssetOption::arguments::validate() : "
                    "no underlying given");
         QL_REQUIRE(blackScholesProcess->stateVariable > 0.0,
-                   "MultiAssetOption::arguments::validate() : "
                    "negative or zero underlying given");
         */
 
         /*
         QL_REQUIRE(correlation,
-                   "MultiAssetOption::arguments::validate() : "
                    "no correlation given");
 */
 
@@ -202,14 +191,11 @@ namespace QuantLib {
         while (proc != blackScholesProcesses.end()) {
             blackScholesProcess = *proc;
             QL_REQUIRE(blackScholesProcess->dividendTS,
-                    "MultiAssetOption::arguments::validate() : "
-                    "no dividend term structure given");
+                       "no dividend term structure given");
             QL_REQUIRE(blackScholesProcess->riskFreeTS,
-                    "MultiAssetOption::arguments::validate() : "
-                    "no risk free term structure given");
+                       "no risk free term structure given");
             QL_REQUIRE(blackScholesProcess->volTS,
-                    "MultiAssetOption::arguments::validate() : "
-                    "no vol term structure given");
+                       "no vol term structure given");
             ++proc;
         }
     }

@@ -93,8 +93,7 @@ namespace QuantLib {
                     xh=root_;
             }
 
-            QL_FAIL("NewtonSafe::solveImpl "
-                    "maximum number of function evaluations (" +
+            QL_FAIL("maximum number of function evaluations (" +
                     SizeFormatter::toString(maxEvaluations_) +
                     ") exceeded");
 

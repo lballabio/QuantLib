@@ -81,8 +81,7 @@ namespace QuantLib {
                 I = newI;
                 i++;
             } while (i < maxIterations_);
-            QL_FAIL("TrapezoidIntegral: "
-                    "max number of iterations reached");
+            QL_FAIL("max number of iterations reached");
         }
         // calculation parameters
         double accuracy() const { return accuracy_; }

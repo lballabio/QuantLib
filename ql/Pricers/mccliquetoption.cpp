@@ -42,11 +42,9 @@ namespace QuantLib {
               globalCap_(globalCap), globalFloor_(globalFloor), 
               discounts_(discounts), redemptionOnly_(redemptionOnly) {
                 QL_REQUIRE(underlying>0.0,
-                           "MyCliquet: "
                            "underlying less/equal zero not allowed");
 
                 QL_REQUIRE(moneyness>0.0,
-                           "MyCliquet: "
                            "moneyness less/equal zero not allowed");
 
                 if (accruedCoupon == Null<double>())

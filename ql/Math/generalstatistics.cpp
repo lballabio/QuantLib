@@ -32,9 +32,7 @@ namespace QuantLib {
 
     double GeneralStatistics::mean() const {
         Size N = samples();
-        QL_ENSURE(N != 0,
-                  "GeneralStatistics::mean() : "
-                  "empty sample set");
+        QL_REQUIRE(N != 0, "empty sample set");
         // eat our own dog food
         return expectationValue(identity<double>(),
                                 everywhere()).first;
@@ -42,9 +40,8 @@ namespace QuantLib {
 
     double GeneralStatistics::variance() const {
         Size N = samples();
-        QL_ENSURE(N > 1,
-                  "GeneralStatistics::variance() : "
-                  "sample number <=1, unsufficient");
+        QL_REQUIRE(N > 1, 
+                   "sample number <=1, unsufficient");
         // Subtract the mean and square. Repeat on the whole range.
         // Hopefully, the whole thing will be inlined in a single loop.
         double s2 = expectationValue(compose(square<double>(),
@@ -58,7 +55,6 @@ namespace QuantLib {
     double GeneralStatistics::skewness() const {
         Size N = samples();
         QL_REQUIRE(N > 2,
-                   "GeneralStatistics::skewness() : "
                    "sample number <=2, unsufficient");
 
         double x = expectationValue(compose(cube<double>(),
@@ -74,7 +70,6 @@ namespace QuantLib {
     double GeneralStatistics::kurtosis() const {
         Size N = samples();
         QL_REQUIRE(N > 3,
-                   "GeneralStatistics::kurtosis() : "
                    "sample number <=3, unsufficient");
 
         double x = expectationValue(compose(fourth_power<double>(),
@@ -93,14 +88,12 @@ namespace QuantLib {
     double GeneralStatistics::percentile(double percent) const {
 
         QL_REQUIRE(percent > 0.0 && percent <= 1.0,
-                   "GeneralStatistics::percentile() : "
                    "percentile (" +
                    DoubleFormatter::toString(percent) +
                    ") must be in (0.0, 1.0]");
 
         double sampleWeight = weightSum();
         QL_REQUIRE(sampleWeight>0.0,
-                   "GeneralStatistics::percentile() : "
                    "empty sample set");
 
         sort();
@@ -121,14 +114,12 @@ namespace QuantLib {
     double GeneralStatistics::topPercentile(double percent) const {
 
         QL_REQUIRE(percent > 0.0 && percent <= 1.0,
-                   "GeneralStatistics::topPercentile() : "
                    "percentile (" +
                    DoubleFormatter::toString(percent) +
                    ") must be in (0.0, 1.0]");
 
         double sampleWeight = weightSum();
         QL_REQUIRE(sampleWeight > 0.0,
-                   "GeneralStatistics::topPercentile() : "
                    "empty sample set");
 
         sort();

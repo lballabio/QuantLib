@@ -33,14 +33,12 @@ namespace QuantLib {
       underlying_(underlying),
       diffProcess_(diffProcess), sequenceGen_(sequenceGen) {
         QL_REQUIRE(underlying>0.0,
-                   "DigitalPathPricer: "
                    "underlying less/equal zero not allowed");
     }
 
     double DigitalPathPricer::operator()(const Path& path) const {
         Size i, n = path.size();
-        QL_REQUIRE(n>0,
-                   "DigitalPathPricer: the path cannot be empty");
+        QL_REQUIRE(n>0, "the path cannot be empty");
 
         double log_asset_price = QL_LOG(underlying_);
         double x, y;
@@ -107,7 +105,7 @@ namespace QuantLib {
             }
             break;
           default:
-            QL_FAIL("DigitalPathPricer: unknown option type");
+            QL_FAIL("unknown option type");
         }
 
         return 0.0;

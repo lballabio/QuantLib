@@ -42,70 +42,69 @@ namespace QuantLib {
     double OneAssetOption::delta() const {
         calculate();
         QL_REQUIRE(delta_ != Null<double>(),
-                   "OneAssetOption: delta not provided");
+                   "delta not provided");
         return delta_;
     }
 
     double OneAssetOption::deltaForward() const {
         calculate();
         QL_REQUIRE(deltaForward_ != Null<double>(),
-                   "OneAssetOption: deltaForward not provided");
+                   "forward delta not provided");
         return deltaForward_;
     }
 
     double OneAssetOption::elasticity() const {
         calculate();
         QL_REQUIRE(elasticity_ != Null<double>(),
-                   "OneAssetOption: elasticity not provided");
+                   "elasticity not provided");
         return elasticity_;
     }
 
     double OneAssetOption::gamma() const {
         calculate();
         QL_REQUIRE(gamma_ != Null<double>(),
-                   "OneAssetOption: gamma not provided");
+                   "gamma not provided");
         return gamma_;
     }
 
     double OneAssetOption::theta() const {
         calculate();
         QL_REQUIRE(theta_ != Null<double>(),
-                   "OneAssetOption: theta not provided");
+                   "theta not provided");
         return theta_;
     }
 
     double OneAssetOption::thetaPerDay() const {
         calculate();
         QL_REQUIRE(thetaPerDay_ != Null<double>(),
-                   "OneAssetOption: thetaPerDay not provided");
+                   "thetaPerDay not provided");
         return thetaPerDay_;
     }
 
     double OneAssetOption::vega() const {
         calculate();
         QL_REQUIRE(vega_ != Null<double>(),
-                   "OneAssetOption: vega not provided");
+                   "vega not provided");
         return vega_;
     }
 
     double OneAssetOption::rho() const {
         calculate();
         QL_REQUIRE(rho_ != Null<double>(),
-                   "OneAssetOption: rho not provided");
+                   "rho not provided");
         return rho_;
     }
 
     double OneAssetOption::dividendRho() const {
         calculate();
         QL_REQUIRE(dividendRho_ != Null<double>(),
-                   "OneAssetOption: dividend rho not provided");
+                   "dividend rho not provided");
         return dividendRho_;
     }
 
     double OneAssetOption::itmCashProbability() const {
         calculate();
         QL_REQUIRE(itmCashProbability_ != Null<double>(),
-                   "OneAssetOption::itmCashProbability() "
                    "in-the-money cash probability not provided");
         return itmCashProbability_;
     }
@@ -116,9 +115,7 @@ namespace QuantLib {
                                             double minVol,
                                             double maxVol) const {
         calculate();
-        QL_REQUIRE(!isExpired(),
-                   "OneAssetOption::impliedVolatility : "
-                   "option expired");
+        QL_REQUIRE(!isExpired(), "option expired");
 
         double guess = blackScholesProcess_->volTS->blackVol(
             exercise_->lastDate(),
@@ -141,13 +138,10 @@ namespace QuantLib {
     void OneAssetOption::setupArguments(Arguments* args) const {
         OneAssetOption::arguments* arguments =
             dynamic_cast<OneAssetOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0,
-                   "OneAssetOption::setupArguments : "
-                   "wrong argument type");
+        QL_REQUIRE(arguments != 0, "wrong argument type");
 
 /*
         QL_REQUIRE(blackScholesProcess_->stateVariable->value(),
-                   "OneAssetOption::setupArguments : "
                    "null underlying price given");
 */
 
@@ -173,7 +167,6 @@ namespace QuantLib {
         const Greeks* results =
             dynamic_cast<const Greeks*>(engine_->results());
         QL_ENSURE(results != 0,
-                  "OneAssetOption::performCalculations : "
                   "no greeks returned from pricing engine");
         /* no check on null values - just copy.
            this allows:
@@ -193,7 +186,6 @@ namespace QuantLib {
         const MoreGreeks* moreResults =
             dynamic_cast<const MoreGreeks*>(engine_->results());
         QL_ENSURE(moreResults != 0,
-                  "OneAssetOption::performCalculations : "
                   "no more greeks returned from pricing engine");
         /* no check on null values - just copy.
            this allows:
@@ -207,10 +199,6 @@ namespace QuantLib {
         elasticity_         = moreResults->elasticity;
         thetaPerDay_        = moreResults->thetaPerDay;
         itmCashProbability_ = moreResults->itmCashProbability;
-
-        QL_ENSURE(NPV_ != Null<double>(),
-                  "OneAssetOption::performCalculations : "
-                  "null value returned from option pricer");
     }
 
 
@@ -223,20 +211,15 @@ namespace QuantLib {
         #endif
         /*
         QL_REQUIRE(blackScholesProcess->stateVariable != Null<double>(),
-                   "OneAssetOption::arguments::validate() : "
                    "no underlying given");
         QL_REQUIRE(blackScholesProcess->stateVariable > 0.0,
-                   "OneAssetOption::arguments::validate() : "
                    "negative or zero underlying given");
         */
         QL_REQUIRE(blackScholesProcess->dividendTS,
-                   "OneAssetOption::arguments::validate() : "
                    "no dividend term structure given");
         QL_REQUIRE(blackScholesProcess->riskFreeTS,
-                   "OneAssetOption::arguments::validate() : "
                    "no risk free term structure given");
         QL_REQUIRE(blackScholesProcess->volTS,
-                   "OneAssetOption::arguments::validate() : "
                    "no vol term structure given");
     }
 
@@ -248,7 +231,6 @@ namespace QuantLib {
         OneAssetOption::arguments* arguments_ =
             dynamic_cast<OneAssetOption::arguments*>(engine_->arguments());
         QL_REQUIRE(arguments_ != 0,
-                   "OneAssetOption::ImpliedVolHelper::ImpliedVolHelper : "
                    "pricing engine does not supply needed arguments");
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         arguments_->blackScholesProcess->volTS = 
@@ -259,7 +241,6 @@ namespace QuantLib {
                                          RelinkableHandle<Quote>(vol_))));
         results_ = dynamic_cast<const Value*>(engine_->results());
         QL_REQUIRE(results_ != 0,
-                   "OneAssetOption::ImpliedVolHelper::ImpliedVolHelper : "
                    "pricing engine does not supply needed results");
     }
 

@@ -22,7 +22,7 @@ namespace QuantLib {
     Date Calendar::roll(const Date& d ,
                         RollingConvention c,
                         const Date& origin) const {
-        QL_REQUIRE(d!=Date(), "Calendar::roll : null date");
+        QL_REQUIRE(d!=Date(), "null date");
         Date d1 = d;
         if (c == Following || c == ModifiedFollowing ||
             c == MonthEndReference) {
@@ -47,14 +47,14 @@ namespace QuantLib {
                 return roll(d,Following);
             }
         } else {
-            QL_FAIL("Unknown rolling convention");
+            QL_FAIL("unknown rolling convention");
         }
         return d1;
     }
 
     Date Calendar::advance(const Date& d, int n, TimeUnit unit,
                            RollingConvention c) const {
-        QL_REQUIRE(d!=Date(), "Calendar::roll : null date");
+        QL_REQUIRE(d!=Date(), "null date");
         if (n == 0) {
             return roll(d,c);
         } else if (unit == Days) {

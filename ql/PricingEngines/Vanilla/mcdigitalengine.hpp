@@ -153,13 +153,11 @@ namespace QuantLib {
 
         boost::shared_ptr<CashOrNothingPayoff> payoff =
             boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "MCDigitalEngine: wrong payoff given");
+        QL_REQUIRE(payoff, "wrong payoff given");
 
         boost::shared_ptr<AmericanExercise> exercise =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
-        QL_REQUIRE(exercise,
-                   "MCDigitalEngine: wrong exercise given");
+        QL_REQUIRE(exercise, "wrong exercise given");
 
         TimeGrid grid = timeGrid();
         PseudoRandom::ursg_type sequenceGen(grid.size()-1, 
@@ -195,7 +193,6 @@ namespace QuantLib {
 
         QL_REQUIRE(requiredTolerance_ != Null<double>() ||
                    int(requiredSamples_) != Null<int>(),
-                   "MCDigitalEngine::calculate: "
                    "neither tolerance nor number of samples set");
 
         //! Initialize the one-factor Monte Carlo
@@ -204,14 +201,12 @@ namespace QuantLib {
             boost::shared_ptr<path_pricer_type> controlPP = 
                 controlPathPricer();
             QL_REQUIRE(controlPP,
-                       "MCDigitalEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
             boost::shared_ptr<PricingEngine> controlPE = 
                 controlPricingEngine();
             QL_REQUIRE(controlPE,
-                       "MCDigitalEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");
         } else {

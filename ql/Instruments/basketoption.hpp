@@ -46,9 +46,6 @@ namespace QuantLib {
                                           boost::shared_ptr<PricingEngine>());
 
         void setupArguments(Arguments*) const;
-      protected:
-        // enforce in this class any check on engine/payoff
-        void performCalculations() const;
       private:
         BasketType basketType_;
     };

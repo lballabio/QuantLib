@@ -42,8 +42,7 @@ namespace QuantLib {
             // Linesearch
             t = (*lineSearch_)(P, t);
 
-            QL_REQUIRE(lineSearch_->succeed(),
-                       "SteepestDescent: line-search failed!");
+            QL_REQUIRE(lineSearch_->succeed(), "line-search failed!");
             // End criteria
             end = endCriteria()(iterationNumber_, functionValue(), 
                                 QL_SQRT(gradientNormValue()), 

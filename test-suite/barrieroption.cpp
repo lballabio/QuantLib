@@ -81,7 +81,7 @@ namespace {
         case Barrier::UpOut:
             return std::string("Up-and-out");
         default:
-            QL_FAIL("exerciseTypeToString : unknown exercise type");
+            QL_FAIL("unknown exercise type");
         }
     }
 

@@ -33,9 +33,7 @@ namespace QuantLib {
         VanillaOption::setupArguments(args);
         ForwardVanillaOption::arguments* arguments =
             dynamic_cast<ForwardVanillaOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0,
-                   "ForwardVanillaOption::setupArguments :"
-                   "wrong argument type");
+        QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->moneyness = moneyness_;
         arguments->resetDate = resetDate_;
@@ -62,8 +60,6 @@ namespace QuantLib {
             dividendRho_ = results->dividendRho;
 
         }
-        QL_ENSURE(NPV_ != Null<double>(),
-                  "null value returned from option pricer");
     }
 
 }

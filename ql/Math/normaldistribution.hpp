@@ -188,7 +188,7 @@ namespace QuantLib {
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
-                   "NormalDistribution: sigma must be greater than 0.0 (" +
+                   "sigma must be greater than 0.0 (" +
                    DoubleFormatter::toString(sigma_) + " not allowed)");
 
         normalizationFactor_ = M_SQRT_2*M_1_SQRTPI/sigma_;
@@ -213,7 +213,6 @@ namespace QuantLib {
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
-                   "CumulativeNormalDistribution: "
                    "sigma must be greater than 0.0 (" +
                    DoubleFormatter::toString(sigma_) + " not allowed)");
     }
@@ -228,7 +227,6 @@ namespace QuantLib {
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
-                   "InverseCumulativeNormal: "
                    "sigma must be greater than 0.0 (" +
                    DoubleFormatter::toString(sigma_) + " not allowed)");
     }
@@ -238,7 +236,6 @@ namespace QuantLib {
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
-                   "InverseCumulativeNormal: "
                    "sigma must be greater than 0.0 (" +
                    DoubleFormatter::toString(sigma_) + " not allowed)");
     }

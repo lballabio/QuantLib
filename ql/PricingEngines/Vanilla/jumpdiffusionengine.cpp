@@ -28,8 +28,7 @@ namespace QuantLib {
         Size maxIterations)
     : baseEngine_(baseEngine), relativeAccuracy_(relativeAccuracy),
       maxIterations_(maxIterations) {
-        QL_REQUIRE(baseEngine_,
-                   "JumpDiffusionEngine: null base engine");
+        QL_REQUIRE(baseEngine_, "null base engine");
     }
 
 
@@ -155,16 +154,15 @@ namespace QuantLib {
             lastContribution *= weight;
         }
         QL_ENSURE(i<maxIterations_,
-            "JumpDiffusionEngine::calculate : "
-            + SizeFormatter::toString(i) +
-            " iterations have been not enough to reach the required "
-            + DoubleFormatter::toExponential(relativeAccuracy_) +
-            " accuracy. The "
-            + SizeFormatter::toOrdinal(i) +
-            " addendum was "
-            + DoubleFormatter::toExponential(lastContribution) +
-            " while the running sum was "
-            + DoubleFormatter::toExponential(results_.value));
+                  SizeFormatter::toString(i) +
+                  " iterations have been not enough to reach the required "
+                  + DoubleFormatter::toExponential(relativeAccuracy_) +
+                  " accuracy. The "
+                  + SizeFormatter::toOrdinal(i) +
+                  " addendum was "
+                  + DoubleFormatter::toExponential(lastContribution) +
+                  " while the running sum was "
+                  + DoubleFormatter::toExponential(results_.value));
     }
 
 }

@@ -68,9 +68,9 @@ namespace QuantLib {
             }
         #endif
             QL_REQUIRE(lastDate >= firstDate,
-                "invalid date range for history");
+                       "invalid date range for history");
             QL_ENSURE(values_.size() == Size((lastDate-firstDate)+1),
-                "history size incompatible with date range");
+                      "history size incompatible with date range");
         }
         History(const Date& firstDate, const std::vector<double>& values)
         : firstDate_(firstDate), lastDate_(firstDate + int(values.size())),
@@ -330,13 +330,13 @@ namespace QuantLib {
     : firstDate_(firstDate), lastDate_(lastDate), values_(values) {
         QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
         QL_REQUIRE(values.size() == Size((lastDate-firstDate)+1),
-            "history size incompatible with date range");
+                   "history size incompatible with date range");
     }
 
     inline History::History(const std::vector<Date>& dates,
         const std::vector<double>& values) {
         QL_REQUIRE(dates.size() == values.size(),
-            "different size for date and value vectors");
+                   "different size for date and value vectors");
         QL_REQUIRE(dates.size() >= 1,"null history given");
         firstDate_ = lastDate_ = dates[0];
         double lastValue = values[0];
@@ -345,11 +345,12 @@ namespace QuantLib {
             Date d = dates[i];
             double x = values[i];
             QL_REQUIRE(d>=lastDate_,
-                "unsorted date after "+DateFormatter::toString(lastDate_));
+                       "unsorted date after " + 
+                       DateFormatter::toString(lastDate_));
             if (d == lastDate_) {
                 QL_REQUIRE(x==lastValue,
-                    "different values in history for " +
-                    DateFormatter::toString(lastDate_));
+                           "different values in history for " +
+                           DateFormatter::toString(lastDate_));
             } else {
                 while (d-lastDate_ > 1) {
                     lastDate_ = lastDate_.plusDays(1);

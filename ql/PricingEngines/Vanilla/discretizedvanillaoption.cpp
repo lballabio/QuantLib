@@ -46,17 +46,14 @@ namespace QuantLib {
             }
             break;
           default:
-            QL_FAIL("DiscretizedVanillaOption::postAdjustValues() : "
-                    "invalid option type");
+            QL_FAIL("invalid option type");
         }
     }
 
     void DiscretizedVanillaOption::applySpecificCondition() {
         boost::shared_ptr<BlackScholesLattice> lattice = 
             boost::dynamic_pointer_cast<BlackScholesLattice>(method());
-        QL_REQUIRE(lattice,
-                   "DiscretizedVanillaOption: "
-                   "non-Black-Scholes lattice given");
+        QL_REQUIRE(lattice, "non-Black-Scholes lattice given");
         boost::shared_ptr<Tree> tree(lattice->tree());
         Size i = method()->timeGrid().findIndex(time());
 

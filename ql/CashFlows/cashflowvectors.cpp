@@ -29,10 +29,8 @@ namespace QuantLib {
                           const DayCounter& firstPeriodDayCount) {
 
         QL_REQUIRE(couponRates.size() != 0, 
-                   "FixedRateCouponVector: "
                    "unspecified coupon rates (size=0)");
         QL_REQUIRE(nominals.size() != 0, 
-                   "FixedRateCouponVector: "
                    "unspecified nominals (size=0)");
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
@@ -121,8 +119,7 @@ namespace QuantLib {
                              int fixingDays,
                              const std::vector<Spread>& spreads) {
 
-        QL_REQUIRE(nominals.size() != 0, 
-                   "FloatingRateCouponVector: unspecified nominals");
+        QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
         Calendar calendar = schedule.calendar();

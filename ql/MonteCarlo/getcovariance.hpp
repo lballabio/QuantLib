@@ -43,10 +43,10 @@ namespace QuantLib {
                                      const Matrix& corr){
         Size size = std::distance(volBegin, volEnd);
         QL_REQUIRE(corr.rows() == size,
-                   "getCovariance: volatilities and correlations "
+                   "volatilities and correlations "
                    "have different size");
         QL_REQUIRE(corr.columns() == size,
-                   "getCovariance: correlation matrix is not square");
+                   "correlation matrix is not square");
 
         Matrix covariance(size,size);
         Size i, j;

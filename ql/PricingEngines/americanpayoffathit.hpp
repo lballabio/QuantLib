@@ -66,20 +66,16 @@ namespace QuantLib {
       variance_(variance) {
 
         QL_REQUIRE(spot_>0.0,
-            "AmericanPayoffAtHit::AmericanPayoffAtHit : "
-            "positive spot value required");
+                   "positive spot value required");
 
         QL_REQUIRE(discount_>0.0,
-            "AmericanPayoffAtHit::AmericanPayoffAtHit : "
-            "positive discount required");
+                   "positive discount required");
 
         QL_REQUIRE(dividendDiscount_>0.0,
-            "AmericanPayoffAtHit::AmericanPayoffAtHit : "
-            "positive dividend discount required");
+                   "positive dividend discount required");
 
         QL_REQUIRE(variance_>=0.0,
-            "AmericanPayoffAtHit::AmericanPayoffAtHit : "
-            "negative variance not allowed");
+                   "negative variance not allowed");
 
         stdDev_ = QL_SQRT(variance_);
 
@@ -96,8 +92,7 @@ namespace QuantLib {
                 mu_     = - 0.5;
                 lambda_ = 0.5;
             } else if (discount_==0.0) {
-                QL_FAIL("AmericanPayoffAtHit::AmericanPayoffAtHit : "
-                        "null discount not handled yet");
+                QL_FAIL("null discount not handled yet");
             } else {
                 mu_ = QL_LOG(dividendDiscount_/discount_)/variance_ - 0.5;
                 lambda_ = QL_SQRT(mu_*mu_-2.0*QL_LOG(discount_)/variance_);
@@ -164,8 +159,7 @@ namespace QuantLib {
                 DbetaDd2_  = 0.0; // -n( d2) + n(d2)
                 break;
             default:
-                QL_FAIL("AnalyticAmericanEngine::calculate() :"
-                        "invalid option type");
+                QL_FAIL("invalid option type");
          }
 
 
@@ -267,8 +261,7 @@ namespace QuantLib {
 
     inline double AmericanPayoffAtHit::rho(double maturity) const {
         QL_REQUIRE(maturity>=0.0,
-            "AmericanPayoffAtHit::rho : "
-            "negative maturity not allowed");
+                   "negative maturity not allowed");
 
         // actually D.Dr / T
         double DalphaDr = -DalphaDd1_/(lambda_*stdDev_) * (1.0 + mu_);

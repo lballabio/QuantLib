@@ -32,13 +32,13 @@ namespace QuantLib {
         int frequency;
         if (indexTenor.units() == Months) {
             QL_REQUIRE((12%indexTenor.length()) == 0, 
-                       "Invalid index tenor");
+                       "invalid index tenor");
             frequency = 12/indexTenor.length();
         } else if (indexTenor.units() == Years) {
-            QL_REQUIRE(indexTenor.length()==1, "Invalid index tenor");
+            QL_REQUIRE(indexTenor.length()==1, "invalid index tenor");
             frequency=1;
         } else {
-            QL_FAIL("Invalid index tenor");
+            QL_FAIL("invalid index tenor");
         }
         Rate fixedRate = 0.04;//dummy value
         Date startDate = termStructure->referenceDate().

@@ -54,7 +54,7 @@ namespace QuantLib {
                     return h*QL_EXP(-x + a_*QL_LOG(x) - gln);
             }
         }
-        QL_FAIL("Too few iterations in GammaDistribution");
+        QL_FAIL("too few iterations");
     }
 
     const double GammaFunction::c1_ = 76.18009172947146;
@@ -65,8 +65,7 @@ namespace QuantLib {
     const double GammaFunction::c6_ = -0.5395239384953e-5;
 
     double GammaFunction::logValue(double x) const {
-        QL_REQUIRE(x>0.0,
-            "GammaFuntion requires a positive argument");
+        QL_REQUIRE(x>0.0, "positive argument required");
         double temp = x + 5.5;
         temp -= (x + 0.5)*QL_LOG(temp);
         double ser=1.000000000190015;

@@ -26,13 +26,13 @@ namespace QuantLib {
                                         SalvagingAlgorithm::Type sa) {
 
         QL_REQUIRE(matrix.rows() == matrix.columns(),
-                   "pseudoSqrt: matrix not square");
+                   "matrix not square");
         Size i, j;
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         for (i=0; i<matrix.rows(); i++)
             for (j=0; j<i; j++)
                 QL_REQUIRE(matrix[i][j] == matrix[j][i],
-                           "pseudoSqrt: matrix not symmetric");
+                           "matrix not symmetric");
         #endif
 
         // spectral (a.k.a Principal Component) analysis
@@ -47,7 +47,7 @@ namespace QuantLib {
           case SalvagingAlgorithm::None:
             // eigenvalues are sorted in decreasing order
             QL_REQUIRE(jd.eigenvalues()[size-1]>=-1e-16,
-                "Matrix pseudoSqrt: negative eigenvalue(s) ("
+                "negative eigenvalue(s) ("
                 + DoubleFormatter::toExponential(jd.eigenvalues()[size-1]) +
                 ")");
             result = CholeskyDecomposition(matrix, true);
@@ -96,23 +96,23 @@ namespace QuantLib {
                                          SalvagingAlgorithm::Type sa) {
 
         QL_REQUIRE(matrix.rows() == matrix.columns(),
-                   "pseudoSqrt: matrix not square");
+                   "matrix not square");
         Size i, j;
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         for (i=0; i<matrix.rows(); i++)
             for (j=0; j<i; j++)
                 QL_REQUIRE(matrix[i][j] == matrix[j][i],
-                           "pseudoSqrt: matrix not symmetric");
+                           "matrix not symmetric");
         #endif
 
         QL_REQUIRE(componentRetainedPercentage>0.0,
-                   "rankReducedSqrt: no eigenvalues retained");
+                   "no eigenvalues retained");
 
         QL_REQUIRE(componentRetainedPercentage<=1.0,
-                   "rankReducedSqrt: percentage to be retained > 100%");
+                   "percentage to be retained > 100%");
 
         QL_REQUIRE(maxRank>=1,
-                   "rankReducedSqrt: max rank required < 1");
+                   "max rank required < 1");
 
         // spectral (a.k.a Principal Component) analysis
         SymmetricSchurDecomposition jd(matrix);
@@ -123,7 +123,7 @@ namespace QuantLib {
         // require a positive semi-definite matrix
         // (eigenvalues are sorted in decreasing order)
         QL_REQUIRE(jd.eigenvalues()[size-1]>=0.0,
-                   "rankReducedSqrt: negative eigenvalue(s)");
+                   "negative eigenvalue(s)");
 
         // rank reduction:
         // output is granted to have a rank<=maxRank
@@ -158,7 +158,7 @@ namespace QuantLib {
             // will use spectral result as starting guess
 
             // optimization (general or LMM specific)
-            QL_FAIL("rankReducedSqrt: not implemented yet");
+            QL_FAIL("not implemented yet");
           default:
             QL_FAIL("unknown salvaging algorithm");
         }

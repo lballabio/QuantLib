@@ -82,14 +82,13 @@ namespace QuantLib {
                     xMin_=root_;
                     fxMin_=froot;
                 } else {
-                    QL_FAIL("Ridder: never get here.");
+                    QL_FAIL("never get here.");
                 }
 
                 if (QL_FABS(xMax_-xMin_) <= xAccuracy) return root_;
             }
 
-            QL_FAIL("Ridder::solveImpl: "
-                    "maximum number of function evaluations (" +
+            QL_FAIL("maximum number of function evaluations (" +
                     SizeFormatter::toString(maxEvaluations_) + 
                     ") exceeded");
 

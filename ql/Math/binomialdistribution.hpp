@@ -29,17 +29,9 @@ namespace QuantLib {
 
     inline double binomialCoefficientLn(unsigned long n, unsigned long k) {
 
-        QL_REQUIRE(n>=0,
-            "binomialCoefficient: "
-            "negative n not allowed");
-
-        QL_REQUIRE(k>=0,
-            "binomialCoefficient: "
-            "negative k not allowed");
-
-        QL_REQUIRE(n>=k,
-            "binomialCoefficient: "
-            "n<k not allowed");
+        QL_REQUIRE(n>=0, "negative n not allowed");
+        QL_REQUIRE(k>=0, "negative k not allowed");
+        QL_REQUIRE(n>=k, "n<k not allowed");
 
         return Factorial::ln(n)-Factorial::ln(k)-Factorial::ln(n-k);
 
@@ -79,9 +71,7 @@ namespace QuantLib {
         // function
         double operator()(unsigned long k) const {
             if (k >= n_) return 1.0;
-            QL_REQUIRE(k>=0,
-                "CumulativeBinomialDistribution::operator() : "
-                "negative k not allowed");
+            QL_REQUIRE(k>=0, "negative k not allowed");
             return 1.0 - incompleteBetaFunction(k+1, n_-k, p_);
         }
       private:
@@ -94,22 +84,15 @@ namespace QuantLib {
                                                       unsigned long n)
     : n_(n) {
 
-        QL_REQUIRE(n>=0,
-            "BinomialDistribution::BinomialDistribution : "
-            "negative n not allowed");
+        QL_REQUIRE(n>=0, "negative n not allowed");
 
         if (p==0.0) {
             logOneMinusP_ = 0.0;
         } else if (p==1.0) {
             logP_ = 0.0;
         } else {
-            QL_REQUIRE(p>0,
-                "BinomialDistribution::BinomialDistribution : "
-                "negative p not allowed");
-
-            QL_REQUIRE(p<1.0,
-                "BinomialDistribution::BinomialDistribution : "
-                "p>1.0 not allowed");
+            QL_REQUIRE(p>0, "negative p not allowed");
+            QL_REQUIRE(p<1.0, "p>1.0 not allowed");
 
             logP_ = QL_LOG(p);
             logOneMinusP_ = QL_LOG(1.0-p);
@@ -122,26 +105,16 @@ namespace QuantLib {
         unsigned long n)
     : n_(n), p_(p) {
 
-        QL_REQUIRE(n>=0,
-            "CumulativeBinomialDistribution::CumulativeBinomialDistribution : "
-            "negative n not allowed");
-
-        QL_REQUIRE(p>=0,
-            "CumulativeBinomialDistribution::CumulativeBinomialDistribution : "
-            "negative p not allowed");
-
-        QL_REQUIRE(p<=1.0,
-            "CumulativeBinomialDistribution::CumulativeBinomialDistribution : "
-            "p>1.0 not allowed");
+        QL_REQUIRE(n>=0, "negative n not allowed");
+        QL_REQUIRE(p>=0, "negative p not allowed");
+        QL_REQUIRE(p<=1.0, "p>1.0 not allowed");
 
     }
 
     inline double BinomialDistribution::operator()(unsigned long k) const {
 
         if (k > n_) return 0.0;
-        QL_REQUIRE(k>=0,
-            "BinomialDistribution::operator() : "
-            "negative k not allowed");
+        QL_REQUIRE(k>=0, "negative k not allowed");
 
         // p==1.0
         if (logP_==0.0)
@@ -165,9 +138,8 @@ namespace QuantLib {
     inline double PeizerPrattMethod2Inversion(double z, unsigned long n) {
 
         QL_REQUIRE(n%2==1,
-            "PeizerPrattMethod2Inversion : "
-            "n must be an odd number" +
-            IntegerFormatter::toString(n) + " not allowed");
+                   "n must be an odd number" +
+                   IntegerFormatter::toString(n) + " not allowed");
 
         double result = (z/(n+1.0/3.0+0.1/(n+1.0)));
         result *= result;

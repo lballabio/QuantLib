@@ -42,7 +42,6 @@ namespace QuantLib {
               logY_(xEnd-xBegin) {
                 for (Size i=0; i<logY_.size(); i++) {
                     QL_REQUIRE(yBegin[i]>0.0,
-                               "LogLinearInterpolation : "
                                "negative values not allowed");
                     logY_[i]=QL_LOG(yBegin[i]);
                 }
@@ -53,16 +52,13 @@ namespace QuantLib {
                 return QL_EXP(linearInterpolation_(x,true));
             }
             double primitive(double) const {
-                QL_FAIL("LogLinearInterpolation::primitive(): "
-                        "not implemented");
+                QL_FAIL("not implemented");
             }
             double derivative(double) const {
-                QL_FAIL("LogLinearInterpolation::derivative(): "
-                        "not implemented");
+                QL_FAIL("not implemented");
             }
             double secondDerivative(double) const {
-                QL_FAIL("LogLinearInterpolation::secondDerivative(): "
-                        "not implemented");
+                QL_FAIL("not implemented");
             }
           private:
             std::vector<double> logY_;

@@ -51,8 +51,6 @@ namespace QuantLib {
                                            boost::shared_ptr<PricingEngine>());
         void setupArguments(Arguments*) const;
       protected:
-        // enforce in this class any check on engine/payoff
-        void performCalculations() const;
         // arguments
         Average::Type averageType_;
         double runningProduct_;

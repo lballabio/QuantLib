@@ -23,13 +23,11 @@ namespace QuantLib {
     void AnalyticEuropeanEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "AnalyticEuropeanEngine::calculate() : "
                    "not an European Option");
 
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "AnalyticEuropeanEngine: non-striked payoff given");
+        QL_REQUIRE(payoff, "non-striked payoff given");
 
         const boost::shared_ptr<BlackScholesStochasticProcess>& process =
             arguments_.blackScholesProcess;

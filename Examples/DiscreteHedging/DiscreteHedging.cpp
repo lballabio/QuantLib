@@ -115,18 +115,13 @@ class ReplicationPathPricer : public PathPricer<Path>
                           double sigma)
     : type_(type), underlying_(underlying),
       strike_(strike), r_(r), maturity_(maturity), sigma_(sigma) {
-        QL_REQUIRE(strike_ > 0.0,
-            "ReplicationPathPricer: strike must be positive");
-        QL_REQUIRE(underlying_ > 0.0,
-            "ReplicationPathPricer: underlying must be positive");
+        QL_REQUIRE(strike_ > 0.0, "strike must be positive");
+        QL_REQUIRE(underlying_ > 0.0, "underlying must be positive");
         QL_REQUIRE(r_ >= 0.0,
-            "ReplicationPathPricer: risk free rate (r) must"
-            " be positive or zero");
-        QL_REQUIRE(maturity_ > 0.0,
-            "ReplicationPathPricer: maturity must be positive");
+                   "risk free rate (r) must be positive or zero");
+        QL_REQUIRE(maturity_ > 0.0, "maturity must be positive");
         QL_REQUIRE(sigma_ >= 0.0,
-            "ReplicationPathPricer: volatility (sigma)"
-            " must be positive or zero");
+                   "volatility (sigma) must be positive or zero");
 
     }
     // The value() method encapsulates the pricing code
@@ -188,8 +183,7 @@ double ReplicationPathPricer::operator()(const Path& path) const
     // It contains the list of variations.
     // It can be used as an array: it has a size() method
     int n = path.size();
-    QL_REQUIRE(n>0,
-        "ReplicationPathPricer: the path cannot be empty");
+    QL_REQUIRE(n>0, "the path cannot be empty");
 
     // discrete hedging interval
     Time dt = maturity_/n;
@@ -283,8 +277,7 @@ double ReplicationPathPricer::operator()(const Path& path) const
 // The computation over nSamples paths of the P&L distribution
 void ReplicationError::compute(int nTimeSteps, int nSamples)
 {
-    QL_REQUIRE(nTimeSteps>0,
-        "ReplicationError::compute : the number of steps must be > 0");
+    QL_REQUIRE(nTimeSteps>0, "the number of steps must be > 0");
 
     // hedging interval
     // double tau = maturity_ / nTimeSteps;

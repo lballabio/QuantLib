@@ -32,7 +32,7 @@ namespace QuantLib {
         : public std::unary_function<double,double> {
       public:
         GammaDistribution(double a) : a_(a) {
-            QL_REQUIRE(a>0.0, "Invalid parameter for gamma distribution");
+            QL_REQUIRE(a>0.0, "invalid parameter for gamma distribution");
         }
         double operator()(double x) const;
       private:

@@ -116,8 +116,7 @@ namespace QuantLib {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "AnalyticAmericanBinaryEngine: non-plain payoff given");
+        QL_REQUIRE(payoff, "non-plain payoff given");
 
         return boost::shared_ptr<MCEuropeanEngine<RNG,S>::path_pricer_type>(
             new EuropeanPathPricer(
@@ -191,7 +190,6 @@ namespace QuantLib {
     inline MakeMCEuropeanEngine<RNG,S>&
     MakeMCEuropeanEngine<RNG,S>::withSamples(Size samples) {
         QL_REQUIRE(tolerance_ == Null<double>(),
-                   "MakeMCEuropeanEngine::withSamples: "
                    "tolerance already set");
         samples_ = samples;
         return *this;
@@ -201,10 +199,8 @@ namespace QuantLib {
     inline MakeMCEuropeanEngine<RNG,S>&
     MakeMCEuropeanEngine<RNG,S>::withTolerance(double tolerance) {
         QL_REQUIRE(samples_ == Size(Null<int>()),
-                   "MakeMCEuropeanEngine::withTolerance: "
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,
-                   "MakeMCEuropeanEngine::withTolerance: "
                    "chosen random generator policy "
                    "does not allow an error estimate");
         tolerance_ = tolerance;
@@ -244,7 +240,6 @@ namespace QuantLib {
     MakeMCEuropeanEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>() 
                                                                       const {
         QL_REQUIRE(steps_ != Size(Null<int>()),
-                   "MakeMCEuropeanEngine<RNG,S>: "
                    "max number of steps per year not given");
         return boost::shared_ptr<PricingEngine>(
                              new MCEuropeanEngine<RNG,S>(steps_, antithetic_,
@@ -263,17 +258,14 @@ namespace QuantLib {
     : PathPricer<Path>(discountTS), underlying_(underlying),
       payoff_(type, strike) {
         QL_REQUIRE(underlying>0.0,
-                   "EuropeanPathPricer: "
                    "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
-                   "EuropeanPathPricer: "
                    "strike less than zero not allowed");
     }
 
     inline double EuropeanPathPricer::operator()(const Path& path) const {
         Size n = path.size();
-        QL_REQUIRE(n>0,
-                   "EuropeanPathPricer: the path cannot be empty");
+        QL_REQUIRE(n>0, "the path cannot be empty");
 
         double log_variation = 0.0;
         for (Size i = 0; i < n; i++)

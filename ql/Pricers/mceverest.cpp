@@ -61,12 +61,12 @@ namespace QuantLib {
 
         Size n = correlation.rows();
         QL_REQUIRE(correlation.columns() == n,
-                   "McEverest: correlation matrix not square");
+                   "correlation matrix not square");
         QL_REQUIRE(dividendYield.size() == n,
-                   "McEverest: dividendYield size does not match"
+                   "dividendYield size does not match"
                    " that of correlation matrix");
         QL_REQUIRE(residualTime > 0,
-                   "McEverest: residualTime must be positive");
+                   "residualTime must be positive");
 
         // initialize the path generator
         std::vector<boost::shared_ptr<DiffusionProcess> > processes(n);

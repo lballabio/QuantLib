@@ -27,19 +27,16 @@ namespace QuantLib {
     : forward_(forward), discount_(discount), variance_(variance) {
 
         QL_REQUIRE(forward>0.0,
-                   "BlackFormula::BlackFormula : "
                    "positive forward value required: " +
                    DoubleFormatter::toString(forward) +
                    " not allowed");
 
         QL_REQUIRE(discount>0.0,
-                   "BlackFormula::BlackFormula : "
                    "positive discount required " +
                    DoubleFormatter::toString(discount) +
                    " not allowed");
 
         QL_REQUIRE(variance>=0.0,
-                   "BlackFormula::BlackFormula : "
                    "non-negative variance required " +
                    DoubleFormatter::toString(variance) +
                    " not allowed");
@@ -104,8 +101,7 @@ namespace QuantLib {
             DbetaDd2_  =      - 2.0*  n_d2; // -n(d2) - n( d2)
             break;
           default:
-            QL_FAIL("BlackFormula::BlackFormula : "
-                    "invalid option type");
+            QL_FAIL("invalid option type");
         }
 
         // binary cash-or-nothing payoff?
@@ -131,8 +127,7 @@ namespace QuantLib {
                 DbetaDd2_ = 0.0; // n(d2) - n( d2) = 0.0
                 break;
               default:
-                QL_FAIL("BlackFormula::BlackFormula : "
-                        "invalid option type");
+                QL_FAIL("invalid option type");
             }
         }
 
@@ -157,8 +152,7 @@ namespace QuantLib {
                 DalphaDd1_ = 0.0; //  n(d1) - n( d1) = 0.0
                 break;
               default:
-                QL_FAIL("BlackFormula::BlackFormula : "
-                        "invalid option type");
+                QL_FAIL("invalid option type");
             }
         }
 
@@ -176,7 +170,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
         if (ss) {
             // ok, the payoff is binary super-share
-            QL_FAIL("Binary super-share payoff not handled yet");
+            QL_FAIL("binary super-share payoff not handled yet");
         }
     }
 
@@ -191,7 +185,6 @@ namespace QuantLib {
     double BlackFormula::delta(double spot) const {
 
         QL_REQUIRE(spot > 0.0,
-                   "BlackFormula::delta : "
                    "positive spot value required");
 
         double DforwardDs = forward_ / spot;
@@ -245,8 +238,7 @@ namespace QuantLib {
     double BlackFormula::gamma(double spot) const {
 
         QL_REQUIRE(spot>0.0,
-            "BlackFormula::gamma : "
-            "positive spot value required");
+                   "positive spot value required");
 
         double DforwardDs = forward_ / spot;
 
@@ -292,18 +284,15 @@ namespace QuantLib {
         } else if (maturity==0.0) {
             // should be r*value(), where r is the short rate
             // but the term structure is not available here
-            QL_FAIL("BlackFormula::theta : "
-                    "null maturity not handled");
+            QL_FAIL("null maturity not handled");
         } else {
-            QL_FAIL("BlackFormula::theta : "
-                    "negative maturity not allowed");
+            QL_FAIL("negative maturity not allowed");
         }
     }
 
     double BlackFormula::rho(double maturity) const {
         QL_REQUIRE(maturity>=0.0,
-            "BlackFormula::rho : "
-            "negative maturity not allowed");
+                   "negative maturity not allowed");
 
         // actually DalphaDr / T
         double DalphaDr = DalphaDd1_/stdDev_;
@@ -315,8 +304,7 @@ namespace QuantLib {
 
     double BlackFormula::dividendRho(double maturity) const {
         QL_REQUIRE(maturity>=0.0,
-            "BlackFormula::dividendRho : "
-            "negative maturity not allowed");
+                   "negative maturity not allowed");
 
         // actually DalphaDq / T
         double DalphaDq = -DalphaDd1_/stdDev_;
@@ -330,8 +318,7 @@ namespace QuantLib {
 
     double BlackFormula::vega(double maturity) const {
         QL_REQUIRE(maturity>=0.0,
-            "BlackFormula::vega : "
-            "negative maturity not allowed");
+                   "negative maturity not allowed");
 
         double temp = QL_LOG(strike_/forward_)/variance_;
         // actually DalphaDsigma / SQRT(T)

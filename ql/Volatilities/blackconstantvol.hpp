@@ -117,7 +117,6 @@ namespace QuantLib {
     inline double BlackConstantVol::blackVolImpl(Time t, double,
                                                  bool) const {
         QL_REQUIRE(t >= 0.0,
-                   "ConstantVol::blackVolImpl: "
                    "negative time (" + DoubleFormatter::toString(t) +
                    ") not allowed");
         return volatility_->value();
@@ -126,9 +125,7 @@ namespace QuantLib {
     // overload base class method in order to avoid numerical round-off
     inline double BlackConstantVol::blackForwardVol(Time t1, Time t2,
                                                     double, bool) const {
-        QL_REQUIRE(t2>=t1,
-                   "BlackConstantVol::blackForwardVol : "
-                   "time2<time1");
+        QL_REQUIRE(t2>=t1, "time2 < time1");
         return volatility_->value();
     }
 

@@ -136,7 +136,7 @@ namespace QuantLib {
         int icount = 0;
         while (!valid) {
             if (icount > 200)
-                QL_FAIL("Can't update parameter vector");
+                QL_FAIL("can't update parameter vector");
             diff *= 0.5;
             icount ++;
 

@@ -36,9 +36,7 @@ namespace QuantLib {
     }
 
     void RateHelper::setTermStructure(TermStructure* t) {
-        QL_REQUIRE(t != 0,
-                   "RateHelper::setTermStructure : "
-                   "RateHelper: null term structure given");
+        QL_REQUIRE(t != 0, "null term structure given");
         termStructure_ = t;
     }
 
@@ -67,18 +65,14 @@ namespace QuantLib {
       convention_(convention), dayCounter_(dayCounter) {}
 
     double DepositRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0,
-                   "DepositRateHelper::impliedQuote : "
-                   "term structure not set");
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
         return (termStructure_->discount(settlement_) /
                 termStructure_->discount(maturity_)-1.0) /
             yearFraction_;
     }
 
     DiscountFactor DepositRateHelper::discountGuess() const {
-        QL_REQUIRE(termStructure_ != 0,
-                   "DepositRateHelper::discountGuess : "
-                   "term structure not set");
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we'll play it safe - no extrapolation
         if (termStructure_->maxDate() < settlement_)
             return Null<double>();
@@ -97,9 +91,7 @@ namespace QuantLib {
     }
 
     Date DepositRateHelper::maturity() const {
-        QL_REQUIRE(termStructure_ != 0,
-                   "DepositRateHelper::maturity : "
-                   "term structure not set");
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
         return maturity_;
     }
 
@@ -130,18 +122,14 @@ namespace QuantLib {
       dayCounter_(dayCounter) {}
 
     double FraRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0,
-                   "FraRateHelper::impliedQuote : "
-                   "term structure not set");
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
         return (termStructure_->discount(start_) /
                 termStructure_->discount(maturity_)-1.0) /
             yearFraction_;
     }
 
     DiscountFactor FraRateHelper::discountGuess() const {
-        QL_REQUIRE(termStructure_ != 0,
-                   "FraRateHelper::discountGuess : "
-                   "term structure not set");
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // extrapolation shouldn't be needed if the input makes sense
         // but we'll play it safe
         return termStructure_->discount(start_,true) /
@@ -160,9 +148,7 @@ namespace QuantLib {
     }
 
     Date FraRateHelper::maturity() const {
-        QL_REQUIRE(termStructure_ != 0,
-                   "FraRateHelper::maturity : "
-                   "term structure not set");
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
         return maturity_;
     }
 
@@ -206,18 +192,14 @@ namespace QuantLib {
     }
 
     double FuturesRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, 
-                   "FuturesRateHelper::impliedQuote : "
-                   "term structure not set");
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
         return 100 * (1.0-(termStructure_->discount(ImmDate_) /
                            termStructure_->discount(maturity_)-1.0) /
                       yearFraction_);
     }
 
     DiscountFactor FuturesRateHelper::discountGuess() const {
-        QL_REQUIRE(termStructure_ != 0, 
-                   "FuturesRateHelper::discountGuess : "
-                   "term structure not set");
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // extrapolation shouldn't be needed if the input makes sense
         // but we'll play it safe
         return termStructure_->discount(ImmDate_,true) /
@@ -292,16 +274,12 @@ namespace QuantLib {
     }
 
     Date SwapRateHelper::maturity() const {
-        QL_REQUIRE(termStructure_ != 0, 
-                   "SwapRateHelper::maturity : "
-                   "null term structure set");
+        QL_REQUIRE(termStructure_ != 0, "null term structure set");
         return swap_->maturity();
     }
 
     double SwapRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, 
-                   "SwapRateHelper::impliedQuote : "
-                   "term structure not set");
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
         return swap_->fairRate();

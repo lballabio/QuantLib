@@ -36,15 +36,15 @@ namespace QuantLib {
       rhoComputed_(false), dividendRhoComputed_(false),
       vegaComputed_(false), thetaComputed_(false) {
         QL_REQUIRE(strike>=0.0,
-                   "SingleAssetOption::SingleAssetOption : strike ("+
+                   "strike ("+
                    DoubleFormatter::toString(strike)+
                    ") must be non negative");
         QL_REQUIRE(underlying > 0.0,
-                   "SingleAssetOption::SingleAssetOption : underlying ("+
+                   "underlying ("+
                    DoubleFormatter::toString(underlying)+
                    ") must be positive");
         QL_REQUIRE(residualTime > 0.0,
-                   "SingleAssetOption::SingleAssetOption : residual time ("+
+                   "residual time ("+
                    DoubleFormatter::toString(residualTime)+
                    ") must be positive");
         // checks on volatility values are in setVolatility
@@ -55,14 +55,14 @@ namespace QuantLib {
 
     void SingleAssetOption::setVolatility(double volatility) {
         QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
-                   "SingleAssetOption::setVolatility ("+
+                   "volatility too small ("+
                    DoubleFormatter::toString(volatility)+
-                   "): Volatility too small");
+                   ")");
 
         QL_REQUIRE(volatility <= QL_MAX_VOLATILITY,
-                   "SingleAssetOption::setVolatility ("+
+                   "volatility too high ("+
                    DoubleFormatter::toString(volatility)+
-                   ") : Volatility too high");
+                   ")");
 
         volatility_ = volatility;
         hasBeenCalculated_ = false;
@@ -157,7 +157,6 @@ namespace QuantLib {
                                                 double maxVol) const {
         // check option targetValue boundary condition
         QL_REQUIRE(targetValue > 0.0,
-                   "SingleAssetOption::impliedVol : "
                    "targetValue must be positive");
         double optionValue = value();
         if (optionValue == targetValue)
@@ -182,7 +181,6 @@ namespace QuantLib {
                                               double maxDivYield) const {
         // check option targetValue boundary condition
         QL_REQUIRE(targetValue > 0.0,
-                   "SingleAssetOption::impliedYield : "
                    "targetValue must be positive");
         double optionValue = value();
         if (optionValue == targetValue)

@@ -84,8 +84,7 @@ namespace QuantLib {
                 *f_(-y2);
             break;
           default:
-            QL_FAIL("DiscreteGeometricASO: "
-                    "invalid option type");
+            QL_FAIL("invalid option type");
         }
         return result;
     }

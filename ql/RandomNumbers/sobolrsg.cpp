@@ -139,7 +139,7 @@ namespace QuantLib {
       directionIntegers_(dimensionality,std::vector<unsigned long>(bits_))
     {
         QL_REQUIRE(dimensionality<=PPMT_MAX_DIM,
-                   "SobolRsg::SobolRsg : dimensionality "
+                   "dimensionality "
                    + SizeFormatter::toString(dimensionality) +
                    " exceeds the number of available "
                    "primitive polynomials modulo two (" +
@@ -288,8 +288,7 @@ namespace QuantLib {
         // increment the counter
         sequenceCounter_++;
         // did we overflow?
-        QL_REQUIRE(sequenceCounter_ != 0,
-                   "SobolRsg::nextSequence() : period exceeded");
+        QL_REQUIRE(sequenceCounter_ != 0, "period exceeded");
 
         // instead of using the counter n as new unique generating integer
         // for the n-th draw use the Gray code G(n) as proposed

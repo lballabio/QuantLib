@@ -128,11 +128,9 @@ namespace QuantLib {
                   case Periodic:
                   case Lagrange:
                     // ignoring end condition value
-                    QL_FAIL("CubicSpline : "
-                            "this end condition is not implemented yet");
+                    QL_FAIL("this end condition is not implemented yet");
                   default:
-                    QL_FAIL("CubicSpline : "
-                            "unknown end condition");
+                    QL_FAIL("unknown end condition");
                 }
 
                 // right condition
@@ -155,11 +153,9 @@ namespace QuantLib {
                   case Periodic:
                   case Lagrange:
                     // ignoring end condition value
-                    QL_FAIL("CubicSpline : "
-                            "this end condition is not implemented yet");
+                    QL_FAIL("this end condition is not implemented yet");
                   default:
-                    QL_FAIL("CubicSpline : "
-                            "unknown end condition");
+                    QL_FAIL("unknown end condition");
                 }
 
                 // solve the system

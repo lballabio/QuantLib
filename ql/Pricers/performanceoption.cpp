@@ -28,13 +28,13 @@ namespace QuantLib {
                        const std::vector<double>& volatility) {
 
         QL_REQUIRE(times.size() > 0,
-                   "At least one option is required for performance options");
+                   "at least one option is required for performance options");
         QL_REQUIRE(dividendYield.size()==times.size(),
-                   "PerformanceOption: dividendYield vector of wrong size");
+                   "dividendYield vector of wrong size");
         QL_REQUIRE(riskFreeRate.size()==times.size(),
-                   "PerformanceOption: riskFreeRate vector of wrong size");
+                   "riskFreeRate vector of wrong size");
         QL_REQUIRE(volatility.size()==times.size(),
-                   "PerformanceOption: volatility vector of wrong size");
+                   "volatility vector of wrong size");
 
         double discount = QL_EXP(-riskFreeRate[0] * times[0]);
 

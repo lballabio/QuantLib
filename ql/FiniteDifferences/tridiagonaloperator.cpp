@@ -48,7 +48,7 @@ namespace QuantLib {
 
     Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
         QL_REQUIRE(v.size()==size(),
-                   "TridiagonalOperator::applyTo: vector of the wrong size (" +
+                   "vector of the wrong size (" +
                    SizeFormatter::toString(v.size()) + "instead of " +
                    SizeFormatter::toString(size()) + ")"  );
         Array result(size());
@@ -66,21 +66,18 @@ namespace QuantLib {
 
     Disposable<Array>
     TridiagonalOperator::solveFor(const Array& rhs) const {
-        QL_REQUIRE(rhs.size()==size(),
-                   "TridiagonalOperator::solveFor: rhs has the wrong size");
+        QL_REQUIRE(rhs.size()==size(), "rhs has the wrong size");
 
         Array result(size()), tmp(size());
 
         double bet=diagonal_[0];
-        QL_REQUIRE(bet != 0.0,
-                   "TridiagonalOperator::solveFor: division by zero");
+        QL_REQUIRE(bet != 0.0, "division by zero");
         result[0] = rhs[0]/bet;
         Size j;
         for (j=1;j<=size()-1;j++){
             tmp[j]=upperDiagonal_[j-1]/bet;
             bet=diagonal_[j]-lowerDiagonal_[j-1]*tmp[j];
-            QL_ENSURE(bet != 0.0,
-                      "TridiagonalOperator::solveFor: division by zero");
+            QL_ENSURE(bet != 0.0, "division by zero");
             result[j] = (rhs[j]-lowerDiagonal_[j-1]*result[j-1])/bet;
         }
         // cannot be j>=0 with Size j
@@ -93,8 +90,7 @@ namespace QuantLib {
 
     Disposable<Array>
     TridiagonalOperator::SOR(const Array& rhs, double tol) const {
-        QL_REQUIRE(rhs.size()==size(),
-                   "TridiagonalOperator::solveFor: rhs has the wrong size");
+        QL_REQUIRE(rhs.size()==size(), "rhs has the wrong size");
 
         // initial guess
         Array result = rhs;
@@ -106,7 +102,7 @@ namespace QuantLib {
         double temp;
         for (sorIteration=0; err>tol ; sorIteration++) {
             QL_REQUIRE(sorIteration<100000,
-                       "TridiagonalOperator::SOR: tolerance ["
+                       "tolerance ["
                        + DoubleFormatter::toString(tol) +
                        "] not reached in "
                        + SizeFormatter::toString(sorIteration) +

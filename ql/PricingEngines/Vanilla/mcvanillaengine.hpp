@@ -101,11 +101,9 @@ namespace QuantLib {
 
         QL_REQUIRE(requiredTolerance_ != Null<double>() ||
                    int(requiredSamples_) != Null<int>(),
-                   "MCVanillaEngine::calculate: "
                    "neither tolerance nor number of samples set");
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "MCVanillaEngine::calculate() : "
                    "not an European Option");
 
         //! Initialize the one-factor Monte Carlo
@@ -114,14 +112,12 @@ namespace QuantLib {
             boost::shared_ptr<path_pricer_type> controlPP = 
                 controlPathPricer();
             QL_REQUIRE(controlPP,
-                       "MCVanillaEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
             boost::shared_ptr<PricingEngine> controlPE = 
                 controlPricingEngine();
             QL_REQUIRE(controlPE,
-                       "MCVanillaEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");
 

@@ -46,21 +46,21 @@ namespace QuantLib {
                     break;
             }
             if (i == 0) {
-                QL_FAIL("Using inadequate TimeGrid: all nodes "
+                QL_FAIL("using inadequate time grid: all nodes "
                         "are later than the required time t = "
                         + DoubleFormatter::toString(t,12) +
                         " (earliest node is t1 = "
                         + DoubleFormatter::toString((*this)[0],12) +
                         ")");
             } else if (i == int(size())) {
-                QL_FAIL("Using inadequate TimeGrid: all nodes "
+                QL_FAIL("using inadequate time grid: all nodes "
                         "are earlier than the required time t = "
                         + DoubleFormatter::toString(t,12) +
                         " (latest node is t1 = "
                         + DoubleFormatter::toString((*this)[size()-1],12) +
                         ")");
             } else {
-                QL_FAIL("Using inadequate TimeGrid: the nodes closest "
+                QL_FAIL("using inadequate time grid: the nodes closest "
                         "to the required time t = "
                         + DoubleFormatter::toString(t,12) +
                         " are t1 = " 

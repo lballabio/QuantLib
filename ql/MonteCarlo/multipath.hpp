@@ -66,8 +66,7 @@ namespace QuantLib {
 
     inline MultiPath::MultiPath(Size nAsset, const TimeGrid& timeGrid)
     : multiPath_(nAsset,Path(timeGrid)) {
-        QL_REQUIRE(nAsset > 0,
-                   "MultiPath: number of asset must be > zero");
+        QL_REQUIRE(nAsset > 0, "number of asset must be positive");
     }
 
     inline MultiPath::MultiPath(const std::vector<Path>& multiPath)

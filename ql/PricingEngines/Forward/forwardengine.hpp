@@ -54,8 +54,7 @@ namespace QuantLib {
         const boost::shared_ptr<GenericEngine<ArgumentsType, ResultsType> >&
             originalEngine)
     : originalEngine_(originalEngine) {
-        QL_REQUIRE(originalEngine_,
-                   "ForwardEngine::ForwardEngine: null engine");
+        QL_REQUIRE(originalEngine_, "null engine");
         originalResults_ = dynamic_cast<const ResultsType*>(
             originalEngine_->results());
         originalArguments_ = dynamic_cast<ArgumentsType*>(
@@ -69,8 +68,7 @@ namespace QuantLib {
 
         boost::shared_ptr<StrikedTypePayoff> argumentsPayoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(argumentsPayoff,
-                   "ForwardEngine: wrong payoff given");
+        QL_REQUIRE(argumentsPayoff, "wrong payoff given");
 
         argumentsPayoff->setStrike(arguments_.moneyness*
             arguments_.blackScholesProcess->stateVariable->value());

@@ -68,7 +68,7 @@ namespace QuantLib {
         Time from = asset->time();
 
         QL_REQUIRE(from >= to,
-                   "Lattice: cannot roll the asset back to" +
+                   "cannot roll the asset back to" +
                    DoubleFormatter::toString(to) +
                    " (it is already at t = " +
                    DoubleFormatter::toString(from) + ")");

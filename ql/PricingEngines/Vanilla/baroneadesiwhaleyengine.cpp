@@ -51,9 +51,7 @@ namespace QuantLib {
                 Si = Su + (payoff->strike() - Su) * QL_EXP(h);
                 break;
               default:
-                QL_FAIL("BaroneAdesiWhaleyApproximationEngine::"
-                        "calculate() :"
-                        "unknown option type");
+                QL_FAIL("unknown option type");
             }
 
 
@@ -115,9 +113,7 @@ namespace QuantLib {
                     }
                     break;
                 default:
-                    QL_FAIL("BaroneAdesiWhaleyApproximationEngine::"
-                            "calculate() :"
-                            "unknown option type");
+                    QL_FAIL("unknown option type");
             }
 
             return Si;
@@ -127,22 +123,17 @@ namespace QuantLib {
     void BaroneAdesiWhaleyApproximationEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
-                   "BaroneAdesiWhaleyApproximationEngine::calculate() : "
                    "not an American Option");
 
         boost::shared_ptr<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
-        QL_REQUIRE(ex,
-                   "BaroneAdesiWhaleyApproximationEngine: "
-                   "non-American exercise given");
+        QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(!ex->payoffAtExpiry(),
-                   "BaroneAdesiWhaleyApproximationEngine::calculate() : "
                    "payoff at expiry not handled");
 
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "AnalyticEuropeanEngine: non-striked payoff given");
+        QL_REQUIRE(payoff, "non-striked payoff given");
 
         double variance = arguments_.blackScholesProcess->volTS->blackVariance(
             ex->lastDate(), payoff->strike());
@@ -220,9 +211,7 @@ namespace QuantLib {
                     }
                     break;
                 default:
-                  QL_FAIL("BaroneAdesiWhaleyApproximationEngine::"
-                          "calculate() :"
-                          "unknown option type");
+                  QL_FAIL("unknown option type");
             }
         } // end of "early exercise can be optimal"
     }

@@ -184,8 +184,7 @@ namespace QuantLib {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff_handle =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff_handle,
-                   "MCAmericanBasketEngine: non-plain payoff given");
+        QL_REQUIRE(payoff_handle, "non-plain payoff given");
 
         double strike = payoff_handle->strike();
         PlainVanillaPayoff payoff(payoff_handle->optionType(), strike);
@@ -637,8 +636,7 @@ namespace QuantLib {
     // s0 is not included in the vector
     std::vector<double> getAssetSequence(double s0, const Path& path) {
         Size n = path.size();
-        QL_REQUIRE(n>0,
-                   "MCAmericanBasketEngine: the path cannot be empty");
+        QL_REQUIRE(n>0, "the path cannot be empty");
 
         std::vector<double> asset(n);
         asset[0] = s0;
@@ -661,8 +659,7 @@ namespace QuantLib {
     // s0 is not included in the vector
     std::vector<double> getAntiAssetSequence(double s0, const Path& path) {
         Size n = path.size();
-        QL_REQUIRE(n>0,
-                   "MCAmericanBasketEngine: the path cannot be empty");
+        QL_REQUIRE(n>0, "the path cannot be empty");
 
         std::vector<double> asset(n);
         asset[0] = s0;

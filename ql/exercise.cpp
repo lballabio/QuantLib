@@ -27,8 +27,7 @@ namespace QuantLib {
 
         // American exercise cannot degenerate into European exercise
         QL_REQUIRE(earliest<latest,
-            "AmericanExercise::AmericanExercise : "
-            "earliest>=latest exercise date");
+                   "earliest>=latest exercise date");
         type_ = American;
         dates_ = std::vector<Date>(2);
         dates_[0] = earliest;
@@ -42,8 +41,7 @@ namespace QuantLib {
         type_ = American;
         // Bermudan exercise cannot degenerate into European exercise
         QL_REQUIRE(dates.size()>1,
-            "BermudanExercise::BermudanExercise : "
-            "at least 2 exercise dates are needed");
+                   "at least 2 exercise dates are needed");
         dates_ = dates;
         std::sort(dates_.begin(), dates_.end());
 

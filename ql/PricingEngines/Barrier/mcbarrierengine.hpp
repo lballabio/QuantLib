@@ -171,8 +171,7 @@ namespace QuantLib {
     MCBarrierEngine<RNG,S>::pathPricer() const {
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "MCBarrierEngine: non-plain payoff given");
+        QL_REQUIRE(payoff, "non-plain payoff given");
 
         boost::shared_ptr<BlackScholesStochasticProcess> process =
             arguments_.blackScholesProcess;
@@ -230,12 +229,10 @@ namespace QuantLib {
 
         QL_REQUIRE(requiredTolerance_ != Null<double>() ||
                    int(requiredSamples_) != Null<int>(),
-                   "MCBarrierEngine::calculate: "
                    "neither tolerance nor number of samples set");
 
         // what exercise type is a barrier option?
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "MCBarrierEngine::calculate() : "
                    "not an European Option");
 
         //! Initialize the one-factor Monte Carlo
@@ -244,7 +241,6 @@ namespace QuantLib {
             boost::shared_ptr<path_pricer_type> controlPP = 
                 controlPathPricer();
             QL_REQUIRE(controlPP,
-                       "MCBarrierEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
@@ -252,7 +248,6 @@ namespace QuantLib {
                 controlPricingEngine();
 
             QL_REQUIRE(controlPE,
-                       "MCBarrierEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");
             /*

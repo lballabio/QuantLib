@@ -59,7 +59,7 @@ namespace QuantLib {
             f = LogLinearInterpolation(xx_begin, xx_end, yy_begin);
             break;
           default:
-            QL_FAIL("interpolate: invalid interpolation type");
+            QL_FAIL("invalid interpolation type");
         }
 
         Size i, n = x_end-x_begin;

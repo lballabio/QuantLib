@@ -36,21 +36,17 @@ namespace QuantLib {
       rebate_(rebate), diffProcess_(diffProcess),
       sequenceGen_(sequenceGen), payoff_(type, strike) {
         QL_REQUIRE(underlying>0.0,
-                   "BarrierPathPricer: "
                    "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
-                   "BarrierPathPricer: "
                    "strike less than zero not allowed");
         QL_REQUIRE(barrier>0.0,
-                   "BarrierPathPricer: "
                    "barrier less/equal zero not allowed");
     }
 
 
     double BarrierPathPricer::operator()(const Path& path) const {
         Size n = path.size();
-        QL_REQUIRE(n>0,
-                   "BarrierPathPricer: the path cannot be empty");
+        QL_REQUIRE(n>0, "the path cannot be empty");
 
         bool isOptionActive = false;
         double asset_price = underlying_;
@@ -140,7 +136,7 @@ namespace QuantLib {
             }
             break;
           default:
-            QL_FAIL("BarrierPathPricer: unknown BarrierType");
+            QL_FAIL("unknown barrier type");
         }
 
         if (isOptionActive) {
@@ -164,21 +160,17 @@ namespace QuantLib {
       barrierType_(barrierType), barrier_(barrier), 
       rebate_(rebate), payoff_(type, strike) {
         QL_REQUIRE(underlying>0.0,
-                   "BiasedBarrierPathPricer: "
                    "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
-                   "BiasedBarrierPathPricer: "
                    "strike less than zero not allowed");
         QL_REQUIRE(barrier>0.0,
-                   "BiasedBarrierPathPricer: "
                    "barrier less/equal zero not allowed");
     }
 
 
     double BiasedBarrierPathPricer::operator()(const Path& path) const {
         Size n = path.size();
-        QL_REQUIRE(n>0,
-                   "BiasedBarrierPathPricer: the path cannot be empty");
+        QL_REQUIRE(n>0, "the path cannot be empty");
 
         bool isOptionActive = false;
         double asset_price = underlying_;
@@ -231,7 +223,7 @@ namespace QuantLib {
             }
             break;
           default:
-            QL_FAIL("BiasedBarrierPathPricer: unknown BarrierType");
+            QL_FAIL("unknown barrier type");
         }
 
         if (isOptionActive) {

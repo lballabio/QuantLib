@@ -36,12 +36,10 @@ namespace QuantLib {
       redemptionOnly_(redemptionOnly), riskFreeTS_(riskFreeTS) {
 
         QL_REQUIRE(underlying_>0.0,
-            "CliquetOptionPathPricer: "
-            "underlying must be greater than zero");
+                   "underlying must be greater than zero");
 
         QL_REQUIRE(moneyness_>0.0,
-            "CliquetOptionPathPricer: "
-            "moneyness must be greater than zero");
+                   "moneyness must be greater than zero");
 
         if (accruedCoupon == Null<double>())
             accruedCoupon_ = 0.0;
@@ -53,8 +51,7 @@ namespace QuantLib {
             localFloor_ = 0.0;
 
         QL_REQUIRE(localCap_>=localFloor_,
-            "CliquetOptionPathPricer: "
-            "localCap cannot be less then localFloor");
+                   "localCap cannot be less then localFloor");
 
         if (globalCap == Null<double>())
             globalCap_ = QL_MAX_DOUBLE;
@@ -63,14 +60,12 @@ namespace QuantLib {
             globalFloor_ = 0.0;
 
         QL_REQUIRE(globalCap_>=globalFloor_,
-            "CliquetOptionPathPricer: "
-            "globalCap cannot be less then globalFloor");
+                   "globalCap cannot be less then globalFloor");
 
         if (!redemptionOnly_) {
             QL_REQUIRE(globalFloor_==0.0,
-                "CliquetOptionPathPricer : "
-                "globalFloor can be non zero only if "
-                "the option is redemption-only");
+                       "globalFloor can be non zero only if "
+                       "the option is redemption-only");
         }
     }
 

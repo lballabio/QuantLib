@@ -53,8 +53,7 @@ namespace QuantLib {
 
     void Swap::performCalculations() const {
         QL_REQUIRE(!termStructure_.isNull(),
-                   "Swap::performCalculations trying to price swap "
-                   "on null term structure");
+                   "null term structure set");
         Date settlement = termStructure_->referenceDate();
         NPV_ = 0.0;
         double firstLegNPV_ = 0.0;
@@ -107,7 +106,7 @@ namespace QuantLib {
                 d = QL_MIN(d, c->accrualStartDate());
         }
         QL_REQUIRE(d != Date::maxDate(),
-                   "Swap::startDate : not enough information available");
+                   "not enough information available");
         return d;
     }
 
@@ -118,8 +117,7 @@ namespace QuantLib {
             d = QL_MAX(d, firstLeg_[i]->date());
         for (i=0; i<secondLeg_.size(); i++)
             d = QL_MAX(d, secondLeg_[i]->date());
-        QL_REQUIRE(d != Date::minDate(),
-                   "Swap::maturity : empty swap");
+        QL_REQUIRE(d != Date::minDate(), "empty swap");
         return d;
     }
 

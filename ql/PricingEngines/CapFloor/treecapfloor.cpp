@@ -33,7 +33,7 @@ namespace QuantLib {
 
     void TreeCapFloor::calculate() const {
 
-        QL_REQUIRE(model_, "TreeCapFloor: No model specified");
+        QL_REQUIRE(model_, "no model specified");
         boost::shared_ptr<Lattice> lattice;
 
         if (!lattice_) {

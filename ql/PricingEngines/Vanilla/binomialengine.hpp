@@ -76,8 +76,7 @@ namespace QuantLib {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "AnalyticEuropeanEngine: non-plain payoff given");
+        QL_REQUIRE(payoff, "non-plain payoff given");
 
         Time maturity = arguments_.blackScholesProcess->riskFreeTS
             ->dayCounter().yearFraction(referenceDate, maturityDate);

@@ -24,10 +24,10 @@ namespace QuantLib {
     Period PeriodParser::parse(const std::string& str) {
         TimeUnit units = Days;
 
-        QL_REQUIRE(str.length()>1, "Argument needs length of at least 2");
+        QL_REQUIRE(str.length()>1, "argument needs length of at least 2");
         Size iPos = str.find_first_of("DdWwMmYy");
         if (iPos != str.length()-1)
-            QL_FAIL("Unknown units, input: '"+str+"'");
+            QL_FAIL("unknown units, input: '"+str+"'");
         char abbr = QL_TOUPPER(str[iPos]);
         if (abbr == 'D')      units = Days;
         else if (abbr == 'W') units = Weeks;

@@ -49,11 +49,11 @@ namespace QuantLib {
 
     void JamshidianSwaption::calculate() const {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "Cannot use the Jamshidian decomposition "
+                   "cannot use the Jamshidian decomposition "
                    "on exotic swaptions");
         Time maturity = arguments_.stoppingTimes[0];
         QL_REQUIRE(maturity==arguments_.floatingResetTimes[0],
-                   "Maturity must be equal to first reset date");
+                   "maturity must be equal to first reset date");
 
         std::vector<double> amounts(arguments_.fixedCoupons);
         amounts.back() += arguments_.nominal;

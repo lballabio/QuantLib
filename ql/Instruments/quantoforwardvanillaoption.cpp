@@ -32,9 +32,7 @@ namespace QuantLib {
     : QuantoVanillaOption(foreignRiskFreeTS, exchRateVolTS, correlation,
                           stochProc, payoff, exercise, engine),
       moneyness_(moneyness), resetDate_(resetDate) {
-        QL_REQUIRE(engine,
-                   "QuantoForwardVanillaOption::QuantoForwardVanillaOption : "
-                   "null engine or wrong engine type");
+        QL_REQUIRE(engine, "null engine or wrong engine type");
     }
 
     void QuantoForwardVanillaOption::setupArguments(Arguments* args)
@@ -43,16 +41,12 @@ namespace QuantLib {
         QuantoForwardVanillaOption::arguments* arguments =
             dynamic_cast<QuantoForwardVanillaOption::arguments*>(args);
         QL_REQUIRE(arguments != 0,
-                   "QuantoForwardVanillaOption::setupArguments() : "
                    "pricing engine does not supply needed arguments");
 
         arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
         arguments->exchRateVolTS = exchRateVolTS_;
-        QL_REQUIRE(correlation_,
-                   "QuantoVanillaOption::setupArguments() : "
-                   "null correlation given");
-        arguments->correlation =
-            correlation_->value();
+        QL_REQUIRE(correlation_, "null correlation given");
+        arguments->correlation = correlation_->value();
 
         arguments->moneyness = moneyness_;
         arguments->resetDate = resetDate_;

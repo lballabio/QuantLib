@@ -35,15 +35,12 @@ namespace QuantLib {
       lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
 
         QL_REQUIRE(dates.size()==blackVolMatrix.columns(),
-            "BlackVarianceSurface::BlackVarianceSurface : "
-            "mismatch between date vector and vol matrix colums");
+                   "mismatch between date vector and vol matrix colums");
         QL_REQUIRE(strikes_.size()==blackVolMatrix.rows(),
-            "BlackVarianceSurface::BlackVarianceSurface : "
-            "mismatch between money-strike vector and vol matrix rows");
+                   "mismatch between money-strike vector and vol matrix rows");
 
         QL_REQUIRE(dates[0]>=referenceDate,
-            "BlackVarianceSurface::BlackVarianceSurface : "
-            "cannot have dates[0]<=referenceDate");
+                   "cannot have dates[0] <= referenceDate");
 
         Size j, i;
         times_ = std::vector<Time>(dates.size()+1);
@@ -55,14 +52,12 @@ namespace QuantLib {
         for (j=1; j<=blackVolMatrix.columns(); j++) {
             times_[j] = dayCounter_.yearFraction(referenceDate, dates[j-1]);
             QL_REQUIRE(times_[j]>times_[j-1],
-                "BlackVarianceSurface::BlackVarianceSurface : "
-                "dates must be sorted unique!");
+                       "dates must be sorted unique!");
             for (i=0; i<blackVolMatrix.rows(); i++) {
                 variances_[i][j] = times_[j] *
                     blackVolMatrix[i][j-1]*blackVolMatrix[i][j-1];
                 QL_REQUIRE(variances_[i][j]>=variances_[i][j-1],
-                    "BlackVarianceCurve::BlackVarianceCurve : "
-                    "variance must be non-decreasing");
+                           "variance must be non-decreasing");
             }
         }
         // default: bilinear interpolation
@@ -90,14 +85,12 @@ namespace QuantLib {
             strike = strikes_.back();
 
         QL_REQUIRE(t>0.0,
-                   "BlackVarianceSurface::blackVarianceImpl : "
                    "negative time (" + DoubleFormatter::toString(t) +
                    ") not allowed");
         if (t<=times_.back())
             return varianceSurface_(t, strike, extrapolate);
         else // t>times_.back() || extrapolate
             QL_REQUIRE(extrapolate,
-                       "ConstantVol::blackVolImpl : "
                        "time (" + DoubleFormatter::toString(t) +
                        ") greater than max time (" +
                        DoubleFormatter::toString(times_.back()) +

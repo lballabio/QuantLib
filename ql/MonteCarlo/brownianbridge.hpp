@@ -108,11 +108,9 @@ namespace QuantLib {
       stdDev_(dimension_) {
 
         QL_REQUIRE(dimension_>0,
-                   "BrownianBridge::BrownianBridge : "
                    "there must be at least one step");
 
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
-                   "BrownianBridge::BrownianBridge : "
                    "GSG/timeGrid dimension mismatch"
                    "(" + IntegerFormatter::toString(dimension_) +
                    "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
@@ -133,11 +131,9 @@ namespace QuantLib {
       stdDev_(dimension_) {
 
         QL_REQUIRE(dimension_>0,
-                   "BrownianBridge::BrownianBridge : "
                    "there must be at least one step");
 
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
-                   "BrownianBridge::BrownianBridge : "
                    "GSG/timeGrid dimension mismatch"
                    "(" + IntegerFormatter::toString(dimension_) +
                    "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
@@ -159,18 +155,15 @@ namespace QuantLib {
       stdDev_(dimension_) {
 
         QL_REQUIRE(dimension_>0,
-                   "BrownianBridge::BrownianBridge : "
                    "there must be at least one step");
 
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
-                   "BrownianBridge::BrownianBridge : "
                    "GSG/timeGrid dimension mismatch"
                    "(" + IntegerFormatter::toString(dimension_) +
                    "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
                    ")");
 
         QL_REQUIRE(dimension_==variances.size(),
-                   "BrownianBridge::BrownianBridge : "
                    "GSG/variances dimension mismatch"
                    "(" + IntegerFormatter::toString(dimension_) +
                    "/" + IntegerFormatter::toString(variances.size()) +
@@ -193,11 +186,9 @@ namespace QuantLib {
       stdDev_(dimension_) {
 
         QL_REQUIRE(dimension_>0,
-                   "BrownianBridge::BrownianBridge : "
                    "there must be at least one step");
 
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
-                   "BrownianBridge::BrownianBridge : "
                    "GSG/timeGrid dimension mismatch"
                    "(" + IntegerFormatter::toString(dimension_) +
                    "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
@@ -226,11 +217,9 @@ namespace QuantLib {
       stdDev_(dimension_) {
 
         QL_REQUIRE(dimension_>0,
-                   "BrownianBridge::BrownianBridge : "
                    "there must be at least one step");
 
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
-                   "BrownianBridge::BrownianBridge : "
                    "GSG/timeGrid dimension mismatch"
                    "(" + SizeFormatter::toString(dimension_) +
                    "/" + SizeFormatter::toString(timeGrid_.size()-1) +
@@ -250,7 +239,6 @@ namespace QuantLib {
     void BrownianBridge<GSG>::initialize(const std::vector<double>& v) {
 
         QL_REQUIRE(v.size()==dimension_,
-                   "BrownianBridge::initialize : "
                    "GSG/variance vector dimension mismatch"
                    "(" + SizeFormatter::toString(dimension_) +
                    "/" + SizeFormatter::toString(v.size()) +

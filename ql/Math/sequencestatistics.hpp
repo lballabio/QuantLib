@@ -113,7 +113,6 @@ namespace QuantLib {
                  Iterator end,
                  double weight = 1.0) {
             QL_REQUIRE(std::distance(begin, end) == int(dimension_),
-                       "SequenceStatistics::add : "
                        "sample size mismatch");
 
             quadraticSum_ += weight * outerProduct(begin, end,
@@ -208,8 +207,7 @@ namespace QuantLib {
     void SequenceStatistics<Stat>::reset(Size dimension) {
         if (dimension == 0)           // if no size given,
             dimension = dimension_;   // keep the current one
-        QL_REQUIRE(dimension > 0,
-                   "SequenceStatistics::reset : null dimension");
+        QL_REQUIRE(dimension > 0, "null dimension");
         if (dimension == dimension_) {
             for (Size i=0; i<dimension_; i++)
                 stats_[i].reset();
@@ -227,12 +225,10 @@ namespace QuantLib {
     Disposable<Matrix> SequenceStatistics<Stat>::covariance() const {
         double sampleWeight = weightSum();
         QL_REQUIRE(sampleWeight > 0.0,
-                   "SequenceStatistics::covariance() : "
                    "sampleWeight=0, unsufficient");
 
         double sampleNumber = samples();
         QL_REQUIRE(sampleNumber > 1.0,
-                   "SequenceStatistics::covariance() : "
                    "sample number <=1, unsufficient");
 
         std::vector<double> m = mean();

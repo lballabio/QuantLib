@@ -27,16 +27,12 @@ namespace QuantLib {
     : todaysDate_(todaysDate), dayCounter_(dayCounter),
       dates_(dates), discounts_(discounts) {
         QL_REQUIRE(dates_.size() > 0, 
-                   "DiscountCurve::DiscountCurve : "
-                   "No input Dates given");
+                   "no input Dates given");
         QL_REQUIRE(discounts_.size() > 0, 
-                   "DiscountCurve::DiscountCurve : "
-                   "No input Discount factors given");
+                   "no input Discount factors given");
         QL_REQUIRE(discounts_.size() == dates_.size(),
-                   "DiscountCurve::DiscountCurve : "
-                   "Dates/Discount factors count mismatch");
+                   "dates/discount factors count mismatch");
         QL_REQUIRE(discounts_[0] == 1.0,
-                   "DiscountCurve::DiscountCurve : "
                    "the first discount must be == 1.0 "
                    "to flag the corrsponding date as settlement date");
 
@@ -46,11 +42,10 @@ namespace QuantLib {
         times_[0] = 0.0;
         for(Size i = 1; i < dates_.size(); i++) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
-                       "DiscountCurve::DiscountCurve : invalid date ("+
+                       "invalid date ("+
                        DateFormatter::toString(dates_[i])+", vs "+
                        DateFormatter::toString(dates_[i-1])+")");
-            QL_REQUIRE(discounts_[i] > 0.0,
-                       "DiscountCurve::DiscountCurve : invalid discount");
+            QL_REQUIRE(discounts_[i] > 0.0, "negative discount");
             times_[i] = 
                 dayCounter_.yearFraction(referenceDate_, dates_[i]);
         }
@@ -61,7 +56,6 @@ namespace QuantLib {
     DiscountFactor DiscountCurve::discountImpl(Time t, 
                                                bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
-                   "DiscountCurve::discountImpl "
                    "negative time (" + DoubleFormatter::toString(t) +
                    ") not allowed");
         if (t == 0.0) {
@@ -79,7 +73,7 @@ namespace QuantLib {
 
     Size DiscountCurve::referenceNode(Time t, bool extrapolate) const {
         QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
-                   "DiscountCurve: time (" +
+                   "time (" +
                    DoubleFormatter::toString(t) +
                    ") outside curve definition [" +
                    DoubleFormatter::toString(0.0) + ", " +

@@ -19,16 +19,58 @@
 #include <sstream>
 #include <stdexcept>
 
+namespace {
+
+    std::string trim(const std::string& file) {
+        // find last path separator
+        std::string::size_type n = file.find_last_of("/\\");
+        if (n == std::string::npos)
+            // return the whole thing--it's a naked file name anyway
+            return file;
+        else
+            // keep the file name only
+            return file.substr(n+1);
+    }
+
+    std::string format(const std::string& file, long line, 
+                       const std::string& function, 
+                       const std::string& message) {
+        std::ostringstream msg;
+        #if QL_ERROR_LINES
+        msg << trim(file) << ":" << line << ": ";
+        #endif
+        if (function != "(unknown)")
+            msg << function << ": ";
+        msg << message;
+        return msg.str();
+    }
+
+}
+
 namespace boost {
 
     // must be defined by the user
     void assertion_failed(char const * expr, char const * function, 
                           char const * file, long line) {
-        std::ostringstream msg;
-        msg << QuantLib::Error::where(file,line)
-            << "in function <" << function << ">: "
-            << "assertion (" << expr << ") failed";
-        throw std::runtime_error(msg.str());
+        throw std::runtime_error(format(file, line, function,
+                                        "assertion failed: " + 
+                                        std::string(expr)));
+    }
+
+}
+
+namespace QuantLib {
+
+    Error::Error(const std::string& file,
+                 long line,
+                 const std::string& function,
+                 const std::string& message)
+    : file_(file), line_(line), function_(function), message_(message) {
+        longMessage_ = format(file, line, function, message);
+    }
+
+    const char* Error::what() const throw () {
+        return longMessage_.c_str();
     }
 
 }

@@ -26,11 +26,9 @@ namespace QuantLib {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "AnalyticAmericanBinaryEngine: non-plain payoff given");
+        QL_REQUIRE(payoff, "non-plain payoff given");
         QL_REQUIRE(payoff->strike()>0.0,
-            "AnalyticBarrierEngine::calculate() : "
-            "strike must be positive");
+                   "strike must be positive");
 
         Barrier::Type barrierType = arguments_.barrierType;
 
@@ -126,7 +124,7 @@ namespace QuantLib {
             }
             break;
           default:
-            QL_FAIL("Option: unknown type");
+            QL_FAIL("unknown type");
         }
     }
 
@@ -138,8 +136,7 @@ namespace QuantLib {
     double AnalyticBarrierEngine::strike() const {
         boost::shared_ptr<PlainVanillaPayoff> payoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "AnalyticAmericanBinaryEngine: non-plain payoff given");
+        QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }
 

@@ -71,11 +71,9 @@ namespace QuantLib {
                            "not enough points to interpolate");
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
                 for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; i++, j++)
-                    QL_REQUIRE(*j > *i,
-                               "Interpolation2D : unsorted x values");
+                    QL_REQUIRE(*j > *i, "unsorted x values");
                 for (I2 k=yBegin_, l=yBegin_+1; l!=yEnd_; k++, l++)
-                    QL_REQUIRE(*l > *k,
-                               "Interpolation2D : unsorted y values");
+                    QL_REQUIRE(*l > *k, "unsorted y values");
                 #endif
             }
             double xMin() const {
@@ -131,8 +129,7 @@ namespace QuantLib {
       protected:
         void checkRange(double x, double y, bool allowExtrapolation) const {
             QL_REQUIRE(allowExtrapolation || impl_->isInRange(x,y),
-                       "Interpolation2D::operator() : "
-                       "\ninterpolation range is ["
+                       "interpolation range is ["
                        + DoubleFormatter::toString(impl_->xMin()) +
                        ", "
                        + DoubleFormatter::toString(impl_->xMax()) +

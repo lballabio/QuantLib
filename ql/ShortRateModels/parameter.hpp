@@ -86,8 +86,7 @@ namespace QuantLib {
               boost::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
               constraint) {
             params_[0] = value;
-            QL_REQUIRE(testParams(params_),
-                       "ConstantParameter: invalid value in constructor");
+            QL_REQUIRE(testParams(params_), "invalid value");
         }
 
     };
@@ -165,7 +164,7 @@ namespace QuantLib {
                 std::vector<Time>::const_iterator result =
                     std::find(times_.begin(), times_.end(), t);
                 QL_REQUIRE(result!=times_.end(),
-                           "Fitting parameter not set!");
+                           "fitting parameter not set!");
                 return values_[result - times_.begin()];
             }
             const RelinkableHandle<TermStructure>& termStructure() const {

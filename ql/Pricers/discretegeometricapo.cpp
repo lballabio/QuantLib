@@ -73,8 +73,7 @@ namespace QuantLib {
                  );
             break;
           default:
-            QL_FAIL("DiscreteGeometricAPO: "
-                    "invalid option type");
+            QL_FAIL("invalid option type");
         }
         return result;
     }

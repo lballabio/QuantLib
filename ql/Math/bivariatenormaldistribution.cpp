@@ -68,8 +68,7 @@ namespace QuantLib {
 
             result= bivCumNormalDist(a, 0.0) + CBND2(b, 0.0) - delta;
         } else {
-            QL_FAIL("BivariateCumulativeNormalDistribution::operator() : "
-                    "case not handled");
+            QL_FAIL("case not handled");
         }
 
         return result;

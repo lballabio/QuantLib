@@ -83,7 +83,6 @@ namespace QuantLib {
             dt = 0.0001;
             wpt = blackTS_->blackVariance(t+dt, strike, true);
             QL_REQUIRE(wpt>=w,
-                       "LocalVolSurface::localVolImpl : "
                        "decreasing variance at strike "
                        + DoubleFormatter::toString(strike) +
                        " between time "
@@ -96,7 +95,6 @@ namespace QuantLib {
             wpt = blackTS_->blackVariance(t+dt, strike, true);
             wmt = blackTS_->blackVariance(t-dt, strike, true);
             QL_REQUIRE(wpt>=w,
-                       "LocalVolSurface::localVolImpl : "
                        "decreasing variance at strike "
                        + DoubleFormatter::toString(strike) +
                        " between time "
@@ -104,7 +102,6 @@ namespace QuantLib {
                        " and time "
                        + DoubleFormatter::toString(t+dt));
             QL_REQUIRE(w>=wmt,
-                       "LocalVolSurface::localVolImpl : "
                        "decreasing variance at strike "
                        + DoubleFormatter::toString(strike) +
                        " between time "
@@ -123,7 +120,6 @@ namespace QuantLib {
             double den = den1+den2+den3;
             double result = dwdt / den;
             QL_REQUIRE(result>=0.0,
-                       "LocalVolSurface::localVolImpl : "
                        "negative local vol^2 at strike "
                        + DoubleFormatter::toString(strike) +
                        " and time "
