@@ -82,7 +82,7 @@ CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
 
 TLIB_OPTS    = /P128
 !ifdef DEBUG
-TLIB_OPTS    = /P256
+TLIB_OPTS    = /P512
 !endif
 
 # Generic rules
