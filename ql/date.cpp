@@ -226,7 +226,6 @@ namespace QuantLib {
             return date + n;
           case Weeks:
             return date + 7*n;
-            break;
           case Months: {
             Day d = date.dayOfMonth();
             Integer m = Integer(date.month())+n;
@@ -536,32 +535,24 @@ namespace QuantLib {
     std::string FrequencyFormatter::toString(Frequency freq) {
 
         switch (freq) {
-            case NoFrequency:
+          case NoFrequency:
             return std::string("no frequency");
-            break;
-            case Once:
+          case Once:
             return std::string("once");
-            break;
-            case Annual:
+          case Annual:
             return std::string("annual");
-            break;
-            case Semiannual:
+          case Semiannual:
             return std::string("semiannual");
-            break;
-            case EveryFourthMonth:
+          case EveryFourthMonth:
             return std::string("every-fourth-month");
-            break;
-            case Quarterly:
+          case Quarterly:
             return std::string("quarterly");
-            break;
-            case Bimonthly:
+          case Bimonthly:
             return std::string("bimonthly");
-            break;
-            case Monthly:
+          case Monthly:
             return std::string("monthly");
-            break;
-            default:
-                QL_FAIL("unknown frequency ("+
+          default:
+            QL_FAIL("unknown frequency ("+
                     IntegerFormatter::toString(freq)+")");
         }
     }
