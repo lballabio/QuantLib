@@ -16,7 +16,6 @@ OBJS = \
        analyticeuropeanengine.obj$(_D) \
        binomialvanillaengine.obj$(_D) \
        discretizedvanillaoption.obj$(_D) \
-       fdvanillaengine.obj$(_D) \
        integralengines.obj$(_D)
 
 

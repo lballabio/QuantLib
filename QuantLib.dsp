@@ -1411,10 +1411,6 @@ SOURCE=.\ql\PricingEngines\discretizedvanillaoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\PricingEngines\forwardengines.hpp
 # End Source File
 # Begin Source File
