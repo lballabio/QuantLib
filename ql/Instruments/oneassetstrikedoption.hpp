@@ -41,7 +41,6 @@ namespace QuantLib {
             const std::string& description = "");
         //@{
         class arguments;
-        class results;
         //@}
         //! \name greeks
         //@{
@@ -59,23 +58,6 @@ namespace QuantLib {
     class OneAssetStrikedOption::arguments : public OneAssetOption::arguments {
       public:
         void validate() const;
-    };
-
-    //! %results from single asset sriked option calculation
-    class OneAssetStrikedOption::results : public OneAssetOption::results {
-      public:
-        void reset() {
-
-            
-            #if defined(QL_PATCH_MICROSOFT)
-            OneAssetOption::results copy = *this;
-            copy.reset();
-            #else
-            OneAssetOption::results::reset();
-            #endif
-            
-            MoreGreeks::reset();
-        }
     };
 
 
