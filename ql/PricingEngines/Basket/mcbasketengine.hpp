@@ -46,12 +46,12 @@ namespace QuantLib {
         // constructor
         MCBasketEngine(Size maxTimeStepsPerYear,
                        bool brownianBridge,
-                       bool antitheticVariate = false,
-                       bool controlVariate = false,
-                       Size requiredSamples = Null<Size>(),
-                       Real requiredTolerance = Null<Real>(),
-                       Size maxSamples = Null<Size>(),
-                       BigNatural seed = 0);
+                       bool antitheticVariate,
+                       bool controlVariate,
+                       Size requiredSamples,
+                       Real requiredTolerance,
+                       Size maxSamples,
+                       BigNatural seed);
         void calculate() const {
             McSimulation<MultiAsset<RNG>,S>::calculate(requiredTolerance_,
                                                        requiredSamples_,

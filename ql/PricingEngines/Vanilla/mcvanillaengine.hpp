@@ -53,12 +53,12 @@ namespace QuantLib {
         // constructor
         MCVanillaEngine(Size maxTimeStepsPerYear,
                         bool brownianBridge,
-                        bool antitheticVariate = false,
-                        bool controlVariate = false,
-                        Size requiredSamples = Null<Size>(),
-                        Real requiredTolerance = Null<Real>(),
-                        Size maxSamples = Null<Size>(),
-                        BigNatural seed = 0);
+                        bool antitheticVariate,
+                        bool controlVariate,
+                        Size requiredSamples,
+                        Real requiredTolerance,
+                        Size maxSamples,
+                        BigNatural seed);
         // McSimulation implementation
         boost::shared_ptr<path_generator_type> pathGenerator() const;
         Real controlVariateValue() const;

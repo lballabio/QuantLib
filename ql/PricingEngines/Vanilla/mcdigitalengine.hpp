@@ -65,12 +65,12 @@ namespace QuantLib {
         // constructor
         MCDigitalEngine(Size maxTimeStepsPerYear,
                         bool brownianBridge,
-                        bool antitheticVariate = false,
-                        bool controlVariate = false,
-                        Size requiredSamples = Null<Size>(),
-                        Real requiredTolerance = Null<Real>(),
-                        Size maxSamples = Null<Size>(),
-                        BigNatural seed = 0);
+                        bool antitheticVariate,
+                        bool controlVariate,
+                        Size requiredSamples,
+                        Real requiredTolerance,
+                        Size maxSamples,
+                        BigNatural seed);
       protected:
         // McSimulation implementation
         TimeGrid timeGrid() const;
