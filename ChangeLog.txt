@@ -1,3 +1,174 @@
+2002-03-13 15:40  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: Instruments/simpleswap.cpp (1.17),
+	Instruments/simpleswap.hpp (1.21), Instruments/swaption.cpp (1.14),
+	Instruments/swaption.hpp (1.15),
+	InterestRateModelling/blackmodel.hpp (1.2),
+	Pricers/blackswaption.cpp (1.3), Pricers/europeanengine.cpp (1.5):
+	Fine tuning of Black swaption
+
+2002-03-12 10:55  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Math/bilinearinterpolation.hpp (1.7), Math/cubicspline.hpp
+	(1.13), Math/interpolation.hpp (1.8), Math/interpolation2D.hpp
+	(1.7), Math/linearinterpolation.hpp (1.7),
+	Pricers/fddividendoption.cpp (1.4),
+	Volatilities/swaptionvolmatrix.hpp (1.4), functions/mathf.cpp
+	(1.6): added allowExtrapolation parameter to interpolaton classes,
+	it has no default value yet
+	
+	In swaptionvolmatrix it is hard-coded to false: is it OK Luigi? In
+	fddividendoption it is hard-coded to true: is it OK Marco?
+
+2002-03-11 14:07  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: date.cpp (1.14), date.hpp (1.12), swaptionvolsurface.hpp
+	(1.11), Volatilities/swaptionvolmatrix.hpp (1.3): Swaption vol
+	matrix defined in terms of Period
+
+2002-03-11 09:27  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Contributors.txt (1.16), Docs/pages/authors.docs (1.10),
+	ql/MonteCarlo/basketpathpricer.cpp (1.17): Basket Option bug fixing
+	thanks to Toyin Akin
+
+2002-03-11 09:18  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.nsi (1.68): added missing folders
+
+2002-03-08 14:21  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: swaptionvolsurface.hpp (1.10),
+	Volatilities/swaptionvolmatrix.hpp (1.2): Using day counter in
+	Swaption volatility surface
+
+2002-03-07 17:04  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/Instruments/: capfloor.cpp (1.22), capfloor.hpp (1.22):
+	Removed requirement of FloatingRateCouponVector
+
+2002-03-07 15:28  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/: Instruments/swaption.cpp (1.13), Instruments/swaption.hpp
+	(1.14), Pricers/blackswaption.cpp (1.2): Simplification of
+	SimpleSwap
+
+2002-03-07 14:34  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Instruments/simpleswap.cpp (1.16): [no log message]
+
+2002-03-07 14:27  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Instruments/simpleswap.hpp (1.20): [no log message]
+
+2002-03-07 14:06  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/Swap/swapvaluation.cpp (1.20),
+	ql/Instruments/simpleswap.cpp (1.15), ql/Instruments/simpleswap.hpp
+	(1.19), ql/Instruments/swaption.cpp (1.12),
+	ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp
+	(1.12), ql/TermStructures/ratehelpers.cpp (1.18): SimpleSwap made a
+	bit simpler
+
+2002-03-06 17:58  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.84), QuantLib.mak (1.73): added volatility files
+
+2002-03-06 17:38  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Math/bilinearinterpolation.hpp (1.6),
+	Math/interpolation2D.hpp (1.6), functions/mathf.cpp (1.5),
+	functions/mathf.hpp (1.4): working on bilinear interpolation
+
+2002-03-06 16:47  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* configure.in (1.75), ql/Makefile.am (1.17), ql/quantlib.hpp
+	(1.52), ql/swaptionvolsurface.hpp (1.9),
+	ql/Volatilities/Makefile.am (1.1),
+	ql/Volatilities/swaptionvolmatrix.hpp (1.1): Added swaption
+	volatility matrix
+
+2002-03-06 15:19  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.83), QuantLib.mak (1.72), ql/quantlib.hpp (1.51):
+	added missing files
+
+2002-03-06 14:59  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Patterns/observable.hpp (1.9): MS VC++ fix
+
+2002-03-06 11:53  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Instruments/: capfloor.hpp (1.21), swaption.hpp (1.13):
+	Removed a couple of unnecessary destructors (~Observer will take
+	care of unregistering)
+
+2002-03-06 11:44  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/Pricers/: analyticalcapfloor.cpp (1.12), blackcapfloor.cpp
+	(1.2): Added collar type to CapFloor.
+
+2002-03-06 11:41  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: Math/bilinearinterpolation.hpp (1.5),
+	Math/interpolation2D.hpp (1.5), functions/mathf.cpp (1.4),
+	functions/mathf.hpp (1.3): Fixed bilinear interpolation
+
+2002-03-06 11:10  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/Instruments/: capfloor.cpp (1.21), capfloor.hpp (1.20): Fixed
+	bug and added Collar instrument.
+
+2002-03-06 08:34  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* News.txt (1.22): Corrected news items.
+
+2002-03-06 07:33  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/: InterestRateModelling/Makefile.am (1.6),
+	Pricers/makefile.mak (1.14): Added missing files to makefiles
+
+2002-03-06 07:16  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/: diffusionprocess.hpp (1.9), handle.hpp (1.9),
+	Instruments/capfloor.cpp (1.20), Instruments/capfloor.hpp (1.19),
+	Instruments/simpleswap.hpp (1.18), Instruments/swaption.cpp (1.11),
+	Instruments/swaption.hpp (1.12),
+	InterestRateModelling/blackmodel.hpp (1.1),
+	InterestRateModelling/calibrationhelper.hpp (1.10),
+	InterestRateModelling/model.cpp (1.18),
+	InterestRateModelling/model.hpp (1.21),
+	InterestRateModelling/onefactormodel.hpp (1.15),
+	InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.9),
+	InterestRateModelling/CalibrationHelpers/caphelper.hpp (1.8),
+	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.11),
+	InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp (1.9),
+	InterestRateModelling/OneFactorModels/coxingersollross.cpp (1.4),
+	InterestRateModelling/OneFactorModels/coxingersollross.hpp (1.5),
+	InterestRateModelling/OneFactorModels/hullwhite.hpp (1.11),
+	InterestRateModelling/TwoFactorModels/g2.hpp (1.9),
+	Optimization/simplex.cpp (1.4), Optimization/simplex.hpp (1.5),
+	Pricers/Makefile.am (1.23), Pricers/analyticalcapfloor.cpp (1.11),
+	Pricers/analyticalcapfloor.hpp (1.7), Pricers/blackcapfloor.cpp
+	(1.1), Pricers/blackcapfloor.hpp (1.1), Pricers/blackswaption.cpp
+	(1.1), Pricers/blackswaption.hpp (1.1),
+	Pricers/jamshidianswaption.cpp (1.9),
+	Pricers/jamshidianswaption.hpp (1.7), Pricers/treecapfloor.cpp
+	(1.13), Pricers/treecapfloor.hpp (1.8), Pricers/treeswaption.cpp
+	(1.16), Pricers/treeswaption.hpp (1.10): Refactoring of the
+	calibration helpers, added Black pricing engines for swaptions and
+	cap/floors, made analytical models derive from the AffineModel
+	class (cleaner interface for analytical formulas) and a small fix
+	in handle (no return in operator=)
+
+2002-03-05 17:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* News.txt (1.21): updated
+
+2002-03-05 17:32  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.17): updated
+
 2002-03-05 17:30  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* QuantLib.nsi (1.67), configure.in (1.74), Docs/configure.in
