@@ -16,6 +16,7 @@ include_HEADERS = \
 	fdtypedefs.hpp \
 	finitedifferencemodel.hpp \
 	impliciteuler.hpp \
+	mixedscheme.hpp\
     onefactoroperator.hpp \
     shoutcondition.hpp \
 	stepcondition.hpp \
