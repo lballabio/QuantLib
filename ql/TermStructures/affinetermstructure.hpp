@@ -27,6 +27,7 @@
 #include <ql/Optimization/method.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/Patterns/lazyobject.hpp>
+#include <ql/TermStructures/discountstructure.hpp>
 
 namespace QuantLib {
 

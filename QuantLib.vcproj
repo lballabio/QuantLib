@@ -8950,6 +8950,9 @@
 				RelativePath="ql\TermStructures\affinetermstructure.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\TermStructures\all.hpp">
+			</File>
+			<File
 				RelativePath="ql\TermStructures\compoundforward.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -9076,6 +9079,9 @@
 				RelativePath="ql\TermStructures\discountcurve.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\TermStructures\discountstructure.hpp">
+			</File>
+			<File
 				RelativePath="ql\TermStructures\drifttermstructure.hpp">
 			</File>
 			<File
@@ -9146,6 +9152,9 @@
 			</File>
 			<File
 				RelativePath="ql\TermStructures\forwardspreadedtermstructure.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\TermStructures\forwardstructure.hpp">
 			</File>
 			<File
 				RelativePath="ql\TermStructures\impliedtermstructure.hpp">
@@ -9344,6 +9353,9 @@
 			</File>
 			<File
 				RelativePath="ql\TermStructures\zerospreadedtermstructure.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\TermStructures\zeroyieldstructure.hpp">
 			</File>
 		</Filter>
 		<Filter

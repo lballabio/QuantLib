@@ -22,7 +22,7 @@
 #ifndef quantlib_zero_curve_hpp
 #define quantlib_zero_curve_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/TermStructures/zeroyieldstructure.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 

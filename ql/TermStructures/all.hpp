@@ -20,6 +20,10 @@
 
 #include <ql/qldefines.hpp>
 
+#include <ql/TermStructures/discountstructure.hpp>
+#include <ql/TermStructures/forwardstructure.hpp>
+#include <ql/TermStructures/zeroyieldstructure.hpp>
+
 #include <ql/TermStructures/compoundforward.hpp>
 #include <ql/TermStructures/discountcurve.hpp>
 #include <ql/TermStructures/drifttermstructure.hpp>

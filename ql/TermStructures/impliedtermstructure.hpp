@@ -22,7 +22,7 @@
 #ifndef quantlib_implied_term_structure_hpp
 #define quantlib_implied_term_structure_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/TermStructures/discountstructure.hpp>
 
 namespace QuantLib {
 

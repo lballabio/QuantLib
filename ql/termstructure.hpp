@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -23,8 +24,9 @@
 #define quantlib_yield_term_structure_hpp
 
 #include <ql/basetermstructure.hpp>
-#include <ql/quote.hpp>
 #include <ql/basicdataformatters.hpp>
+#include <ql/quote.hpp>
+#include <ql/interestrate.hpp>
 #include <ql/Math/extrapolation.hpp>
 #include <vector>
 
@@ -77,7 +79,7 @@ namespace QuantLib {
         //! the day counter used for date/time conversion
         virtual DayCounter dayCounter() const = 0;
         #endif
-        /*! \name Rates and discount
+        /*! \name zero rates
 
             These methods are either function of dates or times.
             In the latter case, times are calculated as fraction
@@ -85,13 +87,91 @@ namespace QuantLib {
         */
         //@{
         //! zero-yield rate
+        /*! \deprecated use zeroRate(const Date&, const DayCounter&,
+                                     Compounding, Frequency, bool) instead
+        */
         Rate zeroYield(const Date&, bool extrapolate = false) const;
+
         //! zero-yield rate
+        /*! \deprecated use zeroRate(Time, const DayCounter&,
+                                     Compounding, Frequency, bool) instead
+        */
         Rate zeroYield(Time, bool extrapolate = false) const;
+
+        //! zero-coupon rate
+        /*! \deprecated use zeroRate(Time, const DayCounter&,
+                                     Compounding, Frequency, bool) instead
+        */
+        Rate zeroCoupon(const Date&, Integer, bool extrapolate = false) const;
+
+        //! zero-coupon rate
+        /*! \deprecated use zeroRate(Time, const DayCounter&,
+                                     Compounding, Frequency, bool) instead
+        */
+        Rate zeroCoupon(Time, Integer, bool extrapolate = false) const;
+
+        //! zero-yield Rate
+        /*! returns the implied zero-yield Rate for a given date.
+            The resulting Rate has the required daycounting rule.
+        */
+        Rate zeroRate(const Date& d,
+                      const DayCounter& resultDayCounter,
+                      Compounding comp,
+                      Frequency freq = Annual,
+                      bool extrapolate = false) const;
+
+        //! zero-yield Rate
+        /*! returns the implied zero-yield Rate for a given time.
+            The resulting Rate is calculated implicitly assuming
+            the same daycounting rule used for the time t measure.
+        */
+        Rate zeroRate(Time t,
+                      Compounding comp,
+                      Frequency freq = Annual,
+                      bool extrapolate = false) const;
+
+        //! zero-yield InterestRate
+        /*! returns the implied zero-yield InterestRate for a given date.
+            The resulting InterestRate has the required daycounting rule.
+        */
+        InterestRate zeroInterestRate(const Date& d,
+                                      const DayCounter& resultDayCounter,
+                                      Compounding comp,
+                                      Frequency freq = Annual,
+                                      bool extrapolate = false) const;
+
+        //! zero-yield InterestRate
+        /*! returns the implied zero-yield InterestRate for a given time.
+            The resulting InterestRate has the same daycounting rule that
+            should have been used for the time measure:
+            Settings::instance().dayCounter()
+        */
+        InterestRate zeroInterestRate(Time t,
+                                      Compounding comp,
+                                      Frequency freq = Annual,
+                                      bool extrapolate = false) const;
+        //@}
+
+        /*! \name discount factors
+
+            These methods are either function of dates or times.
+            In the latter case, times are calculated as fraction
+            of year from the reference date.
+        */
+        //@{
         //! discount factor
         DiscountFactor discount(const Date&, bool extrapolate = false) const;
         //! discount factor
         DiscountFactor discount(Time, bool extrapolate = false) const;
+        //@}
+
+        /*! \name forward rates
+
+            These methods are either function of dates or times.
+            In the latter case, times are calculated as fraction
+            of year from the reference date.
+        */
+        //@{
         //! instantaneous forward rate
         Rate instantaneousForward(const Date&, bool extrapolate = false) const;
         //! instantaneous forward rate
@@ -105,10 +185,51 @@ namespace QuantLib {
         Rate forward(const Date&, const Date&, bool extrapolate = false) const;
         //! discrete forward rate between two times
         Rate forward(Time, Time, bool extrapolate = false) const;
-        //! zero-coupon rate
-        Rate zeroCoupon(const Date&, Integer, bool extrapolate = false) const;
-        //! zero-coupon rate
-        Rate zeroCoupon(Time, Integer, bool extrapolate = false) const;
+
+        //! forward Rate
+        /*! returns the implied forward Rate between two dates
+            The resulting Rate has the required daycounting rule.
+        */
+        Rate forwardRate(const Date& d1,
+                         const Date& d2,
+                         const DayCounter& resultDayCounter,
+                         Compounding comp,
+                         Frequency freq = Annual,
+                         bool extrapolate = false) const;
+
+        //! forward Rate
+        /*! returns the implied forward Rate between two times
+            The resulting Rate is calculated implicitly assuming
+            the same daycounting rule used for the time measures.
+        */
+        Rate forwardRate(Time t1,
+                         Time t2,
+                         Compounding comp,
+                         Frequency freq = Annual,
+                         bool extrapolate = false) const;
+
+        //! forward InterestRate
+        /*! returns the implied forward InterestRate between two dates
+            The resulting InterestRate has the required daycounting rule.
+        */
+        InterestRate forwardInterestRate(const Date& d1,
+                                         const Date& d2,
+                                         const DayCounter& resultDayCounter,
+                                         Compounding comp,
+                                         Frequency freq = Annual,
+                                         bool extrapolate = false) const;
+
+        //! forward InterestRate
+        /*! returns the implied forward InterestRate between two times
+            The resulting InterestRate has the same daycounting rule that
+            should have been used for the time measure:
+            Settings::instance().dayCounter()
+        */
+        InterestRate forwardInterestRate(Time t,
+                                         Time t2,
+                                         Compounding comp,
+                                         Frequency freq = Annual,
+                                         bool extrapolate = false) const;
         //@}
 
         //! \name Dates
@@ -147,147 +268,6 @@ namespace QuantLib {
     #endif
 
 
-    //! Zero-yield term structure
-    /*! This abstract class acts as an adapter to YieldTermStructure
-        allowing the programmer to implement only the
-        <tt>zeroYieldImpl(Time, bool)</tt> method in derived classes.
-
-        Rates are assumed to be annual continuous compounding.
-
-        \ingroup yieldtermstructures
-    */
-    class ZeroYieldStructure : public YieldTermStructure {
-      public:
-        /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
-            constructors.
-        */
-        //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without today's date; set the
-                        evaluation date through Settings::instance().
-        */
-        ZeroYieldStructure(const Date& todaysDate, const Date& referenceDate);
-        #endif
-        ZeroYieldStructure();
-        ZeroYieldStructure(const Date& referenceDate);
-        ZeroYieldStructure(Integer settlementDays, const Calendar&);
-        //@}
-        virtual ~ZeroYieldStructure() {}
-      protected:
-        //! \name YieldTermStructure implementation
-        //@{
-        /*! Returns the discount factor for the given date calculating it
-            from the zero yield.
-        */
-        DiscountFactor discountImpl(Time) const;
-        /*! Returns the instantaneous forward rate for the given date
-            calculating it from the zero yield.
-        */
-        Rate forwardImpl(Time) const;
-        /*! Returns the forward rate at a specified compound frequency
-	    for the given date calculating it from the zero yield.
-        */
-        Rate compoundForwardImpl(Time, Integer) const;
-        //@}
-    };
-
-    //! Discount factor term structure
-    /*! This abstract class acts as an adapter to YieldTermStructure
-        allowing the programmer to implement only the
-        <tt>discountImpl(const Date&, bool)</tt> method in derived
-        classes.
-
-        Rates are assumed to be annual continuous compounding.
-
-        \ingroup yieldtermstructures
-    */
-    class DiscountStructure : public YieldTermStructure {
-      public:
-        /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
-            constructors.
-        */
-        //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without today's date; set the
-                        evaluation date through Settings::instance().
-        */
-        DiscountStructure(const Date& todaysDate, const Date& referenceDate);
-        #endif
-        DiscountStructure();
-        DiscountStructure(const Date& referenceDate);
-        DiscountStructure(Integer settlementDays, const Calendar&);
-        //@}
-        virtual ~DiscountStructure() {}
-      protected:
-        //! \name YieldTermStructure implementation
-        //@{
-        /*! Returns the zero yield rate for the given date calculating it
-            from the discount.
-        */
-        Rate zeroYieldImpl(Time) const;
-        /*! Returns the instantaneous forward rate for the given date
-            calculating it from the discount.
-        */
-        Rate forwardImpl(Time) const;
-        /*! Returns the forward rate at a specified compound frequency
-	    for the given date calculating it from the zero yield.
-        */
-        Rate compoundForwardImpl(Time, Integer) const;
-        //@}
-    };
-
-    //! Forward rate term structure
-    /*! This abstract class acts as an adapter to TermStructure allowing the
-        programmer to implement only the
-        <tt>forwardImpl(const Date&, bool)</tt> method in derived classes.
-
-        Rates are assumed to be annual continuous compounding.
-
-        \ingroup yieldtermstructures
-    */
-    class ForwardRateStructure : public YieldTermStructure {
-      public:
-        /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
-            constructors.
-        */
-        //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without today's date; set the
-                        evaluation date through Settings::instance().
-        */
-        ForwardRateStructure(const Date& todaysDate,
-                             const Date& referenceDate);
-        #endif
-        ForwardRateStructure();
-        ForwardRateStructure(const Date& referenceDate);
-        ForwardRateStructure(Integer settlementDays, const Calendar&);
-        //@}
-        virtual ~ForwardRateStructure() {}
-      protected:
-        //! \name YieldTermStructure implementation
-        //@{
-        /*! Returns the zero yield rate for the given date calculating it
-            from the instantaneous forward rate.
-
-            \warning This is just a default, highly inefficient
-                     implementation. Derived classes should implement
-                     their own zeroYield method.
-        */
-        Rate zeroYieldImpl(Time) const;
-        /*! Returns the discount factor for the given date calculating it
-            from the instantaneous forward rate.
-        */
-        DiscountFactor discountImpl(Time) const;
-        /*! Returns the forward rate at a specified compound frequency
-	    for the given date calculating it from the zero yield.
-        */
-        Rate compoundForwardImpl(Time, Integer) const;
-        //@}
-    };
-
 
     // inline definitions
 
@@ -316,6 +296,112 @@ namespace QuantLib {
         checkRange(t, extrapolate);
         return zeroYieldImpl(t);
     }
+
+
+
+
+
+
+
+    inline Rate YieldTermStructure::zeroRate(const Date& d,
+        const DayCounter& resultDayCounter, Compounding comp, Frequency freq,
+        bool extrapolate) const {
+
+        Real compound = 1.0/discount(d, extrapolate);
+        return InterestRate::impliedRate(compound,
+                                         referenceDate(), d, resultDayCounter,
+                                         comp, freq);
+    }
+
+    inline Rate YieldTermStructure::zeroRate(Time t, Compounding comp,
+        Frequency freq, bool extrapolate) const {
+
+        Real compound = 1.0/discount(t, extrapolate);
+        return InterestRate::impliedRate(compound, t, comp, freq);
+    }
+
+    inline InterestRate YieldTermStructure::zeroInterestRate(const Date& d,
+        const DayCounter& resultDayCounter, Compounding comp, Frequency freq,
+        bool extrapolate) const {
+
+        Real compound = 1.0/discount(d, extrapolate);
+        return InterestRate::impliedInterestRate(compound,
+            referenceDate(), d, resultDayCounter, comp, freq);
+    }
+
+    inline InterestRate YieldTermStructure::zeroInterestRate(Time t, Compounding comp,
+        Frequency freq, bool extrapolate) const {
+
+        Real r = zeroRate(t, comp, freq, extrapolate);
+        return InterestRate(r, Settings::instance().dayCounter(), comp, freq);
+    }
+
+
+
+
+
+
+
+
+
+
+    inline Rate YieldTermStructure::forwardRate(const Date& d1,
+        const Date& d2, const DayCounter& resultDayCounter, Compounding comp,
+        Frequency freq, bool extrapolate) const {
+
+        Real compound = discount(d1, extrapolate)/discount(d2, extrapolate);
+        return InterestRate::impliedRate(compound,
+                                         d1, d2, resultDayCounter,
+                                         comp, freq);
+    }
+
+    inline Rate YieldTermStructure::forwardRate(Time t1,
+        Time t2, Compounding comp, Frequency freq, bool extrapolate) const {
+
+        Real compound = discount(t1, extrapolate)/discount(t2, extrapolate);
+        return InterestRate::impliedRate(compound, t2-t1, comp, freq);
+    }
+
+    inline InterestRate YieldTermStructure::forwardInterestRate(const Date& d1,
+        const Date& d2, const DayCounter& resultDayCounter, Compounding comp,
+        Frequency freq, bool extrapolate) const {
+
+        Real compound = discount(d1, extrapolate)/discount(d2, extrapolate);
+        return InterestRate::impliedInterestRate(compound,
+            d1, d2, resultDayCounter, comp, freq);
+    }
+
+    inline InterestRate YieldTermStructure::forwardInterestRate(Time t1,
+        Time t2, Compounding comp, Frequency freq, bool extrapolate) const {
+
+        Real r = forwardRate(t1, t2, comp, freq, extrapolate);
+        return InterestRate(r, Settings::instance().dayCounter(), comp, freq);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     inline DiscountFactor YieldTermStructure::discount(const Date& d,
                                                        bool extrapolate)
@@ -419,139 +505,6 @@ namespace QuantLib {
                    DecimalFormatter::toString(maxTime()) + ")");
     }
 
-
-    // curve deriving discount and forward from zero yield
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline ZeroYieldStructure::ZeroYieldStructure(const Date& todaysDate,
-                                                  const Date& referenceDate)
-    : YieldTermStructure(todaysDate,referenceDate) {}
-    #endif
-
-    inline ZeroYieldStructure::ZeroYieldStructure() {}
-
-    inline ZeroYieldStructure::ZeroYieldStructure(const Date& referenceDate)
-    : YieldTermStructure(referenceDate) {}
-
-    inline ZeroYieldStructure::ZeroYieldStructure(Integer settlementDays,
-                                                  const Calendar& calendar)
-    : YieldTermStructure(settlementDays,calendar) {}
-
-    inline DiscountFactor ZeroYieldStructure::discountImpl(Time t) const {
-        Rate r = zeroYieldImpl(t);
-        return DiscountFactor(QL_EXP(-r*t));
-    }
-
-    inline Rate ZeroYieldStructure::forwardImpl(Time t) const {
-        // less than half day
-        Time dt = 0.001;
-        Rate r1 = zeroYieldImpl(t),
-             r2 = zeroYieldImpl(t+dt);
-        return r2+t*(r2-r1)/dt;
-    }
-
-    inline Rate ZeroYieldStructure::compoundForwardImpl(Time t,
-                                                        Integer f) const {
-        Rate zy = zeroYieldImpl(t);
-        if (f == 0)
-            return zy;
-        if (t <= 1.0/f)
-            return (QL_EXP(zy*t)-1.0)/t;
-        return (QL_EXP(zy*(1.0/f))-1.0)*f;
-    }
-
-    // curve deriving zero yield and forward from discount
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline DiscountStructure::DiscountStructure(const Date& todaysDate,
-                                                const Date& referenceDate)
-    : YieldTermStructure(todaysDate,referenceDate) {}
-    #endif
-
-    inline DiscountStructure::DiscountStructure() {}
-
-    inline DiscountStructure::DiscountStructure(const Date& referenceDate)
-    : YieldTermStructure(referenceDate) {}
-
-    inline DiscountStructure::DiscountStructure(Integer settlementDays,
-                                                const Calendar& calendar)
-    : YieldTermStructure(settlementDays,calendar) {}
-
-    inline Rate DiscountStructure::zeroYieldImpl(Time t) const {
-        DiscountFactor df;
-        if (t==0.0) {
-            Time dt = 0.001;
-            df = discountImpl(dt);
-            return Rate(-QL_LOG(df)/dt);
-        } else {
-            df = discountImpl(t);
-            return Rate(-QL_LOG(df)/t);
-        }
-    }
-
-    inline Rate DiscountStructure::forwardImpl(Time t) const {
-        // less than half day
-        Time dt = 0.001;
-        DiscountFactor df1 = discountImpl(t),
-                       df2 = discountImpl(t+dt);
-        return Rate(QL_LOG(df1/df2)/dt);
-    }
-
-    inline Rate DiscountStructure::compoundForwardImpl(Time t,
-                                                       Integer f) const {
-        Rate zy = zeroYieldImpl(t);
-        if (f == 0)
-            return zy;
-        if (t <= 1.0/f)
-            return (QL_EXP(zy*t)-1.0)/t;
-        return (QL_EXP(zy*(1.0/f))-1.0)*f;
-    }
-
-    // curve deriving zero yield and discount from forward
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline ForwardRateStructure::ForwardRateStructure(
-                                                    const Date& todaysDate,
-                                                    const Date& referenceDate)
-    : YieldTermStructure(todaysDate,referenceDate) {}
-    #endif
-
-    inline ForwardRateStructure::ForwardRateStructure() {}
-
-    inline ForwardRateStructure::ForwardRateStructure(
-                                                    const Date& referenceDate)
-    : YieldTermStructure(referenceDate) {}
-
-    inline ForwardRateStructure::ForwardRateStructure(Integer settlementDays,
-                                                      const Calendar& calendar)
-    : YieldTermStructure(settlementDays,calendar) {}
-
-    inline Rate ForwardRateStructure::zeroYieldImpl(Time t) const {
-        if (t == 0.0)
-            return forwardImpl(0.0);
-        Rate sum = 0.5*forwardImpl(0.0);
-        Size N = 1000;
-        Time dt = t/N;
-        for (Time i=dt; i<t; i+=dt)
-            sum += forwardImpl(i);
-        sum += 0.5*forwardImpl(t);
-        return Rate(sum*dt/t);
-    }
-
-    inline DiscountFactor ForwardRateStructure::discountImpl(Time t) const {
-        Rate r = zeroYieldImpl(t);
-        return DiscountFactor(QL_EXP(-r*t));
-    }
-
-    inline Rate ForwardRateStructure::compoundForwardImpl(Time t,
-                                                          Integer f) const {
-        Rate zy = zeroYieldImpl(t);
-        if (f == 0)
-            return zy;
-        if (t <= 1.0/f)
-            return (QL_EXP(zy*t)-1.0)/t;
-        return (QL_EXP(zy*(1.0/f))-1.0)*f;
-    }
 
 }
 

@@ -3,20 +3,23 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/TermStructures
 
 include_HEADERS = \
-    all.hpp \
     affinetermstructure.hpp \
+    all.hpp \
     compoundforward.hpp \
     discountcurve.hpp \
+    discountstructure.hpp \
     drifttermstructure.hpp \
     extendeddiscountcurve.hpp \
     flatforward.hpp \
     forwardspreadedtermstructure.hpp \
+    forwardstructure.hpp \
     impliedtermstructure.hpp \
     piecewiseflatforward.hpp \
     quantotermstructure.hpp \
     ratehelpers.hpp \
     zerocurve.hpp \
-    zerospreadedtermstructure.hpp
+    zerospreadedtermstructure.hpp \
+    zeroyieldstructure.hpp
 
 EXTRA_DIST=makefile.mak
 

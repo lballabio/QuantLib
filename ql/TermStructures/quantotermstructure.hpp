@@ -22,7 +22,7 @@
 #ifndef quantlib_quanto_term_structure_hpp
 #define quantlib_quanto_term_structure_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/TermStructures/zeroyieldstructure.hpp>
 #include <ql/voltermstructure.hpp>
 
 namespace QuantLib {

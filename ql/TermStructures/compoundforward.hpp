@@ -22,7 +22,7 @@
 #ifndef quantlib_compoundforward_curve_hpp
 #define quantlib_compoundforward_curve_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/TermStructures/forwardstructure.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 
 namespace QuantLib {

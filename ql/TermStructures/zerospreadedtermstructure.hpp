@@ -22,7 +22,7 @@
 #ifndef quantlib_zero_spreaded_term_structure_hpp
 #define quantlib_zero_spreaded_term_structure_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/TermStructures/zeroyieldstructure.hpp>
 
 namespace QuantLib {
 

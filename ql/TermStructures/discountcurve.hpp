@@ -22,7 +22,7 @@
 #ifndef quantlib_discount_curve_hpp
 #define quantlib_discount_curve_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/TermStructures/discountstructure.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 
