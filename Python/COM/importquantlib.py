@@ -24,26 +24,18 @@
 
 """
 """
-    \file importlibrary.py
+    \file importquantlib.py
     \brief Export modules as COM objects
     
     $Source$
     $Log$
-    Revision 1.7  2001/05/15 13:03:06  marmar
-    Wrappers simplified, copyright changed, exceptions removed
+    Revision 1.1  2001/05/15 13:33:58  marmar
+    Filename importlibrary.py changed to importquantlib.py
 
-    Revision 1.6  2001/03/30 09:59:33  marmar
-    Documentation updated, Matrix call did not work properly: removed
-
-    Revision 1.5  2001/03/30 09:56:20  marmar
-    Debug is now the default, simplified and speeded up
-
-    Revision 1.4  2001/03/14 13:36:20  marmar
-    Changed to accomodate some bad behaviour of VB
 """
 
-import pywintypes, string, types, winerror, exceptions
-import win32com.client, win32com.server.util, win32com.server.policy
+import QuantLib
+import pywintypes, string, types
 from win32com.server.dispatcher import DefaultDebugDispatcher
 from win32com.server.policy import BasicWrapPolicy
 from win32com.server.policy import DynamicPolicy
@@ -75,9 +67,7 @@ def PrepareForReturn(object):
     print "----> Returning", object, objectType
     if(objectType is types.InstanceType):
         print "Returning wrapped object"
-        return WrapObject(
-                    DefaultDebugDispatcher(
-                            QuitePermissivePolicy, object))
+        return WrapObject(DefaultDebugDispatcher(QuitePermissivePolicy, object))
     else:
         print "Returning simple object"
         return object
@@ -128,12 +118,17 @@ class QuitePermissivePolicy(DynamicPolicy):
             setattr(self._obj_, name, args)
 
 class ComImportLibrary:
-    _reg_clsid_ = "{389276A1-24EB-11D5-83D4-0050DA367EDA}"
-    _reg_progid_ = "QuantLib.Import"
+    """
+    Example of usage from Visual
+        Set QuantLib = CreateObject("QuantLib.ImportQuantLib").QuantLib
+        Set rng = QuantLib.UniformRandomGenerator
+        MsgBox rng.Next
+    """
+    _reg_clsid_ = "{4B932900-493E-11D5-803B-00D059087C41}"
+    _reg_progid_ = "QuantLib.ImportQuantLib"
     _public_methods_ = ['QuantLib']
     def QuantLib(self):
-        print "ComImportLibrary called"
-        import QuantLib
+        print "QuantLib called"
         return WrapObject(DefaultDebugDispatcher(QuitePermissivePolicy, QuantLib))
 
 if __name__ == '__main__':

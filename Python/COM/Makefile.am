@@ -3,5 +3,5 @@
 # $Source$
 
 
-EXTRA_DIST=importlibrary.py
+EXTRA_DIST=importquantlib.py
 
