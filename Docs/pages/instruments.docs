@@ -24,11 +24,11 @@
 /*! \page instruments Instruments and pricers
     Documentation for this part of the library is in progress.
 
-    \subsection swap Swaps
+    \section swap Swaps
 
-    \subsection swaption Swaptions
+    \section swaption Swaptions
 
-    \subsection capfloor Caps, Floors and Collars
+    \section capfloor Caps, Floors and Collars
 
     This section will include documentation for classes such as 
     QuantLib::Instrument, its derived classes in the QuantLib::Instruments 

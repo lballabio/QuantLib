@@ -24,7 +24,7 @@
 /*! \page datetime Date and time calculations
     Documentation for this part of the library is in progress.
 
-    \subsection date Dates
+    \section date Dates
 
     The concrete class QuantLib::Date implements the concept of date.
     Its functionalities include:
@@ -39,25 +39,16 @@
     - incrementing or decrementing a date of a given number of days,
       or of a given period expressed in weeks, months, or years.
 
-    \subsection calendars Calendars
+    \section calendars Calendars
 
     The abstract class QuantLib::Calendar provides the
     interface for determining whether a date is a business day or a
     holiday for a given market, or incrementing/decrementing a date of
     a given number of business days. A number of calendars is
-    contained in the QuantLib::Calendars namespace, namely,
-
-    - Frankfurt
-    - Helsinki
-    - London
-    - Milan
-    - NewYork
-    - TARGET
-    - Wellington
-    - Zurich
+    contained in the QuantLib::Calendars namespace.
 
 
-    \subsection daycounters Day counters
+    \section daycounters Day counters
 
     The abstract class QuantLib::DayCounter provides more advanced means
     of measuring the distance between two dates according to a given

@@ -76,12 +76,12 @@
     \f$ \mathbf{x}_i \f$, the evaluation of the \f$ f(\mathbf{x}_i) \f$,
     and the averaging process itself.
     The QuantLib::MonteCarlo::MonteCarloModel class acts as a glue for
-    such three steps --- which are outlined in the following subsections --- and
+    such three steps --- which are outlined in the following sections --- and
     provides the interface of the resulting Monte Carlo model to the
     end user.
 
 
-    \subsection pathgen Path generation
+    \section pathgen Path generation
     The Black-Scholes equation
     \f[ \frac{\partial f}{\partial t} +
         \frac{\sigma^2}{2} \frac{\partial^2 f}{\partial x^2} +
@@ -131,7 +131,7 @@
     vector of explicitly specified times at which the path will be sampled.
 
 
-    \subsection pathprc Pricing an instrument on a path
+    \section pathprc Pricing an instrument on a path
     The QuantLib::MonteCarlo::PathPricer class is the base class from
     which path pricers must inherit. The only method which subclasses
     are required to implement is
@@ -181,7 +181,7 @@
     in the QuantLib::MonteCarlo namespace reference.
 
 
-    \subsection pathavg Accumulating and averaging samples
+    \section pathavg Accumulating and averaging samples
     The class QuantLib::MonteCarlo::MonteCarloModel encapsulates the
     general structure of a Monte Carlo calculations, namely, the generation
     of a number of paths, the pricing of the derivative on each path, and
@@ -246,7 +246,7 @@
     Details on the Monte Carlo Pricer interface will be available
     in the \ref pricers section.
 
-    \subsection mcexamples Examples of Monte Carlo models
+    \section mcexamples Examples of Monte Carlo models
     As a simple example, we will use the outlined tools to price an
     European option by means of Monte Carlo techniques.
 
@@ -377,7 +377,7 @@
     in Monte Carlo models can be found in the QuantLib::Pricers namespace.
 
 
-    \subsection mcnotes Notes
+    \section mcnotes Notes
 
     \anchor mcnote1
     \ref backmcnote1 "(1)" A more rigorous approach would lead us to

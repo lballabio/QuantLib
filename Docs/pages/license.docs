@@ -33,7 +33,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <hr>
-\subsection licensecomments Comments on Copyright and License
+\section licensecomments Comments on Copyright and License
 
 %QuantLib is Non-Copylefted Free Software [1] released under the modified BSD
 License [2] (also know as XFree86-style license).

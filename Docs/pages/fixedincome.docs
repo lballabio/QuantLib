@@ -34,7 +34,7 @@
     for discount bonds and discount bond options are given (useful for 
     calibration). 
 
-    \subsection singlefactormodels Single-factor models
+    \section singlefactormodels Single-factor models
     
     \par The Hull & White model
     \f[
@@ -58,7 +58,7 @@
     There are analytical formulas for discount bonds (and soon for discount 
     bond options).
 
-    \subsection calibration Calibration
+    \section calibration Calibration
 
     The class CalibrationHelper is a base class that facilitates the 
     instanciation of market instruments used for calibration. It has
@@ -79,9 +79,9 @@
     market price, is minimized. A few optimization methods are available in 
     the QuantLib::Optimization namespace, and more are on the way...
 
-    \subsection twofactormodels Two-factor models
+    \section twofactormodels Two-factor models
 
-    \subsection pricers Pricers
+    \section pricers Pricers
 
     \par Analytical pricers
 

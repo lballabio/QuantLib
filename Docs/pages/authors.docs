@@ -23,7 +23,7 @@
 
 /*! \page group The QuantLib Group
 
-    \subsection authors Authors
+    \section authors Authors
 
     The %QuantLib Group members are:
 
@@ -124,7 +124,7 @@
     \endlatexonly
 
 
-    \subsection contributors Contributors
+    \section contributors Contributors
 
     \htmlonly
     <table>

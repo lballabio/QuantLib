@@ -36,15 +36,15 @@
     separately the discretization of the differential operator \f$ L \f$
     and the time scheme used for the evolution of the solution. The
     QuantLib::FiniteDifferences::FiniteDifferenceModel class acts as a glue
-    for such two steps---which are outlined in the following subsections---and
+    for such two steps---which are outlined in the following sections---and
     provides the interface of the resulting finite difference model for the
     end user. Furthermore, it provides the possibility of checking and
     operating on the solution array at each step---which is typically used
     to apply an exercise condition for an option. This is also outlined in a
-    subsection below.
+    section below.
 
 
-    \subsection operators Differential operators
+    \section operators Differential operators
     The discretization of the differential operator \f$ L \f$ depends on the
     discretization chosen for the solution \f$ f \f$ of the given equation.
 
@@ -104,7 +104,7 @@
     currently implemented.
 
 
-    \subsection evolvers Time schemes
+    \section evolvers Time schemes
     Once the differential operator \f$ L \f$ has been discretized, a number
     of choices are available for discretizing the time derivative at the
     left-hand side of the equation.
@@ -172,7 +172,7 @@
     \f$ t-dt \f$.
 
 
-    \subsection conditions Step conditions
+    \section conditions Step conditions
     A finite difference model can be passed a step condition to be
     applied at each step during the rollback of the solution (e.g. the early
     exercise American condition). Such condition must be embodied in a class
@@ -186,7 +186,7 @@
     \endcode
 
 
-    \subsection fdexample An example of finite difference model
+    \section fdexample An example of finite difference model
     The Black-Scholes equation can be written in the above form as
     \f[ \frac{\partial f}{\partial t} =
             - \frac{\sigma^2}{2} \frac{\partial^2 f}{\partial x^2}

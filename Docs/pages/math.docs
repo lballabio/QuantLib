@@ -26,13 +26,13 @@
     
     Math facilities of the library include:
     
-    \subsection randomnumbers Random number and low discrepancy sequence generators
+    \section randomnumbers Random number and low discrepancy sequence generators
     Documentation for this part of the library is in progress.
 
     Implementations of random number and low discrepancy
     sequence generators. They share the QuantLib::RandomNumbers namespace.
 
-    \subsection solvers1d One-dimensional solvers
+    \section solvers1d One-dimensional solvers
     Documentation for this part of the library is in progress.
 
     The abstract class QuantLib::Solver1D provides the interface for 
@@ -49,7 +49,7 @@
     defition: for some algorithms it is the x-accuracy, for others it is
     f(x)-accuracy.
 
-    \subsection optimizers Optimizers
+    \section optimizers Optimizers
     The optimization framework (corresponding to the Optimization namespace) 
     implements some multi-dimensional minimizing methods. The function to be 
     minimized is to be derived from the QuantLib::Optimization::CostFunction 

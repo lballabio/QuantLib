@@ -23,7 +23,7 @@
 
 /*! \page install Installation
 
-    \subsection linux Linux/Unix
+    \section linux Linux/Unix
     The simplest way to compile and install %QuantLib is:
 
     -# get the sources from <br>
@@ -54,7 +54,7 @@
     The file INSTALL.txt in the %QuantLib source distribution
     contains more detailed instructions.
 
-    \subsection win32 Win32
+    \section win32 Win32
     Binary installers are available at <br>
     http://quantlib.org/download.html
 
@@ -64,7 +64,7 @@
     The free Borland C++ compiler is available at <br>
     http://www.borland.com/bcppbuilder/freecompiler/
 
-    \subsection mac Macintosh
+    \section mac Macintosh
     Codewarrior support is currently broken.
     %QuantLib should compile under Mac OS X as outlined under \ref linux.
 

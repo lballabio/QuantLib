@@ -31,7 +31,7 @@
     QuantLib::Lattices::Tree, classes which define the branching between
     nodes and transition probabilities.
 
-    \subsection binomial Binomial trees
+    \section binomial Binomial trees
     The binomial method is the simplest numerical method that can be used to 
     price path-independent derivatives. It is usually the preferred lattice
     method under the Black-Scholes-Merton model. As an example, let's see 
@@ -40,7 +40,7 @@
     There are several approaches to build the underlying binomial tree, like
     Jarrow-Rudd or Cox-Ross-Rubinstein.
 
-    \subsection trinomial Trinomial trees
+    \section trinomial Trinomial trees
     When the underlying stochastic process has a mean-reverting pattern, it is
     usually better to use a trinomial tree instead of a binomial tree. An
     example is implemented in the QuantLib::Lattices::TrinomialTree class, which
@@ -80,10 +80,10 @@
                 \frac{E_{i,j}-y_{i+1,k}}{2\sqrt{3}V_{i}}.
     \f]
 
-    \subsection bidimensional Bidimensional lattices
+    \section bidimensional Bidimensional lattices
     To come...
 
-    \subsection discretizedasset The QuantLib::DiscretizedAsset class
+    \section discretizedasset The QuantLib::DiscretizedAsset class
 
     This class is a representation of the price of a derivative at a specific
     time. It is roughly an array of values, each value being associated to a

@@ -23,7 +23,7 @@
 
 /*! \page where Where to get QuantLib
 
-    \subsection download QuantLib releases
+    \section download QuantLib releases
     Source code, documentation, modules, etc. of current and previous
     %QuantLib releases can be downloaded from
     http://quantlib.org/download.html
@@ -32,7 +32,7 @@
     http://ftp.us.debian.org/debian/pool/main/q/quantlib
     (the .us can be replaced by .jp, .uk, .de, .it, etc.)
 
-    \subsection cvs Current CVS snapshot
+    \section cvs Current CVS snapshot
     Instructions for anonymous CVS access are available at
     http://quantlib.org/cvs.html
 

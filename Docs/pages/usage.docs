@@ -33,7 +33,7 @@
     and Microsoft Visual C++. For the latter project files are also available.
 
 
-    \subsection microsoftvisual Microsoft Visual C++
+    \section microsoftvisual Microsoft Visual C++
     A few suggestions for Visual C++ users wanting to use %QuantLib into their
     own application:
     -# As long as you include ql/quantlib.hpp, you won't have to explicitly

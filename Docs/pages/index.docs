@@ -46,7 +46,7 @@
     warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     \ref license for more details.
 
-    \subsection disclaimer Disclaimer
+    \section disclaimer Disclaimer
     At this time, this documentation is widely incomplete and must be
     regarded as a work in progress. Eventually, all %QuantLib classes will be
     documented.
