@@ -45,25 +45,21 @@ namespace QuantLib {
             "BlackVarianceCurve::BlackVarianceCurve : "
             "cannot have dates[0]<=referenceDate");
 
-        variances_ = std::vector<double>(dates.size());
-        times_ = std::vector<Time>(dates.size());
+        variances_ = std::vector<double>(dates.size()+1);
+        times_ = std::vector<Time>(dates.size()+1);
+        variances_[0] = 0.0;
+        times_[0] = 0.0;
         Size j;
-        for (j=0; j<blackVolCurve.size(); j++) {
-            times_[j] = dayCounter_.yearFraction(referenceDate, dates[j]);
-            QL_REQUIRE(j==0 || times_[j]>times_[j-1],
+        for (j=1; j<=blackVolCurve.size(); j++) {
+            times_[j] = dayCounter_.yearFraction(referenceDate, dates[j-1]);
+            QL_REQUIRE(times_[j]>times_[j-1],
                 "BlackVarianceCurve::BlackVarianceCurve : "
                 "dates must be sorted unique!");
             variances_[j] = times_[j] *
-                blackVolCurve[j]*blackVolCurve[j];
-            if (j==0) {
-                QL_REQUIRE(variances_[0]>=0.0,
-                    "BlackVarianceCurve::BlackVarianceCurve : "
-                    "variance must be non negative");
-            } else {
-                QL_REQUIRE(variances_[j]>=variances_[j-1],
-                    "BlackVarianceCurve::BlackVarianceCurve : "
-                    "variance must be non-decreasing");
-            }
+                blackVolCurve[j-1]*blackVolCurve[j-1];
+            QL_REQUIRE(variances_[j]>=variances_[j-1],
+                "BlackVarianceCurve::BlackVarianceCurve : "
+                "variance must be non-decreasing");
         }
 
         // default: linear interpolation
@@ -74,7 +70,7 @@ namespace QuantLib {
         #endif
     }
 
-    double BlackVarianceCurve::blackVarianceImpl(Time t, double, 
+    double BlackVarianceCurve::blackVarianceImpl(Time t, double,
                                                  bool extrapolate) const {
 
         QL_REQUIRE(t>=0.0,
@@ -82,11 +78,7 @@ namespace QuantLib {
                    "negative time (" + DoubleFormatter::toString(t) +
                    ") not allowed");
 
-        // for early times extrapolate with flat vol
-        if (t<=times_[0])
-            return (*varianceCurve_)(times_[0], extrapolate)*
-                t/times_[0];
-        else if (t<=times_.back())
+        if (t<=times_.back())
             return (*varianceCurve_)(t, extrapolate);
         // for later times extrapolate with flat vol
         else { // t>times_.back() || extrapolate
