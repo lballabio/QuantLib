@@ -65,9 +65,9 @@ namespace QuantLib {
                 Real norm = 0.0;
                 for (j = 0; j < size; j++)
                     norm += result[i][j]*result[i][j];
-                norm = QL_SQRT(norm);
+                norm = QL_SQRT(matrix[i][i]/norm);
                 for(j = 0; j < size; j++)
-                    result[i][j] /= norm;
+                    result[i][j] *= norm;
             }
             break;
         }
