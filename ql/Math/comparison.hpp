@@ -29,8 +29,8 @@ namespace QuantLib {
     /*! Follows somewhat the advice of Knuth on checking for floating-point 
         equality. The closeness relationship is:
         \f[
-        \mathrm{close}(x,y) \equiv |x-y| \leq \varepsilon x
-                            \wedge |x-y| \leq \varepsilon y
+        \mathrm{close}(x,y,n) \equiv |x-y| \leq \varepsilon |x|
+                              \wedge |x-y| \leq \varepsilon |y|
         \f]
         where \f$ \varepsilon \f$ is \f$ n \f$ times the machine accuracy.
     */
@@ -39,8 +39,8 @@ namespace QuantLib {
     /*! Follows somewhat the advice of Knuth on checking for floating-point 
         equality. The closeness relationship is:
         \f[
-        \mathrm{close}(x,y) \equiv |x-y| \leq \varepsilon x
-                              \vee |x-y| \leq \varepsilon y
+        \mathrm{close}(x,y,n) \equiv |x-y| \leq \varepsilon |x|
+                                \vee |x-y| \leq \varepsilon |y|
         \f]
         where \f$ \varepsilon \f$ is \f$ n \f$ times the machine accuracy.
     */
@@ -51,12 +51,12 @@ namespace QuantLib {
 
     inline bool close(Real x, Real y, Size n) {
         Real diff = QL_FABS(x-y), tolerance = n*QL_EPSILON;
-        return diff <= tolerance*x && diff <= tolerance*y;
+        return diff <= tolerance*QL_FABS(x) && diff <= tolerance*QL_FABS(y);
     }
 
     inline bool close_enough(Real x, Real y, Size n) {
         Real diff = QL_FABS(x-y), tolerance = n*QL_EPSILON;
-        return diff <= tolerance*x || diff <= tolerance*y;
+        return diff <= tolerance*QL_FABS(x) || diff <= tolerance*QL_FABS(y);
     }
 
 }
