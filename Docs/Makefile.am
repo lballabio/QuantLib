@@ -14,7 +14,7 @@ EXTRA_DIST = \
              userman.tex \
              README.txt
 
-TEX_PARAMETERS = buf_size=500000 pool_size=512000 extra_mem_top=512000 extra_mem_bot=512000 max_strings=30000 hash_extra=10000
+TEX_PARAMETERS = buf_size=500000 pool_size=768000 extra_mem_top=512000 extra_mem_bot=512000 max_strings=45000 hash_extra=10000 save_size=8000
 
 docs-all: docs-ps docs-pdf
 docs-html: docs-html-offline
@@ -37,23 +37,14 @@ docs-html-online:
 	cp images/*.png html
 	cp images/*.eps latex
 	cp images/*.pdf latex
-# the targets below have somehow to work around a bug in Doxygen
 docs-pdf: tex-files
-	cd latex && \
-	    $(TEX_PARAMETERS) $(PDFLATEX) '\scrollmode\input refman' || \
-	    echo Recovering from failed LaTeX run
+	cd latex && $(TEX_PARAMETERS) $(PDFLATEX) refman
 	cd latex && $(MAKEINDEX) refman
-	cd latex && \
-	    $(TEX_PARAMETERS) $(PDFLATEX) '\scrollmode\input refman' || \
-	    echo Recovering from failed LaTeX run
+	cd latex && $(TEX_PARAMETERS) $(PDFLATEX) refman
 docs-ps: tex-files
-	cd latex && \
-	    $(TEX_PARAMETERS) $(LATEX) '\scrollmode\input refman' || \
-	    echo Recovering from failed LaTeX run
+	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
 	cd latex && $(MAKEINDEX) refman
-	cd latex && \
-	    $(TEX_PARAMETERS) $(LATEX) '\scrollmode\input refman' || \
-	    echo Recovering from failed LaTeX run
+	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
 	cd latex && $(DVIPS) refman
 docs-man: docs-html
 docs-clean:
