@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/01/25 15:11:55  lballabio
+    Added helper functions to make iterators
+
     Revision 1.6  2001/01/23 11:08:51  lballabio
     Renamed iterators in Include\Utilities and related files
 
@@ -58,13 +61,13 @@ namespace QuantLib {
     namespace Utilities {
 
         template <class IteratorTag>
-        class FilteringTag {
+        class filtering_iterator_tag {
           public:
-            typedef IteratorTag iterator_category;
+            typedef filtering_iterator_tag iterator_category;
         };
 
         template <>
-        class FilteringTag<std::random_access_iterator_tag> {
+        class filtering_iterator_tag<std::random_access_iterator_tag> {
           public:
             typedef std::bidirectional_iterator_tag iterator_category;
         };
@@ -79,8 +82,9 @@ namespace QuantLib {
           public:
             typedef typename std::iterator_traits<Iterator>::iterator_category
                 underlying_category;
-            typedef FilteringTag<underlying_category>::iterator_category
-                iterator_category;
+            typedef 
+                filtering_iterator_tag<underlying_category>::iterator_category
+                    iterator_category;
             typedef typename std::iterator_traits<Iterator>::value_type
                 value_type;
             typedef typename std::iterator_traits<Iterator>::difference_type
@@ -113,6 +117,14 @@ namespace QuantLib {
             Iterator it_;
             Iterator beforeBegin_, end_;
         };
+
+        //! helper function to create filtering iterators
+        /*! \relates filtering_iterator */
+        template <class Iterator, class UnaryPredicate>
+        filtering_iterator<Iterator,UnaryPredicate>
+        make_filtering_iterator(Iterator it, UnaryPredicate p, 
+            Iterator beforeBegin, Iterator end);
+
 
 
         // inline definitions
@@ -186,6 +198,14 @@ namespace QuantLib {
         inline bool filtering_iterator<Iterator,UnaryPredicate>::operator!=(
           const filtering_iterator<Iterator,UnaryPredicate>& i) {
             return (it_ != i.it_);
+        }
+
+        template <class Iterator, class UnaryPredicate>
+        inline filtering_iterator<Iterator,UnaryPredicate>
+        make_filtering_iterator(Iterator it, UnaryPredicate p, 
+            Iterator beforeBegin, Iterator end) {
+                return filtering_iterator<Iterator,UnaryPredicate>(
+                    it,p,beforeBegin,end);
         }
 
     }

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/25 15:11:53  lballabio
+    Added helper functions to make iterators
+
     Revision 1.3  2001/01/25 11:57:32  lballabio
     Included outer product and sqrt into matrix.h
 
@@ -75,6 +78,8 @@ namespace QuantLib {
             std::vector<double> meanVector() const;            
             //! returns the covariance Matrix            
             Matrix covariance() const;
+            //@}
+            
             //! \name Modifiers
             //@{
             //! adds an Array to the collection, possibly with a weight

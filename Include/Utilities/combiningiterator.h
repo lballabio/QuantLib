@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/25 15:11:54  lballabio
+    Added helper functions to make iterators
+
     Revision 1.1  2001/01/24 14:56:48  aleppo
     Added iterator combining-iterator
 
@@ -67,7 +70,7 @@ namespace QuantLib {
             template <class IteratorCollectionIterator>
             combining_iterator(IteratorCollectionIterator it1, 
                 IteratorCollectionIterator it2, Function func)
-            : vectorIterators_(it1,it2), f_(func) {}
+            : iteratorVector_(it1,it2), f_(func) {}
             //! \name Dereferencing
             //@{
             reference operator*() const;
@@ -97,25 +100,33 @@ namespace QuantLib {
             //@{
             bool operator==(
                 const combining_iterator<Iterator,Function>& rhs) const {
-                    return vectorIterators_ == rhs.vectorIterators_; }
+                    return iteratorVector_ == rhs.iteratorVector_; }
             bool operator !=(
                 const combining_iterator<Iterator,Function>& rhs) const {
-                    return vectorIterators_ != rhs.vectorIterators_; }
+                    return iteratorVector_ != rhs.iteratorVector_; }
             //@}
           private:
-            std::vector<Iterator> vectorIterators_;
+            std::vector<Iterator> iteratorVector_;
             Function f_;
             mutable value_type x_;
         };
 
+
+        //! helper function to create combining iterators
+        /*! \relates combining_iterator */
+        template <class It, class Function>
+        combining_iterator<typename std::iterator_traits<It>::value_type, 
+            Function>
+        make_combining_iterator(It it1, It it2, Function func);
+            
 
         // inline definitions
 
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>&
         combining_iterator<Iterator,Function>::operator++() {
-            std::vector<Iterator>::iterator it = vectorIterators_.begin();
-            while (it != vectorIterators_.end()) { ++*it; ++it; }
+            std::vector<Iterator>::iterator it = iteratorVector_.begin();
+            while (it != iteratorVector_.end()) { ++*it; ++it; }
             return *this;
         }
 
@@ -130,8 +141,8 @@ namespace QuantLib {
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>&
         combining_iterator<Iterator,Function>::operator--() {
-            std::vector<Iterator>::iterator it = vectorIterators_.begin();
-            while (it != vectorIterators_.end()){ --*it; ++it; }
+            std::vector<Iterator>::iterator it = iteratorVector_.begin();
+            while (it != iteratorVector_.end()){ --*it; ++it; }
             return *this;
         }
 
@@ -147,16 +158,16 @@ namespace QuantLib {
         inline combining_iterator<Iterator,Function>&
         combining_iterator<Iterator,Function>::operator+=(
          combining_iterator<Iterator,Function>::difference_type n) {
-            std::vector<Iterator>::iterator it = vectorIterators_.begin();
-            while ( it != vectorIterators_.end()){ *it +=n ; ++it ; }
+            std::vector<Iterator>::iterator it = iteratorVector_.begin();
+            while ( it != iteratorVector_.end()){ *it +=n ; ++it ; }
             return *this;
         }
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>&
         combining_iterator<Iterator,Function>::operator-=(
          combining_iterator<Iterator,Function>::difference_type n) {
-            std::vector<Iterator>::iterator it = vectorIterators_.begin();
-            while ( it != vectorIterators_.end()){ *it -=n ; ++it ; }
+            std::vector<Iterator>::iterator it = iteratorVector_.begin();
+            while ( it != iteratorVector_.end()){ *it -=n ; ++it ; }
             return *this;
         }
 
@@ -164,15 +175,16 @@ namespace QuantLib {
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>::reference
         combining_iterator<Iterator,Function>::operator*() const {
-            x_ = f_(vectorIterators_.begin(), vectorIterators_.end());
+            x_ = f_(iteratorVector_.begin(), iteratorVector_.end());
             return x_;
         }
 
         template <class Iterator, class Function>
-        inline const combining_iterator<Iterator,Function>::value_type QL_PTR_CONST
-        combining_iterator<Iterator,Function>::operator->() const {
-            x_ = f_(vectorIterators_.begin(), vectorIterators_.end());
-            return &x_;
+        inline const combining_iterator<Iterator,Function>::value_type 
+            QL_PTR_CONST combining_iterator<Iterator,Function>::operator->() 
+            const {
+                x_ = f_(iteratorVector_.begin(), iteratorVector_.end());
+                return &x_;
         }
 
         template <class Iterator, class Function>
@@ -205,15 +217,22 @@ namespace QuantLib {
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>::difference_type 
         combining_iterator<Iterator, Function>::operator-(
-          const combining_iterator<Iterator, Function>& rhs) const 
-          {
-            if( 0 < vectorIterators_.size() && 0 < rhs.vectorIterators_())
-                return vectorIterators_[0] - rhs.vectorIterators_[0];
+          const combining_iterator<Iterator, Function>& rhs) const {
+            if( 0 < iteratorVector_.size() && 0 < rhs.iteratorVector_())
+                return iteratorVector_[0] - rhs.iteratorVector_[0];
             else 
                 return 0;     
             
-          }
-            
+        }
+
+        template <class It, class Function>
+        inline combining_iterator<
+            typename std::iterator_traits<It>::value_type, Function>
+        make_combining_iterator(It it1, It it2, Function func) {
+            typedef std::iterator_traits<It>::value_type Iterator;
+            return combining_iterator<Iterator,Function>(it1,it2,func);
+        }
+        
     }
 
 }

@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/01/25 15:11:55  lballabio
+    Added helper functions to make iterators
+
     Revision 1.4  2001/01/23 11:08:51  lballabio
     Renamed iterators in Include\Utilities and related files
 
@@ -109,6 +112,12 @@ namespace QuantLib {
             RandomAccessIterator it_;
         };
 
+        //! helper function to create stepping iterators
+        /*! \relates stepping_iterator */
+        template <class Iterator>
+        stepping_iterator<Iterator>
+        make_stepping_iterator(Iterator it, 
+            typename stepping_iterator<Iterator>::difference_type step);
 
         // inline definitions
 
@@ -242,6 +251,13 @@ namespace QuantLib {
         inline bool stepping_iterator<RandomAccessIterator>::operator>=(
           const stepping_iterator<RandomAccessIterator>& i) {
             return (it_ >= i.it_);
+        }
+
+        template <class Iterator>
+        inline stepping_iterator<Iterator>
+        make_stepping_iterator(Iterator it, 
+            typename stepping_iterator<Iterator>::difference_type step) {
+                return stepping_iterator<Iterator>(it,step);
         }
 
     }

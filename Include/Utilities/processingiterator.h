@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/25 15:11:55  lballabio
+    Added helper functions to make iterators
+
     Revision 1.1  2001/01/23 11:08:51  lballabio
     Renamed iterators in Include\Utilities and related files
 
@@ -104,6 +107,13 @@ namespace QuantLib {
             UnaryFunction f_;
             value_type x_;
         };
+
+        //! helper function to create processing iterators
+        /*! \relates processing_iterator */
+        template <class Iterator, class UnaryFunction>
+        processing_iterator<Iterator,UnaryFunction>
+        make_processing_iterator(Iterator it, UnaryFunction p);
+
 
 
         // inline definitions
@@ -236,6 +246,12 @@ namespace QuantLib {
         inline bool processing_iterator<Iterator,UnaryFunction>::operator>=(
           const processing_iterator<Iterator,UnaryFunction>& i) {
             return (it_ >= i.it_);
+        }
+
+        template <class Iterator, class UnaryFunction>
+        inline processing_iterator<Iterator,UnaryFunction>
+        make_processing_iterator(Iterator it, UnaryFunction p) {
+            return processing_iterator<Iterator,UnaryFunction>(it,p);
         }
 
     }
