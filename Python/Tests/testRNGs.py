@@ -1,16 +1,16 @@
 """
 /*
  * Copyright (C) 2000-2001 QuantLib Group
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -22,9 +22,12 @@
 */
 """
 
-""" 
+"""
     $Source$
     $Log$
+    Revision 1.5  2001/02/15 11:57:34  nando
+    no message
+
     Revision 1.4  2001/01/08 16:19:29  nando
     more homogeneous format
 
@@ -48,14 +51,15 @@ print "Testing random number generators"
 
 tol = 1e-9
 seed = 576919
-numIte = 100000
-print "Generator                         mean    sigma   skewness kurtosis   min     max"
+numIte = 1000000
+print "Generator                          mean    sigma    skew    kurt" \
+                                                             "   min   max"
 for RNG in [UniformRandomGenerator, GaussianRandomGenerator]:
   rn = RNG(seed=seed)
   s = Statistics()
   for ite in range(numIte):
     s.add(rn.next())
-  print "%35s: %7.4f %8.4f %8.4f %8.4f %7.3f %7.3f " %  (RNG, s.mean(),
+  print "%32s %+8.4f %7.4f %7.3f %7.3f %5.2f %5.2f " %  (RNG, s.mean(),
     s.standardDeviation(), s.skewness(), s.kurtosis(), s.min(), s.max())
 
 print
