@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
@@ -29,7 +30,6 @@
 namespace QuantLib {
 
     namespace Lattices {
-
 
         BinomialTree::BinomialTree(const Handle<DiffusionProcess>& process,
             Time end, Size steps)
@@ -146,9 +146,8 @@ namespace QuantLib {
                 "negative probability");
         }
 
-        double Tian::underlying(Size i,
-            Size index) const {
-            return x0_*QL_POW(down_, i-index) * QL_POW(up_, index);
+        double Tian::underlying(Size i, Size index) const {
+            return x0_*QL_POW(down_, int(i-index)) * QL_POW(up_, int(index));
 
 // doesn't work
 //            int j = (2*index - i);
@@ -156,8 +155,7 @@ namespace QuantLib {
 //            return x0_*QL_POW(treeCentering_, i) * QL_POW(up_, j);
         }
 
-        double Tian::probability(Size,
-            Size, Size branch) const {
+        double Tian::probability(Size, Size, Size branch) const {
             if (branch == 1)
                 return pu_;
             else
