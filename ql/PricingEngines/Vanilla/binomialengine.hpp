@@ -81,7 +81,7 @@ namespace QuantLib {
         Time maturity = arguments_.blackScholesProcess->riskFreeRate()
             ->dayCounter().yearFraction(referenceDate, maturityDate);
 
-        boost::shared_ptr<DiffusionProcess> bs(
+        boost::shared_ptr<StochasticProcess> bs(
             new BlackScholesProcess(
                    RelinkableHandle<Quote>(
                              arguments_.blackScholesProcess->stateVariable()),

@@ -17,18 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/diffusionprocess.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/Volatilities/localvolsurface.hpp>
 #include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/localconstantvol.hpp>
 
 namespace QuantLib {
 
-    double DiffusionProcess::expectation(Time t0, double x0, Time dt) const {
+    double StochasticProcess::expectation(Time t0, double x0, Time dt) const {
         return x0 + drift(t0, x0)*dt;
     }
 
-    double DiffusionProcess::variance(Time t0, double x0, Time dt) const {
+    double StochasticProcess::variance(Time t0, double x0, Time dt) const {
         double sigma = diffusion(t0, x0);
         return sigma*sigma*dt;
     }

@@ -22,7 +22,7 @@
 #ifndef quantlib_interest_rate_modelling_two_factor_model_h
 #define quantlib_interest_rate_modelling_two_factor_model_h
 
-#include <ql/diffusionprocess.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/ShortRateModels/model.hpp>
 #include <ql/Lattices/lattice2d.hpp>
 
@@ -67,8 +67,8 @@ namespace QuantLib {
     */
     class TwoFactorModel::ShortRateDynamics {
       public:
-        ShortRateDynamics(const boost::shared_ptr<DiffusionProcess>& xProcess,
-                          const boost::shared_ptr<DiffusionProcess>& yProcess,
+        ShortRateDynamics(const boost::shared_ptr<StochasticProcess>& xProcess,
+                          const boost::shared_ptr<StochasticProcess>& yProcess,
                           double correlation)
         : xProcess_(xProcess), yProcess_(yProcess),
           correlation_(correlation) {}
@@ -77,12 +77,12 @@ namespace QuantLib {
         virtual Rate shortRate(Time t, double x, double y) const = 0;
 
         //! Risk-neutral dynamics of the first state variable x
-        const boost::shared_ptr<DiffusionProcess>& xProcess() const {
+        const boost::shared_ptr<StochasticProcess>& xProcess() const {
             return xProcess_;
         }
 
         //! Risk-neutral dynamics of the second state variable y
-        const boost::shared_ptr<DiffusionProcess>& yProcess() const {
+        const boost::shared_ptr<StochasticProcess>& yProcess() const {
             return yProcess_;
         }
 
@@ -91,7 +91,7 @@ namespace QuantLib {
             return correlation_;
         }
       private:
-        boost::shared_ptr<DiffusionProcess> xProcess_, yProcess_;
+        boost::shared_ptr<StochasticProcess> xProcess_, yProcess_;
         double correlation_;
     };
 

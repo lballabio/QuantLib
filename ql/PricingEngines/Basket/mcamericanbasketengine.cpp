@@ -415,7 +415,7 @@ namespace QuantLib {
 
         // set up the diffuction processes
         std::vector<double> initialPrices(numAssets);
-        std::vector<boost::shared_ptr<DiffusionProcess> > procs(numAssets);
+        std::vector<boost::shared_ptr<StochasticProcess> > procs(numAssets);
         for (j = 0; j < numAssets; j++) {
             initialPrices[j] = arguments_.blackScholesProcesses[j]
                 ->stateVariable()->value();

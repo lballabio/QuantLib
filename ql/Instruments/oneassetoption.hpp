@@ -24,7 +24,7 @@
 #define quantlib_oneasset_option_h
 
 #include <ql/option.hpp>
-#include <ql/diffusionprocess.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
 

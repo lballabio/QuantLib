@@ -23,7 +23,7 @@
 #ifndef quantlib_lattices_binomial_tree_h
 #define quantlib_lattices_binomial_tree_h
 
-#include <ql/diffusionprocess.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/Lattices/tree.hpp>
 
 namespace QuantLib {
@@ -31,7 +31,7 @@ namespace QuantLib {
     //! Binomial tree base class
     class BinomialTree : public Tree {
       public:
-        BinomialTree(const boost::shared_ptr<DiffusionProcess>& process,
+        BinomialTree(const boost::shared_ptr<StochasticProcess>& process,
                      Time end,
                      unsigned long steps);
         Size size(Size i) const {
@@ -59,7 +59,7 @@ namespace QuantLib {
     class EqualProbabilitiesBinomialTree : public BinomialTree {
       public:
         EqualProbabilitiesBinomialTree(
-                           const boost::shared_ptr<DiffusionProcess>& process,
+                           const boost::shared_ptr<StochasticProcess>& process,
                            Time end,
                            unsigned long steps)
         : BinomialTree(process, end, steps) {}
@@ -78,7 +78,7 @@ namespace QuantLib {
     class EqualJumpsBinomialTree : public BinomialTree {
       public:
         EqualJumpsBinomialTree(
-                           const boost::shared_ptr<DiffusionProcess>& process,
+                           const boost::shared_ptr<StochasticProcess>& process,
                            Time end,
                            unsigned long steps)
         : BinomialTree(process, end, steps) {}
@@ -96,7 +96,7 @@ namespace QuantLib {
     //! Jarrow-Rudd (multiplicative) equal probabilities binomial tree
     class JarrowRudd : public EqualProbabilitiesBinomialTree {
       public:
-        JarrowRudd(const boost::shared_ptr<DiffusionProcess>& process,
+        JarrowRudd(const boost::shared_ptr<StochasticProcess>& process,
                    Time end,
                    unsigned long steps,
                    double strike);
@@ -105,7 +105,7 @@ namespace QuantLib {
     //! Cox-Ross-Rubinstein (multiplicative) equal jumps binomial tree
     class CoxRossRubinstein : public EqualJumpsBinomialTree {
       public:
-        CoxRossRubinstein(const boost::shared_ptr<DiffusionProcess>& process,
+        CoxRossRubinstein(const boost::shared_ptr<StochasticProcess>& process,
                           Time end,
                           unsigned long steps,
                           double strike);
@@ -116,7 +116,7 @@ namespace QuantLib {
     class AdditiveEQPBinomialTree : public EqualProbabilitiesBinomialTree {
       public:
         AdditiveEQPBinomialTree(
-                           const boost::shared_ptr<DiffusionProcess>& process,
+                           const boost::shared_ptr<StochasticProcess>& process,
                            Time end,
                            unsigned long steps,
                            double strike);
@@ -125,7 +125,7 @@ namespace QuantLib {
     //! %Trigeorgis (additive equal jumps) binomial tree
     class Trigeorgis : public EqualJumpsBinomialTree {
       public:
-        Trigeorgis(const boost::shared_ptr<DiffusionProcess>& process,
+        Trigeorgis(const boost::shared_ptr<StochasticProcess>& process,
                    Time end,
                    unsigned long steps,
                    double strike);
@@ -135,7 +135,7 @@ namespace QuantLib {
     //! %Tian tree: third moment matching, multiplicative approach
     class Tian : public BinomialTree {
       public:
-        Tian(const boost::shared_ptr<DiffusionProcess>& process,
+        Tian(const boost::shared_ptr<StochasticProcess>& process,
              Time end,
              unsigned long steps,
              double strike);
@@ -151,7 +151,7 @@ namespace QuantLib {
     //! Leisen & Reimer tree: multiplicative approach
     class LeisenReimer : public BinomialTree {
       public:
-        LeisenReimer(const boost::shared_ptr<DiffusionProcess>& process,
+        LeisenReimer(const boost::shared_ptr<StochasticProcess>& process,
                      Time end,
                      unsigned long steps,
                      double strike);

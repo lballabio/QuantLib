@@ -103,7 +103,7 @@ namespace QuantLib {
     template<class S, class SG, class PG>
     inline
     boost::shared_ptr<PG> McCliquetEngine<S, SG, PG>::pathGenerator() const {
-        boost::shared_ptr<DiffusionProcess> bs(
+        boost::shared_ptr<StochasticProcess> bs(
             new BlackScholesProcess(arguments_.riskFreeTS, 
                                     arguments_.dividendTS,
                                     arguments_.volTS, 

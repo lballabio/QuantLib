@@ -23,7 +23,7 @@
 #ifndef quantlib_montecarlo_multi_path_generator_h
 #define quantlib_montecarlo_multi_path_generator_h
 
-#include <ql/diffusionprocess.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/MonteCarlo/multipath.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 #include <ql/Math/pseudosqrt.hpp>
@@ -46,7 +46,7 @@ namespace QuantLib {
       public:
         typedef Sample<MultiPath> sample_type;
         MultiPathGenerator(
-                     const std::vector<boost::shared_ptr<DiffusionProcess> >&
+                     const std::vector<boost::shared_ptr<StochasticProcess> >&
                                                                diffusionProcs,
                      const Matrix& correlation,
                      const TimeGrid& timeGrid,
@@ -56,7 +56,7 @@ namespace QuantLib {
         const sample_type& antithetic() const;
       private:
         bool brownianBridge_;
-        std::vector<boost::shared_ptr<DiffusionProcess> > diffusionProcs_;
+        std::vector<boost::shared_ptr<StochasticProcess> > diffusionProcs_;
         Size numAssets_;
         Matrix sqrtCorrelation_;
         GSG generator_;
@@ -68,7 +68,7 @@ namespace QuantLib {
 
     template <class GSG>
     MultiPathGenerator<GSG>::MultiPathGenerator(
-                     const std::vector<boost::shared_ptr<DiffusionProcess> >&
+                     const std::vector<boost::shared_ptr<StochasticProcess> >&
                                                                diffusionProcs,
                      const Matrix& correlation,
                      const TimeGrid& times,

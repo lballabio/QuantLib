@@ -115,7 +115,7 @@ namespace QuantLib {
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
-        std::vector<boost::shared_ptr<DiffusionProcess> > diffusionProcs;
+        std::vector<boost::shared_ptr<StochasticProcess> > diffusionProcs;
         for (Size j = 0; j < numAssets; j++) {
             diffusionProcs.push_back(arguments_.blackScholesProcesses[j]);
         }

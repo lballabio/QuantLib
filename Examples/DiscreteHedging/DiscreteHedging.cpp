@@ -298,7 +298,7 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     RelinkableHandle<BlackVolTermStructure> volatility(
                           boost::shared_ptr<BlackVolTermStructure>(
                                         new BlackConstantVol(today, sigma_)));
-    boost::shared_ptr<DiffusionProcess> diffusion(
+    boost::shared_ptr<StochasticProcess> diffusion(
                          new BlackScholesProcess(stateVariable, dividendYield,
                                                  riskFreeRate, volatility));
 

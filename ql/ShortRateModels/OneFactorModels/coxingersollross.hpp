@@ -71,7 +71,7 @@ namespace QuantLib {
         Parameter& r0_;
     };
 
-    class CoxIngersollRoss::HelperProcess : public DiffusionProcess {
+    class CoxIngersollRoss::HelperProcess : public StochasticProcess {
       public:
         HelperProcess(double theta, double k, double sigma, double y0) 
         : y0_(y0), theta_(theta), k_(k), sigma_(sigma) {}
@@ -106,7 +106,7 @@ namespace QuantLib {
                  double k,
                  double sigma,
                  double x0)
-        : ShortRateDynamics(boost::shared_ptr<DiffusionProcess>(
+        : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
                           new HelperProcess(theta, k, sigma, QL_SQRT(x0)))) {}
 
         virtual double variable(Time, Rate r) const {

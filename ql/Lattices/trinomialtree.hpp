@@ -22,7 +22,7 @@
 #ifndef quantlib_lattices_trinomial_tree_h
 #define quantlib_lattices_trinomial_tree_h
 
-#include <ql/diffusionprocess.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/Lattices/tree.hpp>
 
 namespace QuantLib {
@@ -37,7 +37,7 @@ namespace QuantLib {
     */
     class TrinomialTree : public Tree {
       public:
-        TrinomialTree(const boost::shared_ptr<DiffusionProcess>& process,
+        TrinomialTree(const boost::shared_ptr<StochasticProcess>& process,
                       const TimeGrid& timeGrid,
                       bool isPositive = false);
         double dx(Size i) const { return dx_[i]; }

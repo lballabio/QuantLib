@@ -69,11 +69,11 @@ namespace QuantLib {
                    "residualTime must be positive");
 
         // initialize the path generator
-        std::vector<boost::shared_ptr<DiffusionProcess> > processes(n);
+        std::vector<boost::shared_ptr<StochasticProcess> > processes(n);
         RelinkableHandle<Quote> u(
                               boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
         for (Size i=0; i<n; i++)
-            processes[i] = boost::shared_ptr<DiffusionProcess>(
+            processes[i] = boost::shared_ptr<StochasticProcess>(
                                     new BlackScholesProcess(u, 
                                                             dividendYield[i],
                                                             riskFreeRate, 

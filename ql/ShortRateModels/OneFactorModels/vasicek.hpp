@@ -72,7 +72,7 @@ namespace QuantLib {
                  double b,
                  double sigma,
                  double r0)
-        : ShortRateDynamics(boost::shared_ptr<DiffusionProcess>(
+        : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
                              new OrnsteinUhlenbeckProcess(a, sigma, r0 - b))),
           a_(a), b_(b), r0_(r0) {}
 

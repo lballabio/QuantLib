@@ -108,10 +108,10 @@ libQuantLib_la_SOURCES = \
     dataformatters.cpp \
     dataparsers.cpp \
     date.cpp \
-	diffusionprocess.cpp \
 	discretizedasset.cpp \
 	errors.cpp \
 	exercise.cpp \
     grid.cpp \
     scheduler.cpp \
+	stochasticprocess.cpp \
     voltermstructure.cpp

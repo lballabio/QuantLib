@@ -26,7 +26,7 @@ namespace QuantLib {
         const boost::shared_ptr<AmericanExercise>& exercise,
         double underlying,
         const RelinkableHandle<TermStructure>& discountTS,
-        const boost::shared_ptr<DiffusionProcess>& diffProcess,
+        const boost::shared_ptr<StochasticProcess>& diffProcess,
         const PseudoRandom::ursg_type& sequenceGen)
     : PathPricer<Path>(discountTS),
       payoff_(payoff), exercise_(exercise),

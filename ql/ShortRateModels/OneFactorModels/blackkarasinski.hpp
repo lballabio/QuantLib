@@ -70,7 +70,7 @@ namespace QuantLib {
         : public BlackKarasinski::ShortRateDynamics {
       public:
         Dynamics(const Parameter& fitting, double alpha, double sigma)
-        : ShortRateDynamics(boost::shared_ptr<DiffusionProcess>(
+        : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
                                  new OrnsteinUhlenbeckProcess(alpha, sigma))),
           fitting_(fitting) {}
 

@@ -20,7 +20,7 @@
 namespace QuantLib {
 
     TrinomialTree::TrinomialTree(
-                           const boost::shared_ptr<DiffusionProcess>& process,
+                           const boost::shared_ptr<StochasticProcess>& process,
                            const TimeGrid& timeGrid,
                            bool isPositive)
     : Tree(timeGrid.size()), dx_(1, 0.0), timeGrid_(timeGrid) {

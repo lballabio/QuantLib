@@ -123,11 +123,11 @@ namespace QuantLib {
                    "you must have at least one time-step");
 
         // initialize the path generator
-        std::vector<boost::shared_ptr<DiffusionProcess> > processes(n);
+        std::vector<boost::shared_ptr<StochasticProcess> > processes(n);
         for (Size i=0; i<n; i++) {
             RelinkableHandle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
-            processes[i] = boost::shared_ptr<DiffusionProcess>(
+            processes[i] = boost::shared_ptr<StochasticProcess>(
                                     new BlackScholesProcess(u, 
                                                             dividendYield[i],
                                                             riskFreeRate, 

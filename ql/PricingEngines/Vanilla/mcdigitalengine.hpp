@@ -93,14 +93,14 @@ namespace QuantLib {
                        const boost::shared_ptr<AmericanExercise>& exercise,
                        double underlying,
                        const RelinkableHandle<TermStructure>& discountTS,
-                       const boost::shared_ptr<DiffusionProcess>& diffProcess,
+                       const boost::shared_ptr<StochasticProcess>& diffProcess,
                        const PseudoRandom::ursg_type& sequenceGen);
         double operator()(const Path& path) const;
       private:
         boost::shared_ptr<CashOrNothingPayoff> payoff_;
         boost::shared_ptr<AmericanExercise> exercise_;
         double underlying_;
-        boost::shared_ptr<DiffusionProcess> diffProcess_;
+        boost::shared_ptr<StochasticProcess> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
     };
 
@@ -129,7 +129,7 @@ namespace QuantLib {
     boost::shared_ptr<QL_TYPENAME MCDigitalEngine<RNG,S>::path_generator_type>
     MCDigitalEngine<RNG,S>::pathGenerator() const {
 
-        boost::shared_ptr<DiffusionProcess> bs(new
+        boost::shared_ptr<StochasticProcess> bs(new
             BlackScholesProcess(
                 arguments_.blackScholesProcess->riskFreeTS,
                 arguments_.blackScholesProcess->dividendTS,

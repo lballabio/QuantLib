@@ -22,7 +22,7 @@
 #ifndef quantlib_interest_rate_modelling_one_factor_model_h
 #define quantlib_interest_rate_modelling_one_factor_model_h
 
-#include <ql/diffusionprocess.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/ShortRateModels/model.hpp>
 #include <ql/Lattices/tree.hpp>
 
@@ -49,7 +49,7 @@ namespace QuantLib {
     //! Base class describing the short-rate dynamics
     class OneFactorModel::ShortRateDynamics {
       public:
-        ShortRateDynamics(const boost::shared_ptr<DiffusionProcess>& process)
+        ShortRateDynamics(const boost::shared_ptr<StochasticProcess>& process)
         : process_(process) {}
         virtual ~ShortRateDynamics() {};
 
@@ -60,11 +60,11 @@ namespace QuantLib {
         virtual Rate shortRate(Time t, double variable) const = 0;
 
         //! Returns the risk-neutral dynamics of the state variable
-        const boost::shared_ptr<DiffusionProcess>& process() {
+        const boost::shared_ptr<StochasticProcess>& process() {
             return process_;
         }
       private:
-        boost::shared_ptr<DiffusionProcess> process_;
+        boost::shared_ptr<StochasticProcess> process_;
     };
 
     //! Recombining trinomial tree discretizing the state variable

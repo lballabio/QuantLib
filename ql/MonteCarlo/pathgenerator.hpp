@@ -23,7 +23,7 @@
 #ifndef quantlib_montecarlo_path_generator_h
 #define quantlib_montecarlo_path_generator_h
 
-#include <ql/diffusionprocess.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/MonteCarlo/brownianbridge.hpp>
 
 namespace QuantLib {
@@ -37,12 +37,12 @@ namespace QuantLib {
       public:
         typedef Sample<Path> sample_type;
         // constructors
-        PathGenerator(const boost::shared_ptr<DiffusionProcess>& diffProcess,
+        PathGenerator(const boost::shared_ptr<StochasticProcess>& diffProcess,
                       Time length,
                       Size timeSteps,
                       const GSG& generator,
                       bool brownianBridge);
-        PathGenerator(const boost::shared_ptr<DiffusionProcess>& diffProcess,
+        PathGenerator(const boost::shared_ptr<StochasticProcess>& diffProcess,
                       const TimeGrid& timeGrid,
                       const GSG& generator,
                       bool brownianBridge);
@@ -58,7 +58,7 @@ namespace QuantLib {
         GSG generator_;
         Size dimension_;
         TimeGrid timeGrid_;
-        boost::shared_ptr<DiffusionProcess> diffProcess_;
+        boost::shared_ptr<StochasticProcess> diffProcess_;
         mutable sample_type next_;
         BrownianBridge<GSG> bb_;
         mutable double asset_;
@@ -66,7 +66,7 @@ namespace QuantLib {
 
     template <class GSG>
     PathGenerator<GSG>::PathGenerator(
-        const boost::shared_ptr<DiffusionProcess>& diffProcess,
+        const boost::shared_ptr<StochasticProcess>& diffProcess,
         Time length,
         Size timeSteps,
         const GSG& generator,
@@ -86,7 +86,7 @@ namespace QuantLib {
 
     template <class GSG>
     PathGenerator<GSG>::PathGenerator(
-        const boost::shared_ptr<DiffusionProcess>& diffProcess,
+        const boost::shared_ptr<StochasticProcess>& diffProcess,
         const TimeGrid& timeGrid,
         const GSG& generator,
         bool brownianBridge)

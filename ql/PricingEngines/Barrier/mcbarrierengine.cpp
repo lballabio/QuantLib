@@ -29,7 +29,7 @@ namespace QuantLib {
                        double underlying, 
                        double strike,
                        const RelinkableHandle<TermStructure>& discountTS,
-                       const boost::shared_ptr<DiffusionProcess>& diffProcess,
+                       const boost::shared_ptr<StochasticProcess>& diffProcess,
                        const PseudoRandom::ursg_type& sequenceGen)
     : PathPricer<Path>(discountTS), underlying_(underlying),
       barrierType_(barrierType), barrier_(barrier), 

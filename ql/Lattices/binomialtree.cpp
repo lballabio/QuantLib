@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     BinomialTree::BinomialTree(
-                           const boost::shared_ptr<DiffusionProcess>& process,
+                           const boost::shared_ptr<StochasticProcess>& process,
                            Time end, unsigned long steps)
     : Tree(steps+1) {
 
@@ -55,7 +55,7 @@ namespace QuantLib {
     }
 
 
-    JarrowRudd::JarrowRudd(const boost::shared_ptr<DiffusionProcess>& process,
+    JarrowRudd::JarrowRudd(const boost::shared_ptr<StochasticProcess>& process,
                            Time end, unsigned long steps, double)
     : EqualProbabilitiesBinomialTree(process, end, steps) {
 
@@ -64,7 +64,7 @@ namespace QuantLib {
     }
 
     AdditiveEQPBinomialTree::AdditiveEQPBinomialTree(
-                          const boost::shared_ptr<DiffusionProcess>& process, 
+                          const boost::shared_ptr<StochasticProcess>& process, 
                           Time end, unsigned long steps, double)
     : EqualProbabilitiesBinomialTree(process, end, steps) {
 
@@ -77,7 +77,7 @@ namespace QuantLib {
 
 
     CoxRossRubinstein::CoxRossRubinstein(
-                          const boost::shared_ptr<DiffusionProcess>& process, 
+                          const boost::shared_ptr<StochasticProcess>& process, 
                           Time end, unsigned long steps, double)
     : EqualJumpsBinomialTree(process, end, steps) {
 
@@ -90,8 +90,9 @@ namespace QuantLib {
     }
 
 
-    Trigeorgis::Trigeorgis(const boost::shared_ptr<DiffusionProcess>& process, 
-                           Time end, unsigned long steps, double)
+    Trigeorgis::Trigeorgis(
+                         const boost::shared_ptr<StochasticProcess>& process, 
+                         Time end, unsigned long steps, double)
     : EqualJumpsBinomialTree(process, end, steps) {
 
         dx_ = QL_SQRT(process->variance(0.0, x0_, dt_)+
@@ -104,7 +105,7 @@ namespace QuantLib {
     }
 
 
-    Tian::Tian(const boost::shared_ptr<DiffusionProcess>& process, 
+    Tian::Tian(const boost::shared_ptr<StochasticProcess>& process, 
                Time end, unsigned long steps, double)
     : BinomialTree(process, end, steps) {
 
@@ -139,7 +140,7 @@ namespace QuantLib {
 
 
     LeisenReimer::LeisenReimer(
-                           const boost::shared_ptr<DiffusionProcess>& process,
+                           const boost::shared_ptr<StochasticProcess>& process,
                            Time end, unsigned long steps, double strike)
     : BinomialTree(process, end, (steps%2 ? steps : steps+1)) {
 

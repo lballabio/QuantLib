@@ -89,7 +89,7 @@ namespace QuantLib {
                       double underlying,
                       double strike,
                       const RelinkableHandle<TermStructure>& discountTS,
-                      const boost::shared_ptr<DiffusionProcess>& diffProcess,
+                      const boost::shared_ptr<StochasticProcess>& diffProcess,
                       const PseudoRandom::ursg_type& sequenceGen);
         double operator()(const Path& path) const;
       private:
@@ -97,7 +97,7 @@ namespace QuantLib {
         Barrier::Type barrierType_;
         double barrier_;
         double rebate_;
-        boost::shared_ptr<DiffusionProcess> diffProcess_;
+        boost::shared_ptr<StochasticProcess> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
         PlainVanillaPayoff payoff_;
     };
