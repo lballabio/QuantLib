@@ -34,7 +34,7 @@ namespace QuantLib {
 
         class CoxIngersollRoss::VolatilityConstraint : public Constraint {
           public:
-            class Implementation : public ConstraintImpl {
+              class Implementation : public Optimization::Constraint::ConstraintImpl {
               public:
                 Implementation(const Parameter& theta, const Parameter& k) 
                 : theta_(theta), k_(k) {}
