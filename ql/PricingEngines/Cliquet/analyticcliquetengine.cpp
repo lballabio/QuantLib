@@ -20,20 +20,6 @@
 
 namespace QuantLib {
 
-    namespace {
-
-        Time time(const boost::shared_ptr<TermStructure>& ts,
-                  const Date& d) {
-            return ts->dayCounter().yearFraction(ts->referenceDate(), d);
-        }
-
-        Time time(const boost::shared_ptr<BlackVolTermStructure>& ts,
-                  const Date& d) {
-            return ts->dayCounter().yearFraction(ts->referenceDate(), d);
-        }
-
-    }
-
     void AnalyticCliquetEngine::calculate() const {
 
         QL_REQUIRE(arguments_.accruedCoupon == Null<double>() &&
