@@ -63,7 +63,6 @@ include_HEADERS = \
 	qldefines.hpp \
 	quantlib.hpp \
 	relinkablehandle.hpp \
-	riskstatistics.hpp \
 	scheduler.hpp \
 	solver1d.hpp \
 	swaptionvolstructure.hpp \

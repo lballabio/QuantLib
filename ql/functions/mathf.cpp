@@ -20,10 +20,10 @@
 */
 
 #include <ql/functions/mathf.hpp>
+#include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/bicubicsplineinterpolation.hpp>
-#include <ql/Math/riskmeasures.hpp>
 #include <ql/Math/primenumbers.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 

@@ -25,7 +25,6 @@ include_HEADERS = \
 	multivariateaccumulator.hpp \
 	normaldistribution.hpp \
 	primenumbers.hpp \
-	riskmeasures.hpp \
 	riskstatistics.hpp \
 	segmentintegral.hpp \
 	sequencestatistics.hpp \

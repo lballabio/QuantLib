@@ -49,7 +49,6 @@
 #include <ql/payoff.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/relinkablehandle.hpp>
-#include <ql/riskstatistics.hpp>
 #include <ql/scheduler.hpp>
 #include <ql/solver1d.hpp>
 #include <ql/swaptionvolstructure.hpp>
@@ -169,7 +168,6 @@
 #include <ql/Math/multivariateaccumulator.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/primenumbers.hpp>
-#include <ql/Math/riskmeasures.hpp>
 #include <ql/Math/riskstatistics.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/sequencestatistics.hpp>
