@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/06/22 13:19:21  nando
+// 80 colums limit enforced
+//
 // Revision 1.11  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -51,10 +54,16 @@ namespace QuantLib {
         using MonteCarlo::AveragePriceAsianPathPricer;
         using MonteCarlo::GeometricAsianPathPricer;
 
-        AveragePriceAsian::AveragePriceAsian(Option::Type type, double underlying,
-          double strike, Rate dividendYield, Rate riskFreeRate,
-          double residualTime, double volatility, int timesteps, long samples,
-          long seed)
+        AveragePriceAsian::AveragePriceAsian(Option::Type type,
+                                             double       underlying,
+                                             double       strike,
+                                             Rate         dividendYield,
+                                             Rate         riskFreeRate,
+                                             double       residualTime,
+                                             double       volatility,
+                                             int          timesteps,
+                                             long         samples,
+                                             long         seed)
         : McPricer(samples, seed) {
             //! Initialize the path generator
             double deltaT = residualTime/timesteps;
