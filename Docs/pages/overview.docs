@@ -452,6 +452,10 @@
     - Null types.
 
     To do:
+    - Encapsulate in a base class the couple enable/disableExtrapolation()
+      methods, setting a corresponding data member. Then have the relevant
+      classe inherit from the base class and check that data member besides the
+      local argument.
     - IRR, duration, convexity, etc. for a sequence of cash flows
     - Currency as class with methods returning related info
     - Implement currency as per OMG definition
@@ -478,9 +482,7 @@
     - Windows installer generated with NSIS.
     - Included in the Debian distribution.
     - RPMs available.
-
-    To do:
-    - Fink package
+    - Fink package available.
 
 */
 

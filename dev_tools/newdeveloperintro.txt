@@ -3,8 +3,7 @@ You could take a look at the TODO list at http://cvs.sourceforge.net/cgi-bin/vie
 The project roadmap is available at http://quantlib.org/html/overview.html,
 the planned extensions at http://quantlib.org/extensions.html
 
-The latest QuantLib code is available through CVS (more on that below). A
-periodic snapshot is available also at http://quantlib.org/snapshot.html.
+The latest QuantLib code is available through CVS (more on that below).
 
 Feel free to post to quantlib-users@lists.sourceforge.net your development
 ideas, contribution and sample code. To submit a patch would be the easiest
