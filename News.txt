@@ -69,3 +69,5 @@ Changes since release 0.3.7:
   instead of log S. Geometric Brownian process added (thanks to Walter
   Penschke.)
 
+- Added N-dimensional cubic spline (thanks to Roman Gitlin.)
+

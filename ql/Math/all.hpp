@@ -44,6 +44,7 @@
 #include <ql/Math/lexicographicalview.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
+#include <ql/Math/multicubicspline.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/poissondistribution.hpp>
 #include <ql/Math/primenumbers.hpp>

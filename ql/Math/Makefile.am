@@ -33,6 +33,7 @@ include_HEADERS = \
 	linearinterpolation.hpp \
 	loglinearinterpolation.hpp \
 	matrix.hpp \
+	multicubicspline.hpp \
 	normaldistribution.hpp \
 	poissondistribution.hpp \
 	primenumbers.hpp \
