@@ -19,6 +19,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     FdBermudanOption::FdBermudanOption(Option::Type type, Real underlying,
                                        Real strike, Spread dividendYield,
                                        Rate riskFreeRate, Time residualTime,
@@ -46,5 +48,7 @@ namespace QuantLib {
                        dividendYield_, riskFreeRate_, residualTime_,
                        volatility_, dates_, timeStepPerPeriod_, gridPoints_));
     }
+
+    #endif
 
 }

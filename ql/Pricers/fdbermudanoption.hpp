@@ -26,13 +26,16 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! Bermudan option
+    /*! \deprecated use DividendVanillaOption with FDBermudanEngine instead */
     class FdBermudanOption : public FdMultiPeriodOption {
       public:
         // constructor
         FdBermudanOption(Option::Type type, Real underlying,
-                         Real strike, Spread dividendYield, 
-                         Rate riskFreeRate, Time residualTime, 
+                         Real strike, Spread dividendYield,
+                         Rate riskFreeRate, Time residualTime,
                          Volatility volatility,
                          const std::vector<Time>& dates = std::vector<Time>(),
                          Size timeSteps = 100, Size gridPoints = 100);
@@ -42,6 +45,8 @@ namespace QuantLib {
         void initializeStepCondition() const;
         void executeIntermediateStep(Size ) const;
     };
+
+    #endif
 
 }
 

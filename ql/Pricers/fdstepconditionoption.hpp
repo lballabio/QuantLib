@@ -30,6 +30,7 @@ namespace QuantLib {
     #ifndef QL_DISABLE_DEPRECATED
 
     //! %option executing additional code at each time step
+    /*! \deprecated derive engines from FDStepConditionEngine instead */
     class FdStepConditionOption : public FdBsmOption {
       protected:
         // constructor

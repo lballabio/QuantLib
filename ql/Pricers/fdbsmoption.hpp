@@ -28,7 +28,10 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! Black-Scholes-Merton option priced numerically
+    //! \deprecated derive engines from FDVanillaEngine instead */
     class FdBsmOption : public SingleAssetOption {
       public:
         FdBsmOption(Option::Type type, Real underlying,
@@ -80,6 +83,8 @@ namespace QuantLib {
                                            QL_NUM_OPT_GRID_POINTS_PER_YEAR))
                         : QL_NUM_OPT_MIN_GRID_POINTS);
     }
+
+    #endif
 
 }
 

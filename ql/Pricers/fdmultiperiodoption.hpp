@@ -28,14 +28,17 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
+    /*! \deprecated derive engines from FDMultiPeriodEngine instead */
     class FdMultiPeriodOption : public FdBsmOption {
       public:
         Real controlVariateCorrection() const;
       protected:
         // constructor
-        FdMultiPeriodOption(Option::Type type, Real underlying, 
-                            Real strike, Spread dividendYield, 
-                            Rate riskFreeRate, Time residualTime, 
+        FdMultiPeriodOption(Option::Type type, Real underlying,
+                            Real strike, Spread dividendYield,
+                            Rate riskFreeRate, Time residualTime,
                             Volatility volatility, Size gridPoints,
                             const std::vector<Time>& dates,
                             Size timeSteps);
@@ -61,6 +64,8 @@ namespace QuantLib {
       private:
         mutable Real controlVariateCorrection_;
     };
+
+    #endif
 
 }
 

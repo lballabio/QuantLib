@@ -20,6 +20,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     FdBsmOption::FdBsmOption(
                          Option::Type type, Real underlying, Real strike,
                          Spread dividendYield, Rate riskFreeRate,
@@ -103,6 +105,8 @@ namespace QuantLib {
             intrinsicValues_[gridPoints_-1] - intrinsicValues_[gridPoints_-2],
             NeumannBC::Upper));
     }
+
+    #endif
 
 }
 

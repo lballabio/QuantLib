@@ -27,7 +27,12 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! Shout option with dividends
+    /*! \deprecated use DividendVanillaOption with FDDividendShoutEngine
+                    instead
+    */
     class FdDividendShoutOption : public FdDividendOption {
       public:
         // constructor
@@ -46,6 +51,8 @@ namespace QuantLib {
       protected:
         void initializeStepCondition() const;
     };
+
+    #endif
 
 }
 

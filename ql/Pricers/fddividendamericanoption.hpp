@@ -26,10 +26,15 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! American option with discrete dividends.
     /*! \bug
         - sometimes yields negative vega when deeply in-the-money
         - method impliedVolatility() utterly fails
+
+        \deprecated use DividendVanillaOption with FDDividendAmericanEngine
+                    instead
     */
     class FdDividendAmericanOption : public FdDividendOption {
       public:
@@ -43,6 +48,8 @@ namespace QuantLib {
                  Size timeSteps = 100, Size gridPoints = 100);
         boost::shared_ptr<SingleAssetOption> clone() const;
     };
+
+    #endif
 
 }
 

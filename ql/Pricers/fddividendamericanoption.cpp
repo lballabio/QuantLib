@@ -19,9 +19,11 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     FdDividendAmericanOption::FdDividendAmericanOption(
-                         Option::Type type, Real underlying, Real strike, 
-                         Spread dividendYield, Rate riskFreeRate, 
+                         Option::Type type, Real underlying, Real strike,
+                         Spread dividendYield, Rate riskFreeRate,
                          Time residualTime, Volatility volatility,
                          const std::vector<Real>& dividends,
                          const std::vector<Time>& exdivdates,
@@ -30,10 +32,12 @@ namespace QuantLib {
                       riskFreeRate, residualTime, volatility, dividends,
                       exdivdates, timeSteps, gridPoints){}
 
-    boost::shared_ptr<SingleAssetOption> 
+    boost::shared_ptr<SingleAssetOption>
     FdDividendAmericanOption::clone() const {
         return boost::shared_ptr<SingleAssetOption>(
                                          new FdDividendAmericanOption(*this));
     }
+
+    #endif
 
 }

@@ -21,6 +21,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     FdMultiPeriodOption::FdMultiPeriodOption(
                        Option::Type type, Real underlying, Real strike,
                        Spread dividendYield, Rate riskFreeRate,
@@ -170,5 +172,7 @@ namespace QuantLib {
             calculate();
         return controlVariateCorrection_;
     }
+
+    #endif
 
 }

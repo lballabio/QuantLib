@@ -222,6 +222,9 @@ void OldPricerTest::testFdAmericanPricers() {
 }
 
 void OldPricerTest::testFdAmericanDividendPricers() {
+
+    #ifndef QL_DISABLE_DEPRECATED
+
     BOOST_MESSAGE(
                "Testing finite-difference American pricer with dividends...");
 
@@ -264,6 +267,8 @@ void OldPricerTest::testFdAmericanDividendPricers() {
         dividendA.push_back(0.0);
         dividendTimeA.push_back(1.0e-3 * i);
     }
+
+    #endif
 }
 
 
@@ -549,9 +554,11 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
 test_suite* OldPricerTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Old-style pricer tests");
+    #ifndef QL_DISABLE_DEPRECATED
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdEuropeanPricer));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdAmericanPricers));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdAmericanDividendPricers));
+    #endif
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcSingleFactorPricers));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcMultiFactorPricers));
     return suite;

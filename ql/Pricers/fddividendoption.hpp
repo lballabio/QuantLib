@@ -26,6 +26,11 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
+    /*! \deprecated use DividendVanillaOption with FDDividendEuropeanEngine
+                    instead
+    */
     class FdDividendOption : public FdMultiPeriodOption {
       public:
         // constructor
@@ -51,6 +56,8 @@ namespace QuantLib {
             return std::accumulate(A.begin(), A.end(), 0.0);
         }
     };
+
+    #endif
 
 }
 

@@ -21,6 +21,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     FdDividendOption::FdDividendOption(
                        Option::Type type, Real underlying,
                        Real strike, Spread dividendYield, Rate riskFreeRate,
@@ -113,5 +115,7 @@ namespace QuantLib {
             prices[j] = priceSpline(std::log(newGrid[j]), true);
 
     }
+
+    #endif
 
 }
