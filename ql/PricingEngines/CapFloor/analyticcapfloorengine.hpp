@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! Analytic engine for cap/floor
     /*! \bug This engine does not currently work for caps/floors
-             with caplets whose rate is already fixed.
+             with caplets expired or whose rate was already fixed.
 
         \ingroup capfloorengines
     */
