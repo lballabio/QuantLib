@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.2  2001/05/31 13:17:36  lballabio
+//  Added SimpleSwap
+//
 //  Revision 1.1  2001/05/31 08:56:40  lballabio
 //  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 //
@@ -56,7 +59,7 @@ namespace QuantLib {
                  const RelinkableHandle<TermStructure>& termStructure, 
                  const std::string& isinCode = "",
                  const std::string& description = "");
-          private:
+          protected:
             std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
             RelinkableHandle<TermStructure> termStructure_;
             void performCalculations() const;

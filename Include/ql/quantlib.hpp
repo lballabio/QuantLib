@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/05/31 13:17:36  lballabio
+// Added SimpleSwap
+//
 // Revision 1.13  2001/05/31 08:56:40  lballabio
 // Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 //
@@ -120,6 +123,7 @@
 #include "ql/Indexes/xibor.hpp"
 #include "ql/Indexes/usdlibor.hpp"
 
+#include "ql/Instruments/simpleswap.hpp"
 #include "ql/Instruments/stock.hpp"
 #include "ql/Instruments/swap.hpp"
 

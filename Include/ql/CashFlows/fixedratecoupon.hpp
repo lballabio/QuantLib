@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.2  2001/05/31 13:17:36  lballabio
+//  Added SimpleSwap
+//
 //  Revision 1.1  2001/05/31 08:56:40  lballabio
 //  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 //
@@ -59,6 +62,8 @@ namespace QuantLib {
               nominal_(nominal), rate_(rate) {}
             // CashFlow interface
             double amount() const;
+            // other inspectors
+            double nominal() const { return nominal_; }
           private:
             double nominal_;
             Rate rate_;

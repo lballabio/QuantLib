@@ -1,0 +1,90 @@
+
+/*
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
+ * This file is part of QuantLib.
+ * QuantLib is a C++ open source library for financial quantitative
+ * analysts and developers --- http://quantlib.sourceforge.net/
+ *
+ * QuantLib is free software and you are allowed to use, copy, modify, merge,
+ * publish, distribute, and/or sell copies of it under the conditions stated
+ * in the QuantLib License.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+ *
+ * You should have received a copy of the license along with this file;
+ * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ *
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
+
+/*! \file simpleswap.hpp
+    \brief Simple fixed-rate vs Libor swap
+
+    $Id$
+*/
+
+#ifndef quantlib_simple_swap_h
+#define quantlib_simple_swap_h
+
+#include "ql/Instruments/swap.hpp"
+#include "ql/calendar.hpp"
+#include "ql/daycounter.hpp"
+#include "ql/index.hpp"
+
+namespace QuantLib {
+
+    namespace Instruments {
+
+        //! Simple fixed-rate vs Libor swap
+        class SimpleSwap : public Swap {
+          public:
+            SimpleSwap(bool payFixedRate,
+                // dates
+                const Date& startDate, const Date& endDate, 
+                const Handle<Calendar>& calendar, 
+                // nominals
+                const std::vector<double>& nominals, 
+                // fixed leg
+                int fixedFrequency, 
+                const std::vector<Rate>& couponRates, 
+                RollingConvention fixedRollingConvention, 
+                bool fixedIsAdjusted, 
+                const Handle<DayCounter>& fixedDayCount, 
+                // floating leg
+                int floatingFrequency, 
+                const Handle<Index>& index, int fixingDays,
+                const std::vector<Spread>& spreads, 
+                RollingConvention floatingRollingConvention, 
+                bool floatingIsAdjusted, 
+                const Handle<DayCounter>& floatingDayCount, 
+                // hook to term structure
+                const RelinkableHandle<TermStructure>& termStructure, 
+                // description
+                const std::string& isinCode = "",
+                const std::string& description = "");
+            double BPS() const;
+          private:
+            void performCalculations() const;
+            bool payFixedRate_;
+            mutable double BPS_;
+        };
+
+
+        // inline definitions
+        
+        inline double SimpleSwap::BPS() const {
+            calculate();
+            return BPS_;
+        }
+
+    }
+
+}
+
+
+#endif
