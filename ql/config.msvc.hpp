@@ -62,8 +62,6 @@
     #error Add NOMINMAX to preprocessor definitions
 #endif
 
-#define REQUIRES_DUMMY_RETURN
-
 #define HAVE_CSTDLIB 1
 #define QL_SIZE_T    size_t
 #define QL_ATOI      atoi
@@ -123,8 +121,6 @@
 #define HAVE_CSTRING 1
 #define QL_STRLEN    strlen
 
-#define HAVE_INCOMPLETE_ITERATOR_SUPPORT
-
 #define QL_PATCH_MSVC  // more granularity below
 
 //
@@ -135,17 +131,22 @@
 #elif (_MSC_VER == 1200)
 // move inside here configs specific to VC++ 6.0
 #  define QL_PATCH_MSVC6
-#  define QL_LIB_TOOLSET "vc6"
 #  define GARBLED_REVERSE_ITERATOR
 #  define CHOKES_ON_TYPENAME
+#  define HAVE_INCOMPLETE_ITERATOR_SUPPORT
+#  define REQUIRES_DUMMY_RETURN
+#  define QL_LIB_TOOLSET "vc6"
 #elif (_MSC_VER == 1300)
-// move inside here configs specific to VC++ .Net
-#  define QL_LIB_TOOLSET "vc7"
+// move inside here configs specific to VC++ 7.0 (.Net)
 #  define QL_ITERATOR         std::iterator
 #  define QL_ITERATOR_TRAITS  std::iterator_traits
 #  define SPECIALIZE_MS_ITERATOR_TRAITS // always new ways to surprise us...
+// not sure the following two are really needed
+#  define HAVE_INCOMPLETE_ITERATOR_SUPPORT
+#  define REQUIRES_DUMMY_RETURN
+#  define QL_LIB_TOOLSET "vc7"
 #elif (_MSC_VER == 1310)
-// move inside here configs specific to VC++ .Net 2003
+// move inside here configs specific to VC++ 7.1 (.Net 2003)
 #  define QL_LIB_TOOLSET "vc71"
 #else
 #  define QL_LIB_TOOLSET "vc" BOOST_STRINGIZE(_MSC_VER)
