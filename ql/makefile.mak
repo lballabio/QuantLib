@@ -19,7 +19,7 @@ OUTPUT_DIR     = ..\lib\Win32\Borland
 CORE_OBJS        = calendar.obj$(_D) \
                    dataformatters.obj$(_D) \
                    date.obj$(_D) \
-                   option.cpp$(_D) \
+                   option.obj$(_D) \
                    scheduler.obj$(_D) \
                    solver1d.obj$(_D)
 
