@@ -1,5 +1,5 @@
 
-# to be used with NSIS 1.44 and up
+# to be used with NSIS 1.60 and up
 #
 # usage:
 #       makensis /DLIGHT QuantLib.nsi
@@ -10,32 +10,33 @@
 # $Id$
 
 
+!define VER_NUMBER "0.2.1a4"
 
 # HEADER CONFIGURATION COMMANDS
 !ifdef LIGHT
     Name "QuantLib Light"
     Caption "QuantLib Light - Setup"
     #do not change the name below
-    OutFile "..\QuantLib-0.2.1a4-light-inst.exe"
-    ComponentText "This will install QuantLib Light on your computer.$\n A more complete version including documentation, examples, source code, etc. can be downloaded from http://quantlib.org"
+    OutFile "..\QuantLib-${VER_NUMBER}-light-inst.exe"
+    ComponentText "This will install QuantLib ${VER_NUMBER} Light on your computer.$\n A more complete version including documentation, examples, source code, etc. can be downloaded from http://quantlib.org"
 !else
     Name "QuantLib"
     Caption "QuantLib - Setup"
     #do not change the name below
-    OutFile "..\QuantLib-0.2.1a4-full-inst.exe"
+    OutFile "..\QuantLib-${VER_NUMBER}-full-inst.exe"
 
     InstType "Full (w/ Source Code)"
     InstType Typical
     InstType Minimal
 
-    ComponentText "This will install QuantLib on your computer"
+    ComponentText "This will install QuantLib ${VER_NUMBER} on your computer"
 !endif
 
 SilentInstall normal
 CRCCheck on
 UninstallText "This will uninstall QuantLib. Hit next to continue."
 UninstallExeName "QuantLibUninstall.exe"
-LicenseText "You must read the following license before installing:"
+LicenseText "You must agree with the following license before installing:"
 LicenseData License.txt
 DirShow show
 DirText "Please select a location to install QuantLib (or use the default):"
@@ -139,17 +140,20 @@ SectionEnd
 Function .onInit
   SetOutPath $TEMP
   File /oname=spltmp.bmp "Docs\images\QL-largish.bmp"
-# this doesn't work
-#  ReadRegStr $0 HKLM SOFTWARE\NSIS ""
-#  File /oname=spltmp.exe "$0\splash.exe"
+  #this doesn't work
+  #ReadRegStr $0 HKLM SOFTWARE\NSIS ""
+  #File /oname=spltmp.exe "$0\splash.exe"
 
-#the following line depends on NSIS being installed under E:\program files
-#sorry, but no better solution available yet
-  File /oname=spltmp.exe "E:\program files\nsis\splash.exe"
-  ExecWait '"$TEMP\spltmp.exe" 4000 $HWNDPARENT $TEMP\spltmp'
-  Delete $TEMP\spltmp.exe
-  Delete $TEMP\spltmp.bmp
+  #the following line depends on NSIS being installed under E:\program files
+  #sorry, but no better solution available yet
+  IfFileExists "E:\Program Files\nsis\splash.exe" 0 NoSplashExecutable
+      File /oname=spltmp.exe "E:\program files\nsis\splash.exe"
+      ExecWait '"$TEMP\spltmp.exe" 4000 $HWNDPARENT $TEMP\spltmp'
+      Delete $TEMP\spltmp.exe
+      Delete $TEMP\spltmp.bmp
+  NoSplashExecutable:
 FunctionEnd
+
 
 #it doesn't work
 #Function .onInstSuccess
