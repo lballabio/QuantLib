@@ -29,6 +29,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -208,8 +211,6 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
-	-@erase "$(INTDIR)\g2swaptionengine.obj"
-	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -318,8 +319,8 @@ CLEAN :
 	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\rounding.obj"
 	-@erase "$(INTDIR)\rounding.sbr"
-	-@erase "$(INTDIR)\scheduler.obj"
-	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\schedule.obj"
+	-@erase "$(INTDIR)\schedule.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -411,40 +412,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -620,10 +588,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\g2swaptionengine.sbr"
+	"$(INTDIR)\schedule.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -805,10 +772,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\g2swaptionengine.obj" \
+	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -998,8 +964,6 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
-	-@erase "$(INTDIR)\g2swaptionengine.obj"
-	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -1108,8 +1072,8 @@ CLEAN :
 	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\rounding.obj"
 	-@erase "$(INTDIR)\rounding.sbr"
-	-@erase "$(INTDIR)\scheduler.obj"
-	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\schedule.obj"
+	-@erase "$(INTDIR)\schedule.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -1202,40 +1166,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_7" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1411,10 +1342,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\g2swaptionengine.sbr"
+	"$(INTDIR)\schedule.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1596,10 +1526,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\g2swaptionengine.obj" \
+	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1789,8 +1718,6 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
-	-@erase "$(INTDIR)\g2swaptionengine.obj"
-	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -1899,8 +1826,8 @@ CLEAN :
 	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\rounding.obj"
 	-@erase "$(INTDIR)\rounding.sbr"
-	-@erase "$(INTDIR)\scheduler.obj"
-	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\schedule.obj"
+	-@erase "$(INTDIR)\schedule.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -1992,40 +1919,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2201,10 +2095,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\g2swaptionengine.sbr"
+	"$(INTDIR)\schedule.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2386,10 +2279,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\g2swaptionengine.obj" \
+	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2579,8 +2471,6 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
-	-@erase "$(INTDIR)\g2swaptionengine.obj"
-	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -2689,8 +2579,8 @@ CLEAN :
 	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\rounding.obj"
 	-@erase "$(INTDIR)\rounding.sbr"
-	-@erase "$(INTDIR)\scheduler.obj"
-	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\schedule.obj"
+	-@erase "$(INTDIR)\schedule.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -2783,40 +2673,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_7" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2992,10 +2849,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\g2swaptionengine.sbr"
+	"$(INTDIR)\schedule.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3177,10 +3033,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\g2swaptionengine.obj" \
+	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3370,8 +3225,6 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
-	-@erase "$(INTDIR)\g2swaptionengine.obj"
-	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -3480,8 +3333,8 @@ CLEAN :
 	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\rounding.obj"
 	-@erase "$(INTDIR)\rounding.sbr"
-	-@erase "$(INTDIR)\scheduler.obj"
-	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\schedule.obj"
+	-@erase "$(INTDIR)\schedule.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -3573,40 +3426,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -3782,10 +3602,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\g2swaptionengine.sbr"
+	"$(INTDIR)\schedule.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3967,10 +3786,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\g2swaptionengine.obj" \
+	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4160,8 +3978,6 @@ CLEAN :
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\g2.sbr"
-	-@erase "$(INTDIR)\g2swaptionengine.obj"
-	-@erase "$(INTDIR)\g2swaptionengine.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
@@ -4270,8 +4086,8 @@ CLEAN :
 	-@erase "$(INTDIR)\riyadh.sbr"
 	-@erase "$(INTDIR)\rounding.obj"
 	-@erase "$(INTDIR)\rounding.sbr"
-	-@erase "$(INTDIR)\scheduler.obj"
-	-@erase "$(INTDIR)\scheduler.sbr"
+	-@erase "$(INTDIR)\schedule.obj"
+	-@erase "$(INTDIR)\schedule.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
 	-@erase "$(INTDIR)\seoul.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
@@ -4364,40 +4180,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_7" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -4573,10 +4356,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\g2swaptionengine.sbr"
+	"$(INTDIR)\schedule.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4758,10 +4540,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\g2swaptionengine.obj" \
+	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4773,6 +4554,36 @@ LIB32_OBJS= \
 SOURCE="$(InputPath)"
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -5611,12 +5422,6 @@ SOURCE=.\ql\PricingEngines\Swaption\discretizedswaption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Swaption\g2swaptionengine.cpp
-
-"$(INTDIR)\g2swaptionengine.obj"	"$(INTDIR)\g2swaptionengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaptionengine.cpp
 
 "$(INTDIR)\jamshidianswaptionengine.obj"	"$(INTDIR)\jamshidianswaptionengine.sbr" : $(SOURCE) "$(INTDIR)"
@@ -5955,9 +5760,9 @@ SOURCE=.\ql\grid.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\scheduler.cpp
+SOURCE=.\ql\schedule.cpp
 
-"$(INTDIR)\scheduler.obj"	"$(INTDIR)\scheduler.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\schedule.obj"	"$(INTDIR)\schedule.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

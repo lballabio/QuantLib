@@ -1777,6 +1777,10 @@ SOURCE=.\ql\PricingEngines\Swaption\discretizedswaption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Swaption\g2swaptionengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaptionengine.cpp
 # End Source File
 # Begin Source File
@@ -2387,10 +2391,6 @@ SOURCE=.\ql\instrument.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\marketelement.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\null.hpp
 # End Source File
 # Begin Source File
@@ -2419,15 +2419,19 @@ SOURCE=.\ql\quantlib.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\quote.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\relinkablehandle.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\scheduler.cpp
+SOURCE=.\ql\schedule.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\scheduler.hpp
+SOURCE=.\ql\schedule.hpp
 # End Source File
 # Begin Source File
 
