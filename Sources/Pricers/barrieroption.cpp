@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/07/24 11:26:25  sigmud
+// removed a pedantic warning
+//
 // Revision 1.13  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -128,6 +131,12 @@ namespace QuantLib {
                         value_ = A(-1,-1) - C(-1,-1) + F(-1,-1);
                     break;
                 }
+                break;
+              case Straddle:
+                // Actually, because of a previous QL_REQUIRE statement, 
+                // this code is unreachable, but it avoids a warning
+                throw Error("BarrierOption: Straddle is meaningless for barrier"
+                            " options");
                 break;
             }
             hasBeenCalculated_ = true;
