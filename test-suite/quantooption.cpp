@@ -405,9 +405,12 @@ void QuantoOptionTest::testForwardValues() {
 
     QuantoForwardOptionData values[] = {
         //   type, moneyness,  spot,  div, risk-free rate, reset, maturity,  vol, fx risk-free rate, fx vol, corr,     result, tol
-        // reset=0.0, that is a quanto (not-forward) option
+        // reset=0.0, quanto (not-forward) options
         { Option::Call, 1.05, 100.0, 0.04,           0.08,  0.00,      0.5, 0.20,              0.05,   0.10,  0.3, 5.3280/1.5, 1.0e-4 },
-        {  Option::Put, 1.05, 100.0, 0.04,           0.08,  0.00,      0.5, 0.20,              0.05,   0.10,  0.3,     8.1636, 1.0e-4 }
+        {  Option::Put, 1.05, 100.0, 0.04,           0.08,  0.00,      0.5, 0.20,              0.05,   0.10,  0.3,     8.1636, 1.0e-4 },
+        // reset!=0.0, quanto-forward options (cursory checked against FinCAD 7)
+        { Option::Call, 1.05, 100.0, 0.04,           0.08,  0.25,      0.5, 0.20,              0.05,   0.10,  0.3,     2.0171, 1.0e-4 },
+        {  Option::Put, 1.05, 100.0, 0.04,           0.08,  0.25,      0.5, 0.20,              0.05,   0.10,  0.3,     6.7296, 1.0e-4 }
     };
 
     DayCounter dc = Actual360();
