@@ -63,8 +63,7 @@ namespace QuantLib {
 
 			double addElements(const std::vector<double>& A) const{
 				double sum = 0.0;
-				for(unsigned int i=0;i<A.size();i++){ sum += A[i]; }
-				return sum;
+				return sum = std::accumulate(A.begin(),A.end(),sum);   
 			}
 		};
 

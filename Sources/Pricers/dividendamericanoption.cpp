@@ -56,6 +56,7 @@ namespace QuantLib {
 		double DividendAmericanOption::value() const {
 
 			if (!hasBeenCalculated)	{
+				double dt = theResidualTime/timeStepPerDiv;			  
 			
 			  theOptionIsAmerican = true;
 				setGridLimits();
@@ -74,7 +75,7 @@ namespace QuantLib {
 					if(j >=	0)
 						endDate	= theExDivDates[j];
 					else
-						endDate	= 0.0;
+						endDate	= dt;
 					if(theOptionIsAmerican)
 						model.rollback(prices,beginDate,endDate,timeStepPerDiv,americanCondition);
 					else
@@ -97,14 +98,31 @@ namespace QuantLib {
 						movePricesBeforeExDiv(theDividends[j], theGrid,	 prices, 				oldGrid);
 						movePricesBeforeExDiv(theDividends[j], theGrid,	 controlPrices, oldGrid);
 					}
-			}while(--j>=-1);
-			  DividendEuropeanOption analitic(theType,theUnderlying+addElements(theDividends),
-			  	theStrike,theUnderlyingGrowthRate,theRiskFreeRate,theResidualTime,theVolatility,
-			  	theDividends,theExDivDates);
-				theValue = valueAtCenter(prices)-valueAtCenter(controlPrices)+analitic.value();
-				theDelta = firstDerivativeAtCenter(prices,theGrid)-firstDerivativeAtCenter(controlPrices,theGrid)+analitic.delta();
-				theGamma = secondDerivativeAtCenter(prices,theGrid)-secondDerivativeAtCenter(controlPrices,theGrid)+analitic.gamma();
-				theTheta = 0.0;	//!To be implementeded,	eventually
+					else{//Last iteration: option price and greeks are computed
+      			double theValuePlus = valueAtCenter(prices)-valueAtCenter(controlPrices);
+      			if(theOptionIsAmerican)
+      				model.rollback(prices,dt,0,1,americanCondition);  				
+      			else
+      				model.rollback(prices,dt,0,1);			
+    				model.rollback(controlPrices,dt,0,1);
+      				
+    			  DividendEuropeanOption analitic(theType,theUnderlying+addElements(theDividends),
+    			  	theStrike,theUnderlyingGrowthRate,theRiskFreeRate,theResidualTime,theVolatility,
+    			  	theDividends,theExDivDates);
+    				theValue = valueAtCenter(prices)-valueAtCenter(controlPrices)+analitic.value();
+    				theDelta = firstDerivativeAtCenter(prices,theGrid)-firstDerivativeAtCenter(controlPrices,theGrid)+analitic.delta();
+    				theGamma = secondDerivativeAtCenter(prices,theGrid)-secondDerivativeAtCenter(controlPrices,theGrid)+analitic.gamma();
+    
+      			if(theOptionIsAmerican)
+      				model.rollback(prices,0,-dt,1,americanCondition);
+      			else
+      				model.rollback(prices,0,-dt,1);			
+    				model.rollback(controlPrices,0,-dt,1);
+    				
+      			double theValueMinus = valueAtCenter(prices)-valueAtCenter(controlPrices);
+    				theTheta = (theValuePlus-theValueMinus)/(2*dt)+analitic.theta();    				    					
+					}
+			  }while(--j>=-1);							
 				hasBeenCalculated = true;
 			}
 			return theValue;
