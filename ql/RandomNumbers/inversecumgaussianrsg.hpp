@@ -39,7 +39,7 @@ namespace QuantLib {
 
         Class USG must implement the following interface:
         \code
-            USG::sample_type USG::next() const;
+            USG::sample_type USG::nextSequence() const;
             Size USG::dimension() const;
         \endcode
 
