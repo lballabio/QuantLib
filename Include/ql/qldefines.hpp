@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.16  2001/08/30 17:04:24  nando
+// clock substitued by time
+//
 // Revision 1.15  2001/08/30 17:03:08  nando
 // clock substitued by time
 //
@@ -208,7 +211,7 @@
 /*! \def QL_CLOCK
     \brief clock value
 */
-/*! \def QL_CLOCK
+/*! \def QL_TIME
     \brief time value
 */
 #if defined HAVE_CTIME
