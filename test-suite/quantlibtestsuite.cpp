@@ -61,7 +61,6 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
-
     runner.addTest(AmericanOptionTest::suite());
     runner.addTest(AsianOptionTest::suite());
     runner.addTest(BarrierOptionTest::suite());

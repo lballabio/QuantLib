@@ -34,18 +34,13 @@ namespace QuantLib {
     */
     class BinaryBarrierOption : public OneAssetStrikedOption {
       public:
-//        class results;
         BinaryBarrierOption(
-                     const Handle<CashOrNothingPayoff>& payoff,
-                     const Handle<Exercise>& exercise,
-                     const RelinkableHandle<Quote>& underlying,
-                     const RelinkableHandle<TermStructure>& dividendTS,
-                     const RelinkableHandle<TermStructure>& riskFreeTS,
-                     const RelinkableHandle<BlackVolTermStructure>& volTS,
-                     const Handle<PricingEngine>& engine =
-                        Handle<PricingEngine>(),
-                     const std::string& isinCode = "",
-                     const std::string& description = "");
+            const Handle<BlackScholesStochasticProcess>& stochProc,
+            const Handle<CashOrNothingPayoff>& payoff,
+            const Handle<Exercise>& exercise,
+            const Handle<PricingEngine>& engine = Handle<PricingEngine>(),
+            const std::string& isinCode = "",
+            const std::string& description = "");
       protected:
         void performCalculations() const;
     };

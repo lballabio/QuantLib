@@ -36,14 +36,14 @@ namespace QuantLib {
         #endif
 
         Option::Type type = arg_payoff->optionType();
-        double s0 = arguments_.underlying;
+        double s0 = arguments_.blackScholesProcess->stateVariable->value();
         double strike  = arg_payoff->strike();
 
-        // double          vol     = arguments_.volTS->blackVol(
+        // double          vol     = arguments_.blackScholesProcess->volTS->blackVol(
         //     arguments_.exercise->lastDate(), s0);
-        Rate r = arguments_.riskFreeTS->zeroYield(
+        Rate r = arguments_.blackScholesProcess->riskFreeTS->zeroYield(
             arguments_.exercise->lastDate());
-        // Rate q = arguments_.dividendTS->zeroYield(
+        // Rate q = arguments_.blackScholesProcess->dividendTS->zeroYield(
         //     arguments_.exercise->lastDate());
 
         // unsigned long   seed    = 1000L;
@@ -70,13 +70,13 @@ namespace QuantLib {
 
         // simulate the paths
         Handle<DiffusionProcess> bs(
-                                new BlackScholesProcess(arguments_.riskFreeTS, 
-                                                        arguments_.dividendTS,
-                                                        arguments_.volTS, 
+                                new BlackScholesProcess(arguments_.blackScholesProcess->riskFreeTS, 
+                                                        arguments_.blackScholesProcess->dividendTS,
+                                                        arguments_.blackScholesProcess->volTS, 
                                                         s0));
 
-        Time T = arguments_.riskFreeTS->dayCounter().yearFraction(
-            arguments_.riskFreeTS->referenceDate(),
+        Time T = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
             arguments_.exercise->lastDate());
         // Exercise dates
         TimeGrid grid(T, timeSteps_);

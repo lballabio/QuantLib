@@ -113,13 +113,14 @@ void BinaryBarrierOptionTest::testValues() {
         Handle<CashOrNothingPayoff> payoff(new CashOrNothingPayoff(
             Option::Call, values[i].barrier, values[i].rebate));
 
-        BinaryBarrierOption binaryBarrierOption(
-            payoff,
-            exercise,
-            RelinkableHandle<Quote>(underlyingH),
-            RelinkableHandle<TermStructure>(qTS),
-            RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS),
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(underlyingH),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        BinaryBarrierOption binaryBarrierOption(stochProcess, payoff, exercise,
             engine);
 
         double calculated = binaryBarrierOption.NPV();
@@ -199,13 +200,16 @@ void BinaryBarrierOptionTest::testAmericanValues() {
         Handle<CashOrNothingPayoff> payoff(new CashOrNothingPayoff(
             values[i].optionType, values[i].barrier, values[i].rebate));
 
-        BinaryBarrierOption binaryBarrierOption(
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(underlyingH),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        BinaryBarrierOption binaryBarrierOption(stochProcess,
             payoff,
             amExercise,
-            RelinkableHandle<Quote>(underlyingH),
-            RelinkableHandle<TermStructure>(qTS),
-            RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS),
             engine);
 
         double calculated = binaryBarrierOption.NPV();
@@ -299,14 +303,17 @@ void BinaryBarrierOptionTest::testSelfConsistency() {
                   Handle<CashOrNothingPayoff> payoff(
                       new CashOrNothingPayoff(type, k, rebate));
 
+                  Handle<BlackScholesStochasticProcess> stochProcess(new
+                        BlackScholesStochasticProcess(
+                            RelinkableHandle<Quote>(underlyingH),
+                            RelinkableHandle<TermStructure>(qTS),
+                            RelinkableHandle<TermStructure>(rTS),
+                            RelinkableHandle<BlackVolTermStructure>(volTS)));
+
                   // reference option
-                  BinaryBarrierOption opt(
+                  BinaryBarrierOption opt(stochProcess,
                       payoff,
                       exercises[j],
-                      RelinkableHandle<Quote>(underlyingH),
-                      RelinkableHandle<TermStructure>(qTS),
-                      RelinkableHandle<TermStructure>(rTS),
-                      RelinkableHandle<BlackVolTermStructure>(volTS),
                       engines[j]);
                   if (opt.NPV() > 1.0e-6) {
                       // greeks
@@ -493,14 +500,17 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
                   Handle<CashOrNothingPayoff> payoff(new CashOrNothingPayoff(
                       type, barrier, cashPayoff));
 
+                  Handle<BlackScholesStochasticProcess> stochProcess(new
+                    BlackScholesStochasticProcess(
+                        RelinkableHandle<Quote>(underlyingH),
+                        RelinkableHandle<TermStructure>(qTS),
+                        RelinkableHandle<TermStructure>(rTS),
+                        RelinkableHandle<BlackVolTermStructure>(volTS)));
+
                   // reference option
-                  BinaryBarrierOption opt(
+                  BinaryBarrierOption opt(stochProcess,
                       payoff,
                       exercises[j],
-                      RelinkableHandle<Quote>(underlyingH),
-                      RelinkableHandle<TermStructure>(qTS),
-                      RelinkableHandle<TermStructure>(rTS),
-                      RelinkableHandle<BlackVolTermStructure>(volTS),
                       engines[j]);
                   calcAnalytic = opt.NPV();
 

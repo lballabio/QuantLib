@@ -145,16 +145,20 @@ void BarrierOptionTest::testHaugValues() {
         Handle<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
-        BarrierOption barrierCallOption(
-                values[i].type, 
-                values[i].barrier, 
-                rebate, 
-                callPayoff, 
-                exercise, 
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(underlying), 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS));
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        BarrierOption barrierCallOption(
+                values[i].type, 
+                values[i].barrier, 
+                rebate,
+                stochProcess,
+                callPayoff, 
+                exercise);
         double calculated = barrierCallOption.NPV();
         double expected = values[i].callValue;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
@@ -174,12 +178,9 @@ void BarrierOptionTest::testHaugValues() {
                 values[i].type, 
                 values[i].barrier, 
                 rebate, 
+                stochProcess,
                 putPayoff, 
-                exercise, 
-                RelinkableHandle<Quote>(underlying), 
-                RelinkableHandle<TermStructure>(qTS), 
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS));
+                exercise);
         calculated = barrierPutOption.NPV();
         expected = values[i].putValue;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
@@ -199,12 +200,9 @@ void BarrierOptionTest::testHaugValues() {
                 values[i].type, 
                 values[i].barrier, 
                 rebate, 
+                stochProcess,
                 straddlePayoff, 
-                exercise, 
-                RelinkableHandle<Quote>(underlying), 
-                RelinkableHandle<TermStructure>(qTS), 
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS));
+                exercise);
         calculated = barrierStraddleOption.NPV();
         expected = values[i].callValue+values[i].putValue;
         if (QL_FABS(calculated-expected) > maxStraddleErrorAllowed) {
@@ -285,17 +283,21 @@ void BarrierOptionTest::testBabsiriValues() {
         Handle<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(underlying), 
+                RelinkableHandle<TermStructure>(qTS), 
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
         // analytic
         BarrierOption barrierCallOption(
                 values[i].type, 
                 values[i].barrier, 
-                rebate, 
+                rebate,
+                stochProcess,
                 callPayoff, 
                 exercise, 
-                RelinkableHandle<Quote>(underlying), 
-                RelinkableHandle<TermStructure>(qTS), 
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS), 
                 engine);
         double calculated = barrierCallOption.NPV();
         double expected = values[i].callValue;
@@ -382,17 +384,21 @@ void BarrierOptionTest::testBeagleholeValues() {
         Handle<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(underlying), 
+                RelinkableHandle<TermStructure>(qTS), 
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
         // analytic
         BarrierOption barrierCallOption(
                 values[i].type, 
                 values[i].barrier, 
-                rebate, 
+                rebate,
+                stochProcess,
                 callPayoff, 
                 exercise, 
-                RelinkableHandle<Quote>(underlying), 
-                RelinkableHandle<TermStructure>(qTS), 
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS), 
                 engine);
         double calculated = barrierCallOption.NPV();
         double expected = values[i].callValue;

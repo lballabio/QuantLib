@@ -52,17 +52,17 @@ namespace QuantLib {
 
         double cashPayoff = payoff->cashPayoff();
 
-        double underlying = arguments_.underlying;
+        double underlying = arguments_.blackScholesProcess->stateVariable->value();
 
         double strike = payoff->strike();
-        double vol = arguments_.volTS->blackVol(
+        double vol = arguments_.blackScholesProcess->volTS->blackVol(
             ex->lastDate(), strike);
 
         Rate dividendRate =
-            arguments_.dividendTS->zeroYield(ex->lastDate());
+            arguments_.blackScholesProcess->dividendTS->zeroYield(ex->lastDate());
 
         Rate riskFreeRate =
-            arguments_.riskFreeTS->zeroYield(ex->lastDate());
+            arguments_.blackScholesProcess->riskFreeTS->zeroYield(ex->lastDate());
 
         double vol2 = vol*vol;
         double b_temp = riskFreeRate - dividendRate - 0.5*vol2;
@@ -72,8 +72,8 @@ namespace QuantLib {
         double lambda = QL_SQRT(mu*mu+2*(riskFreeRate-dividendRate)/vol2);
         double l_plus = mu + lambda;
         double l_minus = mu - lambda;
-        Time maturity = arguments_.riskFreeTS->dayCounter().yearFraction(
-            arguments_.riskFreeTS->referenceDate(),
+        Time maturity = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
             ex->lastDate());
         double root_tau = QL_SQRT (maturity);
         double root_two_pi = M_SQRT2 * M_SQRTPI;
@@ -88,7 +88,7 @@ namespace QuantLib {
         CumulativeNormalDistribution f;
 
         // up option, or call
-        if (arguments_.underlying < strike) {
+        if (arguments_.blackScholesProcess->stateVariable->value() < strike) {
             double f_minus_z = f(-z);
             double f_minus_zbar = f(-zbar);
             double mod_exp_z2 = QL_EXP(-z*z/2);

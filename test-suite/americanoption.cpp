@@ -21,6 +21,7 @@
 #include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 #include <map>
@@ -290,11 +291,14 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        VanillaOption option(payoff, exercise,
-                             RelinkableHandle<Quote>(spot),
-                             RelinkableHandle<TermStructure>(qTS),
-                             RelinkableHandle<TermStructure>(rTS),
-                             RelinkableHandle<BlackVolTermStructure>(volTS),
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(spot),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        VanillaOption option(stochProcess, payoff, exercise,
                              engine);
 
         double calculated = option.NPV();
@@ -343,11 +347,14 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        VanillaOption option(payoff, exercise,
-                             RelinkableHandle<Quote>(spot),
-                             RelinkableHandle<TermStructure>(qTS),
-                             RelinkableHandle<TermStructure>(rTS),
-                             RelinkableHandle<BlackVolTermStructure>(volTS),
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(spot),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        VanillaOption option(stochProcess, payoff, exercise,
                              engine);
 
         double calculated = option.NPV();

@@ -36,20 +36,16 @@ namespace QuantLib {
     class DiscreteAveragingAsianOption : public OneAssetStrikedOption {
       public:
           DiscreteAveragingAsianOption(
-                    Average::Type averageType,
-                    const Handle<StrikedTypePayoff>& payoff,
-                    const Handle<Exercise>& exercise,
-                    const RelinkableHandle<Quote>& underlying,
-                    double runningProduct,
-                    Size pastFixings,
-                    std::vector<Date> fixingDates,
-                    const RelinkableHandle<TermStructure>& dividendTS,
-                    const RelinkableHandle<TermStructure>& riskFreeTS,
-                    const RelinkableHandle<BlackVolTermStructure>& volTS,
-                    const Handle<PricingEngine>& engine =
-                    Handle<PricingEngine>(),
-                    const std::string& isinCode = "",
-                    const std::string& description = "");
+                Average::Type averageType,
+                double runningProduct,
+                Size pastFixings,
+                std::vector<Date> fixingDates,
+                const Handle<BlackScholesStochasticProcess>& stochProc,
+                const Handle<StrikedTypePayoff>& payoff,
+                const Handle<Exercise>& exercise,
+                const Handle<PricingEngine>& engine = Handle<PricingEngine>(),
+                const std::string& isinCode = "",
+                const std::string& description = "");
         //! \name Instrument interface
         //@{
         class arguments;

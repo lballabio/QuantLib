@@ -21,8 +21,6 @@ BCC_LIBS            = $(MAKEDIR)\..\lib
 
 # Object files
 QL_TESTS = \
-    americanoption.obj$(_D) \
-    asianoptions.obj$(_D) \
     barrieroption.obj$(_D) \
     binarybarrieroption.obj$(_D) \
     calendars.obj$(_D) \
@@ -31,9 +29,7 @@ QL_TESTS = \
     covariance.obj$(_D) \
     dates.obj$(_D) \
     daycounters.obj$(_D) \
-    digitaloption.obj$(_D) \
     distributions.obj$(_D) \
-    europeanoption.obj$(_D) \
     factorial.obj$(_D) \
     instruments.obj$(_D) \
     integrals.obj$(_D) \
@@ -51,6 +47,10 @@ QL_TESTS = \
     swap.obj$(_D) \
     swaption.obj$(_D) \
     termstructures.obj$(_D) \
+    digitaloption.obj$(_D) \
+    europeanoption.obj$(_D) \
+    asianoptions.obj$(_D) \
+    americanoption.obj$(_D) \
     stats.obj$(_D)
 
 # Tools to be used

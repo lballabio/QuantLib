@@ -44,21 +44,21 @@ namespace QuantLib {
         Option::Type type = payoff->optionType();
         double cashPayoff = payoff->cashPayoff();
 
-        double u = arguments_.underlying;
+        double u = arguments_.blackScholesProcess->stateVariable->value();
         double k = payoff->strike();
 
 
-        double vol = arguments_.volTS->blackVol(
+        double vol = arguments_.blackScholesProcess->volTS->blackVol(
             arguments_.exercise->lastDate(), k);
 
-        DiscountFactor discount = arguments_.riskFreeTS->discount(
+        DiscountFactor discount = arguments_.blackScholesProcess->riskFreeTS->discount(
             arguments_.exercise->lastDate());
-        Rate r = arguments_.riskFreeTS->zeroYield(
+        Rate r = arguments_.blackScholesProcess->riskFreeTS->zeroYield(
             arguments_.exercise->lastDate());
-        Rate q = arguments_.dividendTS->zeroYield(
+        Rate q = arguments_.blackScholesProcess->dividendTS->zeroYield(
             arguments_.exercise->lastDate());
 
-        double volSqrtT = QL_SQRT(arguments_.volTS->blackVariance(
+        double volSqrtT = QL_SQRT(arguments_.blackScholesProcess->volTS->blackVariance(
             arguments_.exercise->lastDate(), k));
 
         double T = volSqrtT*volSqrtT/(vol*vol);

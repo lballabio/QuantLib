@@ -2268,6 +2268,10 @@ SOURCE=.\ql\solver1d.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\stochasticprocess.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\swaptionvolstructure.hpp
 # End Source File
 # Begin Source File

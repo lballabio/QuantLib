@@ -24,20 +24,16 @@
 #define quantlib_oneasset_option_h
 
 #include <ql/option.hpp>
-#include <ql/termstructure.hpp>
-#include <ql/voltermstructure.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
 
     //! Base class for options on a single asset
     class OneAssetOption : public Option {
       public:
-        OneAssetOption(const Handle<Payoff>& payoff,
+        OneAssetOption(const Handle<BlackScholesStochasticProcess>& stochProc,
+                       const Handle<Payoff>& payoff,
                        const Handle<Exercise>& exercise,
-                       const RelinkableHandle<Quote>& underlying,
-                       const RelinkableHandle<TermStructure>& dividendTS,
-                       const RelinkableHandle<TermStructure>& riskFreeTS,
-                       const RelinkableHandle<BlackVolTermStructure>& volTS,
                        const Handle<PricingEngine>& engine =
                                             Handle<PricingEngine>(),
                        const std::string& isinCode = "",
@@ -83,9 +79,7 @@ namespace QuantLib {
         mutable double delta_, deltaForward_, elasticity_, gamma_, theta_,
             thetaPerDay_, vega_, rho_, dividendRho_, itmProbability_;
         // arguments
-        RelinkableHandle<Quote> underlying_;
-        RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
-        RelinkableHandle<BlackVolTermStructure> volTS_;
+        Handle<BlackScholesStochasticProcess> blackScholesProcess_;
       private:
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
@@ -104,11 +98,10 @@ namespace QuantLib {
     //! arguments for single asset option calculation
     class OneAssetOption::arguments : public Option::arguments {
       public:
-        arguments() : underlying(Null<double>()) {}
+        arguments()
+        : blackScholesProcess(Handle<BlackScholesStochasticProcess>()) {}
         void validate() const;
-        double underlying;
-        RelinkableHandle<TermStructure> riskFreeTS, dividendTS;
-        RelinkableHandle<BlackVolTermStructure> volTS;
+        Handle<BlackScholesStochasticProcess> blackScholesProcess;
     };
 
     //! %results from single asset option calculation

@@ -81,10 +81,11 @@ namespace QuantLib {
     inline Handle<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type>
     MCVanillaEngine<RNG,S>::pathGenerator() const {
         Handle<DiffusionProcess> bs(new
-            BlackScholesProcess(arguments_.riskFreeTS,
-                                arguments_.dividendTS,
-                                arguments_.volTS,
-                                arguments_.underlying));
+            BlackScholesProcess(
+                arguments_.blackScholesProcess->riskFreeTS,
+                arguments_.blackScholesProcess->dividendTS,
+                arguments_.blackScholesProcess->volTS,
+                arguments_.blackScholesProcess->stateVariable->value()));
 
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =

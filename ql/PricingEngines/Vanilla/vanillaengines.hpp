@@ -93,15 +93,15 @@ namespace QuantLib {
     template <class T>
     void BinomialVanillaEngine<T>::calculate() const {
 
-        double s0 = arguments_.underlying;
-        double v = arguments_.volTS->blackVol(
+        double s0 = arguments_.blackScholesProcess->stateVariable->value();
+        double v = arguments_.blackScholesProcess->volTS->blackVol(
             arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
-        Rate r = arguments_.riskFreeTS->zeroYield(maturityDate);
-        Rate q = arguments_.dividendTS->zeroYield(maturityDate);
-        Date referenceDate = arguments_.riskFreeTS->referenceDate();
-        Date todaysDate    = arguments_.riskFreeTS->todaysDate();
-        DayCounter dc      = arguments_.riskFreeTS->dayCounter();
+        Rate r = arguments_.blackScholesProcess->riskFreeTS->zeroYield(maturityDate);
+        Rate q = arguments_.blackScholesProcess->dividendTS->zeroYield(maturityDate);
+        Date referenceDate = arguments_.blackScholesProcess->riskFreeTS->referenceDate();
+        Date todaysDate    = arguments_.blackScholesProcess->riskFreeTS->todaysDate();
+        DayCounter dc      = arguments_.blackScholesProcess->riskFreeTS->dayCounter();
 
         // binomial trees with constant coefficient
         RelinkableHandle<TermStructure> flatRiskFree(
@@ -123,7 +123,7 @@ namespace QuantLib {
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
-        Time maturity = arguments_.riskFreeTS->dayCounter().yearFraction(
+        Time maturity = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
             referenceDate, maturityDate);;
 
         Handle<DiffusionProcess> bs(

@@ -75,19 +75,22 @@ namespace QuantLib {
         double strike = payoff->strike();
 
         originalArguments_->payoff = arguments_.payoff;
-        originalArguments_->underlying    = arguments_.underlying;
-        originalArguments_->dividendTS    =
-            RelinkableHandle<TermStructure>(
-                Handle<TermStructure>(
-                    new QuantoTermStructure(arguments_.dividendTS,
-                                            arguments_.riskFreeTS,
-                                            arguments_.foreignRiskFreeTS,
-                                            arguments_.volTS, strike,
-                                            arguments_.exchRateVolTS,
-                                            exchangeRateATMlevel,
-                                            arguments_.correlation)));
-        originalArguments_->riskFreeTS    = arguments_.riskFreeTS;
-        originalArguments_->volTS         = arguments_.volTS;
+
+//        originalArguments_->underlying    = arguments_.blackScholesProcess->stateVariable->value();
+//        originalArguments_->riskFreeTS    = arguments_.riskFreeTS;
+//        originalArguments_->volTS         = arguments_.blackScholesProcess->volTS;
+        originalArguments_->blackScholesProcess=arguments_.blackScholesProcess;
+        // dividendTS needs modification
+        originalArguments_->blackScholesProcess->dividendTS =
+            RelinkableHandle<TermStructure>(Handle<TermStructure>(new
+                QuantoTermStructure(
+                    arguments_.blackScholesProcess->dividendTS,
+                    arguments_.blackScholesProcess->riskFreeTS,
+                    arguments_.foreignRiskFreeTS,
+                    arguments_.blackScholesProcess->volTS, strike,
+                    arguments_.exchRateVolTS, exchangeRateATMlevel,
+                    arguments_.correlation)));
+
         originalArguments_->exercise      = arguments_.exercise;
 
         originalArguments_->validate();
@@ -108,12 +111,13 @@ namespace QuantLib {
             originalResults_->dividendRho;
 
 
-        double volatility = arguments_.volTS->blackVol(
-            arguments_.exercise->lastDate(),
-            arguments_.underlying);
+        double volatility =
+            arguments_.blackScholesProcess->volTS->blackVol(
+                arguments_.exercise->lastDate(),
+                arguments_.blackScholesProcess->stateVariable->value());
         results_.qvega = + arguments_.correlation
-            * arguments_.volTS->blackVol(arguments_.exercise->lastDate(),
-                                         arguments_.underlying) *
+            * arguments_.blackScholesProcess->volTS->blackVol(arguments_.exercise->lastDate(),
+                                         arguments_.blackScholesProcess->stateVariable->value()) *
             originalResults_->dividendRho;
         results_.qrho = - originalResults_->dividendRho;
         results_.qlambda = exchangeRateFlatVol *

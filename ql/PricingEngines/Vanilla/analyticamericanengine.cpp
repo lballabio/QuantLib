@@ -52,16 +52,16 @@ namespace QuantLib {
 
         double cashPayoff = payoff->cashPayoff();
 
-        double underlying = arguments_.underlying;
+        double underlying = arguments_.blackScholesProcess->stateVariable->value();
 
         double strike = payoff->strike();
-        double variance = arguments_.volTS->blackVariance(
+        double variance = arguments_.blackScholesProcess->volTS->blackVariance(
             ex->lastDate(), strike);
 
-        Rate dividendDiscount = arguments_.dividendTS->discount(
+        Rate dividendDiscount = arguments_.blackScholesProcess->dividendTS->discount(
             ex->lastDate());
 
-        Rate riskFreeDiscount = arguments_.riskFreeTS->discount(
+        Rate riskFreeDiscount = arguments_.blackScholesProcess->riskFreeTS->discount(
             ex->lastDate());
 
         double b_temp = QL_LOG(dividendDiscount/riskFreeDiscount) - 0.5*variance;
@@ -83,7 +83,7 @@ namespace QuantLib {
         CumulativeNormalDistribution f;
 
         // up option, or call
-        if (arguments_.underlying < payoff->strike()) {
+        if (arguments_.blackScholesProcess->stateVariable->value() < payoff->strike()) {
             double f_minus_z = f(-z);
             double f_minus_zbar = f(-zbar);
             double mod_exp_z2 = QL_EXP(-z*z/2);
@@ -99,8 +99,8 @@ namespace QuantLib {
                             + pow_plus * ((QL_EXP(-z*z/2)) / denom_delta -
                                           l_plus * f_minus_z / underlying));
 
-            Time tRho = arguments_.riskFreeTS->dayCounter().yearFraction(
-                arguments_.riskFreeTS->referenceDate(),
+            Time tRho = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
                 arguments_.exercise->lastDate());
             double denom_rho = lambda*QL_SQRT(variance/tRho)*root_two_pi;
             results_.rho = cashPayoff*
@@ -127,8 +127,8 @@ namespace QuantLib {
                             -pow_plus * (mod_exp_z2/denom_delta
                                          + l_plus * f_z / underlying));
 
-            Time tRho = arguments_.riskFreeTS->dayCounter().yearFraction(
-                arguments_.riskFreeTS->referenceDate(),
+            Time tRho = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
                 arguments_.exercise->lastDate());
             double denom_rho = lambda*QL_SQRT(variance/tRho)*root_two_pi;
             results_.rho = 

@@ -28,21 +28,18 @@
 namespace QuantLib {
 
     BarrierOption::BarrierOption(
-                         Barrier::Type barrierType,
-                         double barrier,
-                         double rebate,
-                         const Handle<StrikedTypePayoff>& payoff,
-                         const Handle<Exercise>& exercise,
-                         const RelinkableHandle<Quote>& underlying,
-                         const RelinkableHandle<TermStructure>& dividendTS,
-                         const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const RelinkableHandle<BlackVolTermStructure>& volTS,
-                         const Handle<PricingEngine>& engine,
-                         const std::string& isinCode, 
-                         const std::string& description)
-    : OneAssetStrikedOption(payoff, exercise, underlying, dividendTS,
-      riskFreeTS, volTS, engine, isinCode, description),
-      barrierType_(barrierType), barrier_(barrier), rebate_(rebate) {
+        Barrier::Type barrierType,
+        double barrier,
+        double rebate,
+        const Handle<BlackScholesStochasticProcess>& stochProc,
+        const Handle<StrikedTypePayoff>& payoff,
+        const Handle<Exercise>& exercise,
+        const Handle<PricingEngine>& engine,
+        const std::string& isinCode, 
+        const std::string& description)
+    : OneAssetStrikedOption(stochProc, payoff, exercise, engine, isinCode,
+      description), barrierType_(barrierType), barrier_(barrier),
+      rebate_(rebate) {
 
         if (IsNull(engine))
             setPricingEngine(Handle<PricingEngine>(new AnalyticBarrierEngine));
@@ -84,32 +81,36 @@ namespace QuantLib {
 
         switch (barrierType) {
           case Barrier::DownIn:
-            QL_REQUIRE(underlying >= barrier, "underlying (" +
-                       DoubleFormatter::toString(underlying) +
-                       ") < barrier (" +
-                       DoubleFormatter::toString(barrier) +
-                       "): down-and-in barrier undefined");
+            QL_REQUIRE(blackScholesProcess->stateVariable->value() >= barrier,
+                "underlying (" +
+                DoubleFormatter::toString(blackScholesProcess->stateVariable->value()) +
+                ") < barrier (" +
+                DoubleFormatter::toString(barrier) +
+                "): down-and-in barrier undefined");
             break;
           case Barrier::UpIn:
-            QL_REQUIRE(underlying <= barrier, "underlying ("+
-                       DoubleFormatter::toString(underlying) +
-                       ") > barrier ("+
-                       DoubleFormatter::toString(barrier) +
-                       "): up-and-in barrier undefined");
+            QL_REQUIRE(blackScholesProcess->stateVariable->value() <= barrier,
+                "underlying ("+
+                DoubleFormatter::toString(blackScholesProcess->stateVariable->value()) +
+                ") > barrier ("+
+                DoubleFormatter::toString(barrier) +
+                "): up-and-in barrier undefined");
             break;
           case Barrier::DownOut:
-            QL_REQUIRE(underlying >= barrier, "underlying ("+
-                       DoubleFormatter::toString(underlying) +
-                       ") < barrier ("+ 
-                       DoubleFormatter::toString(barrier) +
-                       "): down-and-out barrier undefined");
+            QL_REQUIRE(blackScholesProcess->stateVariable->value() >= barrier,
+                "underlying ("+
+                DoubleFormatter::toString(blackScholesProcess->stateVariable->value()) +
+                ") < barrier ("+ 
+                DoubleFormatter::toString(barrier) +
+                "): down-and-out barrier undefined");
             break;
           case Barrier::UpOut:
-            QL_REQUIRE(underlying <= barrier, "underlying ("+
-                       DoubleFormatter::toString(underlying) +
-                       ") > barrier ("+
-                       DoubleFormatter::toString(barrier) +
-                       "): up-and-out barrier undefined");
+            QL_REQUIRE(blackScholesProcess->stateVariable->value() <= barrier,
+                "underlying ("+
+                DoubleFormatter::toString(blackScholesProcess->stateVariable->value()) +
+                ") > barrier ("+
+                DoubleFormatter::toString(barrier) +
+                "): up-and-out barrier undefined");
             break;
           default:
             throw Error("Barrier Option: unknown type");

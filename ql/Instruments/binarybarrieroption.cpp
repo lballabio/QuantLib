@@ -28,17 +28,14 @@
 namespace QuantLib {
 
     BinaryBarrierOption::BinaryBarrierOption(
-                    const Handle<CashOrNothingPayoff>& payoff,
-                    const Handle<Exercise>& exercise,
-                    const RelinkableHandle<Quote>& underlying,
-                    const RelinkableHandle<TermStructure>& dividendTS,
-                    const RelinkableHandle<TermStructure>& riskFreeTS,
-                    const RelinkableHandle<BlackVolTermStructure>& volTS,
-                    const Handle<PricingEngine>& engine,
-                    const std::string& isinCode, 
-                    const std::string& description)
-    : OneAssetStrikedOption(payoff, exercise, underlying, dividendTS,
-      riskFreeTS, volTS, engine, isinCode, description) {
+        const Handle<BlackScholesStochasticProcess>& stochProc,
+        const Handle<CashOrNothingPayoff>& payoff,
+        const Handle<Exercise>& exercise,
+        const Handle<PricingEngine>& engine,
+        const std::string& isinCode, 
+        const std::string& description)
+    : OneAssetStrikedOption(stochProc, payoff, exercise, engine, isinCode,
+      description) {
 
         if (IsNull(engine)) {
             switch (exercise->type()) {

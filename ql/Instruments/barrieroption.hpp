@@ -41,12 +41,9 @@ namespace QuantLib {
         BarrierOption(Barrier::Type barrierType,
                       double barrier,
                       double rebate,
+                      const Handle<BlackScholesStochasticProcess>& stochProc,
                       const Handle<StrikedTypePayoff>& payoff,
                       const Handle<Exercise>& exercise,
-                      const RelinkableHandle<Quote>& underlying,
-                      const RelinkableHandle<TermStructure>& dividendTS,
-                      const RelinkableHandle<TermStructure>& riskFreeTS,
-                      const RelinkableHandle<BlackVolTermStructure>& volTS,
                       const Handle<PricingEngine>& engine =
                       Handle<PricingEngine>(),
                       const std::string& isinCode = "",

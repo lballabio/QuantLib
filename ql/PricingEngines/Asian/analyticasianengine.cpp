@@ -44,8 +44,8 @@ namespace QuantLib {
         #endif
 
 
-        Date referenceDate = arguments_.riskFreeTS->referenceDate();
-        DayCounter dc = arguments_.volTS->dayCounter();
+        Date referenceDate = arguments_.blackScholesProcess->riskFreeTS->referenceDate();
+        DayCounter dc = arguments_.blackScholesProcess->volTS->dayCounter();
         std::vector<Time> fixingTimes;
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {
@@ -68,7 +68,7 @@ namespace QuantLib {
             fixingTimes.end(), 0.0);
 
 
-        double vola = arguments_.volTS->blackVol(
+        double vola = arguments_.blackScholesProcess->volTS->blackVol(
             arguments_.exercise->lastDate(),
             payoff->strike());
         double temp = 0.0;
@@ -79,42 +79,42 @@ namespace QuantLib {
 
 
         Rate dividendRate =
-            arguments_.dividendTS->zeroYield(arguments_.exercise->lastDate());
+            arguments_.blackScholesProcess->dividendTS->zeroYield(arguments_.exercise->lastDate());
         Rate riskFreeRate =
-            arguments_.riskFreeTS->zeroYield(arguments_.exercise->lastDate());
+            arguments_.blackScholesProcess->riskFreeTS->zeroYield(arguments_.exercise->lastDate());
         double nu = riskFreeRate - dividendRate - 0.5*vola*vola;
         double runningLog = QL_LOG(arguments_.runningProduct);
         double muG = pastWeight * runningLog +
-            futureWeight * QL_LOG(arguments_.underlying) +
+            futureWeight * QL_LOG(arguments_.blackScholesProcess->stateVariable->value()) +
             nu*timeSum/N;
         double forwardPrice = QL_EXP(muG + variance / 2.0);
 
 
         DiscountFactor riskFreeDiscount =
-            arguments_.riskFreeTS->discount(arguments_.exercise->lastDate());
+            arguments_.blackScholesProcess->riskFreeTS->discount(arguments_.exercise->lastDate());
 
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
         results_.value = black.value();
-        results_.delta = black.delta(arguments_.underlying);
+        results_.delta = black.delta(arguments_.blackScholesProcess->stateVariable->value());
         // results_.deltaForward = black.value();
-        results_.gamma = black.gamma(arguments_.underlying);
+        results_.gamma = black.gamma(arguments_.blackScholesProcess->stateVariable->value());
 
-        Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
-            arguments_.riskFreeTS->referenceDate(),
+        Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
             arguments_.exercise->lastDate());
         results_.rho = black.rho(t);
 
-        t = arguments_.dividendTS->dayCounter().yearFraction(
-            arguments_.dividendTS->referenceDate(),
+        t = arguments_.blackScholesProcess->dividendTS->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->dividendTS->referenceDate(),
             arguments_.exercise->lastDate());
         results_.dividendRho = black.dividendRho(t);
 
-        t = arguments_.volTS->dayCounter().yearFraction(
-            arguments_.volTS->referenceDate(),
+        t = arguments_.blackScholesProcess->volTS->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->volTS->referenceDate(),
             arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
-        results_.theta = black.theta(arguments_.underlying, t);
+        results_.theta = black.theta(arguments_.blackScholesProcess->stateVariable->value(), t);
 
         results_.strikeSensitivity = black.strikeSensitivity();
 

@@ -38,7 +38,7 @@
 namespace QuantLib {
 
     //! Binary engine base class
-    class BinaryBarrierEngine 
+    class BinaryBarrierEngine
         : public GenericEngine<BinaryBarrierOption::arguments,
                                BinaryBarrierOption::results> {};
 
@@ -119,10 +119,11 @@ namespace QuantLib {
     MCBinaryBarrierEngine<RNG,S>::pathGenerator() const {
 
         Handle<DiffusionProcess> bs(new
-            BlackScholesProcess(arguments_.riskFreeTS,
-                                arguments_.dividendTS,
-                                arguments_.volTS,
-                                arguments_.underlying));
+            BlackScholesProcess(
+                arguments_.blackScholesProcess->riskFreeTS,
+                arguments_.blackScholesProcess->dividendTS,
+                arguments_.blackScholesProcess->volTS,
+                arguments_.blackScholesProcess->stateVariable->value()));
 
         TimeGrid grid = timeGrid();
 
@@ -162,29 +163,29 @@ namespace QuantLib {
         UniformRandomSequenceGenerator
             sequenceGen(grid.size()-1, UniformRandomGenerator(76));
 
-        return Handle<MCBinaryBarrierEngine<RNG,S>::path_pricer_type>(
-            new BinaryBarrierPathPricer(
-                    payoff,
-                    exercise,
-                    arguments_.underlying,
-                    arguments_.riskFreeTS,
-                    Handle<DiffusionProcess> (new BlackScholesProcess(
-                                    arguments_.riskFreeTS,
-                                    arguments_.dividendTS,
-                                    arguments_.volTS,
-                                    arguments_.underlying)),
-                    sequenceGen));
-//        }
-
+        return Handle<MCBinaryBarrierEngine<RNG,S>::path_pricer_type>(new
+          BinaryBarrierPathPricer(
+            payoff,
+            exercise,
+            arguments_.blackScholesProcess->stateVariable->value(),
+            arguments_.blackScholesProcess->riskFreeTS,
+            Handle<DiffusionProcess>(new
+              BlackScholesProcess(
+                  arguments_.blackScholesProcess->riskFreeTS,
+                  arguments_.blackScholesProcess->dividendTS,
+                  arguments_.blackScholesProcess->volTS,
+                  arguments_.blackScholesProcess->stateVariable->value())),
+            sequenceGen));
     }
 
 
     template <class RNG, class S>
     inline
     TimeGrid MCBinaryBarrierEngine<RNG,S>::timeGrid() const {
-        Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
-            arguments_.riskFreeTS->referenceDate(),
-            arguments_.exercise->lastDate());
+        Time t =
+          arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+          arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
+          arguments_.exercise->lastDate());
         return TimeGrid(t, Size(t * maxTimeStepsPerYear_));
     }
 

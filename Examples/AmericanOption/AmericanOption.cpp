@@ -124,14 +124,15 @@ int main(int argc, char* argv[])
         Handle<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(type, strike));
 
+        Handle<BlackScholesStochasticProcess> stochasticProcess(new
+            BlackScholesStochasticProcess(
+                underlyingH,
+                flatDividendTS,
+                flatTermStructure,
+                flatVolTS));
+
         // European option
-        VanillaOption euroOption(
-            payoff,
-            exercise,
-            underlyingH,
-            flatDividendTS,
-            flatTermStructure,
-            flatVolTS,
+        VanillaOption euroOption(stochasticProcess, payoff, exercise,
             Handle<PricingEngine>(new AnalyticEuropeanEngine()));
 
         // method: Black Scholes Engine
@@ -145,13 +146,7 @@ int main(int argc, char* argv[])
              << std::endl;
 
         // American option
-        VanillaOption option(
-            payoff,
-            amExercise,
-            underlyingH,
-            flatDividendTS,
-            flatTermStructure,
-            flatVolTS);
+        VanillaOption option(stochasticProcess, payoff, amExercise);
 
 //        Size timeSteps = 512001;
         Size timeSteps = 801;

@@ -141,7 +141,7 @@ namespace QuantLib {
 
 
     double AnalyticBarrierEngine::underlying() const {
-        return arguments_.underlying;
+        return arguments_.blackScholesProcess->stateVariable->value();
     }
 
     double AnalyticBarrierEngine::strike() const {
@@ -157,13 +157,13 @@ namespace QuantLib {
     }
 
     Time AnalyticBarrierEngine::residualTime() const {
-        return arguments_.riskFreeTS->dayCounter().yearFraction(
-            arguments_.riskFreeTS->referenceDate(),
+        return arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
             arguments_.exercise->lastDate());
     }
 
     double AnalyticBarrierEngine::volatility() const {
-        return arguments_.volTS->blackVol(residualTime(), strike());
+        return arguments_.blackScholesProcess->volTS->blackVol(residualTime(), strike());
     }
 
     double AnalyticBarrierEngine::stdDeviation() const {
@@ -179,19 +179,19 @@ namespace QuantLib {
     }
 
     Rate AnalyticBarrierEngine::riskFreeRate() const {
-        return arguments_.riskFreeTS->zeroYield(residualTime());
+        return arguments_.blackScholesProcess->riskFreeTS->zeroYield(residualTime());
     }
 
     DiscountFactor AnalyticBarrierEngine::riskFreeDiscount() const {
-        return arguments_.riskFreeTS->discount(residualTime());
+        return arguments_.blackScholesProcess->riskFreeTS->discount(residualTime());
     }
 
     Rate AnalyticBarrierEngine::dividendYield() const {
-        return arguments_.dividendTS->zeroYield(residualTime());
+        return arguments_.blackScholesProcess->dividendTS->zeroYield(residualTime());
     }
 
     DiscountFactor AnalyticBarrierEngine::dividendDiscount() const {
-        return arguments_.dividendTS->discount(residualTime());
+        return arguments_.blackScholesProcess->dividendTS->discount(residualTime());
     }
 
     double AnalyticBarrierEngine::mu() const {

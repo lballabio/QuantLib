@@ -24,30 +24,26 @@
 namespace QuantLib {
 
     QuantoForwardVanillaOption::QuantoForwardVanillaOption(
-                 const Handle<StrikedTypePayoff>& payoff,
-                 const Handle<Exercise>& exercise,
-                 const RelinkableHandle<Quote>& underlying,
-                 const RelinkableHandle<TermStructure>& dividendTS,
-                 const RelinkableHandle<TermStructure>& riskFreeTS,
-                 const RelinkableHandle<BlackVolTermStructure>& volTS,
-                 const Handle<PricingEngine>& engine,
-                 const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-                 const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
-                 const RelinkableHandle<Quote>& correlation,
-                 double moneyness,
-                 Date resetDate,
-                 const std::string& isinCode,
-                 const std::string& description)
-    : QuantoVanillaOption(payoff, exercise, underlying, dividendTS, riskFreeTS,
-                          volTS, engine, foreignRiskFreeTS, 
-                          exchRateVolTS, correlation, isinCode, description), 
+        const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
+        const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
+        const RelinkableHandle<Quote>& correlation,
+        double moneyness,
+        Date resetDate,
+        const Handle<BlackScholesStochasticProcess>& stochProc,
+        const Handle<StrikedTypePayoff>& payoff,
+        const Handle<Exercise>& exercise,
+        const Handle<PricingEngine>& engine,
+        const std::string& isinCode,
+        const std::string& description)
+    : QuantoVanillaOption(foreignRiskFreeTS, exchRateVolTS, correlation,
+      stochProc, payoff, exercise, engine, isinCode, description),
       moneyness_(moneyness), resetDate_(resetDate) {
         QL_REQUIRE(!IsNull(engine),
                    "QuantoForwardVanillaOption::QuantoForwardVanillaOption : "
                    "null engine or wrong engine type");
     }
 
-    void QuantoForwardVanillaOption::setupArguments(Arguments* args) 
+    void QuantoForwardVanillaOption::setupArguments(Arguments* args)
         const {
         VanillaOption::setupArguments(args);
         QuantoForwardVanillaOption::arguments* arguments =

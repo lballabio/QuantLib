@@ -110,11 +110,12 @@ namespace QuantLib {
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
-        return Handle<MCEuropeanEngine<RNG,S>::path_pricer_type>(
-            new EuropeanPathPricer(payoff->optionType(),
-                                   arguments_.underlying,
-                                   payoff->strike(),
-                                   arguments_.riskFreeTS));
+        return Handle<MCEuropeanEngine<RNG,S>::path_pricer_type>(new
+            EuropeanPathPricer(
+                payoff->optionType(),
+                arguments_.blackScholesProcess->stateVariable->value(),
+                payoff->strike(),
+                arguments_.blackScholesProcess->riskFreeTS));
     }
 
 
@@ -150,12 +151,12 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCEuropeanEngine<RNG,S>::timeGrid() const {
 
-        Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
-            arguments_.riskFreeTS->referenceDate(),
+        Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
             arguments_.exercise->lastDate());
 
         TimeGridCalculator calc(t, maxTimeStepsPerYear_);
-        arguments_.volTS->accept(calc);
+        arguments_.blackScholesProcess->volTS->accept(calc);
         return TimeGrid(t, calc.size());
     }
 

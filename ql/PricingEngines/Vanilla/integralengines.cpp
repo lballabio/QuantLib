@@ -60,22 +60,22 @@ namespace QuantLib {
         Handle<StrikedTypePayoff> payoff = arguments_.payoff;
         #endif
 
-        double variance = arguments_.volTS->blackVariance(
+        double variance = arguments_.blackScholesProcess->volTS->blackVariance(
                                        arguments_.exercise->lastDate(), payoff->strike());
 
-        double dividendDiscount = arguments_.dividendTS->discount(
+        double dividendDiscount = arguments_.blackScholesProcess->dividendTS->discount(
             arguments_.exercise->lastDate());
-        double riskFreeDiscount = arguments_.riskFreeTS->discount(
+        double riskFreeDiscount = arguments_.blackScholesProcess->riskFreeTS->discount(
             arguments_.exercise->lastDate());
         double drift = QL_LOG(dividendDiscount/riskFreeDiscount) - 0.5*variance;
 
-        Integrand f(arguments_.payoff, arguments_.underlying, 
+        Integrand f(arguments_.payoff, arguments_.blackScholesProcess->stateVariable->value(), 
                     drift, variance);
         SegmentIntegral integrator(5000);
 
         double infinity = 10.0*QL_SQRT(variance);
         results_.value =
-            arguments_.riskFreeTS->discount(arguments_.exercise->lastDate()) /
+            arguments_.blackScholesProcess->riskFreeTS->discount(arguments_.exercise->lastDate()) /
             QL_SQRT(2.0*M_PI*variance) *
             integrator(f, drift-infinity, drift+infinity);
     }

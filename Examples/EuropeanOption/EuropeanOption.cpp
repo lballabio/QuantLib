@@ -252,14 +252,13 @@ int main(int argc, char* argv[])
         Handle<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(type, strike));
 
-        VanillaOption option(
-            payoff,
-            exercise,
-            underlyingH,
-            flatDividendTS,
-            flatTermStructure,
-            flatVolTS,
-            //  blackSurface,
+        Handle<BlackScholesStochasticProcess> stochasticProcess(new
+            BlackScholesStochasticProcess(underlyingH, flatDividendTS,
+                flatTermStructure,
+                //  blackSurface
+                flatVolTS));
+
+        VanillaOption option(stochasticProcess, payoff, exercise,
             Handle<PricingEngine>(new AnalyticEuropeanEngine()));
 
 
@@ -495,17 +494,14 @@ int main(int argc, char* argv[])
 
         double correlation = 0.0;
         QuantoVanillaOption quantoOption(
+            flatTermStructure,
+            flatVolTS,
+            RelinkableHandle<Quote>(Handle<Quote>(new
+                SimpleQuote(correlation))),
+            stochasticProcess,
             payoff,
             exercise,
-            underlyingH,
-            flatDividendTS,
-            flatTermStructure,
-            flatVolTS,
-            quantoEngine,
-            flatTermStructure,
-            flatVolTS,
-            RelinkableHandle<Quote>(
-                Handle<Quote>(new SimpleQuote(correlation))));
+            quantoEngine);
 
         value = quantoOption.NPV();
         double delta = quantoOption.delta();
@@ -554,17 +550,14 @@ int main(int argc, char* argv[])
             forwardEngine(new ForwardEngine<VanillaOption::arguments,
                                             VanillaOption::results>(baseEngine));
 
+        Date resetDate = settlementDate.plusMonths(1);
         ForwardVanillaOption forwardOption(
+            1.1, // moneyness
+            resetDate,
+            stochasticProcess,
             payoff,
             exercise,
-            underlyingH,
-            flatDividendTS,
-            flatTermStructure,
-            flatVolTS,
-            forwardEngine,
-            1.1, // moneyness
-            settlementDate.plusMonths(1) // reset Date
-            );
+            forwardEngine);
 
         value   = forwardOption.NPV();
         delta   = forwardOption.delta();
@@ -643,20 +636,16 @@ int main(int argc, char* argv[])
                                 ForwardVanillaOption::results>(forwardEngine));
 
         QuantoForwardVanillaOption quantoForwardOption(
+            flatTermStructure,
+            flatVolTS,
+            RelinkableHandle<Quote>(Handle<Quote>(new
+                SimpleQuote(correlation))),
+            1.1, // moneyness
+            resetDate,
+            stochasticProcess,
             payoff,
             exercise,
-            underlyingH,
-            flatDividendTS,
-            flatTermStructure,
-            flatVolTS,
-            quantoForwardEngine,
-            flatTermStructure,
-            flatVolTS,
-            RelinkableHandle<Quote>(
-                Handle<Quote>(new SimpleQuote(correlation))),
-            1.1, // moneyness
-            settlementDate.plusMonths(1) // reset Date
-        );
+            quantoForwardEngine);
 
         value   = quantoForwardOption.NPV();
         delta   = quantoForwardOption.delta();

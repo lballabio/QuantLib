@@ -270,12 +270,14 @@ void DigitalOptionTest::testCashOrNothingValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        VanillaOption opt(payoff, exercise,
-                          RelinkableHandle<Quote>(spot),
-                          RelinkableHandle<TermStructure>(qTS),
-                          RelinkableHandle<TermStructure>(rTS),
-                          RelinkableHandle<BlackVolTermStructure>(volTS),
-                          engine);
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(spot),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        VanillaOption opt(stochProcess, payoff, exercise, engine);
 
         double calculated = opt.NPV();
         if (QL_FABS(calculated-values[i].result) > values[i].tol) {
@@ -319,12 +321,14 @@ void DigitalOptionTest::testAssetOrNothingValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        VanillaOption opt(payoff, exercise,
-                          RelinkableHandle<Quote>(spot),
-                          RelinkableHandle<TermStructure>(qTS),
-                          RelinkableHandle<TermStructure>(rTS),
-                          RelinkableHandle<BlackVolTermStructure>(volTS),
-                          engine);
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(spot),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        VanillaOption opt(stochProcess, payoff, exercise, engine);
 
         double calculated = opt.NPV();
         if (QL_FABS(calculated-values[i].result) > values[i].tol) {
@@ -368,12 +372,14 @@ void DigitalOptionTest::testGapValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        VanillaOption opt(payoff, exercise,
-                          RelinkableHandle<Quote>(spot),
-                          RelinkableHandle<TermStructure>(qTS),
-                          RelinkableHandle<TermStructure>(rTS),
-                          RelinkableHandle<BlackVolTermStructure>(volTS),
-                          engine);
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(spot),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        VanillaOption opt(stochProcess, payoff, exercise, engine);
 
         double calculated = opt.NPV();
         if (QL_FABS(calculated-values[i].result) > values[i].tol) {
@@ -428,11 +434,14 @@ void DigitalOptionTest::testCashOrNothingAmericanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        VanillaOption opt(payoff, amExercise,
-                          RelinkableHandle<Quote>(spot),
-                          RelinkableHandle<TermStructure>(qTS),
-                          RelinkableHandle<TermStructure>(rTS),
-                          RelinkableHandle<BlackVolTermStructure>(volTS),
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(spot),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        VanillaOption opt(stochProcess, payoff, amExercise,
                           engine);
 
         double calculated = opt.NPV();
@@ -504,26 +513,21 @@ void DigitalOptionTest::testCashOrNothingAmericanGreeks() {
             Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(types[i1],
               strikes[i6], cashPayoff));
 
+            Handle<BlackScholesStochasticProcess> stochProcess(new
+                BlackScholesStochasticProcess(
+                    RelinkableHandle<Quote>(spot),
+                    RelinkableHandle<TermStructure>(qTS),
+                    RelinkableHandle<TermStructure>(rTS),
+                    RelinkableHandle<BlackVolTermStructure>(volTS)));
+
             // reference option
-            VanillaOption opt(payoff, exercises[j],
-                              RelinkableHandle<Quote>(spot),
-                              RelinkableHandle<TermStructure>(qTS),
-                              RelinkableHandle<TermStructure>(rTS),
-                              RelinkableHandle<BlackVolTermStructure>(volTS),
+            VanillaOption opt(stochProcess, payoff, exercises[j],
                               engines[j]);
             // reference option with shifted exercise date 
-            VanillaOption optP(payoff, exercisesP[j],
-                               RelinkableHandle<Quote>(spot),
-                               RelinkableHandle<TermStructure>(qTS),
-                               RelinkableHandle<TermStructure>(rTS),
-                               RelinkableHandle<BlackVolTermStructure>(volTS),
+            VanillaOption optP(stochProcess, payoff, exercisesP[j],
                                engines[j]);
             // reference option with shifted exercise date 
-            VanillaOption optM(payoff, exercisesM[j],
-                               RelinkableHandle<Quote>(spot),
-                               RelinkableHandle<TermStructure>(qTS),
-                               RelinkableHandle<TermStructure>(rTS),
-                               RelinkableHandle<BlackVolTermStructure>(volTS),
+            VanillaOption optM(stochProcess, payoff, exercisesM[j],
                                engines[j]);
           for (Size i2=0; i2<LENGTH(underlyings); i2++) {
             for (Size i4=0; i4<LENGTH(qRates); i4++) {
@@ -698,14 +702,17 @@ void DigitalOptionTest::testEngineConsistency() {
                   Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
                       type, strike, cashPayoff));
 
+                  Handle<BlackScholesStochasticProcess> stochProcess(new
+                    BlackScholesStochasticProcess(
+                        RelinkableHandle<Quote>(spot),
+                        RelinkableHandle<TermStructure>(qTS),
+                        RelinkableHandle<TermStructure>(rTS),
+                        RelinkableHandle<BlackVolTermStructure>(volTS)));
+
                   // reference option
-                  VanillaOption opt(
+                  VanillaOption opt(stochProcess, 
                       payoff,
                       exercises[j],
-                      RelinkableHandle<Quote>(underlyingH),
-                      RelinkableHandle<TermStructure>(qTS),
-                      RelinkableHandle<TermStructure>(rTS),
-                      RelinkableHandle<BlackVolTermStructure>(volTS),
                       engines[j]);
                   calcAnalytic = opt.NPV();
 

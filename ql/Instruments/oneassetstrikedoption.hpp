@@ -31,16 +31,14 @@ namespace QuantLib {
     //! Base class for options on a single asset with striked payoff
     class OneAssetStrikedOption : public OneAssetOption {
       public:
-        OneAssetStrikedOption(const Handle<StrikedTypePayoff>& payoff,
-                              const Handle<Exercise>& exercise,
-                              const RelinkableHandle<Quote>& underlying,
-                              const RelinkableHandle<TermStructure>& dividendTS,
-                              const RelinkableHandle<TermStructure>& riskFreeTS,
-                              const RelinkableHandle<BlackVolTermStructure>& volTS,
-                              const Handle<PricingEngine>& engine =
-                              Handle<PricingEngine>(),
-                              const std::string& isinCode = "",
-                              const std::string& description = "");
+        OneAssetStrikedOption(
+            const Handle<BlackScholesStochasticProcess>& stochProc,
+            const Handle<StrikedTypePayoff>& payoff,
+            const Handle<Exercise>& exercise,
+            const Handle<PricingEngine>& engine =
+            Handle<PricingEngine>(),
+            const std::string& isinCode = "",
+            const std::string& description = "");
         //@{
         class arguments;
         class results;

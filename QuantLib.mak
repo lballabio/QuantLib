@@ -472,6 +472,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
 	"$(INTDIR)\binarybarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
+	"$(INTDIR)\digitalpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
@@ -564,8 +565,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\digitalpathpricer.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -652,6 +652,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\biasedbarrierpathpricer.obj" \
 	"$(INTDIR)\binarybarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
+	"$(INTDIR)\digitalpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
@@ -744,8 +745,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\digitalpathpricer.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1198,6 +1198,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
 	"$(INTDIR)\binarybarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
+	"$(INTDIR)\digitalpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
@@ -1290,8 +1291,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\digitalpathpricer.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1378,6 +1378,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\biasedbarrierpathpricer.obj" \
 	"$(INTDIR)\binarybarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
+	"$(INTDIR)\digitalpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
@@ -1470,8 +1471,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\digitalpathpricer.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1923,6 +1923,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
 	"$(INTDIR)\binarybarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
+	"$(INTDIR)\digitalpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
@@ -2015,8 +2016,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\digitalpathpricer.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2103,6 +2103,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\biasedbarrierpathpricer.obj" \
 	"$(INTDIR)\binarybarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
+	"$(INTDIR)\digitalpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
@@ -2195,8 +2196,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\digitalpathpricer.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2649,6 +2649,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
 	"$(INTDIR)\binarybarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
+	"$(INTDIR)\digitalpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
@@ -2741,8 +2742,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\digitalpathpricer.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2829,6 +2829,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\biasedbarrierpathpricer.obj" \
 	"$(INTDIR)\binarybarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
+	"$(INTDIR)\digitalpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
@@ -2921,8 +2922,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\digitalpathpricer.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio

@@ -130,11 +130,12 @@ namespace QuantLib {
     Handle<QL_TYPENAME MCBarrierEngine<RNG,S>::path_generator_type>
     MCBarrierEngine<RNG,S>::pathGenerator() const
     {
-        Handle<DiffusionProcess> bs(
-                              new BlackScholesProcess(arguments_.riskFreeTS,
-                                                      arguments_.dividendTS,
-                                                      arguments_.volTS,
-                                                      arguments_.underlying));
+        Handle<DiffusionProcess> bs(new
+            BlackScholesProcess(
+                arguments_.blackScholesProcess->riskFreeTS,
+                arguments_.blackScholesProcess->dividendTS,
+                arguments_.blackScholesProcess->volTS,
+                arguments_.blackScholesProcess->stateVariable->value()));
 
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
@@ -160,10 +161,13 @@ namespace QuantLib {
         if (isBiased_) {
             return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BiasedBarrierPathPricer(
-                    arguments_.barrierType, arguments_.barrier,
-                    arguments_.rebate, payoff->optionType(),
-                    payoff->strike(), arguments_.underlying,
-                    arguments_.riskFreeTS));
+                    arguments_.barrierType,
+                    arguments_.barrier,
+                    arguments_.rebate,
+                    payoff->optionType(),
+                    payoff->strike(),
+                    arguments_.blackScholesProcess->stateVariable->value(),
+                    arguments_.blackScholesProcess->riskFreeTS));
         } else {
             TimeGrid grid = timeGrid();
             UniformRandomSequenceGenerator
@@ -171,15 +175,19 @@ namespace QuantLib {
 
             return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
-                    arguments_.barrierType, arguments_.barrier,
-                    arguments_.rebate, payoff->optionType(),
-                    payoff->strike(), arguments_.underlying,
-                    arguments_.riskFreeTS,
-                    Handle<DiffusionProcess> (new BlackScholesProcess(
-                                    arguments_.riskFreeTS,
-                                    arguments_.dividendTS,
-                                    arguments_.volTS,
-                                    arguments_.underlying)),
+                    arguments_.barrierType,
+                    arguments_.barrier,
+                    arguments_.rebate,
+                    payoff->optionType(),
+                    payoff->strike(),
+                    arguments_.blackScholesProcess->stateVariable->value(),
+                    arguments_.blackScholesProcess->riskFreeTS,
+                    Handle<DiffusionProcess>(new
+                        BlackScholesProcess(
+                            arguments_.blackScholesProcess->riskFreeTS,
+                            arguments_.blackScholesProcess->dividendTS,
+                            arguments_.blackScholesProcess->volTS,
+                            arguments_.blackScholesProcess->stateVariable->value())),
                     sequenceGen));
         }
     }
@@ -188,8 +196,8 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCBarrierEngine<RNG,S>::timeGrid() const {
 
-        Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
-            arguments_.riskFreeTS->referenceDate(),
+        Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
             arguments_.exercise->lastDate());
 
         return TimeGrid(t, Size(t * maxTimeStepsPerYear_));

@@ -43,17 +43,14 @@ namespace QuantLib {
         typedef ForwardOptionArguments<VanillaOption::arguments> arguments;
         typedef VanillaOption::results results;
         ForwardVanillaOption(
-                         const Handle<StrikedTypePayoff>& payoff,
-                         const Handle<Exercise>& exercise,
-                         const RelinkableHandle<Quote>& underlying,
-                         const RelinkableHandle<TermStructure>& dividendTS,
-                         const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const RelinkableHandle<BlackVolTermStructure>& volTS,
-                         const Handle<PricingEngine>& engine,
-                         double moneyness,
-                         Date resetDate,
-                         const std::string& isinCode = "",
-                         const std::string& description = "");
+            double moneyness,
+            Date resetDate,
+            const Handle<BlackScholesStochasticProcess>& stochProc,
+            const Handle<StrikedTypePayoff>& payoff,
+            const Handle<Exercise>& exercise,
+            const Handle<PricingEngine>& engine,
+            const std::string& isinCode = "",
+            const std::string& description = "");
         void setupArguments(Arguments*) const;
       protected:
         void performCalculations() const;
@@ -77,8 +74,11 @@ namespace QuantLib {
         QL_REQUIRE(resetDate != Null<Date>(),
                    "ForwardOption::arguments::validate() : "
                    "null reset date given");
-        Time resetTime = riskFreeTS->dayCounter().yearFraction(
-                                      riskFreeTS->referenceDate(), resetDate);
+
+        Time resetTime =
+            blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+                blackScholesProcess->riskFreeTS->referenceDate(), resetDate);
+
         QL_REQUIRE(resetTime >=0,
                    "ForwardOption::arguments::validate() : "
                    "negative reset time given");

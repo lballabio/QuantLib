@@ -34,6 +34,7 @@
 #include <ql/numericalmethod.hpp>
 #include <ql/payoff.hpp>
 #include <ql/solver1d.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/swaptionvolstructure.hpp>
 
 #include <ql/Calendars/all.hpp>

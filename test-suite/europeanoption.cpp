@@ -128,13 +128,15 @@ namespace {
         }
 
 
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(u),
+                RelinkableHandle<TermStructure>(q),
+                RelinkableHandle<TermStructure>(r),
+                RelinkableHandle<BlackVolTermStructure>(vol)));
+
         return Handle<VanillaOption>(new
-            VanillaOption(payoff, exercise,
-                          RelinkableHandle<Quote>(u),
-                          RelinkableHandle<TermStructure>(q),
-                          RelinkableHandle<TermStructure>(r),
-                          RelinkableHandle<BlackVolTermStructure>(vol),
-                          engine));
+            VanillaOption(stochProcess, payoff, exercise, engine));
     }
 
     std::string engineTypeToString(EngineType type) {
@@ -407,12 +409,14 @@ void EuropeanOptionTest::testValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        VanillaOption option(payoff, exercise,
-                             RelinkableHandle<Quote>(spot),
-                             RelinkableHandle<TermStructure>(qTS),
-                             RelinkableHandle<TermStructure>(rTS),
-                             RelinkableHandle<BlackVolTermStructure>(volTS),
-                             engine);
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                 RelinkableHandle<Quote>(spot),
+                 RelinkableHandle<TermStructure>(qTS),
+                 RelinkableHandle<TermStructure>(rTS),
+                 RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        VanillaOption option(stochProcess, payoff, exercise, engine);
 
         double calculated = option.NPV();
         if (QL_FABS(calculated-values[i].result) > 1e-4) {
@@ -464,6 +468,13 @@ void EuropeanOptionTest::testGreekValues() {
     Handle<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
     Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
+    Handle<BlackScholesStochasticProcess> stochProcess(new
+        BlackScholesStochasticProcess(
+             RelinkableHandle<Quote>(spot),
+             RelinkableHandle<TermStructure>(qTS),
+             RelinkableHandle<TermStructure>(rTS),
+             RelinkableHandle<BlackVolTermStructure>(volTS)));
+
 
     Date today = Date::todaysDate();
 
@@ -485,12 +496,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->delta();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("delta", payoff, exercise, values[i].s, values[i].q,
@@ -507,12 +513,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->delta();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("delta", payoff, exercise, values[i].s, values[i].q,
@@ -529,12 +530,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->elasticity();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("elasticity", payoff, exercise, values[i].s, values[i].q,
@@ -552,12 +548,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->gamma();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("gamma", payoff, exercise, values[i].s, values[i].q,
@@ -574,12 +565,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->gamma();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("gamma", payoff, exercise, values[i].s, values[i].q,
@@ -597,12 +583,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->vega();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("vega", payoff, exercise, values[i].s, values[i].q,
@@ -620,12 +601,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->vega();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("vega", payoff, exercise, values[i].s, values[i].q,
@@ -643,12 +619,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->theta();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("theta", payoff, exercise, values[i].s, values[i].q,
@@ -666,12 +637,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->thetaPerDay();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("thetaPerDay", payoff, exercise, values[i].s, values[i].q,
@@ -689,12 +655,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->rho();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("rho", payoff, exercise, values[i].s, values[i].q,
@@ -712,12 +673,7 @@ void EuropeanOptionTest::testGreekValues() {
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
     option = Handle<VanillaOption>(new VanillaOption(
-        payoff, exercise,
-        RelinkableHandle<Quote>(spot),
-        RelinkableHandle<TermStructure>(qTS),
-        RelinkableHandle<TermStructure>(rTS),
-        RelinkableHandle<BlackVolTermStructure>(volTS),
-        engine));
+        stochProcess, payoff, exercise, engine));
     calculated = option->dividendRho();
     if (QL_FABS(calculated-values[i].result) > 1e-4)
         vanillaOptionTestFailed("dividendRho", payoff, exercise, values[i].s, values[i].q,

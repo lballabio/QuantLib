@@ -24,23 +24,18 @@
 namespace QuantLib {
 
     QuantoVanillaOption::QuantoVanillaOption(
-                 const Handle<StrikedTypePayoff>& payoff,
-                 const Handle<Exercise>& exercise,
-                 const RelinkableHandle<Quote>& underlying,
-                 const RelinkableHandle<TermStructure>& dividendTS,
-                 const RelinkableHandle<TermStructure>& riskFreeTS,
-                 const RelinkableHandle<BlackVolTermStructure>& volTS,
-                 const Handle<PricingEngine>& engine,
-                 const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-                 const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
-                 const RelinkableHandle<Quote>& correlation,
-                 const std::string& isinCode,
-                 const std::string& description)
-    : VanillaOption(payoff, exercise, underlying, dividendTS, riskFreeTS,
-                    volTS, engine, isinCode, description),
-      foreignRiskFreeTS_(foreignRiskFreeTS),
-      exchRateVolTS_(exchRateVolTS),
-      correlation_(correlation) {
+        const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
+        const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
+        const RelinkableHandle<Quote>& correlation,
+        const Handle<BlackScholesStochasticProcess>& stochProc,
+        const Handle<StrikedTypePayoff>& payoff,
+        const Handle<Exercise>& exercise,
+        const Handle<PricingEngine>& engine,
+        const std::string& isinCode,
+        const std::string& description)
+    : VanillaOption(stochProc, payoff, exercise, engine, isinCode,
+      description), foreignRiskFreeTS_(foreignRiskFreeTS),
+      exchRateVolTS_(exchRateVolTS), correlation_(correlation) {
         QL_REQUIRE(!IsNull(engine),
                    "QuantoVanillaOption::QuantoVanillaOption : "
                    "null engine or wrong engine type");

@@ -35,18 +35,15 @@ namespace QuantLib {
         typedef QuantoOptionResults<ForwardVanillaOption::arguments>
         results;
         QuantoForwardVanillaOption(
-                 const Handle<StrikedTypePayoff>& payoff,
-                 const Handle<Exercise>& exercise,
-                 const RelinkableHandle<Quote>& underlying,
-                 const RelinkableHandle<TermStructure>& dividendTS,
-                 const RelinkableHandle<TermStructure>& riskFreeTS,
-                 const RelinkableHandle<BlackVolTermStructure>& volTS,
-                 const Handle<PricingEngine>& engine,
                  const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
                  const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
                  const RelinkableHandle<Quote>& correlation,
                  double moneyness,
                  Date resetDate,
+                 const Handle<BlackScholesStochasticProcess>& stochProc,
+                 const Handle<StrikedTypePayoff>& payoff,
+                 const Handle<Exercise>& exercise,
+                 const Handle<PricingEngine>& engine,
                  const std::string& isinCode = "",
                  const std::string& description = "");
         void setupArguments(Arguments*) const;

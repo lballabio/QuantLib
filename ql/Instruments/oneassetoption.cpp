@@ -26,26 +26,23 @@
 
 namespace QuantLib {
 
-    OneAssetOption::OneAssetOption(const Handle<Payoff>& payoff,
-                         const Handle<Exercise>& exercise,
-                         const RelinkableHandle<Quote>& underlying,
-                         const RelinkableHandle<TermStructure>& dividendTS,
-                         const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const RelinkableHandle<BlackVolTermStructure>& volTS,
-                         const Handle<PricingEngine>& engine,
-                         const std::string& isinCode,
-                         const std::string& description)
-    : Option(payoff, exercise, engine, isinCode, description), underlying_(underlying),
-      riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
-      volTS_(volTS) {
-        registerWith(underlying_);
-        registerWith(dividendTS_);
-        registerWith(riskFreeTS_);
-        registerWith(volTS_);
+    OneAssetOption::OneAssetOption(
+        const Handle<BlackScholesStochasticProcess>& stochProc,
+        const Handle<Payoff>& payoff,
+        const Handle<Exercise>& exercise,
+        const Handle<PricingEngine>& engine,
+        const std::string& isinCode,
+        const std::string& description)
+    : Option(payoff, exercise, engine, isinCode, description),
+      blackScholesProcess_(stochProc) {
+        registerWith(blackScholesProcess_->stateVariable);
+        registerWith(blackScholesProcess_->dividendTS);
+        registerWith(blackScholesProcess_->riskFreeTS);
+        registerWith(blackScholesProcess_->volTS);
     }
 
     bool OneAssetOption::isExpired() const {
-        return exercise_->lastDate() < riskFreeTS_->referenceDate();
+        return exercise_->lastDate() < blackScholesProcess_->riskFreeTS->referenceDate();
     }
 
     double OneAssetOption::delta() const {
@@ -128,8 +125,9 @@ namespace QuantLib {
                    "OneAssetOption::impliedVolatility : "
                    "option expired");
 
-        double guess = volTS_->blackVol(exercise_->lastDate(),
-                                        underlying_->value());
+        double guess = blackScholesProcess_->volTS->blackVol(
+            exercise_->lastDate(),
+            blackScholesProcess_->stateVariable->value());
 
         ImpliedVolHelper f(engine_,targetValue);
         Brent solver;
@@ -149,14 +147,13 @@ namespace QuantLib {
                    "OneAssetOption::setupArguments : "
                    "wrong argument type");
 
-        QL_REQUIRE(!IsNull(underlying_),
+/*
+        QL_REQUIRE(!IsNull(blackScholesProcess_->stateVariable->value()),
                    "OneAssetOption::setupArguments : "
                    "null underlying price given");
-        arguments->underlying = underlying_->value();
+*/
 
-        // should I require !IsNull(TS) ???
-        arguments->dividendTS = dividendTS_;
-        arguments->riskFreeTS = riskFreeTS_;
+        arguments->blackScholesProcess = blackScholesProcess_;
 
         arguments->exercise = exercise_;
 
@@ -165,13 +162,12 @@ namespace QuantLib {
         // it should be moved elsewhere
         arguments->stoppingTimes.clear();
         for (Size i=0; i<exercise_->dates().size(); i++) {
-            Time time = riskFreeTS_->dayCounter().yearFraction(
-                riskFreeTS_->referenceDate(), exercise_->date(i));
+            Time time = blackScholesProcess_->riskFreeTS->dayCounter().yearFraction(
+                blackScholesProcess_->riskFreeTS->referenceDate(), exercise_->date(i));
             arguments->stoppingTimes.push_back(time);
         }
 
 
-        arguments->volTS = volTS_;
     }
 
     void OneAssetOption::performCalculations() const {
@@ -227,19 +223,21 @@ namespace QuantLib {
         #else
         Option::arguments::validate();
         #endif
-        QL_REQUIRE(underlying != Null<double>(),
+        /*
+        QL_REQUIRE(blackScholesProcess->stateVariable != Null<double>(),
                    "OneAssetOption::arguments::validate() : "
                    "no underlying given");
-        QL_REQUIRE(underlying > 0.0,
+        QL_REQUIRE(blackScholesProcess->stateVariable > 0.0,
                    "OneAssetOption::arguments::validate() : "
                    "negative or zero underlying given");
-        QL_REQUIRE(!IsNull(dividendTS),
+        */
+        QL_REQUIRE(!IsNull(blackScholesProcess->dividendTS),
                    "OneAssetOption::arguments::validate() : "
                    "no dividend term structure given");
-        QL_REQUIRE(!IsNull(riskFreeTS),
+        QL_REQUIRE(!IsNull(blackScholesProcess->riskFreeTS),
                    "OneAssetOption::arguments::validate() : "
                    "no risk free term structure given");
-        QL_REQUIRE(!IsNull(volTS),
+        QL_REQUIRE(!IsNull(blackScholesProcess->volTS),
                    "OneAssetOption::arguments::validate() : "
                    "no vol term structure given");
     }
@@ -255,9 +253,9 @@ namespace QuantLib {
                    "OneAssetOption::ImpliedVolHelper::ImpliedVolHelper : "
                    "pricing engine does not supply needed arguments");
         vol_ = Handle<SimpleQuote>(new SimpleQuote(0.0));
-        arguments_->volTS = RelinkableHandle<BlackVolTermStructure>(
+        arguments_->blackScholesProcess->volTS = RelinkableHandle<BlackVolTermStructure>(
             Handle<BlackVolTermStructure>(
-                new BlackConstantVol(arguments_->volTS->referenceDate(),
+                new BlackConstantVol(arguments_->blackScholesProcess->volTS->referenceDate(),
                                      RelinkableHandle<Quote>(vol_))));
         results_ = dynamic_cast<const Value*>(engine_->results());
         QL_REQUIRE(results_ != 0,

@@ -99,10 +99,11 @@ namespace QuantLib {
     MCDigitalEngine<RNG,S>::pathGenerator() const {
 
         Handle<DiffusionProcess> bs(new
-            BlackScholesProcess(arguments_.riskFreeTS,
-                                arguments_.dividendTS,
-                                arguments_.volTS,
-                                arguments_.underlying));
+            BlackScholesProcess(
+                arguments_.blackScholesProcess->riskFreeTS,
+                arguments_.blackScholesProcess->dividendTS,
+                arguments_.blackScholesProcess->volTS,
+                arguments_.blackScholesProcess->underlying));
 
         TimeGrid grid = timeGrid();
 
@@ -141,26 +142,27 @@ namespace QuantLib {
         UniformRandomSequenceGenerator
             sequenceGen(grid.size()-1, UniformRandomGenerator(76));
 
-        return Handle<MCDigitalEngine<RNG,S>::path_pricer_type>(
-            new DigitalPathPricer(payoff,
-                                  exercise,
-                                  arguments_.underlying,
-                                  arguments_.riskFreeTS,
-                                  Handle<DiffusionProcess>(new
-                                    BlackScholesProcess(arguments_.riskFreeTS,
-                                                        arguments_.dividendTS,
-                                                        arguments_.volTS,
-                                                        arguments_.underlying)),
-                                  sequenceGen));
-
+        return Handle<MCDigitalEngine<RNG,S>::path_pricer_type>(new
+          DigitalPathPricer(
+            payoff,
+            exercise,
+            arguments_.blackScholesProcess->stateVariable->value(),
+            arguments_.blackScholesProcess->riskFreeTS,
+            Handle<DiffusionProcess>(new
+                BlackScholesProcess(
+                    arguments_.blackScholesProcess->riskFreeTS,
+                    arguments_.blackScholesProcess->dividendTS,
+                    arguments_.blackScholesProcess->volTS,
+                    arguments_.blackScholesProcess->stateVariable->value())),
+            sequenceGen));
     }
 
 
     template <class RNG, class S>
     inline
     TimeGrid MCDigitalEngine<RNG,S>::timeGrid() const {
-        Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
-            arguments_.riskFreeTS->referenceDate(),
+        Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
             arguments_.exercise->lastDate());
         return TimeGrid(t, Size(t * maxTimeStepsPerYear_));
     }
