@@ -31,8 +31,8 @@
 
 // $Id$
 
-#ifndef quantlib_term_structure_h
-#define quantlib_term_structure_h
+#ifndef quantlib_term_structure_hpp
+#define quantlib_term_structure_hpp
 
 #include <ql/calendar.hpp>
 #include <ql/currency.hpp>
@@ -218,7 +218,7 @@ namespace QuantLib {
                                   public Patterns::Observer {
       public:
         ZeroSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
-            const RelinkableHandle<MarketElement>& spreadHandle);
+            const RelinkableHandle<MarketElement>& spread);
         ~ZeroSpreadedTermStructure();
         //! \name TermStructure interface
         //@{
@@ -242,7 +242,7 @@ namespace QuantLib {
         Rate zeroYieldImpl(Time, bool extrapolate = false) const;
       private:
         RelinkableHandle<TermStructure> originalCurve_;
-        RelinkableHandle<MarketElement> spreadHandle_;
+        RelinkableHandle<MarketElement> spread_;
     };
 
 
@@ -253,10 +253,10 @@ namespace QuantLib {
             this structure as well.
     */
     class ForwardSpreadedTermStructure : public ForwardRateStructure,
-                                  public Patterns::Observer {
+                                         public Patterns::Observer {
       public:
         ForwardSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
-            const RelinkableHandle<MarketElement>& spreadHandle);
+            const RelinkableHandle<MarketElement>& spread);
         ~ForwardSpreadedTermStructure();
         //! \name TermStructure interface
         //@{
@@ -280,7 +280,7 @@ namespace QuantLib {
         Rate forwardImpl(Time, bool extrapolate = false) const;
       private:
         RelinkableHandle<TermStructure> originalCurve_;
-        RelinkableHandle<MarketElement> spreadHandle_;
+        RelinkableHandle<MarketElement> spread_;
     };
 
 
@@ -382,13 +382,11 @@ namespace QuantLib {
     inline ImpliedTermStructure::ImpliedTermStructure(
         const RelinkableHandle<TermStructure>& h, const Date& todaysDate)
     : originalCurve_(h), todaysDate_(todaysDate) {
-        if (!originalCurve_.isNull())
-            originalCurve_.registerObserver(this);
+        originalCurve_.registerObserver(this);
     }
 
     inline ImpliedTermStructure::~ImpliedTermStructure() {
-        if (!originalCurve_.isNull())
-            originalCurve_.unregisterObserver(this);
+        originalCurve_.unregisterObserver(this);
     }
 
     inline Currency ImpliedTermStructure::currency() const {
@@ -456,17 +454,15 @@ namespace QuantLib {
     // zero-yield spreaded curves
     inline ZeroSpreadedTermStructure::ZeroSpreadedTermStructure(
         const RelinkableHandle<TermStructure>& h, 
-        const RelinkableHandle<MarketElement>& spreadHandle)
-    : originalCurve_(h), spreadHandle_(spreadHandle) {
-        if (!originalCurve_.isNull())
-            originalCurve_.registerObserver(this);
-        spreadHandle_.registerObserver(this);
+        const RelinkableHandle<MarketElement>& spread)
+    : originalCurve_(h), spread_(spread) {
+        originalCurve_.registerObserver(this);
+        spread_.registerObserver(this);
     }
 
     inline ZeroSpreadedTermStructure::~ZeroSpreadedTermStructure() {
-        if (!originalCurve_.isNull())
-            originalCurve_.unregisterObserver(this);
-        spreadHandle_.unregisterObserver(this);
+        originalCurve_.unregisterObserver(this);
+        spread_.unregisterObserver(this);
     }
 
     inline Currency ZeroSpreadedTermStructure::currency() const {
@@ -515,24 +511,22 @@ namespace QuantLib {
 
     inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t,
         bool extrapolate) const {
-            return originalCurve_->zeroYield(t, extrapolate) + spreadHandle_->value();
+            return originalCurve_->zeroYield(t, extrapolate) + spread_->value();
     }
 
 
     // forward spreaded curves
     inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(
         const RelinkableHandle<TermStructure>& h, 
-        const RelinkableHandle<MarketElement>& spreadHandle)
-    : originalCurve_(h), spreadHandle_(spreadHandle) {
-        if (!originalCurve_.isNull())
-            originalCurve_.registerObserver(this);
-        spreadHandle_.registerObserver(this);
+        const RelinkableHandle<MarketElement>& spread)
+    : originalCurve_(h), spread_(spread) {
+        originalCurve_.registerObserver(this);
+        spread_.registerObserver(this);
     }
 
     inline ForwardSpreadedTermStructure::~ForwardSpreadedTermStructure() {
-        if (!originalCurve_.isNull())
-            originalCurve_.unregisterObserver(this);
-        spreadHandle_.unregisterObserver(this);
+        originalCurve_.unregisterObserver(this);
+        spread_.unregisterObserver(this);
     }
 
     inline Currency ForwardSpreadedTermStructure::currency() const {
@@ -581,10 +575,8 @@ namespace QuantLib {
 
     inline Rate ForwardSpreadedTermStructure::forwardImpl(Time t,
         bool extrapolate) const {
-            return originalCurve_->forward(t, extrapolate) + spreadHandle_->value();
+            return originalCurve_->forward(t, extrapolate) + spread_->value();
     }
-
-
 
 }
 
