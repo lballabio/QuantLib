@@ -22,7 +22,7 @@
 #ifndef quantlib_barrier_option_pricer_h
 #define quantlib_barrier_option_pricer_h
 
-#include <ql/Instruments/barrieroption.hpp>
+#include <ql/PricingEngines/barrierengines.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
@@ -36,11 +36,12 @@ namespace QuantLib {
             The analytical calculation are taken from
             "Option pricing formulas", E.G. Haug, McGraw-Hill,
             p.69 and following.
+
+            \deprecated use Instruments::BarrierOption instead.
         */
         class BarrierOption : public SingleAssetOption {
           public:
             // constructor
-            //enum BarrierType { DownIn, UpIn, DownOut, UpOut };
             BarrierOption(Barrier::Type barrType,
                           Option::Type type,
                           double underlying,
@@ -63,12 +64,13 @@ namespace QuantLib {
             void calculate_() const;
             mutable double greeksCalculated_, delta_, gamma_, theta_;
           private:
-            void initialize_() const;
+            PricingEngines::AnalyticBarrierEngine engine_;
             Barrier::Type barrType_;
             double barrier_, rebate_;
             mutable double value_, sigmaSqrtT_, mu_, muSigma_;
             mutable double dividendDiscount_, riskFreeDiscount_;
             Math::CumulativeNormalDistribution f_;
+            void initialize_() const;
             double A_(double eta, double phi) const;
             double B_(double eta, double phi) const;
             double C_(double eta, double phi) const;

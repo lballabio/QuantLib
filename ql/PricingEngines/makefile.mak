@@ -16,6 +16,7 @@ OBJDIR         = "..\..\build\Borland"
 # Object files
 OBJS = \
     americanmcengines.obj$(_D) \
+    analyticbarrierengine.obj$(_D) \
     analyticeuropeanengine.obj$(_D) \
     binomialvanillaengine.obj$(_D) \
     discretizedvanillaoption.obj$(_D) \

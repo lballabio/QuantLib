@@ -18,6 +18,7 @@ EXTRA_DIST=makefile.mak
 
 libPricingEngines_la_SOURCES = \
     americanmcengines.cpp \
+    analyticbarrierengine.cpp \
     analyticeuropeanengine.cpp \
     binomialvanillaengine.cpp \
     discretizedvanillaoption.cpp \

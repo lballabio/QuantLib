@@ -491,7 +491,7 @@ CppUnit::Test* BarrierOptionTest::suite() {
                     &BarrierOptionTest::testBabsiriValues));
     tests->addTest(new CppUnit::TestCaller<BarrierOptionTest>
                    ("Testing barrier options against Beaglehole's values",
-                    &BarrierOptionTest::testBeagleholeValues));
+                   &BarrierOptionTest::testBeagleholeValues));
     return tests;
 }
 

@@ -20,10 +20,20 @@
 */
 
 #include <ql/Pricers/barrieroption.hpp>
+#include <ql/Instruments/barrieroption.hpp>
+#include <ql/TermStructures/flatforward.hpp>
+#include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/DayCounters/simpledaycounter.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
+
+        using namespace DayCounters;
+        using namespace Instruments;
+        using namespace PricingEngines;
+        using namespace TermStructures;
+        using namespace VolTermStructures;
 
         BarrierOption::BarrierOption(Barrier::Type barrType,
                                      Option::Type type,
@@ -92,134 +102,69 @@ namespace QuantLib {
         }
 
         double BarrierOption::value() const {
-          if(!hasBeenCalculated_) {
-            initialize_();
-            switch (payoff_.optionType()) {
-              case Option::Call:
-                switch (barrType_) {
-                  case Barrier::DownIn:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = C_(1,1) + E_(1,1);
-                    else
-                        value_ = A_(1,1) - B_(1,1) + D_(1,1) + E_(1,1);
-                    break;
-                  case Barrier::UpIn:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = A_(-1,1) + E_(-1,1);
-                    else
-                        value_ = B_(-1,1) - C_(-1,1) + D_(-1,1) + E_(-1,1);
-                    break;
-                  case Barrier::DownOut:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = A_(1,1) - C_(1,1) + F_(1,1);
-                    else
-                        value_ = B_(1,1) - D_(1,1) + F_(1,1);
-                    break;
-                  case Barrier::UpOut:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = F_(-1,1);
-                    else
-                        value_ = A_(-1,1) - B_(-1,1)+C_(-1,1)-D_(-1,1)+F_(-1,1);
-                    break;
-                }
-                break;
-              case Option::Put:
-                switch (barrType_) {
-                  case Barrier::DownIn:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = B_(1,-1) - C_(1,-1) + D_(1,-1) + E_(1,-1);
-                    else
-                        value_ = A_(1,-1) + E_(1,-1);
-                    break;
-                  case Barrier::UpIn:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = A_(-1,-1) - B_(-1,-1) + D_(-1,-1) + E_(-1,-1);
-                    else
-                        value_ = C_(-1,-1) + E_(-1,-1);
-                    break;
-                  case Barrier::DownOut:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = A_(1,-1) - B_(1,-1)+C_(1,-1)-D_(1,-1)+F_(1,-1);
-                    else
-                        value_ = F_(1,-1);
-                    break;
-                  case Barrier::UpOut:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = B_(-1,-1) - D_(-1,-1) + F_(-1,-1);
-                    else
-                        value_ = A_(-1,-1) - C_(-1,-1) + F_(-1,-1);
-                    break;
-                }
-                break;
-              case Option::Straddle:
-                switch (barrType_) {
-                  case Barrier::DownIn:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = C_(1,1) + E_(1,1) +
-                            B_(1,-1) - C_(1,-1) + D_(1,-1) + E_(1,-1);
-                    else
-                        value_ = A_(1,1) - B_(1,1) + D_(1,1) + E_(1,1) +
-                            A_(1,-1) + E_(1,-1);
-                    break;
-                  case Barrier::UpIn:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = A_(-1,1) + E_(-1,1) +
-                            A_(-1,-1) - B_(-1,-1) + D_(-1,-1) + E_(-1,-1);
-                    else
-                        value_ = B_(-1,1) - C_(-1,1) + D_(-1,1) + E_(-1,1) +
-                            C_(-1,-1) + E_(-1,-1);
-                    break;
-                  case Barrier::DownOut:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = A_(1,1) - C_(1,1) + F_(1,1) +
-                            A_(1,-1) - B_(1,-1)+C_(1,-1)-D_(1,-1)+F_(1,-1);
-                    else
-                        value_ = B_(1,1) - D_(1,1) + F_(1,1) +
-                            F_(1,-1);
-                    break;
-                  case Barrier::UpOut:
-                    if(payoff_.strike() >= barrier_)
-                        value_ = F_(-1,1) +
-                            B_(-1,-1) - D_(-1,-1) + F_(-1,-1);
-                    else
-                        value_ = A_(-1,1) -B_(-1,1)+C_(-1,1)-D_(-1,1)+F_(-1,1) +
-                            A_(-1,-1) - C_(-1,-1) + F_(-1,-1);
-                    break;
-                }
-                break;
-              default:
-                throw Error("Option: unknown type");
+            if(!hasBeenCalculated_) {
+                Instruments::BarrierOption::arguments* args =
+                    dynamic_cast<Instruments::BarrierOption::arguments*>(
+                                                        engine_.arguments());
+
+                Date today = Date::todaysDate();
+
+                args->payoff = Handle<Payoff>(new PlainVanillaPayoff(payoff_));
+                args->underlying = underlying_;
+                args->riskFreeTS.linkTo(Handle<TermStructure>(
+                    new FlatForward(today,today,riskFreeRate_,
+                                    SimpleDayCounter())));
+                args->dividendTS.linkTo(Handle<TermStructure>(
+                    new FlatForward(today,today,dividendYield_,
+                                    SimpleDayCounter())));
+                args->volTS.linkTo(Handle<BlackVolTermStructure>(
+                    new BlackConstantVol(today,volatility_,
+                                         SimpleDayCounter())));
+                args->maturity = residualTime_;
+
+                args->barrierType = barrType_;
+                args->barrier = barrier_;
+                args->rebate = rebate_;
+
+                engine_.calculate();
+
+                const Value* result =
+                    dynamic_cast<const Value*>(engine_.results());
+                value_ = result->value;
+
+                hasBeenCalculated_ = true;
             }
-            hasBeenCalculated_ = true;
-          }
-          return value_;
+            return value_;
         }
 
         void BarrierOption::calculate_() const{
 
-            double underPlus = underlying_ * (1 + 0.0001);
-            double underMinu = underlying_ * (1 - 0.0001);
-            double timePlus = residualTime_ * (1 + 0.0001);
-            BarrierOption barrierTimePlus(barrType_, payoff_.optionType(), underlying_,
-                payoff_.strike(), dividendYield_, riskFreeRate_, timePlus, volatility_,
-                barrier_, rebate_);
+            double refValue = value();
+            Instruments::BarrierOption::arguments* args =
+                dynamic_cast<Instruments::BarrierOption::arguments*>(
+                                                        engine_.arguments());
+            const Value* result =
+                dynamic_cast<const Value*>(engine_.results());
+            
+            double du = underlying_ * 1.0e-4;
+            double dt = residualTime_ * 1.0e-4;
 
-            BarrierOption barrierPlus(barrType_, payoff_.optionType(), underPlus, payoff_.strike(),
-                dividendYield_, riskFreeRate_, residualTime_, volatility_,
-                barrier_, rebate_);
+            args->underlying = underlying_ + du;
+            engine_.calculate();
+            double valuePlus = result->value;
 
-            BarrierOption barrierMinus(barrType_, payoff_.optionType(), underMinu, payoff_.strike(),
-                dividendYield_, riskFreeRate_, residualTime_, volatility_,
-                barrier_, rebate_);
+            args->underlying = underlying_ - du;
+            engine_.calculate();
+            double valueMinus = result->value;
+            
+            args->maturity = residualTime_ + dt;
+            engine_.calculate();
+            double valueTimePlus = result->value;
 
-            delta_ = (barrierPlus.value()-barrierMinus.value())/
-                     (underPlus-underMinu);
+            delta_ = (valuePlus-valueMinus)/(2*du);
 
-            gamma_ = (barrierPlus.value()
-                      + barrierMinus.value() - 2.0 * value())/
-                       ((underPlus-underlying_)*(underlying_-underMinu));
-            theta_ = -(barrierTimePlus.value() - value())/
-                            (timePlus - residualTime_);
+            gamma_ = (valuePlus + valueMinus - 2.0 * refValue)/(du*du);
+            theta_ = -(valueTimePlus - refValue)/dt;
             greeksCalculated_ = true;
         }
 
