@@ -517,14 +517,14 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_CumulativeNormalDistribution swig_types[27] 
 #define  SWIGTYPE_p_InvCumulativeNormalDistribution swig_types[28] 
 #define  SWIGTYPE_p_Statistics swig_types[29] 
-#define  SWIGTYPE_p_Deposit swig_types[30] 
-#define  SWIGTYPE_p_NewtonSafe swig_types[31] 
-#define  SWIGTYPE_p_History swig_types[32] 
-#define  SWIGTYPE_p_Solver1D swig_types[33] 
-#define  SWIGTYPE_p_Array swig_types[34] 
-#define  SWIGTYPE_p_ArrayLexicographicalView swig_types[35] 
-#define  SWIGTYPE_p_RiskTool swig_types[36] 
-#define  SWIGTYPE_p_Ridder swig_types[37] 
+#define  SWIGTYPE_p_NewtonSafe swig_types[30] 
+#define  SWIGTYPE_p_History swig_types[31] 
+#define  SWIGTYPE_p_Solver1D swig_types[32] 
+#define  SWIGTYPE_p_Array swig_types[33] 
+#define  SWIGTYPE_p_ArrayLexicographicalView swig_types[34] 
+#define  SWIGTYPE_p_RiskTool swig_types[35] 
+#define  SWIGTYPE_p_Ridder swig_types[36] 
+#define  SWIGTYPE_p_DepositRate swig_types[37] 
 #define  SWIGTYPE_p_ObjectiveFunction swig_types[38] 
 #define  SWIGTYPE_p_McAsianPricer swig_types[39] 
 #define  SWIGTYPE_p_McEuropeanPricer swig_types[40] 
@@ -756,9 +756,9 @@ TermStructureHandle NewFlatForward(CurrencyHandle currency,
 }
 
 using QuantLib::TermStructures::PiecewiseConstantForwards;
-using QuantLib::Deposit;
+using QuantLib::DepositRate;
 
-typedef std::vector<Deposit> DepositList;
+typedef std::vector<DepositRate> DepositList;
 
 TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency,
   DayCounterHandle dayCounter, Date today, DepositList deposits) {
@@ -1566,12 +1566,12 @@ static PyObject *_wrap_PiecewiseConstantForwards(PyObject *self, PyObject *args,
     {
         if (PyTuple_Check(obj3)) {
             int size = PyTuple_Size(obj3);
-            arg3 = new std::vector<Deposit>(size);
+            arg3 = new std::vector<DepositRate>(size);
             for (int i=0; i<size; i++) {
-                Deposit* d;
+                DepositRate* d;
                 PyObject* o = PyTuple_GetItem(obj3,i);
                 if ((SWIG_ConvertPtr(o,(void **) &d,
-                (swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
+                (swig_type_info *)SWIG_TypeQuery("DepositRate *"),1)) != -1) {
                     (*arg3)[i] = *d;
                 }else {
                     PyErr_SetString(PyExc_TypeError,"tuple must contain deposits");
@@ -1581,12 +1581,12 @@ static PyObject *_wrap_PiecewiseConstantForwards(PyObject *self, PyObject *args,
             }
         }else if (PyList_Check(obj3)) {
             int size = PyList_Size(obj3);
-            arg3 = new std::vector<Deposit>(size);
+            arg3 = new std::vector<DepositRate>(size);
             for (int i=0; i<size; i++) {
-                Deposit* d;
+                DepositRate* d;
                 PyObject* o = PyList_GetItem(obj3,i);
                 if ((SWIG_ConvertPtr(o,(void **) &d,
-                (swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
+                (swig_type_info *)SWIG_TypeQuery("DepositRate *"),1)) != -1) {
                     (*arg3)[i] = *d;
                 }else {
                     PyErr_SetString(PyExc_TypeError,"list must contain deposits");
@@ -6131,7 +6131,7 @@ static PyObject *_wrap_TermStructure___nonzero__(PyObject *self, PyObject *args,
 }
 
 
-static PyObject *_wrap_new_Deposit(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_new_DepositRate(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     Date *arg0 ;
     Rate arg1 ;
@@ -6141,14 +6141,14 @@ static PyObject *_wrap_new_Deposit(PyObject *self, PyObject *args, PyObject *kwa
     char *kwnames[] = {
         "maturity","rate","dayCounter", NULL 
     };
-    Deposit *result ;
+    DepositRate *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OdO:new_Deposit",kwnames,&argo0,&arg1,&argo2)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OdO:new_DepositRate",kwnames,&argo0,&arg1,&argo2)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Date,1)) == -1) return NULL;
     if ((SWIG_ConvertPtr(argo2,(void **) &arg2,SWIGTYPE_p_DayCounterHandle,1)) == -1) return NULL;
     {
         try {
-            result = (Deposit *)new Deposit(*arg0,arg1,*arg2);
+            result = (DepositRate *)new DepositRate(*arg0,arg1,*arg2);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -6157,21 +6157,21 @@ static PyObject *_wrap_new_Deposit(PyObject *self, PyObject *args, PyObject *kwa
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
-    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Deposit);
+    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_DepositRate);
     return resultobj;
 }
 
 
-static PyObject *_wrap_delete_Deposit(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_delete_DepositRate(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    Deposit *arg0 ;
+    DepositRate *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_Deposit",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Deposit,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_DepositRate",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DepositRate,1)) == -1) return NULL;
     {
         try {
             delete arg0;
@@ -6189,17 +6189,17 @@ static PyObject *_wrap_delete_Deposit(PyObject *self, PyObject *args, PyObject *
 }
 
 
-static PyObject *_wrap_Deposit_maturity(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_DepositRate_maturity(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    Deposit *arg0 ;
+    DepositRate *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     Date *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Deposit_maturity",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Deposit,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DepositRate_maturity",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DepositRate,1)) == -1) return NULL;
     {
         try {
             result = new Date (arg0->maturity());
@@ -6215,17 +6215,17 @@ static PyObject *_wrap_Deposit_maturity(PyObject *self, PyObject *args, PyObject
 }
 
 
-static PyObject *_wrap_Deposit_rate(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_DepositRate_rate(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    Deposit *arg0 ;
+    DepositRate *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     Rate result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Deposit_rate",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Deposit,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DepositRate_rate",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DepositRate,1)) == -1) return NULL;
     {
         try {
             result = (Rate )arg0->rate();
@@ -6242,17 +6242,17 @@ static PyObject *_wrap_Deposit_rate(PyObject *self, PyObject *args, PyObject *kw
 }
 
 
-static PyObject *_wrap_Deposit_dayCounter(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_DepositRate_dayCounter(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    Deposit *arg0 ;
+    DepositRate *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     DayCounterHandle *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Deposit_dayCounter",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Deposit,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DepositRate_dayCounter",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DepositRate,1)) == -1) return NULL;
     {
         try {
             result = new DayCounterHandle (arg0->dayCounter());
@@ -11530,11 +11530,11 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "TermStructure_discount", (PyCFunction) _wrap_TermStructure_discount, METH_VARARGS | METH_KEYWORDS },
 	 { "TermStructure_forward", (PyCFunction) _wrap_TermStructure_forward, METH_VARARGS | METH_KEYWORDS },
 	 { "TermStructure___nonzero__", (PyCFunction) _wrap_TermStructure___nonzero__, METH_VARARGS | METH_KEYWORDS },
-	 { "new_Deposit", (PyCFunction) _wrap_new_Deposit, METH_VARARGS | METH_KEYWORDS },
-	 { "delete_Deposit", (PyCFunction) _wrap_delete_Deposit, METH_VARARGS | METH_KEYWORDS },
-	 { "Deposit_maturity", (PyCFunction) _wrap_Deposit_maturity, METH_VARARGS | METH_KEYWORDS },
-	 { "Deposit_rate", (PyCFunction) _wrap_Deposit_rate, METH_VARARGS | METH_KEYWORDS },
-	 { "Deposit_dayCounter", (PyCFunction) _wrap_Deposit_dayCounter, METH_VARARGS | METH_KEYWORDS },
+	 { "new_DepositRate", (PyCFunction) _wrap_new_DepositRate, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_DepositRate", (PyCFunction) _wrap_delete_DepositRate, METH_VARARGS | METH_KEYWORDS },
+	 { "DepositRate_maturity", (PyCFunction) _wrap_DepositRate_maturity, METH_VARARGS | METH_KEYWORDS },
+	 { "DepositRate_rate", (PyCFunction) _wrap_DepositRate_rate, METH_VARARGS | METH_KEYWORDS },
+	 { "DepositRate_dayCounter", (PyCFunction) _wrap_DepositRate_dayCounter, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_Instrument", (PyCFunction) _wrap_delete_Instrument, METH_VARARGS | METH_KEYWORDS },
 	 { "Instrument_setPrice", (PyCFunction) _wrap_Instrument_setPrice, METH_VARARGS | METH_KEYWORDS },
 	 { "Instrument_setTermStructure", (PyCFunction) _wrap_Instrument_setTermStructure, METH_VARARGS | METH_KEYWORDS },
@@ -11756,7 +11756,6 @@ static swig_type_info _swigt__p_NormalDistribution[] = {{"_p_NormalDistribution"
 static swig_type_info _swigt__p_CumulativeNormalDistribution[] = {{"_p_CumulativeNormalDistribution", 0, "CumulativeNormalDistribution *"},{"_p_CumulativeNormalDistribution"},{0}};
 static swig_type_info _swigt__p_InvCumulativeNormalDistribution[] = {{"_p_InvCumulativeNormalDistribution", 0, "InvCumulativeNormalDistribution *"},{"_p_InvCumulativeNormalDistribution"},{0}};
 static swig_type_info _swigt__p_Statistics[] = {{"_p_Statistics", 0, "Statistics *"},{"_p_Statistics"},{0}};
-static swig_type_info _swigt__p_Deposit[] = {{"_p_Deposit", 0, "Deposit *"},{"_p_Deposit"},{0}};
 static swig_type_info _swigt__p_NewtonSafe[] = {{"_p_NewtonSafe", 0, "NewtonSafe *"},{"_p_NewtonSafe"},{0}};
 static swig_type_info _swigt__p_History[] = {{"_p_History", 0, "History *"},{"_p_History"},{0}};
 static swig_type_info _swigt__p_Solver1D[] = {{"_p_Solver1D", 0, "Solver1D *"},{"_p_Newton", _p_NewtonTo_p_Solver1D},{"_p_Ridder", _p_RidderTo_p_Solver1D},{"_p_FalsePosition", _p_FalsePositionTo_p_Solver1D},{"_p_Brent", _p_BrentTo_p_Solver1D},{"_p_Solver1D"},{"_p_Secant", _p_SecantTo_p_Solver1D},{"_p_NewtonSafe", _p_NewtonSafeTo_p_Solver1D},{"_p_Bisection", _p_BisectionTo_p_Solver1D},{0}};
@@ -11764,6 +11763,7 @@ static swig_type_info _swigt__p_Array[] = {{"_p_Array", 0, "Array *"},{"_p_Array
 static swig_type_info _swigt__p_ArrayLexicographicalView[] = {{"_p_ArrayLexicographicalView", 0, "ArrayLexicographicalView *"},{"_p_ArrayLexicographicalView"},{0}};
 static swig_type_info _swigt__p_RiskTool[] = {{"_p_RiskTool", 0, "RiskTool *"},{"_p_RiskTool"},{0}};
 static swig_type_info _swigt__p_Ridder[] = {{"_p_Ridder", 0, "Ridder *"},{"_p_Ridder"},{0}};
+static swig_type_info _swigt__p_DepositRate[] = {{"_p_DepositRate", 0, "DepositRate *"},{"_p_DepositRate"},{0}};
 static swig_type_info _swigt__p_ObjectiveFunction[] = {{"_p_ObjectiveFunction", 0, "ObjectiveFunction *"},{"_p_ObjectiveFunction"},{0}};
 static swig_type_info _swigt__p_McAsianPricer[] = {{"_p_McAsianPricer", 0, "McAsianPricer *"},{"_p_McAsianPricer"},{0}};
 static swig_type_info _swigt__p_McEuropeanPricer[] = {{"_p_McEuropeanPricer", 0, "McEuropeanPricer *"},{"_p_McEuropeanPricer"},{0}};
@@ -11804,7 +11804,6 @@ _swigt__p_NormalDistribution,
 _swigt__p_CumulativeNormalDistribution, 
 _swigt__p_InvCumulativeNormalDistribution, 
 _swigt__p_Statistics, 
-_swigt__p_Deposit, 
 _swigt__p_NewtonSafe, 
 _swigt__p_History, 
 _swigt__p_Solver1D, 
@@ -11812,6 +11811,7 @@ _swigt__p_Array,
 _swigt__p_ArrayLexicographicalView, 
 _swigt__p_RiskTool, 
 _swigt__p_Ridder, 
+_swigt__p_DepositRate, 
 _swigt__p_ObjectiveFunction, 
 _swigt__p_McAsianPricer, 
 _swigt__p_McEuropeanPricer, 

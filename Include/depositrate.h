@@ -21,12 +21,15 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file deposit.h
+/*! \file depositrate.h
     \brief Deposit rate
 
     $Source$
     $Name$
     $Log$
+    Revision 1.1  2001/01/18 16:22:05  nando
+    deposit file and class renamed to DepositRate
+
     Revision 1.7  2001/01/17 14:37:54  nando
     tabs removed
 
@@ -35,8 +38,8 @@
 
 */
 
-#ifndef quantlib_deposit_h
-#define quantlib_deposit_h
+#ifndef quantlib_depositrate_h
+#define quantlib_depositrate_h
 
 #include "qldefines.h"
 #include "date.h"
@@ -47,21 +50,23 @@
 namespace QuantLib {
 
     //! %deposit rate
-    class Deposit {
+    class DepositRate {
       public:
-        Deposit() {}
-        Deposit(const Date& maturity, Rate rate, const Handle<DayCounter>& dayCounter)
-        : theMaturity(maturity), theRate(rate), theDayCounter(dayCounter) {}
+        DepositRate() {}
+        DepositRate(const Date& maturity,
+                Rate rate,
+                const Handle<DayCounter>& dayCounter)
+        : maturity_(maturity), rate_(rate), dayCounter_(dayCounter) {}
         //! \name Inspectors
         //@{
-        Date maturity() const { return theMaturity; }
-        Rate rate() const { return theRate; }
-        Handle<DayCounter> dayCounter() const { return theDayCounter; }
+        Date maturity() const { return maturity_; }
+        Rate rate() const { return rate_; }
+        Handle<DayCounter> dayCounter() const { return dayCounter_; }
         //@}
       private:
-        Date theMaturity;
-        Rate theRate;
-        Handle<DayCounter> theDayCounter;
+        Date maturity_;
+        Rate rate_;
+        Handle<DayCounter> dayCounter_;
     };
 
 }

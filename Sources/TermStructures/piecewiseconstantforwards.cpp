@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.17  2001/01/18 16:22:28  nando
+    deposit file and class renamed to DepositRate
+
     Revision 1.16  2001/01/18 15:51:37  nando
     bug fixed.
     Out of bound array access in case of extrapolation
@@ -57,10 +60,10 @@ namespace QuantLib {
     namespace TermStructures {
 
         PiecewiseConstantForwards::PiecewiseConstantForwards(
-                                        Handle<Currency> currency,
-                                        Handle<DayCounter> dayCounter,
-                                        const Date& today,
-                                        const std::vector<Deposit>& deposits)
+                                    Handle<Currency> currency,
+                                    Handle<DayCounter> dayCounter,
+                                    const Date& today,
+                                    const std::vector<DepositRate>& deposits)
         : currency_(currency), dayCounter_(dayCounter), today_(today),
           deposits_(deposits) {
 
@@ -78,7 +81,7 @@ namespace QuantLib {
             times_[0] = Time(0.0);
             // loop on deposits_
             for (int i=1; i<nodesNumber_; i++) {
-                Deposit& deposit = deposits_[i-1];
+                DepositRate& deposit = deposits_[i-1];
                 nodes_[i] = deposit.maturity();
                 times_[i] = dayCounter_ ->yearFraction(settlementDate(),
                                                                   nodes_[i]);

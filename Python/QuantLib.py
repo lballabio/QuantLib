@@ -495,32 +495,32 @@ TermStructure.discount = new.instancemethod(QuantLibc.TermStructure_discount, No
 TermStructure.forward = new.instancemethod(QuantLibc.TermStructure_forward, None, TermStructure)
 TermStructure.__nonzero__ = new.instancemethod(QuantLibc.TermStructure___nonzero__, None, TermStructure)
 
-class Deposit:
+class DepositRate:
     def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_Deposit,args,kwargs)
+        self.this = apply(QuantLibc.new_DepositRate,args,kwargs)
         self.thisown = 1
 
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
-            QuantLibc.delete_Deposit(self)
+            QuantLibc.delete_DepositRate(self)
     def maturity(*args, **kwargs):
-        val = apply(QuantLibc.Deposit_maturity,args, kwargs)
+        val = apply(QuantLibc.DepositRate_maturity,args, kwargs)
         if val: val = DatePtr(val) ; val.thisown = 1
         return val
     def dayCounter(*args, **kwargs):
-        val = apply(QuantLibc.Deposit_dayCounter,args, kwargs)
+        val = apply(QuantLibc.DepositRate_dayCounter,args, kwargs)
         if val: val = DayCounterPtr(val) ; val.thisown = 1
         return val
     def __repr__(self):
-        return "<C Deposit instance at %s>" % (self.this,)
-class DepositPtr(Deposit):
+        return "<C DepositRate instance at %s>" % (self.this,)
+class DepositRatePtr(DepositRate):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-        self.__class__ = Deposit
+        self.__class__ = DepositRate
 
 
-Deposit.rate = new.instancemethod(QuantLibc.Deposit_rate, None, Deposit)
+DepositRate.rate = new.instancemethod(QuantLibc.DepositRate_rate, None, DepositRate)
 
 class Instrument:
     def __init__(self,this):

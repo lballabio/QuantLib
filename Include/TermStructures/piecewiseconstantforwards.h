@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/01/18 16:22:18  nando
+    deposit file and class renamed to DepositRate
+
     Revision 1.7  2001/01/18 14:36:30  nando
     80 columns enforced
     private members with trailing underscore
@@ -48,7 +51,7 @@
 
 #include "qldefines.h"
 #include "termstructure.h"
-#include "deposit.h"
+#include "depositrate.h"
 #include <vector>
 
 namespace QuantLib {
@@ -61,7 +64,7 @@ namespace QuantLib {
             PiecewiseConstantForwards(Handle<Currency> currency,
                                       Handle<DayCounter> dayCounter,
                                       const Date& today,
-                                      const std::vector<Deposit>& deposits);
+                                      const std::vector<DepositRate>& deposits);
             // clone
             Handle<TermStructure> clone() const;
             // inspectors
@@ -93,7 +96,7 @@ namespace QuantLib {
             std::vector<Rate> forwards_, zeroYields_;
             // here to be used in the clone method
             // to be replaced by an observable pattern
-            std::vector<Deposit> deposits_;
+            std::vector<DepositRate> deposits_;
         };
 
         // inline definitions
