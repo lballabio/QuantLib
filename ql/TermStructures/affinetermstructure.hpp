@@ -67,7 +67,6 @@ namespace QuantLib {
             Date todaysDate() const {return todaysDate_; }
             Date settlementDate() const;
             Date maxDate() const;
-            Time maxTime() const;
 
             void update();
           protected:
