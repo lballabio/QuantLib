@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -30,15 +29,16 @@
 #include <ql/option.hpp>
 #include <ql/solver1d.hpp>
 
-#define QL_MIN_VOLATILITY 0.0001
+#define QL_MIN_VOLATILITY 1.0e-4
+#define QL_MIN_DIVYIELD 1.0e-7
 #define QL_MAX_VOLATILITY 4.0
+#define QL_MAX_DIVYIELD 4.0
 
 namespace QuantLib {
 
     //! Pricing models for options
     /*! See sect. \ref pricers */
     namespace Pricers {
-
 
         double ExercisePayoff(Option::Type type, double price, double strike);
 
@@ -52,11 +52,11 @@ namespace QuantLib {
                               Rate riskFreeRate,
                               Time residualTime,
                               double volatility);
-            virtual ~SingleAssetOption() {}    // just in case
+            virtual ~SingleAssetOption() {}
             // modifiers
-            virtual void setVolatility(double newVolatility) ;
-            virtual void setRiskFreeRate(Rate newRate) ;
-            virtual void setDividendYield(Rate newDividendYield) ;
+            virtual void setVolatility(double newVolatility);
+            virtual void setRiskFreeRate(Rate newRate);
+            virtual void setDividendYield(Rate newDividendYield);
             // accessors
             virtual double value() const = 0;
             virtual double delta() const = 0;
@@ -77,10 +77,14 @@ namespace QuantLib {
                                      double accuracy = 1e-4,
                                      Size maxEvaluations = 100,
                                      double minVol = QL_MIN_VOLATILITY,
-                                     double maxVol = QL_MAX_VOLATILITY) const ;
+                                     double maxVol = QL_MAX_VOLATILITY) const;
+            double impliedDivYield(double targetValue,
+                                     double accuracy = 1e-4,
+                                     Size maxEvaluations = 100,
+                                     double minVol = QL_MIN_DIVYIELD,
+                                     double maxVol = QL_MAX_DIVYIELD) const;
             virtual Handle<SingleAssetOption> clone() const = 0;
           protected:
-            // results declared as mutable to preserve the logical
             Option::Type type_;
             double underlying_;
             double strike_;
@@ -97,9 +101,12 @@ namespace QuantLib {
           private:
             class VolatilityFunction;
             friend class VolatilityFunction;
+            class DivYieldFunction;
+            friend class DivYieldFunction;
         };
 
-        class SingleAssetOption::VolatilityFunction : public ObjectiveFunction {
+        class SingleAssetOption::VolatilityFunction 
+        : public ObjectiveFunction {
           public:
             VolatilityFunction(const Handle<SingleAssetOption>& tempBSM,
                                double targetPrice);
@@ -108,6 +115,18 @@ namespace QuantLib {
             mutable Handle<SingleAssetOption> bsm;
             double targetPrice_;
         };
+
+        class SingleAssetOption::DivYieldFunction 
+        : public ObjectiveFunction {
+          public:
+           DivYieldFunction(const Handle<SingleAssetOption>& tempBSM,
+                            double targetPrice);
+            double operator()(double x) const;
+          private:
+            mutable Handle<SingleAssetOption> bsm;
+            double targetPrice_;
+        };
+
 
         inline SingleAssetOption::VolatilityFunction::VolatilityFunction(
                 const Handle<SingleAssetOption>& tempBSM,
@@ -118,6 +137,19 @@ namespace QuantLib {
 
         inline double SingleAssetOption::VolatilityFunction::operator()(double x) const {
             bsm -> setVolatility(x);
+            return (bsm -> value() - targetPrice_);
+        }
+
+
+        inline SingleAssetOption::DivYieldFunction::DivYieldFunction(
+                const Handle<SingleAssetOption>& tempBSM,
+                double targetPrice) {
+            bsm = tempBSM;
+            targetPrice_ = targetPrice;
+        }
+
+        inline double SingleAssetOption::DivYieldFunction::operator()(double x) const {
+            bsm -> setDividendYield(x);
             return (bsm -> value() - targetPrice_);
         }
 

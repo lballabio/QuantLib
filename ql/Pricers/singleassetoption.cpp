@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -30,7 +29,6 @@
 namespace QuantLib {
 
     namespace Pricers {
-
 
         double ExercisePayoff(Option::Type type, double price,
             double strike) {
@@ -175,8 +173,9 @@ namespace QuantLib {
             return rho_;
         }
 
-        double SingleAssetOption::impliedVolatility(double targetValue, double accuracy,
-                    Size maxEvaluations, double minVol, double maxVol) const {
+        double SingleAssetOption::impliedVolatility(double targetValue, 
+                    double accuracy, Size maxEvaluations, double minVol, 
+                    double maxVol) const {
             // check option targetValue boundary condition
             QL_REQUIRE(targetValue > 0.0,
              "SingleAssetOption::impliedVol : targetValue must be positive");
@@ -194,6 +193,29 @@ namespace QuantLib {
             s1d.setUpperBound(maxVol);
 
             return s1d.solve(bsmf, accuracy, volatility_, minVol, maxVol);
+        }
+
+        double SingleAssetOption::impliedDivYield(double targetValue, 
+                    double accuracy, Size maxEvaluations, double minDivYield, 
+                    double maxDivYield) const {
+            // check option targetValue boundary condition
+            QL_REQUIRE(targetValue > 0.0,
+             "SingleAssetOption::impliedYield : targetValue must be positive");
+            double optionValue = value();
+            if (optionValue == targetValue)
+                return dividendYield_;
+            // clone used for root finding
+            Handle<SingleAssetOption> tempBSM = clone();
+            // objective function
+            DivYieldFunction bsmf(tempBSM, targetValue);
+            // solver
+            Solvers1D::Brent s1d = Solvers1D::Brent();
+            s1d.setMaxEvaluations(maxEvaluations);
+            s1d.setLowerBound(minDivYield);
+            s1d.setUpperBound(maxDivYield);    
+
+            return s1d.solve(bsmf, accuracy, dividendYield_, 
+                             minDivYield, maxDivYield);
         }
 
     }
