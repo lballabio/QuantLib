@@ -15,8 +15,6 @@
 # Directories
 QL_INCLUDE_DIR   = "$(QL_DIR)"
 QL_LIB_DIR       = "$(QL_DIR)\lib\Win32\Borland"
-PPMT_INCLUDE_DIR = "$(PPMT_DIR)"
-PPMT_LIB_DIR     = "$(PPMT_DIR)\lib\Win32\Borland"
 BCC_INCLUDE      = $(MAKEDIR)\..\include
 BCC_LIBS         = $(MAKEDIR)\..\lib
 
@@ -25,7 +23,6 @@ BCC_LIBS         = $(MAKEDIR)\..\lib
 # Options
 CC_OPTS = -vi- -w-8057 \
     -I$(QL_INCLUDE_DIR) \
-    -I$(PPMT_INCLUDE_DIR) \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -33,7 +30,7 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 
 # Primary target:
 BermudanSwaption$(_D).exe: BermudanSwaption.cpp
-    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(PPMT_LIB_DIR) -L$(BCC_LIBS) -oBermudanSwaption$(_D).obj -eBermudanSwaption$(_D).exe BermudanSwaption.cpp QuantLib$(_D).lib
+    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) -oBermudanSwaption$(_D).obj -eBermudanSwaption$(_D).exe BermudanSwaption.cpp QuantLib$(_D).lib
 
 # Clean up
 clean::
