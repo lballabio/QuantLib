@@ -81,6 +81,8 @@ namespace QuantLib {
                 CalibrationSet& instruments,
                 const Handle<Optimization::Method>& method);
 
+            Array params();
+            void setParams(const Array& params);
           protected:
             virtual void generateParameters() {}
 
@@ -88,10 +90,6 @@ namespace QuantLib {
             Handle<Optimization::Constraint> constraint_;
 
           private:
-            Array params();
-
-            void setParams(const Array& params);
-            
             class PrivateConstraint;
             class CalibrationFunction;
             friend class CalibrationFunction;

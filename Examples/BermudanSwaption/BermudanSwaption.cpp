@@ -207,18 +207,22 @@ int main(int argc, char* argv[])
         swaptions.setPricingEngine(
             Handle<OptionPricingEngine>(new JamshidianSwaption(modelHW)));
         calibrateModel(modelHW, swaptions, 0.25);
+        cout << "calibrated to " << modelHW->params() << endl;
         cout << endl;
 
         cout << endl << "Black-Karasinski: " << endl;
         swaptions.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelBK, grid)));
         calibrateModel(modelBK, swaptions, 0.25);
+        cout << "calibrated to " << modelBK->params() << endl;
 
+/*
         cout << "Cox-Ingersoll-Ross: " << endl;
         swaptions.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, grid)));
         calibrateModel(modelCIR, swaptions, 0.25);
-
+        cout << "calibrated to " << modelCIR->params() << endl;
+*/
         cout << "Pricing an ATM bermudan swaption" << endl;
 
         //Define the underlying swap
@@ -256,9 +260,9 @@ int main(int argc, char* argv[])
         bermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
         cout << "BK:  " << bermudanSwaption.NPV() << endl;
-        bermudanSwaption.setPricingEngine(
+/*        bermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, 100)));
-        cout << "CIR: " << bermudanSwaption.NPV() << endl;
+        cout << "CIR: " << bermudanSwaption.NPV() << endl;*/
 
         cout << "Pricing an OTM bermudan swaption" << endl;
 
@@ -279,9 +283,9 @@ int main(int argc, char* argv[])
         otmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
         cout << "BK:  " << otmBermudanSwaption.NPV() << endl;
-        otmBermudanSwaption.setPricingEngine(
+/*        otmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, 100)));
-        cout << "CIR: " << otmBermudanSwaption.NPV() << endl;
+        cout << "CIR: " << otmBermudanSwaption.NPV() << endl;*/
 
         return 0;
     } catch (std::exception& e) {
