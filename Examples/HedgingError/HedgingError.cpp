@@ -28,6 +28,9 @@
 */
 
 // $Log$
+// Revision 1.6  2001/07/27 17:28:31  nando
+// minor changes
+//
 // Revision 1.5  2001/07/27 16:47:25  nando
 // updated in order to compile with the new GeneralMontecarlo interface.
 //
@@ -38,19 +41,6 @@
 // 1) add hedgingerror.hpp
 // 2) avoid using namespace QuantLib in favour of
 //     using QuantLib::Rate
-//
-// Revision 1.4  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.3  2001/07/25 11:02:39  nando
-// 80 columns enforced
-//
-// Revision 1.2  2001/07/24 16:54:05  dzuki
-// Minor fixes.
-//
-// Revision 1.1  2001/07/24 16:36:58  dzuki
-// Discontinuous hedging error calculation example (HedgingError)
-
 
 #include "stdlib.h"
 #include <iostream>
@@ -78,8 +68,7 @@ class HedgeErrorPathPricer : public PathPricer
     double value(const Path &path) const;
     double computePlainVanilla(Option::Type type,
                                double price,
-                               double strike,
-                               double discount) const;
+                               double strike) const;
   protected:
     Option::Type type_;
     Rate r_;
@@ -178,7 +167,7 @@ double HedgeErrorPathPricer::value(const Path & path) const
     stock = underlying_*QL_EXP(stockLogGrowth);
 
     /*** final Profit&Loss valuation ***/
-    double optionPayoff = computePlainVanilla(type_, stock, strike_, 1.0);
+    double optionPayoff = computePlainVanilla(type_, stock, strike_);
     double profitLoss = stockAmount*stock + money_account - optionPayoff;
 
     return profitLoss;
@@ -186,8 +175,7 @@ double HedgeErrorPathPricer::value(const Path & path) const
 
 double HedgeErrorPathPricer::computePlainVanilla(Option::Type type,
                                                  double price,
-                                                 double strike,
-                                                 double discount) const
+                                                 double strike) const
 {
     double optionPrice;
 
@@ -201,18 +189,20 @@ double HedgeErrorPathPricer::computePlainVanilla(Option::Type type,
       case Option::Straddle:
             optionPrice = QL_FABS(strike-price);
     }
-    return discount*optionPrice;
+    return optionPrice;
 }
 
 class ComputeHedgingError
 {
 public:
-    ComputeHedgingError(Time maturity,
+    ComputeHedgingError(Option::Type type,
+                        Time maturity,
                         double strike,
                         double s0,
                         double sigma,
                         Rate r)
     {
+        type_ = type;
         maturity_ = maturity;
         strike_ = strike;
         s0_ = s0;
@@ -222,63 +212,75 @@ public:
 
     void doTest(int nTimeSteps = 21, int nSamples = 50000)
     {
-        BSMEuropeanOption option = BSMEuropeanOption(Option::Type::Call, s0_,
+        BSMEuropeanOption option = BSMEuropeanOption(type_, s0_,
             strike_, 0.0, r_, maturity_, sigma_);
 
         cout << "\n" << "Option value:\t " << option.value() << "\n";
 
-        double theoretical_error_sd =
-                QL_SQRT(3.1415926535/4/nTimeSteps)*option.vega()*sigma_;
-
-        cout << "Value of the hedging error SD"
-                " computed using Derman & Kamal's formula:\t "
-                << theoretical_error_sd;
-
+        // hedging interval
         double tau = maturity_ / nTimeSteps;
 
-        // Black Scholes assumption
+        // Black Scholes assumption rules the path generator
         double sigma = sigma_* sqrt(tau);
         double mean = r_ * tau - 0.5*sigma*sigma;
-
-        Math::Statistics statisticAccumulator;
-
         Handle<StandardPathGenerator> myPathGenerator(
             new StandardPathGenerator(nTimeSteps, mean, sigma*sigma));
 
-        // casting HedgeErrorPathPricer to Handle<PathPricer>
+        // the path pricer knows how to price a path
         Handle<PathPricer> myPathPricer =
-            Handle<PathPricer>(new HedgeErrorPathPricer(Option::Type::Call,
+            Handle<PathPricer>(new HedgeErrorPathPricer(type_,
             s0_, strike_, r_, maturity_, sigma_));
 
+        // a statistic accumulator to accumulate path values
+        Math::Statistics statisticAccumulator;
+
+        // use one factor Montecarlo model
         OneFactorMonteCarloOption myMontecarloSimulation(myPathGenerator,
             myPathPricer, statisticAccumulator);
 
-        // simulating nSamples paths
+        // simulate nSamples paths
         myMontecarloSimulation.addSamples(nSamples);
 
+        // get back the value distribution
         Math::Statistics ProfitLossDistribution =
             myMontecarloSimulation.sampleAccumulator();
 
         cout << "\n";
-        cout << "Mean hedging error: \t" <<ProfitLossDistribution.mean()<< "\n";
-        cout << "Hedging error standard deviation: \t"
-            << ProfitLossDistribution.standardDeviation() << "\n";
+        cout << "Montecarlo simulation: " << nSamples << " samples" << "\n";
+        cout << "Hedging " << nTimeSteps << " times" << "\n";
+        cout << "Mean Profit&Loss: \t" <<ProfitLossDistribution.mean()<< "\n";
+        cout << "Profit&Loss standard deviation (Montecarlo) :\t"
+             << ProfitLossDistribution.standardDeviation() << "\n";
+
+        double theoretical_error_sd =
+                QL_SQRT(3.1415926535/4/nTimeSteps)*option.vega()*sigma_;
+
+        cout << "Profit&Loss StDev (Derman & Kamal's formula):\t"
+                << theoretical_error_sd << "\n";
+
     }
 
 private:
+    Option::Type type_;
     double s0_;
     double strike_;
     Time maturity_;
     double sigma_;
     Rate r_;
-
 };
 
 int main(int argc, char* argv[])
 {
-    // 1-month at the money call, volatility 20%, risk-free rate 5%
-    // underlying price 100.0, strike price 100.0
-    ComputeHedgingError test(1./12., 100., 100., 0.2, 0.05);
+    // 1-month call, volatility 20%, risk-free rate 5%
+    // strike price 100.0, underlying price 100.0
+    Time maturity = 1./12.;
+    double strike = 100;
+    double underlying = 100;
+    double volatility = 0.20;
+    Rate riskFreeRate = 0.05;
+    ComputeHedgingError test(Option::Type::Call, maturity, strike, underlying,
+        volatility, riskFreeRate);
+
     test.doTest();
     test.doTest(84);
     return 0;
