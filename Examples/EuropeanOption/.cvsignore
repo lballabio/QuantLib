@@ -1,5 +1,6 @@
-Makefile.in
 EuropeanOption
+Makefile.in
+build
 *.plg
 *.dep
-build
+*.tds

@@ -1,5 +1,6 @@
-Makefile.in
 SwapValuation
+Makefile.in
+build
 *.plg
 *.dep
-build
+*.tds

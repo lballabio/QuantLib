@@ -1,3 +1,4 @@
+*.obj_d
 *.obj
 *.lib
 testsuite.dep
