@@ -925,15 +925,19 @@ SOURCE=.\Include\ql\CashFlows\fixedratecoupon.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Sources\CashFlows\floatingratecoupon.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\CashFlows\floatingratecoupon.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Include\ql\CashFlows\indexlinkedcoupon.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\CashFlows\parcoupon.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\CashFlows\parcoupon.hpp
+SOURCE=.\Include\ql\CashFlows\Makefile.am
 # End Source File
 # Begin Source File
 

@@ -25,9 +25,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\Release
@@ -67,6 +64,7 @@ CLEAN :
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\falseposition.obj"
 	-@erase "$(INTDIR)\finitedifferenceeuropean.obj"
+	-@erase "$(INTDIR)\floatingratecoupon.obj"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\geometricasianpathpricer.obj"
 	-@erase "$(INTDIR)\getcovariance.obj"
@@ -86,7 +84,6 @@ CLEAN :
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\pagodaoption.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
-	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\piecewiseconstantforwards.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
@@ -116,7 +113,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -189,14 +219,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\xibor.obj" \
+	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
-	"$(INTDIR)\parcoupon.obj" \
+	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\xibormanager.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -242,6 +272,7 @@ CLEAN :
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\falseposition.obj"
 	-@erase "$(INTDIR)\finitedifferenceeuropean.obj"
+	-@erase "$(INTDIR)\floatingratecoupon.obj"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\geometricasianpathpricer.obj"
 	-@erase "$(INTDIR)\getcovariance.obj"
@@ -261,7 +292,6 @@ CLEAN :
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\pagodaoption.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
-	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\piecewiseconstantforwards.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
@@ -292,7 +322,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -365,14 +428,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\xibor.obj" \
+	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
-	"$(INTDIR)\parcoupon.obj" \
+	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\xibormanager.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -380,36 +443,6 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -824,9 +857,9 @@ SOURCE=.\Sources\CashFlows\cashflowvectors.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\CashFlows\parcoupon.cpp
+SOURCE=.\Sources\CashFlows\floatingratecoupon.cpp
 
-"$(INTDIR)\parcoupon.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\floatingratecoupon.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
