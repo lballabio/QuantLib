@@ -27,7 +27,6 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        using CashFlows::FloatingRateCoupon;
         using Pricers::BlackCapFloor;
 
         CapFloor::CapFloor(

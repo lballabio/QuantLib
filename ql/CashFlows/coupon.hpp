@@ -28,102 +28,100 @@
 
 namespace QuantLib {
 
-    namespace CashFlows {
-
-        //! %coupon accruing over a fixed period
-        /*! This class implements part of the CashFlow interface but it
-            is still abstract and provides derived classes with methods for
-            accrual period calculations.
+    //! %coupon accruing over a fixed period
+    /*! This class implements part of the CashFlow interface but it
+      is still abstract and provides derived classes with methods for
+      accrual period calculations.
+    */
+    class Coupon : public CashFlow {
+      public:
+        /*! \warning the coupon does not roll the payment date
+          which must already be a business day.
         */
-        class Coupon : public CashFlow {
-          public:
-            /*! \warning the coupon does not roll the payment date
-                         which must already be a business day.
-            */
-            Coupon(double nominal,
-                   const Date& paymentDate, 
-                   const Date& accrualStartDate, 
-                   const Date& accrualEndDate,
-                   const Date& refPeriodStart = Date(),
-                   const Date& refPeriodEnd = Date());
-            //! \name Partial CashFlow interface
-            //@{
-            Date date() const;
-            //@}
-            //! \name Inspectors
-            //@{
-            double nominal() const;
-            //! start of the accrual period
-            const Date& accrualStartDate() const;
-            //! end of the accrual period
-            const Date& accrualEndDate() const;
-            //! accrual period as fraction of year
-            Time accrualPeriod() const;
-            //! accrual period in days
-            int accrualDays() const;
-            //! day counter for accrual calculation
-            virtual DayCounter dayCounter() const = 0;
-            //! accrued amount at the given date
-            virtual double accruedAmount(const Date&) const = 0;
-            //@}
-            //! \name Visitability
-            //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
-            //@}
-          protected:
-            double nominal_;
-            Date paymentDate_, accrualStartDate_, accrualEndDate_, 
-                 refPeriodStart_, refPeriodEnd_;
-        };
+        Coupon(double nominal,
+               const Date& paymentDate, 
+               const Date& accrualStartDate, 
+               const Date& accrualEndDate,
+               const Date& refPeriodStart = Date(),
+               const Date& refPeriodEnd = Date());
+        //! \name Partial CashFlow interface
+        //@{
+        Date date() const;
+        //@}
+        //! \name Inspectors
+        //@{
+        double nominal() const;
+        //! start of the accrual period
+        const Date& accrualStartDate() const;
+        //! end of the accrual period
+        const Date& accrualEndDate() const;
+        //! accrual period as fraction of year
+        Time accrualPeriod() const;
+        //! accrual period in days
+        int accrualDays() const;
+        //! day counter for accrual calculation
+        virtual DayCounter dayCounter() const = 0;
+        //! accrued amount at the given date
+        virtual double accruedAmount(const Date&) const = 0;
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(Patterns::AcyclicVisitor&);
+        //@}
+      protected:
+        double nominal_;
+        Date paymentDate_, accrualStartDate_, accrualEndDate_, 
+            refPeriodStart_, refPeriodEnd_;
+    };
 
 
-        // inline definitions
+    // inline definitions
 
-        inline Coupon::Coupon(double nominal,
-            const Date& paymentDate, 
-            const Date& accrualStartDate, const Date& accrualEndDate,
-            const Date& refPeriodStart, const Date& refPeriodEnd)
-        : nominal_(nominal), paymentDate_(paymentDate), 
-          accrualStartDate_(accrualStartDate), accrualEndDate_(accrualEndDate),
-          refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd) {}
+    inline Coupon::Coupon(double nominal,
+                          const Date& paymentDate, 
+                          const Date& accrualStartDate, 
+                          const Date& accrualEndDate,
+                          const Date& refPeriodStart, 
+                          const Date& refPeriodEnd)
+    : nominal_(nominal), paymentDate_(paymentDate), 
+      accrualStartDate_(accrualStartDate), accrualEndDate_(accrualEndDate),
+      refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd) {}
 
-        inline Date Coupon::date() const {
-            return paymentDate_;
-        }
+    inline Date Coupon::date() const {
+        return paymentDate_;
+    }
 
-        inline double Coupon::nominal() const {
-            return nominal_;
-        }
+    inline double Coupon::nominal() const {
+        return nominal_;
+    }
 
-        inline const Date& Coupon::accrualStartDate() const {
-            return accrualStartDate_;
-        }
+    inline const Date& Coupon::accrualStartDate() const {
+        return accrualStartDate_;
+    }
 
-        inline const Date& Coupon::accrualEndDate() const {
-            return accrualEndDate_;
-        }
+    inline const Date& Coupon::accrualEndDate() const {
+        return accrualEndDate_;
+    }
 
-        inline Time Coupon::accrualPeriod() const {
-            return dayCounter().yearFraction(accrualStartDate_,
-                                             accrualEndDate_,
-                                             refPeriodStart_,
-                                             refPeriodEnd_);
-        }
+    inline Time Coupon::accrualPeriod() const {
+        return dayCounter().yearFraction(accrualStartDate_,
+                                         accrualEndDate_,
+                                         refPeriodStart_,
+                                         refPeriodEnd_);
+    }
 
-        inline int Coupon::accrualDays() const {
-            return dayCounter().dayCount(accrualStartDate_,
-                                         accrualEndDate_);
-        }
+    inline int Coupon::accrualDays() const {
+        return dayCounter().dayCount(accrualStartDate_,
+                                     accrualEndDate_);
+    }
 
-        inline void Coupon::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
-            Visitor<Coupon>* v1 = dynamic_cast<Visitor<Coupon>*>(&v);
-            if (v1 != 0)
-                v1->visit(*this);
-            else
-                CashFlow::accept(v);
-        }
-
+    inline void Coupon::accept(Patterns::AcyclicVisitor& v) {
+        using namespace Patterns;
+        Visitor<Coupon>* v1 = dynamic_cast<Visitor<Coupon>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            CashFlow::accept(v);
     }
 
 }

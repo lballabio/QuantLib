@@ -24,60 +24,56 @@
 
 #include <ql/CashFlows/indexedcoupon.hpp>
 
-
 namespace QuantLib {
 
-    namespace CashFlows {
+    //! %in arrear indexed coupon class
+    /*! \warning This class does not perform any date adjustment,
+                 i.e., the start and end date passed upon construction
+                 should be already rolled to a business day.
+    */
+    class InArrearIndexedCoupon : public IndexedCoupon {
+      public:
+        InArrearIndexedCoupon(double nominal,
+                              const Date& paymentDate,
+                              const Handle<Indexes::Xibor>& index,
+                              const Date& startDate, const Date& endDate,
+                              int fixingDays,
+                              Spread spread = 0.0,
+                              const Date& refPeriodStart = Date(),
+                              const Date& refPeriodEnd = Date(),
+                              const DayCounter& dayCounter = DayCounter())
+        : IndexedCoupon(nominal, paymentDate, index, startDate, endDate,
+                        fixingDays, spread, refPeriodStart, refPeriodEnd, 
+                        dayCounter) {}
+        //! \name FloatingRateCoupon interface
+        //@{
+        Date fixingDate() const;
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(Patterns::AcyclicVisitor&);
+        //@}
+    };
 
-        //! %in arrear indexed coupon class
-        /*! \warning This class does not perform any date adjustment,
-            i.e., the start and end date passed upon construction
-            should be already rolled to a business day.
-        */
-        class InArrearIndexedCoupon : public IndexedCoupon {
-          public:
-            InArrearIndexedCoupon(double nominal,
-                                  const Date& paymentDate,
-                                  const Handle<Indexes::Xibor>& index,
-                                  const Date& startDate, const Date& endDate,
-                                  int fixingDays,
-                                  Spread spread = 0.0,
-                                  const Date& refPeriodStart = Date(),
-                                  const Date& refPeriodEnd = Date(),
-                                  const DayCounter& dayCounter = DayCounter())
-			 : IndexedCoupon(nominal, paymentDate, index, startDate, endDate,
-			   fixingDays, spread, refPeriodStart, refPeriodEnd, dayCounter) {}
-			//! \name FloatingRateCoupon interface
-            //@{
-			Date fixingDate() const;
-            //@}
-            //! \name Visitability
-            //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
-            //@}
-        };
 
+    // inline definitions
 
-        // inline definitions
+    inline Date InArrearIndexedCoupon::fixingDate() const {
+        // fix at the end of period
+        return index()->calendar().advance(accrualEndDate_, 
+                                           -fixingDays_, Days,
+                                           Preceding);
+    }
 
-        inline Date InArrearIndexedCoupon::fixingDate() const {
-			// fix at the end of period
-            return index()->calendar().advance(
-                accrualEndDate_, -fixingDays_, Days,
-                Preceding);
-		}
-
-        inline 
-        void InArrearIndexedCoupon::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
-            Visitor<InArrearIndexedCoupon>* v1 =
-                dynamic_cast<Visitor<InArrearIndexedCoupon>*>(&v);
-            if (v1 != 0)
-                v1->visit(*this);
-            else
-                IndexedCoupon::accept(v);
-        }
-
+    inline 
+    void InArrearIndexedCoupon::accept(Patterns::AcyclicVisitor& v) {
+        using namespace Patterns;
+        Visitor<InArrearIndexedCoupon>* v1 =
+            dynamic_cast<Visitor<InArrearIndexedCoupon>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            IndexedCoupon::accept(v);
     }
 
 }

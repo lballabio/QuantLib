@@ -27,85 +27,81 @@
 
 namespace QuantLib {
 
-    namespace CashFlows {
-
-        //! %coupon at par on a term structure
-        /*! \warning This class does not perform any date adjustment,
-            i.e., the start and end date passed upon construction
-            should be already rolled to a business day.
-        */
-        class ParCoupon : public FloatingRateCoupon,
-                          public Patterns::Observer {
-          public:
-            ParCoupon(double nominal, const Date& paymentDate,
-                      const Handle<Indexes::Xibor>& index,
-                      const Date& startDate, const Date& endDate,
-                      int fixingDays, Spread spread = 0.0,
-                      const Date& refPeriodStart = Date(),
-                      const Date& refPeriodEnd = Date());
-            //! \name CashFlow interface
-            //@{
-            double amount() const;
-            //@}
-            //! \name Coupon interface
-            //@{
-            DayCounter dayCounter() const;
-            //@}
-            //! \name FloatingRateCoupon interface
-            //@{
-            Rate fixing() const;
-            Date fixingDate() const;
-            //@}
-            //! \name Inspectors
-            //@{
-            const Handle<Indexes::Xibor>& index() const;
-            //@}
-            //! \name Observer interface
-            //@{
-            void update();
-            //@}
-            //! \name Visitability
-            //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
-            //@}
-          private:
-            Handle<Indexes::Xibor> index_;
-        };
+    //! %coupon at par on a term structure
+    /*! \warning This class does not perform any date adjustment,
+      i.e., the start and end date passed upon construction
+      should be already rolled to a business day.
+    */
+    class ParCoupon : public FloatingRateCoupon,
+                      public Patterns::Observer {
+      public:
+        ParCoupon(double nominal, const Date& paymentDate,
+                  const Handle<Indexes::Xibor>& index,
+                  const Date& startDate, const Date& endDate,
+                  int fixingDays, Spread spread = 0.0,
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date());
+        //! \name CashFlow interface
+        //@{
+        double amount() const;
+        //@}
+        //! \name Coupon interface
+        //@{
+        DayCounter dayCounter() const;
+        //@}
+        //! \name FloatingRateCoupon interface
+        //@{
+        Rate fixing() const;
+        Date fixingDate() const;
+        //@}
+        //! \name Inspectors
+        //@{
+        const Handle<Indexes::Xibor>& index() const;
+        //@}
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(Patterns::AcyclicVisitor&);
+        //@}
+      private:
+        Handle<Indexes::Xibor> index_;
+    };
 
 
-        // inline definitions
+    // inline definitions
 
-        inline DayCounter ParCoupon::dayCounter() const {
-            return index_->termStructure()->dayCounter();
-        }
+    inline DayCounter ParCoupon::dayCounter() const {
+        return index_->termStructure()->dayCounter();
+    }
 
-        inline Rate ParCoupon::fixing() const {
-            return amount()/(nominal()*accrualPeriod());
-        }
+    inline Rate ParCoupon::fixing() const {
+        return amount()/(nominal()*accrualPeriod());
+    }
 
-        inline Date ParCoupon::fixingDate() const {
-            return index_->calendar().advance(accrualStartDate_, 
-                                              -fixingDays_, Days, 
-                                              Preceding);
-        }
+    inline Date ParCoupon::fixingDate() const {
+        return index_->calendar().advance(accrualStartDate_, 
+                                          -fixingDays_, Days, 
+                                          Preceding);
+    }
 
-        inline const Handle<Indexes::Xibor>& ParCoupon::index() const {
-            return index_;
-        }
+    inline const Handle<Indexes::Xibor>& ParCoupon::index() const {
+        return index_;
+    }
 
-        inline void ParCoupon::update() {
-            notifyObservers();
-        }
+    inline void ParCoupon::update() {
+        notifyObservers();
+    }
 
-        inline void ParCoupon::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
-            Visitor<ParCoupon>* v1 = dynamic_cast<Visitor<ParCoupon>*>(&v);
-            if (v1 != 0)
-                v1->visit(*this);
-            else
-                FloatingRateCoupon::accept(v);
-        }
-
+    inline void ParCoupon::accept(Patterns::AcyclicVisitor& v) {
+        using namespace Patterns;
+        Visitor<ParCoupon>* v1 = dynamic_cast<Visitor<ParCoupon>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            FloatingRateCoupon::accept(v);
     }
 
 }

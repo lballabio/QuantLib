@@ -26,7 +26,6 @@
 
 namespace QuantLib {
 
-    using namespace CashFlows;
     using Indexes::Xibor;
 
     namespace Instruments {

@@ -28,8 +28,6 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        using namespace CashFlows;
-
         Swaption::Swaption(
             const Handle<SimpleSwap>& swap, const Exercise& exercise,
             const RelinkableHandle<TermStructure>& termStructure,

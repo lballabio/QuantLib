@@ -26,45 +26,41 @@
 
 namespace QuantLib {
 
-    namespace CashFlows {
-
-        //! short coupon at par on a term structure
-        /*! \warning This class does not perform any date adjustment,
-            i.e., the start and end date passed upon construction
-            should be already rolled to a business day.
-        */
-        class ShortFloatingRateCoupon : public ParCoupon {
-          public:
-            ShortFloatingRateCoupon(double nominal,
-                const Date& paymentDate,
-                const Handle<Indexes::Xibor>& index,
-                const Date& startDate, const Date& endDate,
-                int fixingDays,
-                Spread spread = 0.0,
-                const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date());
-            //! throws when an interpolated fixing is needed
-            double amount() const;
-            //! \name Visitability
-            //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
-            //@}
-        };
+    //! short coupon at par on a term structure
+    /*! \warning This class does not perform any date adjustment,
+                 i.e., the start and end date passed upon construction
+                 should be already rolled to a business day.
+    */
+    class ShortFloatingRateCoupon : public ParCoupon {
+      public:
+        ShortFloatingRateCoupon(double nominal,
+                                const Date& paymentDate,
+                                const Handle<Indexes::Xibor>& index,
+                                const Date& startDate, const Date& endDate,
+                                int fixingDays,
+                                Spread spread = 0.0,
+                                const Date& refPeriodStart = Date(),
+                                const Date& refPeriodEnd = Date());
+        //! throws when an interpolated fixing is needed
+        double amount() const;
+        //! \name Visitability
+        //@{
+        virtual void accept(Patterns::AcyclicVisitor&);
+        //@}
+    };
 
 
-        // inline definitions
+    // inline definitions
 
-        inline 
-        void ShortFloatingRateCoupon::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
-            Visitor<ShortFloatingRateCoupon>* v1 = 
-                dynamic_cast<Visitor<ShortFloatingRateCoupon>*>(&v);
-            if (v1 != 0)
-                v1->visit(*this);
-            else
-                ParCoupon::accept(v);
-        }
-
+    inline 
+    void ShortFloatingRateCoupon::accept(Patterns::AcyclicVisitor& v) {
+        using namespace Patterns;
+        Visitor<ShortFloatingRateCoupon>* v1 = 
+            dynamic_cast<Visitor<ShortFloatingRateCoupon>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            ParCoupon::accept(v);
     }
 
 }

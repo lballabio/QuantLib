@@ -27,193 +27,187 @@ namespace QuantLib {
 
     using Indexes::Xibor;
 
-    namespace CashFlows {
+    std::vector<Handle<CashFlow> > 
+    FixedRateCouponVector(const Schedule& schedule,
+                          const std::vector<double>& nominals,
+                          const std::vector<Rate>& couponRates,
+                          const DayCounter& dayCount, 
+                          const DayCounter& firstPeriodDayCount) {
 
-        std::vector<Handle<CashFlow> > 
-        FixedRateCouponVector(const Schedule& schedule,
-                              const std::vector<double>& nominals,
-                              const std::vector<Rate>& couponRates,
-                              const DayCounter& dayCount, 
-                              const DayCounter& firstPeriodDayCount) {
+        QL_REQUIRE(couponRates.size() != 0, 
+                   "FixedRateCouponVector: "
+                   "unspecified coupon rates (size=0)");
+        QL_REQUIRE(nominals.size() != 0, 
+                   "FixedRateCouponVector: "
+                   "unspecified nominals (size=0)");
 
-            QL_REQUIRE(couponRates.size() != 0, 
-                       "FixedRateCouponVector: "
-                       "unspecified coupon rates (size=0)");
-            QL_REQUIRE(nominals.size() != 0, 
-                       "FixedRateCouponVector: "
-                       "unspecified nominals (size=0)");
+        std::vector<Handle<CashFlow> > leg;
+        Calendar calendar = schedule.calendar();
+        RollingConvention rollingConvention =
+            schedule.rollingConvention();
+        bool isAdjusted = schedule.isAdjusted();
 
-            std::vector<Handle<CashFlow> > leg;
-            Calendar calendar = schedule.calendar();
-            RollingConvention rollingConvention =
-                schedule.rollingConvention();
-            bool isAdjusted = schedule.isAdjusted();
-        
-            // first period might be short or long
-            Date start = schedule.date(0), end = schedule.date(1);
-            Date paymentDate = calendar.roll(end,rollingConvention);
-            Rate rate = couponRates[0];
-            double nominal = nominals[0];
-            if (schedule.isRegular(1)) {
-                QL_REQUIRE(firstPeriodDayCount.isNull() ||
-                           firstPeriodDayCount == dayCount,
-                           "regular first coupon "
-                           "does not allow a first-period day count");
+        // first period might be short or long
+        Date start = schedule.date(0), end = schedule.date(1);
+        Date paymentDate = calendar.roll(end,rollingConvention);
+        Rate rate = couponRates[0];
+        double nominal = nominals[0];
+        if (schedule.isRegular(1)) {
+            QL_REQUIRE(firstPeriodDayCount.isNull() ||
+                       firstPeriodDayCount == dayCount,
+                       "regular first coupon "
+                       "does not allow a first-period day count");
+            leg.push_back(Handle<CashFlow>(
+                new FixedRateCoupon(nominal, paymentDate, rate, dayCount,
+                                    start, end, start, end)));
+        } else {
+            Date reference = end.plusMonths(-12/schedule.frequency());
+            if (isAdjusted)
+                reference = calendar.roll(reference,rollingConvention);
+            DayCounter dc = firstPeriodDayCount.isNull() ?
+                            dayCount :
+                            firstPeriodDayCount;
+            leg.push_back(Handle<CashFlow>(
+                new FixedRateCoupon(nominal, paymentDate, rate, 
+                                    dc, start, end, reference, end)));
+        }
+        // regular periods
+        for (Size i=2; i<schedule.size()-1; i++) {
+            start = end; end = schedule.date(i);
+            paymentDate = calendar.roll(end,rollingConvention);
+            if ((i-1) < couponRates.size())
+                rate = couponRates[i-1];
+            else
+                rate = couponRates.back();
+            if ((i-1) < nominals.size())
+                nominal = nominals[i-1];
+            else
+                nominal = nominals.back();
+            leg.push_back(Handle<CashFlow>(
+                new FixedRateCoupon(nominal, paymentDate, rate, dayCount, 
+                                    start, end, start, end)));
+        }
+        if (schedule.size() > 2) {
+            // last period might be short or long
+            Size N = schedule.size();
+            start = end; end = schedule.date(N-1);
+            paymentDate = calendar.roll(end,rollingConvention);
+            if ((N-2) < couponRates.size())
+                rate = couponRates[N-2];
+            else
+                rate = couponRates.back();
+            if ((N-2) < nominals.size())
+                nominal = nominals[N-2];
+            else
+                nominal = nominals.back();
+            if (schedule.isRegular(N-1)) {
                 leg.push_back(Handle<CashFlow>(
-                    new FixedRateCoupon(nominal, paymentDate, rate, dayCount,
+                    new FixedRateCoupon(nominal, paymentDate, 
+                                        rate, dayCount, 
                                         start, end, start, end)));
             } else {
-                Date reference = end.plusMonths(-12/schedule.frequency());
+                Date reference = 
+                    start.plusMonths(12/schedule.frequency());
                 if (isAdjusted)
                     reference = calendar.roll(reference,rollingConvention);
-                DayCounter dc = firstPeriodDayCount.isNull() ?
-                                dayCount :
-                                firstPeriodDayCount;
                 leg.push_back(Handle<CashFlow>(
-                    new FixedRateCoupon(nominal, paymentDate, rate, 
-                                        dc, start, end, 
-                                        reference, end)));
+                    new FixedRateCoupon(nominal, paymentDate, 
+                                        rate, dayCount, 
+                                        start, end, start, reference)));
             }
-            // regular periods
-            for (Size i=2; i<schedule.size()-1; i++) {
-                start = end; end = schedule.date(i);
-                paymentDate = calendar.roll(end,rollingConvention);
-                if ((i-1) < couponRates.size())
-                    rate = couponRates[i-1];
-                else
-                    rate = couponRates.back();
-                if ((i-1) < nominals.size())
-                    nominal = nominals[i-1];
-                else
-                    nominal = nominals.back();
-                leg.push_back(Handle<CashFlow>(
-                    new FixedRateCoupon(nominal, paymentDate, rate, dayCount, 
-                                        start, end, start, end)));
-            }
-            if (schedule.size() > 2) {
-                // last period might be short or long
-                Size N = schedule.size();
-                start = end; end = schedule.date(N-1);
-                paymentDate = calendar.roll(end,rollingConvention);
-                if ((N-2) < couponRates.size())
-                    rate = couponRates[N-2];
-                else
-                    rate = couponRates.back();
-                if ((N-2) < nominals.size())
-                    nominal = nominals[N-2];
-                else
-                    nominal = nominals.back();
-                if (schedule.isRegular(N-1)) {
-                    leg.push_back(Handle<CashFlow>(
-                        new FixedRateCoupon(nominal, paymentDate, 
-                                            rate, dayCount, 
-                                            start, end, start, end)));
-                } else {
-                    Date reference = 
-                        start.plusMonths(12/schedule.frequency());
-                    if (isAdjusted)
-                        reference = calendar.roll(reference,rollingConvention);
-                    leg.push_back(Handle<CashFlow>(
-                        new FixedRateCoupon(nominal, paymentDate, 
-                                            rate, dayCount, 
-                                            start, end, start, reference)));
-                }
-            }
-            return leg;
         }
+        return leg;
+    }
 
 
+    std::vector<Handle<CashFlow> > 
+    FloatingRateCouponVector(const Schedule& schedule,
+                             const std::vector<double>& nominals,
+                             const Handle<Indexes::Xibor>& index, 
+                             int fixingDays,
+                             const std::vector<Spread>& spreads) {
 
-        std::vector<Handle<CashFlow> > 
-        FloatingRateCouponVector(const Schedule& schedule,
-                                 const std::vector<double>& nominals,
-                                 const Handle<Indexes::Xibor>& index, 
-                                 int fixingDays,
-                                 const std::vector<Spread>& spreads) {
+        QL_REQUIRE(nominals.size() != 0, 
+                   "FloatingRateCouponVector: unspecified nominals");
 
-            QL_REQUIRE(nominals.size() != 0, 
-                       "FloatingRateCouponVector: unspecified nominals");
+        std::vector<Handle<CashFlow> > leg;
+        Calendar calendar = schedule.calendar();
+        RollingConvention rollingConvention =
+            schedule.rollingConvention();
 
-            std::vector<Handle<CashFlow> > leg;
-            Calendar calendar = schedule.calendar();
-            RollingConvention rollingConvention =
-                schedule.rollingConvention();
-
-            // first period might be short or long
-            Date start = schedule.date(0), end = schedule.date(1);
-            Date paymentDate = calendar.roll(end,rollingConvention);
-            Spread spread;
-            if (spreads.size() > 0)
-                spread = spreads[0];
+        // first period might be short or long
+        Date start = schedule.date(0), end = schedule.date(1);
+        Date paymentDate = calendar.roll(end,rollingConvention);
+        Spread spread;
+        if (spreads.size() > 0)
+            spread = spreads[0];
+        else
+            spread = 0.0;
+        double nominal = nominals[0];
+        if (schedule.isRegular(1)) {
+            leg.push_back(Handle<CashFlow>(
+                new ParCoupon(nominal, paymentDate, index, start, end, 
+                              fixingDays, spread, start, end)));
+        } else {
+            Date reference = end.plusMonths(-12/schedule.frequency());
+            reference =
+                calendar.roll(reference,rollingConvention);
+            leg.push_back(Handle<CashFlow>(
+                new ShortFloatingRateCoupon(nominal, paymentDate, 
+                                            index, start, end, 
+                                            fixingDays, spread, 
+                                            reference, end)));
+        }
+        // regular periods
+        for (Size i=2; i<schedule.size()-1; i++) {
+            start = end; end = schedule.date(i);
+            paymentDate = calendar.roll(end,rollingConvention);
+            if ((i-1) < spreads.size())
+                spread = spreads[i-1];
+            else if (spreads.size() > 0)
+                spread = spreads.back();
             else
                 spread = 0.0;
-            double nominal = nominals[0];
-            if (schedule.isRegular(1)) {
+            if ((i-1) < nominals.size())
+                nominal = nominals[i-1];
+            else
+                nominal = nominals.back();
+            leg.push_back(Handle<CashFlow>(
+                new ParCoupon(nominal, paymentDate, index, start, end, 
+                              fixingDays, spread, start, end)));
+        }
+        if (schedule.size() > 2) {
+            // last period might be short or long
+            Size N = schedule.size();
+            start = end; end = schedule.date(N-1);
+            paymentDate = calendar.roll(end,rollingConvention);
+            if ((N-2) < spreads.size())
+                spread = spreads[N-2];
+            else if (spreads.size() > 0)
+                spread = spreads.back();
+            else
+                spread = 0.0;
+            if ((N-2) < nominals.size())
+                nominal = nominals[N-2];
+            else
+                nominal = nominals.back();
+            if (schedule.isRegular(N-1)) {
                 leg.push_back(Handle<CashFlow>(
                     new ParCoupon(nominal, paymentDate, index, start, end, 
                                   fixingDays, spread, start, end)));
             } else {
-                Date reference = end.plusMonths(-12/schedule.frequency());
+                Date reference = 
+                    start.plusMonths(12/schedule.frequency());
                 reference =
                     calendar.roll(reference,rollingConvention);
                 leg.push_back(Handle<CashFlow>(
                     new ShortFloatingRateCoupon(nominal, paymentDate, 
                                                 index, start, end, 
                                                 fixingDays, spread, 
-                                                reference, end)));
+                                                start, reference)));
             }
-            // regular periods
-            for (Size i=2; i<schedule.size()-1; i++) {
-                start = end; end = schedule.date(i);
-                paymentDate = calendar.roll(end,rollingConvention);
-                if ((i-1) < spreads.size())
-                    spread = spreads[i-1];
-                else if (spreads.size() > 0)
-                    spread = spreads.back();
-                else
-                    spread = 0.0;
-                if ((i-1) < nominals.size())
-                    nominal = nominals[i-1];
-                else
-                    nominal = nominals.back();
-                leg.push_back(Handle<CashFlow>(
-                    new ParCoupon(nominal, paymentDate, index, start, end, 
-                                  fixingDays, spread, start, end)));
-            }
-            if (schedule.size() > 2) {
-                // last period might be short or long
-                Size N = schedule.size();
-                start = end; end = schedule.date(N-1);
-                paymentDate = calendar.roll(end,rollingConvention);
-                if ((N-2) < spreads.size())
-                    spread = spreads[N-2];
-                else if (spreads.size() > 0)
-                    spread = spreads.back();
-                else
-                    spread = 0.0;
-                if ((N-2) < nominals.size())
-                    nominal = nominals[N-2];
-                else
-                    nominal = nominals.back();
-                if (schedule.isRegular(N-1)) {
-                    leg.push_back(Handle<CashFlow>(
-                        new ParCoupon(nominal, paymentDate, index, start, end, 
-                                      fixingDays, spread, start, end)));
-                } else {
-                    Date reference = 
-                        start.plusMonths(12/schedule.frequency());
-                    reference =
-                        calendar.roll(reference,rollingConvention);
-                    leg.push_back(Handle<CashFlow>(
-                        new ShortFloatingRateCoupon(nominal, paymentDate, 
-                                                    index, start, end, 
-                                                    fixingDays, spread, 
-                                                    start, reference)));
-                }
-            }
-            return leg;
         }
-
+        return leg;
     }
 
 }

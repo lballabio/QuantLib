@@ -26,13 +26,10 @@
 #include <ql/Patterns/observable.hpp>
 #include <ql/Patterns/visitor.hpp>
 
-/*! \namespace QuantLib::CashFlows
-    \brief Concrete implementations of the CashFlow interface
-
-    See sect. \ref cashflows
-*/
-
 namespace QuantLib {
+
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace CashFlows = ::QuantLib;
 
     //! Base class for cash flows
     /*! This class is purely virtual and acts as a base class for the actual

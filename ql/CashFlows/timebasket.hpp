@@ -30,66 +30,62 @@
 
 namespace QuantLib {
 
-    namespace CashFlows {
-
-        //! Distribution over a number of dates
-        class TimeBasket : private std::map<Date,double> {
-            // this is needed for Visual C++ 6
-            typedef std::map<Date,double> super;
-          public:
-            TimeBasket() {}
-            TimeBasket(const std::vector<Date>& dates,
-                       const std::vector<double>& values);
-            //! \name Map interface
-            //@{
-            //! returns the number of entries
-            using super::size;
-            //! element access
-            using super::operator[];
-            // iterators
-            typedef super::iterator iterator;
-            typedef super::const_iterator const_iterator;
-            typedef super::reverse_iterator reverse_iterator;
-            typedef super::const_reverse_iterator const_reverse_iterator;
-            using super::begin;
-            using super::end;
-            using super::rbegin;
-            using super::rend;
-            //! membership
-            bool hasDate(const Date&) const;
-            //@}
-            //! \name Algebra
-            //@{
-            TimeBasket& operator+=(const TimeBasket& other);
-            TimeBasket& operator-=(const TimeBasket& other);
-            //@}
-            //! \name Other methods
-            //@{
-            //! redistribute the entries over the given dates
-            TimeBasket rebin(const std::vector<Date>& buckets) const;
-            //@}
-        };
+    //! Distribution over a number of dates
+    class TimeBasket : private std::map<Date,double> {
+        // this is needed for Visual C++ 6
+        typedef std::map<Date,double> super;
+      public:
+        TimeBasket() {}
+        TimeBasket(const std::vector<Date>& dates,
+                   const std::vector<double>& values);
+        //! \name Map interface
+        //@{
+        //! returns the number of entries
+        using super::size;
+        //! element access
+        using super::operator[];
+        // iterators
+        typedef super::iterator iterator;
+        typedef super::const_iterator const_iterator;
+        typedef super::reverse_iterator reverse_iterator;
+        typedef super::const_reverse_iterator const_reverse_iterator;
+        using super::begin;
+        using super::end;
+        using super::rbegin;
+        using super::rend;
+        //! membership
+        bool hasDate(const Date&) const;
+        //@}
+        //! \name Algebra
+        //@{
+        TimeBasket& operator+=(const TimeBasket& other);
+        TimeBasket& operator-=(const TimeBasket& other);
+        //@}
+        //! \name Other methods
+        //@{
+        //! redistribute the entries over the given dates
+        TimeBasket rebin(const std::vector<Date>& buckets) const;
+        //@}
+    };
 
 
-        // inline definitions
+    // inline definitions
 
-        inline bool TimeBasket::hasDate(const Date& d) const {
-            const_iterator i = find(d);
-            return i != end();
-        }
+    inline bool TimeBasket::hasDate(const Date& d) const {
+        const_iterator i = find(d);
+        return i != end();
+    }
 
-        inline TimeBasket& TimeBasket::operator+=(const TimeBasket& other) {
-            for (const_iterator j = other.begin(); j != other.end(); j++)
-                (*this)[j->first] += j->second;
-            return *this;
-        }
+    inline TimeBasket& TimeBasket::operator+=(const TimeBasket& other) {
+        for (const_iterator j = other.begin(); j != other.end(); j++)
+            (*this)[j->first] += j->second;
+        return *this;
+    }
 
-        inline TimeBasket& TimeBasket::operator-=(const TimeBasket& other) {
-            for (const_iterator j = other.begin(); j != other.end(); j++)
-                (*this)[j->first] -= j->second;
-            return *this;
-        }
-
+    inline TimeBasket& TimeBasket::operator-=(const TimeBasket& other) {
+        for (const_iterator j = other.begin(); j != other.end(); j++)
+            (*this)[j->first] -= j->second;
+        return *this;
     }
 
 }

@@ -29,63 +29,59 @@
 
 namespace QuantLib {
 
-    namespace CashFlows {
+    //! basis point sensitivity (BPS) calculator
+    /*! Instances of this class accumulate the BPS of each
+        cash flow they visit, returning the sum through their
+        result() method.
+    */
+    class BPSCalculator : public Patterns::AcyclicVisitor,
+                          public Patterns::Visitor<CashFlow>,
+                          public Patterns::Visitor<Coupon> {
+      public:
+        BPSCalculator(const RelinkableHandle<TermStructure>& ts) 
+        : termStructure_(ts), result_(0.0) {}
+        //! \name Visitor interface
+        //@{
+        virtual void visit(Coupon&);
+        virtual void visit(CashFlow&);
+        //@}
+        double result() const { return result_; }
+      private:
+        RelinkableHandle<TermStructure> termStructure_;
+        double result_;
+    };
 
-        //! basis point sensitivity (BPS) calculator
-        /*! Instances of this class accumulate the BPS of each
-            cash flow they visit, returning the sum through their
-            result() method.
-        */
-        class BPSCalculator : public Patterns::AcyclicVisitor,
-                              public Patterns::Visitor<CashFlow>,
-                              public Patterns::Visitor<Coupon> {
-          public:
-            BPSCalculator(const RelinkableHandle<TermStructure>& ts) 
-            : termStructure_(ts), result_(0.0) {}
-            //! \name Visitor interface
-            //@{
-            virtual void visit(Coupon&);
-            virtual void visit(CashFlow&);
-            //@}
-            double result() const { return result_; }
-          private:
-            RelinkableHandle<TermStructure> termStructure_;
-            double result_;
-        };
-
-        //! Collective basis-point sensitivity of a cash-flow sequence
-        double BasisPointSensitivity(const std::vector<Handle<CashFlow> >&,
-                                     const RelinkableHandle<TermStructure>&);
+    //! Collective basis-point sensitivity of a cash-flow sequence
+    double BasisPointSensitivity(const std::vector<Handle<CashFlow> >&,
+                                 const RelinkableHandle<TermStructure>&);
 
 
-        class BPSBasketCalculator : public Patterns::AcyclicVisitor,
-                                    public Patterns::Visitor<CashFlow>,
-                                    public Patterns::Visitor<Coupon>,
-                                    public Patterns::Visitor<FixedRateCoupon> {
-          public:
-            BPSBasketCalculator(const RelinkableHandle<TermStructure>& ts,
-                                int basis)
-            : termStructure_(ts), basis_(basis) {}
-            //! \name Visitor interface
-            //@{
-            double sensfactor(const Date& date) const;
-            virtual void visit(Coupon&);
-            virtual void visit(FixedRateCoupon&);
-            virtual void visit(CashFlow&);
-            //@}
-            const TimeBasket& result() const { return result_; }
-          private:
-            RelinkableHandle<TermStructure> termStructure_;
-            int basis_;
-            TimeBasket result_;
-        };
+    class BPSBasketCalculator : public Patterns::AcyclicVisitor,
+                                public Patterns::Visitor<CashFlow>,
+                                public Patterns::Visitor<Coupon>,
+                                public Patterns::Visitor<FixedRateCoupon> {
+      public:
+        BPSBasketCalculator(const RelinkableHandle<TermStructure>& ts,
+                            int basis)
+        : termStructure_(ts), basis_(basis) {}
+        //! \name Visitor interface
+        //@{
+        double sensfactor(const Date& date) const;
+        virtual void visit(Coupon&);
+        virtual void visit(FixedRateCoupon&);
+        virtual void visit(CashFlow&);
+        //@}
+        const TimeBasket& result() const { return result_; }
+      private:
+        RelinkableHandle<TermStructure> termStructure_;
+        int basis_;
+        TimeBasket result_;
+    };
 
-        TimeBasket BasisPointSensitivityBasket(
+    TimeBasket BasisPointSensitivityBasket(
                                      const std::vector<Handle<CashFlow> >&,
                                      const RelinkableHandle<TermStructure>&,
                                      int basis);
-       
-    }
 
 }
 

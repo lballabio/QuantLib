@@ -28,31 +28,27 @@
 
 namespace QuantLib {
 
-    namespace CashFlows {
-
-        //! helper function building a sequence of fixed rate coupons
-        std::vector<Handle<CashFlow> > FixedRateCouponVector(
-            const Schedule& schedule,
-            const std::vector<double>& nominals,
-            const std::vector<Rate>& couponRates,
-            const DayCounter& dayCount, 
-            const DayCounter& firstPeriodDayCount = DayCounter());
+    //! helper function building a sequence of fixed rate coupons
+    std::vector<Handle<CashFlow> > FixedRateCouponVector(
+        const Schedule& schedule,
+        const std::vector<double>& nominals,
+        const std::vector<Rate>& couponRates,
+        const DayCounter& dayCount, 
+        const DayCounter& firstPeriodDayCount = DayCounter());
 
 
-        //! helper function building a sequence of par coupons
-        /*! \warning The passing of a non-null stub date - i.e., the creation
-            of a short/long first coupon - is currently disabled.
-            \todo A suitable algorithm should be implemented for the
-            calculation of the interpolated index fixing for a
-            short/long first coupon.
-        */
-        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
-            const Schedule& schedule,
-            const std::vector<double>& nominals,
-            const Handle<Indexes::Xibor>& index, int fixingDays,
-            const std::vector<Spread>& spreads = std::vector<Spread>());
-       
-    }
+    //! helper function building a sequence of par coupons
+    /*! \warning The passing of a non-null stub date - i.e., the creation
+                 of a short/long first coupon - is currently disabled.
+        \todo A suitable algorithm should be implemented for the
+              calculation of the interpolated index fixing for a
+              short/long first coupon.
+    */
+    std::vector<Handle<CashFlow> > FloatingRateCouponVector(
+        const Schedule& schedule,
+        const std::vector<double>& nominals,
+        const Handle<Indexes::Xibor>& index, int fixingDays,
+        const std::vector<Spread>& spreads = std::vector<Spread>());
 
 }
 

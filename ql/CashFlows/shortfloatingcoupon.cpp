@@ -26,34 +26,29 @@ namespace QuantLib {
 
     using Indexes::Xibor;
 
-    namespace CashFlows {
+    ShortFloatingRateCoupon::ShortFloatingRateCoupon(
+        double nominal, const Date& paymentDate,
+        const Handle<Xibor>& index, const Date& startDate, 
+        const Date& endDate, int fixingDays, Spread spread,
+        const Date& refPeriodStart, const Date& refPeriodEnd)
+    : ParCoupon(nominal,paymentDate,index,
+                startDate,endDate,fixingDays,
+                spread,refPeriodStart,refPeriodEnd) {}
 
-        ShortFloatingRateCoupon::ShortFloatingRateCoupon(double nominal,
-          const Date& paymentDate,
-          const Handle<Xibor>& index,
-          const Date& startDate, const Date& endDate,
-          int fixingDays, Spread spread,
-          const Date& refPeriodStart, const Date& refPeriodEnd)
-        : ParCoupon(nominal,paymentDate,index,
-                    startDate,endDate,fixingDays,
-                    spread,refPeriodStart,refPeriodEnd) {}
-
-        double ShortFloatingRateCoupon::amount() const {
-            QL_REQUIRE(!index()->termStructure().isNull(),
-                "null term structure set to par coupon");
-            Date today = index()->termStructure()->todaysDate();
-            Date fixing_date = fixingDate();
-            QL_REQUIRE(fixing_date >= today,
-                       // must have been fixed
-                       // but we have no way to interpolate the fixing yet
-                       "short/long floating coupons not supported yet"
-                       " (start = " + 
-                       DateFormatter::toString(accrualStartDate_) +
-                       ", end = " + 
-                       DateFormatter::toString(accrualEndDate_) + ")");
-            return ParCoupon::amount();
-        }
-
+    double ShortFloatingRateCoupon::amount() const {
+        QL_REQUIRE(!index()->termStructure().isNull(),
+                   "null term structure set to par coupon");
+        Date today = index()->termStructure()->todaysDate();
+        Date fixing_date = fixingDate();
+        QL_REQUIRE(fixing_date >= today,
+                   // must have been fixed
+                   // but we have no way to interpolate the fixing yet
+                   "short/long floating coupons not supported yet"
+                   " (start = " + 
+                   DateFormatter::toString(accrualStartDate_) +
+                   ", end = " + 
+                   DateFormatter::toString(accrualEndDate_) + ")");
+        return ParCoupon::amount();
     }
 
 }

@@ -19,10 +19,10 @@
     \brief Cap calibration helper
 */
 
-#include "ql/ShortRateModels/CalibrationHelpers/caphelper.hpp"
-#include "ql/CashFlows/cashflowvectors.hpp"
-#include "ql/Instruments/swap.hpp"
-#include "ql/Pricers/blackcapfloor.hpp"
+#include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
+#include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/Instruments/swap.hpp>
+#include <ql/Pricers/blackcapfloor.hpp>
 
 namespace QuantLib {
 
@@ -30,7 +30,6 @@ namespace QuantLib {
 
         namespace CalibrationHelpers {
 
-            using namespace CashFlows;
             using namespace Instruments;
             using Indexes::Xibor;
 

@@ -26,41 +26,37 @@
 
 namespace QuantLib {
 
-    namespace CashFlows {
-
-        //! Predetermined cash flow
-        /*! This cash flow pays a predetermined amount at a given date. */
-        class SimpleCashFlow : public CashFlow {
-          public:
-            SimpleCashFlow(double amount, const Date& date)
-            : amount_(amount), date_(date) {}
-            //! \name CashFlow interface
-            //@{
-            double amount() const { return amount_; }
-            Date date() const { return date_; }
-            //@}
-            //! \name Visitability
-            //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
-            //@}
-          private:
-            double amount_;
-            Date date_;
-        };
+    //! Predetermined cash flow
+    /*! This cash flow pays a predetermined amount at a given date. */
+    class SimpleCashFlow : public CashFlow {
+      public:
+        SimpleCashFlow(double amount, const Date& date)
+        : amount_(amount), date_(date) {}
+        //! \name CashFlow interface
+        //@{
+        double amount() const { return amount_; }
+        Date date() const { return date_; }
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(Patterns::AcyclicVisitor&);
+        //@}
+      private:
+        double amount_;
+        Date date_;
+    };
 
 
-        // inline definitions
+    // inline definitions
 
-        inline void SimpleCashFlow::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
-            Visitor<SimpleCashFlow>* v1 = 
-                dynamic_cast<Visitor<SimpleCashFlow>*>(&v);
-            if (v1 != 0)
-                v1->visit(*this);
-            else
-                CashFlow::accept(v);
-        }
-
+    inline void SimpleCashFlow::accept(Patterns::AcyclicVisitor& v) {
+        using namespace Patterns;
+        Visitor<SimpleCashFlow>* v1 = 
+            dynamic_cast<Visitor<SimpleCashFlow>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            CashFlow::accept(v);
     }
 
 }

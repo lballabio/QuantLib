@@ -24,8 +24,6 @@
 
 namespace QuantLib {
 
-    using namespace CashFlows;
-
     namespace Instruments {
 
         Swap::Swap(const std::vector<Handle<CashFlow> >& firstLeg,

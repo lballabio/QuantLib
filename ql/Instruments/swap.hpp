@@ -51,7 +51,7 @@ namespace QuantLib {
             Date maturity() const;
             double firstLegBPS() const;
             double secondLegBPS() const;
-            CashFlows::TimeBasket sensitivity(int basis = 2) const;
+            TimeBasket sensitivity(int basis = 2) const;
             //@}
           protected:
             // methods

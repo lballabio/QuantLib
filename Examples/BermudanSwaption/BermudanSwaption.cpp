@@ -272,7 +272,7 @@ int main(int argc, char* argv[])
         std::vector<Date> bermudanDates;
         const std::vector<Handle<CashFlow> >& leg = swap->floatingLeg();
         for (i=0; i<leg.size(); i++) {
-            Handle<CashFlows::Coupon> coupon = leg[i];
+            Handle<Coupon> coupon = leg[i];
             bermudanDates.push_back(coupon->accrualStartDate());
         }
 
