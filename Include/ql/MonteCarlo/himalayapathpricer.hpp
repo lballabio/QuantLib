@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -66,9 +69,9 @@ namespace QuantLib {
                 double strike, double discount);
             double value(const MultiPath &path) const;
           protected:
-            double discount_;
             Array underlying_;
             double strike_;
+            double discount_;
         };
 
     }

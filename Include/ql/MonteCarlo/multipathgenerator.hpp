@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.7  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -79,8 +82,9 @@ namespace QuantLib {
             MultiPath next() const;
             double weight() const{return weight_;}
         private:
-            int numAssets_, timeDimension_;
+            int timeDimension_;
             std::vector<Time> timeDelays_;
+	    int numAssets_;
             mutable double weight_;
             Array average_;
             RAG rndArray_;

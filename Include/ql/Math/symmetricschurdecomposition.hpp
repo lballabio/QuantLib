@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -71,13 +74,13 @@ namespace QuantLib {
             Array eigenvalues() const;
             Matrix eigenvectors() const;
           private:
-            int size_;
-            int maxIterations_;
-            double epsPrec_;
             Matrix s_;
-            mutable bool hasBeenComputed_;
+            int size_;
             mutable Array diagonal_;
             mutable Matrix eigenVectors_;
+            mutable bool hasBeenComputed_;
+            int maxIterations_;
+            double epsPrec_;
             void compute() const;
             void jacobiRotate(Matrix & m, double rot, double dil,
                 int j1, int k1, int j2, int k2) const;

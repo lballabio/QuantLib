@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.11  2001/07/06 18:24:17  nando
 // slight modifications to avoid VisualStudio warnings
 //
@@ -80,19 +83,18 @@ namespace QuantLib {
                 double maxVol = QL_MAX_VOLATILITY) const ;
             virtual Handle<BSMOption> clone() const = 0;
           protected:
-            // input data
+            // results declared as mutable to preserve the logical
             Type type_;
             double underlying_;
             double strike_;
-            Rate dividendYield_, riskFreeRate_;
+            Rate dividendYield_;
             Time residualTime_;
-            double volatility_;
-            // results
-            // declared as mutable to preserve the logical
             mutable bool hasBeenCalculated_;
+            mutable bool rhoComputed_, vegaComputed_;
+            double volatility_;
+	    Rate riskFreeRate_;
             mutable double value_;
             mutable double  rho_, vega_;
-            mutable bool rhoComputed_, vegaComputed_;
             const static double dVolMultiplier_;
             const static double dRMultiplier_;
           private:

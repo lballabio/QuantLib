@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.5  2001/07/13 14:29:07  sigmud
+//  removed a few gcc compile warnings
+//
 //  Revision 1.4  2001/07/06 18:24:17  nando
 //  slight modifications to avoid VisualStudio warnings
 //
@@ -56,7 +59,7 @@ namespace QuantLib {
             int frequency, RollingConvention rollingConvention,
             bool isAdjusted, const Date& stubDate = Date());
         // inspectors
-        int size() const { return dates_.size(); }
+        unsigned int size() const { return dates_.size(); }
         const Date& date(int i) const;
         bool isRegular(int i) const;
         // iterators

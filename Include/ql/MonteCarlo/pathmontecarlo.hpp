@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.7  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -84,10 +87,10 @@ namespace QuantLib {
             PathMonteCarlo(Handle<PG> pathGenerator, Handle<PP> pathPricer);
             S sampleAccumulator(long samples = 0) const;
           private:
-            mutable bool isInitialized_;
             S sampleAccumulator_;
             OptionSample<PG,PP> optionSample_;
             GeneralMonteCarlo<S, OptionSample<PG,PP> > monteCarlo_;
+            mutable bool isInitialized_;
         };
 
         // inline definitions

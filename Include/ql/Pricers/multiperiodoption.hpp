@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.10  2001/07/06 18:24:17  nando
 // slight modifications to avoid VisualStudio warnings
 //
@@ -64,12 +67,14 @@ namespace QuantLib {
                 const std::vector<Time>& dates,
                 int timeSteps, int gridPoints);
             // Protected attributes
-            bool firstDateIsZero_, lastDateIsResTime_;
-            int timeStepPerPeriod_, dateNumber_;
-            int lastIndex_, firstIndex_;
-            double firstNonZeroDate_;
-
             std::vector<Time> dates_;
+	    unsigned int dateNumber_;
+            int timeStepPerPeriod_;
+	    bool lastDateIsResTime_;
+            unsigned int lastIndex_;
+            bool firstDateIsZero_;
+            double firstNonZeroDate_;
+	    unsigned int firstIndex_;
             mutable Handle<BSMOption> analytic_;
             mutable Array prices_, controlPrices_;
             mutable Handle<FiniteDifferences::StandardStepCondition>

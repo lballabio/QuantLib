@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.8  2001/07/09 16:29:27  lballabio
 // Some documentation and market element
 //
@@ -107,9 +110,9 @@ namespace QuantLib {
                               SG &sampleGenerator);
             SA sampleAccumulator(long iterations = 0) const;
           private:
-            mutable bool isInitialized_;
             mutable SA sampleAccumulator_;
             mutable SG sampleGenerator_;
+            mutable bool isInitialized_;
         };
 
         template<class SA, class SG>

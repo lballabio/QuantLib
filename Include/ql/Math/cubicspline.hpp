@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -62,6 +65,7 @@ namespace QuantLib {
                 const RandomAccessIterator1& xEnd,
                 const RandomAccessIterator2& yBegin);
             result_type operator()(const argument_type& x) const;
+	    virtual ~CubicSpline() {}
           private:
             std::vector<result_type> d2y_;
         };

@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -75,9 +78,9 @@ namespace QuantLib {
                                  // PP::ValueType next() const;
             double weight() const;
           private:
-            mutable double weight_;
             mutable Handle<PG> samplePath_;
             Handle<PP> pathPricer_;
+            mutable double weight_;
         };
 
         // inline definitions

@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.9  2001/07/13 13:13:14  aleppo
 // moved constructor from public to  protected
 //
@@ -71,8 +74,8 @@ namespace QuantLib {
             virtual double errorEstimate() const;
           protected:
             McPricer(long samples, long seed=0);
-            long seed_;
             mutable long samples_;
+            long seed_;
             bool isInitialized_;
             mutable MonteCarlo::OneFactorMonteCarloOption montecarloPricer_;
         };

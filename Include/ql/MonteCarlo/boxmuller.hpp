@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -66,10 +69,10 @@ namespace QuantLib {
             double weight() const;
           private:
             U basicGenerator;
-            mutable double weight_;
             mutable bool returnFirst;
             mutable double firstValue,secondValue;
             mutable double firstWeight,secondWeight;
+            mutable double weight_;
         };
 
         template <class U>

@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/07/13 14:29:08  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.12  2001/07/09 16:29:27  lballabio
 // Some documentation and market element
 //
@@ -82,9 +85,9 @@ namespace QuantLib {
           private:
             int size_;
             std::vector<Time> timeDelays_;
-            RP rndPoint_;
             mutable double weight_;
             double average_, sqrtVariance_;
+            RP rndPoint_;
             mutable Array averageArray_;
             mutable Math::Matrix sqrtCovariance_;
         };
@@ -143,9 +146,9 @@ namespace QuantLib {
         template <class RP>
         inline RandomArrayGenerator<RP >::RandomArrayGenerator(
             const Math::Matrix &covariance, long seed):
-            size_(covariance.rows()), averageArray_(covariance.rows(),0),
-            sqrtCovariance_(covariance.rows(),covariance.rows()),
-            rndPoint_(seed){
+            size_(covariance.rows()), rndPoint_(seed),
+	    averageArray_(covariance.rows(),0),
+            sqrtCovariance_(covariance.rows(),covariance.rows()){
 
             QL_REQUIRE(covariance.rows() == covariance.columns(),
                 "Covariance matrix must be square ("+
@@ -162,10 +165,10 @@ namespace QuantLib {
 
         template <class RP>
         inline RandomArrayGenerator<RP >::RandomArrayGenerator(
-            const Array &average, const Math::Matrix &covariance, long seed):
-                size_(covariance.rows()), averageArray_(average),
-            sqrtCovariance_(covariance.rows(),covariance.rows()),
-            rndPoint_(seed){
+            const Array &average, const Math::Matrix &covariance, long seed)
+	  : size_(covariance.rows()), rndPoint_(seed),
+	    averageArray_(average),
+            sqrtCovariance_(covariance.rows(),covariance.rows()){
 
             QL_REQUIRE(covariance.rows() == covariance.columns(),
                 "Covariance matrix must be square ("+
