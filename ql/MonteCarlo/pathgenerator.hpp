@@ -226,7 +226,7 @@ namespace QuantLib {
             next_.weight = 1.0;
 
             // starting point for asset value
-            asset_ = 0.0;
+            asset_ = diffProcess_->x0();
             double dt;
             Time t;
             for (Size i=0; i<next_.value.size(); i++) {
@@ -241,7 +241,7 @@ namespace QuantLib {
                 next_.value.diffusion()[i] = randomExtractions_[i] *
                     diff;
                 next_.weight *= sample.weight;
-                asset_ += next_.value.drift()[i] + next_.value.diffusion()[i];
+                asset_ *= QL_EXP(next_.value.drift()[i] + next_.value.diffusion()[i]);
             }
 
             return next_;
@@ -252,7 +252,7 @@ namespace QuantLib {
         PathGenerator2<RNG>::antithetic() const {
 
             // starting point for asset value
-            asset_ = 0.0;
+            asset_ = diffProcess_->x0();
             double dt;
             Time t;
             for (Size i=0; i<next_.value.size(); i++) {
@@ -262,7 +262,7 @@ namespace QuantLib {
                     diffProcess_->drift(t, asset_) * dt;
                 next_.value.diffusion()[i] = - randomExtractions_[i] *
                     QL_SQRT(diffProcess_->variance(t, asset_, dt));
-                asset_ += next_.value.drift()[i] + next_.value.diffusion()[i];
+                asset_ *= QL_EXP(next_.value.drift()[i] + next_.value.diffusion()[i]);
             }
 
             return next_;
