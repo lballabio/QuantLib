@@ -24,7 +24,7 @@
 
 class RiskStatisticsTest : public CppUnit::TestCase {
   public:
-    RiskStatisticsTest() : CppUnit::TestCase("Testing risk statistics") {}
+    RiskStatisticsTest() : CppUnit::TestCase("Testing Statistic's gaussian risk measure ") {}
     void runTest();
 };
 

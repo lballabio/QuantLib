@@ -19,14 +19,13 @@
 #include "riskstats.hpp"
 
 using namespace QuantLib;
-using QuantLib::Math::NormalDistribution;
-using QuantLib::Math::CumulativeNormalDistribution;
+using namespace QuantLib::Math;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 void RiskStatisticsTest::runTest() {
 
-    RiskStatistics s;
+    Statistic s;
 
     double averages[] = { -100.0, 0.0, 100.0 };
     double sigmas[] = { 0.1, 1.0, 10.0 };
@@ -151,7 +150,7 @@ void RiskStatisticsTest::runTest() {
             double upper_tail = averages[i]+2.0*sigmas[j],
                    lower_tail = averages[i]-2.0*sigmas[j];
             double twoSigma = cumulative(upper_tail);
-            calculated = s.potentialUpside(twoSigma);
+            calculated = s.gaussianPotentialUpside(twoSigma);
             expected = QL_MAX(upper_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 : expected*1.0e-3);
             if (QL_FABS(calculated-expected) > tolerance)
@@ -162,7 +161,7 @@ void RiskStatisticsTest::runTest() {
                     "    expected:   "
                     + DoubleFormatter::toString(expected));
 
-            calculated = s.valueAtRisk(twoSigma);
+            calculated = s.gaussianValueAtRisk(twoSigma);
             expected = -QL_MIN(lower_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 : expected*1.0e-3);
             if (QL_FABS(calculated-expected) > tolerance)
@@ -173,7 +172,7 @@ void RiskStatisticsTest::runTest() {
                     "    expected:   "
                     + DoubleFormatter::toString(expected));
 
-            calculated = s.expectedShortfall(twoSigma);
+            calculated = s.gaussianExpectedShortfall(twoSigma);
             expected = -QL_MIN(averages[i]
                                - sigmas[j]*sigmas[j]
                                * normal(lower_tail)/(1.0-twoSigma),
@@ -189,7 +188,7 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(expected));
 
             double target = averages[i];
-            calculated = s.shortfall(target);
+            calculated = s.gaussianShortfall(target);
             expected = 0.5;
             tolerance = 1.0e-8;
             if (QL_FABS(calculated-expected) > tolerance)
@@ -200,7 +199,7 @@ void RiskStatisticsTest::runTest() {
                     "    expected:   "
                     + DoubleFormatter::toString(expected));
 
-            calculated = s.averageShortfall(target);
+            calculated = s.gaussianAverageShortfall(target);
             expected = sigmas[j]/QL_SQRT(2.0*M_PI);
             tolerance = expected*1.0e-4;
             if (QL_FABS(calculated-expected) > tolerance)
