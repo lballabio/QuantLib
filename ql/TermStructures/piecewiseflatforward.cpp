@@ -43,7 +43,7 @@ namespace QuantLib {
 
             QL_REQUIRE(instruments_.size()>0, "No instrument given");
 
-            // sort risk helpers
+            // sort rate helpers
             Size i;
             for (i=0; i<instruments_.size(); i++)
                 instruments_[i]->setTermStructure(this);
