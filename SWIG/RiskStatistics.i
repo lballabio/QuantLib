@@ -22,14 +22,14 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#ifndef quantlib_risktool_i
-#define quantlib_risktool_i
+#ifndef quantlib_riskstatistics_i
+#define quantlib_riskstatistics_i
 
-%module RiskTool
+%module RiskStatistics
 
 %{
 #include "quantlib.h"
-#include "risktool.h"
+#include "riskstatistics.h"
 %}
 
 #if !defined(SWIGPYTHON)
@@ -44,13 +44,13 @@
 %include Vectors.i
 
 %{
-using QuantLib::RiskTool::RiskTool;
+using QuantLib::RiskStatistics::RiskStatistics;
 %}
 
-class RiskTool {
+class RiskStatistics {
   public:
-    RiskTool();
-    virtual ~RiskTool();
+    RiskStatistics();
+    virtual ~RiskStatistics();
     // Accessors
     int samples() const;
     double weightSum() const;
@@ -70,7 +70,7 @@ class RiskTool {
     void reset();
 };
 
-%addmethods RiskTool {
+%addmethods RiskStatistics {
 	void addSequence(DoubleVector values) {
 	  self->addSequence(values.begin(), values.end());
 	}

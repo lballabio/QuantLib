@@ -22,26 +22,29 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file risktool.h
+/*! \file riskstatistics.h
     \brief Normal distribution risk analysis tool: VAR, (Average) Shortfall
 
     $Source$
     $Log$
+    Revision 1.1  2001/01/19 09:33:57  nando
+    RiskTool is now RiskStatistics everywhere
+
     Revision 1.4  2001/01/16 11:30:08  nando
-    restoring risktool.h
+    restoring riskstatistics.h
 
     Revision 1.2  2001/01/15 12:41:14  aleppo
     bug fixed: shortfall(s) were not normalized
 
     Revision 1.1  2001/01/12 17:30:29  nando
-    added RiskTool.
+    added RiskStatistics.
     It offres VAR, shortfall, average shortfall methods.
     It still needs test
 
 */
 
-#ifndef quantlib_risktool_h
-#define quantlib_risktool_h
+#ifndef quantlib_riskstatistics_h
+#define quantlib_riskstatistics_h
 
 #include "qldefines.h"
 #include "null.h"
@@ -53,15 +56,15 @@
 
 namespace QuantLib {
 
-    namespace RiskTool {
+    namespace RiskStatistics {
         //! Risk analysis tool
         /*! It can accumulate a set of data and return risk quantities
             as Value-At-Risk, Shortfall, Average Shortfall, plus statistic
             quantitities as mean, variance, std. deviation, skewness, kurtosis.
         */
-        class RiskTool : public Math::Statistics {
+        class RiskStatistics : public Math::Statistics {
           public:
-            RiskTool() {}
+            RiskStatistics() {}
             //! \name Inspectors
             //@{
             //! returns the Value-At-Risk at a given percentile
@@ -75,9 +78,9 @@ namespace QuantLib {
 
         // inline definitions
         /*! \pre percentile must be in range 90%-100% */
-        inline double RiskTool::valueAtRisk(double percentile) const {
+        inline double RiskStatistics::valueAtRisk(double percentile) const {
             QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                "RiskTool::valueAtRisk : percentile (" +
+                "RiskStatistics::valueAtRisk : percentile (" +
                 DoubleFormatter::toString(percentile) +
                 ") out of range 90%-100%");
 
@@ -89,12 +92,12 @@ namespace QuantLib {
             return -QL_MIN(dist(1.0-percentile), 0.0);
         }
 
-        inline double RiskTool::shortfall(double target) const {
+        inline double RiskStatistics::shortfall(double target) const {
             Math::CumulativeNormalDistribution gI(mean(), standardDeviation());
             return gI(target);
         }
 
-        double RiskTool::averageShortfall(double target) const {
+        double RiskStatistics::averageShortfall(double target) const {
             double m = mean();
             double s = standardDeviation();
             Math::CumulativeNormalDistribution gI(m, s);

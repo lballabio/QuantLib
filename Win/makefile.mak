@@ -183,7 +183,7 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\Options.i \
     $(SWIG_DIR)\Pricers.i \
     $(SWIG_DIR)\RandomGenerators.i \
-    $(SWIG_DIR)\RiskTool.i \
+    $(SWIG_DIR)\RiskStatistics.i \
     $(SWIG_DIR)\Solvers1D.i \
     $(SWIG_DIR)\Statistics.i \
     $(SWIG_DIR)\String.i \
@@ -340,7 +340,7 @@ test::
     python european_with_dividends.py
     python impliedVol.py
     python mcpricers.py
-    python RiskTool.py
+    python RiskStatistics.py
     python statistics_test.py
     python testRNGs.py
     cd ..\..\Win

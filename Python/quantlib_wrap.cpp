@@ -516,13 +516,13 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_NormalDistribution swig_types[26] 
 #define  SWIGTYPE_p_CumulativeNormalDistribution swig_types[27] 
 #define  SWIGTYPE_p_InvCumulativeNormalDistribution swig_types[28] 
-#define  SWIGTYPE_p_Statistics swig_types[29] 
-#define  SWIGTYPE_p_NewtonSafe swig_types[30] 
-#define  SWIGTYPE_p_History swig_types[31] 
-#define  SWIGTYPE_p_Solver1D swig_types[32] 
-#define  SWIGTYPE_p_Array swig_types[33] 
-#define  SWIGTYPE_p_ArrayLexicographicalView swig_types[34] 
-#define  SWIGTYPE_p_RiskTool swig_types[35] 
+#define  SWIGTYPE_p_RiskStatistics swig_types[29] 
+#define  SWIGTYPE_p_Statistics swig_types[30] 
+#define  SWIGTYPE_p_NewtonSafe swig_types[31] 
+#define  SWIGTYPE_p_History swig_types[32] 
+#define  SWIGTYPE_p_Solver1D swig_types[33] 
+#define  SWIGTYPE_p_Array swig_types[34] 
+#define  SWIGTYPE_p_ArrayLexicographicalView swig_types[35] 
 #define  SWIGTYPE_p_Ridder swig_types[36] 
 #define  SWIGTYPE_p_DepositRate swig_types[37] 
 #define  SWIGTYPE_p_ObjectiveFunction swig_types[38] 
@@ -850,9 +850,9 @@ using QuantLib::MonteCarlo::UniformRandomGenerator;
 using QuantLib::MonteCarlo::GaussianRandomGenerator;
 
 #include "quantlib.h"
-#include "risktool.h"
+#include "riskstatistics.h"
 
-using QuantLib::RiskTool::RiskTool;
+using QuantLib::RiskStatistics::RiskStatistics;
 
 #include "quantlib.h"
 
@@ -9529,17 +9529,17 @@ static PyObject *_wrap_GaussianRandomGenerator_weight(PyObject *self, PyObject *
 }
 
 
-static PyObject *_wrap_new_RiskTool(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_new_RiskStatistics(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     char *kwnames[] = {
         NULL 
     };
-    RiskTool *result ;
+    RiskStatistics *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_RiskTool",kwnames)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_RiskStatistics",kwnames)) return NULL;
     {
         try {
-            result = (RiskTool *)new RiskTool();
+            result = (RiskStatistics *)new RiskStatistics();
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -9548,21 +9548,21 @@ static PyObject *_wrap_new_RiskTool(PyObject *self, PyObject *args, PyObject *kw
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
-    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_RiskTool);
+    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_RiskStatistics);
     return resultobj;
 }
 
 
-static PyObject *_wrap_delete_RiskTool(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_delete_RiskStatistics(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_RiskTool",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_RiskStatistics",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             delete arg0;
@@ -9580,17 +9580,17 @@ static PyObject *_wrap_delete_RiskTool(PyObject *self, PyObject *args, PyObject 
 }
 
 
-static PyObject *_wrap_RiskTool_samples(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_samples(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     int result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_samples",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_samples",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (int )arg0->samples();
@@ -9607,17 +9607,17 @@ static PyObject *_wrap_RiskTool_samples(PyObject *self, PyObject *args, PyObject
 }
 
 
-static PyObject *_wrap_RiskTool_weightSum(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_weightSum(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_weightSum",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_weightSum",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->weightSum();
@@ -9634,17 +9634,17 @@ static PyObject *_wrap_RiskTool_weightSum(PyObject *self, PyObject *args, PyObje
 }
 
 
-static PyObject *_wrap_RiskTool_mean(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_mean(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_mean",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_mean",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->mean();
@@ -9661,17 +9661,17 @@ static PyObject *_wrap_RiskTool_mean(PyObject *self, PyObject *args, PyObject *k
 }
 
 
-static PyObject *_wrap_RiskTool_variance(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_variance(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_variance",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_variance",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->variance();
@@ -9688,17 +9688,17 @@ static PyObject *_wrap_RiskTool_variance(PyObject *self, PyObject *args, PyObjec
 }
 
 
-static PyObject *_wrap_RiskTool_standardDeviation(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_standardDeviation(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_standardDeviation",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_standardDeviation",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->standardDeviation();
@@ -9715,17 +9715,17 @@ static PyObject *_wrap_RiskTool_standardDeviation(PyObject *self, PyObject *args
 }
 
 
-static PyObject *_wrap_RiskTool_errorEstimate(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_errorEstimate(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_errorEstimate",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_errorEstimate",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->errorEstimate();
@@ -9742,17 +9742,17 @@ static PyObject *_wrap_RiskTool_errorEstimate(PyObject *self, PyObject *args, Py
 }
 
 
-static PyObject *_wrap_RiskTool_skewness(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_skewness(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_skewness",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_skewness",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->skewness();
@@ -9769,17 +9769,17 @@ static PyObject *_wrap_RiskTool_skewness(PyObject *self, PyObject *args, PyObjec
 }
 
 
-static PyObject *_wrap_RiskTool_kurtosis(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_kurtosis(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_kurtosis",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_kurtosis",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->kurtosis();
@@ -9796,17 +9796,17 @@ static PyObject *_wrap_RiskTool_kurtosis(PyObject *self, PyObject *args, PyObjec
 }
 
 
-static PyObject *_wrap_RiskTool_min(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_min(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_min",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_min",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->min();
@@ -9823,17 +9823,17 @@ static PyObject *_wrap_RiskTool_min(PyObject *self, PyObject *args, PyObject *kw
 }
 
 
-static PyObject *_wrap_RiskTool_max(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_max(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_max",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_max",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->max();
@@ -9850,9 +9850,9 @@ static PyObject *_wrap_RiskTool_max(PyObject *self, PyObject *args, PyObject *kw
 }
 
 
-static PyObject *_wrap_RiskTool_valueAtRisk(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_valueAtRisk(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     double arg1 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
@@ -9860,8 +9860,8 @@ static PyObject *_wrap_RiskTool_valueAtRisk(PyObject *self, PyObject *args, PyOb
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:RiskTool_valueAtRisk",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:RiskStatistics_valueAtRisk",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->valueAtRisk(arg1);
@@ -9878,9 +9878,9 @@ static PyObject *_wrap_RiskTool_valueAtRisk(PyObject *self, PyObject *args, PyOb
 }
 
 
-static PyObject *_wrap_RiskTool_shortfall(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_shortfall(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     double arg1 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
@@ -9888,8 +9888,8 @@ static PyObject *_wrap_RiskTool_shortfall(PyObject *self, PyObject *args, PyObje
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:RiskTool_shortfall",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:RiskStatistics_shortfall",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->shortfall(arg1);
@@ -9906,9 +9906,9 @@ static PyObject *_wrap_RiskTool_shortfall(PyObject *self, PyObject *args, PyObje
 }
 
 
-static PyObject *_wrap_RiskTool_averageShortfall(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_averageShortfall(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     double arg1 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
@@ -9916,8 +9916,8 @@ static PyObject *_wrap_RiskTool_averageShortfall(PyObject *self, PyObject *args,
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:RiskTool_averageShortfall",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:RiskStatistics_averageShortfall",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->averageShortfall(arg1);
@@ -9934,9 +9934,9 @@ static PyObject *_wrap_RiskTool_averageShortfall(PyObject *self, PyObject *args,
 }
 
 
-static PyObject *_wrap_RiskTool_add(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_add(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     double arg1 ;
     double arg2 = 1.0 ;
     PyObject * argo0 =0 ;
@@ -9944,8 +9944,8 @@ static PyObject *_wrap_RiskTool_add(PyObject *self, PyObject *args, PyObject *kw
         "self","value","weight", NULL 
     };
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od|d:RiskTool_add",kwnames,&argo0,&arg1,&arg2)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od|d:RiskStatistics_add",kwnames,&argo0,&arg1,&arg2)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             arg0->add(arg1,arg2);
@@ -9963,16 +9963,16 @@ static PyObject *_wrap_RiskTool_add(PyObject *self, PyObject *args, PyObject *kw
 }
 
 
-static PyObject *_wrap_RiskTool_reset(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_reset(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_reset",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskStatistics_reset",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         try {
             arg0->reset();
@@ -9990,16 +9990,16 @@ static PyObject *_wrap_RiskTool_reset(PyObject *self, PyObject *args, PyObject *
 }
 
 
-void  RiskTool_addSequence(RiskTool *self,DoubleVector values) {
+void  RiskStatistics_addSequence(RiskStatistics *self,DoubleVector values) {
     {
         self->addSequence(values.begin(), values.end());
     }
 }
 
 
-static PyObject *_wrap_RiskTool_addSequence(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_addSequence(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     DoubleVector *arg1 ;
     PyObject * argo0 =0 ;
     PyObject * obj1  = 0 ;
@@ -10007,8 +10007,8 @@ static PyObject *_wrap_RiskTool_addSequence(PyObject *self, PyObject *args, PyOb
         "self","values", NULL 
     };
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:RiskTool_addSequence",kwnames,&argo0,&obj1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:RiskStatistics_addSequence",kwnames,&argo0,&obj1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         if (PyTuple_Check(obj1)) {
             int size = PyTuple_Size(obj1);
@@ -10051,7 +10051,7 @@ static PyObject *_wrap_RiskTool_addSequence(PyObject *self, PyObject *args, PyOb
     }
     {
         try {
-            RiskTool_addSequence(arg0,*arg1);
+            RiskStatistics_addSequence(arg0,*arg1);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -10069,16 +10069,16 @@ static PyObject *_wrap_RiskTool_addSequence(PyObject *self, PyObject *args, PyOb
 }
 
 
-void  RiskTool_addWeightedSequence(RiskTool *self,DoubleVector values,DoubleVector weights) {
+void  RiskStatistics_addWeightedSequence(RiskStatistics *self,DoubleVector values,DoubleVector weights) {
     {
         self->addSequence(values.begin(), values.end(), weights.begin());
     }
 }
 
 
-static PyObject *_wrap_RiskTool_addWeightedSequence(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_RiskStatistics_addWeightedSequence(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    RiskTool *arg0 ;
+    RiskStatistics *arg0 ;
     DoubleVector *arg1 ;
     DoubleVector *arg2 ;
     PyObject * argo0 =0 ;
@@ -10088,8 +10088,8 @@ static PyObject *_wrap_RiskTool_addWeightedSequence(PyObject *self, PyObject *ar
         "self","values","weights", NULL 
     };
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:RiskTool_addWeightedSequence",kwnames,&argo0,&obj1,&obj2)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:RiskStatistics_addWeightedSequence",kwnames,&argo0,&obj1,&obj2)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
         if (PyTuple_Check(obj1)) {
             int size = PyTuple_Size(obj1);
@@ -10172,7 +10172,7 @@ static PyObject *_wrap_RiskTool_addWeightedSequence(PyObject *self, PyObject *ar
     }
     {
         try {
-            RiskTool_addWeightedSequence(arg0,*arg1,*arg2);
+            RiskStatistics_addWeightedSequence(arg0,*arg1,*arg2);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -11628,25 +11628,25 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "delete_GaussianRandomGenerator", (PyCFunction) _wrap_delete_GaussianRandomGenerator, METH_VARARGS | METH_KEYWORDS },
 	 { "GaussianRandomGenerator_next", (PyCFunction) _wrap_GaussianRandomGenerator_next, METH_VARARGS | METH_KEYWORDS },
 	 { "GaussianRandomGenerator_weight", (PyCFunction) _wrap_GaussianRandomGenerator_weight, METH_VARARGS | METH_KEYWORDS },
-	 { "new_RiskTool", (PyCFunction) _wrap_new_RiskTool, METH_VARARGS | METH_KEYWORDS },
-	 { "delete_RiskTool", (PyCFunction) _wrap_delete_RiskTool, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_samples", (PyCFunction) _wrap_RiskTool_samples, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_weightSum", (PyCFunction) _wrap_RiskTool_weightSum, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_mean", (PyCFunction) _wrap_RiskTool_mean, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_variance", (PyCFunction) _wrap_RiskTool_variance, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_standardDeviation", (PyCFunction) _wrap_RiskTool_standardDeviation, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_errorEstimate", (PyCFunction) _wrap_RiskTool_errorEstimate, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_skewness", (PyCFunction) _wrap_RiskTool_skewness, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_kurtosis", (PyCFunction) _wrap_RiskTool_kurtosis, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_min", (PyCFunction) _wrap_RiskTool_min, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_max", (PyCFunction) _wrap_RiskTool_max, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_valueAtRisk", (PyCFunction) _wrap_RiskTool_valueAtRisk, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_shortfall", (PyCFunction) _wrap_RiskTool_shortfall, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_averageShortfall", (PyCFunction) _wrap_RiskTool_averageShortfall, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_add", (PyCFunction) _wrap_RiskTool_add, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_reset", (PyCFunction) _wrap_RiskTool_reset, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_addSequence", (PyCFunction) _wrap_RiskTool_addSequence, METH_VARARGS | METH_KEYWORDS },
-	 { "RiskTool_addWeightedSequence", (PyCFunction) _wrap_RiskTool_addWeightedSequence, METH_VARARGS | METH_KEYWORDS },
+	 { "new_RiskStatistics", (PyCFunction) _wrap_new_RiskStatistics, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_RiskStatistics", (PyCFunction) _wrap_delete_RiskStatistics, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_samples", (PyCFunction) _wrap_RiskStatistics_samples, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_weightSum", (PyCFunction) _wrap_RiskStatistics_weightSum, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_mean", (PyCFunction) _wrap_RiskStatistics_mean, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_variance", (PyCFunction) _wrap_RiskStatistics_variance, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_standardDeviation", (PyCFunction) _wrap_RiskStatistics_standardDeviation, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_errorEstimate", (PyCFunction) _wrap_RiskStatistics_errorEstimate, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_skewness", (PyCFunction) _wrap_RiskStatistics_skewness, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_kurtosis", (PyCFunction) _wrap_RiskStatistics_kurtosis, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_min", (PyCFunction) _wrap_RiskStatistics_min, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_max", (PyCFunction) _wrap_RiskStatistics_max, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_valueAtRisk", (PyCFunction) _wrap_RiskStatistics_valueAtRisk, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_shortfall", (PyCFunction) _wrap_RiskStatistics_shortfall, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_averageShortfall", (PyCFunction) _wrap_RiskStatistics_averageShortfall, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_add", (PyCFunction) _wrap_RiskStatistics_add, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_reset", (PyCFunction) _wrap_RiskStatistics_reset, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_addSequence", (PyCFunction) _wrap_RiskStatistics_addSequence, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskStatistics_addWeightedSequence", (PyCFunction) _wrap_RiskStatistics_addWeightedSequence, METH_VARARGS | METH_KEYWORDS },
 	 { "ObjectiveFunction_value", (PyCFunction) _wrap_ObjectiveFunction_value, METH_VARARGS | METH_KEYWORDS },
 	 { "ObjectiveFunction_derivative", (PyCFunction) _wrap_ObjectiveFunction_derivative, METH_VARARGS | METH_KEYWORDS },
 	 { "Solver1D_solve", (PyCFunction) _wrap_Solver1D_solve, METH_VARARGS | METH_KEYWORDS },
@@ -11755,13 +11755,13 @@ static swig_type_info _swigt__p_GaussianRandomGenerator[] = {{"_p_GaussianRandom
 static swig_type_info _swigt__p_NormalDistribution[] = {{"_p_NormalDistribution", 0, "NormalDistribution *"},{"_p_NormalDistribution"},{0}};
 static swig_type_info _swigt__p_CumulativeNormalDistribution[] = {{"_p_CumulativeNormalDistribution", 0, "CumulativeNormalDistribution *"},{"_p_CumulativeNormalDistribution"},{0}};
 static swig_type_info _swigt__p_InvCumulativeNormalDistribution[] = {{"_p_InvCumulativeNormalDistribution", 0, "InvCumulativeNormalDistribution *"},{"_p_InvCumulativeNormalDistribution"},{0}};
+static swig_type_info _swigt__p_RiskStatistics[] = {{"_p_RiskStatistics", 0, "RiskStatistics *"},{"_p_RiskStatistics"},{0}};
 static swig_type_info _swigt__p_Statistics[] = {{"_p_Statistics", 0, "Statistics *"},{"_p_Statistics"},{0}};
 static swig_type_info _swigt__p_NewtonSafe[] = {{"_p_NewtonSafe", 0, "NewtonSafe *"},{"_p_NewtonSafe"},{0}};
 static swig_type_info _swigt__p_History[] = {{"_p_History", 0, "History *"},{"_p_History"},{0}};
 static swig_type_info _swigt__p_Solver1D[] = {{"_p_Solver1D", 0, "Solver1D *"},{"_p_Newton", _p_NewtonTo_p_Solver1D},{"_p_Ridder", _p_RidderTo_p_Solver1D},{"_p_FalsePosition", _p_FalsePositionTo_p_Solver1D},{"_p_Brent", _p_BrentTo_p_Solver1D},{"_p_Solver1D"},{"_p_Secant", _p_SecantTo_p_Solver1D},{"_p_NewtonSafe", _p_NewtonSafeTo_p_Solver1D},{"_p_Bisection", _p_BisectionTo_p_Solver1D},{0}};
 static swig_type_info _swigt__p_Array[] = {{"_p_Array", 0, "Array *"},{"_p_Array"},{0}};
 static swig_type_info _swigt__p_ArrayLexicographicalView[] = {{"_p_ArrayLexicographicalView", 0, "ArrayLexicographicalView *"},{"_p_ArrayLexicographicalView"},{0}};
-static swig_type_info _swigt__p_RiskTool[] = {{"_p_RiskTool", 0, "RiskTool *"},{"_p_RiskTool"},{0}};
 static swig_type_info _swigt__p_Ridder[] = {{"_p_Ridder", 0, "Ridder *"},{"_p_Ridder"},{0}};
 static swig_type_info _swigt__p_DepositRate[] = {{"_p_DepositRate", 0, "DepositRate *"},{"_p_DepositRate"},{0}};
 static swig_type_info _swigt__p_ObjectiveFunction[] = {{"_p_ObjectiveFunction", 0, "ObjectiveFunction *"},{"_p_ObjectiveFunction"},{0}};
@@ -11803,13 +11803,13 @@ _swigt__p_GaussianRandomGenerator,
 _swigt__p_NormalDistribution, 
 _swigt__p_CumulativeNormalDistribution, 
 _swigt__p_InvCumulativeNormalDistribution, 
+_swigt__p_RiskStatistics, 
 _swigt__p_Statistics, 
 _swigt__p_NewtonSafe, 
 _swigt__p_History, 
 _swigt__p_Solver1D, 
 _swigt__p_Array, 
 _swigt__p_ArrayLexicographicalView, 
-_swigt__p_RiskTool, 
 _swigt__p_Ridder, 
 _swigt__p_DepositRate, 
 _swigt__p_ObjectiveFunction, 

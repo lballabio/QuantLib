@@ -880,40 +880,40 @@ class GaussianRandomGeneratorPtr(GaussianRandomGenerator):
 GaussianRandomGenerator.next = new.instancemethod(QuantLibc.GaussianRandomGenerator_next, None, GaussianRandomGenerator)
 GaussianRandomGenerator.weight = new.instancemethod(QuantLibc.GaussianRandomGenerator_weight, None, GaussianRandomGenerator)
 
-class RiskTool:
+class RiskStatistics:
     def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_RiskTool,args,kwargs)
+        self.this = apply(QuantLibc.new_RiskStatistics,args,kwargs)
         self.thisown = 1
 
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
-            QuantLibc.delete_RiskTool(self)
+            QuantLibc.delete_RiskStatistics(self)
     def __repr__(self):
-        return "<C RiskTool instance at %s>" % (self.this,)
-class RiskToolPtr(RiskTool):
+        return "<C RiskStatistics instance at %s>" % (self.this,)
+class RiskStatisticsPtr(RiskStatistics):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-        self.__class__ = RiskTool
+        self.__class__ = RiskStatistics
 
 
-RiskTool.samples = new.instancemethod(QuantLibc.RiskTool_samples, None, RiskTool)
-RiskTool.weightSum = new.instancemethod(QuantLibc.RiskTool_weightSum, None, RiskTool)
-RiskTool.mean = new.instancemethod(QuantLibc.RiskTool_mean, None, RiskTool)
-RiskTool.variance = new.instancemethod(QuantLibc.RiskTool_variance, None, RiskTool)
-RiskTool.standardDeviation = new.instancemethod(QuantLibc.RiskTool_standardDeviation, None, RiskTool)
-RiskTool.errorEstimate = new.instancemethod(QuantLibc.RiskTool_errorEstimate, None, RiskTool)
-RiskTool.skewness = new.instancemethod(QuantLibc.RiskTool_skewness, None, RiskTool)
-RiskTool.kurtosis = new.instancemethod(QuantLibc.RiskTool_kurtosis, None, RiskTool)
-RiskTool.min = new.instancemethod(QuantLibc.RiskTool_min, None, RiskTool)
-RiskTool.max = new.instancemethod(QuantLibc.RiskTool_max, None, RiskTool)
-RiskTool.valueAtRisk = new.instancemethod(QuantLibc.RiskTool_valueAtRisk, None, RiskTool)
-RiskTool.shortfall = new.instancemethod(QuantLibc.RiskTool_shortfall, None, RiskTool)
-RiskTool.averageShortfall = new.instancemethod(QuantLibc.RiskTool_averageShortfall, None, RiskTool)
-RiskTool.add = new.instancemethod(QuantLibc.RiskTool_add, None, RiskTool)
-RiskTool.reset = new.instancemethod(QuantLibc.RiskTool_reset, None, RiskTool)
-RiskTool.addSequence = new.instancemethod(QuantLibc.RiskTool_addSequence, None, RiskTool)
-RiskTool.addWeightedSequence = new.instancemethod(QuantLibc.RiskTool_addWeightedSequence, None, RiskTool)
+RiskStatistics.samples = new.instancemethod(QuantLibc.RiskStatistics_samples, None, RiskStatistics)
+RiskStatistics.weightSum = new.instancemethod(QuantLibc.RiskStatistics_weightSum, None, RiskStatistics)
+RiskStatistics.mean = new.instancemethod(QuantLibc.RiskStatistics_mean, None, RiskStatistics)
+RiskStatistics.variance = new.instancemethod(QuantLibc.RiskStatistics_variance, None, RiskStatistics)
+RiskStatistics.standardDeviation = new.instancemethod(QuantLibc.RiskStatistics_standardDeviation, None, RiskStatistics)
+RiskStatistics.errorEstimate = new.instancemethod(QuantLibc.RiskStatistics_errorEstimate, None, RiskStatistics)
+RiskStatistics.skewness = new.instancemethod(QuantLibc.RiskStatistics_skewness, None, RiskStatistics)
+RiskStatistics.kurtosis = new.instancemethod(QuantLibc.RiskStatistics_kurtosis, None, RiskStatistics)
+RiskStatistics.min = new.instancemethod(QuantLibc.RiskStatistics_min, None, RiskStatistics)
+RiskStatistics.max = new.instancemethod(QuantLibc.RiskStatistics_max, None, RiskStatistics)
+RiskStatistics.valueAtRisk = new.instancemethod(QuantLibc.RiskStatistics_valueAtRisk, None, RiskStatistics)
+RiskStatistics.shortfall = new.instancemethod(QuantLibc.RiskStatistics_shortfall, None, RiskStatistics)
+RiskStatistics.averageShortfall = new.instancemethod(QuantLibc.RiskStatistics_averageShortfall, None, RiskStatistics)
+RiskStatistics.add = new.instancemethod(QuantLibc.RiskStatistics_add, None, RiskStatistics)
+RiskStatistics.reset = new.instancemethod(QuantLibc.RiskStatistics_reset, None, RiskStatistics)
+RiskStatistics.addSequence = new.instancemethod(QuantLibc.RiskStatistics_addSequence, None, RiskStatistics)
+RiskStatistics.addWeightedSequence = new.instancemethod(QuantLibc.RiskStatistics_addWeightedSequence, None, RiskStatistics)
 
 class ObjectiveFunction:
     def __init__(self,this):

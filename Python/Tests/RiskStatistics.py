@@ -2,16 +2,19 @@
 """
     $Source$
     $Log$
+    Revision 1.1  2001/01/19 09:34:25  nando
+    RiskTool is now RiskStatistics everywhere
+
     Revision 1.6  2001/01/18 14:40:17  nando
     no message
 
     Revision 1.5  2001/01/18 09:12:12  nando
-    improved RiskTool test
+    improved RiskStatistics test
 
 
 """
 
-from QuantLib import RiskTool, NormalDistribution
+from QuantLib import RiskStatistics, NormalDistribution
 import time
 from math import exp, sqrt
 
@@ -24,8 +27,8 @@ def gaussian(x, average, sigma):
 
 
 startTime = time.time()
-print 'Testing RiskTool'
-s = RiskTool()
+print 'Testing RiskStatistics'
+s = RiskStatistics()
 
 averageRange = [-100.0, 0.0, 100.0]
 sigmaRange = [0.1, 1.0, 10]
