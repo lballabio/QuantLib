@@ -6,5 +6,3 @@ include_HEADERS = \
     cliquetengines.hpp
 
 EXTRA_DIST=makefile.mak
-
-noinst_LTLIBRARIES = libPricingEngines.la
