@@ -116,14 +116,15 @@ namespace QuantLib {
 
         // determine strike from payoff
         boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(
+                this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
         Real strike = payoff->strike();
 
-        originalArguments_->payoff = arguments_.payoff;
+        originalArguments_->payoff = this->arguments_.payoff;
 
         const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+            this->arguments_.blackScholesProcess;
 
         Handle<Quote> spot(process->stateVariable());
         Handle<TermStructure> riskFreeRate(process->riskFreeRate());
@@ -133,46 +134,49 @@ namespace QuantLib {
                 new QuantoTermStructure(
                     Handle<TermStructure>(process->dividendYield()),
                     Handle<TermStructure>(process->riskFreeRate()),
-                    arguments_.foreignRiskFreeTS,
+                    this->arguments_.foreignRiskFreeTS,
                     Handle<BlackVolTermStructure>(process->blackVolatility()),
-                    strike, arguments_.exchRateVolTS, exchangeRateATMlevel,
-                    arguments_.correlation)));
+                    strike,
+                    this->arguments_.exchRateVolTS,
+                    exchangeRateATMlevel,
+                    this->arguments_.correlation)));
         Handle<BlackVolTermStructure> blackVol(process->blackVolatility());
         originalArguments_->blackScholesProcess =
             boost::shared_ptr<BlackScholesProcess>(
                              new BlackScholesProcess(spot, dividendYield,
                                                      riskFreeRate, blackVol));
 
-        originalArguments_->exercise = arguments_.exercise;
+        originalArguments_->exercise = this->arguments_.exercise;
 
         originalArguments_->validate();
         originalEngine_->calculate();
 
-        results_.value = originalResults_->value;
-        results_.delta = originalResults_->delta;
-        results_.gamma = originalResults_->gamma;
-        results_.theta = originalResults_->theta;
-        results_.rho = originalResults_->rho +
+        this->results_.value = originalResults_->value;
+        this->results_.delta = originalResults_->delta;
+        this->results_.gamma = originalResults_->gamma;
+        this->results_.theta = originalResults_->theta;
+        this->results_.rho = originalResults_->rho +
             originalResults_->dividendRho;
-        results_.dividendRho = originalResults_->dividendRho;
-        Volatility exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
-            arguments_.exercise->lastDate(),
-            exchangeRateATMlevel);
-        results_.vega = originalResults_->vega +
-            arguments_.correlation * exchangeRateFlatVol *
+        this->results_.dividendRho = originalResults_->dividendRho;
+        Volatility exchangeRateFlatVol =
+            this->arguments_.exchRateVolTS->blackVol(
+                this->arguments_.exercise->lastDate(),
+                exchangeRateATMlevel);
+        this->results_.vega = originalResults_->vega +
+            this->arguments_.correlation * exchangeRateFlatVol *
             originalResults_->dividendRho;
 
 
         Volatility volatility = process->blackVolatility()->blackVol(
-                                           arguments_.exercise->lastDate(),
-                                           process->stateVariable()->value());
-        results_.qvega = + arguments_.correlation
-            * process->blackVolatility()->blackVol(
-                                          arguments_.exercise->lastDate(),
-                                          process->stateVariable()->value()) *
-            originalResults_->dividendRho;
-        results_.qrho = - originalResults_->dividendRho;
-        results_.qlambda = exchangeRateFlatVol *
+            this->arguments_.exercise->lastDate(),
+            process->stateVariable()->value());
+        this->results_.qvega = + this->arguments_.correlation *
+            process->blackVolatility()->blackVol(
+                this->arguments_.exercise->lastDate(),
+                process->stateVariable()->value()) *
+                    originalResults_->dividendRho;
+        this->results_.qrho = - originalResults_->dividendRho;
+        this->results_.qlambda = exchangeRateFlatVol *
             volatility * originalResults_->dividendRho;
     }
 
