@@ -36,11 +36,12 @@ namespace QuantLib {
     namespace Functions {
 
         double blackVol(const Date& refDate,
+                        const DayCounter& dc,
                         const std::vector<Date>& dates,
                         const std::vector<double>& strikes,
                         const Math::Matrix& blackVolSurface,
-                        const DayCounter& dc,
-                        const Date& date,
+                        const Date& date1,
+                        const Date& date2,
                         double strike,
                         int interpolation2DType,
                         bool allowExtrapolation);

@@ -54,6 +54,7 @@
 #include <ql/swaptionvolstructure.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/types.hpp>
+#include <ql/voltermstructure.hpp>
 
 #include <ql/Calendars/frankfurt.hpp>
 #include <ql/Calendars/helsinki.hpp>
@@ -100,6 +101,7 @@
 
 #include <ql/functions/daycounters.hpp>
 #include <ql/functions/mathf.hpp>
+#include <ql/functions/vols.hpp>
 
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Indexes/audlibor.hpp>
@@ -271,6 +273,9 @@
 #include <ql/Utilities/processingiterator.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 
+#include <ql/Volatilities/blackvariancecurve.hpp>
+#include <ql/Volatilities/blackvariancesurface.hpp>
+#include <ql/Volatilities/constantvol.hpp>
 #include <ql/Volatilities/capflatvolvector.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 

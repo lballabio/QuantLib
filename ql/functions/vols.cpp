@@ -24,24 +24,26 @@
 
 #include <ql/functions/vols.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
-#include <ql/Volatilities/interpolatedblackvol.hpp>
+#include <ql/Volatilities/constantvol.hpp>
+#include <ql/Volatilities/blackvariancesurface.hpp>
 
 using QuantLib::Date;
 using QuantLib::Math::Matrix;
 using QuantLib::Math::Interpolation2D;
 using QuantLib::Math::BilinearInterpolation;
-using QuantLib::VolTermStructures::InterpolatedBlackVolStructure;
+using QuantLib::VolTermStructures::BlackVarianceSurface;
 
 namespace QuantLib {
 
     namespace Functions {
 
 		double blackVol(const Date& refDate,
+                        const DayCounter& dc,
                         const std::vector<Date>& dates,
                         const std::vector<double>& strikes,
                         const QuantLib::Math::Matrix& blackVolSurface,
-                        const DayCounter& dc,
-                        const Date& date,
+                        const Date& date1,
+                        const Date& date2,
                         double strike,
                         int interpolation2DType,
                         bool allowExtrapolation) {
@@ -50,12 +52,13 @@ namespace QuantLib {
 
             switch (interpolation2DType) {
                 case 1:
-                    result = InterpolatedBlackVolStructure<
+                    result = BlackVarianceSurface<
                         BilinearInterpolation<
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator,
-                        Matrix> >(refDate, dates, strikes, blackVolSurface,
-                        dc).blackVol(date,strike,allowExtrapolation);
+                        Matrix> >(refDate, dc, dates, strikes,
+                        blackVolSurface).blackForwardVol(date1, date2,
+                        strike, allowExtrapolation);
                     break;
                 default:
                     throw IllegalArgumentError(
