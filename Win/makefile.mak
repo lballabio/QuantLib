@@ -13,6 +13,7 @@ SOURCES_DIR		= ..\Sources
 INCLUDE_DIR		= ..\Include
 BCC_INCLUDE		= $(MAKEDIR)\..\include
 BCC_LIBS		= $(MAKEDIR)\..\lib
+PYTHON_ROOT     = "C:\Python20"
 PYTHON_INCLUDE	= "C:\Python20\include"
 PYTHON_LIBS		= "C:\Python20\libs"
 
@@ -223,6 +224,15 @@ alldocs::
 test::
 	cd ..\Python\Tests
 	python statistics_test.py
+	python impliedVol.py
 	python greeks_in_european.py
 	python greeks_in_american.py
-	python impliedVol.py
+	cd ..\Win
+
+# Install PyQuantLib
+install::
+	if exist $(PYTHON_ROOT)\QuantLib.py       del $(PYTHON_ROOT)\QuantLib.py
+	if exist $(PYTHON_ROOT)\QuantLib.pyc      del $(PYTHON_ROOT)\QuantLib.pyc
+	if exist $(PYTHON_ROOT)\QuantLibc.dll     del $(PYTHON_ROOT)\QuantLibc.dll
+	move $(PYTHON_DIR)\QuantLib.py $(PYTHON_ROOT)\QuantLib.py
+	move $(PYTHON_DIR)\QuantLibc.dll $(PYTHON_ROOT)\QuantLibc.dll
