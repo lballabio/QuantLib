@@ -1,7 +1,7 @@
 
 SUBDIRS=Tests
 
-EXTRA_DIST=extconf.rb quantlib_wrap.cpp
+EXTRA_DIST=README.txt extconf.rb quantlib_wrap.cpp
 
 ruby:
 	$(SWIG) -ruby -c++ -I../SWIG -o quantlib_wrap.cpp ../SWIG/QuantLib.i
