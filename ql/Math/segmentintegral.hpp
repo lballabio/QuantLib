@@ -22,7 +22,8 @@
 #ifndef quantlib_segment_integral_h
 #define quantlib_segment_integral_h
 
-#include <ql/dataformatters.hpp>
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
@@ -46,10 +47,11 @@ namespace QuantLib {
             SegmentIntegral(Size intervals);
             template <class F>
             double operator()(const F& f, double a, double b) const {
-                QL_REQUIRE(a < b,
-                           "to compute an integral on [a,b] it must be a<b; "
-                           "a="+DoubleFormatter::toString(a)+", "
-                           "b="+DoubleFormatter::toString(b));
+
+                if (a == b)
+                    return 0.0;
+                if (a > b)
+                    return -(*this)(f,b,a);
 
                 double dx = (b-a)/intervals_;
                 double sum = 0.5*(f(a)+f(b));
@@ -57,14 +59,14 @@ namespace QuantLib {
                 for (double x = a+dx; x < end; x += dx)
                     sum += f(x);
                 return sum*dx;
-        }
+            }
           private:
             Size intervals_;
         };
 
 
         // inline and template definitions
-        
+
         inline SegmentIntegral::SegmentIntegral(Size intervals)
         : intervals_(intervals) {
             QL_REQUIRE(intervals > 0, "at least 1 interval needed, 0 given");
