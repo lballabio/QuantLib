@@ -68,7 +68,7 @@ namespace QuantLib {
                 Process(const Parameter& fitting,
                         const Parameter& speed,
                         const Parameter& volatility)
-                : OrnsteinUhlenbeckProcess(NullParameter(), speed, volatility),
+                : OrnsteinUhlenbeckProcess(speed, volatility),
                   fitting_(fitting) {}
                 virtual double variable(Time t, Rate r) const {
                     return QL_LOG(r) - fitting_(t);

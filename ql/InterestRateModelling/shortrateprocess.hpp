@@ -42,11 +42,11 @@ namespace QuantLib {
             virtual Rate shortRate(Time t, double variable) const = 0;
         };
 
-        class OrnsteinUhlenbeckProcess : public ShortRateProcess {
+        class MeanRevertingProcess : public ShortRateProcess {
           public:
-            OrnsteinUhlenbeckProcess(const Parameter& mean,
-                                     const Parameter& speed,
-                                     const Parameter& volatility)
+            MeanRevertingProcess(const Parameter& mean,
+                                 const Parameter& speed,
+                                 const Parameter& volatility)
             : mean_(mean), speed_(speed), volatility_(volatility) {}
 
             virtual double drift(Time t, double x) const {
@@ -56,6 +56,17 @@ namespace QuantLib {
             virtual double diffusion(Time t, double x) const {
                 return volatility_(t);
             }
+
+          protected:
+            Parameter mean_, speed_, volatility_;
+        };
+
+        class OrnsteinUhlenbeckProcess : public MeanRevertingProcess {
+          public:
+            OrnsteinUhlenbeckProcess(const Parameter& speed,
+                                     const Parameter& volatility)
+            : MeanRevertingProcess(NullParameter(), speed, volatility)  {}
+
             virtual double expectation(Time t0, double x0, Time dt) const {
                 return x0*QL_EXP(-speed_(t0)*dt);
             }
@@ -63,9 +74,6 @@ namespace QuantLib {
                 return 0.5*volatility_(t0)*volatility_(t0)/speed_(t0)*
                        (1.0 - QL_EXP(-2.0*speed_(t0)*dt));
             }
-
-          protected:
-            Parameter mean_, speed_, volatility_;
         };
 
     }

@@ -101,12 +101,12 @@ namespace QuantLib {
                 virtual ~PiecewiseConstantParameterImpl() {}
 
                 double value(const Array& params, Time t) const {
-                    if (t<times_[0])
-                        return params[0];
-                    for (Size i=0; i<times_.size()-1; i++) {
-                        if (t>=times_[i])
-                            return params[i+1];
+                    Size size = times_.size();
+                    for (Size i=0; i<size; i++) {
+                        if (t<times_[i])
+                            return params[i];
                     }
+                    return params[size];
                 }
               private:
                 std::vector<Time> times_;
