@@ -67,6 +67,7 @@ LIBRARY
 
 DOCUMENTATION ***
     ******
+    review News.txt, History.txt
     add MS-Windows Help
     complete MC documentation
     ******

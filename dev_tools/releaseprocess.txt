@@ -1,15 +1,17 @@
 
-merge relevant branches, if any
-purge headers
-purge warnings
-check for tab
-update ChangeLog
-branch out of the trunk
-update version number on the trunk
+    merge relevant branches, if any
+    purge headers
+    purge warnings
+    check for tab
+    first ChangeLog update
+first update of news and history
+    branch out of the trunk
+    update version number on the trunk
 alert Dirk, our Debian packager
 test and bug fixing on the branch
 review documentation
-create hidden sourceforge.net release
+    create hidden sourceforge.net release
+last update of news, history, ChangeLog
 download files on sourceforge.net
 update download and doc pages at quantlib.org
 news on sourceforge.net
