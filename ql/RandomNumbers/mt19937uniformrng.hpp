@@ -33,7 +33,7 @@ namespace QuantLib {
     namespace RandomNumbers {
 
         //! Uniform random number generator
-        /*! Mersenne Twister random number generatoro of period 2**19937-1
+        /*! Mersenne Twister random number generator of period 2**19937-1
 
             For more details see http://www.math.keio.ac.jp/matumoto/emt.html
         */

@@ -41,9 +41,9 @@ namespace QuantLib {
 
         namespace {
             const unsigned long firstPrimes[] = {
-                // the first two primes are necessary for bootstrapping
+                // the first two primes are mandatory for bootstrapping
                  2,  3, 
-                // additional precomputed primes
+                // optional additional precomputed primes
                  5,  7, 11, 13, 17, 19, 23, 29,
                 31, 37, 41, 43, 47 };
         }
@@ -61,13 +61,13 @@ namespace QuantLib {
             return primeNumbers_[absoluteIndex];
         }
 
-        Size PrimeNumbers::nextPrimeNumber() {
-            Size p, n, m = primeNumbers_.back();
+        unsigned long PrimeNumbers::nextPrimeNumber() {
+            unsigned long p, n, m = primeNumbers_.back();
             do {
                 // skip the even numbers
                 m += 2;
-                n = static_cast<Size>(QL_SQRT(double(m)));
-                // it can be i==1 since the even numbers have been skipped
+                n = static_cast<unsigned long>(QL_SQRT(double(m)));
+                // i=1 since the even numbers have already been skipped
                 Size i = 1;
                 do {
                     p = primeNumbers_[i];

@@ -51,7 +51,7 @@ namespace QuantLib {
             static unsigned long get(Size absoluteIndex);
           private:
             PrimeNumbers() {}
-            static Size nextPrimeNumber();
+            static unsigned long nextPrimeNumber();
             static std::vector<unsigned long> primeNumbers_;
         };
 
