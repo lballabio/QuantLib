@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.20  2001/05/03 15:37:07  lballabio
+    Added actual/actual
+
     Revision 1.19  2001/04/10 07:54:33  lballabio
     Ruby histories (the Ruby way)
 
@@ -44,6 +47,7 @@
 using QuantLib::DayCounter;
 using QuantLib::Handle;
 typedef Handle<DayCounter> DayCounterHandle;
+using QuantLib::DayCounters::ActualActual;
 using QuantLib::DayCounters::Actual360;
 using QuantLib::DayCounters::Actual365;
 using QuantLib::DayCounters::Thirty360;
@@ -57,6 +61,11 @@ using QuantLib::DayCounters::Thirty360Italian;
   public:
     // constructor redefined below as string-based factory
     ~DayCounterHandle();
+    // add yearFraction with default arguments
+    %pragma(python) addtoclass="
+    def yearFraction(self,d1,d2,startRef=None,endRef=None):
+        return self.yearFractionWithRefPeriod(d1,d2,startRef,endRef)
+    "
 };
 
 // replicate the DayCounter interface
@@ -66,7 +75,9 @@ using QuantLib::DayCounters::Thirty360Italian;
     #endif
     DayCounterHandle(const String& name) {
         String s = StringFormatter::toLowercase(name);
-        if (s == "act360" || s == "act/360")
+        if (s == "actact" || s == "act/act")
+            return new DayCounterHandle(new ActualActual);
+        else if (s == "act360" || s == "act/360")
             return new DayCounterHandle(new Actual360);
         else if (s == "act365" || s == "act/365")
             return new DayCounterHandle(new Actual365);
@@ -83,8 +94,9 @@ using QuantLib::DayCounters::Thirty360Italian;
     int dayCount(const Date& d1, const Date& d2) {
         return (*self)->dayCount(d1,d2);
     }
-    Time yearFraction(const Date& d1, const Date& d2) {
-        return (*self)->yearFraction(d1,d2);
+    Time yearFractionWithRefPeriod(const Date& d1, const Date& d2,
+        const Date& startRef, const Date& endRef) {
+            return (*self)->yearFraction(d1,d2,startRef,endRef);
     }
     #if defined (SWIGPYTHON) || defined(SWIGRUBY)
     String __str__() {
@@ -104,8 +116,10 @@ using QuantLib::DayCounters::Thirty360Italian;
     #endif
 }
 
-#if defined (SWIGPYTHON)
+#if defined(SWIGPYTHON)
 %{
+DayCounterHandle NewActualActual() {
+    return DayCounterHandle(new ActualActual); }
 DayCounterHandle NewActual360() {
     return DayCounterHandle(new Actual360); }
 DayCounterHandle NewActual365() {
@@ -118,6 +132,7 @@ DayCounterHandle NewThirty360Italian() {
     return DayCounterHandle(new Thirty360Italian); }
 %}
 
+%name(ActualActual)         DayCounterHandle NewActualActual();
 %name(Actual360)            DayCounterHandle NewActual360();
 %name(Actual365)            DayCounterHandle NewActual365();
 %name(Thirty360)            DayCounterHandle NewThirty360();
