@@ -5,13 +5,16 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.2  2001/08/23 11:24:37  nando
+# try/catch in examples
+#
 # Revision 1.1  2001/08/22 17:57:49  nando
 # Examples compiles under borland
 # added borland makefile
 #
 
 .autodepend
-.silent
+#.silent
 
 # Options
 !ifdef DEBUG

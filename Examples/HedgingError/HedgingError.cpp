@@ -185,24 +185,32 @@ class ReplicationPathPricer : public PathPricer
 // Compute Replication Error as in the Derman and Kamal's research note
 int main(int argc, char* argv[])
 {
-    Time maturity = 1./12.;   // 1 month
-    double strike = 100;
-    double underlying = 100;
-    double volatility = 0.20; // 20%
-    Rate riskFreeRate = 0.05; // 5%
-    ReplicationError rp(Option::Call, maturity, strike, underlying,
-        volatility, riskFreeRate);
+    try {
+        Time maturity = 1./12.;   // 1 month
+        double strike = 100;
+        double underlying = 100;
+        double volatility = 0.20; // 20%
+        Rate riskFreeRate = 0.05; // 5%
+        ReplicationError rp(Option::Call, maturity, strike, underlying,
+            volatility, riskFreeRate);
 
-    int scenarios = 50000;
-    int hedgesNum;
+        int scenarios = 50000;
+        int hedgesNum;
 
-    hedgesNum = 21;
-    rp.compute(hedgesNum, scenarios);
+        hedgesNum = 21;
+        rp.compute(hedgesNum, scenarios);
 
-    hedgesNum = 84;
-    rp.compute(hedgesNum, scenarios);
+        hedgesNum = 84;
+        rp.compute(hedgesNum, scenarios);
 
-    return 0;
+        return 0;
+    } catch (exception& e) {
+        cout << e.what() << endl;
+        return 1;
+    } catch (...) {
+        cout << "unknown error" << endl;
+        return 1;
+    }
 }
 
 

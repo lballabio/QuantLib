@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.18  2001/08/23 11:24:37  nando
+# try/catch in examples
+#
 # Revision 1.17  2001/08/23 10:16:36  nando
 # Examples have been added to Win32 binary installer
 #
@@ -94,6 +97,7 @@ SetOutPath $INSTDIR\Examples
 File /r "Examples\*.txt"
 File /r "Examples\*.mak"
 File /r "Examples\*.am"
+File /r "Examples\*.dsw"
 SetOutPath $INSTDIR\Examples\HedgingError
 File /r "Examples\HedgingError\*.cpp"
 File /r "Examples\HedgingError\*.dsp"
