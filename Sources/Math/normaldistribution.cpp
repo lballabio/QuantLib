@@ -22,11 +22,17 @@
 */
 
 /*! \file normaldistribution.cpp
-    \brief normal and cumulative normal distributions
+    \brief normal, cumulative and inverse cumulative distributions
     
     $Source$
     $Name$
     $Log$
+    Revision 1.10  2001/01/11 18:06:22  nando
+    generalized to sigma<>1 and average<>0
+    Also added NormalDistribution.derivative().
+    Improved Python test now also uses Finite Difference
+    first and second order operators
+
     Revision 1.9  2001/01/08 16:22:55  nando
     added InverseCumulativeNormalDistribution
 
@@ -49,46 +55,50 @@ namespace QuantLib {
         // Handbook of Mathematical Functions,
         // Dover Publications, New York (1972)
         
-        const double CumulativeNormalDistribution::a1_ = 0.319381530;
+        const double CumulativeNormalDistribution::a1_ =  0.319381530;
         const double CumulativeNormalDistribution::a2_ = -0.356563782;
-        const double CumulativeNormalDistribution::a3_ = 1.781477937;
+        const double CumulativeNormalDistribution::a3_ =  1.781477937;
         const double CumulativeNormalDistribution::a4_ = -1.821255978;
-        const double CumulativeNormalDistribution::a5_ = 1.330274429;
-        const double CumulativeNormalDistribution::gamma_ = 0.2316419;
+        const double CumulativeNormalDistribution::a5_ =  1.330274429;
+        
+        const double CumulativeNormalDistribution::gamma_     = 0.2316419;
         const double CumulativeNormalDistribution::precision_ = 1e-6;
         
         double CumulativeNormalDistribution::operator()(double x) const {
-            if (x >= 0.0) {
-                double k = 1.0/(1.0+gamma_*x);
-                double temp = gaussian_(x)*k*(a1_+k*(a2_+k*(a3_+k*(a4_+k*a5_))));
+            if (x >= average_) {
+                double xn = (x - average_) / sigma_;
+                double k = 1.0/(1.0+gamma_*xn);
+                double temp = gaussian_(xn) * k *
+                                (a1_ + k*(a2_ + k*(a3_ + k*(a4_ + k*a5_))));
                 if (temp<precision_) return 1.0;
                 temp = 1.0-temp;
                 if (temp<precision_) return 0.0;
                 return temp;
             } else {
-                return 1.0-(*this)(-x);
+                return 1.0-(*this)(2.0*average_-x);
             }
         }
 
 
-        const double InverseCumulativeNormalDistribution::p0_ = 2.515517;
-        const double InverseCumulativeNormalDistribution::p1_ = 0.802853;
-        const double InverseCumulativeNormalDistribution::p2_ = 0.010328;
-        const double InverseCumulativeNormalDistribution::q1_ = 1.432788;
-        const double InverseCumulativeNormalDistribution::q2_ = 0.189269;
-        const double InverseCumulativeNormalDistribution::q3_ = 0.001308;
+        const double InvCumulativeNormalDistribution::p0_ = 2.515517;
+        const double InvCumulativeNormalDistribution::p1_ = 0.802853;
+        const double InvCumulativeNormalDistribution::p2_ = 0.010328;
+        const double InvCumulativeNormalDistribution::q1_ = 1.432788;
+        const double InvCumulativeNormalDistribution::q2_ = 0.189269;
+        const double InvCumulativeNormalDistribution::q3_ = 0.001308;
         
-        double InverseCumulativeNormalDistribution::operator()(double x) const {
-            QL_REQUIRE(x>0.0 && x<1.0, "InverseCumulativeNormalDistribution(" +
+        double InvCumulativeNormalDistribution::operator()(double x) const {
+            QL_REQUIRE(x>0.0 && x<1.0, "InvCumulativeNormalDistribution(" +
                 DoubleFormatter::toString(x) + ") undefined: must be 0<x<1");
             
             if (x <= 0.5) {
                 double kSquare = QL_LOG( 1 / (x*x) ) ;
                 double k = QL_SQRT(kSquare);
-                return ( ( p0_ + p1_ * k + p2_ * kSquare ) /
-                         (   1 + q1_ * k + q2_ * kSquare + q3_ * kSquare * k ) - k );
+                double rn = ((p0_ + p1_*k + p2_*kSquare) /
+                            (  1  + q1_*k + q2_*kSquare + q3_*kSquare*k) - k );
+                return average_ + rn*sigma_;
             } else {
-                return -(*this)(1.0-x);
+                return 2.0*average_-(*this)(1.0-x);
             }
         }
     

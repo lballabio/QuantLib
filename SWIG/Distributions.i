@@ -42,13 +42,14 @@
 %{
 using QuantLib::Math::NormalDistribution;
 using QuantLib::Math::CumulativeNormalDistribution;
-using QuantLib::Math::InverseCumulativeNormalDistribution;
+using QuantLib::Math::InvCumulativeNormalDistribution;
 %}
 
 class NormalDistribution {
     public:
         NormalDistribution(double average = 0.0, double sigma = 1.0);
         ~NormalDistribution();
+        double derivative(double x);
 };
 
 %addmethods NormalDistribution {
@@ -59,7 +60,7 @@ class NormalDistribution {
 
 class CumulativeNormalDistribution {
     public:
-        CumulativeNormalDistribution();
+        CumulativeNormalDistribution(double average = 0.0, double sigma = 1.0);
         ~CumulativeNormalDistribution();
         double derivative(double x);
 };
@@ -70,13 +71,14 @@ class CumulativeNormalDistribution {
     }
 }
 
-class InverseCumulativeNormalDistribution {
+class InvCumulativeNormalDistribution {
     public:
-        InverseCumulativeNormalDistribution();
-        ~InverseCumulativeNormalDistribution();
+        InvCumulativeNormalDistribution(double average = 0.0,
+                                            double sigma = 1.0);
+        ~InvCumulativeNormalDistribution();
 };
 
-%addmethods InverseCumulativeNormalDistribution {
+%addmethods InvCumulativeNormalDistribution {
     double __call__(double x) {
         return (*self)(x);
     }
