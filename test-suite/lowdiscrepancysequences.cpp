@@ -579,7 +579,7 @@ namespace {
         2.98e-010, 2.91e-010, 2.62e-010, 1.53e-010,
         1.48e-010, 1.15e-010, 8.41e-011
     };
-    const Real dim50DiscrSobLev_Sobol[] = {
+    const Real dim050DiscrSobLev_Sobol[] = {
         2.55e-010, 2.52e-010, 1.61e-010, 1.54e-010,
         1.11e-010, 8.60e-011, 1.17e-010
     };
@@ -603,7 +603,9 @@ namespace {
         1.26e-018, 1.55e-018, 8.46e-019, 4.43e-019,
         4.04e-019, 2.44e-019, 4.86e-019
     };
-    const Real dim100DiscrSobLev_Sobol[] = {9.30e-019};
+    const Real dim100DiscrSobLev_Sobol[] = {
+        9.30e-019, 2.65e-018, 1.45e-018, 7.28e-019,
+        6.33e-019, 3.36e-019, 3.43e-019};
     const Real dim100DiscrMersenneTwis[] = {
         5.30e-019, 7.29e-019, 3.71e-019, 3.33e-019,
         1.33e-017, 6.70e-018, 3.36e-018
