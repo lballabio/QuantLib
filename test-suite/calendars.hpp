@@ -21,15 +21,38 @@
 #include <boost/test/unit_test.hpp>
 
 /*! \class QuantLib::Calendar <ql/calendar.hpp>
-
     \test the methods for adding and removing holidays are tested by
           inspecting the calendar before and after their invocation.
 */
 
 /*! \class QuantLib::JointCalendar <ql/Calendars/jointcalendar.hpp>
-
     \test the correctness of the returned results is tested by
           reproducing the calculations.
+*/
+
+/*! \class QuantLib::Italy <ql/Calendars/italy.hpp>
+    \test the correctness of the returned results is tested against a
+          list of known holidays.
+*/
+
+/*! \class QuantLib::UnitedKingdom <ql/Calendars/unitedkingdom.hpp>
+    \test the correctness of the returned results is tested against a
+          list of known holidays.
+*/
+
+/*! \class QuantLib::Germany <ql/Calendars/germany.hpp>
+    \test the correctness of the returned results is tested against a
+          list of known holidays.
+*/
+
+/*! \class QuantLib::TARGET <ql/Calendars/target.hpp>
+    \test the correctness of the returned results is tested against a
+          list of known holidays.
+*/
+
+/*! \class QuantLib::UnitedStates <ql/Calendars/unitedstates.hpp>
+    \test the correctness of the returned results is tested against a
+          list of known holidays.
 */
 
 class CalendarTest {
