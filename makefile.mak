@@ -28,7 +28,7 @@ quantlib::
 # check
 check: tests
     cd test-suite
-    test-suite
+    $(MAKE) -DQL_DIR=".." check
     cd ..
 
 # test
@@ -43,7 +43,7 @@ tests:: quantlib
 #all
 all:: examples tests
     cd test-suite
-    test-suite
+    $(MAKE) -DQL_DIR=".." check
     cd ..
 
 # Examples

@@ -97,6 +97,12 @@ test-suite$(_mt)$(_D).exe: $(QL_TESTS)
     -e"test-suite$(_mt)$(_D).exe" $(QL_TESTS) \
     libboost_unit_test_framework-bcb$(_mt)$(_D)-1_31.lib
 
+
+check: test-suite$(_mt)$(_D).exe
+    test-suite$(_mt)$(_D) --log_level=messages --build_info=yes
+    cd ..
+
+
 # Clean up
 clean::
     if exist *.obj*  del /q *.obj*
