@@ -50,11 +50,14 @@ namespace QuantLib {
                 || (d == 6  && m == January)
                 // May Day
                 || (d == 1  && m == May)
-                // National Day
-                || (d == 6  && m == June)
+                // June 6 id National Day but is not a holiday.
+                // It has been debated wheter or not this day should be
+                // declared as a holiday.
+                // As of 2002 the Stockholmborsen is open that day
+                // || (d == 6  && m == June)
                 // Midsummer Eve (Friday between June 18-24)
                 || (w == Friday && (d >= 18 && d <= 24) && m == June)
-                // Christmas Eve 
+                // Christmas Eve
                 || (d == 24 && m == December)
                 // Christmas Day
                 || (d == 25 && m == December)
