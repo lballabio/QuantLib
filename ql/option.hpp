@@ -103,12 +103,9 @@ namespace QuantLib {
     class OptionTypeFormatter {
       public:
         static std::string toString(Option::Type type) {
-            switch (type) {
-              case Option::Call:     return "call";
-              case Option::Put:      return "put";
-              default:
-                QL_FAIL("unknown option type");
-            }
+            std::ostringstream out;
+            out << type;
+            return out.str();
         }
     };
     #endif

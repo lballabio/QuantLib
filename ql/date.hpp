@@ -117,6 +117,10 @@ namespace QuantLib {
                  Dec = 12
     };
 
+    /*! \relates Month */
+    std::ostream& operator<<(std::ostream&, Month);
+
+
     //! Main cycle of the International Money Market (a.k.a. IMM) Months
     /*! \ingroup datetime */
     enum IMMMonth { H = 3,

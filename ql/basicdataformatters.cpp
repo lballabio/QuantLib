@@ -21,129 +21,78 @@
 */
 
 #include <ql/basicdataformatters.hpp>
-#include <ql/null.hpp>
-#include <iomanip>
+#include <ql/Utilities/dataformatters.hpp>
+#include <ql/Utilities/strings.hpp>
 
 namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
     std::string IntegerFormatter::toString(BigInteger l, Integer digits) {
-        static BigInteger null = Null<BigInteger>();
-        static std::ostringstream out;
-        if (l == null) {
-            return std::string("null");
-        } else {
-            out.str("");
-            out << std::setw(digits) << l;
-            return out.str();
-        }
+        std::ostringstream out;
+        out << std::setw(digits) << io::checknull(l);
+        return out.str();
     }
 
     std::string IntegerFormatter::toPowerOfTwo(BigInteger l, Integer digits) {
-        if (l < 0L)
-            return "-" + SizeFormatter::toPowerOfTwo(Size(-l),digits);
-        else
-            return SizeFormatter::toPowerOfTwo(Size(l),digits);
+        std::ostringstream out;
+        out << std::setw(digits) << io::power_of_two(l);
+        return out.str();
     }
     #endif
 
     #ifndef QL_DISABLE_DEPRECATED
     std::string SizeFormatter::toString(Size l, Integer digits) {
-        static Size null = Null<Size>();
-        static std::ostringstream out;
-        if (l == null) {
-            return std::string("null");
-        } else {
-            out.str("");
-            out << std::setw(digits) << l;
-            return out.str();
-        }
+        std::ostringstream out;
+        out << std::setw(digits) << io::checknull(l);
+        return out.str();
     }
 
     std::string SizeFormatter::toOrdinal(Size l) {
-        std::ostringstream s;
-        s << l;
-        if (l == Size(11) || l == Size(12) || l == Size(13)) {
-            s << "th";
-        } else {
-            switch (l % 10) {
-              case 1:  s << "st";  break;
-              case 2:  s << "nd";  break;
-              case 3:  s << "rd";  break;
-              default: s << "th";
-            }
-        }
-        return s.str();
+        std::ostringstream out;
+        out << io::ordinal(l);
+        return out.str();
     }
 
     std::string SizeFormatter::toPowerOfTwo(Size l, Integer digits) {
-        static Size null = Null<Size>();
-        if (l == null)
-            return std::string("null");
-        Integer power = 0;
-        while (!(l & 1UL)) {
-            power++;
-            l >>= 1;
-        }
-        std::ostringstream s;
-        s << std::setw(digits) << l << "*2^" << std::setw(2) << power;
-        return s.str();
+        std::ostringstream out;
+        out << std::setw(digits) << io::power_of_two(l);
+        return out.str();
     }
     #endif
 
     #ifndef QL_DISABLE_DEPRECATED
     std::string DecimalFormatter::toString(Decimal x, Integer precision,
                                            Integer digits) {
-        static Decimal null = Null<Decimal>();
-        static std::ostringstream out;
-        if (x == null) {
-            return std::string("null");
-        } else {
-            out.str("");
-            out << std::fixed;
-            out << std::setw(digits) << std::setprecision(precision) << x;
-            return out.str();
-        }
+        std::ostringstream out;
+        out << std::fixed << std::setprecision(precision);
+        out << std::setw(digits) << io::checknull(x);
+        return out.str();
     }
 
     std::string DecimalFormatter::toExponential(Decimal x, Integer precision,
                                                 Integer digits) {
-        static Decimal null = Null<Decimal>();
-        static std::ostringstream out;
-        if (x == null) {
-            return std::string("null");
-        } else {
-            out.str("");
-            out << std::scientific;
-            out << std::setw(digits) << std::setprecision(precision) << x;
-            return out.str();
-        }
+        std::ostringstream out;
+        out << std::scientific << std::setprecision(precision);
+        out << std::setw(digits) << io::checknull(x);
+        return out.str();
     }
 
     std::string DecimalFormatter::toPercentage(Decimal x, Integer precision,
                                                Integer digits) {
-        static std::ostringstream out;
-        out.str("");
-        out << std::fixed;
+        std::ostringstream out;
         out << std::setw(digits) << std::setprecision(precision);
-        out << x*100 << "%";
+        out << io::checknull(x);
         return out.str();
     }
     #endif
 
     #ifndef QL_DISABLE_DEPRECATED
     std::string StringFormatter::toLowercase(const std::string& s) {
-        std::string output = s;
-        for (std::string::iterator i=output.begin(); i!=output.end(); i++)
-            *i = std::tolower(*i);
-        return output;
+        return lowercase(s);
     }
 
     std::string StringFormatter::toUppercase(const std::string& s) {
-        std::string output = s;
-        for (std::string::iterator i=output.begin(); i!=output.end(); i++)
-            *i = std::toupper(*i);
-        return output;
+        return uppercase(s);
     }
     #endif
 

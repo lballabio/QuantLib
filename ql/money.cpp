@@ -207,19 +207,9 @@ namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
     std::string MoneyFormatter::toString(const Money& m) {
-        #if defined(QL_PATCH_BORLAND) && BOOST_VERSION >= 103200
         std::ostringstream out;
-        out << m.currency().symbol() << " " << m.rounded().value();
+        out << m;
         return out.str();
-        #else
-        boost::format fmt(m.currency().format());
-        fmt.exceptions(boost::io::all_error_bits ^
-                       boost::io::too_many_args_bit);
-        fmt % m.rounded().value()
-            % m.currency().code()
-            % m.currency().symbol();
-        return boost::io::str(fmt);
-        #endif
     }
     #endif
 

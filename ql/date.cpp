@@ -528,6 +528,40 @@ namespace QuantLib {
     }
 
 
+    // month formatting
+
+    std::ostream& operator<<(std::ostream& out, Month m) {
+        switch (m) {
+          case January:
+            return out << "January";
+          case February:
+            return out << "February";
+          case March:
+            return out << "March";
+          case April:
+            return out << "April";
+          case May:
+            return out << "May";
+          case June:
+            return out << "June";
+          case July:
+            return out << "July";
+          case August:
+            return out << "August";
+          case September:
+            return out << "September";
+          case October:
+            return out << "October";
+          case November:
+            return out << "November";
+          case December:
+            return out << "December";
+          default:
+            QL_FAIL("unknown month (" << Integer(m) << ")");
+        }
+    }
+
+
     // frequency formatting
 
     std::ostream& operator<<(std::ostream& out, Frequency f) {
@@ -634,107 +668,46 @@ namespace QuantLib {
     #ifndef QL_DISABLE_DEPRECATED
     std::string DateFormatter::toString(const Date& d,
                                         DateFormatter::Format f) {
-        static const std::string monthName[] = {
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        };
-        std::ostringstream output;
-        if (d == Date()) {
-            output << "Null date";
-        } else {
-            Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
-                    yyyy = d.year();
-            switch (f) {
-              case Long:
-                output << monthName[mm-1] << " ";
-                output << dd;
-                switch (dd) {
-                  case 1:
-                  case 21:
-                  case 31:
-                    output << "st, ";
-                    break;
-                  case 2:
-                  case 22:
-                    output << "nd, ";
-                    break;
-                  case 3:
-                  case 23:
-                    output << "rd, ";
-                    break;
-                  default:
-                    output << "th, ";
-                }
-                output << yyyy;
-                break;
-              case Short:
-                output << (mm < 10 ? "0" : "") << mm;
-                output << (dd < 10 ? "/0" : "/") << dd;
-                output << "/" << yyyy;
-                break;
-              case ISO:
-                output << yyyy;
-                output << (mm < 10 ? "-0" : "-") << mm;
-                output << (dd < 10 ? "-0" : "-") << dd;
-                break;
-              default:
-                QL_FAIL("unknown date format");
-            }
+        std::ostringstream out;
+        switch (f) {
+          case Long:
+            out << io::long_date(d);
+            break;
+          case Short:
+            out << io::short_date(d);
+            break;
+          case ISO:
+            out << io::iso_date(d);
+            break;
+          default:
+            QL_FAIL("unknown date format");
         }
-        return output.str();
+        return out.str();
     }
-
 
     std::string WeekdayFormatter::toString(Weekday wd,
                                            WeekdayFormatter::Format f) {
-        static const std::string weekDaysLongNames[] = {
-            "Sunday", "Monday", "Tuesday", "Wednesday",
-            "Thursday", "Friday", "Saturday"
-        };
-        static const std::string weekDaysShortNames[] = {
-            "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-        };
-        static const std::string weekDaysVeryShortNames[] = {
-            "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"
-        };
-        std::string output;
+        std::ostringstream out;
         switch (f) {
           case Long:
-            output = weekDaysLongNames[wd-1];
+            out << io::long_weekday(wd);
             break;
           case Short:
-            output = weekDaysShortNames[wd-1];
+            out << io::short_weekday(wd);
             break;
           case Shortest:
-            output = weekDaysVeryShortNames[wd-1];
+            out << io::shortest_weekday(wd);
             break;
           default:
             QL_FAIL("unknown weekday format");
         }
-        return output;
+        return out.str();
     }
 
     std::string FrequencyFormatter::toString(Frequency freq) {
-        switch (freq) {
-          case NoFrequency:
-            return std::string("no frequency");
-          case Once:
-            return std::string("once");
-          case Annual:
-            return std::string("annual");
-          case Semiannual:
-            return std::string("semiannual");
-          case EveryFourthMonth:
-            return std::string("every-fourth-month");
-          case Quarterly:
-            return std::string("quarterly");
-          case Bimonthly:
-            return std::string("bimonthly");
-          case Monthly:
-            return std::string("monthly");
-          default:
-            QL_FAIL("unknown frequency (" << Integer(freq) << ")");
-        }
+        std::ostringstream out;
+        out << freq;
+        return out.str();
     }
     #endif
 

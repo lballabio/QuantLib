@@ -28,10 +28,9 @@ namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
     std::string CurrencyFormatter::toString(const Currency& c) {
-        if (c.isValid())
-            return c.code() + " currency (" + c.name() + ")";
-        else
-            return "null currency";
+        std::ostringstream out;
+        out << c;
+        return out.str();
     }
     #endif
 

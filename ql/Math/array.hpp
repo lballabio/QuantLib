@@ -176,18 +176,7 @@ namespace QuantLib {
                                     Integer digits = 0,
                                     Size elementsPerRow = QL_MAX_INTEGER) {
             std::ostringstream s;
-            s << "[ ";
-            for (Size n=0; n<a.size(); ++n) {
-                if (n == elementsPerRow) {
-                    s << ";\n  ";
-                    n = 0;
-                }
-                if (n!=0)
-                    s << " ; ";
-                s << std::setprecision(precision)
-                  << std::setw(digits) << a[n];
-            }
-            s << " ]";
+            s << std::setw(digits) << a;
             return s.str();
         }
     };

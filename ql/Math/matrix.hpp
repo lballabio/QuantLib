@@ -176,19 +176,7 @@ namespace QuantLib {
                                     Integer precision = 6,
                                     Integer digits = 0) {
             std::ostringstream s;
-            s << "[ ";
-            Matrix::const_iterator begin = m.begin(), end = m.end();
-            for (Size n=0; begin!=end; ++begin, ++n) {
-                if (n == m.columns()) {
-                    s << ";\n  ";
-                    n = 0;
-                }
-                if (n!=0)
-                    s << " ; ";
-                s << std::setprecision(precision)
-                  << std::setw(digits) << *begin;
-            }
-            s << " ]";
+            s << std::setw(digits) << m;
             return s.str();
         }
     };
