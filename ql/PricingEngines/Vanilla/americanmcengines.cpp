@@ -86,7 +86,7 @@ namespace QuantLib {
 
         // BB here
         Handle<GaussianPathGenerator> pathGenerator(new
-            GaussianPathGenerator(bs, grid, gen, false));
+            GaussianPathGenerator(bs, grid, gen, true));
 
         GaussianPathGenerator::sample_type pathHolder = 
             pathGenerator->next();
