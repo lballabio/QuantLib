@@ -152,7 +152,8 @@ namespace QuantLib {
         // degree 0 is not used
         ppmt[0]=0;
         degree[0]=0;
-        Size k, index, currentDegree;
+        Size k, index;
+        unsigned int currentDegree;
         for (k=1,index=0,currentDegree=1; k<dimensionality_; k++,index++){
             ppmt[k] = PrimitivePolynomials[currentDegree-1][index];
             if (ppmt[k]==-1) {
@@ -178,7 +179,7 @@ namespace QuantLib {
 
 
         // maxTabulated=32
-        unsigned long maxTabulated = 
+        Size maxTabulated = 
             sizeof(initializers)/sizeof(unsigned long *)+1;
         // dimensions from 2 (k=1) to maxTabulated (k=maxTabulated-1)
         // included are initialized from tabulated coefficients
