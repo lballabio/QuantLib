@@ -102,7 +102,7 @@ SectionIn 1 2 3
     File /r "ql\Pricers\*.hpp"
 
     SetOutPath  $INSTDIR\ql\RandomNumbers
-    File /r "ql\Pricers\*.hpp"
+    File /r "ql\RandomNumbers\*.hpp"
 
     SetOutPath  $INSTDIR\ql\Solvers1D
     File /r "ql\Solvers1D\*.hpp"
@@ -218,8 +218,8 @@ SectionIn 1
   File /r "ql\Pricers\makefile.mak"
 
   SetOutPath  $INSTDIR\ql\RandomNumbers
-  File /r "ql\Pricers\*.cpp"
-  File /r "ql\Pricers\makefile.mak"
+  File /r "ql\RandomNumbers\*.cpp"
+  File /r "ql\RandomNumbers\makefile.mak"
 
   SetOutPath  $INSTDIR\ql\Solvers1D
   File /r "ql\Solvers1D\*.cpp"
