@@ -88,7 +88,8 @@
 	- Incomplete gamma functions.
 	- Gamma distribution.
 	- Factorials.
-    - Integration algorithms: Gauss-Kronrod, Simpson, trapezoid.
+    - Integration algorithms: segment, trapezoid, mid-point trapezoid,
+      Simpson, Gauss-Kronrod.
     - Error function.
     - General 1-D statistics: mean, variance,
       standard deviation, skewness, kurtosis, error estimation, min, max.
