@@ -28,7 +28,8 @@ EXTRA_DIST = \
 	Readme.txt \
 	TODO.txt \
 	bootstrap \
-	makefile.mak
+	makefile.mak \
+    quantlib.m4
 
 dist-hook:
 	mkdir $(distdir)/lib
