@@ -51,6 +51,7 @@ namespace QuantLib {
             typedef
               typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
                 result_type;
+	    virtual ~Interpolation() {}
             Interpolation(const RandomAccessIterator1& xBegin,
                 const RandomAccessIterator1& xEnd,
                 const RandomAccessIterator2& yBegin);

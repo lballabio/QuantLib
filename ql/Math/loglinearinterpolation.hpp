@@ -27,8 +27,11 @@
 #ifndef quantlib_loglinear_interpolation_h
 #define quantlib_loglinear_interpolation_h
 
+#include <ql/types.hpp>
+#include <ql/handle.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <algorithm>
+#include <vector>
 
 namespace QuantLib {
 
@@ -48,10 +51,11 @@ namespace QuantLib {
              LogLinearInterpolation(const RandomAccessIterator1& xBegin,
                                     const RandomAccessIterator1& xEnd,
                                     const RandomAccessIterator2& yBegin)
-             : logY_(xEnd-xBegin),
-               Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
-               xBegin, xEnd, yBegin) {
-                 for (int i=0; i<xEnd-xBegin; i++) {
+             : Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
+		xBegin, xEnd, yBegin),
+	       logY_(xEnd-xBegin) {
+		 int i;
+                 for (i=0; i<xEnd-xBegin; i++) {
                      QL_REQUIRE(*(yBegin+i)>0.0,
                         "LogLinearInterpolation::LogLinearInterpolation : "
                         "negative values not allowed");
