@@ -5,6 +5,10 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
+/*! \file array.h
+	\brief 1-D array used in linear algebra.
+*/
+
 #ifndef quantlib_array_h
 #define quantlib_array_h
 
@@ -23,11 +27,20 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 namespace QuantLib {
 
+	//! 1-D array used in linear algebra.
+	/*! This class implements the concept of vector as used in linear algebra.
+		As such, it is not meant to be used as a container - <tt>std::vector</tt>
+		should be used instead.
+	*/
 	class Array {
 	  public:
-		// constructors
+		//! \name Constructors, destructor, and assignment
+		//@{
+		//! creates the array and fills it with zeroes
 		explicit Array(int size = 0);
+		//! creates the array and fills it with <tt>value</tt>
 		Array(int size, double value);
+		//! creates the array and fills it according to \f$ a_{0} = value, a_{i}=a_{i-1}+increment \f$
 		Array(int size, double value, double increment);
 		Array(const Array& from)
 		  : pointer(0), n(0), bufferSize(0) { allocate(from.size()); copy(from); }
@@ -35,9 +48,7 @@ namespace QuantLib {
 		template <class Iter> Array(VectorialExpression<Iter>& e)
 		  : pointer(0), n(0), bufferSize(0) { allocate(e.size()); copy(e); }
 		#endif
-		// destructor
 		~Array();
-		// assignment
 		Array& operator=(const Array& from) {
 			if (this != &from) { resize(from.size()); copy(from); } 
 			return *this;
@@ -47,7 +58,16 @@ namespace QuantLib {
 			resize(e.size()); copy(e); return *this;
 		}
 		#endif
-		// computed assignment
+		//@}
+		/*! \name Vector algebra
+			
+			<tt>v += x</tt> and similar operation involving a scalar value are shortcuts for
+			\f$ \forall i : v_i = v_i + x \f$
+
+			<tt>v *= w</tt> and similar operation involving two vectors are shortcuts for
+			\f$ \forall i : v_i = v_i \times w_i \f$
+		*/
+		//@{
 		Array& operator+=(const Array&);
 		Array& operator+=(double);
 		Array& operator-=(const Array&);
@@ -90,12 +110,21 @@ namespace QuantLib {
 			return *this;
 		}
 		#endif
-		// element access
+		//@}
+		//! \name Element access
+		//@{
+		//! read-only
 		double operator[](int) const;
+		//! read-write
 		double& operator[](int);
-		// info
+		//@}
+		//! \name Inspectors
+		//@{
+		//! dimension of the array
 		int size() const;
-		// iterators
+		//@}
+		//! \name Iterator access
+		//@{
 		typedef double* iterator;
 		typedef const double* const_iterator;
 		typedef QL_REVERSE_ITERATOR(iterator,double) reverse_iterator;
@@ -108,7 +137,8 @@ namespace QuantLib {
 		reverse_iterator rbegin();
 		const_reverse_iterator rend() const;
 		reverse_iterator rend();
-	  protected:
+		//@}
+	  private:
 		void allocate(int size);
 		void resize(int size);
 		void copy(const Array& from) {
@@ -128,165 +158,350 @@ namespace QuantLib {
 		int n, bufferSize;
 	};
 	
-	// vectorial products
+	/*! \relates Array
+	*/
 	double DotProduct(const Array&, const Array&);
 	
 	// unary operators
-	 
+	
+	/*! \defgroup vectalg Vector algebra */
+	
 	#if QL_EXPRESSION_TEMPLATES_WORK
 		// unary plus
+		/*! \ingroup vectalg 
+			\relates Array
+		*/
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Plus> >
 		operator+(const Array& v);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Plus> >
 		operator+(const VectorialExpression<Iter1>& e);
 		// unary minus
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Minus> >
 		operator-(const Array& v);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Minus> >
 		operator-(const VectorialExpression<Iter1>& e);
 	#else
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator+(const Array& v);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator-(const Array& v);
 	#endif
 	
 	// binary operators
 	#if QL_EXPRESSION_TEMPLATES_WORK
 		// addition
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Add> >
 		operator+(const Array& v1, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Add> >
 		operator+(const Array& v1, double x);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Add> >
 		operator+(double x, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter2> 
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Add> >
 		operator+(const Array& v1, const VectorialExpression<Iter2>& e2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1> 
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Add> >
 		operator+(const VectorialExpression<Iter1>& e1, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Add> >
 		operator+(const VectorialExpression<Iter1>& e1, double x);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter2>
 		VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Add> >
 		operator+(double x, const VectorialExpression<Iter2>& e2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1, class Iter2>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Add> >
 		operator+(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 		// subtraction
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Subtract> >
 		operator-(const Array& v1, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Subtract> >
 		operator-(const Array& v1, double x);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Subtract> >
 		operator-(double x, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter2> 
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Subtract> >
 		operator-(const Array& v1, const VectorialExpression<Iter2>& e2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1> 
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Subtract> >
 		operator-(const VectorialExpression<Iter1>& e1, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Subtract> >
 		operator-(const VectorialExpression<Iter1>& e1, double x);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter2>
 		VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Subtract> >
 		operator-(double x, const VectorialExpression<Iter2>& e2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1, class Iter2>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Subtract> >
 		operator-(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 		// multiplication
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Multiply> >
 		operator*(const Array& v1, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Multiply> >
 		operator*(const Array& v1, double x);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Multiply> >
 		operator*(double x, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter2> 
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Multiply> >
 		operator*(const Array& v1, const VectorialExpression<Iter2>& e2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1> 
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Multiply> >
 		operator*(const VectorialExpression<Iter1>& e1, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Multiply> >
 		operator*(const VectorialExpression<Iter1>& e1, double x);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter2>
 		VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Multiply> >
 		operator*(double x, const VectorialExpression<Iter2>& e2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1, class Iter2>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Multiply> >
 		operator*(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 		// division
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Divide> >
 		operator/(const Array& v1, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Divide> >
 		operator/(const Array& v1, double x);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Divide> >
 		operator/(double x, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter2> 
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Divide> >
 		operator/(const Array& v1, const VectorialExpression<Iter2>& e2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1> 
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Divide> >
 		operator/(const VectorialExpression<Iter1>& e1, const Array& v2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Divide> >
 		operator/(const VectorialExpression<Iter1>& e1, double x);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter2>
 		VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Divide> >
 		operator/(double x, const VectorialExpression<Iter2>& e2);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1, class Iter2>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Divide> >
 		operator/(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 	#else
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator+(const Array&, const Array&);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator+(const Array&, double);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator+(double, const Array&);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator-(const Array&, const Array&);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator-(const Array&, double);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator-(double, const Array&);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator*(const Array&, const Array&);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator*(const Array&, double);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator*(double, const Array&);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator/(const Array&, const Array&);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator/(const Array&, double);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array operator/(double, const Array&);
 	#endif
 		
 	// math functions
 	
 	#if QL_EXPRESSION_TEMPLATES_WORK
-		// absolute value
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,AbsoluteValue> >
 		Abs(const Array& v);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,AbsoluteValue> >
 		Abs(const VectorialExpression<Iter1>& e);
-		// square root
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,SquareRoot> >
 		Sqrt(const Array& v);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,SquareRoot> >
 		Sqrt(const VectorialExpression<Iter1>& e);
-		// logarithm
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Logarithm> >
 		Log(const Array& v);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Logarithm> >
 		Log(const VectorialExpression<Iter1>& e);
-		// exponential
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Exponential> >
 		Exp(const Array& v);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Exponential> >
 		Exp(const VectorialExpression<Iter1>& e);
 	#else
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array Abs(const Array&);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array Sqrt(const Array&);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array Log(const Array&);
+		/*! \ingroup vectalg
+			\relates Array
+		*/
 		Array Exp(const Array&);
 	#endif
 	
