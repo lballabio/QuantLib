@@ -74,7 +74,7 @@ namespace QuantLib {
             needsBootstrap_ = false;
             try {
                 // values at settlement date
-                maxDate_ = settlementDate_;
+                dates_ = std::vector<Date>(1, settlementDate_);
                 times_ = std::vector<Time>(1, 0.0);
                 discounts_ = std::vector<DiscountFactor>(1, 1.0);
                 forwards_ = zeroYields_ = std::vector<Rate>();
@@ -224,9 +224,9 @@ namespace QuantLib {
             int segment)
         : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
             // extend curve to next point
-            curve_->maxDate_ = rateHelper_->maturity();
+            curve_->dates_.push_back(rateHelper_->maturity());
             curve_->times_.push_back(curve_->dayCounter().yearFraction(
-                curve_->settlementDate(),curve_->maxDate_));
+                curve_->settlementDate(),curve_->dates_.back()));
             if (segment_ == 1) {
                 // add dummy values at settlement
                 curve_->forwards_.push_back(0.0);

@@ -74,8 +74,10 @@ namespace QuantLib {
             int settlementDays() const;
             Calendar calendar() const;
             Date settlementDate() const;
+            const std::vector<Date>& dates() const;
             Date maxDate() const;
             Date minDate() const;
+            const std::vector<Time>& times() const;
             Time maxTime() const;
             Time minTime() const;
             //@}
@@ -121,8 +123,8 @@ namespace QuantLib {
             Date settlementDate_;
             std::vector<Handle<RateHelper> > instruments_;
             mutable bool needsBootstrap_;
-            mutable Date maxDate_;
             mutable std::vector<Time> times_;
+            mutable std::vector<Date> dates_;
             mutable std::vector<DiscountFactor> discounts_;
             mutable std::vector<Rate> forwards_, zeroYields_;
             double accuracy_;
@@ -154,13 +156,23 @@ namespace QuantLib {
             return settlementDate_;
         }
 
+        inline const std::vector<Date>& PiecewiseFlatForward::dates() const {
+            if (needsBootstrap_) bootstrap();
+            return dates_;
+        }
+
         inline Date PiecewiseFlatForward::maxDate() const {
             if (needsBootstrap_) bootstrap();
-            return maxDate_;
+            return dates_.back();
         }
 
         inline Date PiecewiseFlatForward::minDate() const {
             return settlementDate_;
+        }
+
+        inline const std::vector<Time>& PiecewiseFlatForward::times() const {
+            if (needsBootstrap_) bootstrap();
+            return times_;
         }
 
         inline Time PiecewiseFlatForward::maxTime() const {
