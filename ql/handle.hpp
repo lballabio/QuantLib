@@ -26,12 +26,11 @@
 #include <typeinfo>
 #include <boost/shared_ptr.hpp>
 
-#ifndef QL_DEPRECATED_DISABLED
+#ifndef QL_DISABLE_DEPRECATED
 /*! \def Handle
     \deprecated This define will disappear in next release
 */
 #define Handle boost::shared_ptr
-#endif
 
 namespace QuantLib {
 
@@ -54,6 +53,7 @@ namespace QuantLib {
     }
 
 }
+#endif
 
 
 #endif

@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-#ifndef QL_DEPRECATED_DISABLED
+#ifndef QL_DISABLE_DEPRECATED
     //! \deprecated Use BlackScholesProcess instead
     typedef BlackScholesProcess BlackScholesStochasticProcess;
 

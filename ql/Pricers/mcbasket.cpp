@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-#ifndef QL_DEPRECATED_DISABLED
+#ifndef QL_DISABLE_DEPRECATED
     namespace {
 
         class BasketPathPricer : public PathPricer<MultiPath> {

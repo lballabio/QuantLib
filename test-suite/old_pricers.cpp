@@ -65,7 +65,7 @@ void OldPricerTest::testCliquetPricer() {
             DoubleFormatter::toString(expected));
 }
 
-#ifndef QL_DEPRECATED_DISABLED
+#ifndef QL_DISABLE_DEPRECATED
 void OldPricerTest::testDividendEuropeanPricer() {
 
     BOOST_MESSAGE("Testing old-style European option pricer "
@@ -812,7 +812,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
     std::vector<double> sameAssetValues(4,25.0);
     double strike;
 
-#ifndef QL_DEPRECATED_DISABLED
+#ifndef QL_DISABLE_DEPRECATED
     Option::Type type = Option::Call;
     strike = 100.0;
     // McBasket
@@ -870,7 +870,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
 test_suite* OldPricerTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Old-style pricer tests");
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testCliquetPricer));
-#ifndef QL_DEPRECATED_DISABLED
+#ifndef QL_DISABLE_DEPRECATED
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testDividendEuropeanPricer));
 #endif
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdEuropeanPricer));

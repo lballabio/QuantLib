@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-#ifndef QL_DEPRECATED_DISABLED
+#ifndef QL_DISABLE_DEPRECATED
 
     //! default choice for Gaussian path generator.
     /*! \deprecated use MonteCarlo traits instead */

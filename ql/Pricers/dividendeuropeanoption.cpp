@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-#ifndef QL_DEPRECATED_DISABLED
+#ifndef QL_DISABLE_DEPRECATED
     DividendEuropeanOption::DividendEuropeanOption(
                    Option::Type type, double underlying, double strike,
                    Spread dividendYield, Rate riskFreeRate, Time residualTime,

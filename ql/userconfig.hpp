@@ -43,8 +43,8 @@
    instrument. */
 // #define QL_TODAYS_PAYMENTS 1
 
-/* Define this if you want to disable deprecated code.
-   Of course it must be NOT defined in any official QuantLib release */
-// #define QL_DEPRECATED_DISABLED
+/* Define this if you want to disable deprecated code. */
+// #define QL_DISABLE_DEPRECATED
+
 
 #endif

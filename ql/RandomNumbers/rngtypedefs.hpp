@@ -27,16 +27,7 @@
 
 namespace QuantLib {
 
-    /* Some default choices. Kind of redundant with the default
-       choices made in mctraits---and in fact, defined depending
-       on the former. Personally, I'd dump these ones and keep 
-       the traits only. It's not as we're preventing the user 
-       from creating his own typedefs (and with his own names) 
-       if he feels the itch.
-                                             LB
-    */
-
-#ifndef QL_DEPRECATED_DISABLED
+#ifndef QL_DISABLE_DEPRECATED
     //! default choice for uniform random number generator.
     /*! \deprecated use random number traits instead */
     typedef PseudoRandom::urng_type UniformRandomGenerator;

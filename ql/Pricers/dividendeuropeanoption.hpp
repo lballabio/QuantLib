@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-#ifndef QL_DEPRECATED_DISABLED
+#ifndef QL_DISABLE_DEPRECATED
     //! European option with dividends
     /*! \deprecated use DividendVanillaOption with 
                     AnalyticDividendEuropeanEngine instead
