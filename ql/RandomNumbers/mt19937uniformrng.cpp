@@ -76,19 +76,20 @@
 
 namespace QuantLib {
 
-  namespace RandomNumbers {
+    namespace RandomNumbers {
 
-    // Period parameters
-    const Size MersenneTwisterUniformRng::N = 624;
-    const Size MersenneTwisterUniformRng::M = 397;
-    // constant vector a
-    const unsigned long MersenneTwisterUniformRng::MATRIX_A = 0x9908b0dfUL;
-    // most significant w-r bits
-    const unsigned long MersenneTwisterUniformRng::UPPER_MASK=0x80000000UL;
-    // least significant r bits
-    const unsigned long MersenneTwisterUniformRng::LOWER_MASK=0x7fffffffUL;
+        // Period parameters
+        const Size MersenneTwisterUniformRng::N = 624;
+        const Size MersenneTwisterUniformRng::M = 397;
+        // constant vector a
+        const unsigned long MersenneTwisterUniformRng::MATRIX_A = 0x9908b0dfUL;
+        // most significant w-r bits
+        const unsigned long MersenneTwisterUniformRng::UPPER_MASK=0x80000000UL;
+        // least significant r bits
+        const unsigned long MersenneTwisterUniformRng::LOWER_MASK=0x7fffffffUL;
+        
+        Size MersenneTwisterUniformRng::mti;
+        
+    }
 
-    Size MersenneTwisterUniformRng::mti;
-
-  }
 }

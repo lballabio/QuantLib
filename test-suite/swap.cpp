@@ -70,8 +70,8 @@ void SimpleSwapTest::testFairRate() {
     int lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
 
-    for (int i=0; i<LENGTH(lengths); i++) {
-        for (int j=0; j<LENGTH(spreads); j++) {
+    for (Size i=0; i<LENGTH(lengths); i++) {
+        for (Size j=0; j<LENGTH(spreads); j++) {
 
             Handle<SimpleSwap> swap = makeSwap(lengths[i],0.0,spreads[j]);
             swap = makeSwap(lengths[i],swap->fairRate(),spreads[j]);
@@ -94,8 +94,8 @@ void SimpleSwapTest::testFairSpread() {
     int lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
 
-    for (int i=0; i<LENGTH(lengths); i++) {
-        for (int j=0; j<LENGTH(rates); j++) {
+    for (Size i=0; i<LENGTH(lengths); i++) {
+        for (Size j=0; j<LENGTH(rates); j++) {
 
             Handle<SimpleSwap> swap = makeSwap(lengths[i],rates[j],0.0);
             swap = makeSwap(lengths[i],rates[j],swap->fairSpread());
@@ -119,11 +119,11 @@ void SimpleSwapTest::testRateDependency() {
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
     Rate rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
-    for (int i=0; i<LENGTH(lengths); i++) {
-        for (int j=0; j<LENGTH(spreads); j++) {
+    for (Size i=0; i<LENGTH(lengths); i++) {
+        for (Size j=0; j<LENGTH(spreads); j++) {
             // store the results for different rates...
             std::vector<double> swap_values;
-            for (int k=0; k<LENGTH(rates); k++) {
+            for (Size k=0; k<LENGTH(rates); k++) {
                 Handle<SimpleSwap> swap = 
                     makeSwap(lengths[i],rates[k],spreads[j]);
                 swap_values.push_back(swap->NPV());
@@ -157,11 +157,11 @@ void SimpleSwapTest::testSpreadDependency() {
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
     Spread spreads[] = { -0.01, -0.002, -0.001, 0.0, 0.001, 0.002, 0.01 };
 
-    for (int i=0; i<LENGTH(lengths); i++) {
-        for (int j=0; j<LENGTH(rates); j++) {
+    for (Size i=0; i<LENGTH(lengths); i++) {
+        for (Size j=0; j<LENGTH(rates); j++) {
             // store the results for different spreads...
             std::vector<double> swap_values;
-            for (int k=0; k<LENGTH(spreads); k++) {
+            for (Size k=0; k<LENGTH(spreads); k++) {
                 Handle<SimpleSwap> swap = 
                     makeSwap(lengths[i],rates[j],spreads[k]);
                 swap_values.push_back(swap->NPV());

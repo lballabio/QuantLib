@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file cliquetoptionpathpricer.cpp
     \brief path pricer for cliquet options
 
@@ -65,7 +66,6 @@ namespace QuantLib {
             const std::vector<Time>& fixingTimes = pathTimes.mandatoryTimes();
             Size k = 0;
             for (Size i=0; i<fixingTimes.size(); i++) {
-                double logIncrement = 0.0;
                 double payoff = 0.0;
                 while (pathTimes[k]<fixingTimes[i]) {
                     underlying *= QL_EXP(path[k]);

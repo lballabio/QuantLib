@@ -41,7 +41,7 @@ namespace {
     void test(const S& solver, const std::string& name) {
         double accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
         double expected = 1.0;
-        for (int i=0; i<LENGTH(accuracy); i++) {
+        for (Size i=0; i<LENGTH(accuracy); i++) {
             double root = solver.solve(Foo(),accuracy[i],1.5,0.1);
             if (QL_FABS(root-expected) > accuracy[i]) {
                 CPPUNIT_FAIL(

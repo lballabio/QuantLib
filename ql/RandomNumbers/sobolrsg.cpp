@@ -25,9 +25,9 @@
 // $Id$
 
 #include <ql/RandomNumbers/sobolrsg.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
-#include <ql/RandomNumbers/PrimitivePolynomialsModuloTwoUpToDegree27.h>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -137,9 +137,10 @@ namespace QuantLib {
 
         }
 
-        const int SobolRsg::bits_ = sizeof(unsigned long)*8;
+        const int SobolRsg::bits_ = 8*sizeof(unsigned long);
         // 1/(2^bits_) (written as (1/2)/(2^(bits_-1)) to avoid long overflow)
-        const double SobolRsg::normalizationFactor_=0.5/(1L<<(SobolRsg::bits_-1));
+        const double SobolRsg::normalizationFactor_ = 
+            0.5/(1UL<<(SobolRsg::bits_-1));
 
         SobolRsg::SobolRsg(Size dimensionality, unsigned long seed)
         : dimensionality_(dimensionality), sequenceCounter_(0),
@@ -185,7 +186,8 @@ namespace QuantLib {
             for(j=0; j<bits_; j++)
                 directionIntegers_[0][j] = (1UL<<(bits_-j-1));
 
-            unsigned long maxTabulated = sizeof(initializers)/sizeof(unsigned long *)+1;
+            unsigned long maxTabulated = 
+                sizeof(initializers)/sizeof(unsigned long *)+1;
             // dimensions from 2 to maxTabulated included are initialized
             // from tabulated coefficients
             for (k=1; k<QL_MIN(dimensionality_,maxTabulated); k++) {
@@ -201,13 +203,13 @@ namespace QuantLib {
             if (dimensionality_>maxTabulated) {
                 MersenneTwisterUniformRng uniformRng(seed);
                 for (k=maxTabulated; k<dimensionality_; k++) {
-                    for (int l=1; l<=degree[k]; l++) {
+                    for (Size l=1; l<=degree[k]; l++) {
                         unsigned long n;
                         do {
                             double u = uniformRng.next().value;
                             // u is in (0,1)
                             // n has at most the rightmost l bits non-zero
-                            n = (u*(1UL<<l));
+                            n = (unsigned long)(u*(1UL<<l));
                         } while (n & 1UL); // requiring odd number
 
                         // shifting bits_-l bits to the left
@@ -222,7 +224,7 @@ namespace QuantLib {
                 unsigned int gk = degree[k];
                 for (int l=gk; l<bits_; l++) {
                     unsigned long n = (directionIntegers_[k][l-gk]>>gk);
-                    for (int j=1; j<gk; j++) {
+                    for (Size j=1; j<gk; j++) {
                         if ((ppmt[k] >> (gk-j-1)) & 1UL)
                             n ^= directionIntegers_[k][l-j];
                     }

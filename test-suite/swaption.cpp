@@ -91,16 +91,16 @@ void SwaptionTest::testStrikeDependency() {
 
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
-    for (int i=0; i<LENGTH(exercises); i++) {
-        for (int j=0; j<LENGTH(lengths); j++) {
-            for (int k=0; k<LENGTH(payFixed); k++) {
+    for (Size i=0; i<LENGTH(exercises); i++) {
+        for (Size j=0; j<LENGTH(lengths); j++) {
+            for (Size k=0; k<LENGTH(payFixed); k++) {
                 Date exerciseDate = calendar_.advance(today_,
                                                       exercises[i],Years);
                 Date startDate = calendar_.advance(exerciseDate,
                                                    settlementDays_,Days);
                 // store the results for different rates...
                 std::vector<double> values;
-                for (int l=0; l<LENGTH(strikes); l++) {
+                for (Size l=0; l<LENGTH(strikes); l++) {
                     Handle<SimpleSwap> swap = 
                         makeSwap(startDate,lengths[j],strikes[l],
                                  0.0,payFixed[k]);
@@ -163,16 +163,16 @@ void SwaptionTest::testSpreadDependency() {
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
 
-    for (int i=0; i<LENGTH(exercises); i++) {
-        for (int j=0; j<LENGTH(lengths); j++) {
-            for (int k=0; k<LENGTH(payFixed); k++) {
+    for (Size i=0; i<LENGTH(exercises); i++) {
+        for (Size j=0; j<LENGTH(lengths); j++) {
+            for (Size k=0; k<LENGTH(payFixed); k++) {
                 Date exerciseDate = calendar_.advance(today_,
                                                       exercises[i],Years);
                 Date startDate = calendar_.advance(exerciseDate,
                                                    settlementDays_,Days);
                 // store the results for different rates...
                 std::vector<double> values;
-                for (int l=0; l<LENGTH(spreads); l++) {
+                for (Size l=0; l<LENGTH(spreads); l++) {
                     Handle<SimpleSwap> swap = 
                         makeSwap(startDate,lengths[j],0.06,
                                  spreads[l],payFixed[k]);
@@ -235,14 +235,14 @@ void SwaptionTest::testSpreadTreatment() {
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
 
-    for (int i=0; i<LENGTH(exercises); i++) {
-        for (int j=0; j<LENGTH(lengths); j++) {
-            for (int k=0; k<LENGTH(payFixed); k++) {
+    for (Size i=0; i<LENGTH(exercises); i++) {
+        for (Size j=0; j<LENGTH(lengths); j++) {
+            for (Size k=0; k<LENGTH(payFixed); k++) {
                 Date exerciseDate = calendar_.advance(today_,
                                                       exercises[i],Years);
                 Date startDate = calendar_.advance(exerciseDate,
                                                    settlementDays_,Days);
-                for (int l=0; l<LENGTH(spreads); l++) {
+                for (Size l=0; l<LENGTH(spreads); l++) {
                     Handle<SimpleSwap> swap = 
                         makeSwap(startDate,lengths[j],0.06,
                                  spreads[l],payFixed[k]);

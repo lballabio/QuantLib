@@ -10,6 +10,8 @@ QL_TESTS = quantlibtestsuite.cpp \
            europeanoption.hpp europeanoption.cpp \
            instruments.hpp instruments.cpp \
            integrals.hpp integrals.cpp \
+           lowdiscrepancysequences.hpp \
+           lowdiscrepancysequences.cpp \
            marketelements.hpp marketelements.cpp \
            matrices.hpp matrices.cpp \
            mersennetwister.hpp mersennetwister.cpp \

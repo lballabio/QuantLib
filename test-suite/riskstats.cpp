@@ -33,8 +33,8 @@ void RiskStatisticsTest::runTest() {
     Size N = 25000,
         numberOfSigma = 15;
 
-    for (int i=0; i<LENGTH(averages); i++) {
-        for (int j=0; j<LENGTH(sigmas); j++) {
+    for (Size i=0; i<LENGTH(averages); i++) {
+        for (Size j=0; j<LENGTH(sigmas); j++) {
 
             NormalDistribution normal(averages[i],sigmas[j]);
             CumulativeNormalDistribution cumulative(averages[i],sigmas[j]);

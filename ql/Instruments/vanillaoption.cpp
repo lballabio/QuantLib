@@ -17,7 +17,7 @@
 */
 
 /*! \file vanillaoption.cpp
-    \brief Vanilla (no barriers) option on a single asset
+    \brief Vanilla option on a single asset
 
     \fullpath
     ql/Instruments/%vanillaoption.cpp
@@ -47,8 +47,9 @@ namespace QuantLib {
             const std::string& isinCode, const std::string& description)
         : Option(engine, isinCode, description),
           type_(type), underlying_(underlying),
-          strike_(strike), dividendTS_(dividendTS), riskFreeTS_(riskFreeTS),
-          exercise_(exercise), volTS_(volTS) {
+          strike_(strike), exercise_(exercise), 
+          riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
+          volTS_(volTS) {
             QL_REQUIRE(!engine.isNull(),
                 "VanillaOption::VanillaOption : "
                 "null engine or wrong engine type");

@@ -262,12 +262,11 @@
 #include <ql/RandomNumbers/knuthuniformrng.hpp>
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
+#include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
-// needed for Sobol low discrepancy sequences
-#include <ql/RandomNumbers/PrimitivePolynomialsModuloTwoUpToDegree27.h>
 
 #include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
@@ -319,6 +318,7 @@
 #include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/localvolsurface.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
+
 
 /*** shortcuts for the full namespaces ***/
 

@@ -5,7 +5,6 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/RandomNumbers
 
 include_HEADERS = \
-    PrimitivePolynomialsModuloTwoUpToDegree27.h \
 	boxmullergaussianrng.hpp \
 	centrallimitgaussianrng.hpp \
 	haltonrsg.hpp \
@@ -14,6 +13,7 @@ include_HEADERS = \
 	knuthuniformrng.hpp \
 	lecuyeruniformrng.hpp \
 	mt19937uniformrng.hpp \
+	primitivepolynomials.h \
 	randomarraygenerator.hpp \
 	randomsequencegenerator.hpp \
 	rngtypedefs.hpp \
@@ -22,11 +22,11 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libRandomNumbers_la_SOURCES = \
-    PrimitivePolynomialsModuloTwoUpToDegree27.c \
-	haltonrsg.cpp \
+    haltonrsg.cpp \
 	knuthuniformrng.cpp \
 	lecuyeruniformrng.cpp \
 	mt19937uniformrng.cpp \
+	primitivepolynomials.c \
 	sobolrsg.cpp
 
 noinst_LTLIBRARIES = libRandomNumbers.la

@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file performanceoptionpathpricer.cpp
     \brief path pricer for performance options
 
@@ -37,8 +38,8 @@ namespace QuantLib {
             const std::vector<DiscountFactor>& discounts,
             bool useAntitheticVariance)
         : PathPricer_old<Path>(1.0, useAntitheticVariance),
-          underlying_(underlying), payoff_(type, moneyness),
-          discounts_(discounts) {
+          underlying_(underlying), discounts_(discounts), 
+          payoff_(type, moneyness) {
             QL_REQUIRE(underlying>0.0,
                 "PerformanceOptionPathPricer_old: "
                 "underlying less/equal zero not allowed");
@@ -62,7 +63,6 @@ namespace QuantLib {
             double log_drift = path.drift()[0];
             double log_random = path.diffusion()[0];
             assetValue[0]  = underlying_ * QL_EXP(log_drift+log_random);
-            double dummyStrike = assetValue[0];
 
             if (useAntitheticVariance_) {
                 std::vector<double> assetValue2(n);

@@ -97,11 +97,11 @@ void CapFloorTest::testStrikeDependency() {
 
     Date startDate = termStructure_->referenceDate();
 
-    for (int i=0; i<LENGTH(lengths); i++) {
-        for (int j=0; j<LENGTH(vols); j++) {
+    for (Size i=0; i<LENGTH(lengths); i++) {
+        for (Size j=0; j<LENGTH(vols); j++) {
             // store the results for different strikes...
             std::vector<double> cap_values, floor_values;
-            for (int k=0; k<LENGTH(strikes); k++) {
+            for (Size k=0; k<LENGTH(strikes); k++) {
                 std::vector<Handle<CashFlow> > leg = 
                     makeLeg(startDate,lengths[i]);
                 Handle<Instrument> cap = 
@@ -167,10 +167,10 @@ void CapFloorTest::testConsistency() {
 
     Date startDate = termStructure_->referenceDate();
 
-    for (int i=0; i<LENGTH(lengths); i++) {
-      for (int j=0; j<LENGTH(cap_rates); j++) {
-        for (int k=0; k<LENGTH(floor_rates); k++) {
-          for (int l=0; l<LENGTH(vols); l++) {
+    for (Size i=0; i<LENGTH(lengths); i++) {
+      for (Size j=0; j<LENGTH(cap_rates); j++) {
+        for (Size k=0; k<LENGTH(floor_rates); k++) {
+          for (Size l=0; l<LENGTH(vols); l++) {
               
               std::vector<Handle<CashFlow> > leg = 
                   makeLeg(startDate,lengths[i]);
@@ -216,9 +216,9 @@ void CapFloorTest::testParity() {
 
     Date startDate = termStructure_->referenceDate();
 
-    for (int i=0; i<LENGTH(lengths); i++) {
-      for (int j=0; j<LENGTH(strikes); j++) {
-        for (int k=0; k<LENGTH(vols); k++) {
+    for (Size i=0; i<LENGTH(lengths); i++) {
+      for (Size j=0; j<LENGTH(strikes); j++) {
+        for (Size k=0; k<LENGTH(vols); k++) {
                 
             std::vector<Handle<CashFlow> > leg = 
                 makeLeg(startDate,lengths[i]);

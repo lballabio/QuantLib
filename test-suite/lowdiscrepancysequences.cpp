@@ -39,10 +39,11 @@ CppUnit::Test* LDSTest::suite() {
 
 void LDSTest::testPolynomialsModuloTwo() {
 
-    static const long jj[] = {        1,       1,       2,       2,       6,
-           6,      18,      16,      48,      60,     176,     144,     630,
-         756,    1800,    2048,    7710,    7776,   27594,   24000,   84672,
-      120032,  356960,  276480, 1296000, 1719900, 4202496
+    static const unsigned long jj[] = {
+                 1,       1,       2,       2,       6,       6,      18,
+                16,      48,      60,     176,     144,     630,     756,    
+              1800,    2048,    7710,    7776,   27594,   24000,   84672,  
+            120032,  356960,  276480, 1296000, 1719900, 4202496
     };
 
     unsigned long i=0,j=0,n=0;
@@ -76,7 +77,7 @@ void LDSTest::testSobol() {
     Size dimensionality = PPMT_MAX_DIM;
     unsigned long seed = 123456;
     SobolRsg rsg(dimensionality, seed);
-    unsigned long points = 100, i;
+    Size points = 100, i;
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
     }
@@ -88,7 +89,6 @@ void LDSTest::testSobol() {
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
     }
-
 
 }
 

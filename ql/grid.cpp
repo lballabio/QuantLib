@@ -48,7 +48,7 @@ namespace QuantLib {
                                              CloseEnoughTo(t));
         if (result == end()) {
             int i;
-            for (i=0; i<size(); i++) {
+            for (i=0; i<int(size()); i++) {
                 if ((*this)[i] > t)
                     break;
             }
@@ -59,7 +59,7 @@ namespace QuantLib {
                             " (earliest node is t1 = "
                             + DoubleFormatter::toString((*this)[0],12) +
                             ")");
-            } else if (i == size()) {
+            } else if (i == int(size())) {
                 throw Error("Using inadequate TimeGrid: all nodes "
                             "are earlier than the required time t = "
                             + DoubleFormatter::toString(t,12) +

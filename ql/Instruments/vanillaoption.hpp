@@ -17,8 +17,8 @@
 */
 
 /*! \file vanillaoption.hpp
-    \brief Vanilla (no discrete dividends, no barriers) option on a single asset
-
+    \brief Vanilla option on a single asset
+    
     \fullpath
     ql/Instruments/%vanillaoption.hpp
 */

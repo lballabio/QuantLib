@@ -183,9 +183,9 @@ void EuropeanOptionTest::testGreeks() {
     Date today = Date::todaysDate();
     Calendar calendar = TARGET();
 
-    for (int i=0; i<LENGTH(types); i++) {
-      for (int j=0; j<LENGTH(strikes); j++) {
-        for (int k=0; k<LENGTH(lengths); k++) {
+    for (Size i=0; i<LENGTH(types); i++) {
+      for (Size j=0; j<LENGTH(strikes); j++) {
+        for (Size k=0; k<LENGTH(lengths); k++) {
           // option to check
           Date exDate = calendar.advance(today,lengths[k],Years);
           Handle<VanillaOption> option =
@@ -202,10 +202,10 @@ void EuropeanOptionTest::testGreeks() {
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDateM,volCurve);
 
-          for (int l=0; l<LENGTH(underlyings); l++) {
-            for (int m=0; m<LENGTH(qRates); m++) {
-              for (int n=0; n<LENGTH(rRates); n++) {
-                for (int p=0; p<LENGTH(vols); p++) {
+          for (Size l=0; l<LENGTH(underlyings); l++) {
+            for (Size m=0; m<LENGTH(qRates); m++) {
+              for (Size n=0; n<LENGTH(rRates); n++) {
+                for (Size p=0; p<LENGTH(vols); p++) {
                   double u = underlyings[l],
                          q = qRates[m],
                          r = rRates[n],
@@ -329,19 +329,19 @@ void EuropeanOptionTest::testImpliedVol() {
 
     Date today = Date::todaysDate();
 
-    for (int i=0; i<LENGTH(types); i++) {
-      for (int j=0; j<LENGTH(strikes); j++) {
-        for (int k=0; k<LENGTH(lengths); k++) {
+    for (Size i=0; i<LENGTH(types); i++) {
+      for (Size j=0; j<LENGTH(strikes); j++) {
+        for (Size k=0; k<LENGTH(lengths); k++) {
           // option to check
           Date exDate = today.plusDays(lengths[k]);
           Handle<VanillaOption> option =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDate,volCurve);
 
-          for (int l=0; l<LENGTH(underlyings); l++) {
-            for (int m=0; m<LENGTH(qRates); m++) {
-              for (int n=0; n<LENGTH(rRates); n++) {
-                for (int p=0; p<LENGTH(vols); p++) {
+          for (Size l=0; l<LENGTH(underlyings); l++) {
+            for (Size m=0; m<LENGTH(qRates); m++) {
+              for (Size n=0; n<LENGTH(rRates); n++) {
+                for (Size p=0; p<LENGTH(vols); p++) {
                   double u = underlyings[l],
                          q = qRates[m],
                          r = rRates[n],
@@ -352,7 +352,7 @@ void EuropeanOptionTest::testImpliedVol() {
                   volatility->setValue(v);
 
                   double value = option->NPV();
-                  double implVol;
+                  double implVol = 0.0; // just to remove a warning...
                   if (value != 0.0) {
                       // shift guess somehow
                       volatility->setValue(v*1.5);
@@ -441,9 +441,9 @@ void EuropeanOptionTest::testBinomialEngines() {
     Date today = Date::todaysDate();
     Calendar calendar = TARGET();
 
-    for (int i=0; i<LENGTH(types); i++) {
-      for (int j=0; j<LENGTH(strikes); j++) {
-        for (int k=0; k<LENGTH(lengths); k++) {
+    for (Size i=0; i<LENGTH(types); i++) {
+      for (Size j=0; j<LENGTH(strikes); j++) {
+        for (Size k=0; k<LENGTH(lengths); k++) {
           Date exDate = calendar.advance(today,lengths[k],Years);
           // reference option
           Handle<VanillaOption> refOption =
@@ -451,17 +451,17 @@ void EuropeanOptionTest::testBinomialEngines() {
                                  divCurve,rfCurve,exDate,volCurve);
           // options to check
           std::map<EngineType,Handle<VanillaOption> > options;
-          for (int ii=0; ii<LENGTH(engines); ii++) {
+          for (Size ii=0; ii<LENGTH(engines); ii++) {
               options[engines[ii]] =
                   makeEuropeanOption(types[i],underlying,strikes[j],
                                      divCurve,rfCurve,exDate,volCurve,
                                      engines[ii]);
           }
 
-          for (int l=0; l<LENGTH(underlyings); l++) {
-            for (int m=0; m<LENGTH(qRates); m++) {
-              for (int n=0; n<LENGTH(rRates); n++) {
-                for (int p=0; p<LENGTH(vols); p++) {
+          for (Size l=0; l<LENGTH(underlyings); l++) {
+            for (Size m=0; m<LENGTH(qRates); m++) {
+              for (Size n=0; n<LENGTH(rRates); n++) {
+                for (Size p=0; p<LENGTH(vols); p++) {
                   double u = underlyings[l],
                          q = qRates[m],
                          r = rRates[n],
@@ -472,7 +472,7 @@ void EuropeanOptionTest::testBinomialEngines() {
                   volatility->setValue(v);
 
                   double refValue = refOption->NPV();
-                  for (int ii=0; ii<LENGTH(engines); ii++) {
+                  for (Size ii=0; ii<LENGTH(engines); ii++) {
                       double value = options[engines[ii]]->NPV();
                       if (relativeError(value,refValue,u) > tolerance) {
                           CPPUNIT_FAIL(

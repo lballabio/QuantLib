@@ -141,7 +141,7 @@ namespace QuantLib {
         class IntegralCashOrNothingEngine : public IntegralEngine {
           public:
             IntegralCashOrNothingEngine(double cashPayoff)
-            : cashPayoff_(cashPayoff), IntegralEngine() {}
+            : IntegralEngine(), cashPayoff_(cashPayoff)  {}
           protected:
               Handle<Payoff> payoff() const {
                   return Handle<Payoff>(new

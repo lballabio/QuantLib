@@ -172,7 +172,7 @@ void OldPricerTest::testBarrierPricer() {
         { BarrierOption::UpIn,    0.30,   110,     105,  5.8350,  8.3686 }
     };
 
-    for (int i=0; i<LENGTH(values); i++) {
+    for (Size i=0; i<LENGTH(values); i++) {
         BarrierOption opCall(values[i].type, Option::Call, underlyingPrice,
                              values[i].strike, qRate, rRate, residualTime,
                              values[i].volatility, values[i].barrier, rebate);
@@ -237,13 +237,13 @@ void OldPricerTest::testBinaryPricer() {
     double strikes[] = { 50, 99.5, 100, 100.5, 150 };
     double volatilities[] = { 0.11, 0.5, 1.2 };
 
-    for (int i1=0; i1<LENGTH(types); i1++) {
-      for (int i2=0; i2<LENGTH(underlyings); i2++) {
-        for (int i3=0; i3<LENGTH(rRates); i3++) {
-          for (int i4=0; i4<LENGTH(qRates); i4++) {
-            for (int i5=0; i5<LENGTH(residualTimes); i5++) {
-              for (int i6=0; i6<LENGTH(strikes); i6++) {
-                for (int i7=0; i7<LENGTH(volatilities); i7++) {
+    for (Size i1=0; i1<LENGTH(types); i1++) {
+      for (Size i2=0; i2<LENGTH(underlyings); i2++) {
+        for (Size i3=0; i3<LENGTH(rRates); i3++) {
+          for (Size i4=0; i4<LENGTH(qRates); i4++) {
+            for (Size i5=0; i5<LENGTH(residualTimes); i5++) {
+              for (Size i6=0; i6<LENGTH(strikes); i6++) {
+                for (Size i7=0; i7<LENGTH(volatilities); i7++) {
                   // test data
                   Option::Type type = types[i1];
                   double u = underlyings[i2];
@@ -376,13 +376,13 @@ void OldPricerTest::testDividendEuropeanPricer() {
     double strikes[] = { 50, 99.5, 100, 100.5, 150 };
     double volatilities[] = { 0.04, 0.2, 0.7 };
 
-    for (int i1=0; i1<LENGTH(types); i1++) {
-      for (int i2=0; i2<LENGTH(underlyings); i2++) {
-        for (int i3=0; i3<LENGTH(rRates); i3++) {
-          for (int i4=0; i4<LENGTH(qRates); i4++) {
-            for (int i5=0; i5<LENGTH(residualTimes); i5++) {
-              for (int i6=0; i6<LENGTH(strikes); i6++) {
-                for (int i7=0; i7<LENGTH(volatilities); i7++) {
+    for (Size i1=0; i1<LENGTH(types); i1++) {
+      for (Size i2=0; i2<LENGTH(underlyings); i2++) {
+        for (Size i3=0; i3<LENGTH(rRates); i3++) {
+          for (Size i4=0; i4<LENGTH(qRates); i4++) {
+            for (Size i5=0; i5<LENGTH(residualTimes); i5++) {
+              for (Size i6=0; i6<LENGTH(strikes); i6++) {
+                for (Size i7=0; i7<LENGTH(volatilities); i7++) {
                   // test data
                   Option::Type type = types[i1];
                   double u = underlyings[i2];
@@ -493,7 +493,7 @@ void OldPricerTest::testFdEuropeanPricer() {
         double vol = volMin + volRange * rng.next().value;
         Time resTime = timeMin + timeRange * rng.next().value;
 
-        for (int j=0; j<LENGTH(types); j++) {
+        for (Size j=0; j<LENGTH(types); j++) {
 
             double anValue = EuropeanOption(types[j], under, strike,
                                             qRate, rRate, resTime,
@@ -621,13 +621,13 @@ void OldPricerTest::testAmericanPricers() {
     double strikes[] = { 50, 100, 150 };
     double volatilities[] = { 0.05, 0.5, 1.2 };
 
-    for (int i1=0; i1<LENGTH(types); i1++) {
-      for (int i2=0; i2<LENGTH(underlyings); i2++) {
-        for (int i3=0; i3<LENGTH(rRates); i3++) {
-          for (int i4=0; i4<LENGTH(qRates); i4++) {
-            for (int i5=0; i5<LENGTH(residualTimes); i5++) {
-              for (int i6=0; i6<LENGTH(strikes); i6++) {
-                for (int i7=0; i7<LENGTH(volatilities); i7++) {
+    for (Size i1=0; i1<LENGTH(types); i1++) {
+      for (Size i2=0; i2<LENGTH(underlyings); i2++) {
+        for (Size i3=0; i3<LENGTH(rRates); i3++) {
+          for (Size i4=0; i4<LENGTH(qRates); i4++) {
+            for (Size i5=0; i5<LENGTH(residualTimes); i5++) {
+              for (Size i6=0; i6<LENGTH(strikes); i6++) {
+                for (Size i7=0; i7<LENGTH(volatilities); i7++) {
                   // test data
                   Option::Type type = types[i1];
                   double u = underlyings[i2];
@@ -791,7 +791,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
           true, 7.2374698146 }
     };
 
-    for (int j=0; j<LENGTH(cases4); j++) {
+    for (Size j=0; j<LENGTH(cases4); j++) {
         McEuropean pricer(cases4[j].type, cases4[j].underlying,
                           cases4[j].strike, cases4[j].dividendYield,
                           cases4[j].riskFreeRate, cases4[j].residualTime,
@@ -886,7 +886,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
           0.13, true, true, 2.89703362437 }
     };
 
-    for (int k=0; k<LENGTH(cases5); k++) {
+    for (Size k=0; k<LENGTH(cases5); k++) {
         Time dt = cases5[k].length/(cases5[k].fixings-1);
         std::vector<Time> timeIncrements(cases5[k].fixings);
         for (Size i=0; i<cases5[k].fixings; i++)
@@ -991,7 +991,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
           0.13, true, true, 1.81145760308 }
     };
 
-    for (int l=0; l<LENGTH(cases6); l++) {
+    for (Size l=0; l<LENGTH(cases6); l++) {
         Time dt = cases6[l].length/(cases6[l].fixings-1);
         std::vector<Time> timeIncrements(cases6[l].fixings);
         for (Size i=0; i<cases6[l].fixings; i++)

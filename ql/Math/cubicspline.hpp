@@ -15,6 +15,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file cubicspline.hpp
     \brief cubic spline interpolation between discrete points
 
@@ -80,7 +81,7 @@ namespace QuantLib {
                 I1 xi = xBegin_+1;
                 I2 yi = yBegin_+1;
                 int i;
-                for (i=1; i<n_-1; i++,xi++,yi++) {
+                for (i=1; i<int(n_-1); i++,xi++,yi++) {
                     double sig = double(*xi-*(xi-1))/double(*(xi+1)-*(xi-1));
                     result_type p = sig*d2y_[i-1]+2.0;
                     d2y_[i] = (sig-1)/p;

@@ -34,19 +34,20 @@
 namespace QuantLib {
 
     namespace RandomNumbers {
+
         //! Sobol low-discrepancy sequence generator
-        /*! Sobol low-discrepancy sequence generator using the Gray code
-            counter and bitwise operations for very fast sequence generation.
+        /*! A Gray code counter and bitwise operations are used for 
+            very fast sequence generation.
 
             The implementation relies on primitive polynomials modulo two and
             initialization numbers from the book "Monte Carlo Methods in
-            Finance" by Peter Jäckel
+            Finance" by Peter Jäckel.
 
-            Primitive polynomials modulo two are in the separate library
-            PrimitivePolynomialsModuloTwo of the QuantLib CVS. There are
-            8 129 334 polynomials as provided by Jäckel, but they are compiled
-            only up to PPMT_MAX_DIM. If you need higher dimension you must
-            recompile the PrimitivePolynomialsModuloTwo library.
+            21200 primitive polynomials modulo two are provided by default.
+            There are 8 129 334 polynomials as provided by Jäckel which can
+            be downloaded from quantlib.org. If you need that many dimensions
+            you must replace the primitivepolynomial.* files with the ones
+            downloaded and recompile the library.
 
             The choice of initialization numbers is crucial for the homogeneity
             properties of the sequence. Jäckel's initialization numbers are
@@ -56,7 +57,7 @@ namespace QuantLib {
             For more info on Sobol sequences see "Monte Carlo Methods in
             Finance", by Peter Jäckel, section 8.3 and "Numerical Recipes in
             C", 2nd edition, by Press, Teukolsky, Vetterling, and Flannery,
-            section 7.7
+            section 7.7.
         */
         class SobolRsg {
           public:
@@ -68,7 +69,7 @@ namespace QuantLib {
             const sample_type& lastSequence() const {
                 return sequence_;
             }
-            Size dimension() const {return dimensionality_;}
+            Size dimension() const { return dimensionality_; }
           private:
             static const int bits_;
             static const double normalizationFactor_;
