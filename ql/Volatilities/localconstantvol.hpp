@@ -39,7 +39,6 @@ namespace QuantLib {
         class LocalConstantVol : public LocalVolTermStructure,
                                  public Patterns::Observer {
           public:
-            // constructor
             LocalConstantVol(
                 const Date& referenceDate,
                 double volatility,
@@ -48,12 +47,20 @@ namespace QuantLib {
                 const Date& referenceDate,
                 const RelinkableHandle<MarketElement>& volatility,
                 const DayCounter& dayCounter = DayCounters::Actual365());
-            // inspectors
+            //! \name LocalVolTermStructure interface
+            //@{
             Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
             Date maxDate() const { return Date::maxDate(); }
-            // Observer interface
+            //@}
+            //! \name Observer interface
+            //@{
             void update();
+            //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::AcyclicVisitor&);
+            //@}
           private:
             double localVolImpl(Time,double,bool extrapolate) const;
             Date referenceDate_;
@@ -80,6 +87,17 @@ namespace QuantLib {
 
         inline void LocalConstantVol::update() {
             notifyObservers();
+        }
+
+        inline 
+        void LocalConstantVol::accept(Patterns::AcyclicVisitor& v) {
+            using namespace Patterns;
+            Visitor<LocalConstantVol>* v1 = 
+                dynamic_cast<Visitor<LocalConstantVol>*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                LocalVolTermStructure::accept(v);
         }
 
         inline double LocalConstantVol::localVolImpl(Time t, 

@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/marketelement.hpp>
+#include <ql/Patterns/visitor.hpp>
 #include <vector>
 
 /*! \namespace QuantLib::VolTermStructures
@@ -45,38 +47,38 @@ namespace QuantLib {
         virtual ~BlackVolTermStructure() {}
         //! \name Black Volatility
         //@{
-        //! Black present (a.k.a spot) volatility
+        //! present (a.k.a spot) volatility
         double blackVol(const Date& maturity,
                         double strike,
                         bool extrapolate = false) const;
-        //! Black present (a.k.a spot) volatility
+        //! present (a.k.a spot) volatility
         double blackVol(Time maturity,
                         double strike,
                         bool extrapolate = false) const;
-        //! Black present (a.k.a spot) variance
+        //! present (a.k.a spot) variance
         double blackVariance(const Date& maturity,
                              double strike,
                              bool extrapolate = false) const;
-        //! Black present (a.k.a spot) variance
+        //! present (a.k.a spot) variance
         double blackVariance(Time maturity,
                              double strike,
                              bool extrapolate = false) const;
-        //! Black future (a.k.a. forward) volatility
+        //! future (a.k.a. forward) volatility
         double blackForwardVol(const Date& date1,
                                const Date& date2,
                                double strike,
                                bool extrapolate = false) const;
-        //! Black future (a.k.a. forward) volatility
+        //! future (a.k.a. forward) volatility
         double blackForwardVol(Time time1,
                                Time time2,
                                double strike,
                                bool extrapolate = false) const;
-        //! Black future (a.k.a. forward) variance
+        //! future (a.k.a. forward) variance
         double blackForwardVariance(const Date& date1,
                                     const Date& date2,
                                     double strike,
                                     bool extrapolate = false) const;
-        //! Black future (a.k.a. forward) variance
+        //! future (a.k.a. forward) variance
         double blackForwardVariance(Time time1,
                                     Time time2,
                                     double strike,
@@ -95,7 +97,6 @@ namespace QuantLib {
         virtual double strikeSecondDerivative(Time t, 
                                               double strike, 
                                               bool extrapolate = false) const;
-            
         //@}
         //! \name Dates
         //@{
@@ -108,6 +109,10 @@ namespace QuantLib {
         //! the latest time for which the term structure can return vols
         Time maxTime() const;
         //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(Patterns::AcyclicVisitor&);
+        //@}
       protected:
         //! implements the actual Black variance calculation in derived classes
         virtual double blackVarianceImpl(Time t, double strike,
@@ -116,7 +121,7 @@ namespace QuantLib {
         virtual double blackVolImpl(Time t, double strike,
                                     bool extrapolate = false) const = 0;
 	  private:
-		  static const double dT;
+        static const double dT;
     };
 
    
@@ -129,6 +134,11 @@ namespace QuantLib {
         Volatility are assumed to be expressed on an annual basis.
     */
     class BlackVolatilityTermStructure : public BlackVolTermStructure {
+      public:
+        //! \name Visitability
+        //@{
+        virtual void accept(Patterns::AcyclicVisitor&);
+        //@}
       protected:
         /*! Returns the variance for the given strike and date calculating it
             from the volatility.
@@ -147,6 +157,11 @@ namespace QuantLib {
         Volatility are assumed to be expressed on an annual basis.
     */
     class BlackVarianceTermStructure : public BlackVolTermStructure {
+      public:
+        //! \name Visitability
+        //@{
+        virtual void accept(Patterns::AcyclicVisitor&);
+        //@}
       protected:
         /*! Returns the volatility for the given strike and date calculating it
             from the variance.
@@ -167,10 +182,8 @@ namespace QuantLib {
         virtual ~LocalVolTermStructure() {}
         //! \name Local Volatility
         //@{
-        //! Local volatility
         double localVol(const Date& d, double underlyingLevel,
                         bool extrapolate = false) const;
-        //! Local volatility
         double localVol(Time t, double underlyingLevel,
                         bool extrapolate = false) const;
         //@}
@@ -185,11 +198,61 @@ namespace QuantLib {
         //! the latest time for which the term structure can return vols
         Time maxTime() const;
         //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(Patterns::AcyclicVisitor&);
+        //@}
       protected:
         //! implements the actual local vol calculation in derived classes
         virtual double localVolImpl(Time t, double strike,
                                     bool extrapolate = false) const = 0;
     };
+
+
+
+    // inline definitions
+
+    inline void BlackVolTermStructure::accept(Patterns::AcyclicVisitor& v) {
+        using namespace Patterns;
+        Visitor<BlackVolTermStructure>* v1 = 
+            dynamic_cast<Visitor<BlackVolTermStructure>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            throw Error("Not a Black-volatility term structure visitor");
+    }
+
+    inline 
+    void BlackVolatilityTermStructure::accept(Patterns::AcyclicVisitor& v) {
+        using namespace Patterns;
+        Visitor<BlackVolatilityTermStructure>* v1 = 
+            dynamic_cast<Visitor<BlackVolatilityTermStructure>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BlackVolTermStructure::accept(v);
+    }
+
+    inline 
+    void BlackVarianceTermStructure::accept(Patterns::AcyclicVisitor& v) {
+        using namespace Patterns;
+        Visitor<BlackVarianceTermStructure>* v1 = 
+            dynamic_cast<Visitor<BlackVarianceTermStructure>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BlackVolTermStructure::accept(v);
+    }
+
+    inline void LocalVolTermStructure::accept(Patterns::AcyclicVisitor& v) {
+        using namespace Patterns;
+        Visitor<LocalVolTermStructure>* v1 = 
+            dynamic_cast<Visitor<LocalVolTermStructure>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            throw Error("Not a local-volatility term structure visitor");
+    }
 
 }
 

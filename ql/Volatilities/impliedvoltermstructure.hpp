@@ -44,14 +44,25 @@ namespace QuantLib {
             ImpliedVolTermStructure(
                 const RelinkableHandle<BlackVolTermStructure>& originalTS,
                 const Date& newReferenceDate);
-            Date referenceDate() const { return newReferenceDate_; }
-            DayCounter dayCounter() const ;
-            Date maxDate() const ;
-            // Observer interface
+            //! \name BlackVolTermStructure interface
+            //@{
+            Date referenceDate() const { 
+                return newReferenceDate_; 
+            }
+            DayCounter dayCounter() const;
+            Date maxDate() const;
+            //@}
+            //! \name Observer interface
+            //@{
             void update();
+            //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::AcyclicVisitor&);
+            //@}
           protected:
             virtual double blackVarianceImpl(Time t, double strike,
-                bool extrapolate = false) const;
+                                             bool extrapolate = false) const;
           private:
             RelinkableHandle<BlackVolTermStructure> originalTS_;
             Date newReferenceDate_;
@@ -78,6 +89,17 @@ namespace QuantLib {
             notifyObservers();
         }
 
+        inline 
+        void ImpliedVolTermStructure::accept(Patterns::AcyclicVisitor& v) {
+            using namespace Patterns;
+            Visitor<ImpliedVolTermStructure>* v1 = 
+                dynamic_cast<Visitor<ImpliedVolTermStructure>*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                BlackVarianceTermStructure::accept(v);
+        }
+
         inline double ImpliedVolTermStructure::blackVarianceImpl(Time t,
             double strike, bool extrapolate) const {
                 /* timeShift (and/or variance) variance at evaluation date
@@ -91,7 +113,9 @@ namespace QuantLib {
                 return originalTS_->blackForwardVariance(timeShift,
                     timeShift+t, strike, extrapolate);
         }
+
     }
+
 }
 
 

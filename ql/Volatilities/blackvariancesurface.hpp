@@ -56,6 +56,8 @@ namespace QuantLib {
                                      InterpolatorDefaultExtrapolation,
                                  const DayCounter& dayCounter =
                                      DayCounters::Actual365());
+            //! \name BlackVolTermStructure interface
+            //@{
             Date referenceDate() const { 
                 return referenceDate_; 
             }
@@ -65,7 +67,9 @@ namespace QuantLib {
             Date maxDate() const { 
                 return maxDate_; 
             }
-            // modifiers
+            //@}
+            //! \name Modifiers
+            //@{
             template <class Traits>
             #if defined(QL_PATCH_MICROSOFT)
             void setInterpolation(const Traits&) {
@@ -79,10 +83,17 @@ namespace QuantLib {
                                                variances_);
                 notifyObservers();
             }
-            // Observer interface
+            //@}
+            //! \name Observer interface
+            //@{
             void update() {
                 notifyObservers();
             }
+            //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::AcyclicVisitor&);
+            //@}
           protected:
             virtual double blackVarianceImpl(Time t,
                                              double strike,
@@ -100,6 +111,19 @@ namespace QuantLib {
             Handle<Interpolation> varianceSurface_;
             Extrapolation lowerExtrapolation_, upperExtrapolation_;
         };
+
+
+        // inline definitions
+
+        inline void BlackVarianceSurface::accept(Patterns::AcyclicVisitor& v) {
+            using namespace Patterns;
+            Visitor<BlackVarianceSurface>* v1 = 
+                dynamic_cast<Visitor<BlackVarianceSurface>*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                BlackVarianceTermStructure::accept(v);
+        }
 
     }
 

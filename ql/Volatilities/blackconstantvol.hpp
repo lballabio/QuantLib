@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,43 +39,51 @@ namespace QuantLib {
         class BlackConstantVol : public BlackVolatilityTermStructure,
                                  public Patterns::Observer {
           public:
-            // constructors
             BlackConstantVol(const Date& referenceDate,
                              double volatility,
-                             const DayCounter& dayCounter=DayCounters::Actual365());
+                             const DayCounter& dayCounter = 
+                                 DayCounters::Actual365());
             BlackConstantVol(const Date& referenceDate,
                              const RelinkableHandle<MarketElement>& volatility,
-                             const DayCounter& dayCounter=DayCounters::Actual365());
-            // inspectors
+                             const DayCounter& dayCounter = 
+                                 DayCounters::Actual365());
+            //! \name BlackVolTermStructure interface
+            //@{
             Date referenceDate() const;
             DayCounter dayCounter() const;
             Date maxDate() const;
-            double blackForwardVol(Time t1,
-                                   Time t2,
-                                   double,
+            double blackForwardVol(Time t1, Time t2, double strike,
                                    bool extrapolate = false) const;
-            double timeDerivative(Time t, 
-                                  double, 
+            double timeDerivative(Time t, double strike, 
                                   bool extrapolate = false) const {
-                return 0.0;}
-            double strikeDerivative(Time t, 
-                                    double strike, 
+                return 0.0;
+            }
+            double strikeDerivative(Time t, double strike, 
                                     bool extrapolate = false) const {
-                return 0.0;}
-            double strikeSecondDerivative(Time t, 
-                                          double strike, 
+                return 0.0;
+            }
+            double strikeSecondDerivative(Time t, double strike, 
                                           bool extrapolate = false) const {
-                return 0.0;}
-            // Observer interface
+                return 0.0;
+            }
+            //@}
+            //! \name Observer interface
+            //@{
             void update();
+            //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::AcyclicVisitor&);
+            //@}
           protected:
             virtual double blackVolImpl(Time t, double,
-                bool extrapolate = false) const;
+                                        bool extrapolate = false) const;
           private:
             Date referenceDate_;
             RelinkableHandle<MarketElement> volatility_;
             DayCounter dayCounter_;
         };
+
 
         // inline definitions
 
@@ -110,8 +119,18 @@ namespace QuantLib {
             notifyObservers();
         }
 
+        inline void BlackConstantVol::accept(Patterns::AcyclicVisitor& v) {
+            using namespace Patterns;
+            Visitor<BlackConstantVol>* v1 = 
+                dynamic_cast<Visitor<BlackConstantVol>*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                BlackVolatilityTermStructure::accept(v);
+        }
+
         inline double BlackConstantVol::blackVolImpl(Time t, double,
-            bool) const {
+                                                     bool) const {
             QL_REQUIRE(t >= 0.0,
                 "ConstantVol::blackVolImpl: "
                 "negative time (" + DoubleFormatter::toString(t) +
@@ -119,9 +138,9 @@ namespace QuantLib {
             return volatility_->value();
         }
 
-        //! overload base class method in order to avoid numerical round-off
+        // overload base class method in order to avoid numerical round-off
         inline double BlackConstantVol::blackForwardVol(Time t1, Time t2,
-            double, bool) const {
+                                                        double, bool) const {
             QL_REQUIRE(t2>=t1,
                 "BlackConstantVol::blackForwardVol : "
                 "time2<time1");

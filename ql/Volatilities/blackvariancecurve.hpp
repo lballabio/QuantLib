@@ -50,6 +50,8 @@ namespace QuantLib {
                                const std::vector<double>& blackVolCurve,
                                const DayCounter& dayCounter = 
                                    DayCounters::Actual365());
+            //! \name BlackVolTermStructure interface
+            //@{
             Date referenceDate() const;
             DayCounter dayCounter() const;
             Date maxDate() const;
@@ -59,7 +61,9 @@ namespace QuantLib {
             double strikeSecondDerivative(Time t, 
                                           double strike, 
                                           bool extrapolate = false) const;
-            // modifiers
+            //@}
+            //! \name Modifiers
+            //@{
             template <class Traits>
             #if defined(QL_PATCH_MICROSOFT)
             void setInterpolation(const Traits&) {
@@ -71,8 +75,15 @@ namespace QuantLib {
                                                variances_.begin());
                 notifyObservers();
             }
-            // Observer interface
+            //@}
+            //! \name Observer interface
+            //@{
             void update();
+            //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::AcyclicVisitor&);
+            //@}
           protected:
             virtual double blackVarianceImpl(Time t, double,
                                              bool extrapolate = false) const;
@@ -117,6 +128,17 @@ namespace QuantLib {
 
         inline void BlackVarianceCurve::update() {
             notifyObservers();
+        }
+
+        inline 
+        void BlackVarianceCurve::accept(Patterns::AcyclicVisitor& v) {
+            using namespace Patterns;
+            Visitor<BlackVarianceCurve>* v1 = 
+                dynamic_cast<Visitor<BlackVarianceCurve>*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                BlackVarianceTermStructure::accept(v);
         }
 
     }

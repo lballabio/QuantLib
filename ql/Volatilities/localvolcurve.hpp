@@ -32,12 +32,12 @@ namespace QuantLib {
         class LocalVolCurve : public LocalVolTermStructure,
                               public Patterns::Observer {
           public:
-            // constructor
             LocalVolCurve(const RelinkableHandle<BlackVarianceCurve>& curve)
             : blackVarianceCurve_(curve) {
                 registerWith(blackVarianceCurve_);
             }
-            // inspectors
+            //! \name LocalVolTermStructure interface
+            //@{
             Date referenceDate() const {
                 return blackVarianceCurve_->referenceDate();
             }
@@ -47,16 +47,37 @@ namespace QuantLib {
             Date maxDate() const { 
                 return blackVarianceCurve_->maxDate(); 
             }
-            // Observer interface
+            //@}
+            //! \name Observer interface
+            //@{
             void update() {
                 notifyObservers();
             }
+            //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::AcyclicVisitor&);
+            //@}
           protected:
             double localVolImpl(Time, double, bool extrapolate) const;
           private:
             RelinkableHandle<BlackVarianceCurve> blackVarianceCurve_;
         };
 
+
+
+        // inline definitions
+
+        inline 
+        void LocalVolCurve::accept(Patterns::AcyclicVisitor& v) {
+            using namespace Patterns;
+            Visitor<LocalVolCurve>* v1 = 
+                dynamic_cast<Visitor<LocalVolCurve>*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                LocalVolTermStructure::accept(v);
+        }
 
         /*! The relation
             \f[

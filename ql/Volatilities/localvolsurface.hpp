@@ -37,8 +37,6 @@ namespace QuantLib {
         class LocalVolSurface : public LocalVolTermStructure,
                                 public Patterns::Observer {
           public:
-            //! \name Constructors
-            //@{
             LocalVolSurface(
                 const RelinkableHandle<BlackVolTermStructure>& blackTS,
                 const RelinkableHandle<TermStructure>& riskFreeTS,
@@ -49,7 +47,6 @@ namespace QuantLib {
                 const RelinkableHandle<TermStructure>& riskFreeTS,
                 const RelinkableHandle<TermStructure>& dividendTS,
                 double underlying);
-            //@}
             //! \name LocalVolTermStructure interface
             //@{
             Date referenceDate() const {
@@ -63,6 +60,10 @@ namespace QuantLib {
             //! \name Observer interface
             //@{
             void update() { notifyObservers(); }
+            //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::AcyclicVisitor&);
             //@}
           protected:
             double localVolImpl(Time, double, bool extrapolate) const;

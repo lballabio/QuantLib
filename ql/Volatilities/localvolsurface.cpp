@@ -53,6 +53,16 @@ namespace QuantLib {
                 Handle<MarketElement>(new SimpleMarketElement(underlying)));
         }
 
+        void LocalVolSurface::accept(Patterns::AcyclicVisitor& v) {
+            using namespace Patterns;
+            Visitor<LocalVolSurface>* v1 = 
+                dynamic_cast<Visitor<LocalVolSurface>*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                LocalVolTermStructure::accept(v);
+        }
+
         double LocalVolSurface::localVolImpl(Time t, double underlyingLevel, 
                                              bool extrapolate) const {
 
