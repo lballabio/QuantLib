@@ -25,6 +25,7 @@
 // $Id$
 
 #include <ql/dataformatters.hpp>
+#include <ql/dataparsers.hpp>
 
 namespace QuantLib {
 
@@ -299,16 +300,8 @@ namespace QuantLib {
 
     // Period constructor
     Period::Period(const std::string& pstring)
-    :length_(0),units_(Days) {
-        QL_REQUIRE(pstring.length() > 1,
-                   "Argument needs length of at least 2");
-        char abbr = QL_TOUPPER(pstring[pstring.length()-1]);
-        if (abbr == 'D')      units_ = Days;
-        else if (abbr == 'W') units_ = Weeks;
-        else if (abbr == 'M') units_ = Months;
-        else if (abbr == 'Y') units_ = Years;
-        else throw Error("Unknown units");
-        length_ = atoi(pstring.c_str());
+       :length_(0),units_(Days) {
+       *this = PeriodParser::parse(pstring);
     }
 
 }

@@ -43,6 +43,7 @@ include_HEADERS = \
 	config.hpp \
 	currency.hpp \
 	dataformatters.hpp \
+	dataparsers.hpp \
 	date.hpp \
 	daycounter.hpp \
     diffusionprocess.hpp \
@@ -100,6 +101,7 @@ libQuantLib_la_LIBADD = \
 libQuantLib_la_SOURCES = \
     calendar.cpp \
     dataformatters.cpp \
+    dataparsers.cpp \
     date.cpp \
     option.cpp \
     scheduler.cpp \
