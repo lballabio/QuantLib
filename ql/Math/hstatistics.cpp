@@ -30,13 +30,38 @@ namespace QuantLib {
 
     namespace Math {
 
-/*
+        double HStatistics::weightSum() const {
+
+            double result = 0.0;
+            for (Size i = 0; i<sampleNumber_; i++) {
+                result += samples_[i].second;
+            }
+            return result;
+        }
+
+        double HStatistics::mean() const {
+
+            double result = 0.0, weightSum = 0.0;
+            for (Size i = 0; i<sampleNumber_; i++) {
+                result += samples_[i].second*samples_[i].first;
+                weightSum += samples_[i].second;
+            }
+            QL_REQUIRE(weightSum>0.0,
+                       "HStatistics::mean() : "
+                       "empty sample (zero weight sum)");
+            result /= weightSum;
+            return result;
+        }
+
         double HStatistics::variance() const {
-            QL_REQUIRE(sampleWeight_>0.0,
-                       "Statistics::variance() : "
-                       "sampleWeight_=0, unsufficient");
-            QL_REQUIRE(sampleNumber_>1,
-                       "Statistics::variance() : "
+            double sampleWeight = weightSum();
+            QL_REQUIRE(sampleWeight>0.0,
+                       "HStatistics::variance() : "
+                       "empty sample (zero weight sum)");
+
+            Size sampleNumber = samples_.size();
+            QL_REQUIRE(sampleNumber>1,
+                       "HStatistics::variance() : "
                        "sample number <=1, unsufficient");
 
             double m = mean();
@@ -46,16 +71,40 @@ namespace QuantLib {
                 temp = temp*temp;
                 result += samples_[i].second*temp;
             }
-            result /= sampleWeight_;
+            result /= sampleWeight;
             result -= m*m;
-            result = sampleNumber_/(sampleNumber_-1.0);
+            result *= sampleNumber_/(sampleNumber_-1.0);
             return result;
         }
-*/
+
+        double HStatistics::downsideVariance() const{
+            double sampleWeight = weightSum();
+            QL_REQUIRE(sampleWeight>0.0,
+                       "HStatistics::downsideVariance() : "
+                       "empty sample (zero weight sum)");
+
+            Size sampleNumber = samples_.size();
+            QL_REQUIRE(sampleNumber>1,
+                       "HStatistics::downsideVariance() : "
+                       "sample number <=1, unsufficient");
+
+            double m = mean();
+            double result = 0.0;
+            for (Size i = 0; i<sampleNumber_; i++) {
+                double temp = (samples_[i].first < 0.0 ? samples_[i].first : 0.0);
+                temp = temp*temp;
+                result += samples_[i].second * temp;
+            }
+            result /= sampleWeight;
+            result *= sampleNumber_/(sampleNumber_-1.0);
+            return result;
+        }
+
         double HStatistics::skewness() const{
             QL_REQUIRE(sampleNumber_>2,
                        "HStatistics::skewness() : "
                        "sample number <=2, unsufficient");
+
             double m = mean();
             double s = standardDeviation();
             double result = 0.0;
@@ -64,7 +113,7 @@ namespace QuantLib {
                 temp = temp*temp*temp;
                 result += samples_[i].second*temp;
             }
-            result *= sampleNumber_/sampleWeight_;
+            result *= sampleNumber_/weightSum();
 
             result *= sampleNumber_/(sampleNumber_-2.0);
             result /= (sampleNumber_-1.0);
@@ -73,9 +122,10 @@ namespace QuantLib {
         }
 
         double HStatistics::kurtosis() const{
-            QL_REQUIRE(sampleNumber_>3,
-                       "HStatistics::kurtosis() : sample number <=3, unsufficient");
-
+            Size sampleNumber = samples_.size();
+            QL_REQUIRE(sampleNumber>3,
+                       "HStatistics::kurtosis() : "
+                       "sample number <=3, unsufficient");
 
             double c = (sampleNumber_-1.0)/(sampleNumber_-2.0);
             c *= (sampleNumber_-1.0)/(sampleNumber_-3.0);
@@ -89,7 +139,7 @@ namespace QuantLib {
                 temp = temp*temp*temp*temp;
                 result += samples_[i].second*temp;
             }
-            result *= sampleNumber_/sampleWeight_;
+            result *= sampleNumber_/weightSum();
 
             result *= (sampleNumber_+1.0)/(sampleNumber_-3.0);
             result *= sampleNumber_/(sampleNumber_-2.0);
@@ -99,6 +149,11 @@ namespace QuantLib {
         }
 
         double HStatistics::percentile(double percentile) const{
+            double sampleWeight = weightSum();
+            QL_REQUIRE(sampleWeight>0.0,
+                       "HStatistics::percentile() : "
+                       "empty sample (zero weight sum)");
+
             std::sort(samples_.begin(), samples_.end());
 
             std::vector<std::pair<double,double> >::const_iterator k =
@@ -106,7 +161,7 @@ namespace QuantLib {
             double lowIntegral = 1.0;
             while (lowIntegral > percentile) {
                 ++k;
-                lowIntegral -= k->second/sampleWeight_;
+                lowIntegral -= k->second/sampleWeight;
             }
 
             double result;
@@ -115,16 +170,34 @@ namespace QuantLib {
                 result = k->first;
             else {
                 double lambda = (percentile - lowIntegral) /
-                  (k->second/sampleWeight_);
+                  (k->second/sampleWeight);
                 result = (1.0-lambda) * (k->first) + lambda * ((k-1)->first);
            }
 
            return result;
         }
 
-        double HStatistics::potentialUpside(double percentile) const{
-           // to be implemented
-           return 0.0;
+        double HStatistics::potentialUpside(double y) const{
+            QL_REQUIRE(y<1.0 && y>=0.9,
+                "HStatistics::potentialUpside : percentile (" +
+                DoubleFormatter::toString(y) +
+                ") out of range 90%-100%");
+
+            // potentialUpside must be a gain: this means that it has to be
+            // MAX(dist(percentile), 0.0)
+            return QL_MAX(percentile(y), 0.0);
+        }
+
+        double HStatistics::valueAtRisk(double y) const{
+            QL_REQUIRE(y<1.0 && y>=0.9,
+                "HStatistics::valueAtRisk : percentile (" +
+                DoubleFormatter::toString(y) +
+                ") out of range 90%-100%");
+
+            // VAR must be a loss: this means that it has to be
+            // MIN(dist(1.0-percentile), 0.0)
+            // It must also be a positive quantity, so -MIN(*)
+            return -QL_MIN(percentile(1.0-y), 0.0);
         }
 
         double HStatistics::expectedShortfall(double percentile) const{
@@ -157,8 +230,14 @@ namespace QuantLib {
 
         double HStatistics::shortfall(double target) const {
             Size sampleNumber = samples_.size();
-            QL_REQUIRE(sampleWeight_ > 0,
-                "HStatistics::shortfall() : empty sample");
+            QL_REQUIRE(sampleNumber > 0,
+                "HStatistics::shortfall() : "
+                "empty sample");
+
+            double sampleWeight = weightSum();
+            QL_REQUIRE(sampleWeight>0.0,
+                       "HStatistics::shortfall() : "
+                       "empty sample (zero weight sum)");
 
             double undertarget = 0.0 ;
             for (Size k=0; k < sampleNumber ; ++k)
@@ -169,8 +248,10 @@ namespace QuantLib {
         }
 
         double HStatistics::averageShortfall(double target) const {
-            QL_REQUIRE(sampleWeight_ > 0,
-                "HStatistics::averageShortfall() : empty sample");
+            double sampleWeight = weightSum();
+            QL_REQUIRE(sampleWeight>0.0,
+                       "HStatistics::averageShortfall() : "
+                       "empty sample (zero weight sum)");
 
             double weightedUndertarget = 0.0;
             Size sampleNumber = samples_.size();
