@@ -125,13 +125,12 @@ void LDSTest::testSobol() {
     
     dimensionality = 1;
     rsg = SobolRsg(dimensionality);
-//    points = sizeof(vanderCorputSequenceModuloTwo)/sizeof(double);
-    points = QL_POW(2, 5)-1; // five cycle
+    points = Size(QL_POW(2.0, 5))-1; // five cycles
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            CPPUNIT_FAIL(IntegerFormatter::toString(i+1) +
-                         "-th number (" +
+            CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
+                         " number (" +
                          DoubleFormatter::toString(point[0]) +
                          ") in 1-D Sobol sequence is not in the "
                          "van der Corput sequence modulo two: " +
@@ -197,13 +196,12 @@ void LDSTest::testHalton() {
 
     dimensionality = 1;
     rsg = HaltonRsg(dimensionality);
-//    points = sizeof(vanderCorputSequenceModuloTwo)/sizeof(double);
-    points = QL_POW(2, 5)-1;  // five cycle
+    points = Size(QL_POW(2.0, 5))-1;  // five cycles
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            CPPUNIT_FAIL(IntegerFormatter::toString(i+1) +
-                         "-th number (" +
+            CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
+                         " number (" +
                          DoubleFormatter::toString(point[0]) +
                          ") in 1-D Halton sequence is not in the "
                          "van der Corput sequence modulo two: " +
@@ -226,14 +224,13 @@ void LDSTest::testHalton() {
 
     dimensionality = 2;
     rsg = HaltonRsg(dimensionality);
-//    points = sizeof(vanderCorputSequenceModuloThree)/sizeof(double);
-    points = QL_POW(3, 3)-1;  // three cycle of the higher dimension
+    points = Size(QL_POW(3.0, 3))-1;  // three cycles of the higher dimension
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
             CPPUNIT_FAIL("First component of " +
-                         IntegerFormatter::toString(i+1) +
-                         "-th number (" +
+                         IntegerFormatter::toOrdinal(i+1) +
+                         " number (" +
                          DoubleFormatter::toString(point[0]) +
                          ") in 2-D Halton sequence is not in the "
                          "van der Corput sequence modulo two: " +
@@ -243,8 +240,8 @@ void LDSTest::testHalton() {
         }
         if (fabs(point[1]-vanderCorputSequenceModuloThree[i])>1e-6) {
             CPPUNIT_FAIL("Second component of " +
-                         IntegerFormatter::toString(i+1) +
-                         "-th number (" +
+                         IntegerFormatter::toOrdinal(i+1) +
+                         " number (" +
                          DoubleFormatter::toString(point[1]) +
                          ") in 2-D Halton sequence is not in the "
                          "van der Corput sequence modulo three: "
