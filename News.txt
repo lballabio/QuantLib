@@ -10,10 +10,17 @@ Changes since Release 0.3.6:
     **************************************************************
 
     Date, calendars, and day count conventions
-    -
+    - Working on differentiating calendars depending on country or exchange,
+      instead of city.
+    - Added Italy (Settlement, Exchange),
+      United Kingdom (Settlement, Exchange, Metals),
+      United States (Settlement, Exchange, GovermentBond), Xetra.
+    - Added (old-style) calendars: Beijing, Hong Kong, Riyadh, Seoul, Singapore,
+      Taiwan.
+    - Milan, London, and NewYork calendars have been deprecated.
 
     Math
-    -
+    - Added rounding algorythms.
 
     1-dimensional solvers
     -
@@ -60,9 +67,21 @@ Changes since Release 0.3.6:
 
     Test suite
     - Moved to Boost unit test framework. CppUnit unsupported.
+    - Added test for quanto and forward compound engines.
+    - Added test for roundings.
+    - Added test for discrete dividend European options.
+    - Added test for cliquet options.
+
 
     Miscellanea
+    - The couple enable/disableExtrapolation() has been encapsulated in base
+      class methods, setting a corresponding data member. The relevant classes
+      inherit from the base class and check that data member besides the
+      local argument.
+    - Round implemented as per OMG enumeration/definition
     - Removed deprecated classes.
+    - Added user configured #define to disable usage of deprecated classe.
+    - Straddle in the {Call, Put, Straddle} enumeration has been deprecated.
 
     Documentation
     -
@@ -75,7 +94,7 @@ Changes since Release 0.3.6:
 
 2004-04-15 Release 0.3.6
 Changes since Release 0.3.5:
-   
+
     Bug-fix release for QuantLib 0.3.5. A bug was removed where calls
     to impliedVolatility() would break the state of the option and of
     all options sharing the same stochastic process.

@@ -43,9 +43,13 @@
     - Date class.
     - Weekday, month, frequency, time unit enumerations.
     - Period class (eg. 1y, 30d, 2m, etc.)
-    - Calendars: Budapest, Copenhagen, Frankfurt, Helsinki,
-      Johannesburg, London, Milan, New York, Oslo, Stockholm, Sydney,
-      TARGET, Tokyo, Toronto, Warsaw, Wellington, Zurich.
+    - Calendars: Beijing, Budapest, Copenhagen, Frankfurt, Helsinki,
+      Hong Kong, Italy (Settlement, Exchange), Johannesburg, Oslo, Riyadh,
+      Seoul, Singapore, Stockholm,
+      Sydney, Taiwan, TARGET, Tokyo, Toronto,
+      United Kingdom (Settlement, Exchange, Metals),
+      United States (Settlement, Exchange, GovermentBond), Xetra,
+      Warsaw, Wellington, Zurich.
     - NullCalendar (no holidays) for theoretical calculations.
     - Joint calendars made up as holiday union of base calendars.
     - Rolling conventions: Preceding, ModifiedPreceding, Following,
@@ -241,17 +245,21 @@
     - Monte Carlo simulation base engine.
     - Lattice short rate model base engine.
     - Engines for options described by "vanilla" set of parameters: analytic
-      digital American, analytic European, Barone-Adesi and Whaley
+      digital American, analytic discrete-dividend European,
+      analytic European, Barone-Adesi and Whaley
       approximation for American, binomial (Cox-Ross-Rubinstein, Jarrow-Rudd,
       additive equiprobabilities, Trigeorgis, Tian, Leisen-Reimer), Bjerksund
-      and Stensland approximation  for American, integral European, Merton 76
+      and Stensland approximation for American, integral European, Merton 76
       jump-diffusion, Monte Carlo digital, Monte Carlo European.
     - Engines for options described by "barrier" set of parameters: analytic
       down/up in/out, Monte Carlo down/up in/out
     - Engines for options described by "discrete Asian" set of parameters:
       analytic discrete geometric average price
+    - Engines for options described by "cliquet" set of parameters:
+      analytic, analytic performance.
     - Forward and forward-performance compound engines.
     - Quanto compound engine.
+    - Quanto-forward and Quanto-forward-performance compound engines.
     - Basket engine: analytic Stulz engine for max/min on two assets, Monte
       Carlo engine (in progress).
     - Black model base class for vanilla interest rate derivatives
@@ -269,7 +277,6 @@
     - Ensure all path dependant options allow for evaluation with collected
       past observations.
     - Define dividendRho for discrete dividends.
-    - Improve and test compound engines: quanto, forward, etc.
 
 
     <strong>Pricers</strong>
@@ -391,31 +398,37 @@
 
     <strong>Test suite (Boost Unit Test Framework)</strong>
 
-    More than 100 automated tests covering:
+    More than 120 automated tests covering:
     - American options.
     - Asian options.
     - Barrier options.
     - Basket options (Stulz two-assets, etc.)
     - Calendars.
     - Caps/floors (implied volatility, etc.)
+    - Cliquet options.
     - Covariance matrices.
     - Dates.
     - Day counters.
     - Digital options (Monte Carlo American cash-at-hit, etc.)
     - Distributions.
+    - Discrete-dividend European options.
     - European options (implied volatility, etc.)
     - Factorials, gamma, Poisson distribution.
+    - Forward and Forward-Performance options.
+    - Instruments observability.
     - Integration algorithms.
     - Cubic spline interpolations.
 	- Jump-diffusion engine.
 	- Low-discrepancy sequences.
-	- Quotes.
 	- Matrices (eigenvalues, eigenvectors, pseudo-square root,
 	  singular value decompostion).
 	- Mersenne-twister random-number generator.
 	- Finite-difference operators.
-	- Piecewise flat-forward term structure.
+	- Piecewise flat-forward yield curve term structure bootstrapping.
+	- Quantos (plain, quanto-forward, quanto-forward-performance).
+	- Quotes.
 	- Risk statistics.
+	- Roundings.
 	- 1-dimensional solvers.
 	- Statistics.
 	- Swaps.
@@ -424,7 +437,6 @@
 	- A number of old-style (to be deprecated) pricers.
 
 	To do:
-    - Add tests for quanto and forward engines.
     - Add covariance/correlation test for SequenceStatistics.
     - Add single factor calibration and Bermudan pricing tests.
 	- Increase coverage.
@@ -450,12 +462,9 @@
     - History class for handling of historical data.
     - Quote class for mutable data.
     - Null types.
+    - Added user configured #define to disable usage of deprecated classe.
 
     To do:
-    - Encapsulate in a base class the couple enable/disableExtrapolation()
-      methods, setting a corresponding data member. Then have the relevant
-      classe inherit from the base class and check that data member besides the
-      local argument.
     - IRR, duration, convexity, etc. for a sequence of cash flows
     - Currency as class with methods returning related info
     - Implement currency as per OMG definition
