@@ -40,7 +40,7 @@ namespace QuantLib {
         using MonteCarlo::MonteCarloModel;
         using Math::Statistics;
 
-        McBasket::McBasket(Option::Type type, const Array& underlying,
+        McBasket::McBasket(Option::Type type, const std::vector<double>& underlying,
             double strike, const Array& dividendYield,
             const Math::Matrix& covariance,
             Rate riskFreeRate,  double residualTime,

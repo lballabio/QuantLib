@@ -34,7 +34,7 @@ namespace QuantLib {
             MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
           public:
               McBasket(Option::Type type,
-                       const Array& underlying,
+                       const std::vector<double>& underlying,
                        double strike,
                        const Array& dividendYield,
                        const Math::Matrix& covariance,

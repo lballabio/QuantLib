@@ -32,7 +32,7 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         BasketPathPricer_old::BasketPathPricer_old(Option::Type type,
-            const Array& underlying, double strike,
+            const std::vector<double>& underlying, double strike,
             DiscountFactor discount, bool useAntitheticVariance)
         : PathPricer_old<MultiPath>(discount, useAntitheticVariance), type_(type),
           underlying_(underlying), strike_(strike) {
@@ -48,12 +48,17 @@ namespace QuantLib {
 
         double BasketPathPricer_old::operator()(const MultiPath& multiPath)
           const {
-            Size numAssets = multiPath.assetNumber();
+
             Size numSteps = multiPath.pathSize();
+            Size numAssets = multiPath.assetNumber();
             QL_REQUIRE(underlying_.size() == numAssets,
                 "BasketPathPricer_old: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
+            QL_REQUIRE(numSteps>0,
+                "BasketPathPricer_old: the path cannot be empty");
+
+            // start the simulation
             std::vector<double> log_drift(numAssets, 0.0);
             std::vector<double> log_diffusion(numAssets, 0.0);
             Size i,j;

@@ -41,14 +41,14 @@ namespace QuantLib {
         class BasketPathPricer_old : public PathPricer_old<MultiPath> {
           public:
             BasketPathPricer_old(Option::Type type,
-                             const Array& underlying,
+                             const std::vector<double>& underlying,
                              double strike,
                              DiscountFactor discount,
                              bool useAntitheticVariance);
             double operator()(const MultiPath& multiPath) const;
           private:
             Option::Type type_;
-            Array underlying_;
+            std::vector<double> underlying_;
             double strike_;
         };
 
