@@ -39,33 +39,45 @@ namespace QuantLib {
 				initializeGrid(sMin,sMax);
 				initializeInitialCondition();
 				initializeOperator();
-				// Small time step which will be used to evaluate theta using finite difference
-				double smallDt = theResidualTime/(100*theTimeSteps); 
+				// model used for calculation
 				FiniteDifferenceModel<CrankNicolson<TridiagonalOperator> > model(theOperator);
+				double dt = theResidualTime/theTimeSteps;
 				// Control-variate variance reduction:
-				// 1) calculate the greeks of the European option analytically
+				// 1) calculate value and greeks of the European option analytically
 				BSMEuropeanOption analyticEuro(theType,theUnderlying,theStrike,theUnderlyingGrowthRate, 
 				  theRiskFreeRate,theResidualTime,theVolatility);
 				double analyticEuroValue = analyticEuro.value();
 				double analyticEuroDelta = analyticEuro.delta();
 				double analyticEuroGamma = analyticEuro.gamma();
 				double analyticEuroTheta = analyticEuro.theta();
-				// 2) calculate the greeks of the European option numerically
+				// 2) calculate value and greeks of the European option numerically
 				Array theEuroPrices = thePrices;
-				model.rollback(theEuroPrices,theResidualTime,0.0,theTimeSteps);
+				// rollback until dt
+				model.rollback(theEuroPrices,theResidualTime,dt,theTimeSteps-1);
+				double numericEuroValuePlus = valueAtCenter(theEuroPrices);
+				// complete rollback
+				model.rollback(theEuroPrices,dt,0.0,1);
 				double numericEuroValue = valueAtCenter(theEuroPrices);
 				double numericEuroDelta = firstDerivativeAtCenter(theEuroPrices,theGrid);
 				double numericEuroGamma = secondDerivativeAtCenter(theEuroPrices,theGrid);
-				model.rollback(theEuroPrices,0.0,-smallDt,1);
-				double numericEuroTheta = (numericEuroValue-valueAtCenter(theEuroPrices))/smallDt;
+				// rollback another step
+				model.rollback(theEuroPrices,0.0,-dt,1);
+				double numericEuroValueMinus = valueAtCenter(theEuroPrices);
+				double numericEuroTheta = (numericEuroValuePlus-numericEuroValueMinus)/(2.0*dt);
 				// 3) calculate the greeks of the American option numerically on the same grid
 				Handle<StepCondition<Array> > americanCondition(new BSMAmericanCondition(thePrices));
-				model.rollback(thePrices,theResidualTime,0.0,theTimeSteps,americanCondition);
+				// rollback until dt
+				model.rollback(thePrices,theResidualTime,dt,theTimeSteps-1,americanCondition);
+				double numericAmericanValuePlus = valueAtCenter(thePrices);
+				// complete rollback
+				model.rollback(thePrices,dt,0.0,1,americanCondition);
 				double numericAmericanValue = valueAtCenter(thePrices);
 				double numericAmericanDelta = firstDerivativeAtCenter(thePrices,theGrid);
 				double numericAmericanGamma = secondDerivativeAtCenter(thePrices,theGrid);
-				model.rollback(thePrices,0.0,-smallDt,1,americanCondition);
-				double numericAmericanTheta = (numericAmericanValue-valueAtCenter(thePrices))/smallDt;
+				// rollback another step
+				model.rollback(thePrices,0.0,-dt,1,americanCondition);
+				double numericAmericanValueMinus = valueAtCenter(thePrices);
+				double numericAmericanTheta = (numericAmericanValuePlus-numericAmericanValueMinus)/(2.0*dt);
 				// 4) combine the results
 				theValue = numericAmericanValue - numericEuroValue + analyticEuroValue;
 				theDelta = numericAmericanDelta - numericEuroDelta + analyticEuroDelta;
