@@ -227,7 +227,7 @@ test::
 	python impliedVol.py
 	python greeks_in_european.py
 	python greeks_in_american.py
-	cd ..\Win
+	cd ..\..\Win
 
 # Install PyQuantLib
 install::
