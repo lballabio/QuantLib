@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003 Neil Firth
  Copyright (C) 2003 RiskMap srl
 
@@ -227,9 +227,11 @@ namespace {
 
     double relativeError(double x1, double x2, double reference) {
         if (reference != 0.0)
+            // relative error
             return QL_FABS((x1-x2)/reference);
         else
-            return 1.0e+10;
+            // absolute error
+            return QL_FABS(x1-x2);
     }
 
 }
@@ -392,9 +394,9 @@ void DigitalOptionTest::testGapValues() {
 
 void DigitalOptionTest::testCashOrNothingAmericanValues() {
 
-    // unknown source
     DigitalOptionData values[] = {
         //        type, strike, payoff,   spot,    q,    r,   t,  vol,   value, tol
+        // unknown source
         { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11, 94.8825, 1e-4 },
         { Option::Call, 100.50, 100.00, 100.00, 0.00, 0.01, 1.0, 0.11, 96.5042, 1e-4 },
         { Option::Call, 120.00, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11,  5.5676, 1e-4 },
@@ -406,7 +408,13 @@ void DigitalOptionTest::testCashOrNothingAmericanValues() {
         { Option::Put,   80.00, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11,  8.1172, 1e-4 },
         { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.20, 98.6140, 1e-4 },
         { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.10, 1.0, 0.11, 93.6491, 1e-4 },
-        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 2.0, 0.11, 98.7776, 1e-4 }
+        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 2.0, 0.11, 98.7776, 1e-4 },
+        // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 1,2
+        { Option::Put,  100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.7264, 1e-4 },
+        { Option::Call, 100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.6553, 1e-4 },
+        // in the money options
+        { Option::Call, 100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000, 1e-16 },
+        { Option::Put,  100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000, 1e-16 }
     };
 
     DayCounter dc = Actual360();
@@ -548,13 +556,13 @@ void DigitalOptionTest::testCashOrNothingAmericanGreeks() {
                   // payoff are tested in the europeanoption.cpp test
                   double value         = opt.NPV();
                   calculated["delta"]  = opt.delta();
-                  //calculated["gamma"]  = opt.gamma();
+                  calculated["gamma"]  = opt.gamma();
                   //calculated["theta"]  = opt.theta();
                   calculated["rho"]    = opt.rho();
                   //calculated["divRho"] = opt.dividendRho();
                   //calculated["vega"]   = opt.vega();
 
-                  if (opt.NPV() > 1.0e-6) {
+                  if (value > 1.0e-6) {
                       // perturb spot and get delta and gamma
                       double du = u*1.0e-4;
                       spot->setValue(u+du);
@@ -603,7 +611,7 @@ void DigitalOptionTest::testCashOrNothingAmericanGreeks() {
                           double expct = expected  [greek],
                                  calcl = calculated[greek],
                                  tol   = tolerance [greek];
-                          if (relativeError(expct,calcl,u) > tol) {
+                          if (relativeError(expct,calcl,value) > tol) {
                               vanillaOptionTestFailed(greek, payoff, exercise, u, q, r, today,
                                   v, expct, calcl, tol);
                           }
@@ -615,6 +623,62 @@ void DigitalOptionTest::testCashOrNothingAmericanGreeks() {
           }
         }
       }
+    }
+}
+
+void DigitalOptionTest::testAssetOrNothingAmericanValues() {
+
+    DigitalOptionData values[] = {
+        //        type, strike, payoff,   spot,    q,    r,   t,  vol,   value, tol
+        // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 3,4
+        { Option::Put,  100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20, 68.0848, 1e-04 },
+        { Option::Call, 100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 73.8166, 1e-04 }, // Haug value (11.6553) is wrong here
+        // in the money options
+        { Option::Call, 100.00,  15.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-16 },
+        { Option::Put,  100.00,  15.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-16 }
+    };
+
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot(new SimpleQuote(100.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.04));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.01));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    Handle<SimpleQuote> vol(new SimpleQuote(0.25));
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    Handle<PricingEngine> engine(new AnalyticAmericanEngine);
+
+    Date today = Date::todaysDate();
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        Handle<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
+            values[i].type, values[i].strike));
+
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+        Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
+
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        Handle<BlackScholesStochasticProcess> stochProcess(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(spot),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        VanillaOption opt(stochProcess, payoff, amExercise,
+                          engine);
+
+        double calculated = opt.NPV();
+        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
+            vanillaOptionTestFailed("value", payoff, amExercise, values[i].s, values[i].q,
+                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].tol);
+        }
     }
 }
 
@@ -719,12 +783,6 @@ void DigitalOptionTest::testEngineConsistency() {
                   opt.setPricingEngine(mcEngine);
                   calcMC = opt.NPV();
 
-                  //std::cout << "\nAnalytic: " +
-                  //    DoubleFormatter::toString(calcAnalytic) +
-                  //    "   MC: " + DoubleFormatter::toString(calcMC)
-                  //    << std::endl;
-
-                  // check
                   if (relativeError(calcAnalytic,calcMC,u) > tolerance) {
                       CPPUNIT_FAIL(
                           "Option details: \n"
@@ -773,12 +831,15 @@ CppUnit::Test* DigitalOptionTest::suite() {
                     &DigitalOptionTest::testGapValues));
 
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
+                   ("Testing American cash-or-nothing digital option",
+                    &DigitalOptionTest::testCashOrNothingAmericanValues));
+    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
                    ("Testing American cash-or-nothing digital option greeks",
                     &DigitalOptionTest::testCashOrNothingAmericanGreeks));
 
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing American cash-or-nothing digital option",
-                    &DigitalOptionTest::testCashOrNothingAmericanValues));
+                   ("Testing American asset-or-nothing digital option",
+                    &DigitalOptionTest::testAssetOrNothingAmericanValues));
 
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
                    ("Testing Monte Carlo pricing engine for digital options",
