@@ -691,6 +691,10 @@ SOURCE=.\ql\Math\cubicspline.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\discrepancystatistics.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\discrepancystatistics.hpp
 # End Source File
 # Begin Source File

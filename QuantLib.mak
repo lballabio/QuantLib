@@ -120,6 +120,8 @@ CLEAN :
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
+	-@erase "$(INTDIR)\discrepancystatistics.obj"
+	-@erase "$(INTDIR)\discrepancystatistics.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -412,10 +414,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\hstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -516,8 +520,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\statistics.sbr" \
-	"$(INTDIR)\hstatistics.sbr"
+	"$(INTDIR)\discrepancystatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -576,10 +579,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\hstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -680,8 +685,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\statistics.obj" \
-	"$(INTDIR)\hstatistics.obj"
+	"$(INTDIR)\discrepancystatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -778,6 +782,8 @@ CLEAN :
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
+	-@erase "$(INTDIR)\discrepancystatistics.obj"
+	-@erase "$(INTDIR)\discrepancystatistics.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -1071,10 +1077,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\hstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -1175,8 +1183,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\statistics.sbr" \
-	"$(INTDIR)\hstatistics.sbr"
+	"$(INTDIR)\discrepancystatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1235,10 +1242,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\hstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -1339,8 +1348,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\statistics.obj" \
-	"$(INTDIR)\hstatistics.obj"
+	"$(INTDIR)\discrepancystatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1437,6 +1445,8 @@ CLEAN :
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
+	-@erase "$(INTDIR)\discrepancystatistics.obj"
+	-@erase "$(INTDIR)\discrepancystatistics.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -1729,10 +1739,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\hstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -1833,8 +1845,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\statistics.sbr" \
-	"$(INTDIR)\hstatistics.sbr"
+	"$(INTDIR)\discrepancystatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1893,10 +1904,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\hstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -1997,8 +2010,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\statistics.obj" \
-	"$(INTDIR)\hstatistics.obj"
+	"$(INTDIR)\discrepancystatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2095,6 +2107,8 @@ CLEAN :
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
+	-@erase "$(INTDIR)\discrepancystatistics.obj"
+	-@erase "$(INTDIR)\discrepancystatistics.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -2388,10 +2402,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\hstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -2492,8 +2508,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\statistics.sbr" \
-	"$(INTDIR)\hstatistics.sbr"
+	"$(INTDIR)\discrepancystatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2552,10 +2567,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\hstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -2656,8 +2673,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\statistics.obj" \
-	"$(INTDIR)\hstatistics.obj"
+	"$(INTDIR)\discrepancystatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2986,6 +3002,12 @@ SOURCE=.\ql\Lattices\trinomialtree.cpp
 SOURCE=.\ql\Math\chisquaredistribution.cpp
 
 "$(INTDIR)\chisquaredistribution.obj"	"$(INTDIR)\chisquaredistribution.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Math\discrepancystatistics.cpp
+
+"$(INTDIR)\discrepancystatistics.obj"	"$(INTDIR)\discrepancystatistics.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
