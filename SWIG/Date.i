@@ -293,6 +293,51 @@ class Date {
 	}
 }
 
+// typemap Python list of dates to std::vector<Date>
+
+%{
+typedef std::vector<Date> DateVector;
+%}
+
+%typemap(python,in) DateVector, DateVector *, const DateVector & {
+	if (PyTuple_Check($source)) {
+		int size = PyTuple_Size($source);
+		$target = new std::vector<Date>(size);
+		for (int i=0; i<size; i++) {
+			Date* d;
+			PyObject* o = PyTuple_GetItem($source,i);
+			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("Date *"),1)) != -1) {
+				(*$target)[i] = *d;
+			} else {
+				PyErr_SetString(PyExc_TypeError,"tuple must contain dates");
+				delete $target;
+				return NULL;
+			}
+		}
+	} else if (PyList_Check($source)) {
+		int size = PyList_Size($source);
+		$target = new std::vector<Date>(size);
+		for (int i=0; i<size; i++) {
+			Date* d;
+			PyObject* o = PyList_GetItem($source,i);
+			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("Date *"),1)) != -1) {
+				(*$target)[i] = *d;
+			} else {
+				PyErr_SetString(PyExc_TypeError,"list must contain dates");
+				delete $target;
+				return NULL;
+			}
+		}
+	} else {
+		PyErr_SetString(PyExc_TypeError,"not a sequence");
+		return NULL;
+	}
+};
+
+%typemap(python,freearg) DateVector, DateVector *, const DateVector & {
+	delete $source;
+};
+
 #endif
 
 %inline %{
