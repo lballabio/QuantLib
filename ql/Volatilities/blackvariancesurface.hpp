@@ -30,99 +30,94 @@
 
 namespace QuantLib {
 
-    namespace VolTermStructures {
+    //! Black volatility surface modelled as variance surface
+    /*! This class calculates time/strike dependent Black volatilities
+        using as input a matrix of Black volatilities observed in the
+        market.
 
-        //! Black volatility surface modelled as variance surface
-        /*! This class calculates time/strike dependent Black volatilities
-            using as input a matrix of Black volatilities
-            observed in the market.
-
-            The calculation is performed interpolating on the variance surface.
-            Bilinear interpolation is used as default; this can be changed
-            by the setInterpolation() method.
-        */
-        class BlackVarianceSurface : public BlackVarianceTermStructure,
-                                     public Observer {
-          public:
-            enum Extrapolation { ConstantExtrapolation,
-                                 InterpolatorDefaultExtrapolation };
-            BlackVarianceSurface(const Date& referenceDate,
-                                 const std::vector<Date>& dates,
-                                 const std::vector<double>& strikes,
-                                 const Matrix& blackVolMatrix,
-                                 Extrapolation lowerExtrapolation =
-                                     InterpolatorDefaultExtrapolation,
-                                 Extrapolation upperExtrapolation =
-                                     InterpolatorDefaultExtrapolation,
-                                 const DayCounter& dayCounter = Actual365());
-            //! \name BlackVolTermStructure interface
-            //@{
-            Date referenceDate() const { 
-                return referenceDate_; 
-            }
-            DayCounter dayCounter() const { 
-                return dayCounter_; 
-            }
-            Date maxDate() const { 
-                return maxDate_; 
-            }
-            //@}
-            //! \name Modifiers
-            //@{
-            template <class Traits>
-            #if defined(QL_PATCH_MICROSOFT)
-            void setInterpolation(const Traits&) {
-            #else
-            void setInterpolation() {
-            #endif
-                varianceSurface_ = 
-                    Traits::make_interpolation(times_.begin(), times_.end(),
-                                               strikes_.begin(), 
-                                               strikes_.end(),
-                                               variances_);
-                notifyObservers();
-            }
-            //@}
-            //! \name Observer interface
-            //@{
-            void update() {
-                notifyObservers();
-            }
-            //@}
-            //! \name Visitability
-            //@{
-            virtual void accept(AcyclicVisitor&);
-            //@}
-          protected:
-            virtual double blackVarianceImpl(Time t,
-                                             double strike,
-                                             bool extrapolate = false) const;
-          private:
-            typedef Interpolation2D<std::vector<Time>::iterator,
-                                    std::vector<double>::iterator,
-                                    Matrix> Interpolation_t;
-            Date referenceDate_;
-            DayCounter dayCounter_;
-            Date maxDate_;
-            std::vector<double> strikes_;
-            std::vector<Time> times_;
-            Matrix variances_;
-            Handle<Interpolation_t> varianceSurface_;
-            Extrapolation lowerExtrapolation_, upperExtrapolation_;
-        };
-
-
-        // inline definitions
-
-        inline void BlackVarianceSurface::accept(AcyclicVisitor& v) {
-            Visitor<BlackVarianceSurface>* v1 = 
-                dynamic_cast<Visitor<BlackVarianceSurface>*>(&v);
-            if (v1 != 0)
-                v1->visit(*this);
-            else
-                BlackVarianceTermStructure::accept(v);
+        The calculation is performed interpolating on the variance
+        surface.  Bilinear interpolation is used as default; this can
+        be changed by the setInterpolation() method.
+    */
+    class BlackVarianceSurface : public BlackVarianceTermStructure,
+                                 public Observer {
+      public:
+        enum Extrapolation { ConstantExtrapolation,
+                             InterpolatorDefaultExtrapolation };
+        BlackVarianceSurface(const Date& referenceDate,
+                             const std::vector<Date>& dates,
+                             const std::vector<double>& strikes,
+                             const Matrix& blackVolMatrix,
+                             Extrapolation lowerExtrapolation =
+                             InterpolatorDefaultExtrapolation,
+                             Extrapolation upperExtrapolation =
+                             InterpolatorDefaultExtrapolation,
+                             const DayCounter& dayCounter = Actual365());
+        //! \name BlackVolTermStructure interface
+        //@{
+        Date referenceDate() const { 
+            return referenceDate_; 
         }
+        DayCounter dayCounter() const { 
+            return dayCounter_; 
+        }
+        Date maxDate() const { 
+            return maxDate_; 
+        }
+        //@}
+        //! \name Modifiers
+        //@{
+        template <class Traits>
+        #if defined(QL_PATCH_MICROSOFT)
+        void setInterpolation(const Traits&) {
+        #else
+        void setInterpolation() {
+        #endif
+            varianceSurface_ = 
+                Traits::make_interpolation(times_.begin(), times_.end(),
+                                           strikes_.begin(), strikes_.end(),
+                                           variances_);
+            notifyObservers();
+        }
+        //@}
+        //! \name Observer interface
+        //@{
+        void update() {
+            notifyObservers();
+        }
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
+        //@}
+        protected:
+        virtual double blackVarianceImpl(Time t,
+                                         double strike,
+                                         bool extrapolate = false) const;
+        private:
+        typedef Interpolation2D<std::vector<Time>::iterator,
+                                std::vector<double>::iterator,
+                                Matrix> Interpolation_t;
+        Date referenceDate_;
+        DayCounter dayCounter_;
+        Date maxDate_;
+        std::vector<double> strikes_;
+        std::vector<Time> times_;
+        Matrix variances_;
+        Handle<Interpolation_t> varianceSurface_;
+        Extrapolation lowerExtrapolation_, upperExtrapolation_;
+    };
 
+
+    // inline definitions
+
+    inline void BlackVarianceSurface::accept(AcyclicVisitor& v) {
+        Visitor<BlackVarianceSurface>* v1 = 
+            dynamic_cast<Visitor<BlackVarianceSurface>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BlackVarianceTermStructure::accept(v);
     }
 
 }

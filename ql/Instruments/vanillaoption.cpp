@@ -24,8 +24,6 @@
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
-using QuantLib::VolTermStructures::BlackConstantVol;
-
 namespace QuantLib {
 
     VanillaOption::VanillaOption(

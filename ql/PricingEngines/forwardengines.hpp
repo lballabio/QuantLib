@@ -80,12 +80,12 @@ namespace QuantLib {
         originalArguments_->underlying = arguments_.underlying;
         originalArguments_->dividendTS = RelinkableHandle<TermStructure>(
             Handle<TermStructure>(new
-                TermStructures::ImpliedTermStructure(
+                ImpliedTermStructure(
                         arguments_.dividendTS, arguments_.resetDate,
                         arguments_.resetDate)));
         originalArguments_->riskFreeTS = RelinkableHandle<TermStructure>(
             Handle<TermStructure>(new
-                TermStructures::ImpliedTermStructure(
+                ImpliedTermStructure(
                         arguments_.riskFreeTS, arguments_.resetDate,
                         arguments_.resetDate)));
 
@@ -97,8 +97,8 @@ namespace QuantLib {
         originalArguments_->volTS =
             RelinkableHandle<BlackVolTermStructure>(
                 Handle<BlackVolTermStructure>(new
-                    VolTermStructures::ImpliedVolTermStructure(
-                            arguments_.volTS, arguments_.resetDate)));
+                    ImpliedVolTermStructure(arguments_.volTS, 
+                                            arguments_.resetDate)));
 
         originalArguments_->exerciseType  = arguments_.exerciseType;
         originalArguments_->stoppingTimes = arguments_.stoppingTimes;

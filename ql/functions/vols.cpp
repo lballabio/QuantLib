@@ -27,8 +27,6 @@
 
 namespace QuantLib {
 
-    using namespace VolTermStructures;
-
     double blackVol(const Date& refDate,
                     const DayCounter& dc,
                     const std::vector<Date>& dates,

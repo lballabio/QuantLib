@@ -25,8 +25,6 @@
 #include <ql/Instruments/barrieroption.hpp>
 #include <ql/PricingEngines/barrierengines.hpp>
 
-using QuantLib::VolTermStructures::BlackConstantVol;
-
 namespace QuantLib {
 
     BarrierOption::BarrierOption(

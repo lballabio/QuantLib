@@ -29,86 +29,82 @@
 
 namespace QuantLib {
 
-    namespace TermStructures {
+    //! Term-structure implied by an affine model
+    /*! This class defines a term-structure that is based on an affine
+        model, e.g. Vasicek or Cox-Ingersoll-Ross. It either be
+        instanced using a model with defined arguments, or the model
+        can be calibrated to a set of rate helpers. Of course, there
+        is no point in using a term-structure consistent affine model,
+        since the implied term-structure will just be the initial
+        term-structure on which the model is based.
+    */
+    class AffineTermStructure : public DiscountStructure,
+                                public Observer {
+      public:
+        //! constructor using a fixed model
+        AffineTermStructure(const Date& todaysDate,
+                            const Date& referenceDate,
+                            const Handle<AffineModel>& model,
+                            const DayCounter& dayCounter);
+        //! constructor using a model that has to be calibrated
+        AffineTermStructure(const Date& todaysDate,
+                            const Date& referenceDate,
+                            const Handle<AffineModel>& model,
+                            const std::vector<Handle<RateHelper> >&,
+                            const Handle<Method>& method,
+                            const DayCounter& dayCounter);
 
-        //! Term-structure implied by an affine model
-        /*! This class defines a term-structure that is based on an affine
-            model, e.g. Vasicek or Cox-Ingersoll-Ross. It either be instanced
-            using a model with defined arguments, or the model can be
-            calibrated to a set of rate helpers. Of course, there is no point
-            in using a term-structure consistent affine model, since the
-            implied term-structure will just be the initial term-structure on
-            which the model is based.
-        */
-        class AffineTermStructure : public DiscountStructure,
-                                    public Observer {
-          public:
-            //! constructor using a fixed model
-            AffineTermStructure(const Date& todaysDate,
-                                const Date& referenceDate,
-                                const Handle<AffineModel>& model,
-                                const DayCounter& dayCounter);
-            //! constructor using a model that has to be calibrated
-            AffineTermStructure(
-                const Date& todaysDate,
-                const Date& referenceDate,
-                const Handle<AffineModel>& model,
-                const std::vector<Handle<RateHelper> >& instruments,
-                const Handle<Method>& method,
-                const DayCounter& dayCounter);
+        // inspectors
+        DayCounter dayCounter() const;
+        Date todaysDate() const {return todaysDate_; }
+        Date referenceDate() const;
+        Date maxDate() const;
 
-            // inspectors
-            DayCounter dayCounter() const;
-            Date todaysDate() const {return todaysDate_; }
-            Date referenceDate() const;
-            Date maxDate() const;
+        void update();
+      protected:
+        DiscountFactor discountImpl(Time,
+                                    bool extrapolate = false) const;
+      private:
+        class CalibrationFunction;
 
-            void update();
-          protected:
-            DiscountFactor discountImpl(Time,
-                bool extrapolate = false) const;
-          private:
-            class CalibrationFunction;
+        void calibrate() const;
 
-            void calibrate() const;
+        DayCounter dayCounter_;
+        Date todaysDate_, referenceDate_;
 
-            DayCounter dayCounter_;
-            Date todaysDate_, referenceDate_;
+        mutable bool needsRecalibration_;
+        Handle<AffineModel> model_;
+        std::vector<Handle<RateHelper> > instruments_;
+        Handle<Method> method_;
+    };
 
-            mutable bool needsRecalibration_;
-            Handle<AffineModel> model_;
-            std::vector<Handle<RateHelper> > instruments_;
-            Handle<Method> method_;
-        };
+    inline DayCounter AffineTermStructure::dayCounter() const {
+        return dayCounter_;
+    }
 
-        inline DayCounter AffineTermStructure::dayCounter() const {
-            return dayCounter_;
-        }
+    inline Date AffineTermStructure::referenceDate() const {
+        return referenceDate_;
+    }
 
-        inline Date AffineTermStructure::referenceDate() const {
-            return referenceDate_;
-        }
+    inline Date AffineTermStructure::maxDate() const {
+        return Date::maxDate();
+    }
 
-        inline Date AffineTermStructure::maxDate() const {
-            return Date::maxDate();
-        }
+    inline void AffineTermStructure::update() {
+        needsRecalibration_ = true;
+        notifyObservers();
+    }
 
-        inline void AffineTermStructure::update() {
-            needsRecalibration_ = true;
-            notifyObservers();
-        }
-
-        inline
-        DiscountFactor AffineTermStructure::discountImpl(Time t, bool) const {
-            if (needsRecalibration_) calibrate();
-            QL_REQUIRE(t >= 0.0,
-                "AffineTermStructure: discount undefined for time (" +
-                DoubleFormatter::toString(t) + ")");
-            return model_->discount(t);
-        }
-
+    inline
+    DiscountFactor AffineTermStructure::discountImpl(Time t, bool) const {
+        if (needsRecalibration_) calibrate();
+        QL_REQUIRE(t >= 0.0,
+                   "AffineTermStructure: discount undefined for time (" +
+                   DoubleFormatter::toString(t) + ")");
+        return model_->discount(t);
     }
 
 }
+
 
 #endif

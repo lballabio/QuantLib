@@ -19,8 +19,6 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::TermStructures;
-using namespace QuantLib::VolTermStructures;
 
 // This will be included in the library after a bit of redesign
 class WeightedPayoff {

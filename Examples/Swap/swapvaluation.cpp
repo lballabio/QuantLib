@@ -24,13 +24,6 @@
 
 
 using namespace QuantLib;
-using TermStructures::PiecewiseFlatForward;
-using TermStructures::FlatForward;
-using TermStructures::RateHelper;
-using TermStructures::DepositRateHelper;
-using TermStructures::FraRateHelper;
-using TermStructures::FuturesRateHelper;
-using TermStructures::SwapRateHelper;
 
 
 int main(int argc, char* argv[])

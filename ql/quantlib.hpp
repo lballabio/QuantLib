@@ -338,7 +338,9 @@
 
 /*** shortcuts for the full namespaces ***/
 
+//! \deprecated define your own alias when you use QuantLib
 namespace QL    = QuantLib;
+
 //! \deprecated inner namespace aliases will be removed in next release
 namespace QLCAL = QuantLib::Calendars;
 //! \deprecated inner namespace aliases will be removed in next release
@@ -367,8 +369,11 @@ namespace QLRNG = QuantLib::RandomNumbers;
 namespace QLSRM = QuantLib::ShortRateModels;
 //! \deprecated inner namespace aliases will be removed in next release
 namespace QLS1D = QuantLib::Solvers1D;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLTST = QuantLib::TermStructures;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLUTL = QuantLib::Utilities;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLVOL = QuantLib::Volatilities;
 
 

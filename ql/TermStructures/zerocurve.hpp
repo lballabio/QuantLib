@@ -28,65 +28,61 @@
 
 namespace QuantLib {
 
-    namespace TermStructures {
+    //! Term structure based on linear interpolation of zero yields
 
-        //! Term structure based on linear interpolation of zero yields
+    class ZeroCurve : public ZeroYieldStructure {
+      public:
+        // constructor
+        ZeroCurve (const Date& todaysDate,
+                   const std::vector<Date>& dates,
+                   const std::vector<Rate>& yields,
+                   const DayCounter& dayCounter = Actual365());
 
-        class ZeroCurve : public ZeroYieldStructure {
-          public:
-            // constructor
-            ZeroCurve (const Date& todaysDate,
-                          const std::vector<Date>& dates,
-                          const std::vector<Rate>& yields,
-                          const DayCounter& dayCounter = Actual365());
+        DayCounter dayCounter() const;
+        Date todaysDate() const {return todaysDate_; }
+        Date referenceDate() const;
+        const std::vector<Date>& dates() const;
+        Date maxDate() const;
+        const std::vector<Time>& times() const;
+        Time maxTime() const;
+      protected:
+        Rate zeroYieldImpl(Time t, bool extrapolate = false) const;
+      private:
+        Date todaysDate_;
+        std::vector<Date> dates_;
+        std::vector<Rate> yields_;
+        DayCounter dayCounter_;
+        std::vector<Time> times_;
+        typedef LinearInterpolation<
+            std::vector<Time>::const_iterator,
+            std::vector<Rate>::const_iterator> YieldInterpolation;
+        Handle<YieldInterpolation> interpolation_;
+    };
 
-            DayCounter dayCounter() const;
-            Date todaysDate() const {return todaysDate_; }
-            Date referenceDate() const;
-            const std::vector<Date>& dates() const;
-            Date maxDate() const;
-            const std::vector<Time>& times() const;
-            Time maxTime() const;
-          protected:
-			Rate zeroYieldImpl(Time t, bool extrapolate = false) const;
-		  private:
-            Date todaysDate_;
-            std::vector<Date> dates_;
-            std::vector<Rate> yields_;
-            DayCounter dayCounter_;
-            std::vector<Time> times_;
-            typedef LinearInterpolation<
-                std::vector<Time>::const_iterator,
-                std::vector<Rate>::const_iterator> YieldInterpolation;
-            Handle<YieldInterpolation> interpolation_;
-        };
+    // inline definitions
 
-        // inline definitions
+    inline Date ZeroCurve::referenceDate() const {
+        return dates_[0];
+    }
 
-        inline Date ZeroCurve::referenceDate() const {
-            return dates_[0];
-        }
+    inline DayCounter ZeroCurve::dayCounter() const {
+        return dayCounter_;
+    }
 
-        inline DayCounter ZeroCurve::dayCounter() const {
-            return dayCounter_;
-        }
+    inline const std::vector<Date>& ZeroCurve::dates() const {
+        return dates_;
+    }
 
-        inline const std::vector<Date>& ZeroCurve::dates() const {
-            return dates_;
-        }
+    inline Date ZeroCurve::maxDate() const {
+        return dates_.back();
+    }
 
-        inline Date ZeroCurve::maxDate() const {
-            return dates_.back();
-        }
+    inline const std::vector<Time>& ZeroCurve::times() const {
+        return times_;
+    }
 
-        inline const std::vector<Time>& ZeroCurve::times() const {
-            return times_;
-        }
-
-        inline Time ZeroCurve::maxTime() const {
-            return times_.back();
-        }
-
+    inline Time ZeroCurve::maxTime() const {
+        return times_.back();
     }
 
 }

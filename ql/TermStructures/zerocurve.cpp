@@ -23,46 +23,42 @@
 
 namespace QuantLib {
 
-    namespace TermStructures {
+    ZeroCurve::ZeroCurve(const Date &todaysDate,
+                         const std::vector < Date > &dates,
+                         const std::vector < Rate > &yields,
+                         const DayCounter & dayCounter)
+    : todaysDate_(todaysDate), dates_(dates), yields_(yields),
+      dayCounter_(dayCounter) {
 
-        ZeroCurve::ZeroCurve(const Date &todaysDate,
-                             const std::vector < Date > &dates,
-                             const std::vector < Rate > &yields,
-                             const DayCounter & dayCounter)
-        : todaysDate_(todaysDate), dates_(dates), yields_(yields),
-          dayCounter_(dayCounter) {
+        QL_REQUIRE(dates_.size()>1, 
+                   "ZeroCurve::ZeroCurve : too few dates");
+        QL_REQUIRE(yields_.size()==dates_.size(),
+                   "ZeroCurve::ZeroCurve : dates/yields mismatch");
 
-            QL_REQUIRE(dates_.size()>1, 
-                       "ZeroCurve::ZeroCurve : too few dates");
-            QL_REQUIRE(yields_.size()==dates_.size(),
-                       "ZeroCurve::ZeroCurve : dates/yields mismatch");
-            
-            times_.resize(dates_.size());
-            times_[0]=0.0;
-            for(Size i = 1; i < dates_.size(); i++) {
-                QL_REQUIRE(dates_[i]>dates_[i-1],
-                           "ZeroCurve::ZeroCurve : invalid date");
-                #if !defined(QL_NEGATIVE_RATES)
-                QL_REQUIRE(yields_[i] >= 0.0,
-                           "ZeroCurve::ZeroCurve : invalid yield");
-                #endif
-                times_[i] = dayCounter_.yearFraction(dates_[0],
-                                                     dates_[i]);
-            }
-
-            interpolation_ = Handle<YieldInterpolation>(
-                new YieldInterpolation(times_.begin(), times_.end(),
-                                       yields_.begin()));
+        times_.resize(dates_.size());
+        times_[0]=0.0;
+        for(Size i = 1; i < dates_.size(); i++) {
+            QL_REQUIRE(dates_[i]>dates_[i-1],
+                       "ZeroCurve::ZeroCurve : invalid date");
+            #if !defined(QL_NEGATIVE_RATES)
+            QL_REQUIRE(yields_[i] >= 0.0,
+                       "ZeroCurve::ZeroCurve : invalid yield");
+            #endif
+            times_[i] = dayCounter_.yearFraction(dates_[0],
+                                                 dates_[i]);
         }
 
-        Rate ZeroCurve::zeroYieldImpl(Time t, bool extrapolate) const {
-            QL_REQUIRE(t >= 0.0,
-                       "ZeroCurve::zeroYieldImpl "
-                       "negative time (" + DoubleFormatter::toString(t) +
-                       ") not allowed");
-            return (*interpolation_)(t, extrapolate);
-        }
+        interpolation_ = Handle<YieldInterpolation>(
+                          new YieldInterpolation(times_.begin(), times_.end(),
+                                                 yields_.begin()));
+    }
 
+    Rate ZeroCurve::zeroYieldImpl(Time t, bool extrapolate) const {
+        QL_REQUIRE(t >= 0.0,
+                   "ZeroCurve::zeroYieldImpl "
+                   "negative time (" + DoubleFormatter::toString(t) +
+                   ") not allowed");
+        return (*interpolation_)(t, extrapolate);
     }
 
 }

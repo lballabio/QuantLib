@@ -28,13 +28,10 @@
 #include <ql/marketelement.hpp>
 #include <vector>
 
-/*! \namespace QuantLib::TermStructures
-    \brief Concrete implementations of the TermStructure interface
-
-    See sect. \ref termstructures
-*/
-
 namespace QuantLib {
+
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace TermStructures = ::QuantLib;
 
     //! Term structure
     /*! This abstract class defines the interface of concrete

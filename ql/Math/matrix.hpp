@@ -72,8 +72,8 @@ namespace QuantLib {
             reverse_row_iterator;
         typedef QL_REVERSE_ITERATOR(const_row_iterator,double)
             const_reverse_row_iterator;
-        typedef Utilities::stepping_iterator<double*> column_iterator;
-        typedef Utilities::stepping_iterator<const double*>
+        typedef stepping_iterator<double*> column_iterator;
+        typedef stepping_iterator<const double*>
         const_column_iterator;
         typedef QL_REVERSE_ITERATOR(column_iterator,double)
             reverse_column_iterator;

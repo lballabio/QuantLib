@@ -29,111 +29,110 @@
 
 namespace QuantLib {
 
-    namespace VolTermStructures {
-
-        //! Constant Black volatility, no time-strike dependence
-        /*! This class implements the BlackVolatilityTermStructure
-            interface for
-            a constant Black volatility (no time/strike dependence).
-        */
-        class BlackConstantVol : public BlackVolatilityTermStructure,
-                                 public Observer {
-          public:
-            BlackConstantVol(const Date& referenceDate,
-                             double volatility,
-                             const DayCounter& dayCounter = Actual365());
-            BlackConstantVol(const Date& referenceDate,
-                             const RelinkableHandle<MarketElement>& volatility,
-                             const DayCounter& dayCounter = Actual365());
-            //! \name BlackVolTermStructure interface
-            //@{
-            Date referenceDate() const;
-            DayCounter dayCounter() const;
-            Date maxDate() const;
-            double blackForwardVol(Time t1, Time t2, double strike,
-                                   bool extrapolate = false) const;
-            //@}
-            //! \name Observer interface
-            //@{
-            void update();
-            //@}
-            //! \name Visitability
-            //@{
-            virtual void accept(AcyclicVisitor&);
-            //@}
-          protected:
-            virtual double blackVolImpl(Time t, double,
-                                        bool extrapolate = false) const;
-          private:
-            Date referenceDate_;
-            RelinkableHandle<MarketElement> volatility_;
-            DayCounter dayCounter_;
-        };
+    //! Constant Black volatility, no time-strike dependence
+    /*! This class implements the BlackVolatilityTermStructure
+        interface for a constant Black volatility (no time/strike
+        dependence).
+    */
+    class BlackConstantVol : public BlackVolatilityTermStructure,
+                             public Observer {
+      public:
+        BlackConstantVol(const Date& referenceDate,
+                         double volatility,
+                         const DayCounter& dayCounter = Actual365());
+        BlackConstantVol(const Date& referenceDate,
+                         const RelinkableHandle<MarketElement>& volatility,
+                         const DayCounter& dayCounter = Actual365());
+        //! \name BlackVolTermStructure interface
+        //@{
+        Date referenceDate() const;
+        DayCounter dayCounter() const;
+        Date maxDate() const;
+        double blackForwardVol(Time t1, Time t2, double strike,
+                               bool extrapolate = false) const;
+        //@}
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
+        //@}
+      protected:
+        virtual double blackVolImpl(Time t, double,
+                                    bool extrapolate = false) const;
+      private:
+        Date referenceDate_;
+        RelinkableHandle<MarketElement> volatility_;
+        DayCounter dayCounter_;
+    };
 
 
-        // inline definitions
+    // inline definitions
 
-        inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
-            double volatility, const DayCounter& dayCounter)
-        : referenceDate_(referenceDate), dayCounter_(dayCounter) {
-            volatility_.linkTo(Handle<MarketElement>(
-                new SimpleMarketElement(volatility)));
-            registerWith(volatility_);
-        }
+    inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
+                                              double volatility, 
+                                              const DayCounter& dayCounter)
+    : referenceDate_(referenceDate), dayCounter_(dayCounter) {
+        volatility_.linkTo(Handle<MarketElement>(
+                                        new SimpleMarketElement(volatility)));
+        registerWith(volatility_);
+    }
 
-        inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
-            const RelinkableHandle<MarketElement>& volatility,
-            const DayCounter& dayCounter)
-        : referenceDate_(referenceDate), volatility_(volatility),
-          dayCounter_(dayCounter) {
-            registerWith(volatility_);
-        }
+    inline BlackConstantVol::BlackConstantVol(
+                            const Date& referenceDate,
+                            const RelinkableHandle<MarketElement>& volatility,
+                            const DayCounter& dayCounter)
+    : referenceDate_(referenceDate), volatility_(volatility),
+      dayCounter_(dayCounter) {
+        registerWith(volatility_);
+    }
 
-        inline DayCounter BlackConstantVol::dayCounter() const {
-            return dayCounter_;
-        }
+    inline DayCounter BlackConstantVol::dayCounter() const {
+        return dayCounter_;
+    }
 
-        inline Date BlackConstantVol::referenceDate() const {
-            return referenceDate_;
-        }
+    inline Date BlackConstantVol::referenceDate() const {
+        return referenceDate_;
+    }
 
-        inline Date BlackConstantVol::maxDate() const {
-            return Date::maxDate();
-        }
+    inline Date BlackConstantVol::maxDate() const {
+        return Date::maxDate();
+    }
 
-        inline void BlackConstantVol::update() {
-            notifyObservers();
-        }
+    inline void BlackConstantVol::update() {
+        notifyObservers();
+    }
 
-        inline void BlackConstantVol::accept(AcyclicVisitor& v) {
-            Visitor<BlackConstantVol>* v1 = 
-                dynamic_cast<Visitor<BlackConstantVol>*>(&v);
-            if (v1 != 0)
-                v1->visit(*this);
-            else
-                BlackVolatilityTermStructure::accept(v);
-        }
+    inline void BlackConstantVol::accept(AcyclicVisitor& v) {
+        Visitor<BlackConstantVol>* v1 = 
+            dynamic_cast<Visitor<BlackConstantVol>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BlackVolatilityTermStructure::accept(v);
+    }
 
-        inline double BlackConstantVol::blackVolImpl(Time t, double,
-                                                     bool) const {
-            QL_REQUIRE(t >= 0.0,
-                "ConstantVol::blackVolImpl: "
-                "negative time (" + DoubleFormatter::toString(t) +
-                ") not allowed");
-            return volatility_->value();
-        }
+    inline double BlackConstantVol::blackVolImpl(Time t, double,
+                                                 bool) const {
+        QL_REQUIRE(t >= 0.0,
+                   "ConstantVol::blackVolImpl: "
+                   "negative time (" + DoubleFormatter::toString(t) +
+                   ") not allowed");
+        return volatility_->value();
+    }
 
-        // overload base class method in order to avoid numerical round-off
-        inline double BlackConstantVol::blackForwardVol(Time t1, Time t2,
-                                                        double, bool) const {
-            QL_REQUIRE(t2>=t1,
-                "BlackConstantVol::blackForwardVol : "
-                "time2<time1");
-            return volatility_->value();
-        }
-
+    // overload base class method in order to avoid numerical round-off
+    inline double BlackConstantVol::blackForwardVol(Time t1, Time t2,
+                                                    double, bool) const {
+        QL_REQUIRE(t2>=t1,
+                   "BlackConstantVol::blackForwardVol : "
+                   "time2<time1");
+        return volatility_->value();
     }
 
 }
+
 
 #endif

@@ -235,16 +235,15 @@ namespace QuantLib {
         class DataValidator;
       public:
         //! bidirectional iterator on non-null history entries
-        typedef Utilities::filtering_iterator<const_iterator,DataValidator>
+        typedef filtering_iterator<const_iterator,DataValidator>
             const_valid_iterator;
 
         //! random access iterator on historical data
         typedef std::vector<double>::const_iterator const_data_iterator;
 
         //! bidirectional iterator on non-null historical data
-        typedef
-            Utilities::filtering_iterator<const_data_iterator,DataValidator>
-                const_valid_data_iterator;
+        typedef filtering_iterator<const_data_iterator,DataValidator>
+            const_valid_data_iterator;
 
         /*! \name Iterator access
             Four different types of iterators are provided, namely,

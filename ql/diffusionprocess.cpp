@@ -27,13 +27,11 @@
 
 namespace QuantLib {
 
-    using namespace VolTermStructures;
-
     BlackScholesProcess::BlackScholesProcess(
-        const RelinkableHandle<TermStructure>& riskFreeTS,
-        const RelinkableHandle<TermStructure>& dividendTS,
-        const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
-        double s0)
+                    const RelinkableHandle<TermStructure>& riskFreeTS,
+                    const RelinkableHandle<TermStructure>& dividendTS,
+                    const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
+                    double s0)
     : DiffusionProcess(s0), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS) {
 

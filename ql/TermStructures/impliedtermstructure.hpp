@@ -25,90 +25,92 @@
 #include <ql/termstructure.hpp>
 
 namespace QuantLib {
-    namespace TermStructures {
 
-        //! Implied term structure at a given date in the future
-        /*! The given date will be the implied reference date.
-            \note This term structure will remain linked to the original
-                structure, i.e., any changes in the latter will be reflected in
-                this structure as well.
-        */
-        class ImpliedTermStructure : public DiscountStructure,
-                                     public Observer {
-          public:
-            ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
-                                 const Date& newTodaysDate,
-                                 const Date& newReferenceDate);
-            //! \name TermStructure interface
-            //@{
-            DayCounter dayCounter() const;
-            Date todaysDate() const;
-            Date referenceDate() const;
-            Date maxDate() const;
-            Time maxTime() const;
-            //@}
-            //! \name Observer interface
-            //@{
-            void update();
-            //@}
-          protected:
-            //! returns the discount factor as seen from the evaluation date
-            DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-          private:
-            RelinkableHandle<TermStructure> originalCurve_;
-            Date newTodaysDate_, newReferenceDate_;
-        };
+    //! Implied term structure at a given date in the future
+    /*! The given date will be the implied reference date.
+    
+        \note This term structure will remain linked to the original
+              structure, i.e., any changes in the latter will be
+              reflected in this structure as well.
+    */
+    class ImpliedTermStructure : public DiscountStructure,
+                                 public Observer {
+      public:
+        ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
+                             const Date& newTodaysDate,
+                             const Date& newReferenceDate);
+        //! \name TermStructure interface
+        //@{
+        DayCounter dayCounter() const;
+        Date todaysDate() const;
+        Date referenceDate() const;
+        Date maxDate() const;
+        Time maxTime() const;
+        //@}
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
+      protected:
+        //! returns the discount factor as seen from the evaluation date
+        DiscountFactor discountImpl(Time, bool extrapolate = false) const;
+      private:
+        RelinkableHandle<TermStructure> originalCurve_;
+        Date newTodaysDate_, newReferenceDate_;
+    };
 
 
 
-        inline ImpliedTermStructure::ImpliedTermStructure(
-            const RelinkableHandle<TermStructure>& h,
-            const Date& newTodaysDate, const Date& newReferenceDate)
-        : originalCurve_(h), newTodaysDate_(newTodaysDate),
-          newReferenceDate_(newReferenceDate) {
-            registerWith(originalCurve_);
-        }
-
-        inline DayCounter ImpliedTermStructure::dayCounter() const {
-            return originalCurve_->dayCounter();
-        }
-
-        inline Date ImpliedTermStructure::todaysDate() const {
-            return newTodaysDate_;
-        }
-
-        inline Date ImpliedTermStructure::referenceDate() const {
-            return newReferenceDate_;
-        }
-
-        inline Date ImpliedTermStructure::maxDate() const {
-            return originalCurve_->maxDate();
-        }
-
-        inline Time ImpliedTermStructure::maxTime() const {
-            return dayCounter().yearFraction(
-                newReferenceDate_,originalCurve_->maxDate());
-        }
-
-        inline void ImpliedTermStructure::update() {
-            notifyObservers();
-        }
-
-        inline DiscountFactor ImpliedTermStructure::discountImpl(Time t,
-            bool extrapolate) const {
-                /* t is relative to the current reference date
-                   and needs to be converted to the time relative
-                   to the reference date of the original curve */
-                Time originalTime = t + dayCounter().yearFraction(
-                    originalCurve_->referenceDate(), newReferenceDate_);
-                // evaluationDate cannot be an extrapolation
-                /* discount at evaluation date cannot be cached
-                   since the original curve could change between
-                   invocations of this method */
-                return originalCurve_->discount(originalTime, extrapolate) /
-                       originalCurve_->discount(referenceDate(),false);
-        }
+    inline ImpliedTermStructure::ImpliedTermStructure(
+                                     const RelinkableHandle<TermStructure>& h,
+                                     const Date& newTodaysDate, 
+                                     const Date& newReferenceDate)
+    : originalCurve_(h), newTodaysDate_(newTodaysDate),
+      newReferenceDate_(newReferenceDate) {
+        registerWith(originalCurve_);
     }
+
+    inline DayCounter ImpliedTermStructure::dayCounter() const {
+        return originalCurve_->dayCounter();
+    }
+
+    inline Date ImpliedTermStructure::todaysDate() const {
+        return newTodaysDate_;
+    }
+
+    inline Date ImpliedTermStructure::referenceDate() const {
+        return newReferenceDate_;
+    }
+
+    inline Date ImpliedTermStructure::maxDate() const {
+        return originalCurve_->maxDate();
+    }
+
+    inline Time ImpliedTermStructure::maxTime() const {
+        return dayCounter().yearFraction(
+                                 newReferenceDate_,originalCurve_->maxDate());
+    }
+
+    inline void ImpliedTermStructure::update() {
+        notifyObservers();
+    }
+
+    inline DiscountFactor ImpliedTermStructure::discountImpl(Time t,
+                                                             bool extrapolate)
+                                                                        const {
+        /* t is relative to the current reference date
+           and needs to be converted to the time relative
+           to the reference date of the original curve */
+        Time originalTime = t + dayCounter().yearFraction(
+                          originalCurve_->referenceDate(), newReferenceDate_);
+        // evaluationDate cannot be an extrapolation
+        /* discount at evaluation date cannot be cached
+           since the original curve could change between
+           invocations of this method */
+        return originalCurve_->discount(originalTime, extrapolate) /
+            originalCurve_->discount(referenceDate(),false);
+    }
+
 }
 
 

@@ -27,112 +27,110 @@
 
 namespace QuantLib {
 
-    namespace TermStructures {
+    class FlatForward : public TermStructure, public Observer {
+      public:
+        // constructors
+        FlatForward(const Date& todaysDate,
+                    const Date& referenceDate,
+                    Rate forward,
+                    const DayCounter& dayCounter = Actual365());
+        FlatForward(const Date& todaysDate,
+                    const Date& referenceDate,
+                    const RelinkableHandle<MarketElement>& forward,
+                    const DayCounter& dayCounter = Actual365());
+        // inspectors
+        DayCounter dayCounter() const;
+        Date todaysDate() const { return todaysDate_; }
+        Date referenceDate() const;
+        Date maxDate() const;
+        // Observer interface
+        void update();
+      protected:
+        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
+        DiscountFactor discountImpl(Time,
+                                    bool extrapolate = false) const;
+        Rate forwardImpl(Time, bool extrapolate = false) const;
+        Rate compoundForwardImpl(Time t, int compFreq,
+                                 bool extrapolate = false) const;
+      private:
+        Date todaysDate_, referenceDate_;
+        DayCounter dayCounter_;
+        RelinkableHandle<MarketElement> forward_;
+    };
 
-        class FlatForward : public TermStructure, public Observer {
-          public:
-            // constructors
-            FlatForward(const Date& todaysDate,
-                        const Date& referenceDate,
-                        Rate forward,
-                        const DayCounter& dayCounter = Actual365());
-            FlatForward(const Date& todaysDate,
-                        const Date& referenceDate,
-                        const RelinkableHandle<MarketElement>& forward,
-                        const DayCounter& dayCounter = Actual365());
-            // inspectors
-            DayCounter dayCounter() const;
-            Date todaysDate() const { return todaysDate_; }
-            Date referenceDate() const;
-            Date maxDate() const;
-            // Observer interface
-            void update();
-          protected:
-            Rate zeroYieldImpl(Time, bool extrapolate = false) const;
-            DiscountFactor discountImpl(Time,
-                bool extrapolate = false) const;
-            Rate forwardImpl(Time, bool extrapolate = false) const;
-            Rate compoundForwardImpl(Time t, int compFreq,
-                                     bool extrapolate = false) const;
-          private:
-            Date todaysDate_, referenceDate_;
-            DayCounter dayCounter_;
-            RelinkableHandle<MarketElement> forward_;
-        };
+    // inline definitions
 
-        // inline definitions
+    inline FlatForward::FlatForward(const Date& todaysDate,
+                                    const Date& referenceDate,
+                                    Rate forward, 
+                                    const DayCounter& dayCounter)
+    : todaysDate_(todaysDate), referenceDate_(referenceDate),
+      dayCounter_(dayCounter) {
+        forward_.linkTo(
+                     Handle<MarketElement>(new SimpleMarketElement(forward)));
+    }
 
-        inline FlatForward::FlatForward(const Date& todaysDate,
-            const Date& referenceDate,
-            Rate forward, const DayCounter& dayCounter)
-        : todaysDate_(todaysDate), referenceDate_(referenceDate),
-          dayCounter_(dayCounter) {
-            forward_.linkTo(
-                Handle<MarketElement>(new SimpleMarketElement(forward)));
-        }
+    inline FlatForward::FlatForward(
+                               const Date& todaysDate,
+                               const Date& referenceDate,
+                               const RelinkableHandle<MarketElement>& forward,
+                               const DayCounter& dayCounter)
+    : todaysDate_(todaysDate), referenceDate_(referenceDate),
+      dayCounter_(dayCounter), forward_(forward) {
+        registerWith(forward_);
+    }
 
-        inline FlatForward::FlatForward(const Date& todaysDate,
-            const Date& referenceDate,
-            const RelinkableHandle<MarketElement>& forward,
-            const DayCounter& dayCounter)
-        : todaysDate_(todaysDate), referenceDate_(referenceDate),
-          dayCounter_(dayCounter), forward_(forward) {
-            registerWith(forward_);
-        }
+    inline DayCounter FlatForward::dayCounter() const {
+        return dayCounter_;
+    }
 
-        inline DayCounter FlatForward::dayCounter() const {
-            return dayCounter_;
-        }
+    inline Date FlatForward::referenceDate() const {
+        return referenceDate_;
+    }
 
-        inline Date FlatForward::referenceDate() const {
-            return referenceDate_;
-        }
+    inline Date FlatForward::maxDate() const {
+        return Date::maxDate();
+    }
 
-        inline Date FlatForward::maxDate() const {
-            return Date::maxDate();
-        }
+    inline void FlatForward::update() {
+        notifyObservers();
+    }
 
-        inline void FlatForward::update() {
-            notifyObservers();
-        }
+    inline Rate FlatForward::zeroYieldImpl(Time t, bool) const {
+        // no forward limit on time
+        QL_REQUIRE(t >= 0.0,
+                   "FlatForward::zeroYieldImpl : "
+                   "zero yield undefined for time (" +
+                   DoubleFormatter::toString(t) + ")");
+        return forward_->value();
+    }
 
-        inline Rate FlatForward::zeroYieldImpl(Time t, bool) const {
-            // no forward limit on time
-            QL_REQUIRE(t >= 0.0,
-                "FlatForward::zeroYieldImpl : "
-                "zero yield undefined for time (" +
-                DoubleFormatter::toString(t) + ")");
-            return forward_->value();
-        }
+    inline DiscountFactor FlatForward::discountImpl(Time t, bool) const {
+        // no forward limit on time
+        QL_REQUIRE(t >= 0.0,
+                   "FlatForward::discountImpl : "
+                   "discount undefined for time (" +
+                   DoubleFormatter::toString(t) + ")");
+        return DiscountFactor(QL_EXP(-forward_->value()*t));
+    }
 
-        inline DiscountFactor FlatForward::discountImpl(Time t, bool) const {
-            // no forward limit on time
-            QL_REQUIRE(t >= 0.0,
-                "FlatForward::discountImpl : "
-                "discount undefined for time (" +
-                DoubleFormatter::toString(t) + ")");
-            return DiscountFactor(QL_EXP(-forward_->value()*t));
-        }
+    inline Rate FlatForward::forwardImpl(Time t, bool) const {
+        // no forward limit on time
+        QL_REQUIRE(t >= 0.0,
+                   "FlatForward::forwardImpl : "
+                   "forward undefined for time (" +
+                   DoubleFormatter::toString(t) + ")");
+        return forward_->value();
+    }
 
-        inline Rate FlatForward::forwardImpl(Time t, bool) const {
-            // no forward limit on time
-            QL_REQUIRE(t >= 0.0,
-                "FlatForward::forwardImpl : "
-                "forward undefined for time (" +
-                DoubleFormatter::toString(t) + ")");
-            return forward_->value();
-        }
-
-        inline Rate FlatForward::compoundForwardImpl(Time t, int compFreq, 
-                                                     bool extrapolate) const {
-            double zy = zeroYieldImpl(t, extrapolate);
-            if (compFreq == 0)
-                return zy;
-            if (t <= 1.0/compFreq)
-                return (QL_EXP(zy*t)-1.0)/t;
-            return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
-        }
-
+    inline Rate FlatForward::compoundForwardImpl(Time t, int compFreq, 
+                                                 bool extrapolate) const {
+        double zy = zeroYieldImpl(t, extrapolate);
+        if (compFreq == 0)
+            return zy;
+        if (t <= 1.0/compFreq)
+            return (QL_EXP(zy*t)-1.0)/t;
+        return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
     }
 
 }

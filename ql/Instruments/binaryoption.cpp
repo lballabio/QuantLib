@@ -25,8 +25,6 @@
 #include <ql/Instruments/binaryoption.hpp>
 #include <ql/PricingEngines/binaryengines.hpp>
 
-using QuantLib::VolTermStructures::BlackConstantVol;
-
 namespace QuantLib {
 
     void BinaryOption::arguments::validate() const {

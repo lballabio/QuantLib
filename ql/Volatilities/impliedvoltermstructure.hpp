@@ -25,94 +25,91 @@
 #include <ql/voltermstructure.hpp>
 
 namespace QuantLib {
-    namespace VolTermStructures {
 
-        //! Implied vol term structure at a given date in the future
-        /*! The given date will be the implied reference date.
-            \note This term structure will remain linked to the original
-                  structure, i.e., any changes in the latter will be reflected
-                  in this structure as well.
+    //! Implied vol term structure at a given date in the future
+    /*! The given date will be the implied reference date.
+        \note This term structure will remain linked to the original
+              structure, i.e., any changes in the latter will be reflected
+              in this structure as well.
 
-            \warning It doesn't make financial sense to have an
-                     asset-dependant implied Vol Term Structure.
-                     This class should be used with term structures that
-                     are time dependant only
-        */
-        class ImpliedVolTermStructure : public BlackVarianceTermStructure,
-                                        public Observer {
-          public:
-            ImpliedVolTermStructure(
-                const RelinkableHandle<BlackVolTermStructure>& originalTS,
-                const Date& newReferenceDate);
-            //! \name BlackVolTermStructure interface
-            //@{
-            Date referenceDate() const { 
-                return newReferenceDate_; 
-            }
-            DayCounter dayCounter() const;
-            Date maxDate() const;
-            //@}
-            //! \name Observer interface
-            //@{
-            void update();
-            //@}
-            //! \name Visitability
-            //@{
-            virtual void accept(AcyclicVisitor&);
-            //@}
-          protected:
-            virtual double blackVarianceImpl(Time t, double strike,
-                                             bool extrapolate = false) const;
-          private:
-            RelinkableHandle<BlackVolTermStructure> originalTS_;
-            Date newReferenceDate_;
-        };
-
-
-
-        inline ImpliedVolTermStructure::ImpliedVolTermStructure(
-            const RelinkableHandle<BlackVolTermStructure>& originalTS,
-            const Date& newReferenceDate)
-        : originalTS_(originalTS), newReferenceDate_(newReferenceDate) {
-            registerWith(originalTS_);
+        \warning It doesn't make financial sense to have an
+                 asset-dependant implied Vol Term Structure.  This
+                 class should be used with term structures that are
+                 time dependant only
+    */
+    class ImpliedVolTermStructure : public BlackVarianceTermStructure,
+                                    public Observer {
+      public:
+        ImpliedVolTermStructure(
+                    const RelinkableHandle<BlackVolTermStructure>& originalTS,
+                    const Date& newReferenceDate);
+        //! \name BlackVolTermStructure interface
+        //@{
+        Date referenceDate() const { 
+            return newReferenceDate_; 
         }
+        DayCounter dayCounter() const;
+        Date maxDate() const;
+        //@}
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
+        //@}
+      protected:
+        virtual double blackVarianceImpl(Time t, double strike,
+                                         bool extrapolate = false) const;
+      private:
+        RelinkableHandle<BlackVolTermStructure> originalTS_;
+        Date newReferenceDate_;
+    };
 
-        inline DayCounter ImpliedVolTermStructure::dayCounter() const {
-            return originalTS_->dayCounter();
-        }
 
-        inline Date ImpliedVolTermStructure::maxDate() const {
-            return originalTS_->maxDate();
-        }
 
-        inline void ImpliedVolTermStructure::update() {
-            notifyObservers();
-        }
+    inline ImpliedVolTermStructure::ImpliedVolTermStructure(
+                    const RelinkableHandle<BlackVolTermStructure>& originalTS,
+                    const Date& newReferenceDate)
+    : originalTS_(originalTS), newReferenceDate_(newReferenceDate) {
+        registerWith(originalTS_);
+    }
 
-        inline 
-        void ImpliedVolTermStructure::accept(AcyclicVisitor& v) {
-            Visitor<ImpliedVolTermStructure>* v1 = 
-                dynamic_cast<Visitor<ImpliedVolTermStructure>*>(&v);
-            if (v1 != 0)
-                v1->visit(*this);
-            else
-                BlackVarianceTermStructure::accept(v);
-        }
+    inline DayCounter ImpliedVolTermStructure::dayCounter() const {
+        return originalTS_->dayCounter();
+    }
 
-        inline double ImpliedVolTermStructure::blackVarianceImpl(Time t,
-            double strike, bool extrapolate) const {
-                /* timeShift (and/or variance) variance at evaluation date
-                   cannot be cached since the original curve could change
-                   between invocations of this method */
-                Time timeShift = dayCounter().yearFraction(
-                    originalTS_->referenceDate(), newReferenceDate_);
-                /* t is relative to the current reference date
-                   and needs to be converted to the time relative
-                   to the reference date of the original curve */
-                return originalTS_->blackForwardVariance(timeShift,
-                    timeShift+t, strike, extrapolate);
-        }
+    inline Date ImpliedVolTermStructure::maxDate() const {
+        return originalTS_->maxDate();
+    }
 
+    inline void ImpliedVolTermStructure::update() {
+        notifyObservers();
+    }
+
+    inline void ImpliedVolTermStructure::accept(AcyclicVisitor& v) {
+        Visitor<ImpliedVolTermStructure>* v1 = 
+            dynamic_cast<Visitor<ImpliedVolTermStructure>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BlackVarianceTermStructure::accept(v);
+    }
+
+    inline double ImpliedVolTermStructure::blackVarianceImpl(
+                                                     Time t, double strike, 
+                                                     bool extrapolate) const {
+        /* timeShift (and/or variance) variance at evaluation date
+           cannot be cached since the original curve could change
+           between invocations of this method */
+        Time timeShift = dayCounter().yearFraction(
+                             originalTS_->referenceDate(), newReferenceDate_);
+        /* t is relative to the current reference date
+           and needs to be converted to the time relative
+           to the reference date of the original curve */
+        return originalTS_->blackForwardVariance(timeShift,
+                                            timeShift+t, strike, extrapolate);
     }
 
 }

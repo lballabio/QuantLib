@@ -29,98 +29,93 @@
 
 namespace QuantLib {
 
-    namespace VolTermStructures {
+    //! Black volatility curve modelled as variance curve
+    /*! This class calculates time-dependent Black volatilities using
+        as input a vector of (ATM) Black volatilities observed in the
+        market.
 
-        //! Black volatility curve modelled as variance curve
-        /*! This class calculates time-dependent Black volatilities
-            using as input a vector of (ATM) Black volatilities
-            observed in the market.
-
-            The calculation is performed interpolating on the variance curve.
-            Linear interpolation is used as default; this can be changed
-            by the setInterpolation() method.
+        The calculation is performed interpolating on the variance curve.
+        Linear interpolation is used as default; this can be changed
+        by the setInterpolation() method.
             
-            For strike dependence, see BlackVarianceSurface.
-        */
-        class BlackVarianceCurve : public BlackVarianceTermStructure,
-                                   public Observer {
-          public:
-            BlackVarianceCurve(const Date& referenceDate,
-                               const std::vector<Date>& dates,
-                               const std::vector<double>& blackVolCurve,
-                               const DayCounter& dayCounter = Actual365());
-            //! \name BlackVolTermStructure interface
-            //@{
-            Date referenceDate() const;
-            DayCounter dayCounter() const;
-            Date maxDate() const;
-            //@}
-            //! \name Modifiers
-            //@{
-            template <class Traits>
-            #if defined(QL_PATCH_MICROSOFT)
-            void setInterpolation(const Traits&) {
-            #else
-            void setInterpolation() {
-            #endif
-                varianceCurve_ = 
-                    Traits::make_interpolation(times_.begin(), times_.end(),
-                                               variances_.begin());
-                notifyObservers();
-            }
-            //@}
-            //! \name Observer interface
-            //@{
-            void update();
-            //@}
-            //! \name Visitability
-            //@{
-            virtual void accept(AcyclicVisitor&);
-            //@}
-          protected:
-            virtual double blackVarianceImpl(Time t, double,
-                                             bool extrapolate = false) const;
-          private:
-            typedef Interpolation<std::vector<Time>::iterator,
-                                  std::vector<double>::iterator>
-                Interpolation_t;
-            Date referenceDate_;
-            DayCounter dayCounter_;
-            Date maxDate_;
-            std::vector<Time> times_;
-            std::vector<double> variances_;
-            Handle<Interpolation_t> varianceCurve_;
-        };
-
-
-        // inline definitions
-
-        inline Date BlackVarianceCurve::referenceDate() const { 
-            return referenceDate_; 
-        }
-
-        inline DayCounter BlackVarianceCurve::dayCounter() const { 
-            return dayCounter_; 
-        }
-
-        inline Date BlackVarianceCurve::maxDate() const { 
-            return maxDate_; 
-        }
-
-        inline void BlackVarianceCurve::update() {
+        For strike dependence, see BlackVarianceSurface.
+    */
+    class BlackVarianceCurve : public BlackVarianceTermStructure,
+                               public Observer {
+      public:
+        BlackVarianceCurve(const Date& referenceDate,
+                           const std::vector<Date>& dates,
+                           const std::vector<double>& blackVolCurve,
+                           const DayCounter& dayCounter = Actual365());
+        //! \name BlackVolTermStructure interface
+        //@{
+        Date referenceDate() const;
+        DayCounter dayCounter() const;
+        Date maxDate() const;
+        //@}
+        //! \name Modifiers
+        //@{
+        template <class Traits>
+        #if defined(QL_PATCH_MICROSOFT)
+        void setInterpolation(const Traits&) {
+        #else
+        void setInterpolation() {
+        #endif
+            varianceCurve_ = 
+                Traits::make_interpolation(times_.begin(), times_.end(),
+                                           variances_.begin());
             notifyObservers();
         }
+        //@}
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
+        //@}
+        protected:
+        virtual double blackVarianceImpl(Time t, double,
+                                         bool extrapolate = false) const;
+        private:
+        typedef Interpolation<std::vector<Time>::iterator,
+            std::vector<double>::iterator>
+            Interpolation_t;
+        Date referenceDate_;
+        DayCounter dayCounter_;
+        Date maxDate_;
+        std::vector<Time> times_;
+        std::vector<double> variances_;
+        Handle<Interpolation_t> varianceCurve_;
+    };
 
-        inline 
-        void BlackVarianceCurve::accept(AcyclicVisitor& v) {
-            Visitor<BlackVarianceCurve>* v1 = 
-                dynamic_cast<Visitor<BlackVarianceCurve>*>(&v);
-            if (v1 != 0)
-                v1->visit(*this);
-            else
-                BlackVarianceTermStructure::accept(v);
-        }
 
+    // inline definitions
+
+    inline Date BlackVarianceCurve::referenceDate() const { 
+        return referenceDate_; 
+    }
+
+    inline DayCounter BlackVarianceCurve::dayCounter() const { 
+        return dayCounter_; 
+    }
+
+    inline Date BlackVarianceCurve::maxDate() const { 
+        return maxDate_; 
+    }
+
+    inline void BlackVarianceCurve::update() {
+        notifyObservers();
+    }
+
+    inline void BlackVarianceCurve::accept(AcyclicVisitor& v) {
+        Visitor<BlackVarianceCurve>* v1 = 
+            dynamic_cast<Visitor<BlackVarianceCurve>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BlackVarianceTermStructure::accept(v);
     }
 
 }

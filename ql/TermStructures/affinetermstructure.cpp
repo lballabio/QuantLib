@@ -23,70 +23,63 @@
 
 namespace QuantLib {
 
-    namespace TermStructures {
+    class AffineTermStructure::CalibrationFunction : public CostFunction {
+      public:
+        CalibrationFunction(const Handle<Model>& model,
+                            const std::vector<Handle<RateHelper> >& helpers)
+        : model_(model), instruments_(helpers) {}
+        virtual ~CalibrationFunction() {}
 
-        class AffineTermStructure::CalibrationFunction
-            : public CostFunction {
-          public:
-            CalibrationFunction(
-              const Handle<Model>& model,
-              const std::vector<Handle<RateHelper> >& instruments)
-            : model_(model), instruments_(instruments) {}
-            virtual ~CalibrationFunction() {}
+        virtual double value(const Array& params) const {
+            model_->setParams(params);
 
-            virtual double value(const Array& params) const {
-                model_->setParams(params);
-
-                double value = 0.0;
-                for (Size i=0; i<instruments_.size(); i++) {
-                    double diff = instruments_[i]->quoteError();
-                    value += diff*diff;
-                }
-                return value;
+            double value = 0.0;
+            for (Size i=0; i<instruments_.size(); i++) {
+                double diff = instruments_[i]->quoteError();
+                value += diff*diff;
             }
-            virtual double finiteDifferenceEpsilon() const { return 1e-7; }
-          private:
-            Handle<Model> model_;
-            const std::vector<Handle<RateHelper> >& instruments_;
-        };
-
-        AffineTermStructure::AffineTermStructure(
-            const Date& todaysDate,
-            const Date& referenceDate,
-            const Handle<AffineModel>& model,
-            const DayCounter& dayCounter)
-        : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-          referenceDate_(referenceDate), needsRecalibration_(false), 
-          model_(model) { }
-
-        AffineTermStructure::AffineTermStructure(
-            const Date& todaysDate,
-            const Date& referenceDate,
-            const Handle<AffineModel>& model,
-            const std::vector<Handle<RateHelper> >& instruments,
-            const Handle<Method>& method,
-            const DayCounter& dayCounter)
-        : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-          referenceDate_(referenceDate), needsRecalibration_(true), 
-          model_(model), instruments_(instruments), method_(method) {
-            for (Size i=0; i<instruments_.size(); i++)
-                registerWith(instruments_[i]);
+            return value;
         }
+        virtual double finiteDifferenceEpsilon() const { return 1e-7; }
+      private:
+        Handle<Model> model_;
+        const std::vector<Handle<RateHelper> >& instruments_;
+    };
 
-        void AffineTermStructure::calibrate() const {
-            Handle<Model> model = model_;
-            CalibrationFunction f(model, instruments_);
+    AffineTermStructure::AffineTermStructure(const Date& todaysDate,
+                                             const Date& referenceDate,
+                                             const Handle<AffineModel>& model,
+                                             const DayCounter& dayCounter)
+    : dayCounter_(dayCounter), todaysDate_(todaysDate), 
+      referenceDate_(referenceDate), needsRecalibration_(false), 
+      model_(model) { }
 
-            method_->setInitialValue(model->params());
-            method_->endCriteria().setPositiveOptimization();
-            Problem prob(f, *model->constraint(), *method_);
-            prob.minimize();
+    AffineTermStructure::AffineTermStructure(
+                          const Date& todaysDate,
+                          const Date& referenceDate,
+                          const Handle<AffineModel>& model,
+                          const std::vector<Handle<RateHelper> >& instruments,
+                          const Handle<Method>& method,
+                          const DayCounter& dayCounter)
+    : dayCounter_(dayCounter), todaysDate_(todaysDate), 
+      referenceDate_(referenceDate), needsRecalibration_(true), 
+      model_(model), instruments_(instruments), method_(method) {
+        for (Size i=0; i<instruments_.size(); i++)
+            registerWith(instruments_[i]);
+    }
 
-            Array result(prob.minimumValue());
-            model->setParams(result);
-            needsRecalibration_ = false;
-        }
+    void AffineTermStructure::calibrate() const {
+        Handle<Model> model = model_;
+        CalibrationFunction f(model, instruments_);
 
+        method_->setInitialValue(model->params());
+        method_->endCriteria().setPositiveOptimization();
+        Problem prob(f, *model->constraint(), *method_);
+        prob.minimize();
+
+        Array result(prob.minimumValue());
+        model->setParams(result);
+        needsRecalibration_ = false;
     }
 
 }

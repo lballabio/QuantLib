@@ -45,7 +45,7 @@ namespace QuantLib {
                 typename QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type)
             reverse_x_iterator;
         //! iterates over \f$ v_{ij} \f$ with \f$ i \f$ fixed.
-        typedef Utilities::stepping_iterator<RandomAccessIterator> y_iterator;
+        typedef stepping_iterator<RandomAccessIterator> y_iterator;
         //! iterates backwards over \f$ v_{ij} \f$ with \f$ i \f$ fixed.
         typedef 
             QL_REVERSE_ITERATOR(

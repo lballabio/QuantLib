@@ -19,8 +19,6 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::TermStructures;
-using namespace QuantLib::VolTermStructures;
 
 
 int main(int argc, char* argv[])

@@ -28,67 +28,62 @@
 
 namespace QuantLib {
 
-    namespace TermStructures {
+    //! Term structure based on loglinear interpolation of discount factors
+    /*! Loglinear interpolation guarantees piecewise constant forward rates.
 
-        //! Term structure based on loglinear interpolation of discount factors
-        /*! Loglinear interpolation guarantees piecewise constant forward
-            rates.
+        Rates are assumed to be annual continuos compounding.
+    */
+    class DiscountCurve : public DiscountStructure {
+      public:
+        // constructor
+        DiscountCurve(const Date &todaysDate,
+                      const std::vector<Date> &dates,
+                      const std::vector<DiscountFactor> &dfs,
+                      const DayCounter & dayCounter = Actual365());
+        Date todaysDate() const { return todaysDate_; }
+        Date referenceDate() const { return referenceDate_; };
+        DayCounter dayCounter() const { return dayCounter_; };
+        Date maxDate() const;
+        Time maxTime() const;
+        const std::vector<Time>& times() const;
+        const std::vector<Date>& dates() const;
+        const std::vector<DiscountFactor>& discounts() const;
+      protected:
+        DiscountFactor discountImpl(Time, bool extrapolate = false) const;
+        int referenceNode(Time, bool extrapolate = false) const;
+        Date todaysDate_;
+        Date referenceDate_;
+        DayCounter dayCounter_;
+        mutable std::vector<Date> dates_;
+        mutable std::vector<DiscountFactor> discounts_;
+        mutable std::vector<Time> times_;
+        typedef LogLinearInterpolation <
+            std::vector<Time>::const_iterator,
+            std::vector<DiscountFactor>::const_iterator > DfInterpolation;
+        mutable Handle<DfInterpolation> interpolation_;
+    };
 
-            Rates are assumed to be annual continuos compounding.
-        */
-        class DiscountCurve : public DiscountStructure {
-          public:
-            // constructor
-            DiscountCurve(const Date &todaysDate,
-                          const std::vector<Date> &dates,
-                          const std::vector<DiscountFactor> &dfs,
-                          const DayCounter & dayCounter = Actual365());
-            Date todaysDate() const { return todaysDate_; }
-            Date referenceDate() const { return referenceDate_; };
-            DayCounter dayCounter() const { return dayCounter_; };
-            Date maxDate() const;
-            Time maxTime() const;
-            const std::vector<Time>& times() const;
-            const std::vector<Date>& dates() const;
-            const std::vector<DiscountFactor>& discounts() const;
-          protected:
-            DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-            int referenceNode(Time, bool extrapolate = false) const;
-            Date todaysDate_;
-            Date referenceDate_;
-            DayCounter dayCounter_;
-            mutable std::vector<Date> dates_;
-            mutable std::vector<DiscountFactor> discounts_;
-            mutable std::vector<Time> times_;
-            typedef LogLinearInterpolation <
-                std::vector<Time>::const_iterator,
-                std::vector<DiscountFactor>::const_iterator > DfInterpolation;
-            mutable Handle<DfInterpolation> interpolation_;
-        };
+    // inline definitions
 
-        // inline definitions
+    inline const std::vector<Date>& DiscountCurve::dates() const {
+        return dates_;
+    }
 
-        inline const std::vector<Date>& DiscountCurve::dates() const {
-            return dates_;
-        }
+    inline Date DiscountCurve::maxDate() const {
+        return dates_.back();
+    }
 
-        inline Date DiscountCurve::maxDate() const {
-            return dates_.back();
-        }
+    inline const std::vector<DiscountFactor>& 
+    DiscountCurve::discounts() const {
+        return discounts_;
+    }
 
-        inline const std::vector<DiscountFactor>& 
-        DiscountCurve::discounts() const {
-            return discounts_;
-        }
+    inline const std::vector<Time>& DiscountCurve::times() const {
+        return times_;
+    }
 
-        inline const std::vector<Time>& DiscountCurve::times() const {
-            return times_;
-        }
-
-        inline Time DiscountCurve::maxTime() const {
-            return times_.back();
-        }
-       
+    inline Time DiscountCurve::maxTime() const {
+        return times_.back();
     }
 
 }

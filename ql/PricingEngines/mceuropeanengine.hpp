@@ -109,11 +109,10 @@ namespace QuantLib {
 
     namespace {
 
-        class TimeGridCalculator 
-            : public AcyclicVisitor,
-              public Visitor<BlackVolTermStructure>,
-              public Visitor<VolTermStructures::BlackConstantVol>,
-              public Visitor<VolTermStructures::BlackVarianceCurve> {
+        class TimeGridCalculator : public AcyclicVisitor,
+                                   public Visitor<BlackVolTermStructure>,
+                                   public Visitor<BlackConstantVol>,
+                                   public Visitor<BlackVarianceCurve> {
           public:
             TimeGridCalculator(Time maturity, Size stepsPerYear)
             : maturity_(maturity), stepsPerYear_(stepsPerYear) {}
@@ -123,10 +122,10 @@ namespace QuantLib {
                 result_ = Size(maturity_ * stepsPerYear_);
             }
             // specializations
-            void visit(VolTermStructures::BlackConstantVol&) {
+            void visit(BlackConstantVol&) {
                 result_ = 1;
             }
-            void visit(VolTermStructures::BlackVarianceCurve&) {
+            void visit(BlackVarianceCurve&) {
                 result_ = 1;
             }
           private:

@@ -29,12 +29,10 @@
 #include <ql/Patterns/visitor.hpp>
 #include <vector>
 
-/*! \namespace QuantLib::VolTermStructures
-    \brief Concrete implementations of Volatility Term Structures
-
-*/
-
 namespace QuantLib {
+
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace VolTermStructures = ::QuantLib;
 
     //! Black Volatility Term structure
     /*! This abstract class defines the interface of concrete

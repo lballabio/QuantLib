@@ -27,49 +27,44 @@
 
 namespace QuantLib {
 
-    namespace TermStructures {
+    //! Term structure based on loglinear interpolation of discount factors
+    /*! Loglinear interpolation guarantees piecewise constant forward rates.
 
-        //! Term structure based on loglinear interpolation of discount factors
-        /*! Loglinear interpolation guarantees piecewise constant forward
-            rates.
+        Rates are assumed to be annual continuos compounding.
+    */
+    class ExtendedDiscountCurve : public DiscountCurve,
+                                  public Observer {
+      public:
+        // constructor
+        ExtendedDiscountCurve(const Date &todaysDate,
+                              const std::vector<Date> &dates,
+                              const std::vector<DiscountFactor> &dfs,
+                              const Calendar & calendar,
+                              const RollingConvention roll,
+                              const DayCounter & dayCounter = Actual365());
+        Calendar calendar() const { return calendar_; };
+        RollingConvention roll() const { return roll_; };
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
+      protected:
+        void calibrateNodes() const;
+        Handle<TermStructure> reversebootstrap(int) const;
+        Rate compoundForwardImpl(Time, int, 
+                                 bool extrapolate = false) const;
+        Handle<TermStructure> forwardCurve(int) const;
+      private:
+        Calendar calendar_;
+        RollingConvention roll_;
+        mutable std::map<int,Handle<TermStructure> > forwardCurveMap_;
+    };
 
-            Rates are assumed to be annual continuos compounding.
-        */
-        class ExtendedDiscountCurve : public DiscountCurve,
-                                      public Observer {
-          public:
-            // constructor
-            ExtendedDiscountCurve(const Date &todaysDate,
-                                  const std::vector<Date> &dates,
-                                  const std::vector<DiscountFactor> &dfs,
-                                  const Calendar & calendar,
-                                  const RollingConvention roll,
-                                  const DayCounter & dayCounter = Actual365());
-            Calendar calendar() const { return calendar_; };
-            RollingConvention roll() const { return roll_; };
-            //! \name Observer interface
-            //@{
-            void update();
-            //@}
-          protected:
-            void calibrateNodes() const;
-            Handle<TermStructure> reversebootstrap(int) const;
-            Rate compoundForwardImpl(Time, int, 
-                                     bool extrapolate = false) const;
-            Handle<TermStructure> forwardCurve(int) const;
-          private:
-            Calendar calendar_;
-            RollingConvention roll_;
-            mutable std::map<int,Handle<TermStructure> > forwardCurveMap_;
-        };
+    // inline definitions
 
-        // inline definitions
-
-        inline void ExtendedDiscountCurve::update() {
-            forwardCurveMap_.clear();
-            notifyObservers();
-        }
-
+    inline void ExtendedDiscountCurve::update() {
+        forwardCurveMap_.clear();
+        notifyObservers();
     }
 
 }

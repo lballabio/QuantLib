@@ -29,7 +29,6 @@
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
-using namespace QuantLib::TermStructures;
 
 namespace {
 

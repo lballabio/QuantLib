@@ -26,203 +26,201 @@
 
 namespace QuantLib {
 
-    //! Classes and functions of general utility
-    /*! See sect. \ref utilities */
-    namespace Utilities {
-
-        //! most generic of two given iterator categories
-        /*! Specializations of this struct define a typedef iterator_category
-            which corresponds to the most generic of the two input 
-            categories, e.g., 
-            lowest_category_iterator<std::random_access_iterator_tag,
-            std::forward_iterator_tag>::iterator_category corresponds to
-            std::forward_iterator_tag.
-        */
-        template <class Category1, class Category2>
-        struct lowest_category_iterator {};
-
-        #if !defined(__DOXYGEN__)
-        template <>
-        struct lowest_category_iterator<
-            std::random_access_iterator_tag,
-            std::random_access_iterator_tag> {
-                typedef std::random_access_iterator_tag iterator_category;
-        };
-
-        template <>
-        struct lowest_category_iterator<
-            std::random_access_iterator_tag,
-            std::bidirectional_iterator_tag> {
-                typedef std::bidirectional_iterator_tag iterator_category;
-        };
-
-        template <>
-        struct lowest_category_iterator<
-            std::random_access_iterator_tag,
-            std::forward_iterator_tag> {
-                typedef std::forward_iterator_tag iterator_category;
-        };
-
-        template <>
-        struct lowest_category_iterator<
-            std::random_access_iterator_tag,
-            std::input_iterator_tag> {
-                typedef std::input_iterator_tag iterator_category;
-        };
-
-        template <>
-        struct lowest_category_iterator<
-            std::random_access_iterator_tag,
-            std::output_iterator_tag> {
-                typedef std::output_iterator_tag iterator_category;
-        };
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace Utilities = ::QuantLib;
 
 
-        template <>
-        struct lowest_category_iterator<
-            std::bidirectional_iterator_tag,
-            std::random_access_iterator_tag> {
-                typedef std::bidirectional_iterator_tag iterator_category;
-        };
+    //! most generic of two given iterator categories
+    /*! Specializations of this struct define a typedef
+        iterator_category which corresponds to the most generic of the
+        two input categories, e.g.,
+        lowest_category_iterator<std::random_access_iterator_tag,
+        std::forward_iterator_tag>::iterator_category corresponds to
+        std::forward_iterator_tag.
+    */
+    template <class Category1, class Category2>
+    struct lowest_category_iterator {};
 
-        template <>
-        struct lowest_category_iterator<
-            std::bidirectional_iterator_tag,
-            std::bidirectional_iterator_tag> {
-                typedef std::bidirectional_iterator_tag iterator_category;
-        };
+    #if !defined(__DOXYGEN__)
+    template <>
+    struct lowest_category_iterator<
+        std::random_access_iterator_tag,
+        std::random_access_iterator_tag> {
+        typedef std::random_access_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::bidirectional_iterator_tag,
-            std::forward_iterator_tag> {
-                typedef std::forward_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::random_access_iterator_tag,
+        std::bidirectional_iterator_tag> {
+        typedef std::bidirectional_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::bidirectional_iterator_tag,
-            std::input_iterator_tag> {
-                typedef std::input_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::random_access_iterator_tag,
+        std::forward_iterator_tag> {
+        typedef std::forward_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::bidirectional_iterator_tag,
-            std::output_iterator_tag> {
-                typedef std::output_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::random_access_iterator_tag,
+        std::input_iterator_tag> {
+        typedef std::input_iterator_tag iterator_category;
+    };
 
-
-        template <>
-        struct lowest_category_iterator<
-            std::forward_iterator_tag,
-            std::random_access_iterator_tag> {
-                typedef std::forward_iterator_tag iterator_category;
-        };
-
-        template <>
-        struct lowest_category_iterator<
-            std::forward_iterator_tag,
-            std::bidirectional_iterator_tag> {
-                typedef std::forward_iterator_tag iterator_category;
-        };
-
-        template <>
-        struct lowest_category_iterator<
-            std::forward_iterator_tag,
-            std::forward_iterator_tag> {
-                typedef std::forward_iterator_tag iterator_category;
-        };
-
-        template <>
-        struct lowest_category_iterator<
-            std::forward_iterator_tag,
-            std::input_iterator_tag> {
-                typedef std::input_iterator_tag iterator_category;
-        };
-
-        template <>
-        struct lowest_category_iterator<
-            std::forward_iterator_tag,
-            std::output_iterator_tag> {
-                typedef std::output_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::random_access_iterator_tag,
+        std::output_iterator_tag> {
+        typedef std::output_iterator_tag iterator_category;
+    };
 
 
-        template <>
-        struct lowest_category_iterator<
-            std::input_iterator_tag,
-            std::random_access_iterator_tag> {
-                typedef std::input_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::bidirectional_iterator_tag,
+        std::random_access_iterator_tag> {
+        typedef std::bidirectional_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::input_iterator_tag,
-            std::bidirectional_iterator_tag> {
-                typedef std::input_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::bidirectional_iterator_tag,
+        std::bidirectional_iterator_tag> {
+        typedef std::bidirectional_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::input_iterator_tag,
-            std::forward_iterator_tag> {
-                typedef std::input_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::bidirectional_iterator_tag,
+        std::forward_iterator_tag> {
+        typedef std::forward_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::input_iterator_tag,
-            std::input_iterator_tag> {
-                typedef std::input_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::bidirectional_iterator_tag,
+        std::input_iterator_tag> {
+        typedef std::input_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::input_iterator_tag,
-            std::output_iterator_tag> {
-                typedef void iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::bidirectional_iterator_tag,
+        std::output_iterator_tag> {
+        typedef std::output_iterator_tag iterator_category;
+    };
 
 
-        template <>
-        struct lowest_category_iterator<
-            std::output_iterator_tag,
-            std::random_access_iterator_tag> {
-                typedef std::output_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::forward_iterator_tag,
+        std::random_access_iterator_tag> {
+        typedef std::forward_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::output_iterator_tag,
-            std::bidirectional_iterator_tag> {
-                typedef std::output_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::forward_iterator_tag,
+        std::bidirectional_iterator_tag> {
+        typedef std::forward_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::output_iterator_tag,
-            std::forward_iterator_tag> {
-                typedef std::output_iterator_tag iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::forward_iterator_tag,
+        std::forward_iterator_tag> {
+        typedef std::forward_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::output_iterator_tag,
-            std::input_iterator_tag> {
-                typedef void iterator_category;
-        };
+    template <>
+    struct lowest_category_iterator<
+        std::forward_iterator_tag,
+        std::input_iterator_tag> {
+        typedef std::input_iterator_tag iterator_category;
+    };
 
-        template <>
-        struct lowest_category_iterator<
-            std::output_iterator_tag,
-            std::output_iterator_tag> {
-                typedef std::output_iterator_tag iterator_category;
-        };
-        #endif
+    template <>
+    struct lowest_category_iterator<
+        std::forward_iterator_tag,
+        std::output_iterator_tag> {
+        typedef std::output_iterator_tag iterator_category;
+    };
 
-    }
+
+    template <>
+    struct lowest_category_iterator<
+        std::input_iterator_tag,
+        std::random_access_iterator_tag> {
+        typedef std::input_iterator_tag iterator_category;
+    };
+
+    template <>
+    struct lowest_category_iterator<
+        std::input_iterator_tag,
+        std::bidirectional_iterator_tag> {
+        typedef std::input_iterator_tag iterator_category;
+    };
+
+    template <>
+    struct lowest_category_iterator<
+        std::input_iterator_tag,
+        std::forward_iterator_tag> {
+        typedef std::input_iterator_tag iterator_category;
+    };
+
+    template <>
+    struct lowest_category_iterator<
+        std::input_iterator_tag,
+        std::input_iterator_tag> {
+        typedef std::input_iterator_tag iterator_category;
+    };
+
+    template <>
+    struct lowest_category_iterator<
+        std::input_iterator_tag,
+        std::output_iterator_tag> {
+        typedef void iterator_category;
+    };
+
+
+    template <>
+    struct lowest_category_iterator<
+        std::output_iterator_tag,
+        std::random_access_iterator_tag> {
+        typedef std::output_iterator_tag iterator_category;
+    };
+
+    template <>
+    struct lowest_category_iterator<
+        std::output_iterator_tag,
+        std::bidirectional_iterator_tag> {
+        typedef std::output_iterator_tag iterator_category;
+    };
+
+    template <>
+    struct lowest_category_iterator<
+        std::output_iterator_tag,
+        std::forward_iterator_tag> {
+        typedef std::output_iterator_tag iterator_category;
+    };
+
+    template <>
+    struct lowest_category_iterator<
+        std::output_iterator_tag,
+        std::input_iterator_tag> {
+        typedef void iterator_category;
+    };
+
+    template <>
+    struct lowest_category_iterator<
+        std::output_iterator_tag,
+        std::output_iterator_tag> {
+        typedef std::output_iterator_tag iterator_category;
+    };
+    #endif
 
 }
 

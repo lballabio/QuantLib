@@ -75,9 +75,6 @@ namespace QuantLib {
     template <class T>
     void BinomialVanillaEngine<T>::calculate() const {
 
-        using namespace QuantLib::TermStructures;
-        using namespace QuantLib::VolTermStructures;
-
         double s0 = arguments_.underlying;
         double v = arguments_.volTS->blackVol(arguments_.maturity, s0);
         Rate r = arguments_.riskFreeTS->zeroYield(arguments_.maturity);

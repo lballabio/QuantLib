@@ -73,13 +73,13 @@ namespace QuantLib {
         originalArguments_->dividendTS    = 
             RelinkableHandle<TermStructure>(
                 Handle<TermStructure>(
-                    new TermStructures::QuantoTermStructure(
-                        arguments_.dividendTS,
-                        arguments_.riskFreeTS, 
-                        arguments_.foreignRiskFreeTS,
-                        arguments_.volTS, strike,
-                        arguments_.exchRateVolTS, exchangeRateATMlevel,
-                        arguments_.correlation)));
+                    new QuantoTermStructure(arguments_.dividendTS,
+                                            arguments_.riskFreeTS, 
+                                            arguments_.foreignRiskFreeTS,
+                                            arguments_.volTS, strike,
+                                            arguments_.exchRateVolTS, 
+                                            exchangeRateATMlevel,
+                                            arguments_.correlation)));
         originalArguments_->riskFreeTS    = arguments_.riskFreeTS;
         originalArguments_->volTS         = arguments_.volTS;
         originalArguments_->maturity      = arguments_.maturity;

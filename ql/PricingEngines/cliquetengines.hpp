@@ -67,7 +67,7 @@ namespace QuantLib {
             }
 
             try {
-                Handle<VolTermStructures::BlackConstantVol> constVolTS = 
+                Handle<BlackConstantVol> constVolTS = 
                     (*(arguments.blackVolTS)).currentLink();
                 return TimeGrid(resetTimes.begin(), resetTimes.end());
             } catch (...) {

@@ -18,8 +18,6 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::TermStructures;
-
 
 //Number of swaptions to be calibrated to...
 

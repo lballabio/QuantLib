@@ -25,88 +25,87 @@
 #include <ql/termstructure.hpp>
 
 namespace QuantLib {
-    namespace TermStructures {
 
-        //! Term structure with added spread on the instantaneous forward rate
-        /*! \note This term structure will remain linked to the original
-                structure, i.e., any changes in the latter will be reflected in
-                this structure as well.
+    //! Term structure with added spread on the instantaneous forward rate
+    /*! \note This term structure will remain linked to the original
+              structure, i.e., any changes in the latter will be
+              reflected in this structure as well.
+    */
+    class ForwardSpreadedTermStructure : public ForwardRateStructure,
+                                         public Observer {
+      public:
+        ForwardSpreadedTermStructure(
+                               const RelinkableHandle<TermStructure>&,
+                               const RelinkableHandle<MarketElement>& spread);
+        //! \name TermStructure interface
+        //@{
+        DayCounter dayCounter() const;
+        Date todaysDate() const;
+        Date referenceDate() const;
+        Date maxDate() const;
+        Time maxTime() const;
+        //@}
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
+      protected:
+        //! returns the spreaded forward rate
+        Rate forwardImpl(Time, bool extrapolate = false) const;
+        //! returns the spreaded zero yield rate
+        /*! \warning This method must disappear should the spread become a
+          curve
         */
-        class ForwardSpreadedTermStructure : public ForwardRateStructure,
-                                             public Observer {
-          public:
-            ForwardSpreadedTermStructure(
-                const RelinkableHandle<TermStructure>&,
-                const RelinkableHandle<MarketElement>& spread);
-            //! \name TermStructure interface
-            //@{
-            DayCounter dayCounter() const;
-            Date todaysDate() const;
-            Date referenceDate() const;
-            Date maxDate() const;
-            Time maxTime() const;
-            //@}
-            //! \name Observer interface
-            //@{
-            void update();
-            //@}
-          protected:
-            //! returns the spreaded forward rate
-            Rate forwardImpl(Time, bool extrapolate = false) const;
-            //! returns the spreaded zero yield rate
-            /*! \warning This method must disappear should the spread become a
-                         curve
-            */
-            Rate zeroYieldImpl(Time, bool extrapolate = false) const;
-          private:
-            RelinkableHandle<TermStructure> originalCurve_;
-            RelinkableHandle<MarketElement> spread_;
-        };
+        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
+      private:
+        RelinkableHandle<TermStructure> originalCurve_;
+        RelinkableHandle<MarketElement> spread_;
+    };
 
-        inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(
-            const RelinkableHandle<TermStructure>& h,
-            const RelinkableHandle<MarketElement>& spread)
-        : originalCurve_(h), spread_(spread) {
-            registerWith(originalCurve_);
-            registerWith(spread_);
-        }
+    inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(
+                                const RelinkableHandle<TermStructure>& h,
+                                const RelinkableHandle<MarketElement>& spread)
+    : originalCurve_(h), spread_(spread) {
+        registerWith(originalCurve_);
+        registerWith(spread_);
+    }
 
-        inline DayCounter ForwardSpreadedTermStructure::dayCounter() const {
-            return originalCurve_->dayCounter();
-        }
+    inline DayCounter ForwardSpreadedTermStructure::dayCounter() const {
+        return originalCurve_->dayCounter();
+    }
 
-        inline Date ForwardSpreadedTermStructure::todaysDate() const {
-            return originalCurve_->todaysDate();
-        }
+    inline Date ForwardSpreadedTermStructure::todaysDate() const {
+        return originalCurve_->todaysDate();
+    }
 
-        inline Date ForwardSpreadedTermStructure::referenceDate() const {
-            return originalCurve_->referenceDate();
-        }
+    inline Date ForwardSpreadedTermStructure::referenceDate() const {
+        return originalCurve_->referenceDate();
+    }
 
-        inline Date ForwardSpreadedTermStructure::maxDate() const {
-            return originalCurve_->maxDate();
-        }
+    inline Date ForwardSpreadedTermStructure::maxDate() const {
+        return originalCurve_->maxDate();
+    }
 
-        inline Time ForwardSpreadedTermStructure::maxTime() const {
-            return originalCurve_->maxTime();
-        }
+    inline Time ForwardSpreadedTermStructure::maxTime() const {
+        return originalCurve_->maxTime();
+    }
 
-        inline void ForwardSpreadedTermStructure::update() {
-            notifyObservers();
-        }
+    inline void ForwardSpreadedTermStructure::update() {
+        notifyObservers();
+    }
 
-        inline Rate ForwardSpreadedTermStructure::forwardImpl(Time t,
-            bool extrapolate) const {
-                return originalCurve_->instantaneousForward(t, extrapolate) +
-                    spread_->value();
-        }
+    inline Rate ForwardSpreadedTermStructure::forwardImpl(Time t,
+                                                          bool extrapolate) 
+                                                                       const {
+        return originalCurve_->instantaneousForward(t, extrapolate) +
+            spread_->value();
+    }
 
-        inline Rate ForwardSpreadedTermStructure::zeroYieldImpl(Time t,
-            bool extrapolate) const {
-                return originalCurve_->zeroYield(t, extrapolate) +
-                    spread_->value();
-        }
-
+    inline Rate ForwardSpreadedTermStructure::zeroYieldImpl(Time t,
+                                                            bool extrapolate) 
+                                                                       const {
+        return originalCurve_->zeroYield(t, extrapolate) +
+            spread_->value();
     }
 
 }
