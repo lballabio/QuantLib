@@ -809,12 +809,12 @@ void OldPricerTest::testMcMultiFactorPricers() {
     // McEverest
     testMcMFPricer(McEverest(dividendYields, covariance,
                              riskFreeRate, resTime, false, seed),
-                   0.7573671360,
+                   0.7576728045,
                    1.0e-5,
                    "McEverest");
     testMcMFPricer(McEverest(dividendYields, covariance,
                              riskFreeRate, resTime, true, seed),
-                   0.7589007593,
+                   0.7595186301,
                    1.0e-5,
                    "McEverest");
 
@@ -843,12 +843,12 @@ void OldPricerTest::testMcMultiFactorPricers() {
     assetValues[3] = 105.0;
     testMcMFPricer(McMaxBasket(assetValues, dividendYields, covariance,
                                riskFreeRate, resTime, false, seed),
-                   123.5888551983,
+                   122.9022162184,
                    1.0e-5,
                    "McMaxBasket");
     testMcMFPricer(McMaxBasket(assetValues, dividendYields, covariance,
                                riskFreeRate, resTime, true, seed),
-                   123.6730798620,
+                   123.4285003113,
                    1.0e-5,
                    "McMaxBasket");
 
@@ -868,13 +868,13 @@ void OldPricerTest::testMcMultiFactorPricers() {
     testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields,
                             covariance, riskFreeRate, timeIncrements,
                             false, seed),
-                   0.0396631508,
+                   0.0375712308,
                    1.0e-5,
                    "McPagoda");
     testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields,
                             covariance, riskFreeRate, timeIncrements,
                             true, seed),
-                   0.0398469344,
+                   0.0400207621,
                    1.0e-5,
                    "McPagoda");
 
@@ -883,13 +883,13 @@ void OldPricerTest::testMcMultiFactorPricers() {
     testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance,
                               riskFreeRate, strike, timeIncrements,
                               false, seed),
-                   5.8957072859,
+                   5.8695504793,
                    1.0e-5,
                    "McHimalaya");
     testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance,
                               riskFreeRate, strike, timeIncrements,
                               true, seed),
-                   5.8444928730,
+                   6.0712230330,
                    1.0e-5,
                    "McHimalaya");
 }

@@ -31,10 +31,10 @@ namespace QuantLib {
     //! Base error class
     class Error : public std::exception {
       public:
-        explicit Error(const std::string& what = "") : message(what) {}
+        explicit Error(const std::string& what = "") : message_(what) {}
         ~Error() throw() {}
         //! returns the error message.
-        const char* what() const throw () { return message.c_str(); }
+        const char* what() const throw () { return message_.c_str(); }
         // formats file and line information
         static std::string where(const char* file, int line) {
             #if QL_ERROR_LINES
@@ -46,7 +46,7 @@ namespace QuantLib {
             #endif
         }
       private:
-        std::string message;
+        std::string message_;
     };
 
     //! Specialized error

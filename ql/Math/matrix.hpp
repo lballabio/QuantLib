@@ -170,8 +170,9 @@ namespace QuantLib {
     enum SalvagingAlgorithm {None, Spectral, Hypersphere};
     //! returns the pseudo square root of a real symmetric matrix
     /*! returns the pseudo square root of a real symmetric matrix.
+
         If the matrix is not positive semi definite, it can
-        returns an approximation of the pseudo square root
+        return an approximation of the pseudo square root
         using a (user selected) salvaging algorithm
 
         For more information see: "The most general methodology to create
@@ -182,22 +183,27 @@ namespace QuantLib {
 
         Revised and extended in "Monte Carlo Methods in Finance",
         by Peter Jäckel, Chapter 6
-                    
-        \relates Matrix 
+
+        \relates Matrix
     */
     Disposable<Matrix> pseudoSqrt(const Matrix& realSymmetricMatrix,
-                                  SalvagingAlgorithm sa = None);
+                                  SalvagingAlgorithm sa);
 
-    //! returns the pseudo square root of a real symmetric matrix
-    /*! returns the pseudo square root of a real symmetric matrix.
-            
-        \deprecated use pseudoSqrt instead
-        \relates Matrix 
-    */
-    Disposable<Matrix> matrixSqrt(const Matrix& realSymmetricMatrix);
+    Disposable<Matrix> rankReducedSqrt(const Matrix& realSymmetricMatrix,
+                                       Size maxRank,
+                                       double componentRetainedPercentage,
+                                       SalvagingAlgorithm sa);
 
 
     // inline definitions
+
+    /*! \deprecated
+
+        use CholeskyDecompostion or pseudoSqrt instead
+    */
+    inline Disposable<Matrix> matrixSqrt(const Matrix& m) {
+        return pseudoSqrt(m, None);
+    }
 
     inline Matrix::Matrix()
     : pointer_(0), rows_(0), columns_(0) {}
@@ -431,7 +437,7 @@ namespace QuantLib {
         return columns_;
     }
 
-    inline Disposable<Matrix> operator+(const Matrix& m1, 
+    inline Disposable<Matrix> operator+(const Matrix& m1,
                                         const Matrix& m2) {
         QL_REQUIRE(m1.rows() == m2.rows() &&
                    m1.columns() == m2.columns(),
@@ -442,7 +448,7 @@ namespace QuantLib {
         return temp;
     }
 
-    inline Disposable<Matrix> operator-(const Matrix& m1, 
+    inline Disposable<Matrix> operator-(const Matrix& m1,
                                         const Matrix& m2) {
         QL_REQUIRE(m1.rows() == m2.rows() &&
                    m1.columns() == m2.columns(),
@@ -497,7 +503,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Disposable<Matrix> operator*(const Matrix& m1, 
+    inline Disposable<Matrix> operator*(const Matrix& m1,
                                         const Matrix& m2) {
         QL_REQUIRE(m1.columns() == m2.rows(),
                    "matrices with different sizes cannot be multiplied");
@@ -517,15 +523,15 @@ namespace QuantLib {
         return result;
     }
 
-    inline Disposable<Matrix> outerProduct(const Array& v1, 
+    inline Disposable<Matrix> outerProduct(const Array& v1,
                                            const Array& v2) {
         return outerProduct(v1.begin(), v1.end(), v2.begin(), v2.end());
     }
 
     template<class Iterator1, class Iterator2>
-    inline Disposable<Matrix> outerProduct(Iterator1 v1begin, 
+    inline Disposable<Matrix> outerProduct(Iterator1 v1begin,
                                            Iterator1 v1end,
-                                           Iterator2 v2begin, 
+                                           Iterator2 v2begin,
                                            Iterator2 v2end) {
 
         Size size1 = std::distance(v1begin, v1end);
@@ -543,9 +549,6 @@ namespace QuantLib {
         return result;
     }
 
-    inline Disposable<Matrix> matrixSqrt(const Matrix& m) {
-        return pseudoSqrt(m, None);
-    }
 
 }
 
