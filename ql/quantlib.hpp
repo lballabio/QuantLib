@@ -170,6 +170,7 @@
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/sequencestatistics.hpp>
 #include <ql/Math/statistics.hpp>
+#include <ql/Math/svd.hpp>
 #include <ql/Math/symmetriceigenvalues.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
 
@@ -251,6 +252,7 @@
 #include <ql/Pricers/treecapfloor.hpp>
 #include <ql/Pricers/treeswaption.hpp>
 
+#include <ql/PricingEngines/americanmcengines.hpp>
 #include <ql/PricingEngines/cliquetengines.hpp>
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 #include <ql/PricingEngines/forwardengines.hpp>
