@@ -30,3 +30,14 @@ Changes since release 0.3.7:
 - Added compilation flag to select default floating-coupon type
 
 - Added Faure low-discrepancy sequence; tests provided
+
+- Added the implementation of Sobol sequences using the coefficients of the free
+  direction integers as provided by Bratley and Fox, who credited unpublished
+  work of Sobol' and Levitan.
+
+- Added an implementation of Sobol sequences using the coefficients of the free
+  direction integers of Lemieux, Cieslak, and Luttmer. Coefficients for d<=40
+  are the same as in Bradley-Fox. For dimension 40<d<=360 the coefficients have
+  been calculated as optimal values based on the "resolution" criterion. The
+  values has been provided by Christiane Lemieux, private communication,
+  September 2004.
