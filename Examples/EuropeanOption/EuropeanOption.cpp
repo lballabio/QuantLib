@@ -264,12 +264,13 @@ int main(int argc, char* argv[])
         vols[0][0] = 0.2; vols[0][1] = 0.18; vols[0][2] = 0.16; 
         vols[1][0] = 0.2; vols[1][1] = 0.18; vols[1][2] = 0.16; 
         vols[2][0] = 0.2; vols[2][1] = 0.18; vols[2][2] = 0.16; 
-        Handle<BlackVolTermStructure> blackSurface(new
+        RelinkableHandle<BlackVolTermStructure> blackSurface(
+            Handle<BlackVolTermStructure> (new
             VolTermStructures::BlackVarianceSurface<
             Math::BilinearInterpolation<
             std::vector<double>::const_iterator,
 			std::vector<double>::const_iterator,
-            Math::Matrix> >(settlementDate, dates, strikes, vols));
+            Math::Matrix> >(settlementDate, dates, strikes, vols)));
 
         VolTermStructures::LocalVolSurface locVol(blackSurface,
             flatTermStructure, flatDividendTS, underlyingH);
