@@ -122,9 +122,9 @@ namespace QuantLib {
             return next_;
         }
 
-        template <class RNG>
-        inline const typename PathGenerator<RNG>::sample_type&
-        PathGenerator<RNG>::antithetic() const {
+        template <class SG>
+        inline const typename PathGenerator<SG>::sample_type&
+        PathGenerator<SG>::antithetic() const {
 
             typedef typename SG::sample_type sequence_type;
             const sequence_type& sequence_ = generator_.lastSequence();
