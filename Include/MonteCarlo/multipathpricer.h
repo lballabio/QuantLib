@@ -25,14 +25,16 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/02 10:50:02  marmar
+    Include-guard redefined
+
     Revision 1.1  2001/01/25 16:11:17  marmar
     MultiPath, the first step for a multi-dimensional Monte Carlo
 
-
 */
 
-#ifndef quantlib_montecarlo_path_pricer_h
-#define quantlib_montecarlo_path_pricer_h
+#ifndef quantlib_montecarlo_multi_path_pricer_h
+#define quantlib_montecarlo_multi_path_pricer_h
 
 #include "qldefines.h"
 #include "multipath.h"
