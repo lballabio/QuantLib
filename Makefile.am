@@ -25,6 +25,8 @@ EXTRA_DIST = \
 	makefile.mak \
 	quantlib.m4
 
+examples:
+	$(MAKE) -C Examples examples
 
 docs-all:
 	$(MAKE) -C Docs docs-all

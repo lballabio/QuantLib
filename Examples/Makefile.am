@@ -11,3 +11,7 @@ EXTRA_DIST = \
     Examples.dsw \
     makefile.mak \
     README.txt
+
+examples:
+	for d in $(SUBDIRS); do $(MAKE) -C $$d examples; done
+
