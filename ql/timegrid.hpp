@@ -26,6 +26,7 @@
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <vector>
+#include <numeric>
 
 namespace QuantLib {
 
