@@ -100,17 +100,17 @@ QL_CHECK_BOOST
 AM_CONDITIONAL(EMACS_FOUND, test "${EMACS}" != "no")
 
 # site configuration
-AC_ARG_ENABLE([extra-safety-checks],
-              AC_HELP_STRING([--enable-extra-safety-checks],
-                             [If enabled, extra run-time checks are added
-                              to a few functions. This can prevent their
-                              inlining and degrade performance.]),
-              [ql_belt_and_braces=$enableval],
-              [ql_belt_and_braces=no])
-if test "$ql_belt_and_braces" = "yes" ; then
-   AC_DEFINE([QL_EXTRA_SAFETY_CHECKS],[1],
-             [Define this if extra safety checks should be performed.
-              This can degrade performance.])
+AC_ARG_ENABLE([error-lines],
+              AC_HELP_STRING([--enable-error-lines],
+                             [If enabled (the default), file and line
+                              information is added to the error messages
+                              thrown by the library.]),
+              [ql_error_lines=$enableval],
+              [ql_error_lines=yes])
+if test "$ql_error_lines" = "yes" ; then
+   AC_DEFINE([QL_ERROR_LINES],[1],
+             [Define this if error messages should include file and line
+              information.])
 fi
 
 AC_ARG_ENABLE([negative-rates],
@@ -127,17 +127,17 @@ if test "$ql_negative_rates" = "yes" ; then
               This might not be safe.])
 fi
 
-AC_ARG_ENABLE([error-lines],
-              AC_HELP_STRING([--enable-error-lines],
-                             [If enabled (the default), file and line 
-                              information is added to the error messages 
-                              thrown by the library.]),
-              [ql_error_lines=$enableval],
-              [ql_error_lines=yes])
-if test "$ql_error_lines" = "yes" ; then
-   AC_DEFINE([QL_ERROR_LINES],[1],
-             [Define this if error messages should include file and line
-              information.])
+AC_ARG_ENABLE([extra-safety-checks],
+              AC_HELP_STRING([--enable-extra-safety-checks],
+                             [If enabled, extra run-time checks are added
+                              to a few functions. This can prevent their
+                              inlining and degrade performance.]),
+              [ql_belt_and_braces=$enableval],
+              [ql_belt_and_braces=no])
+if test "$ql_belt_and_braces" = "yes" ; then
+   AC_DEFINE([QL_EXTRA_SAFETY_CHECKS],[1],
+             [Define this if extra safety checks should be performed.
+              This can degrade performance.])
 fi
 
 AC_ARG_ENABLE([early-payments],
@@ -153,6 +153,18 @@ if test "$ql_early_payments" = "no" ; then
    AC_DEFINE([QL_TODAYS_PAYMENTS],[1],
              [Define this if payments occurring today should enter the NPV
               of an instrument.])
+fi
+
+AC_ARG_ENABLE([deprecated-code-disabled],
+              AC_HELP_STRING([--enable-deprecated-code-disabled],
+                             [If enabled , deprecated code will be
+                              disabled.]),
+              [ql_deprecated_code_disabled=$enableval],
+              [ql_deprecated_code_disabled=no])
+if test "$ql_deprecated_code_disabled" = "no" ; then
+   AC_DEFINE([QL_DEPRECATED_DISABLED],[1],
+             [Define this if you want to disable deprecated
+              code.])
 fi
 
 AC_ARG_ENABLE([examples],
