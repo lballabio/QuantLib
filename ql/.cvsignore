@@ -2,3 +2,5 @@ config.hpp
 config.hpp.in
 stamp-h
 stamp-h.in
+.qldefines.hpp
+
