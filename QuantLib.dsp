@@ -1002,6 +1002,10 @@ SOURCE=.\Sources\solver1d.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\ql\solver1d.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Include\ql\spread.hpp
 # End Source File
 # Begin Source File
