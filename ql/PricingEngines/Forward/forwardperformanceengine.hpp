@@ -62,27 +62,26 @@ namespace QuantLib {
     getOriginalResults() const {
 
         const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+            this->arguments_.blackScholesProcess;
 
         Time resetTime = process->riskFreeRate()->dayCounter().yearFraction(
                                     process->riskFreeRate()->referenceDate(), 
-                                    arguments_.resetDate);
-        DiscountFactor discR = 
-            process->riskFreeRate()->discount(arguments_.resetDate);
+                                    this->arguments_.resetDate);
+        DiscountFactor discR = process->riskFreeRate()->discount(
+                                    this->arguments_.resetDate);
         // it's a performance option
         discR /= process->stateVariable()->value();
 
-        Real temp = originalResults_->value;
-        results_.value = discR * temp;
-        results_.delta = 0.0;
-        results_.gamma = 0.0;
-        results_.theta = process->riskFreeRate()->zeroYield(
-                                                        arguments_.resetDate) 
-            * results_.value;
-        results_.vega = discR * originalResults_->vega;
-        results_.rho = - resetTime * results_.value +
-            discR * originalResults_->rho;
-        results_.dividendRho = discR * originalResults_->dividendRho;
+        Real temp = this->originalResults_->value;
+        this->results_.value = discR * temp;
+        this->results_.delta = 0.0;
+        this->results_.gamma = 0.0;
+        this->results_.theta = process->riskFreeRate()->zeroYield(
+            this->arguments_.resetDate) * this->results_.value;
+        this->results_.vega = discR * this->originalResults_->vega;
+        this->results_.rho = - resetTime * this->results_.value +
+            discR * this->originalResults_->rho;
+        this->results_.dividendRho = discR * this->originalResults_->dividendRho;
     }
 
 }

@@ -141,7 +141,7 @@ namespace QuantLib {
                       new BlackScholesProcess(spot, dividendYield,
                                               riskFreeRate, blackVolatility));
 
-        originalArguments_->exercise = arguments_.exercise;
+        originalArguments_->exercise = this->arguments_.exercise;
 
         originalArguments_->validate();
     }
@@ -159,25 +159,24 @@ namespace QuantLib {
                                                                       const {
 
         const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+            this->arguments_.blackScholesProcess;
 
         Time resetTime = process->riskFreeRate()->dayCounter().yearFraction(
                                     process->riskFreeRate()->referenceDate(), 
-                                    arguments_.resetDate);
+                                    this->arguments_.resetDate);
         DiscountFactor discQ = process->dividendYield()->discount(
-                                                        arguments_.resetDate);
+                                    this->arguments_.resetDate);
 
-        results_.value = discQ * originalResults_->value;
+        this->results_.value = discQ * originalResults_->value;
         // I need the strike derivative here ...
-        results_.delta = discQ * (originalResults_->delta +
-                  arguments_.moneyness * originalResults_->strikeSensitivity);
-        results_.gamma = 0.0;
-        results_.theta = process->dividendYield()->zeroYield(
-                                                        arguments_.resetDate) 
-            * results_.value;
-        results_.vega  = discQ * originalResults_->vega;
-        results_.rho   = discQ *  originalResults_->rho;
-        results_.dividendRho = - resetTime * results_.value
+        this->results_.delta = discQ * (originalResults_->delta +
+            this->arguments_.moneyness * originalResults_->strikeSensitivity);
+        this->results_.gamma = 0.0;
+        this->results_.theta = process->dividendYield()->zeroYield(
+            this->arguments_.resetDate) * this->results_.value;
+        this->results_.vega  = discQ * originalResults_->vega;
+        this->results_.rho   = discQ *  originalResults_->rho;
+        this->results_.dividendRho = - resetTime * this->results_.value
             + discQ * originalResults_->dividendRho;
     }
 
