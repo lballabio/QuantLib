@@ -122,12 +122,8 @@ int main(int argc, char* argv[])
         vols[3][0] = volatility*1.1; vols[3][1] = volatility; 
             vols[3][2] = volatility*0.9; vols[3][3] = volatility*0.8;
         RelinkableHandle<BlackVolTermStructure> blackSurface(
-            Handle<BlackVolTermStructure> (new
-            VolTermStructures::BlackVarianceSurface<
-            Math::BicubicSplineInterpolation<
-            std::vector<double>::const_iterator,
-			std::vector<double>::const_iterator,
-            Math::Matrix> >(settlementDate, dates, strikes, vols)));
+            Handle<BlackVolTermStructure>(
+                new BlackVarianceSurface(settlementDate, dates, strikes, vols)));
 
         // European option
         Instruments::VanillaOption euroOption(
