@@ -6,7 +6,6 @@ Makefile.win
 *.plg
 quantlib-test-suite
 build
-bin
 .deps
 .libs
 quantlib-test-suite.exe
