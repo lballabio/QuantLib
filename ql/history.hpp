@@ -89,27 +89,31 @@ namespace QuantLib {
             values, corresponding to the date range between
             <b><i>firstDate</i></b> and <b><i>lastDate</i></b> included.
 
-            \pre The size of <b><i>values</i></b> must equal the number of days
-            from <b><i>firstDate</i></b> to <b><i>lastDate</i></b> included.
+            \pre The size of <b><i>values</i></b> must equal the number of 
+                 days from <b><i>firstDate</i></b> to <b><i>lastDate</i></b> 
+                 included.
         */
         History(const Date& firstDate, const Date& lastDate,
             const std::vector<double>& values);
         /*! This constructor initializes the history with the given set of
-            values, corresponding each to the element with the same index in the
-            given set of dates. The whole date range between
+            values, corresponding each to the element with the same index in 
+            the given set of dates. The whole date range between
             <b><i>dates</i></b>[0] and <b><i>dates</i></b>[N-1] will be
             automatically filled by inserting null values where a date is
             missing from the given set.
 
             \pre <b><i>dates</i></b> must be sorted.
             \pre There can be no pairs
-            (<b><i>dates</i></b>[i],<b><i>values</i></b>[i]) and
-            (<b><i>dates</i></b>[j],<b><i>values</i></b>[j])
-            such that <tt>dates[i] == dates[j] && values[i] != values[j]</tt>.
-            Pairs with <tt>dates[i] == dates[j] && values[i] == values[j]</tt>
-            are allowed; the duplicated entries will be discarded.
-            \pre The size of <b><i>values</i></b> must equal the number of days
-            from <b><i>firstDate</i></b> to <b><i>lastDate</i></b> included.
+                 (<b><i>dates</i></b>[i],<b><i>values</i></b>[i]) and
+                 (<b><i>dates</i></b>[j],<b><i>values</i></b>[j])
+                 such that <tt>dates[i] == dates[j] && values[i] != 
+                 values[j]</tt>.
+                 Pairs with <tt>dates[i] == dates[j] && values[i] == 
+                 values[j]</tt> are allowed; the duplicated entries will be 
+                 discarded.
+            \pre The size of <b><i>values</i></b> must equal the number of 
+                 days from <b><i>firstDate</i></b> to <b><i>lastDate</i></b> 
+                 included.
         */
         History(const std::vector<Date>& dates,
             const std::vector<double>& values);
@@ -151,8 +155,8 @@ namespace QuantLib {
         {
             friend class History;
           public:
-            /* These typedefs are needed even though inherited from QL_ITERATOR
-               (see 14.6.2.3 of the standard).  */
+            /* These typedefs are needed even though inherited from 
+               QL_ITERATOR (see 14.6.2.3 of the standard).  */
             typedef Entry                           value_type;
             typedef int                             difference_type;
             typedef const Entry*                    pointer;
@@ -241,20 +245,21 @@ namespace QuantLib {
         typedef std::vector<double>::const_iterator const_data_iterator;
 
         //! bidirectional iterator on non-null historical data
-        typedef Utilities::filtering_iterator<const_data_iterator,DataValidator>
-            const_valid_data_iterator;
+        typedef 
+            Utilities::filtering_iterator<const_data_iterator,DataValidator>
+                const_valid_data_iterator;
 
         /*! \name Iterator access
             Four different types of iterators are provided, namely,
             const_iterator, const_valid_iterator, const_data_iterator, and
             const_valid_data_iterator.
 
-            const_iterator and const_valid_iterator point to an Entry structure,
-            the difference being that the latter only iterates over valid
-            entries - i.e., entries whose data are not null.
+            const_iterator and const_valid_iterator point to an Entry 
+            structure, the difference being that the latter only iterates 
+            over valid entries - i.e., entries whose data are not null.
             The same difference exists between const_data_iterator and
-            const_valid_data_iterator which point directly to historical values
-            without reference to the date they are associated to.
+            const_valid_data_iterator which point directly to historical 
+            values without reference to the date they are associated to.
         */
         //@{
         // entry iterators
@@ -295,8 +300,8 @@ namespace QuantLib {
             return const_valid_data_iterator(dend(),DataValidator(),
                 dbegin()-1,dend()); }
         const_valid_data_iterator valid_data_iterator(const Date& d) const {
-            return const_valid_data_iterator(data_iterator(d),DataValidator(),
-            dbegin()-1,dend());
+            return const_valid_data_iterator(data_iterator(d),
+                DataValidator(), dbegin()-1,dend());
         }
         //@}
       private:
@@ -315,8 +320,8 @@ namespace QuantLib {
 
 
     /*! \example history_iterators.cpp
-        This code exemplifies how to use History iterators to perform statistic
-        analyses on historical data.
+        This code exemplifies how to use History iterators to perform 
+        statistic analyses on historical data.
     */
 
 
@@ -326,7 +331,7 @@ namespace QuantLib {
         const std::vector<double>& values)
     : firstDate_(firstDate), lastDate_(lastDate), values_(values) {
         QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
-        QL_REQUIRE(values.size() == static_cast<unsigned int>((lastDate-firstDate))+1,
+        QL_REQUIRE(values.size() == (unsigned int)(lastDate-firstDate)+1,
             "history size incompatible with date range");
     }
 
