@@ -13,6 +13,7 @@ libQuantLib_la_LIBADD = ./Calendars/libCalendars.la \
 	TermStructures/libTermStructures.la
 
 
-libQuantLib_la_SOURCES = calendar.cpp dataformatters.cpp date.cpp solver1d.cpp
+libQuantLib_la_SOURCES = calendar.cpp dataformatters.cpp date.cpp \
+    solver1d.cpp risktool.cpp
 
 lib_LTLIBRARIES = libQuantLib.la
