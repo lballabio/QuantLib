@@ -95,7 +95,7 @@ namespace QuantLib {
         }
     }
 
-    double CapHelper::modelValue() {
+    double CapHelper::modelValue() const {
         cap_->setPricingEngine(engine_);
         return cap_->NPV();
     }

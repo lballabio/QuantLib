@@ -90,7 +90,7 @@ namespace QuantLib {
             times.push_back(params.floatingPayTimes[i]);
     }
 
-    double SwaptionHelper::modelValue() {
+    double SwaptionHelper::modelValue() const {
         swaption_->setPricingEngine(engine_);
         return swaption_->NPV();
     }

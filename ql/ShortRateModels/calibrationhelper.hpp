@@ -45,10 +45,10 @@ namespace QuantLib {
         }
 
         //! returns the actual price of the instrument (from volatility)
-        double marketValue() { return marketValue_; }
+        double marketValue() const { return marketValue_; }
 
         //! returns the price of the instrument according to the model
-        virtual double modelValue() = 0;
+        virtual double modelValue() const = 0;
 
         //! returns the error resulting from the model valuation
         virtual double calibrationError() {
