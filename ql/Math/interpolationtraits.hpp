@@ -19,6 +19,9 @@
     \brief traits classes for interpolation algorithms
 */
 
+#ifndef quantlib_interpolation_traits_hpp
+#define quantlib_interpolation_traits_hpp
+
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
@@ -86,3 +89,6 @@ namespace QuantLib {
     }
 
 }
+
+
+#endif
