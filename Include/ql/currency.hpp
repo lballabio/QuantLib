@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/17 14:59:25  lballabio
+    Added deposit conventions to Currency
+
     Revision 1.1  2001/04/09 14:03:54  nando
     all the *.hpp moved below the Include/ql level
 
@@ -46,8 +49,9 @@
 #define quantlib_currency_h
 
 #include "ql/qldefines.hpp"
-#include "ql/calendar.hpp"
 #include "ql/date.hpp"
+#include "ql/calendar.hpp"
+#include "ql/daycounter.hpp"
 #include "ql/handle.hpp"
 #include "ql/null.hpp"
 #include <string>
@@ -78,7 +82,16 @@ namespace QuantLib {
         //! Returns the settlement date relative to a given actual date.
         Date settlementDate(const Date&) const;
         //@}
-        // conventions for deposits or any other rates can be added
+        //! \name Deposit conventions
+        //@{
+        //! Returns the day count for calculating deposit periods.
+        virtual Handle<DayCounter> depositDayCounter() const = 0;
+        //! Returns true if dates are adjusted.
+        virtual bool depositIsAdjusted() const = 0;
+        //! Returns true if dates are adjusted to modified following.
+        virtual bool depositIsModified() const = 0;
+        //@}
+        // conventions for other rates will be added
     };
 
     // comparison based on name

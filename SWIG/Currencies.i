@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.23  2001/05/17 14:59:25  lballabio
+    Added deposit conventions to Currency
+
     Revision 1.22  2001/05/17 14:23:32  lballabio
     Removed phony currencies before adding methods to interface
 
@@ -42,6 +45,7 @@
 
 %include Date.i
 %include Calendars.i
+%include DayCounters.i
 %include String.i
 
 %{
@@ -88,6 +92,15 @@ using QuantLib::Currencies::CHF;
     }
     Date settlementDate(const Date& d) {
         return (*self)->settlementDate(d);
+    }
+    DayCounterHandle depositDayCounter() {
+        return (*self)->depositDayCounter();
+    }
+    bool depositIsAdjusted() {
+        return (*self)->depositIsAdjusted();
+    }
+    bool depositIsModified() {
+        return (*self)->depositIsModified();
     }
     #if defined (SWIGPYTHON) || defined (SWIGRUBY)
     String __str__() {

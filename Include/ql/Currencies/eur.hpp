@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/17 14:59:25  lballabio
+    Added deposit conventions to Currency
+
     Revision 1.1  2001/04/09 14:03:55  nando
     all the *.hpp moved below the Include/ql level
 
@@ -44,6 +47,7 @@
 #include "ql/qldefines.hpp"
 #include "ql/currency.hpp"
 #include "ql/Calendars/target.hpp"
+#include "ql/DayCounters/actual360.hpp"
 
 namespace QuantLib {
 
@@ -59,6 +63,13 @@ namespace QuantLib {
                 return Handle<Calendar>(new Calendars::TARGET); }
             //! returns 2
             int settlementDays() const { return 2; }
+            //! returns a handle to the actual/360 day counter
+            Handle<DayCounter> depositDayCounter() const {
+                return Handle<DayCounter>(new DayCounters::Actual360); }
+            //! returns true
+            bool depositIsAdjusted() const { return true; }
+            //! returns true
+            bool depositIsModified() const { return true; }
         };
 
     }
