@@ -94,7 +94,8 @@ libQuantLib_la_LIBADD = \
     MonteCarlo/libMonteCarlo.la \
     Optimization/libOptimization.la \
     Pricers/libPricers.la \
-    PricingEngines/libPricingEngines.la \
+    PricingEngines/Barrier/libBarrierEngines.la \
+    PricingEngines/Vanilla/libVanillaEngines.la \
     RandomNumbers/libRandomNumbers.la \
     ShortRateModels/libShortRateModels.la \
     ShortRateModels/CalibrationHelpers/libCalibrationHelpers.la \
