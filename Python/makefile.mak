@@ -183,7 +183,7 @@ test::
     python implied_volatility.py -b
     python montecarlo_pricers.py -b
     python plain_basket_option.py -b
-    python pagoda.py -b
+    python pagoda_option.py -b
     python random_generators.py -b
     python risk_statistics.py -b
     python statistics.py -b
