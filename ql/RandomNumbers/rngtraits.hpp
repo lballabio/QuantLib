@@ -34,10 +34,10 @@ namespace QuantLib {
 
     // random number traits
 
-    template <class URSG, class IC>
+    template <class URNG, class IC>
     struct GenericPseudoRandom {
         // typedefs
-        typedef URSG urng_type;
+        typedef URNG urng_type;
         typedef ICGaussianRng<urng_type,IC> rng_type;
         typedef RandomSequenceGenerator<urng_type> ursg_type;
         typedef ICGaussianRsg<ursg_type,IC> rsg_type;
