@@ -53,7 +53,7 @@ namespace QuantLib {
         class SwapAsset : public Asset {
           public:
             SwapAsset(const Instruments::SwaptionParameters& params,
-                      const Handle<Asset>& bond)
+                      const Handle<DiscountBondAsset>& bond)
             : parameters_(params), bond_(bond) {}
 
             void reset(Size size) {
@@ -99,7 +99,7 @@ namespace QuantLib {
           public:
             SwaptionAsset(
                 const Instruments::SwaptionParameters& params,
-                const Handle<Asset>& swap)
+                const Handle<SwapAsset>& swap)
             : parameters_(params), swap_(swap) {}
 
             void reset(Size size) {

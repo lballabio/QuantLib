@@ -55,13 +55,14 @@ namespace QuantLib {
             }
             virtual void applyCondition() {
                 if (time_ == maturity_) {
+                    Size i;
                     switch(type_) {
                       case Option::Call:
-                        for (size_t i=0; i<newValues_.size(); i++)
+                        for (i=0; i<newValues_.size(); i++)
                           newValues_[i] = QL_MAX(newValues_[i] - strike_, 0.0);
                         break;
                       case Option::Put:
-                        for (size_t i=0; i<newValues_.size(); i++)
+                        for (i=0; i<newValues_.size(); i++)
                           newValues_[i] = QL_MAX(strike_ - newValues_[i], 0.0);
                         break;
                     }

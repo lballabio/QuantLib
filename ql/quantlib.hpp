@@ -31,6 +31,7 @@
 
 #include <ql/argsandresults.hpp>
 #include <ql/array.hpp>
+#include <ql/asset.hpp>
 #include <ql/calendar.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/constraint.hpp>
@@ -126,6 +127,8 @@
 #include <ql/InterestRateModelling/OneFactorModels/coxingersollrossplus.hpp>
 #include <ql/InterestRateModelling/OneFactorModels/hullwhite.hpp>
 
+#include <ql/InterestRateModelling/TwoFactorModels/g2.hpp>
+
 #include <ql/Lattices/node.hpp>
 #include <ql/Lattices/timegrid.hpp>
 #include <ql/Lattices/tree.hpp>
@@ -175,6 +178,7 @@
 #include <ql/Patterns/factory.hpp>
 #include <ql/Patterns/observable.hpp>
 
+#include <ql/Pricers/analyticalcapfloor.hpp>
 #include <ql/Pricers/barrieroption.hpp>
 #include <ql/Pricers/binaryoption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>
@@ -194,6 +198,7 @@
 #include <ql/Pricers/fdmultiperiodoption.hpp>
 #include <ql/Pricers/fdshoutoption.hpp>
 #include <ql/Pricers/fdstepconditionoption.hpp>
+#include <ql/Pricers/jamshidianswaption.hpp>
 #include <ql/Pricers/mcbasket.hpp>
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>

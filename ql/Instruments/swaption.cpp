@@ -62,7 +62,8 @@ namespace QuantLib {
             const std::vector<Handle<CashFlow> >& fixedLeg = swap_.fixedLeg();
 
             parameters->payFixed = swap_.payFixedRate();
-            for (size_t i=0; i<fixedLeg.size(); i++) {
+            Size i;
+            for (i=0; i<fixedLeg.size(); i++) {
                 Time time = counter.yearFraction(today, fixedLeg[i]->date());
                 parameters->fixedPayTimes.push_back(time);
                 parameters->fixedCoupons.push_back(fixedLeg[i]->amount());
@@ -84,7 +85,7 @@ namespace QuantLib {
             }
 
             parameters->exerciseType = exercise_.type();
-            for (size_t i=0; i<exercise_.dates().size(); i++) {
+            for (i=0; i<exercise_.dates().size(); i++) {
                 Time time = counter.yearFraction(today, exercise_.dates()[i]);
                 parameters->exerciseTimes.push_back(time);
             }
