@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.30  2001/06/05 10:56:08  lballabio
+# Added docs-clean target
+#
 # Revision 1.29  2001/05/28 14:57:54  lballabio
 # Removed files removed from distribution list also
 #
@@ -57,3 +60,6 @@ docs-pdf:
 docs-man:
 	echo You need to install doxygen in order to generate documentation.
 endif
+docs-clean:
+	$(MAKE) -C Docs docs-clean
+
