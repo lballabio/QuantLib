@@ -240,7 +240,7 @@ int main(int argc, char* argv[])
             Handle<PricingEngine>(new JamshidianSwaption(modelHW)));
 
 
-        calibrateModel(modelHW, swaptions, 0.25);
+        calibrateModel(modelHW, swaptions, 0.05);
         std::cout << "calibrated to "
                   << modelHW->params()
                   << std::endl
@@ -251,7 +251,7 @@ int main(int argc, char* argv[])
             Handle<PricingEngine>(new TreeSwaption(modelHW2, grid)));
 
 
-        calibrateModel(modelHW2, swaptions, 0.25);
+        calibrateModel(modelHW2, swaptions, 0.05);
         std::cout << "calibrated to "
                   << modelHW2->params()
                   << std::endl
@@ -260,7 +260,7 @@ int main(int argc, char* argv[])
         std::cout << "Black-Karasinski: " << std::endl;
         swaptions.setPricingEngine(
             Handle<PricingEngine>(new TreeSwaption(modelBK, grid)));
-        calibrateModel(modelBK, swaptions, 0.25);
+        calibrateModel(modelBK, swaptions, 0.05);
         std::cout << "calibrated to "
                   << modelBK->params()
                   << std::endl
