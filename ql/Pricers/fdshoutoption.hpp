@@ -35,7 +35,7 @@
 #define quantlib_pricers_shout_option_h
 
 #include <ql/Pricers/fdstepconditionoption.hpp>
-#include <ql/Pricers/shoutcondition.hpp>
+#include <ql/FiniteDifferences/shoutcondition.hpp>
 
 namespace QuantLib {
 
@@ -69,8 +69,8 @@ namespace QuantLib {
 
         inline void FdShoutOption::initializeStepCondition() const {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
-                new ShoutCondition(initialPrices_, residualTime_,
-                    riskFreeRate_));
+                new FiniteDifferences::ShoutCondition(initialPrices_,
+                residualTime_, riskFreeRate_));
         }
 
     }

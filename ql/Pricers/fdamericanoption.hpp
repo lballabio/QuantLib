@@ -35,7 +35,7 @@
 #define quantlib_pricers_american_option_h
 
 #include <ql/Pricers/fdstepconditionoption.hpp>
-#include <ql/Pricers/americancondition.hpp>
+#include <ql/FiniteDifferences/americancondition.hpp>
 
 namespace QuantLib {
 
@@ -71,7 +71,7 @@ namespace QuantLib {
 
         inline void FdAmericanOption::initializeStepCondition() const {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
-                new AmericanCondition(initialPrices_));
+                new FiniteDifferences::AmericanCondition(initialPrices_));
         }
 
     }

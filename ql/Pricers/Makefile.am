@@ -5,7 +5,6 @@ INCLUDES= -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Pricers
 
 include_HEADERS = \
-    americancondition.hpp \
     barrieroption.hpp \
     binaryoption.hpp \
     cliquetoption.hpp \
@@ -36,9 +35,7 @@ include_HEADERS = \
     mcmaxbasket.hpp \
     mcpagoda.hpp \
     mcpricer.hpp \
-    shoutcondition.hpp \
-    singleassetoption.hpp \
-    swaptioncondition.hpp
+    singleassetoption.hpp
 
 EXTRA_DIST=makefile.mak
 

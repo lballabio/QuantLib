@@ -22,43 +22,46 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file americancondition.hpp
-    \brief american option exercise condition
+/*! \file shoutcondition.hpp
+    \brief shout option exercise condition
 
     \fullpath
-    ql/Pricers/%americancondition.hpp
+    ql/FiniteDifferences/%shoutcondition.hpp
 */
 
 // $Id$
 
-#ifndef bsm_american_condition_h
-#define bsm_american_condition_h
+#ifndef quantlib_fd_shout_condition_h
+#define quantlib_fd_shout_condition_h
 
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 
 namespace QuantLib {
 
-    namespace Pricers {
+    namespace FiniteDifferences {
 
-        class AmericanCondition
+        class ShoutCondition
         : public FiniteDifferences::StandardStepCondition {
           public:
-            AmericanCondition(const Array& initialPrices);
-            void applyTo(Array& a, Time t) const;
+            ShoutCondition(const Array& initialPrices,
+                           Time resTime,
+                           Rate rate);
+            void applyTo(Array& a,
+                         Time t) const;
           private:
             Array initialPrices_;
+            Time resTime_;
+            Rate rate_;
         };
 
+        inline ShoutCondition::ShoutCondition(
+            const Array& initialPrices, Time resTime, Rate rate)
+            : initialPrices_(initialPrices), resTime_(resTime), rate_(rate) {}
 
-        // inline definitions
-
-        inline AmericanCondition::AmericanCondition(
-            const Array& initialPrices)
-            : initialPrices_(initialPrices) {}
-
-        inline void AmericanCondition::applyTo(Array& a, Time t) const {
+        inline void ShoutCondition::applyTo(Array& a, Time t) const {
             for (size_t i = 0; i < a.size(); i++)
-                a[i] = QL_MAX(a[i], initialPrices_[i]);
+                a[i] = QL_MAX(a[i], QL_EXP(-rate_ * (t - resTime_)) *
+                                           initialPrices_[i] );
         }
 
     }

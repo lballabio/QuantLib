@@ -32,7 +32,7 @@
 // $Id$
 
 #include <ql/Pricers/europeanoption.hpp>
-#include <ql/Pricers/americancondition.hpp>
+#include <ql/FiniteDifferences/americancondition.hpp>
 #include <ql/Pricers/fdmultiperiodoption.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
@@ -194,7 +194,7 @@ namespace QuantLib {
 
         void FdMultiPeriodOption::initializeStepCondition() const{
             stepCondition_ = Handle<StandardStepCondition> (
-                             new AmericanCondition(initialPrices_));
+                new FiniteDifferences::AmericanCondition(initialPrices_));
         }
 
         using FiniteDifferences::StandardFiniteDifferenceModel;

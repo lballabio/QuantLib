@@ -37,7 +37,7 @@
 #include <vector>
 #include "ql/option.hpp"
 #include "ql/InterestRateModelling/onefactormodel.hpp"
-#include "ql/Pricers/swaptioncondition.hpp"
+#include "ql/FiniteDifferences/swaptioncondition.hpp"
 #include "ql/FiniteDifferences/onefactoroperator.hpp"
 
 namespace QuantLib {

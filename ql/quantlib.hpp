@@ -78,6 +78,7 @@
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 
+#include <ql/FiniteDifferences/americancondition.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/FiniteDifferences/bsmoperator.hpp>
 #include <ql/FiniteDifferences/cranknicolson.hpp>
@@ -90,7 +91,9 @@
 #include <ql/FiniteDifferences/finitedifferencemodel.hpp>
 #include <ql/FiniteDifferences/impliciteuler.hpp>
 #include <ql/FiniteDifferences/onefactoroperator.hpp>
+#include <ql/FiniteDifferences/shoutcondition.hpp>
 #include <ql/FiniteDifferences/stepcondition.hpp>
+#include <ql/FiniteDifferences/swaptioncondition.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
@@ -111,8 +114,10 @@
 #include <ql/InterestRateModelling/model.hpp>
 #include <ql/InterestRateModelling/onefactormodel.hpp>
 #include <ql/InterestRateModelling/swapfuturevalue.hpp>
+
 #include <ql/InterestRateModelling/CalibrationHelpers/cap.hpp>
 #include <ql/InterestRateModelling/CalibrationHelpers/swaption.hpp>
+
 #include <ql/InterestRateModelling/OneFactorModels/blackdermanandtoy.hpp>
 #include <ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp>
 #include <ql/InterestRateModelling/OneFactorModels/hoandlee.hpp>
@@ -165,11 +170,11 @@
 #include <ql/Patterns/factory.hpp>
 #include <ql/Patterns/observable.hpp>
 
-#include <ql/Pricers/americancondition.hpp>
 #include <ql/Pricers/barrieroption.hpp>
 #include <ql/Pricers/binaryoption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>
 #include <ql/Pricers/continuousgeometricapo.hpp>
+#include <ql/Pricers/couponbondoption.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
 #include <ql/Pricers/europeanengine.hpp>
@@ -182,6 +187,7 @@
 #include <ql/Pricers/fddividendoption.hpp>
 #include <ql/Pricers/fddividendshoutoption.hpp>
 #include <ql/Pricers/fdeuropean.hpp>
+#include <ql/Pricers/fdeuropeanswaption.hpp>
 #include <ql/Pricers/fdmultiperiodoption.hpp>
 #include <ql/Pricers/fdshoutoption.hpp>
 #include <ql/Pricers/fdstepconditionoption.hpp>
@@ -194,7 +200,6 @@
 #include <ql/Pricers/mcmaxbasket.hpp>
 #include <ql/Pricers/mcpagoda.hpp>
 #include <ql/Pricers/mcpricer.hpp>
-#include <ql/Pricers/shoutcondition.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>

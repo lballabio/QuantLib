@@ -35,7 +35,7 @@
 #define quantlib_dividend_shout_option_pricer_h
 
 #include <ql/Pricers/fddividendoption.hpp>
-#include <ql/Pricers/shoutcondition.hpp>
+#include <ql/FiniteDifferences/shoutcondition.hpp>
 
 namespace QuantLib {
 

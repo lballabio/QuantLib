@@ -23,31 +23,33 @@
 */
 
 /*! \file swaptioncondition.hpp
-    \brief swaption option exercise condition
+    \brief swaption exercise condition
 
     \fullpath
-    ql/Pricers/%swaptioncondition.hpp
+    ql/FiniteDifferences/%swaptioncondition.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_swaption_condition_h
-#define quantlib_pricers_swaption_condition_h
+#ifndef quantlib_fd_swaption_condition_h
+#define quantlib_fd_swaption_condition_h
 
 #include "ql/FiniteDifferences/fdtypedefs.hpp"
 #include "ql/InterestRateModelling/swapfuturevalue.hpp"
 
 namespace QuantLib {
 
-    namespace Pricers {
+    namespace FiniteDifferences {
 
         class SwaptionCondition
         : public FiniteDifferences::StandardStepCondition {
           public:
-            SwaptionCondition(const Handle<InterestRateModelling::Model>& model,
+            SwaptionCondition(
+                const Handle<InterestRateModelling::Model>& model,
                 const Handle<Instruments::SimpleSwap>& swap,
                 const std::vector<double>& rates);
-            void applyTo(Array& a, Time t) const;
+            void applyTo(Array& a,
+                         Time t) const;
           private:
             const Handle<InterestRateModelling::Model>& model_;
             const Handle<Instruments::SimpleSwap>& swap_;
@@ -64,10 +66,11 @@ namespace QuantLib {
         : model_(model), swap_(swap), rates_(rates) {}
 
         inline void SwaptionCondition::applyTo(Array& a, Time t) const {
-            for (unsigned int i = 0; i < a.size(); i++)
+            for (size_t i = 0; i < a.size(); i++)
                 a[i] = QL_MAX(a[i],
                     QL_MAX(0.0,
-                    InterestRateModelling::swapFutureValue(swap_, model_, rates_[i], t)));
+                    InterestRateModelling::swapFutureValue(swap_,
+                    model_, rates_[i], t)));
         }
 
     }
