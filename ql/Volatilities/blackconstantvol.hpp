@@ -14,11 +14,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file constantvol.hpp
+/*! \file blackconstantvol.hpp
     \brief Black constant volatility, no time dependence, no strike dependence
 
     \fullpath
-    ql/Volatilities/%constantvol.hpp
+    ql/Volatilities/%blackconstantvol.hpp
 */
 
 // $Id$
@@ -56,7 +56,7 @@ namespace QuantLib {
             // Observer interface
             void update();
           protected:
-            virtual double blackVolImpl(Time t, double strike,
+            virtual double blackVolImpl(Time t, double,
                 bool extrapolate = false) const;
           private:
             Date referenceDate_;
@@ -77,7 +77,7 @@ namespace QuantLib {
         inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
             const RelinkableHandle<MarketElement>& volatility,
             const DayCounter& dayCounter)
-        : referenceDate_(referenceDate), volatility_(volatility), 
+        : referenceDate_(referenceDate), volatility_(volatility),
           dayCounter_(dayCounter) {
             registerWith(volatility_);
         }

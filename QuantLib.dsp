@@ -1407,6 +1407,14 @@ SOURCE=.\ql\Volatilities\capflatvolvector.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Volatilities\localconstantvol.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\localvariancecurve.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Volatilities\swaptionvolmatrix.hpp
 # End Source File
 # End Group
