@@ -22,17 +22,20 @@ EXTRA_DIST = makefile.mak \
 docs-all: docs-pdf
 docs-html: docs-html-offline
 docs-html-offline:
-	export GENERATE_MAN=YES
-	export HTML=
-	$(DOXYGEN) quantlib.doxy
+	$(SED) -e "s/_MAN           = NO/_MAN           = YES/" \
+	       quantlib.doxy > quantlib.doxy.temp
+	$(DOXYGEN) quantlib.doxy.temp
+	rm quantlib.doxy.temp
 	cp images/*.jpg html
 	cp images/*.png html
 	cp images/*.eps latex
 	cp images/*.pdf latex
 docs-html-online:
-	export GENERATE_MAN=YES
-	export HTML=online
-	$(DOXYGEN) quantlib.doxy
+	$(SED) -e "s/quantlibfooter.html/quantlibfooteronline.html/" \
+	       -e "s/_MAN           = NO/_MAN           = YES/" \
+	       quantlib.doxy > quantlib.doxy.temp
+	$(DOXYGEN) quantlib.doxy.temp
+	rm quantlib.doxy.temp
 	cp images/*.jpg html
 	cp images/*.png html
 	cp images/*.eps latex

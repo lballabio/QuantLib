@@ -83,7 +83,7 @@ IGNORE_PREFIX          =
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_HEADER            = quantlibheader.html
-HTML_FOOTER            = quantlibfooter$(HTML).html
+HTML_FOOTER            = quantlibfooter.html
 HTML_STYLESHEET        = quantlib.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = YES
@@ -118,7 +118,7 @@ RTF_EXTENSIONS_FILE    =
 #---------------------------------------------------------------------------
 # configuration options related to the man page output
 #---------------------------------------------------------------------------
-GENERATE_MAN           = $(GENERATE_MAN)
+GENERATE_MAN           = NO
 MAN_OUTPUT             = man
 MAN_EXTENSION          = .3
 MAN_LINKS              = 
