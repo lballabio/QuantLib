@@ -60,8 +60,6 @@
     terms of the \f$ f_i \f$. A number of basic operators are defined in the
     framework which can be composed to form more complex operators, namely:
 
-    the identity operator \f$ I \f$ is implemented in class Identity;
-
     the first derivative \f$ \partial/\partial x \f$ is discretized as the
     operator \f$ D_+ \f$, defined as
     \f[ D_{+} u_{i} = \frac{u_{i+1}-u_{i}}{h} \f]
@@ -103,7 +101,7 @@
     determining a different discretization of the differential operators.
     One of such ways was implemented in the LexicographicalView class,
     while others will be implemented in the future. No 2-D operator is
-    currently implemented apart from the identity operator.
+    currently implemented.
 
 
     \subsection evolvers Time schemes
