@@ -39,6 +39,9 @@ namespace QuantLib {
             (e.g: mean, variance, skewness, kurtosis, error estimation,
             percentile, etc.) plus gaussian assumption risk measures
             (e.g.: value at risk, expected shortfall, etc.)
+
+            \warning high moments are numerically unstable for high
+                     average/standardDeviation ratios
         */
         class Statistics {
           public:

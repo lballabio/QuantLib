@@ -493,32 +493,11 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hs.downsideVariance();
-    if (QL_FABS(calculated-expected) > tolerance)
-        CPPUNIT_FAIL(
-            "HStatistics: "
-            "wrong downside variance\n"
-            "    calculated: "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    expected:   "
-            + DoubleFormatter::toString(expected));
     calculatedSequence = ss.downsideVariance();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
                 "SequenceStatistics<Statistics>: "
-                + IntegerFormatter::toOrdinal(i+1) + " dimension: "
-                "wrong downside variance\n"
-                "    calculated: "
-                + DoubleFormatter::toString(calculatedSequence[i]) + "\n"
-                "    expected:   "
-                + DoubleFormatter::toString(expected));
-    }
-    calculatedSequence = hss.downsideVariance();
-    for (i=0; i<dimension; i++) {
-        if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
-            CPPUNIT_FAIL(
-                "SequenceStatistics<HStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong downside variance\n"
                 "    calculated: "
@@ -543,32 +522,11 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hs.downsideDeviation();
-    if (QL_FABS(calculated-expected) > tolerance)
-        CPPUNIT_FAIL(
-            "HStatistics: "
-            "wrong downside deviation\n"
-            "    calculated: "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    expected:   "
-            + DoubleFormatter::toString(expected));
     calculatedSequence = ss.downsideDeviation();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
                 "SequenceStatistics<Statistics>: "
-                + IntegerFormatter::toOrdinal(i+1) + " dimension: "
-                "wrong downside deviation\n"
-                "    calculated: "
-                + DoubleFormatter::toString(calculatedSequence[i]) + "\n"
-                "    expected:   "
-                + DoubleFormatter::toString(expected));
-    }
-    calculatedSequence = hss.downsideDeviation();
-    for (i=0; i<dimension; i++) {
-        if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
-            CPPUNIT_FAIL(
-                "SequenceStatistics<HStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong downside deviation\n"
                 "    calculated: "

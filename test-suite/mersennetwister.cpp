@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 // $Id$
 
 #include "mersennetwister.hpp"
@@ -441,7 +442,7 @@ void MersenneTwisterTest::runTest() {
 
     // discard first 1000 sample
     for (i=0; i<1000; i++) {
-        double e = fabs((double(referenceLongValues[i])+ 0.5)/4294967296.0-
+        double e = QL_FABS((double(referenceLongValues[i])+ 0.5)/4294967296.0-
             mt19937.next().value);
         if (e > 1.0e-8) {
             char s[10];
@@ -452,7 +453,7 @@ void MersenneTwisterTest::runTest() {
         }
     }
     for (i=0; i<1000; i++) {
-        double e = fabs(referenceValues[i]-
+        double e = QL_FABS(referenceValues[i]-
             mt19937.next().value);
         if (e > 1.0e-8) {
             char s[10];

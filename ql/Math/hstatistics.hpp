@@ -24,7 +24,10 @@
 #ifndef quantlib_hstatistics_h
 #define quantlib_hstatistics_h
 
-#include <ql/Math/statistics.hpp>
+#include <ql/null.hpp>
+#include <ql/dataformatters.hpp>
+#include <ql/Math/normaldistribution.hpp>
+#include <ql/Math/riskmeasures.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -34,13 +37,12 @@ namespace QuantLib {
         /*! It can accumulate a set of data and return statistics quantities
             (e.g: mean, variance, skewness, kurtosis, error estimation,
             percentile, etc.) plus risk measures (e.g.: value at risk,
-            expected shortfall, etc.) with both gaussian assumption or
-            using the historic (empiric) distribution.
+            expected shortfall, etc.) with gaussian assumption
 
             It extends the class Statistics with the penalty of storing
-            all samples
+            all samples, but could be extend to non-gaussian risk measures
         */
-        class HStatistics : public Statistics {
+        class HStatistics {
           public:
             HStatistics() { reset(); }
             //! \name Inspectors
@@ -62,26 +64,11 @@ namespace QuantLib {
             */
             double variance() const;
 
-            /*! returns the downside variance, defined as
-                \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
-                \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
-                where \f$ \theta \f$ = 0 if x > 0 and
-                \f$ \theta \f$ =1 if x <0
-            */
-            double downsideVariance() const;
-
             /*! returns the standard deviation \f$ \sigma \f$, defined as the
                 square root of the variance.
             */
             double standardDeviation() const {
                 return QL_SQRT(variance());
-            }
-
-            /*! returns the downside deviation, defined as the
-                square root of the downside variance.
-            */
-            double downsideDeviation() const {
-                return QL_SQRT(downsideVariance());
             }
 
             /*! returns the error estimate \f$ \epsilon \f$, defined as the
@@ -140,17 +127,11 @@ namespace QuantLib {
                     mean(), standardDeviation());
             }
 
-            //! Potential-Upside at a given percentile
-            double potentialUpside(double percentile) const;
-
             //! gaussian-assumption Value-At-Risk at a given percentile
             double gaussianValueAtRisk(double percentile) const {
                 return rm_.valueAtRisk(percentile,
                     mean(), standardDeviation());
             }
-
-            //! Value-At-Risk at a given percentile
-            double valueAtRisk(double percentile)  const;
 
             //! gaussian-assumption Expected Shortfall at a given percentile
             double gaussianExpectedShortfall(double percentile) const {
@@ -158,26 +139,17 @@ namespace QuantLib {
                     mean(), standardDeviation());
             }
 
-            //! Expected Shortfall at a given percentile
-            double expectedShortfall(double percentile)  const;
-
             //! gaussian-assumption Shortfall (observations below target)
             double gaussianShortfall(double target) const {
                 return rm_.shortfall(target,
                     mean(), standardDeviation());
             }
 
-            //! Shortfall (observations below target)
-            double shortfall(double target)  const;
-
             //! gaussian-assumption Average Shortfall (averaged shortfallness)
             double gaussianAverageShortfall(double target) const  {
                 return rm_.averageShortfall(target,
                     mean(), standardDeviation());
             }
-
-            //! Average Shortfall (averaged shortfallness)
-            double averageShortfall(double target) const;
 
             //! access to the sample data accumulated so far
             const std::vector<std::pair<double,double> >& sampleData() const {
@@ -214,12 +186,10 @@ namespace QuantLib {
           QL_REQUIRE(weight>=0.0,
               "HStatistics::add : negative weight not allowed");
           samples_.push_back(std::make_pair(value,weight));
-          Statistics::add(value,weight);
         }
 
         inline void HStatistics::reset() {
             samples_ = std::vector<std::pair<double,double> >();
-            Statistics::reset();
         }
 
     }

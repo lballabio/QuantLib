@@ -43,7 +43,7 @@ namespace QuantLib {
             For most of the statistics quantities this class relies on
             the StatisticsType underlying class to provide 1-D methods that
             will be iterated for all the components of the N-D data. These
-            "inherited" methods are the union of all the methods that might be
+            lifted methods are the union of all the methods that might be
             requested to the 1-D underlying StatisticsType class, with the
             usual compile-time checks provided by the template approach.
         */
@@ -84,11 +84,6 @@ namespace QuantLib {
             std::vector<double> gaussianAverageShortfall(double target) const;
 
             std::vector<double> percentile(double y) const;
-            std::vector<double> potentialUpside(double percentile) const;
-            std::vector<double> valueAtRisk(double percentile) const;
-            std::vector<double> expectedShortfall(double percentile) const;
-            std::vector<double> shortfall(double target) const;
-            std::vector<double> averageShortfall(double target) const;
             //@}
             //! \name Modifiers
             //@{
@@ -178,11 +173,6 @@ namespace QuantLib {
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(gaussianAverageShortfall)
 
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(percentile)
-        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(potentialUpside)
-        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(valueAtRisk)
-        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(expectedShortfall)
-        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(shortfall)
-        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(averageShortfall)
         #undef DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE
 
 

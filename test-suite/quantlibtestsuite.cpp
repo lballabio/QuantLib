@@ -49,9 +49,9 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
-    runner.addTest(LDSTest::suite());
     runner.addTest(new RiskStatisticsTest);
     runner.addTest(new StatisticsTest);
+    runner.addTest(LDSTest::suite());
 
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());

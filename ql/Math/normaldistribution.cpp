@@ -49,8 +49,8 @@ namespace QuantLib {
                    sum -= a;
                    g *= y;
                    ++i;
-                   a = fabs(a);
-                 } while (lasta>a && a>=fabs(sum*QL_EPSILON));
+                   a = QL_FABS(a);
+                 } while (lasta>a && a>=QL_FABS(sum*QL_EPSILON));
                  result = -gaussian_(z)/z*sum;
              }
              return result;

@@ -1,7 +1,6 @@
 cliquet move forward
-ottimizzazione PathPricer
-MultiPath e MultiPathPricer
-matrici di covarianza
+optimize PathPricer
+MultiPath and MultiPathPricer
 
 FINITE DIFFERENCE FRAMEWORK
 -*use DicretisedAsset instead of array
@@ -81,7 +80,6 @@ MISCELLANEA
 - histogram class
 - contact M. Higgings
 - check disable warning 4786 better
-- understand difference between multi-threaded and multi-threaded dll
 - && (_MSC_VER >= 1200)
 
 ASIAN
