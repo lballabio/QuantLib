@@ -69,7 +69,7 @@ CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
 test-suite$(_D).exe: $(QL_TESTS)
     $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) -L$(CPPUNIT_LIB_DIR) -L$(BCC_LIBS) \
     -etest-suite$(_D).exe $(QL_TESTS) \
-    QuantLib$(_D).lib cppunit_bcc$(_D).lib testrunner_bcc$(_D).lib
+    QuantLib$(_D).lib cppunit_bcpp$(_D).lib
 
 # Clean up
 clean::

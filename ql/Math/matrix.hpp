@@ -160,8 +160,16 @@ namespace QuantLib {
 
         /*! \relates Matrix */
         Matrix transpose(const Matrix&);
+
         /*! \relates Matrix */
         Matrix outerProduct(const Array &v1, const Array &v2);
+
+        /*! \relates Matrix */
+        template<class DataIterator>
+        Matrix outerProduct(DataIterator v1begin,
+                            DataIterator   v1end,
+                            DataIterator v2begin,
+                            DataIterator   v2end);
 
         enum SalvagingAlgorithm {None, Spectral, Hypersphere};
         //! returns the pseudo square root of a real symmetric matrix
@@ -506,12 +514,25 @@ namespace QuantLib {
         }
 
         inline Matrix outerProduct(const Array &v1, const Array &v2){
-            QL_REQUIRE(v1.size() > 0 && v2.size() > 0,
-                    "outerProduct: vectors must have non-null dimension");
-            Matrix result(v1.size(),v2.size());
-            for(Size i = 0; i < v1.size(); i++)
-                std::transform(v2.begin(),v2.end(),result.row_begin(i),
-                    std::bind1st(std::multiplies<double>(),v1[i]));
+            return outerProduct(v1.begin(), v1.end(), v2.begin(), v2.end());
+        }
+
+        template<class DataIterator>
+        inline Matrix outerProduct(DataIterator v1begin, DataIterator v1end,
+                                   DataIterator v2begin, DataIterator v2end) {
+
+            Size size1 = std::distance(v1begin, v1end);
+            QL_REQUIRE(size1>0, "outerProduct: null dimension first vector");
+
+            Size size2 = std::distance(v2begin, v2end);
+            QL_REQUIRE(size2>0, "outerProduct: null dimension second vector");
+
+            Matrix result(size1, size2);
+
+            for (Size i=0; v1begin!=v1end; i++, v1begin++)
+                std::transform(v2begin, v2end, result.row_begin(i),
+                    std::bind1st(std::multiplies<double>(), *v1begin));
+
             return result;
         }
 

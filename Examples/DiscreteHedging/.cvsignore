@@ -4,4 +4,5 @@ DiscreteHedging
 *.exe
 *.dep
 *.obj
+*.obj_d
 build

@@ -117,18 +117,23 @@ namespace QuantLib {
             void add(Iterator begin,
                      Iterator end,
                      double weight = 1.0) {
-                QL_REQUIRE(std::distance(begin,end) == int(dimension_),
+                QL_REQUIRE(std::distance(begin, end) == int(dimension_),
                            "SequenceStatistics::add : "
                            "sample size mismatch");
-                Size i;
-                for (i=0; i<dimension_; ++begin, ++i)
+
+                quadraticSum_ += weight * outerProduct(begin, end,
+                                                       begin, end);
+
+                for (Size i=0; i<dimension_; begin++, i++)
                     stats_[i].add(*begin, weight);
+
             }
             //@}
           protected:
             Size dimension_;
             std::vector<statistics_type> stats_;
             mutable std::vector<double> results_;
+            Matrix quadraticSum_;
         };
 
 
@@ -137,7 +142,7 @@ namespace QuantLib {
         template <class Stat>
         inline SequenceStatistics<Stat>::SequenceStatistics(Size dimension)
         : dimension_(0) {
-            reset(dimension); 
+            reset(dimension);
         }
 
         template <class Stat>
@@ -216,6 +221,7 @@ namespace QuantLib {
                 stats_ = std::vector<Stat>(dimension);
                 results_ = std::vector<double>(dimension);
             }
+            quadraticSum_ = Matrix(dimension_, dimension_, 0.0);
         }
 
 
@@ -226,16 +232,21 @@ namespace QuantLib {
             QL_REQUIRE(sampleWeight > 0.0,
                         "SequenceStatistics::covariance() : "
                         "sampleWeight=0, unsufficient");
-            
+
             sampleNumber = samples();
             QL_REQUIRE(sampleNumber > 1,
                         "SequenceStatistics::covariance() : "
                         "sample number <=1, unsufficient");
 
-          double inv = 1.0/sampleWeight;
+            std::vector<double> mean = mean();
+            double inv = 1.0/sampleWeight;
 
-          // to be implemented
-          return Matrix(dimension_, dimension_, 0.0);;
+            Matrix result = outerProduct(mean.begin(), mean.end(),
+                                         mean.begin(), mean.end());
+            result *= (inv*inv);
+            result -= inv*quadraticSum_;
+            result *= (sampleNumber/(sampleNumber-1.0))
+            return result;
         }
 
 
@@ -255,9 +266,9 @@ namespace QuantLib {
                       if (variances[i]==0.0 && variances[j]==0) {
                           correlation[i][j] = 1.0;
                       } else if (variances[i]==0.0 || variances[j]==0.0) {
-                          correlation[i][j] = 0.0;   
-                      } else {                            
-                          correlation[i][j] *= 1.0/QL_SQRT(variances[i]*variances[j]);   
+                          correlation[i][j] = 0.0;
+                      } else {
+                          correlation[i][j] *= 1.0/QL_SQRT(variances[i]*variances[j]);
                       }
                   }
               } // j for

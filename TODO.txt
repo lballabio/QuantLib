@@ -1,3 +1,7 @@
+- add covariance/correlation test for SequenceStatistics
+- cross test with getcovariance
+- add correlation salvaging alg test
+
 cliquet move forward
 optimize PathPricer
 MultiPath and MultiPathPricer
