@@ -26,7 +26,7 @@ using namespace QuantLib::RandomNumbers;
 
 CppUnit::Test* LDSTest::suite() {
     CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("Low discerpancy sequences' tests");
+        new CppUnit::TestSuite("Low discrepancy sequences' tests");
     tests->addTest(new CppUnit::TestCaller<LDSTest>
                    ("Testing primitive polynomials modulo two",
                     &LDSTest::testPolynomialsModuloTwo));
@@ -181,7 +181,7 @@ void LDSTest::testHalton() {
         stat.add(point);
     }
     Array mean = stat.mean();
-    if (mean[1]!=0.5) {
+    if (mean[1] != 0.5) {
         CPPUNIT_FAIL("Second dimension mean (" +
                      DoubleFormatter::toString(mean[1]) +
                      ") in Halton sequence is not " + 
@@ -193,7 +193,7 @@ void LDSTest::testHalton() {
         stat.add(point);
     }
     mean = stat.mean();
-    if (mean[0]!=0.5) {
+    if (mean[0] != 0.5) {
         CPPUNIT_FAIL("First dimension mean (" +
                      DoubleFormatter::toString(mean[0]) +
                      ") in Halton sequence is not " + 
@@ -260,7 +260,7 @@ void LDSTest::testHalton() {
                          DoubleFormatter::toString(
                              vanderCorputSequenceModuloTwo[i]));
         }
-        if (fabs(point[1]-vanderCorputSequenceModuloThree[i])>1.0e-15) {
+        if (QL_FABS(point[1]-vanderCorputSequenceModuloThree[i])>1.0e-15) {
             CPPUNIT_FAIL("Second component of " +
                          IntegerFormatter::toOrdinal(i+1) +
                          " draw (" +
