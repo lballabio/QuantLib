@@ -40,12 +40,16 @@ namespace QuantLib {
             typedef typename Evolver::arrayType arrayType;
             typedef typename Evolver::operatorType operatorType;
             typedef BoundaryCondition<operatorType> bcType;
-            // constructor
+            // constructors
             FiniteDifferenceModel(
                 const operatorType& L,
                 const std::vector<Handle<bcType> >& bcs,
                 const std::vector<Time>& stoppingTimes=std::vector<Time>())
             : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {}
+            FiniteDifferenceModel(
+                const Evolver& evolver,
+                const std::vector<Time>& stoppingTimes=std::vector<Time>())
+            : evolver_(evolver), stoppingTimes_(stoppingTimes) {}
             // methods
             // arrayType grid() const { return evolver.xGrid(); }
             /*! solves the problem between the given times, possibly
