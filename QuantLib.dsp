@@ -259,6 +259,10 @@ SOURCE=.\ql\DayCounters\thirty360.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\FiniteDifferences\americancondition.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\FiniteDifferences\boundarycondition.hpp
 # End Source File
 # Begin Source File
@@ -315,7 +319,15 @@ SOURCE=.\ql\FiniteDifferences\onefactoroperator.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\FiniteDifferences\shoutcondition.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\FiniteDifferences\stepcondition.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\swaptioncondition.hpp
 # End Source File
 # Begin Source File
 
@@ -631,10 +643,6 @@ SOURCE=.\ql\Patterns\observable.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\Pricers\americancondition.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\barrieroption.cpp
 # End Source File
 # Begin Source File
@@ -859,19 +867,11 @@ SOURCE=.\ql\Pricers\mcpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\shoutcondition.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\singleassetoption.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Pricers\singleassetoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\swaptioncondition.hpp
 # End Source File
 # End Group
 # Begin Group "RandomNumbers"
