@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/07/05 12:35:09  enri
+// - added some static_cast<int>() to prevent gcc warnings
+// - added some virtual constructor (same reason)
+//
 // Revision 1.4  2001/05/29 15:12:47  lballabio
 // Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
 //
@@ -117,7 +121,7 @@ namespace QuantLib {
             //! returns "None"
             std::string name() const { return "None"; }
             //! always returns <tt>true</tt>
-            bool isBusinessDay(const Date& d) const { d; return true; }
+            bool isBusinessDay(const Date& d) const {return true; }
         };
 
     }

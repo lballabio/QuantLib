@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/05 12:35:09  enri
+// - added some static_cast<int>() to prevent gcc warnings
+// - added some virtual constructor (same reason)
+//
 // Revision 1.7  2001/07/02 12:36:18  sigmud
 // pruned redundant header inclusions
 //
@@ -74,7 +78,7 @@ namespace QuantLib {
             std::vector<double> divs, std::vector<Time> divDates) const{
 
             double tmp_riskless = 0.0;
-            for(int j = 0; j < divs.size(); j++)
+            for(int j = 0; j < static_cast<int>(divs.size()); j++)
                 tmp_riskless += divs[j]*QL_EXP(-r*divDates[j]);
             return tmp_riskless;
         }

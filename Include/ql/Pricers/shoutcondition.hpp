@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/05 12:35:09  enri
+// - added some static_cast<int>() to prevent gcc warnings
+// - added some virtual constructor (same reason)
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -63,7 +67,7 @@ namespace QuantLib {
 
         inline ShoutCondition::ShoutCondition(
             const Array& initialPrices, Time resTime, Rate rate)
-            : initialPrices_(initialPrices), resTime_(resTime), rate_(rate) {}
+            : rate_(rate), resTime_(resTime), initialPrices_(initialPrices){}
 
         inline void ShoutCondition::applyTo(Array& a, Time t) const {
             for (int i = 0; i < a.size(); i++)

@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/05 12:35:09  enri
+// - added some static_cast<int>() to prevent gcc warnings
+// - added some virtual constructor (same reason)
+//
 // Revision 1.7  2001/07/05 08:16:28  enri
 // * history.cpp (History) typo fixed
 //
@@ -343,7 +347,7 @@ namespace QuantLib {
         firstDate_ = lastDate_ = dates[0];
         double lastValue = values[0];
         values_ = std::vector<double>(1,lastValue);
-        for (int i=1; i<dates.size(); i++) {
+        for (int i=1; i<static_cast<int>(dates.size()); i++) {
             Date d = dates[i];
             double x = values[i];
             QL_REQUIRE(d>=lastDate_,

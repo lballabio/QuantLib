@@ -29,6 +29,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/05 12:35:09  enri
+// - added some static_cast<int>() to prevent gcc warnings
+// - added some virtual constructor (same reason)
+//
 // Revision 1.7  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -60,13 +64,13 @@ namespace QuantLib {
           public:
             McPricer() : isInitialized_(false){}
             McPricer(long samples, long seed=0);
-            ~McPricer(){}
+            virtual ~McPricer(){}
             virtual double value() const;
             virtual double errorEstimate() const;
           protected:
-            bool isInitialized_;
             long seed_;
             mutable long samples_;
+            bool isInitialized_;
             mutable MonteCarlo::OneFactorMonteCarloOption montecarloPricer_;
         };
 

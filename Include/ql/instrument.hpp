@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/05 12:35:09  enri
+// - added some static_cast<int>() to prevent gcc warnings
+// - added some virtual constructor (same reason)
+//
 // Revision 1.7  2001/07/02 12:36:17  sigmud
 // pruned redundant header inclusions
 //
@@ -133,8 +137,11 @@ namespace QuantLib {
 
     inline Instrument::Instrument(const std::string& isinCode, 
         const std::string& description)
-    : isinCode_(isinCode), description_(description),
-      NPV_(0.0), isExpired_(false), calculated(false) {}
+        : NPV_(0.0), 
+        isExpired_(false), 
+        isinCode_(isinCode),
+        description_(description), 
+        calculated(false) {}
 
     inline std::string Instrument::isinCode() const {
         return isinCode_;
