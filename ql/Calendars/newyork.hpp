@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -22,43 +23,14 @@
 #ifndef quantlib_newyork_calendar_h
 #define quantlib_newyork_calendar_h
 
-#include <ql/calendar.hpp>
+#include <ql/Calendars/usexchange.hpp>
 
 namespace QuantLib {
 
-    //! New York calendar
-    /*! Holidays:
-        <ul>
-        <li>Saturdays</li>
-        <li>Sundays</li>
-        <li>New Year's Day, January 1st (possibly moved to Monday if
-            actually on Sunday, or to Friday if on Saturday)</li>
-        <li>Martin Luther King's birthday, third Monday in January</li>
-        <li>Washington's birthday, third Monday in February</li>
-        <li>Good Friday</li>
-        <li>Memorial Day, last Monday in May</li>
-        <li>Independence Day, July 4th (moved to Monday if Sunday or
-            Friday if Saturday)</li>
-        <li>Labor Day, first Monday in September</li>
-        <li>Thanksgiving Day, fourth Thursday in November</li>
-        <li>Christmas, December 25th (moved to Monday if Sunday or Friday
-            if Saturday)</li>
-        </ul>
-
-        Data from http://www.nyse.com
-
-        \ingroup calendars
-    */
-    class NewYork : public Calendar {
-      private:
-        class Impl : public Calendar::WesternImpl {
-          public:
-            std::string name() const { return "NewYork"; }
-            bool isBusinessDay(const Date&) const;
-        };
-      public:
-        NewYork();
-    };
+    #if !defined(QL_DISABLE_DEPRECATED)
+    //! \deprecated renamed to USExchange
+    typedef USExchange NewYork;
+    #endif
 
 }
 

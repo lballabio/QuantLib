@@ -217,6 +217,8 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
+	-@erase "$(INTDIR)\greatbritain.obj"
+	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -233,6 +235,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\italy.obj"
+	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -251,8 +255,6 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
-	-@erase "$(INTDIR)\london.obj"
-	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -279,16 +281,14 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milan.obj"
-	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\milanstockexchange.obj"
+	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
 	-@erase "$(INTDIR)\multiassetoption.sbr"
-	-@erase "$(INTDIR)\newyork.obj"
-	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
 	-@erase "$(INTDIR)\oneassetoption.obj"
@@ -385,6 +385,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
+	-@erase "$(INTDIR)\usexchange.obj"
+	-@erase "$(INTDIR)\usexchange.sbr"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -398,6 +402,8 @@ CLEAN :
 	-@erase "$(INTDIR)\warsaw.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\wellington.sbr"
+	-@erase "$(INTDIR)\xetra.obj"
+	-@erase "$(INTDIR)\xetra.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -424,9 +430,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
-	"$(INTDIR)\london.sbr" \
-	"$(INTDIR)\milan.sbr" \
-	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
 	"$(INTDIR)\riyadh.sbr" \
 	"$(INTDIR)\seoul.sbr" \
@@ -538,6 +541,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -583,14 +594,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\treeswaptionengine.sbr" \
-	"$(INTDIR)\discretizedswaption.sbr" \
-	"$(INTDIR)\jamshidianswaptionengine.sbr" \
-	"$(INTDIR)\blackswaptionengine.sbr" \
-	"$(INTDIR)\treecapfloorengine.sbr" \
-	"$(INTDIR)\blackcapfloorengine.sbr" \
-	"$(INTDIR)\discretizedcapfloor.sbr" \
-	"$(INTDIR)\analyticcapfloorengine.sbr"
+	"$(INTDIR)\usexchange.sbr" \
+	"$(INTDIR)\italy.sbr" \
+	"$(INTDIR)\milanstockexchange.sbr" \
+	"$(INTDIR)\usgovernmentbondmarket.sbr" \
+	"$(INTDIR)\xetra.sbr" \
+	"$(INTDIR)\greatbritain.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -608,9 +617,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
-	"$(INTDIR)\london.obj" \
-	"$(INTDIR)\milan.obj" \
-	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
 	"$(INTDIR)\riyadh.obj" \
 	"$(INTDIR)\seoul.obj" \
@@ -722,6 +728,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -767,14 +781,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\treeswaptionengine.obj" \
-	"$(INTDIR)\discretizedswaption.obj" \
-	"$(INTDIR)\jamshidianswaptionengine.obj" \
-	"$(INTDIR)\blackswaptionengine.obj" \
-	"$(INTDIR)\treecapfloorengine.obj" \
-	"$(INTDIR)\blackcapfloorengine.obj" \
-	"$(INTDIR)\discretizedcapfloor.obj" \
-	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\usexchange.obj" \
+	"$(INTDIR)\italy.obj" \
+	"$(INTDIR)\milanstockexchange.obj" \
+	"$(INTDIR)\usgovernmentbondmarket.obj" \
+	"$(INTDIR)\xetra.obj" \
+	"$(INTDIR)\greatbritain.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -970,6 +982,8 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
+	-@erase "$(INTDIR)\greatbritain.obj"
+	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -986,6 +1000,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\italy.obj"
+	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -1004,8 +1020,6 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
-	-@erase "$(INTDIR)\london.obj"
-	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -1032,16 +1046,14 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milan.obj"
-	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\milanstockexchange.obj"
+	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
 	-@erase "$(INTDIR)\multiassetoption.sbr"
-	-@erase "$(INTDIR)\newyork.obj"
-	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
 	-@erase "$(INTDIR)\oneassetoption.obj"
@@ -1138,6 +1150,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
+	-@erase "$(INTDIR)\usexchange.obj"
+	-@erase "$(INTDIR)\usexchange.sbr"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -1150,6 +1166,8 @@ CLEAN :
 	-@erase "$(INTDIR)\warsaw.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\wellington.sbr"
+	-@erase "$(INTDIR)\xetra.obj"
+	-@erase "$(INTDIR)\xetra.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -1178,9 +1196,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
-	"$(INTDIR)\london.sbr" \
-	"$(INTDIR)\milan.sbr" \
-	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
 	"$(INTDIR)\riyadh.sbr" \
 	"$(INTDIR)\seoul.sbr" \
@@ -1292,6 +1307,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -1337,14 +1360,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\treeswaptionengine.sbr" \
-	"$(INTDIR)\discretizedswaption.sbr" \
-	"$(INTDIR)\jamshidianswaptionengine.sbr" \
-	"$(INTDIR)\blackswaptionengine.sbr" \
-	"$(INTDIR)\treecapfloorengine.sbr" \
-	"$(INTDIR)\blackcapfloorengine.sbr" \
-	"$(INTDIR)\discretizedcapfloor.sbr" \
-	"$(INTDIR)\analyticcapfloorengine.sbr"
+	"$(INTDIR)\usexchange.sbr" \
+	"$(INTDIR)\italy.sbr" \
+	"$(INTDIR)\milanstockexchange.sbr" \
+	"$(INTDIR)\usgovernmentbondmarket.sbr" \
+	"$(INTDIR)\xetra.sbr" \
+	"$(INTDIR)\greatbritain.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1362,9 +1383,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
-	"$(INTDIR)\london.obj" \
-	"$(INTDIR)\milan.obj" \
-	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
 	"$(INTDIR)\riyadh.obj" \
 	"$(INTDIR)\seoul.obj" \
@@ -1476,6 +1494,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -1521,14 +1547,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\treeswaptionengine.obj" \
-	"$(INTDIR)\discretizedswaption.obj" \
-	"$(INTDIR)\jamshidianswaptionengine.obj" \
-	"$(INTDIR)\blackswaptionengine.obj" \
-	"$(INTDIR)\treecapfloorengine.obj" \
-	"$(INTDIR)\blackcapfloorengine.obj" \
-	"$(INTDIR)\discretizedcapfloor.obj" \
-	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\usexchange.obj" \
+	"$(INTDIR)\italy.obj" \
+	"$(INTDIR)\milanstockexchange.obj" \
+	"$(INTDIR)\usgovernmentbondmarket.obj" \
+	"$(INTDIR)\xetra.obj" \
+	"$(INTDIR)\greatbritain.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1724,6 +1748,8 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
+	-@erase "$(INTDIR)\greatbritain.obj"
+	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -1740,6 +1766,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\italy.obj"
+	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -1758,8 +1786,6 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
-	-@erase "$(INTDIR)\london.obj"
-	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -1786,16 +1812,14 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milan.obj"
-	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\milanstockexchange.obj"
+	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
 	-@erase "$(INTDIR)\multiassetoption.sbr"
-	-@erase "$(INTDIR)\newyork.obj"
-	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
 	-@erase "$(INTDIR)\oneassetoption.obj"
@@ -1892,6 +1916,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
+	-@erase "$(INTDIR)\usexchange.obj"
+	-@erase "$(INTDIR)\usexchange.sbr"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -1905,6 +1933,8 @@ CLEAN :
 	-@erase "$(INTDIR)\warsaw.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\wellington.sbr"
+	-@erase "$(INTDIR)\xetra.obj"
+	-@erase "$(INTDIR)\xetra.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -1931,9 +1961,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
-	"$(INTDIR)\london.sbr" \
-	"$(INTDIR)\milan.sbr" \
-	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
 	"$(INTDIR)\riyadh.sbr" \
 	"$(INTDIR)\seoul.sbr" \
@@ -2045,6 +2072,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -2090,14 +2125,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\treeswaptionengine.sbr" \
-	"$(INTDIR)\discretizedswaption.sbr" \
-	"$(INTDIR)\jamshidianswaptionengine.sbr" \
-	"$(INTDIR)\blackswaptionengine.sbr" \
-	"$(INTDIR)\treecapfloorengine.sbr" \
-	"$(INTDIR)\blackcapfloorengine.sbr" \
-	"$(INTDIR)\discretizedcapfloor.sbr" \
-	"$(INTDIR)\analyticcapfloorengine.sbr"
+	"$(INTDIR)\usexchange.sbr" \
+	"$(INTDIR)\italy.sbr" \
+	"$(INTDIR)\milanstockexchange.sbr" \
+	"$(INTDIR)\usgovernmentbondmarket.sbr" \
+	"$(INTDIR)\xetra.sbr" \
+	"$(INTDIR)\greatbritain.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2115,9 +2148,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
-	"$(INTDIR)\london.obj" \
-	"$(INTDIR)\milan.obj" \
-	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
 	"$(INTDIR)\riyadh.obj" \
 	"$(INTDIR)\seoul.obj" \
@@ -2229,6 +2259,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -2274,14 +2312,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\treeswaptionengine.obj" \
-	"$(INTDIR)\discretizedswaption.obj" \
-	"$(INTDIR)\jamshidianswaptionengine.obj" \
-	"$(INTDIR)\blackswaptionengine.obj" \
-	"$(INTDIR)\treecapfloorengine.obj" \
-	"$(INTDIR)\blackcapfloorengine.obj" \
-	"$(INTDIR)\discretizedcapfloor.obj" \
-	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\usexchange.obj" \
+	"$(INTDIR)\italy.obj" \
+	"$(INTDIR)\milanstockexchange.obj" \
+	"$(INTDIR)\usgovernmentbondmarket.obj" \
+	"$(INTDIR)\xetra.obj" \
+	"$(INTDIR)\greatbritain.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2477,6 +2513,8 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
+	-@erase "$(INTDIR)\greatbritain.obj"
+	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -2493,6 +2531,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\italy.obj"
+	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -2511,8 +2551,6 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
-	-@erase "$(INTDIR)\london.obj"
-	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -2539,16 +2577,14 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milan.obj"
-	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\milanstockexchange.obj"
+	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
 	-@erase "$(INTDIR)\multiassetoption.sbr"
-	-@erase "$(INTDIR)\newyork.obj"
-	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
 	-@erase "$(INTDIR)\oneassetoption.obj"
@@ -2645,6 +2681,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
+	-@erase "$(INTDIR)\usexchange.obj"
+	-@erase "$(INTDIR)\usexchange.sbr"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -2657,6 +2697,8 @@ CLEAN :
 	-@erase "$(INTDIR)\warsaw.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\wellington.sbr"
+	-@erase "$(INTDIR)\xetra.obj"
+	-@erase "$(INTDIR)\xetra.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -2685,9 +2727,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
-	"$(INTDIR)\london.sbr" \
-	"$(INTDIR)\milan.sbr" \
-	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
 	"$(INTDIR)\riyadh.sbr" \
 	"$(INTDIR)\seoul.sbr" \
@@ -2799,6 +2838,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -2844,14 +2891,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\treeswaptionengine.sbr" \
-	"$(INTDIR)\discretizedswaption.sbr" \
-	"$(INTDIR)\jamshidianswaptionengine.sbr" \
-	"$(INTDIR)\blackswaptionengine.sbr" \
-	"$(INTDIR)\treecapfloorengine.sbr" \
-	"$(INTDIR)\blackcapfloorengine.sbr" \
-	"$(INTDIR)\discretizedcapfloor.sbr" \
-	"$(INTDIR)\analyticcapfloorengine.sbr"
+	"$(INTDIR)\usexchange.sbr" \
+	"$(INTDIR)\italy.sbr" \
+	"$(INTDIR)\milanstockexchange.sbr" \
+	"$(INTDIR)\usgovernmentbondmarket.sbr" \
+	"$(INTDIR)\xetra.sbr" \
+	"$(INTDIR)\greatbritain.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2869,9 +2914,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
-	"$(INTDIR)\london.obj" \
-	"$(INTDIR)\milan.obj" \
-	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
 	"$(INTDIR)\riyadh.obj" \
 	"$(INTDIR)\seoul.obj" \
@@ -2983,6 +3025,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -3028,14 +3078,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\treeswaptionengine.obj" \
-	"$(INTDIR)\discretizedswaption.obj" \
-	"$(INTDIR)\jamshidianswaptionengine.obj" \
-	"$(INTDIR)\blackswaptionengine.obj" \
-	"$(INTDIR)\treecapfloorengine.obj" \
-	"$(INTDIR)\blackcapfloorengine.obj" \
-	"$(INTDIR)\discretizedcapfloor.obj" \
-	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\usexchange.obj" \
+	"$(INTDIR)\italy.obj" \
+	"$(INTDIR)\milanstockexchange.obj" \
+	"$(INTDIR)\usgovernmentbondmarket.obj" \
+	"$(INTDIR)\xetra.obj" \
+	"$(INTDIR)\greatbritain.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3231,6 +3279,8 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
+	-@erase "$(INTDIR)\greatbritain.obj"
+	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -3247,6 +3297,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\italy.obj"
+	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -3265,8 +3317,6 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
-	-@erase "$(INTDIR)\london.obj"
-	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -3293,16 +3343,14 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milan.obj"
-	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\milanstockexchange.obj"
+	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
 	-@erase "$(INTDIR)\multiassetoption.sbr"
-	-@erase "$(INTDIR)\newyork.obj"
-	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
 	-@erase "$(INTDIR)\oneassetoption.obj"
@@ -3399,6 +3447,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
+	-@erase "$(INTDIR)\usexchange.obj"
+	-@erase "$(INTDIR)\usexchange.sbr"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -3412,6 +3464,8 @@ CLEAN :
 	-@erase "$(INTDIR)\warsaw.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\wellington.sbr"
+	-@erase "$(INTDIR)\xetra.obj"
+	-@erase "$(INTDIR)\xetra.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -3438,9 +3492,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
-	"$(INTDIR)\london.sbr" \
-	"$(INTDIR)\milan.sbr" \
-	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
 	"$(INTDIR)\riyadh.sbr" \
 	"$(INTDIR)\seoul.sbr" \
@@ -3552,6 +3603,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -3597,14 +3656,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\treeswaptionengine.sbr" \
-	"$(INTDIR)\discretizedswaption.sbr" \
-	"$(INTDIR)\jamshidianswaptionengine.sbr" \
-	"$(INTDIR)\blackswaptionengine.sbr" \
-	"$(INTDIR)\treecapfloorengine.sbr" \
-	"$(INTDIR)\blackcapfloorengine.sbr" \
-	"$(INTDIR)\discretizedcapfloor.sbr" \
-	"$(INTDIR)\analyticcapfloorengine.sbr"
+	"$(INTDIR)\usexchange.sbr" \
+	"$(INTDIR)\italy.sbr" \
+	"$(INTDIR)\milanstockexchange.sbr" \
+	"$(INTDIR)\usgovernmentbondmarket.sbr" \
+	"$(INTDIR)\xetra.sbr" \
+	"$(INTDIR)\greatbritain.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3622,9 +3679,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
-	"$(INTDIR)\london.obj" \
-	"$(INTDIR)\milan.obj" \
-	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
 	"$(INTDIR)\riyadh.obj" \
 	"$(INTDIR)\seoul.obj" \
@@ -3736,6 +3790,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -3781,14 +3843,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\treeswaptionengine.obj" \
-	"$(INTDIR)\discretizedswaption.obj" \
-	"$(INTDIR)\jamshidianswaptionengine.obj" \
-	"$(INTDIR)\blackswaptionengine.obj" \
-	"$(INTDIR)\treecapfloorengine.obj" \
-	"$(INTDIR)\blackcapfloorengine.obj" \
-	"$(INTDIR)\discretizedcapfloor.obj" \
-	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\usexchange.obj" \
+	"$(INTDIR)\italy.obj" \
+	"$(INTDIR)\milanstockexchange.obj" \
+	"$(INTDIR)\usgovernmentbondmarket.obj" \
+	"$(INTDIR)\xetra.obj" \
+	"$(INTDIR)\greatbritain.obj" \
 	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3984,6 +4044,8 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
+	-@erase "$(INTDIR)\greatbritain.obj"
+	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -4000,6 +4062,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\italy.obj"
+	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -4018,8 +4082,6 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
-	-@erase "$(INTDIR)\london.obj"
-	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -4046,16 +4108,14 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milan.obj"
-	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\milanstockexchange.obj"
+	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
 	-@erase "$(INTDIR)\multiassetoption.sbr"
-	-@erase "$(INTDIR)\newyork.obj"
-	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
 	-@erase "$(INTDIR)\oneassetoption.obj"
@@ -4152,6 +4212,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
+	-@erase "$(INTDIR)\usexchange.obj"
+	-@erase "$(INTDIR)\usexchange.sbr"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
+	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -4164,6 +4228,8 @@ CLEAN :
 	-@erase "$(INTDIR)\warsaw.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\wellington.sbr"
+	-@erase "$(INTDIR)\xetra.obj"
+	-@erase "$(INTDIR)\xetra.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibor.sbr"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -4192,9 +4258,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
-	"$(INTDIR)\london.sbr" \
-	"$(INTDIR)\milan.sbr" \
-	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
 	"$(INTDIR)\riyadh.sbr" \
 	"$(INTDIR)\seoul.sbr" \
@@ -4306,6 +4369,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
+	"$(INTDIR)\analyticcapfloorengine.sbr" \
+	"$(INTDIR)\blackcapfloorengine.sbr" \
+	"$(INTDIR)\discretizedcapfloor.sbr" \
+	"$(INTDIR)\treecapfloorengine.sbr" \
+	"$(INTDIR)\blackswaptionengine.sbr" \
+	"$(INTDIR)\discretizedswaption.sbr" \
+	"$(INTDIR)\jamshidianswaptionengine.sbr" \
+	"$(INTDIR)\treeswaptionengine.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
@@ -4351,14 +4422,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\treeswaptionengine.sbr" \
-	"$(INTDIR)\discretizedswaption.sbr" \
-	"$(INTDIR)\jamshidianswaptionengine.sbr" \
-	"$(INTDIR)\blackswaptionengine.sbr" \
-	"$(INTDIR)\treecapfloorengine.sbr" \
-	"$(INTDIR)\blackcapfloorengine.sbr" \
-	"$(INTDIR)\discretizedcapfloor.sbr" \
-	"$(INTDIR)\analyticcapfloorengine.sbr"
+	"$(INTDIR)\usexchange.sbr" \
+	"$(INTDIR)\italy.sbr" \
+	"$(INTDIR)\milanstockexchange.sbr" \
+	"$(INTDIR)\usgovernmentbondmarket.sbr" \
+	"$(INTDIR)\xetra.sbr" \
+	"$(INTDIR)\greatbritain.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4376,9 +4445,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
-	"$(INTDIR)\london.obj" \
-	"$(INTDIR)\milan.obj" \
-	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
 	"$(INTDIR)\riyadh.obj" \
 	"$(INTDIR)\seoul.obj" \
@@ -4490,6 +4556,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
+	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\blackcapfloorengine.obj" \
+	"$(INTDIR)\discretizedcapfloor.obj" \
+	"$(INTDIR)\treecapfloorengine.obj" \
+	"$(INTDIR)\blackswaptionengine.obj" \
+	"$(INTDIR)\discretizedswaption.obj" \
+	"$(INTDIR)\jamshidianswaptionengine.obj" \
+	"$(INTDIR)\treeswaptionengine.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
@@ -4535,14 +4609,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\treeswaptionengine.obj" \
-	"$(INTDIR)\discretizedswaption.obj" \
-	"$(INTDIR)\jamshidianswaptionengine.obj" \
-	"$(INTDIR)\blackswaptionengine.obj" \
-	"$(INTDIR)\treecapfloorengine.obj" \
-	"$(INTDIR)\blackcapfloorengine.obj" \
-	"$(INTDIR)\discretizedcapfloor.obj" \
-	"$(INTDIR)\analyticcapfloorengine.obj" \
+	"$(INTDIR)\usexchange.obj" \
+	"$(INTDIR)\italy.obj" \
+	"$(INTDIR)\milanstockexchange.obj" \
+	"$(INTDIR)\usgovernmentbondmarket.obj" \
+	"$(INTDIR)\xetra.obj" \
+	"$(INTDIR)\greatbritain.obj" \
 	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4620,6 +4692,12 @@ SOURCE=.\ql\Calendars\frankfurt.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Calendars\greatbritain.cpp
+
+"$(INTDIR)\greatbritain.obj"	"$(INTDIR)\greatbritain.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Calendars\helsinki.cpp
 
 "$(INTDIR)\helsinki.obj"	"$(INTDIR)\helsinki.sbr" : $(SOURCE) "$(INTDIR)"
@@ -4629,6 +4707,12 @@ SOURCE=.\ql\Calendars\helsinki.cpp
 SOURCE=.\ql\Calendars\hongkong.cpp
 
 "$(INTDIR)\hongkong.obj"	"$(INTDIR)\hongkong.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\italy.cpp
+
+"$(INTDIR)\italy.obj"	"$(INTDIR)\italy.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -4644,21 +4728,9 @@ SOURCE=.\ql\Calendars\jointcalendar.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Calendars\london.cpp
+SOURCE=.\ql\Calendars\milanstockexchange.cpp
 
-"$(INTDIR)\london.obj"	"$(INTDIR)\london.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Calendars\milan.cpp
-
-"$(INTDIR)\milan.obj"	"$(INTDIR)\milan.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Calendars\newyork.cpp
-
-"$(INTDIR)\newyork.obj"	"$(INTDIR)\newyork.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\milanstockexchange.obj"	"$(INTDIR)\milanstockexchange.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -4722,6 +4794,18 @@ SOURCE=.\ql\Calendars\toronto.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Calendars\usexchange.cpp
+
+"$(INTDIR)\usexchange.obj"	"$(INTDIR)\usexchange.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\usgovernmentbondmarket.cpp
+
+"$(INTDIR)\usgovernmentbondmarket.obj"	"$(INTDIR)\usgovernmentbondmarket.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Calendars\warsaw.cpp
 
 "$(INTDIR)\warsaw.obj"	"$(INTDIR)\warsaw.sbr" : $(SOURCE) "$(INTDIR)"
@@ -4731,6 +4815,12 @@ SOURCE=.\ql\Calendars\warsaw.cpp
 SOURCE=.\ql\Calendars\wellington.cpp
 
 "$(INTDIR)\wellington.obj"	"$(INTDIR)\wellington.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\xetra.cpp
+
+"$(INTDIR)\xetra.obj"	"$(INTDIR)\xetra.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,17 +15,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Calendars/newyork.hpp>
+#include <ql/Calendars/usgovernmentbondmarket.hpp>
 
 namespace QuantLib {
 
-    NewYork::NewYork() {
+    USGovernmentBondMarket::USGovernmentBondMarket() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new NewYork::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new
+			USGovernmentBondMarket::Impl);
         impl_ = impl;
     }
 
-    bool NewYork::Impl::isBusinessDay(const Date& date) const {
+    bool USGovernmentBondMarket::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();
@@ -50,10 +51,10 @@ namespace QuantLib {
             // Labor Day (first Monday in September)
             || (d <= 7 && w == Monday && m == September)
             // Columbus Day (second Monday in October)
-            // || ((d >= 8 && d <= 14) && w == Monday && m == October)
+            || ((d >= 8 && d <= 14) && w == Monday && m == October)
             // Veteran's Day (Monday if Sunday or Friday if Saturday)
-            // || ((d == 11 || (d == 12 && w == Monday) ||
-            //    (d == 10 && w == Friday)) && m == November)
+            || ((d == 11 || (d == 12 && w == Monday) ||
+				 (d == 10 && w == Friday)) && m == November)
             // Thanksgiving Day (fourth Thursday in November)
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday or Friday if Saturday)

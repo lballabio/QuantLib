@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -43,9 +44,9 @@
 
     The class <tt>QuantLib::Calendar</tt> provides the interface for
     determining whether a date is a business day or a holiday for a
-    given market, or incrementing/decrementing a date of a given
-    number of business days. A number of calendars is contained in the
-    <tt>ql/Calendars</tt> directory.
+    given exchange or a given country, and for incrementing/decrementing
+    a date of a given number of business days. A number of calendars is
+    contained in the <tt>ql/Calendars</tt> directory.
 */
 
 /*! \defgroup daycounters Day counters

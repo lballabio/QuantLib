@@ -251,6 +251,14 @@ SOURCE=.\ql\Calendars\frankfurt.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\greatbritain.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\greatbritain.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\helsinki.cpp
 # End Source File
 # Begin Source File
@@ -264,6 +272,14 @@ SOURCE=.\ql\Calendars\hongkong.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\hongkong.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\italy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\italy.hpp
 # End Source File
 # Begin Source File
 
@@ -283,15 +299,7 @@ SOURCE=.\ql\Calendars\jointcalendar.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\london.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Calendars\london.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\milan.cpp
 # End Source File
 # Begin Source File
 
@@ -299,7 +307,11 @@ SOURCE=.\ql\Calendars\milan.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\newyork.cpp
+SOURCE=.\ql\Calendars\milanstockexchange.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\milanstockexchange.hpp
 # End Source File
 # Begin Source File
 
@@ -391,6 +403,22 @@ SOURCE=.\ql\Calendars\toronto.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\usexchange.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\usexchange.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\usgovernmentbondmarket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\usgovernmentbondmarket.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\warsaw.cpp
 # End Source File
 # Begin Source File
@@ -404,6 +432,14 @@ SOURCE=.\ql\Calendars\wellington.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\wellington.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\xetra.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\xetra.hpp
 # End Source File
 # Begin Source File
 

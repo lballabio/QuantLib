@@ -8,12 +8,15 @@ include_HEADERS = \
 	budapest.hpp \
 	copenhagen.hpp \
 	frankfurt.hpp \
+	greatbritain.hpp \
 	helsinki.hpp \
 	hongkong.hpp \
+	italy.hpp \
 	johannesburg.hpp \
 	jointcalendar.hpp \
 	london.hpp \
 	milan.hpp \
+	milanstockexchange.hpp \
 	newyork.hpp \
 	nullcalendar.hpp \
 	oslo.hpp \
@@ -26,6 +29,9 @@ include_HEADERS = \
 	target.hpp \
 	tokyo.hpp \
 	toronto.hpp \
+	usexchange.hpp \
+	usgovernmentbondmarket.hpp \
+	xetra.hpp \
 	warsaw.hpp \
 	wellington.hpp \
 	zurich.hpp
@@ -37,13 +43,13 @@ libCalendars_la_SOURCES = \
 	budapest.cpp \
 	copenhagen.cpp \
 	frankfurt.cpp \
+	greatbritain.cpp \
 	helsinki.cpp \
 	hongkong.cpp \
+	italy.cpp \
 	johannesburg.cpp \
 	jointcalendar.cpp \
-	london.cpp \
-	milan.cpp \
-	newyork.cpp \
+	milanstockexchange.cpp \
 	oslo.cpp \
 	riyadh.cpp \
 	seoul.cpp \
@@ -54,6 +60,9 @@ libCalendars_la_SOURCES = \
 	target.cpp \
 	tokyo.cpp \
 	toronto.cpp \
+	usexchange.cpp \
+	usgovernmentbondmarket.cpp \
+	xetra.cpp \
 	warsaw.cpp \
 	wellington.cpp \
 	zurich.cpp

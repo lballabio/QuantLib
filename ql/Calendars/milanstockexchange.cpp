@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -15,17 +16,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Calendars/milan.hpp>
+#include <ql/Calendars/milanstockexchange.hpp>
 
 namespace QuantLib {
 
-    Milan::Milan() {
+    MilanStockExchange::MilanStockExchange() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Milan::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new MilanStockExchange::Impl);
         impl_ = impl;
     }
 
-    bool Milan::Impl::isBusinessDay(const Date& date) const {
+    bool MilanStockExchange::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();
@@ -34,28 +35,22 @@ namespace QuantLib {
         if ((w == Saturday || w == Sunday)
             // New Year's Day
             || (d == 1 && m == January)
-            // Epiphany
-            || (d == 6 && m == January)
+            // Good Friday
+            || (dd == em-3)
             // Easter Monday
             || (dd == em)
-            // Liberation Day
-            || (d == 25 && m == April)
             // Labour Day
             || (d == 1 && m == May)
-            // Republic Day
-            || (d == 2 && m == June && y >= 2000)
             // Assumption
             || (d == 15 && m == August)
-            // All Saints' Day
-            || (d == 1 && m == November)
-            // Immaculate Conception
-            || (d == 8 && m == December)
+            // Christmas' Eve
+            || (d == 24 && m == December)
             // Christmas
             || (d == 25 && m == December)
             // St. Stephen
             || (d == 26 && m == December)
-            // December 31st, 1999 only
-            || (d == 31 && m == December && y == 1999))
+            // New Year's Eve
+            || (d == 31 && m == December))
             return false;
         return true;
     }

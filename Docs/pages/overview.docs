@@ -55,8 +55,8 @@
       AFB), 30/360 (US, European, Italian).
 
     To do:
-    - Differentiate calendars depending on city+exchange, instead of
-      city alone.
+    - Differentiate calendars depending on country or exchange, instead of
+      city.
 
 
 
