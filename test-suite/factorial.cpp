@@ -37,7 +37,7 @@ CppUnit::Test* FactorialTest::suite() {
                    ("Testing Gamma function",
                     &FactorialTest::testGammaFunction));
     tests->addTest(new CppUnit::TestCaller<FactorialTest>
-                   ("Testing Poisson Distribution",
+                   ("Testing Poisson distribution",
                     &FactorialTest::testPoissonDistribution));
     return tests;
 }
