@@ -305,6 +305,11 @@ namespace QuantLib {
                                     Format f = Long);
     };
 
+    //! Formats frequency for output
+    class FrequencyFormatter {
+      public:
+        static std::string toString(Frequency f);
+    };
 
     // inline definitions
 

@@ -533,4 +533,37 @@ namespace QuantLib {
         return output;
     }
 
+    std::string FrequencyFormatter::toString(Frequency freq) {
+
+        switch (freq) {
+            case NoFrequency:
+            return std::string("no frequency");
+            break;
+            case Once:
+            return std::string("once");
+            break;
+            case Annual:
+            return std::string("annual");
+            break;
+            case Semiannual:
+            return std::string("semiannual");
+            break;
+            case EveryFourthMonth:
+            return std::string("every-fourth-month");
+            break;
+            case Quarterly:
+            return std::string("quarterly");
+            break;
+            case Bimonthly:
+            return std::string("bimonthly");
+            break;
+            case Monthly:
+            return std::string("monthly");
+            break;
+            default:
+                QL_FAIL("unknown frequency ("+
+                    IntegerFormatter::toString(freq)+")");
+        }
+    }
+
 }
