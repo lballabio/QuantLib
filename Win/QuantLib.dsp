@@ -205,6 +205,10 @@ SOURCE=..\Sources\date.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Sources\normaldistribution.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\solver1d.cpp
 # End Source File
 # Begin Source File
@@ -212,6 +216,10 @@ SOURCE=..\Sources\solver1d.cpp
 SOURCE=..\Sources\statistics.cpp
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\Sources\normaldistribution.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\Sources\statistics.h
