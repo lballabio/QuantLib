@@ -811,17 +811,13 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 // should be refactored as testEngineConsistency in europeanoption.cpp
 void DigitalOptionTest::testEngineConsistency() {
 
-    double cashPayoff = 100.0;
-    Option::Type types[] = { Option::Call };
-    double underlyings[] = { 100 };
-//    Rate rRates[] = { 0.01, 0.05, 0.15 };
-//    Rate qRates[] = { 0.04, 0.05, 0.06 };
-    Rate rRates[] = { 0.01 };
-    Rate qRates[] = { 0.06 };
-//    double strikes[] = { 100.5, 150 };
-    double strikes[] = { 101.0, 102.0 };
-    double volatilities[] = { 0.10};
-//    double volatilities[] = { 0.11, 0.5, 1.2 };
+    double cashPayoff = 15.0;
+    Option::Type types[] = { Option::Put };
+    double underlyings[] = { 105.0 };
+    Rate rRates[] = { 0.10 };
+    Rate qRates[] = { 0.0 };
+    double strikes[] = { 100.0 };
+    double volatilities[] = { 0.20};
 
     Handle<SimpleQuote> spot(new SimpleQuote(underlyings[0]));
 
@@ -834,18 +830,17 @@ void DigitalOptionTest::testEngineConsistency() {
         Actual360());
 
     Date today = Date::todaysDate();
-    Date exDate = today.plusDays(360);
+    Date exDate = today.plusDays(180); // 0.75*360
     Handle<Exercise> exercise(new EuropeanExercise(exDate));
     Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
     Handle<Exercise> exercises[] = {amExercise};
 
 
-    Size maxTimeStepsPerYear = 10;
-//    Size maxTimeStepsPerYear = 365;
+    Size maxTimeStepsPerYear = 180;
     bool antitheticVariate = false;
     bool controlVariate = false;
     Size requiredSamples = Size(QL_POW(2.0, 10)-1);
-    double requiredAccuracy = 0.05;
+    double requiredAccuracy = 0.01;
 //    double requiredAccuracy = 0.005;
     Size maxSamples = 1000000;
     long seed = 1;
@@ -853,14 +848,14 @@ void DigitalOptionTest::testEngineConsistency() {
     Handle<PricingEngine> mcEngine = Handle<PricingEngine>(new
         MCDigitalEngine<PseudoRandom>(maxTimeStepsPerYear,
                                       antitheticVariate, controlVariate,
-                                      requiredSamples, requiredAccuracy,
+                                      Null<int>(), requiredAccuracy,
                                       maxSamples, seed));
 
     Handle<PricingEngine> mcldEngine = Handle<PricingEngine>(new
         MCDigitalEngine<LowDiscrepancy>(maxTimeStepsPerYear,
                                         antitheticVariate, controlVariate,
                                         requiredSamples, Null<double>(),
-                                        Null<int>()));
+                                        maxSamples));
 
     Handle<PricingEngine> euroEngine = Handle<PricingEngine>(new
         AnalyticEuropeanEngine());
@@ -873,7 +868,7 @@ void DigitalOptionTest::testEngineConsistency() {
 
 
 //    double testTolerance = requiredAccuracy*2;
-    double testTolerance = 1.0e-1;
+    double testTolerance = 1.0e-2;
     double calcAnalytic, calcMC;
     for (Size j=0; j<LENGTH(engines); j++) {
       for (Size i1=0; i1<LENGTH(types); i1++) {
@@ -985,9 +980,9 @@ CppUnit::Test* DigitalOptionTest::suite() {
     // missing for the time being
 
     // test of the MC engine for American options
-    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing Monte Carlo pricing engine for digital options",
-                    &DigitalOptionTest::testEngineConsistency));
+//    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
+//                   ("Testing Monte Carlo pricing engine for digital options",
+//                    &DigitalOptionTest::testEngineConsistency));
 
     return tests;
 }
