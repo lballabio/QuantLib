@@ -129,7 +129,7 @@ namespace QuantLib {
         }
 
         Size primeNumbers(Size absoluteIndex) {
-            return PrimeNumbers()[absoluteIndex];
+            return PrimeNumbers::get(absoluteIndex);
         }
 
     }

@@ -28,7 +28,6 @@
 #define quantlib_halton_ld_rsg_h
 
 #include "ql/array.hpp"
-#include "ql/Math/primenumbers.hpp"
 #include <ql/MonteCarlo/sample.hpp>
 #include <cmath>
 
@@ -53,7 +52,6 @@ namespace QuantLib {
             Size dimensionality_;
             mutable Size sequenceCounter_;
             mutable sample_type sequence_;
-            mutable Math::PrimeNumbers primeNumbers_;
         };
     }
 

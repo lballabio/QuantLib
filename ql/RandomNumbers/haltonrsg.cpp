@@ -36,6 +36,7 @@
 // $Id$
 
 #include <ql/RandomNumbers/haltonrsg.hpp>
+#include "ql/Math/primenumbers.hpp"
 
 namespace QuantLib {
 
@@ -47,7 +48,7 @@ namespace QuantLib {
             double f, h;
             for (i=0; i<dimensionality_; ++i) {
                 h = 0;
-                b = primeNumbers_[i];
+                b = Math::PrimeNumbers::get(i);
                 f = 1.;
                 k = sequenceCounter_;
                 while (k) {
