@@ -551,7 +551,7 @@ namespace QuantLib {
     }
 
     inline std::ostream& operator<<(std::ostream& out, const Matrix& m) {
-        Size width = out.width();
+        std::streamsize width = out.width();
         for (Size i=0; i<m.rows(); i++) {
             out << "| ";
             for (Size j=0; j<m.columns(); j++)

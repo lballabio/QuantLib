@@ -36,6 +36,9 @@
     - Enrico Sirola, StatPro Italia srl
     - Liguo Song
 
+    %QuantLib also includes code taken from Peter Jäckel's book "Monte Carlo
+    Methods in Finance".
+
     \section contributors Contributors
 
     We gratefully acknowledge contributions from Xavier Abulker, Toyin

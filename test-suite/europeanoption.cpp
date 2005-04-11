@@ -53,134 +53,131 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+QL_BEGIN_TEST_LOCALS(EuropeanOptionTest)
 
-    // utilities
+// utilities
 
-    struct EuropeanOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-    };
+struct EuropeanOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+};
 
-    enum EngineType { Analytic,
-                      JR, CRR, EQP, TGEO, TIAN, LR,
-                      FiniteDifferences,
-                      PseudoMonteCarlo, QuasiMonteCarlo };
+enum EngineType { Analytic,
+                  JR, CRR, EQP, TGEO, TIAN, LR,
+                  FiniteDifferences,
+                  PseudoMonteCarlo, QuasiMonteCarlo };
 
-    boost::shared_ptr<VanillaOption>
-    makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
-               const boost::shared_ptr<Exercise>& exercise,
-               const boost::shared_ptr<Quote>& u,
-               const boost::shared_ptr<YieldTermStructure>& q,
-               const boost::shared_ptr<YieldTermStructure>& r,
-               const boost::shared_ptr<BlackVolTermStructure>& vol,
-               EngineType engineType,
-               Size binomialSteps,
-               Size samples) {
+boost::shared_ptr<VanillaOption>
+makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
+           const boost::shared_ptr<Exercise>& exercise,
+           const boost::shared_ptr<Quote>& u,
+           const boost::shared_ptr<YieldTermStructure>& q,
+           const boost::shared_ptr<YieldTermStructure>& r,
+           const boost::shared_ptr<BlackVolTermStructure>& vol,
+           EngineType engineType,
+           Size binomialSteps,
+           Size samples) {
 
-        boost::shared_ptr<PricingEngine> engine;
-        switch (engineType) {
-          case Analytic:
-            engine = boost::shared_ptr<PricingEngine>(
-                new AnalyticEuropeanEngine);
-            break;
-          case JR:
-            engine = boost::shared_ptr<PricingEngine>(
+    boost::shared_ptr<PricingEngine> engine;
+    switch (engineType) {
+      case Analytic:
+        engine = boost::shared_ptr<PricingEngine>(new AnalyticEuropeanEngine);
+        break;
+      case JR:
+        engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<JarrowRudd>(binomialSteps));
-            break;
-          case CRR:
-            engine = boost::shared_ptr<PricingEngine>(
+        break;
+      case CRR:
+        engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<CoxRossRubinstein>(binomialSteps));
-          case EQP:
-            engine = boost::shared_ptr<PricingEngine>(
+      case EQP:
+        engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<AdditiveEQPBinomialTree>(
                                                               binomialSteps));
-            break;
-          case TGEO:
-            engine = boost::shared_ptr<PricingEngine>(
+        break;
+      case TGEO:
+        engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<Trigeorgis>(binomialSteps));
-            break;
-          case TIAN:
-            engine = boost::shared_ptr<PricingEngine>(
+        break;
+      case TIAN:
+        engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<Tian>(binomialSteps));
-            break;
-          case LR:
-            engine = boost::shared_ptr<PricingEngine>(
+        break;
+      case LR:
+        engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<LeisenReimer>(binomialSteps));
-            break;
-          case FiniteDifferences:
-            engine = boost::shared_ptr<PricingEngine>(
+        break;
+      case FiniteDifferences:
+        engine = boost::shared_ptr<PricingEngine>(
                 new FDEuropeanEngine(binomialSteps,samples));
-            break;
-          case PseudoMonteCarlo:
-            engine = MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(1)
-                                                         .withSamples(samples)
-                                                         .withSeed(42);
-            break;
-          case QuasiMonteCarlo:
-            engine = MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(1)
-                                                           .withSamples(samples);
-            break;
-          default:
-            QL_FAIL("unknown engine type");
-        }
-
-
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(u),
-                                Handle<YieldTermStructure>(q),
-                                Handle<YieldTermStructure>(r),
-                                Handle<BlackVolTermStructure>(vol)));
-
-        return boost::shared_ptr<VanillaOption>(new
-            EuropeanOption(stochProcess, payoff, exercise, engine));
+        break;
+      case PseudoMonteCarlo:
+        engine = MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(1)
+                                                     .withSamples(samples)
+                                                     .withSeed(42);
+        break;
+      case QuasiMonteCarlo:
+        engine = MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(1)
+                                                       .withSamples(samples);
+        break;
+      default:
+        QL_FAIL("unknown engine type");
     }
 
-    std::string engineTypeToString(EngineType type) {
-        switch (type) {
-          case Analytic:
-            return "analytic";
-          case JR:
-            return "Jarrow-Rudd";
-          case CRR:
-            return "Cox-Ross-Rubinstein";
-          case EQP:
-            return "EQP";
-          case TGEO:
-            return "Trigeorgis";
-          case TIAN:
-            return "Tian";
-          case LR:
-            return "LeisenReimer";
-          case FiniteDifferences:
-            return "FiniteDifferences";
-          case PseudoMonteCarlo:
-            return "MonteCarlo";
-          case QuasiMonteCarlo:
-            return "Quasi-MonteCarlo";
-          default:
-            QL_FAIL("unknown engine type");
-        }
-    }
+    boost::shared_ptr<BlackScholesProcess> stochProcess(
+                 new BlackScholesProcess(Handle<Quote>(u),
+                                         Handle<YieldTermStructure>(q),
+                                         Handle<YieldTermStructure>(r),
+                                         Handle<BlackVolTermStructure>(vol)));
 
-    Integer timeToDays(Time t) {
-        return Integer(t*360+0.5);
-    }
-
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
+    return boost::shared_ptr<VanillaOption>(
+                  new EuropeanOption(stochProcess, payoff, exercise, engine));
 }
 
-// tests
+std::string engineTypeToString(EngineType type) {
+    switch (type) {
+      case Analytic:
+        return "analytic";
+      case JR:
+        return "Jarrow-Rudd";
+      case CRR:
+        return "Cox-Ross-Rubinstein";
+      case EQP:
+        return "EQP";
+      case TGEO:
+        return "Trigeorgis";
+      case TIAN:
+        return "Tian";
+      case LR:
+        return "LeisenReimer";
+      case FiniteDifferences:
+        return "FiniteDifferences";
+      case PseudoMonteCarlo:
+        return "MonteCarlo";
+      case QuasiMonteCarlo:
+        return "Quasi-MonteCarlo";
+      default:
+        QL_FAIL("unknown engine type");
+    }
+}
+
+Integer timeToDays(Time t) {
+    return Integer(t*360+0.5);
+}
+
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
+}
+
+QL_END_TEST_LOCALS(EuropeanOptionTest)
+
 
 void EuropeanOptionTest::testValues() {
 
@@ -909,40 +906,40 @@ void EuropeanOptionTest::testImpliedVolContainment() {
 
 // different engines
 
-namespace {
+QL_BEGIN_TEST_LOCALS(EuropeanOptionTest)
 
-    void testEngineConsistency(EngineType *engines,
-                               Size N,
-                               Size binomialSteps,
-                               Size samples,
-                               Real tolerance) {
+void testEngineConsistency(EngineType *engines,
+                           Size N,
+                           Size binomialSteps,
+                           Size samples,
+                           Real tolerance) {
 
-        QL_TEST_START_TIMING
+    QL_TEST_START_TIMING
 
-        // test options
-        Option::Type types[] = { Option::Call, Option::Put };
-        Real strikes[] = { 75.0, 100.0, 125.0 };
-        Integer lengths[] = { 1 };
+    // test options
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real strikes[] = { 75.0, 100.0, 125.0 };
+    Integer lengths[] = { 1 };
 
-        // test data
-        Real underlyings[] = { 100.0 };
-        Rate qRates[] = { 0.00, 0.05 };
-        Rate rRates[] = { 0.01, 0.05, 0.15 };
-        Volatility vols[] = { 0.11, 0.50, 1.20 };
+    // test data
+    Real underlyings[] = { 100.0 };
+    Rate qRates[] = { 0.00, 0.05 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-        DayCounter dc = Actual360();
-        Date today = Date::todaysDate();
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
 
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-        boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        boost::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        boost::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
 
-        for (Size i=0; i<LENGTH(types); i++) {
-          for (Size j=0; j<LENGTH(strikes); j++) {
+    for (Size i=0; i<LENGTH(types); i++) {
+        for (Size j=0; j<LENGTH(strikes); j++) {
             for (Size k=0; k<LENGTH(lengths); k++) {
               Date exDate = today + lengths[k]*360;
               boost::shared_ptr<Exercise> exercise(
@@ -1009,11 +1006,12 @@ namespace {
                 }
               }
             }
-          }
         }
     }
-
 }
+
+QL_END_TEST_LOCALS(EuropeanOptionTest)
+
 
 void EuropeanOptionTest::testJRBinomialEngines() {
 

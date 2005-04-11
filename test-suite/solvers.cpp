@@ -30,37 +30,38 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(Solver1DTest)
 
-    class Foo {
-      public:
-        Real operator()(Real x) const { return x*x-1.0; }
-        Real derivative(Real x) const { return 2.0*x; }
-    };
+class Foo {
+  public:
+    Real operator()(Real x) const { return x*x-1.0; }
+    Real derivative(Real x) const { return 2.0*x; }
+};
 
-    template <class S>
-    void test(const S& solver, const std::string& name) {
-        Real accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
-        Real expected = 1.0;
-        for (Size i=0; i<LENGTH(accuracy); i++) {
-            Real root = solver.solve(Foo(),accuracy[i],1.5,0.1);
-            if (std::fabs(root-expected) > accuracy[i]) {
-                BOOST_FAIL(name << " solver:\n"
-                           << "    expected:   " << expected << "\n"
-                           << "    calculated: " << root << "\n"
-                           << "    accuracy:   " << accuracy[i]);
-            }
-            root = solver.solve(Foo(),accuracy[i],1.5,0.0,1.0);
-            if (std::fabs(root-expected) > accuracy[i]) {
-                BOOST_FAIL(name << " solver (bracketed):\n"
-                           << "    expected:   " << expected << "\n"
-                           << "    calculated: " << root << "\n"
-                           << "    accuracy:   " << accuracy[i]);
-            }
+template <class S>
+void test(const S& solver, const std::string& name) {
+    Real accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
+    Real expected = 1.0;
+    for (Size i=0; i<LENGTH(accuracy); i++) {
+        Real root = solver.solve(Foo(),accuracy[i],1.5,0.1);
+        if (std::fabs(root-expected) > accuracy[i]) {
+            BOOST_FAIL(name << " solver:\n"
+                       << "    expected:   " << expected << "\n"
+                       << "    calculated: " << root << "\n"
+                       << "    accuracy:   " << accuracy[i]);
+        }
+        root = solver.solve(Foo(),accuracy[i],1.5,0.0,1.0);
+        if (std::fabs(root-expected) > accuracy[i]) {
+            BOOST_FAIL(name << " solver (bracketed):\n"
+                       << "    expected:   " << expected << "\n"
+                       << "    calculated: " << root << "\n"
+                       << "    accuracy:   " << accuracy[i]);
         }
     }
-
 }
+
+QL_END_TEST_LOCALS(Solver1DTest)
+
 
 void Solver1DTest::testResults() {
 

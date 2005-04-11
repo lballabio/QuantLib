@@ -28,19 +28,20 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(ShortRateModelTest)
 
-    struct CalibrationData {
-        Integer start;
-        Integer length;
-        Volatility volatility;
-    };
+struct CalibrationData {
+    Integer start;
+    Integer length;
+    Volatility volatility;
+};
 
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
 }
+
+QL_END_TEST_LOCALS(ShortRateModelTest)
+
 
 void ShortRateModelTest::testCachedHullWhite() {
 

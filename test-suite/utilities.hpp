@@ -44,6 +44,20 @@
 #define QL_TEST_TEARDOWN  teardown(); } catch (...) { teardown(); throw; }
 #define QL_TEST_END       } catch (...) { throw; }
 
+/*! the following supports file-local variables for linkers which
+    fail to manage anonymous namespaces correctly */
+#if defined(QL_PATCH_DARWIN)
+#define QL_BEGIN_TEST_LOCALS(testclass) \
+namespace testclass##Locals {
+#define QL_END_TEST_LOCALS(testclass) \
+} \
+using namespace testclass##Locals;
+#else
+#define QL_BEGIN_TEST_LOCALS(testclass) namespace  {
+#define QL_END_TEST_LOCALS(testclass)   }
+#endif
+
+
 /* the following displays the elapsed time for the test if
    QL_DISPLAY_TEST_TIME is defined. */
 #if defined(QL_DISPLAY_TEST_TIME)

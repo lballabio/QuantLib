@@ -121,9 +121,7 @@ namespace QuantLib {
 
             \note The returned values are not guaranteed to be sorted.
         */
-        virtual std::vector<Time> mandatoryTimes() const {
-            return std::vector<Time>();
-        }
+        virtual std::vector<Time> mandatoryTimes() const = 0;
         //@}
       protected:
         /*! This method checks whether the asset was rolled at the
@@ -148,6 +146,9 @@ namespace QuantLib {
         DiscretizedDiscountBond() {}
         void reset(Size size) {
             values_ = Array(size, 1.0);
+        }
+        std::vector<Time> mandatoryTimes() const {
+            return std::vector<Time>();
         }
     };
 

@@ -46,7 +46,7 @@ docs-html: .time-stamp-html
 
 docs-html-dist: docs-html
 	ln -s html QuantLib-docs-$(VERSION)-html
-	tar chof - QuantLib-docs-$(VERSION)-html \
+	tar chf - QuantLib-docs-$(VERSION)-html \
 	    | GZIP=--best gzip -c > QuantLib-docs-$(VERSION)-html.tar.gz
 	rm QuantLib-docs-$(VERSION)-html
 
@@ -96,7 +96,7 @@ docs-man: .time-stamp-man
 
 docs-man-dist: docs-man
 	ln -s man QuantLib-docs-$(VERSION)-man
-	tar chof - QuantLib-docs-$(VERSION)-man \
+	tar chf - QuantLib-docs-$(VERSION)-man \
 	    | GZIP=--best gzip -c > QuantLib-docs-$(VERSION)-man.tar.gz
 	rm QuantLib-docs-$(VERSION)-man
 

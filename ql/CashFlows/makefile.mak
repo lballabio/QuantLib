@@ -1,6 +1,6 @@
 
 .autodepend
-#.silent
+.silent
 
 !ifdef _DEBUG
 !ifndef _RTLDLL
@@ -37,7 +37,7 @@ TLIB      = tlib
 
 
 # Options
-CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR)
+CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR) -w-8070
 
 !ifdef _DEBUG
     CC_OPTS = $(CC_OPTS) -v -D_DEBUG

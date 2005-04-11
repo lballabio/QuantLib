@@ -26,26 +26,33 @@
 #include <ql/Math/comparison.hpp>
 #include <iomanip>
 
+#if !defined(QL_PATCH_MSVC6)
+#define SCIENTIFIC std::scientific
+#else
+#define SCIENTIFIC ""
+#endif
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(DistributionTest)
 
-    Real average = 1.0, sigma = 2.0;
+Real average = 1.0, sigma = 2.0;
 
-    Real gaussian(Real x) {
-        Real normFact = sigma*std::sqrt(2*M_PI);
-        Real dx = x-average;
-        return std::exp(-dx*dx/(2.0*sigma*sigma))/normFact;
-    }
-
-    Real gaussianDerivative(Real x) {
-        Real normFact = sigma*sigma*sigma*std::sqrt(2*M_PI);
-        Real dx = x-average;
-        return -dx*std::exp(-dx*dx/(2.0*sigma*sigma))/normFact;
-    }
-
+Real gaussian(Real x) {
+    Real normFact = sigma*std::sqrt(2*M_PI);
+    Real dx = x-average;
+    return std::exp(-dx*dx/(2.0*sigma*sigma))/normFact;
 }
+
+Real gaussianDerivative(Real x) {
+    Real normFact = sigma*sigma*sigma*std::sqrt(2*M_PI);
+    Real dx = x-average;
+    return -dx*std::exp(-dx*dx/(2.0*sigma*sigma))/normFact;
+}
+
+QL_END_TEST_LOCALS(DistributionTest)
+
 
 void DistributionTest::testNormal() {
 
@@ -55,7 +62,7 @@ void DistributionTest::testNormal() {
     Real check = invCumStandardNormal(0.5);
     if (check != 0.0e0) {
         BOOST_FAIL("C++ inverse cumulative of the standard normal at 0.5 is "
-                   << std::scientific << check
+                   << SCIENTIFIC << check
                    << "\n instead of zero: something is wrong!");
     }
 
@@ -85,7 +92,7 @@ void DistributionTest::testNormal() {
     Real e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         BOOST_FAIL("norm of C++ NormalDistribution minus analytic Gaussian: "
-                   << std::scientific << e << "\n"
+                   << SCIENTIFIC << e << "\n"
                    << "tolerance exceeded");
     }
 
@@ -97,7 +104,7 @@ void DistributionTest::testNormal() {
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-8) {
         BOOST_FAIL("norm of invCum . cum minus identity: "
-                   << std::scientific << e << "\n"
+                   << SCIENTIFIC << e << "\n"
                    << "tolerance exceeded");
     }
 
@@ -110,7 +117,7 @@ void DistributionTest::testNormal() {
     if (e > 1.0e-16) {
         BOOST_FAIL(
             "norm of C++ Cumulative.derivative minus analytic Gaussian: "
-            << std::scientific << e << "\n"
+            << SCIENTIFIC << e << "\n"
             << "tolerance exceeded");
     }
 
@@ -122,7 +129,7 @@ void DistributionTest::testNormal() {
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         BOOST_FAIL("norm of C++ Normal.derivative minus analytic derivative: "
-                   << std::scientific << e << "\n"
+                   << SCIENTIFIC << e << "\n"
                    << "tolerance exceeded");
     }
 }

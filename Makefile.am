@@ -52,3 +52,5 @@ docs-dist:
 docs-clean:
 	$(MAKE) -C Docs docs-clean
 
+dist-hook:
+	mkdir -p $(distdir)/build

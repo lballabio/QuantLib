@@ -61,23 +61,24 @@ using namespace boost::unit_test_framework;
                << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+QL_BEGIN_TEST_LOCALS(AsianOptionTest)
 
-    std::string averageTypeToString(Average::Type averageType) {
+std::string averageTypeToString(Average::Type averageType) {
 
-        if (averageType == Average::Geometric)
-            return "Geometric Averaging";
-        else if (averageType == Average::Arithmetic)
-            return "Arithmetic Averaging";
-        else
-            QL_FAIL("unknown averaging");
-    }
-
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
+    if (averageType == Average::Geometric)
+        return "Geometric Averaging";
+    else if (averageType == Average::Arithmetic)
+        return "Arithmetic Averaging";
+    else
+        QL_FAIL("unknown averaging");
 }
+
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
+}
+
+QL_END_TEST_LOCALS(AsianOptionTest)
+
 
 void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
@@ -451,23 +452,24 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     }
 }
 
-namespace {
+QL_BEGIN_TEST_LOCALS(AsianOptionTest)
 
-    struct DiscreteAverageData {
-        Option::Type type;
-        Real underlying;
-        Real strike;
-        Rate dividendYield;
-        Rate riskFreeRate;
-        Time first;
-        Time length;
-        Size fixings;
-        Volatility volatility;
-        bool controlVariate;
-        Real result;
-    };
+struct DiscreteAverageData {
+    Option::Type type;
+    Real underlying;
+    Real strike;
+    Rate dividendYield;
+    Rate riskFreeRate;
+    Time first;
+    Time length;
+    Size fixings;
+    Volatility volatility;
+    bool controlVariate;
+    Real result;
+};
 
-}
+QL_END_TEST_LOCALS(AsianOptionTest)
+
 
 void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 

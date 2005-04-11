@@ -25,3 +25,5 @@ libQuantLibFunctions_la_SOURCES = \
 	mathf.cpp \
 	vols.cpp
 
+dist-hook:
+	mkdir -p $(distdir)/build

@@ -74,31 +74,27 @@ using namespace boost::unit_test_framework;
                << "    tolerance:        " << tolerance);
 
 
-namespace {
+QL_BEGIN_TEST_LOCALS(JumpDiffusionTest)
 
-    struct HaugMertonData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real jumpIntensity;
-        Real gamma;
-        Real result;   // result
-        Real tol;      // tolerance
-    };
+struct HaugMertonData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real jumpIntensity;
+    Real gamma;
+    Real result;   // result
+    Real tol;      // tolerance
+};
 
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
 }
 
-
-
-// tests
+QL_END_TEST_LOCALS(JumpDiffusionTest)
 
 
 void JumpDiffusionTest::testMerton76() {

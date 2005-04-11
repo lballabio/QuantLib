@@ -2384,6 +2384,10 @@
 			Name="FiniteDifferences"
 			>
 			<File
+				RelativePath=".\ql\FiniteDifferences\all.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\FiniteDifferences\americancondition.hpp"
 				>
 			</File>
@@ -2542,6 +2546,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\FiniteDifferences\bsmtermoperator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\bsmtermoperator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\core.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\FiniteDifferences\cranknicolson.hpp"
 				>
 			</File>
@@ -2656,6 +2672,14 @@
 			</File>
 			<File
 				RelativePath="ql\FiniteDifferences\onefactoroperator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\operatortraits.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\parallelevolver.hpp"
 				>
 			</File>
 			<File
@@ -3485,6 +3509,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\Instruments\fixedcouponbond.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\floatingratebond.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\floatingratebond.hpp"
 				>
 			</File>
 			<File
@@ -4338,6 +4370,14 @@
 				RelativePath="ql\Instruments\vanillaoption.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\ql\Instruments\zerocouponbond.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\zerocouponbond.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Lattices"
@@ -4741,6 +4781,10 @@
 			</File>
 			<File
 				RelativePath="ql\Math\array.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Math\backwardflatinterpolation.hpp"
 				>
 			</File>
 			<File
@@ -5308,6 +5352,10 @@
 			</File>
 			<File
 				RelativePath="ql\Math\factorial.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Math\forwardflatinterpolation.hpp"
 				>
 			</File>
 			<File
@@ -7958,6 +8006,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\PricingEngines\greeks.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\greeks.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\PricingEngines\latticeshortratemodelengine.hpp"
 				>
 			</File>
@@ -8897,6 +8953,70 @@
 				</File>
 				<File
 					RelativePath="ql\PricingEngines\Vanilla\discretizedvanillaoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdamericanengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdbermudanengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fddividendamericanengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fddividendengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fddividendengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fddividendeuropeanengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fddividendshoutengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdeuropeanengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdeuropeanengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdmultiperiodengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdmultiperiodengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdshoutengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdstepconditionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdstepconditionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdvanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdvanillaengine.hpp"
 					>
 				</File>
 				<File
@@ -10835,6 +10955,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\TermStructures\bootstraptraits.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\TermStructures\compoundforward.cpp"
 				>
 				<FileConfiguration
@@ -10910,79 +11034,6 @@
 			<File
 				RelativePath="ql\TermStructures\compoundforward.hpp"
 				>
-			</File>
-			<File
-				RelativePath="ql\TermStructures\discountcurve.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="ql\TermStructures\discountcurve.hpp"
@@ -11078,6 +11129,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\TermStructures\forwardcurve.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\TermStructures\forwardspreadedtermstructure.hpp"
 				>
 			</File>
@@ -11167,6 +11222,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\TermStructures\piecewiseyieldcurve.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\TermStructures\quantotermstructure.hpp"
 				>
 			</File>
@@ -11248,79 +11307,6 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\TermStructures\zerocurve.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="ql\TermStructures\zerocurve.hpp"
 				>
 			</File>
@@ -11337,11 +11323,35 @@
 			Name="Utilities"
 			>
 			<File
+				RelativePath=".\ql\Utilities\all.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Utilities\combiningiterator.hpp"
 				>
 			</File>
 			<File
 				RelativePath="ql\Utilities\couplingiterator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\dataformatters.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\dataformatters.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\dataparsers.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\dataparsers.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\disposable.hpp"
 				>
 			</File>
 			<File
@@ -11353,11 +11363,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Utilities\null.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Utilities\processingiterator.hpp"
 				>
 			</File>
 			<File
 				RelativePath="ql\Utilities\steppingiterator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\strings.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\tracing.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\tracing.hpp"
 				>
 			</File>
 		</Filter>
@@ -11660,12 +11686,56 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Processes"
+			>
+			<File
+				RelativePath=".\ql\Processes\all.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\blackscholesprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\blackscholesprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\geometricbrownianprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\geometricbrownianprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\merton76process.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\merton76process.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\ornsteinuhlenbeckprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\ornsteinuhlenbeckprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\squarerootprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\squarerootprocess.hpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\basetermstructure.hpp"
 			>
 		</File>
 		<File
@@ -11860,83 +11930,6 @@
 		</File>
 		<File
 			RelativePath="ql\currency.hpp"
-			>
-		</File>
-		<File
-			RelativePath="ql\dataparsers.cpp"
-			>
-			<FileConfiguration
-				Name="Debug MTDLL|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release SingleThread|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release MTDLL|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug SingleThread|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="ql\dataparsers.hpp"
 			>
 		</File>
 		<File
@@ -12341,6 +12334,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\handle.hpp"
+			>
+		</File>
+		<File
 			RelativePath="ql\history.hpp"
 			>
 		</File>
@@ -12519,6 +12516,10 @@
 		</File>
 		<File
 			RelativePath="ql\voltermstructure.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\yieldtermstructure.hpp"
 			>
 		</File>
 	</Files>

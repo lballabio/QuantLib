@@ -11,6 +11,7 @@ SwapValuation_SOURCES = swapvaluation.cpp
 SwapValuation_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
+    Swap.dev \
     Swap.dsp \
     Swap.vcproj \
     Swap_vc8.vcproj \
@@ -19,4 +20,8 @@ EXTRA_DIST = \
 
 .PHONY: examples
 examples: SwapValuation
+
+dist-hook:
+	mkdir -p $(distdir)/bin
+	mkdir -p $(distdir)/build
 

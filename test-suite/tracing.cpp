@@ -26,40 +26,40 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(TracingTest)
 
-    void teardown() {
-        QL_TRACE_ON(std::cerr);
-    }
-
-    void testTraceOutput(bool enable,
-                         const std::string& result) {
-        std::ostringstream output;
-        if (enable)
-            QL_TRACE_ENABLE;
-        else
-            QL_TRACE_DISABLE;
-        QL_TRACE_ON(output);
-        int i = 42;
-        QL_TRACE_VARIABLE(i);
-
-        #if defined(QL_ENABLE_TRACING)
-        std::string expected = result;
-        #else
-        std::string expected = "";
-        #endif
-        if (output.str() != expected) {
-            BOOST_FAIL("wrong trace:\n"
-                       "    expected:\n"
-                       "\""+ expected + "\"\n"
-                       "    written:\n"
-                       "\""+ output.str() + "\"");
-        }
-    }
-
+void teardown() {
+    QL_TRACE_ON(std::cerr);
 }
 
-// tests
+void testTraceOutput(bool enable,
+                     const std::string& result) {
+    std::ostringstream output;
+    if (enable)
+        QL_TRACE_ENABLE;
+    else
+        QL_TRACE_DISABLE;
+    QL_TRACE_ON(output);
+    int i = 42;
+    QL_TRACE_VARIABLE(i);
+    i++;
+
+    #if defined(QL_ENABLE_TRACING)
+    std::string expected = result;
+    #else
+    std::string expected = "";
+    #endif
+    if (output.str() != expected) {
+        BOOST_FAIL("wrong trace:\n"
+                   "    expected:\n"
+                   "\""+ expected + "\"\n"
+                   "    written:\n"
+                   "\""+ output.str() + "\"");
+    }
+}
+
+QL_END_TEST_LOCALS(TracingTest)
+
 
 void TracingTest::testOutput() {
 

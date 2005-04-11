@@ -30,121 +30,122 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(PiecewiseFlatForwardTest)
 
-    struct Datum {
-        Integer n;
-        TimeUnit units;
-        Rate rate;
-    };
+struct Datum {
+    Integer n;
+    TimeUnit units;
+    Rate rate;
+};
 
-    Datum depositData[] = {
-        { 1, Weeks,  4.559 },
-        { 1, Months, 4.581 },
-        { 2, Months, 4.573 },
-        { 3, Months, 4.557 },
-        { 6, Months, 4.496 },
-        { 9, Months, 4.490 }
-    };
+Datum depositData[] = {
+    { 1, Weeks,  4.559 },
+    { 1, Months, 4.581 },
+    { 2, Months, 4.573 },
+    { 3, Months, 4.557 },
+    { 6, Months, 4.496 },
+    { 9, Months, 4.490 }
+};
 
-    Datum swapData[] = {
-        {  1, Years, 4.54 },
-        {  2, Years, 4.63 },
-        {  3, Years, 4.75 },
-        {  4, Years, 4.86 },
-        {  5, Years, 4.99 },
-        {  6, Years, 5.11 },
-        {  7, Years, 5.23 },
-        {  8, Years, 5.33 },
-        {  9, Years, 5.41 },
-        { 10, Years, 5.47 },
-        { 12, Years, 5.60 },
-        { 15, Years, 5.75 },
-        { 20, Years, 5.89 },
-        { 25, Years, 5.95 },
-        { 30, Years, 5.96 }
-    };
+Datum swapData[] = {
+    {  1, Years, 4.54 },
+    {  2, Years, 4.63 },
+    {  3, Years, 4.75 },
+    {  4, Years, 4.86 },
+    {  5, Years, 4.99 },
+    {  6, Years, 5.11 },
+    {  7, Years, 5.23 },
+    {  8, Years, 5.33 },
+    {  9, Years, 5.41 },
+    { 10, Years, 5.47 },
+    { 12, Years, 5.60 },
+    { 15, Years, 5.75 },
+    { 20, Years, 5.89 },
+    { 25, Years, 5.95 },
+    { 30, Years, 5.96 }
+};
 
-    // test-global variables
+// test-global variables
 
-    Calendar calendar;
-    Integer settlementDays, fixingDays;
-    Date today, settlement;
-    BusinessDayConvention depoConvention;
-    DayCounter depoDayCounter;
-    BusinessDayConvention fixedLegConvention, floatingLegConvention;
-    Frequency fixedLegFrequency;
-    DayCounter fixedLegDayCounter;
-    Frequency floatingLegFrequency;
+Calendar calendar;
+Integer settlementDays, fixingDays;
+Date today, settlement;
+BusinessDayConvention depoConvention;
+DayCounter depoDayCounter;
+BusinessDayConvention fixedLegConvention, floatingLegConvention;
+Frequency fixedLegFrequency;
+DayCounter fixedLegDayCounter;
+Frequency floatingLegFrequency;
 
-    Size deposits, swaps;
-    std::vector<boost::shared_ptr<SimpleQuote> > rates;
-    std::vector<boost::shared_ptr<RateHelper> > instruments;
-    boost::shared_ptr<YieldTermStructure> termStructure;
+Size deposits, swaps;
+std::vector<boost::shared_ptr<SimpleQuote> > rates;
+std::vector<boost::shared_ptr<RateHelper> > instruments;
+boost::shared_ptr<YieldTermStructure> termStructure;
 
-    void setup() {
+void setup() {
 
-        // data
-        calendar = TARGET();
-        settlementDays = 2;
-        fixingDays = 2;
-        today = calendar.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
-        settlement = calendar.advance(today,settlementDays,Days);
-        depoConvention = ModifiedFollowing;
-        depoDayCounter = Actual360();
-        fixedLegConvention = Unadjusted;
-        floatingLegConvention = ModifiedFollowing;
-        fixedLegFrequency = Annual;
-        fixedLegDayCounter = Thirty360();
-        floatingLegFrequency = Semiannual;
+    // data
+    calendar = TARGET();
+    settlementDays = 2;
+    fixingDays = 2;
+    today = calendar.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = today;
+    settlement = calendar.advance(today,settlementDays,Days);
+    depoConvention = ModifiedFollowing;
+    depoDayCounter = Actual360();
+    fixedLegConvention = Unadjusted;
+    floatingLegConvention = ModifiedFollowing;
+    fixedLegFrequency = Annual;
+    fixedLegDayCounter = Thirty360();
+    floatingLegFrequency = Semiannual;
 
-        deposits = LENGTH(depositData);
-        swaps = LENGTH(swapData);
+    deposits = LENGTH(depositData);
+    swaps = LENGTH(swapData);
 
-        // market elements
-        rates = std::vector<boost::shared_ptr<SimpleQuote> >(deposits+swaps);
-        Size i;
-        for (i=0; i<deposits; i++) {
-            rates[i] = boost::shared_ptr<SimpleQuote>(
+    // market elements
+    rates = std::vector<boost::shared_ptr<SimpleQuote> >(deposits+swaps);
+    Size i;
+    for (i=0; i<deposits; i++) {
+        rates[i] = boost::shared_ptr<SimpleQuote>(
                                     new SimpleQuote(depositData[i].rate/100));
-        }
-        for (i=0; i<swaps; i++) {
-            rates[i+deposits] = boost::shared_ptr<SimpleQuote>(
+    }
+    for (i=0; i<swaps; i++) {
+        rates[i+deposits] = boost::shared_ptr<SimpleQuote>(
                                        new SimpleQuote(swapData[i].rate/100));
-        }
+    }
 
-        // rate helpers
-        instruments =
-            std::vector<boost::shared_ptr<RateHelper> >(deposits+swaps);
-        for (i=0; i<deposits; i++) {
-            Handle<Quote> r(rates[i]);
-            instruments[i] = boost::shared_ptr<RateHelper>(
+    // rate helpers
+    instruments =
+        std::vector<boost::shared_ptr<RateHelper> >(deposits+swaps);
+    for (i=0; i<deposits; i++) {
+        Handle<Quote> r(rates[i]);
+        instruments[i] = boost::shared_ptr<RateHelper>(
               new DepositRateHelper(r, depositData[i].n, depositData[i].units,
                                     settlementDays, calendar,
                                     depoConvention, depoDayCounter));
-        }
-        for (i=0; i<swaps; i++) {
-            Handle<Quote> r(rates[i+deposits]);
-            instruments[i+deposits] = boost::shared_ptr<RateHelper>(
+    }
+    for (i=0; i<swaps; i++) {
+        Handle<Quote> r(rates[i+deposits]);
+        instruments[i+deposits] = boost::shared_ptr<RateHelper>(
                 new SwapRateHelper(r, swapData[i].n, swapData[i].units,
                                    settlementDays, calendar,
                                    fixedLegFrequency, fixedLegConvention,
                                    fixedLegDayCounter, floatingLegFrequency,
                                    floatingLegConvention));
-        }
+    }
 
-        // instantiate curve
-        termStructure = boost::shared_ptr<YieldTermStructure>(
+    // instantiate curve
+    termStructure = boost::shared_ptr<YieldTermStructure>(
                 new PiecewiseFlatForward(settlement,instruments,Actual360()));
 
-    }
-
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
 }
+
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
+}
+
+QL_END_TEST_LOCALS(PiecewiseFlatForwardTest)
+
 
 void PiecewiseFlatForwardTest::testConsistency() {
 

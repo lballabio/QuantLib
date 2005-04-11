@@ -11,6 +11,7 @@ DiscreteHedging_SOURCES = DiscreteHedging.cpp
 DiscreteHedging_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
+    DiscreteHedging.dev \
     DiscreteHedging.dsp \
     DiscreteHedging.vcproj \
     DiscreteHedging_vc8.vcproj \
@@ -19,4 +20,8 @@ EXTRA_DIST = \
 
 .PHONY: examples
 examples: DiscreteHedging
+
+dist-hook:
+	mkdir -p $(distdir)/bin
+	mkdir -p $(distdir)/build
 

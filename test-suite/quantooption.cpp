@@ -79,46 +79,45 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+QL_BEGIN_TEST_LOCALS(QuantoOptionTest)
 
-    struct QuantoOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;          // spot
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Rate fxr;        // fx risk-free rate
-        Volatility fxv;  // fx volatility
-        Real corr;       // correlation
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
+struct QuantoOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;          // spot
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Rate fxr;        // fx risk-free rate
+    Volatility fxv;  // fx volatility
+    Real corr;       // correlation
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    struct QuantoForwardOptionData {
-        Option::Type type;
-        Real moneyness;
-        Real s;          // spot
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time start;      // time to reset
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Rate fxr;        // fx risk-free rate
-        Volatility fxv;  // fx volatility
-        Real corr;       // correlation
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
+struct QuantoForwardOptionData {
+    Option::Type type;
+    Real moneyness;
+    Real s;          // spot
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time start;      // time to reset
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Rate fxr;        // fx risk-free rate
+    Volatility fxv;  // fx volatility
+    Real corr;       // correlation
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
 }
 
-// tests
+QL_END_TEST_LOCALS(QuantoOptionTest)
+
 
 void QuantoOptionTest::testValues() {
 

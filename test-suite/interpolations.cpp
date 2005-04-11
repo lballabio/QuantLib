@@ -29,151 +29,158 @@
 #include <ql/Math/functional.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
 
+#if !defined(QL_PATCH_MSVC6)
+#define SCIENTIFIC std::scientific
+#else
+#define SCIENTIFIC ""
+#endif
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(InterpolationTest)
 
-    #define BEGIN(x) (x+0)
-    #define END(x) (x+LENGTH(x))
+#define BEGIN(x) (x+0)
+#define END(x) (x+LENGTH(x))
 
-    std::vector<Real> xRange(Real start, Real finish, Size points) {
-        std::vector<Real> x(points);
-        Real dx = (finish-start)/(points-1);
-        for (Size i=0; i<points-1; i++)
-            x[i] = start+i*dx;
-        x[points-1] = finish;
-        return x;
-    }
-
-    std::vector<Real> gaussian(const std::vector<Real>& x) {
-        std::vector<Real> y(x.size());
-        for (Size i=0; i<x.size(); i++)
-            y[i] = std::exp(-x[i]*x[i]);
-        return y;
-    }
-
-    std::vector<Real> parabolic(const std::vector<Real>& x) {
-        std::vector<Real> y(x.size());
-        for (Size i=0; i<x.size(); i++)
-            y[i] = -x[i]*x[i];
-        return y;
-    }
-    template <class I, class J>
-    void checkValues(const char* type,
-                     const CubicSpline& spline,
-                     I xBegin, I xEnd, J yBegin) {
-        Real tolerance = 2.0e-15;
-        while (xBegin != xEnd) {
-            Real interpolated = spline(*xBegin);
-            if (std::fabs(interpolated-*yBegin) > tolerance) {
-                BOOST_FAIL(type << " interpolation failed at x = " << *xBegin
-                           << std::scientific
-                           << "\n    interpolated value: " << interpolated
-                           << "\n    expected value:     " << *yBegin
-                           << "\n    error:              "
-                           << std::fabs(interpolated-*yBegin));
-            }
-            ++xBegin; ++yBegin;
-        }
-    }
-
-    void check1stDerivativeValue(const char* type,
-                                 const CubicSpline& spline,
-                                 Real x,
-                                 Real value) {
-        Real tolerance = 1.0e-14;
-        Real interpolated = spline.derivative(x);
-        Real error = std::fabs(interpolated-value);
-        if (error > tolerance) {
-            BOOST_FAIL(type << " interpolation first derivative failure\n"
-                       << "at x = " << x
-                       << "\n    interpolated value: " << interpolated
-                       << "\n    expected value:     " << value
-                       << std::scientific
-                       << "\n    error:              " << error);
-        }
-    }
-
-    void check2ndDerivativeValue(const char* type,
-                                 const CubicSpline& spline,
-                                 Real x,
-                                 Real value) {
-        Real tolerance = 1.0e-13;
-        Real interpolated = spline.secondDerivative(x);
-        Real error = std::fabs(interpolated-value);
-        if (error > tolerance) {
-            BOOST_FAIL(type << " interpolation second derivative failure\n"
-                       << "at x = " << x
-                       << "\n    interpolated value: " << interpolated
-                       << "\n    expected value:     " << value
-                       << std::scientific
-                       << "\n    error:              " << error);
-        }
-    }
-
-    void checkNotAKnotCondition(const char* type,
-                                const CubicSpline& spline) {
-
-        Real tolerance = 1.0e-14;
-        const std::vector<Real>& c = spline.cCoefficients();
-        if (std::fabs(c[0]-c[1]) > tolerance) {
-            BOOST_FAIL(type << " interpolation failure"
-                       << "\n    cubic coefficient of the first"
-                       << " polinomial is " << c[0]
-                       << "\n    cubic coefficient of the second"
-                       << " polinomial is " << c[1]);
-        }
-        Size n = c.size();
-        if (std::fabs(c[n-2]-c[n-1]) > tolerance) {
-            BOOST_FAIL(type << " interpolation failure"
-                       << "\n    cubic coefficient of the 2nd to last"
-                       << " polinomial is " << c[n-2]
-                       << "\n    cubic coefficient of the last"
-                       << " polinomial is " << c[n-1]);
-        }
-    }
-
-    void checkSymmetry(const char* type,
-                       const CubicSpline& spline,
-                       Real xMin) {
-        Real tolerance = 1.0e-15;
-        for (Real x = xMin; x < 0.0; x += 0.1) {
-            Real y1 = spline(x), y2 = spline(-x);
-            if (std::fabs(y1-y2) > tolerance) {
-                BOOST_FAIL(type << " interpolation not symmetric"
-                           << "\n    x = " << x
-                           << "\n    g(x)  = " << y1
-                           << "\n    g(-x) = " << y2
-                           << "\n    error:  " << std::fabs(y1-y2));
-            }
-        }
-    }
-
-    template <class F>
-    class errorFunction : public std::unary_function<Real,Real> {
-      public:
-        errorFunction(const F& f) : f_(f) {}
-        Real operator()(Real x) const {
-            Real temp = f_(x)-std::exp(-x*x);
-            return temp*temp;
-        }
-      private:
-        F f_;
-    };
-
-    template <class F>
-    errorFunction<F> make_error_function(const F& f) {
-        return errorFunction<F>(f);
-    }
-
-    Real multif(Real s, Real t, Real u, Real v, Real w) {
-        return std::sqrt(s * std::sinh(std::log(t)) +
-                         std::exp(std::sin(u) * std::sin(3 * v)) +
-                         std::sinh(std::log(v * w)));
-    }
-
+std::vector<Real> xRange(Real start, Real finish, Size points) {
+    std::vector<Real> x(points);
+    Real dx = (finish-start)/(points-1);
+    for (Size i=0; i<points-1; i++)
+        x[i] = start+i*dx;
+    x[points-1] = finish;
+    return x;
 }
+
+std::vector<Real> gaussian(const std::vector<Real>& x) {
+    std::vector<Real> y(x.size());
+    for (Size i=0; i<x.size(); i++)
+        y[i] = std::exp(-x[i]*x[i]);
+    return y;
+}
+
+std::vector<Real> parabolic(const std::vector<Real>& x) {
+    std::vector<Real> y(x.size());
+    for (Size i=0; i<x.size(); i++)
+        y[i] = -x[i]*x[i];
+    return y;
+}
+
+template <class I, class J>
+void checkValues(const char* type,
+                 const CubicSpline& spline,
+                 I xBegin, I xEnd, J yBegin) {
+    Real tolerance = 2.0e-15;
+    while (xBegin != xEnd) {
+        Real interpolated = spline(*xBegin);
+        if (std::fabs(interpolated-*yBegin) > tolerance) {
+            BOOST_FAIL(type << " interpolation failed at x = " << *xBegin
+                       << SCIENTIFIC
+                       << "\n    interpolated value: " << interpolated
+                       << "\n    expected value:     " << *yBegin
+                       << "\n    error:              "
+                       << std::fabs(interpolated-*yBegin));
+        }
+        ++xBegin; ++yBegin;
+    }
+}
+
+void check1stDerivativeValue(const char* type,
+                             const CubicSpline& spline,
+                             Real x,
+                             Real value) {
+    Real tolerance = 1.0e-14;
+    Real interpolated = spline.derivative(x);
+    Real error = std::fabs(interpolated-value);
+    if (error > tolerance) {
+        BOOST_FAIL(type << " interpolation first derivative failure\n"
+                   << "at x = " << x
+                   << "\n    interpolated value: " << interpolated
+                   << "\n    expected value:     " << value
+                   << SCIENTIFIC
+                   << "\n    error:              " << error);
+    }
+}
+
+void check2ndDerivativeValue(const char* type,
+                             const CubicSpline& spline,
+                             Real x,
+                             Real value) {
+    Real tolerance = 1.0e-13;
+    Real interpolated = spline.secondDerivative(x);
+    Real error = std::fabs(interpolated-value);
+    if (error > tolerance) {
+        BOOST_FAIL(type << " interpolation second derivative failure\n"
+                   << "at x = " << x
+                   << "\n    interpolated value: " << interpolated
+                   << "\n    expected value:     " << value
+                   << SCIENTIFIC
+                   << "\n    error:              " << error);
+    }
+}
+
+void checkNotAKnotCondition(const char* type,
+                            const CubicSpline& spline) {
+    Real tolerance = 1.0e-14;
+    const std::vector<Real>& c = spline.cCoefficients();
+    if (std::fabs(c[0]-c[1]) > tolerance) {
+        BOOST_FAIL(type << " interpolation failure"
+                   << "\n    cubic coefficient of the first"
+                   << " polinomial is " << c[0]
+                   << "\n    cubic coefficient of the second"
+                   << " polinomial is " << c[1]);
+    }
+    Size n = c.size();
+    if (std::fabs(c[n-2]-c[n-1]) > tolerance) {
+        BOOST_FAIL(type << " interpolation failure"
+                   << "\n    cubic coefficient of the 2nd to last"
+                   << " polinomial is " << c[n-2]
+                   << "\n    cubic coefficient of the last"
+                   << " polinomial is " << c[n-1]);
+    }
+}
+
+void checkSymmetry(const char* type,
+                   const CubicSpline& spline,
+                   Real xMin) {
+    Real tolerance = 1.0e-15;
+    for (Real x = xMin; x < 0.0; x += 0.1) {
+        Real y1 = spline(x), y2 = spline(-x);
+        if (std::fabs(y1-y2) > tolerance) {
+            BOOST_FAIL(type << " interpolation not symmetric"
+                       << "\n    x = " << x
+                       << "\n    g(x)  = " << y1
+                       << "\n    g(-x) = " << y2
+                       << "\n    error:  " << std::fabs(y1-y2));
+        }
+    }
+}
+
+template <class F>
+class errorFunction : public std::unary_function<Real,Real> {
+  public:
+    errorFunction(const F& f) : f_(f) {}
+    Real operator()(Real x) const {
+        Real temp = f_(x)-std::exp(-x*x);
+        return temp*temp;
+    }
+  private:
+    F f_;
+};
+
+template <class F>
+errorFunction<F> make_error_function(const F& f) {
+    return errorFunction<F>(f);
+}
+
+Real multif(Real s, Real t, Real u, Real v, Real w) {
+    return std::sqrt(s * std::sinh(std::log(t)) +
+                     std::exp(std::sin(u) * std::sin(3 * v)) +
+                     std::sinh(std::log(v * w)));
+}
+
+QL_END_TEST_LOCALS(InterpolationTest)
+
 
 /* See J. M. Hyman, "Accurate monotonicity preserving cubic interpolation"
    SIAM J. of Scientific and Statistical Computing, v. 4, 1983, pp. 645-654.

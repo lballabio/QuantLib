@@ -11,6 +11,7 @@ EuropeanOption_SOURCES = EuropeanOption.cpp
 EuropeanOption_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
+    EuropeanOption.dev \
     EuropeanOption.dsp \
     EuropeanOption.vcproj \
     EuropeanOption_vc8.vcproj \
@@ -19,4 +20,8 @@ EXTRA_DIST = \
 
 .PHONY: examples
 examples: EuropeanOption
+
+dist-hook:
+	mkdir -p $(distdir)/bin
+	mkdir -p $(distdir)/build
 

@@ -28,87 +28,91 @@
 #include <ql/Utilities/dataformatters.hpp>
 #include <iomanip>
 
+#if !defined(QL_PATCH_MSVC6)
+#define FIXED std::fixed
+#else
+#define FIXED ""
+#endif
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(SwaptionTest)
 
-    // global data
+// global data
 
-    Integer exercises[] = { 1, 2, 3, 5, 7, 10 };
-    Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
-    bool payFixed[] = { false, true };
+Integer exercises[] = { 1, 2, 3, 5, 7, 10 };
+Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
+bool payFixed[] = { false, true };
 
-    Date today_, settlement_;
-    Real nominal_;
-    Calendar calendar_;
-    BusinessDayConvention fixedConvention_, floatingConvention_;
-    Frequency fixedFrequency_, floatingFrequency_;
-    DayCounter fixedDayCount_;
-    boost::shared_ptr<Xibor> index_;
-    Integer settlementDays_, fixingDays_;
-    Handle<YieldTermStructure> termStructure_;
+Date today_, settlement_;
+Real nominal_;
+Calendar calendar_;
+BusinessDayConvention fixedConvention_, floatingConvention_;
+Frequency fixedFrequency_, floatingFrequency_;
+DayCounter fixedDayCount_;
+boost::shared_ptr<Xibor> index_;
+Integer settlementDays_, fixingDays_;
+Handle<YieldTermStructure> termStructure_;
 
-    // utilities
+// utilities
 
-    boost::shared_ptr<SimpleSwap> makeSwap(const Date& start, Integer length,
-                                           Rate fixedRate,
-                                           Spread floatingSpread,
-                                           bool payFixed) {
-        Date maturity = calendar_.advance(start,length,Years,
-                                          floatingConvention_);
-        Schedule fixedSchedule(calendar_,start,maturity,
-                               fixedFrequency_,fixedConvention_);
-        Schedule floatSchedule(calendar_,start,maturity,
-                               floatingFrequency_,floatingConvention_);
-        return boost::shared_ptr<SimpleSwap>(
+boost::shared_ptr<SimpleSwap> makeSwap(const Date& start, Integer length,
+                                       Rate fixedRate,
+                                       Spread floatingSpread,
+                                       bool payFixed) {
+    Date maturity = calendar_.advance(start,length,Years,
+                                      floatingConvention_);
+    Schedule fixedSchedule(calendar_,start,maturity,
+                           fixedFrequency_,fixedConvention_);
+    Schedule floatSchedule(calendar_,start,maturity,
+                           floatingFrequency_,floatingConvention_);
+    return boost::shared_ptr<SimpleSwap>(
             new SimpleSwap(payFixed,nominal_,
                            fixedSchedule,fixedRate,fixedDayCount_,
                            floatSchedule,index_,fixingDays_,floatingSpread,
                            termStructure_));
-    }
+}
 
-    boost::shared_ptr<Swaption> makeSwaption(
+boost::shared_ptr<Swaption> makeSwaption(
                                     const boost::shared_ptr<SimpleSwap>& swap,
                                     const Date& exercise,
                                     Volatility volatility) {
-        boost::shared_ptr<Quote> vol_me(new SimpleQuote(volatility));
-        Handle<Quote> vol_rh(vol_me);
-        boost::shared_ptr<BlackModel> model(
-                                       new BlackModel(vol_rh,termStructure_));
-        boost::shared_ptr<PricingEngine> engine(
-                                              new BlackSwaptionEngine(model));
-        return boost::shared_ptr<Swaption>(new Swaption(
+    boost::shared_ptr<Quote> vol_me(new SimpleQuote(volatility));
+    Handle<Quote> vol_rh(vol_me);
+    boost::shared_ptr<BlackModel> model(new BlackModel(vol_rh,termStructure_));
+    boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(model));
+    return boost::shared_ptr<Swaption>(new Swaption(
                   swap,
                   boost::shared_ptr<Exercise>(new EuropeanExercise(exercise)),
                   termStructure_,
                   engine));
-    }
-
-    void setup() {
-        settlementDays_ = 2;
-        fixingDays_ = 2;
-        nominal_ = 100.0;
-        fixedConvention_ = Unadjusted;
-        floatingConvention_ = ModifiedFollowing;
-        fixedFrequency_ = Annual;
-        floatingFrequency_ = Semiannual;
-        fixedDayCount_ = Thirty360();
-        index_ = boost::shared_ptr<Xibor>(
-                                     new Euribor(12/floatingFrequency_,Months,
-                                                 termStructure_));
-        calendar_ = index_->calendar();
-        today_ = calendar_.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today_;
-        settlement_ = calendar_.advance(today_,settlementDays_,Days);
-        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
-    }
-
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
 }
+
+void setup() {
+    settlementDays_ = 2;
+    fixingDays_ = 2;
+    nominal_ = 100.0;
+    fixedConvention_ = Unadjusted;
+    floatingConvention_ = ModifiedFollowing;
+    fixedFrequency_ = Annual;
+    floatingFrequency_ = Semiannual;
+    fixedDayCount_ = Thirty360();
+    index_ = boost::shared_ptr<Xibor>(new Euribor(12/floatingFrequency_,
+                                                  Months, termStructure_));
+    calendar_ = index_->calendar();
+    today_ = calendar_.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = today_;
+    settlement_ = calendar_.advance(today_,settlementDays_,Days);
+    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
+}
+
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
+}
+
+QL_END_TEST_LOCALS(SwaptionTest)
+
 
 void SwaptionTest::testStrikeDependency() {
 
@@ -318,7 +322,7 @@ void SwaptionTest::testCachedValue() {
 
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-11)
         BOOST_FAIL("failed to reproduce cached swaption value:\n"
-                   << std::fixed << std::setprecision(12)
+                   << FIXED << std::setprecision(12)
                    << "    calculated: " << swaption->NPV() << "\n"
                    << "    expected:   " << cachedNPV);
 

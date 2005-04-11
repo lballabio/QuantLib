@@ -54,49 +54,49 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+QL_BEGIN_TEST_LOCALS(BarrierOptionTest)
 
-    std::string barrierTypeToString(Barrier::Type type) {
-
-        switch(type){
-        case Barrier::DownIn:
-            return std::string("Down-and-in");
-        case Barrier::UpIn:
-            return std::string("Up-and-in");
-        case Barrier::DownOut:
-            return std::string("Down-and-out");
-        case Barrier::UpOut:
-            return std::string("Up-and-out");
-        default:
-            QL_FAIL("unknown exercise type");
-        }
+std::string barrierTypeToString(Barrier::Type type) {
+    switch(type){
+      case Barrier::DownIn:
+        return std::string("Down-and-in");
+      case Barrier::UpIn:
+        return std::string("Up-and-in");
+      case Barrier::DownOut:
+        return std::string("Down-and-out");
+      case Barrier::UpOut:
+        return std::string("Up-and-out");
+      default:
+        QL_FAIL("unknown exercise type");
     }
-
-    struct BarrierOptionData {
-        Barrier::Type type;
-        Volatility volatility;
-        Real strike;
-        Real barrier;
-        Real callValue;
-        Real putValue;
-    };
-
-    struct NewBarrierOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real rebate;
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // result
-        Real tol;      // tolerance
-    };
-
 }
+
+struct BarrierOptionData {
+    Barrier::Type type;
+    Volatility volatility;
+    Real strike;
+    Real barrier;
+    Real callValue;
+    Real putValue;
+};
+
+struct NewBarrierOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real rebate;
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // result
+    Real tol;      // tolerance
+};
+
+QL_END_TEST_LOCALS(BarrierOptionTest)
+
 
 void BarrierOptionTest::testHaugValues() {
 

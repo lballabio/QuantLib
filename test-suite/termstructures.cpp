@@ -32,75 +32,80 @@
 #include <ql/Utilities/dataformatters.hpp>
 #include <iomanip>
 
+#if !defined(QL_PATCH_MSVC6)
+#define FIXED std::fixed
+#else
+#define FIXED ""
+#endif
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(TermStructureTest)
 
-    // global data
+// global data
 
-    Calendar calendar_;
-    Integer settlementDays_;
-    boost::shared_ptr<YieldTermStructure> termStructure_;
+Calendar calendar_;
+Integer settlementDays_;
+boost::shared_ptr<YieldTermStructure> termStructure_;
 
-    // utilities
+// utilities
 
-    struct Datum {
-        Integer n;
-        TimeUnit units;
-        Rate rate;
+struct Datum {
+    Integer n;
+    TimeUnit units;
+    Rate rate;
+};
+
+void setup() {
+    calendar_ = TARGET();
+    settlementDays_ = 2;
+    Date today = calendar_.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = today;
+    Date settlement = calendar_.advance(today,settlementDays_,Days);
+    Datum depositData[] = {
+        { 1, Months, 4.581 },
+        { 2, Months, 4.573 },
+        { 3, Months, 4.557 },
+        { 6, Months, 4.496 },
+        { 9, Months, 4.490 }
     };
+    Datum swapData[] = {
+        {  1, Years, 4.54 },
+        {  5, Years, 4.99 },
+        { 10, Years, 5.47 },
+        { 20, Years, 5.89 },
+        { 30, Years, 5.96 }
+    };
+    Size deposits = LENGTH(depositData),
+         swaps = LENGTH(swapData);
 
-    void setup() {
-        calendar_ = TARGET();
-        settlementDays_ = 2;
-        Date today = calendar_.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
-        Date settlement = calendar_.advance(today,settlementDays_,Days);
-        Datum depositData[] = {
-            { 1, Months, 4.581 },
-            { 2, Months, 4.573 },
-            { 3, Months, 4.557 },
-            { 6, Months, 4.496 },
-            { 9, Months, 4.490 }
-        };
-        Datum swapData[] = {
-            {  1, Years, 4.54 },
-            {  5, Years, 4.99 },
-            { 10, Years, 5.47 },
-            { 20, Years, 5.89 },
-            { 30, Years, 5.96 }
-        };
-        Size deposits = LENGTH(depositData),
-            swaps = LENGTH(swapData);
-
-        std::vector<boost::shared_ptr<RateHelper> >
-            instruments(deposits+swaps);
-        Size i;
-        for (i=0; i<deposits; i++) {
-            instruments[i] = boost::shared_ptr<RateHelper>(
+    std::vector<boost::shared_ptr<RateHelper> > instruments(deposits+swaps);
+    Size i;
+    for (i=0; i<deposits; i++) {
+        instruments[i] = boost::shared_ptr<RateHelper>(
                  new DepositRateHelper(depositData[i].rate/100,
                                        depositData[i].n, depositData[i].units,
                                        settlementDays_, calendar_,
                                        ModifiedFollowing, Actual360()));
-        }
-        for (i=0; i<swaps; i++) {
-            instruments[i+deposits] = boost::shared_ptr<RateHelper>(
+    }
+    for (i=0; i<swaps; i++) {
+        instruments[i+deposits] = boost::shared_ptr<RateHelper>(
                           new SwapRateHelper(swapData[i].rate/100,
                                              swapData[i].n, swapData[i].units,
                                              settlementDays_, calendar_,
                                              Annual, Unadjusted, Thirty360(),
                                              Semiannual, ModifiedFollowing));
-        }
-        termStructure_ = boost::shared_ptr<YieldTermStructure>(
+    }
+    termStructure_ = boost::shared_ptr<YieldTermStructure>(
               new PiecewiseFlatForward(settlement, instruments, Actual360()));
-    }
-
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
 }
+
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
+}
+
+QL_END_TEST_LOCALS(TermStructureTest)
 
 
 void TermStructureTest::testReferenceChange() {
@@ -159,7 +164,7 @@ void TermStructureTest::testImplied() {
     if (std::fabs(discount - baseDiscount*impliedDiscount) > tolerance)
         BOOST_FAIL(
             "unable to reproduce discount from implied curve\n"
-            << std::fixed << std::setprecision(10)
+            << FIXED << std::setprecision(10)
             << "    calculated: " << baseDiscount*impliedDiscount << "\n"
             << "    expected:   " << discount);
 

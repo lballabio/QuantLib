@@ -49,6 +49,7 @@ QL_TESTS = \
 	utilities.hpp utilities.cpp
 
 dist-hook:
+	mkdir -p $(distdir)/build
 	mkdir -p $(distdir)/bin
 	cp -p $(srcdir)/bin/runtest.bat $(distdir)/bin
 

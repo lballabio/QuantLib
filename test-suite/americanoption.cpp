@@ -53,24 +53,25 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+QL_BEGIN_TEST_LOCALS(AmericanOptionTest)
 
-    struct AmericanOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-    };
+struct AmericanOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+};
 
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
 }
+
+QL_END_TEST_LOCALS(AmericanOptionTest)
+
 
 void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
@@ -236,82 +237,83 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
 
 }
 
-namespace {
+QL_BEGIN_TEST_LOCALS(AmericanOptionTest)
 
-    /* The data below are from
-        An Approximate Formula for Pricing American Options
-        Journal of Derivatives Winter 1999
-        Ju, N.
-    */
-    AmericanOptionData juValues[] = {
-      //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
-      // These values are from Exhibit 3 - Short dated Put Options
-      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  0.006 },
-      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  0.201 },
-      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  0.433 },
+/* The data below are from
+   An Approximate Formula for Pricing American Options
+   Journal of Derivatives Winter 1999
+   Ju, N.
+*/
+AmericanOptionData juValues[] = {
+    //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
+    // These values are from Exhibit 3 - Short dated Put Options
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  0.006 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  0.201 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  0.433 },
 
-      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  0.851 },
-      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  1.576 },
-      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  1.984 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  0.851 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  1.576 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  1.984 },
 
-      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  5.000 },
-      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  5.084 },
-      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  5.260 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  5.000 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  5.084 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  5.260 },
 
-      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  0.078 },
-      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  0.697 },
-      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  1.218 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  0.078 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  0.697 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  1.218 },
 
-      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  1.309 },
-      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  2.477 },
-      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  3.161 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  1.309 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  2.477 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  3.161 },
 
-      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  5.059 },
-      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  5.699 },
-      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  6.231 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  5.059 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  5.699 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  6.231 },
 
-      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  0.247 },
-      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  1.344 },
-      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  2.150 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  0.247 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  1.344 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  2.150 },
 
-      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  1.767 },
-      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  3.381 },
-      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  4.342 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  1.767 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  3.381 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  4.342 },
 
-      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  5.288 },
-      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  6.501 },
-      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  7.367 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  5.288 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  6.501 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  7.367 },
 
-      // Type in Exhibits 4 and 5 if you have some spare time ;-)
+    // Type in Exhibits 4 and 5 if you have some spare time ;-)
 
-      //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
-      // These values are from Exhibit 6 - Long dated Call Options with dividends
-      { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.2,  2.605 },
-      { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.2,  5.182 },
-      { Option::Call, 100.00,   100.00,  0.07,  0.03, 3.0,  0.2,  9.065 },
-      { Option::Call, 100.00,   110.00,  0.07,  0.03, 3.0,  0.2,  14.430 },
-      { Option::Call, 100.00,   120.00,  0.07,  0.03, 3.0,  0.2,  21.398 },
+    //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
+    // These values are from Exhibit 6 - Long dated Call Options with dividends
+    { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.2,  2.605 },
+    { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.2,  5.182 },
+    { Option::Call, 100.00,   100.00,  0.07,  0.03, 3.0,  0.2,  9.065 },
+    { Option::Call, 100.00,   110.00,  0.07,  0.03, 3.0,  0.2,  14.430 },
+    { Option::Call, 100.00,   120.00,  0.07,  0.03, 3.0,  0.2,  21.398 },
 
-      { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.4,  11.336 },
-      { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.4,  15.711 },
-      { Option::Call, 100.00,   100.00,  0.07,  0.03, 3.0,  0.4,  20.760 },
-      { Option::Call, 100.00,   110.00,  0.07,  0.03, 3.0,  0.4,  26.440 },
-      { Option::Call, 100.00,   120.00,  0.07,  0.03, 3.0,  0.4,  32.709 },
+    { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.4,  11.336 },
+    { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.4,  15.711 },
+    { Option::Call, 100.00,   100.00,  0.07,  0.03, 3.0,  0.4,  20.760 },
+    { Option::Call, 100.00,   110.00,  0.07,  0.03, 3.0,  0.4,  26.440 },
+    { Option::Call, 100.00,   120.00,  0.07,  0.03, 3.0,  0.4,  32.709 },
 
-      { Option::Call, 100.00,   80.00,  0.07,  0.0, 3.0,  0.3,  5.552 },
-      { Option::Call, 100.00,   90.00,  0.07,  0.0, 3.0,  0.3,  8.868 },
-      { Option::Call, 100.00,   100.00,  0.07,  0.0, 3.0,  0.3,  13.158 },
-      { Option::Call, 100.00,   110.00,  0.07,  0.0, 3.0,  0.3,  18.458 },
-      { Option::Call, 100.00,   120.00,  0.07,  0.0, 3.0,  0.3,  24.786 },
+    { Option::Call, 100.00,   80.00,  0.07,  0.0, 3.0,  0.3,  5.552 },
+    { Option::Call, 100.00,   90.00,  0.07,  0.0, 3.0,  0.3,  8.868 },
+    { Option::Call, 100.00,   100.00,  0.07,  0.0, 3.0,  0.3,  13.158 },
+    { Option::Call, 100.00,   110.00,  0.07,  0.0, 3.0,  0.3,  18.458 },
+    { Option::Call, 100.00,   120.00,  0.07,  0.0, 3.0,  0.3,  24.786 },
 
-      { Option::Call, 100.00,   80.00,  0.03,  0.07, 3.0,  0.3,  12.177 },
-      { Option::Call, 100.00,   90.00,  0.03,  0.07, 3.0,  0.3,  17.411 },
-      { Option::Call, 100.00,   100.00,  0.03,  0.07, 3.0,  0.3,  23.402 },
-      { Option::Call, 100.00,   110.00,  0.03,  0.07, 3.0,  0.3,  30.028 },
-      { Option::Call, 100.00,   120.00,  0.03,  0.07, 3.0,  0.3,  37.177 }
-    };
+    { Option::Call, 100.00,   80.00,  0.03,  0.07, 3.0,  0.3,  12.177 },
+    { Option::Call, 100.00,   90.00,  0.03,  0.07, 3.0,  0.3,  17.411 },
+    { Option::Call, 100.00,   100.00,  0.03,  0.07, 3.0,  0.3,  23.402 },
+    { Option::Call, 100.00,   110.00,  0.03,  0.07, 3.0,  0.3,  30.028 },
+    { Option::Call, 100.00,   120.00,  0.03,  0.07, 3.0,  0.3,  37.177 }
+};
 
-}
+QL_END_TEST_LOCALS(AmericanOptionTest)
+
 
 void AmericanOptionTest::testJuValues() {
 
@@ -418,40 +420,40 @@ void AmericanOptionTest::testFdValues() {
 }
 
 
-namespace {
+QL_BEGIN_TEST_LOCALS(AmericanOptionTest)
 
-    template <class Engine>
-    void testFdGreeks(const Engine&) {
+template <class Engine>
+void testFdGreeks(const Engine&) {
 
-        std::map<std::string,Real> calculated, expected, tolerance;
-        tolerance["delta"]  = 7.0e-4;
-        tolerance["gamma"]  = 2.0e-4;
-        //tolerance["theta"]  = 1.0e-4;
+    std::map<std::string,Real> calculated, expected, tolerance;
+    tolerance["delta"]  = 7.0e-4;
+    tolerance["gamma"]  = 2.0e-4;
+    //tolerance["theta"]  = 1.0e-4;
 
-        Option::Type types[] = { Option::Call, Option::Put };
-        Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-        Real underlyings[] = { 100.0 };
-        Rate qRates[] = { 0.04, 0.05, 0.06 };
-        Rate rRates[] = { 0.01, 0.05, 0.15 };
-        Integer years[] = { 1, 2 };
-        Volatility vols[] = { 0.11, 0.50, 1.20 };
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+    Real underlyings[] = { 100.0 };
+    Rate qRates[] = { 0.04, 0.05, 0.06 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    Integer years[] = { 1, 2 };
+    Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-        DayCounter dc = Actual360();
-        Date today = Date::todaysDate();
-        Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+    Settings::instance().evaluationDate() = today;
 
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-        Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-        boost::shared_ptr<StrikedTypePayoff> payoff;
+    boost::shared_ptr<StrikedTypePayoff> payoff;
 
-        for (Size i=0; i<LENGTH(types); i++) {
-          for (Size j=0; j<LENGTH(strikes); j++) {
+    for (Size i=0; i<LENGTH(types); i++) {
+        for (Size j=0; j<LENGTH(strikes); j++) {
             for (Size k=0; k<LENGTH(years); k++) {
               Date exDate = today + years[k]*Years;
               boost::shared_ptr<Exercise> exercise(
@@ -528,11 +530,12 @@ namespace {
                 }
               }
             }
-          }
         }
     }
-
 }
+
+QL_END_TEST_LOCALS(AmericanOptionTest)
+
 
 void AmericanOptionTest::testFdAmericanGreeks() {
 

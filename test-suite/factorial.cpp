@@ -22,6 +22,12 @@
 #include <ql/Math/gammadistribution.hpp>
 #include <iomanip>
 
+#if !defined(QL_PATCH_MSVC6)
+#define SCIENTIFIC std::scientific
+#else
+#define SCIENTIFIC ""
+#endif
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
@@ -34,7 +40,7 @@ void FactorialTest::testFactorial() {
     Real calculated = Factorial::get(0);
     if (calculated!=expected)
         BOOST_FAIL("Factorial(0)\n"
-                   << std::setprecision(16) << std::scientific
+                   << std::setprecision(16) << SCIENTIFIC
                    << "    calculated: " << calculated << "\n"
                    << "    expected:   " << expected);
     for (i=1; i<28; i++) {
@@ -42,7 +48,7 @@ void FactorialTest::testFactorial() {
         calculated   = Factorial::get(i);
         if (calculated!=expected)
             BOOST_FAIL("Factorial(" << i << ")\n"
-                       << std::setprecision(16) << std::scientific
+                       << std::setprecision(16) << SCIENTIFIC
                        << "    calculated: " << calculated << "\n"
                        << "    expected:   " << expected);
     }
@@ -53,7 +59,7 @@ void FactorialTest::testFactorial() {
         calculated   = Factorial::get(i);
         if (std::fabs(calculated-expected)/expected > 1.0e-9)
             BOOST_FAIL("Factorial(" << i << ")\n"
-                       << std::setprecision(16) << std::scientific
+                       << std::setprecision(16) << SCIENTIFIC
                        << "    calculated: " << calculated << "\n"
                        << "    expected:   " << expected << "\n"
                        << "    rel. error: "
@@ -69,7 +75,7 @@ void FactorialTest::testGammaFunction() {
     Real calculated = GammaFunction().logValue(1);
     if (std::fabs(calculated) > 1.0e-15)
         BOOST_FAIL("GammaFunction(1)\n"
-                   << std::setprecision(16) << std::scientific
+                   << std::setprecision(16) << SCIENTIFIC
                    << "    calculated: " << calculated << "\n"
                    << "    expected:   " << expected);
 
@@ -78,7 +84,7 @@ void FactorialTest::testGammaFunction() {
         calculated = GammaFunction().logValue(i+1);
         if (std::fabs(calculated-expected)/expected > 1.0e-9)
             BOOST_FAIL("GammaFunction(" << i << ")\n"
-                       << std::setprecision(16) << std::scientific
+                       << std::setprecision(16) << SCIENTIFIC
                        << "    calculated: " << calculated << "\n"
                        << "    expected:   " << expected << "\n"
                        << "    rel. error: "

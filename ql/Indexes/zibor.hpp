@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,29 +17,35 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file usdlibor.hpp
-    \brief %USD %LIBOR rate
+/*! \file zibor.hpp
+    \brief %CHF %ZIBOR rate
 */
 
-#ifndef quantlib_usd_libor_hpp
-#define quantlib_usd_libor_hpp
+#ifndef quantlib_zibor_hpp
+#define quantlib_zibor_hpp
 
 #include <ql/Indexes/xibor.hpp>
-#include <ql/Calendars/unitedkingdom.hpp>
+#include <ql/Calendars/zurich.hpp>
 #include <ql/DayCounters/actual360.hpp>
-#include <ql/Currencies/america.hpp>
+#include <ql/Currencies/europe.hpp>
 
 namespace QuantLib {
 
-    //! %USD %LIBOR rate
-    class USDLibor : public Xibor {
+    //! %CHF %ZIBOR rate
+    /*! Zurich Interbank Offered Rate.
+
+        \warning This is the rate fixed in Zurich by BBA. Use CHFLibor if
+                 you're interested in the London fixing by BBA.
+
+        \todo check settlement days and day-count.
+    */
+    class Zibor : public Xibor {
       public:
-        USDLibor(Integer n, TimeUnit units,
-                 const Handle<YieldTermStructure>& h,
-                 const DayCounter& dc = Actual360())
-        : Xibor("USDLibor", n, units, 2, USDCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
-                ModifiedFollowing, dc, h) {}
+        Zibor(Integer n, TimeUnit units,
+              const Handle<YieldTermStructure>& h,
+              const DayCounter& dc = Actual360())
+        : Xibor("Zibor", n, units, 2, CHFCurrency(),
+                Zurich(), ModifiedFollowing, dc, h) {}
     };
 
 }

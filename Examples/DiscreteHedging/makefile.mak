@@ -26,7 +26,7 @@ QL_LIB_DIR       = "$(QL_DIR)\lib"
 EXE_DIR            = .\bin
 
 # Options
-CC_OPTS = -vi- -I$(QL_INCLUDE_DIR)
+CC_OPTS = -vi- -I$(QL_INCLUDE_DIR) -w-8070
 
 !ifdef _DEBUG
     CC_OPTS = $(CC_OPTS) -v -D_DEBUG

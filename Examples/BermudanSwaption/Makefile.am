@@ -11,6 +11,7 @@ BermudanSwaption_SOURCES = BermudanSwaption.cpp
 BermudanSwaption_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
+    BermudanSwaption.dev \
     BermudanSwaption.dsp \
     BermudanSwaption.vcproj \
     BermudanSwaption_vc8.vcproj \
@@ -19,4 +20,8 @@ EXTRA_DIST = \
 
 .PHONY: examples
 examples: BermudanSwaption
+
+dist-hook:
+	mkdir -p $(distdir)/bin
+	mkdir -p $(distdir)/build
 

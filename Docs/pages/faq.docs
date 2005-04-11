@@ -163,6 +163,38 @@
     \section faq_build Building QuantLib
 
     <strong>
+    \anchor faq_compiling_mingw
+    I'm having trouble building QuantLib with MinGW.
+    </strong>
+
+    Terry August was kind enough to put together detailed instructions
+    for MinGW users. They can be found at
+    <http://www.stanford.edu/~taugust/quantlib.html>.
+
+
+    <strong>
+    \anchor faq_compiling_devcpp_choking
+    When trying to compile QuantLib in the Dev-C++ IDE, I get an error
+    saying that "Could not create makefile: C:\...\Makefile.win"
+    </strong>
+
+    The message is misleading. Close the IDE, create an empty
+    sub-directory named "build" in the same directory as the Dev-C++
+    project, and retry.
+
+
+    <strong>
+    \anchor faq_compiling_missing_boost
+    When building QuantLib, I get a compile error about a missing
+    boost/something header.
+    </strong>
+
+    As mentioned in the readme, QuantLib depends on the Boost library
+    (http://www.boost.org). You must download and install it before
+    building QuantLib.
+
+
+    <strong>
     \anchor faq_linking_libboost_unit
     When building the test-suite, I encounter a linking error about
     libboost_unit_test_framework-xxx.
@@ -182,7 +214,37 @@
     libraries must be built as well; see
     http://www.boost.org/more/getting_started.html
     for instructions.
-    
+
+    <strong>
+    \anchor faq_renaming_libboost_unit
+    Ok, now I have the library; and the library path is set correctly.
+    But I still cannot link!
+    </strong>
+
+    You're using Dev-C++ or MinGW, aren't you? gcc is looking for a
+    library called libboost_unit_test_framework-xxx.a, but the Boost
+    installation process created a
+    libboost_unit_test_framework-xxx.lib instead. Make a copy of the
+    latter in the same location and rename the copy so that it has the
+    correct extension.
+
+    <strong>
+    \anchor faq_compiling_boost_1_32
+    When building the test-suite, I encounter a number of compile
+    errors. I'm using gcc and Boost 1.32.
+    </strong>
+
+    This is a Boost problem; you have to apply a one-line patch to
+    your Boost installation. Open
+    boost/test/detail/wrap_stringstream.hpp and edit line 120,
+    \code
+#if !defined(BOOST_NO_STD_LOCALE) && BOOST_WORKAROUND(BOOST_MSVC, >= 1310)
+    \endcode
+    so that it reads like:
+    \code
+#if !defined(BOOST_NO_STD_LOCALE) && ( !defined(BOOST_MSVC) || BOOST_WORKAROUND(BOOST_MSVC, >= 1310))
+    \endcode
+
 
     \section faq_using Using QuantLib
 

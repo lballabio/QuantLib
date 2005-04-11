@@ -7,12 +7,15 @@ include_HEADERS = \
     core.hpp \
     audlibor.hpp \
     cadlibor.hpp \
+    cdor.hpp \
     chflibor.hpp \
     euribor.hpp \
     gbplibor.hpp \
-    usdlibor.hpp \
     jpylibor.hpp \
+    tibor.hpp \
+    usdlibor.hpp \
     zarlibor.hpp \
+    zibor.hpp \
     xibor.hpp \
     indexmanager.hpp
 

@@ -21,8 +21,8 @@
     \brief Analytic engine for caps/floors
 */
 
-#ifndef quantlib_pricers_analytical_cap_floor_h
-#define quantlib_pricers_analytical_cap_floor_h
+#ifndef quantlib_pricers_analytical_cap_floor_hpp
+#define quantlib_pricers_analytical_cap_floor_hpp
 
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/PricingEngines/genericmodelengine.hpp>
@@ -31,11 +31,7 @@
 namespace QuantLib {
 
     //! Analytic engine for cap/floor
-    /*! \bug This engine does not currently work for caps/floors
-             with caplets expired or whose rate was already fixed.
-
-        \ingroup capfloorengines
-    */
+    /*! \ingroup capfloorengines */
     class AnalyticCapFloorEngine
         : public GenericModelEngine<AffineModel,
                                     CapFloor::arguments,

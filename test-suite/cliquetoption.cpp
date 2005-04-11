@@ -48,15 +48,14 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+QL_BEGIN_TEST_LOCALS(CliquetOptionTest)
 
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
 }
 
-// tests
+QL_END_TEST_LOCALS(CliquetOptionTest)
+
 
 void CliquetOptionTest::testValues() {
 
@@ -106,10 +105,10 @@ void CliquetOptionTest::testValues() {
 }
 
 
-namespace {
+QL_BEGIN_TEST_LOCALS(CliquetOptionTest)
 
-  template <class T>
-  void testOptionGreeks() {
+template <class T>
+void testOptionGreeks() {
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
@@ -259,9 +258,9 @@ namespace {
         }
       }
     }
-  }
-
 }
+
+QL_END_TEST_LOCALS(CliquetOptionTest)
 
 
 void CliquetOptionTest::testGreeks() {

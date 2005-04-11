@@ -61,7 +61,7 @@ namespace QuantLib {
                 Real dx = x-this->xBegin_[i];
                 return primitive_[i] + dx*this->yBegin_[i+1];
             }
-            Real derivative(Real x) const {
+            Real derivative(Real) const {
                 return 0.0;
             }
             Real secondDerivative(Real) const {

@@ -18,7 +18,7 @@
 
 /*! \page history Version history
 
-    <strong>Release 0.3.9 - March 2005</strong>
+    <strong>Release 0.3.9 - April 2005</strong>
 
     GLOBAL FEATURES
     - QL_SQRT, QL_MIN etc. deprecated in favor of std::sqrt,
@@ -49,9 +49,16 @@
       BlackScholesProcess. This avoids erroneous upcasts.
     - Partial fix for Bermudan swaptions with exercise lag (thanks to
       Luca Berardi for the report and discussion.)
+    - Fix for analytic cap/floor engine; caplets/floorlets whose
+      fixing is in the past are now calculated correctly (thanks to
+      Aurelien Chanudet.)
 
     CALENDARS
     - Added Bratislava and Prague calendars.
+
+    INDICES
+    - Fixed calendars for LIBOR fixings (thanks to Daniele De
+      Francesco.)
 
     FINITE_DIFFERENCES FRAMEWORK
     - Migrated finite-difference pricers to pricing-engine framework

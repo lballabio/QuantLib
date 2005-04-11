@@ -57,7 +57,7 @@ namespace QuantLib {
 
     void Lattice::rollback(DiscretizedAsset& asset, Time to) const {
         partialRollback(asset,to);
-        asset.postAdjustValues();
+        asset.adjustValues();
     }
 
     void Lattice::partialRollback(DiscretizedAsset& asset, Time to) const {

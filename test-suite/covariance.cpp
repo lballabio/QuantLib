@@ -24,19 +24,29 @@
 #include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/sequencestatistics.hpp>
 
+#if !defined(QL_PATCH_MSVC6)
+#define FIXED std::fixed
+#define SCIENTIFIC std::scientific
+#else
+#define FIXED ""
+#define SCIENTIFIC ""
+#endif
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(CovarianceTest)
 
-    Real norm(const Matrix& m) {
-        Real sum = 0.0;
-        for (Size i=0; i<m.rows(); i++)
-            for (Size j=0; j<m.columns(); j++)
-                sum += m[i][j]*m[i][j];
-        return std::sqrt(sum);
-    }
+Real norm(const Matrix& m) {
+    Real sum = 0.0;
+    for (Size i=0; i<m.rows(); i++)
+        for (Size j=0; j<m.columns(); j++)
+            sum += m[i][j]*m[i][j];
+    return std::sqrt(sum);
 }
+
+QL_END_TEST_LOCALS(CovarianceTest)
+
 
 void CovarianceTest::testSalvagingCorrelation() {
 
@@ -85,9 +95,9 @@ void CovarianceTest::testSalvagingCorrelation() {
     Real error = norm(goodCov-badCov);
     if (error > 4.0e-4)
         BOOST_FAIL(
-            std::scientific << error
+            SCIENTIFIC << error
             << " error while salvaging covariance matrix with spectral alg\n"
-            << std::fixed
+            << FIXED
             << "input matrix:\n" << badCov
             << "salvaged matrix:\n" << goodCov);
 }
@@ -185,7 +195,7 @@ void CovarianceTest::testCovariance() {
         if (std::fabs(calculated-expected) > 1.0e-16) {
             BOOST_FAIL("CovarianceDecomposition "
                        << "standardDev[" << i << "]:\n"
-                       << std::setprecision(16) << std::scientific
+                       << std::setprecision(16) << SCIENTIFIC
                        << "    calculated: " << calculated << "\n"
                        << "    expected:   " << expected);
         }
@@ -195,7 +205,7 @@ void CovarianceTest::testCovariance() {
             if (std::fabs(calculated-expected) > 1.0e-14) {
                 BOOST_FAIL("\nCovarianceDecomposition "
                            << "corr[" << i << "][" << j << "]:\n"
-                           << std::setprecision(14) << std::scientific
+                           << std::setprecision(14) << SCIENTIFIC
                            << "    calculated: " << calculated << "\n"
                            << "    expected:   " << expected);
             }

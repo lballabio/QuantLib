@@ -179,17 +179,19 @@
 #  define REQUIRES_DUMMY_RETURN
 #  define QL_LIB_TOOLSET "vc6"
 #elif (_MSC_VER == 1300)
-// move inside here configs specific to VC++ 7.0 (.Net)
-// not sure the following two are really needed
-#  define HAVE_INCOMPLETE_ITERATOR_SUPPORT
-#  define REQUIRES_DUMMY_RETURN
+// move inside here configs specific to VC++ 7.0
+// Warning: QuantLib has never been compiled with VC++ 7.0,
+// the settings are just borrowed from 7.1
 #  define QL_LIB_TOOLSET "vc7"
+#  define QL_PATCH_MSVC71
 #elif (_MSC_VER == 1310)
 // move inside here configs specific to VC++ 7.1 (.Net 2003)
 #  define QL_LIB_TOOLSET "vc71"
+#  define QL_PATCH_MSVC71
 #elif (_MSC_VER == 1400)
 // move inside here configs specific to VC++ 8 (2005)
-#  define QL_LIB_TOOLSET "vc8"
+#  define QL_LIB_TOOLSET "vc80"
+#  define QL_PATCH_MSVC80
 #else
 #  error "unknown Microsoft compiler"
 #endif

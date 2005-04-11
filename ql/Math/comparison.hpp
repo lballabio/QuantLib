@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,7 +35,7 @@ namespace QuantLib {
                               \wedge |x-y| \leq \varepsilon |y|
         \f]
         where \f$ \varepsilon \f$ is \f$ n \f$ times the machine accuracy;
-        \f$ n \f$ equals 42 if not given..
+        \f$ n \f$ equals 42 if not given.
     */
     bool close(Real x, Real y);
     bool close(Real x, Real y, Size n);
@@ -47,7 +47,7 @@ namespace QuantLib {
                                 \vee |x-y| \leq \varepsilon |y|
         \f]
         where \f$ \varepsilon \f$ is \f$ n \f$ times the machine accuracy;
-        \f$ n \f$ equals 42 if not given..
+        \f$ n \f$ equals 42 if not given.
     */
     bool close_enough(Real x, Real y);
     bool close_enough(Real x, Real y, Size n);

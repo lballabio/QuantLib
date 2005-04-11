@@ -35,13 +35,18 @@ namespace {
 
     #if defined(_MSC_VER) || defined(__BORLANDC__)
     // allow Visual Studio integration
-    std::string format(const std::string& file, long line,
+    std::string format(
+                       #ifdef QL_ERROR_LINES
+                       const std::string& file, long line,
+                       #else
+                       const std::string&, long,
+                       #endif
                        const std::string& function,
                        const std::string& message) {
         std::ostringstream msg;
         if (function != "(unknown)")
             msg << function << ": ";
-        #if QL_ERROR_LINES
+        #ifdef QL_ERROR_LINES
         msg << "\n  " << file << "(" << line << "): \n";
         #endif
         msg << message;

@@ -18,11 +18,10 @@
 */
 
 // ===========================================================================
-// NOTE: The following copyright notice applies to the Halton algorithm
-// implementation, which was taken from "Monte Carlo Methods in Finance",
-// by Peter Jäckel
+// NOTE: The following copyright notice applies to the original code,
 //
-// Copyright (C) 2002 "Monte Carlo Methods in Finance". All rights reserved.
+// Copyright (C) 2002 Peter Jäckel "Monte Carlo Methods in Finance".
+// All rights reserved.
 //
 // Permission to use, copy, modify, and distribute this software is freely
 // granted, provided that this notice is preserved.

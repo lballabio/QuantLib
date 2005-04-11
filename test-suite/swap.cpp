@@ -33,66 +33,72 @@
 #include <ql/Utilities/dataformatters.hpp>
 #include <iomanip>
 
+#if !defined(QL_PATCH_MSVC6)
+#define FIXED std::fixed
+#else
+#define FIXED ""
+#endif
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(SwapTest)
 
-    // global data
+// global data
 
-    Date today_, settlement_;
-    bool payFixed_;
-    Real nominal_;
-    Calendar calendar_;
-    BusinessDayConvention fixedConvention_, floatingConvention_;
-    Frequency fixedFrequency_, floatingFrequency_;
-    DayCounter fixedDayCount_;
-    boost::shared_ptr<Xibor> index_;
-    Integer settlementDays_, fixingDays_;
-    Handle<YieldTermStructure> termStructure_;
+Date today_, settlement_;
+bool payFixed_;
+Real nominal_;
+Calendar calendar_;
+BusinessDayConvention fixedConvention_, floatingConvention_;
+Frequency fixedFrequency_, floatingFrequency_;
+DayCounter fixedDayCount_;
+boost::shared_ptr<Xibor> index_;
+Integer settlementDays_, fixingDays_;
+Handle<YieldTermStructure> termStructure_;
 
-    // utilities
+// utilities
 
-    boost::shared_ptr<SimpleSwap> makeSwap(Integer length, Rate fixedRate,
-                                           Spread floatingSpread) {
-        Date maturity = calendar_.advance(settlement_,length,Years,
-                                          floatingConvention_);
-        Schedule fixedSchedule(calendar_,settlement_,maturity,
-                               fixedFrequency_,fixedConvention_);
-        Schedule floatSchedule(calendar_,settlement_,maturity,
-                               floatingFrequency_,floatingConvention_);
-        return boost::shared_ptr<SimpleSwap>(
+boost::shared_ptr<SimpleSwap> makeSwap(Integer length, Rate fixedRate,
+                                       Spread floatingSpread) {
+    Date maturity = calendar_.advance(settlement_,length,Years,
+                                      floatingConvention_);
+    Schedule fixedSchedule(calendar_,settlement_,maturity,
+                           fixedFrequency_,fixedConvention_);
+    Schedule floatSchedule(calendar_,settlement_,maturity,
+                           floatingFrequency_,floatingConvention_);
+    return boost::shared_ptr<SimpleSwap>(
             new SimpleSwap(payFixed_,nominal_,
                            fixedSchedule,fixedRate,fixedDayCount_,
                            floatSchedule,index_,fixingDays_,floatingSpread,
                            termStructure_));
-    }
-
-    void setup() {
-        payFixed_ = true;
-        settlementDays_ = 2;
-        fixingDays_ = 2;
-        nominal_ = 100.0;
-        fixedConvention_ = Unadjusted;
-        floatingConvention_ = ModifiedFollowing;
-        fixedFrequency_ = Annual;
-        floatingFrequency_ = Semiannual;
-        fixedDayCount_ = Thirty360();
-        index_ = boost::shared_ptr<Xibor>(
-                                     new Euribor(12/floatingFrequency_,Months,
-                                                 termStructure_));
-        calendar_ = index_->calendar();
-        today_ = calendar_.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today_;
-        settlement_ = calendar_.advance(today_,settlementDays_,Days);
-        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
-    }
-
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
 }
+
+void setup() {
+    payFixed_ = true;
+    settlementDays_ = 2;
+    fixingDays_ = 2;
+    nominal_ = 100.0;
+    fixedConvention_ = Unadjusted;
+    floatingConvention_ = ModifiedFollowing;
+    fixedFrequency_ = Annual;
+    floatingFrequency_ = Semiannual;
+    fixedDayCount_ = Thirty360();
+    index_ = boost::shared_ptr<Xibor>(new Euribor(12/floatingFrequency_,
+                                                  Months, termStructure_));
+    calendar_ = index_->calendar();
+    today_ = calendar_.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = today_;
+    settlement_ = calendar_.advance(today_,settlementDays_,Days);
+    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
+}
+
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
+}
+
+QL_END_TEST_LOCALS(SwapTest)
+
 
 void SwapTest::testFairRate() {
 
@@ -323,7 +329,7 @@ void SwapTest::testCachedValue() {
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_FAIL("failed to reproduce cached swap value:\n"
-                   << std::fixed << std::setprecision(12)
+                   << FIXED << std::setprecision(12)
                    << "    calculated: " << swap->NPV() << "\n"
                    << "    expected:   " << cachedNPV);
 

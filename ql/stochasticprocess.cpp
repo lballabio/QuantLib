@@ -43,7 +43,7 @@ namespace QuantLib {
         return currentValue + change;
     }
 
-    Time StochasticProcess::time(const Date& d) const {
+    Time StochasticProcess::time(const Date& ) const {
         QL_FAIL("date/time conversion not supported");
     }
 

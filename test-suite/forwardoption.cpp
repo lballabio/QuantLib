@@ -52,28 +52,27 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+QL_BEGIN_TEST_LOCALS(ForwardOptionTest)
 
-    struct ForwardOptionData {
-        Option::Type type;
-        Real moneyness;
-        Real s;          // spot
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time start;      // time to reset
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
+struct ForwardOptionData {
+    Option::Type type;
+    Real moneyness;
+    Real s;          // spot
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time start;      // time to reset
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
 }
 
-// tests
+QL_END_TEST_LOCALS(ForwardOptionTest)
+
 
 void ForwardOptionTest::testValues() {
 
@@ -212,10 +211,10 @@ void ForwardOptionTest::testPerformanceValues() {
 }
 
 
-namespace {
+QL_BEGIN_TEST_LOCALS(ForwardOptionTest)
 
-  template <class Engine>
-  void testForwardGreeks() {
+template <class Engine>
+void testForwardGreeks() {
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]   = 1.0e-5;
@@ -365,9 +364,9 @@ namespace {
         }
       }
     }
-  }
-
 }
+
+QL_END_TEST_LOCALS(ForwardOptionTest)
 
 
 void ForwardOptionTest::testGreeks() {

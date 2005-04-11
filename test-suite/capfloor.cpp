@@ -35,93 +35,89 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(CapFloorTest)
 
-    // global data
+// global data
 
-    Date today_, settlement_;
-    std::vector<Real> nominals_;
-    BusinessDayConvention convention_;
-    Frequency frequency_;
-    boost::shared_ptr<Xibor> index_;
-    Calendar calendar_;
-    Integer settlementDays_, fixingDays_;
-    Handle<YieldTermStructure> termStructure_;
+Date today_, settlement_;
+std::vector<Real> nominals_;
+BusinessDayConvention convention_;
+Frequency frequency_;
+boost::shared_ptr<Xibor> index_;
+Calendar calendar_;
+Integer settlementDays_, fixingDays_;
+Handle<YieldTermStructure> termStructure_;
 
-    // utilities
+// utilities
 
-    std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
-                                                      Integer length) {
-        Date endDate = calendar_.advance(startDate,length,Years,convention_);
-        Schedule schedule(calendar_,startDate,endDate,frequency_,convention_);
-        return FloatingRateCouponVector(schedule, convention_, nominals_,
-                                        index_, fixingDays_,
-                                        std::vector<Spread>(),
-                                        index_->dayCounter());
-    }
+std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
+                                                  Integer length) {
+    Date endDate = calendar_.advance(startDate,length,Years,convention_);
+    Schedule schedule(calendar_,startDate,endDate,frequency_,convention_);
+    return FloatingRateCouponVector(schedule, convention_, nominals_,
+                                    index_, fixingDays_,
+                                    std::vector<Spread>(),
+                                    index_->dayCounter());
+}
 
-    boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
-        Handle<Quote> vol(
-                       boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-        boost::shared_ptr<BlackModel> model(
-                                         new BlackModel(vol, termStructure_));
-        return boost::shared_ptr<PricingEngine>(
-                                              new BlackCapFloorEngine(model));
-    }
+boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
+    Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
+    boost::shared_ptr<BlackModel> model(new BlackModel(vol, termStructure_));
+    return boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(model));
+}
 
-    boost::shared_ptr<CapFloor> makeCapFloor(
+boost::shared_ptr<CapFloor> makeCapFloor(
                          CapFloor::Type type,
                          const std::vector<boost::shared_ptr<CashFlow> >& leg,
                          Rate strike,
                          Volatility volatility) {
-        switch (type) {
-          case CapFloor::Cap:
-            return boost::shared_ptr<CapFloor>(
+    switch (type) {
+      case CapFloor::Cap:
+        return boost::shared_ptr<CapFloor>(
                new Cap(leg, std::vector<Rate>(1, strike),
                        termStructure_, makeEngine(volatility)));
-          case CapFloor::Floor:
+      case CapFloor::Floor:
             return boost::shared_ptr<CapFloor>(
                 new Floor(leg, std::vector<Rate>(1, strike),
                           termStructure_, makeEngine(volatility)));
-          default:
-            QL_FAIL("unknown cap/floor type");
-        }
+      default:
+        QL_FAIL("unknown cap/floor type");
     }
-
-    std::string typeToString(CapFloor::Type type) {
-        switch (type) {
-          case CapFloor::Cap:
-            return "cap";
-          case CapFloor::Floor:
-            return "floor";
-          case CapFloor::Collar:
-            return "collar";
-          default:
-            QL_FAIL("unknown cap/floor type");
-        }
-    }
-
-
-    void setup() {
-        nominals_ = std::vector<Real>(1,100.0);
-        frequency_ = Semiannual;
-        index_ = boost::shared_ptr<Xibor>(
-                            new Euribor(12/frequency_,Months,termStructure_));
-        calendar_ = index_->calendar();
-        convention_ = ModifiedFollowing;
-        today_ = calendar_.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today_;
-        settlementDays_ = 2;
-        fixingDays_ = 2;
-        settlement_ = calendar_.advance(today_,settlementDays_,Days);
-        termStructure_.linkTo(flatRate(settlement_,0.05,Actual360()));
-    }
-
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
 }
+
+std::string typeToString(CapFloor::Type type) {
+    switch (type) {
+      case CapFloor::Cap:
+        return "cap";
+      case CapFloor::Floor:
+        return "floor";
+      case CapFloor::Collar:
+        return "collar";
+      default:
+        QL_FAIL("unknown cap/floor type");
+    }
+}
+
+void setup() {
+    nominals_ = std::vector<Real>(1,100.0);
+    frequency_ = Semiannual;
+    index_ = boost::shared_ptr<Xibor>(
+                            new Euribor(12/frequency_,Months,termStructure_));
+    calendar_ = index_->calendar();
+    convention_ = ModifiedFollowing;
+    today_ = calendar_.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = today_;
+    settlementDays_ = 2;
+    fixingDays_ = 2;
+    settlement_ = calendar_.advance(today_,settlementDays_,Days);
+    termStructure_.linkTo(flatRate(settlement_,0.05,Actual360()));
+}
+
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
+}
+
+QL_END_TEST_LOCALS(CapFloorTest)
 
 
 void CapFloorTest::testStrikeDependency() {

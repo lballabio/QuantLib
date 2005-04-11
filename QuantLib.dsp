@@ -703,6 +703,10 @@ SOURCE=.\ql\Indexes\cadlibor.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Indexes\cdor.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Indexes\chflibor.hpp
 # End Source File
 # Begin Source File
@@ -731,6 +735,10 @@ SOURCE=.\ql\Indexes\jpylibor.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Indexes\tibor.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Indexes\usdlibor.hpp
 # End Source File
 # Begin Source File
@@ -744,6 +752,10 @@ SOURCE=.\ql\Indexes\xibor.hpp
 # Begin Source File
 
 SOURCE=.\ql\Indexes\zarlibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\zibor.hpp
 # End Source File
 # End Group
 # Begin Group "Instruments"

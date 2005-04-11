@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,29 +17,35 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file usdlibor.hpp
-    \brief %USD %LIBOR rate
+/*! \file tibor.hpp
+    \brief %JPY %TIBOR rate
 */
 
-#ifndef quantlib_usd_libor_hpp
-#define quantlib_usd_libor_hpp
+#ifndef quantlib_tibor_hpp
+#define quantlib_tibor_hpp
 
 #include <ql/Indexes/xibor.hpp>
-#include <ql/Calendars/unitedkingdom.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Currencies/america.hpp>
+#include <ql/Calendars/tokyo.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
+#include <ql/Currencies/asia.hpp>
 
 namespace QuantLib {
 
-    //! %USD %LIBOR rate
-    class USDLibor : public Xibor {
+    //! %JPY %TIBOR index
+    /*! Tokyo Interbank Offered Rate.
+
+        \warning This is the rate fixed in Tokio by JBA. Use JPYLibor
+                 if you're interested in the London fixing by BBA.
+
+        \todo check settlement days.
+    */
+    class Tibor : public Xibor {
       public:
-        USDLibor(Integer n, TimeUnit units,
-                 const Handle<YieldTermStructure>& h,
-                 const DayCounter& dc = Actual360())
-        : Xibor("USDLibor", n, units, 2, USDCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
-                ModifiedFollowing, dc, h) {}
+        Tibor(Integer n, TimeUnit units,
+              const Handle<YieldTermStructure>& h,
+              const DayCounter& dc = Actual365Fixed())
+        : Xibor("Tibor", n, units, 2, JPYCurrency(),
+                Tokyo(), ModifiedFollowing, dc, h) {}
     };
 
 }

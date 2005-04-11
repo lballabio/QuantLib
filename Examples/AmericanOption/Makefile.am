@@ -11,6 +11,7 @@ AmericanOption_SOURCES = AmericanOption.cpp
 AmericanOption_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
+    AmericanOption.dev \
     AmericanOption.dsp \
     AmericanOption.vcproj \
     AmericanOption_vc8.vcproj \
@@ -19,4 +20,8 @@ EXTRA_DIST = \
 
 .PHONY: examples
 examples: AmericanOption
+
+dist-hook:
+	mkdir -p $(distdir)/bin
+	mkdir -p $(distdir)/build
 

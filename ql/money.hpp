@@ -60,7 +60,7 @@ namespace QuantLib {
         Money& operator*=(Decimal);
         Money& operator/=(Decimal);
         //@}
-        /*! Conversion settings
+        /*! \name Conversion settings
 
             These parameters are used for combining money amounts
             in different currencies

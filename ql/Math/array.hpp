@@ -543,7 +543,7 @@ namespace QuantLib {
     }
 
     inline std::ostream& operator<<(std::ostream& out, const Array& a) {
-        Size width = out.width();
+        std::streamsize width = out.width();
         out << "[ ";
         for (Integer n=0; n<Integer(a.size())-1; ++n)
             out << std::setw(width) << a[n] << "; ";

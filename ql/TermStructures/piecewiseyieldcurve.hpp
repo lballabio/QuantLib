@@ -103,6 +103,8 @@ namespace QuantLib {
 
     // objective function for solver
 
+    #ifndef __DOXYGEN__
+
     template <class C, class I>
     class PiecewiseYieldCurve<C,I>::ObjectiveFunction {
       public:
@@ -114,6 +116,8 @@ namespace QuantLib {
         boost::shared_ptr<RateHelper> rateHelper_;
         Size segment_;
     };
+
+    #endif
 
     // helper class
 

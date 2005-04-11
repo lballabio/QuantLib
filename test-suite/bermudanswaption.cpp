@@ -29,67 +29,66 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(BermudanSwaptionTest)
 
-    // global data
-    Date today_, settlement_;
-    Calendar calendar_;
+// global data
+Date today_, settlement_;
+Calendar calendar_;
 
-    // underlying swap parameters
-    Integer startYears_, length_;
-    bool payFixed_;
-    Real nominal_;
-    BusinessDayConvention fixedConvention_, floatingConvention_;
-    Frequency fixedFrequency_, floatingFrequency_;
-    DayCounter fixedDayCount_;
-    boost::shared_ptr<Xibor> index_;
-    Integer settlementDays_, fixingDays_;
+// underlying swap parameters
+Integer startYears_, length_;
+bool payFixed_;
+Real nominal_;
+BusinessDayConvention fixedConvention_, floatingConvention_;
+Frequency fixedFrequency_, floatingFrequency_;
+DayCounter fixedDayCount_;
+boost::shared_ptr<Xibor> index_;
+Integer settlementDays_, fixingDays_;
 
-    Handle<YieldTermStructure> termStructure_;
+Handle<YieldTermStructure> termStructure_;
 
-    // utilities
+// utilities
 
-    boost::shared_ptr<SimpleSwap> makeSwap(Rate fixedRate) {
-        Date start = calendar_.advance(settlement_,startYears_,Years);
-        Date maturity = calendar_.advance(start,length_,Years);
-        Schedule fixedSchedule(calendar_,start,maturity,
-                               fixedFrequency_,fixedConvention_);
-        Schedule floatSchedule(calendar_,start,maturity,
-                               floatingFrequency_,floatingConvention_);
-        return boost::shared_ptr<SimpleSwap>(
+boost::shared_ptr<SimpleSwap> makeSwap(Rate fixedRate) {
+    Date start = calendar_.advance(settlement_,startYears_,Years);
+    Date maturity = calendar_.advance(start,length_,Years);
+    Schedule fixedSchedule(calendar_,start,maturity,
+                           fixedFrequency_,fixedConvention_);
+    Schedule floatSchedule(calendar_,start,maturity,
+                           floatingFrequency_,floatingConvention_);
+    return boost::shared_ptr<SimpleSwap>(
             new SimpleSwap(payFixed_,nominal_,
                            fixedSchedule,fixedRate,fixedDayCount_,
                            floatSchedule,index_,fixingDays_,0.0,
                            termStructure_));
-    }
-
-    void setup() {
-        startYears_ = 1;
-        length_ = 5;
-        payFixed_ = true;
-        nominal_ = 1000.0;
-        settlementDays_ = 2;
-        fixingDays_ = 2;
-        fixedConvention_ = Unadjusted;
-        floatingConvention_ = ModifiedFollowing;
-        fixedFrequency_ = Annual;
-        floatingFrequency_ = Semiannual;
-        fixedDayCount_ = Thirty360();
-        index_ = boost::shared_ptr<Xibor>(
-                    new Euribor(12/floatingFrequency_,Months,termStructure_));
-        calendar_ = index_->calendar();
-        today_ = calendar_.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today_;
-        settlement_ = calendar_.advance(today_,settlementDays_,Days);
-
-        termStructure_.linkTo(flatRate(settlement_,0.05, Actual365Fixed()));
-    }
-
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
 }
+
+void setup() {
+    startYears_ = 1;
+    length_ = 5;
+    payFixed_ = true;
+    nominal_ = 1000.0;
+    settlementDays_ = 2;
+    fixingDays_ = 2;
+    fixedConvention_ = Unadjusted;
+    floatingConvention_ = ModifiedFollowing;
+    fixedFrequency_ = Annual;
+    floatingFrequency_ = Semiannual;
+    fixedDayCount_ = Thirty360();
+    index_ = boost::shared_ptr<Xibor>(
+                    new Euribor(12/floatingFrequency_,Months,termStructure_));
+    calendar_ = index_->calendar();
+    today_ = calendar_.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = today_;
+    settlement_ = calendar_.advance(today_,settlementDays_,Days);
+}
+
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
+}
+
+QL_END_TEST_LOCALS(BermudanSwaptionTest)
+
 
 void BermudanSwaptionTest::testCachedValues() {
 

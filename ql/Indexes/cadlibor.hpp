@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,28 +18,35 @@
 */
 
 /*! \file cadlibor.hpp
-    \brief %CAD %Libor index (Also known as CDOR)
+    \brief %CAD %LIBOR rate
 */
 
 #ifndef quantlib_cad_libor_hpp
 #define quantlib_cad_libor_hpp
 
 #include <ql/Indexes/xibor.hpp>
-#include <ql/Calendars/toronto.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
+#include <ql/Calendars/unitedkingdom.hpp>
+#include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/america.hpp>
 
 namespace QuantLib {
 
-    //! %CAD %Libor index, also known as CDOR
-    /*! \todo check settlement days */
+    //! %CAD LIBOR rate
+    /*! Canadian Dollar LIBOR fixed by BBA.
+
+        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+
+        \warning This is the rate fixed in London by BBA. Use CDOR if
+                 you're interested in the Canadian fixing by IDA.
+    */
     class CADLibor : public Xibor {
       public:
         CADLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
-                 const DayCounter& dc = Actual365Fixed())
+                 const DayCounter& dc = Actual360())
         : Xibor("CADLibor", n, units, 2, CADCurrency(),
-                Toronto(), ModifiedFollowing, dc, h) {}
+                UnitedKingdom(UnitedKingdom::Exchange),
+                ModifiedFollowing, dc, h) {}
     };
 
 }

@@ -42,9 +42,9 @@ namespace QuantLib {
         // initial guess
         static DiscountFactor initialGuess() { return 0.9; }
         // further guesses
-        static DiscountFactor guess(const YieldTermStructure* curve,
+        static DiscountFactor guess(const YieldTermStructure* c,
                                     const Date& d) {
-            return curve->discount(d,true);
+            return c->discount(d,true);
         }
         // possible constraints based on previous values
         static DiscountFactor minValueAfter(Size,
@@ -83,10 +83,10 @@ namespace QuantLib {
         // initial guess
         static Rate initialGuess() { return 0.02; }
         // further guesses
-        static Rate guess(const YieldTermStructure* curve,
+        static Rate guess(const YieldTermStructure* c,
                           const Date& d) {
-            return curve->zeroRate(d,curve->dayCounter(),
-                                   Continuous,Annual,true);
+            return c->zeroRate(d, c->dayCounter(),
+                               Continuous, Annual, true);
         }
         // possible constraints based on previous values
         static Rate minValueAfter(Size, const std::vector<Real>&) {
@@ -126,10 +126,10 @@ namespace QuantLib {
         // initial guess
         static Rate initialGuess() { return 0.02; }
         // further guesses
-        static Rate guess(const YieldTermStructure* curve,
+        static Rate guess(const YieldTermStructure* c,
                           const Date& d) {
-            return curve->forwardRate(d,d,curve->dayCounter(),
-                                      Continuous,Annual,true);
+            return c->forwardRate(d, d, c->dayCounter(),
+                                  Continuous, Annual, true);
         }
         // possible constraints based on previous values
         static Rate minValueAfter(Size, const std::vector<Real>&) {

@@ -7,9 +7,11 @@
 // "PrimitivePolynomialsModuloTwo" on the CD accompanying the book
 // "Monte Carlo Methods in Finance" by Peter Jäckel.
 //
-// the original copyright is:
 // ===========================================================================
-// Copyright (C) 2002 "Monte Carlo Methods in Finance". All rights reserved.
+// NOTE: The following copyright notice applies to the original code,
+//
+// Copyright (C) 2002 Peter Jäckel "Monte Carlo Methods in Finance".
+// All rights reserved.
 //
 // Permission to use, copy, modify, and distribute this software is freely
 // granted, provided that this notice is preserved.
@@ -27,8 +29,11 @@
 // below to N_PRIMITIVES_UP_TO_DEGREE_18 which is 21200. That's how many
 // primitive polynomials are provided by the standard primitivepolynomial.c
 // distributed with QuantLib and that will be compiled into a static array.
-// Should you need more, another version of primitivepolynomial.c is available
-// for download from quantlib.org which provide polynomials up to degree 27
+// Should you need more, get the original version of primitivepolynomial.c
+// as provided ready for compilation in the directory
+// "PrimitivePolynomialsModuloTwo" on the CD accompanying the book
+// "Monte Carlo Methods in Finance" by Peter Jäckel.
+// The file provides polynomials up to degree 27
 // for a grand total of 8129334 dimensions.
 // Since 8129334 longs compile into an object file of at least 32517336 byte
 // size (in fact, gcc -c -O0 PrimitivePolynomialsModuloTwoUpToDegree27.c

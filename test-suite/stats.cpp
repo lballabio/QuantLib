@@ -29,89 +29,88 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+QL_BEGIN_TEST_LOCALS(StatisticsTest)
 
-    typedef GaussianStatistics<IncrementalStatistics>
-        IncrementalGaussianStatistics;
+typedef GaussianStatistics<IncrementalStatistics>
+    IncrementalGaussianStatistics;
 
-    Real data[] =    { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };
-    Real weights[] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
+Real data[] =    { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };
+Real weights[] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
 
+template <class S>
+void check(const std::string& name) {
 
-    template <class S>
-    void check(const std::string& name) {
+    S s;
+    for (Size i=0; i<LENGTH(data); i++)
+        s.add(data[i],weights[i]);
 
-        S s;
-        for (Size i=0; i<LENGTH(data); i++)
-            s.add(data[i],weights[i]);
+    Real calculated, expected;
+    Real tolerance;
 
-        Real calculated, expected;
-        Real tolerance;
+    if (s.samples() != LENGTH(data))
+        BOOST_FAIL(name << ": wrong number of samples\n"
+                   << "    calculated: " << s.samples() << "\n"
+                   << "    expected:   " << LENGTH(data));
 
-        if (s.samples() != LENGTH(data))
-            BOOST_FAIL(name << ": wrong number of samples\n"
-                       << "    calculated: " << s.samples() << "\n"
-                       << "    expected:   " << LENGTH(data));
+    expected = std::accumulate(weights,weights+LENGTH(weights),0.0);
+    calculated = s.weightSum();
+    if (calculated != expected)
+        BOOST_FAIL(name << ": wrong sum of weights\n"
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected);
 
-        expected = std::accumulate(weights,weights+LENGTH(weights),0.0);
-        calculated = s.weightSum();
-        if (calculated != expected)
-            BOOST_FAIL(name << ": wrong sum of weights\n"
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected);
+    expected = *std::min_element(data,data+LENGTH(data));
+    calculated = s.min();
+    if (calculated != expected)
+        BOOST_FAIL(name << ": wrong minimum value\n"
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected);
 
-        expected = *std::min_element(data,data+LENGTH(data));
-        calculated = s.min();
-        if (calculated != expected)
-            BOOST_FAIL(name << ": wrong minimum value\n"
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected);
+    expected = *std::max_element(data,data+LENGTH(data));
+    calculated = s.max();
+    if (calculated != expected)
+        BOOST_FAIL(name << ": wrong maximum value\n"
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected);
 
-        expected = *std::max_element(data,data+LENGTH(data));
-        calculated = s.max();
-        if (calculated != expected)
-            BOOST_FAIL(name << ": wrong maximum value\n"
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected);
+    expected = 4.3;
+    tolerance = 1.0e-9;
+    calculated = s.mean();
+    if (std::fabs(calculated-expected) > tolerance)
+        BOOST_FAIL(name << ": wrong mean value\n"
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected);
 
-        expected = 4.3;
-        tolerance = 1.0e-9;
-        calculated = s.mean();
-        if (std::fabs(calculated-expected) > tolerance)
-            BOOST_FAIL(name << ": wrong mean value\n"
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected);
+    expected = 2.23333333333;
+    calculated = s.variance();
+    if (std::fabs(calculated-expected) > tolerance)
+        BOOST_FAIL(name << ": wrong variance\n"
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected);
 
-        expected = 2.23333333333;
-        calculated = s.variance();
-        if (std::fabs(calculated-expected) > tolerance)
-            BOOST_FAIL(name << ": wrong variance\n"
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected);
+    expected = 1.4944341181;
+    calculated = s.standardDeviation();
+    if (std::fabs(calculated-expected) > tolerance)
+        BOOST_FAIL(name << ": wrong standard deviation\n"
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected);
 
-        expected = 1.4944341181;
-        calculated = s.standardDeviation();
-        if (std::fabs(calculated-expected) > tolerance)
-            BOOST_FAIL(name << ": wrong standard deviation\n"
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected);
+    expected = 0.359543071407;
+    calculated = s.skewness();
+    if (std::fabs(calculated-expected) > tolerance)
+        BOOST_FAIL(name << ": wrong skewness\n"
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected);
 
-        expected = 0.359543071407;
-        calculated = s.skewness();
-        if (std::fabs(calculated-expected) > tolerance)
-            BOOST_FAIL(name << ": wrong skewness\n"
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected);
-
-        expected = -0.151799637209;
-        calculated = s.kurtosis();
-        if (std::fabs(calculated-expected) > tolerance)
-            BOOST_FAIL(name << ": wrong kurtosis\n"
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected);
-    }
-
+    expected = -0.151799637209;
+    calculated = s.kurtosis();
+    if (std::fabs(calculated-expected) > tolerance)
+        BOOST_FAIL(name << ": wrong kurtosis\n"
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected);
 }
+
+QL_END_TEST_LOCALS(StatisticsTest)
 
 
 void StatisticsTest::testStatistics() {
@@ -124,115 +123,115 @@ void StatisticsTest::testStatistics() {
 }
 
 
-namespace {
+QL_BEGIN_TEST_LOCALS(StatisticsTest)
 
-    template <class S>
-    void checkSequence(const std::string& name,
-                       Size dimension) {
+template <class S>
+void checkSequence(const std::string& name, Size dimension) {
 
-        SequenceStatistics<S> ss(dimension);
-        Size i;
-        for (i = 0; i<LENGTH(data); i++) {
-            std::vector<Real> temp(dimension, data[i]);
-            ss.add(temp, weights[i]);
-        }
-
-        std::vector<Real> calculated;
-        Real expected, tolerance;
-
-        if (ss.samples() != LENGTH(data))
-            BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                       << "wrong number of samples\n"
-                       << "    calculated: " << ss.samples() << "\n"
-                       << "    expected:   " << LENGTH(data));
-
-        expected = std::accumulate(weights,weights+LENGTH(weights),0.0);
-        if (ss.weightSum() != expected)
-            BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                       << "wrong sum of weights\n"
-                       << "    calculated: " << ss.weightSum() << "\n"
-                       << "    expected:   " << expected);
-
-        expected = *std::min_element(data,data+LENGTH(data));
-        calculated = ss.min();
-        for (i=0; i<dimension; i++) {
-            if (calculated[i] != expected)
-                BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << io::ordinal(i+1) << " dimension: "
-                           << "wrong minimum value\n"
-                           << "    calculated: " << calculated[i] << "\n"
-                           << "    expected:   " << expected);
-        }
-
-        expected = *std::max_element(data,data+LENGTH(data));
-        calculated = ss.max();
-        for (i=0; i<dimension; i++) {
-            if (calculated[i] != expected)
-                BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << io::ordinal(i+1) << " dimension: "
-                           << "wrong maximun value\n"
-                           << "    calculated: " << calculated[i] << "\n"
-                           << "    expected:   " << expected);
-        }
-
-        expected = 4.3;
-        tolerance = 1.0e-9;
-        calculated = ss.mean();
-        for (i=0; i<dimension; i++) {
-            if (std::fabs(calculated[i]-expected) > tolerance)
-                BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << io::ordinal(i+1) << " dimension: "
-                           << "wrong mean value\n"
-                           << "    calculated: " << calculated[i] << "\n"
-                           << "    expected:   " << expected);
-        }
-
-        expected = 2.23333333333;
-        calculated = ss.variance();
-        for (i=0; i<dimension; i++) {
-            if (std::fabs(calculated[i]-expected) > tolerance)
-                BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << io::ordinal(i+1) << " dimension: "
-                           << "wrong variance\n"
-                           << "    calculated: " << calculated[i] << "\n"
-                           << "    expected:   " << expected);
-        }
-
-        expected = 1.4944341181;
-        calculated = ss.standardDeviation();
-        for (i=0; i<dimension; i++) {
-            if (std::fabs(calculated[i]-expected) > tolerance)
-                BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << io::ordinal(i+1) << " dimension: "
-                           << "wrong standard deviation\n"
-                           << "    calculated: " << calculated[i] << "\n"
-                           << "    expected:   " << expected);
-        }
-
-        expected = 0.359543071407;
-        calculated = ss.skewness();
-        for (i=0; i<dimension; i++) {
-            if (std::fabs(calculated[i]-expected) > tolerance)
-                BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << io::ordinal(i+1) << " dimension: "
-                           << "wrong skewness\n"
-                           << "    calculated: " << calculated[i] << "\n"
-                           << "    expected:   " << expected);
-        }
-
-        expected = -0.151799637209;
-        calculated = ss.kurtosis();
-        for (i=0; i<dimension; i++) {
-            if (std::fabs(calculated[i]-expected) > tolerance)
-                BOOST_FAIL("SequenceStatistics<" << name << ">: "
-                           << io::ordinal(i+1) << " dimension: "
-                           << "wrong kurtosis\n"
-                           << "    calculated: " << calculated[i] << "\n"
-                           << "    expected:   " << expected);
-        }
+    SequenceStatistics<S> ss(dimension);
+    Size i;
+    for (i = 0; i<LENGTH(data); i++) {
+        std::vector<Real> temp(dimension, data[i]);
+        ss.add(temp, weights[i]);
     }
 
+    std::vector<Real> calculated;
+    Real expected, tolerance;
+
+    if (ss.samples() != LENGTH(data))
+        BOOST_FAIL("SequenceStatistics<" << name << ">: "
+                   << "wrong number of samples\n"
+                   << "    calculated: " << ss.samples() << "\n"
+                   << "    expected:   " << LENGTH(data));
+
+    expected = std::accumulate(weights,weights+LENGTH(weights),0.0);
+    if (ss.weightSum() != expected)
+        BOOST_FAIL("SequenceStatistics<" << name << ">: "
+                   << "wrong sum of weights\n"
+                   << "    calculated: " << ss.weightSum() << "\n"
+                   << "    expected:   " << expected);
+
+    expected = *std::min_element(data,data+LENGTH(data));
+    calculated = ss.min();
+    for (i=0; i<dimension; i++) {
+        if (calculated[i] != expected)
+            BOOST_FAIL("SequenceStatistics<" << name << ">: "
+                       << io::ordinal(i+1) << " dimension: "
+                       << "wrong minimum value\n"
+                       << "    calculated: " << calculated[i] << "\n"
+                       << "    expected:   " << expected);
+    }
+
+    expected = *std::max_element(data,data+LENGTH(data));
+    calculated = ss.max();
+    for (i=0; i<dimension; i++) {
+        if (calculated[i] != expected)
+            BOOST_FAIL("SequenceStatistics<" << name << ">: "
+                       << io::ordinal(i+1) << " dimension: "
+                       << "wrong maximun value\n"
+                       << "    calculated: " << calculated[i] << "\n"
+                       << "    expected:   " << expected);
+    }
+
+    expected = 4.3;
+    tolerance = 1.0e-9;
+    calculated = ss.mean();
+    for (i=0; i<dimension; i++) {
+        if (std::fabs(calculated[i]-expected) > tolerance)
+            BOOST_FAIL("SequenceStatistics<" << name << ">: "
+                       << io::ordinal(i+1) << " dimension: "
+                       << "wrong mean value\n"
+                       << "    calculated: " << calculated[i] << "\n"
+                       << "    expected:   " << expected);
+    }
+
+    expected = 2.23333333333;
+    calculated = ss.variance();
+    for (i=0; i<dimension; i++) {
+        if (std::fabs(calculated[i]-expected) > tolerance)
+            BOOST_FAIL("SequenceStatistics<" << name << ">: "
+                       << io::ordinal(i+1) << " dimension: "
+                       << "wrong variance\n"
+                       << "    calculated: " << calculated[i] << "\n"
+                       << "    expected:   " << expected);
+    }
+
+    expected = 1.4944341181;
+    calculated = ss.standardDeviation();
+    for (i=0; i<dimension; i++) {
+        if (std::fabs(calculated[i]-expected) > tolerance)
+            BOOST_FAIL("SequenceStatistics<" << name << ">: "
+                       << io::ordinal(i+1) << " dimension: "
+                       << "wrong standard deviation\n"
+                       << "    calculated: " << calculated[i] << "\n"
+                       << "    expected:   " << expected);
+    }
+
+    expected = 0.359543071407;
+    calculated = ss.skewness();
+    for (i=0; i<dimension; i++) {
+        if (std::fabs(calculated[i]-expected) > tolerance)
+            BOOST_FAIL("SequenceStatistics<" << name << ">: "
+                       << io::ordinal(i+1) << " dimension: "
+                       << "wrong skewness\n"
+                       << "    calculated: " << calculated[i] << "\n"
+                       << "    expected:   " << expected);
+    }
+
+    expected = -0.151799637209;
+    calculated = ss.kurtosis();
+    for (i=0; i<dimension; i++) {
+        if (std::fabs(calculated[i]-expected) > tolerance)
+            BOOST_FAIL("SequenceStatistics<" << name << ">: "
+                       << io::ordinal(i+1) << " dimension: "
+                       << "wrong kurtosis\n"
+                       << "    calculated: " << calculated[i] << "\n"
+                       << "    expected:   " << expected);
+    }
 }
+
+QL_END_TEST_LOCALS(StatisticsTest)
+
 
 void StatisticsTest::testSequenceStatistics() {
 

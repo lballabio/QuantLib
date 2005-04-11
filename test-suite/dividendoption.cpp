@@ -52,13 +52,14 @@ using namespace boost::unit_test_framework;
 
 // tests
 
-namespace {
+QL_BEGIN_TEST_LOCALS(DividendOptionTest)
 
-    void teardown() {
-        Settings::instance().evaluationDate() = Date();
-    }
-
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
 }
+
+QL_END_TEST_LOCALS(DividendOptionTest)
+
 
 void DividendOptionTest::testEuropeanGreeks() {
 
@@ -208,36 +209,36 @@ void DividendOptionTest::testEuropeanGreeks() {
 }
 
 
-namespace {
+QL_BEGIN_TEST_LOCALS(DividendOptionTest)
 
-    void testFdGreeks(const Date& today,
-                      const boost::shared_ptr<Exercise>& exercise,
-                      const boost::shared_ptr<PricingEngine>& engine) {
+void testFdGreeks(const Date& today,
+                  const boost::shared_ptr<Exercise>& exercise,
+                  const boost::shared_ptr<PricingEngine>& engine) {
 
-        std::map<std::string,Real> calculated, expected, tolerance;
-        tolerance["delta"] = 1.0e-2;
-        tolerance["gamma"] = 1.0e-2;
-        // tolerance["theta"] = 1.0e-2;
+    std::map<std::string,Real> calculated, expected, tolerance;
+    tolerance["delta"] = 1.0e-2;
+    tolerance["gamma"] = 1.0e-2;
+    // tolerance["theta"] = 1.0e-2;
 
-        Option::Type types[] = { Option::Call, Option::Put };
-        Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-        Real underlyings[] = { 100.0 };
-        Rate qRates[] = { 0.00, 0.10, 0.30 };
-        Rate rRates[] = { 0.01, 0.05, 0.15 };
-        Volatility vols[] = { 0.05, 0.20, 0.70 };
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+    Real underlyings[] = { 100.0 };
+    Rate qRates[] = { 0.00, 0.10, 0.30 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    Volatility vols[] = { 0.05, 0.20, 0.70 };
 
-        DayCounter dc = Actual360();
+    DayCounter dc = Actual360();
 
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-        Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-        for (Size i=0; i<LENGTH(types); i++) {
-          for (Size j=0; j<LENGTH(strikes); j++) {
+    for (Size i=0; i<LENGTH(types); i++) {
+        for (Size j=0; j<LENGTH(strikes); j++) {
 
             std::vector<Date> dividendDates;
             std::vector<Real> dividends;
@@ -319,11 +320,11 @@ namespace {
                 }
              }
             }
-          }
         }
     }
-
 }
+
+QL_END_TEST_LOCALS(DividendOptionTest)
 
 
 void DividendOptionTest::testFdEuropeanGreeks() {
@@ -372,51 +373,52 @@ void DividendOptionTest::testFdAmericanGreeks() {
 }
 
 
-namespace {
+QL_BEGIN_TEST_LOCALS(DividendOptionTest)
 
-    void testFdDegenerate(const Date& today,
-                          const boost::shared_ptr<Exercise>& exercise,
-                          const boost::shared_ptr<PricingEngine>& engine) {
+void testFdDegenerate(const Date& today,
+                      const boost::shared_ptr<Exercise>& exercise,
+                      const boost::shared_ptr<PricingEngine>& engine) {
 
-        DayCounter dc = Actual360();
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
-        Handle<YieldTermStructure> rTS(flatRate(0.052706, dc));
-        Handle<YieldTermStructure> qTS(flatRate(0.0, dc));
-        Handle<BlackVolTermStructure> volTS(flatVol(0.282922, dc));
+    DayCounter dc = Actual360();
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
+    Handle<YieldTermStructure> rTS(flatRate(0.052706, dc));
+    Handle<YieldTermStructure> qTS(flatRate(0.0, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(0.282922, dc));
 
-        boost::shared_ptr<BlackScholesProcess> process(
+    boost::shared_ptr<BlackScholesProcess> process(
               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(
+    boost::shared_ptr<StrikedTypePayoff> payoff(
                                   new PlainVanillaPayoff(Option::Call, 55.0));
 
-        Real tolerance = 3.0e-3;
+    Real tolerance = 3.0e-3;
 
-        std::vector<Rate> dividends;
-        std::vector<Date> dividendDates;
+    std::vector<Rate> dividends;
+    std::vector<Date> dividendDates;
 
-        DividendVanillaOption option1(process, payoff, exercise,
-                                      dividendDates, dividends, engine);
-        Real refValue = option1.NPV();
+    DividendVanillaOption option1(process, payoff, exercise,
+                                  dividendDates, dividends, engine);
+    Real refValue = option1.NPV();
 
-        for (Size i=0; i<=6; i++) {
+    for (Size i=0; i<=6; i++) {
 
-            dividends.push_back(0.0);
-            dividendDates.push_back(today+i);
+        dividends.push_back(0.0);
+        dividendDates.push_back(today+i);
 
-            DividendVanillaOption option(process, payoff, exercise,
-                                         dividendDates, dividends, engine);
-            Real value = option.NPV();
+        DividendVanillaOption option(process, payoff, exercise,
+                                     dividendDates, dividends, engine);
+        Real value = option.NPV();
 
-            if (std::fabs(refValue-value) > tolerance)
-                BOOST_FAIL("NPV changed by null dividend :\n"
-                           << "    previous value: " << value << "\n"
-                           << "    current value:  " << refValue << "\n"
-                           << "    change:         " << value-refValue);
-        }
+        if (std::fabs(refValue-value) > tolerance)
+            BOOST_FAIL("NPV changed by null dividend :\n"
+                       << "    previous value: " << value << "\n"
+                       << "    current value:  " << refValue << "\n"
+                       << "    change:         " << value-refValue);
     }
-
 }
+
+QL_END_TEST_LOCALS(DividendOptionTest)
+
 
 void DividendOptionTest::testFdEuropeanDegenerate() {
 

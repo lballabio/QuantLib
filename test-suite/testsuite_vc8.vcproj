@@ -912,6 +912,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\bermudanswaption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\bonds.cpp"
 				>
 			</File>
@@ -1504,77 +1508,8 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="dividendeuropeanoption.cpp"
+				RelativePath=".\dividendoption.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="europeanoption.cpp"
@@ -2469,6 +2404,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\piecewiseyieldcurve.cpp"
+				>
+			</File>
+			<File
 				RelativePath="quantlibtestsuite.cpp"
 				>
 				<FileConfiguration
@@ -2697,6 +2636,10 @@
 			</File>
 			<File
 				RelativePath=".\rounding.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\shortratemodels.cpp"
 				>
 			</File>
 			<File
@@ -3065,6 +3008,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\tracing.cpp"
+				>
+			</File>
+			<File
 				RelativePath="utilities.cpp"
 				>
 				<FileConfiguration
@@ -3159,6 +3106,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\bermudanswaption.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\bonds.hpp"
 				>
 			</File>
@@ -3199,7 +3150,7 @@
 				>
 			</File>
 			<File
-				RelativePath="dividendeuropeanoption.hpp"
+				RelativePath=".\dividendoption.hpp"
 				>
 			</File>
 			<File
@@ -3267,6 +3218,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\piecewiseyieldcurve.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\quantooption.hpp"
 				>
 			</File>
@@ -3287,6 +3242,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\shortratemodels.hpp"
+				>
+			</File>
+			<File
 				RelativePath="solvers.hpp"
 				>
 			</File>
@@ -3304,6 +3263,10 @@
 			</File>
 			<File
 				RelativePath="termstructures.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\tracing.hpp"
 				>
 			</File>
 			<File

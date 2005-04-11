@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+Copyright (C) 2000-2005 StatPro Italia srl
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +18,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 /*! \file zarlibor.hpp
-    \brief %ZAR %Libor index (also known as JIBAR)
+    \brief %JIBAR rate
 */
 
 #ifndef quantlib_zar_libor_hpp
@@ -31,16 +31,24 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    //! %ZAR %Libor index, also known as JIBAR
-    /*! \todo check settlement days */
-    class ZARLibor : public Xibor {
+    //! %JIBAR rate
+    /*! Johannesburg Interbank Agreed Rate
+
+        \todo check settlement days and day-count convention.
+    */
+    class Jibar : public Xibor {
       public:
-        ZARLibor(Integer n, TimeUnit units,
-                 const Handle<YieldTermStructure>& h,
-                 const DayCounter& dc = Actual365Fixed())
-        : Xibor("ZARLibor", n, units, 0, ZARCurrency(),
+        Jibar(Integer n, TimeUnit units,
+              const Handle<YieldTermStructure>& h,
+              const DayCounter& dc = Actual365Fixed())
+        : Xibor("Jibar", n, units, 0, ZARCurrency(),
                 Johannesburg(), ModifiedFollowing, dc, h) {}
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated use Jibar instead */
+    typedef Jibar ZARLibor;
+    #endif
 
 }
 

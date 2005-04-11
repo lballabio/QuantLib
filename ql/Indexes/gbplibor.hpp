@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +18,7 @@
 */
 
 /*! \file gbplibor.hpp
-    \brief %GBP %Libor index
+    \brief %GBP %LIBOR rate
 */
 
 #ifndef quantlib_gbp_libor_hpp
@@ -31,7 +31,11 @@
 
 namespace QuantLib {
 
-    //! %GBP %Libor index
+    //! %GBP %LIBOR rate
+    /*! Pound Sterling LIBOR fixed by BBA.
+
+        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+    */
     class GBPLibor : public Xibor {
       public:
         GBPLibor(Integer n, TimeUnit units,

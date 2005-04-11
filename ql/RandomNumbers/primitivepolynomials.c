@@ -10,7 +10,8 @@
 //
 //
 // =========================================================================
-// Copyright (C) 2002 "Monte Carlo Methods in Finance". All rights reserved.
+// Copyright (C) 2002 Peter Jäckel "Monte Carlo Methods in Finance".
+// All rights reserved.
 //
 // Permission to use, copy, modify, and distribute this software is freely
 // granted, provided that this notice is preserved.

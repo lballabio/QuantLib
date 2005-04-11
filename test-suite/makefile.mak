@@ -81,7 +81,7 @@ CC        = bcc32
 TLIB      = tlib
 
 # Options
-CC_OPTS = -vi- -I$(QL_INCLUDE_DIR) -I$(QL_FUN_INCLUDE_DIR)
+CC_OPTS = -vi- -I$(QL_INCLUDE_DIR) -I$(QL_FUN_INCLUDE_DIR) -w-8070 -w-8066 -w-8008
 
 !ifdef _DEBUG
     CC_OPTS = $(CC_OPTS) -v -D_DEBUG

@@ -27,28 +27,52 @@ namespace QuantLib {
         Real value = 0.0;
         CapFloor::Type type = arguments_.type;
         Size nPeriods = arguments_.endTimes.size();
+
         for (Size i=0; i<nPeriods; i++) {
-            Time maturity = arguments_.startTimes[i];
+
+            Time fixingTime = arguments_.fixingTimes[i];
             Time bond = arguments_.endTimes[i];
-            Time tenor = arguments_.accrualTimes[i];
 
-            if ((type == CapFloor::Cap) ||
-                (type == CapFloor::Collar)) {
-                Real temp = 1.0+arguments_.capRates[i]*tenor;
-                value += arguments_.nominals[i]*temp*
-                    model_->discountBondOption(Option::Put, 1.0/temp,
-                                               maturity, bond);
+            #if QL_TODAYS_PAYMENTS
+            if (bond >= 0.0) {
+            #else
+            if (bond > 0.0) {
+            #endif
+                Time tenor = arguments_.accrualTimes[i];
+                Rate fixing = arguments_.forwards[i];
+                if (fixingTime <= 0.0) {
+                    if (type == CapFloor::Cap || type == CapFloor::Collar) {
+                        DiscountFactor discount = model_->discount(bond);
+                        Rate strike = arguments_.capRates[i];
+                        value += discount * arguments_.nominals[i] * tenor
+                               * std::max(0.0, fixing - strike);
+                    }
+                    if (type == CapFloor::Floor || type == CapFloor::Collar) {
+                        DiscountFactor discount = model_->discount(bond);
+                        Rate strike = arguments_.floorRates[i];
+                        Real mult = (type == CapFloor::Floor)?1.0:-1.0;
+                        value += discount * arguments_.nominals[i] * tenor
+                              * mult * std::max(0.0, strike - fixing);
+                    }
+                } else {
+                    Time maturity = arguments_.startTimes[i];
+                    if (type == CapFloor::Cap || type == CapFloor::Collar) {
+                        Real temp = 1.0+arguments_.capRates[i]*tenor;
+                        value += arguments_.nominals[i]*temp*
+                            model_->discountBondOption(Option::Put, 1.0/temp,
+                                                       maturity, bond);
+                    }
+                    if (type == CapFloor::Floor || type == CapFloor::Collar) {
+                        Real temp = 1.0+arguments_.floorRates[i]*tenor;
+                        Real mult = (type == CapFloor::Floor) ? 1.0 : -1.0;
+                        value += arguments_.nominals[i]*temp*mult*
+                            model_->discountBondOption(Option::Call, 1.0/temp,
+                                                       maturity, bond);
+                    }
+                }
             }
-            if ((type == CapFloor::Floor) ||
-                (type == CapFloor::Collar)) {
-                Real temp = 1.0+arguments_.floorRates[i]*tenor;
-                Real mult = (type == CapFloor::Floor) ? 1.0 : -1.0;
-                value += arguments_.nominals[i]*temp*mult*
-                    model_->discountBondOption(Option::Call, 1.0/temp,
-                                               maturity, bond);
-            }
-
         }
+
         results_.value = value;
     }
 
