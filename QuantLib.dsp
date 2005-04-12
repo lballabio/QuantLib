@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_9.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_10.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -81,7 +81,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_9.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_10.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -109,7 +109,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-0_3_9.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-0_3_10.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -137,7 +137,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_9.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_10.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -165,7 +165,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-s-0_3_9.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-s-0_3_10.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -193,7 +193,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-sgd-0_3_9.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-sgd-0_3_10.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -2721,6 +2721,10 @@ SOURCE=.\ql\swaptionvolstructure.hpp
 # Begin Source File
 
 SOURCE=.\ql\termstructure.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\timegrid.cpp
 # End Source File
 # Begin Source File
 

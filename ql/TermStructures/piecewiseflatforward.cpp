@@ -17,6 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/qldefines.hpp>
+
 #if defined(QL_PATCH_MSVC6)
 
 #include <ql/TermStructures/piecewiseflatforward.hpp>

@@ -7,23 +7,23 @@
 CFG=QuantLibFunctions - Win32 Debug SingleThread
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLibFunctions.mak".
-!MESSAGE
+!MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLibFunctions.mak" CFG="QuantLibFunctions - Win32 Debug SingleThread"
-!MESSAGE
+!MESSAGE 
 !MESSAGE Possible choices for configuration are:
-!MESSAGE
+!MESSAGE 
 !MESSAGE "QuantLibFunctions - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLibFunctions - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLibFunctions - Win32 Release MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLibFunctions - Win32 Debug MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLibFunctions - Win32 Release SingleThread" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLibFunctions - Win32 Debug SingleThread" (based on "Win32 (x86) Static Library")
-!MESSAGE
+!MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "build\vc6\Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_9.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_10.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug"
 
@@ -68,7 +68,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\vc6\Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -76,7 +76,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_9.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_10.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release MTDLL"
 
@@ -91,7 +91,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\vc6\ReleaseMTDLL"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -99,7 +99,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_9.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_9.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_10.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug MTDLL"
 
@@ -114,7 +114,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\vc6\DebugMTDLL"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -122,7 +122,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_9.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_9.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_10.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release SingleThread"
 
@@ -137,7 +137,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\vc6\ReleaseST"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /YX /FD /c
+# ADD CPP /nologo /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -145,7 +145,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_9.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_9.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_10.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug SingleThread"
 
@@ -160,7 +160,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\vc6\DebugST"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -168,9 +168,9 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_9.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_9.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_10.lib"
 
-!ENDIF
+!ENDIF 
 
 # Begin Target
 
