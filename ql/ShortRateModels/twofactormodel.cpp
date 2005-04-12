@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +25,7 @@ namespace QuantLib {
     TwoFactorModel::TwoFactorModel(Size nArguments)
     : ShortRateModel(nArguments) {}
 
-    boost::shared_ptr<Lattice>
+    boost::shared_ptr<NumericalMethod>
     TwoFactorModel::tree(const TimeGrid& grid) const {
         boost::shared_ptr<ShortRateDynamics> dyn = dynamics();
 
@@ -33,7 +34,7 @@ namespace QuantLib {
         boost::shared_ptr<TrinomialTree> tree2(
                                     new TrinomialTree(dyn->yProcess(), grid));
 
-        return boost::shared_ptr<Lattice>(
+        return boost::shared_ptr<NumericalMethod>(
                         new TwoFactorModel::ShortRateTree(tree1, tree2, dyn));
     }
 
@@ -41,7 +42,8 @@ namespace QuantLib {
                          const boost::shared_ptr<TrinomialTree>& tree1,
                          const boost::shared_ptr<TrinomialTree>& tree2,
                          const boost::shared_ptr<ShortRateDynamics>& dynamics)
-    : Lattice2D(tree1, tree2, dynamics->correlation()), dynamics_(dynamics)
-    {}
+    : Lattice2D<TwoFactorModel::ShortRateTree,TrinomialTree>(
+                                       tree1, tree2, dynamics->correlation()),
+      dynamics_(dynamics) {}
 
 }

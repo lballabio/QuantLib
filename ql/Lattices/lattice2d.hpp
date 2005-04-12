@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,8 +22,8 @@
     \brief Two-dimensional lattice class
 */
 
-#ifndef quantlib_lattices_lattice2d_h
-#define quantlib_lattices_lattice2d_h
+#ifndef quantlib_lattice2d_hpp
+#define quantlib_lattice2d_hpp
 
 #include <ql/Lattices/lattice.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
@@ -31,27 +32,104 @@
 namespace QuantLib {
 
     //! Two-dimensional lattice.
-    /*! This lattice is based on two trinomial trees and primarly used
+    /*! This lattice is based on two trinomial trees and primarily used
         for the G2 short-rate model.
 
         \ingroup lattices
     */
-    class Lattice2D : public Lattice {
+    template <class Impl, class T = TrinomialTree>
+    class Lattice2D : public Lattice<Impl> {
       public:
-        Lattice2D(const boost::shared_ptr<TrinomialTree>& tree1,
-                  const boost::shared_ptr<TrinomialTree>& tree2,
+        Lattice2D(const boost::shared_ptr<T>& tree1,
+                  const boost::shared_ptr<T>& tree2,
                   Real correlation);
 
-        Size size(Size i) const { return tree1_->size(i)*tree2_->size(i); }
-      protected:
+        Size size(Size i) const;
         Size descendant(Size i, Size index, Size branch) const;
         Real probability(Size i, Size index, Size branch) const;
-
-        boost::shared_ptr<Tree> tree1_, tree2_;
+      protected:
+        boost::shared_ptr<T> tree1_, tree2_;
+        // smelly
+        Disposable<Array> grid(Time) const { QL_FAIL("not implemented"); }
       private:
         Matrix m_;
         Real rho_;
     };
+
+
+    // inline definitions
+
+    template <class Impl, class T>
+    inline Size Lattice2D<Impl,T>::size(Size i) const {
+        return tree1_->size(i)*tree2_->size(i);
+    }
+
+
+    // template definitions
+
+    template <class Impl, class T>
+    Lattice2D<Impl,T>::Lattice2D(const boost::shared_ptr<T>& tree1,
+                                 const boost::shared_ptr<T>& tree2,
+                                 Real correlation)
+    : Lattice<Impl>(tree1->timeGrid(), T::branches*T::branches),
+      tree1_(tree1), tree2_(tree2), m_(T::branches,T::branches),
+      rho_(std::fabs(correlation)) {
+
+        // what happens here?
+        if (correlation < 0.0 && T::branches == 3) {
+            m_[0][0] = -1.0;
+            m_[0][1] = -4.0;
+            m_[0][2] =  5.0;
+            m_[1][0] = -4.0;
+            m_[1][1] =  8.0;
+            m_[1][2] = -4.0;
+            m_[2][0] =  5.0;
+            m_[2][1] = -4.0;
+            m_[2][2] = -1.0;
+        } else {
+            m_[0][0] =  5.0;
+            m_[0][1] = -4.0;
+            m_[0][2] = -1.0;
+            m_[1][0] = -4.0;
+            m_[1][1] =  8.0;
+            m_[1][2] = -4.0;
+            m_[2][0] = -1.0;
+            m_[2][1] = -4.0;
+            m_[2][2] =  5.0;
+        }
+    }
+
+
+    template <class Impl, class T>
+    Size Lattice2D<Impl,T>::descendant(Size i, Size index,
+                                       Size branch) const {
+        Size modulo = tree1_->size(i);
+
+        Size index1 = index % modulo;
+        Size index2 = index / modulo;
+        Size branch1 = branch % T::branches;
+        Size branch2 = branch / T::branches;
+
+        modulo = tree1_->size(i+1);
+        return tree1_->descendant(i, index1, branch1) +
+            tree2_->descendant(i, index2, branch2)*modulo;
+    }
+
+    template <class Impl, class T>
+    Real Lattice2D<Impl,T>::probability(Size i, Size index,
+                                        Size branch) const {
+        Size modulo = tree1_->size(i);
+
+        Size index1 = index % modulo;
+        Size index2 = index / modulo;
+        Size branch1 = branch % T::branches;
+        Size branch2 = branch / T::branches;
+
+        Real prob1 = tree1_->probability(i, index1, branch1);
+        Real prob2 = tree2_->probability(i, index2, branch2);
+        // does the 36 below depend on T::branches?
+        return prob1*prob2 + rho_*(m_[branch1][branch2])/36.0;
+    }
 
 }
 

@@ -8,6 +8,7 @@ include_HEADERS = \
     binomialtree.hpp \
     bsmlattice.hpp \
     lattice.hpp \
+    lattice1d.hpp \
     lattice2d.hpp \
     tree.hpp \
     trinomialtree.hpp
@@ -16,9 +17,6 @@ EXTRA_DIST=makefile.mak
 
 libLattices_la_SOURCES = \
     binomialtree.cpp \
-    bsmlattice.cpp \
-    lattice.cpp \
-    lattice2d.cpp \
     trinomialtree.cpp
 
 noinst_LTLIBRARIES = libLattices.la

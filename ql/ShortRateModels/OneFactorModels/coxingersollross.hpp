@@ -21,8 +21,8 @@
     \brief Cox-Ingersoll-Ross model
 */
 
-#ifndef quantlib_one_factor_models_cox_ingersoll_ross_h
-#define quantlib_one_factor_models_cox_ingersoll_ross_h
+#ifndef quantlib_cox_ingersoll_ross_hpp
+#define quantlib_cox_ingersoll_ross_hpp
 
 #include <ql/ShortRateModels/onefactormodel.hpp>
 
@@ -53,7 +53,7 @@ namespace QuantLib {
 
         virtual boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
-        virtual boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        boost::shared_ptr<NumericalMethod> tree(const TimeGrid& grid) const;
 
         class Dynamics;
       protected:

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,12 +22,13 @@
     \brief Abstract one-factor interest rate model class
 */
 
-#ifndef quantlib_interest_rate_modelling_one_factor_model_h
-#define quantlib_interest_rate_modelling_one_factor_model_h
+#ifndef quantlib_one_factor_model_hpp
+#define quantlib_one_factor_model_hpp
 
 #include <ql/stochasticprocess.hpp>
 #include <ql/ShortRateModels/model.hpp>
-#include <ql/Lattices/tree.hpp>
+#include <ql/Lattices/lattice1d.hpp>
+#include <ql/Lattices/trinomialtree.hpp>
 
 namespace QuantLib {
 
@@ -43,7 +45,7 @@ namespace QuantLib {
         virtual boost::shared_ptr<ShortRateDynamics> dynamics() const = 0;
 
         //! Return by default a trinomial recombining tree
-        virtual boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        boost::shared_ptr<NumericalMethod> tree(const TimeGrid& grid) const;
 
       protected:
         class ShortRateTree;
@@ -71,15 +73,15 @@ namespace QuantLib {
     };
 
     //! Recombining trinomial tree discretizing the state variable
-    class OneFactorModel::ShortRateTree : public Lattice {
+    class OneFactorModel::ShortRateTree
+        : public Lattice1D<OneFactorModel::ShortRateTree> {
       public:
         //! Plain tree build-up from short-rate dynamics
-        ShortRateTree(const boost::shared_ptr<Tree>& tree,
+        ShortRateTree(const boost::shared_ptr<TrinomialTree>& tree,
                       const boost::shared_ptr<ShortRateDynamics>& dynamics,
                       const TimeGrid& timeGrid);
         //! Tree build-up + numerical fitting to term-structure
-        ShortRateTree(
-                      const boost::shared_ptr<Tree>& tree,
+        ShortRateTree(const boost::shared_ptr<TrinomialTree>& tree,
                       const boost::shared_ptr<ShortRateDynamics>& dynamics,
                       const boost::shared_ptr
                           <TermStructureFittingParameter::NumericalImpl>& phi,
@@ -93,7 +95,9 @@ namespace QuantLib {
             Rate r = dynamics_->shortRate(timeGrid()[i], x);
             return std::exp(-r*timeGrid().dt(i));
         }
-      protected:
+        Real underlying(Size i, Size index) const {
+            return tree_->underlying(i, index);
+        }
         Size descendant(Size i, Size index, Size branch) const {
             return tree_->descendant(i, index, branch);
         }
@@ -101,7 +105,7 @@ namespace QuantLib {
             return tree_->probability(i, index, branch);
         }
       private:
-        boost::shared_ptr<Tree> tree_;
+        boost::shared_ptr<TrinomialTree> tree_;
         boost::shared_ptr<ShortRateDynamics> dynamics_;
         class Helper;
     };

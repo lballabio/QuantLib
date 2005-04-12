@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,32 +22,42 @@
     \brief Tree class
 */
 
-#ifndef quantlib_lattices_tree_h
-#define quantlib_lattices_tree_h
+#ifndef quantlib_tree_hpp
+#define quantlib_tree_hpp
 
-#include <ql/numericalmethod.hpp>
+#include <ql/types.hpp>
+#include <ql/Patterns/curiouslyrecurring.hpp>
 
 namespace QuantLib {
 
     //! %Tree approximating a single-factor diffusion
-    /*! \ingroup lattices */
-    class Tree {
-      public:
-        Tree(Size nColumns) : nColumns_(nColumns) {}
-        virtual ~Tree() {}
-        virtual Real underlying(Size i,
-                                Size index) const = 0;
-        virtual Size size(Size i) const = 0;
-        virtual Size descendant(Size i,
-                                Size index,
-                                Size branch) const = 0;
-        virtual Real probability(Size i,
-                                 Size index,
-                                 Size branch) const = 0;
+    /*! Derived classes must implement the following interface:
+        \code
+        public:
+          Real underlying(Size i, Size index) const;
+          Size size(Size i) const;
+          Size descendant(Size i, Size index, Size branch) const;
+          Real probability(Size i, Size index, Size branch) const;
+        \endcode
+        and provide a public enumeration
+        \code
+        enum { branches = N };
+        \endcode
+        where N is a suitable constant (2 for binomial, 3 for trinomial...)
 
-        Size nColumns() const { return nColumns_; }
+        \ingroup lattices
+    */
+    template <class T>
+    class Tree : public CuriouslyRecurringTemplate<T> {
+      public:
+        Tree(Size columns) : columns_(columns) {}
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use columns() instead */
+        Size nColumns() const { return columns_; }
+        #endif
+        Size columns() const { return columns_; }
       private:
-        Size nColumns_;
+        Size columns_;
     };
 
 }

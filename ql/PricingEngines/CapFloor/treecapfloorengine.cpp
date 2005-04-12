@@ -40,7 +40,7 @@ namespace QuantLib {
         QL_REQUIRE(model_, "no model specified");
 
         DiscretizedCapFloor capfloor(arguments_);
-        boost::shared_ptr<Lattice> lattice;
+        boost::shared_ptr<NumericalMethod> lattice;
 
         if (lattice_) {
             lattice = lattice_;

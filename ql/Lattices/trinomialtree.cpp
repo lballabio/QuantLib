@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,7 +26,7 @@ namespace QuantLib {
                            const boost::shared_ptr<StochasticProcess>& process,
                            const TimeGrid& timeGrid,
                            bool isPositive)
-    : Tree(timeGrid.size()), dx_(1, 0.0), timeGrid_(timeGrid) {
+    : Tree<TrinomialTree>(timeGrid.size()), dx_(1, 0.0), timeGrid_(timeGrid) {
         x0_ = process->x0();
 
         Size nTimeSteps = timeGrid.size() - 1;
@@ -41,8 +42,7 @@ namespace QuantLib {
             Volatility v = std::sqrt(v2);
             dx_.push_back(v*std::sqrt(3.0));
 
-            boost::shared_ptr<TrinomialBranching> branching(
-                                                    new TrinomialBranching());
+            Branching branching;
             for (Integer j=jMin; j<=jMax; j++) {
                 Real x = x0_ + j*dx_[i];
                 Real m = process->expectation(t, x, dt);
@@ -54,37 +54,21 @@ namespace QuantLib {
                     }
                 }
 
-                branching->k_.push_back(temp);
                 Real e = m - (x0_ + temp*dx_[i+1]);
                 Real e2 = e*e;
                 Real e3 = e*std::sqrt(3.0);
 
-                branching->probs_[0].push_back((1.0 + e2/v2 - e3/v)/6.0);
-                branching->probs_[1].push_back((2.0 - e2/v2)/3.0);
-                branching->probs_[2].push_back((1.0 + e2/v2 + e3/v)/6.0);
+                Real p1 = (1.0 + e2/v2 - e3/v)/6.0;
+                Real p2 = (2.0 - e2/v2)/3.0;
+                Real p3 = (1.0 + e2/v2 + e3/v)/6.0;
+
+                branching.add(temp, p1, p2, p3);
             }
             branchings_.push_back(branching);
 
-            const std::vector<Integer>& k = branching->k_;
-            jMin = *std::min_element(k.begin(), k.end()) - 1;
-            jMax = *std::max_element(k.begin(), k.end()) + 1;
+            jMin = branching.jMin();
+            jMax = branching.jMax();
         }
-
-    }
-
-    Real TrinomialTree::underlying(Size i, Size index) const {
-        if (i==0) return x0_;
-        const std::vector<Integer>& k = branchings_[i-1]->k_;
-        Integer jMin = *std::min_element(k.begin(), k.end()) - 1;
-        return x0_ + (jMin*1.0 + index*1.0)*dx(i);
-    }
-
-    Size TrinomialTree::size(Size i) const {
-        if (i==0) return 1;
-        const std::vector<Integer>& k = branchings_[i-1]->k_;
-        Integer jMin = *std::min_element(k.begin(), k.end()) - 1;
-        Integer jMax = *std::max_element(k.begin(), k.end()) + 1;
-        return jMax - jMin + 1;
     }
 
 }

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,8 +22,8 @@
     \brief Abstract interest rate model class
 */
 
-#ifndef quantlib_interest_rate_modelling_model_h
-#define quantlib_interest_rate_modelling_model_h
+#ifndef quantlib_interest_rate_model_hpp
+#define quantlib_interest_rate_model_hpp
 
 #include <ql/option.hpp>
 #include <ql/Lattices/lattice.hpp>
@@ -77,7 +78,8 @@ namespace QuantLib {
             notifyObservers();
         }
 
-        virtual boost::shared_ptr<Lattice> tree(const TimeGrid&) const = 0;
+        virtual boost::shared_ptr<NumericalMethod> tree(
+                                                   const TimeGrid&) const = 0;
 
         //! Calibrate to a set of market instruments (caps/swaptions)
         /*! An additional constraint can be passed which must be

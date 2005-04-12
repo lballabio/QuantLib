@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2002, 2003, 2004 StatPro Italia srl
+ Copyright (C) 2002, 2003, 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,7 +40,7 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               checking it against analytic results.
     */
-    template <class TreeType>
+    template <class T>
     class BinomialVanillaEngine : public VanillaOption::engine {
       public:
         BinomialVanillaEngine(Size timeSteps)
@@ -95,11 +95,11 @@ namespace QuantLib {
         boost::shared_ptr<StochasticProcess> bs(new
             BlackScholesProcess(Handle<Quote>(process->stateVariable()),
                                 flatDividends, flatRiskFree, flatVol));
-        boost::shared_ptr<Tree> tree(new T(bs, maturity, timeSteps_,
-                                           payoff->strike()));
+        boost::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,
+                                        payoff->strike()));
 
-        boost::shared_ptr<Lattice> lattice(
-            new BlackScholesLattice(tree, r, maturity, timeSteps_));
+        boost::shared_ptr<NumericalMethod> lattice(
+            new BlackScholesLattice<T>(tree, r, maturity, timeSteps_));
 
         DiscretizedVanillaOption option(arguments_);
 

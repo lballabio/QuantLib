@@ -63,7 +63,7 @@ namespace QuantLib {
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
     }
 
-    boost::shared_ptr<Lattice>
+    boost::shared_ptr<NumericalMethod>
     BlackKarasinski::tree(const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());

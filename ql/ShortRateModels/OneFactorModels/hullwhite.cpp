@@ -33,16 +33,14 @@ namespace QuantLib {
         generateArguments();
     }
 
-    boost::shared_ptr<Lattice> HullWhite::tree(const TimeGrid& grid) const {
+    boost::shared_ptr<NumericalMethod> HullWhite::tree(
+                                                 const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());
-
         boost::shared_ptr<ShortRateDynamics> numericDynamics(
                                              new Dynamics(phi, a(), sigma()));
-
         boost::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
-
         boost::shared_ptr<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 

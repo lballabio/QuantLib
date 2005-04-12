@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,11 +22,12 @@
     \brief Lattice method class
 */
 
-#ifndef quantlib_lattices_lattice_hpp
-#define quantlib_lattices_lattice_hpp
+#ifndef quantlib_lattice_hpp
+#define quantlib_lattice_hpp
 
 #include <ql/numericalmethod.hpp>
-#include <ql/Math/array.hpp>
+#include <ql/discretizedasset.hpp>
+#include <ql/Patterns/curiouslyrecurring.hpp>
 
 namespace QuantLib {
 
@@ -35,9 +36,26 @@ namespace QuantLib {
         (with discount) a discretized asset object. It will usually be
         based on one or more trees.
 
+        Derived classes must implement the following interface:
+        \code
+        public:
+          DiscountFactor discount(Size i, Size index) const;
+          Size descendant(Size i, Size index, Size branch) const;
+          Real probability(Size i, Size index, Size branch) const;
+        \endcode
+        and may implement the following:
+        \code
+        public:
+          void stepback(Size i,
+                        const Array& values,
+                        Array& newValues) const;
+        \endcode
+
         \ingroup lattices
     */
-    class Lattice : public NumericalMethod {
+    template <class Impl>
+    class Lattice : public NumericalMethod,
+                    public CuriouslyRecurringTemplate<Impl> {
       public:
         Lattice(const TimeGrid& timeGrid,
                 Size n)
@@ -53,39 +71,111 @@ namespace QuantLib {
         void rollback(DiscretizedAsset&, Time to) const;
         void partialRollback(DiscretizedAsset&, Time to) const;
         //! Computes the present value of an asset using Arrow-Debrew prices
-        Real presentValue(DiscretizedAsset&);
+        Real presentValue(DiscretizedAsset&) const;
         //@}
 
-        virtual Size size(Size i) const = 0;
+        const Array& statePrices(Size i) const;
 
-        //! Discount factor at time t_i and node indexed by index.
-        virtual DiscountFactor discount(Size i,
-                                        Size index) const = 0;
-
-        const Array& statePrices(Size i);
-
-        //! Tree properties
-        virtual Size descendant(Size i,
-                                Size index,
-                                Size branch) const = 0;
-        virtual Real probability(Size i,
-                                 Size index,
-                                 Size branch) const = 0;
+        void stepback(Size i,
+                      const Array& values,
+                      Array& newValues) const;
 
       protected:
-        void computeStatePrices(Size until);
-
-        virtual void stepback(Size i,
-                              const Array& values,
-                              Array& newValues) const;
+        void computeStatePrices(Size until) const;
 
         // Arrow-Debrew state prices
-        std::vector<Array> statePrices_;
+        mutable std::vector<Array> statePrices_;
 
       private:
         Size n_;
-        Size statePricesLimit_;
+        mutable Size statePricesLimit_;
     };
+
+
+    // template definitions
+
+    template <class Impl>
+    void Lattice<Impl>::computeStatePrices(Size until) const {
+        for (Size i=statePricesLimit_; i<until; i++) {
+            statePrices_.push_back(Array(this->impl().size(i+1), 0.0));
+            for (Size j=0; j<this->impl().size(i); j++) {
+                DiscountFactor disc = this->impl().discount(i,j);
+                Real statePrice = statePrices_[i][j];
+                for (Size l=0; l<n_; l++) {
+                    statePrices_[i+1][this->impl().descendant(i,j,l)] +=
+                        statePrice*disc*this->impl().probability(i,j,l);
+                }
+            }
+        }
+        statePricesLimit_ = until;
+    }
+
+    template <class Impl>
+    const Array& Lattice<Impl>::statePrices(Size i) const {
+        if (i>statePricesLimit_)
+            computeStatePrices(i);
+        return statePrices_[i];
+    }
+
+    template <class Impl>
+    Real Lattice<Impl>::presentValue(DiscretizedAsset& asset) const {
+        Size i = t_.findIndex(asset.time());
+        return DotProduct(asset.values(), statePrices(i));
+    }
+
+    template <class Impl>
+    void Lattice<Impl>::initialize(DiscretizedAsset& asset, Time t) const {
+        Size i = t_.findIndex(t);
+        asset.time() = t;
+        asset.reset(this->impl().size(i));
+    }
+
+    template <class Impl>
+    void Lattice<Impl>::rollback(DiscretizedAsset& asset, Time to) const {
+        partialRollback(asset,to);
+        asset.adjustValues();
+    }
+
+    template <class Impl>
+    void Lattice<Impl>::partialRollback(DiscretizedAsset& asset,
+                                        Time to) const {
+
+        Time from = asset.time();
+
+        if (close(from,to))
+            return;
+
+        QL_REQUIRE(from > to,
+                   "cannot roll the asset back to" << to
+                   << " (it is already at t = " << from << ")");
+
+        Integer iFrom = Integer(t_.findIndex(from));
+        Integer iTo = Integer(t_.findIndex(to));
+
+        for (Integer i=iFrom-1; i>=iTo; i--) {
+            Array newValues(this->impl().size(i));
+            this->impl().stepback(i, asset.values(), newValues);
+            asset.time() = t_[i];
+            asset.values() = newValues;
+            // skip the very last adjustment
+            if (i != iTo)
+                asset.adjustValues();
+        }
+    }
+
+    template <class Impl>
+    void Lattice<Impl>::stepback(Size i, const Array& values,
+                                 Array& newValues) const {
+        for (Size j=0; j<this->impl().size(i); j++) {
+            Real value = 0.0;
+            for (Size l=0; l<n_; l++) {
+                value += this->impl().probability(i,j,l) *
+                         values[this->impl().descendant(i,j,l)];
+            }
+            value *= this->impl().discount(i,j);
+            newValues[j] = value;
+        }
+    }
 
 }
 

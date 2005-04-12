@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,11 +22,11 @@
     \brief Numerical method class
 */
 
-#ifndef quantlib_numerical_method_h
-#define quantlib_numerical_method_h
+#ifndef quantlib_numerical_method_hpp
+#define quantlib_numerical_method_hpp
 
 #include <ql/timegrid.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/Math/array.hpp>
 
 namespace QuantLib {
 
@@ -84,9 +84,12 @@ namespace QuantLib {
                                      Time to) const = 0;
 
         //! computes the present value of an asset.
-        virtual Real presentValue(DiscretizedAsset&) = 0;
+        virtual Real presentValue(DiscretizedAsset&) const = 0;
 
         //@}
+
+        // this is a smell, but we need it. We'll rethink it later.
+        virtual Disposable<Array> grid(Time) const = 0;
       protected:
         TimeGrid t_;
     };

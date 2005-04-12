@@ -967,10 +967,6 @@ SOURCE=.\ql\Lattices\binomialtree.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Lattices\bsmlattice.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Lattices\bsmlattice.hpp
 # End Source File
 # Begin Source File
@@ -979,15 +975,11 @@ SOURCE=.\ql\Lattices\core.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Lattices\lattice.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Lattices\lattice.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Lattices\lattice2d.cpp
+SOURCE=.\ql\Lattices\lattice1d.hpp
 # End Source File
 # Begin Source File
 

@@ -58,12 +58,13 @@ namespace QuantLib {
     };
 
     OneFactorModel::ShortRateTree::ShortRateTree(
-            const boost::shared_ptr<Tree>& tree,
+            const boost::shared_ptr<TrinomialTree>& tree,
             const boost::shared_ptr<ShortRateDynamics>& dynamics,
             const boost::shared_ptr
                 <TermStructureFittingParameter::NumericalImpl>& theta,
             const TimeGrid& timeGrid)
-    : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {
+    : Lattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)),
+      tree_(tree), dynamics_(dynamics) {
 
         theta->reset();
         Real value = 1.0;
@@ -82,19 +83,20 @@ namespace QuantLib {
     }
 
     OneFactorModel::ShortRateTree::ShortRateTree(
-                         const boost::shared_ptr<Tree>& tree,
+                         const boost::shared_ptr<TrinomialTree>& tree,
                          const boost::shared_ptr<ShortRateDynamics>& dynamics,
                          const TimeGrid& timeGrid)
-    : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {}
+    : Lattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)),
+      tree_(tree), dynamics_(dynamics) {}
 
     OneFactorModel::OneFactorModel(Size nArguments)
     : ShortRateModel(nArguments) {}
 
-    boost::shared_ptr<Lattice>
+    boost::shared_ptr<NumericalMethod>
     OneFactorModel::tree(const TimeGrid& grid) const {
-        boost::shared_ptr<Tree> trinomial(
+        boost::shared_ptr<TrinomialTree> trinomial(
                               new TrinomialTree(dynamics()->process(), grid));
-        return boost::shared_ptr<Lattice>(
+        return boost::shared_ptr<NumericalMethod>(
                               new ShortRateTree(trinomial, dynamics(), grid));
     }
 

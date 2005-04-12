@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,7 +29,6 @@
 #include <ql/Math/array.hpp>
 #include <ql/Math/comparison.hpp>
 #include <ql/exercise.hpp>
-#include <list>
 
 namespace QuantLib {
 
@@ -76,8 +75,9 @@ namespace QuantLib {
             These methods (that developers should override when
             deriving from DiscretizedAsset) are to be used by
             numerical methods and not directly by users, with the
-            exception of preAdjustValues() and postAdjustValues() that
-            can be used together with partialRollback().
+            exception of adjustValues(), preAdjustValues() and
+            postAdjustValues() that can be used together with
+            partialRollback().
 
             @{
         */

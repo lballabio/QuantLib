@@ -125,11 +125,11 @@ namespace QuantLib {
             return call - discountS + strike*discountT;
     }
 
-    boost::shared_ptr<Lattice>
+    boost::shared_ptr<NumericalMethod>
     CoxIngersollRoss::tree(const TimeGrid& grid) const {
-        boost::shared_ptr<Tree> trinomial(
+        boost::shared_ptr<TrinomialTree> trinomial(
                         new TrinomialTree(dynamics()->process(), grid, true));
-        return boost::shared_ptr<Lattice>(
+        return boost::shared_ptr<NumericalMethod>(
                               new ShortRateTree(trinomial, dynamics(), grid));
     }
 
