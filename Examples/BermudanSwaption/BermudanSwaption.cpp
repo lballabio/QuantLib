@@ -19,9 +19,7 @@
 */
 
 #include <ql/quantlib.hpp>
-#include <boost/timer.hpp>
 #include <iostream>
-#include <iomanip>
 
 using namespace QuantLib;
 
@@ -71,8 +69,6 @@ int main(int, char* [])
 {
     try {
         QL_IO_INIT
-
-        boost::timer timer;
 
         Date todaysDate(15, February, 2002);
         Calendar calendar = TARGET();
@@ -330,19 +326,6 @@ int main(int, char* [])
             new TreeSwaptionEngine(modelBK, 50)));
         std::cout << "BK:       " << itmBermudanSwaption.NPV() << std::endl;
 #endif
-
-        double seconds = timer.elapsed();
-        int hours = int(seconds/3600);
-        seconds -= hours * 3600;
-        int minutes = int(seconds/60);
-        seconds -= minutes * 60;
-        std::cout << " \nRun completed in ";
-        if (hours > 0)
-            std::cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            std::cout << minutes << " m ";
-        std::cout << std::fixed << std::setprecision(0)
-                  << seconds << " s\n" << std::endl;
 
         return 0;
     } catch (std::exception& e) {
