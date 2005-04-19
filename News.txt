@@ -7,4 +7,6 @@ Changes since release 0.3.9:
      Settings::instance().evaluationDate() = date;
      registerWith(Settings::instance().evaluationDate());
 
+- Added Gaussian quadratures (thanks to Klaus Spanderen.)
+
 

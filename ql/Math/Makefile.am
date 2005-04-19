@@ -23,6 +23,8 @@ include_HEADERS = \
 	forwardflatinterpolation.hpp \
 	functional.hpp \
 	gammadistribution.hpp \
+	gaussianorthogonalpolynomial.hpp \
+	gaussianquadratures.hpp \
 	gaussianstatistics.hpp \
 	generalstatistics.hpp \
 	incompletegamma.hpp \
@@ -48,6 +50,7 @@ include_HEADERS = \
 	svd.hpp \
 	symmetriceigenvalues.hpp \
 	symmetricschurdecomposition.hpp \
+	tqreigendecomposition.hpp \
 	trapezoidintegral.hpp
 
 EXTRA_DIST=makefile.mak
@@ -61,6 +64,8 @@ libMath_la_SOURCES = \
 	errorfunction.cpp \
 	factorial.cpp \
 	gammadistribution.cpp \
+	gaussianorthogonalpolynomial.cpp \
+	gaussianquadratures.cpp \
 	generalstatistics.cpp \
 	incompletegamma.cpp \
 	incrementalstatistics.cpp \
@@ -69,7 +74,8 @@ libMath_la_SOURCES = \
 	pseudosqrt.cpp \
 	rounding.cpp \
 	svd.cpp \
-	symmetricschurdecomposition.cpp
+	symmetricschurdecomposition.cpp \
+	tqreigendecomposition.cpp
 
 
 noinst_LTLIBRARIES = libMath.la

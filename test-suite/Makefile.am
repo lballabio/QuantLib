@@ -21,6 +21,7 @@ QL_TESTS = \
 	exchangerate.hpp exchangerate.cpp \
 	factorial.hpp factorial.cpp \
 	forwardoption.hpp forwardoption.cpp \
+	gaussianquadratures.hpp gaussianquadratures.cpp \
 	instruments.hpp instruments.cpp \
 	integrals.hpp integrals.cpp \
 	interestrates.hpp interestrates.cpp \
@@ -44,6 +45,7 @@ QL_TESTS = \
 	swap.hpp swap.cpp \
 	swaption.hpp swaption.cpp \
 	termstructures.hpp termstructures.cpp \
+	tqreigendecomposition.hpp tqreigendecomposition.cpp \
 	tracing.hpp tracing.cpp \
 	old_pricers.hpp old_pricers.cpp \
 	utilities.hpp utilities.cpp

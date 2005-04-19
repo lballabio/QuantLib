@@ -53,6 +53,7 @@
 #include "exchangerate.hpp"
 #include "factorial.hpp"
 #include "forwardoption.hpp"
+#include "gaussianquadratures.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "interestrates.hpp"
@@ -76,6 +77,7 @@
 #include "swap.hpp"
 #include "swaption.hpp"
 #include "termstructures.hpp"
+#include "tqreigendecomposition.hpp"
 #include "tracing.hpp"
 // to be deprecated
 #include "old_pricers.hpp"
@@ -148,6 +150,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ExchangeRateTest::suite());
     test->add(FactorialTest::suite());
     test->add(ForwardOptionTest::suite());
+    test->add(GaussianQuadraturesTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
@@ -171,6 +174,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SwapTest::suite());
     test->add(SwaptionTest::suite());
     test->add(TermStructureTest::suite());
+    test->add(TqrEigenDecompositionTest::suite());
     test->add(TracingTest::suite());
 
     // tests for deprecated (or generally old-style) classes
