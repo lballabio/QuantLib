@@ -35,6 +35,7 @@
     - Niels Elken Sønderby
     - Enrico Sirola, StatPro Italia srl
     - Liguo Song
+    - Joseph Wang
 
     %QuantLib also includes code taken from Peter Jäckel's book "Monte Carlo
     Methods in Finance".
@@ -45,8 +46,8 @@
     Akin, James Battle, Christopher Baus, Thomas Becker, Adolfo Benin,
     David Binderman, Jon Davidson, Daniele De Francesco, Matteo
     Gallivanoni, Roman Gitlin, Tomoya Kawanishi, Gilbert Peffer,
-    Walter Penschke, Gianni Piolanti, Peter Schmitteckert, Maxim
-    Sokolov, David Schwartz, Joseph Wang, Bernd Johannes Wuebben,
+    Walter Penschke, Gianni Piolanti, Peter Schmitteckert, David
+    Schwartz, Maxim Sokolov, Klaus Spanderen, Bernd Johannes Wuebben,
     and Jeff Yu.
 
 */
