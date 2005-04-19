@@ -100,7 +100,7 @@ namespace QuantLib {
                  unsigned long seed = 0,
                  DirectionIntegers directionIntegers = Jaeckel);
         const std::vector<unsigned long>& nextInt32Sequence() const;
-        const SobolRsg::sample_type& SobolRsg::nextSequence() const {
+        const SobolRsg::sample_type& nextSequence() const {
             const std::vector<unsigned long>& v = nextInt32Sequence();
             // normalize to get a double in (0,1)
             for (Size k=0; k<dimensionality_; k++)
