@@ -24,15 +24,15 @@
 namespace QuantLib {
 
     BarrierPathPricer::BarrierPathPricer(
-                       Barrier::Type barrierType,
-                       Real barrier,
-                       Real rebate,
-                       Option::Type type,
-                       Real underlying,
-                       Real strike,
-                       DiscountFactor discount,
-                       const boost::shared_ptr<StochasticProcess>& diffProcess,
-                       const PseudoRandom::ursg_type& sequenceGen)
+                    Barrier::Type barrierType,
+                    Real barrier,
+                    Real rebate,
+                    Option::Type type,
+                    Real underlying,
+                    Real strike,
+                    DiscountFactor discount,
+                    const boost::shared_ptr<StochasticProcess1D>& diffProcess,
+                    const PseudoRandom::ursg_type& sequenceGen)
     : underlying_(underlying),
       barrierType_(barrierType), barrier_(barrier),
       rebate_(rebate), diffProcess_(diffProcess),

@@ -25,44 +25,57 @@ namespace QuantLib {
 
     // base class
 
-    StochasticProcess::StochasticProcess() {}
+    GenericStochasticProcess::GenericStochasticProcess() {}
 
-    StochasticProcess::StochasticProcess(
-             const boost::shared_ptr<StochasticProcess::discretization>& disc)
+    GenericStochasticProcess::GenericStochasticProcess(
+                                const boost::shared_ptr<discretization>& disc)
     : discretization_(disc) {}
 
-    Real StochasticProcess::expectation(Time t0, Real x0, Time dt) const {
+    Disposable<Array> GenericStochasticProcess::expectation(Time t0,
+                                                            const Array& x0,
+                                                            Time dt) const {
         return discretization_->expectation(*this, t0, x0, dt);
     }
 
-    Real StochasticProcess::variance(Time t0, Real x0, Time dt) const {
-        return discretization_->variance(*this, t0, x0, dt);
+    Disposable<Matrix> GenericStochasticProcess::covariance(Time t0,
+                                                            const Array& x0,
+                                                            Time dt) const {
+        return discretization_->covariance(*this, t0, x0, dt);
     }
 
-    Real StochasticProcess::evolve(Real change, Real currentValue) const {
+    Disposable<Array> GenericStochasticProcess::evolve(
+                                            const Array& change,
+                                            const Array& currentValue) const {
         return currentValue + change;
     }
 
-    Time StochasticProcess::time(const Date& ) const {
+    Time GenericStochasticProcess::time(const Date& ) const {
         QL_FAIL("date/time conversion not supported");
     }
 
-    void StochasticProcess::update() {
+    void GenericStochasticProcess::update() {
         notifyObservers();
     }
 
 
-    // Euler discretization
+    // 1-D specialization
 
-    Real EulerDiscretization::expectation(const StochasticProcess& process,
-                                          Time t0, Real x0, Time dt) const {
-        return x0 + process.drift(t0, x0)*dt;
+    StochasticProcess1D::StochasticProcess1D() {}
+
+    StochasticProcess1D::StochasticProcess1D(
+                                const boost::shared_ptr<discretization>& disc)
+    : discretization_(disc) {}
+
+    Real StochasticProcess1D::expectation(Time t0, Real x0, Time dt) const {
+        return discretization_->expectation(*this, t0, x0, dt);
     }
 
-    Real EulerDiscretization::variance(const StochasticProcess& process,
-                                       Time t0, Real x0, Time dt) const {
-        Real sigma = process.diffusion(t0, x0);
-        return sigma*sigma*dt;
+    Real StochasticProcess1D::variance(Time t0, Real x0, Time dt) const {
+        return discretization_->variance(*this, t0, x0, dt);
+    }
+
+    Real StochasticProcess1D::evolve(Real change, Real currentValue) const {
+        return currentValue + change;
     }
 
 }

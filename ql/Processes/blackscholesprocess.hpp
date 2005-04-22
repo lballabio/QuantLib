@@ -27,6 +27,7 @@
 #define quantlib_black_scholes_process_hpp
 
 #include <ql/stochasticprocess.hpp>
+#include <ql/Processes/eulerdiscretization.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <ql/voltermstructure.hpp>
 
@@ -38,17 +39,16 @@ namespace QuantLib {
             dS(t, S)=(r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
         \f]
     */
-    class BlackScholesProcess : public StochasticProcess {
+    class BlackScholesProcess : public StochasticProcess1D {
       public:
         BlackScholesProcess(
             const Handle<Quote>& x0,
             const Handle<YieldTermStructure>& dividendTS,
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
-            const boost::shared_ptr<StochasticProcess::discretization>& d =
-                    boost::shared_ptr<StochasticProcess::discretization>(
-                                                    new EulerDiscretization));
-        //! \name StochasticProcess interface
+            const boost::shared_ptr<discretization>& d =
+                  boost::shared_ptr<discretization>(new EulerDiscretization));
+        //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
         /*! \todo revise extrapolation */

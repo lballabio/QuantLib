@@ -71,9 +71,10 @@ namespace QuantLib {
     */
     class TwoFactorModel::ShortRateDynamics {
       public:
-        ShortRateDynamics(const boost::shared_ptr<StochasticProcess>& xProcess,
-                          const boost::shared_ptr<StochasticProcess>& yProcess,
-                          Real correlation)
+        ShortRateDynamics(
+                       const boost::shared_ptr<StochasticProcess1D>& xProcess,
+                       const boost::shared_ptr<StochasticProcess1D>& yProcess,
+                       Real correlation)
         : xProcess_(xProcess), yProcess_(yProcess),
           correlation_(correlation) {}
         virtual ~ShortRateDynamics() {}
@@ -81,12 +82,12 @@ namespace QuantLib {
         virtual Rate shortRate(Time t, Real x, Real y) const = 0;
 
         //! Risk-neutral dynamics of the first state variable x
-        const boost::shared_ptr<StochasticProcess>& xProcess() const {
+        const boost::shared_ptr<StochasticProcess1D>& xProcess() const {
             return xProcess_;
         }
 
         //! Risk-neutral dynamics of the second state variable y
-        const boost::shared_ptr<StochasticProcess>& yProcess() const {
+        const boost::shared_ptr<StochasticProcess1D>& yProcess() const {
             return yProcess_;
         }
 
@@ -95,7 +96,7 @@ namespace QuantLib {
             return correlation_;
         }
       private:
-        boost::shared_ptr<StochasticProcess> xProcess_, yProcess_;
+        boost::shared_ptr<StochasticProcess1D> xProcess_, yProcess_;
         Real correlation_;
     };
 

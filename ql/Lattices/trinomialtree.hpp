@@ -33,7 +33,7 @@ namespace QuantLib {
 
     //! Recombining trinomial tree class
     /*! This class defines a recombining trinomial tree approximating a
-        a diffusion.
+        1-D stochastic process.
         \warning The diffusion term of the SDE must be independent of the
                  underlying process.
 
@@ -43,7 +43,7 @@ namespace QuantLib {
         class Branching;
       public:
         enum { branches = 3 };
-        TrinomialTree(const boost::shared_ptr<StochasticProcess>& process,
+        TrinomialTree(const boost::shared_ptr<StochasticProcess1D>& process,
                       const TimeGrid& timeGrid,
                       bool isPositive = false);
         Real dx(Size i) const { return dx_[i]; }

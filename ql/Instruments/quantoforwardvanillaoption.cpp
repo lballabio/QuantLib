@@ -22,15 +22,15 @@
 namespace QuantLib {
 
     QuantoForwardVanillaOption::QuantoForwardVanillaOption(
-                      const Handle<YieldTermStructure>& foreignRiskFreeTS,
-                      const Handle<BlackVolTermStructure>& exchRateVolTS,
-                      const Handle<Quote>& correlation,
-                      Real moneyness,
-                      Date resetDate,
-                      const boost::shared_ptr<StochasticProcess>& process,
-                      const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                      const boost::shared_ptr<Exercise>& exercise,
-                      const boost::shared_ptr<PricingEngine>& engine)
+                   const Handle<YieldTermStructure>& foreignRiskFreeTS,
+                   const Handle<BlackVolTermStructure>& exchRateVolTS,
+                   const Handle<Quote>& correlation,
+                   Real moneyness,
+                   Date resetDate,
+                   const boost::shared_ptr<GenericStochasticProcess>& process,
+                   const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                   const boost::shared_ptr<Exercise>& exercise,
+                   const boost::shared_ptr<PricingEngine>& engine)
     : QuantoVanillaOption(foreignRiskFreeTS, exchRateVolTS, correlation,
                           process, payoff, exercise, engine),
       moneyness_(moneyness), resetDate_(resetDate) {

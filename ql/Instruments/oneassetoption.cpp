@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     OneAssetOption::OneAssetOption(
-        const boost::shared_ptr<StochasticProcess>& process,
+        const boost::shared_ptr<GenericStochasticProcess>& process,
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
@@ -185,8 +185,8 @@ namespace QuantLib {
         #else
         Option::arguments::validate();
         #endif
-
-        QL_REQUIRE(stochasticProcess->x0() > 0.0,
+        // we assume the underlying value to be the first state variable
+        QL_REQUIRE(stochasticProcess->initialValues()[0] > 0.0,
                    "negative or zero underlying given");
     }
 
@@ -216,7 +216,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> riskFreeRate(
                                             originalProcess->riskFreeRate());
         Handle<BlackVolTermStructure> volatility;
-        boost::shared_ptr<StochasticProcess> process(
+        boost::shared_ptr<GenericStochasticProcess> process(
                new BlackScholesProcess(stateVariable, dividendYield,
                                        riskFreeRate, volatility));
 

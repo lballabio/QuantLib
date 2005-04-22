@@ -73,7 +73,7 @@ void CliquetOptionTest::testValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine);
 
-    boost::shared_ptr<StochasticProcess> process(
+    boost::shared_ptr<GenericStochasticProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),

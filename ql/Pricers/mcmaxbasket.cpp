@@ -86,11 +86,11 @@ namespace QuantLib {
 
         // initialize the path generator
         Size n = underlying.size();
-        std::vector<boost::shared_ptr<StochasticProcess> > processes(n);
+        std::vector<boost::shared_ptr<StochasticProcess1D> > processes(n);
         for (Size i=0; i<n; i++) {
             Handle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
-            processes[i] = boost::shared_ptr<StochasticProcess>(
+            processes[i] = boost::shared_ptr<StochasticProcess1D>(
                                     new BlackScholesProcess(u,
                                                             dividendYield[i],
                                                             riskFreeRate,

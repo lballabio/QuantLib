@@ -106,7 +106,7 @@ namespace QuantLib {
 
 
     Real AnalyticBarrierEngine::underlying() const {
-        return arguments_.stochasticProcess->x0();
+        return arguments_.stochasticProcess->initialValues()[0];
     }
 
     Real AnalyticBarrierEngine::strike() const {

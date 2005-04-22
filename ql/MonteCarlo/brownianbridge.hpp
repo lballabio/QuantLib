@@ -31,8 +31,8 @@
 // granted, provided that this notice is preserved.
 // ===========================================================================
 
-#ifndef   quantlib_brownian_bridge_h
-#define   quantlib_brownian_bridge_h
+#ifndef  quantlib_brownian_bridge_hpp
+#define  quantlib_brownian_bridge_hpp
 
 #include <ql/MonteCarlo/path.hpp>
 #include <ql/MonteCarlo/sample.hpp>
@@ -67,7 +67,7 @@ namespace QuantLib {
         BrownianBridge(const boost::shared_ptr<BlackVolTermStructure>&,
                        const TimeGrid& timeGrid,
                        const GSG& generator);
-        BrownianBridge(const boost::shared_ptr<StochasticProcess>&,
+        BrownianBridge(const boost::shared_ptr<StochasticProcess1D>&,
                        const TimeGrid& timeGrid,
                        const GSG& generator);
         //! \name inspectors
@@ -200,7 +200,7 @@ namespace QuantLib {
 
     template <class GSG>
     BrownianBridge<GSG>::BrownianBridge(
-        const boost::shared_ptr<StochasticProcess>& diffProcess,
+        const boost::shared_ptr<StochasticProcess1D>& diffProcess,
         const TimeGrid& timeGrid,
         const GSG& generator)
     : generator_(generator), dimension_(generator_.dimension()),

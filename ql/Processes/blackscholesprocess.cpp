@@ -31,8 +31,8 @@ namespace QuantLib {
              const Handle<YieldTermStructure>& dividendTS,
              const Handle<YieldTermStructure>& riskFreeTS,
              const Handle<BlackVolTermStructure>& blackVolTS,
-             const boost::shared_ptr<StochasticProcess::discretization>& disc)
-    : StochasticProcess(disc), x0_(x0), riskFreeRate_(riskFreeTS),
+             const boost::shared_ptr<discretization>& disc)
+    : StochasticProcess1D(disc), x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
       updated_(false) {
         registerWith(x0_);
@@ -70,7 +70,7 @@ namespace QuantLib {
 
     void BlackScholesProcess::update() {
         updated_ = false;
-        StochasticProcess::update();
+        StochasticProcess1D::update();
     }
 
     const boost::shared_ptr<Quote>&

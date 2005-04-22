@@ -34,7 +34,7 @@ namespace QuantLib {
     //! Base class for options on a single asset
     class OneAssetOption : public Option {
       public:
-        OneAssetOption(const boost::shared_ptr<StochasticProcess>&,
+        OneAssetOption(const boost::shared_ptr<GenericStochasticProcess>&,
                        const boost::shared_ptr<Payoff>&,
                        const boost::shared_ptr<Exercise>&,
                        const boost::shared_ptr<PricingEngine>& engine =
@@ -87,7 +87,7 @@ namespace QuantLib {
         mutable Real delta_, deltaForward_, elasticity_, gamma_, theta_,
             thetaPerDay_, vega_, rho_, dividendRho_, itmCashProbability_;
         // arguments
-        boost::shared_ptr<StochasticProcess> stochasticProcess_;
+        boost::shared_ptr<GenericStochasticProcess> stochasticProcess_;
       private:
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
@@ -108,7 +108,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        boost::shared_ptr<StochasticProcess> stochasticProcess;
+        boost::shared_ptr<GenericStochasticProcess> stochasticProcess;
     };
 
     //! %Results from single-asset option calculation

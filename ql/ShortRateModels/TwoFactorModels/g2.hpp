@@ -115,9 +115,9 @@ namespace QuantLib {
                  Real b,
                  Real eta,
                  Real rho)
-        : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
+        : ShortRateDynamics(boost::shared_ptr<StochasticProcess1D>(
                                       new OrnsteinUhlenbeckProcess(a, sigma)),
-                            boost::shared_ptr<StochasticProcess>(
+                            boost::shared_ptr<StochasticProcess1D>(
                                       new OrnsteinUhlenbeckProcess(b, eta)),
                             rho),
           fitting_(fitting) {}

@@ -37,7 +37,7 @@ namespace QuantLib {
     class BinomialTree : public Tree<T> {
       public:
         enum { branches = 2 };
-        BinomialTree(const boost::shared_ptr<StochasticProcess>& process,
+        BinomialTree(const boost::shared_ptr<StochasticProcess1D>& process,
                      Time end,
                      Size steps)
         : Tree<T>(steps+1) {
@@ -63,9 +63,9 @@ namespace QuantLib {
     class EqualProbabilitiesBinomialTree : public BinomialTree<T> {
       public:
         EqualProbabilitiesBinomialTree(
-                           const boost::shared_ptr<StochasticProcess>& process,
-                           Time end,
-                           Size steps)
+                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        Time end,
+                        Size steps)
         : BinomialTree<T>(process, end, steps) {}
         Real underlying(Size i, Size index) const {
             BigInteger j = 2*BigInteger(index) - BigInteger(i);
@@ -84,9 +84,9 @@ namespace QuantLib {
     class EqualJumpsBinomialTree : public BinomialTree<T> {
       public:
         EqualJumpsBinomialTree(
-                           const boost::shared_ptr<StochasticProcess>& process,
-                           Time end,
-                           Size steps)
+                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        Time end,
+                        Size steps)
         : BinomialTree<T>(process, end, steps) {}
         Real underlying(Size i, Size index) const {
             BigInteger j = 2*BigInteger(index) - BigInteger(i);
@@ -105,7 +105,7 @@ namespace QuantLib {
     /*! \ingroup lattices */
     class JarrowRudd : public EqualProbabilitiesBinomialTree<JarrowRudd> {
       public:
-        JarrowRudd(const boost::shared_ptr<StochasticProcess>& process,
+        JarrowRudd(const boost::shared_ptr<StochasticProcess1D>& process,
                    Time end,
                    Size steps,
                    Real strike);
@@ -117,10 +117,11 @@ namespace QuantLib {
     class CoxRossRubinstein
         : public EqualJumpsBinomialTree<CoxRossRubinstein> {
       public:
-        CoxRossRubinstein(const boost::shared_ptr<StochasticProcess>& process,
-                          Time end,
-                          Size steps,
-                          Real strike);
+        CoxRossRubinstein(
+                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        Time end,
+                        Size steps,
+                        Real strike);
     };
 
 
@@ -130,10 +131,10 @@ namespace QuantLib {
         : public EqualProbabilitiesBinomialTree<AdditiveEQPBinomialTree> {
       public:
         AdditiveEQPBinomialTree(
-                           const boost::shared_ptr<StochasticProcess>& process,
-                           Time end,
-                           Size steps,
-                           Real strike);
+                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        Time end,
+                        Size steps,
+                        Real strike);
     };
 
 
@@ -141,7 +142,7 @@ namespace QuantLib {
     /*! \ingroup lattices */
     class Trigeorgis : public EqualJumpsBinomialTree<Trigeorgis> {
       public:
-        Trigeorgis(const boost::shared_ptr<StochasticProcess>& process,
+        Trigeorgis(const boost::shared_ptr<StochasticProcess1D>& process,
                    Time end,
                    Size steps,
                    Real strike);
@@ -152,7 +153,7 @@ namespace QuantLib {
     /*! \ingroup lattices */
     class Tian : public BinomialTree<Tian> {
       public:
-        Tian(const boost::shared_ptr<StochasticProcess>& process,
+        Tian(const boost::shared_ptr<StochasticProcess1D>& process,
              Time end,
              Size steps,
              Real strike);
@@ -171,7 +172,7 @@ namespace QuantLib {
     /*! \ingroup lattices */
     class LeisenReimer : public BinomialTree<LeisenReimer> {
       public:
-        LeisenReimer(const boost::shared_ptr<StochasticProcess>& process,
+        LeisenReimer(const boost::shared_ptr<StochasticProcess1D>& process,
                      Time end,
                      Size steps,
                      Real strike);

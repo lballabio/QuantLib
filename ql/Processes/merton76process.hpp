@@ -27,11 +27,12 @@
 #define quantlib_merton_76_process_hpp
 
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Processes/eulerdiscretization.hpp>
 
 namespace QuantLib {
 
     //! Merton-76 jump-diffusion process
-    class Merton76Process : public StochasticProcess {
+    class Merton76Process : public StochasticProcess1D {
       public:
         Merton76Process(
             const Handle<Quote>& stateVariable,
@@ -41,10 +42,9 @@ namespace QuantLib {
             const Handle<Quote>& jumpInt,
             const Handle<Quote>& logJMean,
             const Handle<Quote>& logJVol,
-            const boost::shared_ptr<StochasticProcess::discretization>& d =
-                    boost::shared_ptr<StochasticProcess::discretization>(
-                                                    new EulerDiscretization));
-        //! \name StochasticProcess interface
+            const boost::shared_ptr<discretization>& d =
+                  boost::shared_ptr<discretization>(new EulerDiscretization));
+        //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
         Real drift(Time, Real) const { QL_FAIL("not implemented"); }

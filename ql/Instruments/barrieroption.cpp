@@ -29,7 +29,7 @@ namespace QuantLib {
         Barrier::Type barrierType,
         Real barrier,
         Real rebate,
-        const boost::shared_ptr<StochasticProcess>& process,
+        const boost::shared_ptr<GenericStochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
@@ -71,28 +71,31 @@ namespace QuantLib {
         OneAssetStrikedOption::arguments::validate();
         #endif
 
+        // assuming, as always, that the underlying is the first of
+        // the state variables...
+        Real underlying = stochasticProcess->initialValues()[0];
         switch (barrierType) {
           case Barrier::DownIn:
-            QL_REQUIRE(stochasticProcess->x0() >= barrier,
-                       "underlying (" << stochasticProcess->x0()
+            QL_REQUIRE(underlying >= barrier,
+                       "underlying (" << underlying
                        << ") < barrier (" << barrier
                        << "): down-and-in barrier undefined");
             break;
           case Barrier::UpIn:
-            QL_REQUIRE(stochasticProcess->x0() <= barrier,
-                       "underlying (" << stochasticProcess->x0()
+            QL_REQUIRE(underlying <= barrier,
+                       "underlying (" << underlying
                        << ") > barrier (" << barrier
                        << "): up-and-in barrier undefined");
             break;
           case Barrier::DownOut:
-            QL_REQUIRE(stochasticProcess->x0() >= barrier,
-                       "underlying (" << stochasticProcess->x0()
+            QL_REQUIRE(underlying >= barrier,
+                       "underlying (" << underlying
                        << ") < barrier (" << barrier
                        << "): down-and-out barrier undefined");
             break;
           case Barrier::UpOut:
-            QL_REQUIRE(stochasticProcess->x0() <= barrier,
-                       "underlying (" << stochasticProcess->x0()
+            QL_REQUIRE(underlying <= barrier,
+                       "underlying (" << underlying
                        << ") > barrier (" << barrier
                        << "): up-and-out barrier undefined");
             break;

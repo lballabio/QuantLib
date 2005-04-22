@@ -24,13 +24,19 @@
 #ifndef quantlib_greeks_hpp
 #define quantlib_greeks_hpp
 
-#include <ql/stochasticprocess.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
     //! default theta calculation for Black-Scholes options
-    Real blackScholesTheta(const boost::shared_ptr<StochasticProcess>&,
+    Real blackScholesTheta(const boost::shared_ptr<BlackScholesProcess>&,
                            Real value, Real delta, Real gamma);
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated use the other overload */
+    Real blackScholesTheta(const boost::shared_ptr<StochasticProcess1D>&,
+                           Real value, Real delta, Real gamma);
+    #endif
 
     //! default theta-per-day calculation
     Real defaultThetaPerDay(Real theta);

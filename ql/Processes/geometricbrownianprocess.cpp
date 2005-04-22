@@ -20,6 +20,7 @@
 */
 
 #include <ql/Processes/geometricbrownianprocess.hpp>
+#include <ql/Processes/eulerdiscretization.hpp>
 
 namespace QuantLib {
 
@@ -27,7 +28,7 @@ namespace QuantLib {
                                                           double initialValue,
                                                           double mue,
                                                           double sigma)
-    : StochasticProcess(boost::shared_ptr<StochasticProcess::discretization>(
+    : StochasticProcess1D(boost::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
       initialValue_(initialValue), mue_(mue), sigma_(sigma) {}
 

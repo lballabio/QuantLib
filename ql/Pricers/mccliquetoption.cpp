@@ -144,7 +144,7 @@ namespace QuantLib {
 
         // initialize the path generator
         Handle<Quote> u(boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
-        boost::shared_ptr<StochasticProcess> diffusion(
+        boost::shared_ptr<StochasticProcess1D> diffusion(
                                      new BlackScholesProcess(u,
                                                              dividendYield,
                                                              riskFreeRate,

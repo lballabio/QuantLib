@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     MultiAssetOption::MultiAssetOption(
-        const std::vector<boost::shared_ptr<StochasticProcess> >& processes,
+        const std::vector<boost::shared_ptr<StochasticProcess1D> >& processes,
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const Matrix& correlation,
@@ -96,7 +96,7 @@ namespace QuantLib {
         // it might be made more robust by checking that all processes
         // return the same times, but what the hey...
         arguments->stoppingTimes.clear();
-        const boost::shared_ptr<StochasticProcess>& process =
+        const boost::shared_ptr<StochasticProcess1D>& process =
             stochasticProcesses_[0];
         for (Size i=0; i<exercise_->dates().size(); i++) {
             arguments->stoppingTimes.push_back(

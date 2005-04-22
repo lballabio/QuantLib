@@ -36,7 +36,7 @@ namespace QuantLib {
             dS(t, S)= \mu S dt + \sigma S dW_t.
         \f]
     */
-    class GeometricBrownianMotionProcess : public StochasticProcess {
+    class GeometricBrownianMotionProcess : public StochasticProcess1D {
       public:
         GeometricBrownianMotionProcess(double initialValue,
                                        double mue,

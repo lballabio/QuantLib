@@ -83,7 +83,7 @@ namespace QuantLib {
         Dynamics(const Parameter& fitting,
                  Real a,
                  Real sigma)
-        : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
+        : ShortRateDynamics(boost::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(a, sigma))),
           fitting_(fitting) {}
 

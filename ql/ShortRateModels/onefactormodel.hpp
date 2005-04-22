@@ -54,7 +54,8 @@ namespace QuantLib {
     //! Base class describing the short-rate dynamics
     class OneFactorModel::ShortRateDynamics {
       public:
-        ShortRateDynamics(const boost::shared_ptr<StochasticProcess>& process)
+        ShortRateDynamics(
+                        const boost::shared_ptr<StochasticProcess1D>& process)
         : process_(process) {}
         virtual ~ShortRateDynamics() {};
 
@@ -65,11 +66,11 @@ namespace QuantLib {
         virtual Rate shortRate(Time t, Real variable) const = 0;
 
         //! Returns the risk-neutral dynamics of the state variable
-        const boost::shared_ptr<StochasticProcess>& process() {
+        const boost::shared_ptr<StochasticProcess1D>& process() {
             return process_;
         }
       private:
-        boost::shared_ptr<StochasticProcess> process_;
+        boost::shared_ptr<StochasticProcess1D> process_;
     };
 
     //! Recombining trinomial tree discretizing the state variable

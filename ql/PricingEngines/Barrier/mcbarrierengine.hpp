@@ -99,22 +99,22 @@ namespace QuantLib {
     class BarrierPathPricer : public PathPricer<Path> {
       public:
         BarrierPathPricer(
-                      Barrier::Type barrierType,
-                      Real barrier,
-                      Real rebate,
-                      Option::Type type,
-                      Real underlying,
-                      Real strike,
-                      DiscountFactor discount,
-                      const boost::shared_ptr<StochasticProcess>& diffProcess,
-                      const PseudoRandom::ursg_type& sequenceGen);
+                    Barrier::Type barrierType,
+                    Real barrier,
+                    Real rebate,
+                    Option::Type type,
+                    Real underlying,
+                    Real strike,
+                    DiscountFactor discount,
+                    const boost::shared_ptr<StochasticProcess1D>& diffProcess,
+                    const PseudoRandom::ursg_type& sequenceGen);
         Real operator()(const Path& path) const;
       private:
         Real underlying_;
         Barrier::Type barrierType_;
         Real barrier_;
         Real rebate_;
-        boost::shared_ptr<StochasticProcess> diffProcess_;
+        boost::shared_ptr<StochasticProcess1D> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
@@ -175,11 +175,15 @@ namespace QuantLib {
     boost::shared_ptr<QL_TYPENAME MCBarrierEngine<RNG,S>::path_generator_type>
     MCBarrierEngine<RNG,S>::pathGenerator() const
     {
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
         return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(arguments_.stochasticProcess,
+                         new path_generator_type(process,
                                                  grid, gen, brownianBridge_));
     }
 

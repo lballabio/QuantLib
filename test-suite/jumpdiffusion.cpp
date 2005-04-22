@@ -284,7 +284,7 @@ void JumpDiffusionTest::testMerton76() {
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<GenericStochasticProcess> stochProcess(
            new Merton76Process(Handle<Quote>(spot),
                                Handle<YieldTermStructure>(qTS),
                                Handle<YieldTermStructure>(rTS),
@@ -388,7 +388,7 @@ void JumpDiffusionTest::testGreeks() {
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
-    boost::shared_ptr<StochasticProcess> stochProcess(
+    boost::shared_ptr<GenericStochasticProcess> stochProcess(
           new Merton76Process(Handle<Quote>(spot), qTS, rTS, volTS,
                               Handle<Quote>(jumpIntensity),
                               Handle<Quote>(meanLogJump),

@@ -83,18 +83,18 @@ namespace QuantLib {
     class DigitalPathPricer : public PathPricer<Path> {
       public:
         DigitalPathPricer(
-                       const boost::shared_ptr<CashOrNothingPayoff>& payoff,
-                       const boost::shared_ptr<AmericanExercise>& exercise,
-                       Real underlying,
-                       const Handle<YieldTermStructure>& discountTS,
-                       const boost::shared_ptr<StochasticProcess>& diffProcess,
-                       const PseudoRandom::ursg_type& sequenceGen);
+                    const boost::shared_ptr<CashOrNothingPayoff>& payoff,
+                    const boost::shared_ptr<AmericanExercise>& exercise,
+                    Real underlying,
+                    const Handle<YieldTermStructure>& discountTS,
+                    const boost::shared_ptr<StochasticProcess1D>& diffProcess,
+                    const PseudoRandom::ursg_type& sequenceGen);
         Real operator()(const Path& path) const;
       private:
         boost::shared_ptr<CashOrNothingPayoff> payoff_;
         boost::shared_ptr<AmericanExercise> exercise_;
         Real underlying_;
-        boost::shared_ptr<StochasticProcess> diffProcess_;
+        boost::shared_ptr<StochasticProcess1D> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
         Handle<YieldTermStructure> discountTS_;
     };

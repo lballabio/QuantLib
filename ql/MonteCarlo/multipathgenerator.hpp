@@ -50,17 +50,17 @@ namespace QuantLib {
       public:
         typedef Sample<MultiPath> sample_type;
         MultiPathGenerator(
-                     const std::vector<boost::shared_ptr<StochasticProcess> >&
+                   const std::vector<boost::shared_ptr<StochasticProcess1D> >&
                                                                diffusionProcs,
-                     const Matrix& correlation,
-                     const TimeGrid& timeGrid,
-                     GSG generator,
-                     bool brownianBridge = false);
+                   const Matrix& correlation,
+                   const TimeGrid& timeGrid,
+                   GSG generator,
+                   bool brownianBridge = false);
         const sample_type& next() const;
         const sample_type& antithetic() const;
       private:
         bool brownianBridge_;
-        std::vector<boost::shared_ptr<StochasticProcess> > diffusionProcs_;
+        std::vector<boost::shared_ptr<StochasticProcess1D> > diffusionProcs_;
         Size numAssets_;
         Matrix sqrtCorrelation_;
         GSG generator_;
@@ -72,12 +72,12 @@ namespace QuantLib {
 
     template <class GSG>
     MultiPathGenerator<GSG>::MultiPathGenerator(
-                     const std::vector<boost::shared_ptr<StochasticProcess> >&
+                   const std::vector<boost::shared_ptr<StochasticProcess1D> >&
                                                                diffusionProcs,
-                     const Matrix& correlation,
-                     const TimeGrid& times,
-                     GSG generator,
-                     bool brownianBridge)
+                   const Matrix& correlation,
+                   const TimeGrid& times,
+                   GSG generator,
+                   bool brownianBridge)
     :   brownianBridge_(brownianBridge),
         diffusionProcs_(diffusionProcs),
         numAssets_(correlation.rows()),

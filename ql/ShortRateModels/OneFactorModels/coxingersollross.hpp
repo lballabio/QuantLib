@@ -75,7 +75,7 @@ namespace QuantLib {
         Parameter& r0_;
     };
 
-    class CoxIngersollRoss::HelperProcess : public StochasticProcess {
+    class CoxIngersollRoss::HelperProcess : public StochasticProcess1D {
       public:
         HelperProcess(Real theta, Real k, Real sigma, Real y0)
         : y0_(y0), theta_(theta), k_(k), sigma_(sigma) {}
@@ -110,7 +110,7 @@ namespace QuantLib {
                  Real k,
                  Real sigma,
                  Real x0)
-        : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
+        : ShortRateDynamics(boost::shared_ptr<StochasticProcess1D>(
                         new HelperProcess(theta, k, sigma, std::sqrt(x0)))) {}
 
         virtual Real variable(Time, Rate r) const {

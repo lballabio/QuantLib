@@ -131,7 +131,7 @@ namespace QuantLib {
 
         results_.strikeSensitivity = black.strikeSensitivity();
 
-        results_.theta = blackScholesTheta(arguments_.stochasticProcess,
+        results_.theta = blackScholesTheta(process,
                                            results_.value,
                                            results_.delta,
                                            results_.gamma);

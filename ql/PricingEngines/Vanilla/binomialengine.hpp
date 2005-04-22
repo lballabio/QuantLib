@@ -92,7 +92,7 @@ namespace QuantLib {
 
         Time maturity = rfdc.yearFraction(referenceDate, maturityDate);
 
-        boost::shared_ptr<StochasticProcess> bs(new
+        boost::shared_ptr<StochasticProcess1D> bs(new
             BlackScholesProcess(Handle<Quote>(process->stateVariable()),
                                 flatDividends, flatRiskFree, flatVol));
         boost::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,

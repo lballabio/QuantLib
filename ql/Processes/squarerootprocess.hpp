@@ -27,6 +27,7 @@
 #define quantlib_square_root_process_hpp
 
 #include <ql/stochasticprocess.hpp>
+#include <ql/Processes/eulerdiscretization.hpp>
 
 namespace QuantLib {
 
@@ -36,13 +37,12 @@ namespace QuantLib {
             dx = a (b - x_t) dt + \sigma \sqrt{x_t} dW_t.
         \f]
     */
-    class SquareRootProcess : public StochasticProcess {
+    class SquareRootProcess : public StochasticProcess1D {
       public:
         SquareRootProcess(
             Real b, Real a, Volatility sigma, Real x0 = 0.0,
-            const boost::shared_ptr<StochasticProcess::discretization>& d =
-                    boost::shared_ptr<StochasticProcess::discretization>(
-                                                    new EulerDiscretization));
+            const boost::shared_ptr<discretization>& d =
+                  boost::shared_ptr<discretization>(new EulerDiscretization));
         //! \name StochasticProcess interface
         //@{
         Real x0() const;

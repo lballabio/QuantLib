@@ -40,10 +40,15 @@ namespace QuantLib {
         results_.value = valueAtCenter(euroPrices_);
         results_.delta = firstDerivativeAtCenter(euroPrices_, grid_);
         results_.gamma = secondDerivativeAtCenter(euroPrices_, grid_);
-        results_.theta = blackScholesTheta(arguments_.stochasticProcess,
-                                           results_.value,
-                                           results_.delta,
-                                           results_.gamma);
+
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        if (process)
+            results_.theta = blackScholesTheta(process,
+                                               results_.value,
+                                               results_.delta,
+                                               results_.gamma);
     }
 
 }

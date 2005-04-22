@@ -25,8 +25,8 @@ namespace QuantLib {
 
     SquareRootProcess::SquareRootProcess(
              Real b, Real a, Volatility sigma, Real x0,
-             const boost::shared_ptr<StochasticProcess::discretization>& disc)
-    : StochasticProcess(disc), x0_(x0), mean_(b), speed_(a),
+             const boost::shared_ptr<discretization>& disc)
+    : StochasticProcess1D(disc), x0_(x0), mean_(b), speed_(a),
       volatility_(sigma) {}
 
     Real SquareRootProcess::x0() const {

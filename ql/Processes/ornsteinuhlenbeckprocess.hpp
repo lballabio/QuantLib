@@ -36,7 +36,7 @@ namespace QuantLib {
             dx = -a x_t dt + \sigma dW_t.
         \f]
     */
-    class OrnsteinUhlenbeckProcess : public StochasticProcess {
+    class OrnsteinUhlenbeckProcess : public StochasticProcess1D {
       public:
         OrnsteinUhlenbeckProcess(Real speed,
                                  Volatility vol,

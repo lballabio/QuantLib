@@ -119,11 +119,15 @@ namespace QuantLib {
     boost::shared_ptr<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type>
     MCVanillaEngine<RNG,S>::pathGenerator() const {
 
+        boost::shared_ptr<StochasticProcess1D> process =
+            boost::dynamic_pointer_cast<StochasticProcess1D>(
+                                          this->arguments_.stochasticProcess);
+        QL_REQUIRE(process, "1-D process required");
         TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
         return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(arguments_.stochasticProcess,
+                         new path_generator_type(process,
                                                  grid, gen, brownianBridge_));
     }
 
