@@ -58,7 +58,7 @@ void TqrEigenDecompositionTest::testEigenValueDecomposition() {
 }
 
 void TqrEigenDecompositionTest::testZeroOffDiagEigenValues() {
-    BOOST_MESSAGE("Testing TQR zero off-diag eigenvalues...");
+    BOOST_MESSAGE("Testing TQR zero-off-diagonal eigenvalues...");
 
     Array diag(5);
     Array sub(4,1);
