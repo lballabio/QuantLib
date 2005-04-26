@@ -49,6 +49,10 @@ namespace QuantLib {
                                               const GenericStochasticProcess&,
                                               Time t0, const Array& x0,
                                               Time dt) const = 0;
+            virtual Disposable<Matrix> stdDeviation(
+                                              const GenericStochasticProcess&,
+                                              Time t0, const Array& x0,
+                                              Time dt) const = 0;
             virtual Disposable<Matrix> covariance(
                                               const GenericStochasticProcess&,
                                               Time t0, const Array& x0,
@@ -70,7 +74,8 @@ namespace QuantLib {
         */
         virtual Disposable<Matrix> diffusion(Time t, const Array& x) const = 0;
         /*! returns the expectation
-            \f$ E(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$
+            \f$ E(\mathrm{x}_{t_0 + \Delta t}
+                | \mathrm{x}_{t_0} = \mathrm{x}_0) \f$
             of the process after a time interval \f$ \Delta t \f$
             according to the given discretization. This method can be
             overridden in derived classes which want to hard-code a
@@ -78,8 +83,19 @@ namespace QuantLib {
         */
         virtual Disposable<Array> expectation(Time t0, const Array& x0,
                                               Time dt) const;
+        /*! returns the standard deviation
+            \f$ S(\mathrm{x}_{t_0 + \Delta t}
+                | \mathrm{x}_{t_0} = \mathrm{x}_0) \f$
+            of the process after a time interval \f$ \Delta t \f$
+            according to the given discretization. This method can be
+            overridden in derived classes which want to hard-code a
+            particular discretization.
+        */
+        virtual Disposable<Matrix> stdDeviation(Time t0, const Array& x0,
+                                                Time dt) const;
         /*! returns the covariance
-            \f$ V(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$
+            \f$ V(\mathrm{x}_{t_0 + \Delta t}
+                | \mathrm{x}_{t_0} = \mathrm{x}_0) \f$
             of the process after a time interval \f$ \Delta t \f$
             according to the given discretization. This method can be
             overridden in derived classes which want to hard-code a
@@ -130,6 +146,8 @@ namespace QuantLib {
             virtual ~discretization() {}
             virtual Real expectation(const StochasticProcess1D&,
                                      Time t0, Real x0, Time dt) const = 0;
+            virtual Real stdDeviation(const StochasticProcess1D&,
+                                      Time t0, Real x0, Time dt) const = 0;
             virtual Real variance(const StochasticProcess1D&,
                                   Time t0, Real x0, Time dt) const = 0;
         };
@@ -151,6 +169,14 @@ namespace QuantLib {
             particular discretization.
         */
         virtual Real expectation(Time t0, Real x0, Time dt) const;
+        /*! returns the standard deviation
+            \f$ S(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$
+            of the process after a time interval \f$ \Delta t \f$
+            according to the given discretization. This method can be
+            overridden in derived classes which want to hard-code a
+            particular discretization.
+        */
+        virtual Real stdDeviation(Time t0, Real x0, Time dt) const;
         /*! returns the variance
             \f$ V(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$
             of the process after a time interval \f$ \Delta t \f$
@@ -176,6 +202,8 @@ namespace QuantLib {
         Disposable<Matrix> diffusion(Time t, const Array& x) const;
         Disposable<Array> expectation(Time t0, const Array& x0,
                                       Time dt) const;
+        Disposable<Matrix> stdDeviation(Time t0, const Array& x0,
+                                        Time dt) const;
         Disposable<Matrix> covariance(Time t0, const Array& x0,
                                       Time dt) const;
         Disposable<Array> evolve(const Array& change,
@@ -218,6 +246,13 @@ namespace QuantLib {
         QL_REQUIRE(x0.size() == 1, "1-D array required");
         Array a(1, expectation(t0, x0[0], dt));
         return a;
+    }
+
+    inline Disposable<Matrix> StochasticProcess1D::stdDeviation(
+                                    Time t0, const Array& x0, Time dt) const {
+        QL_REQUIRE(x0.size() == 1, "1-D array required");
+        Matrix m(1, 1, stdDeviation(t0, x0[0], dt));
+        return m;
     }
 
     inline Disposable<Matrix> StochasticProcess1D::covariance(

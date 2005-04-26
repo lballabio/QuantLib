@@ -45,6 +45,11 @@ namespace QuantLib {
         return x0*std::exp(-speed_*dt);
     }
 
+    Real OrnsteinUhlenbeckProcess::stdDeviation(Time t, Real x0,
+                                                Time dt) const {
+        return std::sqrt(variance(t,x0,dt));
+    }
+
     Real OrnsteinUhlenbeckProcess::variance(Time, Real, Time dt) const {
         return 0.5*volatility_*volatility_/speed_*
             (1.0 - std::exp(-2.0*speed_*dt));

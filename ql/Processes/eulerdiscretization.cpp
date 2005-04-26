@@ -36,12 +36,25 @@ namespace QuantLib {
         return x0 + process.drift(t0, x0)*dt;
     }
 
+    Disposable<Matrix> EulerDiscretization::stdDeviation(
+                                      const GenericStochasticProcess& process,
+                                      Time t0, const Array& x0,
+                                      Time dt) const {
+        Matrix result = process.diffusion(t0, x0) * std::sqrt(dt);
+        return result;
+    }
+
+    Real EulerDiscretization::stdDeviation(const StochasticProcess1D& process,
+                                           Time t0, Real x0, Time dt) const {
+        return process.diffusion(t0, x0) * std::sqrt(dt);
+    }
+
     Disposable<Matrix> EulerDiscretization::covariance(
                                       const GenericStochasticProcess& process,
                                       Time t0, const Array& x0,
                                       Time dt) const {
         Matrix sigma = process.diffusion(t0, x0);
-        Matrix result = sigma*sigma*dt;
+        Matrix result = sigma*transpose(sigma)*dt;
         return result;
     }
 

@@ -47,6 +47,7 @@ namespace QuantLib {
         Real drift(Time t, Real x) const;
         Real diffusion(Time t, Real x) const;
         Real expectation(Time t0, Real x0, Time dt) const;
+        Real stdDeviation(Time t0, Real x0, Time dt) const;
         Real variance(Time t0, Real x0, Time dt) const;
         //@}
       private:

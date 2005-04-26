@@ -43,7 +43,20 @@ namespace QuantLib {
         */
         Real expectation(const StochasticProcess1D&,
                          Time t0, Real x0, Time dt) const;
-        /*! Returns an approximation of the variance defined as
+
+        /*! Returns an approximation of the standard deviation defined as
+            \f$ \sigma(t_0, \mathbf{x}_0) \sqrt{\Delta t} \f$.
+        */
+        Disposable<Matrix> stdDeviation(const GenericStochasticProcess&,
+                                        Time t0, const Array& x0,
+                                        Time dt) const;
+        /*! Returns an approximation of the standard deviation defined as
+            \f$ \sigma(t_0, x_0) \sqrt{\Delta t} \f$.
+        */
+        Real stdDeviation(const StochasticProcess1D&,
+                          Time t0, Real x0, Time dt) const;
+
+        /*! Returns an approximation of the covariance defined as
             \f$ \sigma(t_0, \mathbf{x}_0)^2 \Delta t \f$.
         */
         Disposable<Matrix> covariance(const GenericStochasticProcess&,

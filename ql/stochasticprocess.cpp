@@ -37,6 +37,12 @@ namespace QuantLib {
         return discretization_->expectation(*this, t0, x0, dt);
     }
 
+    Disposable<Matrix> GenericStochasticProcess::stdDeviation(Time t0,
+                                                              const Array& x0,
+                                                              Time dt) const {
+        return discretization_->stdDeviation(*this, t0, x0, dt);
+    }
+
     Disposable<Matrix> GenericStochasticProcess::covariance(Time t0,
                                                             const Array& x0,
                                                             Time dt) const {
@@ -68,6 +74,10 @@ namespace QuantLib {
 
     Real StochasticProcess1D::expectation(Time t0, Real x0, Time dt) const {
         return discretization_->expectation(*this, t0, x0, dt);
+    }
+
+    Real StochasticProcess1D::stdDeviation(Time t0, Real x0, Time dt) const {
+        return discretization_->stdDeviation(*this, t0, x0, dt);
     }
 
     Real StochasticProcess1D::variance(Time t0, Real x0, Time dt) const {
