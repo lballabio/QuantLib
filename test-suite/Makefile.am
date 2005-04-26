@@ -32,6 +32,7 @@ QL_TESTS = \
 	mersennetwister.hpp mersennetwister.cpp \
 	money.hpp money.cpp \
 	operators.hpp operators.cpp \
+	pathgenerator.hpp pathgenerator.cpp \
 	piecewiseflatforward.hpp piecewiseflatforward.cpp \
 	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
 	quantooption.hpp quantooption.cpp \

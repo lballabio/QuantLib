@@ -35,6 +35,8 @@ namespace QuantLib {
         using a gaussian sequence generator
 
         \ingroup mcarlo
+
+        \test the generated paths are checked against cached results
     */
     template <class GSG>
     class PathGenerator {

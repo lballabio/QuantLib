@@ -44,6 +44,8 @@ namespace QuantLib {
         \todo why store correlation matrix rather than covariance?
 
         \ingroup mcarlo
+
+        \test the generated paths are checked against cached results
     */
     template <class GSG>
     class MultiPathGenerator {
