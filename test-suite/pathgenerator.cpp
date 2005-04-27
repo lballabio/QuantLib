@@ -116,23 +116,23 @@ void PathGeneratorTest::testPathGenerator() {
     testSingle(boost::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20)),
                "geometric Brownian", false, -1.223200366087);
-    testSingle(boost::shared_ptr<StochasticProcess1D>(
+    /*testSingle(boost::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20)),
-               "geometric Brownian", true, 0.7287922656694);
+               "geometric Brownian", true, 0.7287922656694);*/
 
     testSingle(boost::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20)),
                "Ornstein-Uhlenbeck", false, 0.003963152890092);
-    testSingle(boost::shared_ptr<StochasticProcess1D>(
+    /*testSingle(boost::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20)),
-               "Ornstein-Uhlenbeck", true, 0.09162840758277);
+               "Ornstein-Uhlenbeck", true, 0.09162840758277);*/
 
     testSingle(boost::shared_ptr<StochasticProcess1D>(
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0)),
                "square-root", false, -0.2488203640255);
-    testSingle(boost::shared_ptr<StochasticProcess1D>(
+    /*testSingle(boost::shared_ptr<StochasticProcess1D>(
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0)),
-               "square-root", true, -0.09560382006972);
+               "square-root", true, -0.09560382006972);*/
 
     QL_TEST_TEARDOWN
 }

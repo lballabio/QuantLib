@@ -46,6 +46,10 @@ namespace QuantLib {
         section 10.8.3
 
         \ingroup mcarlo
+
+        \bug this class does not work if either the drift or diffusion
+             term of the underlying stochastic process is
+             asset-dependent.
     */
     template <class GSG> // Gaussian Sequence Generator
     class BrownianBridge {

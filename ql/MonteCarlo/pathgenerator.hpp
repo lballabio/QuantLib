@@ -37,6 +37,10 @@ namespace QuantLib {
         \ingroup mcarlo
 
         \test the generated paths are checked against cached results
+
+        \bug the Brownian bridge does not work if either the drift or
+             diffusion term of the underlying stochastic process is
+             asset-dependent.
     */
     template <class GSG>
     class PathGenerator {
