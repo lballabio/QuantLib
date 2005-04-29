@@ -20,6 +20,7 @@
 #include <ql/MonteCarlo/montecarlomodel.hpp>
 #include <ql/Pricers/mchimalaya.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Processes/stochasticprocessarray.hpp>
 
 namespace QuantLib {
 
@@ -130,6 +131,8 @@ namespace QuantLib {
                                                             riskFreeRate,
                                                             volatilities[i]));
         }
+        boost::shared_ptr<GenericStochasticProcess> process(
+                           new StochasticProcessArray(processes,correlation));
 
         TimeGrid grid(times.begin(), times.end());
         PseudoRandom::rsg_type rsg =
@@ -138,8 +141,8 @@ namespace QuantLib {
         bool brownianBridge = false;
 
         typedef MultiAsset<PseudoRandom>::path_generator_type generator;
-        boost::shared_ptr<generator> pathGenerator(new
-            generator(processes, correlation, grid, rsg, brownianBridge));
+        boost::shared_ptr<generator> pathGenerator(
+                           new generator(process, grid, rsg, brownianBridge));
 
         // initialize the path pricer
         DiscountFactor discount = riskFreeRate->discount(times.back());

@@ -22,10 +22,11 @@
     \brief Generates a multi path from a random-array generator
 */
 
-#ifndef quantlib_montecarlo_multi_path_generator_h
-#define quantlib_montecarlo_multi_path_generator_h
+#ifndef quantlib_multi_path_generator_hpp
+#define quantlib_multi_path_generator_hpp
 
 #include <ql/stochasticprocess.hpp>
+#include <ql/Processes/stochasticprocessarray.hpp>
 #include <ql/MonteCarlo/multipath.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 #include <ql/Math/pseudosqrt.hpp>
@@ -41,8 +42,6 @@ namespace QuantLib {
         };
         \endcode
 
-        \todo why store correlation matrix rather than covariance?
-
         \ingroup mcarlo
 
         \test the generated paths are checked against cached results
@@ -52,19 +51,27 @@ namespace QuantLib {
       public:
         typedef Sample<MultiPath> sample_type;
         MultiPathGenerator(
-                   const std::vector<boost::shared_ptr<StochasticProcess1D> >&
-                                                               diffusionProcs,
-                   const Matrix& correlation,
+                   const boost::shared_ptr<GenericStochasticProcess>& process,
                    const TimeGrid& timeGrid,
                    GSG generator,
                    bool brownianBridge = false);
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the other constructor passing a
+                        StochasticProcessArray
+        */
+        MultiPathGenerator(
+                 const std::vector<boost::shared_ptr<StochasticProcess1D> >&
+                                                               diffusionProcs,
+                 const Matrix& correlation,
+                 const TimeGrid& timeGrid,
+                 GSG generator,
+                 bool brownianBridge = false);
+        #endif
         const sample_type& next() const;
         const sample_type& antithetic() const;
       private:
         bool brownianBridge_;
-        std::vector<boost::shared_ptr<StochasticProcess1D> > diffusionProcs_;
-        Size numAssets_;
-        Matrix sqrtCorrelation_;
+        boost::shared_ptr<GenericStochasticProcess> process_;
         GSG generator_;
         mutable sample_type next_;
     };
@@ -74,6 +81,26 @@ namespace QuantLib {
 
     template <class GSG>
     MultiPathGenerator<GSG>::MultiPathGenerator(
+                   const boost::shared_ptr<GenericStochasticProcess>& process,
+                   const TimeGrid& times,
+                   GSG generator,
+                   bool brownianBridge)
+    : brownianBridge_(brownianBridge), process_(process),
+        generator_(generator), next_(MultiPath(process->size(), times), 1.0) {
+
+        QL_REQUIRE(generator_.dimension() ==
+                   process->size()*(times.size()-1),
+                   "dimension (" << generator_.dimension()
+                   << ") is not equal to ("
+                   << process->size() << " * " << times.size()-1
+                   << ") the number of assets times the number of time steps");
+        QL_REQUIRE(times.size() > 1,
+                   "no times given");
+    }
+
+    #ifndef QL_DISABLE_DEPRECATED
+    template <class GSG>
+    MultiPathGenerator<GSG>::MultiPathGenerator(
                    const std::vector<boost::shared_ptr<StochasticProcess1D> >&
                                                                diffusionProcs,
                    const Matrix& correlation,
@@ -81,23 +108,22 @@ namespace QuantLib {
                    GSG generator,
                    bool brownianBridge)
     :   brownianBridge_(brownianBridge),
-        diffusionProcs_(diffusionProcs),
-        numAssets_(correlation.rows()),
-        sqrtCorrelation_(pseudoSqrt(correlation,SalvagingAlgorithm::Spectral)),
         generator_(generator),
         next_(MultiPath(correlation.rows(), times), 1.0) {
 
-        QL_REQUIRE(generator_.dimension() == numAssets_*(times.size()-1),
+        QL_REQUIRE(generator_.dimension() ==
+                   diffusionProcs.size()*(times.size()-1),
                    "dimension (" << generator_.dimension()
                    << ") is not equal to ("
-                   << numAssets_ << " * " << times.size()-1
+                   << diffusionProcs.size() << " * " << times.size()-1
                    << ") the number of assets times the number of time steps");
-        QL_REQUIRE(sqrtCorrelation_.columns() == numAssets_,
-                   "correlation is not a square matrix");
         QL_REQUIRE(times.size() > 1,
                    "no times given");
-    }
 
+        process_ = boost::shared_ptr<GenericStochasticProcess>(
+                     new StochasticProcessArray(diffusionProcs, correlation));
+    }
+    #endif
 
     template <class GSG>
     const typename MultiPathGenerator<GSG>::sample_type&
@@ -122,47 +148,43 @@ namespace QuantLib {
                 next_.value.diffusion()[i] =
                     stdDev_.value[i] - stdDev_.value[i-1];
             }
-            */
             return next_;
+            */
+
+            QL_FAIL("Brownian bridge not supported");
 
         } else {
+
             typedef typename GSG::sample_type sequence_type;
             const sequence_type& sequence_ = generator_.nextSequence();
 
-            Array asset(numAssets_);
-            Array temp(numAssets_);
+            Size n = process_->size();
+            Array asset = process_->initialValues();
+            Array temp(n);
             next_.weight = sequence_.weight;
-
-            for (Size j = 0; j < numAssets_; j++) {
-                asset[j] = diffusionProcs_[j]->x0();
-            }
 
             TimeGrid timeGrid = next_.value[0].timeGrid();
             Time t, dt;
             for (Size i = 0; i < next_.value[0].size(); i++) {
-                Size offset = i*numAssets_;
+                Size offset = i*n;
                 t = timeGrid[i+1];
                 dt = timeGrid.dt(i);
                 std::copy(sequence_.value.begin()+offset,
-                        sequence_.value.begin()+offset+numAssets_,
-                        temp.begin());
+                          sequence_.value.begin()+offset+n,
+                          temp.begin());
 
-                temp = sqrtCorrelation_ * temp;
-
-                for (Size j=0; j<numAssets_; j++) {
-                    next_.value[j].drift()[i] =
-                        dt * diffusionProcs_[j]->drift(t, asset[j]);
-                    next_.value[j].diffusion()[i] =
-                        temp[j] *
-                        std::sqrt(diffusionProcs_[j]->variance(t,
-                                                               asset[j],
-                                                               dt));
-                    Real change = next_.value[j].drift()[i] +
-                                  next_.value[j].diffusion()[i];
-                    asset[j] = diffusionProcs_[j]->evolve(change, asset[j]);
+                Array drift = process_->drift(t, asset);
+                Array diffusion = process_->stdDeviation(t, asset, dt)*temp;
+                Array change(n);
+                for (Size j=0; j<n; j++) {
+                    // not yet fully satisfactory---we should use expectation
+                    next_.value[j].drift()[i] = dt * drift[j];
+                    // this is ok
+                    next_.value[j].diffusion()[i] = diffusion[j];
+                    change[j] = next_.value[j][i];
                 }
+                asset = process_->evolve(change, asset);
             }
-
             return next_;
         }
     }

@@ -136,10 +136,11 @@ namespace QuantLib {
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
+        boost::shared_ptr<GenericStochasticProcess> process(
+                    new StochasticProcessArray(arguments_.stochasticProcesses,
+                                               arguments_.correlation));
         return boost::shared_ptr<path_generator_type>(
-                       new path_generator_type(arguments_.stochasticProcesses,
-                                               arguments_.correlation,
-                                               grid, gen, brownianBridge_));
+                new path_generator_type(process, grid, gen, brownianBridge_));
     }
 
     template <class RNG, class S>

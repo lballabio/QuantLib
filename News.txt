@@ -9,4 +9,9 @@ Changes since release 0.3.9:
 
 - Added Gaussian quadratures (thanks to Klaus Spanderen.)
 
+- Added generic multi-dimensional stochastic process
+
+- Added stochastic process array (thanks to Klaus Spanderen.)
+
+- Multi-path generator now takes a generic stochastic process
 

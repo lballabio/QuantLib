@@ -29,7 +29,7 @@ namespace QuantLib {
                         Time end, Size steps, Real)
     : EqualProbabilitiesBinomialTree<JarrowRudd>(process, end, steps) {
         // drift removed
-        up_ = std::sqrt(process->variance(0.0, x0_, dt_));
+        up_ = process->stdDeviation(0.0, x0_, dt_);
     }
 
 
@@ -38,7 +38,7 @@ namespace QuantLib {
                         Time end, Size steps, Real)
     : EqualJumpsBinomialTree<CoxRossRubinstein>(process, end, steps) {
 
-        dx_ = std::sqrt(process->variance(0.0, x0_, dt_));
+        dx_ = process->stdDeviation(0.0, x0_, dt_);
         pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
         pd_ = 1.0 - pu_;
 

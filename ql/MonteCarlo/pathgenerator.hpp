@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,8 +22,8 @@
     \brief Generates random paths using a sequence generator
 */
 
-#ifndef quantlib_montecarlo_path_generator_h
-#define quantlib_montecarlo_path_generator_h
+#ifndef quantlib_montecarlo_path_generator_hpp
+#define quantlib_montecarlo_path_generator_hpp
 
 #include <ql/stochasticprocess.hpp>
 #include <ql/MonteCarlo/brownianbridge.hpp>
@@ -117,6 +117,7 @@ namespace QuantLib {
 
             next_.weight = stdDev_.weight;
 
+            asset_ = diffProcess_->x0();
             Time t = timeGrid_[1];
             Time dt= timeGrid_.dt(0);
             next_.value.drift()[0] = dt *
@@ -125,10 +126,10 @@ namespace QuantLib {
             for (Size i=1; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);
-                next_.value.drift()[i] = dt *
-                    diffProcess_->drift(t, asset_);
+                next_.value.drift()[i] = dt * diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] =
                     stdDev_.value[i] - stdDev_.value[i-1];
+                asset_ = diffProcess_->evolve(next_.value[i], asset_);
             }
             return next_;
         } else {
@@ -146,7 +147,7 @@ namespace QuantLib {
                 next_.value.drift()[i] = dt *
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = sequence_.value[i] *
-                    std::sqrt(diffProcess_->variance(t, asset_, dt));
+                    diffProcess_->stdDeviation(t, asset_, dt);
                 asset_ = diffProcess_->evolve(next_.value[i], asset_);
             }
 
@@ -193,7 +194,7 @@ namespace QuantLib {
                 next_.value.drift()[i] = dt *
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = - sequence_.value[i] *
-                    std::sqrt(diffProcess_->variance(t, asset_, dt));
+                    diffProcess_->stdDeviation(t, asset_, dt);
                 asset_ = diffProcess_->evolve(next_.value[i], asset_);
             }
 

@@ -19,6 +19,7 @@
 
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Processes/stochasticprocessarray.hpp>
 #include <ql/grid.hpp>
 #include <ql/Math/svd.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
@@ -424,18 +425,20 @@ namespace QuantLib {
         }
 
         // create the MultiPathGenerator
+        boost::shared_ptr<GenericStochasticProcess> multiProcess(
+                    new StochasticProcessArray(arguments_.stochasticProcesses,
+                                               arguments_.correlation));
+
         boost::shared_ptr<MultiPathGenerator<PseudoRandom::rsg_type> >
             multipathGenerator(
                 new MultiPathGenerator<PseudoRandom::rsg_type> (
-                                            arguments_.stochasticProcesses,
-                                            arguments_.correlation, grid,
+                                            multiProcess, grid,
                                             gen, brownianBridge));
 
         boost::shared_ptr<MultiPathGenerator<LowDiscrepancy::rsg_type> >
             quasiMultipathGenerator(
             new MultiPathGenerator<LowDiscrepancy::rsg_type> (
-                                            arguments_.stochasticProcesses,
-                                            arguments_.correlation, grid,
+                                            multiProcess, grid,
                                             quasiGen, brownianBridge));
 
         MultiPathGenerator<LowDiscrepancy::rsg_type>
