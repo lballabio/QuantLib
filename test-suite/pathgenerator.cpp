@@ -81,8 +81,8 @@ void testMultiple(
     sample_type sample = generator.next();
     for (Size j=0; j<assets; j++) {
         Real calculated = sample.value[j][sample.value.pathSize()-1];
-        if (std::fabs(calculated-expected[j]) > 1.0e-12) {
-            BOOST_FAIL("using " << tag << " process "
+        if (std::fabs(calculated-expected[j]) > 1.0e-10) {
+            BOOST_ERROR("using " << tag << " process "
                        << "(" << io::ordinal(j+1) << " asset:)\n"
                        << std::setprecision(13)
                        << "    calculated: " << calculated << "\n"
@@ -169,16 +169,17 @@ void PathGeneratorTest::testMultiPathGenerator() {
         0.04057136028457 };
     testMultiple(processes, correlation, "Black-Scholes", result1);
 
-    /* This gives 0---it should be investigated.
     processes[0] = boost::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
     processes[1] = boost::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
     processes[2] = boost::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
-    Real result2[] = { 0.0, 0.0, 0.0 };
+    Real result2[] = {
+        24.04649099339,
+        43.72875185354,
+        6.44889193814 };
     testMultiple(processes, correlation, "geometric Brownian", result2);
-    */
 
     processes[0] = boost::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20));
@@ -187,9 +188,9 @@ void PathGeneratorTest::testMultiPathGenerator() {
     processes[2] = boost::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20));
     Real result3[] = {
-        0.1290669412913,
-        0.1928521310325,
-        0.03094027149707 };
+        0.1145529276342,
+        0.1609358646784,
+        0.03128651475229 };
     testMultiple(processes, correlation, "Ornstein-Uhlenbeck", result3);
 
     processes[0] = boost::shared_ptr<StochasticProcess1D>(
@@ -199,9 +200,9 @@ void PathGeneratorTest::testMultiPathGenerator() {
     processes[2] = boost::shared_ptr<StochasticProcess1D>(
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0));
     Real result4[] = {
-        0.0608875770716,
-        0.127518476995,
-        -0.02974031646139 };
+        -0.07385744304226,
+        0.04484225895393,
+        -0.2484464926277 };
     testMultiple(processes, correlation, "square-root", result4);
 
     QL_TEST_TEARDOWN

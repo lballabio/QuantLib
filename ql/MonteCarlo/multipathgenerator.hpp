@@ -157,9 +157,9 @@ namespace QuantLib {
                         std::sqrt(diffusionProcs_[j]->variance(t,
                                                                asset[j],
                                                                dt));
-                    asset[j] *=
-                        std::exp(next_.value[j].drift()[i] +
-                                 next_.value[j].diffusion()[i]);
+                    Real change = next_.value[j].drift()[i] +
+                                  next_.value[j].diffusion()[i];
+                    asset[j] = diffusionProcs_[j]->evolve(change, asset[j]);
                 }
             }
 
