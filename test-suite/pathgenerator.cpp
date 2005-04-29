@@ -50,13 +50,13 @@ void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
         generator.next();
     sample_type sample = generator.next();
     Real calculated = sample.value[sample.value.size()-1];
-    if (std::fabs(calculated-expected) > 1.0e-12) {
-        BOOST_FAIL("using " << tag << " process "
-                   << (brownianBridge ? "with " : "without ")
-                   << "brownian bridge:\n"
-                   << std::setprecision(13)
-                   << "    calculated: " << calculated << "\n"
-                   << "    expected:   " << expected);
+    if (std::fabs(calculated-expected) > 1.0e-10) {
+        BOOST_ERROR("using " << tag << " process "
+                    << (brownianBridge ? "with " : "without ")
+                    << "brownian bridge:\n"
+                    << std::setprecision(13)
+                    << "    calculated: " << calculated << "\n"
+                    << "    expected:   " << expected);
     }
 }
 
@@ -106,10 +106,10 @@ void PathGeneratorTest::testPathGenerator() {
     Handle<BlackVolTermStructure> sigma(flatVol(0.20, Actual360()));
     testSingle(boost::shared_ptr<StochasticProcess1D>(
                                        new BlackScholesProcess(x0,q,r,sigma)),
-               "Black-Scholes", false, -0.05907199907827);
+               "Black-Scholes", false, -0.05907199908012);
     testSingle(boost::shared_ptr<StochasticProcess1D>(
                                        new BlackScholesProcess(x0,q,r,sigma)),
-               "Black-Scholes", true, 0.0465700264949);
+               "Black-Scholes", true, 0.04657002649305);
 
     testSingle(boost::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20)),
@@ -166,9 +166,9 @@ void PathGeneratorTest::testMultiPathGenerator() {
     process = boost::shared_ptr<GenericStochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     Real result1[] = {
-        0.1428138446652,
-        0.2092744336113,
-        0.04057136028457 };
+        0.1428138446634,
+        0.2092744336095,
+        0.04057136028272 };
     testMultiple(process, "Black-Scholes", result1);
 
     processes[0] = boost::shared_ptr<StochasticProcess1D>(

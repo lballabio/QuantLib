@@ -37,10 +37,6 @@ namespace QuantLib {
         \ingroup mcarlo
 
         \test the generated paths are checked against cached results
-
-        \bug the Brownian bridge does not work if either the drift or
-             diffusion term of the underlying stochastic process is
-             asset-dependent.
     */
     template <class GSG>
     class PathGenerator {
@@ -118,13 +114,13 @@ namespace QuantLib {
             next_.weight = stdDev_.weight;
 
             asset_ = diffProcess_->x0();
-            Time t = timeGrid_[1];
+            Time t = timeGrid_[0];
             Time dt= timeGrid_.dt(0);
             next_.value.drift()[0] = dt *
                 diffProcess_->drift(t, asset_);
             next_.value.diffusion()[0] = stdDev_.value[0];
             for (Size i=1; i<next_.value.size(); i++) {
-                t = timeGrid_[i+1];
+                t = timeGrid_[i];
                 dt = timeGrid_.dt(i);
                 next_.value.drift()[i] = dt * diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] =
@@ -142,10 +138,9 @@ namespace QuantLib {
             asset_ = diffProcess_->x0();
             Time t,  dt;
             for (Size i=0; i<next_.value.size(); i++) {
-                t = timeGrid_[i+1];
+                t = timeGrid_[i];
                 dt = timeGrid_.dt(i);
-                next_.value.drift()[i] = dt *
-                    diffProcess_->drift(t, asset_);
+                next_.value.drift()[i] = dt * diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = sequence_.value[i] *
                     diffProcess_->stdDeviation(t, asset_, dt);
                 asset_ = diffProcess_->evolve(next_.value[i], asset_);
@@ -165,18 +160,19 @@ namespace QuantLib {
 
             next_.weight = stdDev_.weight;
 
-            Time t = timeGrid_[1];
+            asset_ = diffProcess_->x0();
+            Time t = timeGrid_[0];
             Time dt= timeGrid_.dt(0);
             next_.value.drift()[0] = dt *
                 diffProcess_->drift(t, asset_);
             next_.value.diffusion()[0] = - stdDev_.value[0];
             for (Size i=1; i<next_.value.size(); i++) {
-                t = timeGrid_[i+1];
+                t = timeGrid_[i];
                 dt = timeGrid_.dt(i);
-                next_.value.drift()[i] = dt *
-                    diffProcess_->drift(t, asset_);
+                next_.value.drift()[i] = dt * diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] =
                     - stdDev_.value[i] + stdDev_.value[i-1];
+                asset_ = diffProcess_->evolve(next_.value[i], asset_);
             }
             return next_;
         } else {
@@ -189,7 +185,7 @@ namespace QuantLib {
             asset_ = diffProcess_->x0();
             Time t, dt;
             for (Size i=0; i<next_.value.size(); i++) {
-                t = timeGrid_[i+1];
+                t = timeGrid_[i];
                 dt = timeGrid_.dt(i);
                 next_.value.drift()[i] = dt *
                     diffProcess_->drift(t, asset_);

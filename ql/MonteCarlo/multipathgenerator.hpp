@@ -135,13 +135,13 @@ namespace QuantLib {
 
             next_.weight = stdDev_.weight;
 
-            Time t = timeGrid_[1];
+            Time t = timeGrid_[0];
             Time dt= timeGrid_.dt(0);
             next_.value.drift()[0] = dt *
                 diffProcess_->drift(t, asset_);
             next_.value.diffusion()[0] = stdDev_.value[0];
             for (Size i=1; i<next_.value.size(); i++) {
-                t = timeGrid_[i+1];
+                t = timeGrid_[i];
                 dt = timeGrid_.dt(i);
                 next_.value.drift()[i] = dt *
                     diffProcess_->drift(t, asset_);
@@ -167,7 +167,7 @@ namespace QuantLib {
             Time t, dt;
             for (Size i = 0; i < next_.value[0].size(); i++) {
                 Size offset = i*n;
-                t = timeGrid[i+1];
+                t = timeGrid[i];
                 dt = timeGrid.dt(i);
                 std::copy(sequence_.value.begin()+offset,
                           sequence_.value.begin()+offset+n,
