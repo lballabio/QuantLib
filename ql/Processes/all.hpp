@@ -23,10 +23,12 @@
 #include <ql/qldefines.hpp>
 
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Processes/eulerdiscretization.hpp>
 #include <ql/Processes/geometricbrownianprocess.hpp>
 #include <ql/Processes/merton76process.hpp>
 #include <ql/Processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/Processes/squarerootprocess.hpp>
+#include <ql/Processes/stochasticprocessarray.hpp>
 
 
 #endif

@@ -9,7 +9,8 @@ include_HEADERS = \
 	geometricbrownianprocess.hpp \
 	merton76process.hpp \
 	ornsteinuhlenbeckprocess.hpp \
-	squarerootprocess.hpp
+	squarerootprocess.hpp \
+	stochasticprocessarray.hpp
 
 EXTRA_DIST = makefile.mak
 
@@ -19,6 +20,7 @@ libProcesses_la_SOURCES = \
 	geometricbrownianprocess.cpp \
 	merton76process.cpp \
 	ornsteinuhlenbeckprocess.cpp \
-	squarerootprocess.cpp
+	squarerootprocess.cpp \
+	stochasticprocessarray.cpp
 
 noinst_LTLIBRARIES = libProcesses.la
