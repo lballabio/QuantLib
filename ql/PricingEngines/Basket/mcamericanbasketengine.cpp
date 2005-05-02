@@ -149,7 +149,7 @@ namespace QuantLib {
         Real MyPolynomial::calculate(const std::vector<Real>& x) const {
             Real result = 0.0;
             for (Size j = 0; j<basisFunctions_.size(); j++) {
-                result =+ (basisFunctions_[j])->calculate(x);
+                result += (basisFunctions_[j])->calculate(x);
             }
             return factor_*result;
         }

@@ -18,7 +18,7 @@
 
 /*! \page history Version history
 
-    <strong>Release 0.3.9 - April 2005</strong>
+    <strong>Release 0.3.9 - May 2005</strong>
 
     GLOBAL FEATURES
     - QL_SQRT, QL_MIN etc. deprecated in favor of std::sqrt,
@@ -85,7 +85,7 @@
     - Added backward- and forward-flat interpolations.
 
 
-    <strong>Release 0.3.8 - December 2004</strong>
+    <strong>Release 0.3.8 - December 22nd, 2004</strong>
 
     REQUIRED PACKAGES
     - Boost version 1.31.0 or later is now required.
