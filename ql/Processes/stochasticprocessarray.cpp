@@ -30,9 +30,12 @@ namespace QuantLib {
     : processes_(processes),
       sqrtCorrelation_(pseudoSqrt(correlation,SalvagingAlgorithm::Spectral)) {
 
+        QL_REQUIRE(!processes.empty(), "no processes given");
         QL_REQUIRE(correlation.rows() == processes.size(),
                    "mismatch between number of processes "
                    "and size of correlation matrix");
+        for (Size i=0; i<processes_.size(); i++)
+            registerWith(processes_[i]);
     }
 
     Size StochasticProcessArray::size() const {
@@ -101,6 +104,19 @@ namespace QuantLib {
         for (Size i=0; i<size(); ++i)
             tmp[i] = processes_[i]->evolve(change[i],currentValue[i]);
         return tmp;
+    }
+
+    Time StochasticProcessArray::time(const Date& d) const {
+        return processes_[0]->time(d);
+    }
+
+    const boost::shared_ptr<StochasticProcess1D>&
+    StochasticProcessArray::process(Size i) const {
+        return processes_[i];
+    }
+
+    Disposable<Matrix> StochasticProcessArray::correlation() const {
+        return sqrtCorrelation_ * transpose(sqrtCorrelation_);
     }
 
 }

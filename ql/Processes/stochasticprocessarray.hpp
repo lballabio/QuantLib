@@ -47,6 +47,10 @@ namespace QuantLib {
         Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const;
         Disposable<Array> evolve(const Array& change,
                                  const Array& currentValue) const;
+        Time time(const Date&) const;
+        // inspectors
+        const boost::shared_ptr<StochasticProcess1D>& process(Size i) const;
+        Disposable<Matrix> correlation() const;
       protected:
         std::vector<boost::shared_ptr<StochasticProcess1D> > processes_;
         Matrix sqrtCorrelation_;
