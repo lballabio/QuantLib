@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2005 Gary Kennedy
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,8 +30,10 @@ class StatisticsTest {
   public:
     static void testStatistics();
     static void testSequenceStatistics();
+    static void testConvergenceStatistics();
     static boost::unit_test_framework::test_suite* suite();
 };
 
 
 #endif
+

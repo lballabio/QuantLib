@@ -15,6 +15,7 @@ include_HEADERS = \
 	chisquaredistribution.hpp \
 	choleskydecomposition.hpp \
 	comparison.hpp \
+	convergencestatistics.hpp \
 	cubicspline.hpp \
 	discrepancystatistics.hpp \
 	errorfunction.hpp \

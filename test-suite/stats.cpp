@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2005 Gary Kennedy
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,6 +25,7 @@
 #include <ql/Math/incrementalstatistics.hpp>
 #include <ql/Math/gaussianstatistics.hpp>
 #include <ql/Math/sequencestatistics.hpp>
+#include <ql/Math/convergencestatistics.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -243,10 +245,91 @@ void StatisticsTest::testSequenceStatistics() {
 }
 
 
+QL_BEGIN_TEST_LOCALS(StatisticsTest)
+
+template <class S>
+void checkConvergence(const std::string& name) {
+
+    ConvergenceStatistics<S> stats;
+
+    stats.add(1.0);
+    stats.add(2.0);
+    stats.add(3.0);
+    stats.add(4.0);
+    stats.add(5.0);
+    stats.add(6.0);
+    stats.add(7.0);
+    stats.add(8.0);
+
+    const Size expectedSize1 = 3;
+    Size calculatedSize = stats.convergenceTable().size();
+    if (calculatedSize != expectedSize1)
+        BOOST_FAIL("ConvergenceStatistics<" << name << ">: "
+                   << "\nwrong convergence-table size"
+                   << "\n    calculated: " << calculatedSize
+                   << "\n    expected:   " << expectedSize1);
+
+    const Real expectedValue1 = 4.0;
+    const Real tolerance = 1.0e-9;
+    Real calculatedValue = stats.convergenceTable().back().second;
+    if (std::fabs(calculatedValue-expectedValue1) > tolerance)
+        BOOST_FAIL("wrong last value in convergence table"
+                   << "\n    calculated: " << calculatedValue
+                   << "\n    expected:   " << expectedValue1);
+
+    const Size expectedSampleSize1 = 7;
+    Size calculatedSamples = stats.convergenceTable().back().first;
+    if (calculatedSamples != expectedSampleSize1)
+        BOOST_FAIL("wrong number of samples in convergence table"
+                   << "\n    calculated: " << calculatedSamples
+                   << "\n    expected:   " << expectedSampleSize1);
+
+    stats.reset();
+    stats.add(1.0);
+    stats.add(2.0);
+    stats.add(3.0);
+    stats.add(4.0);
+
+    const Size expectedSize2 = 2;
+    calculatedSize = stats.convergenceTable().size();
+    if (calculatedSize != expectedSize2)
+        BOOST_FAIL("wrong convergence-table size"
+                   << "\n    calculated: " << calculatedSize
+                   << "\n    expected:   " << expectedSize2);
+
+    const Real expectedValue2 = 2.0;
+    calculatedValue = stats.convergenceTable().back().second;
+    if (std::fabs(calculatedValue-expectedValue2) > tolerance)
+        BOOST_FAIL("wrong last value in convergence table"
+                   << "\n    calculated: " << calculatedValue
+                   << "\n    expected:   " << expectedValue2);
+
+    const Size expectedSampleSize2 = 3;
+    calculatedSamples = stats.convergenceTable().back().first;
+    if (calculatedSamples != expectedSampleSize2)
+        BOOST_FAIL("wrong number of samples in convergence table"
+                   << "\n    calculated: " << calculatedSamples
+                   << "\n    expected:   " << expectedSampleSize2);
+}
+
+QL_END_TEST_LOCALS(StatisticsTest)
+
+void StatisticsTest::testConvergenceStatistics() {
+
+    BOOST_MESSAGE("Testing convergence statistics...");
+
+    //checkConvergence<IncrementalGaussianStatistics>(
+    //                          std::string("IncrementalGaussianStatistics"));
+    checkConvergence<Statistics>(std::string("Statistics"));
+}
+
+
+
 test_suite* StatisticsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Statistics tests");
     suite->add(BOOST_TEST_CASE(&StatisticsTest::testStatistics));
     suite->add(BOOST_TEST_CASE(&StatisticsTest::testSequenceStatistics));
+    suite->add(BOOST_TEST_CASE(&StatisticsTest::testConvergenceStatistics));
     return suite;
 }
 
