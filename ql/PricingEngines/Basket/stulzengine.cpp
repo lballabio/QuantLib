@@ -20,6 +20,7 @@
 
 #include <ql/PricingEngines/Basket/stulzengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Processes/stochasticprocessarray.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/bivariatenormaldistribution.hpp>
 #include <ql/Math/normaldistribution.hpp>
@@ -101,15 +102,19 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        QL_REQUIRE(arguments_.stochasticProcesses.size() == 2,
+        QL_REQUIRE(arguments_.stochasticProcess->size() == 2,
                    "not a basket of two stocks");
+        boost::shared_ptr<StochasticProcessArray> processes =
+            boost::dynamic_pointer_cast<StochasticProcessArray>(
+                                           arguments_.stochasticProcess);
+        QL_REQUIRE(processes, "Stochastic-process array required");
         boost::shared_ptr<BlackScholesProcess> process1 =
             boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                           arguments_.stochasticProcesses[0]);
+                                                       processes->process(0));
         QL_REQUIRE(process1, "Black-Scholes processes required");
         boost::shared_ptr<BlackScholesProcess> process2 =
             boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                           arguments_.stochasticProcesses[1]);
+                                                       processes->process(1));
         QL_REQUIRE(process2, "Black-Scholes processes required");
 
         boost::shared_ptr<EuropeanExercise> exercise =
@@ -121,7 +126,6 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-plain payoff given");
 
 
-
         Real strike = payoff->strike();
 
         Real variance1 = process1->blackVolatility()->blackVariance(
@@ -129,7 +133,7 @@ namespace QuantLib {
         Real variance2 = process2->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), strike);
 
-        Real rho = arguments_.correlation[1][0];
+        Real rho = processes->correlation()[1][0];
 
         DiscountFactor riskFreeDiscount =
             process1->riskFreeRate()->discount(exercise->lastDate());

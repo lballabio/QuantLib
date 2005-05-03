@@ -35,6 +35,14 @@ namespace QuantLib {
     class MultiAssetOption : public Option {
       public:
         MultiAssetOption(
+               const boost::shared_ptr<GenericStochasticProcess>&,
+               const boost::shared_ptr<Payoff>&,
+               const boost::shared_ptr<Exercise>&,
+               const boost::shared_ptr<PricingEngine>& engine =
+                                           boost::shared_ptr<PricingEngine>());
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the other constructor */
+        MultiAssetOption(
                const std::vector<boost::shared_ptr<StochasticProcess1D> >&
                                                                    stochProcs,
                const boost::shared_ptr<Payoff>& payoff,
@@ -42,6 +50,7 @@ namespace QuantLib {
                const Matrix& correlation,
                const boost::shared_ptr<PricingEngine>& engine =
                                            boost::shared_ptr<PricingEngine>());
+        #endif
         //! \name Instrument interface
         //@{
         class arguments;
@@ -65,9 +74,7 @@ namespace QuantLib {
         mutable Real delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
         // arguments
-        std::vector<boost::shared_ptr<StochasticProcess1D> >
-            stochasticProcesses_;
-        Matrix correlation_;
+        boost::shared_ptr<GenericStochasticProcess> stochasticProcess_;
     };
 
     //! %Arguments for multi-asset option calculation
@@ -75,9 +82,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        std::vector<boost::shared_ptr<StochasticProcess1D> >
-            stochasticProcesses;
-        Matrix correlation;
+        boost::shared_ptr<GenericStochasticProcess> stochasticProcess;
     };
 
     //! %Results from multi-asset option calculation

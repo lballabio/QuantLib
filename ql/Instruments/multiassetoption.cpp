@@ -19,23 +19,34 @@
 */
 
 #include <ql/Instruments/multiassetoption.hpp>
+#include <ql/Processes/stochasticprocessarray.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
     MultiAssetOption::MultiAssetOption(
+        const boost::shared_ptr<GenericStochasticProcess>& process,
+        const boost::shared_ptr<Payoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise,
+        const boost::shared_ptr<PricingEngine>& engine)
+    : Option(payoff, exercise, engine), stochasticProcess_(process) {
+    }
+
+    #ifndef QL_DISABLE_DEPRECATED
+    MultiAssetOption::MultiAssetOption(
         const std::vector<boost::shared_ptr<StochasticProcess1D> >& processes,
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const Matrix& correlation,
         const boost::shared_ptr<PricingEngine>& engine)
-    : Option(payoff, exercise, engine),
-      stochasticProcesses_(processes), correlation_(correlation) {
+    : Option(payoff, exercise, engine) {
 
-        for (Size i=0; i<stochasticProcesses_.size(); i++)
-            registerWith(stochasticProcesses_[i]);
+        stochasticProcess_ = boost::shared_ptr<GenericStochasticProcess>(
+                           new StochasticProcessArray(processes,correlation));
+        registerWith(stochasticProcess_);
     }
+    #endif
 
     bool MultiAssetOption::isExpired() const {
         return exercise_->lastDate() < Settings::instance().evaluationDate();
@@ -88,19 +99,13 @@ namespace QuantLib {
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->payoff = payoff_;
-        arguments->stochasticProcesses = stochasticProcesses_;
-        arguments->correlation = correlation_;
+        arguments->stochasticProcess = stochasticProcess_;
         arguments->exercise = exercise_;
 
-        // take the times from the first process.
-        // it might be made more robust by checking that all processes
-        // return the same times, but what the hey...
         arguments->stoppingTimes.clear();
-        const boost::shared_ptr<StochasticProcess1D>& process =
-            stochasticProcesses_[0];
         for (Size i=0; i<exercise_->dates().size(); i++) {
             arguments->stoppingTimes.push_back(
-                                           process->time(exercise_->date(i)));
+                                stochasticProcess_->time(exercise_->date(i)));
         }
     }
 
@@ -135,16 +140,7 @@ namespace QuantLib {
         Option::arguments::validate();
         #endif
 
-        QL_REQUIRE(correlation.rows() == correlation.columns(),
-                   "correlation matrix is not square");
-        QL_REQUIRE(correlation.rows() == stochasticProcesses.size(),
-                   "the size of the correlation matrix does not match "
-                   "the number of underlyings");
-
-        for (Size i=0; i<stochasticProcesses.size(); i++) {
-            QL_REQUIRE(stochasticProcesses[i]->x0() > 0.0,
-                       "negative or zero underlying given");
-        }
+        QL_REQUIRE(stochasticProcess, "no process given");
     }
 
 }

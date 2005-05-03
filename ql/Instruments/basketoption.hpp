@@ -38,6 +38,15 @@ namespace QuantLib {
         enum BasketType { Min, Max };
         BasketOption(
                const BasketType basketType,
+               const boost::shared_ptr<GenericStochasticProcess>&,
+               const boost::shared_ptr<PlainVanillaPayoff>&,
+               const boost::shared_ptr<Exercise>&,
+               const boost::shared_ptr<PricingEngine>& engine =
+                                          boost::shared_ptr<PricingEngine>());
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the other constructor */
+        BasketOption(
+               const BasketType basketType,
                const std::vector<boost::shared_ptr<StochasticProcess1D> >&
                                                                   stochProcs,
                const boost::shared_ptr<PlainVanillaPayoff>& payoff,
@@ -45,7 +54,7 @@ namespace QuantLib {
                const Matrix& correlation,
                const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>());
-
+        #endif
         void setupArguments(Arguments*) const;
       private:
         BasketType basketType_;

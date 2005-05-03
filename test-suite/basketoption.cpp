@@ -27,6 +27,7 @@
 #include <ql/PricingEngines/Basket/mcbasketengine.hpp>
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Processes/stochasticprocessarray.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
@@ -272,8 +273,11 @@ void BasketOptionTest::testEuroTwoValues() {
             correlationMatrix[j][j] = 1.0;
         }
 
-        BasketOption basketOption(values[i].basketType, procs, payoff,
-                                  exercise, correlationMatrix, engine);
+        boost::shared_ptr<GenericStochasticProcess> process(
+                         new StochasticProcessArray(procs,correlationMatrix));
+
+        BasketOption basketOption(values[i].basketType, process,
+                                  payoff, exercise, engine);
 
         // analytic engine
         Real calculated = basketOption.NPV();
@@ -457,8 +461,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
             correlation[j][j] = 1.0;
         }
 
-
-
+        boost::shared_ptr<GenericStochasticProcess> process(
+                               new StochasticProcessArray(procs,correlation));
 
         // use a 3D sobol sequence...
         // Think long and hard before moving to more than 1 timestep....
@@ -467,8 +471,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
                                            8091, Null<Real>(),
                                            Null<Size>(), 42));
 
-        BasketOption euroBasketOption(values[i].basketType, procs, payoff,
-                                      exercise, correlation, mcQuasiEngine);
+        BasketOption euroBasketOption(values[i].basketType, process,
+                                      payoff, exercise, mcQuasiEngine);
 
         Real expected = values[i].euroValue;
         // std::cerr<<"\n starting euro calculation";
@@ -493,8 +497,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
             new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
 
-        BasketOption amBasketOption(values[i].basketType, procs, payoff,
-                                  amExercise, correlation, mcLSMCEngine);
+        BasketOption amBasketOption(values[i].basketType, process,
+                                    payoff, amExercise, mcLSMCEngine);
 
         expected = values[i].amValue;
         // std::cerr<<"\n  starting american ";
@@ -607,8 +611,11 @@ void BasketOptionTest::testTavellaValues() {
     correlation[2][1] = 0.3;
     correlation[1][2] = 0.3;
 
-    BasketOption basketOption(values[0].basketType, procs, payoff,
-                                exercise, correlation, mcLSMCEngine);
+    boost::shared_ptr<GenericStochasticProcess> process(
+                               new StochasticProcessArray(procs,correlation));
+
+    BasketOption basketOption(values[0].basketType, process,
+                              payoff, exercise, mcLSMCEngine);
 
     Real calculated = basketOption.NPV();
     Real expected = values[0].amValue;
@@ -703,6 +710,8 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     Matrix correlation(1, 1, 1.0);
 
+    boost::shared_ptr<GenericStochasticProcess> process(
+                               new StochasticProcessArray(procs,correlation));
 
     for (Size i=0; i<LENGTH(values); i++) {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
@@ -717,8 +726,8 @@ void BasketOptionTest::testOneDAmericanValues() {
         rRate ->setValue(values[i].r);
         qRate ->setValue(values[i].q);
 
-        BasketOption basketOption(BasketOption::Max, procs, payoff,
-                                    exercise, correlation, mcLSMCEngine);
+        BasketOption basketOption(BasketOption::Max, process,
+                                  payoff, exercise, mcLSMCEngine);
 
         Real calculated = basketOption.NPV();
         Real expected = values[i].result;

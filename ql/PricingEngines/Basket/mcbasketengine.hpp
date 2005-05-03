@@ -115,7 +115,7 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCBasketEngine<RNG,S>::timeGrid() const {
 
-        Time residualTime = this->arguments_.stochasticProcesses[0]->time(
+        Time residualTime = this->arguments_.stochasticProcess->time(
                                        this->arguments_.exercise->lastDate());
 
         return TimeGrid(residualTime, maxTimeStepsPerYear_);
@@ -130,17 +130,15 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        Size numAssets = arguments_.stochasticProcesses.size();
+        Size numAssets = arguments_.stochasticProcess->size();
 
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
-        boost::shared_ptr<GenericStochasticProcess> process(
-                    new StochasticProcessArray(arguments_.stochasticProcesses,
-                                               arguments_.correlation));
         return boost::shared_ptr<path_generator_type>(
-                new path_generator_type(process, grid, gen, brownianBridge_));
+                         new path_generator_type(arguments_.stochasticProcess,
+                                                 grid, gen, brownianBridge_));
     }
 
     template <class RNG, class S>
@@ -152,15 +150,15 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        Size numAssets = arguments_.stochasticProcesses.size();
-        Array underlying(numAssets, 0.0);
-        for (Size i = 0; i < numAssets; i++) {
-            underlying[i] = arguments_.stochasticProcesses[i]->x0();
-        }
+        Array underlying = arguments_.stochasticProcess->initialValues();
 
+        boost::shared_ptr<StochasticProcessArray> processes =
+            boost::dynamic_pointer_cast<StochasticProcessArray>(
+                                           arguments_.stochasticProcess);
+        QL_REQUIRE(processes, "stochastic-process array required");
         boost::shared_ptr<BlackScholesProcess> process =
             boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                           arguments_.stochasticProcesses[0]);
+                                                       processes->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 
         return boost::shared_ptr<
