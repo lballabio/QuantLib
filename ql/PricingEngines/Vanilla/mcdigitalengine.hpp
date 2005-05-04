@@ -66,7 +66,8 @@ namespace QuantLib {
         typedef typename MCVanillaEngine<RNG,S>::stats_type
             stats_type;
         // constructor
-        MCDigitalEngine(Size maxTimeStepsPerYear,
+        MCDigitalEngine(Size timeSteps,
+                        Size timeStepsPerYear,
                         bool brownianBridge,
                         bool antitheticVariate,
                         bool controlVariate,
@@ -76,8 +77,32 @@ namespace QuantLib {
                         BigNatural seed);
       protected:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
         boost::shared_ptr<path_pricer_type> pathPricer() const;
+    };
+
+    //! Monte Carlo digital engine factory
+    template <class RNG = PseudoRandom, class S = Statistics>
+    class MakeMCDigitalEngine {
+      public:
+        MakeMCDigitalEngine();
+        // named parameters
+        MakeMCDigitalEngine& withSteps(Size steps);
+        MakeMCDigitalEngine& withStepsPerYear(Size steps);
+        MakeMCDigitalEngine& withBrownianBridge(bool b = true);
+        MakeMCDigitalEngine& withSamples(Size samples);
+        MakeMCDigitalEngine& withTolerance(Real tolerance);
+        MakeMCDigitalEngine& withMaxSamples(Size samples);
+        MakeMCDigitalEngine& withSeed(BigNatural seed);
+        MakeMCDigitalEngine& withAntitheticVariate(bool b = true);
+        MakeMCDigitalEngine& withControlVariate(bool b = true);
+        // conversion to pricing engine
+        operator boost::shared_ptr<PricingEngine>() const;
+      private:
+        bool antithetic_, controlVariate_;
+        Size steps_, stepsPerYear_, samples_, maxSamples_;
+        Real tolerance_;
+        bool brownianBridge_;
+        BigNatural seed_;
     };
 
     class DigitalPathPricer : public PathPricer<Path> {
@@ -104,7 +129,8 @@ namespace QuantLib {
     // template definitions
 
     template<class RNG, class S>
-    MCDigitalEngine<RNG,S>::MCDigitalEngine(Size maxTimeStepsPerYear,
+    MCDigitalEngine<RNG,S>::MCDigitalEngine(Size timeSteps,
+                                            Size timeStepsPerYear,
                                             bool brownianBridge,
                                             bool antitheticVariate,
                                             bool controlVariate,
@@ -112,7 +138,8 @@ namespace QuantLib {
                                             Real requiredTolerance,
                                             Size maxSamples,
                                             BigNatural seed)
-    : MCVanillaEngine<RNG,S>(maxTimeStepsPerYear,
+    : MCVanillaEngine<RNG,S>(timeSteps,
+                             timeStepsPerYear,
                              brownianBridge,
                              antitheticVariate,
                              controlVariate,
@@ -158,15 +185,99 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline
-    TimeGrid MCDigitalEngine<RNG,S>::timeGrid() const {
+    inline MakeMCDigitalEngine<RNG,S>::MakeMCDigitalEngine()
+    : antithetic_(false), controlVariate_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
-        Time residualTime = this->arguments_.stochasticProcess->time(
-                                       this->arguments_.exercise->lastDate());
-        return TimeGrid(
-                  residualTime,
-                  Size(std::max<Real>(residualTime*this->maxTimeStepsPerYear_,
-                                      1.0)));
+    template <class RNG, class S>
+    inline MakeMCDigitalEngine<RNG,S>&
+    MakeMCDigitalEngine<RNG,S>::withSteps(Size steps) {
+        steps_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCDigitalEngine<RNG,S>&
+    MakeMCDigitalEngine<RNG,S>::withStepsPerYear(Size steps) {
+        stepsPerYear_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCDigitalEngine<RNG,S>&
+    MakeMCDigitalEngine<RNG,S>::withSamples(Size samples) {
+        QL_REQUIRE(tolerance_ == Null<Real>(),
+                   "tolerance already set");
+        samples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCDigitalEngine<RNG,S>&
+    MakeMCDigitalEngine<RNG,S>::withTolerance(Real tolerance) {
+        QL_REQUIRE(samples_ == Null<Size>(),
+                   "number of samples already set");
+        QL_REQUIRE(RNG::allowsErrorEstimate,
+                   "chosen random generator policy "
+                   "does not allow an error estimate");
+        tolerance_ = tolerance;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCDigitalEngine<RNG,S>&
+    MakeMCDigitalEngine<RNG,S>::withMaxSamples(Size samples) {
+        maxSamples_ = samples;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCDigitalEngine<RNG,S>&
+    MakeMCDigitalEngine<RNG,S>::withSeed(BigNatural seed) {
+        seed_ = seed;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCDigitalEngine<RNG,S>&
+    MakeMCDigitalEngine<RNG,S>::withBrownianBridge(bool brownianBridge) {
+        brownianBridge_ = brownianBridge;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCDigitalEngine<RNG,S>&
+    MakeMCDigitalEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCDigitalEngine<RNG,S>&
+    MakeMCDigitalEngine<RNG,S>::withControlVariate(bool b) {
+        controlVariate_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline
+    MakeMCDigitalEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
+                                                                      const {
+        QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
+                   "number of steps not given");
+        QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
+                   "number of steps overspecified");
+        return boost::shared_ptr<PricingEngine>(new
+            MCDigitalEngine<RNG,S>(steps_,
+                                   stepsPerYear_,
+                                   brownianBridge_,
+                                   antithetic_,
+                                   controlVariate_,
+                                   samples_, tolerance_,
+                                   maxSamples_,
+                                   seed_));
     }
 
 }

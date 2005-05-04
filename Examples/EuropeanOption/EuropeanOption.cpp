@@ -315,7 +315,7 @@ int main(int, char* [])
 
         boost::shared_ptr<PricingEngine> mcengine1;
         mcengine1 =
-            MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(timeSteps)
+            MakeMCEuropeanEngine<PseudoRandom>().withSteps(timeSteps)
                                                 .withTolerance(0.02)
                                                 .withSeed(mcSeed);
         option.setPricingEngine(mcengine1);
@@ -334,7 +334,7 @@ int main(int, char* [])
 
         boost::shared_ptr<PricingEngine> mcengine2;
         mcengine2 =
-            MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(timeSteps)
+            MakeMCEuropeanEngine<LowDiscrepancy>().withSteps(timeSteps)
                                                   .withSamples(nSamples);
         option.setPricingEngine(mcengine2);
 

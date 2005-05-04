@@ -119,12 +119,12 @@ makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
                 new FDEuropeanEngine(binomialSteps,samples));
         break;
       case PseudoMonteCarlo:
-        engine = MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(1)
+        engine = MakeMCEuropeanEngine<PseudoRandom>().withSteps(1)
                                                      .withSamples(samples)
                                                      .withSeed(42);
         break;
       case QuasiMonteCarlo:
-        engine = MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(1)
+        engine = MakeMCEuropeanEngine<LowDiscrepancy>().withSteps(1)
                                                        .withSamples(samples);
         break;
       default:

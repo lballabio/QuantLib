@@ -683,9 +683,7 @@ void DigitalOptionTest::testMCCashAtHit() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    Size maxTimeStepsPerYear = 90;
-    bool brownianBridge, antitheticVariate;
-    bool controlVariate = false;
+    Size timeStepsPerYear = 90;
     Size maxSamples = 1000000;
     BigNatural seed = 1;
 
@@ -709,15 +707,15 @@ void DigitalOptionTest::testMCCashAtHit() {
                                 Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
-        antitheticVariate = false;
-        brownianBridge = true;
         Size requiredSamples = Size(std::pow(2.0, 14)-1);
-        boost::shared_ptr<PricingEngine> mcldEngine(new
-            MCDigitalEngine<LowDiscrepancy>(maxTimeStepsPerYear,
-                                            brownianBridge,
-                                            antitheticVariate, controlVariate,
-                                            requiredSamples, Null<Real>(),
-                                            maxSamples, seed));
+        boost::shared_ptr<PricingEngine> mcldEngine;
+        mcldEngine =
+            MakeMCDigitalEngine<LowDiscrepancy>()
+            .withStepsPerYear(timeStepsPerYear)
+            .withBrownianBridge()
+            .withSamples(requiredSamples)
+            .withMaxSamples(maxSamples)
+            .withSeed(seed);
 
         VanillaOption opt(stochProcess, payoff, amExercise,
                           mcldEngine);

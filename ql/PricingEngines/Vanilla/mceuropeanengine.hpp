@@ -48,7 +48,8 @@ namespace QuantLib {
         typedef typename MCVanillaEngine<RNG,S>::stats_type
             stats_type;
         // constructor
-        MCEuropeanEngine(Size maxTimeStepPerYear,
+        MCEuropeanEngine(Size timeSteps,
+                         Size timeStepsPerYear,
                          bool brownianBridge,
                          bool antitheticVariate,
                          bool controlVariate,
@@ -57,16 +58,17 @@ namespace QuantLib {
                          Size maxSamples,
                          BigNatural seed);
       protected:
-        TimeGrid timeGrid() const;
         boost::shared_ptr<path_pricer_type> pathPricer() const;
     };
 
+    //! Monte Carlo European engine factory
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEuropeanEngine {
       public:
         MakeMCEuropeanEngine();
         // named parameters
-        MakeMCEuropeanEngine& withStepsPerYear(Size maxSteps);
+        MakeMCEuropeanEngine& withSteps(Size steps);
+        MakeMCEuropeanEngine& withStepsPerYear(Size steps);
         MakeMCEuropeanEngine& withBrownianBridge(bool b = true);
         MakeMCEuropeanEngine& withSamples(Size samples);
         MakeMCEuropeanEngine& withTolerance(Real tolerance);
@@ -78,7 +80,7 @@ namespace QuantLib {
         operator boost::shared_ptr<PricingEngine>() const;
       private:
         bool antithetic_, controlVariate_;
-        Size steps_, samples_, maxSamples_;
+        Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
         bool brownianBridge_;
         BigNatural seed_;
@@ -102,7 +104,8 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    MCEuropeanEngine<RNG,S>::MCEuropeanEngine(Size maxTimeStepPerYear,
+    MCEuropeanEngine<RNG,S>::MCEuropeanEngine(Size timeSteps,
+                                              Size timeStepsPerYear,
                                               bool brownianBridge,
                                               bool antitheticVariate,
                                               bool controlVariate,
@@ -110,7 +113,8 @@ namespace QuantLib {
                                               Real requiredTolerance,
                                               Size maxSamples,
                                               BigNatural seed)
-    : MCVanillaEngine<RNG,S>(maxTimeStepPerYear,
+    : MCVanillaEngine<RNG,S>(timeSteps,
+                             timeStepsPerYear,
                              brownianBridge,
                              antitheticVariate,
                              controlVariate,
@@ -145,67 +149,24 @@ namespace QuantLib {
     }
 
 
-    namespace {
-
-        // not appropriate for path-dependent and American options
-        class TimeGridCalculator : public AcyclicVisitor,
-                                   public Visitor<BlackVolTermStructure>,
-                                   public Visitor<BlackConstantVol>,
-                                   public Visitor<BlackVarianceCurve> {
-          public:
-            TimeGridCalculator(Time maturity, Size stepsPerYear)
-            : maturity_(maturity), stepsPerYear_(stepsPerYear) {}
-            Size size() { return result_; }
-            // generic case
-            void visit(BlackVolTermStructure&) {
-                result_ = Size(std::max<Real>(maturity_ * stepsPerYear_, 1.0));
-            }
-            // specializations
-            void visit(BlackConstantVol&) {
-                result_ = 1;
-            }
-            void visit(BlackVarianceCurve&) {
-                result_ = 1;
-            }
-          private:
-            Time maturity_;
-            Size stepsPerYear_;
-            Size result_;
-        };
-
-    }
-
-    template <class RNG, class S>
-    inline TimeGrid MCEuropeanEngine<RNG,S>::timeGrid() const {
-
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                          this->arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-
-        Date refDate = process->riskFreeRate()->referenceDate();
-        Date lastExerciseDate = this->arguments_.exercise->lastDate();
-
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        Time t = rfdc.yearFraction(refDate, lastExerciseDate);
-
-        TimeGridCalculator calc(t, this->maxTimeStepsPerYear_);
-        process->blackVolatility()->accept(calc);
-        return TimeGrid(t, calc.size());
-    }
-
-
-
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>::MakeMCEuropeanEngine()
     : antithetic_(false), controlVariate_(false),
-      steps_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
-    MakeMCEuropeanEngine<RNG,S>::withStepsPerYear(Size maxSteps) {
-        steps_ = maxSteps;
+    MakeMCEuropeanEngine<RNG,S>::withSteps(Size steps) {
+        steps_ = steps;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanEngine<RNG,S>&
+    MakeMCEuropeanEngine<RNG,S>::withStepsPerYear(Size steps) {
+        stepsPerYear_ = steps;
         return *this;
     }
 
@@ -269,10 +230,13 @@ namespace QuantLib {
     inline
     MakeMCEuropeanEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
                                                                       const {
-        QL_REQUIRE(steps_ != Null<Size>(),
-                   "max number of steps per year not given");
+        QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
+                   "number of steps not given");
+        QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
+                   "number of steps overspecified");
         return boost::shared_ptr<PricingEngine>(new
             MCEuropeanEngine<RNG,S>(steps_,
+                                    stepsPerYear_,
                                     brownianBridge_,
                                     antithetic_,
                                     controlVariate_,

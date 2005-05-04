@@ -53,7 +53,8 @@ namespace QuantLib {
         typedef typename McSimulation<SingleAsset<RNG>,S>::stats_type
             stats_type;
         // constructor
-        MCVanillaEngine(Size maxTimeStepsPerYear,
+        MCVanillaEngine(Size timeSteps,
+                        Size timeStepsPerYear,
                         bool brownianBridge,
                         bool antitheticVariate,
                         bool controlVariate,
@@ -62,10 +63,11 @@ namespace QuantLib {
                         Size maxSamples,
                         BigNatural seed);
         // McSimulation implementation
+        TimeGrid timeGrid() const;
         boost::shared_ptr<path_generator_type> pathGenerator() const;
         Real controlVariateValue() const;
         // data members
-        Size maxTimeStepsPerYear_;
+        Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
         bool brownianBridge_;
@@ -76,7 +78,8 @@ namespace QuantLib {
     // template definitions
 
     template<class RNG, class S>
-    inline MCVanillaEngine<RNG,S>::MCVanillaEngine(Size maxTimeStepsPerYear,
+    inline MCVanillaEngine<RNG,S>::MCVanillaEngine(Size timeSteps,
+                                                   Size timeStepsPerYear,
                                                    bool brownianBridge,
                                                    bool antitheticVariate,
                                                    bool controlVariate,
@@ -85,7 +88,7 @@ namespace QuantLib {
                                                    Size maxSamples,
                                                    BigNatural seed)
     : McSimulation<SingleAsset<RNG>,S>(antitheticVariate, controlVariate),
-      maxTimeStepsPerYear_(maxTimeStepsPerYear),
+      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {}
@@ -113,6 +116,20 @@ namespace QuantLib {
             return controlResults->value;
     }
 
+
+    template <class RNG, class S>
+    inline TimeGrid MCVanillaEngine<RNG,S>::timeGrid() const {
+        Date lastExerciseDate = this->arguments_.exercise->lastDate();
+        Time t = this->arguments_.stochasticProcess->time(lastExerciseDate);
+        if (this->timeSteps_ != Null<Size>()) {
+            return TimeGrid(t, this->timeSteps_);
+        } else if (this->timeStepsPerYear_ != Null<Size>()) {
+            Size steps = static_cast<Size>(this->timeStepsPerYear_*t);
+            return TimeGrid(t, std::max<Size>(steps, 1));
+        } else {
+            QL_FAIL("time steps not specified");
+        }
+    }
 
     template<class RNG, class S>
     inline
