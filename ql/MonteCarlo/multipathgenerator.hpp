@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2005 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,18 +51,16 @@ namespace QuantLib {
     class MultiPathGenerator {
       public:
         typedef Sample<MultiPath> sample_type;
-        MultiPathGenerator(
-                   const boost::shared_ptr<GenericStochasticProcess>& process,
-                   const TimeGrid& timeGrid,
-                   GSG generator,
-                   bool brownianBridge = false);
+        MultiPathGenerator(const boost::shared_ptr<GenericStochasticProcess>&,
+                           const TimeGrid&,
+                           GSG generator,
+                           bool brownianBridge = false);
         #ifndef QL_DISABLE_DEPRECATED
         /*! \deprecated use the other constructor passing a
                         StochasticProcessArray
         */
         MultiPathGenerator(
-                 const std::vector<boost::shared_ptr<StochasticProcess1D> >&
-                                                               diffusionProcs,
+                 const std::vector<boost::shared_ptr<StochasticProcess1D> >&,
                  const Matrix& correlation,
                  const TimeGrid& timeGrid,
                  GSG generator,
@@ -70,6 +69,7 @@ namespace QuantLib {
         const sample_type& next() const;
         const sample_type& antithetic() const;
       private:
+        const sample_type& next(bool antithetic) const;
         bool brownianBridge_;
         boost::shared_ptr<GenericStochasticProcess> process_;
         GSG generator_;
@@ -86,7 +86,7 @@ namespace QuantLib {
                    GSG generator,
                    bool brownianBridge)
     : brownianBridge_(brownianBridge), process_(process),
-        generator_(generator), next_(MultiPath(process->size(), times), 1.0) {
+      generator_(generator), next_(MultiPath(process->size(), times), 1.0) {
 
         QL_REQUIRE(generator_.dimension() ==
                    process->size()*(times.size()-1),
@@ -107,9 +107,9 @@ namespace QuantLib {
                    const TimeGrid& times,
                    GSG generator,
                    bool brownianBridge)
-    :   brownianBridge_(brownianBridge),
-        generator_(generator),
-        next_(MultiPath(correlation.rows(), times), 1.0) {
+    : brownianBridge_(brownianBridge),
+      generator_(generator),
+      next_(MultiPath(correlation.rows(), times), 1.0) {
 
         QL_REQUIRE(generator_.dimension() ==
                    diffusionProcs.size()*(times.size()-1),
@@ -126,8 +126,20 @@ namespace QuantLib {
     #endif
 
     template <class GSG>
-    const typename MultiPathGenerator<GSG>::sample_type&
+    inline const typename MultiPathGenerator<GSG>::sample_type&
     MultiPathGenerator<GSG>::next() const {
+        return next(false);
+    }
+
+    template <class GSG>
+    inline const typename MultiPathGenerator<GSG>::sample_type&
+    MultiPathGenerator<GSG>::antithetic() const {
+        return next(true);
+    }
+
+    template <class GSG>
+    const typename MultiPathGenerator<GSG>::sample_type&
+    MultiPathGenerator<GSG>::next(bool antithetic) const {
 
         if (brownianBridge_) {
             /*typedef typename BrownianBridge<GSG>::sample_type sequence_type;
@@ -156,7 +168,9 @@ namespace QuantLib {
         } else {
 
             typedef typename GSG::sample_type sequence_type;
-            const sequence_type& sequence_ = generator_.nextSequence();
+            const sequence_type& sequence_ =
+                antithetic ? generator_.lastSequence()
+                           : generator_.nextSequence();
 
             Size n = process_->size();
             Array asset = process_->initialValues();
@@ -174,7 +188,9 @@ namespace QuantLib {
                           temp.begin());
 
                 Array drift = process_->drift(t, asset);
-                Array diffusion = process_->stdDeviation(t, asset, dt)*temp;
+                Array diffusion =
+                    antithetic ? process_->stdDeviation(t, asset, dt)*(-temp)
+                               : process_->stdDeviation(t, asset, dt)*temp;
                 Array change(n);
                 for (Size j=0; j<n; j++) {
                     // not yet fully satisfactory---we should use expectation
@@ -187,17 +203,6 @@ namespace QuantLib {
             }
             return next_;
         }
-    }
-
-
-    template <class GSG>
-    inline const typename MultiPathGenerator<GSG>::sample_type&
-    MultiPathGenerator<GSG>::antithetic() const {
-
-        // brownian bridge?
-
-        return next();
-
     }
 
 }
