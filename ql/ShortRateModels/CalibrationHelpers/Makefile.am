@@ -4,12 +4,14 @@ includedir = $(prefix)/include/ql/ShortRateModels/CalibrationHelpers
 
 include_HEADERS = \
     caphelper.hpp \
+    hestonmodelhelper.hpp \
     swaptionhelper.hpp
 
 EXTRA_DIST=makefile.mak
 
 libCalibrationHelpers_la_SOURCES = \
     caphelper.cpp \
+    hestonmodelhelper.cpp \
     swaptionhelper.cpp
 
 noinst_LTLIBRARIES = libCalibrationHelpers.la

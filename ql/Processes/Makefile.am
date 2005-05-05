@@ -7,6 +7,7 @@ include_HEADERS = \
 	blackscholesprocess.hpp \
 	eulerdiscretization.hpp \
 	geometricbrownianprocess.hpp \
+	hestonprocess.hpp \
 	merton76process.hpp \
 	ornsteinuhlenbeckprocess.hpp \
 	squarerootprocess.hpp \
@@ -18,6 +19,7 @@ libProcesses_la_SOURCES = \
 	blackscholesprocess.cpp \
 	eulerdiscretization.cpp \
 	geometricbrownianprocess.cpp \
+	hestonprocess.cpp \
 	merton76process.cpp \
 	ornsteinuhlenbeckprocess.cpp \
 	squarerootprocess.cpp \

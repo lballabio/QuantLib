@@ -148,8 +148,6 @@ namespace QuantLib {
                                                  grid, gen, brownianBridge_));
     }
 
-
-
 }
 
 

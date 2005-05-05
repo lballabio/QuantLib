@@ -22,6 +22,7 @@ QL_TESTS = \
 	factorial.hpp factorial.cpp \
 	forwardoption.hpp forwardoption.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
+	hestonmodel.hpp hestonmodel.cpp \
 	instruments.hpp instruments.cpp \
 	integrals.hpp integrals.cpp \
 	interestrates.hpp interestrates.cpp \

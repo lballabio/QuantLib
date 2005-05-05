@@ -7,6 +7,7 @@ include_HEADERS = \
     analyticdigitalamericanengine.hpp \
     analyticdividendeuropeanengine.hpp \
     analyticeuropeanengine.hpp \
+    analytichestonengine.hpp \
     baroneadesiwhaleyengine.hpp \
     binomialengine.hpp \
     bjerksundstenslandengine.hpp \
@@ -27,6 +28,8 @@ include_HEADERS = \
     fdvanillaengine.hpp \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
+    mceuropeanhestonengine.hpp \
+    mchestonengine.hpp \
     mcvanillaengine.hpp
 
 EXTRA_DIST = makefile.mak
@@ -35,6 +38,7 @@ libVanillaEngines_la_SOURCES = \
     analyticdigitalamericanengine.cpp \
     analyticdividendeuropeanengine.cpp \
     analyticeuropeanengine.cpp \
+    analytichestonengine.cpp \
     baroneadesiwhaleyengine.cpp \
     bjerksundstenslandengine.cpp \
     discretizedvanillaoption.cpp \

@@ -19,3 +19,8 @@ Changes since release 0.3.9:
 
 - Convergence statistics added (thanks to Gary Kennedy.)
 
+- Added Heston stochastic-volatility model (thanks to Klaus Spanderen.)
+  - stochastic process
+  - analytic and Monte Carlo pricing engines
+  - parameter calibration
+
