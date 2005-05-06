@@ -168,7 +168,7 @@ namespace QuantLib {
                                           this->arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        TimeGrid grid = timeGrid();
+        TimeGrid grid = this->timeGrid();
         PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                             PseudoRandom::urng_type(76));
 

@@ -89,8 +89,8 @@ namespace QuantLib {
     template <class T, class U>
     void ConvergenceStatistics<T,U>::add(Real value, Real weight) {
         T::add(value,weight);
-        if (samples() == nextSampleSize_) {
-            table_.push_back(std::make_pair(samples(),mean()));
+        if (this->samples() == nextSampleSize_) {
+            table_.push_back(std::make_pair(this->samples(),this->mean()));
             nextSampleSize_ = samplingRule_.nextSamples(nextSampleSize_);
         }
     }
