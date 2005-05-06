@@ -19,6 +19,7 @@
 
 #include <ql/Processes/hestonprocess.hpp>
 #include <ql/Processes/eulerdiscretization.hpp>
+#include <ql/Math/pseudosqrt.hpp>
 
 namespace QuantLib {
 
@@ -60,11 +61,18 @@ namespace QuantLib {
     }
 
     Disposable<Matrix> HestonProcess::diffusion(Time t, const Array& x) const {
+        /* the correlation matrix is
+           |  1   rho |
+           | rho   1  |
+           whose square root (which is used here) is
+           |  1          0       |
+           | rho   sqrt(1-rho^2) |
+        */
         Matrix tmp(2,2);
         Real sigma1 = x[1] > 0 ? std::sqrt(x[1]) : 0.0;
         Real sigma2 = sigma_ * sigma1;
-        tmp[0][0] = sigma1;       tmp[0][1] = rho_*sigma1;
-        tmp[1][0] = rho_*sigma2;  tmp[1][1] = sigma2;
+        tmp[0][0] = sigma1;       tmp[0][1] = 0.0;
+        tmp[1][0] = rho_*sigma2;  tmp[1][1] = std::sqrt(1.0-rho_*rho_)*sigma2;
         return tmp;
     }
 

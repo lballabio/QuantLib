@@ -443,16 +443,16 @@ void HestonModelTest::testMcVsCached() {
     Real tolerance = 7.5e-4;
 
     if (std::fabs(calculated - expected) > 2.34*errorEstimate) {
-        BOOST_FAIL("Failed to reproduce cached price"
-                   << "\n    calculated: " << calculated
-                   << "\n    expected:   " << expected
-                   << " +/- " << errorEstimate);
+        BOOST_ERROR("Failed to reproduce cached price"
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << " +/- " << errorEstimate);
     }
 
     if (errorEstimate > tolerance) {
-        BOOST_FAIL("failed to reproduce error estimate"
-                   << "\n    calculated: " << errorEstimate
-                   << "\n    expected:   " << tolerance);
+        BOOST_ERROR("failed to reproduce error estimate"
+                    << "\n    calculated: " << errorEstimate
+                    << "\n    expected:   " << tolerance);
     }
 
     QL_TEST_TEARDOWN
@@ -461,7 +461,9 @@ void HestonModelTest::testMcVsCached() {
 
 void HestonModelTest::testEngines() {
 
-    BOOST_MESSAGE("Compare MCEuropeanHestonEngine with AnalyticHestonEngine");
+    BOOST_MESSAGE(
+       "Testing Monte Carlo Heston engine against analytic Heston engine...");
+
 
     QL_TEST_BEGIN
 
@@ -486,6 +488,10 @@ void HestonModelTest::testEngines() {
         for (Real kappa = 1.0; kappa < 8.0; kappa += 2.0) {
             for (Real sigma = 0.5; sigma < 7.0; sigma += 2.0) {
 
+                BOOST_MESSAGE("s0 = " << s0
+                              << ", kappa = " << kappa
+                              << ", sigma = " << sigma);
+
                 Handle<Quote> q(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
                 boost::shared_ptr<HestonProcess> process(new HestonProcess(
                     riskFreeTS, dividendTS, q, v0, kappa, theta, sigma, rho));
@@ -509,12 +515,18 @@ void HestonModelTest::testEngines() {
 
                 option.setPricingEngine(engine2);
                 Real expected = option.NPV();
+                Real tolerance = 7.5e-4;
 
                 if (std::fabs(calculated - expected) > 1.65*errorEstimate) {
-                    BOOST_FAIL("failed to compare engines"
-                               << "\n    analytic:    " << expected
-                               << "\n    Monte Carlo: " << calculated
-                               << " +/- " << errorEstimate);
+                    BOOST_ERROR("failed to match results from engines"
+                                << "\n    analytic:    " << expected
+                                << "\n    Monte Carlo: " << calculated
+                                << " +/- " << errorEstimate);
+                }
+                if (errorEstimate > 2.0*tolerance) {
+                    BOOST_ERROR("failed to reproduce error estimate"
+                                << "\n    calculated: " << errorEstimate
+                                << "\n    expected:   " << tolerance);
                 }
             }
         }
@@ -529,9 +541,8 @@ test_suite* HestonModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testDAXCalibration));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
-    // this doesn't work
-    // suite->add(BOOST_TEST_CASE(&HestonModelTest::testMcVsCached));
-    // this takes too long
+    suite->add(BOOST_TEST_CASE(&HestonModelTest::testMcVsCached));
+    // this passes (except for one case) but takes way too long
     // suite->add(BOOST_TEST_CASE(&HestonModelTest::testEngines));
     return suite;
 }

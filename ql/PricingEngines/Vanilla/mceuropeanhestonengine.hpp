@@ -33,10 +33,6 @@ namespace QuantLib {
 
         \test the correctness of the returned value is tested by
               reproducing results available in web/literature
-
-        \bug this engine was broken while adapting it to the new
-             multi-path generation (Luigi's fault.) It will have to be
-             fixed.
     */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCEuropeanHestonEngine : public MCHestonEngine<RNG,S> {
@@ -116,7 +112,7 @@ namespace QuantLib {
 
         boost::shared_ptr<HestonProcess> process =
             boost::dynamic_pointer_cast<HestonProcess>(
-                                                arguments_.stochasticProcess);
+                                          this->arguments_.stochasticProcess);
         QL_REQUIRE(process, "Heston process required");
 
         return boost::shared_ptr<
