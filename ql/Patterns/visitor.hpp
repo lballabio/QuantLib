@@ -40,6 +40,7 @@ namespace QuantLib {
     class Visitor {
       public:
         virtual void visit(T&) = 0;
+        virtual ~Visitor<T>() {};
     };
 
 }
