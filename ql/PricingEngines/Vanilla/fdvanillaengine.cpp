@@ -30,12 +30,15 @@ namespace QuantLib {
                       getResidualTime());
     }
 
-    void FDVanillaEngine::setGridLimits(Real center, Time t) const {
-        center_ = center;
+    Real FDVanillaEngine::centerGridValue() const {
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(
-                                                   vanillaArguments_->payoff);
-        Date exerciseDate = vanillaArguments_->exercise->lastDate();
+                                                           optionArguments_->payoff);
+        return payoff->strike();
+    }
+    void FDVanillaEngine::setGridLimits(Real center, Time t) const {
+        center_ = center;
+        Date exerciseDate = optionArguments_->exercise->lastDate();
 
         Size newGridPoints = safeGridPoints(gridPoints_, t);
         if (newGridPoints > grid_.size()) {
@@ -53,13 +56,14 @@ namespace QuantLib {
         sMax_ = center_*minMaxFactor;  // underlying grid max value
         // insure strike is included in the grid
         Real safetyZoneFactor = 1.1;
-        if(sMin_ > payoff->strike()/safetyZoneFactor){
-            sMin_ = payoff->strike()/safetyZoneFactor;
+        Real centerValue = centerGridValue();
+        if(sMin_ > centerValue/safetyZoneFactor){
+            sMin_ = centerValue/safetyZoneFactor;
             // enforce central placement of the underlying
             sMax_ = center_/(sMin_/center_);
         }
-        if(sMax_ < payoff->strike()*safetyZoneFactor){
-            sMax_ = payoff->strike()*safetyZoneFactor;
+        if(sMax_ < centerValue*safetyZoneFactor){
+            sMax_ = centerValue*safetyZoneFactor;
             // enforce central placement of the underlying
             sMin_ = center_/(sMax_/center_);
         }
@@ -75,7 +79,7 @@ namespace QuantLib {
 
     void FDVanillaEngine::initializeInitialCondition() const {
         boost::shared_ptr<Payoff> payoff =
-            boost::dynamic_pointer_cast<Payoff>(vanillaArguments_->payoff);
+            boost::dynamic_pointer_cast<Payoff>(optionArguments_->payoff);
         for(Size j = 0; j < grid_.size(); j++)
             intrinsicValues_[j] = (*payoff)(grid_[j]);
     }
@@ -98,7 +102,7 @@ namespace QuantLib {
     }
 
     Time FDVanillaEngine::getResidualTime() const {
-        return getYearFraction(vanillaArguments_->exercise->lastDate());
+        return getYearFraction(optionArguments_->exercise->lastDate());
     }
 
     Time FDVanillaEngine::getYearFraction(Date d) const {

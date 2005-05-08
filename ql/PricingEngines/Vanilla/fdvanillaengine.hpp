@@ -37,11 +37,11 @@ namespace QuantLib {
     /*! \ingroup vanillaengines */
     class FDVanillaEngine {
       public:
-        FDVanillaEngine(const VanillaOption::arguments* args,
+        FDVanillaEngine(const OneAssetOption::arguments* args,
                         Size timeSteps, Size gridPoints,
                         bool timeDependent = false)
         : timeSteps_(timeSteps), gridPoints_(gridPoints),
-          timeDependent_(timeDependent), vanillaArguments_(args),
+          timeDependent_(timeDependent), optionArguments_(args),
           grid_(gridPoints), intrinsicValues_(gridPoints), BCs_(2) {}
         virtual ~FDVanillaEngine() {};
         // accessors
@@ -58,7 +58,7 @@ namespace QuantLib {
         // data
         Size timeSteps_, gridPoints_;
         bool timeDependent_;
-        const VanillaOption::arguments* vanillaArguments_;
+        const OneAssetOption::arguments* optionArguments_;
         mutable Array grid_;
         mutable TridiagonalOperator finiteDifferenceOperator_;
         mutable Array intrinsicValues_;
@@ -69,10 +69,13 @@ namespace QuantLib {
         boost::shared_ptr<BlackScholesProcess> getProcess() const {
             boost::shared_ptr<BlackScholesProcess> process =
                 boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                        vanillaArguments_->stochasticProcess);
+                                        optionArguments_->stochasticProcess);
             QL_REQUIRE(process, "Black-Scholes process required");
             return process;
         }
+    protected:
+        virtual Real centerGridValue() const;
+        
       private:
         // temporaries
         mutable Real gridLogSpacing_;
