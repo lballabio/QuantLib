@@ -107,7 +107,7 @@ void HestonModelTest::testBlackCalibration() {
 
         boost::shared_ptr<HestonModel> model(new HestonModel(process));
         boost::shared_ptr<PricingEngine> engine(
-                                         new AnalyticHestonEngine(model, 64));
+                                         new AnalyticHestonEngine(model, 96));
 
         for (Size i = 0; i < options.size(); ++i)
             options[i]->setPricingEngine(engine);
@@ -122,16 +122,17 @@ void HestonModelTest::testBlackCalibration() {
                         << "\n    expected:   " << 0.0);
         }
 
-        if (std::fabs(model->theta()(0.0)-volatility*volatility) > tolerance) {
+        if (std::fabs(model->kappa()(0.0)
+                  *(model->theta()(0.0)-volatility*volatility)) > tolerance) {
             BOOST_ERROR("Failed to reproduce expected theta"
                         << "\n    calculated: " << model->theta()(0.0)
-                        << "\n    expected:   " << 0.01);
+                        << "\n    expected:   " << volatility*volatility);
         }
 
         if (std::fabs(model->v0()(0.0)-volatility*volatility) > tolerance) {
             BOOST_ERROR("Failed to reproduce expected v0"
                         << "\n    calculated: " << model->v0()(0.0)
-                        << "\n    expected:   " << 0.01);
+                        << "\n    expected:   " << volatility*volatility);
         }
     }
 
@@ -500,14 +501,14 @@ void HestonModelTest::testEngines() {
 
                 boost::shared_ptr<PricingEngine> engine1;
                 engine1 = MakeMCEuropeanHestonEngine<PseudoRandom>()
-                    .withStepsPerYear(730)
+                    .withStepsPerYear(1825)
                     .withAntitheticVariate()
                     .withSamples(20000)
                     .withSeed(1234);
 
                 boost::shared_ptr<PricingEngine> engine2(
                     new AnalyticHestonEngine(boost::shared_ptr<HestonModel>(
-                                               new HestonModel(process)),128));
+                                               new HestonModel(process)),192));
 
                 option.setPricingEngine(engine1);
                 Real calculated = option.NPV();
@@ -542,7 +543,7 @@ test_suite* HestonModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testMcVsCached));
-    // this passes (except for one case) but takes way too long
+    // this passes but takes way too long
     // suite->add(BOOST_TEST_CASE(&HestonModelTest::testEngines));
     return suite;
 }

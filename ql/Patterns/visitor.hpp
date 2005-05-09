@@ -39,8 +39,8 @@ namespace QuantLib {
     template <class T>
     class Visitor {
       public:
+        virtual ~Visitor() {};
         virtual void visit(T&) = 0;
-        virtual ~Visitor<T>() {};
     };
 
 }
