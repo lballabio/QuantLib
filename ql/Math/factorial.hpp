@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file Math/factorial.hpp
+/*! \file factorial.hpp
     \brief Factorial numbers calculator
 */
 

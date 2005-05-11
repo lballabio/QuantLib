@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file Instruments/barrieroption.hpp
+/*! \file barrieroption.hpp
     \brief Barrier option on a single asset
 */
 

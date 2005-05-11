@@ -72,8 +72,7 @@ WARN_LOGFILE           =
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ./pages \
-                         ../ql \
-                         ../test-suite
+                         ../ql 
 FILE_PATTERNS          = *.docs \
                          *.hpp \
                          *.h

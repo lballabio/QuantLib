@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mathf.hpp
-    \brief math functions
-*/
-
 #ifndef quantlib_functions_math_h
 #define quantlib_functions_math_h
 

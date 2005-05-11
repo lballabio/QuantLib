@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file Functions/daycounters.hpp
-    \brief day counters functions
-*/
-
 #ifndef quantlib_functions_daycounters_h
 #define quantlib_functions_daycounters_h
 

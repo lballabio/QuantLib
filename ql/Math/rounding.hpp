@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file Math/rounding.hpp
+/*! \file rounding.hpp
     \brief Rounding implementation
 */
 

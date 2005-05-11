@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file vols.hpp
-    \brief Volatility functions
-*/
-
 #ifndef quantlib_functions_vols_h
 #define quantlib_functions_vols_h
 

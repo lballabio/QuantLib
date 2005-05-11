@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file ql/exchangerate.hpp
+/*! \file exchangerate.hpp
     \brief exchange rate between two currencies
 */
 

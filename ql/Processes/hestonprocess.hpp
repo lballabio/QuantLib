@@ -34,11 +34,11 @@ namespace QuantLib {
     /*! This class describes the square root stochastic volatility
         process governed by
         \f[
-        \begin{eqnarray*}
-        dS(t, S) = \mu S dt + \sqrt(v_t) S dW1_t \\
-        dv_t     = \kappa (\theta - v_t) dt + \sigma \sqrt{v_t} dW2_t \\
-        dW1 dW2  = \rho dt
-        \end{eqnarray*}
+        \begin{array}{rcl}
+        dS(t, S)  &=& \mu S dt + \sqrt{v} S dW_1 \\
+        dv(t, S)  &=& \kappa (\theta - v) dt + \sigma \sqrt{v} dW_2 \\
+        dW_1 dW_2 &=& \rho dt
+        \end{array}
         \f]
     */
     class HestonProcess : public GenericStochasticProcess {

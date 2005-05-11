@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file Instruments/basketoption.hpp
+/*! \file basketoption.hpp
     \brief Basket option on a number of assets
 */
 

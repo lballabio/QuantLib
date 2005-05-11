@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file RandomNumbers/rngtraits.hpp
+/*! \file rngtraits.hpp
     \brief random-number generation policies
 */
 

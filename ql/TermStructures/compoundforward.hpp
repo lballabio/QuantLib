@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file TermStructures/compoundforward.hpp
+/*! \file compoundforward.hpp
     \brief compounded forward term structure
 */
 

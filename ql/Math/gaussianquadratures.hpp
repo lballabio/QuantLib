@@ -184,7 +184,7 @@ namespace QuantLib {
         \f]
         The weighting function is
         \f[
-            w(x)=(1-x^2)^{\lamda-1/2}
+            w(x)=(1-x^2)^{\lambda-1/2}
         \f]
     */
     class GaussGegenbauerIntegration : public GaussianQuadrature {

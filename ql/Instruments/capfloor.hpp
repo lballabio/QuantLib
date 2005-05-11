@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file Instruments/capfloor.hpp
+/*! \file capfloor.hpp
     \brief Cap and Floor class
 */
 

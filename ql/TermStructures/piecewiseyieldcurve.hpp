@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file TermStructures/piecewiseyieldcurve.hpp
+/*! \file piecewiseyieldcurve.hpp
     \brief piecewise-interpolated term structure
 */
 

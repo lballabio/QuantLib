@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file TermStructures/piecewiseflatforward.hpp
+/*! \file piecewiseflatforward.hpp
     \brief piecewise flat forward term structure
 */
 

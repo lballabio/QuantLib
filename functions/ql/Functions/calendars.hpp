@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file calendars.hpp
-    \brief %calendar class non-member non-friend functions
-*/
-
 #ifndef quantlib_functions_calendar_h
 #define quantlib_functions_calendar_h
 
