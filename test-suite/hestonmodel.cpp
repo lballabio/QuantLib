@@ -283,7 +283,7 @@ void HestonModelTest::testAnalyticVsBlack() {
     Real expected = BlackFormula(forwardPrice, std::exp(-0.1*yearFraction),
                                  0.05*yearFraction, payoff).value();
 
-    Real tolerance = 1.0e-8;
+    Real tolerance = 3.0e-8;
     if (std::fabs(calculated - expected) > tolerance) {
         BOOST_FAIL("failed to reproduce Black price"
                    << "\n    calculated: " << calculated
