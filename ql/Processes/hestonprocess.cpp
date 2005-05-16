@@ -76,11 +76,18 @@ namespace QuantLib {
         return tmp;
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     Disposable<Array> HestonProcess::evolve(const Array& change,
                                             const Array& currentValue) const {
+        return apply(currentValue,change);
+    }
+    #endif
+
+    Disposable<Array> HestonProcess::apply(const Array& x0,
+                                           const Array& dx) const {
         Array tmp(2);
-        tmp[0] = currentValue[0] * std::exp(change[0]);
-        tmp[1] = currentValue[1] + change[1];
+        tmp[0] = x0[0] * std::exp(dx[0]);
+        tmp[1] = x0[1] + dx[1];
         return tmp;
     }
 

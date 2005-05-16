@@ -59,8 +59,14 @@ namespace QuantLib {
         return localVolatility()->localVol(t, x, true);
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     Real BlackScholesProcess::evolve(Real change, Real currentValue) const {
-        return currentValue * std::exp(change);
+        return apply(currentValue,change);
+    }
+    #endif
+
+    Real BlackScholesProcess::apply(Real x0, Real dx) const {
+        return x0 * std::exp(dx);
     }
 
     Time BlackScholesProcess::time(const Date& d) const {

@@ -193,13 +193,13 @@ namespace QuantLib {
                                : process_->stdDeviation(t, asset, dt)*temp;
                 Array change(n);
                 for (Size j=0; j<n; j++) {
-                    // not yet fully satisfactory---we should use expectation
+                    // not fully satisfactory---we should use expectation
                     next_.value[j].drift()[i] = dt * drift[j];
                     // this is ok
                     next_.value[j].diffusion()[i] = diffusion[j];
                     change[j] = next_.value[j][i];
                 }
-                asset = process_->evolve(change, asset);
+                asset = process_->apply(asset, change);
             }
             return next_;
         }

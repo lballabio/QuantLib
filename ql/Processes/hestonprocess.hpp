@@ -53,8 +53,11 @@ namespace QuantLib {
         Disposable<Array> initialValues() const;
         Disposable<Array> drift(Time t, const Array& x) const;
         Disposable<Matrix> diffusion(Time t, const Array& x) const;
+        #ifndef QL_DISABLE_DEPRECATED
         Disposable<Array> evolve(const Array& change,
                                  const Array& currentValue) const;
+        #endif
+        Disposable<Array> apply(const Array& x0, const Array& dx) const;
 
         Real s0()    const;
         Real v0()    const;

@@ -125,7 +125,7 @@ namespace QuantLib {
                 next_.value.drift()[i] = dt * diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] =
                     stdDev_.value[i] - stdDev_.value[i-1];
-                asset_ = diffProcess_->evolve(next_.value[i], asset_);
+                asset_ = diffProcess_->apply(asset_, next_.value[i]);
             }
             return next_;
         } else {
@@ -143,7 +143,7 @@ namespace QuantLib {
                 next_.value.drift()[i] = dt * diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = sequence_.value[i] *
                     diffProcess_->stdDeviation(t, asset_, dt);
-                asset_ = diffProcess_->evolve(next_.value[i], asset_);
+                asset_ = diffProcess_->apply(asset_, next_.value[i]);
             }
 
             return next_;
@@ -172,7 +172,7 @@ namespace QuantLib {
                 next_.value.drift()[i] = dt * diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] =
                     - stdDev_.value[i] + stdDev_.value[i-1];
-                asset_ = diffProcess_->evolve(next_.value[i], asset_);
+                asset_ = diffProcess_->apply(asset_, next_.value[i]);
             }
             return next_;
         } else {
@@ -191,7 +191,7 @@ namespace QuantLib {
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = - sequence_.value[i] *
                     diffProcess_->stdDeviation(t, asset_, dt);
-                asset_ = diffProcess_->evolve(next_.value[i], asset_);
+                asset_ = diffProcess_->apply(asset_, next_.value[i]);
             }
 
             return next_;
