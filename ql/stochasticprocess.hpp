@@ -130,7 +130,7 @@ namespace QuantLib {
             E(\mathrm{x}_0,t_0,\Delta t) +
             S(\mathrm{x}_0,t_0,\Delta t) \cdot \Delta \mathrm{w}
             \f]
-            where \f$ E \f$ is the expectation and \f$ S f$ the
+            where \f$ E \f$ is the expectation and \f$ S \f$ the
             standard deviation.
         */
         virtual Disposable<Array> evolve(Time t0, const Array& x0,
@@ -140,6 +140,7 @@ namespace QuantLib {
         */
         virtual Disposable<Array> apply(const Array& x0,
                                         const Array& dx) const;
+        //@}
 
         //! \name utilities
         //@{
@@ -239,7 +240,7 @@ namespace QuantLib {
             \f[
             E(x_0,t_0,\Delta t) + S(x_0,t_0,\Delta t) \cdot \Delta w
             \f]
-            where \f$ E \f$ is the expectation and \f$ S f$ the
+            where \f$ E \f$ is the expectation and \f$ S \f$ the
             standard deviation.
         */
         virtual Real evolve(Time t0, Real x0, Time dt, Real dw) const;
@@ -292,35 +293,45 @@ namespace QuantLib {
 
     inline Disposable<Array> StochasticProcess1D::drift(
                                                Time t, const Array& x) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(x.size() == 1, "1-D array required");
+        #endif
         Array a(1, drift(t, x[0]));
         return a;
     }
 
     inline Disposable<Matrix> StochasticProcess1D::diffusion(
                                                Time t, const Array& x) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(x.size() == 1, "1-D array required");
+        #endif
         Matrix m(1, 1, diffusion(t, x[0]));
         return m;
     }
 
     inline Disposable<Array> StochasticProcess1D::expectation(
                                     Time t0, const Array& x0, Time dt) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(x0.size() == 1, "1-D array required");
+        #endif
         Array a(1, expectation(t0, x0[0], dt));
         return a;
     }
 
     inline Disposable<Matrix> StochasticProcess1D::stdDeviation(
                                     Time t0, const Array& x0, Time dt) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(x0.size() == 1, "1-D array required");
+        #endif
         Matrix m(1, 1, stdDeviation(t0, x0[0], dt));
         return m;
     }
 
     inline Disposable<Matrix> StochasticProcess1D::covariance(
                                     Time t0, const Array& x0, Time dt) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(x0.size() == 1, "1-D array required");
+        #endif
         Matrix m(1, 1, variance(t0, x0[0], dt));
         return m;
     }
@@ -329,8 +340,10 @@ namespace QuantLib {
     inline Disposable<Array> StochasticProcess1D::evolve(
                                             const Array& change,
                                             const Array& currentValue) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(change.size() == 1, "1-D array required");
         QL_REQUIRE(currentValue.size() == 1, "1-D array required");
+        #endif
         Array a(1, evolve(change[0],currentValue[0]));
         return a;
     }
@@ -339,8 +352,10 @@ namespace QuantLib {
     inline Disposable<Array> StochasticProcess1D::evolve(
                                              Time t0, const Array& x0,
                                              Time dt, const Array& dw) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(x0.size() == 1, "1-D array required");
         QL_REQUIRE(dw.size() == 1, "1-D array required");
+        #endif
         Array a(1, evolve(t0,x0[0],dt,dw[0]));
         return a;
     }
@@ -348,8 +363,10 @@ namespace QuantLib {
     inline Disposable<Array> StochasticProcess1D::apply(
                                                       const Array& x0,
                                                       const Array& dx) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(x0.size() == 1, "1-D array required");
         QL_REQUIRE(dx.size() == 1, "1-D array required");
+        #endif
         Array a(1, apply(x0[0],dx[0]));
         return a;
     }
