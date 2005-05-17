@@ -1,4 +1,4 @@
-# Doxyfile 1.4.2
+# Doxyfile 1.4.3
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -72,7 +72,7 @@ WARN_LOGFILE           =
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ./pages \
-                         ../ql 
+                         ../ql
 FILE_PATTERNS          = *.docs \
                          *.hpp \
                          *.h
@@ -100,6 +100,7 @@ INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
 REFERENCED_BY_RELATION = NO
 REFERENCES_RELATION    = NO
+USE_HTAGS              = NO
 VERBATIM_HEADERS       = NO
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
