@@ -22,6 +22,7 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/Instruments/payoffs.hpp>
+#include <ql/Instruments/dividendschedule.hpp>
 
 
 #endif
