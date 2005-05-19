@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2005 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,15 +23,18 @@
 
 #ifndef quantlib_dividend_schedule_hpp
 #define quantlib_dividend_schedule_hpp
-#include <vector>
-#include <ql/types.hpp>
+
 #include <ql/date.hpp>
+#include <vector>
+
 namespace QuantLib {
-  class DividendSchedule {
-  public:
+
+    class DividendSchedule {
+      public:
         std::vector<Date> dividendDates;
         std::vector<Real> dividends;
-  };
+    };
+
 }
 
 
