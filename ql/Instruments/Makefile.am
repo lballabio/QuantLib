@@ -12,6 +12,7 @@ include_HEADERS = \
     capfloor.hpp \
     cliquetoption.hpp \
     dividendvanillaoption.hpp \
+    dividendschedule.hpp \
     europeanoption.hpp \
     fixedcouponbond.hpp \
     floatingratebond.hpp \

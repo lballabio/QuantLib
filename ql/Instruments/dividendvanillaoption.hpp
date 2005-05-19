@@ -53,7 +53,7 @@ namespace QuantLib {
 
     //! %Arguments for dividend vanilla option calculation
     class DividendVanillaOption::arguments : public VanillaOption::arguments,
-    public DividendSchedule {
+                                             public DividendSchedule {
       public:
         arguments() {}
         void validate() const;
