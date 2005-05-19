@@ -25,6 +25,7 @@
 #define quantlib_dividend_vanilla_option_hpp
 
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/dividendschedule.hpp>
 
 namespace QuantLib {
 
@@ -51,12 +52,11 @@ namespace QuantLib {
 
 
     //! %Arguments for dividend vanilla option calculation
-    class DividendVanillaOption::arguments : public VanillaOption::arguments {
+    class DividendVanillaOption::arguments : public VanillaOption::arguments,
+    public DividendSchedule {
       public:
         arguments() {}
         void validate() const;
-        std::vector<Date> dividendDates;
-        std::vector<Real> dividends;
     };
 
     //! Dividend vanilla option engine base class
