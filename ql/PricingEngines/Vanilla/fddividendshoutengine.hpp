@@ -31,12 +31,17 @@ namespace QuantLib {
 
     //! Finite-differences shout engine with dividends
     /*! \ingroup vanillaengines */
-    class FDDividendShoutEngine : public FDDividendEngine {
+    class FDDividendShoutEngine : public DividendVanillaOption::engine,
+        public FDDividendEngine {
       public:
         FDDividendShoutEngine(Size timeSteps = 100, Size gridPoints = 100,
                               bool timeDependent = false)
-        : FDDividendEngine(timeSteps, gridPoints,
-                           timeDependent) {}
+            : FDDividendEngine(&arguments_, &arguments_,
+                               timeSteps, gridPoints,
+                               timeDependent) {}
+        void calculate() const {
+            FDDividendEngine::calculate(&results_);
+        }
       protected:
         void initializeStepCondition() const {
             Time residualTime = getResidualTime();

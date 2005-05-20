@@ -23,6 +23,7 @@
 #include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendamericanengine.hpp>
+#include <ql/PricingEngines/Vanilla/fddividendshoutengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
