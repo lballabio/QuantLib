@@ -27,24 +27,24 @@ namespace QuantLib {
       private:
         class Impl : public Constraint::Impl {
           public:
-            Impl(const Parameter& theta, const Parameter& k)
-            : theta_(theta), k_(k) {}
             bool test(const Array& params) const {
-                if (params[0] <= 0.0)
+                Real theta = params[0], k = params[1], sigma = params[2];
+                if (sigma <= 0.0)
                     return false;
-                if (params[0] >= std::sqrt(2.0*k_(0.0)*theta_(0.0)))
+                if (sigma*sigma >= 2.0*k*theta)
                     return false;
                 return true;
             }
-
-          private:
-            const Parameter& theta_;
-            const Parameter& k_;
         };
       public:
+        VolatilityConstraint()
+        : Constraint(boost::shared_ptr<Constraint::Impl>(
+                                           new VolatilityConstraint::Impl)) {}
+        #ifndef QL_DISABLE_DEPRECATED
         VolatilityConstraint(const Parameter& theta, const Parameter& k)
         : Constraint(boost::shared_ptr<Constraint::Impl>(
-                                 new VolatilityConstraint::Impl(theta, k))) {}
+                                           new VolatilityConstraint::Impl)) {}
+        #endif
     };
 
     CoxIngersollRoss::CoxIngersollRoss(Rate r0, Real theta,
@@ -54,7 +54,7 @@ namespace QuantLib {
       sigma_(arguments_[2]), r0_(arguments_[3]) {
         theta_ = ConstantParameter(theta, PositiveConstraint());
         k_ = ConstantParameter(k, PositiveConstraint());
-        sigma_ = ConstantParameter(sigma, VolatilityConstraint(theta_, k_));
+        sigma_ = ConstantParameter(sigma, VolatilityConstraint());
         r0_ = ConstantParameter(r0, PositiveConstraint());
     }
 
