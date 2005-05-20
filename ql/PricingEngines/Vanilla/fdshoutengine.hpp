@@ -36,12 +36,17 @@ namespace QuantLib {
         \test the correctness of the returned greeks is tested by
               reproducing numerical derivatives.
     */
-    class FDShoutEngine : public FDStepConditionEngine {
+    class FDShoutEngine : public VanillaOption::engine,
+        public FDStepConditionEngine {
       public:
         FDShoutEngine(Size timeSteps=100, Size gridPoints=100,
                       bool timeDependent = false)
-        : FDStepConditionEngine(timeSteps, gridPoints, timeDependent) {}
+        : FDStepConditionEngine(&arguments_,
+                                timeSteps, gridPoints, timeDependent) {}
       private:
+        void calculate() const {
+            FDStepConditionEngine::calculate(&results_);
+        }
         void initializeStepCondition() const {
             Time residualTime = getResidualTime();
             Rate riskFreeRate = getProcess()->riskFreeRate()

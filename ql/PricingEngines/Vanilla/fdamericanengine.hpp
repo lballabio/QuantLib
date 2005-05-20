@@ -39,12 +39,17 @@ namespace QuantLib {
         - the correctness of the returned greeks is tested by
           reproducing numerical derivatives.
     */
-    class FDAmericanEngine : public FDStepConditionEngine {
+    class FDAmericanEngine : public VanillaOption::engine,
+        public FDStepConditionEngine {
       public:
         FDAmericanEngine(Size timeSteps=100, Size gridPoints=100,
                          bool timeDependent = false)
-        : FDStepConditionEngine(timeSteps, gridPoints, timeDependent) {}
+        : FDStepConditionEngine(&arguments_,
+                                timeSteps, gridPoints, timeDependent) {}
       private:
+        void calculate() const {
+            FDStepConditionEngine::calculate(&results_);
+        }
         void initializeStepCondition() const {
             stepCondition_ = boost::shared_ptr<StandardStepCondition>(
                                      new AmericanCondition(intrinsicValues_));

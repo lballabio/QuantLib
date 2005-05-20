@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    void FDStepConditionEngine::calculate() const {
+    void FDStepConditionEngine::calculate(OneAssetOption::results* results) const {
         setGridLimits();
         initializeGrid();
         initializeInitialCondition();
@@ -67,33 +67,33 @@ namespace QuantLib {
         Array controlPrices = arraySet[1];
         boost::shared_ptr<BlackScholesProcess> process =
             boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                                arguments_.stochasticProcess);
+                                                optionArguments_->stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
         boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(optionArguments_->payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance =
             process->blackVolatility()->blackVariance(
-                                             arguments_.exercise->lastDate(),
+                                             optionArguments_->exercise->lastDate(),
                                              payoff->strike());
         DiscountFactor dividendDiscount =
             process->dividendYield()->discount(
-                                             arguments_.exercise->lastDate());
+                                             optionArguments_->exercise->lastDate());
         DiscountFactor riskFreeDiscount =
-            process->riskFreeRate()->discount(arguments_.exercise->lastDate());
+            process->riskFreeRate()->discount(optionArguments_->exercise->lastDate());
         Real spot = process->stateVariable()->value();
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
-        results_.value = valueAtCenter(prices)
+        results->value = valueAtCenter(prices)
             - valueAtCenter(controlPrices)
             + black.value();
-        results_.delta = firstDerivativeAtCenter(prices, grid_)
+        results->delta = firstDerivativeAtCenter(prices, grid_)
             - firstDerivativeAtCenter(controlPrices, grid_)
             + black.delta(spot);
-        results_.gamma = secondDerivativeAtCenter(prices, grid_)
+        results->gamma = secondDerivativeAtCenter(prices, grid_)
             - secondDerivativeAtCenter(controlPrices, grid_)
             + black.gamma(spot);
     }

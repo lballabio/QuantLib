@@ -32,12 +32,12 @@ namespace QuantLib {
 
     //! Finite-differences pricing engine for American-style vanilla options
     /*! \ingroup vanillaengines */
-    class FDStepConditionEngine : public VanillaOption::engine,
-                                  public FDVanillaEngine {
+    class FDStepConditionEngine :  public FDVanillaEngine {
       public:
-        FDStepConditionEngine(Size timeSteps, Size gridPoints,
+        FDStepConditionEngine(const OneAssetOption::arguments* option_args,
+                              Size timeSteps, Size gridPoints,
                               bool timeDependent = false)
-        : FDVanillaEngine(&arguments_, timeSteps, gridPoints,
+        : FDVanillaEngine(option_args, timeSteps, gridPoints,
                           timeDependent),
           controlBCs_(2), controlPrices_(gridPoints) {}
       protected:
@@ -47,7 +47,7 @@ namespace QuantLib {
         mutable std::vector<boost::shared_ptr<bc_type> > controlBCs_;
         mutable Array controlPrices_;
         virtual void initializeStepCondition() const = 0;
-        void calculate() const;
+        void calculate(OneAssetOption::results* result) const;
     };
 
 }
