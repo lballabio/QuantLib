@@ -77,7 +77,7 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite.dsp \
 	testsuite.vcproj \
-	QuantLib-test-suite.dev \
+	testsuite.dev \
 	makefile.mak
 
 else
@@ -88,7 +88,7 @@ EXTRA_DIST = \
 	testsuite.dsp \
 	testsuite.vcproj \
 	testsuite_vc8.vcproj \
-	QuantLib-test-suite.dev \
+	testsuite.dev \
 	makefile.mak
 
 endif

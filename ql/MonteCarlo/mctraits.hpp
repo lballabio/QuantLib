@@ -35,7 +35,7 @@ namespace QuantLib {
     template <class rng_traits = PseudoRandom>
     struct SingleAsset {
         typedef Path path_type;
-        typedef PathPricer<Path> path_pricer_type;
+        typedef PathPricer<path_type> path_pricer_type;
         typedef typename rng_traits::rsg_type rsg_type;
         typedef PathGenerator<rsg_type> path_generator_type;
     };
@@ -43,7 +43,7 @@ namespace QuantLib {
     template <class rng_traits = PseudoRandom>
     struct MultiAsset {
         typedef MultiPath path_type;
-        typedef PathPricer<MultiPath> path_pricer_type;
+        typedef PathPricer<path_type> path_pricer_type;
         typedef typename rng_traits::rsg_type rsg_type;
         typedef MultiPathGenerator<rsg_type> path_generator_type;
     };

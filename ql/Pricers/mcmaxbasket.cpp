@@ -38,21 +38,23 @@ namespace QuantLib {
 
             Real operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
-                Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
                            "the multi-path must contain "
                            << underlying_.size() << " assets");
 
-                Real log_variation;
-                Size i,j;
                 Real maxPrice = QL_MIN_REAL;
-                for(j = 0; j < numAssets; j++) {
-                    log_variation = 0.0;
-                    for(i = 0; i < numSteps; i++)
+                for (Size j = 0; j < numAssets; j++) {
+                    #ifndef QL_DISABLE_DEPRECATED
+                    Size numSteps = multiPath.pathSize();
+                    Real log_variation = 0.0;
+                    for (Size i = 0; i < numSteps; i++)
                         log_variation += multiPath[j][i];
                     maxPrice =
                         std::max(maxPrice,
                                  underlying_[j]*std::exp(log_variation));
+                    #else
+                    maxPrice = std::max(maxPrice,multiPath[j].back());
+                    #endif
                 }
                 return discount_ * maxPrice;
             }

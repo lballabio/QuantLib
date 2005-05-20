@@ -56,11 +56,6 @@ namespace QuantLib {
     // s0 is not included in the vector
     std::vector<Real> getAssetSequence(Real s0, const Path& path);
 
-    // put all the antithetic asset prices into a vector.
-    // s0 is not included in the vector
-    std::vector<Real> getAntiAssetSequence(Real s0, const Path& path);
-
-
 }
 
 

@@ -48,7 +48,11 @@ namespace QuantLib {
 
 
     Real BarrierPathPricer::operator()(const Path& path) const {
+        #ifndef QL_DISABLE_DEPRECATED
         Size n = path.size();
+        #else
+        Size n = path.length();
+        #endif
         QL_REQUIRE(n>0, "the path cannot be empty");
 
         bool isOptionActive = false;
@@ -58,17 +62,21 @@ namespace QuantLib {
         Volatility vol;
         TimeGrid timeGrid = path.timeGrid();
         Time dt;
-        Real log_drift, log_random;
         Array u = sequenceGen_.nextSequence().value;
         Size i;
 
         switch (barrierType_) {
           case Barrier::DownIn:
             isOptionActive = false;
+            #ifndef QL_DISABLE_DEPRECATED
             for (i = 0; i < n; i++) {
-                log_drift = path.drift()[i];
-                log_random = path.diffusion()[i];
+                Real log_drift = path.drift()[i];
+                Real log_random = path.diffusion()[i];
                 new_asset_price = asset_price * std::exp(log_drift+log_random);
+            #else
+            for (i = 0; i < n-1; i++) {
+                new_asset_price = path.value(i+1);
+            #endif
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
@@ -84,10 +92,15 @@ namespace QuantLib {
             break;
           case Barrier::UpIn:
             isOptionActive = false;
+            #ifndef QL_DISABLE_DEPRECATED
             for (i = 0; i < n; i++) {
-                log_drift = path.drift()[i];
-                log_random = path.diffusion()[i];
+                Real log_drift = path.drift()[i];
+                Real log_random = path.diffusion()[i];
                 new_asset_price = asset_price * std::exp(log_drift+log_random);
+            #else
+            for (i = 0; i < n-1; i++) {
+                new_asset_price = path.value(i+1);
+            #endif
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
@@ -103,10 +116,15 @@ namespace QuantLib {
             break;
           case Barrier::DownOut:
             isOptionActive = true;
+            #ifndef QL_DISABLE_DEPRECATED
             for (i = 0; i < n; i++) {
-                log_drift = path.drift()[i];
-                log_random = path.diffusion()[i];
+                Real log_drift = path.drift()[i];
+                Real log_random = path.diffusion()[i];
                 new_asset_price = asset_price * std::exp(log_drift+log_random);
+            #else
+            for (i = 0; i < n-1; i++) {
+                new_asset_price = path.value(i+1);
+            #endif
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
@@ -122,10 +140,15 @@ namespace QuantLib {
             break;
           case Barrier::UpOut:
             isOptionActive = true;
+            #ifndef QL_DISABLE_DEPRECATED
             for (i = 0; i < n; i++) {
-                log_drift = path.drift()[i];
-                log_random = path.diffusion()[i];
+                Real log_drift = path.drift()[i];
+                Real log_random = path.diffusion()[i];
                 new_asset_price = asset_price * std::exp(log_drift+log_random);
+            #else
+            for (i = 0; i < n-1; i++) {
+                new_asset_price = path.value(i+1);
+            #endif
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
@@ -172,21 +195,29 @@ namespace QuantLib {
 
 
     Real BiasedBarrierPathPricer::operator()(const Path& path) const {
+        #ifndef QL_DISABLE_DEPRECATED
         Size n = path.size();
+        #else
+        Size n = path.length();
+        #endif
         QL_REQUIRE(n>0, "the path cannot be empty");
 
         bool isOptionActive = false;
         Real asset_price = underlying_;
-        Real log_drift, log_random;
         Size i;
 
         switch (barrierType_) {
           case Barrier::DownIn:
             isOptionActive = false;
+            #ifndef QL_DISABLE_DEPRECATED
             for (i = 0; i < n; i++) {
-                log_drift = path.drift()[i];
-                log_random = path.diffusion()[i];
+                Real log_drift = path.drift()[i];
+                Real log_random = path.diffusion()[i];
                 asset_price = asset_price * std::exp(log_drift+log_random);
+            #else
+            for (i = 0; i < n-1; i++) {
+                asset_price = path.value(i+1);
+            #endif
                 if (asset_price <= barrier_) {
                     isOptionActive = true;
                 }
@@ -194,10 +225,15 @@ namespace QuantLib {
             break;
           case Barrier::UpIn:
             isOptionActive = false;
+            #ifndef QL_DISABLE_DEPRECATED
             for (i = 0; i < n; i++) {
-                log_drift = path.drift()[i];
-                log_random = path.diffusion()[i];
+                Real log_drift = path.drift()[i];
+                Real log_random = path.diffusion()[i];
                 asset_price = asset_price * std::exp(log_drift+log_random);
+            #else
+            for (i = 0; i < n-1; i++) {
+                asset_price = path.value(i+1);
+            #endif
                 if (asset_price >= barrier_) {
                     isOptionActive = true;
                 }
@@ -205,10 +241,15 @@ namespace QuantLib {
             break;
           case Barrier::DownOut:
             isOptionActive = true;
+            #ifndef QL_DISABLE_DEPRECATED
             for (i = 0; i < n; i++) {
-                log_drift = path.drift()[i];
-                log_random = path.diffusion()[i];
+                Real log_drift = path.drift()[i];
+                Real log_random = path.diffusion()[i];
                 asset_price = asset_price * std::exp(log_drift+log_random);
+            #else
+            for (i = 0; i < n-1; i++) {
+                asset_price = path.value(i+1);
+            #endif
                 if (asset_price <= barrier_) {
                     isOptionActive = false;
                 }
@@ -216,10 +257,15 @@ namespace QuantLib {
             break;
           case Barrier::UpOut:
             isOptionActive = true;
+            #ifndef QL_DISABLE_DEPRECATED
             for (i = 0; i < n; i++) {
-                log_drift = path.drift()[i];
-                log_random = path.diffusion()[i];
+                Real log_drift = path.drift()[i];
+                Real log_random = path.diffusion()[i];
                 asset_price = asset_price * std::exp(log_drift+log_random);
+            #else
+            for (i = 0; i < n-1; i++) {
+                asset_price = path.value(i+1);
+            #endif
                 if (asset_price >= barrier_) {
                     isOptionActive = false;
                 }

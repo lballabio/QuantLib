@@ -68,13 +68,21 @@ namespace QuantLib {
                     averagePrice += bestPrice;
                     fixings = numSteps+1;
                 }
+                #ifndef QL_DISABLE_DEPRECATED
                 for (i = 0; i < numSteps; i++) {
+                #else
+                for (i = 1; i < numSteps; i++) {
+                #endif
                     bestPrice = 0.0;
                     // dummy assignement to avoid compiler warning
                     removeAsset=0;
                     for (j = 0; j < numAssets; j++) {
                         if (remainingAssets[j]) {
+                            #ifndef QL_DISABLE_DEPRECATED
                             prices[j] *= std::exp(multiPath[j][i]);
+                            #else
+                            prices[j] = multiPath[j].value(i);
+                            #endif
                             if (prices[j] >= bestPrice) {
                                 bestPrice = prices[j];
                                 removeAsset = j;

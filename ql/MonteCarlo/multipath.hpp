@@ -38,8 +38,6 @@ namespace QuantLib {
         at discretized time \f$ t_i \f$. The first index refers to the
         underlying, the second to the time position MultiPath[j,i]
 
-        \todo rename as MultiAssetPath
-
         \ingroup mcarlo
     */
     class MultiPath {
@@ -50,7 +48,13 @@ namespace QuantLib {
         //! \name inspectors
         //@{
         Size assetNumber() const { return multiPath_.size(); }
-        Size pathSize() const { return multiPath_[0].size(); }
+        Size pathSize() const {
+            #ifndef QL_DISABLE_DEPRECATED
+            return multiPath_[0].size();
+            #else
+            return multiPath_[0].length();
+            #endif
+        }
         //@}
         //! \name read/write access to components
         //@{

@@ -378,7 +378,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
     testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields,
                             riskFreeRate, volatilities, correlation,
                             timeIncrements, seed),
-                   0.03829317,
+                   0.01221094,
                    1.0e-8,
                    "McPagoda");
 

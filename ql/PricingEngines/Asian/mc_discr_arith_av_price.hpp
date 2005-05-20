@@ -22,8 +22,8 @@
     \brief Monte Carlo engine for discrete arithmetic average price Asian
 */
 
-#ifndef quantlib_mc_discrete_arithmetic_average_price_asian_engine_h
-#define quantlib_mc_discrete_arithmetic_average_price_asian_engine_h
+#ifndef quantlib_mc_discrete_arithmetic_average_price_asian_engine_hpp
+#define quantlib_mc_discrete_arithmetic_average_price_asian_engine_hpp
 
 #include <ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp>
 #include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
@@ -80,21 +80,33 @@ namespace QuantLib {
                                 Real runningSum = 0.0,
                                 Size pastFixings = 0);
         Real operator()(const Path& path) const  {
+            #ifndef QL_DISABLE_DEPRECATED
             Size n = path.size();
+            #else
+            Size n = path.length() - 1;
+            #endif
             QL_REQUIRE(n>0, "the path cannot be empty");
-            Real price1 = underlying_, averagePrice1 = runningSum_;
+
+            Real price = underlying_, averagePrice = runningSum_;
             Size fixings = n + pastFixings_;
             // not sure the if is correct
             if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-                averagePrice1 = price1;
-                fixings = n+1;
+                averagePrice = price;
+                fixings = n + pastFixings_ + 1;
             }
+            #ifndef QL_DISABLE_DEPRECATED
             for (Size i=0; i<n; i++) {
-                price1 *= std::exp(path[i]);
-                averagePrice1 += price1;
+                price *= std::exp(path[i]);
+                averagePrice += price;
             }
-            averagePrice1 = averagePrice1/fixings;
-            return discount_ * payoff_(averagePrice1);
+            #else
+            for (Size i=0; i<n; i++) {
+                price = path.value(i+1);
+                averagePrice += price;
+            }
+            #endif
+            averagePrice = averagePrice/fixings;
+            return discount_ * payoff_(averagePrice);
         }
       private:
         Real underlying_;

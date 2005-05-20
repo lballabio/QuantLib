@@ -482,7 +482,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
     // in "Exotic Options: The State of the Art",
     // edited by Clewlow, Strickland
     DiscreteAverageData cases4[] = {
-         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2,
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2,
           0.13, true, 1.3942835683 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4,
           0.13, true, 1.5852442983 },

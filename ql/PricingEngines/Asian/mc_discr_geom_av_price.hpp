@@ -69,28 +69,54 @@ namespace QuantLib {
                                Real runningProduct = 1.0,
                                Size pastFixings = 0);
         Real operator()(const Path& path) const {
+            #ifndef QL_DISABLE_DEPRECATED
             Size n = path.size();
+            #else
+            Size n = path.length() - 1;
+            #endif
             QL_REQUIRE(n>0, "the path cannot be empty");
+
+            Real averagePrice;
+            #ifndef QL_DISABLE_DEPRECATED
             Real runningLog = runningLog_;
             // path[i] is d log(S), the log increment
             for (Size i=0; i<n; i++)
                 runningLog += (n-i)*path[i];
-            Real averagePrice1;
             // not sure the if case is correct
             if (path.timeGrid().mandatoryTimes()[0]==0.0)
-                averagePrice1 = underlying_ *
+                averagePrice = underlying_ *
                                     std::exp(runningLog/(n+pastFixings_+1));
             else
-                averagePrice1 = underlying_ *
-                                    std::exp(runningLog/n+pastFixings_);
-
-            return discount_ * payoff_(averagePrice1);
+                averagePrice = underlying_ *
+                                    std::exp(runningLog/(n+pastFixings_));
+            #else
+            Real product = runningProduct_;
+            Size fixings = n+pastFixings_;
+            if (path.timeGrid().mandatoryTimes()[0]==0.0) {
+                fixings += 1;
+                product *= underlying_;
+            }
+            // care must be taken not to overflow product
+            Real maxValue = QL_MAX_REAL;
+            averagePrice = 1.0;
+            for (Size i=1; i<n+1; i++) {
+                Real price = path.value(i);
+                if (product < maxValue/price) {
+                    product *= price;
+                } else {
+                    averagePrice *= std::pow(product, 1.0/fixings);
+                    product = price;
+                }
+            }
+            averagePrice *= std::pow(product, 1.0/fixings);
+            #endif
+            return discount_ * payoff_(averagePrice);
         }
       private:
         Real underlying_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
-        Real runningLog_;
+        Real runningProduct_, runningLog_;
         Size pastFixings_;
     };
 

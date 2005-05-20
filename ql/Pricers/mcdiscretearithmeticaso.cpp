@@ -36,10 +36,12 @@ namespace QuantLib {
             }
 
             Real operator()(const Path& path) const  {
-
+                #ifndef QL_DISABLE_DEPRECATED
                 Size n = path.size();
-                QL_REQUIRE(n > 0,
-                           "the path cannot be empty");
+                #else
+                Size n = path.length()-1;
+                #endif
+                QL_REQUIRE(n > 0, "the path cannot be empty");
 
                 Real price1 = underlying_;
                 Real averageStrike1 = 0.0;
@@ -49,8 +51,13 @@ namespace QuantLib {
                     fixings = n+1;
                 }
                 Size i;
+                #ifndef QL_DISABLE_DEPRECATED
                 for (i=0; i<n; i++) {
                     price1 *= std::exp(path[i]);
+                #else
+                for (i=0; i<n; i++) {
+                    price1 = path.value(i+1);
+                #endif
                     averageStrike1 += price1;
                 }
                 averageStrike1 = averageStrike1/fixings;
@@ -77,29 +84,49 @@ namespace QuantLib {
 
             Real operator()(const Path& path) const {
 
+                #ifndef QL_DISABLE_DEPRECATED
                 Size n = path.size();
-                QL_REQUIRE(n>0,
-                           "the path cannot be empty");
+                #else
+                Size n = path.length()-1;
+                #endif
+                QL_REQUIRE(n>0, "the path cannot be empty");
 
+                Size fixings = n;
+                if (path.timeGrid().mandatoryTimes()[0]==0.0)
+                    fixings = n+1;
+
+                #ifndef QL_DISABLE_DEPRECATED
                 Real logVariation = 0.0;
                 Real geoLogVariation = 0.0;
-                Size i;
-                for (i=0; i<n; i++) {
+                for (Size i=0; i<n; i++) {
                     logVariation += path[i];
                     geoLogVariation += (n-i)*path[i];
                 }
-                Size fixings = n;
-                if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-                    fixings = n+1;
-                }
                 Real averageStrike1 = underlying_*
                     std::exp(geoLogVariation/fixings);
-
                 return discount_
                     * PlainVanillaPayoff(type_, averageStrike1)
                     (underlying_ * std::exp(logVariation));
+                #else
+                Real averageStrike = 1.0;
+                Real maxValue = QL_MAX_REAL;
+                Real product = 1.0;
+                if (path.timeGrid().mandatoryTimes()[0]==0.0)
+                    product = underlying_;
+                for (Size i=0; i<n; i++) {
+                    Real value = path.value(i+1);
+                    if (product < maxValue/value) {
+                        product *= value;
+                    } else {
+                        averageStrike *= std::pow(product, 1.0/fixings);
+                        product = value;
+                    }
+                }
+                averageStrike *= std::pow(product, 1.0/fixings);
+                return discount_
+                    * PlainVanillaPayoff(type_, averageStrike)(path.back());
+                #endif
             }
-
           private:
             Option::Type type_;
             Real underlying_;

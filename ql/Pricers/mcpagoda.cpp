@@ -40,13 +40,26 @@ namespace QuantLib {
                            "the multi-path must contain "
                            << underlying_.size() << " assets");
 
-                Size i,j;
                 Real averageGain = 0.0;
-                for (i = 0; i < numSteps; i++)
-                    for (j = 0; j < numAssets; j++) {
+                #ifndef QL_DISABLE_DEPRECATED
+                for (Size i = 0; i < numSteps; i++) {
+                    for (Size j = 0; j < numAssets; j++) {
                         averageGain += underlying_[j] *
                             (std::exp(multiPath[j][i]) -1.0);
                     }
+                }
+                #else
+                for (Size i = 1; i < numSteps; i++) {
+                    for (Size j = 0; j < numAssets; j++) {
+                        averageGain +=
+                            underlying_[j] *
+                            (multiPath[j].value(i)/multiPath[j].value(i-1)
+                             - 1.0);
+                    }
+                }
+                #endif
+                averageGain /= numAssets;
+
                 return discount_ * fraction_
                     * std::max<Real>(0.0, std::min(roof_, averageGain));
             }

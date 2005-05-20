@@ -106,8 +106,7 @@ private:
 // The key for the MonteCarlo simulation is to have a PathPricer that
 // implements a value(const Path& path) method.
 // This method prices the portfolio for each Path of the random variable
-class ReplicationPathPricer : public PathPricer<Path>
-{
+class ReplicationPathPricer : public PathPricer<Path> {
   public:
     // real constructor
     ReplicationPathPricer(Option::Type type,
@@ -179,13 +178,13 @@ int main(int, char* [])
    the life of the option are carried out, using the Black-Scholes
    hedge ratio.
 */
-Real ReplicationPathPricer::operator()(const Path& path) const
-{
+Real ReplicationPathPricer::operator()(const Path& path) const {
 
-    // path is an instance of QuantLib::Path
-    // It contains the list of variations.
-    // It can be used as an array: it has a size() method
+    #ifndef QL_DISABLE_DEPRECATED
     Size n = path.size();
+    #else
+    Size n = path.length()-1;
+    #endif
     QL_REQUIRE(n>0, "the path cannot be empty");
 
     // discrete hedging interval
@@ -199,7 +198,9 @@ Real ReplicationPathPricer::operator()(const Path& path) const
 
     // stock value at t=0
     Real stock = underlying_;
+    #ifndef QL_DISABLE_DEPRECATED
     Real stockLogGrowth = 0.0;
+    #endif
 
     // money account at t=0
     Real money_account = 0.0;
@@ -235,10 +236,12 @@ Real ReplicationPathPricer::operator()(const Path& path) const
         money_account *= std::exp( r_*dt );
 
         // stock growth:
-        // path contains the list of Gaussian variations
-        // and path[n] is the n-th variation
+        #ifndef QL_DISABLE_DEPRECATED
         stockLogGrowth += path[step];
         stock = underlying_*std::exp(stockLogGrowth);
+        #else
+        stock = path.value(step+1);
+        #endif
 
         // recalculate option value at the current stock value,
         // and the current time to maturity
@@ -262,8 +265,12 @@ Real ReplicationPathPricer::operator()(const Path& path) const
     // last accrual on my money account
     money_account *= std::exp( r_*dt );
     // last stock growth
+    #ifndef QL_DISABLE_DEPRECATED
     stockLogGrowth += path[n-1];
     stock = underlying_*std::exp(stockLogGrowth);
+    #else
+    stock = path.value(n);
+    #endif
 
     // the hedger delivers the option payoff to the option holder
     Real optionPayoff = PlainVanillaPayoff(type_, strike_)(stock);

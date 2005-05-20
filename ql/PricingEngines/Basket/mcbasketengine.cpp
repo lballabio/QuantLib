@@ -50,9 +50,10 @@ namespace QuantLib {
         Size numAssets = multiPath.assetNumber();
         QL_REQUIRE(numAssets>0, "there must be some paths");
 
+        Size j;
+        #ifndef QL_DISABLE_DEPRECATED
         Array log_drift(numAssets, 0.0);
         Array log_random(numAssets, 0.0);
-        Size j;
         for (j = 0; j < numAssets; j++) {
             for (Size i = 0; i < n; i++) {
                 log_drift[j] += multiPath[j].drift()[i];
@@ -66,6 +67,12 @@ namespace QuantLib {
             finalPrice[j] = underlying_[j] *
                             std::exp(log_drift[j]+log_random[j]);
         }
+        #else
+        // calculate the final price of each asset
+        Array finalPrice(numAssets, 0.0);
+        for (j = 0; j < numAssets; j++)
+            finalPrice[j] = multiPath[j].back();
+        #endif
 
         // this should be a basket payoff
         Real basketPrice = finalPrice[0];

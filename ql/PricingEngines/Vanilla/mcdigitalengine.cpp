@@ -38,7 +38,11 @@ namespace QuantLib {
     }
 
     Real DigitalPathPricer::operator()(const Path& path) const {
-        Size i, n = path.size();
+        #ifndef QL_DISABLE_DEPRECATED
+        Size n = path.size();
+        #else
+        Size n = path.length();
+        #endif
         QL_REQUIRE(n>0, "the path cannot be empty");
 
         Real log_asset_price = std::log(underlying_);
@@ -49,12 +53,17 @@ namespace QuantLib {
         Array u = sequenceGen_.nextSequence().value;
         Real log_strike = std::log(payoff_->strike());
 
+        Size i;
         switch (payoff_->optionType()) {
           case Option::Call:
+            #ifndef QL_DISABLE_DEPRECATED
             for (i=0; i<n; i++) {
                 x = path.drift()[i] + path.diffusion()[i];
+            #else
+            for (i=0; i<n-1; i++) {
+                x = std::log(path.value(i+1)/path.value(i));
+            #endif
                 // terminal or initial vol?
-                // initial (timeGrid[i+1]) for the time being
                 vol = diffProcess_->diffusion(timeGrid[i+1],
                                               std::exp(log_asset_price));
                 // vol = diffProcess_->diffusion(timeGrid[i+2],
@@ -79,8 +88,13 @@ namespace QuantLib {
             }
             break;
           case Option::Put:
-            for (i = 0; i < n; i++) {
-                x = path.drift()[i]+path.diffusion()[i];
+            #ifndef QL_DISABLE_DEPRECATED
+            for (i=0; i<n; i++) {
+                x = path.drift()[i] + path.diffusion()[i];
+            #else
+            for (i=0; i<n-1; i++) {
+                x = std::log(path.value(i+1)/path.value(i));
+            #endif
                 // terminal or initial vol?
                 // initial (timeGrid[i+1]) for the time being
                 vol = diffProcess_->diffusion(timeGrid[i+1],
