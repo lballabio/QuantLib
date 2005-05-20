@@ -37,12 +37,17 @@ namespace QuantLib {
         - the invariance of the results upon addition of null
           dividends is tested.
     */
-    class FDDividendEuropeanEngine : public FDDividendEngine {
+    class FDDividendEuropeanEngine :  public DividendVanillaOption::engine,
+        public FDDividendEngine {
       public:
         FDDividendEuropeanEngine(Size timeSteps = 100,
                                  Size gridPoints = 100,
                                  bool timeDependent = false)
-        : FDDividendEngine(timeSteps, gridPoints, timeDependent) {}
+        : FDDividendEngine(&arguments_, &arguments_,
+                           timeSteps, gridPoints, timeDependent) {}
+        void calculate() const {
+            FDDividendEngine::calculate(&results_);
+        }
     };
 
 }

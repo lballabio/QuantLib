@@ -40,12 +40,17 @@ namespace QuantLib {
 
         \bug method impliedVolatility() utterly fails
     */
-    class FDDividendAmericanEngine : public FDDividendEngine {
+    class FDDividendAmericanEngine : public DividendVanillaOption::engine,
+        public FDDividendEngine {
       public:
         FDDividendAmericanEngine(Size timeSteps = 100,
                                  Size gridPoints = 100,
                                  bool timeDependent = false)
-        : FDDividendEngine(timeSteps, gridPoints, timeDependent) {}
+        : FDDividendEngine(&arguments_, &arguments_,
+                           timeSteps, gridPoints, timeDependent) {}
+        void calculate() const {
+            FDDividendEngine::calculate(&results_);
+        }
       protected:
         void initializeStepCondition() const {
             stepCondition_ = boost::shared_ptr<StandardStepCondition>(

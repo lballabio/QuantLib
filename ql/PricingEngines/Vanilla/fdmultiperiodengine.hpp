@@ -30,21 +30,23 @@
 
 namespace QuantLib {
 
-    class FDMultiPeriodEngine : public DividendVanillaOption::engine,
-                                public FDVanillaEngine {
+    class FDMultiPeriodEngine : public FDVanillaEngine {
       protected:
-        FDMultiPeriodEngine(Size gridPoints=100, Size timeSteps=100,
+        FDMultiPeriodEngine(const OneAssetOption::arguments* option_args,
+                            const DividendSchedule* schedule,
+                            Size gridPoints=100, Size timeSteps=100,
                             bool timeDependent = false);
+        const DividendSchedule* schedule_;
         Size timeStepPerPeriod_;
         mutable Array prices_;
-        void calculate() const;
+        void calculate(OneAssetOption::results* result) const;
         mutable boost::shared_ptr<StandardStepCondition > stepCondition_;
         mutable boost::shared_ptr<StandardFiniteDifferenceModel> model_;
         virtual void executeIntermediateStep(Size step) const = 0;
         virtual void initializeStepCondition() const;
         virtual void initializeModel() const;
         Time getDividendTime(int i) const {
-            return getYearFraction(arguments_.dividendDates[i]);
+            return getYearFraction(schedule_->dividendDates[i]);
         }
     };
 

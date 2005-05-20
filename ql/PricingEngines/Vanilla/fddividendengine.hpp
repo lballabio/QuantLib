@@ -32,10 +32,14 @@ namespace QuantLib {
     /*! \ingroup vanillaengines */
     class FDDividendEngine : public FDMultiPeriodEngine {
       public:
-        FDDividendEngine(Size timeSteps = 100,
+        FDDividendEngine(const OneAssetOption::arguments* option_args,
+                         const DividendSchedule* schedule,
+                         Size timeSteps = 100,
                          Size gridPoints = 100,
                          bool timeDependent = false)
-        : FDMultiPeriodEngine(timeSteps, gridPoints,
+        : FDMultiPeriodEngine(option_args,
+                              schedule,
+                              timeSteps, gridPoints,
                               timeDependent) {}
       private:
         void executeIntermediateStep(Size step) const;
@@ -46,7 +50,7 @@ namespace QuantLib {
             return std::accumulate(A.begin(), A.end(), 0.0);
         }
         Real getDividend(int i) const {
-            return arguments_.dividends[i];
+            return schedule_->dividends[i];
         }
     };
 

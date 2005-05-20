@@ -25,6 +25,7 @@
 #define quantlib_schedule_hpp
 
 #include <ql/calendar.hpp>
+#include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Utilities/null.hpp>
 #include <vector>
 
@@ -39,7 +40,8 @@ namespace QuantLib {
                  const Date& stubDate = Date(),
                  bool startFromEnd = false, bool longFinal = false);
         Schedule(const std::vector<Date>&,
-                 const Calendar& calendar, BusinessDayConvention convention);
+                 const Calendar& calendar = NullCalendar(), 
+                 BusinessDayConvention convention = Unadjusted);
         //! \name Date access
         //@{
         Size size() const { return dates_.size(); }

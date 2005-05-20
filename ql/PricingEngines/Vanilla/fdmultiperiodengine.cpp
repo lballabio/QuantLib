@@ -22,14 +22,18 @@
 
 namespace QuantLib {
 
-    FDMultiPeriodEngine::FDMultiPeriodEngine(Size gridPoints, Size timeSteps,
-                                             bool timeDependent)
-    : FDVanillaEngine(&arguments_, gridPoints, timeSteps, timeDependent),
+    FDMultiPeriodEngine::
+    FDMultiPeriodEngine(const OneAssetOption::arguments* option_args,
+                        const DividendSchedule* schedule,
+                        Size gridPoints, Size timeSteps,
+                        bool timeDependent)
+    : FDVanillaEngine(option_args, gridPoints, timeSteps, timeDependent),
+      schedule_(schedule),
       timeStepPerPeriod_(timeSteps) {}
 
-    void FDMultiPeriodEngine::calculate() const {
+    void FDMultiPeriodEngine::calculate(OneAssetOption::results* results) const {
         Time beginDate, endDate;
-        Size dateNumber = arguments_.dividendDates.size();
+        Size dateNumber = schedule_->dividendDates.size();
         bool lastDateIsResTime = false;
         Integer firstIndex = -1;
         Integer lastIndex = dateNumber - 1;
@@ -108,9 +112,9 @@ namespace QuantLib {
         if(firstDateIsZero)
             executeIntermediateStep(0);
 
-        results_.value = valueAtCenter(prices_);
-        results_.delta = firstDerivativeAtCenter(prices_, grid_);
-        results_.gamma = secondDerivativeAtCenter(prices_, grid_);
+        results->value = valueAtCenter(prices_);
+        results->delta = firstDerivativeAtCenter(prices_, grid_);
+        results->gamma = secondDerivativeAtCenter(prices_, grid_);
     }
 
     void FDMultiPeriodEngine::initializeStepCondition() const{
