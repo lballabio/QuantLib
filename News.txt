@@ -24,3 +24,7 @@ Changes since release 0.3.9:
   - analytic and Monte Carlo pricing engines
   - parameter calibration
 
+- New Path class implemented which stores asset values rather than variations
+  - makes pricers independent on whether or not log-variations are stored
+  - enabled when QL_DISABLE_DEPRECATED is defined
+
