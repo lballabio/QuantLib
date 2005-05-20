@@ -21,8 +21,8 @@
     \brief Swaption calibration helper
 */
 
-#ifndef quantlib_interest_rate_modelling_calibration_helpers_swaption_h
-#define quantlib_interest_rate_modelling_calibration_helpers_swaption_h
+#ifndef quantlib_swaption_calibration_helper_hpp
+#define quantlib_swaption_calibration_helper_hpp
 
 #include <ql/ShortRateModels/calibrationhelper.hpp>
 #include <ql/Instruments/swaption.hpp>
@@ -31,11 +31,20 @@ namespace QuantLib {
 
     class SwaptionHelper : public CalibrationHelper {
       public:
-        //!Constructor for ATM swaption
+        // Constructor for ATM swaption
+        #ifndef QL_DISABLE_DEPRECATED
         SwaptionHelper(const Period& maturity,
                        const Period& length,
                        const Handle<Quote>& volatility,
                        const boost::shared_ptr<Xibor>& index,
+                       const Handle<YieldTermStructure>& termStructure);
+        #endif
+        SwaptionHelper(const Period& maturity,
+                       const Period& length,
+                       const Handle<Quote>& volatility,
+                       const boost::shared_ptr<Xibor>& index,
+                       Frequency fixedLegFrequency,
+                       const DayCounter& fixedLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure);
 
         virtual void addTimesTo(std::list<Time>& times) const;

@@ -151,6 +151,7 @@ int main(int, char* [])
                                Period(swapLenghts[j], Years),
                                Handle<Quote>(vol),
                                indexSixMonths,
+                               Annual, Thirty360(),
                                rhTermStructure)));
             swaptions.back()->addTimesTo(times);
         }

@@ -21,8 +21,8 @@
     \brief CapHelper calibration helper
 */
 
-#ifndef quantlib_interest_rate_modelling_calibration_helpers_cap_h
-#define quantlib_interest_rate_modelling_calibration_helpers_cap_h
+#ifndef quantlib_cap_calibration_helper_hpp
+#define quantlib_cap_calibration_helper_hpp
 
 #include <ql/ShortRateModels/calibrationhelper.hpp>
 #include <ql/Instruments/capfloor.hpp>
@@ -32,10 +32,20 @@ namespace QuantLib {
 
     class CapHelper : public CalibrationHelper {
       public:
-        //Constructor for ATM cap
+        // Constructor for ATM cap
+        #ifndef QL_DISABLE_DEPRECATED
         CapHelper(const Period& length,
                   const Handle<Quote>& volatility,
                   const boost::shared_ptr<Xibor>& index,
+                  const Handle<YieldTermStructure>& termStructure);
+        #endif
+        CapHelper(const Period& length,
+                  const Handle<Quote>& volatility,
+                  const boost::shared_ptr<Xibor>& index,
+                  // data for ATM swap-rate calculation
+                  Frequency fixedLegFrequency,
+                  const DayCounter& fixedLegDayCounter,
+                  bool includeFirstSwaplet,
                   const Handle<YieldTermStructure>& termStructure);
 
         virtual void addTimesTo(std::list<Time>& times) const;

@@ -23,6 +23,7 @@
 #include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
 #include <ql/PricingEngines/Swaption/jamshidianswaptionengine.hpp>
 #include <ql/Indexes/euribor.hpp>
+#include <ql/DayCounters/thirty360.hpp>
 #include <ql/Optimization/simplex.hpp>
 
 using namespace QuantLib;
@@ -75,6 +76,7 @@ void ShortRateModelTest::testCachedHullWhite() {
                                                 Period(data[i].length, Years),
                                                 Handle<Quote>(vol),
                                                 index,
+                                                Annual, Thirty360(),
                                                 termStructure));
         helper->setPricingEngine(boost::shared_ptr<PricingEngine>(
                                         new JamshidianSwaptionEngine(model)));
@@ -86,7 +88,7 @@ void ShortRateModelTest::testCachedHullWhite() {
     simplex.setEndCriteria(EndCriteria(10000, 1e-7));
     model->calibrate(swaptions, simplex);
 
-    Real cachedA = 0.0486909, cachedSigma = 0.00589026;
+    Real cachedA = 0.0487299, cachedSigma = 0.00582086;
     Real tolerance = 1.0e-6;
 
     if (std::fabs(model->params()[0]-cachedA) > tolerance
