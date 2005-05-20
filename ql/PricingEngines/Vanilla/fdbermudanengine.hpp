@@ -42,7 +42,7 @@ namespace QuantLib {
                               timeSteps, gridPoints,
                               timeDependent) {}
         void calculate() {
-            calculate(&results_);
+            FDMultiPeriodEngine::calculate(&results_);
         }
       protected:
         Real extraTermInBermudan ;
