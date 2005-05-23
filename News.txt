@@ -9,22 +9,26 @@ Changes since release 0.3.9:
 
 - Added Gaussian quadratures (thanks to Klaus Spanderen.)
 
-- Added generic multi-dimensional stochastic process
+- Added generic multi-dimensional stochastic process.
 
 - Added stochastic process array (thanks to Klaus Spanderen.)
 
-- Multi-path generator now takes a generic stochastic process
+- Multi-path generator now takes a generic stochastic process; tests provided.
 
-- Multi-asset option now takes a generic stochastic process
+- Multi-asset option now takes a generic stochastic process.
 
-- Convergence statistics added (thanks to Gary Kennedy.)
+- Convergence statistics added; tests provided (thanks to Gary Kennedy.)
 
-- Added Heston stochastic-volatility model (thanks to Klaus Spanderen.)
+- Added Heston stochastic-volatility model; tests provided (thanks
+  to Klaus Spanderen.)
   - stochastic process
   - analytic and Monte Carlo pricing engines
   - parameter calibration
 
-- New Path class implemented which stores asset values rather than variations
-  - makes pricers independent on whether or not log-variations are stored
-  - enabled when QL_DISABLE_DEPRECATED is defined
+- New Path class implemented which stores asset values rather than variations:
+  - makes pricers independent on whether or not log-variations are stored;
+  - enabled when QL_DISABLE_DEPRECATED is defined.
+
+- Cash-flow analyses such as NPV, IRR, convexity and duration added
+  (thanks to Charles Whitmore.)
 

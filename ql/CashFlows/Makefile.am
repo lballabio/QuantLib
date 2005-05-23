@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/CashFlows
 include_HEADERS = \
         all.hpp \
         core.hpp \
+        analysis.hpp \
         basispointsensitivity.hpp \
         cashflowvectors.hpp \
         coupon.hpp \
@@ -23,6 +24,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libCashFlows_la_SOURCES = \
+    analysis.cpp \
     basispointsensitivity.cpp \
     cashflowvectors.cpp \
     inarrearindexedcoupon.cpp \
