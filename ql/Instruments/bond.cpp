@@ -166,7 +166,7 @@ namespace QuantLib {
         return NPV_;
     }
 
-    Real Bond::yield(Compounding compounding,
+    Rate Bond::yield(Compounding compounding,
                      Real accuracy, Size maxEvaluations) const {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
@@ -193,7 +193,7 @@ namespace QuantLib {
                                    settlement);
     }
 
-    Real Bond::yield(Real cleanPrice, Compounding compounding,
+    Rate Bond::yield(Real cleanPrice, Compounding compounding,
                      Date settlement,
                      Real accuracy, Size maxEvaluations) const {
         if (settlement == Date())

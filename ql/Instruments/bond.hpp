@@ -81,7 +81,7 @@ namespace QuantLib {
         /*! The default bond settlement and theoretical price are used
             for calculation.
         */
-        Real yield(Compounding compounding,
+        Rate yield(Compounding compounding,
                    Real accuracy = 1.0e-8,
                    Size maxEvaluations = 100) const;
         //! clean price given a yield and settlement date
@@ -96,7 +96,7 @@ namespace QuantLib {
                         Date settlementDate = Date()) const;
         //! yield given a (clean) price and settlement date
         /*! The default bond settlement is used if no date is given. */
-        Real yield(Real cleanPrice,
+        Rate yield(Real cleanPrice,
                    Compounding compounding,
                    Date settlementDate = Date(),
                    Real accuracy = 1.0e-8,
