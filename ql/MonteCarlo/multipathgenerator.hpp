@@ -112,11 +112,6 @@ namespace QuantLib {
 
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    using Old::MultiPathGenerator;
-    #else
-    using New::MultiPathGenerator;
-    #endif
 
     namespace Old {
 

@@ -21,11 +21,11 @@
     \brief Least-square Monte Carlo engines
 */
 
-#ifndef quantlib_american_basket_montecarlo_engine_h
-#define quantlib_american_basket_montecarlo_engine_h
+#ifndef quantlib_american_basket_montecarlo_engine_hpp
+#define quantlib_american_basket_montecarlo_engine_hpp
 
 #include <ql/Instruments/basketoption.hpp>
-#include <ql/MonteCarlo/path.hpp>
+#include <ql/MonteCarlo/mctraits.hpp>
 
 namespace QuantLib {
 

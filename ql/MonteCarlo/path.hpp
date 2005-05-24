@@ -112,12 +112,6 @@ namespace QuantLib {
 
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    using Old::Path;
-    #else
-    using New::Path;
-    #endif
-
 
     // inline definitions
 

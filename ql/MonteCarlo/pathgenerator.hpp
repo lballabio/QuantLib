@@ -118,12 +118,8 @@ namespace QuantLib {
 
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    using Old::PathGenerator;
-    #else
-    using New::PathGenerator;
-    #endif
 
+    // template definitions
 
     namespace Old {
 

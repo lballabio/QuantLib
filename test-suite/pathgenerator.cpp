@@ -19,9 +19,7 @@
 
 #include "pathgenerator.hpp"
 #include "utilities.hpp"
-#include <ql/MonteCarlo/pathgenerator.hpp>
-#include <ql/MonteCarlo/multipathgenerator.hpp>
-#include <ql/RandomNumbers/rngtraits.hpp>
+#include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/Processes/all.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Utilities/dataformatters.hpp>

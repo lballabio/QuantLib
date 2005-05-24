@@ -21,14 +21,27 @@
     \brief Monte Carlo policies
 */
 
-#ifndef quantlib_mc_traits_h
-#define quantlib_mc_traits_h
+#ifndef quantlib_mc_traits_hpp
+#define quantlib_mc_traits_hpp
 
+#include <ql/MonteCarlo/pathgenerator.hpp>
 #include <ql/MonteCarlo/multipathgenerator.hpp>
 #include <ql/MonteCarlo/pathpricer.hpp>
 #include <ql/RandomNumbers/rngtraits.hpp>
 
 namespace QuantLib {
+
+    #ifndef QL_DISABLE_DEPRECATED
+    using Old::Path;
+    using Old::MultiPath;
+    using Old::PathGenerator;
+    using Old::MultiPathGenerator;
+    #else
+    using New::Path;
+    using New::MultiPath;
+    using New::PathGenerator;
+    using New::MultiPathGenerator;
+    #endif
 
     // path generation and pricing traits
 
