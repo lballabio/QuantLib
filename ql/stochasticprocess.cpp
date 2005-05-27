@@ -49,14 +49,6 @@ namespace QuantLib {
         return discretization_->covariance(*this, t0, x0, dt);
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    Disposable<Array> GenericStochasticProcess::evolve(
-                                            const Array& change,
-                                            const Array& currentValue) const {
-        return apply(currentValue, change);
-    }
-    #endif
-
     Disposable<Array> GenericStochasticProcess::evolve(
                                              Time t0, const Array& x0,
                                              Time dt, const Array& dw) const {
@@ -96,12 +88,6 @@ namespace QuantLib {
     Real StochasticProcess1D::variance(Time t0, Real x0, Time dt) const {
         return discretization_->variance(*this, t0, x0, dt);
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    Real StochasticProcess1D::evolve(Real change, Real currentValue) const {
-        return apply(currentValue, change);
-    }
-    #endif
 
     Real StochasticProcess1D::evolve(Time t0, Real x0,
                                      Time dt, Real dw) const {

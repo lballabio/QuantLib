@@ -33,30 +33,6 @@ namespace QuantLib {
         : public GenericStochasticProcess::discretization,
           public StochasticProcess1D::discretization {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! Returns an approximation of the expected value defined as
-            \f$ \mathbf{x}_0 + \mu(t_0, \mathbf{x}_0) \Delta t \f$.
-        */
-        Disposable<Array> expectation(const GenericStochasticProcess&,
-                                      Time t0, const Array& x0, Time dt) const;
-        /*! Returns an approximation of the expected value defined as
-            \f$ x_0 + \mu(t_0, x_0) \Delta t \f$.
-        */
-        Real expectation(const StochasticProcess1D&,
-                         Time t0, Real x0, Time dt) const;
-
-        /*! Returns an approximation of the standard deviation defined as
-            \f$ \sigma(t_0, \mathbf{x}_0) \sqrt{\Delta t} \f$.
-        */
-        Disposable<Matrix> stdDeviation(const GenericStochasticProcess&,
-                                        Time t0, const Array& x0,
-                                        Time dt) const;
-        /*! Returns an approximation of the standard deviation defined as
-            \f$ \sigma(t_0, x_0) \sqrt{\Delta t} \f$.
-        */
-        Real stdDeviation(const StochasticProcess1D&,
-                          Time t0, Real x0, Time dt) const;
-        #endif
 
         /*! Returns an approximation of the drift defined as
             \f$ \mu(t_0, \mathbf{x}_0) \Delta t \f$.

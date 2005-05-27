@@ -66,12 +66,6 @@ namespace QuantLib {
         */
         DateProxy& evaluationDate();
         const DateProxy& evaluationDate() const;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated assign the new value to evaluationDate() instead */
-        void setEvaluationDate(const Date&);
-        /*! \deprecated register with evaluationDate() instead */
-        boost::shared_ptr<Observable> evaluationDateGuard() const;
-        #endif
       private:
         DateProxy evaluationDate_;
     };
@@ -86,17 +80,6 @@ namespace QuantLib {
     inline const Settings::DateProxy& Settings::evaluationDate() const {
         return evaluationDate_;
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline void Settings::setEvaluationDate(const Date& d) {
-        evaluationDate_ = d;
-    }
-
-    inline
-    boost::shared_ptr<Observable> Settings::evaluationDateGuard() const {
-        return evaluationDate_;
-    }
-    #endif
 
     inline Settings::DateProxy::DateProxy() : ObservableValue<Date>(Date()) {}
 

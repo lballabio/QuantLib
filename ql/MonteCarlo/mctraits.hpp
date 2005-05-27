@@ -31,18 +31,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    using Old::Path;
-    using Old::MultiPath;
-    using Old::PathGenerator;
-    using Old::MultiPathGenerator;
-    #else
-    using New::Path;
-    using New::MultiPath;
-    using New::PathGenerator;
-    using New::MultiPathGenerator;
-    #endif
-
     // path generation and pricing traits
 
     template <class rng_traits = PseudoRandom>

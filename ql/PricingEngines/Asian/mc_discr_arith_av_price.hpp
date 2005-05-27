@@ -80,11 +80,7 @@ namespace QuantLib {
                                 Real runningSum = 0.0,
                                 Size pastFixings = 0);
         Real operator()(const Path& path) const  {
-            #ifndef QL_DISABLE_DEPRECATED
-            Size n = path.size();
-            #else
             Size n = path.length() - 1;
-            #endif
             QL_REQUIRE(n>0, "the path cannot be empty");
 
             Real price = underlying_, averagePrice = runningSum_;
@@ -94,17 +90,10 @@ namespace QuantLib {
                 averagePrice = price;
                 fixings = n + pastFixings_ + 1;
             }
-            #ifndef QL_DISABLE_DEPRECATED
-            for (Size i=0; i<n; i++) {
-                price *= std::exp(path[i]);
-                averagePrice += price;
-            }
-            #else
             for (Size i=0; i<n; i++) {
                 price = path.value(i+1);
                 averagePrice += price;
             }
-            #endif
             averagePrice = averagePrice/fixings;
             return discount_ * payoff_(averagePrice);
         }

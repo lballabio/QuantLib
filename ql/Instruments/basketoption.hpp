@@ -43,18 +43,6 @@ namespace QuantLib {
                const boost::shared_ptr<Exercise>&,
                const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>());
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the other constructor */
-        BasketOption(
-               const BasketType basketType,
-               const std::vector<boost::shared_ptr<StochasticProcess1D> >&
-                                                                  stochProcs,
-               const boost::shared_ptr<PlainVanillaPayoff>& payoff,
-               const boost::shared_ptr<Exercise>& exercise,
-               const Matrix& correlation,
-               const boost::shared_ptr<PricingEngine>& engine =
-                                          boost::shared_ptr<PricingEngine>());
-        #endif
         void setupArguments(Arguments*) const;
       private:
         BasketType basketType_;

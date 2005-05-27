@@ -45,10 +45,6 @@ namespace QuantLib {
         Disposable<Matrix> stdDeviation(Time t0, const Array& x0,
                                         Time dt) const;
         Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const;
-        #ifndef QL_DISABLE_DEPRECATED
-        Disposable<Array> evolve(const Array& change,
-                                 const Array& currentValue) const;
-        #endif
         Disposable<Array> apply(const Array& x0, const Array& dx) const;
         Time time(const Date&) const;
         // inspectors

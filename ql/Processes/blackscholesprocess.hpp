@@ -55,9 +55,6 @@ namespace QuantLib {
         Real drift(Time t, Real x) const;
         /*! \todo revise extrapolation */
         Real diffusion(Time t, Real x) const;
-        #ifndef QL_DISABLE_DEPRECATED
-        Real evolve(Real change, Real currentValue) const;
-        #endif
         Real apply(Real x0, Real dx) const;
         //@}
         Time time(const Date&) const;

@@ -33,21 +33,6 @@ namespace QuantLib {
     : Option(payoff, exercise, engine), stochasticProcess_(process) {
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    MultiAssetOption::MultiAssetOption(
-        const std::vector<boost::shared_ptr<StochasticProcess1D> >& processes,
-        const boost::shared_ptr<Payoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const Matrix& correlation,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : Option(payoff, exercise, engine) {
-
-        stochasticProcess_ = boost::shared_ptr<GenericStochasticProcess>(
-                           new StochasticProcessArray(processes,correlation));
-        registerWith(stochasticProcess_);
-    }
-    #endif
-
     bool MultiAssetOption::isExpired() const {
         return exercise_->lastDate() < Settings::instance().evaluationDate();
     }

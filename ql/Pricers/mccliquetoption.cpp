@@ -67,12 +67,8 @@ namespace QuantLib {
             }
 
             Real operator()(const Path& path) const {
-                #ifndef QL_DISABLE_DEPRECATED
-                Size n = path.size();
-                #else
                 Size n = path.length();
-                #endif
-                QL_REQUIRE(n>0, "the path cannot be empty");
+                QL_REQUIRE(n>1, "the path cannot be empty");
 
                 QL_REQUIRE(n==discounts_.size(), "discounts/options mismatch");
 
@@ -86,15 +82,9 @@ namespace QuantLib {
                 else
                     result = 0.0;
 
-                Size i;
                 // step by step using the discretization of the path
-                #ifndef QL_DISABLE_DEPRECATED
-                for (i=0; i<n; i++) {
-                    underlying *= std::exp(path[i]);
-                #else
-                for (i=1; i<n; i++) {
+                for (Size i=1; i<n; i++) {
                     underlying = path.value(i);
-                #endif
                     // incorporate payoff
                     if (lastFixing != Null<Real>()) {
                         payoff =

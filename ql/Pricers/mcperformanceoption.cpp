@@ -42,11 +42,7 @@ namespace QuantLib {
             }
 
             Real operator()(const Path& path) const {
-                #ifndef QL_DISABLE_DEPRECATED
-                Size n = path.size();
-                #else
                 Size n = path.length() - 1;
-                #endif
                 QL_REQUIRE(n>0,
                            "at least one option is required");
                 QL_REQUIRE(n==2,
@@ -56,21 +52,11 @@ namespace QuantLib {
 
                 std::vector<Real> result(n);
                 std::vector<Real> assetValue(n);
-                #ifndef QL_DISABLE_DEPRECATED
-                Real log_variation = path[0];
-                assetValue[0]  = underlying_ * std::exp(log_variation);
-                #else
                 assetValue[0] = path.value(1);
-                #endif
                 // removing first option
                 result[0] = 0.0;
                 for (Size i = 1 ; i < n; i++) {
-                    #ifndef QL_DISABLE_DEPRECATED
-                    log_variation  += path[i];
-                    assetValue[i]  = underlying_ * std::exp(log_variation);
-                    #else
                     assetValue[i] = path.value(i+1);
-                    #endif
                     result[i] = discounts_[i] *
                         payoff_(assetValue[i]/assetValue[i-1]);
                 }

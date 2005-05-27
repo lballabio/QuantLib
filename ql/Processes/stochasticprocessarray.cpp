@@ -98,13 +98,6 @@ namespace QuantLib {
         return tmp*transpose(tmp);
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    Disposable<Array> StochasticProcessArray::evolve(
-                       const Array& change, const Array& currentValue) const {
-        return apply(currentValue,change);
-    }
-    #endif
-
     Disposable<Array> StochasticProcessArray::apply(const Array& x0,
                                                     const Array& dx) const {
         Array tmp(size());

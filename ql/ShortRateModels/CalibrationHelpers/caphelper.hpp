@@ -33,12 +33,6 @@ namespace QuantLib {
     class CapHelper : public CalibrationHelper {
       public:
         // Constructor for ATM cap
-        #ifndef QL_DISABLE_DEPRECATED
-        CapHelper(const Period& length,
-                  const Handle<Quote>& volatility,
-                  const boost::shared_ptr<Xibor>& index,
-                  const Handle<YieldTermStructure>& termStructure);
-        #endif
         CapHelper(const Period& length,
                   const Handle<Quote>& volatility,
                   const boost::shared_ptr<Xibor>& index,

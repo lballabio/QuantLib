@@ -21,33 +21,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    Disposable<Array> EulerDiscretization::expectation(
-                                      const GenericStochasticProcess& process,
-                                      Time t0, const Array& x0,
-                                      Time dt) const {
-        return x0 + drift(process, t0, x0, dt);
-    }
-
-    Real EulerDiscretization::expectation(
-                                      const StochasticProcess1D& process,
-                                      Time t0, Real x0, Time dt) const {
-        return x0 + drift(process, t0, x0, dt);
-    }
-
-    Disposable<Matrix> EulerDiscretization::stdDeviation(
-                                      const GenericStochasticProcess& process,
-                                      Time t0, const Array& x0,
-                                      Time dt) const {
-        return diffusion(process,t0,x0,dt);
-    }
-
-    Real EulerDiscretization::stdDeviation(const StochasticProcess1D& process,
-                                           Time t0, Real x0, Time dt) const {
-        return diffusion(process, t0, x0, dt);
-    }
-    #endif
-
     Disposable<Array> EulerDiscretization::drift(
                                       const GenericStochasticProcess& process,
                                       Time t0, const Array& x0,

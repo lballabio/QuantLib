@@ -45,18 +45,6 @@ namespace QuantLib {
         class discretization {
           public:
             virtual ~discretization() {}
-            #ifndef QL_DISABLE_DEPRECATED
-            /*! \deprecated use drift() instead */
-            virtual Disposable<Array> expectation(
-                                              const GenericStochasticProcess&,
-                                              Time t0, const Array& x0,
-                                              Time dt) const = 0;
-            /*! \deprecated use diffusion() instead */
-            virtual Disposable<Matrix> stdDeviation(
-                                              const GenericStochasticProcess&,
-                                              Time t0, const Array& x0,
-                                              Time dt) const = 0;
-            #endif
             virtual Disposable<Array> drift(const GenericStochasticProcess&,
                                             Time t0, const Array& x0,
                                             Time dt) const = 0;
@@ -114,15 +102,6 @@ namespace QuantLib {
         */
         virtual Disposable<Matrix> covariance(Time t0, const Array& x0,
                                               Time dt) const;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! applies a change to the asset value. By default, it
-            returns \f$ \mathrm{x} + \Delta \mathrm{x} \f$.
-
-            \deprecated use either the other overload or the apply() method.
-        */
-        virtual Disposable<Array> evolve(const Array& change,
-                                         const Array& currentValue) const;
-        #endif
         /*! returns the asset value after a time interval \f$ \Delta t
             \f$ according to the given discretization. By default, it
             returns
@@ -177,14 +156,6 @@ namespace QuantLib {
         class discretization {
           public:
             virtual ~discretization() {}
-            #ifndef QL_DISABLE_DEPRECATED
-            /*! \deprecated use drift() instead */
-            virtual Real expectation(const StochasticProcess1D&,
-                                     Time t0, Real x0, Time dt) const = 0;
-            /*! \deprecated use diffusion() instead */
-            virtual Real stdDeviation(const StochasticProcess1D&,
-                                      Time t0, Real x0, Time dt) const = 0;
-            #endif
             virtual Real drift(const StochasticProcess1D&,
                                Time t0, Real x0, Time dt) const = 0;
             virtual Real diffusion(const StochasticProcess1D&,
@@ -226,14 +197,6 @@ namespace QuantLib {
             particular discretization.
         */
         virtual Real variance(Time t0, Real x0, Time dt) const;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! applies a change to the asset value. By default, it
-            returns \f$ x + \Delta x \f$.
-
-            \deprecated use either the other overload or the apply() method.
-        */
-        virtual Real evolve(Real change, Real currentValue) const;
-        #endif
         /*! returns the asset value after a time interval \f$ \Delta t
             \f$ according to the given discretization. By default, it
             returns
@@ -265,19 +228,10 @@ namespace QuantLib {
                                         Time dt) const;
         Disposable<Matrix> covariance(Time t0, const Array& x0,
                                       Time dt) const;
-        #ifndef QL_DISABLE_DEPRECATED
-        Disposable<Array> evolve(const Array& change,
-                                 const Array& currentValue) const;
-        #endif
         Disposable<Array> evolve(Time t0, const Array& x0,
                                  Time dt, const Array& dw) const;
         Disposable<Array> apply(const Array& x0, const Array& dx) const;
     };
-
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to StochasticProcess1D */
-    typedef StochasticProcess1D StochasticProcess;
-    #endif
 
 
     // inline definitions
@@ -335,19 +289,6 @@ namespace QuantLib {
         Matrix m(1, 1, variance(t0, x0[0], dt));
         return m;
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline Disposable<Array> StochasticProcess1D::evolve(
-                                            const Array& change,
-                                            const Array& currentValue) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(change.size() == 1, "1-D array required");
-        QL_REQUIRE(currentValue.size() == 1, "1-D array required");
-        #endif
-        Array a(1, evolve(change[0],currentValue[0]));
-        return a;
-    }
-    #endif
 
     inline Disposable<Array> StochasticProcess1D::evolve(
                                              Time t0, const Array& x0,

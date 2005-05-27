@@ -34,18 +34,8 @@ namespace QuantLib {
                 Size numAssets = multiPath.assetNumber();
                 Real minPrice = QL_MAX_REAL;
 
-                for (Size j = 0; j < numAssets; j++) {
-                    #ifndef QL_DISABLE_DEPRECATED
-                    Size numSteps = multiPath.pathSize();
-                    Real log_variation = 0.0;
-                    for(Size i = 0; i < numSteps; i++)
-                        log_variation += multiPath[j][i];
-                    minPrice = std::min(minPrice,
-                                        std::exp(log_variation));
-                    #else
+                for (Size j = 0; j < numAssets; j++)
                     minPrice = std::min(minPrice,multiPath[j].back());
-                    #endif
-                }
 
                 return discount_ * minPrice;
             }

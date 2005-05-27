@@ -69,27 +69,10 @@ namespace QuantLib {
                                Real runningProduct = 1.0,
                                Size pastFixings = 0);
         Real operator()(const Path& path) const {
-            #ifndef QL_DISABLE_DEPRECATED
-            Size n = path.size();
-            #else
             Size n = path.length() - 1;
-            #endif
             QL_REQUIRE(n>0, "the path cannot be empty");
 
             Real averagePrice;
-            #ifndef QL_DISABLE_DEPRECATED
-            Real runningLog = runningLog_;
-            // path[i] is d log(S), the log increment
-            for (Size i=0; i<n; i++)
-                runningLog += (n-i)*path[i];
-            // not sure the if case is correct
-            if (path.timeGrid().mandatoryTimes()[0]==0.0)
-                averagePrice = underlying_ *
-                                    std::exp(runningLog/(n+pastFixings_+1));
-            else
-                averagePrice = underlying_ *
-                                    std::exp(runningLog/(n+pastFixings_));
-            #else
             Real product = runningProduct_;
             Size fixings = n+pastFixings_;
             if (path.timeGrid().mandatoryTimes()[0]==0.0) {
@@ -109,7 +92,6 @@ namespace QuantLib {
                 }
             }
             averagePrice *= std::pow(product, 1.0/fixings);
-            #endif
             return discount_ * payoff_(averagePrice);
         }
       private:

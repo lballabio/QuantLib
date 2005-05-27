@@ -32,12 +32,6 @@ namespace QuantLib {
     Real blackScholesTheta(const boost::shared_ptr<BlackScholesProcess>&,
                            Real value, Real delta, Real gamma);
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated use the other overload */
-    Real blackScholesTheta(const boost::shared_ptr<StochasticProcess1D>&,
-                           Real value, Real delta, Real gamma);
-    #endif
-
     //! default theta-per-day calculation
     Real defaultThetaPerDay(Real theta);
 

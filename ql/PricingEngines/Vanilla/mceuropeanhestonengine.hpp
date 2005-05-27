@@ -228,15 +228,7 @@ namespace QuantLib {
         const Size n = multiPath.pathSize();
         QL_REQUIRE(n>0, "the path cannot be empty");
 
-        #ifndef QL_DISABLE_DEPRECATED
-        Real log_variation = 0.0;
-        for (Size i = 0; i < n; i++)
-            log_variation += path[i];
-
-        return payoff_(underlying_ * std::exp(log_variation)) * discount_;
-        #else
         return payoff_(path.back()) * discount_;
-        #endif
     }
 
 }

@@ -50,13 +50,7 @@ void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
         generator.next();
 
     sample_type sample = generator.next();
-    #ifndef QL_DISABLE_DEPRECATED
-    Real calculated = process->x0();
-    for (i=0; i<sample.value.size(); i++)
-        calculated = process->apply(calculated,sample.value[i]);
-    #else
     Real calculated = sample.value.back();
-    #endif
     if (std::fabs(calculated-expected) > 1.0e-10) {
         BOOST_ERROR("using " << tag << " process "
                     << (brownianBridge ? "with " : "without ")
@@ -67,13 +61,7 @@ void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
     }
 
     sample = generator.antithetic();
-    #ifndef QL_DISABLE_DEPRECATED
-    calculated = process->x0();
-    for (i=0; i<sample.value.size(); i++)
-        calculated = process->apply(calculated,sample.value[i]);
-    #else
     calculated = sample.value.back();
-    #endif
     if (std::fabs(calculated-antithetic) > 1.0e-10) {
         BOOST_ERROR("using " << tag << " process "
                     << (brownianBridge ? "with " : "without ")
@@ -105,19 +93,9 @@ void testMultiple(const boost::shared_ptr<GenericStochasticProcess>& process,
         generator.next();
 
     sample_type sample = generator.next();
-    #ifndef QL_DISABLE_DEPRECATED
-    Array calculated = process->initialValues();
-    for (i=0; i<sample.value.pathSize(); i++) {
-        Array change(assets);
-        for (Size j=0; j<assets; j++)
-            change[j] = sample.value[j][i];
-        calculated = process->apply(calculated,change);
-    }
-    #else
     Array calculated(assets);
     for (j=0; j<assets; j++)
         calculated[j] = sample.value[j].back();
-    #endif
     for (j=0; j<assets; j++) {
         if (std::fabs(calculated[j]-expected[j]) > 1.0e-10) {
             BOOST_ERROR("using " << tag << " process "
@@ -129,18 +107,8 @@ void testMultiple(const boost::shared_ptr<GenericStochasticProcess>& process,
     }
 
     sample = generator.antithetic();
-    #ifndef QL_DISABLE_DEPRECATED
-    calculated = process->initialValues();
-    for (i=0; i<sample.value.pathSize(); i++) {
-        Array change(assets);
-        for (Size j=0; j<assets; j++)
-            change[j] = sample.value[j][i];
-        calculated = process->apply(calculated,change);
-    }
-    #else
     for (j=0; j<assets; j++)
         calculated[j] = sample.value[j].back();
-    #endif
     for (j=0; j<assets; j++) {
         if (std::fabs(calculated[j]-antithetic[j]) > 1.0e-10) {
             BOOST_ERROR("using " << tag << " process "
@@ -179,15 +147,9 @@ void PathGeneratorTest::testPathGenerator() {
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20)),
                "geometric Brownian", false, 27.62223714065, 483.602651493);
 
-    #ifndef QL_DISABLE_DEPRECATED
-    testSingle(boost::shared_ptr<StochasticProcess1D>(
-                                     new OrnsteinUhlenbeckProcess(0.1, 0.20)),
-               "Ornstein-Uhlenbeck", false, -0.8198975077064, 0.8198975077064);
-    #else
     testSingle(boost::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20)),
                "Ornstein-Uhlenbeck", false, -0.8372003433557, 0.8372003433557);
-    #endif
 
     testSingle(boost::shared_ptr<StochasticProcess1D>(
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0)),
@@ -262,16 +224,6 @@ void PathGeneratorTest::testMultiPathGenerator() {
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20));
     process = boost::shared_ptr<GenericStochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
-    #ifndef QL_DISABLE_DEPRECATED
-    Real result3[] = {
-        0.2887210915189,
-        0.543931060928,
-        0.02713159568959 };
-    Real result3a[] = {
-        -0.2887210915189,
-        -0.543931060928,
-        -0.02713159568959 };
-    #else
     Real result3[] = {
         0.2942058437284,
         0.5525006418386,
@@ -280,7 +232,6 @@ void PathGeneratorTest::testMultiPathGenerator() {
         -0.2942058437284,
         -0.5525006418386,
         -0.02650931054575 };
-    #endif
     testMultiple(process, "Ornstein-Uhlenbeck", result3, result3a);
 
     processes[0] = boost::shared_ptr<StochasticProcess1D>(

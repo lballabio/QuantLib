@@ -31,18 +31,6 @@ namespace QuantLib {
     : MultiAssetOption(process, payoff, exercise, engine),
       basketType_(basketType) {}
 
-    #ifndef QL_DISABLE_DEPRECATED
-    BasketOption::BasketOption(
-        const BasketType basketType,
-        const std::vector<boost::shared_ptr<StochasticProcess1D> >& processes,
-        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const Matrix& correlation,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : MultiAssetOption(processes, payoff, exercise, correlation, engine),
-      basketType_(basketType) {}
-    #endif
-
     void BasketOption::setupArguments(Arguments* args) const {
         MultiAssetOption::setupArguments(args);
 

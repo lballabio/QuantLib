@@ -12,13 +12,13 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=-Wall_@@_
-Linker=../lib/libQuantLib-mgw-0_3_10.a_@@_../lib/libQuantLibFunctions-mgw-0_3_10.a_@@_-lboost_unit_test_framework-mgw-mt_@@_
+Linker=../lib/libQuantLib-mgw-0_3_11.a_@@_../lib/libQuantLibFunctions-mgw-0_3_11.a_@@_-lboost_unit_test_framework-mgw-mt_@@_
 IsCpp=1
 Icon=
 ExeOutput=./bin
 ObjectOutput=./build/mingw
 OverrideOutput=1
-OverrideOutputName=QuantLib-test-suite-mgw-0_3_10.exe
+OverrideOutputName=QuantLib-test-suite-mgw-0_3_11.exe
 HostApplication=
 Folders=
 CommandLine=--log_level=messages --build_info=yes --result_code=no --report_level=short

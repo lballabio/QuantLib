@@ -259,22 +259,8 @@ namespace QuantLib {
     }
 
     inline Real EuropeanPathPricer::operator()(const Path& path) const {
-        #ifndef QL_DISABLE_DEPRECATED
-        Size n = path.size();
-        #else
-        Size n = path.length();
-        #endif
-        QL_REQUIRE(n>0, "the path cannot be empty");
-
-        #ifndef QL_DISABLE_DEPRECATED
-        Real log_variation = 0.0;
-        for (Size i = 0; i < n; i++)
-            log_variation += path[i];
-
-        return payoff_(underlying_ * std::exp(log_variation)) * discount_;
-        #else
+        QL_REQUIRE(path.length() > 0, "the path cannot be empty");
         return payoff_(path.back()) * discount_;
-        #endif
     }
 
 }

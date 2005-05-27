@@ -25,62 +25,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    CapHelper::CapHelper(const Period& length,
-                         const Handle<Quote>& volatility,
-                         const boost::shared_ptr<Xibor>& index,
-                         const Handle<YieldTermStructure>& termStructure)
-    : CalibrationHelper(volatility,termStructure) {
-
-        Period indexTenor = index->tenor();
-        Frequency frequency = index->frequency();
-        Rate fixedRate = 0.04;//dummy value
-        Date startDate = termStructure->referenceDate() + indexTenor;
-        Date maturity = termStructure->referenceDate() + length;
-
-        DayCounter rfdc = termStructure->dayCounter();
-        boost::shared_ptr<Xibor> dummyIndex(
-                                     new Xibor("dummy",
-                                               indexTenor.length(),
-                                               indexTenor.units(),
-                                               index->settlementDays(),
-                                               index->currency(),
-                                               index->calendar(),
-                                               index->businessDayConvention(),
-                                               rfdc,
-                                               termStructure));
-
-        std::vector<Real> nominals(1,1.0);
-        Schedule floatSchedule(index->calendar(), startDate, maturity,
-                               frequency, index->businessDayConvention());
-        std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-            FloatingRateCouponVector(floatSchedule,
-                                     index->businessDayConvention(),
-                                     nominals,
-                                     index, 0,
-                                     std::vector<Spread>());
-
-        Schedule fixedSchedule(index->calendar(), startDate, maturity,
-                               frequency, Unadjusted);
-        std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
-            FixedRateCouponVector(fixedSchedule,
-                                  index->businessDayConvention(),
-                                  nominals,
-                                  std::vector<Rate>(1, fixedRate),
-                                  index->dayCounter());
-
-        boost::shared_ptr<Swap> swap(
-                              new Swap(floatingLeg, fixedLeg, termStructure));
-        Rate fairRate = fixedRate -
-            swap->NPV()/swap->secondLegBPS();
-        engine_  = boost::shared_ptr<PricingEngine>();
-        cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg,
-                                              std::vector<Rate>(1, fairRate),
-                                              termStructure, engine_));
-        marketValue_ = blackPrice(volatility_->value());
-    }
-    #endif
-
     CapHelper::CapHelper(const Period& length,
                          const Handle<Quote>& volatility,
                          const boost::shared_ptr<Xibor>& index,

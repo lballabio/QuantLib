@@ -49,11 +49,6 @@ namespace QuantLib {
         Real x0() const;
         Real drift(Time, Real) const { QL_FAIL("not implemented"); }
         Real diffusion(Time, Real) const { QL_FAIL("not implemented"); }
-        #ifndef QL_DISABLE_DEPRECATED
-        Real evolve(Real change, Real currentValue) const {
-            QL_FAIL("not implemented");
-        }
-        #endif
         Real apply(Real x0, Real dx) const {
             QL_FAIL("not implemented");
         }

@@ -45,11 +45,6 @@ namespace QuantLib {
                 Johannesburg(), ModifiedFollowing, dc, h) {}
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated use Jibar instead */
-    typedef Jibar ZARLibor;
-    #endif
-
 }
 
 

@@ -632,31 +632,13 @@ namespace QuantLib {
     // put all the asset prices into a vector.
     // s0 is not included in the vector
     std::vector<Real> getAssetSequence(Real s0, const Path& path) {
-        #ifndef QL_DISABLE_DEPRECATED
-        Size n = path.size();
-        #else
         Size n = path.length()-1;
-        #endif
         QL_REQUIRE(n>0, "the path cannot be empty");
 
         std::vector<Real> asset(n);
 
-        #ifndef QL_DISABLE_DEPRECATED
-        Real log_drift, log_random;
-        log_drift = path.drift()[0];
-        log_random = path.diffusion()[0];
-        asset[0] = s0*std::exp(log_drift + log_random);
-
-        for (Size i = 1; i < n; i++) {
-            log_drift = path.drift()[i];
-            log_random = path.diffusion()[i];
-            asset[i] = asset[i-1]*std::exp(log_drift + log_random);
-        }
-        #else
-        for (Size i = 0; i < n; i++) {
+        for (Size i = 0; i < n; i++)
             asset[i] = path.value(i+1);
-        }
-        #endif
 
         return asset;
     }

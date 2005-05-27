@@ -51,10 +51,6 @@ namespace QuantLib {
     class Tree : public CuriouslyRecurringTemplate<T> {
       public:
         Tree(Size columns) : columns_(columns) {}
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use columns() instead */
-        Size nColumns() const { return columns_; }
-        #endif
         Size columns() const { return columns_; }
       private:
         Size columns_;

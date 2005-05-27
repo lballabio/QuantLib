@@ -25,53 +25,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    SwaptionHelper::SwaptionHelper(
-                              const Period& maturity,
-                              const Period& length,
-                              const Handle<Quote>& volatility,
-                              const boost::shared_ptr<Xibor>& index,
-                              const Handle<YieldTermStructure>& termStructure)
-    : CalibrationHelper(volatility,termStructure) {
-
-        Calendar calendar = index->calendar();
-        Period indexTenor = index->tenor();
-        Frequency frequency = index->frequency();
-        Date startDate =
-            calendar.advance(termStructure->referenceDate(),
-                             maturity.length(), maturity.units());
-        Date endDate =
-            calendar.advance(startDate, length.length(), length.units(),
-                             index->businessDayConvention());
-        Schedule fixedSchedule(calendar, startDate, endDate,
-                               frequency, Unadjusted);
-        Schedule floatSchedule(calendar, startDate, endDate,
-                               frequency, index->businessDayConvention());
-
-        Rate fixedRate = 0.04;//dummy value
-        swap_ = boost::shared_ptr<SimpleSwap>(
-                      new SimpleSwap(false, 1.0, fixedSchedule, fixedRate,
-                                     index->dayCounter(), floatSchedule,
-                                     index, 0, 0.0, termStructure));
-        Rate fairFixedRate = swap_->fairRate();
-        swap_ = boost::shared_ptr<SimpleSwap>(
-                      new SimpleSwap(false, 1.0, fixedSchedule, fairFixedRate,
-                                     index->dayCounter(), floatSchedule,
-                                     index, 0, 0.0, termStructure));
-        exerciseRate_ = fairFixedRate;
-        engine_  = boost::shared_ptr<PricingEngine>();
-        Date exerciseDate = calendar.adjust(startDate,
-                                            index->businessDayConvention());
-
-        swaption_ = boost::shared_ptr<Swaption>(new Swaption(
-            swap_,
-            boost::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)),
-            termStructure,
-            engine_));
-        marketValue_ = blackPrice(volatility_->value());
-    }
-    #endif
-
     SwaptionHelper::SwaptionHelper(
                               const Period& maturity,
                               const Period& length,

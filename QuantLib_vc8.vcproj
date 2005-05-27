@@ -52,7 +52,7 @@
 				PrecompiledHeaderFile=".\build\vc80\DebugMTDLL/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\DebugMTDLL/"
 				ObjectFile=".\build\vc80\DebugMTDLL/"
-				ProgramDataBaseFileName=".\lib\QuantLib-vc80-mt-gd-0_3_9"
+				ProgramDataBaseFileName=".\lib\QuantLib-vc80-mt-gd-0_3_11"
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\DebugMTDLL/"
 				WarningLevel="3"
@@ -75,7 +75,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc80-mt-gd-0_3_9.lib"
+				OutputFile=".\lib\QuantLib-vc80-mt-gd-0_3_11.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool
@@ -162,7 +162,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc80-s-0_3_9.lib"
+				OutputFile=".\lib\QuantLib-vc80-s-0_3_11.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool
@@ -249,7 +249,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc80-mt-s-0_3_9.lib"
+				OutputFile=".\lib\QuantLib-vc80-mt-s-0_3_11.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool
@@ -336,7 +336,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc80-mt-0_3_9.lib"
+				OutputFile=".\lib\QuantLib-vc80-mt-0_3_11.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool
@@ -397,7 +397,7 @@
 				PrecompiledHeaderFile=".\build\vc80\Debug/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\Debug/"
 				ObjectFile=".\build\vc80\Debug/"
-				ProgramDataBaseFileName=".\lib\QuantLib-vc80-mt-sgd-0_3_9"
+				ProgramDataBaseFileName=".\lib\QuantLib-vc80-mt-sgd-0_3_11"
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\Debug/"
 				WarningLevel="3"
@@ -420,7 +420,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc80-mt-sgd-0_3_9.lib"
+				OutputFile=".\lib\QuantLib-vc80-mt-sgd-0_3_11.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool
@@ -481,7 +481,7 @@
 				PrecompiledHeaderFile=".\build\vc80\DebugST/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\DebugST/"
 				ObjectFile=".\build\vc80\DebugST/"
-				ProgramDataBaseFileName=".\lib\QuantLib-vc80-sgd-0_3_9"
+				ProgramDataBaseFileName=".\lib\QuantLib-vc80-sgd-0_3_11"
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\DebugST/"
 				WarningLevel="3"
@@ -504,7 +504,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc80-sgd-0_3_9.lib"
+				OutputFile=".\lib\QuantLib-vc80-sgd-0_3_11.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool

@@ -40,11 +40,6 @@ namespace QuantLib {
         VolatilityConstraint()
         : Constraint(boost::shared_ptr<Constraint::Impl>(
                                            new VolatilityConstraint::Impl)) {}
-        #ifndef QL_DISABLE_DEPRECATED
-        VolatilityConstraint(const Parameter& theta, const Parameter& k)
-        : Constraint(boost::shared_ptr<Constraint::Impl>(
-                                           new VolatilityConstraint::Impl)) {}
-        #endif
     };
 
     CoxIngersollRoss::CoxIngersollRoss(Rate r0, Real theta,

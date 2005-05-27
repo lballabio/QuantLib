@@ -33,21 +33,6 @@ namespace QuantLib {
         return r*value -(r-q)*u*delta - 0.5*v*v*u*u*gamma;
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    Real blackScholesTheta(const boost::shared_ptr<StochasticProcess1D>& p,
-                           Real value, Real delta, Real gamma) {
-
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(p);
-        if (process) {
-            return blackScholesTheta(process,value,delta,gamma);
-        } else {
-            // this calculation doesn't apply
-            return Null<Real>();
-        }
-    }
-    #endif
-
     Real defaultThetaPerDay(Real theta) {
         return theta/365.0;
     }
