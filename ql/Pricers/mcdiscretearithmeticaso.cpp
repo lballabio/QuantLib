@@ -28,66 +28,54 @@ namespace QuantLib {
         class ArithmeticASOPathPricer : public PathPricer<Path> {
           public:
             ArithmeticASOPathPricer(Option::Type type,
-                                    Real underlying,
                                     DiscountFactor discount)
-            : type_(type), underlying_(underlying), discount_(discount) {
-                QL_REQUIRE(underlying>0.0,
-                           "underlying less/equal zero not allowed");
-            }
+            : type_(type), discount_(discount) {}
 
             Real operator()(const Path& path) const  {
-                Size n = path.length()-1;
-                QL_REQUIRE(n > 0, "the path cannot be empty");
+                Size n = path.length();
+                QL_REQUIRE(n > 1, "the path cannot be empty");
 
-                Real price1 = underlying_;
-                Real averageStrike1 = 0.0;
-                Size fixings = n;
+                Real averageStrike;
                 if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-                    averageStrike1 = price1;
-                    fixings = n+1;
+                    // include initial fixing
+                    averageStrike =
+                        std::accumulate(path.begin(),path.end(),0.0)/n;
+                } else {
+                    averageStrike =
+                        std::accumulate(path.begin()+1,path.end(),0.0)/(n-1);
                 }
-                for (Size i=0; i<n; i++) {
-                    price1 = path.value(i+1);
-                    averageStrike1 += price1;
-                }
-                averageStrike1 = averageStrike1/fixings;
 
                 return discount_
-                    * PlainVanillaPayoff(type_, averageStrike1)(price1);
+                    * PlainVanillaPayoff(type_, averageStrike)(path.back());
             }
 
           private:
             Option::Type type_;
-            Real underlying_;
             DiscountFactor discount_;
         };
 
         class GeometricASOPathPricer : public PathPricer<Path> {
           public:
             GeometricASOPathPricer(Option::Type type,
-                                   Real underlying,
                                    DiscountFactor discount)
-            : type_(type), underlying_(underlying), discount_(discount) {
-                QL_REQUIRE(underlying>0.0,
-                           "underlying less/equal zero not allowed");
-            }
+            : type_(type), discount_(discount) {}
 
             Real operator()(const Path& path) const {
 
-                Size n = path.length()-1;
-                QL_REQUIRE(n>0, "the path cannot be empty");
+                Size n = path.length();
+                QL_REQUIRE(n>1, "the path cannot be empty");
 
-                Size fixings = n;
+                Size fixings = n-1;
                 if (path.timeGrid().mandatoryTimes()[0]==0.0)
-                    fixings = n+1;
+                    fixings = n;
 
                 Real averageStrike = 1.0;
                 Real maxValue = QL_MAX_REAL;
                 Real product = 1.0;
                 if (path.timeGrid().mandatoryTimes()[0]==0.0)
-                    product = underlying_;
-                for (Size i=0; i<n; i++) {
-                    Real value = path.value(i+1);
+                    product = path.front();
+                for (Size i=1; i<n; i++) {
+                    Real value = path[i];
                     if (product < maxValue/value) {
                         product *= value;
                     } else {
@@ -101,7 +89,6 @@ namespace QuantLib {
             }
           private:
             Option::Type type_;
-            Real underlying_;
             DiscountFactor discount_;
         };
 
@@ -140,16 +127,16 @@ namespace QuantLib {
         // initialize the path pricer
         DiscountFactor discount = riskFreeRate->discount(times.back());
         boost::shared_ptr<PathPricer<Path> > spPricer(
-                     new ArithmeticASOPathPricer(type, underlying, discount));
+                                 new ArithmeticASOPathPricer(type, discount));
 
         if (controlVariate) {
             boost::shared_ptr<PathPricer<Path> > controlVariateSpPricer(
-                     new GeometricASOPathPricer(type, underlying, discount));
+                                  new GeometricASOPathPricer(type, discount));
 
             // Not sure whether this work when curves are not flat...
             Time exercise = times.back();
-            Rate r = riskFreeRate->zeroRate(exercise, Continuous, NoFrequency);
-            Rate q = dividendYield->zeroRate(exercise, Continuous, NoFrequency);
+            Rate r = riskFreeRate->zeroRate(exercise,Continuous,NoFrequency);
+            Rate q = dividendYield->zeroRate(exercise,Continuous,NoFrequency);
             Volatility sigma = volatility->blackVol(exercise,underlying);
 
             Real controlVariatePrice = DiscreteGeometricASO(type,

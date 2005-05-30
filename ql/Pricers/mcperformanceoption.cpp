@@ -30,33 +30,29 @@ namespace QuantLib {
           public:
             PerformanceOptionPathPricer(
                                  Option::Type type,
-                                 Real underlying,
                                  Real moneyness,
                                  const std::vector<DiscountFactor>& discounts)
-            : underlying_(underlying), discounts_(discounts),
-              payoff_(type, moneyness) {
-                QL_REQUIRE(underlying>0.0,
-                           "underlying less/equal zero not allowed");
+            : discounts_(discounts), payoff_(type, moneyness) {
                 QL_REQUIRE(moneyness>0.0,
                            "moneyness less/equal zero not allowed");
             }
 
             Real operator()(const Path& path) const {
-                Size n = path.length() - 1;
-                QL_REQUIRE(n>0,
+                Size n = path.length();
+                QL_REQUIRE(n>1,
                            "at least one option is required");
-                QL_REQUIRE(n==2,
+                QL_REQUIRE(n==3,
                            "only one option for the time being");
-                QL_REQUIRE(n==discounts_.size(),
+                QL_REQUIRE(n==discounts_.size()+1,
                            "discounts/options mismatch");
 
-                std::vector<Real> result(n);
-                std::vector<Real> assetValue(n);
-                assetValue[0] = path.value(1);
+                std::vector<Real> result(n-1);
+                std::vector<Real> assetValue(n-1);
+                assetValue[0] = path[1];
                 // removing first option
                 result[0] = 0.0;
-                for (Size i = 1 ; i < n; i++) {
-                    assetValue[i] = path.value(i+1);
+                for (Size i = 1 ; i < n-1; i++) {
+                    assetValue[i] = path[i+1];
                     result[i] = discounts_[i] *
                         payoff_(assetValue[i]/assetValue[i-1]);
                 }
@@ -65,7 +61,6 @@ namespace QuantLib {
             }
 
           private:
-            Real underlying_;
             std::vector<DiscountFactor> discounts_;
             PlainVanillaPayoff payoff_;
         };
@@ -105,8 +100,7 @@ namespace QuantLib {
 
         // Initialize the pricer on the single Path
         boost::shared_ptr<PathPricer<Path> > performancePathPricer(
-            new PerformanceOptionPathPricer(type,
-            underlying, moneyness, discounts));
+                 new PerformanceOptionPathPricer(type, moneyness, discounts));
 
         // Initialize the one-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<SingleAsset<

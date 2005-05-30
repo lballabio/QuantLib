@@ -21,8 +21,8 @@
     \brief Cliquet option priced with Monte Carlo simulation
 */
 
-#ifndef quantlib_montecarlo_cliquetoption_pricer_h
-#define quantlib_montecarlo_cliquetoption_pricer_h
+#ifndef quantlib_montecarlo_cliquetoption_pricer_hpp
+#define quantlib_montecarlo_cliquetoption_pricer_hpp
 
 #include <ql/option.hpp>
 #include <ql/types.hpp>

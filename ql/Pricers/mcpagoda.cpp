@@ -27,26 +27,20 @@ namespace QuantLib {
 
         class PagodaPathPricer : public PathPricer<MultiPath> {
           public:
-            PagodaPathPricer(const std::vector<Real>& underlying,
-                             Real roof, Real fraction,
+            PagodaPathPricer(Real roof, Real fraction,
                              DiscountFactor discount)
-            : underlying_(underlying), roof_(roof), fraction_(fraction),
-              discount_(discount) {}
+            : roof_(roof), fraction_(fraction), discount_(discount) {}
 
             Real operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
-                QL_REQUIRE(underlying_.size() == numAssets,
-                           "the multi-path must contain "
-                           << underlying_.size() << " assets");
 
                 Real averageGain = 0.0;
                 for (Size i = 1; i < numSteps; i++) {
                     for (Size j = 0; j < numAssets; j++) {
                         averageGain +=
-                            underlying_[j] *
-                            (multiPath[j].value(i)/multiPath[j].value(i-1)
-                             - 1.0);
+                            multiPath[j].front() *
+                            (multiPath[j][i]/multiPath[j][i-1] - 1.0);
                     }
                 }
                 averageGain /= numAssets;
@@ -56,7 +50,6 @@ namespace QuantLib {
             }
 
           private:
-            std::vector<Real> underlying_;
             Real roof_, fraction_;
             DiscountFactor discount_;
         };
@@ -117,7 +110,7 @@ namespace QuantLib {
         // initialize the path pricer
         DiscountFactor discount = riskFreeRate->discount(times.back());
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
-                  new PagodaPathPricer(underlying, roof, fraction, discount));
+                              new PagodaPathPricer(roof, fraction, discount));
 
          // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset<

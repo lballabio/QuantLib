@@ -437,42 +437,11 @@ namespace QuantLib {
                                              arguments_.stochasticProcess,
                                              grid, quasiGen, brownianBridge));
 
-        MultiPathGenerator<LowDiscrepancy::rsg_type>::sample_type
-            quasiMultipathHolder = multipathGenerator->next();
-
-        MultiPathGenerator<PseudoRandom::rsg_type>::sample_type
-            multipathHolder = multipathGenerator->next();
-
-        bool isQuasi = false;
-        if (isQuasi) {
-            multipathHolder = quasiMultipathHolder;
-        }
-
         // generate the paths
-        MultiPath multipath = multipathHolder.value;
-        std::vector<MultiPath> multipaths (N, multipath);
-        std::vector<MultiPath> antimultipaths (N, multipath);
+        std::vector<MultiPath> multipaths(N);
         for (i=0; i<N/2; i++) {
-            multipathHolder = multipathGenerator->next();
-            multipaths[i] = multipathHolder.value;
-            multipathHolder = multipathGenerator->antithetic();
-            antimultipaths[i] = multipathHolder.value;
-        }
-
-        // get the asset values into an easy container
-        std::vector<Real> assetPath = getAssetSequence(
-                        initialPrices[0], (multipaths[0])[0]);
-        std::vector< std::vector<Real> >  temp_asset(numAssets, assetPath);
-
-        std::vector<std::vector<std::vector<Real> > >
-                multiAssetPaths(N, temp_asset);
-        for (i=0; i<N/2; i++) {
-            for (j = 0; j < numAssets; j++) {
-                multiAssetPaths[i][j] =
-                    getAssetSequence(initialPrices[j], multipaths[i][j]);
-                multiAssetPaths[N/2 + i][j] =
-                    getAssetSequence(initialPrices[j], antimultipaths[i][j]);
-            }
+            multipaths[i] = multipathGenerator->next().value;
+            multipaths[N/2+i] = multipathGenerator->antithetic().value;
         }
 
         // initialise rollback vector with payoff
@@ -480,10 +449,10 @@ namespace QuantLib {
         for (i=0; i<N; i++) {
             std::vector<Real> finalPrices(numAssets);
             for (j=0; j<numAssets; j++) {
-                finalPrices[j] = multiAssetPaths[i][j][timeSteps_-1];
+                finalPrices[j] = multipaths[i][j].back();
             }
-            normalizedContinuationValue[i] = payoff(basketPayoff(
-                        arguments_.basketType, finalPrices))/strike;
+            normalizedContinuationValue[i] =
+                payoff(basketPayoff(arguments_.basketType,finalPrices))/strike;
         }
 
         Array temp_coeffs(numBasisFunctions,1.0);
@@ -517,7 +486,7 @@ namespace QuantLib {
             std::vector<Real> y(N);
             for (i=0; i<N; i++) {
                 for (j=0; j<numAssets; j++) {
-                    assetPrices[j] = multiAssetPaths[i][j][timeStep];
+                    assetPrices[j] = multipaths[i][j][timeStep+1];
                 }
                 y[i] = payoff(basketPayoff(arguments_.basketType,
                                            assetPrices));
@@ -550,7 +519,7 @@ namespace QuantLib {
 
                     for (j=0; j<numAssets; j++) {
                         normalizedAssetPrices[j] =
-                            multiAssetPaths[itmPaths[i]][j][timeStep]/strike;
+                            multipaths[itmPaths[i]][j][timeStep+1]/strike;
                     }
                     // sort - ascending order
                     std::sort(normalizedAssetPrices.begin(),
@@ -626,21 +595,6 @@ namespace QuantLib {
 
         results_.value  = stats.mean();
         results_.errorEstimate = stats.errorEstimate();
-    }
-
-
-    // put all the asset prices into a vector.
-    // s0 is not included in the vector
-    std::vector<Real> getAssetSequence(Real s0, const Path& path) {
-        Size n = path.length()-1;
-        QL_REQUIRE(n>0, "the path cannot be empty");
-
-        std::vector<Real> asset(n);
-
-        for (Size i = 0; i < n; i++)
-            asset[i] = path.value(i+1);
-
-        return asset;
     }
 
 }

@@ -28,32 +28,26 @@ namespace QuantLib {
 
         class HimalayaPathPricer : public PathPricer<MultiPath> {
           public:
-            HimalayaPathPricer(const std::vector<Real>& underlying,
-                               Real strike,
+            HimalayaPathPricer(Real strike,
                                DiscountFactor discount)
-            : underlying_(underlying), strike_(strike), discount_(discount) {
-                for (Size j=0; j<underlying_.size(); j++) {
-                    QL_REQUIRE(underlying_[j]>0.0,
-                               "underlying less/equal zero not allowed");
-                    QL_REQUIRE(strike>=0.0,
-                               "strike less than zero not allowed");
-                }
+            : strike_(strike), discount_(discount) {
+                QL_REQUIRE(strike>=0.0, "negative strike given");
             }
 
             Real operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
-                Size numSteps = multiPath.pathSize();
-                QL_REQUIRE(underlying_.size() == numAssets,
-                           "the multi-path must contain "
-                           << underlying_.size() << " assets");
+                Size numNodes = multiPath.pathSize();
                 QL_REQUIRE(numAssets>0, "no asset given");
 
-                std::vector<Real> prices(underlying_);
-                Real averagePrice = 0;
+                Size i, j;
+                std::vector<Real> prices(numAssets);
+                for (j=0; j<numAssets; j++)
+                    prices[j] = multiPath[j].front();
                 std::vector<bool> remainingAssets(numAssets, true);
+                Real averagePrice = 0.0;
                 Real bestPrice;
-                Size removeAsset, i, j;
-                Size fixings = numSteps;
+                Size removeAsset;
+                Size fixings = numNodes-1;
                 if (multiPath[0].timeGrid().mandatoryTimes()[0] == 0.0) {
                     bestPrice = 0.0;
                     // dummy assignement to avoid compiler warning
@@ -66,15 +60,15 @@ namespace QuantLib {
                     }
                     remainingAssets[removeAsset] = false;
                     averagePrice += bestPrice;
-                    fixings = numSteps+1;
+                    fixings = numNodes;
                 }
-                for (i = 1; i < numSteps; i++) {
+                for (i = 1; i < numNodes; i++) {
                     bestPrice = 0.0;
                     // dummy assignement to avoid compiler warning
                     removeAsset=0;
                     for (j = 0; j < numAssets; j++) {
                         if (remainingAssets[j]) {
-                            prices[j] = multiPath[j].value(i);
+                            prices[j] = multiPath[j][i];
                             if (prices[j] >= bestPrice) {
                                 bestPrice = prices[j];
                                 removeAsset = j;
@@ -91,7 +85,6 @@ namespace QuantLib {
             }
 
           private:
-            std::vector<Real> underlying_;
             Real strike_;
             DiscountFactor discount_;
         };
@@ -147,7 +140,7 @@ namespace QuantLib {
         // initialize the path pricer
         DiscountFactor discount = riskFreeRate->discount(times.back());
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
-                        new HimalayaPathPricer(underlying, strike, discount));
+                                    new HimalayaPathPricer(strike, discount));
 
         // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset<

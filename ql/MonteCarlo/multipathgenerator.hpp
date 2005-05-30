@@ -120,7 +120,7 @@ namespace QuantLib {
 
             Array asset = process_->initialValues();
             for (Size j=0; j<n; j++)
-                path[j].value(0) = asset[j];
+                path[j].front() = asset[j];
 
             Array temp(n);
             next_.weight = sequence_.weight;
@@ -143,7 +143,7 @@ namespace QuantLib {
 
                 asset = process_->evolve(t, asset, dt, temp);
                 for (Size j=0; j<n; j++)
-                    path[j].value(i) = asset[j];
+                    path[j][i] = asset[j];
             }
             return next_;
         }

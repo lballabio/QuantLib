@@ -65,7 +65,7 @@ namespace QuantLib {
           case Barrier::DownIn:
             isOptionActive = false;
             for (i = 0; i < n-1; i++) {
-                new_asset_price = path.value(i+1);
+                new_asset_price = path[i+1];
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
@@ -82,7 +82,7 @@ namespace QuantLib {
           case Barrier::UpIn:
             isOptionActive = false;
             for (i = 0; i < n-1; i++) {
-                new_asset_price = path.value(i+1);
+                new_asset_price = path[i+1];
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
@@ -99,7 +99,7 @@ namespace QuantLib {
           case Barrier::DownOut:
             isOptionActive = true;
             for (i = 0; i < n-1; i++) {
-                new_asset_price = path.value(i+1);
+                new_asset_price = path[i+1];
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
@@ -116,7 +116,7 @@ namespace QuantLib {
           case Barrier::UpOut:
             isOptionActive = true;
             for (i = 0; i < n-1; i++) {
-                new_asset_price = path.value(i+1);
+                new_asset_price = path[i+1];
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
@@ -173,32 +173,32 @@ namespace QuantLib {
         switch (barrierType_) {
           case Barrier::DownIn:
             isOptionActive = false;
-            for (i = 0; i < n-1; i++) {
-                asset_price = path.value(i+1);
+            for (i = 1; i < n; i++) {
+                asset_price = path[i];
                 if (asset_price <= barrier_)
                     isOptionActive = true;
             }
             break;
           case Barrier::UpIn:
             isOptionActive = false;
-            for (i = 0; i < n-1; i++) {
-                asset_price = path.value(i+1);
+            for (i = 1; i < n; i++) {
+                asset_price = path[i];
                 if (asset_price >= barrier_)
                     isOptionActive = true;
             }
             break;
           case Barrier::DownOut:
             isOptionActive = true;
-            for (i = 0; i < n-1; i++) {
-                asset_price = path.value(i+1);
+            for (i = 1; i < n; i++) {
+                asset_price = path[i];
                 if (asset_price <= barrier_)
                     isOptionActive = false;
             }
             break;
           case Barrier::UpOut:
             isOptionActive = true;
-            for (i = 0; i < n-1; i++) {
-                asset_price = path.value(i+1);
+            for (i = 1; i < n; i++) {
+                asset_price = path[i];
                 if (asset_price >= barrier_)
                     isOptionActive = false;
             }

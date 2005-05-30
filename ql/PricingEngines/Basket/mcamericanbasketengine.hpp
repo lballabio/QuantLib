@@ -51,11 +51,6 @@ namespace QuantLib {
         BigNatural seed_;
     };
 
-
-    // put all the asset prices into a vector.
-    // s0 is not included in the vector
-    std::vector<Real> getAssetSequence(Real s0, const Path& path);
-
 }
 
 

@@ -29,7 +29,6 @@ namespace QuantLib {
           public:
             CliquetOptionPathPricer(
                                  Option::Type type,
-                                 Real underlying,
                                  Real moneyness,
                                  Real accruedCoupon,
                                  Real lastFixing,
@@ -39,14 +38,11 @@ namespace QuantLib {
                                  Real globalFloor,
                                  const std::vector<DiscountFactor>& discounts,
                                  bool redemptionOnly)
-            : type_(type), underlying_(underlying), moneyness_(moneyness),
+            : type_(type), moneyness_(moneyness),
               accruedCoupon_(accruedCoupon), lastFixing_(lastFixing),
               localCap_(localCap), localFloor_(localFloor),
               globalCap_(globalCap), globalFloor_(globalFloor),
               discounts_(discounts), redemptionOnly_(redemptionOnly) {
-                QL_REQUIRE(underlying>0.0,
-                           "underlying less/equal zero not allowed");
-
                 QL_REQUIRE(moneyness>0.0,
                            "moneyness less/equal zero not allowed");
 
@@ -76,7 +72,7 @@ namespace QuantLib {
 
                 // start the simulation
                 lastFixing = lastFixing_;
-                underlying = underlying_;
+                underlying = path.front();
                 if (redemptionOnly_)
                     result = accruedCoupon_;
                 else
@@ -84,7 +80,7 @@ namespace QuantLib {
 
                 // step by step using the discretization of the path
                 for (Size i=1; i<n; i++) {
-                    underlying = path.value(i);
+                    underlying = path[i];
                     // incorporate payoff
                     if (lastFixing != Null<Real>()) {
                         payoff =
@@ -115,7 +111,7 @@ namespace QuantLib {
 
           private:
             Option::Type type_;
-            Real underlying_, moneyness_, accruedCoupon_;
+            Real moneyness_, accruedCoupon_;
             Real lastFixing_, localCap_, localFloor_,
                  globalCap_, globalFloor_;
             std::vector<DiscountFactor> discounts_;
@@ -160,7 +156,7 @@ namespace QuantLib {
 
         // initialize the path pricer
         boost::shared_ptr<PathPricer<Path> > cliquetPathPricer(
-            new CliquetOptionPathPricer(type, underlying, moneyness,
+            new CliquetOptionPathPricer(type, moneyness,
                                         accruedCoupon, lastFixing,
                                         localCap, localFloor,
                                         globalCap, globalFloor,

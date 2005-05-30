@@ -130,22 +130,21 @@ namespace QuantLib {
 
             Path& path = next_.value;
 
-            path.value(0) = process_->x0();
+            path.front() = process_->x0();
 
             Time t = timeGrid_[0];
             Time dt= timeGrid_.dt(0);
             Real diffusion = stdDev_.value[0];
-            path.value(1) =
-                process_->apply(process_->expectation(t,path.value(0),dt),
-                                antithetic ? -diffusion : diffusion);
+            path[1] = process_->apply(process_->expectation(t,path.front(),dt),
+                                      antithetic ? -diffusion : diffusion);
 
             for (Size i=2; i<path.length(); i++) {
                 t = timeGrid_[i-1];
                 dt = timeGrid_.dt(i-1);
                 diffusion = stdDev_.value[i-1] - stdDev_.value[i-2];
-                path.value(i) = process_->apply(
-                                  process_->expectation(t,path.value(i-1),dt),
-                                  antithetic ? -diffusion : diffusion);
+                path[i] =
+                    process_->apply(process_->expectation(t,path[i-1],dt),
+                                    antithetic ? -diffusion : diffusion);
             }
             return next_;
         } else {
@@ -159,15 +158,15 @@ namespace QuantLib {
             Path& path = next_.value;
 
             // starting point for asset value
-            path.value(0) = process_->x0();
+            path.front() = process_->x0();
 
             for (Size i=1; i<path.length(); i++) {
                 Time t = timeGrid_[i-1];
                 Time dt = timeGrid_.dt(i-1);
-                path.value(i) = process_->evolve(t, path.value(i-1), dt,
-                                                 antithetic ?
-                                                   -sequence_.value[i-1] :
-                                                    sequence_.value[i-1]);
+                path[i] = process_->evolve(t, path[i-1], dt,
+                                           antithetic ?
+                                               -sequence_.value[i-1] :
+                                                sequence_.value[i-1]);
             }
 
             return next_;

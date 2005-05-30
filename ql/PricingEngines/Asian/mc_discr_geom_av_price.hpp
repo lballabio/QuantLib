@@ -38,11 +38,14 @@ namespace QuantLib {
               reproducing results available in literature.
     */
     template <class RNG = PseudoRandom, class S = Statistics>
-    class MCDiscreteGeometricAPEngine : public MCDiscreteAveragingAsianEngine<RNG,S> {
+    class MCDiscreteGeometricAPEngine
+        : public MCDiscreteAveragingAsianEngine<RNG,S> {
       public:
-        typedef typename MCDiscreteAveragingAsianEngine<RNG,S>::path_generator_type
+        typedef
+        typename MCDiscreteAveragingAsianEngine<RNG,S>::path_generator_type
             path_generator_type;
-        typedef typename MCDiscreteAveragingAsianEngine<RNG,S>::path_pricer_type
+        typedef
+        typename MCDiscreteAveragingAsianEngine<RNG,S>::path_pricer_type
             path_pricer_type;
         typedef typename MCDiscreteAveragingAsianEngine<RNG,S>::stats_type
             stats_type;
@@ -63,7 +66,6 @@ namespace QuantLib {
     class GeometricAPOPathPricer : public PathPricer<Path> {
       public:
         GeometricAPOPathPricer(Option::Type type,
-                               Real underlying,
                                Real strike,
                                DiscountFactor discount,
                                Real runningProduct = 1.0,
@@ -77,13 +79,13 @@ namespace QuantLib {
             Size fixings = n+pastFixings_;
             if (path.timeGrid().mandatoryTimes()[0]==0.0) {
                 fixings += 1;
-                product *= underlying_;
+                product *= path.front();
             }
             // care must be taken not to overflow product
             Real maxValue = QL_MAX_REAL;
             averagePrice = 1.0;
             for (Size i=1; i<n+1; i++) {
-                Real price = path.value(i);
+                Real price = path[i];
                 if (product < maxValue/price) {
                     product *= price;
                 } else {
@@ -95,10 +97,9 @@ namespace QuantLib {
             return discount_ * payoff_(averagePrice);
         }
       private:
-        Real underlying_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
-        Real runningProduct_, runningLog_;
+        Real runningProduct_;
         Size pastFixings_;
     };
 
@@ -151,7 +152,6 @@ namespace QuantLib {
             MCDiscreteGeometricAPEngine<RNG,S>::path_pricer_type>(
             new GeometricAPOPathPricer(
               payoff->optionType(),
-              process->stateVariable()->value(),
               payoff->strike(),
               process->riskFreeRate()->discount(this->timeGrid().back())));
     }

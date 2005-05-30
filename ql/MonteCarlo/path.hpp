@@ -45,6 +45,8 @@ namespace QuantLib {
         bool empty() const;
         Size length() const;
         //! asset value at the \f$ i \f$-th point
+        Real operator[](Size i) const;
+        Real& operator[](Size i);
         Real value(Size i) const;
         Real& value(Size i);
         //! time at the \f$ i \f$-th point
@@ -89,6 +91,14 @@ namespace QuantLib {
 
     inline Size Path::length() const {
         return timeGrid_.size();
+    }
+
+    inline Real Path::operator[](Size i) const {
+        return values_[i];
+    }
+
+    inline Real& Path::operator[](Size i) {
+        return values_[i];
     }
 
     inline Real Path::value(Size i) const {

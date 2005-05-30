@@ -53,7 +53,7 @@ namespace QuantLib {
         switch (payoff_->optionType()) {
           case Option::Call:
             for (i=0; i<n-1; i++) {
-                x = std::log(path.value(i+1)/path.value(i));
+                x = std::log(path[i+1]/path[i]);
                 // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i+1],
                                               std::exp(log_asset_price));
@@ -80,7 +80,7 @@ namespace QuantLib {
             break;
           case Option::Put:
             for (i=0; i<n-1; i++) {
-                x = std::log(path.value(i+1)/path.value(i));
+                x = std::log(path[i+1]/path[i]);
                 // terminal or initial vol?
                 // initial (timeGrid[i+1]) for the time being
                 vol = diffProcess_->diffusion(timeGrid[i+1],

@@ -229,7 +229,7 @@ Real ReplicationPathPricer::operator()(const Path& path) const {
         money_account *= std::exp( r_*dt );
 
         // stock growth:
-        stock = path.value(step+1);
+        stock = path[step+1];
 
         // recalculate option value at the current stock value,
         // and the current time to maturity
@@ -253,7 +253,7 @@ Real ReplicationPathPricer::operator()(const Path& path) const {
     // last accrual on my money account
     money_account *= std::exp( r_*dt );
     // last stock growth
-    stock = path.value(n);
+    stock = path[n];
 
     // the hedger delivers the option payoff to the option holder
     Real optionPayoff = PlainVanillaPayoff(type_, strike_)(stock);

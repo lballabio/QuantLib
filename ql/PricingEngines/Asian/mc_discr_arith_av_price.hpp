@@ -43,12 +43,14 @@ namespace QuantLib {
                reproducing results available in literature.
     */
     template <class RNG = PseudoRandom, class S = Statistics>
-    class MCDiscreteArithmeticAPEngine :
-                                public MCDiscreteAveragingAsianEngine<RNG,S> {
+    class MCDiscreteArithmeticAPEngine
+        : public MCDiscreteAveragingAsianEngine<RNG,S> {
       public:
-        typedef typename MCDiscreteAveragingAsianEngine<RNG,S>::path_generator_type
+        typedef
+        typename MCDiscreteAveragingAsianEngine<RNG,S>::path_generator_type
             path_generator_type;
-        typedef typename MCDiscreteAveragingAsianEngine<RNG,S>::path_pricer_type
+        typedef
+        typename MCDiscreteAveragingAsianEngine<RNG,S>::path_pricer_type
             path_pricer_type;
         typedef typename MCDiscreteAveragingAsianEngine<RNG,S>::stats_type
             stats_type;
@@ -74,31 +76,28 @@ namespace QuantLib {
     class ArithmeticAPOPathPricer : public PathPricer<Path> {
       public:
         ArithmeticAPOPathPricer(Option::Type type,
-                                Real underlying,
                                 Real strike,
                                 DiscountFactor discount,
                                 Real runningSum = 0.0,
                                 Size pastFixings = 0);
         Real operator()(const Path& path) const  {
-            Size n = path.length() - 1;
-            QL_REQUIRE(n>0, "the path cannot be empty");
+            Size n = path.length();
+            QL_REQUIRE(n>1, "the path cannot be empty");
 
-            Real price = underlying_, averagePrice = runningSum_;
-            Size fixings = n + pastFixings_;
-            // not sure the if is correct
+            Real sum;
+            Size fixings;
             if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-                averagePrice = price;
-                fixings = n + pastFixings_ + 1;
+                // include initial fixing
+                sum = std::accumulate(path.begin(),path.end(),runningSum_);
+                fixings = pastFixings_ + n;
+            } else {
+                sum = std::accumulate(path.begin()+1,path.end(),runningSum_);
+                fixings = pastFixings_ + n - 1;
             }
-            for (Size i=0; i<n; i++) {
-                price = path.value(i+1);
-                averagePrice += price;
-            }
-            averagePrice = averagePrice/fixings;
+            Real averagePrice = sum/fixings;
             return discount_ * payoff_(averagePrice);
         }
       private:
-        Real underlying_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
         Real runningSum_;
@@ -152,7 +151,6 @@ namespace QuantLib {
             MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
             new ArithmeticAPOPathPricer(
               payoff->optionType(),
-              process->stateVariable()->value(),
               payoff->strike(),
               process->riskFreeRate()->discount(this->timeGrid().back())));
     }
@@ -184,7 +182,6 @@ namespace QuantLib {
             MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
             new GeometricAPOPathPricer(
               payoff->optionType(),
-              process->stateVariable()->value(),
               payoff->strike(),
               process->riskFreeRate()->discount(this->timeGrid().back())));
     }
