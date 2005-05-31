@@ -163,14 +163,9 @@ int main(int, char* [])
         // defining the models
         boost::shared_ptr<G2> modelG2(new G2(rhTermStructure));
         boost::shared_ptr<HullWhite> modelHW(new HullWhite(rhTermStructure));
-
-#define ALSO_NUMERICAL_MODELS
-
-#ifdef ALSO_NUMERICAL_MODELS
         boost::shared_ptr<HullWhite> modelHW2(new HullWhite(rhTermStructure));
-        boost::shared_ptr<BlackKarasinski> modelBK(new
-            BlackKarasinski(rhTermStructure));
-#endif
+        boost::shared_ptr<BlackKarasinski> modelBK(
+                                        new BlackKarasinski(rhTermStructure));
 
 
         // model calibrations
@@ -202,7 +197,6 @@ int main(int, char* [])
                   << "sigma = " << modelHW->params()[1]
                   << std::endl << std::endl;
 
-#ifdef ALSO_NUMERICAL_MODELS
         std::cout << "Hull-White (numerical) calibration" << std::endl;
         for (i=0; i<swaptions.size(); i++)
             swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
@@ -214,7 +208,6 @@ int main(int, char* [])
                   << "sigma = " << modelHW2->params()[1]
                   << std::endl << std::endl;
 
-
         std::cout << "Black-Karasinski (numerical) calibration" << std::endl;
         for (i=0; i<swaptions.size(); i++)
             swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
@@ -225,7 +218,6 @@ int main(int, char* [])
                   << "a = " << modelBK->params()[0] << ", "
                   << "sigma = " << modelBK->params()[1]
                   << std::endl << std::endl;
-#endif
 
 
         // ATM Bermudan swaption pricing
@@ -243,10 +235,10 @@ int main(int, char* [])
             bermudanDates.push_back(coupon->accrualStartDate());
         }
 
-        boost::shared_ptr<Exercise> bermudaExercise(new
-            BermudanExercise(bermudanDates));
+        boost::shared_ptr<Exercise> bermudanExercise(
+                                         new BermudanExercise(bermudanDates));
 
-        Swaption bermudanSwaption(atmSwap, bermudaExercise, rhTermStructure,
+        Swaption bermudanSwaption(atmSwap, bermudanExercise, rhTermStructure,
                                   boost::shared_ptr<PricingEngine>());
 
         // Do the pricing for each model
@@ -260,7 +252,6 @@ int main(int, char* [])
            new TreeSwaptionEngine(modelHW, 50)));
         std::cout << "HW:       " << bermudanSwaption.NPV() << std::endl;
 
-#ifdef ALSO_NUMERICAL_MODELS
         bermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(new
             TreeSwaptionEngine(modelHW2, 50)));
         std::cout << "HW (num): " << bermudanSwaption.NPV() << std::endl;
@@ -268,7 +259,6 @@ int main(int, char* [])
         bermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(new
             TreeSwaptionEngine(modelBK, 50)));
         std::cout << "BK:       " << bermudanSwaption.NPV() << std::endl;
-#endif
 
 
         // OTM Bermudan swaption pricing
@@ -277,7 +267,7 @@ int main(int, char* [])
                   << "struck at " << io::rate(fixedOTMRate)
                   << " (OTM)" << std::endl;
 
-        Swaption otmBermudanSwaption(otmSwap, bermudaExercise, rhTermStructure,
+        Swaption otmBermudanSwaption(otmSwap,bermudanExercise,rhTermStructure,
                                      boost::shared_ptr<PricingEngine>());
 
         // Do the pricing for each model
@@ -289,7 +279,6 @@ int main(int, char* [])
             new TreeSwaptionEngine(modelHW, 50)));
         std::cout << "HW:       " << otmBermudanSwaption.NPV() << std::endl;
 
-#ifdef ALSO_NUMERICAL_MODELS
         otmBermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelHW2, 50)));
         std::cout << "HW (num): " << otmBermudanSwaption.NPV() << std::endl;
@@ -297,7 +286,6 @@ int main(int, char* [])
         otmBermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelBK, 50)));
         std::cout << "BK:       " << otmBermudanSwaption.NPV() << std::endl;
-#endif
 
 
         // ITM Bermudan swaption pricing
@@ -306,7 +294,7 @@ int main(int, char* [])
                   << "struck at " << io::rate(fixedITMRate)
                   << " (ITM)" << std::endl;
 
-        Swaption itmBermudanSwaption(itmSwap, bermudaExercise, rhTermStructure,
+        Swaption itmBermudanSwaption(itmSwap,bermudanExercise,rhTermStructure,
                                      boost::shared_ptr<PricingEngine>());
 
         // Do the pricing for each model
@@ -318,7 +306,6 @@ int main(int, char* [])
             new TreeSwaptionEngine(modelHW, 50)));
         std::cout << "HW:       " << itmBermudanSwaption.NPV() << std::endl;
 
-#ifdef ALSO_NUMERICAL_MODELS
         itmBermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelHW2, 50)));
         std::cout << "HW (num): " << itmBermudanSwaption.NPV() << std::endl;
@@ -326,7 +313,6 @@ int main(int, char* [])
         itmBermudanSwaption.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelBK, 50)));
         std::cout << "BK:       " << itmBermudanSwaption.NPV() << std::endl;
-#endif
 
         return 0;
     } catch (std::exception& e) {
