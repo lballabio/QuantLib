@@ -9,8 +9,10 @@ include_HEADERS = \
     barrieroption.hpp \
     basketoption.hpp \
     bond.hpp \
+    callabilityschedule.hpp \
     capfloor.hpp \
     cliquetoption.hpp \
+    convertiblebond.hpp \
     dividendvanillaoption.hpp \
     dividendschedule.hpp \
     europeanoption.hpp \
