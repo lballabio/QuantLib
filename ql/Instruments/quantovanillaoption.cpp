@@ -25,7 +25,7 @@ namespace QuantLib {
                    const Handle<YieldTermStructure>& foreignRiskFreeTS,
                    const Handle<BlackVolTermStructure>& exchRateVolTS,
                    const Handle<Quote>& correlation,
-                   const boost::shared_ptr<GenericStochasticProcess>& process,
+                   const boost::shared_ptr<StochasticProcess>& process,
                    const boost::shared_ptr<StrikedTypePayoff>& payoff,
                    const boost::shared_ptr<Exercise>& exercise,
                    const boost::shared_ptr<PricingEngine>& engine)

@@ -94,7 +94,7 @@ namespace QuantLib {
                                                             riskFreeRate,
                                                             volatilities[i]));
         }
-        boost::shared_ptr<GenericStochasticProcess> process(
+        boost::shared_ptr<StochasticProcess> process(
                            new StochasticProcessArray(processes,correlation));
 
         TimeGrid grid(times.begin(), times.end());

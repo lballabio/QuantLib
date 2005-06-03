@@ -23,7 +23,7 @@ namespace QuantLib {
 
 
     CliquetOption::CliquetOption(
-                   const boost::shared_ptr<GenericStochasticProcess>& process,
+                   const boost::shared_ptr<StochasticProcess>& process,
                    const boost::shared_ptr<PercentageStrikePayoff>& payoff,
                    const boost::shared_ptr<EuropeanExercise>& maturity,
                    const std::vector<Date>& resetDates,

@@ -25,46 +25,46 @@ namespace QuantLib {
 
     // base class
 
-    GenericStochasticProcess::GenericStochasticProcess() {}
+    StochasticProcess::StochasticProcess() {}
 
-    GenericStochasticProcess::GenericStochasticProcess(
+    StochasticProcess::StochasticProcess(
                                 const boost::shared_ptr<discretization>& disc)
     : discretization_(disc) {}
 
-    Disposable<Array> GenericStochasticProcess::expectation(Time t0,
-                                                            const Array& x0,
-                                                            Time dt) const {
+    Disposable<Array> StochasticProcess::expectation(Time t0,
+                                                     const Array& x0,
+                                                     Time dt) const {
         return apply(x0, discretization_->drift(*this, t0, x0, dt));
     }
 
-    Disposable<Matrix> GenericStochasticProcess::stdDeviation(Time t0,
-                                                              const Array& x0,
-                                                              Time dt) const {
+    Disposable<Matrix> StochasticProcess::stdDeviation(Time t0,
+                                                       const Array& x0,
+                                                       Time dt) const {
         return discretization_->diffusion(*this, t0, x0, dt);
     }
 
-    Disposable<Matrix> GenericStochasticProcess::covariance(Time t0,
-                                                            const Array& x0,
-                                                            Time dt) const {
+    Disposable<Matrix> StochasticProcess::covariance(Time t0,
+                                                     const Array& x0,
+                                                     Time dt) const {
         return discretization_->covariance(*this, t0, x0, dt);
     }
 
-    Disposable<Array> GenericStochasticProcess::evolve(
+    Disposable<Array> StochasticProcess::evolve(
                                              Time t0, const Array& x0,
                                              Time dt, const Array& dw) const {
         return apply(expectation(t0,x0,dt), stdDeviation(t0,x0,dt)*dw);
     }
 
-    Disposable<Array> GenericStochasticProcess::apply(const Array& x0,
-                                                      const Array& dx) const {
+    Disposable<Array> StochasticProcess::apply(const Array& x0,
+                                               const Array& dx) const {
         return x0 + dx;
     }
 
-    Time GenericStochasticProcess::time(const Date& ) const {
+    Time StochasticProcess::time(const Date& ) const {
         QL_FAIL("date/time conversion not supported");
     }
 
-    void GenericStochasticProcess::update() {
+    void StochasticProcess::update() {
         notifyObservers();
     }
 

@@ -147,7 +147,7 @@ namespace QuantLib {
                     this->arguments_.resetDate)));
 
         originalArguments_->stochasticProcess =
-            boost::shared_ptr<GenericStochasticProcess>(
+            boost::shared_ptr<StochasticProcess>(
                       new BlackScholesProcess(spot, dividendYield,
                                               riskFreeRate, blackVolatility));
 

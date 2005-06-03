@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     OneAssetOption::OneAssetOption(
-        const boost::shared_ptr<GenericStochasticProcess>& process,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
@@ -216,7 +216,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> riskFreeRate(
                                             originalProcess->riskFreeRate());
         Handle<BlackVolTermStructure> volatility;
-        boost::shared_ptr<GenericStochasticProcess> process(
+        boost::shared_ptr<StochasticProcess> process(
                new BlackScholesProcess(stateVariable, dividendYield,
                                        riskFreeRate, volatility));
 

@@ -24,7 +24,7 @@ namespace QuantLib {
 
     BasketOption::BasketOption(
         const BasketType basketType,
-        const boost::shared_ptr<GenericStochasticProcess>& process,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)

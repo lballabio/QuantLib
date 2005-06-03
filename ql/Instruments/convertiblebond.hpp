@@ -44,7 +44,7 @@ namespace QuantLib {
     class ConvertibleBond: public Bond {
       public:
         ConvertibleBond(
-                 const boost::shared_ptr<GenericStochasticProcess>& stochProc,
+                 const boost::shared_ptr<StochasticProcess>& stochProc,
                  Real conversionRatio,
                  const DividendSchedule&  dividends,
                  const CallabilitySchedule& callability,

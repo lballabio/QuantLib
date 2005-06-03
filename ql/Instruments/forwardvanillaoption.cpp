@@ -24,7 +24,7 @@ namespace QuantLib {
     ForwardVanillaOption::ForwardVanillaOption(
         Real moneyness,
         Date resetDate,
-        const boost::shared_ptr<GenericStochasticProcess>& process,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)

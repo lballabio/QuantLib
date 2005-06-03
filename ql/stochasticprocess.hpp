@@ -32,32 +32,32 @@
 
 namespace QuantLib {
 
-    //! multi dimensional Stochastic process class.
+    //! multi-dimensional stochastic process class.
     /*! This class describes a stochastic process governed by
         \f[
         d\mathrm{x}_t = \mu(t, x_t)\mathrm{d}t
                       + \sigma(t, \mathrm{x}_t) \cdot d\mathrm{W}_t.
         \f]
     */
-    class GenericStochasticProcess : public Observer, public Observable {
+    class StochasticProcess : public Observer, public Observable {
       public:
         //! discretization of a stochastic process over a given time interval
         class discretization {
           public:
             virtual ~discretization() {}
-            virtual Disposable<Array> drift(const GenericStochasticProcess&,
+            virtual Disposable<Array> drift(const StochasticProcess&,
                                             Time t0, const Array& x0,
                                             Time dt) const = 0;
             virtual Disposable<Matrix> diffusion(
-                                              const GenericStochasticProcess&,
+                                              const StochasticProcess&,
                                               Time t0, const Array& x0,
                                               Time dt) const = 0;
             virtual Disposable<Matrix> covariance(
-                                              const GenericStochasticProcess&,
+                                              const StochasticProcess&,
                                               Time t0, const Array& x0,
                                               Time dt) const = 0;
         };
-        virtual ~GenericStochasticProcess() {}
+        virtual ~StochasticProcess() {}
         //! \name Stochastic process interface
         //@{
         //! returns the number of dimensions of the stochastic process
@@ -138,10 +138,15 @@ namespace QuantLib {
         void update();
         //@}
       protected:
-        GenericStochasticProcess();
-        GenericStochasticProcess(const boost::shared_ptr<discretization>&);
+        StochasticProcess();
+        StochasticProcess(const boost::shared_ptr<discretization>&);
         boost::shared_ptr<discretization> discretization_;
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to StochasticProcess */
+    typedef StochasticProcess GenericStochasticProcess;
+    #endif
 
 
     //! 1-dimensional stochastic process
@@ -150,7 +155,7 @@ namespace QuantLib {
             dx_t = \mu(t, x_t)dt + \sigma(t, x_t)dW_t.
         \f]
     */
-    class StochasticProcess1D : public GenericStochasticProcess {
+    class StochasticProcess1D : public StochasticProcess {
       public:
         //! discretization of a 1-D stochastic process
         class discretization {
@@ -217,7 +222,7 @@ namespace QuantLib {
         StochasticProcess1D(const boost::shared_ptr<discretization>&);
         boost::shared_ptr<discretization> discretization_;
       private:
-        // GenericStochasticProcess interface implementation
+        // StochasticProcess interface implementation
         Size size() const;
         Disposable<Array> initialValues() const;
         Disposable<Array> drift(Time t, const Array& x) const;

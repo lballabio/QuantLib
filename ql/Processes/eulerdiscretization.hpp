@@ -30,14 +30,14 @@ namespace QuantLib {
 
     //! Euler discretization for stochastic processes
     class EulerDiscretization
-        : public GenericStochasticProcess::discretization,
+        : public StochasticProcess::discretization,
           public StochasticProcess1D::discretization {
       public:
 
         /*! Returns an approximation of the drift defined as
             \f$ \mu(t_0, \mathbf{x}_0) \Delta t \f$.
         */
-        Disposable<Array> drift(const GenericStochasticProcess&,
+        Disposable<Array> drift(const StochasticProcess&,
                                 Time t0, const Array& x0, Time dt) const;
         /*! Returns an approximation of the drift defined as
             \f$ \mu(t_0, x_0) \Delta t \f$.
@@ -48,7 +48,7 @@ namespace QuantLib {
         /*! Returns an approximation of the diffusion defined as
             \f$ \sigma(t_0, \mathbf{x}_0) \sqrt{\Delta t} \f$.
         */
-        Disposable<Matrix> diffusion(const GenericStochasticProcess&,
+        Disposable<Matrix> diffusion(const StochasticProcess&,
                                      Time t0, const Array& x0, Time dt) const;
         /*! Returns an approximation of the diffusion defined as
             \f$ \sigma(t_0, x_0) \sqrt{\Delta t} \f$.
@@ -59,7 +59,7 @@ namespace QuantLib {
         /*! Returns an approximation of the covariance defined as
             \f$ \sigma(t_0, \mathbf{x}_0)^2 \Delta t \f$.
         */
-        Disposable<Matrix> covariance(const GenericStochasticProcess&,
+        Disposable<Matrix> covariance(const StochasticProcess&,
                                       Time t0, const Array& x0, Time dt) const;
         /*! Returns an approximation of the variance defined as
             \f$ \sigma(t_0, x_0)^2 \Delta t \f$.

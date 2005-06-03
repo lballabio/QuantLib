@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     //! Array of correlated 1-D stochastic processes
-    class StochasticProcessArray : public GenericStochasticProcess {
+    class StochasticProcessArray : public StochasticProcess {
       public:
         StochasticProcessArray(
                   const std::vector<boost::shared_ptr<StochasticProcess1D> >&,

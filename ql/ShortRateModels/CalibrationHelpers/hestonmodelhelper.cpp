@@ -49,7 +49,7 @@ namespace QuantLib {
 
         Handle<Quote> underlying(boost::shared_ptr<Quote>(
                                                        new SimpleQuote(s0_)));
-        boost::shared_ptr<GenericStochasticProcess> process(
+        boost::shared_ptr<StochasticProcess> process(
                       new HestonProcess(riskFreeRate, dividendYield,
                                         underlying, 1.0, 0.1, 1.0, 0.3, 0.0));
 

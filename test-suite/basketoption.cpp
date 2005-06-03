@@ -273,7 +273,7 @@ void BasketOptionTest::testEuroTwoValues() {
             correlationMatrix[j][j] = 1.0;
         }
 
-        boost::shared_ptr<GenericStochasticProcess> process(
+        boost::shared_ptr<StochasticProcess> process(
                          new StochasticProcessArray(procs,correlationMatrix));
 
         BasketOption basketOption(values[i].basketType, process,
@@ -461,7 +461,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
             correlation[j][j] = 1.0;
         }
 
-        boost::shared_ptr<GenericStochasticProcess> process(
+        boost::shared_ptr<StochasticProcess> process(
                                new StochasticProcessArray(procs,correlation));
 
         // use a 3D sobol sequence...
@@ -611,7 +611,7 @@ void BasketOptionTest::testTavellaValues() {
     correlation[2][1] = 0.3;
     correlation[1][2] = 0.3;
 
-    boost::shared_ptr<GenericStochasticProcess> process(
+    boost::shared_ptr<StochasticProcess> process(
                                new StochasticProcessArray(procs,correlation));
 
     BasketOption basketOption(values[0].basketType, process,
@@ -710,7 +710,7 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     Matrix correlation(1, 1, 1.0);
 
-    boost::shared_ptr<GenericStochasticProcess> process(
+    boost::shared_ptr<StochasticProcess> process(
                                new StochasticProcessArray(procs,correlation));
 
     for (Size i=0; i<LENGTH(values); i++) {

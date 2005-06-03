@@ -74,7 +74,7 @@ void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
 
 }
 
-void testMultiple(const boost::shared_ptr<GenericStochasticProcess>& process,
+void testMultiple(const boost::shared_ptr<StochasticProcess>& process,
                   const std::string& tag, Real expected[], Real antithetic[]) {
     typedef PseudoRandom::rsg_type rsg_type;
     typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
@@ -178,7 +178,7 @@ void PathGeneratorTest::testMultiPathGenerator() {
     correlation[2][0] = 0.7; correlation[2][1] = 0.4; correlation[2][2] = 1.0;
 
     std::vector<boost::shared_ptr<StochasticProcess1D> > processes(3);
-    boost::shared_ptr<GenericStochasticProcess> process;
+    boost::shared_ptr<StochasticProcess> process;
 
     processes[0] = boost::shared_ptr<StochasticProcess1D>(
                                        new BlackScholesProcess(x0,q,r,sigma));
@@ -186,7 +186,7 @@ void PathGeneratorTest::testMultiPathGenerator() {
                                        new BlackScholesProcess(x0,q,r,sigma));
     processes[2] = boost::shared_ptr<StochasticProcess1D>(
                                        new BlackScholesProcess(x0,q,r,sigma));
-    process = boost::shared_ptr<GenericStochasticProcess>(
+    process = boost::shared_ptr<StochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     Real result1[] = {
         188.2235869273,
@@ -204,7 +204,7 @@ void PathGeneratorTest::testMultiPathGenerator() {
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
     processes[2] = boost::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
-    process = boost::shared_ptr<GenericStochasticProcess>(
+    process = boost::shared_ptr<StochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     Real result2[] = {
         174.8266132344,
@@ -222,7 +222,7 @@ void PathGeneratorTest::testMultiPathGenerator() {
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20));
     processes[2] = boost::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20));
-    process = boost::shared_ptr<GenericStochasticProcess>(
+    process = boost::shared_ptr<StochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     Real result3[] = {
         0.2942058437284,
@@ -240,7 +240,7 @@ void PathGeneratorTest::testMultiPathGenerator() {
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0));
     processes[2] = boost::shared_ptr<StochasticProcess1D>(
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0));
-    process = boost::shared_ptr<GenericStochasticProcess>(
+    process = boost::shared_ptr<StochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     Real result4[] = {
         4.279510844897,

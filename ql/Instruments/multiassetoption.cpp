@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     MultiAssetOption::MultiAssetOption(
-        const boost::shared_ptr<GenericStochasticProcess>& process,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)

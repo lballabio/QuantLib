@@ -155,7 +155,7 @@ namespace QuantLib {
                     this->arguments_.correlation)));
         Handle<BlackVolTermStructure> blackVol(process->blackVolatility());
         originalArguments_->stochasticProcess =
-            boost::shared_ptr<GenericStochasticProcess>(
+            boost::shared_ptr<StochasticProcess>(
                              new BlackScholesProcess(spot, dividendYield,
                                                      riskFreeRate, blackVol));
 

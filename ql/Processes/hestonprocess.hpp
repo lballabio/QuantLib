@@ -41,7 +41,7 @@ namespace QuantLib {
         \end{array}
         \f]
     */
-    class HestonProcess : public GenericStochasticProcess {
+    class HestonProcess : public StochasticProcess {
       public:
         HestonProcess(const Handle<YieldTermStructure>& riskFreeRate,
                       const Handle<YieldTermStructure>& dividendYield,

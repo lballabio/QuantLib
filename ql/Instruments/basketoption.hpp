@@ -36,12 +36,11 @@ namespace QuantLib {
         class arguments;
         class engine;
         enum BasketType { Min, Max };
-        BasketOption(
-               const BasketType basketType,
-               const boost::shared_ptr<GenericStochasticProcess>&,
-               const boost::shared_ptr<PlainVanillaPayoff>&,
-               const boost::shared_ptr<Exercise>&,
-               const boost::shared_ptr<PricingEngine>& engine =
+        BasketOption(const BasketType basketType,
+                     const boost::shared_ptr<StochasticProcess>&,
+                     const boost::shared_ptr<PlainVanillaPayoff>&,
+                     const boost::shared_ptr<Exercise>&,
+                     const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>());
         void setupArguments(Arguments*) const;
       private:

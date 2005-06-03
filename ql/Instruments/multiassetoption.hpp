@@ -34,11 +34,10 @@ namespace QuantLib {
     //! Base class for options on multiple assets
     class MultiAssetOption : public Option {
       public:
-        MultiAssetOption(
-               const boost::shared_ptr<GenericStochasticProcess>&,
-               const boost::shared_ptr<Payoff>&,
-               const boost::shared_ptr<Exercise>&,
-               const boost::shared_ptr<PricingEngine>& engine =
+        MultiAssetOption(const boost::shared_ptr<StochasticProcess>&,
+                         const boost::shared_ptr<Payoff>&,
+                         const boost::shared_ptr<Exercise>&,
+                         const boost::shared_ptr<PricingEngine>& engine =
                                            boost::shared_ptr<PricingEngine>());
         //! \name Instrument interface
         //@{
@@ -63,7 +62,7 @@ namespace QuantLib {
         mutable Real delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
         // arguments
-        boost::shared_ptr<GenericStochasticProcess> stochasticProcess_;
+        boost::shared_ptr<StochasticProcess> stochasticProcess_;
     };
 
     //! %Arguments for multi-asset option calculation
@@ -71,7 +70,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        boost::shared_ptr<GenericStochasticProcess> stochasticProcess;
+        boost::shared_ptr<StochasticProcess> stochasticProcess;
     };
 
     //! %Results from multi-asset option calculation

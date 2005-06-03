@@ -33,11 +33,10 @@ namespace QuantLib {
     //! Base class for options on a single asset with striked payoff
     class OneAssetStrikedOption : public OneAssetOption {
       public:
-        OneAssetStrikedOption(
-            const boost::shared_ptr<GenericStochasticProcess>&,
-            const boost::shared_ptr<StrikedTypePayoff>&,
-            const boost::shared_ptr<Exercise>&,
-            const boost::shared_ptr<PricingEngine>& engine =
+        OneAssetStrikedOption(const boost::shared_ptr<StochasticProcess>&,
+                              const boost::shared_ptr<StrikedTypePayoff>&,
+                              const boost::shared_ptr<Exercise>&,
+                              const boost::shared_ptr<PricingEngine>& engine =
                                       boost::shared_ptr<PricingEngine>());
         //! \name greeks
         //@{
