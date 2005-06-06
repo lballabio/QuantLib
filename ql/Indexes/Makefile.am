@@ -11,10 +11,10 @@ include_HEADERS = \
     chflibor.hpp \
     euribor.hpp \
     gbplibor.hpp \
+    jibar.hpp \
     jpylibor.hpp \
     tibor.hpp \
     usdlibor.hpp \
-    zarlibor.hpp \
     zibor.hpp \
     xibor.hpp \
     indexmanager.hpp

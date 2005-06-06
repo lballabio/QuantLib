@@ -17,12 +17,12 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file zarlibor.hpp
+/*! \file jibar.hpp
     \brief %JIBAR rate
 */
 
-#ifndef quantlib_zar_libor_hpp
-#define quantlib_zar_libor_hpp
+#ifndef quantlib_jibar_hpp
+#define quantlib_jibar_hpp
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/johannesburg.hpp>

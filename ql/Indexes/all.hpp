@@ -29,10 +29,10 @@
 #include <ql/Indexes/chflibor.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Indexes/gbplibor.hpp>
+#include <ql/Indexes/jibar.hpp>
 #include <ql/Indexes/jpylibor.hpp>
 #include <ql/Indexes/tibor.hpp>
 #include <ql/Indexes/usdlibor.hpp>
-#include <ql/Indexes/zarlibor.hpp>
 #include <ql/Indexes/zibor.hpp>
 
 
