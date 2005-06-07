@@ -24,8 +24,9 @@
 #ifndef quantlib_aud_libor_hpp
 #define quantlib_aud_libor_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/libor.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
+#include <ql/Calendars/sydney.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/oceania.hpp>
 
@@ -36,13 +37,13 @@ namespace QuantLib {
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
     */
-    class AUDLibor : public Xibor {
+    class AUDLibor : public Libor {
       public:
         AUDLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Xibor("AUDLibor", n, units, 2, AUDCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
+        : Libor("AUDLibor", n, units, 2, AUDCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange), Sydney(),
                 ModifiedFollowing, dc, h) {}
     };
 

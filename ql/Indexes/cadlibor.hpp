@@ -24,8 +24,9 @@
 #ifndef quantlib_cad_libor_hpp
 #define quantlib_cad_libor_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/libor.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
+#include <ql/Calendars/toronto.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/america.hpp>
 
@@ -39,13 +40,13 @@ namespace QuantLib {
         \warning This is the rate fixed in London by BBA. Use CDOR if
                  you're interested in the Canadian fixing by IDA.
     */
-    class CADLibor : public Xibor {
+    class CADLibor : public Libor {
       public:
         CADLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Xibor("CADLibor", n, units, 2, CADCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
+        : Libor("CADLibor", n, units, 2, CADCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange), Toronto(),
                 ModifiedFollowing, dc, h) {}
     };
 

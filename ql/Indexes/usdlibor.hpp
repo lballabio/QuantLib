@@ -24,21 +24,23 @@
 #ifndef quantlib_usd_libor_hpp
 #define quantlib_usd_libor_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/libor.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
+#include <ql/Calendars/unitedstates.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/america.hpp>
 
 namespace QuantLib {
 
     //! %USD %LIBOR rate
-    class USDLibor : public Xibor {
+    class USDLibor : public Libor {
       public:
         USDLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Xibor("USDLibor", n, units, 2, USDCurrency(),
+        : Libor("USDLibor", n, units, 2, USDCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange),
+                UnitedStates(UnitedStates::Exchange),
                 ModifiedFollowing, dc, h) {}
     };
 

@@ -24,7 +24,7 @@
 #ifndef quantlib_gbp_libor_hpp
 #define quantlib_gbp_libor_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/libor.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Currencies/europe.hpp>
@@ -36,12 +36,13 @@ namespace QuantLib {
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
     */
-    class GBPLibor : public Xibor {
+    class GBPLibor : public Libor {
       public:
         GBPLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual365Fixed())
-        : Xibor("GBPLibor", n, units, 0, GBPCurrency(),
+        : Libor("GBPLibor", n, units, 0, GBPCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange),
                 UnitedKingdom(UnitedKingdom::Exchange),
                 ModifiedFollowing, dc, h) {}
     };

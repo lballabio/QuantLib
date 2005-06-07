@@ -124,49 +124,58 @@ void BermudanSwaptionTest::testCachedValues() {
 
     boost::shared_ptr<PricingEngine> engine(new TreeSwaptionEngine(model, 50));
 
+    #if defined(QL_USE_INDEXED_COUPON)
+    Real itmValue = 42.2413, atmValue = 12.8789, otmValue = 2.4759;
+    #else
     Real itmValue = 42.2470, atmValue = 12.8826, otmValue = 2.4769;
+    #endif
+
     Real tolerance = 1.0e-4;
 
     Swaption swaption(itmSwap, exercise, termStructure_, engine);
     if (std::fabs(swaption.NPV()-itmValue) > tolerance)
-        BOOST_FAIL("failed to reproduce cached in-the-money swaption value:\n"
-                   << "calculated: " << swaption.NPV() << "\n"
-                   << "expected:   " << itmValue);
+        BOOST_ERROR("failed to reproduce cached in-the-money swaption value:\n"
+                    << "calculated: " << swaption.NPV() << "\n"
+                    << "expected:   " << itmValue);
     swaption = Swaption(atmSwap, exercise, termStructure_, engine);
     if (std::fabs(swaption.NPV()-atmValue) > tolerance)
-        BOOST_FAIL("failed to reproduce cached at-the-money swaption value:\n"
-                   << "calculated: " << swaption.NPV() << "\n"
-                   << "expected:   " << atmValue);
+        BOOST_ERROR("failed to reproduce cached at-the-money swaption value:\n"
+                    << "calculated: " << swaption.NPV() << "\n"
+                    << "expected:   " << atmValue);
     swaption = Swaption(otmSwap, exercise, termStructure_, engine);
     if (std::fabs(swaption.NPV()-otmValue) > tolerance)
-        BOOST_FAIL("failed to reproduce cached out-of-the-money "
-                   << "swaption value:\n"
-                   << "calculated: " << swaption.NPV() << "\n"
-                   << "expected:   " << otmValue);
+        BOOST_ERROR("failed to reproduce cached out-of-the-money "
+                    << "swaption value:\n"
+                    << "calculated: " << swaption.NPV() << "\n"
+                    << "expected:   " << otmValue);
 
     for (Size j=0; j<exerciseDates.size(); j++)
         exerciseDates[j] = calendar_.adjust(exerciseDates[j]-10);
     exercise =
         boost::shared_ptr<Exercise>(new BermudanExercise(exerciseDates));
 
+    #if defined(QL_USE_INDEXED_COUPON)
+    itmValue = 42.1917; atmValue = 12.7788; otmValue = 2.4388;
+    #else
     itmValue = 42.1974; atmValue = 12.7825; otmValue = 2.4399;
+    #endif
 
     swaption = Swaption(itmSwap, exercise, termStructure_, engine);
     if (std::fabs(swaption.NPV()-itmValue) > tolerance)
-        BOOST_FAIL("failed to reproduce cached in-the-money swaption value:\n"
-                   << "calculated: " << swaption.NPV() << "\n"
-                   << "expected:   " << itmValue);
+        BOOST_ERROR("failed to reproduce cached in-the-money swaption value:\n"
+                    << "calculated: " << swaption.NPV() << "\n"
+                    << "expected:   " << itmValue);
     swaption = Swaption(atmSwap, exercise, termStructure_, engine);
     if (std::fabs(swaption.NPV()-atmValue) > tolerance)
-        BOOST_FAIL("failed to reproduce cached at-the-money swaption value:\n"
-                   << "calculated: " << swaption.NPV() << "\n"
-                   << "expected:   " << atmValue);
+        BOOST_ERROR("failed to reproduce cached at-the-money swaption value:\n"
+                    << "calculated: " << swaption.NPV() << "\n"
+                    << "expected:   " << atmValue);
     swaption = Swaption(otmSwap, exercise, termStructure_, engine);
     if (std::fabs(swaption.NPV()-otmValue) > tolerance)
-        BOOST_FAIL("failed to reproduce cached out-of-the-money "
-                   << "swaption value:\n"
-                   << "calculated: " << swaption.NPV() << "\n"
-                   << "expected:   " << otmValue);
+        BOOST_ERROR("failed to reproduce cached out-of-the-money "
+                    << "swaption value:\n"
+                    << "calculated: " << swaption.NPV() << "\n"
+                    << "expected:   " << otmValue);
 
     QL_TEST_TEARDOWN
 }

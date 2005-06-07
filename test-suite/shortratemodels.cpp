@@ -88,16 +88,20 @@ void ShortRateModelTest::testCachedHullWhite() {
     simplex.setEndCriteria(EndCriteria(10000, 1e-7));
     model->calibrate(swaptions, simplex);
 
+    #if defined(QL_USE_INDEXED_COUPON)
+    Real cachedA = 0.0478260, cachedSigma = 0.00580695;
+    #else
     Real cachedA = 0.0487299, cachedSigma = 0.00582086;
+    #endif
     Real tolerance = 1.0e-6;
 
     if (std::fabs(model->params()[0]-cachedA) > tolerance
         || std::fabs(model->params()[1]-cachedSigma) > tolerance) {
-        BOOST_FAIL("Failed to reproduce cached calibration results:\n"
-                   << "calculated: a = " << model->params()[0] << ", "
-                   << "sigma = " << model->params()[1] << "\n"
-                   << "expected:   a = " << cachedA << ", "
-                   << "sigma = " << cachedSigma);
+        BOOST_ERROR("Failed to reproduce cached calibration results:\n"
+                    << "calculated: a = " << model->params()[0] << ", "
+                    << "sigma = " << model->params()[1] << "\n"
+                    << "expected:   a = " << cachedA << ", "
+                    << "sigma = " << cachedSigma);
     }
 
     QL_TEST_TEARDOWN

@@ -24,8 +24,9 @@
 #ifndef quantlib_jpy_libor_hpp
 #define quantlib_jpy_libor_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/libor.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
+#include <ql/Calendars/tokyo.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/asia.hpp>
 
@@ -39,13 +40,13 @@ namespace QuantLib {
         \warning This is the rate fixed in London by BBA. Use TIBOR if
                  you're interested in the Tokio fixing.
     */
-    class JPYLibor : public Xibor {
+    class JPYLibor : public Libor {
       public:
         JPYLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Xibor("JPYLibor", n, units, 2, JPYCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
+        : Libor("JPYLibor", n, units, 2, JPYCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange), Tokyo(),
                 ModifiedFollowing, dc, h) {}
     };
 

@@ -23,6 +23,22 @@
 
 namespace QuantLib {
 
+    Xibor::Xibor(const std::string& familyName,
+                 Integer n, TimeUnit units, Integer settlementDays,
+                 const Currency& currency,
+                 const Calendar& calendar,
+                 BusinessDayConvention convention,
+                 const DayCounter& dayCounter,
+                 const Handle<YieldTermStructure>& h)
+    : familyName_(familyName), n_(n), units_(units),
+      settlementDays_(settlementDays),
+      currency_(currency), calendar_(calendar),
+      convention_(convention),
+      dayCounter_(dayCounter), termStructure_(h) {
+        registerWith(termStructure_);
+        registerWith(Settings::instance().evaluationDate());
+    }
+
     std::string Xibor::name() const {
         std::ostringstream tenor;
         switch (units_) {
@@ -83,10 +99,8 @@ namespace QuantLib {
         }
         // forecast
         QL_REQUIRE(!termStructure_.empty(), "no term structure set");
-        Date fixingValueDate = calendar_.advance(fixingDate,
-                                                 settlementDays_,Days);
-        Date endValueDate = calendar_.advance(fixingValueDate,n_,units_,
-                                              convention_);
+        Date fixingValueDate = valueDate(fixingDate);
+        Date endValueDate = maturityDate(fixingValueDate);
         DiscountFactor fixingDiscount =
             termStructure_->discount(fixingValueDate);
         DiscountFactor endDiscount =
@@ -94,6 +108,14 @@ namespace QuantLib {
         Time fixingPeriod =
             dayCounter_.yearFraction(fixingValueDate, endValueDate);
         return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
+    }
+
+    Date Xibor::valueDate(const Date& fixingDate) const {
+        return calendar_.advance(fixingDate, settlementDays_, Days);
+    }
+
+    Date Xibor::maturityDate(const Date& valueDate) const {
+        return calendar_.advance(valueDate, n_, units_, convention_);
     }
 
 }

@@ -24,8 +24,9 @@
 #ifndef quantlib_chf_libor_hpp
 #define quantlib_chf_libor_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/libor.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
+#include <ql/Calendars/zurich.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/europe.hpp>
 
@@ -39,13 +40,13 @@ namespace QuantLib {
         \warning This is the rate fixed in London by BBA. Use ZIBOR if
                  you're interested in the Zurich fixing.
     */
-    class CHFLibor : public Xibor {
+    class CHFLibor : public Libor {
       public:
         CHFLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Xibor("CHFLibor", n, units, 2, CHFCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
+        : Libor("CHFLibor", n, units, 2, CHFCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange), Zurich(),
                 ModifiedFollowing, dc, h) {}
     };
 

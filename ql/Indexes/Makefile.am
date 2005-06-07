@@ -17,12 +17,14 @@ include_HEADERS = \
     usdlibor.hpp \
     zibor.hpp \
     xibor.hpp \
+    libor.hpp \
     indexmanager.hpp
 
 EXTRA_DIST=makefile.mak
 
 libIndexes_la_SOURCES = \
     xibor.cpp \
+    libor.cpp \
     indexmanager.cpp
 
 noinst_LTLIBRARIES = libIndexes.la

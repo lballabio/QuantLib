@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +18,7 @@
 */
 
 /*! \file xibor.hpp
-    \brief base class for libor indexes
+    \brief base class for LIBOR-like indexes
 */
 
 #ifndef quantlib_xibor_hpp
@@ -29,24 +29,17 @@
 
 namespace QuantLib {
 
-    //! base class for libor indexes
+    //! base class for LIBOR-like indexes
     class Xibor : public Index, public Observer {
       public:
         Xibor(const std::string& familyName,
-              Integer n, TimeUnit units, Integer settlementDays,
+              Integer n, TimeUnit units,
+              Integer settlementDays,
               const Currency& currency,
               const Calendar& calendar,
               BusinessDayConvention convention,
               const DayCounter& dayCounter,
-              const Handle<YieldTermStructure>& h)
-        : familyName_(familyName), n_(n), units_(units),
-          settlementDays_(settlementDays),
-          currency_(currency), calendar_(calendar),
-          convention_(convention),
-          dayCounter_(dayCounter), termStructure_(h) {
-            registerWith(termStructure_);
-            registerWith(Settings::instance().evaluationDate());
-        }
+              const Handle<YieldTermStructure>& h);
         //! \name Index interface
         //@{
         Rate fixing(const Date& fixingDate) const;
@@ -65,10 +58,20 @@ namespace QuantLib {
         Calendar calendar() const;
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
-        DayCounter dayCounter() const { return dayCounter_; }
+        DayCounter dayCounter() const;
         boost::shared_ptr<YieldTermStructure> termStructure() const;
         //@}
-      private:
+        /*| \name Date calculations
+
+            These methods can be overridden to implement particular
+            conventions
+
+            @{
+        */
+        virtual Date valueDate(const Date& fixingDate) const;
+        virtual Date maturityDate(const Date& valueDate) const;
+        //@}
+      protected:
         std::string familyName_;
         Integer n_;
         TimeUnit units_;
@@ -109,6 +112,10 @@ namespace QuantLib {
 
     inline BusinessDayConvention Xibor::businessDayConvention() const {
         return convention_;
+    }
+
+    inline DayCounter Xibor::dayCounter() const {
+        return dayCounter_;
     }
 
     inline boost::shared_ptr<YieldTermStructure> Xibor::termStructure() const {
