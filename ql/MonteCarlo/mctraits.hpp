@@ -46,11 +46,12 @@ namespace QuantLib {
     /*! \deprecated use SingleVariate instead */
     template <class rng_traits = PseudoRandom>
     struct SingleAsset {
-        typedef typename SingleVariate::path_type path_type;
-        typedef typename SingleVariate::path_pricer_type path_pricer_type;
-        typedef typename SingleVariate::rsg_type rsg_type;
-        typedef typename SingleVariate::path_generator_type
-                                                       path_generator_type;
+        typedef typename SingleVariate<rng_traits>::path_type path_type;
+        typedef typename SingleVariate<rng_traits>::path_pricer_type
+                                                             path_pricer_type;
+        typedef typename SingleVariate<rng_traits>::rsg_type rsg_type;
+        typedef typename SingleVariate<rng_traits>::path_generator_type
+                                                          path_generator_type;
     };
     #endif
 
@@ -67,10 +68,12 @@ namespace QuantLib {
     /*! \deprecated use MultiVariate instead */
     template <class rng_traits = PseudoRandom>
     struct MultiAsset {
-        typedef typename MultiVariate::path_type path_type;
-        typedef typename MultiVariate::path_pricer_type path_pricer_type;
-        typedef typename MultiVariate::rsg_type rsg_type;
-        typedef typename MultiVariate::path_generator_type path_generator_type;
+        typedef typename MultiVariate<rng_traits>::path_type path_type;
+        typedef typename MultiVariate<rng_traits>::path_pricer_type
+                                                             path_pricer_type;
+        typedef typename MultiVariate<rng_traits>::rsg_type rsg_type;
+        typedef typename MultiVariate<rng_traits>::path_generator_type
+                                                          path_generator_type;
     };
     #endif
 
