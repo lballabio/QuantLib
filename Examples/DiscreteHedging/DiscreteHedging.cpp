@@ -304,7 +304,7 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
 
     bool brownianBridge = false;
 
-    typedef SingleAsset<PseudoRandom>::path_generator_type generator_type;
+    typedef SingleVariate<PseudoRandom>::path_generator_type generator_type;
     boost::shared_ptr<generator_type> myPathGenerator(new
         generator_type(diffusion, maturity_, nTimeSteps,
                        rsg, brownianBridge));

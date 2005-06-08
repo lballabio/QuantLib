@@ -38,7 +38,7 @@ namespace QuantLib {
         strike) options is \$ max(S/X- 1) \$.
     */
     class McPerformanceOption
-        : public McPricer<SingleAsset<PseudoRandom> >{
+        : public McPricer<SingleVariate<PseudoRandom> >{
       public:
         McPerformanceOption(Option::Type type,
                             Real underlying,

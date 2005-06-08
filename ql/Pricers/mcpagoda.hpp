@@ -36,7 +36,7 @@ namespace QuantLib {
         fraction of the positive portfolio performance.  If the
         performance of the portfolio is below then the payoff is null.
     */
-    class McPagoda : public McPricer<MultiAsset<PseudoRandom> > {
+    class McPagoda : public McPricer<MultiVariate<PseudoRandom> > {
       public:
         McPagoda(const std::vector<Real>& underlyings,
                  Real fraction,

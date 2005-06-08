@@ -53,13 +53,14 @@ namespace QuantLib {
     */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCBarrierEngine : public BarrierOption::engine,
-                            public McSimulation<SingleAsset<RNG>, S> {
+                            public McSimulation<SingleVariate<RNG>, S> {
       public:
-        typedef typename McSimulation<SingleAsset<RNG>,S>::path_generator_type
+        typedef
+        typename McSimulation<SingleVariate<RNG>,S>::path_generator_type
             path_generator_type;
-        typedef typename McSimulation<SingleAsset<RNG>,S>::path_pricer_type
+        typedef typename McSimulation<SingleVariate<RNG>,S>::path_pricer_type
             path_pricer_type;
-        typedef typename McSimulation<SingleAsset<RNG>,S>::stats_type
+        typedef typename McSimulation<SingleVariate<RNG>,S>::stats_type
             stats_type;
         // constructor
         MCBarrierEngine(Size maxTimeStepsPerYear,
@@ -72,9 +73,9 @@ namespace QuantLib {
                         bool isBiased,
                         BigNatural seed);
         void calculate() const {
-            McSimulation<SingleAsset<RNG>,S>::calculate(requiredTolerance_,
-                                                        requiredSamples_,
-                                                        maxSamples_);
+            McSimulation<SingleVariate<RNG>,S>::calculate(requiredTolerance_,
+                                                          requiredSamples_,
+                                                          maxSamples_);
             results_.value = this->mcModel_->sampleAccumulator().mean();
             if (RNG::allowsErrorEstimate)
             results_.errorEstimate =
@@ -153,7 +154,7 @@ namespace QuantLib {
                                                    Size maxSamples,
                                                    bool isBiased,
                                                    BigNatural seed)
-    : McSimulation<SingleAsset<RNG>,S>(antitheticVariate, controlVariate),
+    : McSimulation<SingleVariate<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),

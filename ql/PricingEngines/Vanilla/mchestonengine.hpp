@@ -34,23 +34,23 @@ namespace QuantLib {
     /*! \ingroup vanillaengines */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCHestonEngine : public VanillaOption::engine,
-                           public McSimulation<MultiAsset<RNG>, S> {
+                           public McSimulation<MultiVariate<RNG>, S> {
       public:
         void calculate() const {
-            McSimulation<MultiAsset<RNG>,S>::calculate(requiredTolerance_,
-                                                       requiredSamples_,
-                                                       maxSamples_);
+            McSimulation<MultiVariate<RNG>,S>::calculate(requiredTolerance_,
+                                                         requiredSamples_,
+                                                         maxSamples_);
             results_.value = this->mcModel_->sampleAccumulator().mean();
             if (RNG::allowsErrorEstimate)
             results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
       protected:
-        typedef typename McSimulation<MultiAsset<RNG>,S>::path_generator_type
+        typedef typename McSimulation<MultiVariate<RNG>,S>::path_generator_type
             path_generator_type;
-        typedef typename McSimulation<MultiAsset<RNG>,S>::path_pricer_type
+        typedef typename McSimulation<MultiVariate<RNG>,S>::path_pricer_type
             path_pricer_type;
-        typedef typename McSimulation<MultiAsset<RNG>,S>::stats_type
+        typedef typename McSimulation<MultiVariate<RNG>,S>::stats_type
             stats_type;
         // constructor
         MCHestonEngine(Size timeSteps,
@@ -82,7 +82,7 @@ namespace QuantLib {
                                            Real requiredTolerance,
                                            Size maxSamples,
                                            BigNatural seed)
-    : McSimulation<MultiAsset<RNG>,S>(antitheticVariate, false),
+    : McSimulation<MultiVariate<RNG>,S>(antitheticVariate, false),
       timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance), seed_(seed) {}

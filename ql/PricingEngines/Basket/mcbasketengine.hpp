@@ -38,13 +38,13 @@ namespace QuantLib {
     */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCBasketEngine  : public BasketOption::engine,
-                            public McSimulation<MultiAsset<RNG>, S> {
+                            public McSimulation<MultiVariate<RNG>, S> {
       public:
-        typedef typename McSimulation<MultiAsset<RNG>,S>::path_generator_type
+        typedef typename McSimulation<MultiVariate<RNG>,S>::path_generator_type
             path_generator_type;
-        typedef typename McSimulation<MultiAsset<RNG>,S>::path_pricer_type
+        typedef typename McSimulation<MultiVariate<RNG>,S>::path_pricer_type
             path_pricer_type;
-        typedef typename McSimulation<MultiAsset<RNG>,S>::stats_type
+        typedef typename McSimulation<MultiVariate<RNG>,S>::stats_type
             stats_type;
         // constructor
         MCBasketEngine(Size maxTimeStepsPerYear,
@@ -56,9 +56,9 @@ namespace QuantLib {
                        Size maxSamples,
                        BigNatural seed);
         void calculate() const {
-            McSimulation<MultiAsset<RNG>,S>::calculate(requiredTolerance_,
-                                                       requiredSamples_,
-                                                       maxSamples_);
+            McSimulation<MultiVariate<RNG>,S>::calculate(requiredTolerance_,
+                                                         requiredSamples_,
+                                                         maxSamples_);
             results_.value = this->mcModel_->sampleAccumulator().mean();
             if (RNG::allowsErrorEstimate)
             results_.errorEstimate =
@@ -106,7 +106,7 @@ namespace QuantLib {
                                                  Real requiredTolerance,
                                                  Size maxSamples,
                                                  BigNatural seed)
-    : McSimulation<MultiAsset<RNG>,S>(antitheticVariate, controlVariate),
+    : McSimulation<MultiVariate<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),

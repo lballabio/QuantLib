@@ -33,21 +33,46 @@ namespace QuantLib {
 
     // path generation and pricing traits
 
+    //! default Monte Carlo traits for single-variate models
     template <class rng_traits = PseudoRandom>
-    struct SingleAsset {
+    struct SingleVariate {
         typedef Path path_type;
         typedef PathPricer<path_type> path_pricer_type;
         typedef typename rng_traits::rsg_type rsg_type;
         typedef PathGenerator<rsg_type> path_generator_type;
     };
 
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated use SingleVariate instead */
     template <class rng_traits = PseudoRandom>
-    struct MultiAsset {
+    struct SingleAsset {
+        typedef typename SingleVariate::path_type path_type;
+        typedef typename SingleVariate::path_pricer_type path_pricer_type;
+        typedef typename SingleVariate::rsg_type rsg_type;
+        typedef typename SingleVariate::path_generator_type
+                                                       path_generator_type;
+    };
+    #endif
+
+    //! default Monte Carlo traits for multi-variate models
+    template <class rng_traits = PseudoRandom>
+    struct MultiVariate {
         typedef MultiPath path_type;
         typedef PathPricer<path_type> path_pricer_type;
         typedef typename rng_traits::rsg_type rsg_type;
         typedef MultiPathGenerator<rsg_type> path_generator_type;
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated use MultiVariate instead */
+    template <class rng_traits = PseudoRandom>
+    struct MultiAsset {
+        typedef typename MultiVariate::path_type path_type;
+        typedef typename MultiVariate::path_pricer_type path_pricer_type;
+        typedef typename MultiVariate::rsg_type rsg_type;
+        typedef typename MultiVariate::path_generator_type path_generator_type;
+    };
+    #endif
 
 }
 

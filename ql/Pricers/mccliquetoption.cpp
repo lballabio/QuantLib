@@ -150,7 +150,7 @@ namespace QuantLib {
 
         bool brownianBridge = false;
 
-        typedef SingleAsset<PseudoRandom>::path_generator_type generator;
+        typedef SingleVariate<PseudoRandom>::path_generator_type generator;
         boost::shared_ptr<generator> pathGenerator(new
             generator(diffusion, grid, rsg, brownianBridge));
 
@@ -164,8 +164,8 @@ namespace QuantLib {
 
         // initialize the one-factor Monte Carlo
         mcModel_ =
-            boost::shared_ptr<MonteCarloModel<SingleAsset<PseudoRandom> > >(
-                new MonteCarloModel<SingleAsset<PseudoRandom> >(
+            boost::shared_ptr<MonteCarloModel<SingleVariate<PseudoRandom> > >(
+                new MonteCarloModel<SingleVariate<PseudoRandom> >(
                       pathGenerator, cliquetPathPricer, Statistics(), false));
     }
 

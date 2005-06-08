@@ -34,7 +34,7 @@ namespace QuantLib {
     /*! The payoff of an Everest option is simply given by the
         final price / initial price ratio of the worst performer
     */
-    class McEverest : public McPricer<MultiAsset<PseudoRandom> > {
+    class McEverest : public McPricer<MultiVariate<PseudoRandom> > {
       public:
         McEverest(
                 const std::vector<Handle<YieldTermStructure> >& dividendYield,

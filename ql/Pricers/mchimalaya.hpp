@@ -38,7 +38,7 @@ namespace QuantLib {
         N periods the option pays the max between the strike and the
         average of the best performers.
     */
-    class McHimalaya : public McPricer<MultiAsset<PseudoRandom> > {
+    class McHimalaya : public McPricer<MultiVariate<PseudoRandom> > {
       public:
         McHimalaya(
                const std::vector<Real>& underlyings,

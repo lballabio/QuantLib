@@ -133,7 +133,7 @@ namespace QuantLib {
 
         bool brownianBridge = false;
 
-        typedef MultiAsset<PseudoRandom>::path_generator_type generator;
+        typedef MultiVariate<PseudoRandom>::path_generator_type generator;
         boost::shared_ptr<generator> pathGenerator(
                            new generator(process, grid, rsg, brownianBridge));
 
@@ -143,9 +143,9 @@ namespace QuantLib {
                                     new HimalayaPathPricer(strike, discount));
 
         // initialize the multi-factor Monte Carlo
-        mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset<
+        mcModel_ = boost::shared_ptr<MonteCarloModel<MultiVariate<
                                                       PseudoRandom> > > (
-            new MonteCarloModel<MultiAsset<PseudoRandom> > (
+            new MonteCarloModel<MultiVariate<PseudoRandom> > (
                              pathGenerator, pathPricer, Statistics(), false));
 
     }

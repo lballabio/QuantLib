@@ -34,7 +34,7 @@ namespace QuantLib {
 
     //! simple example of Monte Carlo pricer
     class McCliquetOption
-        : public McPricer<SingleAsset<PseudoRandom> >{
+        : public McPricer<SingleVariate<PseudoRandom> >{
       public:
         McCliquetOption(Option::Type type,
                         Real underlying,
