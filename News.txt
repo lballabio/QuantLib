@@ -1,3 +1,5 @@
 
-More accurate LIBOR calendars (thanks to Daniele de Francesco.)
+- More accurate LIBOR calendars (thanks to Daniele de Francesco.)
+
+- Added DKKLibor, EURLibor, NZDLibor.
 

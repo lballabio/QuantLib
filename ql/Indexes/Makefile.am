@@ -9,10 +9,13 @@ include_HEADERS = \
     cadlibor.hpp \
     cdor.hpp \
     chflibor.hpp \
+    dkklibor.hpp \
     euribor.hpp \
+    eurlibor.hpp \
     gbplibor.hpp \
     jibar.hpp \
     jpylibor.hpp \
+    nzdlibor.hpp \
     tibor.hpp \
     usdlibor.hpp \
     zibor.hpp \

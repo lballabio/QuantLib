@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,34 +17,35 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file usdlibor.hpp
-    \brief %USD %LIBOR rate
+/*! \file eurlibor.hpp
+    \brief %EUR %LIBOR rate
 */
 
-#ifndef quantlib_usd_libor_hpp
-#define quantlib_usd_libor_hpp
+#ifndef quantlib_eur_libor_hpp
+#define quantlib_eur_libor_hpp
 
 #include <ql/Indexes/libor.hpp>
-#include <ql/Calendars/unitedkingdom.hpp>
-#include <ql/Calendars/unitedstates.hpp>
+#include <ql/Calendars/target.hpp>
 #include <ql/DayCounters/actual360.hpp>
-#include <ql/Currencies/america.hpp>
+#include <ql/Currencies/europe.hpp>
 
 namespace QuantLib {
 
-    //! %USD %LIBOR rate
-    /*! US Dollar LIBOR fixed by BBA.
+    //! %EUR %LIBOR rate
+    /*! Euro LIBOR fixed by BBA.
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+
+        \warning This is the rate fixed in London by BBA. Use Euribor if
+                 you're interested in the fixing by the ECB.
     */
-    class USDLibor : public Libor {
+    class EURLibor : public Libor {
       public:
-        USDLibor(Integer n, TimeUnit units,
+        EURLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Libor("USDLibor", n, units, 2, USDCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
-                UnitedStates(UnitedStates::Exchange),
+        : Libor("EURLibor", n, units, 2, EURCurrency(),
+                TARGET(), TARGET(),
                 ModifiedFollowing, dc, h) {}
     };
 

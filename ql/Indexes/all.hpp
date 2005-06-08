@@ -27,10 +27,13 @@
 #include <ql/Indexes/cadlibor.hpp>
 #include <ql/Indexes/cdor.hpp>
 #include <ql/Indexes/chflibor.hpp>
+#include <ql/Indexes/dkklibor.hpp>
 #include <ql/Indexes/euribor.hpp>
+#include <ql/Indexes/eurlibor.hpp>
 #include <ql/Indexes/gbplibor.hpp>
 #include <ql/Indexes/jibar.hpp>
 #include <ql/Indexes/jpylibor.hpp>
+#include <ql/Indexes/nzdlibor.hpp>
 #include <ql/Indexes/tibor.hpp>
 #include <ql/Indexes/usdlibor.hpp>
 #include <ql/Indexes/zibor.hpp>

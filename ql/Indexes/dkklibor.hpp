@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,34 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file usdlibor.hpp
-    \brief %USD %LIBOR rate
+/*! \file dkklibor.hpp
+    \brief %DKK %LIBOR rate
 */
 
-#ifndef quantlib_usd_libor_hpp
-#define quantlib_usd_libor_hpp
+#ifndef quantlib_dkk_libor_hpp
+#define quantlib_dkk_libor_hpp
 
 #include <ql/Indexes/libor.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
-#include <ql/Calendars/unitedstates.hpp>
+#include <ql/Calendars/copenhagen.hpp>
 #include <ql/DayCounters/actual360.hpp>
-#include <ql/Currencies/america.hpp>
+#include <ql/Currencies/europe.hpp>
 
 namespace QuantLib {
 
-    //! %USD %LIBOR rate
-    /*! US Dollar LIBOR fixed by BBA.
+    //! %DKK %LIBOR rate
+    /*! Danish Krona LIBOR fixed by BBA.
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
     */
-    class USDLibor : public Libor {
+    class DKKLibor : public Libor {
       public:
-        USDLibor(Integer n, TimeUnit units,
+        DKKLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Libor("USDLibor", n, units, 2, USDCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
-                UnitedStates(UnitedStates::Exchange),
+        : Libor("DKKLibor", n, units, 2, DKKCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange), Copenhagen(),
                 ModifiedFollowing, dc, h) {}
     };
 
