@@ -36,84 +36,7 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(OldPricerTest)
 
-template<class O>
-void testStepOption(Option::Type type, Real u, Real k,
-                    Rate q, Rate r, Time T, Volatility v,
-                    const std::string& name) {
-
-    Size nstp = 145;
-    Size ngrd = nstp+1;
-
-    std::map<std::string,Real> calculated, expected, tolerance;
-    tolerance["delta"]  = 2.0e-3;
-    tolerance["gamma"]  = 2.0e-3;
-    tolerance["theta"]  = 2.0e-3;
-    tolerance["rho"]    = 2.0e-3;
-    tolerance["divRho"] = 2.0e-3;
-    tolerance["vega"]   = 2.0e-3;
-
-    Real du = u*1.0e-4;
-    Volatility dv = v*1.0e-4;
-    Spread dr = r*1.0e-4;
-    Spread dq = q*1.0e-4;
-
-    O option(type,u,k,q,r,T,v,nstp,ngrd);
-    if (option.value() > u*1.0e-5) {
-        // greeks
-        calculated["delta"]  = option.delta();
-        calculated["gamma"]  = option.gamma();
-        calculated["theta"]  = option.theta();
-        calculated["rho"]    = option.rho();
-        calculated["divRho"] = option.dividendRho();
-        calculated["vega"]   = option.vega();
-        // recalculate greeks numerically
-        O optPs(type,u+du,k,q,   r,   T,v,   nstp,ngrd);
-        O optMs(type,u-du,k,q,   r,   T,v,   nstp,ngrd);
-        O optPr(type,u,   k,q,   r+dr,T,v,   nstp,ngrd);
-        O optMr(type,u,   k,q,   r-dr,T,v,   nstp,ngrd);
-        O optPq(type,u,   k,q+dq,r,   T,v,   nstp,ngrd);
-        O optMq(type,u,   k,q-dq,r,   T,v,   nstp,ngrd);
-        O optPv(type,u,   k,q,   r,   T,v+dv,nstp,ngrd);
-        O optMv(type,u,   k,q,   r,   T,v-dv,nstp,ngrd);
-
-        expected["delta"]  = (optPs.value()-optMs.value())/(2*du);
-        expected["gamma"]  = (optPs.delta()-optMs.delta())/(2*du);
-        expected["theta"]  = r*option.value() - (r-q)*u*option.delta()
-                           - 0.5*v*v*u*u*option.gamma();
-        expected["rho"]    = (optPr.value()-optMr.value())/(2*dr);
-        expected["divRho"] = (optPq.value()-optMq.value())/(2*dq);
-        expected["vega"]   = (optPv.value()-optMv.value())/(2*dv);
-
-        // check
-        std::map<std::string,Real>::iterator it;
-        for (it = expected.begin(); it != expected.end(); ++it) {
-            std::string greek = it->first;
-            Real expct = expected[greek];
-            Real calcl = calculated[greek];
-            Real tol = tolerance[greek];
-            if (relativeError(expct,calcl,u) > tol)
-                BOOST_FAIL(
-                        "Option details:"
-                        << "\n    type:           " << name << " " << type
-                        << "\n    underlying:     " << u
-                        << "\n    strike:         " << k
-                        << "\n    dividend yield: " << io::rate(q)
-                        << "\n    risk-free rate: " << io::rate(r)
-                        << "\n    residual time:  " << T
-                        << "\n    volatility:     " << io::volatility(v)
-                        << "\n\n"
-                        << "    calculated " << greek << ": " << calcl << "\n"
-                        << "    expected:  " << greek << ": " << expct);
-        }
-    }
-}
-
-QL_END_TEST_LOCALS(OldPricerTest)
-
-
-QL_BEGIN_TEST_LOCALS(OldPricerTest)
-
-struct Batch4Data {
+struct BatchData {
     Option::Type type;
     Real underlying;
     Real strike;
@@ -126,8 +49,6 @@ struct Batch4Data {
     bool controlVariate;
     Real result;
 };
-
-typedef Batch4Data Batch5Data;
 
 QL_END_TEST_LOCALS(OldPricerTest)
 
@@ -153,7 +74,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
     // in "Exotic Options: The State of the Art",
     // edited by Clewlow, Strickland
 
-    Batch5Data cases5[] = {
+    BatchData cases5[] = {
         { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2,
           0.13, true, 1.51917595129 },
         { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4,
@@ -249,7 +170,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
         value = pricer.value(tolerance);
         Real accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
-            BOOST_FAIL("Batch 5, case " << l+1 << ":\n"
+            BOOST_FAIL("case " << l+1 << ":\n"
                        << std::setprecision(10)
                        << "    reached accuracy: " << accuracy << "\n"
                        << "    expected:         " << tolerance);
