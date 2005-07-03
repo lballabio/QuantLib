@@ -29,6 +29,7 @@
 #include <list>
 
 namespace QuantLib {
+    class Observer;
 
     //! Object that notifies its changes to a set of observables
     /*! \ingroup patterns */
