@@ -29,10 +29,20 @@
 #include <vector>
 #include <string>
 #include <numeric>
+#include <iomanip>
 
 // This makes it easier to use array literals (alas, no std::vector literals)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
+/* the following works around a problem with Boost 1.32 where std::fixed
+   and similar manipulators could not be streamed to the Boost streams */
+#if defined(QL_WORKING_BOOST_STREAMS)
+#define QL_FIXED std::fixed
+#define QL_SCIENTIFIC std::scientific
+#else
+#define QL_FIXED ""
+#define QL_SCIENTIFIC ""
+#endif
 
 /* the following somewhat support setup() and teardown() functions,
    the latter being called even in presence of exceptions.  When used,

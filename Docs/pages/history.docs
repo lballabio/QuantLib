@@ -18,7 +18,53 @@
 
 /*! \page history Version history
 
-    <strong>Release 0.3.9 - May 2005</strong>
+    <strong>Release 0.3.10 - July 2005</strong>
+
+    GLOBAL FEATURES
+    - The suggested syntax for setting and registering with the global
+      evaluation date is now:
+      \code
+      Settings::instance().evaluationDate() = date;
+      registerWith(Settings::instance().evaluationDate());
+      \endcode
+
+    CALENDARS
+
+    - Istanbul calendar added (thanks to Serkan Atalik.)
+
+    MONTE CARLO FRAMEWORK
+    - Added generic multi-dimensional stochastic process.
+    - Added stochastic process array (thanks to Klaus Spanderen.)
+    - Multi-path generator now takes a generic stochastic process;
+      tests provided.
+    - New Path class implemented which stores asset values rather than
+      variations; this makes pricers independent on whether or not
+      log-variations were calculated. The new class is enabled when
+      QL_DISABLE_DEPRECATED is defined; the old class is used
+      otherwise.
+
+    INSTRUMENTS
+    - Multi-asset option now takes a generic stochastic process.
+
+    MODELS
+    - Added Heston stochastic-volatility model; tests provided (thanks
+      to Klaus Spanderen.) Provided code include:
+      - a corresponding stochastic process;
+      - analytic and Monte Carlo option-pricing engines;
+      - parameter calibration.
+
+    CASH FLOWS
+    - Cash-flow analyses such as NPV, IRR, convexity and duration added
+      (thanks to Charles Whitmore.)
+
+    MATH
+    - Added Gaussian orthogonal polynomials and Gaussian quadratures;
+      tests provided (thanks to Klaus Spanderen.)
+    - Convergence statistics added; tests provided (thanks to Gary
+      Kennedy.)
+
+
+    <strong>Release 0.3.9 - May 2nd, 2005</strong>
 
     GLOBAL FEATURES
     - QL_SQRT, QL_MIN etc. deprecated in favor of std::sqrt,
@@ -240,7 +286,7 @@
       such as TermStructure. They make it possible to persistently allow
       extrapolation without the need of specifying it at every method
       call.
-    - Added user configured #define to disable usage of deprecated
+    - Added user-configurable flag to disable usage of deprecated
       classes.
 
     PORTABILITY

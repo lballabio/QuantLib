@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="QuantLib"
 	ProjectGUID="{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			IntermediateDirectory=".\build\vc80\DebugMTDLL"
 			ConfigurationType="4"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -40,14 +41,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="."
 				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\DebugMTDLL/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\DebugMTDLL/"
@@ -56,7 +57,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\DebugMTDLL/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -91,9 +92,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -103,7 +101,7 @@
 			IntermediateDirectory=".\build\vc80\ReleaseST"
 			ConfigurationType="4"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -126,16 +124,16 @@
 				AdditionalOptions="/Oi- "
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="."
 				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\ReleaseST/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\ReleaseST/"
@@ -144,7 +142,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\ReleaseST/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -178,9 +176,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -190,7 +185,7 @@
 			IntermediateDirectory=".\build\vc80\Release"
 			ConfigurationType="4"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -213,16 +208,16 @@
 				AdditionalOptions="/Oi- "
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="."
 				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\Release/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\Release/"
@@ -231,7 +226,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -265,9 +260,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -277,7 +269,7 @@
 			IntermediateDirectory=".\build\vc80\ReleaseMTDLL"
 			ConfigurationType="4"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -300,16 +292,16 @@
 				AdditionalOptions="/Oi- "
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="."
 				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="TRUE"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\ReleaseMTDLL/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\ReleaseMTDLL/"
@@ -318,7 +310,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\ReleaseMTDLL/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -352,9 +344,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -364,7 +353,7 @@
 			IntermediateDirectory=".\build\vc80\Debug"
 			ConfigurationType="4"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -385,14 +374,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="."
 				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\Debug/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\Debug/"
@@ -401,7 +390,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\Debug/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -436,9 +425,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -448,7 +434,7 @@
 			IntermediateDirectory=".\build\vc80\DebugST"
 			ConfigurationType="4"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -469,14 +455,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="."
 				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\DebugST/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\DebugST/"
@@ -485,7 +471,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\DebugST/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -520,9 +506,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -543,6 +526,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\Calendars\beijing.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\bratislava.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\bratislava.hpp"
 				>
 			</File>
 			<File
@@ -793,6 +784,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Calendars\istanbul.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\istanbul.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Calendars\italy.cpp"
 				>
 			</File>
@@ -1033,6 +1032,14 @@
 			</File>
 			<File
 				RelativePath="ql\Calendars\oslo.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\prague.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\prague.hpp"
 				>
 			</File>
 			<File
@@ -1704,6 +1711,14 @@
 			Name="CashFlows"
 			>
 			<File
+				RelativePath=".\ql\CashFlows\analysis.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\analysis.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\CashFlows\basispointsensitivity.cpp"
 				>
 				<FileConfiguration
@@ -1878,7 +1893,7 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\CashFlows\indexcashflowvectors.hpp"
+				RelativePath=".\ql\CashFlows\indexedcashflowvectors.hpp"
 				>
 			</File>
 			<File
@@ -2857,6 +2872,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\cdor.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Indexes\chflibor.hpp"
 				>
 			</File>
@@ -2878,6 +2897,10 @@
 			</File>
 			<File
 				RelativePath="ql\Indexes\jpylibor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\tibor.hpp"
 				>
 			</File>
 			<File
@@ -2963,6 +2986,10 @@
 			</File>
 			<File
 				RelativePath="ql\Indexes\zarlibor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\zibor.hpp"
 				>
 			</File>
 		</Filter>
@@ -3347,6 +3374,10 @@
 			</File>
 			<File
 				RelativePath="ql\Instruments\core.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\dividendschedule.hpp"
 				>
 			</File>
 			<File
@@ -4460,231 +4491,16 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Lattices\bsmlattice.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="ql\Lattices\bsmlattice.hpp"
 				>
-			</File>
-			<File
-				RelativePath="ql\Lattices\lattice.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="ql\Lattices\lattice.hpp"
 				>
 			</File>
 			<File
-				RelativePath="ql\Lattices\lattice2d.cpp"
+				RelativePath=".\ql\Lattices\lattice1d.hpp"
 				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="ql\Lattices\lattice2d.hpp"
@@ -5112,6 +4928,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Math\convergencestatistics.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Math\core.hpp"
 				>
 			</File>
@@ -5440,6 +5260,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Math\gaussianorthogonalpolynomial.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Math\gaussianorthogonalpolynomial.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Math\gaussianquadratures.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Math\gaussianquadratures.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Math\gaussianstatistics.hpp"
 				>
 			</File>
@@ -5683,10 +5519,6 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Math\interpolationtraits.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\kronrodintegral.hpp"
 				>
 			</File>
@@ -5708,10 +5540,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\Math\multicubicspline.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\multivariateaccumulator.hpp"
 				>
 			</File>
 			<File
@@ -6136,6 +5964,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Math\tqreigendecomposition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Math\tqreigendecomposition.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Math\trapezoidintegral.hpp"
 				>
 			</File>
@@ -6540,6 +6376,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Patterns\composite.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Patterns\curiouslyrecurring.hpp"
 				>
 			</File>
@@ -6646,630 +6486,6 @@
 			</File>
 			<File
 				RelativePath="ql\Pricers\discretegeometricaso.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdamericanoption.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdbermudanoption.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdbermudanoption.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdbsmoption.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdbsmoption.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fddividendamericanoption.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fddividendamericanoption.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fddividendoption.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fddividendoption.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fddividendshoutoption.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fddividendshoutoption.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdeuropean.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdeuropean.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdmultiperiodoption.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdmultiperiodoption.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdshoutoption.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdstepconditionoption.cpp"
-				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\fdstepconditionoption.hpp"
 				>
 			</File>
 			<File
@@ -8721,6 +7937,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\analytichestonengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\analytichestonengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.cpp"
 					>
 					<FileConfiguration
@@ -9263,6 +8487,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\mceuropeanhestonengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\mchestonengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\PricingEngines\Vanilla\mcvanillaengine.hpp"
 					>
 				</File>
@@ -9470,14 +8702,6 @@
 			</File>
 			<File
 				RelativePath="ql\RandomNumbers\haltonrsg.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\RandomNumbers\inversecumgaussianrng.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\RandomNumbers\inversecumgaussianrsg.hpp"
 				>
 			</File>
 			<File
@@ -10290,6 +9514,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\ShortRateModels\CalibrationHelpers\hestonmodelhelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\CalibrationHelpers\hestonmodelhelper.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\ShortRateModels\CalibrationHelpers\swaptionhelper.cpp"
 					>
 					<FileConfiguration
@@ -10836,6 +10068,14 @@
 					RelativePath="ql\ShortRateModels\TwoFactorModels\g2.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\TwoFactorModels\hestonmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\TwoFactorModels\hestonmodel.hpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -11037,10 +10277,6 @@
 			</File>
 			<File
 				RelativePath="ql\TermStructures\discountcurve.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\TermStructures\discountstructure.hpp"
 				>
 			</File>
 			<File
@@ -11327,14 +10563,6 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Utilities\combiningiterator.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Utilities\couplingiterator.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Utilities\dataformatters.cpp"
 				>
 			</File>
@@ -11355,19 +10583,11 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Utilities\filteringiterator.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Utilities\iteratorcategories.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Utilities\null.hpp"
 				>
 			</File>
 			<File
-				RelativePath="ql\Utilities\processingiterator.hpp"
+				RelativePath=".\ql\Utilities\observablevalue.hpp"
 				>
 			</File>
 			<File
@@ -11702,11 +10922,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Processes\eulerdiscretization.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\eulerdiscretization.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Processes\geometricbrownianprocess.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ql\Processes\geometricbrownianprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\hestonprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\hestonprocess.hpp"
 				>
 			</File>
 			<File
@@ -11733,86 +10969,17 @@
 				RelativePath=".\ql\Processes\squarerootprocess.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\ql\Processes\stochasticprocessarray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\stochasticprocessarray.hpp"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp"
-			>
-		</File>
-		<File
-			RelativePath="ql\basicdataformatters.cpp"
-			>
-			<FileConfiguration
-				Name="Debug MTDLL|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release SingleThread|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release MTDLL|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug SingleThread|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="ql\basicdataformatters.hpp"
 			>
 		</File>
 		<File
@@ -12091,10 +11258,6 @@
 			>
 		</File>
 		<File
-			RelativePath="ql\disposable.hpp"
-			>
-		</File>
-		<File
 			RelativePath="ql\errors.cpp"
 			>
 			<FileConfiguration
@@ -12257,79 +11420,6 @@
 			>
 		</File>
 		<File
-			RelativePath="ql\grid.cpp"
-			>
-			<FileConfiguration
-				Name="Debug MTDLL|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release SingleThread|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release MTDLL|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug SingleThread|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath="ql\grid.hpp"
 			>
 		</File>
@@ -12366,10 +11456,6 @@
 			>
 		</File>
 		<File
-			RelativePath="ql\null.hpp"
-			>
-		</File>
-		<File
 			RelativePath="ql\numericalmethod.hpp"
 			>
 		</File>
@@ -12395,10 +11481,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\quote.hpp"
-			>
-		</File>
-		<File
-			RelativePath="ql\relinkablehandle.hpp"
 			>
 		</File>
 		<File
@@ -12431,6 +11513,14 @@
 		</File>
 		<File
 			RelativePath="ql\termstructure.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\timegrid.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\timegrid.hpp"
 			>
 		</File>
 		<File

@@ -47,7 +47,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-sgd-0_3_9.exe"
+				OutputFile=".\bin/BermudanSwaption-vc71-sgd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -119,7 +119,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-mt-0_3_9.exe"
+				OutputFile=".\bin/BermudanSwaption-vc71-mt.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -190,7 +190,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-mt-s-0_3_9.exe"
+				OutputFile=".\bin/BermudanSwaption-vc71-mt-s.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -261,7 +261,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-s-0_3_9.exe"
+				OutputFile=".\bin/BermudanSwaption-vc71-s.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -329,7 +329,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-mt-gd-0_3_9.exe"
+				OutputFile=".\bin/BermudanSwaption-vc71-mt-gd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -398,7 +398,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/BermudanSwaption-vc71-mt-sgd-0_3_9.exe"
+				OutputFile=".\bin/BermudanSwaption-vc71-mt-sgd.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"

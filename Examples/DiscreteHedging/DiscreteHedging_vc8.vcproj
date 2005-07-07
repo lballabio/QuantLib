@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="DiscreteHedging"
 	ProjectGUID="{C3E22CAD-0CAF-42DC-ADE0-B2FF4F644BCE}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			IntermediateDirectory=".\build\vc80\ReleaseST"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -43,16 +44,16 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\.."
 				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
 				PrecompiledHeaderFile=".\build\vc80\ReleaseST/DiscreteHedging.pch"
@@ -62,7 +63,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\ReleaseST/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -78,9 +79,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/DiscreteHedging-vc80-s-0_3_9.exe"
+				OutputFile=".\bin/DiscreteHedging-vc80-s.exe"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\build\vc80\ReleaseST/DiscreteHedging.pdb"
 				SubSystem="1"
@@ -91,7 +92,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -118,7 +119,7 @@
 			IntermediateDirectory=".\build\vc80\Release"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -142,16 +143,16 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\.."
 				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
 				PrecompiledHeaderFile=".\build\vc80\Release/DiscreteHedging.pch"
@@ -161,7 +162,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -177,9 +178,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/DiscreteHedging-vc80-mt-s-0_3_9.exe"
+				OutputFile=".\bin/DiscreteHedging-vc80-mt-s.exe"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\build\vc80\Release/DiscreteHedging.pdb"
 				SubSystem="1"
@@ -190,7 +191,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -217,7 +218,7 @@
 			IntermediateDirectory=".\build\vc80\DebugST"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -240,14 +241,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\.."
 				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
 				PrecompiledHeaderFile=".\build\vc80\DebugST/DiscreteHedging.pch"
@@ -257,7 +258,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\DebugST/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -274,11 +275,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/DiscreteHedging-vc80-sgd-0_3_9.exe"
+				OutputFile=".\bin/DiscreteHedging-vc80-sgd.exe"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\build\vc80\DebugST/DiscreteHedging.pdb"
 				SubSystem="1"
 				TargetMachine="1"
@@ -288,7 +289,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -315,7 +316,7 @@
 			IntermediateDirectory=".\build\vc80\ReleaseMTDLL"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -339,16 +340,16 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\.."
 				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="TRUE"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
 				PrecompiledHeaderFile=".\build\vc80\ReleaseMTDLL/DiscreteHedging.pch"
@@ -358,7 +359,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\ReleaseMTDLL/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -374,9 +375,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/DiscreteHedging-vc80-mt-0_3_9.exe"
+				OutputFile=".\bin/DiscreteHedging-vc80-mt.exe"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\build\vc80\ReleaseMTDLL/DiscreteHedging.pdb"
 				SubSystem="1"
@@ -387,7 +388,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -414,7 +415,7 @@
 			IntermediateDirectory=".\build\vc80\Debug"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -437,14 +438,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\.."
 				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
 				PrecompiledHeaderFile=".\build\vc80\Debug/DiscreteHedging.pch"
@@ -454,7 +455,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\Debug/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -471,11 +472,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/DiscreteHedging-vc80-mt-sgd-0_3_9.exe"
+				OutputFile=".\bin/DiscreteHedging-vc80-mt-sgd.exe"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\build\vc80\Debug/DiscreteHedging.pdb"
 				SubSystem="1"
 				TargetMachine="1"
@@ -485,7 +486,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -512,7 +513,7 @@
 			IntermediateDirectory=".\build\vc80\DebugMTDLL"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -535,14 +536,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\.."
 				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				DisableLanguageExtensions="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
 				PrecompiledHeaderFile=".\build\vc80\DebugMTDLL/DiscreteHedging.pch"
@@ -552,7 +553,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\DebugMTDLL/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -569,11 +570,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/DiscreteHedging-vc80-mt-gd-0_3_9.exe"
+				OutputFile=".\bin/DiscreteHedging-vc80-mt-gd.exe"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\build\vc80\DebugMTDLL/DiscreteHedging.pdb"
 				SubSystem="1"
 				TargetMachine="1"
@@ -583,7 +584,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

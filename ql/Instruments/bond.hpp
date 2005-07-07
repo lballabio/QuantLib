@@ -141,6 +141,10 @@ namespace QuantLib {
         return businessDayConvention_;
     }
 
+    inline const DayCounter& Bond::dayCounter() const {
+        return dayCount_;
+    }
+
     inline Frequency Bond::frequency() const {
         return frequency_;
     }

@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="testsuite"
 	ProjectGUID="{A613045C-34AF-4706-AA3C-730C92524F74}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			IntermediateDirectory=".\build\vc80\Debug"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -42,14 +43,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\functions;.."
 				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				DisableLanguageExtensions="FALSE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\Debug/testsuite.pch"
 				AssemblerListingLocation=".\build\vc80\Debug/"
@@ -58,7 +59,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\Debug/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -77,9 +78,9 @@
 				Name="VCLinkerTool"
 				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-sgd-0_3_11.exe"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\build\vc80\Debug/testsuite.pdb"
 				SubSystem="1"
 				TargetMachine="1"
@@ -89,7 +90,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -118,7 +119,7 @@
 			IntermediateDirectory=".\build\vc80\Release"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -142,16 +143,16 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\functions;.."
 				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				DisableLanguageExtensions="FALSE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\Release/testsuite.pch"
 				AssemblerListingLocation=".\build\vc80\Release/"
@@ -160,7 +161,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -178,7 +179,7 @@
 				Name="VCLinkerTool"
 				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-s-0_3_11.exe"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
 				ProgramDatabaseFile=".\build\vc80\Release/testsuite.pdb"
 				SubSystem="1"
@@ -189,7 +190,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -218,7 +219,7 @@
 			IntermediateDirectory=".\build\vc80\ReleaseST"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -242,16 +243,16 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\functions;.."
 				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				DisableLanguageExtensions="FALSE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\ReleaseST/testsuite.pch"
 				AssemblerListingLocation=".\build\vc80\ReleaseST/"
@@ -260,7 +261,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\ReleaseST/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -278,7 +279,7 @@
 				Name="VCLinkerTool"
 				OutputFile=".\bin/QuantLib-test-suite-vc80-s-0_3_11.exe"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
 				ProgramDatabaseFile=".\build\vc80\ReleaseST/testsuite.pdb"
 				SubSystem="1"
@@ -289,7 +290,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -318,7 +319,7 @@
 			IntermediateDirectory=".\build\vc80\DebugMTDLL"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -341,14 +342,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\functions;.."
 				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				DisableLanguageExtensions="FALSE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\DebugMTDLL/testsuite.pch"
 				AssemblerListingLocation=".\build\vc80\DebugMTDLL/"
@@ -357,7 +358,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\DebugMTDLL/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -376,9 +377,9 @@
 				Name="VCLinkerTool"
 				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-gd-0_3_11.exe"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\build\vc80\DebugMTDLL/testsuite.pdb"
 				SubSystem="1"
 				TargetMachine="1"
@@ -388,7 +389,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -417,7 +418,7 @@
 			IntermediateDirectory=".\build\vc80\ReleaseMTDLL"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -441,16 +442,16 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\functions;.."
 				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="TRUE"
-				DisableLanguageExtensions="FALSE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\ReleaseMTDLL/testsuite.pch"
 				AssemblerListingLocation=".\build\vc80\ReleaseMTDLL/"
@@ -459,7 +460,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\ReleaseMTDLL/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -477,9 +478,9 @@
 				Name="VCLinkerTool"
 				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-0_3_11.exe"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\build\vc80\ReleaseMTDLL/testsuite.pdb"
 				SubSystem="1"
 				TargetMachine="1"
@@ -489,7 +490,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -518,7 +519,7 @@
 			IntermediateDirectory=".\build\vc80\DebugST"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			>
 			<Tool
@@ -541,14 +542,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				EnableIntrinsicFunctions="FALSE"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\functions;.."
 				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				DisableLanguageExtensions="FALSE"
-				ForceConformanceInForLoopScope="TRUE"
-				RuntimeTypeInfo="TRUE"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\build\vc80\DebugST/testsuite.pch"
 				AssemblerListingLocation=".\build\vc80\DebugST/"
@@ -557,7 +558,7 @@
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\DebugST/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -576,9 +577,9 @@
 				Name="VCLinkerTool"
 				OutputFile=".\bin/QuantLib-test-suite-vc80-sgd-0_3_11.exe"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\build\vc80\DebugST/testsuite.pdb"
 				SubSystem="1"
 				TargetMachine="1"
@@ -588,7 +589,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				EmbedManifest="FALSE"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -1666,6 +1667,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gaussianquadratures.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\hestonmodel.cpp"
+				>
+			</File>
+			<File
 				RelativePath="instruments.cpp"
 				>
 				<FileConfiguration
@@ -2329,6 +2338,10 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\pathgenerator.cpp"
+				>
 			</File>
 			<File
 				RelativePath="piecewiseflatforward.cpp"
@@ -3008,6 +3021,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\tqreigendecomposition.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\tracing.cpp"
 				>
 			</File>
@@ -3170,6 +3187,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gaussianquadratures.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\hestonmodel.hpp"
+				>
+			</File>
+			<File
 				RelativePath="instruments.hpp"
 				>
 			</File>
@@ -3211,6 +3236,10 @@
 			</File>
 			<File
 				RelativePath="operators.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\pathgenerator.hpp"
 				>
 			</File>
 			<File
@@ -3263,6 +3292,10 @@
 			</File>
 			<File
 				RelativePath="termstructures.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\tqreigendecomposition.hpp"
 				>
 			</File>
 			<File

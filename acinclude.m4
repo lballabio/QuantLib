@@ -270,6 +270,23 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
  fi
 ])
 
+# QL_CHECK_BOOST_TEST_STREAM
+# --------------------------
+# Check whether Boost unit-test stream accepts std::fixed
+AC_DEFUN([QL_CHECK_BOOST_TEST_STREAM],
+[AC_MSG_CHECKING([whether Boost unit-test streams work])
+ AC_REQUIRE([AC_PROG_CC])
+ AC_TRY_COMPILE(
+    [@%:@include <boost/test/unit_test.hpp>
+     @%:@include <iomanip>],
+    [BOOST_ERROR("foo " << std::fixed << 42.0);],
+    [AC_MSG_RESULT([yes])
+     AC_SUBST(BOOST_UNIT_TEST_DEFINE,[-DQL_WORKING_BOOST_STREAMS])],
+    [AC_MSG_RESULT([no])
+     AC_SUBST(BOOST_UNIT_TEST_DEFINE,[""])
+    ])
+])
+
 # QL_CHECK_BOOST
 # ------------------------
 # Boost-related tests
@@ -277,5 +294,6 @@ AC_DEFUN([QL_CHECK_BOOST],
 [AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
  AC_REQUIRE([QL_CHECK_BOOST_VERSION])
  AC_REQUIRE([QL_CHECK_BOOST_UNIT_TEST])
+ AC_REQUIRE([QL_CHECK_BOOST_TEST_STREAM])
 ])
 

@@ -65,5 +65,5 @@ namespace QuantLib {
         registerWith(index);
     }
 
-};
+}
 

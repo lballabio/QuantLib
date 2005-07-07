@@ -43,5 +43,5 @@ namespace QuantLib {
         cashFlows_ = std::vector<boost::shared_ptr<CashFlow> >();
     }
 
-};
+}
 

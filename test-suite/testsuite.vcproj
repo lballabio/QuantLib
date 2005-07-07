@@ -1304,6 +1304,12 @@
 				RelativePath=".\forwardoption.cpp">
 			</File>
 			<File
+				RelativePath=".\gaussianquadratures.cpp">
+			</File>
+			<File
+				RelativePath=".\hestonmodel.cpp">
+			</File>
+			<File
 				RelativePath="instruments.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -1848,6 +1854,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\pathgenerator.cpp">
 			</File>
 			<File
 				RelativePath="piecewiseflatforward.cpp">
@@ -2405,6 +2414,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\tqreigendecomposition.cpp">
+			</File>
+			<File
 				RelativePath=".\tracing.cpp">
 			</File>
 			<File
@@ -2532,6 +2544,12 @@
 				RelativePath=".\forwardoption.hpp">
 			</File>
 			<File
+				RelativePath=".\gaussianquadratures.hpp">
+			</File>
+			<File
+				RelativePath=".\hestonmodel.hpp">
+			</File>
+			<File
 				RelativePath="instruments.hpp">
 			</File>
 			<File
@@ -2563,6 +2581,9 @@
 			</File>
 			<File
 				RelativePath="operators.hpp">
+			</File>
+			<File
+				RelativePath=".\pathgenerator.hpp">
 			</File>
 			<File
 				RelativePath="piecewiseflatforward.hpp">
@@ -2602,6 +2623,9 @@
 			</File>
 			<File
 				RelativePath="termstructures.hpp">
+			</File>
+			<File
+				RelativePath=".\tqreigendecomposition.hpp">
 			</File>
 			<File
 				RelativePath=".\tracing.hpp">

@@ -188,10 +188,14 @@
 // move inside here configs specific to VC++ 7.1 (.Net 2003)
 #  define QL_LIB_TOOLSET "vc71"
 #  define QL_PATCH_MSVC71
+#  define QL_WORKING_BOOST_STREAMS
 #elif (_MSC_VER == 1400)
 // move inside here configs specific to VC++ 8 (2005)
 #  define QL_LIB_TOOLSET "vc80"
 #  define QL_PATCH_MSVC80
+#  define QL_WORKING_BOOST_STREAMS
+#  pragma warning(disable: 4267)
+#  pragma warning(disable: 4996)
 #else
 #  error "unknown Microsoft compiler"
 #endif

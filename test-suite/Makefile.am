@@ -59,7 +59,9 @@ dist-hook:
 
 if BOOST_UNIT_TEST_FOUND
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_srcdir}/functions -I${top_builddir}
+AM_CPPFLAGS = \
+	-I${top_srcdir} -I${top_srcdir}/functions -I${top_builddir} \
+	${BOOST_UNIT_TEST_DEFINE}
 
 bin_PROGRAMS = quantlib-test-suite
 
@@ -77,6 +79,7 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite.dsp \
 	testsuite.vcproj \
+	testsuite_vc8.vcproj \
 	testsuite.dev \
 	makefile.mak
 

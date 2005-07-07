@@ -30,13 +30,6 @@
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Math/comparison.hpp>
 #include <ql/Utilities/dataformatters.hpp>
-#include <iomanip>
-
-#if !defined(QL_PATCH_MSVC6)
-#define FIXED std::fixed
-#else
-#define FIXED ""
-#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -133,10 +126,10 @@ void TermStructureTest::testReferenceChange() {
 
     for (i=0; i<LENGTH(days); i++) {
         if (!close(expected[i],calculated[i]))
-            BOOST_FAIL("\n  Discount at " << days[i] << " days:\n"
-                       << std::setprecision(12)
-                       << "    before date change: " << expected[i] << "\n"
-                       << "    after date change:  " << calculated[i]);
+            BOOST_ERROR("\n  Discount at " << days[i] << " days:\n"
+                        << std::setprecision(12)
+                        << "    before date change: " << expected[i] << "\n"
+                        << "    after date change:  " << calculated[i]);
     }
 
     QL_TEST_TEARDOWN
@@ -162,9 +155,9 @@ void TermStructureTest::testImplied() {
     DiscountFactor discount = termStructure_->discount(testDate);
     DiscountFactor impliedDiscount = implied->discount(testDate);
     if (std::fabs(discount - baseDiscount*impliedDiscount) > tolerance)
-        BOOST_FAIL(
+        BOOST_ERROR(
             "unable to reproduce discount from implied curve\n"
-            << FIXED << std::setprecision(10)
+            << QL_FIXED << std::setprecision(10)
             << "    calculated: " << baseDiscount*impliedDiscount << "\n"
             << "    expected:   " << discount);
 
@@ -188,7 +181,7 @@ void TermStructureTest::testImpliedObs() {
     flag.registerWith(implied);
     h.linkTo(termStructure_);
     if (!flag.isUp())
-        BOOST_FAIL("Observer was not notified of term structure change");
+        BOOST_ERROR("Observer was not notified of term structure change");
 
     QL_TEST_TEARDOWN
 }
@@ -214,7 +207,7 @@ void TermStructureTest::testFSpreaded() {
     Rate spreadedForward = spreaded->forwardRate(testDate, testDate, sprdc,
                                                  Continuous, NoFrequency);
     if (std::fabs(forward - (spreadedForward-me->value())) > tolerance)
-        BOOST_FAIL(
+        BOOST_ERROR(
             "unable to reproduce forward from spreaded curve\n"
             << std::setprecision(10)
             << "    calculated: "
@@ -241,11 +234,11 @@ void TermStructureTest::testFSpreadedObs() {
     flag.registerWith(spreaded);
     h.linkTo(termStructure_);
     if (!flag.isUp())
-        BOOST_FAIL("Observer was not notified of term structure change");
+        BOOST_ERROR("Observer was not notified of term structure change");
     flag.lower();
     me->setValue(0.005);
     if (!flag.isUp())
-        BOOST_FAIL("Observer was not notified of spread change");
+        BOOST_ERROR("Observer was not notified of spread change");
 
     QL_TEST_TEARDOWN
 }
@@ -270,7 +263,7 @@ void TermStructureTest::testZSpreaded() {
     Rate spreadedZero = spreaded->zeroRate(testDate, rfdc,
                                            Continuous, NoFrequency);
     if (std::fabs(zero - (spreadedZero-me->value())) > tolerance)
-        BOOST_FAIL(
+        BOOST_ERROR(
             "unable to reproduce zero yield from spreaded curve\n"
             << std::setprecision(10)
             << "    calculated: " << io::rate(spreadedZero-me->value()) << "\n"
@@ -295,11 +288,11 @@ void TermStructureTest::testZSpreadedObs() {
     flag.registerWith(spreaded);
     h.linkTo(termStructure_);
     if (!flag.isUp())
-        BOOST_FAIL("Observer was not notified of term structure change");
+        BOOST_ERROR("Observer was not notified of term structure change");
     flag.lower();
     me->setValue(0.005);
     if (!flag.isUp())
-        BOOST_FAIL("Observer was not notified of spread change");
+        BOOST_ERROR("Observer was not notified of spread change");
 
     QL_TEST_TEARDOWN
 }

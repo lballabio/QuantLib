@@ -1,3 +1,621 @@
+2005-06-20 15:15  Luigi Ballabio
+
+	* ql/Patterns/observable.hpp (1.23.2.1):
+
+	Fix for gcc 4 (thanks to Andreas Jochens)
+
+2005-06-20 15:14  Luigi Ballabio
+
+	* ql/Instruments/bond.hpp (1.10.2.1):
+
+	Added missing method body (thanks to Mirko Raso)
+
+2005-06-03 15:21  Luigi Ballabio
+
+	* Contributors.txt (1.29.2.1), News.txt (1.84.2.2),
+	Docs/pages/authors.docs (1.37.2.1), Docs/pages/history.docs
+	(1.22.2.2), ql/Calendars/Makefile.am (1.26.4.1),
+	ql/Calendars/all.hpp (1.11.2.1), ql/Calendars/istanbul.cpp
+	(1.1.2.1), ql/Calendars/istanbul.hpp (1.1.2.1):
+
+	Istanbul calendar added (thanks to Serkan Atalik)
+
+2005-05-25 12:25  Luigi Ballabio
+
+	* QuantLib.dsp (1.263.2.1), ql/Math/gaussianquadratures.cpp
+	(1.1.2.1), ql/Math/tqreigendecomposition.cpp (1.1.2.1),
+	ql/PricingEngines/Basket/mcamericanbasketengine.cpp (1.34.2.1),
+	ql/qldefines.hpp (1.94.2.1), test-suite/gaussianquadratures.cpp
+	(1.1.2.1), test-suite/hestonmodel.cpp (1.4.2.1),
+	test-suite/pathgenerator.cpp (1.8.2.1), test-suite/testsuite.dsp
+	(1.50.2.1):
+
+	Fixes for VC++6
+
+2005-05-24 18:05  Luigi Ballabio
+
+	* ql/: FiniteDifferences/parallelevolver.hpp (1.2.2.1),
+	Instruments/fixedcouponbond.cpp (1.8.2.1),
+	Instruments/floatingratebond.cpp (1.3.2.1),
+	Instruments/zerocouponbond.cpp (1.2.2.1):
+
+	Fixes for gcc 4.0
+
+2005-05-23 17:05  Luigi Ballabio
+
+	* Contributors.txt (1.29), News.txt (1.84), Docs/pages/authors.docs
+	(1.37), ql/CashFlows/Makefile.am (1.16), ql/CashFlows/analysis.cpp
+	(1.1), ql/CashFlows/analysis.hpp (1.1), ql/CashFlows/core.hpp
+	(1.3):
+
+	Cash-flow analyses added (thanks to Charles Whitmore)
+
+2005-05-20 14:53  Luigi Ballabio
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.75),
+	ql/PricingEngines/Swaption/jamshidianswaptionengine.cpp (1.3),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.45),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.hpp (1.20),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.41),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp (1.18),
+	test-suite/shortratemodels.cpp (1.5):
+
+	Fixes for short-rate model calibration helpers (thanks to Enrico
+	Michelotti)
+
+2005-05-20 13:10  Luigi Ballabio
+
+	* ql/ShortRateModels/OneFactorModels/coxingersollross.cpp (1.29):
+
+	Fixed volatility constraint (thanks to Klaus Spanderen.)
+
+2005-05-20 11:12  Luigi Ballabio
+
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.53),
+	ql/MonteCarlo/mctraits.hpp (1.16), ql/MonteCarlo/multipath.hpp
+	(1.24), ql/MonteCarlo/multipathgenerator.hpp (1.64),
+	ql/MonteCarlo/path.hpp (1.27), ql/MonteCarlo/pathgenerator.hpp
+	(1.71), ql/Pricers/mccliquetoption.cpp (1.39),
+	ql/Pricers/mcdiscretearithmeticaso.cpp (1.42),
+	ql/Pricers/mceverest.cpp (1.48), ql/Pricers/mchimalaya.cpp (1.52),
+	ql/Pricers/mcmaxbasket.cpp (1.48), ql/Pricers/mcpagoda.cpp (1.51),
+	ql/Pricers/mcperformanceoption.cpp (1.34),
+	ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp (1.12),
+	ql/PricingEngines/Asian/mc_discr_geom_av_price.cpp (1.5),
+	ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp (1.11),
+	ql/PricingEngines/Barrier/mcbarrierengine.cpp (1.13),
+	ql/PricingEngines/Basket/mcamericanbasketengine.cpp (1.34),
+	ql/PricingEngines/Basket/mcamericanbasketengine.hpp (1.13),
+	ql/PricingEngines/Basket/mcbasketengine.cpp (1.10),
+	ql/PricingEngines/Vanilla/mcdigitalengine.cpp (1.14),
+	ql/PricingEngines/Vanilla/mceuropeanengine.hpp (1.40),
+	ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp (1.3),
+	test-suite/Makefile.am (1.54), test-suite/asianoptions.cpp (1.53),
+	test-suite/old_pricers.cpp (1.76), test-suite/pathgenerator.cpp
+	(1.7):
+
+	New path class storing the asset values
+
+2005-05-20 09:28  drjoe
+
+	* ql/PricingEngines/Vanilla/: fdamericanengine.hpp (1.4),
+	fdshoutengine.hpp (1.4), fdstepconditionengine.cpp (1.5),
+	fdstepconditionengine.hpp (1.5):
+
+	modify step condition pricing engines so that the engine interface
+	is in the concrete class rather than in the abstract class.
+
+2005-05-20 08:59  drjoe
+
+	* ql/PricingEngines/Vanilla/fddividendshoutengine.hpp (1.3),
+	test-suite/dividendoption.cpp (1.7):
+
+	move engine definition to concrete class.
+
+2005-05-20 08:38  drjoe
+
+	* ql/: schedule.hpp (1.6),
+	PricingEngines/Vanilla/fdbermudanengine.hpp (1.4),
+	PricingEngines/Vanilla/fddividendamericanengine.hpp (1.3),
+	PricingEngines/Vanilla/fddividendengine.hpp (1.4),
+	PricingEngines/Vanilla/fddividendeuropeanengine.hpp (1.3),
+	PricingEngines/Vanilla/fdmultiperiodengine.cpp (1.3),
+	PricingEngines/Vanilla/fdmultiperiodengine.hpp (1.3):
+
+	Move the argument defintion to the concrete class rather than the
+	abstract class.  This is intended to make the abstract classes much
+	more portable.
+
+2005-05-19 16:13  Luigi Ballabio
+
+	* ql/Instruments/dividendschedule.hpp (1.2):
+
+	Fixed copyright
+
+2005-05-19 07:29  drjoe
+
+	* ql/Instruments/: dividendschedule.hpp (1.1),
+	dividendvanillaoption.hpp (1.7):
+
+	Move out dividend schedule to its own class.
+
+2005-05-17 12:43  Luigi Ballabio
+
+	* test-suite/pathgenerator.cpp (1.6):
+
+	Improved test
+
+2005-05-17 09:49  Luigi Ballabio
+
+	* Docs/quantlib.doxy (1.98):
+
+	Upgraded to Doxygen 1.4.3
+
+2005-05-16 17:12  Luigi Ballabio
+
+	* ql/: stochasticprocess.cpp (1.18), stochasticprocess.hpp (1.26),
+	MonteCarlo/multipathgenerator.hpp (1.63),
+	MonteCarlo/pathgenerator.hpp (1.70),
+	Processes/blackscholesprocess.cpp (1.4),
+	Processes/blackscholesprocess.hpp (1.4),
+	Processes/eulerdiscretization.cpp (1.3),
+	Processes/eulerdiscretization.hpp (1.3),
+	Processes/hestonprocess.cpp (1.3), Processes/hestonprocess.hpp
+	(1.3), Processes/merton76process.hpp (1.4),
+	Processes/stochasticprocessarray.cpp (1.3),
+	Processes/stochasticprocessarray.hpp (1.3):
+
+	Added higher-level evolve() method
+
+2005-05-12 21:23  Luigi Ballabio
+
+	* test-suite/hestonmodel.cpp (1.4):
+
+	Increased tolerance for Mac OS X
+
+2005-05-11 17:43  Luigi Ballabio
+
+	* Docs/quantlib.doxy (1.97), functions/ql/Functions/calendars.hpp
+	(1.3), functions/ql/Functions/daycounters.hpp (1.6),
+	functions/ql/Functions/mathf.hpp (1.6),
+	functions/ql/Functions/vols.hpp (1.7), ql/exchangerate.hpp (1.7),
+	ql/money.hpp (1.11), ql/Instruments/barrieroption.hpp (1.31),
+	ql/Instruments/basketoption.hpp (1.17), ql/Instruments/capfloor.hpp
+	(1.56), ql/Instruments/cliquetoption.hpp (1.19),
+	ql/Instruments/europeanoption.hpp (1.8), ql/Instruments/swap.hpp
+	(1.35), ql/Instruments/swaption.hpp (1.47),
+	ql/Math/convergencestatistics.hpp (1.3), ql/Math/factorial.hpp
+	(1.8), ql/Math/gaussianquadratures.hpp (1.2), ql/Math/rounding.hpp
+	(1.12), ql/PricingEngines/Vanilla/analytichestonengine.hpp (1.2),
+	ql/Processes/hestonprocess.hpp (1.2),
+	ql/RandomNumbers/rngtraits.hpp (1.13),
+	ql/ShortRateModels/CalibrationHelpers/hestonmodelhelper.hpp (1.2),
+	ql/TermStructures/compoundforward.hpp (1.45),
+	ql/TermStructures/piecewiseflatforward.hpp (1.55),
+	ql/TermStructures/piecewiseyieldcurve.hpp (1.10),
+	ql/Utilities/tracing.hpp (1.9):
+
+	Clean-up of Doxygen comments
+
+2005-05-08 21:33  drjoe
+
+	* ql/PricingEngines/Vanilla/: fdvanillaengine.cpp (1.5),
+	fdvanillaengine.hpp (1.6):
+
+	Generalize a bit.  Make this work for all OneAssetOptions, not
+	merely Vanilla options.
+
+2005-05-07 05:25  drjoe
+
+	* ql/Patterns/visitor.hpp (1.10):
+
+	Classes with virtual functions should have virtual destructors.
+
+2005-05-06 14:36  Luigi Ballabio
+
+	* ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp (1.2),
+	ql/Processes/hestonprocess.cpp (1.2), test-suite/hestonmodel.cpp
+	(1.2):
+
+	Fixes for Heston-model path generation
+
+2005-05-06 14:36  Luigi Ballabio
+
+	* ql/: Math/convergencestatistics.hpp (1.2),
+	PricingEngines/Vanilla/mcdigitalengine.hpp (1.40):
+
+	Fixes for gcc 3.4
+
+2005-05-05 18:24  Luigi Ballabio
+
+	* News.txt (1.82), ql/PricingEngines/Vanilla/Makefile.am (1.20),
+	ql/PricingEngines/Vanilla/analytichestonengine.cpp (1.1),
+	ql/PricingEngines/Vanilla/analytichestonengine.hpp (1.1),
+	ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp (1.1),
+	ql/PricingEngines/Vanilla/mchestonengine.hpp (1.1),
+	ql/PricingEngines/Vanilla/mcvanillaengine.hpp (1.28),
+	ql/Processes/Makefile.am (1.4), ql/Processes/hestonprocess.cpp
+	(1.1), ql/Processes/hestonprocess.hpp (1.1),
+	ql/ShortRateModels/CalibrationHelpers/Makefile.am (1.4),
+	ql/ShortRateModels/CalibrationHelpers/hestonmodelhelper.cpp (1.1),
+	ql/ShortRateModels/CalibrationHelpers/hestonmodelhelper.hpp (1.1),
+	ql/ShortRateModels/TwoFactorModels/Makefile.am (1.4),
+	ql/ShortRateModels/TwoFactorModels/hestonmodel.cpp (1.1),
+	ql/ShortRateModels/TwoFactorModels/hestonmodel.hpp (1.1),
+	test-suite/Makefile.am (1.53), test-suite/hestonmodel.cpp (1.1),
+	test-suite/hestonmodel.hpp (1.1), test-suite/quantlibtestsuite.cpp
+	(1.102):
+
+	Added Heston stochastic-volatility model (thanks to Klaus
+	Spanderen.)
+
+2005-05-05 10:56  Luigi Ballabio
+
+	* ql/MonteCarlo/multipathgenerator.hpp (1.62):
+
+	Added antithetic path generation to multi-path generator
+
+2005-05-03 16:04  Luigi Ballabio
+
+	* News.txt (1.81), ql/Math/Makefile.am (1.46),
+	ql/Math/convergencestatistics.hpp (1.1), test-suite/stats.cpp
+	(1.30), test-suite/stats.hpp (1.16):
+
+	Convergence statistics added (thanks to Gary Kennedy)
+
+2005-05-03 13:03  Luigi Ballabio
+
+	* News.txt (1.80), ql/Instruments/basketoption.cpp (1.13),
+	ql/Instruments/basketoption.hpp (1.16),
+	ql/Instruments/multiassetoption.cpp (1.17),
+	ql/Instruments/multiassetoption.hpp (1.13),
+	ql/PricingEngines/Basket/mcamericanbasketengine.cpp (1.33),
+	ql/PricingEngines/Basket/mcbasketengine.hpp (1.35),
+	ql/PricingEngines/Basket/stulzengine.cpp (1.22),
+	test-suite/basketoption.cpp (1.45):
+
+	Multi-asset option takes a generic stochastic process
+
+2005-05-03 13:01  Luigi Ballabio
+
+	* ql/Processes/: stochasticprocessarray.cpp (1.2),
+	stochasticprocessarray.hpp (1.2):
+
+	Allowed access to underlying processes
+
+2005-05-02 17:27  Luigi Ballabio
+
+	* Docs/pages/history.docs (1.22),
+	ql/PricingEngines/Basket/mcamericanbasketengine.cpp (1.32):
+
+	Merged latest changes from 0.3.9
+
+2005-04-29 17:35  Luigi Ballabio
+
+	* ql/MonteCarlo/brownianbridge.hpp (1.30),
+	ql/MonteCarlo/multipathgenerator.hpp (1.61),
+	ql/MonteCarlo/pathgenerator.hpp (1.69),
+	test-suite/pathgenerator.cpp (1.5):
+
+	Fixes for path generation
+
+2005-04-29 16:07  Luigi Ballabio
+
+	* News.txt (1.79), ql/Lattices/binomialtree.cpp (1.31),
+	ql/MonteCarlo/multipathgenerator.hpp (1.60),
+	ql/MonteCarlo/pathgenerator.hpp (1.68), ql/Pricers/mceverest.cpp
+	(1.47), ql/Pricers/mchimalaya.cpp (1.51),
+	ql/Pricers/mcmaxbasket.cpp (1.47), ql/Pricers/mcpagoda.cpp (1.50),
+	ql/PricingEngines/Basket/mcamericanbasketengine.cpp (1.31),
+	ql/PricingEngines/Basket/mcbasketengine.hpp (1.34),
+	test-suite/pathgenerator.cpp (1.4):
+
+	Multi-path generator now takes a generic stochastic process
+
+2005-04-29 16:05  Luigi Ballabio
+
+	* ql/Processes/: stochasticprocessarray.cpp (1.1),
+	stochasticprocessarray.hpp (1.1), Makefile.am (1.3), all.hpp (1.3):
+
+	Added stochastic process array (thanks to Klaus Spanderen.)
+
+2005-04-29 14:11  Luigi Ballabio
+
+	* ql/MonteCarlo/multipathgenerator.hpp (1.59),
+	test-suite/pathgenerator.cpp (1.3):
+
+	Fix for non-logarithmic processes
+
+2005-04-27 17:37  Luigi Ballabio
+
+	* ql/MonteCarlo/brownianbridge.hpp (1.29),
+	ql/MonteCarlo/pathgenerator.hpp (1.67),
+	test-suite/pathgenerator.cpp (1.2):
+
+	Added word of warning wrt the use of Brownian bridge---it will have
+	to be fixed somehow
+
+2005-04-26 14:51  Luigi Ballabio
+
+	* ql/: stochasticprocess.cpp (1.17), stochasticprocess.hpp (1.25),
+	Processes/eulerdiscretization.cpp (1.2),
+	Processes/eulerdiscretization.hpp (1.2),
+	Processes/ornsteinuhlenbeckprocess.cpp (1.3),
+	Processes/ornsteinuhlenbeckprocess.hpp (1.4):
+
+	Extended stochastic process interface
+
+2005-04-26 12:04  Luigi Ballabio
+
+	* ql/MonteCarlo/multipathgenerator.hpp (1.58),
+	ql/MonteCarlo/pathgenerator.hpp (1.66), test-suite/Makefile.am
+	(1.52), test-suite/pathgenerator.cpp (1.1),
+	test-suite/pathgenerator.hpp (1.1),
+	test-suite/quantlibtestsuite.cpp (1.101):
+
+	Added path-generation tests
+
+2005-04-22 14:45  Luigi Ballabio
+
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.52),
+	ql/stochasticprocess.cpp (1.16), ql/stochasticprocess.hpp (1.24),
+	ql/Instruments/asianoption.cpp (1.24),
+	ql/Instruments/asianoption.hpp (1.24),
+	ql/Instruments/barrieroption.cpp (1.35),
+	ql/Instruments/barrieroption.hpp (1.30),
+	ql/Instruments/basketoption.cpp (1.12),
+	ql/Instruments/basketoption.hpp (1.15),
+	ql/Instruments/cliquetoption.cpp (1.6),
+	ql/Instruments/cliquetoption.hpp (1.18),
+	ql/Instruments/dividendvanillaoption.cpp (1.9),
+	ql/Instruments/dividendvanillaoption.hpp (1.6),
+	ql/Instruments/europeanoption.cpp (1.5),
+	ql/Instruments/europeanoption.hpp (1.7),
+	ql/Instruments/forwardvanillaoption.cpp (1.32),
+	ql/Instruments/forwardvanillaoption.hpp (1.32),
+	ql/Instruments/multiassetoption.cpp (1.16),
+	ql/Instruments/multiassetoption.hpp (1.12),
+	ql/Instruments/oneassetoption.cpp (1.24),
+	ql/Instruments/oneassetoption.hpp (1.16),
+	ql/Instruments/oneassetstrikedoption.cpp (1.19),
+	ql/Instruments/oneassetstrikedoption.hpp (1.16),
+	ql/Instruments/quantoforwardvanillaoption.cpp (1.30),
+	ql/Instruments/quantoforwardvanillaoption.hpp (1.26),
+	ql/Instruments/quantovanillaoption.cpp (1.37),
+	ql/Instruments/quantovanillaoption.hpp (1.34),
+	ql/Instruments/vanillaoption.cpp (1.49),
+	ql/Instruments/vanillaoption.hpp (1.49),
+	ql/Lattices/binomialtree.cpp (1.30), ql/Lattices/binomialtree.hpp
+	(1.24), ql/Lattices/trinomialtree.cpp (1.26),
+	ql/Lattices/trinomialtree.hpp (1.18),
+	ql/MonteCarlo/brownianbridge.hpp (1.28),
+	ql/MonteCarlo/multipathgenerator.hpp (1.57),
+	ql/MonteCarlo/pathgenerator.hpp (1.65),
+	ql/Pricers/mccliquetoption.cpp (1.38),
+	ql/Pricers/mcdiscretearithmeticaso.cpp (1.41),
+	ql/Pricers/mceverest.cpp (1.46), ql/Pricers/mchimalaya.cpp (1.50),
+	ql/Pricers/mcmaxbasket.cpp (1.46), ql/Pricers/mcpagoda.cpp (1.49),
+	ql/Pricers/mcperformanceoption.cpp (1.33),
+	ql/PricingEngines/greeks.cpp (1.3), ql/PricingEngines/greeks.hpp
+	(1.3), ql/PricingEngines/Asian/analytic_discr_geom_av_price.cpp
+	(1.14), ql/PricingEngines/Asian/mcdiscreteasianengine.hpp (1.10),
+	ql/PricingEngines/Barrier/analyticbarrierengine.cpp (1.22),
+	ql/PricingEngines/Barrier/mcbarrierengine.cpp (1.12),
+	ql/PricingEngines/Barrier/mcbarrierengine.hpp (1.33),
+	ql/PricingEngines/Forward/forwardengine.hpp (1.25),
+	ql/PricingEngines/Quanto/quantoengine.hpp (1.19),
+	ql/PricingEngines/Vanilla/binomialengine.hpp (1.27),
+	ql/PricingEngines/Vanilla/fdeuropeanengine.cpp (1.5),
+	ql/PricingEngines/Vanilla/jumpdiffusionengine.cpp (1.34),
+	ql/PricingEngines/Vanilla/mcdigitalengine.cpp (1.13),
+	ql/PricingEngines/Vanilla/mcdigitalengine.hpp (1.38),
+	ql/PricingEngines/Vanilla/mcvanillaengine.hpp (1.26),
+	ql/Processes/Makefile.am (1.2),
+	ql/Processes/blackscholesprocess.cpp (1.3),
+	ql/Processes/blackscholesprocess.hpp (1.3),
+	ql/Processes/eulerdiscretization.cpp (1.1),
+	ql/Processes/eulerdiscretization.hpp (1.1),
+	ql/Processes/geometricbrownianprocess.cpp (1.3),
+	ql/Processes/geometricbrownianprocess.hpp (1.3),
+	ql/Processes/merton76process.cpp (1.3),
+	ql/Processes/merton76process.hpp (1.3),
+	ql/Processes/ornsteinuhlenbeckprocess.hpp (1.3),
+	ql/Processes/squarerootprocess.cpp (1.3),
+	ql/Processes/squarerootprocess.hpp (1.3),
+	ql/ShortRateModels/onefactormodel.hpp (1.22),
+	ql/ShortRateModels/twofactormodel.hpp (1.19),
+	ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp (1.23),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.hpp (1.27),
+	ql/ShortRateModels/OneFactorModels/hullwhite.hpp (1.29),
+	ql/ShortRateModels/OneFactorModels/vasicek.hpp (1.19),
+	ql/ShortRateModels/TwoFactorModels/g2.hpp (1.32),
+	test-suite/basketoption.cpp (1.44), test-suite/cliquetoption.cpp
+	(1.28), test-suite/digitaloption.cpp (1.54),
+	test-suite/jumpdiffusion.cpp (1.40):
+
+	Added generic multi-dimensional stochastic process
+
+2005-04-19 16:46  Luigi Ballabio
+
+	* News.txt (1.78), ql/Math/Makefile.am (1.45),
+	ql/Math/gaussianorthogonalpolynomial.cpp (1.1),
+	ql/Math/gaussianorthogonalpolynomial.hpp (1.1),
+	ql/Math/gaussianquadratures.cpp (1.1),
+	ql/Math/gaussianquadratures.hpp (1.1),
+	ql/Math/tqreigendecomposition.cpp (1.1),
+	ql/Math/tqreigendecomposition.hpp (1.1),
+	ql/Optimization/simplex.cpp (1.15), test-suite/Makefile.am (1.51),
+	test-suite/gaussianquadratures.cpp (1.1),
+	test-suite/gaussianquadratures.hpp (1.1),
+	test-suite/quantlibtestsuite.cpp (1.100),
+	test-suite/tqreigendecomposition.cpp (1.1),
+	test-suite/tqreigendecomposition.hpp (1.1):
+
+	Added Gaussian quadratures (thanks to Klaus Spanderen.)
+
+2005-04-12 16:40  Luigi Ballabio
+
+	* Examples/AmericanOption/AmericanOption.dev (1.3),
+	Examples/BermudanSwaption/BermudanSwaption.dev (1.3),
+	Examples/DiscreteHedging/DiscreteHedging.dev (1.3),
+	Examples/EuropeanOption/EuropeanOption.dev (1.3),
+	Examples/Swap/Swap.dev (1.3), QuantLib.dev (1.11),
+	functions/ql/Functions/QuantLibFunctions.dev (1.7),
+	test-suite/QuantLib-test-suite.dev (1.11):
+
+	Upgraded Dev-C++ projects
+
+2005-04-12 15:56  Luigi Ballabio
+
+	* Examples/AmericanOption/AmericanOption.dsp (1.12),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.73),
+	Examples/BermudanSwaption/BermudanSwaption.dsp (1.19),
+	Examples/DiscreteHedging/DiscreteHedging.dsp (1.21),
+	Examples/EuropeanOption/EuropeanOption.dsp (1.19),
+	Examples/Swap/Swap.dsp (1.20), QuantLib.dsp (1.263),
+	ql/Lattices/Makefile.am (1.11), ql/Lattices/binomialtree.cpp
+	(1.29), ql/Lattices/binomialtree.hpp (1.23),
+	ql/Lattices/bsmlattice.hpp (1.14), ql/Lattices/lattice.hpp (1.20),
+	ql/Lattices/lattice2d.hpp (1.14), ql/Lattices/tree.hpp (1.26),
+	ql/Lattices/bsmlattice.cpp (1.15), ql/Lattices/lattice1d.hpp (1.1),
+	ql/Lattices/trinomialtree.cpp (1.25), ql/Lattices/trinomialtree.hpp
+	(1.17), ql/Lattices/lattice.cpp (1.30), ql/Lattices/lattice2d.cpp
+	(1.16), ql/PricingEngines/CapFloor/treecapfloorengine.cpp (1.7),
+	ql/PricingEngines/Swaption/treeswaptionengine.cpp (1.7),
+	ql/PricingEngines/Vanilla/binomialengine.hpp (1.26),
+	ql/PricingEngines/latticeshortratemodelengine.hpp (1.14),
+	ql/PricingEngines/Vanilla/discretizedvanillaoption.cpp (1.11),
+	ql/ShortRateModels/OneFactorModels/blackkarasinski.cpp (1.23),
+	ql/discretizedasset.hpp (1.22), ql/ShortRateModels/model.hpp
+	(1.34), ql/ShortRateModels/onefactormodel.cpp (1.19),
+	ql/ShortRateModels/onefactormodel.hpp (1.21),
+	ql/ShortRateModels/twofactormodel.cpp (1.14),
+	ql/ShortRateModels/twofactormodel.hpp (1.18),
+	ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp (1.22),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.cpp (1.28),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.hpp (1.26),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp
+	(1.31),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
+	(1.28), ql/ShortRateModels/OneFactorModels/hullwhite.cpp (1.27),
+	ql/ShortRateModels/OneFactorModels/hullwhite.hpp (1.28),
+	ql/numericalmethod.hpp (1.21):
+
+	Faster implementation of binomial/trinomial trees and lattices
+
+2005-04-11 14:32  Luigi Ballabio
+
+	* Authors.txt (1.15), ChangeLog.txt (1.48), Makefile.am (1.96),
+	News.txt (1.77), QuantLib.dev (1.10), QuantLib.dsp (1.261),
+	QuantLib_vc8.vcproj (1.2), memo.txt (1.5), Docs/Makefile.am (1.75),
+	Docs/pages/authors.docs (1.35), Docs/pages/faq.docs (1.15),
+	Docs/pages/history.docs (1.21),
+	Examples/AmericanOption/AmericanOption.dev (1.2),
+	Examples/AmericanOption/Makefile.am (1.6),
+	Examples/AmericanOption/makefile.mak (1.16),
+	Examples/BermudanSwaption/BermudanSwaption.dev (1.2),
+	Examples/BermudanSwaption/Makefile.am (1.12),
+	Examples/BermudanSwaption/makefile.mak (1.20),
+	Examples/DiscreteHedging/DiscreteHedging.dev (1.2),
+	Examples/DiscreteHedging/Makefile.am (1.19),
+	Examples/DiscreteHedging/makefile.mak (1.23),
+	Examples/EuropeanOption/EuropeanOption.dev (1.2),
+	Examples/EuropeanOption/Makefile.am (1.13),
+	Examples/EuropeanOption/makefile.mak (1.26),
+	Examples/Swap/Makefile.am (1.14), Examples/Swap/Swap.dev (1.2),
+	Examples/Swap/makefile.mak (1.23),
+	functions/ql/Functions/Makefile.am (1.8),
+	functions/ql/Functions/makefile.mak (1.8), ql/config.msvc.hpp
+	(1.68), ql/discretizedasset.hpp (1.21), ql/errors.cpp (1.12),
+	ql/makefile.mak (1.71), ql/money.hpp (1.10),
+	ql/stochasticprocess.cpp (1.15), ql/Calendars/makefile.mak (1.32),
+	ql/CashFlows/makefile.mak (1.25), ql/Currencies/makefile.mak (1.2),
+	ql/DayCounters/makefile.mak (1.22),
+	ql/FiniteDifferences/makefile.mak (1.23),
+	ql/FiniteDifferences/stepcondition.hpp (1.19),
+	ql/Indexes/Makefile.am (1.12), ql/Indexes/all.hpp (1.3),
+	ql/Indexes/audlibor.hpp (1.23), ql/Indexes/cadlibor.hpp (1.23),
+	ql/Indexes/cdor.hpp (1.2), ql/Indexes/chflibor.hpp (1.20),
+	ql/Indexes/euribor.hpp (1.25), ql/Indexes/gbplibor.hpp (1.28),
+	ql/Indexes/jpylibor.hpp (1.21), ql/Indexes/makefile.mak (1.22),
+	ql/Indexes/tibor.hpp (1.2), ql/Indexes/usdlibor.hpp (1.27),
+	ql/Indexes/zarlibor.hpp (1.21), ql/Indexes/zibor.hpp (1.2),
+	ql/Instruments/makefile.mak (1.38), ql/Lattices/lattice.cpp (1.29),
+	ql/Lattices/makefile.mak (1.28), ql/Math/array.hpp (1.21),
+	ql/Math/backwardflatinterpolation.hpp (1.4), ql/Math/comparison.hpp
+	(1.9), ql/Math/makefile.mak (1.39), ql/Math/matrix.hpp (1.44),
+	ql/Math/primenumbers.cpp (1.16), ql/Math/primenumbers.hpp (1.12),
+	ql/MonteCarlo/brownianbridge.hpp (1.27), ql/MonteCarlo/makefile.mak
+	(1.31), ql/Optimization/makefile.mak (1.20),
+	ql/Pricers/makefile.mak (1.48), ql/PricingEngines/makefile.mak
+	(1.35), ql/PricingEngines/Asian/makefile.mak (1.10),
+	ql/PricingEngines/Barrier/makefile.mak (1.10),
+	ql/PricingEngines/Basket/makefile.mak (1.9),
+	ql/PricingEngines/CapFloor/analyticcapfloorengine.cpp (1.3),
+	ql/PricingEngines/CapFloor/analyticcapfloorengine.hpp (1.7),
+	ql/PricingEngines/CapFloor/makefile.mak (1.9),
+	ql/PricingEngines/Cliquet/makefile.mak (1.12),
+	ql/PricingEngines/Swaption/makefile.mak (1.11),
+	ql/PricingEngines/Vanilla/makefile.mak (1.17),
+	ql/Processes/makefile.mak (1.3), ql/RandomNumbers/haltonrsg.cpp
+	(1.16), ql/RandomNumbers/makefile.mak (1.30),
+	ql/RandomNumbers/primitivepolynomials.c (1.10),
+	ql/RandomNumbers/primitivepolynomials.h (1.6),
+	ql/ShortRateModels/makefile.mak (1.17),
+	ql/ShortRateModels/CalibrationHelpers/makefile.mak (1.16),
+	ql/ShortRateModels/OneFactorModels/makefile.mak (1.16),
+	ql/ShortRateModels/TwoFactorModels/makefile.mak (1.16),
+	ql/TermStructures/bootstraptraits.hpp (1.6),
+	ql/TermStructures/makefile.mak (1.27),
+	ql/TermStructures/piecewiseyieldcurve.hpp (1.9),
+	ql/Utilities/disposable.hpp (1.3), ql/Utilities/makefile.mak (1.4),
+	ql/Volatilities/makefile.mak (1.11), test-suite/Makefile.am (1.50),
+	test-suite/americanoption.cpp (1.38), test-suite/asianoptions.cpp
+	(1.52), test-suite/barrieroption.cpp (1.48),
+	test-suite/basketoption.cpp (1.43), test-suite/bermudanswaption.cpp
+	(1.4), test-suite/bonds.cpp (1.15), test-suite/capfloor.cpp (1.50),
+	test-suite/cliquetoption.cpp (1.27), test-suite/compoundforward.cpp
+	(1.34), test-suite/covariance.cpp (1.30),
+	test-suite/daycounters.cpp (1.19), test-suite/digitaloption.cpp
+	(1.53), test-suite/distributions.cpp (1.27),
+	test-suite/dividendoption.cpp (1.6), test-suite/europeanoption.cpp
+	(1.90), test-suite/factorial.cpp (1.21),
+	test-suite/forwardoption.cpp (1.23), test-suite/integrals.cpp
+	(1.14), test-suite/interestrates.cpp (1.19),
+	test-suite/interpolations.cpp (1.27), test-suite/jumpdiffusion.cpp
+	(1.39), test-suite/lowdiscrepancysequences.cpp (1.73),
+	test-suite/makefile.mak (1.54), test-suite/matrices.cpp (1.32),
+	test-suite/old_pricers.cpp (1.75), test-suite/operators.cpp (1.16),
+	test-suite/piecewiseflatforward.cpp (1.35),
+	test-suite/piecewiseyieldcurve.cpp (1.8),
+	test-suite/quantooption.cpp (1.25), test-suite/quotes.cpp (1.10),
+	test-suite/rounding.cpp (1.7), test-suite/shortratemodels.cpp
+	(1.4), test-suite/solvers.cpp (1.15), test-suite/stats.cpp (1.29),
+	test-suite/swap.cpp (1.42), test-suite/swaption.cpp (1.42),
+	test-suite/termstructures.cpp (1.40), test-suite/testsuite.vcproj
+	(1.31), test-suite/testsuite_vc8.vcproj (1.2),
+	test-suite/tracing.cpp (1.6), test-suite/utilities.hpp (1.25):
+
+	Merged 0.3.9 branch
+
+2005-04-08 14:25  Luigi Ballabio
+
+	* Docs/pages/faq.docs (1.13.2.6):
+
+	Link to MinGW instructions
+
+2005-04-07 11:57  Luigi Ballabio
+
+	* ql/Utilities/disposable.hpp (1.1.2.2):
+
+	Fix for gcc 3.4 warning
+
+2005-04-05 16:18  Ferdinando Ametrano
+
+	* QuantLib.vcproj (1.51.2.3):
+
+	catching up
+
 2005-04-01 17:37  Ferdinando Ametrano
 
 	* Authors.txt (1.14.4.1), Docs/pages/authors.docs (1.33.2.2),

@@ -26,13 +26,6 @@
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
 #include <ql/Utilities/dataformatters.hpp>
-#include <iomanip>
-
-#if !defined(QL_PATCH_MSVC6)
-#define FIXED std::fixed
-#else
-#define FIXED ""
-#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -147,7 +140,7 @@ void SwaptionTest::testStrikeDependency() {
                                            std::less<Real>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
-                        BOOST_FAIL(
+                        BOOST_ERROR(
                             "NPV is increasing with the strike "
                             << "in a payer swaption: \n"
                             << "    exercise date: " << exerciseDate << "\n"
@@ -163,7 +156,7 @@ void SwaptionTest::testStrikeDependency() {
                                            std::greater<Real>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
-                        BOOST_FAIL(
+                        BOOST_ERROR(
                             "NPV is decreasing with the strike "
                             << "in a receiver swaption: \n"
                             << "    exercise date: " << exerciseDate << "\n"
@@ -214,7 +207,7 @@ void SwaptionTest::testSpreadDependency() {
                                            std::greater<Real>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
-                        BOOST_FAIL(
+                        BOOST_ERROR(
                             "NPV is decreasing with the spread "
                             << "in a payer swaption: \n"
                             << "    exercise date: " << exerciseDate << "\n"
@@ -230,7 +223,7 @@ void SwaptionTest::testSpreadDependency() {
                                            std::less<Real>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
-                        BOOST_FAIL(
+                        BOOST_ERROR(
                             "NPV is increasing with the spread "
                             << "in a receiver swaption: \n"
                             << "    exercise date: " << exerciseDate << "\n"
@@ -279,7 +272,7 @@ void SwaptionTest::testSpreadTreatment() {
                     boost::shared_ptr<Swaption> swaption2 =
                         makeSwaption(equivalentSwap,exerciseDate,0.20);
                     if (std::fabs(swaption1->NPV()-swaption2->NPV()) > 1.0e-10)
-                        BOOST_FAIL(
+                        BOOST_ERROR(
                             "wrong spread treatment: \n"
                             << "    exercise date: " << exerciseDate << "\n"
                             << "    length: " << lengths[j] << " years\n"
@@ -321,10 +314,10 @@ void SwaptionTest::testCachedValue() {
 #endif
 
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-11)
-        BOOST_FAIL("failed to reproduce cached swaption value:\n"
-                   << FIXED << std::setprecision(12)
-                   << "    calculated: " << swaption->NPV() << "\n"
-                   << "    expected:   " << cachedNPV);
+        BOOST_ERROR("failed to reproduce cached swaption value:\n"
+                    << QL_FIXED << std::setprecision(12)
+                    << "    calculated: " << swaption->NPV() << "\n"
+                    << "    expected:   " << cachedNPV);
 
     QL_TEST_TEARDOWN
 }

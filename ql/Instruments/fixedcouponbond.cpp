@@ -57,5 +57,5 @@ namespace QuantLib {
                                            coupons, dayCounter);
     }
 
-};
+}
 

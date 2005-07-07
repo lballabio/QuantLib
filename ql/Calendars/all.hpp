@@ -31,6 +31,7 @@
 #include <ql/Calendars/helsinki.hpp>
 #include <ql/Calendars/hongkong.hpp>
 #include <ql/Calendars/italy.hpp>
+#include <ql/Calendars/istanbul.hpp>
 #include <ql/Calendars/johannesburg.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
 #include <ql/Calendars/nullcalendar.hpp>

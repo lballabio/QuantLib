@@ -158,7 +158,7 @@
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::sqrt; using ::fabs; using ::exp; using ::log;
                     using ::sin; using ::cos; using ::pow; using ::modf;
-                    using ::sinh; using ::cosh; using ::floor; }
+                    using ::sinh; using ::cosh; using ::floor; using ::fmod; }
 #endif
 
 

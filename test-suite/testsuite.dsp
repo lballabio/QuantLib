@@ -317,6 +317,14 @@ SOURCE=.\forwardoption.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\gaussianquadratures.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\hestonmodel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\instruments.cpp
 # End Source File
 # Begin Source File
@@ -358,6 +366,10 @@ SOURCE=.\old_pricers.cpp
 # Begin Source File
 
 SOURCE=.\operators.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\pathgenerator.cpp
 # End Source File
 # Begin Source File
 
@@ -414,6 +426,10 @@ SOURCE=.\swaption.cpp
 # Begin Source File
 
 SOURCE=.\termstructures.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\tqreigendecomposition.cpp
 # End Source File
 # Begin Source File
 
@@ -509,6 +525,14 @@ SOURCE=.\forwardoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\gaussianquadratures.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\hestonmodel.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\instruments.hpp
 # End Source File
 # Begin Source File
@@ -550,6 +574,10 @@ SOURCE=.\old_pricers.hpp
 # Begin Source File
 
 SOURCE=.\operators.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\pathgenerator.hpp
 # End Source File
 # Begin Source File
 
@@ -602,6 +630,10 @@ SOURCE=.\swaption.hpp
 # Begin Source File
 
 SOURCE=.\termstructures.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\tqreigendecomposition.hpp
 # End Source File
 # Begin Source File
 

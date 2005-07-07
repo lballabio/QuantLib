@@ -1343,6 +1343,15 @@
 			Name="CashFlows"
 			Filter="">
 			<File
+				RelativePath=".\ql\CashFlows\all.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\analysis.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\analysis.hpp">
+			</File>
+			<File
 				RelativePath="ql\CashFlows\basispointsensitivity.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -1469,6 +1478,9 @@
 				RelativePath="ql\CashFlows\cashflowvectors.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\core.hpp">
+			</File>
+			<File
 				RelativePath="ql\CashFlows\coupon.hpp">
 			</File>
 			<File
@@ -1485,6 +1497,9 @@
 			</File>
 			<File
 				RelativePath="ql\CashFlows\indexcashflowvectors.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\indexedcashflowvectors.hpp">
 			</File>
 			<File
 				RelativePath="ql\CashFlows\indexedcoupon.hpp">
@@ -1897,6 +1912,9 @@
 			Name="FiniteDifferences"
 			Filter="">
 			<File
+				RelativePath=".\ql\FiniteDifferences\all.hpp">
+			</File>
+			<File
 				RelativePath="ql\FiniteDifferences\americancondition.hpp">
 			</File>
 			<File
@@ -2026,6 +2044,15 @@
 				RelativePath="ql\FiniteDifferences\bsmoperator.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\FiniteDifferences\bsmtermoperator.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\bsmtermoperator.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\core.hpp">
+			</File>
+			<File
 				RelativePath="ql\FiniteDifferences\cranknicolson.hpp">
 			</File>
 			<File
@@ -2117,6 +2144,12 @@
 			</File>
 			<File
 				RelativePath="ql\FiniteDifferences\onefactoroperator.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\operatortraits.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\parallelevolver.hpp">
 			</File>
 			<File
 				RelativePath="ql\FiniteDifferences\shoutcondition.hpp">
@@ -2658,6 +2691,9 @@
 				RelativePath="ql\Instruments\core.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\dividendschedule.hpp">
+			</File>
+			<File
 				RelativePath="ql\Instruments\dividendvanillaoption.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -2788,6 +2824,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\Instruments\fixedcouponbond.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\floatingratebond.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\floatingratebond.hpp">
 			</File>
 			<File
 				RelativePath="ql\Instruments\forwardvanillaoption.cpp">
@@ -3485,6 +3527,12 @@
 			<File
 				RelativePath="ql\Instruments\vanillaoption.hpp">
 			</File>
+			<File
+				RelativePath=".\ql\Instruments\zerocouponbond.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\zerocouponbond.hpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Lattices"
@@ -3553,190 +3601,10 @@
 				RelativePath="ql\Lattices\binomialtree.hpp">
 			</File>
 			<File
-				RelativePath="ql\Lattices\bsmlattice.cpp">
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="ql\Lattices\bsmlattice.hpp">
 			</File>
 			<File
-				RelativePath="ql\Lattices\lattice.cpp">
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="ql\Lattices\lattice.hpp">
-			</File>
-			<File
-				RelativePath="ql\Lattices\lattice2d.cpp">
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="ql\Lattices\lattice2d.hpp">
@@ -3816,6 +3684,9 @@
 			</File>
 			<File
 				RelativePath="ql\Math\array.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\backwardflatinterpolation.hpp">
 			</File>
 			<File
 				RelativePath="ql\Math\beta.cpp">
@@ -4082,6 +3953,9 @@
 				RelativePath="ql\Math\comparison.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Math\convergencestatistics.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Math\core.hpp">
 			</File>
 			<File
@@ -4280,6 +4154,9 @@
 				RelativePath="ql\Math\factorial.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Math\forwardflatinterpolation.hpp">
+			</File>
+			<File
 				RelativePath="ql\Math\functional.hpp">
 			</File>
 			<File
@@ -4344,6 +4221,18 @@
 			</File>
 			<File
 				RelativePath="ql\Math\gammadistribution.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\gaussianorthogonalpolynomial.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\gaussianorthogonalpolynomial.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\gaussianquadratures.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\gaussianquadratures.hpp">
 			</File>
 			<File
 				RelativePath="ql\Math\gaussianstatistics.hpp">
@@ -4908,6 +4797,12 @@
 			</File>
 			<File
 				RelativePath="ql\Math\symmetricschurdecomposition.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\tqreigendecomposition.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\tqreigendecomposition.hpp">
 			</File>
 			<File
 				RelativePath="ql\Math\trapezoidintegral.hpp">
@@ -5923,6 +5818,12 @@
 				RelativePath="ql\PricingEngines\genericmodelengine.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\PricingEngines\greeks.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\greeks.hpp">
+			</File>
+			<File
 				RelativePath="ql\PricingEngines\latticeshortratemodelengine.hpp">
 			</File>
 			<File
@@ -6501,6 +6402,12 @@
 					RelativePath="ql\PricingEngines\Vanilla\analyticeuropeanengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\analytichestonengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\analytichestonengine.hpp">
+				</File>
+				<File
 					RelativePath="ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.cpp">
 					<FileConfiguration
 						Name="Debug MTDLL|Win32">
@@ -6693,10 +6600,52 @@
 					RelativePath="ql\PricingEngines\Vanilla\discretizedvanillaoption.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdamericanengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdbermudanengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fddividendamericanengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fddividendengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fddividendengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fddividendeuropeanengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fddividendshoutengine.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\PricingEngines\Vanilla\fdeuropeanengine.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\PricingEngines\Vanilla\fdeuropeanengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdmultiperiodengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdmultiperiodengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdshoutengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdstepconditionengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdstepconditionengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdvanillaengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdvanillaengine.hpp">
 				</File>
 				<File
 					RelativePath="ql\PricingEngines\Vanilla\integralengine.cpp">
@@ -6895,6 +6844,12 @@
 				</File>
 				<File
 					RelativePath="ql\PricingEngines\Vanilla\mceuropeanengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\mceuropeanhestonengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\mchestonengine.hpp">
 				</File>
 				<File
 					RelativePath="ql\PricingEngines\Vanilla\mcvanillaengine.hpp">
@@ -7410,6 +7365,9 @@
 			Name="ShortRateModels"
 			Filter="">
 			<File
+				RelativePath=".\ql\ShortRateModels\all.hpp">
+			</File>
+			<File
 				RelativePath="ql\ShortRateModels\calibrationhelper.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -7471,6 +7429,9 @@
 			</File>
 			<File
 				RelativePath="ql\ShortRateModels\calibrationhelper.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\ShortRateModels\core.hpp">
 			</File>
 			<File
 				RelativePath="ql\ShortRateModels\model.cpp">
@@ -7729,6 +7690,12 @@
 				</File>
 				<File
 					RelativePath="ql\ShortRateModels\CalibrationHelpers\caphelper.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\CalibrationHelpers\hestonmodelhelper.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\CalibrationHelpers\hestonmodelhelper.hpp">
 				</File>
 				<File
 					RelativePath="ql\ShortRateModels\CalibrationHelpers\swaptionhelper.cpp">
@@ -8179,6 +8146,12 @@
 				<File
 					RelativePath="ql\ShortRateModels\TwoFactorModels\g2.hpp">
 				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\TwoFactorModels\hestonmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\TwoFactorModels\hestonmodel.hpp">
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -8276,6 +8249,9 @@
 				RelativePath=".\ql\TermStructures\all.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\TermStructures\bootstraptraits.hpp">
+			</File>
+			<File
 				RelativePath="ql\TermStructures\compoundforward.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -8340,9 +8316,6 @@
 			</File>
 			<File
 				RelativePath="ql\TermStructures\discountcurve.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\TermStructures\discountstructure.hpp">
 			</File>
 			<File
 				RelativePath="ql\TermStructures\drifttermstructure.hpp">
@@ -8412,6 +8385,9 @@
 			</File>
 			<File
 				RelativePath="ql\TermStructures\flatforward.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\TermStructures\forwardcurve.hpp">
 			</File>
 			<File
 				RelativePath="ql\TermStructures\forwardspreadedtermstructure.hpp">
@@ -8486,6 +8462,9 @@
 				RelativePath="ql\TermStructures\piecewiseflatforward.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\TermStructures\piecewiseyieldcurve.hpp">
+			</File>
+			<File
 				RelativePath="ql\TermStructures\quantotermstructure.hpp">
 			</File>
 			<File
@@ -8550,66 +8529,6 @@
 			</File>
 			<File
 				RelativePath="ql\TermStructures\ratehelpers.hpp">
-			</File>
-			<File
-				RelativePath="ql\TermStructures\zerocurve.cpp">
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="ql\TermStructures\zerocurve.hpp">
@@ -8901,6 +8820,61 @@
 			</File>
 			<File
 				RelativePath=".\ql\Currencies\oceania.hpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Processes"
+			Filter="">
+			<File
+				RelativePath=".\ql\Processes\all.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\blackscholesprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\blackscholesprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\eulerdiscretization.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\eulerdiscretization.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\geometricbrownianprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\geometricbrownianprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\hestonprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\hestonprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\merton76process.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\merton76process.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\ornsteinuhlenbeckprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\ornsteinuhlenbeckprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\squarerootprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\squarerootprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\stochasticprocessarray.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\stochasticprocessarray.hpp">
 			</File>
 		</Filter>
 		<File

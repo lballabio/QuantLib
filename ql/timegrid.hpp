@@ -157,14 +157,15 @@ namespace QuantLib {
         typedef std::vector<Time>::const_iterator const_iterator;
         typedef std::vector<Time>::const_reverse_iterator
                                           const_reverse_iterator;
-        const Time operator[](Size i) const { return times_[i]; }
+
+        Time operator[](Size i) const { return times_[i]; }
         Size size() const { return times_.size(); }
         const_iterator begin() const { return times_.begin(); }
         const_iterator end() const { return times_.end(); }
         const_reverse_iterator rbegin() const { return times_.rbegin(); }
         const_reverse_iterator rend() const { return times_.rend(); }
-        const Time front() const { return times_.front(); }
-        const Time back() const { return times_.back(); }
+        Time front() const { return times_.front(); }
+        Time back() const { return times_.back(); }
         //@}
       private:
         std::vector<Time> times_;

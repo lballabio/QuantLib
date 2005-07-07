@@ -35,7 +35,8 @@ namespace QuantLib {
         // set-up matrix to compute the roots and the weights
         Array e(n-1);
 
-        for (Size i=1; i < n; ++i) {
+        Size i;
+        for (i=1; i < n; ++i) {
             x_[i] = orthPoly.alpha(i);
             e[i-1] = std::sqrt(orthPoly.beta(i));
         }
@@ -50,7 +51,7 @@ namespace QuantLib {
         const Matrix& ev = tqr.eigenvectors();
 
         Real mu_0 = orthPoly.mu_0();
-        for (Size i=0; i<n; ++i) {
+        for (i=0; i<n; ++i) {
             w_[i] = mu_0*ev[0][i]*ev[0][i] / orthPoly.w(x_[i]);
         }
     }

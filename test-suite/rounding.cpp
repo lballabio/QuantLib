@@ -21,13 +21,6 @@
 #include "utilities.hpp"
 #include <ql/Math/rounding.hpp>
 #include <ql/Math/comparison.hpp>
-#include <iomanip>
-
-#if !defined(QL_PATCH_MSVC6)
-#define FIXED std::fixed
-#else
-#define FIXED ""
-#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -80,11 +73,11 @@ void RoundingTest::testClosest() {
         Real calculated = closest(testData[i].x);
         Real expected = testData[i].closest;
         if (!close(calculated,expected,1))
-            BOOST_FAIL(FIXED << std::setprecision(8)
-                       << "Original number: " << testData[i].x << "\n"
-                       << std::setprecision(digits)
-                       << "Expected:        " << expected << "\n"
-                       << "Calculated:      " << calculated);
+            BOOST_ERROR(QL_FIXED << std::setprecision(8)
+                        << "Original number: " << testData[i].x << "\n"
+                        << std::setprecision(digits)
+                        << "Expected:        " << expected << "\n"
+                        << "Calculated:      " << calculated);
     }
 }
 
@@ -98,11 +91,11 @@ void RoundingTest::testUp() {
         Real calculated = up(testData[i].x);
         Real expected = testData[i].up;
         if (!close(calculated,expected,1))
-            BOOST_FAIL(FIXED << std::setprecision(8)
-                       << "Original number: " << testData[i].x << "\n"
-                       << std::setprecision(digits)
-                       << "Expected:        " << expected << "\n"
-                       << "Calculated:      " << calculated);
+            BOOST_ERROR(QL_FIXED << std::setprecision(8)
+                        << "Original number: " << testData[i].x << "\n"
+                        << std::setprecision(digits)
+                        << "Expected:        " << expected << "\n"
+                        << "Calculated:      " << calculated);
     }
 }
 
@@ -116,11 +109,11 @@ void RoundingTest::testDown() {
         Real calculated = down(testData[i].x);
         Real expected = testData[i].down;
         if (!close(calculated,expected,1))
-            BOOST_FAIL(FIXED << std::setprecision(8)
-                       << "Original number: " << testData[i].x << "\n"
-                       << std::setprecision(digits)
-                       << "Expected:        " << expected << "\n"
-                       << "Calculated:      " << calculated);
+            BOOST_ERROR(QL_FIXED << std::setprecision(8)
+                        << "Original number: " << testData[i].x << "\n"
+                        << std::setprecision(digits)
+                        << "Expected:        " << expected << "\n"
+                        << "Calculated:      " << calculated);
     }
 }
 
@@ -134,11 +127,11 @@ void RoundingTest::testFloor() {
         Real calculated = floor(testData[i].x);
         Real expected = testData[i].floor;
         if (!close(calculated,expected,1))
-            BOOST_FAIL(FIXED << std::setprecision(8)
-                       << "Original number: " << testData[i].x << "\n"
-                       << std::setprecision(digits)
-                       << "Expected:        " << expected << "\n"
-                       << "Calculated:      " << calculated);
+            BOOST_ERROR(QL_FIXED << std::setprecision(8)
+                        << "Original number: " << testData[i].x << "\n"
+                        << std::setprecision(digits)
+                        << "Expected:        " << expected << "\n"
+                        << "Calculated:      " << calculated);
     }
 }
 
@@ -152,11 +145,11 @@ void RoundingTest::testCeiling() {
         Real calculated = ceiling(testData[i].x);
         Real expected = testData[i].ceiling;
         if (!close(calculated,expected,1))
-            BOOST_FAIL(FIXED << std::setprecision(8)
-                       << "Original number: " << testData[i].x << "\n"
-                       << std::setprecision(digits)
-                       << "Expected:        " << expected << "\n"
-                       << "Calculated:      " << calculated);
+            BOOST_ERROR(QL_FIXED << std::setprecision(8)
+                        << "Original number: " << testData[i].x << "\n"
+                        << std::setprecision(digits)
+                        << "Expected:        " << expected << "\n"
+                        << "Calculated:      " << calculated);
     }
 }
 

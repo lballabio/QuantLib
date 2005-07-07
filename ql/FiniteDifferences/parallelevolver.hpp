@@ -102,7 +102,7 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<Evolver> > evolvers_;
     };
 
-};
+}
 
 
 #endif

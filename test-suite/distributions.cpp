@@ -24,13 +24,6 @@
 #include <ql/Math/bivariatenormaldistribution.hpp>
 #include <ql/Math/poissondistribution.hpp>
 #include <ql/Math/comparison.hpp>
-#include <iomanip>
-
-#if !defined(QL_PATCH_MSVC6)
-#define SCIENTIFIC std::scientific
-#else
-#define SCIENTIFIC ""
-#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -61,9 +54,9 @@ void DistributionTest::testNormal() {
     InverseCumulativeNormal invCumStandardNormal;
     Real check = invCumStandardNormal(0.5);
     if (check != 0.0e0) {
-        BOOST_FAIL("C++ inverse cumulative of the standard normal at 0.5 is "
-                   << SCIENTIFIC << check
-                   << "\n instead of zero: something is wrong!");
+        BOOST_ERROR("C++ inverse cumulative of the standard normal at 0.5 is "
+                    << QL_SCIENTIFIC << check
+                    << "\n instead of zero: something is wrong!");
     }
 
     NormalDistribution normal(average,sigma);
@@ -91,9 +84,9 @@ void DistributionTest::testNormal() {
                    std::minus<Real>());
     Real e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
-        BOOST_FAIL("norm of C++ NormalDistribution minus analytic Gaussian: "
-                   << SCIENTIFIC << e << "\n"
-                   << "tolerance exceeded");
+        BOOST_ERROR("norm of C++ NormalDistribution minus analytic Gaussian: "
+                    << QL_SCIENTIFIC << e << "\n"
+                    << "tolerance exceeded");
     }
 
     // check that invCum . cum = identity
@@ -103,9 +96,9 @@ void DistributionTest::testNormal() {
                    std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-8) {
-        BOOST_FAIL("norm of invCum . cum minus identity: "
-                   << SCIENTIFIC << e << "\n"
-                   << "tolerance exceeded");
+        BOOST_ERROR("norm of invCum . cum minus identity: "
+                    << QL_SCIENTIFIC << e << "\n"
+                    << "tolerance exceeded");
     }
 
     // check that cum.derivative = Gaussian
@@ -115,9 +108,9 @@ void DistributionTest::testNormal() {
                    std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
-        BOOST_FAIL(
+        BOOST_ERROR(
             "norm of C++ Cumulative.derivative minus analytic Gaussian: "
-            << SCIENTIFIC << e << "\n"
+            << QL_SCIENTIFIC << e << "\n"
             << "tolerance exceeded");
     }
 
@@ -128,9 +121,9 @@ void DistributionTest::testNormal() {
                    std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
-        BOOST_FAIL("norm of C++ Normal.derivative minus analytic derivative: "
-                   << SCIENTIFIC << e << "\n"
-                   << "tolerance exceeded");
+        BOOST_ERROR("norm of C++ Normal.derivative minus analytic derivative: "
+                    << QL_SCIENTIFIC << e << "\n"
+                    << "tolerance exceeded");
     }
 }
 
@@ -212,13 +205,13 @@ void DistributionTest::testBivariate() {
         Real value = bcd(values[i].a, values[i].b);
 
         if (std::fabs(value-values[i].result)>=1e-6) {
-          BOOST_FAIL("BivariateCumulativeDistribution \n"
-                     << "case " << i+1 << "\n"
-                     << "    a:   " << values[i].a << "\n"
-                     << "    b:   " << values[i].b << "\n"
-                     << "    rho: " << values[i].rho <<"\n"
-                     << "    tabulated value:  " << values[i].result << "\n"
-                     << "    result:           " << value);
+          BOOST_ERROR("BivariateCumulativeDistribution \n"
+                      << "case " << i+1 << "\n"
+                      << "    a:   " << values[i].a << "\n"
+                      << "    b:   " << values[i].b << "\n"
+                      << "    rho: " << values[i].rho <<"\n"
+                      << "    tabulated value:  " << values[i].result << "\n"
+                      << "    result:           " << value);
         }
     }
 
@@ -237,11 +230,11 @@ void DistributionTest::testPoisson() {
         Real expected = std::exp(logHelper);
         Real error = std::fabs(calculated-expected);
         if (error > 1.0e-16)
-            BOOST_FAIL("Poisson pdf(" << mean << ")(" << i << ")\n"
-                       << std::setprecision(16)
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected << "\n"
-                       << "    error:      " << error);
+            BOOST_ERROR("Poisson pdf(" << mean << ")(" << i << ")\n"
+                        << std::setprecision(16)
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected << "\n"
+                        << "    error:      " << error);
 
         for (i=1; i<25; i++) {
             calculated = pdf(i);
@@ -253,11 +246,11 @@ void DistributionTest::testPoisson() {
             }
             error = std::fabs(calculated-expected);
             if (error>1.0e-13)
-                BOOST_FAIL("Poisson pdf(" << mean << ")(" << i << ")\n"
-                           << std::setprecision(13)
-                           << "    calculated: " << calculated << "\n"
-                           << "    expected:   " << expected << "\n"
-                           << "    error:      " << error);
+                BOOST_ERROR("Poisson pdf(" << mean << ")(" << i << ")\n"
+                            << std::setprecision(13)
+                            << "    calculated: " << calculated << "\n"
+                            << "    expected:   " << expected << "\n"
+                            << "    error:      " << error);
         }
     }
 }
@@ -274,11 +267,11 @@ void DistributionTest::testCumulativePoisson() {
         Real cumExpected = std::exp(logHelper);
         Real error = std::fabs(cumCalculated-cumExpected);
         if (error>1.0e-13)
-            BOOST_FAIL("Poisson cdf(" << mean << ")(" << i << ")\n"
-                       << std::setprecision(13)
-                       << "    calculated: " << cumCalculated << "\n"
-                       << "    expected:   " << cumExpected << "\n"
-                       << "    error:      " << error);
+            BOOST_ERROR("Poisson cdf(" << mean << ")(" << i << ")\n"
+                        << std::setprecision(13)
+                        << "    calculated: " << cumCalculated << "\n"
+                        << "    expected:   " << cumExpected << "\n"
+                        << "    error:      " << error);
         for (i=1; i<25; i++) {
             cumCalculated = cdf(i);
             if (mean == 0.0) {
@@ -289,11 +282,11 @@ void DistributionTest::testCumulativePoisson() {
             }
             error = std::fabs(cumCalculated-cumExpected);
             if (error>1.0e-12)
-                BOOST_FAIL("Poisson cdf(" << mean << ")(" << i << ")\n"
-                           << std::setprecision(12)
-                           << "    calculated: " << cumCalculated << "\n"
-                           << "    expected:   " << cumExpected << "\n"
-                           << "    error:      " << error);
+                BOOST_ERROR("Poisson cdf(" << mean << ")(" << i << ")\n"
+                            << std::setprecision(12)
+                            << "    calculated: " << cumCalculated << "\n"
+                            << "    expected:   " << cumExpected << "\n"
+                            << "    error:      " << error);
         }
     }
 }
@@ -320,11 +313,11 @@ void DistributionTest::testInverseCumulativePoisson() {
 
     for (Size i=0; i<LENGTH(data); i++) {
         if (!close(icp(data[i]), i)) {
-            BOOST_FAIL(std::setprecision(8)
-                       << "failed to reproduce known value for x = "
-                       << data[i] << "\n"
-                       << "    calculated: " << icp(data[i]) << "\n"
-                       << "    expected:   " << Real(i));
+            BOOST_ERROR(std::setprecision(8)
+                        << "failed to reproduce known value for x = "
+                        << data[i] << "\n"
+                        << "    calculated: " << icp(data[i]) << "\n"
+                        << "    expected:   " << Real(i));
         }
     }
 }

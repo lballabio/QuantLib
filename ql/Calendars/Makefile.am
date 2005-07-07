@@ -13,6 +13,7 @@ include_HEADERS = \
 	helsinki.hpp \
 	hongkong.hpp \
 	italy.hpp \
+	istanbul.hpp \
 	johannesburg.hpp \
 	jointcalendar.hpp \
 	nullcalendar.hpp \
@@ -46,6 +47,7 @@ libCalendars_la_SOURCES = \
 	helsinki.cpp \
 	hongkong.cpp \
 	italy.cpp \
+	istanbul.cpp \
 	johannesburg.cpp \
 	jointcalendar.cpp \
 	oslo.cpp \

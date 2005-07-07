@@ -18,15 +18,9 @@
 */
 
 #include "factorial.hpp"
+#include "utilities.hpp"
 #include <ql/Math/factorial.hpp>
 #include <ql/Math/gammadistribution.hpp>
-#include <iomanip>
-
-#if !defined(QL_PATCH_MSVC6)
-#define SCIENTIFIC std::scientific
-#else
-#define SCIENTIFIC ""
-#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -39,31 +33,31 @@ void FactorialTest::testFactorial() {
     Real expected = 1.0;
     Real calculated = Factorial::get(0);
     if (calculated!=expected)
-        BOOST_FAIL("Factorial(0)\n"
-                   << std::setprecision(16) << SCIENTIFIC
-                   << "    calculated: " << calculated << "\n"
-                   << "    expected:   " << expected);
+        BOOST_ERROR("Factorial(0)\n"
+                    << std::setprecision(16) << QL_SCIENTIFIC
+                    << "    calculated: " << calculated << "\n"
+                    << "    expected:   " << expected);
     for (i=1; i<28; i++) {
         expected *= i;
         calculated   = Factorial::get(i);
         if (calculated!=expected)
-            BOOST_FAIL("Factorial(" << i << ")\n"
-                       << std::setprecision(16) << SCIENTIFIC
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected);
+            BOOST_ERROR("Factorial(" << i << ")\n"
+                        << std::setprecision(16) << QL_SCIENTIFIC
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected);
     }
-    // Borland cannot stand i>=171
+    // Borland cannot manage i>=171
     // ????????????????????????????
     for (i=28; i<171; i++) {
         expected *= i;
         calculated   = Factorial::get(i);
         if (std::fabs(calculated-expected)/expected > 1.0e-9)
-            BOOST_FAIL("Factorial(" << i << ")\n"
-                       << std::setprecision(16) << SCIENTIFIC
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected << "\n"
-                       << "    rel. error: "
-                       << std::fabs(calculated-expected)/expected);
+            BOOST_ERROR("Factorial(" << i << ")\n"
+                        << std::setprecision(16) << QL_SCIENTIFIC
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected << "\n"
+                        << "    rel. error: "
+                        << std::fabs(calculated-expected)/expected);
     }
 }
 
@@ -74,21 +68,21 @@ void FactorialTest::testGammaFunction() {
     Real expected = 0.0;
     Real calculated = GammaFunction().logValue(1);
     if (std::fabs(calculated) > 1.0e-15)
-        BOOST_FAIL("GammaFunction(1)\n"
-                   << std::setprecision(16) << SCIENTIFIC
-                   << "    calculated: " << calculated << "\n"
-                   << "    expected:   " << expected);
+        BOOST_ERROR("GammaFunction(1)\n"
+                    << std::setprecision(16) << QL_SCIENTIFIC
+                    << "    calculated: " << calculated << "\n"
+                    << "    expected:   " << expected);
 
     for (Size i=2; i<9000; i++) {
         expected  += std::log(Real(i));
         calculated = GammaFunction().logValue(i+1);
         if (std::fabs(calculated-expected)/expected > 1.0e-9)
-            BOOST_FAIL("GammaFunction(" << i << ")\n"
-                       << std::setprecision(16) << SCIENTIFIC
-                       << "    calculated: " << calculated << "\n"
-                       << "    expected:   " << expected << "\n"
-                       << "    rel. error: "
-                       << std::fabs(calculated-expected)/expected);
+            BOOST_ERROR("GammaFunction(" << i << ")\n"
+                        << std::setprecision(16) << QL_SCIENTIFIC
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected << "\n"
+                        << "    rel. error: "
+                        << std::fabs(calculated-expected)/expected);
     }
 }
 

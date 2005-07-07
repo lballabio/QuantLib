@@ -73,7 +73,7 @@ PreLink_Cmds=if not exist lib mkdir lib
 # PROP Intermediate_Dir "build\vc6\Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_9" /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_10" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -128,8 +128,8 @@ PreLink_Cmds=if not exist lib mkdir lib
 # PROP Output_Dir "build\vc6\DebugMTDLL"
 # PROP Intermediate_Dir "build\vc6\DebugMTDLL"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-gd-0_3_9" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-gd-0_3_9" /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-gd-0_3_10" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-gd-0_3_10" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -184,8 +184,8 @@ PreLink_Cmds=if not exist lib mkdir lib
 # PROP Output_Dir "build\vc6\DebugST"
 # PROP Intermediate_Dir "build\vc6\DebugST"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-sgd-0_3_9" /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-sgd-0_3_9" /FD /GZ /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-sgd-0_3_10" /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-sgd-0_3_10" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -272,6 +272,14 @@ SOURCE=.\ql\Calendars\hongkong.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\hongkong.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\istanbul.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\istanbul.hpp
 # End Source File
 # Begin Source File
 
@@ -436,6 +444,14 @@ SOURCE=.\ql\Calendars\zurich.hpp
 # Begin Source File
 
 SOURCE=.\ql\CashFlows\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\analysis.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\analysis.hpp
 # End Source File
 # Begin Source File
 
@@ -1115,6 +1131,22 @@ SOURCE=.\ql\Math\gammadistribution.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\gaussianorthogonalpolynomial.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\gaussianorthogonalpolynomial.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\gaussianquadratures.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\gaussianquadratures.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\gaussianstatistics.hpp
 # End Source File
 # Begin Source File
@@ -1248,6 +1280,14 @@ SOURCE=.\ql\Math\symmetricschurdecomposition.cpp
 # Begin Source File
 
 SOURCE=.\ql\Math\symmetricschurdecomposition.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\tqreigendecomposition.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\tqreigendecomposition.hpp
 # End Source File
 # Begin Source File
 
@@ -1674,6 +1714,14 @@ SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanengine.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\analytichestonengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\analytichestonengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.cpp
 # End Source File
 # Begin Source File
@@ -1799,6 +1847,14 @@ SOURCE=.\ql\PricingEngines\Vanilla\mcdigitalengine.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\mceuropeanengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\mceuropeanhestonengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\mchestonengine.hpp
 # End Source File
 # Begin Source File
 
@@ -2090,6 +2146,14 @@ SOURCE=.\ql\ShortRateModels\CalibrationHelpers\caphelper.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\hestonmodelhelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\hestonmodelhelper.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\ShortRateModels\CalibrationHelpers\swaptionhelper.cpp
 # End Source File
 # Begin Source File
@@ -2151,6 +2215,14 @@ SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.cpp
 # Begin Source File
 
 SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\TwoFactorModels\hestonmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\TwoFactorModels\hestonmodel.hpp
 # End Source File
 # End Group
 # Begin Source File
@@ -2491,11 +2563,27 @@ SOURCE=.\ql\Processes\blackscholesprocess.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Processes\eulerdiscretization.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\eulerdiscretization.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Processes\geometricbrownianprocess.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Processes\geometricbrownianprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\hestonprocess.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\hestonprocess.hpp
 # End Source File
 # Begin Source File
 
@@ -2520,6 +2608,14 @@ SOURCE=.\ql\Processes\squarerootprocess.cpp
 # Begin Source File
 
 SOURCE=.\ql\Processes\squarerootprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\stochasticprocessarray.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\stochasticprocessarray.hpp
 # End Source File
 # End Group
 # Begin Source File

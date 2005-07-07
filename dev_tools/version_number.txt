@@ -26,9 +26,6 @@ This version number is in:
     QuantLib/functions/ql/Functions/QuantLibFunctions_vc8.vcproj
     QuantLib/functions/ql/Functions/QuantLibFunctions.dsp
     QuantLib/functions/ql/Functions/QuantLibFunctions.dev
-    QuantLib/test-suite/testsuite.vcproj
-    QuantLib/test-suite/testsuite_vc8.vcproj
-    QuantLib/test-suite/testsuite.dev
 
     QuantLib-SWIG/SWIG/ql.i
     QuantLib-SWIG/Python/setup.py

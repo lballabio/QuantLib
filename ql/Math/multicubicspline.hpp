@@ -249,7 +249,10 @@ namespace QuantLib {
                     (v[k] = (u += d[j] * v[j])) /= t;
                 }
                 y2[0] = y2[dim] = 0.0;
-                while(k) (y2[--k] *= y2[--l]) += v[k];
+                while (k) {
+                    (y2[k-1] *= y2[l-1]) += v[k-1];
+                    --k; --l;
+                }
             }
         };
 

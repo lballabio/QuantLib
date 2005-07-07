@@ -72,7 +72,7 @@ Real x_inv_cosh(Real x) {
 }
 
 template <class T>
-void testJacobi(const T& I) {
+void testSingleJacobi(const T& I) {
     testSingle(I, "f(x) = 1",
                constant<Real,Real>(1.0), 2.0);
     testSingle(I, "f(x) = x",
@@ -91,7 +91,7 @@ void testJacobi(const T& I) {
 }
 
 template <class T>
-void testLaguerre(const T& I) {
+void testSingleLaguerre(const T& I) {
     testSingle(I, "f(x) = exp(-x)",
                std::ptr_fun<Real,Real>(inv_exp), 1.0);
     testSingle(I, "f(x) = x*exp(-x)",
@@ -106,17 +106,17 @@ QL_END_TEST_LOCALS(GaussianQuadraturesTest)
 void GaussianQuadraturesTest::testJacobi() {
     BOOST_MESSAGE("Testing Gauss-Jacobi integration...");
 
-    ::testJacobi(GaussLegendreIntegration(16));
-    ::testJacobi(GaussChebyshevIntegration(130));
-    ::testJacobi(GaussChebyshev2thIntegration(130));
-    ::testJacobi(GaussGegenbauerIntegration(50,0.55));
+    testSingleJacobi(GaussLegendreIntegration(16));
+    testSingleJacobi(GaussChebyshevIntegration(130));
+    testSingleJacobi(GaussChebyshev2thIntegration(130));
+    testSingleJacobi(GaussGegenbauerIntegration(50,0.55));
 }
 
 void GaussianQuadraturesTest::testLaguerre() {
      BOOST_MESSAGE("Testing Gauss-Laguerre integration...");
 
-     ::testLaguerre(GaussLaguerreIntegration(16));
-     ::testLaguerre(GaussLaguerreIntegration(150,0.01));
+     testSingleLaguerre(GaussLaguerreIntegration(16));
+     testSingleLaguerre(GaussLaguerreIntegration(150,0.01));
 
      testSingle(GaussLaguerreIntegration(16, 1.0), "f(x) = x*exp(-x)",
                 std::ptr_fun<Real,Real>(x_inv_exp), 1.0);

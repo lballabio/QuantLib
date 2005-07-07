@@ -25,6 +25,13 @@
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
+#if defined(QL_PATCH_MSVC6)
+#ifndef QL_DISABLE_DEPRECATED
+using namespace QuantLib::Old;
+#else
+using namespace QuantLib::New;
+#endif
+#endif
 using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(PathGeneratorTest)
@@ -51,7 +58,7 @@ void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
 
     sample_type sample = generator.next();
     Real calculated = sample.value.back();
-    if (std::fabs(calculated-expected) > 1.0e-10) {
+    if (std::fabs(calculated-expected) > 1.0e-8) {
         BOOST_ERROR("using " << tag << " process "
                     << (brownianBridge ? "with " : "without ")
                     << "brownian bridge:\n"
@@ -62,7 +69,7 @@ void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
 
     sample = generator.antithetic();
     calculated = sample.value.back();
-    if (std::fabs(calculated-antithetic) > 1.0e-10) {
+    if (std::fabs(calculated-antithetic) > 1.0e-8) {
         BOOST_ERROR("using " << tag << " process "
                     << (brownianBridge ? "with " : "without ")
                     << "brownian bridge:\n"
@@ -97,7 +104,7 @@ void testMultiple(const boost::shared_ptr<StochasticProcess>& process,
     for (j=0; j<assets; j++)
         calculated[j] = sample.value[j].back();
     for (j=0; j<assets; j++) {
-        if (std::fabs(calculated[j]-expected[j]) > 1.0e-10) {
+        if (std::fabs(calculated[j]-expected[j]) > 1.0e-8) {
             BOOST_ERROR("using " << tag << " process "
                         << "(" << io::ordinal(j+1) << " asset:)\n"
                         << std::setprecision(13)
@@ -110,7 +117,7 @@ void testMultiple(const boost::shared_ptr<StochasticProcess>& process,
     for (j=0; j<assets; j++)
         calculated[j] = sample.value[j].back();
     for (j=0; j<assets; j++) {
-        if (std::fabs(calculated[j]-antithetic[j]) > 1.0e-10) {
+        if (std::fabs(calculated[j]-antithetic[j]) > 1.0e-8) {
             BOOST_ERROR("using " << tag << " process "
                         << "(" << io::ordinal(j+1) << " asset:)\n"
                         << "antithetic sample:\n"
@@ -132,7 +139,8 @@ void PathGeneratorTest::testPathGenerator() {
 
     Settings::instance().evaluationDate() = Date(26,April,2005);
 
-    Handle<Quote> x0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> x0;
+    x0.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
     Handle<YieldTermStructure> r(flatRate(0.05, Actual360()));
     Handle<YieldTermStructure> q(flatRate(0.02, Actual360()));
     Handle<BlackVolTermStructure> sigma(flatVol(0.20, Actual360()));

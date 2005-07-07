@@ -224,7 +224,7 @@ namespace QuantLib {
         this->data_[0] = C::initialValue();
         for (Size i=0; i<n; i++) {
             this->dates_[i+1] = instruments_[i]->latestDate();
-            this->times_[i+1] = timeFromReference(this->dates_[i+1]);
+            this->times_[i+1] = this->timeFromReference(this->dates_[i+1]);
             this->data_[i+1] = this->data_[i];
         }
         Brent solver;

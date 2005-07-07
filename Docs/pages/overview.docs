@@ -414,7 +414,7 @@
     - History class for handling of historical data.
     - Quote class for mutable data.
     - Null types.
-    - User-configurable #define to disable usage of deprecated classes.
+    - User-configurable flag to disable usage of deprecated classes.
 
     To do:
     - IRR, duration, convexity, etc. for a sequence of cash flows

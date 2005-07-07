@@ -29,12 +29,6 @@
 #include <ql/Math/functional.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
 
-#if !defined(QL_PATCH_MSVC6)
-#define SCIENTIFIC std::scientific
-#else
-#define SCIENTIFIC ""
-#endif
-
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
@@ -74,12 +68,12 @@ void checkValues(const char* type,
     while (xBegin != xEnd) {
         Real interpolated = spline(*xBegin);
         if (std::fabs(interpolated-*yBegin) > tolerance) {
-            BOOST_FAIL(type << " interpolation failed at x = " << *xBegin
-                       << SCIENTIFIC
-                       << "\n    interpolated value: " << interpolated
-                       << "\n    expected value:     " << *yBegin
-                       << "\n    error:              "
-                       << std::fabs(interpolated-*yBegin));
+            BOOST_ERROR(type << " interpolation failed at x = " << *xBegin
+                        << QL_SCIENTIFIC
+                        << "\n    interpolated value: " << interpolated
+                        << "\n    expected value:     " << *yBegin
+                        << "\n    error:              "
+                        << std::fabs(interpolated-*yBegin));
         }
         ++xBegin; ++yBegin;
     }
@@ -93,12 +87,12 @@ void check1stDerivativeValue(const char* type,
     Real interpolated = spline.derivative(x);
     Real error = std::fabs(interpolated-value);
     if (error > tolerance) {
-        BOOST_FAIL(type << " interpolation first derivative failure\n"
-                   << "at x = " << x
-                   << "\n    interpolated value: " << interpolated
-                   << "\n    expected value:     " << value
-                   << SCIENTIFIC
-                   << "\n    error:              " << error);
+        BOOST_ERROR(type << " interpolation first derivative failure\n"
+                    << "at x = " << x
+                    << "\n    interpolated value: " << interpolated
+                    << "\n    expected value:     " << value
+                    << QL_SCIENTIFIC
+                    << "\n    error:              " << error);
     }
 }
 
@@ -110,12 +104,12 @@ void check2ndDerivativeValue(const char* type,
     Real interpolated = spline.secondDerivative(x);
     Real error = std::fabs(interpolated-value);
     if (error > tolerance) {
-        BOOST_FAIL(type << " interpolation second derivative failure\n"
-                   << "at x = " << x
-                   << "\n    interpolated value: " << interpolated
-                   << "\n    expected value:     " << value
-                   << SCIENTIFIC
-                   << "\n    error:              " << error);
+        BOOST_ERROR(type << " interpolation second derivative failure\n"
+                    << "at x = " << x
+                    << "\n    interpolated value: " << interpolated
+                    << "\n    expected value:     " << value
+                    << QL_SCIENTIFIC
+                    << "\n    error:              " << error);
     }
 }
 
@@ -124,19 +118,19 @@ void checkNotAKnotCondition(const char* type,
     Real tolerance = 1.0e-14;
     const std::vector<Real>& c = spline.cCoefficients();
     if (std::fabs(c[0]-c[1]) > tolerance) {
-        BOOST_FAIL(type << " interpolation failure"
-                   << "\n    cubic coefficient of the first"
-                   << " polinomial is " << c[0]
-                   << "\n    cubic coefficient of the second"
-                   << " polinomial is " << c[1]);
+        BOOST_ERROR(type << " interpolation failure"
+                    << "\n    cubic coefficient of the first"
+                    << " polinomial is " << c[0]
+                    << "\n    cubic coefficient of the second"
+                    << " polinomial is " << c[1]);
     }
     Size n = c.size();
     if (std::fabs(c[n-2]-c[n-1]) > tolerance) {
-        BOOST_FAIL(type << " interpolation failure"
-                   << "\n    cubic coefficient of the 2nd to last"
-                   << " polinomial is " << c[n-2]
-                   << "\n    cubic coefficient of the last"
-                   << " polinomial is " << c[n-1]);
+        BOOST_ERROR(type << " interpolation failure"
+                    << "\n    cubic coefficient of the 2nd to last"
+                    << " polinomial is " << c[n-2]
+                    << "\n    cubic coefficient of the last"
+                    << " polinomial is " << c[n-1]);
     }
 }
 
@@ -147,11 +141,11 @@ void checkSymmetry(const char* type,
     for (Real x = xMin; x < 0.0; x += 0.1) {
         Real y1 = spline(x), y2 = spline(-x);
         if (std::fabs(y1-y2) > tolerance) {
-            BOOST_FAIL(type << " interpolation not symmetric"
-                       << "\n    x = " << x
-                       << "\n    g(x)  = " << y1
-                       << "\n    g(-x) = " << y2
-                       << "\n    error:  " << std::fabs(y1-y2));
+            BOOST_ERROR(type << " interpolation not symmetric"
+                        << "\n    x = " << x
+                        << "\n    g(x)  = " << y1
+                        << "\n    g(-x) = " << y2
+                        << "\n    error:  " << std::fabs(y1-y2));
         }
     }
 }
@@ -223,10 +217,10 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         Real result = std::sqrt(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
         if (std::fabs(result-tabulatedErrors[i]) > toleranceOnTabErr[i])
-            BOOST_FAIL("Not-a-knot spline interpolation "
-                       << "\n    sample points:      " << n
-                       << "\n    norm of difference: " << result
-                       << "\n    it should be:       " << tabulatedErrors[i]);
+            BOOST_ERROR("Not-a-knot spline interpolation "
+                        << "\n    sample points:      " << n
+                        << "\n    norm of difference: " << result
+                        << "\n    it should be:       " << tabulatedErrors[i]);
 
         // MC not-a-knot
         f = MonotonicCubicSpline(x.begin(), x.end(), y.begin(),
@@ -235,11 +229,11 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         result = std::sqrt(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
         if (std::fabs(result-tabulatedMCErrors[i]) > toleranceOnTabMCErr[i])
-            BOOST_FAIL("MC Not-a-knot spline interpolation "
-                       << "\n    sample points:      " << n
-                       << "\n    norm of difference: " << result
-                       << "\n    it should be:       "
-                       << tabulatedMCErrors[i]);
+            BOOST_ERROR("MC Not-a-knot spline interpolation "
+                        << "\n    sample points:      " << n
+                        << "\n    norm of difference: " << result
+                        << "\n    it should be:       "
+                        << tabulatedMCErrors[i]);
     }
 
 }
@@ -274,13 +268,13 @@ void InterpolationTest::testSplineOnGaussianValues() {
         interpolated = f(x1_bad);
         interpolated2= f(x2_bad);
         if (interpolated>0.0 && interpolated2>0.0 ) {
-            BOOST_FAIL("Not-a-knot spline interpolation "
-                       << "bad performance unverified"
-                       << "\nat x = " << x1_bad
-                       << " interpolated value: " << interpolated
-                       << "\nat x = " << x2_bad
-                       << " interpolated value: " << interpolated
-                       << "\n at least one of them was expected to be < 0.0");
+            BOOST_ERROR("Not-a-knot spline interpolation "
+                        << "bad performance unverified"
+                        << "\nat x = " << x1_bad
+                        << " interpolated value: " << interpolated
+                        << "\nat x = " << x2_bad
+                        << " interpolated value: " << interpolated
+                        << "\n at least one of them was expected to be < 0.0");
         }
 
         // MC not-a-knot spline
@@ -292,19 +286,19 @@ void InterpolationTest::testSplineOnGaussianValues() {
         // good performance
         interpolated = f(x1_bad);
         if (interpolated<0.0) {
-            BOOST_FAIL("MC not-a-knot spline interpolation "
-                       << "good performance unverified\n"
-                       << "at x = " << x1_bad
-                       << "\ninterpolated value: " << interpolated
-                       << "\nexpected value > 0.0");
+            BOOST_ERROR("MC not-a-knot spline interpolation "
+                        << "good performance unverified\n"
+                        << "at x = " << x1_bad
+                        << "\ninterpolated value: " << interpolated
+                        << "\nexpected value > 0.0");
         }
         interpolated = f(x2_bad);
         if (interpolated<0.0) {
-            BOOST_FAIL("MC not-a-knot spline interpolation "
-                       << "good performance unverified\n"
-                       << "at x = " << x2_bad
-                       << "\ninterpolated value: " << interpolated
-                       << "\nexpected value > 0.0");
+            BOOST_ERROR("MC not-a-knot spline interpolation "
+                        << "good performance unverified\n"
+                        << "at x = " << x2_bad
+                        << "\ninterpolated value: " << interpolated
+                        << "\nexpected value > 0.0");
         }
     }
 }
@@ -342,11 +336,11 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     Real x_bad = 11.0;
     interpolated = f(x_bad);
     if (interpolated<1.0) {
-        BOOST_FAIL("Natural spline interpolation "
-                   << "poor performance unverified\n"
-                   << "at x = " << x_bad
-                   << "\ninterpolated value: " << interpolated
-                   << "\nexpected value > 1.0");
+        BOOST_ERROR("Natural spline interpolation "
+                    << "poor performance unverified\n"
+                    << "at x = " << x_bad
+                    << "\ninterpolated value: " << interpolated
+                    << "\nexpected value > 1.0");
     }
 
 
@@ -364,11 +358,11 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     // poor performance
     interpolated = f(x_bad);
     if (interpolated<1.0) {
-        BOOST_FAIL("Clamped spline interpolation "
-                   << "poor performance unverified\n"
-                   << "at x = " << x_bad
-                   << "\ninterpolated value: " << interpolated
-                   << "\nexpected value > 1.0");
+        BOOST_ERROR("Clamped spline interpolation "
+                    << "poor performance unverified\n"
+                    << "at x = " << x_bad
+                    << "\ninterpolated value: " << interpolated
+                    << "\nexpected value > 1.0");
     }
 
 
@@ -383,11 +377,11 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     // poor performance
     interpolated = f(x_bad);
     if (interpolated<1.0) {
-        BOOST_FAIL("Not-a-knot spline interpolation "
-                   << "poor performance unverified\n"
-                   << "at x = " << x_bad
-                   << "\ninterpolated value: " << interpolated
-                   << "\nexpected value > 1.0");
+        BOOST_ERROR("Not-a-knot spline interpolation "
+                    << "poor performance unverified\n"
+                    << "at x = " << x_bad
+                    << "\ninterpolated value: " << interpolated
+                    << "\nexpected value > 1.0");
     }
 
 
@@ -399,11 +393,11 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     // good performance
     interpolated = f(x_bad);
     if (interpolated>1.0) {
-        BOOST_FAIL("MC natural spline interpolation "
-                   << "good performance unverified\n"
-                   << "at x = " << x_bad
-                   << "\ninterpolated value: " << interpolated
-                   << "\nexpected value < 1.0");
+        BOOST_ERROR("MC natural spline interpolation "
+                    << "good performance unverified\n"
+                    << "at x = " << x_bad
+                    << "\ninterpolated value: " << interpolated
+                    << "\nexpected value < 1.0");
     }
 
 
@@ -420,11 +414,11 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     // good performance
     interpolated = f(x_bad);
     if (interpolated>1.0) {
-        BOOST_FAIL("MC clamped spline interpolation "
-                   << "good performance unverified\n"
-                   << "at x = " << x_bad
-                   << "\ninterpolated value: " << interpolated
-                   << "\nexpected value < 1.0");
+        BOOST_ERROR("MC clamped spline interpolation "
+                    << "good performance unverified\n"
+                    << "at x = " << x_bad
+                    << "\ninterpolated value: " << interpolated
+                    << "\nexpected value < 1.0");
     }
 
 
@@ -437,11 +431,11 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     // good performance
     interpolated = f(x_bad);
     if (interpolated>1.0) {
-        BOOST_FAIL("MC clamped spline interpolation "
-                   << "good performance unverified\n"
-                   << "at x = " << x_bad
-                   << "\ninterpolated value: " << interpolated
-                   << "\nexpected value < 1.0");
+        BOOST_ERROR("MC clamped spline interpolation "
+                    << "good performance unverified\n"
+                    << "at x = " << x_bad
+                    << "\ninterpolated value: " << interpolated
+                    << "\nexpected value < 1.0");
     }
 }
 
@@ -476,11 +470,11 @@ void InterpolationTest::testSplineOnGenericValues() {
         interpolated = f.secondDerivative(generic_x[i]);
         error = interpolated - generic_natural_y2[i];
         if (std::fabs(error)>3e-16) {
-            BOOST_FAIL("Natural spline interpolation "
-                       << "second derivative failed at x=" << generic_x[i]
-                       << "\ninterpolated value: " << interpolated
-                       << "\nexpected value:     " << generic_natural_y2[i]
-                       << "\nerror:              " << error);
+            BOOST_ERROR("Natural spline interpolation "
+                        << "second derivative failed at x=" << generic_x[i]
+                        << "\ninterpolated value: " << interpolated
+                        << "\nexpected value:     " << generic_natural_y2[i]
+                        << "\nerror:              " << error);
         }
     }
     x35[1] = f(3.5);
@@ -513,12 +507,12 @@ void InterpolationTest::testSplineOnGenericValues() {
     x35[2] = f(3.5);
 
     if (x35[0]>x35[1] || x35[1]>x35[2]) {
-        BOOST_FAIL("Spline interpolation failure"
-                   << "\nat x = " << 3.5
-                   << "\nclamped spline    " << x35[0]
-                   << "\nnatural spline    " << x35[1]
-                   << "\nnot-a-knot spline " << x35[2]
-                   << "\nvalues should be in increasing order");
+        BOOST_ERROR("Spline interpolation failure"
+                    << "\nat x = " << 3.5
+                    << "\nclamped spline    " << x35[0]
+                    << "\nnatural spline    " << x35[1]
+                    << "\nnot-a-knot spline " << x35[2]
+                    << "\nvalues should be in increasing order");
     }
 }
 
@@ -692,12 +686,12 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                                   true);
     interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {
-        BOOST_FAIL("MC not-a-knot spline"
-                   << " interpolation failed at x = " << zero
-                   << "\n    interpolated value: " << interpolated
-                   << "\n    expected value:     " << expected
-                   << "\n    error:              "
-                   << std::fabs(interpolated-expected));
+        BOOST_ERROR("MC not-a-knot spline"
+                    << " interpolation failed at x = " << zero
+                    << "\n    interpolated value: " << interpolated
+                    << "\n    expected value:     " << expected
+                    << "\n    error:              "
+                    << std::fabs(interpolated-expected));
     }
 
 
@@ -708,12 +702,12 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                     true);
     interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {
-        BOOST_FAIL("MC clamped spline"
-                   << " interpolation failed at x = " << zero
-                   << "\n    interpolated value: " << interpolated
-                   << "\n    expected value:     " << expected
-                   << "\n    error:              "
-                   << std::fabs(interpolated-expected));
+        BOOST_ERROR("MC clamped spline"
+                    << " interpolation failed at x = " << zero
+                    << "\n    interpolated value: " << interpolated
+                    << "\n    expected value:     " << expected
+                    << "\n    error:              "
+                    << std::fabs(interpolated-expected));
     }
 
 
@@ -723,19 +717,19 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                     CubicSpline::SecondDerivative, -2.0,
                     true);
     if (std::fabs(interpolated-expected)>1e-15) {
-        BOOST_FAIL("MC SecondDerivative spline"
-                   << " interpolation failed at x = " << zero
-                   << "\n    interpolated value: " << interpolated
-                   << "\n    expected value:     " << expected
-                   << "\n    error:              "
-                   << std::fabs(interpolated-expected));
+        BOOST_ERROR("MC SecondDerivative spline"
+                    << " interpolation failed at x = " << zero
+                    << "\n    interpolated value: " << interpolated
+                    << "\n    expected value:     " << expected
+                    << "\n    error:              "
+                    << std::fabs(interpolated-expected));
     }
 
 }
 
 #ifdef QL_PATCH_BORLAND
 void InterpolationTest::testMultiSpline() {
-    BOOST_FAIL("\n  N-dimensional cubic spline test SKIPPED!!!");
+    BOOST_ERROR("\n  N-dimensional cubic spline test SKIPPED!!!");
 }
 #else
 void InterpolationTest::testMultiSpline() {
@@ -803,7 +797,7 @@ void InterpolationTest::testMultiSpline() {
                         Real error = std::fabs(interpolated-expected);
                         Real tolerance = 1e-16;
                         if (error > tolerance) {
-                            BOOST_FAIL(
+                            BOOST_ERROR(
                                 "\n  At ("
                                 << s << "," << t << "," << u << ","
                                             << v << "," << w << "):"
@@ -830,7 +824,7 @@ void InterpolationTest::testMultiSpline() {
         Real interpolated = cs(args), expected = multif(s, t, u, v, w);
         Real error = std::fabs(interpolated-expected);
         if (error > tolerance) {
-            BOOST_FAIL(
+            BOOST_ERROR(
                 "\n  At ("
                 << s << "," << t << "," << u << "," << v << "," << w << "):"
                 << "\n    interpolated: " << interpolated

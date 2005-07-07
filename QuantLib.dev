@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=615
+UnitCount=619
 Type=2
 Ver=1
 ObjFiles=
@@ -6198,9 +6198,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit616]
-FileName=ql\Indexes\cdor.hpp
+FileName=ql\CashFlows\analysis.hpp
 CompileCpp=1
-Folder=Indexes
+Folder=CashFlows
 Compile=1
 Link=1
 Priority=1000
@@ -6208,9 +6208,29 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit617]
-FileName=ql\Indexes\tibor.hpp
+FileName=ql\CashFlows\analysis.cpp
 CompileCpp=1
-Folder=Indexes
+Folder=CashFlows
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit618]
+FileName=ql\Calendars\istanbul.hpp
+CompileCpp=1
+Folder=Calendars
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit619]
+FileName=ql\Calendars\istanbul.cpp
+CompileCpp=1
+Folder=Calendars
 Compile=1
 Link=1
 Priority=1000

@@ -31,13 +31,6 @@
 #include <ql/CashFlows/indexedcashflowvectors.hpp>
 #include <ql/Volatilities/capletconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
-#include <iomanip>
-
-#if !defined(QL_PATCH_MSVC6)
-#define FIXED std::fixed
-#else
-#define FIXED ""
-#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -117,12 +110,12 @@ void SwapTest::testFairRate() {
                 makeSwap(lengths[i],0.0,spreads[j]);
             swap = makeSwap(lengths[i],swap->fairRate(),spreads[j]);
             if (std::fabs(swap->NPV()) > 1.0e-10) {
-                BOOST_FAIL("recalculating with implied rate:\n"
-                           << std::setprecision(2)
-                           << "    length: " << lengths[i] << " years\n"
-                           << "    floating spread: "
-                           << io::rate(spreads[j]) << "\n"
-                           << "    swap value: " << swap->NPV());
+                BOOST_ERROR("recalculating with implied rate:\n"
+                            << std::setprecision(2)
+                            << "    length: " << lengths[i] << " years\n"
+                            << "    floating spread: "
+                            << io::rate(spreads[j]) << "\n"
+                            << "    swap value: " << swap->NPV());
             }
         }
     }
@@ -148,11 +141,11 @@ void SwapTest::testFairSpread() {
                 makeSwap(lengths[i],rates[j],0.0);
             swap = makeSwap(lengths[i],rates[j],swap->fairSpread());
             if (std::fabs(swap->NPV()) > 1.0e-10) {
-                BOOST_FAIL("recalculating with implied spread:\n"
-                           << std::setprecision(2)
-                           << "    length: " << lengths[i] << " years\n"
-                           << "    fixed rate: " << io::rate(rates[j]) << "\n"
-                           << "    swap value: " << swap->NPV());
+                BOOST_ERROR("recalculating with implied spread:\n"
+                            << std::setprecision(2)
+                            << "    length: " << lengths[i] << " years\n"
+                            << "    fixed rate: " << io::rate(rates[j]) << "\n"
+                            << "    swap value: " << swap->NPV());
             }
         }
     }
@@ -186,7 +179,7 @@ void SwapTest::testRateDependency() {
                                    std::less<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
-                BOOST_FAIL(
+                BOOST_ERROR(
                     "NPV is increasing with the fixed rate in a swap: \n"
                     << "    length: " << lengths[i] << " years\n"
                     << "    value:  " << swap_values[n]
@@ -226,7 +219,7 @@ void SwapTest::testSpreadDependency() {
                                    std::greater<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
-                BOOST_FAIL(
+                BOOST_ERROR(
                     "NPV is decreasing with the floating spread in a swap: \n"
                     << "    length: " << lengths[i] << " years\n"
                     << "    value:  " << swap_values[n]
@@ -283,9 +276,9 @@ void SwapTest::testInArrears() {
     Swap swap(floatingLeg,fixedLeg,termStructure_);
 
     if (std::fabs(swap.NPV()) > 1.0e-4)
-        BOOST_FAIL("While setting up test:\n"
-                   << "    expected swap NPV: 0.0\n"
-                   << "    calculated:        " << swap.NPV());
+        BOOST_ERROR("While setting up test:\n"
+                    << "    expected swap NPV: 0.0\n"
+                    << "    calculated:        " << swap.NPV());
 
     Volatility capletVolatility = 0.22;
     Handle<CapletVolatilityStructure> vol(
@@ -301,9 +294,9 @@ void SwapTest::testInArrears() {
     Real tolerance = 1.0;
 
     if (std::fabs(swap.NPV()-storedValue) > tolerance)
-        BOOST_FAIL("Wrong NPV calculation:\n"
-                   << "    expected:   " << storedValue << "\n"
-                   << "    calculated: " << swap.NPV());
+        BOOST_ERROR("Wrong NPV calculation:\n"
+                    << "    expected:   " << storedValue << "\n"
+                    << "    calculated: " << swap.NPV());
 
     QL_TEST_TEARDOWN
 }
@@ -328,10 +321,10 @@ void SwapTest::testCachedValue() {
 #endif
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
-        BOOST_FAIL("failed to reproduce cached swap value:\n"
-                   << FIXED << std::setprecision(12)
-                   << "    calculated: " << swap->NPV() << "\n"
-                   << "    expected:   " << cachedNPV);
+        BOOST_ERROR("failed to reproduce cached swap value:\n"
+                    << QL_FIXED << std::setprecision(12)
+                    << "    calculated: " << swap->NPV() << "\n"
+                    << "    expected:   " << cachedNPV);
 
     QL_TEST_TEARDOWN
 }

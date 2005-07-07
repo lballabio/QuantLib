@@ -21,14 +21,15 @@
     \brief observer/observable pattern
 */
 
-#ifndef quantlib_observable_h
-#define quantlib_observable_h
+#ifndef quantlib_observable_hpp
+#define quantlib_observable_hpp
 
 #include <ql/qldefines.hpp>
 #include <boost/shared_ptr.hpp>
 #include <list>
 
 namespace QuantLib {
+
     class Observer;
 
     //! Object that notifies its changes to a set of observables
