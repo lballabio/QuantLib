@@ -16,8 +16,6 @@ include_HEADERS = \
     mcpricer.hpp \
     singleassetoption.hpp
 
-EXTRA_DIST=makefile.mak
-
 libPricers_la_SOURCES = \
     discretegeometricaso.cpp \
     mccliquetoption.cpp \

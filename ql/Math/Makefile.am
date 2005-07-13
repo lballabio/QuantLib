@@ -54,8 +54,6 @@ include_HEADERS = \
 	tqreigendecomposition.hpp \
 	trapezoidintegral.hpp
 
-EXTRA_DIST=makefile.mak
-
 libMath_la_SOURCES = \
 	beta.cpp \
 	bivariatenormaldistribution.cpp \

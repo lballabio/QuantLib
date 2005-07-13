@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_config_msvc_h
-#define quantlib_config_msvc_h
+#ifndef quantlib_config_msvc_hpp
+#define quantlib_config_msvc_hpp
 
 #include <ql/userconfig.hpp>
 
@@ -180,9 +180,10 @@
 #  define QL_LIB_TOOLSET "vc6"
 #elif (_MSC_VER == 1300)
 // move inside here configs specific to VC++ 7.0
-// Warning: QuantLib has never been compiled with VC++ 7.0,
+// Warning: QuantLib was never been compiled with VC++ 7.0,
 // the settings are just borrowed from 7.1
 #  define QL_LIB_TOOLSET "vc7"
+#  define QL_PATCH_MSVC70
 #  define QL_PATCH_MSVC71
 #elif (_MSC_VER == 1310)
 // move inside here configs specific to VC++ 7.1 (.Net 2003)

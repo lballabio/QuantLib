@@ -35,8 +35,6 @@ include_HEADERS = \
 	wellington.hpp \
 	zurich.hpp
 
-EXTRA_DIST = makefile.mak
-
 libCalendars_la_SOURCES = \
 	beijing.cpp \
 	bombay.cpp \

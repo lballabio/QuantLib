@@ -10,8 +10,6 @@ include_HEADERS = \
     discretizedswaption.hpp \
     treeswaptionengine.hpp
 
-EXTRA_DIST=makefile.mak
-
 libSwaptionEngines_la_SOURCES = \
     blackswaptionengine.cpp \
     jamshidianswaptionengine.cpp \

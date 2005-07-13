@@ -13,8 +13,6 @@ include_HEADERS = \
     tree.hpp \
     trinomialtree.hpp
 
-EXTRA_DIST=makefile.mak
-
 libLattices_la_SOURCES = \
     binomialtree.cpp \
     trinomialtree.cpp

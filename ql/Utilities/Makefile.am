@@ -13,8 +13,6 @@ include_HEADERS = \
     strings.hpp \
     tracing.hpp
 
-EXTRA_DIST=makefile.mak
-
 libUtilities_la_SOURCES = \
     dataformatters.cpp \
     dataparsers.cpp \

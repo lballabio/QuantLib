@@ -27,8 +27,6 @@ include_HEADERS = \
 	tridiagonaloperator.hpp \
 	valueatcenter.hpp
 
-EXTRA_DIST=makefile.mak
-
 libFiniteDifferences_la_SOURCES = \
     boundarycondition.cpp \
     bsmoperator.cpp \

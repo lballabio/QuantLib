@@ -7,8 +7,6 @@ include_HEADERS = \
     analyticbarrierengine.hpp \
     mcbarrierengine.hpp
 
-EXTRA_DIST=makefile.mak
-
 libBarrierEngines_la_SOURCES = \
     analyticbarrierengine.cpp \
 	mcbarrierengine.cpp

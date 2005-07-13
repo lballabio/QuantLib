@@ -15,7 +15,6 @@ EXTRA_DIST = \
     AmericanOption.dsp \
     AmericanOption.vcproj \
     AmericanOption_vc8.vcproj \
-    makefile.mak \
     ReadMe.txt
 
 .PHONY: examples

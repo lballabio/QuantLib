@@ -17,8 +17,6 @@ include_HEADERS = \
 	pathpricer.hpp \
 	sample.hpp
 
-EXTRA_DIST=makefile.mak
-
 libMonteCarlo_la_SOURCES = \
 	getcovariance.cpp
 

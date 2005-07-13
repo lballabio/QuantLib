@@ -17,8 +17,6 @@ include_HEADERS = \
     simplex.hpp \
     steepestdescent.hpp
 
-EXTRA_DIST=makefile.mak
-
 libOptimization_la_SOURCES = \
     armijo.cpp \
     conjugategradient.cpp \

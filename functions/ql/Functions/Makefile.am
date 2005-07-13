@@ -10,7 +10,6 @@ include_HEADERS = \
 	vols.hpp
 
 EXTRA_DIST = \
-	makefile.mak \
 	QuantLibFunctions.dsp \
 	QuantLibFunctions.vcproj \
 	QuantLibFunctions_vc8.vcproj \

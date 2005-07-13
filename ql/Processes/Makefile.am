@@ -13,8 +13,6 @@ include_HEADERS = \
 	squarerootprocess.hpp \
 	stochasticprocessarray.hpp
 
-EXTRA_DIST = makefile.mak
-
 libProcesses_la_SOURCES = \
 	blackscholesprocess.cpp \
 	eulerdiscretization.cpp \

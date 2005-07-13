@@ -19,6 +19,38 @@
 
 /*! \page faq Frequently asked questions
 
+    \ref faq_generic
+    - \ref faq_generic_email "Is it OK to email a QuantLib developer?"
+    - \ref faq_generic_bug_report "How should I report a bug?"
+    - \ref faq_generic_thanks "How can I give back to this project?"
+
+    \ref faq_contributing
+    - \ref faq_contributing_involved "I'm interested in getting involved with the project."
+    - \ref faq_contributing_code "How do I contribute code to the project?"
+
+    \ref faq_building
+    - \ref faq_compiling_mingw "I'm having trouble building QuantLib with MinGW."
+    - \ref faq_compiling_devcpp_choking "I get an error when trying to compile QuantLib in the Dev-C++ IDE."
+    - \ref faq_compiling_missing_boost "I get a compile error about a missing boost header."
+    - \ref faq_linking_libboost_unit "I encounter a linking error about a boost library."
+    - \ref faq_compiling_boost_1_32 "I encounter a number of compile errors when building the test-suite."
+
+    \ref faq_testing
+    - \ref faq_testing_darwin "The QuantLib test-suite fails under Mac OS X."
+
+    \ref faq_using
+    - \ref faq_using_vclink "I encounter a linking error under Visual C++."
+    - \ref faq_using_darwin "QuantLib fails to run correctly under Mac OS X."
+
+    \ref faq_features
+    - \ref faq_features_missing "Why is feature X missing from QuantLib?"
+
+    \ref faq_lists
+    - \ref faq_lists_disable "How do I prevent my auto-responder from posting to the list?"
+
+
+    <hr>
+
     \section faq_generic Generic questions
 
     <strong>
@@ -49,7 +81,7 @@
 
 
     <strong>
-    \anchor faq_bug_problem_report
+    \anchor faq_generic_bug_report
     How should I report a bug?
     </strong>
 
@@ -160,7 +192,7 @@
     developers a lot more sympathy towards your contribution.
 
 
-    \section faq_build Building QuantLib
+    \section faq_building Building QuantLib
 
     <strong>
     \anchor faq_compiling_mingw
@@ -244,6 +276,8 @@
     \code
 #if !defined(BOOST_NO_STD_LOCALE) && ( !defined(BOOST_MSVC) || BOOST_WORKAROUND(BOOST_MSVC, >= 1310))
     \endcode
+    Also, this problem has been worked around in QuantLib itself since
+    version 0.3.10. You might want to upgrade your QuantLib installation.
 
 
     \section faq_testing Testing QuantLib
@@ -279,6 +313,14 @@
     QuantLib-vcX-xx-xxx-a_b_c.lib yet.  Note that each build
     configuration produces a different library.
 
+    <strong>
+    \anchor faq_using_darwin
+    Programs linking QuantLib fail to run correctly under Mac OS X.
+    </strong>
+
+    This is the same problem reported in the '\ref faq_testing'
+    section; the same workaround applies.
+
 
     \section faq_features QuantLib features
 
@@ -294,7 +336,8 @@
 
     <strong>
     \anchor faq_lists_disable
-    How do I prevent my auto-responder to post to the list when I'm away?
+    How do I prevent my auto-responder from posting to the list while
+    I'm away?
     </strong>
 
     It might be possible to configure the auto-responder so that it

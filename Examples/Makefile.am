@@ -9,7 +9,6 @@ SUBDIRS =  \
     Swap
 
 EXTRA_DIST = \
-    makefile.mak \
     README.txt
 
 .PHONY: examples $(SUBDIRS)

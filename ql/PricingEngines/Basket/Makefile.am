@@ -8,8 +8,6 @@ include_HEADERS = \
 	mcbasketengine.hpp \
 	stulzengine.hpp
 
-EXTRA_DIST=makefile.mak
-
 libBasketEngines_la_SOURCES = \
 	mcamericanbasketengine.cpp \
 	mcbasketengine.cpp \

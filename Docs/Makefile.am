@@ -1,6 +1,5 @@
 
 EXTRA_DIST = \
-             makefile.mak \
              quantlib.css \
              quantlib.doxy \
              quantlibfooter.html \

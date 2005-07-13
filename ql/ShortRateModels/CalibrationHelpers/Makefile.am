@@ -7,8 +7,6 @@ include_HEADERS = \
     hestonmodelhelper.hpp \
     swaptionhelper.hpp
 
-EXTRA_DIST=makefile.mak
-
 libCalibrationHelpers_la_SOURCES = \
     caphelper.cpp \
     hestonmodelhelper.cpp \

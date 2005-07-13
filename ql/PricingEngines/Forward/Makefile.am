@@ -7,5 +7,3 @@ include_HEADERS = \
     forwardengine.hpp \
     forwardperformanceengine.hpp
 
-EXTRA_DIST = makefile.mak
-

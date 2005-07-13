@@ -11,8 +11,6 @@ include_HEADERS = \
 	exchangeratemanager.hpp \
 	oceania.hpp
 
-EXTRA_DIST = makefile.mak
-
 libCurrencies_la_SOURCES = \
 	exchangeratemanager.cpp
 

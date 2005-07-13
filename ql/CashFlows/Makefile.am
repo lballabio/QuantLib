@@ -21,8 +21,6 @@ include_HEADERS = \
         timebasket.hpp \
         upfrontindexedcoupon.hpp
 
-EXTRA_DIST=makefile.mak
-
 libCashFlows_la_SOURCES = \
     analysis.cpp \
     basispointsensitivity.cpp \

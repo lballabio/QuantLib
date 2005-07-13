@@ -32,7 +32,7 @@
 
 namespace QuantLib {
 
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     //! Piecewise yield term structure
     /*! This term structure is bootstrapped on a number of interest

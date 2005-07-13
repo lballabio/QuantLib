@@ -17,8 +17,6 @@ include_HEADERS = \
     latticeshortratemodelengine.hpp \
     mcsimulation.hpp
 
-EXTRA_DIST=makefile.mak
-
 libPricingEngines_la_SOURCES = \
 	americanpayoffatexpiry.cpp \
 	americanpayoffathit.cpp \

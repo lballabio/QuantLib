@@ -10,8 +10,6 @@ include_HEADERS = \
 	mc_discr_geom_av_price.hpp \
 	mcdiscreteasianengine.hpp
 
-EXTRA_DIST=makefile.mak
-
 libAsianEngines_la_SOURCES = \
 	analytic_cont_geom_av_price.cpp \
 	analytic_discr_geom_av_price.cpp \

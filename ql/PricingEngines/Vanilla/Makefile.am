@@ -32,8 +32,6 @@ include_HEADERS = \
     mchestonengine.hpp \
     mcvanillaengine.hpp
 
-EXTRA_DIST = makefile.mak
-
 libVanillaEngines_la_SOURCES = \
     analyticdigitalamericanengine.cpp \
     analyticdividendeuropeanengine.cpp \

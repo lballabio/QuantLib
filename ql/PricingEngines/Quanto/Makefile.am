@@ -6,5 +6,3 @@ include_HEADERS = \
 	all.hpp \
     quantoengine.hpp
 
-EXTRA_DIST=makefile.mak
-

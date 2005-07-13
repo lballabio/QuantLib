@@ -23,8 +23,6 @@ include_HEADERS = \
     libor.hpp \
     indexmanager.hpp
 
-EXTRA_DIST=makefile.mak
-
 libIndexes_la_SOURCES = \
     xibor.cpp \
     libor.cpp \

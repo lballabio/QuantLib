@@ -23,8 +23,6 @@ include_HEADERS = \
     zerospreadedtermstructure.hpp \
     zeroyieldstructure.hpp
 
-EXTRA_DIST=makefile.mak
-
 libTermStructures_la_SOURCES = \
     affinetermstructure.cpp \
     compoundforward.cpp \

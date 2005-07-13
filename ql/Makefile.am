@@ -31,7 +31,6 @@ EXTRA_DIST= \
 	config.msvc.hpp \
 	config.mwcw.hpp \
 	config.mingw.hpp \
-	makefile.mak \
 	userconfig.hpp
 
 include_HEADERS = \

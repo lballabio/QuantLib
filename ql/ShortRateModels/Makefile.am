@@ -13,8 +13,6 @@ include_HEADERS = \
     parameter.hpp \
     twofactormodel.hpp
 
-EXTRA_DIST=makefile.mak
-
 libShortRateModels_la_SOURCES = \
     calibrationhelper.cpp \
     model.cpp \

@@ -142,7 +142,7 @@ void teardown() {
     Settings::instance().evaluationDate() = Date();
 }
 
-#ifndef QL_PATCH_MSVC6
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
 template <class T, class I>
 void testCurveConsistency(const T&, const I& interpolator) {
@@ -212,7 +212,7 @@ QL_END_TEST_LOCALS(PiecewiseYieldCurveTest)
 
 void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
 
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-log-linear discount curve...");
@@ -229,7 +229,7 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
 
 void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
 
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear discount curve...");
@@ -246,7 +246,7 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
 
 void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
 
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-log-linear zero-yield curve...");
@@ -263,7 +263,7 @@ void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
 
 void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
 
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear zero-yield curve...");
@@ -280,7 +280,7 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
 
 void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
 
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-spline zero-yield curve...");
@@ -300,7 +300,7 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
 
 void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
 
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear forward-rate curve...");
@@ -317,7 +317,7 @@ void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
 
 void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
 
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-flat forward-rate curve...");
@@ -334,7 +334,7 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
 
 void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
 
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-spline forward-rate curve...");
@@ -354,7 +354,7 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
 
 void PiecewiseYieldCurveTest::testObservability() {
 
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE("Testing observability of piecewise yield curve...");
 

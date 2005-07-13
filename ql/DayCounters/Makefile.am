@@ -11,8 +11,6 @@ include_HEADERS = \
 	simpledaycounter.hpp \
 	thirty360.hpp
 
-EXTRA_DIST=makefile.mak
-
 libDayCounters_la_SOURCES = \
     actualactual.cpp \
 	simpledaycounter.cpp \

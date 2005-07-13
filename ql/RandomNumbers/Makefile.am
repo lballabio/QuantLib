@@ -21,8 +21,6 @@ include_HEADERS = \
 	seedgenerator.hpp \
 	sobolrsg.hpp
 
-EXTRA_DIST=makefile.mak
-
 libRandomNumbers_la_SOURCES = \
     faurersg.cpp \
     haltonrsg.cpp \

@@ -7,8 +7,6 @@ include_HEADERS = \
 	analyticcliquetengine.hpp \
 	analyticperformanceengine.hpp
 
-EXTRA_DIST=makefile.mak
-
 libCliquetEngines_la_SOURCES = \
     analyticcliquetengine.cpp \
     analyticperformanceengine.cpp

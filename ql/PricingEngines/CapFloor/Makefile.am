@@ -9,8 +9,6 @@ include_HEADERS = \
     discretizedcapfloor.hpp \
     treecapfloorengine.hpp
 
-EXTRA_DIST=makefile.mak
-
 libCapFloorEngines_la_SOURCES = \
     analyticcapfloorengine.cpp \
     blackcapfloorengine.cpp \

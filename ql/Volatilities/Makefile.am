@@ -15,8 +15,6 @@ include_HEADERS = \
     localvolsurface.hpp \
     swaptionvolmatrix.hpp
 
-EXTRA_DIST=makefile.mak
-
 libVolatilities_la_SOURCES = \
     blackvariancecurve.cpp \
     blackvariancesurface.cpp \

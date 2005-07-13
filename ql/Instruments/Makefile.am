@@ -32,8 +32,6 @@ include_HEADERS = \
     vanillaoption.hpp \
     zerocouponbond.hpp
 
-EXTRA_DIST=makefile.mak
-
 libInstruments_la_SOURCES = \
     asianoption.cpp \
     barrieroption.cpp \

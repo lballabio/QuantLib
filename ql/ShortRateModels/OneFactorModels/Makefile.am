@@ -9,8 +9,6 @@ include_HEADERS = \
     hullwhite.hpp \
     vasicek.hpp
 
-EXTRA_DIST = makefile.mak
-
 libOneFactorModels_la_SOURCES = \
     blackkarasinski.cpp \
     coxingersollross.cpp \
