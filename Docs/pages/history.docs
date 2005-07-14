@@ -29,8 +29,10 @@
       \endcode
 
     CALENDARS
-
     - Istanbul calendar added (thanks to Serkan Atalik.)
+
+    LATTICE FRAMEWORK
+    - Faster implementation of binomial and trinomial trees.
 
     MONTE CARLO FRAMEWORK
     - Added generic multi-dimensional stochastic process.
