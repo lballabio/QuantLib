@@ -17,6 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/qldefines.hpp>
+#if defined(QL_PATCH_MSVC70)
+#pragma optimize( "", on )
+#endif
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Processes/stochasticprocessarray.hpp>
