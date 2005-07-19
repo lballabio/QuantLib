@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,6 +33,7 @@ namespace QuantLib {
     //! Base class for least square problem
     class LeastSquareProblem {
       public:
+        virtual ~LeastSquareProblem() {}
         //! size of the problem ie size of target vector
         virtual Size size() = 0;
         //! compute the target vector and the values of the function to fit
