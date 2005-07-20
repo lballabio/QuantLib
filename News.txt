@@ -5,3 +5,6 @@
 
 - Added Bombay and Taipei calendars.
 
+- Added configuration option for adding current function information
+  to error messages
+

@@ -159,6 +159,19 @@ if test "$ql_error_lines" = "yes" ; then
               information.])
 fi
 
+AC_ARG_ENABLE([error-functions],
+              AC_HELP_STRING([--enable-error-functions],
+                             [If enabled, current function information
+                              is added to the error messages thrown by
+                              the library.]),
+              [ql_error_functions=$enableval],
+              [ql_error_functions=no])
+if test "$ql_error_functions" = "yes" ; then
+   AC_DEFINE([QL_ERROR_FUNCTIONS],[1],
+             [Define this if error messages should include current function
+              information.])
+fi
+
 AC_ARG_ENABLE([tracing],
               AC_HELP_STRING([--enable-tracing],
                              [If enabled, tracing messages might be emitted

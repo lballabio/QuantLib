@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +29,10 @@
    it will not be read by the compiler. The definitions below
    will be provided by running ./configure instead.
 ****************************************************************/
+
+/* Define this if error messages should include current function
+   information. */
+// #define QL_ERROR_FUNCTIONS 1
 
 /* Define this if error messages should include file and line information. */
 // #define QL_ERROR_LINES 1
