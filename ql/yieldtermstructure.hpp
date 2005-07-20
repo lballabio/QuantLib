@@ -29,6 +29,7 @@
 #include <ql/interestrate.hpp>
 #include <ql/handle.hpp>
 #include <ql/Math/extrapolation.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -66,16 +67,15 @@ namespace QuantLib {
                            const Calendar&);
         //@}
         virtual ~YieldTermStructure() {}
-        /*! \name zero rates
+        /*! \name zero-yield rates
 
-            These methods are either function of dates or times.
-            In the latter case, times are calculated as fraction
-            of year from the reference date.
+            These methods return the implied zero-yield rate for a
+            given date or time.  In the former case, the time is
+            calculated as a fraction of year from the reference date.
         */
         //@{
-        //! zero-yield rate
-        /*! returns the implied zero-yield rate for a given date.
-            The resulting InterestRate has the required daycounting rule.
+        /*! The resulting interest rate has the required daycounting
+            rule.
         */
         InterestRate zeroRate(const Date& d,
                               const DayCounter& resultDayCounter,
@@ -83,11 +83,9 @@ namespace QuantLib {
                               Frequency freq = Annual,
                               bool extrapolate = false) const;
 
-        //! zero-yield rate
-        /*! returns the implied zero-yield rate for a given
-            time.  The resulting InterestRate has the same
-            day-counting rule used by the term structure. The same
-            rule should be used for the calculating the time t.
+        /*! The resulting interest rate has the same day-counting rule
+            used by the term structure. The same rule should be used
+            for calculating the passed time t.
         */
         InterestRate zeroRate(Time t,
                               Compounding comp,
@@ -97,31 +95,29 @@ namespace QuantLib {
 
         /*! \name discount factors
 
-            These methods are either function of dates or times.
-            In the latter case, times are calculated as fraction
-            of year from the reference date.
+            These methods return the discount factor for a given date
+            or time.  In the former case, the time is calculated as a
+            fraction of year from the reference date.
         */
         //@{
-        //! discount factor
         DiscountFactor discount(const Date&,
                                 bool extrapolate = false) const;
-        //! discount factor
+        /*! The same day-counting rule used by the term structure
+            should be used for calculating the passed time t.
+        */
         DiscountFactor discount(Time,
                                 bool extrapolate = false) const;
         //@}
 
         /*! \name forward rates
 
-            These methods are either function of dates or times.
-            In the latter case, times are calculated as fraction
-            of year from the reference date.
+            These methods returns the implied forward interest rate
+            between two dates or times.  In the former case, times are
+            calculated as fractions of year from the reference date.
         */
         //@{
-
-        //! forward interest rate
-        /*! returns the implied forward interest rate between two
-            dates The resulting interest rate has the required
-            day-counting rule.
+        /*! The resulting interest rate has the required day-counting
+            rule.
         */
         InterestRate forwardRate(const Date& d1,
                                  const Date& d2,
@@ -130,11 +126,9 @@ namespace QuantLib {
                                  Frequency freq = Annual,
                                  bool extrapolate = false) const;
 
-        //! forward interest rate
-        /*! returns the implied forward interest rate between two
-            times The resulting interest rate has the same
-            day-counting rule used by the term structure. The same
-            rule should be used for the calculating the time t.
+        /*! The resulting interest rate has the same day-counting rule
+            used by the term structure. The same rule should be used
+            for the calculating the passed times t1 and t2.
         */
         InterestRate forwardRate(Time t1,
                                  Time t2,
@@ -145,37 +139,48 @@ namespace QuantLib {
 
         /*! \name par rates
 
-            These methods are either function of dates or times.
-            In the latter case, times are calculated as fraction
-            of year from the reference date.
+            These methods returns the implied par rate for a given
+            sequence of payments at the given dates or times.  In the
+            former case, times are calculated as fractions of year
+            from the reference date.
+
+            \warning though somewhat related to a swap rate, this
+                     method is not to be used for the fair rate of a
+                     real swap, since it does not take into account
+                     all the market conventions' details. The correct
+                     way to evaluate such rate is to instantiate a
+                     SimpleSwap with the correct conventions, pass it
+                     the term structure and call the swap's fairRate()
+                     method.
         */
         //@{
-        //! par rate
-        /*! returns the implied par rate of a stylised swap starting at the
-            effective date with a given tenor.
-
-            \warning this par rate is not to be used for evaluation of a real
-                     swap, since it does not take into account all the market
-                     conventions' details.
-        */
-        Rate parRate(Year tenor,
-                     const Date& effectiveDate,
+        Rate parRate(Integer tenor,
+                     const Date& startDate,
                      Frequency freq = Annual,
                      bool extrapolate = false) const;
 
-        //! par rate
-        /*! returns the implied par rate of a stylised swap starting at the
-            given time with a given tenor.
-
-            \warning this par rate is not to be used for evaluation of a real
-                     swap, since it does not take into account all the market
-                     conventions' details.
+        /*! the first date in the vector must equal the start date;
+            the following dates must equal the payment dates.
         */
+        Rate parRate(const std::vector<Date>& dates,
+                     Frequency freq = Annual,
+                     bool extrapolate = false) const;
+
+        /*! the first time in the vector must equal the start time;
+            the following times must equal the payment times.
+        */
+        Rate parRate(const std::vector<Time>& times,
+                     Frequency freq = Annual,
+                     bool extrapolate = false) const;
+
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the overload taking a vector of times */
         Rate parRate(Year tenor,
                      Time t0,
                      Frequency freq = Annual,
                      bool extrapolate = false) const;
         //@}
+        #endif
 
         //! \name Dates
         //@{
@@ -297,13 +302,39 @@ namespace QuantLib {
 
     // inline par rate definitions
 
-    inline Rate YieldTermStructure::parRate(Year tenor,
-                                            const Date& effectiveDate,
+    inline Rate YieldTermStructure::parRate(Integer tenor,
+                                            const Date& startDate,
                                             Frequency freq,
-                                            bool extrap) const {
-        return parRate(tenor, timeFromReference(effectiveDate), freq, extrap);
+                                            bool extrapolate) const {
+        std::vector<Date> dates(1, startDate);
+        for (Integer i=1; i<=tenor; i++)
+            dates.push_back(startDate + i*Years);
+        return parRate(dates, freq, extrapolate);
     }
 
+    inline Rate YieldTermStructure::parRate(const std::vector<Date>& dates,
+                                            Frequency freq,
+                                            bool extrapolate) const {
+        std::vector<Time> times(dates.size());
+        for (Size i=0; i<dates.size(); i++)
+            times[i] = timeFromReference(dates[i]);
+        return parRate(times,freq,extrapolate);
+    }
+
+    inline Rate YieldTermStructure::parRate(const std::vector<Time>& times,
+                                            Frequency freq,
+                                            bool extrapolate) const {
+        QL_REQUIRE(times.size() >= 2, "at least two times are required");
+        checkRange(times.back(), extrapolate);
+        Real sum = 0.0;
+        for (Size i=1; i<=times.size(); i++)
+            sum += discountImpl(times[i]);
+        Real result = discountImpl(times.front())-discountImpl(times.back());
+        result *=  Real(freq)/sum;
+        return result;
+    }
+
+    #ifndef QL_DISABLE_DEPRECATED
     inline Rate YieldTermStructure::parRate(Year tenor, Time t0,
                                             Frequency freq,
                                             bool extrapolate) const {
@@ -315,6 +346,7 @@ namespace QuantLib {
         result *=  Real(freq)/sum;
         return result;
     }
+    #endif
 
     // inline discount definitions
 
