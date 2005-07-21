@@ -18,7 +18,7 @@ ComponentText "This will install QuantLib ${VER_NUMBER} on your computer"
 
 SilentInstall normal
 Icon Docs\images\favicon.ico
-UninstallIcon Docs\images\classic-uninstall.ico
+UninstallIcon Docs\images\favicon.ico
 CRCCheck on
 LicenseText "You must agree with the following license before installing:"
 LicenseData License.txt
