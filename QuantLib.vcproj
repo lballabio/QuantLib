@@ -400,6 +400,18 @@
 				RelativePath=".\ql\Calendars\beijing.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Calendars\bombay.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\bombay.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\bratislava.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\bratislava.hpp">
+			</File>
+			<File
 				RelativePath="ql\Calendars\budapest.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -601,6 +613,12 @@
 				RelativePath=".\ql\Calendars\hongkong.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Calendars\istanbul.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\istanbul.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Calendars\italy.cpp">
 			</File>
 			<File
@@ -799,6 +817,12 @@
 				RelativePath="ql\Calendars\oslo.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Calendars\prague.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\prague.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Calendars\riyadh.cpp">
 			</File>
 			<File
@@ -941,6 +965,12 @@
 			</File>
 			<File
 				RelativePath="ql\Calendars\sydney.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\taipei.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\taipei.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Calendars\taiwan.cpp">
@@ -2288,16 +2318,31 @@
 			Name="Indexes"
 			Filter="">
 			<File
+				RelativePath=".\ql\Indexes\all.hpp">
+			</File>
+			<File
 				RelativePath="ql\Indexes\audlibor.hpp">
 			</File>
 			<File
 				RelativePath="ql\Indexes\cadlibor.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\cdor.hpp">
+			</File>
+			<File
 				RelativePath="ql\Indexes\chflibor.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\core.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\dkklibor.hpp">
+			</File>
+			<File
 				RelativePath="ql\Indexes\euribor.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\eurlibor.hpp">
 			</File>
 			<File
 				RelativePath="ql\Indexes\gbplibor.hpp">
@@ -2309,7 +2354,22 @@
 				RelativePath=".\ql\Indexes\indexmanager.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\jibar.hpp">
+			</File>
+			<File
 				RelativePath="ql\Indexes\jpylibor.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\libor.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\libor.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\nzdlibor.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\tibor.hpp">
 			</File>
 			<File
 				RelativePath="ql\Indexes\usdlibor.hpp">
@@ -2378,7 +2438,7 @@
 				RelativePath="ql\Indexes\xibor.hpp">
 			</File>
 			<File
-				RelativePath="ql\Indexes\zarlibor.hpp">
+				RelativePath=".\ql\Indexes\zibor.hpp">
 			</File>
 		</Filter>
 		<Filter
@@ -2583,6 +2643,9 @@
 				RelativePath=".\ql\Instruments\bond.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\callabilityschedule.hpp">
+			</File>
+			<File
 				RelativePath="ql\Instruments\capfloor.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -2686,6 +2749,9 @@
 			</File>
 			<File
 				RelativePath="ql\Instruments\cliquetoption.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\convertiblebond.hpp">
 			</File>
 			<File
 				RelativePath="ql\Instruments\core.hpp">
@@ -3538,6 +3604,9 @@
 			Name="Lattices"
 			Filter="">
 			<File
+				RelativePath=".\ql\Lattices\all.hpp">
+			</File>
+			<File
 				RelativePath="ql\Lattices\binomialtree.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -3604,7 +3673,13 @@
 				RelativePath="ql\Lattices\bsmlattice.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Lattices\core.hpp">
+			</File>
+			<File
 				RelativePath="ql\Lattices\lattice.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Lattices\lattice1d.hpp">
 			</File>
 			<File
 				RelativePath="ql\Lattices\lattice2d.hpp">
@@ -8559,10 +8634,25 @@
 				RelativePath=".\ql\Utilities\dataformatters.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Utilities\dataparsers.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\dataparsers.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\disposable.hpp">
+			</File>
+			<File
 				RelativePath="ql\Utilities\filteringiterator.hpp">
 			</File>
 			<File
 				RelativePath="ql\Utilities\iteratorcategories.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\null.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Utilities\observablevalue.hpp">
 			</File>
 			<File
 				RelativePath="ql\Utilities\processingiterator.hpp">

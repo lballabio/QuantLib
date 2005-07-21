@@ -17,6 +17,8 @@ InstType Minimal
 ComponentText "This will install QuantLib ${VER_NUMBER} on your computer"
 
 SilentInstall normal
+Icon Docs\images\favicon.ico
+UninstallIcon Docs\images\classic-uninstall.ico
 CRCCheck on
 LicenseText "You must agree with the following license before installing:"
 LicenseData License.txt
@@ -85,20 +87,20 @@ SectionIn 1 2
     File /r "Examples\*.vcproj"
 
     SetOutPath $INSTDIR\Docs
-    File /r "Docs\*.pdf"
     File /r "Docs\*.am"
     File /r "Docs\*.bmp"
-    File /r "Docs\*.css"
     File /r "Docs\*.cpp"
+    File /r "Docs\*.css"
     File /r "Docs\*.docs"
     File /r "Docs\*.doxy"
+    File /r "Docs\*.eps"
     File /r "Docs\*.html"
     File /r "Docs\*.jpg"
-    File /r "Docs\makefile.mak"
+    File /r "Docs\*.pdf"
     File /r "Docs\*.png"
-    File /r "Docs\*.eps"
     File /r "Docs\*.tex"
     File /r "Docs\*.txt"
+    File /r "Docs\makefile.mak"
 
     WriteRegStr HKEY_LOCAL_MACHINE \
                 "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
