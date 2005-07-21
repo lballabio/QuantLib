@@ -5,6 +5,6 @@ Adolfo Benin, Luca Berardi, David Binderman, Aurelien Chanudet, Jon
 Davidson, Daniele De Francesco, Matteo Gallivanoni, Roman Gitlin,
 Tomoya Kawanishi, Gary Kennedy, Enrico Michelotti, Gilbert Peffer,
 Walter Penschke, Gianni Piolanti, Peter Schmitteckert, David Schwartz,
-Maxim Sokolov, Klaus Spanderen, Charles Whitmore, Bernd Johannes
-Wuebben, and Jeff Yu.
+Maxim Sokolov, Klaus Spanderen, Marco Tarenghi, Charles Whitmore,
+Bernd Johannes Wuebben, and Jeff Yu.
 

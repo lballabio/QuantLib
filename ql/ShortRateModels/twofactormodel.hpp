@@ -115,7 +115,7 @@ namespace QuantLib {
             Size index2 = index / modulo;
 
             Real x = tree1_->underlying(i, index1);
-            Real y = tree1_->underlying(i, index2);
+            Real y = tree2_->underlying(i, index2);
 
             Rate r = dynamics_->shortRate(timeGrid()[i], x, y);
             return std::exp(-r*timeGrid().dt(i));

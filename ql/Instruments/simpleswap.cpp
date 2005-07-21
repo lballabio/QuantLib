@@ -110,7 +110,7 @@ namespace QuantLib {
             floatingLeg();
 
         arguments->floatingResetTimes = arguments->floatingPayTimes =
-            arguments->floatingAccrualTimes =
+            arguments->floatingFixingTimes = arguments->floatingAccrualTimes =
             std::vector<Time>(floatingCoupons.size());
         arguments->floatingSpreads =
             std::vector<Spread>(floatingCoupons.size());
@@ -126,6 +126,9 @@ namespace QuantLib {
             Time paymentTime =
                 counter.yearFraction(settlement, coupon->date());
             arguments->floatingPayTimes[i] = paymentTime;
+            Time floatingFixingTime =
+                counter.yearFraction(settlement, coupon->fixingDate());
+            arguments->floatingFixingTimes[i] = floatingFixingTime;
             arguments->floatingAccrualTimes[i] = coupon->accrualPeriod();
             arguments->floatingSpreads[i] = coupon->spread();
             if (resetTime < 0.0 && paymentTime >= 0.0)
@@ -145,6 +148,9 @@ namespace QuantLib {
                    "number of fixed coupon amounts");
         QL_REQUIRE(floatingResetTimes.size() == floatingPayTimes.size(),
                    "number of floating start times different from "
+                   "number of floating payment times");
+        QL_REQUIRE(floatingFixingTimes.size() == floatingPayTimes.size(),
+                   "number of floating fixing times different from "
                    "number of floating payment times");
         QL_REQUIRE(floatingAccrualTimes.size() == floatingPayTimes.size(),
                    "number of floating accrual times different from "

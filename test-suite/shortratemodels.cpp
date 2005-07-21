@@ -89,9 +89,9 @@ void ShortRateModelTest::testCachedHullWhite() {
     model->calibrate(swaptions, simplex);
 
     #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedA = 0.0478260, cachedSigma = 0.00580695;
+    Real cachedA = 0.0484921, cachedSigma = 0.00591608;
     #else
-    Real cachedA = 0.0487299, cachedSigma = 0.00582086;
+    Real cachedA = 0.0458489, cachedSigma = 0.00582708;
     #endif
     Real tolerance = 1.0e-6;
 

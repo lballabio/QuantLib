@@ -54,8 +54,8 @@ namespace QuantLib {
                    "cannot use the Jamshidian decomposition "
                    "on exotic swaptions");
         Time maturity = arguments_.stoppingTimes[0];
-        //QL_REQUIRE(maturity==arguments_.floatingResetTimes[0],
-        //           "maturity must be equal to first reset date");
+        // QL_REQUIRE(maturity==arguments_.floatingFixingTimes[0],
+        //            "maturity must be equal to first fixing date");
 
         std::vector<Real> amounts(arguments_.fixedCoupons);
         amounts.back() += arguments_.nominal;

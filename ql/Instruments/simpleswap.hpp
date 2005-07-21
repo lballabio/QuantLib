@@ -95,6 +95,7 @@ namespace QuantLib {
         std::vector<Real> fixedCoupons;
         std::vector<Time> floatingAccrualTimes;
         std::vector<Time> floatingResetTimes;
+        std::vector<Time> floatingFixingTimes;
         std::vector<Time> floatingPayTimes;
         std::vector<Spread> floatingSpreads;
         Real currentFloatingCoupon;

@@ -209,7 +209,7 @@ namespace QuantLib {
         Real w = (arguments.payFixed ? 1 : -1 );
         SwaptionPricingFunction function(a(), sigma(), b(), eta(), rho(),
                                          w, start,
-                                         arguments.floatingPayTimes,
+                                         arguments.fixedPayTimes,
                                          arguments.fixedRate, (*this));
 
         Real upper = function.mux() + range*function.sigmax();

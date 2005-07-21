@@ -37,15 +37,18 @@ namespace QuantLib {
 
         Calendar calendar = index->calendar();
         Period indexTenor = index->tenor();
-        Date startDate =
-            calendar.advance(termStructure->referenceDate(),
-                             maturity.length(), maturity.units(),
-                             index->businessDayConvention());
-        Date endDate =
-            calendar.advance(startDate, length.length(), length.units(),
-                             index->businessDayConvention());
+        Integer fixingDays = index->settlementDays();
+        Date exerciseDate = calendar.advance(termStructure->referenceDate(),
+                                             maturity,
+                                             index->businessDayConvention());
+        Date startDate = calendar.advance(exerciseDate,
+                                          fixingDays, Days,
+                                          index->businessDayConvention());
+        Date endDate = calendar.advance(startDate, length,
+                                        index->businessDayConvention());
         Schedule fixedSchedule(calendar, startDate, endDate,
-                               fixedLegFrequency, Unadjusted);
+                               fixedLegFrequency,
+                               index->businessDayConvention());
         Schedule floatSchedule(calendar, startDate, endDate,
                                index->frequency(),
                                index->businessDayConvention());
@@ -65,7 +68,7 @@ namespace QuantLib {
         engine_  = boost::shared_ptr<PricingEngine>();
         swaption_ = boost::shared_ptr<Swaption>(new Swaption(
             swap_,
-            boost::shared_ptr<Exercise>(new EuropeanExercise(startDate)),
+            boost::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)),
             termStructure,
             engine_));
         marketValue_ = blackPrice(volatility_->value());
