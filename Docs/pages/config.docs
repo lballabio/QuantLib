@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,10 +36,17 @@
     Such macros include:
 
     \code
+    #define QL_ERROR_FUNCTIONS
+    \endcode
+
+    If defined, function information is added to the error messages
+    thrown by the library. Undefined by default.
+
+    \code
     #define QL_ERROR_LINES
     \endcode
-    If defined (the default), file and line information is added to
-    the error messages thrown by the library.
+    If defined, file and line information is added to the error
+    messages thrown by the library. Undefined by default.
 
     \code
     #define QL_ENABLE_TRACING
@@ -47,14 +54,14 @@
 
     If enabled, tracing messages might be emitted by the library
     depending on run-time settings. Enabling this option can degrade
-    performance. The default is to undefine the macro.
+    performance. Undefined by default.
 
     \code
     #define QL_NEGATIVE_RATES
     \endcode
     If defined, negative yield rates are allowed in a few places where
     they are currently forbidden. It is still not clear whether this
-    is safe. The default is to undefine the macro.
+    is safe. Undefined by default.
 
     \code
     #define QL_EXTRA_SAFETY_CHECKS
@@ -73,8 +80,8 @@
     \code
     #define QL_DISABLE_DEPRECATED
     \endcode
-    If defined, deprecated code will not be included in the library.
-    Undefined by default.
+    If defined, deprecated code will not be included in the
+    library. Undefined by default.
 
     \code
     #define QL_USE_INDEXED_COUPON
