@@ -48,6 +48,9 @@
     \ref faq_lists
     - \ref faq_lists_disable "How do I prevent my auto-responder from posting to the list?"
 
+    \ref faq_platforms
+    - \ref faq_dot_net "Does QuantLib support .NET?"
+
 
     <hr>
 
@@ -360,4 +363,16 @@
     have to check the list archives at
     <http://sourceforge.net/mailarchive/forum.php?forum=quantlib-users>
     to catch up on the posts you missed.
+
+    \section faq_platforms QuantLib cross-platform support
+
+    <strong>
+    \anchor faq_dot_net
+    Does QuantLib support .NET?
+    </strong>
+
+    C# has never been officially supported by the QuantLib team. Both
+    <http://www.quantlib.net> and <http://www.capetools.net> have been 
+    "external" attempts which now look like abandoned projects. As 
+    such nobody but their authors could help you.
 */
