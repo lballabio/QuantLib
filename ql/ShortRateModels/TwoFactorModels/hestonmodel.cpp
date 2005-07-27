@@ -40,14 +40,16 @@ namespace QuantLib {
     };
 
     HestonModel::HestonModel(const boost::shared_ptr<HestonProcess> & process)
-    : ShortRateModel(5), theta_(arguments_[0]), kappa_(arguments_[1]),
-      sigma_(arguments_[2]), rho_(arguments_[3]), v0_(arguments_[4]) {
-        kappa_ = ConstantParameter(process->kappa(), PositiveConstraint());
-        theta_ = ConstantParameter(process->theta(), PositiveConstraint());
-        sigma_ = ConstantParameter(process->sigma(), PositiveConstraint());
-        rho_   = ConstantParameter(process->rho(),
-                                   BoundaryConstraint(-1.0, 1.0));
-        v0_    = ConstantParameter(process->v0(), PositiveConstraint());
+    : ShortRateModel(5) {
+        arguments_[0] = ConstantParameter(process->theta(),
+                                          PositiveConstraint());
+        arguments_[1] = ConstantParameter(process->kappa(),
+                                          PositiveConstraint());
+        arguments_[2] = ConstantParameter(process->sigma(),
+                                          PositiveConstraint());
+        arguments_[3] = ConstantParameter(process->rho(),
+                                          BoundaryConstraint(-1.0, 1.0));
+        arguments_[4] = ConstantParameter(process->v0(), PositiveConstraint());
 	}
 
     boost::shared_ptr<NumericalMethod> HestonModel::tree(

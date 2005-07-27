@@ -73,9 +73,21 @@ namespace QuantLib {
 
     Real HestonModelHelper::calibrationError() {
         if (calibrateVolatility_) {
-            const Volatility implied = this->impliedVolatility(
-                                          modelValue(), 1e-5, 5000, 0.01, 5);
-            return implied - volatility_->value();
+            const Real lowerPrice = blackPrice(0.01);
+            const Real upperPrice = blackPrice(5);
+            const Real modelPrice = modelValue();
+            
+            Volatility implied;
+            if (modelPrice <= lowerPrice)
+                implied = 0.01;
+            else
+                if (modelPrice >= upperPrice)
+                    implied = 5.0;
+                else
+                    implied = this->impliedVolatility(
+                                        modelValue(), 1e-8, 5000, 0.01, 5);
+
+            return implied - volatility_->value();            
         } else {
             return CalibrationHelper::calibrationError();
         }

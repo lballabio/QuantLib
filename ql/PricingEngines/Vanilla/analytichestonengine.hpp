@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Klaus Spanderen
+ Copyright (C) 2004, 2005 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +28,7 @@
 #include <ql/ShortRateModels/TwoFactorModels/hestonmodel.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Math/gaussianquadratures.hpp>
+#include <complex>
 
 namespace QuantLib {
 
@@ -51,16 +52,25 @@ namespace QuantLib {
               reproducing results available in web/literature
               and comparison with Black pricing.
     */
+
     class AnalyticHestonEngine
         : public GenericModelEngine<HestonModel,
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        AnalyticHestonEngine(const boost::shared_ptr<HestonModel> model,
+        AnalyticHestonEngine(const boost::shared_ptr<HestonModel> & model,
                              Size integrationOrder = 64);
         void calculate() const;
+      protected:
+        // call back for extended stochastic volatility
+        // plus jump diffusion engines like bates model
+        virtual std::complex<Real>
+            jumpDiffusionTerm(Real phi, Time t, Size j) const;
+
       private:
         GaussLaguerreIntegration gaussLaguerre;
+
+        class Fj_Helper;
     };
 
 }

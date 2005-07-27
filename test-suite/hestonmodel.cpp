@@ -32,7 +32,6 @@
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/TermStructures/zerocurve.hpp>
 #include <ql/TermStructures/flatforward.hpp>
-#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -117,22 +116,22 @@ void HestonModelTest::testBlackCalibration() {
 
         Real tolerance = 1.0e-4;
 
-        if (model->sigma()(0.0) > tolerance) {
+        if (model->sigma() > tolerance) {
             BOOST_ERROR("Failed to reproduce expected sigma"
-                        << "\n    calculated: " << model->sigma()(0.0)
+                        << "\n    calculated: " << model->sigma()
                         << "\n    expected:   " << 0.0);
         }
 
-        if (std::fabs(model->kappa()(0.0)
-                  *(model->theta()(0.0)-volatility*volatility)) > tolerance) {
+        if (std::fabs(model->kappa()
+                  *(model->theta()-volatility*volatility)) > tolerance) {
             BOOST_ERROR("Failed to reproduce expected theta"
-                        << "\n    calculated: " << model->theta()(0.0)
+                        << "\n    calculated: " << model->theta()
                         << "\n    expected:   " << volatility*volatility);
         }
 
-        if (std::fabs(model->v0()(0.0)-volatility*volatility) > tolerance) {
+        if (std::fabs(model->v0()-volatility*volatility) > tolerance) {
             BOOST_ERROR("Failed to reproduce expected v0"
-                        << "\n    calculated: " << model->v0()(0.0)
+                        << "\n    calculated: " << model->v0()
                         << "\n    expected:   " << volatility*volatility);
         }
     }
@@ -285,10 +284,9 @@ void HestonModelTest::testAnalyticVsBlack() {
     Real expected = BlackFormula(forwardPrice, std::exp(-0.1*yearFraction),
                                  0.05*yearFraction, payoff).value();
 
-    Real tolerance = 3.0e-7;
+    Real tolerance = 3.0e-8;
     if (std::fabs(calculated - expected) > tolerance) {
         BOOST_FAIL("failed to reproduce Black price"
-                   << std::setprecision(8)
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected);
     }

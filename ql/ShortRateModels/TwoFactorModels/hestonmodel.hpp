@@ -43,22 +43,20 @@ namespace QuantLib {
       public:
         HestonModel(const boost::shared_ptr<HestonProcess> & process);
 
-        Parameter& v0()    const { return v0_; }
-        Parameter& sigma() const { return sigma_; }
-        Parameter& rho()   const { return rho_; }
-        Parameter& kappa() const { return kappa_; }
-        Parameter& theta() const { return theta_; }
+        // variance mean version level
+        Real theta() const { return arguments_[0](0.0); }
+        // variance mean reversion speed
+        Real kappa() const { return arguments_[1](0.0); }
+        // volatility of the volatility
+        Real sigma() const { return arguments_[2](0.0); }
+        // correlation
+        Real rho()   const { return arguments_[3](0.0); }
+        // spot variance
+        Real v0()    const { return arguments_[4](0.0); }
 
         boost::shared_ptr<NumericalMethod> tree(const TimeGrid&) const;
 
         class VolatilityConstraint;
-
-      private:
-        Parameter& theta_;       // variance mean version level
-        Parameter& kappa_;       // variance mean reversion speed
-        Parameter& sigma_;       // volatility of the volatility
-        Parameter& rho_;         // correlation
-        Parameter& v0_;          // spot variance
     };
 
 }

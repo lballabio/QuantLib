@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +24,9 @@
 #include <ql/PricingEngines/Vanilla/analyticdigitalamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/analytichestonengine.hpp>
 #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
+#include <ql/PricingEngines/Vanilla/batesengine.hpp>
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>
 #include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
 #include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
@@ -40,8 +42,12 @@
 #include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
 #include <ql/PricingEngines/Vanilla/integralengine.hpp>
+#include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
+#include <ql/PricingEngines/Vanilla/juquadraticengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp>
+#include <ql/PricingEngines/Vanilla/mchestonengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
 
 

@@ -8,3 +8,6 @@
 - Added configuration option for adding current function information
   to error messages
 
+- Added Bates stochastic-volatility model; tests provided (thanks to
+  Klaus Spanderen.)
+

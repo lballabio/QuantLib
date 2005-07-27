@@ -9,6 +9,7 @@ include_HEADERS = \
     analyticeuropeanengine.hpp \
     analytichestonengine.hpp \
     baroneadesiwhaleyengine.hpp \
+    batesengine.hpp \
     binomialengine.hpp \
     bjerksundstenslandengine.hpp \
     discretizedvanillaoption.hpp \
@@ -38,6 +39,7 @@ libVanillaEngines_la_SOURCES = \
     analyticeuropeanengine.cpp \
     analytichestonengine.cpp \
     baroneadesiwhaleyengine.cpp \
+    batesengine.cpp \
     bjerksundstenslandengine.cpp \
     discretizedvanillaoption.cpp \
     integralengine.cpp \

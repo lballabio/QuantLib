@@ -5,6 +5,7 @@ QL_TESTS = \
 	asianoptions.hpp asianoptions.cpp \
 	barrieroption.hpp barrieroption.cpp \
 	basketoption.hpp basketoption.cpp \
+	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \
 	bonds.hpp bonds.cpp \
 	calendars.hpp calendars.cpp \

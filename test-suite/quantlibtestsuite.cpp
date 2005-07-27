@@ -37,6 +37,7 @@
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
 #include "basketoption.hpp"
+#include "batesmodel.hpp"
 #include "bermudanswaption.hpp"
 #include "bonds.hpp"
 #include "calendars.hpp"
@@ -136,6 +137,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AsianOptionTest::suite());
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());
+    test->add(BatesModelTest::suite());
     test->add(BermudanSwaptionTest::suite());
     test->add(BondTest::suite());
     test->add(CalendarTest::suite());
