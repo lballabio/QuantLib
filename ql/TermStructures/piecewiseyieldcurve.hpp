@@ -95,6 +95,7 @@ namespace QuantLib {
         // methods
         void checkInstruments();
         void performCalculations() const;
+        DiscountFactor discountImpl(Time) const;
         // data members
         std::vector<boost::shared_ptr<RateHelper> > instruments_;
         Real accuracy_;
@@ -163,6 +164,13 @@ namespace QuantLib {
     inline void PiecewiseYieldCurve<C,I>::update() {
         base_curve::update();
         LazyObject::update();
+    }
+
+    template <class C, class I>
+    inline DiscountFactor PiecewiseYieldCurve<C,I>::discountImpl(Time t)
+                                                                       const {
+        calculate();
+        return base_curve::discountImpl(t);
     }
 
 

@@ -364,21 +364,26 @@ void PiecewiseYieldCurveTest::testObservability() {
     termStructure = boost::shared_ptr<YieldTermStructure>(
        new PiecewiseYieldCurve<Discount,LogLinear>(settlementDays, calendar,
                                                    instruments, Actual360()));
-
     Flag f;
     f.registerWith(termStructure);
 
     for (Size i=0; i<deposits+swaps; i++) {
+        Time testTime = Actual360().yearFraction(settlement,
+                                                 instruments[i]->latestDate());
+        DiscountFactor discount = termStructure->discount(testTime);
         f.lower();
         rates[i]->setValue(rates[i]->value()*1.01);
         if (!f.isUp())
             BOOST_FAIL("Observer was not notified of underlying rate change");
+        if (termStructure->discount(testTime,true) == discount)
+            BOOST_FAIL("rate change did not trigger recalculation");
+        rates[i]->setValue(rates[i]->value()/1.01);
     }
 
     f.lower();
-    Settings::instance().evaluationDate() = calendar.advance(today,1,Months);
+    Settings::instance().evaluationDate() = calendar.advance(today,15,Days);
     if (!f.isUp())
-            BOOST_FAIL("Observer was not notified of date change");
+        BOOST_FAIL("Observer was not notified of date change");
 
     QL_TEST_TEARDOWN
 
