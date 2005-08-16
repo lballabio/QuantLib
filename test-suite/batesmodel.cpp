@@ -216,8 +216,7 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
         Real expected = mertonOption.NPV();
 
         Real tolerance = 1e-8;
-        if (std::isnan(calculated)
-        || std::fabs(calculated - expected)/expected > tolerance) {
+        if (std::fabs(calculated - expected)/expected > tolerance) {
             BOOST_FAIL("failed to reproduce Merton76 price with " \
                        "BatesEngine"
                        << "\n    calculated: " << calculated
@@ -353,7 +352,7 @@ void BatesModelTest::testDAXCalibration() {
     boost::shared_ptr<PricingEngine> mertonEngine(
         new JumpDiffusionEngine(baseEngine, 1e-10, 1000));
 
-    Real tolerance = 1e-6;
+    Real tolerance = 5e-6;
     // compare Merton76 and Bates engine
     for (Size i = 0; i < options.size(); ++i) {
         options[i]->setPricingEngine(batesEngine);
@@ -361,12 +360,13 @@ void BatesModelTest::testDAXCalibration() {
 
         Real calculated = options[i]->modelValue();
         Real expected   = merton76options[i]->NPV();
+        Real error = std::fabs(calculated-expected)/expected;
 
-        if (std::fabs(calculated-expected)/expected > tolerance)
-            BOOST_FAIL("failed to reproduce Merton76 price with " \
-                       "BatesEngine"
-                       << "\n    calculated: " << calculated
-                       << "\n    expected:   " << expected);
+        if (error > tolerance)
+            BOOST_ERROR("failed to reproduce Merton76 price with Bates engine"
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected
+                        << "\n    error:      " << QL_SCIENTIFIC << error);
     }
 
     // check calibration engine
@@ -379,9 +379,9 @@ void BatesModelTest::testDAXCalibration() {
     Real calculated = getCalibrationError(options);
 
     if (std::fabs(calculated - expected) > 2.5)
-        BOOST_FAIL("failed to calibrate the bates model"
-                   << "\n    calculated: " << calculated
-                   << "\n    expected:   " << expected);
+        BOOST_ERROR("failed to calibrate the bates model"
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected);
 
     //check pricing of derived engines
     std::vector<boost::shared_ptr<PricingEngine> > pricingEngines;
@@ -413,11 +413,10 @@ void BatesModelTest::testDAXCalibration() {
 
         Real calculated = std::fabs(getCalibrationError(options));
         if (std::fabs(calculated - expectedValues[i]) > tolerance)
-            BOOST_FAIL("failed to calculated prices for derived bates models"
-                       << "\n    calculated: " << calculated
-                       << "\n    expected:   " << expectedValues[i]);
+            BOOST_ERROR("failed to calculated prices for derived Bates models"
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expectedValues[i]);
     }
-
 
     QL_TEST_TEARDOWN
 }

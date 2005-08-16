@@ -1,3 +1,4 @@
 *.exe
 *.tds
 *.ilk
+*.manifest

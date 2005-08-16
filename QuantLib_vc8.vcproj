@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="QuantLib"
 	ProjectGUID="{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
-	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -77,7 +76,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\lib\QuantLib-vc80-mt-gd-0_3_11.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -161,7 +160,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\lib\QuantLib-vc80-s-0_3_11.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -245,7 +244,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\lib\QuantLib-vc80-mt-s-0_3_11.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -329,7 +328,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\lib\QuantLib-vc80-mt-0_3_11.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -410,7 +409,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\lib\QuantLib-vc80-mt-sgd-0_3_11.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -491,7 +490,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\lib\QuantLib-vc80-sgd-0_3_11.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -2880,7 +2879,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\dkklibor.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Indexes\euribor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\eurlibor.hpp"
 				>
 			</File>
 			<File
@@ -2896,7 +2903,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\jibar.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Indexes\jpylibor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\libor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\libor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\nzdlibor.hpp"
 				>
 			</File>
 			<File
@@ -2982,10 +3005,6 @@
 			</File>
 			<File
 				RelativePath="ql\Indexes\xibor.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Indexes\zarlibor.hpp"
 				>
 			</File>
 			<File
@@ -8022,6 +8041,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\batesengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\batesengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\PricingEngines\Vanilla\binomialengine.hpp"
 					>
 				</File>
@@ -9991,6 +10018,14 @@
 			<Filter
 				Name="TwoFactorModels"
 				>
+				<File
+					RelativePath=".\ql\ShortRateModels\TwoFactorModels\batesmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\TwoFactorModels\batesmodel.hpp"
+					>
+				</File>
 				<File
 					RelativePath="ql\ShortRateModels\TwoFactorModels\g2.cpp"
 					>
