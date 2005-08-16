@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=101
+UnitCount=103
 Type=1
 Ver=1
 ObjFiles=
@@ -1049,6 +1049,26 @@ BuildCmd=
 
 [Unit101]
 FileName=hestonmodel.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit102]
+FileName=batesmodel.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit103]
+FileName=batesmodel.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
