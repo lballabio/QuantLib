@@ -61,7 +61,6 @@ namespace QuantLib {
         AnalyticHestonEngine(const boost::shared_ptr<HestonModel> & model,
                              Size integrationOrder = 64);
         void calculate() const;
-      protected:
         // call back for extended stochastic volatility
         // plus jump diffusion engines like bates model
         virtual std::complex<Real>

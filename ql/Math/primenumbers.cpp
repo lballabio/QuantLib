@@ -28,6 +28,7 @@
 // ===========================================================================
 
 #include <ql/Math/primenumbers.hpp>
+#include <iterator>
 
 namespace QuantLib {
 

@@ -25,13 +25,6 @@
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
-#if defined(QL_PATCH_MSVC6)
-#ifndef QL_DISABLE_DEPRECATED
-using namespace QuantLib::Old;
-#else
-using namespace QuantLib::New;
-#endif
-#endif
 using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(PathGeneratorTest)

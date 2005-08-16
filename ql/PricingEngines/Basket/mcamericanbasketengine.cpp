@@ -187,14 +187,6 @@ namespace QuantLib {
         }
     }
 
-    #if defined(QL_PATCH_MSVC6)
-    #ifndef QL_DISABLE_DEPRECATED
-    using namespace Old;
-    #else
-    using namespace New;
-    #endif
-    #endif
-
     // calculate
     void MCAmericanBasketEngine::calculate() const {
 
