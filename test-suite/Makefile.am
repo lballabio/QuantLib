@@ -74,7 +74,7 @@ quantlib_test_suite_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
 TESTS = quantlib-test-suite
 
-TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=messages
+TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message
 
 EXTRA_DIST = \
 	README.txt \
