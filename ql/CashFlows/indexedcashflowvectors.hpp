@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003 Nicolas Di Césaré
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -56,7 +56,7 @@ namespace QuantLib {
                         #endif
                         ) {
 
-        QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
+        QL_REQUIRE(!nominals.empty(), "nominals not specified");
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
         // first period might be short or long

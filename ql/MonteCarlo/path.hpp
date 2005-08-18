@@ -78,15 +78,15 @@ namespace QuantLib {
     // inline definitions
 
     inline Path::Path(const TimeGrid& timeGrid, const Array& values)
-    : timeGrid_(timeGrid), values_(values_) {
-        if (values_.size() == 0)
+    : timeGrid_(timeGrid), values_(values) {
+        if (values_.empty())
             values_ = Array(timeGrid_.size());
         QL_REQUIRE(values_.size() == timeGrid_.size(),
                    "different number of times and asset values");
     }
 
     inline bool Path::empty() const {
-        return timeGrid_.size() == 0;
+        return timeGrid_.empty();
     }
 
     inline Size Path::length() const {

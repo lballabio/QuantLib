@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +29,7 @@
 #include <ql/errors.hpp>
 #include <ql/Utilities/disposable.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
+#include <boost/scoped_array.hpp>
 #include <functional>
 #include <numeric>
 #include <iomanip>
@@ -40,6 +41,8 @@ namespace QuantLib {
         algebra.
         As such, it is <b>not</b> meant to be used as a container -
         <tt>std::vector</tt> should be used instead.
+
+        \test construction of arrays is checked in a number of cases
     */
     class Array {
       public:
@@ -55,7 +58,6 @@ namespace QuantLib {
         Array(Size size, Real value, Real increment);
         Array(const Array&);
         Array(const Disposable<Array>&);
-        ~Array();
         Array& operator=(const Array&);
         Array& operator=(const Disposable<Array>&);
         //@}
@@ -91,6 +93,8 @@ namespace QuantLib {
         //@{
         //! dimension of the array
         Size size() const;
+        //! whether the array is empty
+        bool empty() const;
         //@}
         typedef Real* iterator;
         typedef const Real* const_iterator;
@@ -109,14 +113,11 @@ namespace QuantLib {
         //@}
         //! \name Utilities
         //@{
-        void swap(Array&);
+        void swap(Array&);  // never throws
         //@}
       private:
-        void allocate(Size size);
-        void resize(Size size);
-        void copy(const Array&);
-        Real* pointer_;
-        Size n_, bufferSize_;
+        boost::scoped_array<Real> data_;
+        Size n_;
     };
 
     /*! \relates Array */
@@ -164,6 +165,10 @@ namespace QuantLib {
     /*! \relates Array */
     const Disposable<Array> Exp(const Array&);
 
+    // utilities
+    /*! \relates Array */
+    void swap(Array&, Array&);
+
     // format
     /*! \relates Array */
     std::ostream& operator<<(std::ostream&, const Array&);
@@ -172,49 +177,33 @@ namespace QuantLib {
     // inline definitions
 
     inline Array::Array(Size size)
-    : pointer_(0), n_(0), bufferSize_(0) {
-        if (size > 0)
-            allocate(size);
-    }
+    : data_(size ? new Real[size] : (Real*)(0)), n_(size) {}
 
     inline Array::Array(Size size, Real value)
-    : pointer_(0), n_(0), bufferSize_(0) {
-        if (size > 0)
-            allocate(size);
+    : data_(size ? new Real[size] : (Real*)(0)), n_(size) {
         std::fill(begin(),end(),value);
     }
 
     inline Array::Array(Size size, Real value, Real increment)
-    : pointer_(0), n_(0), bufferSize_(0) {
-        if (size > 0)
-            allocate(size);
+    : data_(size ? new Real[size] : (Real*)(0)), n_(size) {
         for (iterator i=begin(); i!=end(); i++,value+=increment)
             *i = value;
     }
 
     inline Array::Array(const Array& from)
-    : pointer_(0), n_(0), bufferSize_(0) {
-        allocate(from.size());
-        copy(from);
+    : data_(from.n_ ? new Real[from.n_] : (Real*)(0)), n_(from.n_) {
+        std::copy(from.begin(),from.end(),begin());
     }
 
     inline Array::Array(const Disposable<Array>& from)
-    : pointer_(0), n_(0), bufferSize_(0) {
+    : data_((Real*)(0)), n_(0) {
         swap(const_cast<Disposable<Array>&>(from));
     }
 
-    inline Array::~Array() {
-        if (pointer_ != 0 && bufferSize_ != 0)
-            delete[] pointer_;
-        pointer_ = 0;
-        n_ = bufferSize_ = 0;
-    }
-
     inline Array& Array::operator=(const Array& from) {
-        if (this != &from) {
-            resize(from.size());
-            copy(from);
-        }
+        // strong guarantee
+        Array temp(from);
+        swap(temp);
         return *this;
     }
 
@@ -288,7 +277,7 @@ namespace QuantLib {
         QL_REQUIRE(i<n_,
                    "array cannot be accessed out of range");
         #endif
-        return pointer_[i];
+        return data_.get()[i];
     }
 
     inline Real& Array::operator[](Size i) {
@@ -296,27 +285,31 @@ namespace QuantLib {
         QL_REQUIRE(i<n_,
                    "array cannot be accessed out of range");
         #endif
-        return pointer_[i];
+        return data_.get()[i];
     }
 
     inline Size Array::size() const {
         return n_;
     }
 
+    inline bool Array::empty() const {
+        return n_ == 0;
+    }
+
     inline Array::const_iterator Array::begin() const {
-        return pointer_;
+        return data_.get();
     }
 
     inline Array::iterator Array::begin() {
-        return pointer_;
+        return data_.get();
     }
 
     inline Array::const_iterator Array::end() const {
-        return pointer_+n_;
+        return data_.get()+n_;
     }
 
     inline Array::iterator Array::end() {
-        return pointer_+n_;
+        return data_.get()+n_;
     }
 
     inline Array::const_reverse_iterator Array::rbegin() const {
@@ -336,56 +329,9 @@ namespace QuantLib {
     }
 
     inline void Array::swap(Array& from) {
-        std::swap(pointer_,from.pointer_);
-        std::swap(n_,from.n_);
-        std::swap(bufferSize_,from.bufferSize_);
-    }
-
-    inline void Array::allocate(Size size) {
-        if (pointer_ != 0 && bufferSize_ != 0)
-            delete[] pointer_;
-        if (size <= 0) {
-            pointer_ = 0;
-        } else {
-            n_ = size;
-            bufferSize_ = size+size/10+10;
-            try {
-                pointer_ = new Real[bufferSize_];
-            }
-            catch (...) {
-                pointer_ = 0;
-            }
-            if (pointer_ == 0) {
-                n_ = bufferSize_ = size;
-                try {
-                    pointer_ = new Real[bufferSize_];
-                }
-                catch (...) {
-                    pointer_ = 0;
-                }
-                if (pointer_ == 0) {
-                    n_ = bufferSize_ = 0;
-                    QL_FAIL("out of memory");
-                }
-            }
-        }
-    }
-
-    inline void Array::resize(Size size) {
-        if (size != n_) {
-            if (size <= bufferSize_) {
-                n_ = size;
-            } else {
-                Array temp(size);
-                std::copy(begin(),end(),temp.begin());
-                allocate(size);
-                copy(temp);
-            }
-        }
-    }
-
-    inline void Array::copy(const Array& from) {
-        std::copy(from.begin(),from.end(),begin());
+        using std::swap;
+        data_.swap(from.data_);
+        swap(n_,from.n_);
     }
 
     // dot product
@@ -540,6 +486,10 @@ namespace QuantLib {
         std::transform(v.begin(),v.end(),result.begin(),
                        std::ptr_fun<Real,Real>(std::exp));
         return result;
+    }
+
+    inline void swap(Array& v, Array& w) {
+        v.swap(w);
     }
 
     inline std::ostream& operator<<(std::ostream& out, const Array& a) {

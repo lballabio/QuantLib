@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,10 +33,8 @@ namespace QuantLib {
                           const DayCounter& dayCount,
                           const DayCounter& firstPeriodDayCount) {
 
-        QL_REQUIRE(couponRates.size() != 0,
-                   "unspecified coupon rates (size=0)");
-        QL_REQUIRE(nominals.size() != 0,
-                   "unspecified nominals (size=0)");
+        QL_REQUIRE(!couponRates.empty(), "coupon rates not specified");
+        QL_REQUIRE(!nominals.empty(), "nominals not specified");
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
         Calendar calendar = schedule.calendar();

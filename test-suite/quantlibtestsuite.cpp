@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,6 +34,7 @@
 #endif
 
 #include "americanoption.hpp"
+#include "array.hpp"
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
 #include "basketoption.hpp"
@@ -134,6 +135,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(BOOST_TEST_CASE(startTimer));
 
     test->add(AmericanOptionTest::suite());
+    test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());

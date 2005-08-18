@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -47,7 +47,6 @@ namespace QuantLib {
         Matrix(Size rows, Size columns, Real value);
         Matrix(const Matrix&);
         Matrix(const Disposable<Matrix>&);
-        ~Matrix();
         Matrix& operator=(const Matrix&);
         Matrix& operator=(const Disposable<Matrix>&);
         //@}
@@ -72,8 +71,8 @@ namespace QuantLib {
         typedef boost::reverse_iterator<row_iterator> reverse_row_iterator;
         typedef boost::reverse_iterator<const_row_iterator>
                                                 const_reverse_row_iterator;
-        typedef step_iterator<Real*> column_iterator;
-        typedef step_iterator<const Real*> const_column_iterator;
+        typedef step_iterator<iterator> column_iterator;
+        typedef step_iterator<const_iterator> const_column_iterator;
         typedef boost::reverse_iterator<column_iterator>
                                                    reverse_column_iterator;
         typedef boost::reverse_iterator<const_column_iterator>
@@ -117,6 +116,7 @@ namespace QuantLib {
         //@{
         Size rows() const;
         Size columns() const;
+        bool empty() const;
         //@}
 
         //! \name Utilities
@@ -124,9 +124,7 @@ namespace QuantLib {
         void swap(Matrix&);
         //@}
       private:
-        void allocate(Size rows, Size columns);
-        void copy(const Matrix&);
-        Real* pointer_;
+        boost::scoped_array<Real> data_;
         Size rows_, columns_;
     };
 
@@ -167,52 +165,42 @@ namespace QuantLib {
                                           Iterator2 v2begin, Iterator2 v2end);
 
     /*! \relates Matrix */
+    void swap(Matrix&, Matrix&);
+
+    /*! \relates Matrix */
     std::ostream& operator<<(std::ostream&, const Matrix&);
 
 
     // inline definitions
 
     inline Matrix::Matrix()
-    : pointer_(0), rows_(0), columns_(0) {}
+    : data_((Real*)(0)), rows_(0), columns_(0) {}
 
     inline Matrix::Matrix(Size rows, Size columns)
-    : pointer_(0), rows_(0), columns_(0) {
-        if (rows > 0 && columns > 0)
-            allocate(rows,columns);
-    }
+    : data_(rows*columns > 0 ? new Real[rows*columns] : (Real*)(0)),
+      rows_(rows), columns_(columns) {}
 
-    inline Matrix::Matrix(Size rows,
-                          Size columns,
-                          Real value)
-    : pointer_(0), rows_(0), columns_(0) {
-        if (rows > 0 && columns > 0)
-            allocate(rows,columns);
+    inline Matrix::Matrix(Size rows, Size columns, Real value)
+    : data_(rows*columns > 0 ? new Real[rows*columns] : (Real*)(0)),
+      rows_(rows), columns_(columns) {
         std::fill(begin(),end(),value);
     }
 
     inline Matrix::Matrix(const Matrix& from)
-    : pointer_(0), rows_(0), columns_(0) {
-        allocate(from.rows(), from.columns());
-        copy(from);
+    : data_(!from.empty() ? new Real[from.rows_*from.columns_] : (Real*)(0)),
+      rows_(from.rows_), columns_(from.columns_) {
+        std::copy(from.begin(),from.end(),begin());
     }
 
     inline Matrix::Matrix(const Disposable<Matrix>& from)
-    : pointer_(0), rows_(0), columns_(0) {
+    : data_((Real*)(0)), rows_(0), columns_(0) {
         swap(const_cast<Disposable<Matrix>&>(from));
     }
 
-    inline Matrix::~Matrix() {
-        if (pointer_ != 0 && rows_ != 0 && columns_ != 0)
-            delete[] pointer_;
-        pointer_ = 0;
-        rows_ = columns_ = 0;
-    }
-
     inline Matrix& Matrix::operator=(const Matrix& from) {
-        if (this != &from) {
-            allocate(from.rows(),from.columns());
-            copy(from);
-        }
+        // strong guarantee
+        Matrix temp(from);
+        swap(temp);
         return *this;
     }
 
@@ -222,28 +210,10 @@ namespace QuantLib {
     }
 
     inline void Matrix::swap(Matrix& from) {
-        std::swap(pointer_,from.pointer_);
-        std::swap(rows_,from.rows_);
-        std::swap(columns_,from.columns_);
-    }
-
-    inline void Matrix::allocate(Size rows, Size columns) {
-        if (rows_ == rows && columns_ == columns)
-            return;
-        if (pointer_ != 0 && rows_ != 0 && columns_ != 0)
-            delete[] pointer_;
-        if (rows == 0 || columns == 0) {
-            pointer_ = 0;
-            rows_ = columns_ = 0;
-        } else {
-            pointer_ = new Real[rows*columns];
-            rows_ = rows;
-            columns_ = columns;
-        }
-    }
-
-    inline void Matrix::copy(const Matrix& from) {
-        std::copy(from.begin(),from.end(),begin());
+        using std::swap;
+        data_.swap(from.data_);
+        swap(rows_,from.rows_);
+        swap(columns_,from.columns_);
     }
 
     inline const Matrix& Matrix::operator+=(const Matrix& m) {
@@ -275,19 +245,19 @@ namespace QuantLib {
     }
 
     inline Matrix::const_iterator Matrix::begin() const {
-        return pointer_;
+        return data_.get();
     }
 
     inline Matrix::iterator Matrix::begin() {
-        return pointer_;
+        return data_.get();
     }
 
     inline Matrix::const_iterator Matrix::end() const {
-        return pointer_+rows_*columns_;
+        return data_.get()+rows_*columns_;
     }
 
     inline Matrix::iterator Matrix::end() {
-        return pointer_+rows_*columns_;
+        return data_.get()+rows_*columns_;
     }
 
     inline Matrix::const_reverse_iterator Matrix::rbegin() const {
@@ -312,7 +282,7 @@ namespace QuantLib {
         QL_REQUIRE(i<rows_,
                    "matrix cannot be accessed out of range");
         #endif
-        return pointer_+columns_*i;
+        return data_.get()+columns_*i;
     }
 
     inline Matrix::row_iterator Matrix::row_begin(Size i) {
@@ -320,7 +290,7 @@ namespace QuantLib {
         QL_REQUIRE(i<rows_,
                    "matrix cannot be accessed out of range");
         #endif
-        return pointer_+columns_*i;
+        return data_.get()+columns_*i;
     }
 
     inline Matrix::const_row_iterator Matrix::row_end(Size i) const{
@@ -328,7 +298,7 @@ namespace QuantLib {
         QL_REQUIRE(i<rows_,
                    "matrix cannot be accessed out of range");
         #endif
-        return pointer_+columns_*(i+1);
+        return data_.get()+columns_*(i+1);
     }
 
     inline Matrix::row_iterator Matrix::row_end(Size i) {
@@ -336,7 +306,7 @@ namespace QuantLib {
         QL_REQUIRE(i<rows_,
                    "matrix cannot be accessed out of range");
         #endif
-        return pointer_+columns_*(i+1);
+        return data_.get()+columns_*(i+1);
     }
 
     inline Matrix::const_reverse_row_iterator
@@ -363,7 +333,7 @@ namespace QuantLib {
         QL_REQUIRE(i<columns_,
                    "matrix cannot be accessed out of range");
         #endif
-        return const_column_iterator(pointer_+i,columns_);
+        return const_column_iterator(data_.get()+i,columns_);
     }
 
     inline Matrix::column_iterator Matrix::column_begin(Size i) {
@@ -371,7 +341,7 @@ namespace QuantLib {
         QL_REQUIRE(i<columns_,
                    "matrix cannot be accessed out of range");
         #endif
-        return column_iterator(pointer_+i,columns_);
+        return column_iterator(data_.get()+i,columns_);
     }
 
     inline Matrix::const_column_iterator
@@ -380,8 +350,7 @@ namespace QuantLib {
         QL_REQUIRE(i<columns_,
                    "matrix cannot be accessed out of range");
         #endif
-        //return column_begin(i)+rows_;
-        return const_column_iterator(pointer_+i+rows_*columns_,columns_);
+        return const_column_iterator(data_.get()+i+rows_*columns_,columns_);
     }
 
     inline Matrix::column_iterator Matrix::column_end(Size i) {
@@ -389,8 +358,7 @@ namespace QuantLib {
         QL_REQUIRE(i<columns_,
                    "matrix cannot be accessed out of range");
         #endif
-        //return column_begin(i)+rows_;
-        return column_iterator(pointer_+i+rows_*columns_,columns_);
+        return column_iterator(data_.get()+i+rows_*columns_,columns_);
     }
 
     inline Matrix::const_reverse_column_iterator
@@ -436,6 +404,10 @@ namespace QuantLib {
 
     inline Size Matrix::columns() const {
         return columns_;
+    }
+
+    inline bool Matrix::empty() const {
+        return rows_ == 0 || columns_ == 0;
     }
 
     inline const Disposable<Matrix> operator+(const Matrix& m1,
@@ -548,6 +520,10 @@ namespace QuantLib {
                            std::bind1st(std::multiplies<Real>(), *v1begin));
 
         return result;
+    }
+
+    inline void swap(Matrix& m1, Matrix& m2) {
+        m1.swap(m2);
     }
 
     inline std::ostream& operator<<(std::ostream& out, const Matrix& m) {

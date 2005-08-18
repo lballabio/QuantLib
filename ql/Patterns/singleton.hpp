@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +26,7 @@
 
 #include <ql/qldefines.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace QuantLib {
 
@@ -48,18 +49,16 @@ namespace QuantLib {
         \ingroup patterns
     */
     template <class T>
-    class Singleton {
+    class Singleton : private boost::noncopyable {
       public:
         //! access to the unique instance
         static T& instance();
       protected:
         Singleton() {}
+    #ifdef QL_PATCH_MSVC6
       private:
-        #ifdef QL_PATCH_MSVC6
         static boost::shared_ptr<T> instance_;
-        #endif
-        Singleton(const Singleton&) {}
-        void operator=(const Singleton&) {}
+    #endif
     };
 
 

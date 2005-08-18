@@ -160,6 +160,7 @@ namespace QuantLib {
 
         Time operator[](Size i) const { return times_[i]; }
         Size size() const { return times_.size(); }
+        bool empty() const { return times_.empty(); }
         const_iterator begin() const { return times_.begin(); }
         const_iterator end() const { return times_.end(); }
         const_reverse_iterator rbegin() const { return times_.rbegin(); }

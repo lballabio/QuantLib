@@ -2,6 +2,7 @@
 QL_TESTS = \
 	quantlibtestsuite.cpp \
 	americanoption.hpp americanoption.cpp \
+	array.hpp array.cpp \
 	asianoptions.hpp asianoptions.cpp \
 	barrieroption.hpp barrieroption.cpp \
 	basketoption.hpp basketoption.cpp \

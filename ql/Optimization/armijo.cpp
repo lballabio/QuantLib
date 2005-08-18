@@ -38,7 +38,7 @@ namespace QuantLib {
         Real qp0 = method.gradientNormValue();
 
         qt_ = q0;
-        qpt_ = (gradient_.size() == 0) ? qp0 : -DotProduct(gradient_,d);
+        qpt_ = (gradient_.empty()) ? qp0 : -DotProduct(gradient_,d);
 
         // Initialize gradient
         gradient_ = Array(x.size());
