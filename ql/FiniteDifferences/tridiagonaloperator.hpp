@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -118,6 +118,8 @@ namespace QuantLib {
         boost::shared_ptr<TimeSetter> timeSetter_;
     };
 
+    /* \relates TridiagonalOperator */
+    void swap(TridiagonalOperator&, TridiagonalOperator&);
 
     // inline definitions
 
@@ -209,10 +211,11 @@ namespace QuantLib {
     }
 
     inline void TridiagonalOperator::swap(TridiagonalOperator& from) {
+        using std::swap;
         diagonal_.swap(from.diagonal_);
         lowerDiagonal_.swap(from.lowerDiagonal_);
         upperDiagonal_.swap(from.upperDiagonal_);
-        std::swap(timeSetter_,from.timeSetter_);
+        swap(timeSetter_,from.timeSetter_);
     }
 
 
@@ -277,6 +280,10 @@ namespace QuantLib {
             high = D.upperDiagonal_/a;
         TridiagonalOperator result(low,mid,high);
         return result;
+    }
+
+    inline void swap(TridiagonalOperator& L1, TridiagonalOperator& L2) {
+        L1.swap(L2);
     }
 
 }

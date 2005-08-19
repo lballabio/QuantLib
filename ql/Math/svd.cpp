@@ -58,6 +58,8 @@ namespace QuantLib {
 
     SVD::SVD(const Matrix& M) {
 
+        using std::swap;
+
         Matrix A;
 
         /* The implementation requires that rows > columns.
@@ -459,15 +461,15 @@ namespace QuantLib {
                       if (s_[k] >= s_[k+1]) {
                           break;
                       }
-                      std::swap(s_[k], s_[k+1]);
+                      swap(s_[k], s_[k+1]);
                       if (k < n_-1) {
                           for (i = 0; i < n_; i++) {
-                              std::swap(V_[i][k], V_[i][k+1]);
+                              swap(V_[i][k], V_[i][k+1]);
                           }
                       }
                       if (k < m_-1) {
                           for (i = 0; i < m_; i++) {
-                              std::swap(U_[i][k], U_[i][k+1]);
+                              swap(U_[i][k], U_[i][k+1]);
                           }
                       }
                       k++;
