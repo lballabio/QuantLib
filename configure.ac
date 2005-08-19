@@ -36,7 +36,7 @@ AC_SUBST([CXXFLAGS],[${CXXFLAGS='-g -O2 -Wall'}])
 AC_ARG_WITH([boost-include],
             AC_HELP_STRING([--with-boost-include=INCLUDE_PATH],
                            [Supply the location of Boost header files]),
-            [ql_boost_include_path=$withval],
+            [ql_boost_include_path="`cd ${withval} 2>/dev/null && pwd`"],
             [ql_boost_include_path=""])
 if test [ -n "$ql_boost_include_path" ] ; then
    AC_SUBST([CPPFLAGS],["${CPPFLAGS} -I${ql_boost_include_path}"])
@@ -44,7 +44,7 @@ fi
 AC_ARG_WITH([boost-lib],
             AC_HELP_STRING([--with-boost-lib=LIB_PATH],
                            [Supply the location of Boost libraries]),
-            [ql_boost_lib_path=$withval],
+            [ql_boost_lib_path="`cd ${withval} 2>/dev/null && pwd`"],
             [ql_boost_lib_path=""])
 if test [ -n "$ql_boost_lib_path" ] ; then
    AC_SUBST([LDFLAGS],["${LDFLAGS} -L${ql_boost_lib_path}"])
