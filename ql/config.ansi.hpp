@@ -28,15 +28,9 @@
    do not modify the following definitions.
  *******************************************/
 
-#define HAVE_CMATH   1
-
 #define M_SQRT_2    0.7071067811865475244008443621048490392848359376887
 #define M_1_SQRTPI  0.564189583547756286948
 #define M_SQRTPI    1.77245385090551602792981
-
-#define HAVE_CSTDLIB 1
-#define HAVE_CTIME   1
-#define HAVE_CCTYPE  1
 
 
 #endif

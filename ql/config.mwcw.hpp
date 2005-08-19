@@ -29,10 +29,5 @@
 
 #define REQUIRES_DUMMY_RETURN
 
-#define HAVE_CSTDLIB 1
-#define HAVE_CMATH   1
-#define HAVE_CTIME   1
-#define HAVE_CCTYPE  1
-
 
 #endif

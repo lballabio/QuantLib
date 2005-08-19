@@ -75,10 +75,17 @@ include_HEADERS = \
 
 install-data-hook:
 	$(SED) -e "s,HAVE_CONFIG_H,QL_HAVE_CONFIG_H," \
-               -e "s,/\* install-hook \*/,#define QL_HAVE_CONFIG_H," \
+           -e "s,/\* install-hook \*/,#define QL_HAVE_CONFIG_H," \
            $(includedir)/qldefines.hpp > .qldefines.hpp
 	$(INSTALL_DATA) .qldefines.hpp $(includedir)/qldefines.hpp
 	rm .qldefines.hpp
+	$(SED) -e "s,PACKAGE,QL_PACKAGE," \
+           -e "s,STDC,QL_STDC," \
+           -e "s, HAVE, QL_HAVE," \
+           -e "s, VERSION, QL_AC_VERSION," \
+           $(includedir)/config.hpp > .config.hpp
+	$(INSTALL_DATA) .config.hpp $(includedir)/config.hpp
+	rm .config.hpp
 depend:
 	makedepend $(INCLUDES) -- $(CFLAGS) -- $(SOURCES)
 

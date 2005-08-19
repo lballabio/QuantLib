@@ -28,9 +28,6 @@
    do not modify the following definitions.
  *******************************************/
 
-#define HAVE_CSTDLIB 1
-#define HAVE_CMATH   1
-
 /* Useful constants missing in Borland math.h  */
 #define M_IVLN10    0.434294481903251827651 /* 1 / log(10) */
 #define M_LOG2_E    0.693147180559945309417
@@ -42,9 +39,6 @@
 #define M_LN2HI     6.9314718036912381649E-1
 #define M_SQRT3     1.73205080756887719000
 #define M_INVLN2    1.4426950408889633870E0  /* 1 / log(2) */
-
-#define HAVE_CTIME   1
-#define HAVE_CCTYPE  1
 
 #define QL_PATCH_BORLAND
 

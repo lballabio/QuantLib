@@ -58,9 +58,6 @@
 
 // leave outside here common configs
 
-#define HAVE_CSTDLIB 1
-#define HAVE_CMATH   1
-
 /* Useful constants missing in Visual C++ math.h,
    define them if not defined elsewhere
 */
@@ -160,9 +157,6 @@
     #define M_INVLN2    1.4426950408889633870E0  /* 1 / log(2) */
 #  endif
 
-
-#define HAVE_CTIME   1
-#define HAVE_CCTYPE  1
 
 #define QL_PATCH_MSVC  // more granularity below
 

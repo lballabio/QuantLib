@@ -51,7 +51,6 @@ if test [ -n "$ql_boost_lib_path" ] ; then
 fi
 
 
-
 # Continue setup
 
 AC_PROG_CC
@@ -61,24 +60,16 @@ AC_PROG_LIBTOOL
 
 AC_LANG([C++])
 
-# Check for mandatory features and header files
+# Check for mandatory features
 
-QL_CHECK_NAMESPACES
-
-QL_CHECK_HEADER([stdlib])
-
-QL_CHECK_HEADER([math])
-QL_CHECK_CONSTANT([M_PI],[double],[$ql_math],
+QL_CHECK_CONSTANT([M_PI],[double],[cmath],
                   [3.141592653589793238462643383280],[pi])
-QL_CHECK_CONSTANT([M_SQRT_2],[double],[$ql_math],
+QL_CHECK_CONSTANT([M_SQRT_2],[double],[cmath],
                   [0.7071067811865475244008443621048],[1/sqrt(2)])
-QL_CHECK_CONSTANT([M_SQRTPI],[double],[$ql_math],
+QL_CHECK_CONSTANT([M_SQRTPI],[double],[cmath],
                   [1.77245385090551602792981],[sqrt(pi)])
-QL_CHECK_CONSTANT([M_1_SQRTPI],[double],[$ql_math],
+QL_CHECK_CONSTANT([M_1_SQRTPI],[double],[cmath],
                   [0.564189583547756286948],[1/sqrt(pi)])
-
-QL_CHECK_HEADER([ctype])
-QL_CHECK_HEADER([time])
 
 # Check for Boost components
 QL_CHECK_BOOST

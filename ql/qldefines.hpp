@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -136,25 +136,13 @@
 /*! @} */
 
 
-#if defined HAVE_CSTDLIB
-    #include <cstdlib>
-#elif defined HAVE_STDLIB_H
-    #include <stdlib.h>
-#else
-    #error Neither <cstdlib> nor <stdlib.h> found
-#endif
+#include <cstdlib>
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::atoi; }
 #endif
 
 
-#if defined HAVE_CMATH
-    #include <cmath>
-#elif defined HAVE_MATH_H
-    #include <math.h>
-#else
-    #error Neither <cmath> nor <math.h> found
-#endif
+#include <cmath>
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::sqrt; using ::fabs; using ::exp; using ::log;
                     using ::sin; using ::cos; using ::pow; using ::modf;
@@ -205,25 +193,13 @@
 /*! @} */
 
 
-#if defined HAVE_CTIME
-    #include <ctime>
-#elif defined HAVE_TIME_H
-    #include <time.h>
-#else
-    #error Neither <ctime> nor <time.h> found
-#endif
+#include <ctime>
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::time; using ::time_t; using ::tm; using ::gmtime; }
 #endif
 
 
-#if defined HAVE_CCTYPE
-    #include <cctype>
-#elif defined HAVE_CTYPE_H
-    #include <ctype.h>
-#else
-    #error Neither <cctype> nor <ctype.h> found
-#endif
+#include <cctype>
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::tolower; using ::toupper; }
 #endif
