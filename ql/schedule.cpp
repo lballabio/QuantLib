@@ -81,16 +81,17 @@ namespace QuantLib {
                     periods++;
             }
 
+            Size N = dates_.size();
             // possibly correct first inserted date
             if (dates_[0] < first) {
                 dates_[0] = first;
-                if (longFinal)
+                if (N > 1 && longFinal)
                     dates_.erase(dates_.begin()+1);
                 finalIsRegular_ = false;
             }
 
             // possibly collapse first two dates
-            if (calendar.adjust(dates_[0], convention) ==
+            if (N > 1 && calendar.adjust(dates_[0], convention) ==
                 calendar.adjust(dates_[1], convention)) {
                 dates_[1] = dates_[0];
                 dates_.erase(dates_.begin());
@@ -122,17 +123,17 @@ namespace QuantLib {
                     periods++;
             }
 
+            Size N = dates_.size();
             // possibly correct last inserted date
             if (dates_.back() > last) {
-                if (longFinal)
+                if (N > 1 && longFinal)
                     dates_.pop_back();
                 dates_.back() = last;
                 finalIsRegular_ = false;
             }
 
             // possibly collapse last two dates
-            Size N = dates_.size();
-            if (calendar.adjust(dates_[N-2], convention) ==
+            if (N > 1 && calendar.adjust(dates_[N-2], convention) ==
                 calendar.adjust(dates_[N-1], convention)) {
                 dates_[N-2] = dates_[N-1];
                 dates_.pop_back();
