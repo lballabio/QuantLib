@@ -136,12 +136,6 @@
 /*! @} */
 
 
-#include <cstdlib>
-#if defined(BOOST_NO_STDC_NAMESPACE)
-    namespace std { using ::atoi; }
-#endif
-
-
 #include <cmath>
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::sqrt; using ::fabs; using ::exp; using ::log;
@@ -191,18 +185,6 @@
 #define QL_NULL_INTEGER        ((std::numeric_limits<int>::max)())
 #define QL_NULL_REAL           ((std::numeric_limits<float>::max)())
 /*! @} */
-
-
-#include <ctime>
-#if defined(BOOST_NO_STDC_NAMESPACE)
-    namespace std { using ::time; using ::time_t; using ::tm; using ::gmtime; }
-#endif
-
-
-#include <cctype>
-#if defined(BOOST_NO_STDC_NAMESPACE)
-    namespace std { using ::tolower; using ::toupper; }
-#endif
 
 
 /*! \defgroup templateMacros Template capabilities

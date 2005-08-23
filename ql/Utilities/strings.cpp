@@ -17,22 +17,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file strings.hpp
-    \brief string utilities
-*/
-
-#ifndef quantlib_strings_hpp
-#define quantlib_strings_hpp
-
-#include <string>
+#include <ql/Utilities/strings.hpp>
+#include <cctype>
+#if defined(BOOST_NO_STDC_NAMESPACE)
+    namespace std { using ::tolower; using ::toupper; }
+#endif
 
 namespace QuantLib {
 
-    std::string lowercase(const std::string&);
+    std::string lowercase(const std::string& s) {
+        std::string output = s;
+        for (std::string::iterator i=output.begin(); i!=output.end(); i++)
+            *i = std::tolower(*i);
+        return output;
+    }
 
-    std::string uppercase(const std::string&);
+    std::string uppercase(const std::string& s) {
+        std::string output = s;
+        for (std::string::iterator i=output.begin(); i!=output.end(); i++)
+            *i = std::toupper(*i);
+        return output;
+    }
 
 }
-
-
-#endif

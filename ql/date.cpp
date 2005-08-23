@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +22,10 @@
 #include <ql/Utilities/dataformatters.hpp>
 #include <sstream>
 #include <iomanip>
+#include <ctime>
+#if defined(BOOST_NO_STDC_NAMESPACE)
+    namespace std { using ::time; using ::time_t; using ::tm; using ::gmtime; }
+#endif
 
 namespace QuantLib {
 

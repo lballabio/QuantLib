@@ -20,6 +20,11 @@
 #include <ql/Utilities/dataparsers.hpp>
 #include <ql/Utilities/strings.hpp>
 #include <ql/Utilities/null.hpp>
+#include <cstdlib>
+#include <cctype>
+#if defined(BOOST_NO_STDC_NAMESPACE)
+    namespace std { using ::atoi; using ::toupper; }
+#endif
 
 namespace QuantLib {
 

@@ -18,6 +18,10 @@
 */
 
 #include <ql/RandomNumbers/seedgenerator.hpp>
+#include <ctime>
+#if defined(BOOST_NO_STDC_NAMESPACE)
+    namespace std { using ::time; }
+#endif
 
 namespace QuantLib {
 
