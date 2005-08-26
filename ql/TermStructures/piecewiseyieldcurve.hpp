@@ -223,7 +223,12 @@ namespace QuantLib {
     template <class C, class I>
     void PiecewiseYieldCurve<C,I>::performCalculations() const {
         // setup vectors
-        Size n = instruments_.size();
+        Size i, n = instruments_.size();
+        for (i=0; i<n; i++) {
+            // don't try this at home!
+            instruments_[i]->setTermStructure(
+                                 const_cast<PiecewiseYieldCurve<C,I>*>(this));
+        }
         this->dates_ = std::vector<Date>(n+1);
         this->times_ = std::vector<Time>(n+1);
         this->data_ = std::vector<Real>(n+1);
@@ -258,9 +263,6 @@ namespace QuantLib {
                     }
                 }
                 boost::shared_ptr<RateHelper> instrument = instruments_[i-1];
-                // don't try this at home!
-                instrument->setTermStructure(
-                                 const_cast<PiecewiseYieldCurve<C,I>*>(this));
                 Real guess;
                 if (iteration > 0) {
                     // use perturbed value from previous loop
