@@ -46,7 +46,7 @@ namespace QuantLib {
         virtual void initializeStepCondition() const;
         virtual void initializeModel() const;
         Time getDividendTime(int i) const {
-            return getYearFraction(schedule_->dividendDates[i]);
+            return getProcess()->time(schedule_->dividendDates[i]);
         }
     };
 

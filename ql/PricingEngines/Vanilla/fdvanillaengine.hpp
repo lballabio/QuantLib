@@ -54,7 +54,8 @@ namespace QuantLib {
         virtual void initializeInitialCondition() const;
         virtual void initializeOperator() const;
         virtual Time getResidualTime() const;
-        virtual Time getYearFraction(Date d) const;
+        // removed - replace with getProcess()->time(d) const
+        //        virtual Time getYearFraction(const Date &d) const;
         // data
         Size timeSteps_, gridPoints_;
         bool timeDependent_;

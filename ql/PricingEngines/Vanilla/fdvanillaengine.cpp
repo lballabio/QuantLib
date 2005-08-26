@@ -102,16 +102,7 @@ namespace QuantLib {
     }
 
     Time FDVanillaEngine::getResidualTime() const {
-        return getYearFraction(optionArguments_->exercise->lastDate());
-    }
-
-    Time FDVanillaEngine::getYearFraction(Date d) const {
-        DayCounter rfdc  = getProcess()->riskFreeRate()->dayCounter();
-        Time t =  rfdc.yearFraction(getProcess()->riskFreeRate()
-                                    ->referenceDate(),
-                                    d);
-        if (std::fabs(t) < 1e-8) t = 0;
-        return t;
+        return getProcess()->time(optionArguments_->exercise->lastDate());
     }
 
     // safety check to be sure we have enough grid points.
