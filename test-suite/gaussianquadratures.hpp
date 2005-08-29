@@ -31,6 +31,7 @@ class GaussianQuadraturesTest {
     static void testLaguerre();
     static void testHermite();
     static void testHyperbolic();
+    static void testTabulated();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -2,7 +2,8 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2005 Gary Kennedy
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,6 +43,125 @@ Real gaussianDerivative(Real x) {
     Real normFact = sigma*sigma*sigma*std::sqrt(2*M_PI);
     Real dx = x-average;
     return -dx*std::exp(-dx*dx/(2.0*sigma*sigma))/normFact;
+}
+
+struct BivariateTestData {
+    Real a;
+    Real b;
+    Real rho;
+    Real result;
+};
+
+template <class Bivariate>
+void checkBivariate(const std::string& tag) {
+
+    BivariateTestData values[] = {
+        /* The data below are from
+           "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
+           pag 193
+        */
+        {  0.0,  0.0,  0.0, 0.250000 },
+        {  0.0,  0.0, -0.5, 0.166667 },
+        {  0.0,  0.0,  0.5, 1.0/3    },
+        {  0.0, -0.5,  0.0, 0.154269 },
+        {  0.0, -0.5, -0.5, 0.081660 },
+        {  0.0, -0.5,  0.5, 0.226878 },
+        {  0.0,  0.5,  0.0, 0.345731 },
+        {  0.0,  0.5, -0.5, 0.273122 },
+        {  0.0,  0.5,  0.5, 0.418340 },
+
+        { -0.5,  0.0,  0.0, 0.154269 },
+        { -0.5,  0.0, -0.5, 0.081660 },
+        { -0.5,  0.0,  0.5, 0.226878 },
+        { -0.5, -0.5,  0.0, 0.095195 },
+        { -0.5, -0.5, -0.5, 0.036298 },
+        { -0.5, -0.5,  0.5, 0.163319 },
+        { -0.5,  0.5,  0.0, 0.213342 },
+        { -0.5,  0.5, -0.5, 0.145218 },
+        { -0.5,  0.5,  0.5, 0.272239 },
+
+        {  0.5,  0.0,  0.0, 0.345731 },
+        {  0.5,  0.0, -0.5, 0.273122 },
+        {  0.5,  0.0,  0.5, 0.418340 },
+        {  0.5, -0.5,  0.0, 0.213342 },
+        {  0.5, -0.5, -0.5, 0.145218 },
+        {  0.5, -0.5,  0.5, 0.272239 },
+        {  0.5,  0.5,  0.0, 0.478120 },
+        {  0.5,  0.5, -0.5, 0.419223 },
+        {  0.5,  0.5,  0.5, 0.546244 },
+
+        // known analytical values
+        {  0.0, 0.0, std::sqrt(1/2.0), 3.0/8},
+
+//      {  0.0,  big,  any, 0.500000 },
+        {  0.0,   30, -1.0, 0.500000 },
+        {  0.0,   30,  0.0, 0.500000 },
+        {  0.0,   30,  1.0, 0.500000 },
+
+//      { big,  big,   any, 1.000000 },
+        {  30,   30,  -1.0, 1.000000 },
+        {  30,   30,   0.0, 1.000000 },
+        {  30,   30,   1.0, 1.000000 },
+
+//      {-big,  any,   any, 0.000000 }
+        { -30, -1.0,  -1.0, 0.000000 },
+        { -30,  0.0,  -1.0, 0.000000 },
+        { -30,  1.0,  -1.0, 0.000000 },
+        { -30, -1.0,   0.0, 0.000000 },
+        { -30,  0.0,   0.0, 0.000000 },
+        { -30,  1.0,   0.0, 0.000000 },
+        { -30, -1.0,   1.0, 0.000000 },
+        { -30,  0.0,   1.0, 0.000000 },
+        { -30,  1.0,   1.0, 0.000000 }
+    };
+
+    for (Size i=0; i<LENGTH(values); i++) {
+        Bivariate bcd(values[i].rho);
+        Real value = bcd(values[i].a, values[i].b);
+
+        Real tolerance = 1.0e-6;
+        if (std::fabs(value-values[i].result) >= tolerance) {
+          BOOST_ERROR(tag << " bivariate cumulative distribution\n"
+                      << "    case: " << i+1 << "\n"
+                      << QL_FIXED
+                      << "    a:    " << values[i].a << "\n"
+                      << "    b:    " << values[i].b << "\n"
+                      << "    rho:  " << values[i].rho <<"\n"
+                      << QL_SCIENTIFIC
+                      << "    tabulated value:  " << values[i].result << "\n"
+                      << "    result:           " << value);
+        }
+    }
+}
+
+template <class Bivariate>
+void checkBivariateAtZero(const std::string& tag, Real tolerance) {
+
+    /*
+    BVN(0.0,0.0,rho) = 1/4 + arcsin(rho)/(2*M_PI)
+    "Handbook of the Normal Distribution", J.K. Patel & C.B.Read, 2nd Ed, 1996
+    */
+    const Real rho[] = { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
+                         0.6, 0.7, 0.8, 0.9, 0.99999 };
+    const Real x(0.0);
+    const Real y(0.0);
+
+    for (Size i=0;i<LENGTH(rho);i++) {
+        for (Integer sgn=-1; sgn < 2; sgn+=2) {
+            Bivariate bvn(sgn*rho[i]);
+            Real expected = 0.25 + std::asin(sgn*rho[i]) / (2*M_PI) ;
+            Real realised = bvn(x,y);
+
+            if (std::fabs(realised-expected)>=tolerance) {
+                BOOST_ERROR(tag << " bivariate cumulative distribution\n"
+                            << QL_SCIENTIFIC
+                            << "    rho: " << sgn*rho[i] << "\n"
+                            << "    expected:  " << expected << "\n"
+                            << "    realised:  " << realised << "\n"
+                            << "    tolerance: " << tolerance);
+            }
+        }
+    }
 }
 
 QL_END_TEST_LOCALS(DistributionTest)
@@ -131,90 +251,13 @@ void DistributionTest::testBivariate() {
 
     BOOST_MESSAGE("Testing bivariate cumulative normal distribution...");
 
-    struct BivariateTestData {
-        Real a;
-        Real b;
-        Real rho;
-        Real result;
-    };
+    checkBivariateAtZero<BivariateCumulativeNormalDistributionDr78>(
+                                                      "Drezner 1978", 1.0e-6);
+    checkBivariate<BivariateCumulativeNormalDistributionDr78>("Drezner 1978");
 
-    BivariateTestData values[] = {
-        /* The data below are from
-           "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
-           pag 193
-        */
-        {  0.0,  0.0,  0.0, 0.250000 },
-        {  0.0,  0.0, -0.5, 0.166667 },
-        {  0.0,  0.0,  0.5, 1.0/3    },
-        {  0.0, -0.5,  0.0, 0.154269 },
-        {  0.0, -0.5, -0.5, 0.081660 },
-        {  0.0, -0.5,  0.5, 0.226878 },
-        {  0.0,  0.5,  0.0, 0.345731 },
-        {  0.0,  0.5, -0.5, 0.273122 },
-        {  0.0,  0.5,  0.5, 0.418340 },
-
-        { -0.5,  0.0,  0.0, 0.154269 },
-        { -0.5,  0.0, -0.5, 0.081660 },
-        { -0.5,  0.0,  0.5, 0.226878 },
-        { -0.5, -0.5,  0.0, 0.095195 },
-        { -0.5, -0.5, -0.5, 0.036298 },
-        { -0.5, -0.5,  0.5, 0.163319 },
-        { -0.5,  0.5,  0.0, 0.213342 },
-        { -0.5,  0.5, -0.5, 0.145218 },
-        { -0.5,  0.5,  0.5, 0.272239 },
-
-        {  0.5,  0.0,  0.0, 0.345731 },
-        {  0.5,  0.0, -0.5, 0.273122 },
-        {  0.5,  0.0,  0.5, 0.418340 },
-        {  0.5, -0.5,  0.0, 0.213342 },
-        {  0.5, -0.5, -0.5, 0.145218 },
-        {  0.5, -0.5,  0.5, 0.272239 },
-        {  0.5,  0.5,  0.0, 0.478120 },
-        {  0.5,  0.5, -0.5, 0.419223 },
-        {  0.5,  0.5,  0.5, 0.546244 },
-
-        // known analytical values
-        {  0.0, 0.0, std::sqrt(1/2.0), 3.0/8},
-
-//      {  0.0,  big,  any, 0.500000 },
-        {  0.0,   30, -1.0, 0.500000 },
-        {  0.0,   30,  0.0, 0.500000 },
-        {  0.0,   30,  1.0, 0.500000 },
-
-//      { big,  big,   any, 1.000000 },
-        {  30,   30,  -1.0, 1.000000 },
-        {  30,   30,   0.0, 1.000000 },
-        {  30,   30,   1.0, 1.000000 },
-
-//      {-big,  any,   any, 0.000000 }
-        { -30, -1.0,  -1.0, 0.000000 },
-        { -30,  0.0,  -1.0, 0.000000 },
-        { -30,  1.0,  -1.0, 0.000000 },
-        { -30, -1.0,   0.0, 0.000000 },
-        { -30,  0.0,   0.0, 0.000000 },
-        { -30,  1.0,   0.0, 0.000000 },
-        { -30, -1.0,   1.0, 0.000000 },
-        { -30,  0.0,   1.0, 0.000000 },
-        { -30,  1.0,   1.0, 0.000000 }
-    };
-
-
-    for (Size i=0; i<LENGTH(values); i++) {
-
-        BivariateCumulativeNormalDistribution bcd(values[i].rho);
-        Real value = bcd(values[i].a, values[i].b);
-
-        if (std::fabs(value-values[i].result)>=1e-6) {
-          BOOST_ERROR("BivariateCumulativeDistribution \n"
-                      << "case " << i+1 << "\n"
-                      << "    a:   " << values[i].a << "\n"
-                      << "    b:   " << values[i].b << "\n"
-                      << "    rho: " << values[i].rho <<"\n"
-                      << "    tabulated value:  " << values[i].result << "\n"
-                      << "    result:           " << value);
-        }
-    }
-
+    checkBivariateAtZero<BivariateCumulativeNormalDistributionWe04DP>(
+                                                        "West 2004", 1.0e-15);
+    checkBivariate<BivariateCumulativeNormalDistributionWe04DP>("West 2004");
 }
 
 

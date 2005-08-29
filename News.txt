@@ -11,3 +11,7 @@
 - Added Bates stochastic-volatility model; tests provided (thanks to
   Klaus Spanderen.)
 
+- Added tabulated Gauss-Legendre quadratures (thanks to Gary Kennedy.)
+
+- Added more precise implementation of bivariate cumulative normal
+  distribution (thanks to Gary Kennedy.)

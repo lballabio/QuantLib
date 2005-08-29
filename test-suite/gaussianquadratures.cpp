@@ -36,12 +36,9 @@ void testSingle(const T& I, const std::string& tag,
                 const F& f, Real expected) {
     Real calculated = I(f);
     if (std::fabs(calculated-expected) > tolerance) {
-        BOOST_FAIL("integrating\n"
-                   << tag
-                   << "    calculated: "
-                   <<calculated
-                   <<"    expected:   "
-                   <<expected);
+        BOOST_ERROR("integrating" << tag << "\n"
+                    << "    calculated: " << calculated << "\n"
+                    << "    expected:   " << expected);
     }
 }
 
@@ -100,6 +97,23 @@ void testSingleLaguerre(const T& I) {
                NormalDistribution(), 0.5);
 }
 
+template <class F>
+void testSingleTabulated(const F& f, const std::string& tag,
+                         Real expected, Real tolerance) {
+    const Size order[] = { 6, 7, 12, 20 };
+    TabulatedGaussLegendre quad;
+    for (Size i=0; i<LENGTH(order); i++) {
+        quad.order(order[i]);
+        Real realised = quad(f);
+        if (std::fabs(realised-expected) > tolerance) {
+            BOOST_ERROR(" integrating " << tag << "\n"
+                        << "    order " << order[i] << "\n"
+                        << "    realised: " << realised << "\n"
+                        << "    expected: " << expected);
+        }
+    }
+}
+
 QL_END_TEST_LOCALS(GaussianQuadraturesTest)
 
 
@@ -144,12 +158,29 @@ void GaussianQuadraturesTest::testHyperbolic() {
                 std::ptr_fun<Real,Real>(x_inv_cosh), 0.0);
 }
 
+void GaussianQuadraturesTest::testTabulated() {
+     BOOST_MESSAGE("Testing tabulated Gauss-Laguerre integration...");
+
+     testSingleTabulated(constant<Real,Real>(1.0), "f(x) = 1",
+                         2.0,       1.0e-13);
+     testSingleTabulated(identity<Real>(), "f(x) = x",
+                         0.0,       1.0e-13);
+     testSingleTabulated(square<Real>(), "f(x) = x^2",
+                         (2.0/3.0), 1.0e-13);
+     testSingleTabulated(cube<Real>(), "f(x) = x^3",
+                         0.0,       1.0e-13);
+     testSingleTabulated(fourth_power<Real>(), "f(x) = x^4",
+                         (2.0/5.0), 1.0e-13);
+}
+
+
 test_suite* GaussianQuadraturesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Gaussian quadratures tests");
     suite->add(BOOST_TEST_CASE(&GaussianQuadraturesTest::testJacobi));
     suite->add(BOOST_TEST_CASE(&GaussianQuadraturesTest::testLaguerre));
     suite->add(BOOST_TEST_CASE(&GaussianQuadraturesTest::testHermite));
     suite->add(BOOST_TEST_CASE(&GaussianQuadraturesTest::testHyperbolic));
+    suite->add(BOOST_TEST_CASE(&GaussianQuadraturesTest::testTabulated));
     return suite;
 }
 
