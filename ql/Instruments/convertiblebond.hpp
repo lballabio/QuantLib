@@ -33,6 +33,7 @@
 #include <ql/stochasticprocess.hpp>
 #include <ql/Instruments/dividendschedule.hpp>
 #include <ql/Instruments/callabilityschedule.hpp>
+#include <ql/Instruments/oneassetstrikedoption.hpp>
 
 namespace QuantLib {
 
@@ -42,33 +43,65 @@ namespace QuantLib {
     class Date;
 
     class ConvertibleBond: public Bond {
-      public:
+    public:
+        class option;
         ConvertibleBond(
-                 const boost::shared_ptr<StochasticProcess>& stochProc,
-                 Real conversionRatio,
-                 const DividendSchedule&  dividends,
-                 const CallabilitySchedule& callability,
-                 const Handle<Quote>& creditSpread,
-                 // Bond Parameters
-                 const Date& issueDate,
-                 Integer settlementDays,
-                 Rate coupon,
-                 const DayCounter& dayCounter,
-                 const Schedule& schedule,
-                 Real redemption = 100
-                 );  // constructor
+                        const boost::shared_ptr<StochasticProcess>& stochProc,
+                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                        const boost::shared_ptr<Exercise>& exercise,
+                        const boost::shared_ptr<PricingEngine>& engine =
+                        boost::shared_ptr<PricingEngine>(),
+                        // Convertible parameters
+                        Real  conversionRatio, 
+                        const DividendSchedule&  dividends,
+                        const CallabilitySchedule& callability,
+                        const Handle<Quote>& creditSpread,
+                        // Bond Parameters
+                        const Date& issueDate,
+                        Integer settlementDays,
+                        Rate coupon,
+                        const DayCounter& dayCounter,
+                        const Schedule& schedule,
+                        Real redemption = 100);  // constructor
+        virtual ~ConvertibleBond();
         Real conversionRatio() const;
         const DividendSchedule& dividends() const;
         const CallabilitySchedule& callability() const;
         const Handle<Quote>& creditSpread() const;
-      private:
+    private:
         Real conversionRatio_;
         Spread creditSpreadRates_;
         CallabilitySchedule callability_;
         DividendSchedule dividends_;
         Handle<Quote> creditSpread_;
     };
+    
+//! Option like features for Convertible Bond calculation
+    class ConvertibleBond::option : public OneAssetStrikedOption {
+    public:
+        class engine;
+        class arguments;
+        void setupArguments(Arguments*) const;
+        
+    };
+    //! %Arguments for Convertible Bond calculation
+    class ConvertibleBond::option::arguments : public OneAssetStrikedOption::arguments {
+    public:
+        Real  conversionRatio; 
+        DividendSchedule  dividends;
+        CallabilitySchedule callability;
+        Handle<Quote> creditSpread;
+        void validate() const;
+    };
+    
+    //! convertible bond engine base class
+    class ConvertibleBond::option::engine : 
+        public GenericEngine<ConvertibleBond::option::arguments,
+                           ConvertibleBond::option::results> {}; 
+    
+ 
 
+  
 }
 
 
