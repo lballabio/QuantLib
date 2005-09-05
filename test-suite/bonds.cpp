@@ -22,7 +22,6 @@
 #include <ql/Instruments/fixedcouponbond.hpp>
 #include <ql/Instruments/floatingratebond.hpp>
 #include <ql/Instruments/zerocouponbond.hpp>
-#include <ql/Instruments/convertiblebond.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/unitedstates.hpp>
 #include <ql/Calendars/nullcalendar.hpp>

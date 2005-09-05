@@ -12,7 +12,6 @@ include_HEADERS = \
     callabilityschedule.hpp \
     capfloor.hpp \
     cliquetoption.hpp \
-    convertiblebond.hpp \
     dividendvanillaoption.hpp \
     dividendschedule.hpp \
     europeanoption.hpp \
