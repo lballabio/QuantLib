@@ -20,8 +20,10 @@
 #include "piecewiseyieldcurve.hpp"
 #include "utilities.hpp"
 #include <ql/TermStructures/piecewiseyieldcurve.hpp>
+#include <ql/TermStructures/bondhelpers.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/DayCounters/actual360.hpp>
+#include <ql/DayCounters/actualactual.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Math/linearinterpolation.hpp>
@@ -39,6 +41,15 @@ struct Datum {
     Integer n;
     TimeUnit units;
     Rate rate;
+};
+
+struct BondDatum {
+    Integer n;
+    TimeUnit units;
+    Integer length;
+    Frequency frequency;
+    Rate coupon;
+    Real price;
 };
 
 Datum depositData[] = {
@@ -68,6 +79,14 @@ Datum swapData[] = {
     { 30, Years, 5.96 }
 };
 
+BondDatum bondData[] = {
+    {  6, Months, 5, Semiannual, 4.75, 101.320 },
+    {  1, Years,  3, Semiannual, 2.75, 100.590 },
+    {  2, Years,  5, Semiannual, 5.00, 105.650 },
+    {  5, Years, 11, Semiannual, 5.50, 113.610 },
+    { 10, Years, 11, Semiannual, 3.75, 104.070 }
+};
+
 // test-global variables
 
 Calendar calendar;
@@ -79,10 +98,14 @@ BusinessDayConvention fixedLegConvention, floatingLegConvention;
 Frequency fixedLegFrequency;
 DayCounter fixedLegDayCounter;
 Frequency floatingLegFrequency;
+Integer bondSettlementDays;
+DayCounter bondDayCounter;
+BusinessDayConvention bondConvention;
+Real bondRedemption;
 
-Size deposits, swaps;
-std::vector<boost::shared_ptr<SimpleQuote> > rates;
-std::vector<boost::shared_ptr<RateHelper> > instruments;
+Size deposits, swaps, bonds;
+std::vector<boost::shared_ptr<SimpleQuote> > rates, prices;
+std::vector<boost::shared_ptr<RateHelper> > instruments, bondHelpers;
 boost::shared_ptr<YieldTermStructure> termStructure;
 
 void setup() {
@@ -101,12 +124,18 @@ void setup() {
     fixedLegFrequency = Annual;
     fixedLegDayCounter = Thirty360();
     floatingLegFrequency = Semiannual;
+    bondSettlementDays = 3;
+    bondDayCounter = ActualActual();
+    bondConvention = Following;
+    bondRedemption = 100.0;
 
     deposits = LENGTH(depositData);
     swaps = LENGTH(swapData);
+    bonds = LENGTH(bondData);
 
     // market elements
     rates = std::vector<boost::shared_ptr<SimpleQuote> >(deposits+swaps);
+    prices = std::vector<boost::shared_ptr<SimpleQuote> >(bonds);
     Size i;
     for (i=0; i<deposits; i++) {
         rates[i] = boost::shared_ptr<SimpleQuote>(
@@ -116,10 +145,16 @@ void setup() {
         rates[i+deposits] = boost::shared_ptr<SimpleQuote>(
                                        new SimpleQuote(swapData[i].rate/100));
     }
+    for (i=0; i<bonds; i++) {
+        prices[i] = boost::shared_ptr<SimpleQuote>(
+                                    new SimpleQuote(bondData[i].price));
+    }
 
     // rate helpers
     instruments =
         std::vector<boost::shared_ptr<RateHelper> >(deposits+swaps);
+    bondHelpers =
+        std::vector<boost::shared_ptr<RateHelper> >(bonds);
     for (i=0; i<deposits; i++) {
         Handle<Quote> r(rates[i]);
         instruments[i] = boost::shared_ptr<RateHelper>(
@@ -135,6 +170,21 @@ void setup() {
                                    fixedLegFrequency, fixedLegConvention,
                                    fixedLegDayCounter, floatingLegFrequency,
                                    floatingLegConvention));
+    }
+    for (i=0; i<bonds; i++) {
+        Handle<Quote> p(prices[i]);
+        Date maturity =
+            calendar.advance(today, bondData[i].n, bondData[i].units);
+        Date issue = calendar.advance(maturity, -bondData[i].length, Years);
+        std::vector<Rate> coupons(1, bondData[i].coupon/100.0);
+        bondHelpers[i] = boost::shared_ptr<RateHelper>(
+                          new FixedCouponBondHelper(p, issue, issue, maturity,
+                                                    bondSettlementDays,
+                                                    coupons,
+                                                    bondData[i].frequency,
+                                                    bondDayCounter, calendar,
+                                                    bondConvention,
+                                                    bondRedemption));
     }
 }
 
@@ -152,17 +202,17 @@ void testCurveConsistency(const T&, const I& interpolator) {
                                                        Actual360(), 1.0e-12,
                                                        interpolator));
 
-    Handle<YieldTermStructure> euriborHandle;
-    euriborHandle.linkTo(termStructure);
+    Handle<YieldTermStructure> curveHandle;
+    curveHandle.linkTo(termStructure);
 
     Size i;
     // check deposits
     for (i=0; i<deposits; i++) {
-        Euribor index(depositData[i].n,depositData[i].units,euriborHandle);
+        Euribor index(depositData[i].n,depositData[i].units,curveHandle);
         Rate expectedRate  = depositData[i].rate/100,
              estimatedRate = index.fixing(today);
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
-            BOOST_FAIL(
+            BOOST_ERROR(
                     depositData[i].n << " "
                     << (depositData[i].units == Weeks ? "week(s)" : "month(s)")
                     << " deposit:"
@@ -174,7 +224,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
 
     // check swaps
     boost::shared_ptr<Xibor> index(new Euribor(12/floatingLegFrequency,
-                                               Months, euriborHandle));
+                                               Months, curveHandle));
     for (i=0; i<swaps; i++) {
         Date maturity = calendar.advance(settlement,
                                          swapData[i].n,swapData[i].units,
@@ -186,7 +236,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
         SimpleSwap swap(true,100.0,
                         fixedSchedule,0.0,fixedLegDayCounter,
                         floatSchedule,index,fixingDays,0.0,
-                        euriborHandle);
+                        curveHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         #ifdef QL_PATCH_BORLAND
@@ -195,12 +245,42 @@ void testCurveConsistency(const T&, const I& interpolator) {
         Real tolerance = 1.0e-9;
         #endif
         if (std::fabs(expectedRate-estimatedRate) > tolerance) {
-            BOOST_FAIL(swapData[i].n << " year(s) swap:\n"
+            BOOST_ERROR(swapData[i].n << " year(s) swap:\n"
                        << std::setprecision(8)
                        << "    estimated rate: "
                        << io::rate(estimatedRate) << "\n"
                        << "    expected rate:  "
                        << io::rate(expectedRate));
+        }
+    }
+
+    // check bonds
+    termStructure = boost::shared_ptr<YieldTermStructure>(
+                          new PiecewiseYieldCurve<T,I>(settlement,bondHelpers,
+                                                       Actual360(), 1.0e-12,
+                                                       interpolator));
+    curveHandle.linkTo(termStructure);
+
+    for (i=0; i<bonds; i++) {
+        Date maturity =
+            calendar.advance(today, bondData[i].n, bondData[i].units);
+        Date issue = calendar.advance(maturity, -bondData[i].length, Years);
+        std::vector<Rate> coupons(1, bondData[i].coupon/100.0);
+
+        FixedCouponBond bond(issue, issue, maturity, bondSettlementDays,
+                             coupons, bondData[i].frequency,
+                             bondDayCounter, calendar,
+                             bondConvention, bondRedemption, curveHandle);
+        Real expectedPrice = bondData[i].price,
+             estimatedPrice = bond.cleanPrice();
+        Real tolerance = 1.0e-9;
+        if (std::fabs(expectedPrice-estimatedPrice) > tolerance) {
+            BOOST_ERROR(io::ordinal(i) << " bond:\n"
+                       << std::setprecision(8)
+                       << "    estimated price: "
+                       << io::rate(estimatedPrice) << "\n"
+                       << "    expected price:  "
+                       << io::rate(expectedPrice));
         }
     }
 }

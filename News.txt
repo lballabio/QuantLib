@@ -15,3 +15,7 @@
 
 - Added more precise implementation of bivariate cumulative normal
   distribution (thanks to Gary Kennedy.)
+
+- Added fixed-coupon bond helper for curve bootstrapping (thanks to
+  Toyin Akin.)
+

@@ -190,7 +190,8 @@ namespace QuantLib {
 
 
     //! %Swap rate
-    /*! \todo Currency and dayCounter of Xibor should be added to obtain well define SwapRateHelper
+    /*! \todo currency and day counter of Xibor should be added to
+              obtain well-defined SwapRateHelper
 		\warning This class assumes that the settlement date
                  does not change between calls of setTermStructure().
     */

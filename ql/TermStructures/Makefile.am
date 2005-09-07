@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/TermStructures
 include_HEADERS = \
     affinetermstructure.hpp \
     all.hpp \
+    bondhelpers.hpp \
     bootstraptraits.hpp \
     compoundforward.hpp \
     discountcurve.hpp \
@@ -25,6 +26,7 @@ include_HEADERS = \
 
 libTermStructures_la_SOURCES = \
     affinetermstructure.cpp \
+    bondhelpers.cpp \
     compoundforward.cpp \
     extendeddiscountcurve.cpp \
     piecewiseflatforward.cpp \
