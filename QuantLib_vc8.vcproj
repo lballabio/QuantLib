@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="QuantLib"
 	ProjectGUID="{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -10227,6 +10228,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\TermStructures\all.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\TermStructures\bondhelpers.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\TermStructures\bondhelpers.hpp"
 				>
 			</File>
 			<File

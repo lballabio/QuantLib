@@ -96,11 +96,15 @@ void BatesModelTest::testAnalyticVsBlack() {
     option.setPricingEngine(engine);
     Real calculated = option.NPV();
 
-    Real tolerance = 1.0e-8;
-    if (std::fabs(calculated - expected) > tolerance) {
-        BOOST_FAIL("failed to reproduce Black price with BatesEngine"
-                   << "\n    calculated: " << calculated
-                   << "\n    expected:   " << expected);
+    Real tolerance = 1.0e-7;
+    Real error = std::fabs(calculated - expected);
+    if (error > tolerance) {
+        BOOST_ERROR("failed to reproduce Black price with BatesEngine"
+                    << QL_FIXED
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << QL_SCIENTIFIC
+				    << "\n    error:      " << error);
     }
 
     engine = boost::shared_ptr<PricingEngine>(new BatesDetJumpEngine(
@@ -111,11 +115,15 @@ void BatesModelTest::testAnalyticVsBlack() {
     option.setPricingEngine(engine);
     calculated = option.NPV();
 
-    if (std::fabs(calculated - expected) > tolerance) {
-        BOOST_FAIL("failed to reproduce Black price with " \
-                   "BatesDetJumpEngine"
-                   << "\n    calculated: " << calculated
-                   << "\n    expected:   " << expected);
+    error = std::fabs(calculated - expected);
+    if (error > tolerance) {
+        BOOST_ERROR("failed to reproduce Black price with " \
+                    "BatesDetJumpEngine"
+                    << QL_FIXED
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << QL_SCIENTIFIC
+				    << "\n    error:      " << error);
     }
 
     engine = boost::shared_ptr<PricingEngine>(new BatesDoubleExpEngine(
@@ -125,10 +133,14 @@ void BatesModelTest::testAnalyticVsBlack() {
     option.setPricingEngine(engine);
     calculated = option.NPV();
 
-    if (std::fabs(calculated - expected) > tolerance) {
-        BOOST_FAIL("failed to reproduce Black price with BatesDoubleExpEngine"
-                   << "\n    calculated: " << calculated
-                   << "\n    expected:   " << expected);
+    error = std::fabs(calculated - expected);
+    if (error > tolerance) {
+        BOOST_ERROR("failed to reproduce Black price with BatesDoubleExpEngine"
+                    << QL_FIXED
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << QL_SCIENTIFIC
+				    << "\n    error:      " << error);
     }
 
     engine = boost::shared_ptr<PricingEngine>(new BatesDoubleExpDetJumpEngine(
@@ -139,11 +151,15 @@ void BatesModelTest::testAnalyticVsBlack() {
     option.setPricingEngine(engine);
     calculated = option.NPV();
 
-    if (std::fabs(calculated - expected) > tolerance) {
-        BOOST_FAIL("failed to reproduce Black price with " \
-                   "BatesDoubleExpDetJumpEngine"
-                   << "\n    calculated: " << calculated
-                   << "\n    expected:   " << expected);
+    error = std::fabs(calculated - expected);
+    if (error > tolerance) {
+        BOOST_ERROR("failed to reproduce Black price with " \
+                    "BatesDoubleExpDetJumpEngine"
+                    << QL_FIXED
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << QL_SCIENTIFIC
+				    << "\n    error:      " << error);
     }
 
     QL_TEST_TEARDOWN

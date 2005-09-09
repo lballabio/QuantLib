@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="testsuite"
 	ProjectGUID="{A613045C-34AF-4706-AA3C-730C92524F74}"
-	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -692,6 +691,10 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\array.cpp"
+				>
 			</File>
 			<File
 				RelativePath="asianoptions.cpp"
@@ -3112,6 +3115,10 @@
 			>
 			<File
 				RelativePath="americanoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\array.hpp"
 				>
 			</File>
 			<File
