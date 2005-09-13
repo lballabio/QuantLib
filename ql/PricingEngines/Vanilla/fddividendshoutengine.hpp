@@ -36,10 +36,11 @@ namespace QuantLib {
       public:
         FDDividendShoutEngine(Size timeSteps = 100, Size gridPoints = 100,
                               bool timeDependent = false)
-            : FDDividendEngine(&arguments_, &arguments_,
+            : FDDividendEngine(
                                timeSteps, gridPoints,
                                timeDependent) {}
         void calculate() const {
+            setupArguments(&arguments_, &arguments_);
             FDDividendEngine::calculate(&results_);
         }
       protected:

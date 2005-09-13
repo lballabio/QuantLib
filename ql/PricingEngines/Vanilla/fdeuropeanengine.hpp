@@ -39,10 +39,9 @@ namespace QuantLib {
       public:
         FDEuropeanEngine(Size timeSteps=100, Size gridPoints=100,
                          bool timeDependent = false)
-        : FDVanillaEngine(&arguments_,
-                          timeSteps, gridPoints, timeDependent) {}
+        : FDVanillaEngine(timeSteps, gridPoints, timeDependent) {}
       private:
-        mutable Array euroPrices_;
+        mutable Array prices_;
         void calculate() const;
     };
 

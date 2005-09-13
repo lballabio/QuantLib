@@ -37,17 +37,20 @@ namespace QuantLib {
     /*! \ingroup vanillaengines */
     class FDVanillaEngine {
       public:
-        FDVanillaEngine(const OneAssetOption::arguments* args,
-                        Size timeSteps, Size gridPoints,
+        FDVanillaEngine(Size timeSteps, Size gridPoints,
                         bool timeDependent = false)
         : timeSteps_(timeSteps), gridPoints_(gridPoints),
-          timeDependent_(timeDependent), optionArguments_(args),
+          timeDependent_(timeDependent), 
           grid_(gridPoints), intrinsicValues_(gridPoints), BCs_(2) {}
         virtual ~FDVanillaEngine() {};
         // accessors
         const Array& grid() const { return grid_; }
       protected:
         // methods
+        virtual void 
+        setupArguments(const OneAssetOption::arguments* args) const {
+            optionArguments_ = args;
+        };
         virtual void setGridLimits() const;
         virtual void setGridLimits(Real, Time) const;
         virtual void initializeGrid() const;
@@ -59,7 +62,7 @@ namespace QuantLib {
         // data
         Size timeSteps_, gridPoints_;
         bool timeDependent_;
-        const OneAssetOption::arguments* optionArguments_;
+        mutable const OneAssetOption::arguments* optionArguments_;
         mutable Array grid_;
         mutable TridiagonalOperator finiteDifferenceOperator_;
         mutable Array intrinsicValues_;

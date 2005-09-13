@@ -25,6 +25,7 @@
 namespace QuantLib {
 
     void FDEuropeanEngine::calculate() const {
+        setupArguments(&arguments_);
         setGridLimits();
         initializeGrid();
         initializeInitialCondition();
@@ -32,18 +33,17 @@ namespace QuantLib {
 
         StandardFiniteDifferenceModel model(finiteDifferenceOperator_, BCs_);
 
-        euroPrices_ = intrinsicValues_;
+        prices_ = intrinsicValues_;
 
-        model.rollback(euroPrices_, getResidualTime(),
+        model.rollback(prices_, getResidualTime(),
                        0, timeSteps_);
 
-        results_.value = valueAtCenter(euroPrices_);
-        results_.delta = firstDerivativeAtCenter(euroPrices_, grid_);
-        results_.gamma = secondDerivativeAtCenter(euroPrices_, grid_);
+        results_.value = valueAtCenter(prices_);
+        results_.delta = firstDerivativeAtCenter(prices_, grid_);
+        results_.gamma = secondDerivativeAtCenter(prices_, grid_);
 
         boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                                arguments_.stochasticProcess);
+            getProcess();
         if (process)
             results_.theta = blackScholesTheta(process,
                                                results_.value,

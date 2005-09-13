@@ -21,14 +21,11 @@
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
-
+    DividendSchedule FDMultiPeriodEngine::emptySchedule;
     FDMultiPeriodEngine::
-    FDMultiPeriodEngine(const OneAssetOption::arguments* option_args,
-                        const DividendSchedule* schedule,
-                        Size gridPoints, Size timeSteps,
+    FDMultiPeriodEngine(Size gridPoints, Size timeSteps,
                         bool timeDependent)
-    : FDVanillaEngine(option_args, gridPoints, timeSteps, timeDependent),
-      schedule_(schedule),
+    : FDVanillaEngine(gridPoints, timeSteps, timeDependent),
       timeStepPerPeriod_(timeSteps) {}
 
     void FDMultiPeriodEngine::calculate(OneAssetOption::results* results) const {

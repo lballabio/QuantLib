@@ -44,10 +44,10 @@ namespace QuantLib {
       public:
         FDAmericanEngine(Size timeSteps=100, Size gridPoints=100,
                          bool timeDependent = false)
-        : FDStepConditionEngine(&arguments_,
-                                timeSteps, gridPoints, timeDependent) {}
+        : FDStepConditionEngine(timeSteps, gridPoints, timeDependent) {}
       private:
         void calculate() const {
+            setupArguments(&arguments_);
             FDStepConditionEngine::calculate(&results_);
         }
         void initializeStepCondition() const {

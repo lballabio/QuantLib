@@ -34,10 +34,9 @@ namespace QuantLib {
     /*! \ingroup vanillaengines */
     class FDStepConditionEngine :  public FDVanillaEngine {
       public:
-        FDStepConditionEngine(const OneAssetOption::arguments* option_args,
-                              Size timeSteps, Size gridPoints,
+        FDStepConditionEngine(Size timeSteps, Size gridPoints,
                               bool timeDependent = false)
-        : FDVanillaEngine(option_args, timeSteps, gridPoints,
+        : FDVanillaEngine(timeSteps, gridPoints,
                           timeDependent),
           controlBCs_(2), controlPrices_(gridPoints) {}
       protected:

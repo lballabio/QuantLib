@@ -46,9 +46,9 @@ namespace QuantLib {
         FDDividendAmericanEngine(Size timeSteps = 100,
                                  Size gridPoints = 100,
                                  bool timeDependent = false)
-        : FDDividendEngine(&arguments_, &arguments_,
-                           timeSteps, gridPoints, timeDependent) {}
+        : FDDividendEngine(timeSteps, gridPoints, timeDependent) {}
         void calculate() const {
+            setupArguments(&arguments_, &arguments_);
             FDDividendEngine::calculate(&results_);
         }
       protected:

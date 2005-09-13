@@ -32,14 +32,10 @@ namespace QuantLib {
     /*! \ingroup vanillaengines */
     class FDDividendEngine : public FDMultiPeriodEngine {
       public:
-        FDDividendEngine(const OneAssetOption::arguments* option_args,
-                         const DividendSchedule* schedule,
-                         Size timeSteps = 100,
+        FDDividendEngine(Size timeSteps = 100,
                          Size gridPoints = 100,
                          bool timeDependent = false)
-        : FDMultiPeriodEngine(option_args,
-                              schedule,
-                              timeSteps, gridPoints,
+        : FDMultiPeriodEngine(timeSteps, gridPoints,
                               timeDependent) {}
       private:
         void executeIntermediateStep(Size step) const;

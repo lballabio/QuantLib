@@ -37,11 +37,10 @@ namespace QuantLib {
         FDBermudanEngine(Size timeSteps = 100,
                          Size gridPoints = 100,
                          bool timeDependent = false)
-        : FDMultiPeriodEngine(&arguments_,
-                              &arguments_,
-                              timeSteps, gridPoints,
+        : FDMultiPeriodEngine(timeSteps, gridPoints,
                               timeDependent) {}
         void calculate() {
+            setupArguments(&arguments_, &arguments_);
             FDMultiPeriodEngine::calculate(&results_);
         }
       protected:
