@@ -24,17 +24,18 @@
 #ifndef quantlib_fd_european_engine_hpp
 #define quantlib_fd_european_engine_hpp
 
+#include <ql/Instruments/oneassetoption.hpp>
 #include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
 
 namespace QuantLib {
 
-    //! Pricing engine for European vanilla options using finite-differences
+    //! Pricing engine for European options using finite-differences
     /*! \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
               checking it against analytic results.
     */
-    class FDEuropeanEngine : public VanillaOption::engine,
+    class FDEuropeanEngine : public OneAssetOption::engine,
                              public FDVanillaEngine {
       public:
         FDEuropeanEngine(Size timeSteps=100, Size gridPoints=100,

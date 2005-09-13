@@ -20,33 +20,36 @@
 */
 
 #include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
+#include <ql/Instruments/payoffs.hpp>
 #include <ql/FiniteDifferences/bsmoperator.hpp>
 #include <ql/FiniteDifferences/bsmtermoperator.hpp>
 
 namespace QuantLib {
+    const Real FDVanillaEngine::safetyZoneFactor_ = 1.1;
 
     void FDVanillaEngine::setGridLimits() const {
-        setGridLimits(getProcess()->stateVariable()->value(),
+        setGridLimits(process_->stateVariable()->value(),
                       getResidualTime());
     }
-
-    Real FDVanillaEngine::centerGridValue() const {
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(
-                                                           optionArguments_->payoff);
-        return payoff->strike();
+    void FDVanillaEngine::setupArguments(const OneAssetOption::arguments*args) const {
+        process_ =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(args->stochasticProcess);
+        QL_REQUIRE(process_, "Black-Scholes process required");
+        exerciseDate_ = args->exercise->lastDate();
+        payoff_ = args->payoff;
+        requiredGridValue_ =
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_)->strike();
     }
+
     void FDVanillaEngine::setGridLimits(Real center, Time t) const {
         center_ = center;
-        Date exerciseDate = optionArguments_->exercise->lastDate();
-
         Size newGridPoints = safeGridPoints(gridPoints_, t);
         if (newGridPoints > grid_.size()) {
             grid_ = Array(newGridPoints);
             intrinsicValues_ = Array(newGridPoints);
         }
 
-        Real volSqrtTime = std::sqrt(getProcess()->blackVolatility()
+        Real volSqrtTime = std::sqrt(process_->blackVolatility()
                                      ->blackVariance(t, center_));
 
         // the prefactor fine tunes performance at small volatilities
@@ -54,16 +57,24 @@ namespace QuantLib {
         Real minMaxFactor = std::exp(4.0 * prefactor * volSqrtTime);
         sMin_ = center_/minMaxFactor;  // underlying grid min value
         sMax_ = center_*minMaxFactor;  // underlying grid max value
+        insureStrikeInGrid();
+    }
+
+    void FDVanillaEngine::insureStrikeInGrid() const {
         // insure strike is included in the grid
-        Real safetyZoneFactor = 1.1;
-        Real centerValue = centerGridValue();
-        if(sMin_ > centerValue/safetyZoneFactor){
-            sMin_ = centerValue/safetyZoneFactor;
+        boost::shared_ptr<StrikedTypePayoff> striked_payoff =
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+        if (!striked_payoff) 
+            return;
+        Real requiredGridValue = striked_payoff->strike();
+
+        if(sMin_ > requiredGridValue/safetyZoneFactor_){
+            sMin_ = requiredGridValue/safetyZoneFactor_;
             // enforce central placement of the underlying
             sMax_ = center_/(sMin_/center_);
         }
-        if(sMax_ < centerValue*safetyZoneFactor){
-            sMax_ = centerValue*safetyZoneFactor;
+        if(sMax_ < requiredGridValue*safetyZoneFactor_){
+            sMax_ = requiredGridValue*safetyZoneFactor_;
             // enforce central placement of the underlying
             sMin_ = center_/(sMax_/center_);
         }
@@ -78,18 +89,16 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::initializeInitialCondition() const {
-        boost::shared_ptr<Payoff> payoff =
-            boost::dynamic_pointer_cast<Payoff>(optionArguments_->payoff);
         for(Size j = 0; j < grid_.size(); j++)
-            intrinsicValues_[j] = (*payoff)(grid_[j]);
+            intrinsicValues_[j] = (*payoff_)(grid_[j]);
     }
 
     void FDVanillaEngine::initializeOperator() const {
         if (timeDependent_)
-            finiteDifferenceOperator_ = BSMTermOperator(grid_, getProcess(),
+            finiteDifferenceOperator_ = BSMTermOperator(grid_, process_,
                                                         getResidualTime());
         else
-            finiteDifferenceOperator_ = BSMOperator(grid_, getProcess(),
+            finiteDifferenceOperator_ = BSMOperator(grid_, process_,
                                                     getResidualTime());
 
         BCs_[0] = boost::shared_ptr<bc_type>(new NeumannBC(
@@ -102,7 +111,7 @@ namespace QuantLib {
     }
 
     Time FDVanillaEngine::getResidualTime() const {
-        return getProcess()->time(optionArguments_->exercise->lastDate());
+        return process_->time(exerciseDate_);
     }
 
     // safety check to be sure we have enough grid points.

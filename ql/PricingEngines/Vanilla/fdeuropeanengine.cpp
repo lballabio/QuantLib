@@ -41,14 +41,10 @@ namespace QuantLib {
         results_.value = valueAtCenter(prices_);
         results_.delta = firstDerivativeAtCenter(prices_, grid_);
         results_.gamma = secondDerivativeAtCenter(prices_, grid_);
-
-        boost::shared_ptr<BlackScholesProcess> process =
-            getProcess();
-        if (process)
-            results_.theta = blackScholesTheta(process,
-                                               results_.value,
-                                               results_.delta,
-                                               results_.gamma);
+        results_.theta = blackScholesTheta(process_,
+                                           results_.value,
+                                           results_.delta,
+                                           results_.gamma);
     }
 
 }

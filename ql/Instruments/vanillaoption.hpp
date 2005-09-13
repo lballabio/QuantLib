@@ -42,9 +42,7 @@ namespace QuantLib {
 
     //! Vanilla option engine base class
     class VanillaOption::engine
-        : public GenericEngine<VanillaOption::arguments,
-                               VanillaOption::results> {};
-
+        : public OneAssetStrikedOption::engine {};
 }
 
 

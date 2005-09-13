@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    //! Finite-differences pricing engine for American vanilla options
+    //! Finite-differences pricing engine for American one asset options
     /*! \ingroup vanillaengines
 
         \test
@@ -39,7 +39,7 @@ namespace QuantLib {
         - the correctness of the returned greeks is tested by
           reproducing numerical derivatives.
     */
-    class FDAmericanEngine : public VanillaOption::engine,
+    class FDAmericanEngine : public OneAssetOption::engine,
         public FDStepConditionEngine {
       public:
         FDAmericanEngine(Size timeSteps=100, Size gridPoints=100,

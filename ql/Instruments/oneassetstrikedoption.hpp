@@ -33,6 +33,7 @@ namespace QuantLib {
     //! Base class for options on a single asset with striked payoff
     class OneAssetStrikedOption : public OneAssetOption {
       public:
+        class engine;
         OneAssetStrikedOption(const boost::shared_ptr<StochasticProcess>&,
                               const boost::shared_ptr<StrikedTypePayoff>&,
                               const boost::shared_ptr<Exercise>&,
@@ -49,6 +50,8 @@ namespace QuantLib {
         mutable Real strikeSensitivity_;
     };
 
+    class OneAssetStrikedOption::engine
+        : public OneAssetOption::engine {};
 }
 
 

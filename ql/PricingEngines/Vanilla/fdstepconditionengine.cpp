@@ -65,27 +65,24 @@ namespace QuantLib {
 
         Array prices = arraySet[0];
         Array controlPrices = arraySet[1];
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                                optionArguments_->stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(optionArguments_->payoff);
-        QL_REQUIRE(payoff, "non-striked payoff given");
+
+        boost::shared_ptr<StrikedTypePayoff> striked_payoff =
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+        QL_REQUIRE(striked_payoff, "non-striked payoff given");
 
         Real variance =
-            process->blackVolatility()->blackVariance(
-                                             optionArguments_->exercise->lastDate(),
-                                             payoff->strike());
+            process_->blackVolatility()->
+            blackVariance(exerciseDate_,
+                          striked_payoff->strike());
         DiscountFactor dividendDiscount =
-            process->dividendYield()->discount(
-                                             optionArguments_->exercise->lastDate());
+            process_->dividendYield()->discount(exerciseDate_);
         DiscountFactor riskFreeDiscount =
-            process->riskFreeRate()->discount(optionArguments_->exercise->lastDate());
-        Real spot = process->stateVariable()->value();
+            process_->riskFreeRate()->discount(exerciseDate_);
+        Real spot = process_->stateVariable()->value();
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
-        BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
+        BlackFormula black(forwardPrice, riskFreeDiscount, 
+                           variance, striked_payoff);
 
         results->value = valueAtCenter(prices)
             - valueAtCenter(controlPrices)

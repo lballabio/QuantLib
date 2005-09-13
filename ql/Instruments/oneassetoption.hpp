@@ -34,6 +34,7 @@ namespace QuantLib {
     //! Base class for options on a single asset
     class OneAssetOption : public Option {
       public:
+        class engine;
         OneAssetOption(const boost::shared_ptr<StochasticProcess>&,
                        const boost::shared_ptr<Payoff>&,
                        const boost::shared_ptr<Exercise>&,
@@ -122,7 +123,9 @@ namespace QuantLib {
             MoreGreeks::reset();
         }
     };
-
+    class OneAssetOption::engine :
+        public GenericEngine<OneAssetOption::arguments,
+                              OneAssetOption::results> {};
 }
 
 

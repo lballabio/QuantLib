@@ -26,15 +26,19 @@
 #ifndef quantlib_fd_vanilla_engine_hpp
 #define quantlib_fd_vanilla_engine_hpp
 
-#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/oneassetoption.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
-    //! Finite-differences pricing engine for BSM vanilla options
-    /*! \ingroup vanillaengines */
+    //! Finite-differences pricing engine for BSM one asset options
+    /*! \ingroup vanillaengines 
+      
+    The name is a misnomer as this is a base class for any finite difference
+    scheme.  It's main job is to handle grid layout. */
+
     class FDVanillaEngine {
       public:
         FDVanillaEngine(Size timeSteps, Size gridPoints,
@@ -47,10 +51,8 @@ namespace QuantLib {
         const Array& grid() const { return grid_; }
       protected:
         // methods
-        virtual void 
-        setupArguments(const OneAssetOption::arguments* args) const {
-            optionArguments_ = args;
-        };
+        virtual void setupArguments(const OneAssetOption::arguments* args) 
+            const;
         virtual void setGridLimits() const;
         virtual void setGridLimits(Real, Time) const;
         virtual void initializeGrid() const;
@@ -62,29 +64,25 @@ namespace QuantLib {
         // data
         Size timeSteps_, gridPoints_;
         bool timeDependent_;
-        mutable const OneAssetOption::arguments* optionArguments_;
+        mutable boost::shared_ptr<BlackScholesProcess> process_;
+        mutable Real requiredGridValue_;
+        mutable Date exerciseDate_;
         mutable Array grid_;
+        mutable boost::shared_ptr<Payoff> payoff_;
         mutable TridiagonalOperator finiteDifferenceOperator_;
         mutable Array intrinsicValues_;
         typedef BoundaryCondition<TridiagonalOperator> bc_type;
         mutable std::vector<boost::shared_ptr<bc_type> > BCs_;
         // temporaries
         mutable Real sMin_, center_, sMax_;
-        boost::shared_ptr<BlackScholesProcess> getProcess() const {
-            boost::shared_ptr<BlackScholesProcess> process =
-                boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                        optionArguments_->stochasticProcess);
-            QL_REQUIRE(process, "Black-Scholes process required");
-            return process;
-        }
-    protected:
-        virtual Real centerGridValue() const;
-        
+      protected:
       private:
         // temporaries
         mutable Real gridLogSpacing_;
         Size safeGridPoints(Size gridPoints,
                             Time residualTime) const;
+        void insureStrikeInGrid() const;
+        static const Real safetyZoneFactor_;
     };
 
 }

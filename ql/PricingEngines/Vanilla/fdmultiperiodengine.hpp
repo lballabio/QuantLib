@@ -37,13 +37,13 @@ namespace QuantLib {
         mutable const DividendSchedule* schedule_;
         Size timeStepPerPeriod_;
         mutable Array prices_;
-        virtual void setupArguments(const OneAssetOption::arguments* args,
-                                    const DividendSchedule *schedule) const {
-            optionArguments_ = args;
+        void setupArguments(const OneAssetOption::arguments* args,
+                            const DividendSchedule *schedule) const {
+            FDVanillaEngine::setupArguments(args);
             schedule_ = schedule;
         };
-        virtual void setupArguments(const OneAssetOption::arguments* args) {
-            optionArguments_ = args;
+        void setupArguments(const OneAssetOption::arguments* args) {
+            FDVanillaEngine::setupArguments(args);
             schedule_ = &emptySchedule;
         };
 
@@ -54,7 +54,7 @@ namespace QuantLib {
         virtual void initializeStepCondition() const;
         virtual void initializeModel() const;
         Time getDividendTime(int i) const {
-            return getProcess()->time(schedule_->dividendDates[i]);
+            return process_->time(schedule_->dividendDates[i]);
         }
     private:
         static DividendSchedule emptySchedule;

@@ -49,7 +49,7 @@ namespace QuantLib {
         }
         void initializeStepCondition() const {
             Time residualTime = getResidualTime();
-            Rate riskFreeRate = getProcess()->riskFreeRate()
+            Rate riskFreeRate = process_->riskFreeRate()
                 ->zeroRate(residualTime, Continuous);
 
             stepCondition_ = boost::shared_ptr<StandardStepCondition>(
