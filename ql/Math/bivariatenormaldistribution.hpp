@@ -100,7 +100,7 @@ namespace QuantLib {
     };
 
     //! default bivariate implementation
-    typedef BivariateCumulativeNormalDistributionDr78
+    typedef BivariateCumulativeNormalDistributionWe04DP
                                         BivariateCumulativeNormalDistribution;
 
 }

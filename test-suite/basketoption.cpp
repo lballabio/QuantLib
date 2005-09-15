@@ -39,48 +39,50 @@ using namespace boost::unit_test_framework;
 #define REPORT_FAILURE_2(greekName, basketType, payoff, exercise, \
                          s1, s2, q1, q2, r, today, v1, v2, rho, \
                          expected, calculated, error, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) << " " \
-               << payoff->optionType() << " option on " \
-               << basketTypeToString(basketType) \
-               << " with " << payoffTypeToString(payoff) << " payoff:\n" \
-               << "1st underlying value: " << s1 << "\n" \
-               << "2nd underlying value: " << s2 << "\n" \
-               << "              strike: " << payoff->strike() << "\n" \
-               << "  1st dividend yield: " << io::rate(q1) << "\n" \
-               << "  2nd dividend yield: " << io::rate(q2) << "\n" \
-               << "      risk-free rate: " << io::rate(r) << "\n" \
-               << "      reference date: " << today << "\n" \
-               << "            maturity: " << exercise->lastDate() << "\n" \
-               << "1st asset volatility: " << io::volatility(v1) << "\n" \
-               << "2nd asset volatility: " << io::volatility(v2) << "\n" \
-               << "         correlation: " << rho << "\n\n" \
-               << "    expected   " << greekName << ": " << expected << "\n" \
-               << "    calculated " << greekName << ": " << calculated << "\n"\
-               << "    error:            " << error << "\n" \
-               << "    tolerance:        " << tolerance);
+    BOOST_ERROR( \
+        exerciseTypeToString(exercise) << " " \
+        << payoff->optionType() << " option on " \
+        << basketTypeToString(basketType) \
+        << " with " << payoffTypeToString(payoff) << " payoff:\n" \
+        << "1st underlying value: " << s1 << "\n" \
+        << "2nd underlying value: " << s2 << "\n" \
+        << "              strike: " << payoff->strike() << "\n" \
+        << "  1st dividend yield: " << io::rate(q1) << "\n" \
+        << "  2nd dividend yield: " << io::rate(q2) << "\n" \
+        << "      risk-free rate: " << io::rate(r) << "\n" \
+        << "      reference date: " << today << "\n" \
+        << "            maturity: " << exercise->lastDate() << "\n" \
+        << "1st asset volatility: " << io::volatility(v1) << "\n" \
+        << "2nd asset volatility: " << io::volatility(v2) << "\n" \
+        << "         correlation: " << rho << "\n\n" \
+        << "    expected   " << greekName << ": " << expected << "\n" \
+        << "    calculated " << greekName << ": " << calculated << "\n"\
+        << "    error:            " << error << "\n" \
+        << "    tolerance:        " << tolerance);
 
 #define REPORT_FAILURE_3(greekName, basketType, payoff, exercise, \
                          s1, s2, s3, r, today, v1, v2, v3, rho, \
                          expected, calculated, error, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) << " " \
-               << payoff->optionType() << " option on " \
-               << basketTypeToString(basketType) \
-               << " with " << payoffTypeToString(payoff) << " payoff:\n" \
-               << "1st underlying value: " << s1 << "\n" \
-               << "2nd underlying value: " << s2 << "\n" \
-               << "3rd underlying value: " << s3 << "\n" \
-               << "              strike: " << payoff->strike() <<"\n" \
-               << "      risk-free rate: " << io::rate(r) << "\n" \
-               << "      reference date: " << today << "\n" \
-               << "            maturity: " << exercise->lastDate() << "\n" \
-               << "1st asset volatility: " << io::volatility(v1) << "\n" \
-               << "2nd asset volatility: " << io::volatility(v2) << "\n" \
-               << "3rd asset volatility: " << io::volatility(v3) << "\n" \
-               << "         correlation: " << rho << "\n\n" \
-               << "    expected   " << greekName << ": " << expected << "\n" \
-               << "    calculated " << greekName << ": " << calculated << "\n"\
-               << "    error:            " << error << "\n" \
-               << "    tolerance:        " << tolerance);
+    BOOST_ERROR( \
+        exerciseTypeToString(exercise) << " " \
+        << payoff->optionType() << " option on " \
+        << basketTypeToString(basketType) \
+        << " with " << payoffTypeToString(payoff) << " payoff:\n" \
+        << "1st underlying value: " << s1 << "\n" \
+        << "2nd underlying value: " << s2 << "\n" \
+        << "3rd underlying value: " << s3 << "\n" \
+        << "              strike: " << payoff->strike() <<"\n" \
+        << "      risk-free rate: " << io::rate(r) << "\n" \
+        << "      reference date: " << today << "\n" \
+        << "            maturity: " << exercise->lastDate() << "\n" \
+        << "1st asset volatility: " << io::volatility(v1) << "\n" \
+        << "2nd asset volatility: " << io::volatility(v2) << "\n" \
+        << "3rd asset volatility: " << io::volatility(v3) << "\n" \
+        << "         correlation: " << rho << "\n\n" \
+        << "    expected   " << greekName << ": " << expected << "\n" \
+        << "    calculated " << greekName << ": " << calculated << "\n"\
+        << "    error:            " << error << "\n" \
+        << "    tolerance:        " << tolerance);
 
 
 QL_BEGIN_TEST_LOCALS(BasketOptionTest)
@@ -172,7 +174,7 @@ void BasketOptionTest::testEuroTwoValues() {
         {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.70, 19.980, 1.0e-3},
         {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.50, 21.619, 1.0e-3},
         {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.30, 22.932, 1.0e-3},
-        {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.10, 24.049, 1.0e-3},
+        {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.10, 24.049, 1.1e-3},
         {BasketOption::Max, Option::Call,  100.0,  80.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.30, 16.508, 1.0e-3},
         {BasketOption::Max, Option::Call,  100.0,  80.0,  80.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.30,  8.049, 1.0e-3},
         {BasketOption::Max, Option::Call,  100.0,  80.0, 120.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.30, 30.141, 1.0e-3},
@@ -191,7 +193,7 @@ void BasketOptionTest::testEuroTwoValues() {
         {BasketOption::Max,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.90,  7.339, 1.0e-3},
         {BasketOption::Max,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.70,  5.853, 1.0e-3},
         {BasketOption::Max,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.50,  4.818, 1.0e-3},
-        {BasketOption::Max,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.30,  3.967, 1.0e-3},
+        {BasketOption::Max,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.30,  3.967, 1.1e-3},
         {BasketOption::Max,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.10,  3.223, 1.0e-3},
 
         //      basketType,   optionType, strike,    s1,    s2,   q1,   q2,    r,    t,   v1,   v2,  rho,  result, tol
