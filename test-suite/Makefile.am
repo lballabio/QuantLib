@@ -16,6 +16,7 @@ QL_TESTS = \
 	covariance.hpp covariance.cpp \
 	dates.hpp dates.cpp \
 	daycounters.hpp daycounters.cpp \
+	defaultable.cpp \
 	digitaloption.hpp digitaloption.cpp \
 	distributions.hpp distributions.cpp \
 	dividendoption.hpp dividendoption.cpp \

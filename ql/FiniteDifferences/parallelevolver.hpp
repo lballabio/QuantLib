@@ -19,6 +19,14 @@
 
 /*! \file parallelevolver.hpp
     \brief Parallel evolver for multiple arrays
+
+    This class takes the evolver class and creates a new class which evolves
+    each of the evolvers in parallel.  Part of what this does is to take the 
+    types for each evolver class and then wrapper them so that they create
+    new types which are sets of the old types.
+
+    This class is intended to be run in situations where there are parallel
+    differential equations such as with some convertible bond models.
 */
 
 #ifndef quantlib_system_evolver_hpp
