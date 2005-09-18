@@ -27,9 +27,9 @@
 #include <ql/types.hpp>
 
 namespace QuantLib {
-    template <class base_process>
-    class  Defaultable: public base_process {
+    class  Defaultable {
       public:
+        virtual ~Defaultable() {};
         virtual Real hazardRate(Time t, Real underlying) const = 0;
         virtual Real defaultRecovery(Time t, Real underlying) const = 0;
     };
