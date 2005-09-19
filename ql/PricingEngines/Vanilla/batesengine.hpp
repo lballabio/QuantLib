@@ -33,6 +33,7 @@ namespace QuantLib {
     /*! this classes price european options under the following processes
 
         1. Jump-Diffusion with Stochastic Volatility
+
         \f[
         \begin{array}{rcl}
         dS(t, S)  &=& (r-d-\lambda m) S dt +\sqrt{v} S dW_1 + (e^J - 1) S dN \\
@@ -41,34 +42,37 @@ namespace QuantLib {
         \end{array}
         \f]
 
-        N is a Poisson process with the intensity \f[\lambda\f]. When a
-        jump occurs the magnitude J has the probability distribution function
-        \f[\omega(J)\f]
+        N is a Poisson process with the intensity \f$ \lambda
+        \f$. When a jump occurs the magnitude J has the probability
+        distribution function \f$ \omega(J) \f$.
 
         1.1 Log-Normal Jump Diffusion: BatesEngine
+
         Logarithm of the jump size J is normally distributed
         \f[
-        \omega(J) = \frac{1}{\sqrt(2\pi \delta^2)}
-                    e^{-\frac{(J-\nu)^2}{2\delta^2}}
+        \omega(J) = \frac{1}{\sqrt{2\pi \delta^2}}
+                    \exp\left[-\frac{(J-\nu)^2}{2\delta^2}\right]
         \f]
 
         1.2  Double-Exponential Jump Diffusion: BatesDoubleExpEngine
+
         The jump size has an asymmetric double exponential distribution
         \f[
         \begin{array}{rcl}
         \omega(J)&=&  p\frac{1}{\eta_u}e^{-\frac{1}{\eta_u}J} 1_{J>0}
-                    + q\frac{1}{\eta_d}e^{\frac{1}{\eta_d}J} 1_{J<0}
+                    + q\frac{1}{\eta_d}e^{\frac{1}{\eta_d}J} 1_{J<0} \\
         p + q &=& 1
         \end{array}
         \f]
 
         2. Stochastic Volatility with Jump Diffusion
            and Deterministic Jump Intensity
+
         \f[
         \begin{array}{rcl}
         dS(t, S)  &=& (r-d-\lambda m) S dt +\sqrt{v} S dW_1 + (e^J - 1) S dN \\
         dv(t, S)  &=& \kappa (\theta - v) dt + \sigma \sqrt{v} dW_2 \\
-        d\lambda(t) &=& \kappa_\lambda(\theta_\lambda-\lambda) dt
+        d\lambda(t) &=& \kappa_\lambda(\theta_\lambda-\lambda) dt \\
         dW_1 dW_2 &=& \rho dt
         \end{array}
         \f]
@@ -81,6 +85,7 @@ namespace QuantLib {
 
 
         References:
+
         D. Bates, Jumps and stochastic volatilit: exchange rate processes
         implicit in Deutsche mark options",
         Review of Financial Sudies 9, 69-107.
