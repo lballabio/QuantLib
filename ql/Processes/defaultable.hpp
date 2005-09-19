@@ -33,7 +33,41 @@ namespace QuantLib {
         virtual Real hazardRate(Time t, Real underlying) const = 0;
         virtual Real defaultRecovery(Time t, Real underlying) const = 0;
     };
-}
 
+    class NegativePowerDefaultIntensity : public Defaultable {
+    private:
+        Real alpha_, p_, recovery_;
+    public:
+        NegativePowerDefaultIntensity(Real alpha, Real p,
+                               Real recovery = 0.0) {
+            alpha_ = alpha; p_ = p;
+            recovery_ = recovery;
+        }
+        Real hazardRate(Time t, Real s) {
+            if (s <= 0.0) return 0.0;
+            return alpha_ * std::pow(s, -p_);
+        }
+        Real defaultRecovery(Time t, Real s) {
+            return recovery_;
+        }
+    };
+
+    class ConstantDefaultIntensity : public Defaultable {
+    private:
+        Real constant_, recovery_;
+    public:
+        ConstantDefaultIntensity(Real constant,
+                                 Real recovery = 0.0) {
+            constant_ = constant;
+            recovery_ = recovery;
+        }
+        Real hazardRate(Time t, Real s) {
+            return constant_;
+        }
+        Real defaultRecovery(Time t, Real s) {
+            return recovery_;
+        }
+    };
+}
 
 #endif
