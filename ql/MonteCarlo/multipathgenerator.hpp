@@ -78,11 +78,11 @@ namespace QuantLib {
       generator_(generator), next_(MultiPath(process->size(), times), 1.0) {
 
         QL_REQUIRE(generator_.dimension() ==
-                   process->size()*(times.size()-1),
+                   process->factors()*(times.size()-1),
                    "dimension (" << generator_.dimension()
                    << ") is not equal to ("
-                   << process->size() << " * " << times.size()-1
-                   << ") the number of assets "
+                   << process->factors() << " * " << times.size()-1
+                   << ") the number of factors "
                    << "times the number of time steps");
         QL_REQUIRE(times.size() > 1,
                    "no times given");
@@ -115,11 +115,13 @@ namespace QuantLib {
                 antithetic ? generator_.lastSequence()
                            : generator_.nextSequence();
 
-            Size n = process_->size();
+            Size m = process_->size();
+            Size n = process_->factors();
+
             MultiPath& path = next_.value;
 
             Array asset = process_->initialValues();
-            for (Size j=0; j<n; j++)
+            for (Size j=0; j<m; j++)
                 path[j].front() = asset[j];
 
             Array temp(n);
@@ -142,7 +144,7 @@ namespace QuantLib {
                               temp.begin());
 
                 asset = process_->evolve(t, asset, dt, temp);
-                for (Size j=0; j<n; j++)
+                for (Size j=0; j<m; j++)
                     path[j][i] = asset[j];
             }
             return next_;

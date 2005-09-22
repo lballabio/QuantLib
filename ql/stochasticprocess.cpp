@@ -31,6 +31,10 @@ namespace QuantLib {
                                 const boost::shared_ptr<discretization>& disc)
     : discretization_(disc) {}
 
+    Size StochasticProcess::factors() const {
+        return size();
+    }
+
     Disposable<Array> StochasticProcess::expectation(Time t0,
                                                      const Array& x0,
                                                      Time dt) const {

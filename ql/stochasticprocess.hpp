@@ -62,6 +62,8 @@ namespace QuantLib {
         //@{
         //! returns the number of dimensions of the stochastic process
         virtual Size size() const = 0;
+        //! returns the number of independent factors of the process
+        virtual Size factors() const;
         //! returns the initial values of the state variables
         virtual Disposable<Array> initialValues() const = 0;
         /*! \brief returns the drift part of the equation, i.e.,
