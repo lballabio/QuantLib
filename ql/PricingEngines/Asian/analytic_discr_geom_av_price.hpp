@@ -34,8 +34,7 @@ namespace QuantLib {
         Option", E. Levy (1997) in "Exotic Options: The State of the
         Art", edited by L. Clewlow, C. Strickland, pag 65-97
 
-        \todo implement correct theta, rho, dividend-rho, and vega
-              calculation
+        \todo implement correct theta, rho, and dividend-rho calculation
 
         \test
         - the correctness of the returned value is tested by

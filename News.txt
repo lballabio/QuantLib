@@ -19,3 +19,7 @@
 - Added fixed-coupon bond helper for curve bootstrapping (thanks to
   Toyin Akin.)
 
+- Added vega to analytic discrete-averaging Asian engine (thanks to
+  Gary Kennedy.)
+
+

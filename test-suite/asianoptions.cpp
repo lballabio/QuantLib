@@ -39,27 +39,28 @@ using namespace boost::unit_test_framework;
                        runningAccumulator, pastFixings, \
                        fixingDates, payoff, exercise, s, q, r, today, v, \
                        expected, calculated, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) \
-               << " Asian option with " \
-               << averageTypeToString(averageType) << " and " \
-               << payoffTypeToString(payoff) << " payoff:\n" \
-               << "    running variable: " \
-               << io::checknull(runningAccumulator) << "\n" \
-               << "    past fixings:     " \
-               << io::checknull(pastFixings) << "\n" \
-               << "    future fixings:   " << fixingDates.size() << "\n" \
-               << "    underlying value: " << s << "\n" \
-               << "    strike:           " << payoff->strike() << "\n" \
-               << "    dividend yield:   " << io::rate(q) << "\n" \
-               << "    risk-free rate:   " << io::rate(r) << "\n" \
-               << "    reference date:   " << today << "\n" \
-               << "    maturity:         " << exercise->lastDate() << "\n" \
-               << "    volatility:       " << io::volatility(v) << "\n\n" \
-               << "    expected   " << greekName << ": " << expected << "\n" \
-               << "    calculated " << greekName << ": " << calculated << "\n"\
-               << "    error:            " << std::fabs(expected-calculated) \
-               << "\n" \
-               << "    tolerance:        " << tolerance);
+    BOOST_ERROR( \
+        exerciseTypeToString(exercise) \
+        << " Asian option with " \
+        << averageTypeToString(averageType) << " and " \
+        << payoffTypeToString(payoff) << " payoff:\n" \
+        << "    running variable: " \
+        << io::checknull(runningAccumulator) << "\n" \
+        << "    past fixings:     " \
+        << io::checknull(pastFixings) << "\n" \
+        << "    future fixings:   " << fixingDates.size() << "\n" \
+        << "    underlying value: " << s << "\n" \
+        << "    strike:           " << payoff->strike() << "\n" \
+        << "    dividend yield:   " << io::rate(q) << "\n" \
+        << "    risk-free rate:   " << io::rate(r) << "\n" \
+        << "    reference date:   " << today << "\n" \
+        << "    maturity:         " << exercise->lastDate() << "\n" \
+        << "    volatility:       " << io::volatility(v) << "\n\n" \
+        << "    expected   " << greekName << ": " << expected << "\n" \
+        << "    calculated " << greekName << ": " << calculated << "\n"\
+        << "    error:            " << std::fabs(expected-calculated) \
+        << "\n" \
+        << "    tolerance:        " << tolerance);
 
 QL_BEGIN_TEST_LOCALS(AsianOptionTest)
 
@@ -631,7 +632,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     tolerance["theta"]  = 1.0e-5;
     // tolerance["rho"]    = 1.0e-5;
     // tolerance["divRho"] = 1.0e-5;
-    // tolerance["vega"]   = 1.0e-5;
+    tolerance["vega"]   = 1.0e-5;
 
     Option::Type types[] = { Option::Call, Option::Put };
     Real underlyings[] = { 100.0 };
@@ -704,7 +705,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                       calculated["theta"]  = option.theta();
                       // calculated["rho"]    = option.rho();
                       // calculated["divRho"] = option.dividendRho();
-                      // calculated["vega"]   = option.vega();
+                      calculated["vega"]   = option.vega();
 
                       if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
@@ -736,6 +737,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                           value_m = option.NPV();
                           qRate->setValue(q);
                           expected["divRho"] = (value_p - value_m)/(2*dq);
+                          */
 
                           // perturb volatility and get vega
                           Volatility dv = v*1.0e-4;
@@ -745,7 +747,6 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                           value_m = option.NPV();
                           vol->setValue(v);
                           expected["vega"] = (value_p - value_m)/(2*dv);
-                          */
 
                           // perturb date and get theta
                           Time dT = dc.yearFraction(today-1, today+1);

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2005 Gary Kennedy
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,7 @@
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/PricingEngines/greeks.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Math/normaldistribution.hpp>
 #include <numeric>
 
 namespace QuantLib {
@@ -31,7 +33,7 @@ namespace QuantLib {
            since it can be used as control variate for the Arithmetic version
         QL_REQUIRE(arguments_.averageType == Average::Geometric,
                    "not a geometric average option");
-       */
+        */
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
@@ -73,7 +75,8 @@ namespace QuantLib {
         }
 
         Size remainingFixings = fixingTimes.size();
-        Real N = Real(pastFixings + remainingFixings);
+        Size numberOfFixings = pastFixings + remainingFixings;
+        Real N = static_cast<Real>(numberOfFixings);
 
         Real pastWeight   = pastFixings/N;
         Real futureWeight = 1.0-pastWeight;
@@ -87,16 +90,17 @@ namespace QuantLib {
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
         Real temp = 0.0;
-        for (i=pastFixings+1; i<N; i++)
+        for (i=pastFixings+1; i<numberOfFixings; i++)
             temp += fixingTimes[i-pastFixings-1]*(N-i);
         Real variance = vola*vola /N/N * (timeSum+ 2.0*temp);
+        Real dsigG_dsig = std::sqrt((timeSum + 2.0*temp))/N;
+        Real sigG = vola * dsigG_dsig;
+        Real dmuG_dsig = -(vola * timeSum)/N;
 
         Date exDate = arguments_.exercise->lastDate();
         Rate dividendRate = process->dividendYield()->
-            //zeroYield(exDate);
             zeroRate(exDate, divdc, Continuous, NoFrequency);
         Rate riskFreeRate = process->riskFreeRate()->
-            //zeroYield(exDate);
             zeroRate(exDate, rfdc, Continuous, NoFrequency);
         Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
         Real muG = pastWeight * runningLog +
@@ -111,8 +115,25 @@ namespace QuantLib {
 
         results_.value = black.value();
         results_.delta = black.delta(process->stateVariable()->value());
-        // results_.deltaForward = black.value();
         results_.gamma = black.gamma(process->stateVariable()->value());
+
+        Real Nx_1, nx_1;
+        CumulativeNormalDistribution CND;
+        NormalDistribution ND;
+        if (sigG > QL_EPSILON) {
+            Real x_1  = (muG-std::log(payoff->strike())+variance)/sigG;
+            Nx_1 = CND(x_1);
+            nx_1 = ND(x_1);
+        } else {
+            Nx_1 = (muG > std::log(payoff->strike()) ? 1.0 : 0.0);
+            nx_1 = 0.0;
+        }
+        results_.vega = forwardPrice * riskFreeDiscount *
+                   ( (dmuG_dsig + sigG * dsigG_dsig)*Nx_1 + nx_1*dsigG_dsig );
+
+        if (payoff->optionType() == Option::Put)
+            results_.vega -= riskFreeDiscount * forwardPrice *
+                                              (dmuG_dsig + sigG * dsigG_dsig);
 
         /*
         Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
@@ -125,7 +146,7 @@ namespace QuantLib {
 
         t = voldc.yearFraction(process->blackVolatility()->referenceDate(),
                                arguments_.exercise->lastDate());
-        results_.vega = black.vega(t);
+
         results_.theta = black.theta(process->stateVariable()->value(), t);
         */
 
