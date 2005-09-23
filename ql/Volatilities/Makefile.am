@@ -9,6 +9,7 @@ include_HEADERS = \
     blackvariancesurface.hpp \
     capflatvolvector.hpp \
     capletconstantvol.hpp \
+    capletvariancecurve.hpp \
     impliedvoltermstructure.hpp \
     localconstantvol.hpp \
     localvolcurve.hpp \

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,6 +48,10 @@ namespace QuantLib {
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
         //@}
+        Date maxDate() const;
+        Time maxTime() const;
+        Real minStrike() const;
+        Real maxStrike() const;
       protected:
         //! \name CapletVolatilityStructure interface
         //@{
@@ -100,6 +104,22 @@ namespace QuantLib {
     : CapletVolatilityStructure(settlementDays,calendar),
       volatility_(volatility), dayCounter_(dayCounter) {
         registerWith(volatility_);
+    }
+
+    inline Date CapletConstantVolatility::maxDate() const {
+        return Date::maxDate();
+    }
+
+    inline Time CapletConstantVolatility::maxTime() const {
+        return QL_MAX_REAL;
+    }
+
+    inline Real CapletConstantVolatility::minStrike() const {
+        return QL_MIN_REAL;
+    }
+
+    inline Real CapletConstantVolatility::maxStrike() const {
+        return QL_MAX_REAL;
     }
 
     inline Volatility CapletConstantVolatility::volatilityImpl(

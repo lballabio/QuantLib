@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -130,7 +130,6 @@ namespace QuantLib {
         //@}
 	  private:
         static const Time dT;
-        void checkRange(const Date&, Real strike, bool extrapolate) const;
         void checkRange(Time, Real strike, bool extrapolate) const;
     };
 
@@ -274,7 +273,6 @@ namespace QuantLib {
         virtual Volatility localVolImpl(Time t, Real strike) const = 0;
         //@}
       private:
-        void checkRange(const Date&, Real strike, bool extrapolate) const;
         void checkRange(Time, Real strike, bool extrapolate) const;
     };
 
@@ -299,8 +297,8 @@ namespace QuantLib {
     inline Volatility BlackVolTermStructure::blackVol(const Date& maturity,
                                                       Real strike,
                                                       bool extrapolate) const {
-        checkRange(maturity,strike,extrapolate);
         Time t = timeFromReference(maturity);
+        checkRange(t,strike,extrapolate);
         return blackVolImpl(t, strike);
     }
 
@@ -315,8 +313,8 @@ namespace QuantLib {
                                                      Real strike,
                                                      bool extrapolate)
                                                                       const {
-        checkRange(maturity,strike,extrapolate);
         Time t = timeFromReference(maturity);
+        checkRange(t,strike,extrapolate);
         return blackVarianceImpl(t, strike);
     }
 
@@ -334,12 +332,6 @@ namespace QuantLib {
             v1->visit(*this);
         else
             QL_FAIL("not a Black-volatility term structure visitor");
-    }
-
-    inline void BlackVolTermStructure::checkRange(const Date& d, Real k,
-                                                  bool extrapolate) const {
-        Time t = timeFromReference(d);
-        checkRange(t,k,extrapolate);
     }
 
     inline void BlackVolTermStructure::checkRange(Time t, Real k,
@@ -429,8 +421,8 @@ namespace QuantLib {
     inline Volatility LocalVolTermStructure::localVol(const Date& d,
                                                       Real underlyingLevel,
                                                       bool extrapolate) const {
-        checkRange(d,underlyingLevel,extrapolate);
         Time t = timeFromReference(d);
+        checkRange(t,underlyingLevel,extrapolate);
         return localVolImpl(t, underlyingLevel);
     }
 
@@ -448,12 +440,6 @@ namespace QuantLib {
             v1->visit(*this);
         else
             QL_FAIL("not a local-volatility term structure visitor");
-    }
-
-    inline void LocalVolTermStructure::checkRange(const Date& d, Real k,
-                                                  bool extrapolate) const {
-        Time t = timeFromReference(d);
-        checkRange(t,k,extrapolate);
     }
 
     inline void LocalVolTermStructure::checkRange(Time t, Real k,

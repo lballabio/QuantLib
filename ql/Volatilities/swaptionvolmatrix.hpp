@@ -53,6 +53,12 @@ namespace QuantLib {
         DayCounter dayCounter() const { return dayCounter_; }
         const std::vector<Date>& exerciseDates() const;
         const std::vector<Period>& lengths() const;
+        Date maxStartDate() const;
+        Time maxStartTime() const;
+        Period maxLength() const;
+        Time maxTimeLength() const;
+        Real minStrike() const;
+        Real maxStrike() const;
       private:
         DayCounter dayCounter_;
         std::vector<Date> exerciseDates_;
@@ -105,9 +111,33 @@ namespace QuantLib {
         return lengths_;
     }
 
+    inline Date SwaptionVolatilityMatrix::maxStartDate() const {
+        return exerciseDates_.back();
+    }
+
+    inline Time SwaptionVolatilityMatrix::maxStartTime() const {
+        return exerciseTimes_.back();
+    }
+
+    inline Period SwaptionVolatilityMatrix::maxLength() const {
+        return lengths_.back();
+    }
+
+    inline Time SwaptionVolatilityMatrix::maxTimeLength() const {
+        return timeLengths_.back();
+    }
+
+    inline Real SwaptionVolatilityMatrix::minStrike() const {
+        return QL_MIN_REAL;
+    }
+
+    inline Real SwaptionVolatilityMatrix::maxStrike() const {
+        return QL_MAX_REAL;
+    }
+
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
                                         Time start, Time length, Rate) const {
-        return interpolation_(start,length,false);
+        return interpolation_(start,length,true);
     }
 
     inline std::pair<Time,Time> SwaptionVolatilityMatrix::convertDates(

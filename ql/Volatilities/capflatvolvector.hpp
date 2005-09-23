@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -55,6 +55,10 @@ namespace QuantLib {
                             const DayCounter& dayCounter);
         // inspectors
         DayCounter dayCounter() const { return dayCounter_; }
+        Date maxDate() const;
+        Time maxTime() const;
+        Real minStrike() const;
+        Real maxStrike() const;
         // observability
         void update();
       private:
@@ -103,6 +107,22 @@ namespace QuantLib {
         interpolate();
     }
 
+    inline Date CapVolatilityVector::maxDate() const {
+        return referenceDate()+lengths_.back();
+    }
+
+    inline Time CapVolatilityVector::maxTime() const {
+        return timeLengths_.back();
+    }
+
+    inline Real CapVolatilityVector::minStrike() const {
+        return QL_MIN_REAL;
+    }
+
+    inline Real CapVolatilityVector::maxStrike() const {
+        return QL_MAX_REAL;
+    }
+
     inline void CapVolatilityVector::update() {
         CapVolatilityStructure::update();
         interpolate();
@@ -122,7 +142,7 @@ namespace QuantLib {
 
     inline Volatility CapVolatilityVector::volatilityImpl(
                                                     Time length, Rate) const {
-        return interpolation_(length, false);
+        return interpolation_(length, true);
     }
 
 }

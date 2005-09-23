@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +25,7 @@
 #define quantlib_cap_volatility_structures_hpp
 
 #include <ql/termstructure.hpp>
+#include <ql/Math/extrapolation.hpp>
 
 namespace QuantLib {
 
@@ -32,7 +33,8 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         structures which will be derived from this one.
     */
-    class CapVolatilityStructure : public TermStructure {
+    class CapVolatilityStructure : public TermStructure,
+                                   public Extrapolator {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -53,22 +55,39 @@ namespace QuantLib {
         virtual ~CapVolatilityStructure() {}
         //! \name Volatility
         //@{
-        Volatility volatility(const Date& end, Rate strike) const;
+        Volatility volatility(const Date& end, Rate strike,
+                              bool extrapolate = false) const;
         //! returns the volatility for a given cap/floor length and strike rate
-        Volatility volatility(const Period& length, Rate strike) const;
+        Volatility volatility(const Period& length, Rate strike,
+                              bool extrapolate = false) const;
         //! returns the volatility for a given end time and strike rate
-        Volatility volatility(Time t, Rate strike) const;
+        Volatility volatility(Time t, Rate strike,
+                              bool extrapolate = false) const;
+        //@}
+        //! \name Limits
+        //@{
+        //! the latest date for which the term structure can return vols
+        virtual Date maxDate() const = 0;
+        //! the latest time for which the term structure can return vols
+        virtual Time maxTime() const;
+        //! the minimum strike for which the term structure can return vols
+        virtual Real minStrike() const = 0;
+        //! the maximum strike for which the term structure can return vols
+        virtual Real maxStrike() const = 0;
         //@}
       protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
+	  private:
+        void checkRange(Time, Real strike, bool extrapolate) const;
     };
 
     //! Caplet/floorlet forward-volatility structure
     /*! This class is purely abstract and defines the interface of
         concrete structures which will be derived from this one.
     */
-    class CapletVolatilityStructure : public TermStructure {
+    class CapletVolatilityStructure : public TermStructure,
+                                      public Extrapolator {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -90,13 +109,28 @@ namespace QuantLib {
         //! \name Volatility
         //@{
         //! returns the volatility for a given start date and strike rate
-        Volatility volatility(const Date& start, Rate strike) const ;
+        Volatility volatility(const Date& start, Rate strike,
+                              bool extrapolate = false) const ;
         //! returns the volatility for a given start time and strike rate
-        Volatility volatility(Time t, Rate strike) const;
+        Volatility volatility(Time t, Rate strike,
+                              bool extrapolate = false) const;
+        //@}
+        //! \name Limits
+        //@{
+        //! the latest date for which the term structure can return vols
+        virtual Date maxDate() const = 0;
+        //! the latest time for which the term structure can return vols
+        virtual Time maxTime() const;
+        //! the minimum strike for which the term structure can return vols
+        virtual Real minStrike() const = 0;
+        //! the maximum strike for which the term structure can return vols
+        virtual Real maxStrike() const = 0;
         //@}
       protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
+	  private:
+        void checkRange(Time, Real strike, bool extrapolate) const;
     };
 
 
@@ -113,20 +147,50 @@ namespace QuantLib {
     : TermStructure(settlementDays,calendar) {}
 
     inline Volatility CapVolatilityStructure::volatility(const Date& end,
-                                                         Rate strike) const {
-        return volatilityImpl(timeFromReference(end),strike);
+                                                         Rate strike,
+                                                         bool extrapolate)
+                                                                       const {
+        Time t = timeFromReference(end);
+        checkRange(t,strike,extrapolate);
+        return volatilityImpl(t,strike);
     }
 
     inline Volatility CapVolatilityStructure::volatility(const Period& length,
-                                                         Rate strike) const {
+                                                         Rate strike,
+                                                         bool extrapolate)
+                                                                       const {
         Date end = referenceDate() + length;
-        return volatilityImpl(timeFromReference(end),strike);
+        Time t = timeFromReference(end);
+        checkRange(t,strike,extrapolate);
+        return volatilityImpl(t,strike);
     }
 
     inline Volatility CapVolatilityStructure::volatility(Time t,
-                                                         Rate strike) const {
+                                                         Rate strike,
+                                                         bool extrapolate)
+                                                                       const {
+        checkRange(t,strike,extrapolate);
         return volatilityImpl(t,strike);
     }
+
+	inline Time CapVolatilityStructure::maxTime() const {
+        return timeFromReference(maxDate());
+    }
+
+    inline void CapVolatilityStructure::checkRange(
+                                     Time t, Rate k, bool extrapolate) const {
+        QL_REQUIRE(t >= 0.0,
+                   "negative time (" << t << ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
+                   t <= maxTime(),
+                   "time (" << t << ") is past max curve time ("
+                   << maxTime() << ")");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
+                   (k >= minStrike() && k <= maxStrike()),
+                   "strike (" << k << ") is outside the curve domain ["
+                   << minStrike() << "," << maxStrike()<< "]");
+    }
+
 
 
 
@@ -142,14 +206,39 @@ namespace QuantLib {
 
     inline Volatility CapletVolatilityStructure::volatility(
                                                         const Date& start,
-                                                        Rate strike) const {
-        return volatilityImpl(timeFromReference(start),strike);
+                                                        Rate strike,
+                                                        bool extrapolate)
+                                                                       const {
+        Time t = timeFromReference(start);
+        checkRange(t,strike,extrapolate);
+        return volatilityImpl(t,strike);
     }
 
     inline Volatility CapletVolatilityStructure::volatility(
                                                         Time t,
-                                                        Rate strike) const {
+                                                        Rate strike,
+                                                        bool extrapolate)
+                                                                       const {
+        checkRange(t,strike,extrapolate);
         return volatilityImpl(t,strike);
+    }
+
+	inline Time CapletVolatilityStructure::maxTime() const {
+        return timeFromReference(maxDate());
+    }
+
+    inline void CapletVolatilityStructure::checkRange(
+                                     Time t, Rate k, bool extrapolate) const {
+        QL_REQUIRE(t >= 0.0,
+                   "negative time (" << t << ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
+                   t <= maxTime(),
+                   "time (" << t << ") is past max curve time ("
+                   << maxTime() << ")");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
+                   (k >= minStrike() && k <= maxStrike()),
+                   "strike (" << k << ") is outside the curve domain ["
+                   << minStrike() << "," << maxStrike()<< "]");
     }
 
 }
