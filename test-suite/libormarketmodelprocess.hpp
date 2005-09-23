@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,19 +17,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_processes_all_hpp
-#define quantlib_processes_all_hpp
+#ifndef quantlib_test_libor_market_model_process_hpp
+#define quantlib_test_libor_market_model_process_hpp
 
-#include <ql/qldefines.hpp>
+#include <boost/test/unit_test.hpp>
 
-#include <ql/Processes/blackscholesprocess.hpp>
-#include <ql/Processes/capletlmmprocess.hpp>
-#include <ql/Processes/eulerdiscretization.hpp>
-#include <ql/Processes/geometricbrownianprocess.hpp>
-#include <ql/Processes/merton76process.hpp>
-#include <ql/Processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/Processes/squarerootprocess.hpp>
-#include <ql/Processes/stochasticprocessarray.hpp>
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
+
+class LiborMarketModelProcessTest {
+  public:
+    static void testInitialisation();
+    static void testLambdaBootstrapping();
+    static void testMonteCarloCapletPricing();
+    static boost::unit_test_framework::test_suite* suite();
+};
 
 
 #endif

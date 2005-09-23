@@ -6,7 +6,7 @@
 - Added Bombay and Taipei calendars.
 
 - Added configuration option for adding current function information
-  to error messages
+  to error messages.
 
 - Added Bates stochastic-volatility model; tests provided (thanks to
   Klaus Spanderen.)
@@ -19,7 +19,9 @@
 - Added fixed-coupon bond helper for curve bootstrapping (thanks to
   Toyin Akin.)
 
-- Added vega to analytic discrete-averaging Asian engine (thanks to
-  Gary Kennedy.)
+- Added vega to analytic discrete-averaging Asian engine; test
+  provided (thanks to Gary Kennedy.)
 
+- Added stochastic process for caplet Libor market model; tests
+  provided (thanks to Klaus Spanderen.)
 

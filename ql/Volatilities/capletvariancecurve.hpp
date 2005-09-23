@@ -36,6 +36,10 @@ namespace QuantLib {
                             const std::vector<Volatility>& capletVolCurve,
                             const DayCounter& dayCounter);
         DayCounter dayCounter() const;
+        Date maxDate() const;
+        Time maxTime() const;
+        Real minStrike() const;
+        Real maxStrike() const;
         template <class Interpolator>
         void setInterpolation(const Interpolator& i
                     #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
@@ -59,10 +63,27 @@ namespace QuantLib {
     : CapletVolatilityStructure(referenceDate),
       blackCurve_(referenceDate, dates, capletVolCurve, dayCounter) {}
 
-    DayCounter CapletVarianceCurve::dayCounter() const {
+    inline DayCounter CapletVarianceCurve::dayCounter() const {
         return blackCurve_.dayCounter();
     }
 
+    inline Date CapletVarianceCurve::maxDate() const {
+        return blackCurve_.maxDate();
+    }
+
+    inline Time CapletVarianceCurve::maxTime() const {
+        return blackCurve_.maxTime();
+    }
+
+    inline Real CapletVarianceCurve::minStrike() const {
+        return blackCurve_.minStrike();
+    }
+
+    inline Real CapletVarianceCurve::maxStrike() const {
+        return blackCurve_.maxStrike();
+    }
+
+    inline 
     Volatility CapletVarianceCurve::volatilityImpl(Time t, Rate r) const {
         return blackCurve_.blackVol(t, r, true);
     }

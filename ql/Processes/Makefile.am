@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/Processes
 include_HEADERS = \
 	all.hpp \
 	blackscholesprocess.hpp \
+	capletlmmprocess.hpp \
 	eulerdiscretization.hpp \
 	geometricbrownianprocess.hpp \
 	hestonprocess.hpp \
@@ -15,6 +16,7 @@ include_HEADERS = \
 
 libProcesses_la_SOURCES = \
 	blackscholesprocess.cpp \
+	capletlmmprocess.cpp \
 	eulerdiscretization.cpp \
 	geometricbrownianprocess.cpp \
 	hestonprocess.cpp \

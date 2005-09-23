@@ -30,6 +30,7 @@ QL_TESTS = \
 	interestrates.hpp interestrates.cpp \
 	interpolations.hpp interpolations.cpp \
 	jumpdiffusion.hpp jumpdiffusion.cpp \
+	libormarketmodelprocess.hpp libormarketmodelprocess.cpp \
 	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
 	matrices.hpp matrices.cpp \
 	mersennetwister.hpp mersennetwister.cpp \
