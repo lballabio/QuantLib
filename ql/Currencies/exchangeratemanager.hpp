@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
  Copyright (C) 2004 Decillion Pty(Ltd)
 
  This file is part of QuantLib, a free-software/open-source library
@@ -82,7 +82,7 @@ namespace QuantLib {
         mutable std::map<Key, std::list<Entry> > data_;
         Key hash(const Currency&, const Currency&) const;
         bool hashes(Key, const Currency&) const;
-        void addEuroRates();
+        void addKnownRates();
         ExchangeRate directLookup(const Currency& source,
                                   const Currency& target,
                                   const Date& date) const;

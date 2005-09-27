@@ -35,7 +35,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is BDT; the numeric code is 50.
         It is divided in 100 paisa.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class BDTCurrency : public Currency {
       public:
@@ -53,7 +53,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is CNY; the numeric code is 156.
         It is divided in 100 fen.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class CNYCurrency : public Currency {
       public:
@@ -71,7 +71,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is HKD; the numeric code is 344.
         It is divided in 100 cents.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class HKDCurrency : public Currency {
       public:
@@ -89,7 +89,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is ILS; the numeric code is 376.
         It is divided in 100 agorot.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class ILSCurrency : public Currency {
       public:
@@ -107,7 +107,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is INR; the numeric code is 356.
         It is divided in 100 paise.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class INRCurrency : public Currency {
       public:
@@ -125,7 +125,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is IQD; the numeric code is 368.
         It is divided in 1000 fils.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class IQDCurrency : public Currency {
       public:
@@ -143,7 +143,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is IRR; the numeric code is 364.
         It has no subdivisions.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class IRRCurrency : public Currency {
       public:
@@ -179,7 +179,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is KRW; the numeric code is 410.
         It is divided in 100 chon.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class KRWCurrency : public Currency {
       public:
@@ -197,7 +197,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is KWD; the numeric code is 414.
         It is divided in 1000 fils.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class KWDCurrency : public Currency {
       public:
@@ -215,7 +215,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is NPR; the numeric code is 524.
         It is divided in 100 paise.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class NPRCurrency : public Currency {
       public:
@@ -233,7 +233,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is PKR; the numeric code is 586.
         It is divided in 100 paisa.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class PKRCurrency : public Currency {
       public:
@@ -251,7 +251,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is SAR; the numeric code is 682.
         It is divided in 100 halalat.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class SARCurrency : public Currency {
       public:
@@ -269,7 +269,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is SGD; the numeric code is 702.
         It is divided in 100 cents.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class SGDCurrency : public Currency {
       public:
@@ -287,7 +287,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is THB; the numeric code is 764.
         It is divided in 100 stang.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class THBCurrency : public Currency {
       public:
@@ -305,7 +305,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is TWD; the numeric code is 901.
         It is divided in 100 cents.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class TWDCurrency : public Currency {
       public:

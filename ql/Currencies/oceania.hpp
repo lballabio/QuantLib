@@ -53,7 +53,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is NZD; the numeric code is 554.
         It is divided in 100 cents.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class NZDCurrency : public Currency {
       public:

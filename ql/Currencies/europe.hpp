@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,7 +35,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is BGL; the numeric code is 100.
         It is divided in 100 stotinki.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class BGLCurrency : public Currency {
       public:
@@ -53,7 +53,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is BYR; the numeric code is 974.
         It has no subdivisions.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class BYRCurrency : public Currency {
       public:
@@ -89,7 +89,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is CYP; the numeric code is 196.
         It is divided in 100 cents.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class CYPCurrency : public Currency {
       public:
@@ -107,7 +107,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is CZK; the numeric code is 203.
         It is divided in 100 haleru.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class CZKCurrency : public Currency {
       public:
@@ -125,7 +125,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is DKK; the numeric code is 208.
         It is divided in 100 øre.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class DKKCurrency : public Currency {
       public:
@@ -143,7 +143,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is EEK; the numeric code is 233.
         It is divided in 100 senti.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class EEKCurrency : public Currency {
       public:
@@ -197,7 +197,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is HUF; the numeric code is 348.
         It has no subdivisions.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class HUFCurrency : public Currency {
       public:
@@ -215,7 +215,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is ISK; the numeric code is 352.
         It is divided in 100 aurar.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class ISKCurrency : public Currency {
       public:
@@ -233,7 +233,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is LTL; the numeric code is 440.
         It is divided in 100 centu.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class LTLCurrency : public Currency {
       public:
@@ -251,7 +251,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is LVL; the numeric code is 428.
         It is divided in 100 santims.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class LVLCurrency : public Currency {
       public:
@@ -269,7 +269,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is MTL; the numeric code is 470.
         It is divided in 100 cents.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class MTLCurrency : public Currency {
       public:
@@ -287,7 +287,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is NOK; the numeric code is 578.
         It is divided in 100 øre.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class NOKCurrency : public Currency {
       public:
@@ -305,7 +305,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is PLN; the numeric code is 985.
         It is divided in 100 groszy.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class PLNCurrency : public Currency {
       public:
@@ -323,7 +323,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is ROL; the numeric code is 642.
         It is divided in 100 bani.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class ROLCurrency : public Currency {
       public:
@@ -341,7 +341,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is SEK; the numeric code is 752.
         It is divided in 100 öre.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class SEKCurrency : public Currency {
       public:
@@ -359,7 +359,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is SIT; the numeric code is 705.
         It is divided in 100 stotinov.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class SITCurrency : public Currency {
       public:
@@ -377,7 +377,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is SKK; the numeric code is 703.
         It is divided in 100 halierov.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class SKKCurrency : public Currency {
       public:
@@ -395,7 +395,9 @@ namespace QuantLib {
     /*! The ISO three-letter code is TRL; the numeric code is 792.
         It is divided in 100 kurus.
 
-        ingroup currencies
+        Obsoleted by the new Turkish lira since 2005.
+
+        \ingroup currencies
     */
     class TRLCurrency : public Currency {
       public:
@@ -409,6 +411,24 @@ namespace QuantLib {
         }
     };
 
+    //! New Turkish lira
+    /*! The ISO three-letter code is TRY; the numeric code is 949.
+        It is divided in 100 new kurus.
+
+        \ingroup currencies
+    */
+    class TRYCurrency : public Currency {
+      public:
+        TRYCurrency() {
+            static boost::shared_ptr<Data> tryData(
+                                      new Data("New Turkish lira", "TRY", 949,
+                                               "YTL", "", 100,
+                                               Rounding(),
+                                               "%1$.2f %3%"));
+            data_ = tryData;
+        }
+    };
+
 
     // currencies obsoleted by Euro
 
@@ -416,7 +436,7 @@ namespace QuantLib {
     /*! The ISO three-letter code was ATS; the numeric code was 40.
         It was divided in 100 groschen.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class ATSCurrency : public Currency {
       public:
@@ -435,7 +455,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is BEF; the numeric code is 56.
         It has no subdivisions.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class BEFCurrency : public Currency {
       public:
@@ -473,7 +493,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is ESP; the numeric code is 724.
         It is divided in 100 centimos.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class ESPCurrency : public Currency {
       public:
@@ -492,7 +512,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is FIM; the numeric code is 246.
         It is divided in 100 penniä.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class FIMCurrency : public Currency {
       public:
@@ -511,7 +531,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is FRF; the numeric code is 250.
         It is divided in 100 centimes.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class FRFCurrency : public Currency {
       public:
@@ -530,7 +550,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is GRD; the numeric code is 300.
         It is divided in 100 lepta.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class GRDCurrency : public Currency {
       public:
@@ -549,7 +569,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is IEP; the numeric code is 372.
         It is divided in 100 pence.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class IEPCurrency : public Currency {
       public:
@@ -587,7 +607,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is LUF; the numeric code is 442.
         It is divided in 100 centimes.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class LUFCurrency : public Currency {
       public:
@@ -606,7 +626,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is NLG; the numeric code is 528.
         It is divided in 100 cents.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class NLGCurrency : public Currency {
       public:
@@ -625,7 +645,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is PTE; the numeric code is 620.
         It is divided in 100 centavos.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class PTECurrency : public Currency {
       public:

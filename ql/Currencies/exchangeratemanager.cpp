@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
  Copyright (C) 2004 Decillion Pty(Ltd)
 
  This file is part of QuantLib, a free-software/open-source library
@@ -38,7 +38,7 @@ namespace QuantLib {
     }
 
     ExchangeRateManager::ExchangeRateManager() {
-        addEuroRates();
+        addKnownRates();
     }
 
     void ExchangeRateManager::add(const ExchangeRate& rate,
@@ -78,7 +78,7 @@ namespace QuantLib {
 
     void ExchangeRateManager::clear() {
         data_.clear();
-        addEuroRates();
+        addKnownRates();
     }
 
     ExchangeRateManager::Key ExchangeRateManager::hash(
@@ -92,7 +92,8 @@ namespace QuantLib {
         return c.numericCode() == k % 1000 || c.numericCode() == k/1000;
     }
 
-    void ExchangeRateManager::addEuroRates() {
+    void ExchangeRateManager::addKnownRates() {
+        // currencies obsoleted by Euro
         add(ExchangeRate(EURCurrency(), ATSCurrency(), 13.7603),
             Date(1,January,1999), Date::maxDate());
         add(ExchangeRate(EURCurrency(), BEFCurrency(), 40.3399),
@@ -117,6 +118,9 @@ namespace QuantLib {
             Date(1,January,1999), Date::maxDate());
         add(ExchangeRate(EURCurrency(), PTECurrency(), 200.482),
             Date(1,January,1999), Date::maxDate());
+        // other obsoleted currencies
+        add(ExchangeRate(TRYCurrency(), TRLCurrency(), 1000000.0),
+            Date(1,January,2005), Date::maxDate());
     }
 
     ExchangeRate ExchangeRateManager::directLookup(const Currency& source,

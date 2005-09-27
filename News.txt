@@ -25,3 +25,6 @@
 - Added stochastic process for caplet Libor market model; tests
   provided (thanks to Klaus Spanderen.)
 
+- Added new Turkish lira.
+
+

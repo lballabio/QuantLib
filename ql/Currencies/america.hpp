@@ -35,7 +35,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is ARS; the numeric code is 32.
         It is divided in 100 centavos.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class ARSCurrency : public Currency {
       public:
@@ -53,7 +53,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is BRL; the numeric code is 986.
         It is divided in 100 centavos.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class BRLCurrency : public Currency {
       public:
@@ -89,7 +89,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is CLP; the numeric code is 152.
         It is divided in 100 centavos.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class CLPCurrency : public Currency {
       public:
@@ -107,7 +107,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is COP; the numeric code is 170.
         It is divided in 100 centavos.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class COPCurrency : public Currency {
       public:
@@ -125,7 +125,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is MXN; the numeric code is 484.
         It is divided in 100 centavos.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class MXNCurrency : public Currency {
       public:
@@ -143,7 +143,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is TTD; the numeric code is 780.
         It is divided in 100 cents.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class TTDCurrency : public Currency {
       public:
@@ -179,7 +179,7 @@ namespace QuantLib {
     /*! The ISO three-letter code is VEB; the numeric code is 862.
         It is divided in 100 centimos.
 
-        ingroup currencies
+        \ingroup currencies
     */
     class VEBCurrency : public Currency {
       public:
