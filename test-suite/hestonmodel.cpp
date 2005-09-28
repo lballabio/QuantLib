@@ -26,6 +26,7 @@
 #include <ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Calendars/target.hpp>
+#include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Optimization/simplex.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/actual360.hpp>
@@ -59,7 +60,7 @@ void HestonModelTest::testBlackCalibration() {
     Settings::instance().evaluationDate() = today;
 
     DayCounter dayCounter = Actual360();
-    Calendar calendar = TARGET();
+    Calendar calendar = NullCalendar();
 
     Handle<YieldTermStructure> riskFreeTS(flatRate(0.04, dayCounter));
     Handle<YieldTermStructure> dividendTS(flatRate(0.50, dayCounter));
@@ -102,7 +103,7 @@ void HestonModelTest::testBlackCalibration() {
     for (Real sigma = 0.1; sigma < 0.9; sigma += 0.2) {
         boost::shared_ptr<HestonProcess> process(
                                      new HestonProcess(riskFreeTS, dividendTS,
-                                                       s0, 0.02, 0.5, 0.02,
+                                                       s0, 0.01, 0.2, 0.02,
                                                        sigma, -0.75));
 
         boost::shared_ptr<HestonModel> model(new HestonModel(process));
