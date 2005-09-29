@@ -89,5 +89,13 @@
     If defined, indexed coupons (see the documentation) are used in
     floating legs.  If undefined (the default), par coupons are used.
 
+    \code
+    #define QL_ENABLE_SESSIONS
+    \endcode
+    If defined, singletons will return different instances for
+    different sessions. You will have to provide and link with the
+    library a sessionId() function in namespace QuantLib, returning a
+    different session id for each session.
+
 */
 

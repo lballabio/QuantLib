@@ -244,6 +244,21 @@ if test "$ql_use_deprecated_code" = "no" ; then
              [Define this if you want to disable deprecated code.])
 fi
 
+AC_ARG_ENABLE([sessions],
+              AC_HELP_STRING([--enable-sessions],
+                             [If enabled, singletons will return different
+                              instances for different sessions. You will
+                              have to provide and link with the library
+                              a sessionId() function in namespace QuantLib,
+                              returning a different session id for each
+                              session.]),
+              [ql_use_sessions=$enableval],
+              [ql_use_sessions=no])
+if test "$ql_use_sessions" = "yes" ; then
+   AC_DEFINE([QL_ENABLE_SESSIONS],[1],
+             [Define this if you want to enable sessions.])
+fi
+
 AC_ARG_ENABLE([examples],
               AC_HELP_STRING([--enable-examples],
                              [If enabled, examples are built and installed

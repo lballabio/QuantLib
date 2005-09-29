@@ -23,6 +23,15 @@
 
 using namespace QuantLib;
 
+#if defined(QL_ENABLE_SESSIONS)
+namespace QuantLib {
+
+    Integer sessionId() { return 0; }
+
+}
+#endif
+
+
 //Number of swaptions to be calibrated to...
 
 Size numRows = 5;

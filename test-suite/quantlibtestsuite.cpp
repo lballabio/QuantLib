@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/timer.hpp>
 
@@ -113,6 +113,14 @@ namespace {
     }
 
 }
+
+#if defined(QL_ENABLE_SESSIONS)
+namespace QuantLib {
+
+    Integer sessionId() { return 0; }
+
+}
+#endif
 
 test_suite* init_unit_test_suite(int, char* []) {
 

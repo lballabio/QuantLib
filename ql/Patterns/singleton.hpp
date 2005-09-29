@@ -27,6 +27,7 @@
 #include <ql/qldefines.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
+#include <map>
 
 namespace QuantLib {
 
@@ -57,27 +58,36 @@ namespace QuantLib {
         Singleton() {}
     #ifdef QL_PATCH_MSVC6
       private:
-        static boost::shared_ptr<T> instance_;
+        static std::map<Integer, boost::shared_ptr<T> > instances_;
     #endif
     };
 
+    #if defined(QL_ENABLE_SESSIONS)
+    // definition must be provided by the user
+    Integer sessionId();
+    #endif
 
     // template definitions
 
     #ifdef QL_PATCH_MSVC6
     template <class T>
-    boost::shared_ptr<T> Singleton<T>::instance_;
+    std::map<Integer, boost::shared_ptr<T> > Settings::instances_;
     #endif
 
     template <class T>
     T& Singleton<T>::instance() {
         #ifndef QL_PATCH_MSVC6
-        static boost::shared_ptr<T> instance_(new T);
-        #else
-        if (!instance_)
-            instance_ = boost::shared_ptr<T>(new T);
+        static std::map<Integer, boost::shared_ptr<T> > instances_;
         #endif
-        return *instance_;
+        #if defined(QL_ENABLE_SESSIONS)
+        Integer id = sessionId();
+        #else
+        Integer id = 0;
+        #endif
+        boost::shared_ptr<T>& instance = instances_[id];
+        if (!instance)
+            instance = boost::shared_ptr<T>(new T);
+        return *instance;
     }
 
 }

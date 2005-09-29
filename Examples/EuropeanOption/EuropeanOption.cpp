@@ -23,6 +23,15 @@
 
 using namespace QuantLib;
 
+#if defined(QL_ENABLE_SESSIONS)
+namespace QuantLib {
+
+    Integer sessionId() { return 0; }
+
+}
+#endif
+
+
 // This will be included in the library after a bit of redesign
 class WeightedPayoff {
     public:

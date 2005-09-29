@@ -27,4 +27,5 @@
 
 - Added new Turkish lira.
 
+- Added hook for multiple sessions to Singleton.
 

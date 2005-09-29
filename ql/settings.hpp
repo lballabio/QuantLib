@@ -41,6 +41,7 @@ namespace QuantLib {
             DateProxy& operator=(const Date&);
             operator Date() const;
         };
+        friend std::ostream& operator<<(std::ostream&, const DateProxy&);
       public:
         //! the date at which pricing is to be performed.
         /*! Client code can inspect the evaluation date, as in:
@@ -94,6 +95,11 @@ namespace QuantLib {
     Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {
         ObservableValue<Date>::operator=(d);
         return *this;
+    }
+
+    inline std::ostream& operator<<(std::ostream& out,
+                                    const Settings::DateProxy& p) {
+        return out << Date(p);
     }
 
 }
