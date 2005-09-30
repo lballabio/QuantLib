@@ -178,7 +178,8 @@ void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
     Size i;
     std::vector<Size> location;
     for (i=0; i < tmp.size(); ++i) {
-        location.push_back(find(grid.begin(),grid.end(),tmp[i])-grid.begin());
+        location.push_back(
+                      std::find(grid.begin(),grid.end(),tmp[i])-grid.begin());
     }
 
     // set-up a small Monte-Carlo simulation to price caplets

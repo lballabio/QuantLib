@@ -227,6 +227,14 @@ SOURCE=.\ql\Calendars\beijing.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\bombay.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\bombay.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\bratislava.cpp
 # End Source File
 # Begin Source File
@@ -367,6 +375,14 @@ SOURCE=.\ql\Calendars\sydney.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\taipei.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\taipei.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\taiwan.cpp
 # End Source File
 # Begin Source File
@@ -495,7 +511,7 @@ SOURCE=.\ql\CashFlows\inarrearindexedcoupon.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\CashFlows\indexcashflowvectors.hpp
+SOURCE=.\ql\CashFlows\indexedcashflowvectors.hpp
 # End Source File
 # Begin Source File
 
@@ -731,7 +747,15 @@ SOURCE=.\ql\Indexes\core.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Indexes\dkklibor.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Indexes\euribor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\eurlibor.hpp
 # End Source File
 # Begin Source File
 
@@ -747,7 +771,23 @@ SOURCE=.\ql\Indexes\indexmanager.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Indexes\jibar.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Indexes\jpylibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\libor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\libor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\nzdlibor.hpp
 # End Source File
 # Begin Source File
 
@@ -764,10 +804,6 @@ SOURCE=.\ql\Indexes\xibor.cpp
 # Begin Source File
 
 SOURCE=.\ql\Indexes\xibor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Indexes\zarlibor.hpp
 # End Source File
 # Begin Source File
 
@@ -815,6 +851,10 @@ SOURCE=.\ql\Instruments\bond.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\callabilityschedule.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\capfloor.cpp
 # End Source File
 # Begin Source File
@@ -832,6 +872,10 @@ SOURCE=.\ql\Instruments\cliquetoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\core.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\dividendschedule.hpp
 # End Source File
 # Begin Source File
 
@@ -1076,6 +1120,10 @@ SOURCE=.\ql\Math\choleskydecomposition.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\comparison.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\convergencestatistics.hpp
 # End Source File
 # Begin Source File
 
@@ -1730,6 +1778,14 @@ SOURCE=.\ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\batesengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\batesengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\binomialengine.hpp
 # End Source File
 # Begin Source File
@@ -2031,11 +2087,19 @@ SOURCE=.\ql\PricingEngines\mcsimulation.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\RandomNumbers\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\RandomNumbers\boxmullergaussianrng.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\centrallimitgaussianrng.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\core.hpp
 # End Source File
 # Begin Source File
 
@@ -2052,14 +2116,6 @@ SOURCE=.\ql\RandomNumbers\haltonrsg.cpp
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\haltonrsg.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\inversecumgaussianrng.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\inversecumgaussianrsg.hpp
 # End Source File
 # Begin Source File
 
@@ -2210,6 +2266,14 @@ SOURCE=.\ql\ShortRateModels\OneFactorModels\vasicek.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\ShortRateModels\TwoFactorModels\batesmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\TwoFactorModels\batesmodel.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.cpp
 # End Source File
 # Begin Source File
@@ -2275,6 +2339,10 @@ SOURCE=.\ql\ShortRateModels\twofactormodel.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Solvers1D\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Solvers1D\bisection.hpp
 # End Source File
 # Begin Source File
@@ -2316,6 +2384,14 @@ SOURCE=.\ql\TermStructures\affinetermstructure.hpp
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\bondhelpers.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\bondhelpers.hpp
 # End Source File
 # Begin Source File
 
@@ -2435,7 +2511,15 @@ SOURCE=.\ql\Utilities\null.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Utilities\observablevalue.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Utilities\steppingiterator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Utilities\strings.cpp
 # End Source File
 # Begin Source File
 
@@ -2484,6 +2568,10 @@ SOURCE=.\ql\Volatilities\capflatvolvector.hpp
 # Begin Source File
 
 SOURCE=.\ql\Volatilities\capletconstantvol.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\capletvariancecurve.hpp
 # End Source File
 # Begin Source File
 
@@ -2560,6 +2648,14 @@ SOURCE=.\ql\Processes\blackscholesprocess.cpp
 # Begin Source File
 
 SOURCE=.\ql\Processes\blackscholesprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\capletlmmprocess.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\capletlmmprocess.hpp
 # End Source File
 # Begin Source File
 
@@ -2640,23 +2736,7 @@ SOURCE=.\ql\cashflow.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\config.ansi.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\config.bcc.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\config.mingw.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\config.msvc.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\config.mwcw.hpp
 # End Source File
 # Begin Source File
 
@@ -2813,6 +2893,10 @@ SOURCE=.\ql\termstructure.hpp
 # Begin Source File
 
 SOURCE=.\ql\timegrid.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\timegrid.hpp
 # End Source File
 # Begin Source File
 

@@ -20,6 +20,8 @@
 #include <ql/PricingEngines/Vanilla/batesengine.hpp>
 #include <ql/Instruments/payoffs.hpp>
 
+#if !defined(QL_PATCH_MSVC6)
+
 namespace QuantLib {
 
     BatesEngine::BatesEngine(const boost::shared_ptr<BatesModel> & model,
@@ -112,4 +114,7 @@ namespace QuantLib {
     }
 
 }
+
+
+#endif
 

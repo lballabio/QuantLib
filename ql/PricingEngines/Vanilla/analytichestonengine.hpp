@@ -24,6 +24,10 @@
 #ifndef quantlib_analytic_heston_engine_hpp
 #define quantlib_analytic_heston_engine_hpp
 
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_MSVC6)
+
 #include <ql/PricingEngines/genericmodelengine.hpp>
 #include <ql/ShortRateModels/TwoFactorModels/hestonmodel.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
@@ -74,5 +78,6 @@ namespace QuantLib {
 
 }
 
+#endif
 
 #endif

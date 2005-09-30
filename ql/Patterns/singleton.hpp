@@ -71,7 +71,7 @@ namespace QuantLib {
 
     #ifdef QL_PATCH_MSVC6
     template <class T>
-    std::map<Integer, boost::shared_ptr<T> > Settings::instances_;
+    std::map<Integer, boost::shared_ptr<T> > Singleton<T>::instances_;
     #endif
 
     template <class T>

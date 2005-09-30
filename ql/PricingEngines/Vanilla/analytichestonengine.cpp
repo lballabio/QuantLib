@@ -22,9 +22,10 @@
   based on fourier transformation
 */
 
-#include <complex>
-#include <ql/Instruments/payoffs.hpp>
 #include <ql/PricingEngines/Vanilla/analytichestonengine.hpp>
+#include <ql/Instruments/payoffs.hpp>
+
+#if !defined(QL_PATCH_MSVC6)
 
 namespace QuantLib {
 
@@ -195,4 +196,6 @@ namespace QuantLib {
         }
     }
 }
+
+#endif
 

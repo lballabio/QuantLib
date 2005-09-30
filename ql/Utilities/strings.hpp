@@ -24,6 +24,7 @@
 #ifndef quantlib_strings_hpp
 #define quantlib_strings_hpp
 
+#include <ql/qldefines.hpp>
 #include <string>
 
 namespace QuantLib {

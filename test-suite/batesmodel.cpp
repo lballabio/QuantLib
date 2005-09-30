@@ -55,6 +55,7 @@ void teardown() {
 QL_END_TEST_LOCALS(BatesModelTest)
 
 void BatesModelTest::testAnalyticVsBlack() {
+    #ifndef QL_PATCH_MSVC6
 
     BOOST_MESSAGE("Testing analytic Bates engine against Black formula...");
 
@@ -163,10 +164,12 @@ void BatesModelTest::testAnalyticVsBlack() {
     }
 
     QL_TEST_TEARDOWN
+    #endif
 }
 
 
 void BatesModelTest::testAnalyticVsJumpDiffusion() {
+    #ifndef QL_PATCH_MSVC6
 
     BOOST_MESSAGE("Testing analytic Bates engine against Merton-76 engine...");
 
@@ -241,9 +244,11 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
     }
 
     QL_TEST_TEARDOWN
+    #endif
 }
 
 void BatesModelTest::testDAXCalibration() {
+    #ifndef QL_PATCH_MSVC6
 
     /* this example is taken from A. Sepp
        Pricing European-Style Options under Jump Diffusion Processes
@@ -435,6 +440,7 @@ void BatesModelTest::testDAXCalibration() {
     }
 
     QL_TEST_TEARDOWN
+    #endif
 }
 
 test_suite* BatesModelTest::suite() {
