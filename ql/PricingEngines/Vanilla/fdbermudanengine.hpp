@@ -31,7 +31,7 @@ namespace QuantLib {
     //! Finite-differences Bermudan engine
     /*! \ingroup vanillaengines */
     class FDBermudanEngine : public DividendVanillaOption::engine,
-        public FDMultiPeriodEngine {
+                             public FDMultiPeriodEngine {
       public:
         // constructor
         FDBermudanEngine(Size timeSteps = 100,
@@ -39,7 +39,7 @@ namespace QuantLib {
                          bool timeDependent = false)
         : FDMultiPeriodEngine(timeSteps, gridPoints,
                               timeDependent) {}
-        void calculate() {
+        void calculate() const {
             setupArguments(&arguments_, &arguments_);
             FDMultiPeriodEngine::calculate(&results_);
         }
