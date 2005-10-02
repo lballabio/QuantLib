@@ -2111,6 +2111,9 @@
 				RelativePath=".\rounding.cpp">
 			</File>
 			<File
+				RelativePath=".\sampledcurve.cpp">
+			</File>
+			<File
 				RelativePath=".\shortratemodels.cpp">
 			</File>
 			<File

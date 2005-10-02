@@ -417,6 +417,10 @@ SOURCE=.\rounding.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\sampledcurve.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\shortratemodels.cpp
 # End Source File
 # Begin Source File

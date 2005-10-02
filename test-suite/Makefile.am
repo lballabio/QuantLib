@@ -44,6 +44,7 @@ QL_TESTS = \
 	riskstats.hpp riskstats.cpp \
 	rngtraits.hpp rngtraits.cpp \
 	rounding.hpp rounding.cpp \
+	sampledcurve.hpp sampledcurve.cpp \
 	shortratemodels.hpp shortratemodels.cpp \
 	solvers.hpp solvers.cpp \
 	stats.hpp stats.cpp \

@@ -76,6 +76,7 @@
 #include "riskstats.hpp"
 #include "rngtraits.hpp"
 #include "rounding.hpp"
+#include "sampledcurve.hpp"
 #include "shortratemodels.hpp"
 #include "solvers.hpp"
 #include "stats.hpp"
@@ -142,7 +143,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(BOOST_TEST_CASE(startTimer));
-
+    test->add(SampledCurveTest::suite());
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
