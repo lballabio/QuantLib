@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="testsuite"
 	ProjectGUID="{A613045C-34AF-4706-AA3C-730C92524F74}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -1978,6 +1979,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\libormarketmodelprocess.cpp"
+				>
+			</File>
+			<File
 				RelativePath="lowdiscrepancysequences.cpp"
 				>
 				<FileConfiguration
@@ -2659,6 +2664,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sampledcurve.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\shortratemodels.cpp"
 				>
 			</File>
@@ -3230,6 +3239,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\libormarketmodelprocess.hpp"
+				>
+			</File>
+			<File
 				RelativePath="lowdiscrepancysequences.hpp"
 				>
 			</File>
@@ -3283,6 +3296,10 @@
 			</File>
 			<File
 				RelativePath=".\rounding.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sampledcurve.hpp"
 				>
 			</File>
 			<File
