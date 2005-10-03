@@ -25,14 +25,6 @@ INCLUDE_DIR    = ..\..
 # Object files
 OBJS = \
     "discretegeometricaso.obj$(_mt)$(_D)" \
-    "fdbermudanoption.obj$(_mt)$(_D)" \
-    "fdbsmoption.obj$(_mt)$(_D)" \
-    "fddividendamericanoption.obj$(_mt)$(_D)" \
-    "fddividendoption.obj$(_mt)$(_D)" \
-    "fddividendshoutoption.obj$(_mt)$(_D)" \
-    "fdeuropean.obj$(_mt)$(_D)" \
-    "fdmultiperiodoption.obj$(_mt)$(_D)" \
-    "fdstepconditionoption.obj$(_mt)$(_D)" \
     "mccliquetoption.obj$(_mt)$(_D)" \
     "mcdiscretearithmeticaso.obj$(_mt)$(_D)" \
     "mceverest.obj$(_mt)$(_D)" \
@@ -45,7 +37,6 @@ OBJS = \
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
-
 
 
 # Options
@@ -85,7 +76,6 @@ TLIB_OPTS    = /P256
 Pricers$(_mt)$(_D).lib:: $(OBJS)
     if exist Pricers$(_mt)$(_D).lib     del Pricers$(_mt)$(_D).lib
     $(TLIB) $(TLIB_OPTS) "Pricers$(_mt)$(_D).lib" /a $(OBJS)
-
 
 
 # Clean up

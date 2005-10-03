@@ -21,8 +21,12 @@
     \brief Hull & White (HW) model
 */
 
-#ifndef quantlib_one_factor_models_hull_white_h
-#define quantlib_one_factor_models_hull_white_h
+#ifndef quantlib_hull_white_hpp
+#define quantlib_hull_white_hpp
+
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
 
 #include <ql/ShortRateModels/OneFactorModels/vasicek.hpp>
 
@@ -143,3 +147,6 @@ namespace QuantLib {
 
 
 #endif
+
+#endif
+

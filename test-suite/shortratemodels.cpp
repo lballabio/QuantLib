@@ -45,6 +45,7 @@ QL_END_TEST_LOCALS(ShortRateModelTest)
 
 
 void ShortRateModelTest::testCachedHullWhite() {
+    #if !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE("Testing Hull-White calibration against cached values...");
 
@@ -105,6 +106,7 @@ void ShortRateModelTest::testCachedHullWhite() {
     }
 
     QL_TEST_TEARDOWN
+    #endif
 }
 
 

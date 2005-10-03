@@ -21,8 +21,12 @@
     \brief Black-Karasinski model
 */
 
-#ifndef quantlib_one_factor_models_black_karasinski_h
-#define quantlib_one_factor_models_black_karasinski_h
+#ifndef quantlib_black_karasinski_hpp
+#define quantlib_black_karasinski_hpp
+
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
 
 #include <ql/ShortRateModels/onefactormodel.hpp>
 #include <ql/Processes/ornsteinuhlenbeckprocess.hpp>
@@ -94,3 +98,6 @@ namespace QuantLib {
 
 
 #endif
+
+#endif
+

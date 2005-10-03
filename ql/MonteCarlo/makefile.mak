@@ -69,9 +69,6 @@ MonteCarlo$(_mt)$(_D).lib:: $(OBJS)
     $(TLIB) $(TLIB_OPTS) "MonteCarlo$(_mt)$(_D).lib" /a $(OBJS)
 
 
-
-
-
 # Clean up
 clean::
     if exist *.obj* del /q *.obj*

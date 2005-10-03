@@ -24,6 +24,10 @@
 #ifndef quantlib_extended_cox_ingersoll_ross_hpp
 #define quantlib_extended_cox_ingersoll_ross_hpp
 
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
+
 #include <ql/ShortRateModels/OneFactorModels/coxingersollross.hpp>
 
 namespace QuantLib {
@@ -158,3 +162,6 @@ namespace QuantLib {
 
 
 #endif
+
+#endif
+

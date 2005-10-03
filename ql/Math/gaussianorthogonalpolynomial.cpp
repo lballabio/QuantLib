@@ -58,7 +58,7 @@ namespace QuantLib {
         return std::exp(GammaFunction().logValue(mu_+0.5));
     }
 
-    Real GaussHermitePolynomial::alpha(Size i) const {
+    Real GaussHermitePolynomial::alpha(Size) const {
         return 0.0;
     }
 
@@ -132,7 +132,7 @@ namespace QuantLib {
         return M_PI;
     }
 
-    Real GaussHyperbolicPolynomial::alpha(Size i) const {
+    Real GaussHyperbolicPolynomial::alpha(Size) const {
         return 0.0;
     }
 

@@ -25,6 +25,10 @@
 #ifndef quantlib_one_factor_model_hpp
 #define quantlib_one_factor_model_hpp
 
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
+
 #include <ql/stochasticprocess.hpp>
 #include <ql/ShortRateModels/model.hpp>
 #include <ql/Lattices/lattice1d.hpp>
@@ -142,5 +146,6 @@ namespace QuantLib {
 
 }
 
+#endif
 
 #endif

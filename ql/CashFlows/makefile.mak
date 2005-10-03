@@ -23,6 +23,7 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
+    "analysis.obj$(_mt)$(_D)" \
     "basispointsensitivity.obj$(_mt)$(_D)" \
     "cashflowvectors.obj$(_mt)$(_D)" \
     "inarrearindexedcoupon.obj$(_mt)$(_D)" \
@@ -33,8 +34,6 @@ OBJS = \
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
-
-
 
 # Options
 CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR) -w-8070
@@ -73,9 +72,6 @@ TLIB_OPTS    = /P128
 CashFlows$(_mt)$(_D).lib:: $(OBJS)
     if exist CashFlows$(_mt)$(_D).lib     del CashFlows$(_mt)$(_D).lib
     $(TLIB) $(TLIB_OPTS) "CashFlows$(_mt)$(_D).lib" /a $(OBJS)
-
-
-
 
 
 # Clean up

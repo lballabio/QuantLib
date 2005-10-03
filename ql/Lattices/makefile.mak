@@ -25,15 +25,11 @@ INCLUDE_DIR    = ..\..
 # Object files
 OBJS = \
     "binomialtree.obj$(_mt)$(_D)" \
-    "bsmlattice.obj$(_mt)$(_D)" \
-    "lattice.obj$(_mt)$(_D)" \
-    "lattice2d.obj$(_mt)$(_D)" \
     "trinomialtree.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
-
 
 
 # Options
@@ -73,9 +69,6 @@ TLIB_OPTS    = /P128
 Lattices$(_mt)$(_D).lib:: $(OBJS)
     if exist Lattices$(_mt)$(_D).lib     del Lattices$(_mt)$(_D).lib
     $(TLIB) $(TLIB_OPTS) "Lattices$(_mt)$(_D).lib" /a $(OBJS)
-
-
-
 
 
 # Clean up

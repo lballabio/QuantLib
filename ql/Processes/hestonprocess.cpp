@@ -60,7 +60,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Matrix> HestonProcess::diffusion(Time t, const Array& x) const {
+    Disposable<Matrix> HestonProcess::diffusion(Time, const Array& x) const {
         /* the correlation matrix is
            |  1   rho |
            | rho   1  |

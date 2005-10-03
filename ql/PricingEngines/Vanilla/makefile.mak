@@ -26,7 +26,9 @@ OBJS = \
     "analyticdigitalamericanengine.obj$(_mt)$(_D)" \
     "analyticdividendeuropeanengine.obj$(_mt)$(_D)" \
     "analyticeuropeanengine.obj$(_mt)$(_D)" \
+    "analytichestonengine.obj$(_mt)$(_D)" \
     "baroneadesiwhaleyengine.obj$(_mt)$(_D)" \
+    "batesengine.obj$(_mt)$(_D)" \
     "bjerksundstenslandengine.obj$(_mt)$(_D)" \
     "discretizedvanillaoption.obj$(_mt)$(_D)" \
     "fddividendengine.obj$(_mt)$(_D)" \

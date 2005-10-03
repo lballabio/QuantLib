@@ -2,6 +2,8 @@
 .autodepend
 .silent
 
+MAKE = $(MAKE)
+
 !ifdef _DEBUG
 !ifndef _RTLDLL
     _D = -sd
@@ -26,7 +28,10 @@ OBJS = \
     "calibrationhelper.obj$(_mt)$(_D)" \
     "model.obj$(_mt)$(_D)" \
     "onefactormodel.obj$(_mt)$(_D)" \
-    "twofactormodel.obj$(_mt)$(_D)"
+    "twofactormodel.obj$(_mt)$(_D)" \
+    "CalibrationHelpers\CalibrationHelpers$(_mt)$(_D).lib" \
+    "OneFactorModels\OneFactorModels$(_mt)$(_D).lib" \
+    "TwoFactorModels\TwoFactorModels$(_mt)$(_D).lib"
 
 # Tools to be used
 CC        = bcc32
@@ -67,16 +72,28 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-ShortRateModels$(_mt)$(_D).lib:: $(OBJS)
+ShortRateModels$(_mt)$(_D).lib:: SubLibraries $(OBJS)
     if exist ShortRateModels$(_mt)$(_D).lib     del ShortRateModels$(_mt)$(_D).lib
     $(TLIB) $(TLIB_OPTS) "ShortRateModels$(_mt)$(_D).lib" /a $(OBJS)
 
-
-
-
+SubLibraries:
+    cd CalibrationHelpers
+    $(MAKE)
+    cd ..\OneFactorModels
+    $(MAKE)
+    cd ..\TwoFactorModels
+    $(MAKE)
+    cd ..
 
 # Clean up
 clean::
     if exist *.obj         del /q *.obj
     if exist *.obj$(_mt)$(_D)""    del /q *.obj
     if exist *.lib         del /q *.lib
+    cd CalibrationHelpers
+    $(MAKE) clean
+    cd ..\OneFactorModels
+    $(MAKE) clean
+    cd ..\TwoFactorModels
+    $(MAKE) clean
+    cd ..

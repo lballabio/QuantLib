@@ -24,6 +24,7 @@ INCLUDE_DIR    = ..\..
 # Object files
 OBJS = \
     "affinetermstructure.obj$(_mt)$(_D)" \
+    "bondhelpers.obj$(_mt)$(_D)" \
     "compoundforward.obj$(_mt)$(_D)" \
     "extendeddiscountcurve.obj$(_mt)$(_D)" \
     "piecewiseflatforward.obj$(_mt)$(_D)" \

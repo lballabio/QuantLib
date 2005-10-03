@@ -29,9 +29,11 @@ EXE_DIR            = .\bin
 # Object files
 QL_TESTS = \
     "americanoption.obj$(_mt)$(_D)" \
+    "array.obj$(_mt)$(_D)" \
     "asianoptions.obj$(_mt)$(_D)" \
     "barrieroption.obj$(_mt)$(_D)" \
     "basketoption.obj$(_mt)$(_D)" \
+    "batesmodel.obj$(_mt)$(_D)" \
     "bermudanswaption.obj$(_mt)$(_D)" \
     "bonds.obj$(_mt)$(_D)" \
     "calendars.obj$(_mt)$(_D)" \
@@ -48,17 +50,21 @@ QL_TESTS = \
     "exchangerate.obj$(_mt)$(_D)" \
     "factorial.obj$(_mt)$(_D)" \
     "forwardoption.obj$(_mt)$(_D)" \
+    "gaussianquadratures.obj$(_mt)$(_D)" \
+    "hestonmodel.obj$(_mt)$(_D)" \
     "instruments.obj$(_mt)$(_D)" \
     "integrals.obj$(_mt)$(_D)" \
     "interestrates.obj$(_mt)$(_D)" \
     "interpolations.obj$(_mt)$(_D)" \
     "jumpdiffusion.obj$(_mt)$(_D)" \
+    "libormarketmodelprocess.obj$(_mt)$(_D)" \
     "lowdiscrepancysequences.obj$(_mt)$(_D)" \
     "matrices.obj$(_mt)$(_D)" \
     "mersennetwister.obj$(_mt)$(_D)" \
     "money.obj$(_mt)$(_D)" \
     "old_pricers.obj$(_mt)$(_D)" \
     "operators.obj$(_mt)$(_D)" \
+    "pathgenerator.obj$(_mt)$(_D)" \
     "piecewiseflatforward.obj$(_mt)$(_D)" \
     "piecewiseyieldcurve.obj$(_mt)$(_D)" \
     "quantlibtestsuite.obj$(_mt)$(_D)" \
@@ -67,12 +73,14 @@ QL_TESTS = \
     "riskstats.obj$(_mt)$(_D)" \
     "rngtraits.obj$(_mt)$(_D)" \
     "rounding.obj$(_mt)$(_D)" \
+    "sampledcurve.obj$(_mt)$(_D)" \
     "shortratemodels.obj$(_mt)$(_D)" \
     "solvers.obj$(_mt)$(_D)" \
     "stats.obj$(_mt)$(_D)" \
     "swap.obj$(_mt)$(_D)" \
     "swaption.obj$(_mt)$(_D)" \
     "termstructures.obj$(_mt)$(_D)" \
+    "tqreigendecomposition.obj$(_mt)$(_D)" \
     "tracing.obj$(_mt)$(_D)" \
     "utilities.obj$(_mt)$(_D)"
 
@@ -119,7 +127,7 @@ $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe:: $(EXE_DIR)
          del $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe
     $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) \
     -e"$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe" \
-    $(QL_TEST_LIB) libboost_unit_test_framework-bcb$(_mt)$(_D)-1_31.lib
+    $(QL_TEST_LIB) libboost_unit_test_framework-bcb$(_mt)$(_D)-1_33.lib
 
 $(EXE_DIR):
     if not exist .\bin md .\bin
@@ -131,7 +139,7 @@ $(QL_TEST_LIB): $(QL_TESTS)
 
 check: $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe
     $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe \
-                  --log_level=messages --build_info=yes --report_level=short
+                  --log_level=message --build_info=yes --report_level=short
     cd ..
 
 

@@ -21,8 +21,12 @@
     \brief Swaption engine using Jamshidian's decomposition
 */
 
-#ifndef quantlib_pricers_jamshidian_swaption_h
-#define quantlib_pricers_jamshidian_swaption_h
+#ifndef quantlib_pricers_jamshidian_swaption_hpp
+#define quantlib_pricers_jamshidian_swaption_hpp
+
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
 
 #include <ql/Instruments/swaption.hpp>
 #include <ql/ShortRateModels/onefactormodel.hpp>
@@ -52,3 +56,6 @@ namespace QuantLib {
 
 
 #endif
+
+#endif
+

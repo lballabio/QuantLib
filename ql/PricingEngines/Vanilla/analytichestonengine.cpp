@@ -25,7 +25,7 @@
 #include <ql/PricingEngines/Vanilla/analytichestonengine.hpp>
 #include <ql/Instruments/payoffs.hpp>
 
-#if !defined(QL_PATCH_MSVC6)
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
 namespace QuantLib {
 
@@ -41,7 +41,7 @@ namespace QuantLib {
 
       private:
         const Size j_;
-        const VanillaOption::arguments& arg;
+        const VanillaOption::arguments& arg_;
         const Real kappa_, theta_, sigma_, v0_;
 
         // helper variables
@@ -63,14 +63,14 @@ namespace QuantLib {
         const boost::shared_ptr<HestonModel>& model,
         const AnalyticHestonEngine* const engine,
         Time term, Real ratio, Size j)
-    : j_ (j), arg(arguments),
+    : j_ (j), arg_(arguments),
       kappa_(model->kappa()), theta_(model->theta()),
       sigma_(model->sigma()), v0_(model->v0()),
       term_(term),
       x_(std::log(boost::dynamic_pointer_cast<HestonProcess>
-                  (arg.stochasticProcess)->s0())),
+                  (arg_.stochasticProcess)->s0())),
       sx_(std::log(boost::dynamic_pointer_cast<StrikedTypePayoff>
-                   (arg.payoff)->strike())),
+                   (arg_.payoff)->strike())),
       dd_(x_-std::log(ratio)),
       sigma2_(sigma_*sigma_),
       rsigma_(model->rho()*sigma_),

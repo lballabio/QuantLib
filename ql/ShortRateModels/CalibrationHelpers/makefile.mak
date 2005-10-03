@@ -24,6 +24,7 @@ INCLUDE_DIR    = ..\..\..
 # Object files
 OBJS = \
     "caphelper.obj$(_mt)$(_D)" \
+    "hestonmodelhelper.obj$(_mt)$(_D)" \
     "swaptionhelper.obj$(_mt)$(_D)"
 
 # Tools to be used

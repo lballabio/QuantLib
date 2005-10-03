@@ -26,7 +26,7 @@
 
 #include <ql/qldefines.hpp>
 
-#if !defined(QL_PATCH_MSVC6)
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
 #include <ql/PricingEngines/genericmodelengine.hpp>
 #include <ql/ShortRateModels/TwoFactorModels/hestonmodel.hpp>

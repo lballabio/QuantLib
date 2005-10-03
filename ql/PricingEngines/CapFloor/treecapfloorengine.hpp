@@ -21,8 +21,8 @@
     \brief Numerical lattice engine for cap/floors
 */
 
-#ifndef quantlib_pricers_tree_cap_floor_h
-#define quantlib_pricers_tree_cap_floor_h
+#ifndef quantlib_pricers_tree_cap_floor_hpp
+#define quantlib_pricers_tree_cap_floor_hpp
 
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/PricingEngines/latticeshortratemodelengine.hpp>
@@ -46,3 +46,4 @@ namespace QuantLib {
 
 
 #endif
+

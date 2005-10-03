@@ -17,6 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
+
 #include <ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 #include <ql/Math/chisquaredistribution.hpp>
@@ -101,3 +105,6 @@ namespace QuantLib {
     }
 
 }
+
+#endif
+

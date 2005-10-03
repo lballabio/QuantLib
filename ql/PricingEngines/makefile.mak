@@ -2,6 +2,8 @@
 .autodepend
 .silent
 
+MAKE = $(MAKE)
+
 !ifdef _DEBUG
 !ifndef _RTLDLL
     _D = -sd
@@ -26,7 +28,15 @@ OBJS = \
     "americanpayoffatexpiry.obj$(_mt)$(_D)" \
     "americanpayoffathit.obj$(_mt)$(_D)" \
     "blackformula.obj$(_mt)$(_D)" \
-    "greeks.obj$(_mt)$(_D)"
+    "greeks.obj$(_mt)$(_D)" \
+    "Asian\AsianEngines$(_mt)$(_D).lib" \
+    "Barrier\BarrierEngines$(_mt)$(_D).lib" \
+    "Basket\BasketEngines$(_mt)$(_D).lib" \
+    "CapFloor\CapFloorEngines$(_mt)$(_D).lib" \
+    "Cliquet\CliquetEngines$(_mt)$(_D).lib" \
+    "Swaption\SwaptionEngines$(_mt)$(_D).lib" \
+    "Vanilla\VanillaEngines$(_mt)$(_D).lib"
+
 
 # Tools to be used
 CC        = bcc32
@@ -66,15 +76,44 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-PricingEngines$(_mt)$(_D).lib:: $(OBJS)
-    if exist PricingEngines$(_mt)$(_D).lib     del PricingEngines$(_mt)$(_D).lib
+PricingEngines$(_mt)$(_D).lib:: SubLibraries $(OBJS)
+    if exist PricingEngines$(_mt)$(_D).lib    del PricingEngines$(_mt)$(_D).lib
     $(TLIB) $(TLIB_OPTS) "PricingEngines$(_mt)$(_D).lib" /a $(OBJS)
 
-
-
+SubLibraries:
+    cd Asian
+    $(MAKE)
+    cd ..\Barrier
+    $(MAKE)
+    cd ..\Basket
+    $(MAKE)
+    cd ..\CapFloor
+    $(MAKE)
+    cd ..\Cliquet
+    $(MAKE)
+    cd ..\Swaption
+    $(MAKE)
+    cd ..\Vanilla
+    $(MAKE)
+    cd ..
 
 
 # Clean up
 clean::
     if exist *.obj* del /q *.obj*
     if exist *.lib  del /q *.lib
+    cd Asian
+    $(MAKE) clean
+    cd ..\Barrier
+    $(MAKE) clean
+    cd ..\Basket
+    $(MAKE) clean
+    cd ..\CapFloor
+    $(MAKE) clean
+    cd ..\Cliquet
+    $(MAKE) clean
+    cd ..\Swaption
+    $(MAKE) clean
+    cd ..\Vanilla
+    $(MAKE) clean
+    cd ..

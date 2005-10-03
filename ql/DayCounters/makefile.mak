@@ -32,7 +32,6 @@ CC        = bcc32
 TLIB      = tlib
 
 
-
 # Options
 CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR) -w-8070
 
@@ -70,9 +69,6 @@ TLIB_OPTS    = /P128
 DayCounters$(_mt)$(_D).lib:: $(OBJS)
     if exist DayCounters$(_mt)$(_D).lib     del DayCounters$(_mt)$(_D).lib
     $(TLIB) $(TLIB_OPTS) "DayCounters$(_mt)$(_D).lib" /a $(OBJS)
-
-
-
 
 
 # Clean up

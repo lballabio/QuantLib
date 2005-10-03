@@ -24,12 +24,12 @@ INCLUDE_DIR    = ..\..
 # Object files
 OBJS = \
     "indexmanager.obj$(_mt)$(_D)" \
+    "libor.obj$(_mt)$(_D)" \
     "xibor.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
-
 
 
 # Options
@@ -69,9 +69,6 @@ TLIB_OPTS    = /P128
 Indexes$(_mt)$(_D).lib:: $(OBJS)
     if exist Indexes$(_mt)$(_D).lib     del Indexes$(_mt)$(_D).lib
     $(TLIB) $(TLIB_OPTS) "Indexes$(_mt)$(_D).lib" /a $(OBJS)
-
-
-
 
 
 # Clean up

@@ -129,7 +129,7 @@ namespace QuantLib {
     }
 
     Disposable<Matrix> CapletLiborMarketModelProcess::diffusion(
-                                               Time t, const Array& x) const {
+                                               Time t, const Array&) const {
 
         Matrix tmp(size(), factors(), 0.0);
         const Size m = nextResetDate(t);

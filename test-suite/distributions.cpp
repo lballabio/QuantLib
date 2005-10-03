@@ -53,7 +53,7 @@ struct BivariateTestData {
 };
 
 template <class Bivariate>
-void checkBivariate(const std::string& tag) {
+void checkBivariate(const char* tag) {
 
     BivariateTestData values[] = {
         /* The data below are from
@@ -135,7 +135,7 @@ void checkBivariate(const std::string& tag) {
 }
 
 template <class Bivariate>
-void checkBivariateAtZero(const std::string& tag, Real tolerance) {
+void checkBivariateAtZero(const char* tag, Real tolerance) {
 
     /*
     BVN(0.0,0.0,rho) = 1/4 + arcsin(rho)/(2*M_PI)

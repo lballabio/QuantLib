@@ -23,6 +23,8 @@ INCLUDE_DIR    = ..\..\..
 
 # Object files
 OBJS = \
+    "batesmodel.obj$(_mt)$(_D)" \
+    "hestonmodel.obj$(_mt)$(_D)" \
     "g2.obj$(_mt)$(_D)"
 
 # Tools to be used

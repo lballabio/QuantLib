@@ -26,7 +26,7 @@
 
 #include <ql/qldefines.hpp>
 
-#if !defined(QL_PATCH_MSVC6)
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
 #include <ql/ShortRateModels/TwoFactorModels/batesmodel.hpp>
 #include <ql/PricingEngines/Vanilla/analytichestonengine.hpp>

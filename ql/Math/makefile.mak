@@ -31,6 +31,8 @@ OBJS = \
     "errorfunction.obj$(_mt)$(_D)" \
     "factorial.obj$(_mt)$(_D)" \
     "gammadistribution.obj$(_mt)$(_D)" \
+    "gaussianorthogonalpolynomial.obj$(_mt)$(_D)" \
+    "gaussianquadratures.obj$(_mt)$(_D)" \
     "generalstatistics.obj$(_mt)$(_D)" \
     "incompletegamma.obj$(_mt)$(_D)" \
     "incrementalstatistics.obj$(_mt)$(_D)" \
@@ -39,7 +41,8 @@ OBJS = \
     "pseudosqrt.obj$(_mt)$(_D)" \
     "rounding.obj$(_mt)$(_D)" \
     "svd.obj$(_mt)$(_D)" \
-    "symmetricschurdecomposition.obj$(_mt)$(_D)"
+    "symmetricschurdecomposition.obj$(_mt)$(_D)" \
+    "tqreigendecomposition.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32

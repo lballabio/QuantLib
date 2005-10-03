@@ -29,11 +29,9 @@ OBJS = \
     "treecapfloorengine.obj$(_mt)$(_D)"
 
 
-
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
-
 
 
 # Options

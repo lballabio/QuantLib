@@ -19,6 +19,8 @@
 
 #include <ql/FiniteDifferences/onefactoroperator.hpp>
 
+#if !defined(QL_PATCH_BORLAND)
+
 namespace QuantLib {
 
     OneFactorOperator::OneFactorOperator(
@@ -59,3 +61,6 @@ namespace QuantLib {
     }
 
 }
+
+#endif
+

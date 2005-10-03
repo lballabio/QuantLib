@@ -26,7 +26,6 @@ OUTPUT_DIR     = ..\lib
 
 # Object files
 CORE_OBJS = \
-    "basicdataformatters.obj$(_mt)$(_D)" \
     "calendar.obj$(_mt)$(_D)" \
     "currency.obj$(_mt)$(_D)" \
     "date.obj$(_mt)$(_D)" \
@@ -34,11 +33,11 @@ CORE_OBJS = \
     "errors.obj$(_mt)$(_D)" \
     "exchangerate.obj$(_mt)$(_D)" \
     "exercise.obj$(_mt)$(_D)" \
-    "grid.obj$(_mt)$(_D)" \
     "interestrate.obj$(_mt)$(_D)" \
     "money.obj$(_mt)$(_D)" \
     "schedule.obj$(_mt)$(_D)" \
     "stochasticprocess.obj$(_mt)$(_D)" \
+    "timegrid.obj$(_mt)$(_D)" \
     "voltermstructure.obj$(_mt)$(_D)"
 
 CALENDAR_LIB         = "Calendars\Calendars$(_mt)$(_D).lib"
@@ -55,28 +54,14 @@ OPTIMIZATION_LIB     = "Optimization\Optimization$(_mt)$(_D).lib"
 PRICER_LIB           = "Pricers\Pricers$(_mt)$(_D).lib"
 PRICING_ENGINES_LIB  = "PricingEngines\PricingEngines$(_mt)$(_D).lib"
 PROCESSES_LIB        = "Processes\Processes$(_mt)$(_D).lib"
-ASIAN_ENGINES_LIB    = "PricingEngines\Asian\AsianEngines$(_mt)$(_D).lib"
-BARRIER_ENGINES_LIB  = "PricingEngines\Barrier\BarrierEngines$(_mt)$(_D).lib"
-BASKET_ENGINES_LIB   = "PricingEngines\Basket\BasketEngines$(_mt)$(_D).lib"
-CAPFLOOR_ENGINES_LIB = "PricingEngines\CapFloor\CapFloorEngines$(_mt)$(_D).lib"
-CLIQUET_ENGINES_LIB  = "PricingEngines\Cliquet\CliquetEngines$(_mt)$(_D).lib"
-SWAPTION_ENGINES_LIB = "PricingEngines\Swaption\SwaptionEngines$(_mt)$(_D).lib"
-VANILLA_ENGINES_LIB  = "PricingEngines\Vanilla\VanillaEngines$(_mt)$(_D).lib"
 RNG_LIB              = "RandomNumbers\RandomNumbers$(_mt)$(_D).lib"
 SHORTRATEMODELS_LIB  = "ShortRateModels\ShortRateModels$(_mt)$(_D).lib"
-CALIBRATION_LIB      = \
-         "ShortRateModels\CalibrationHelpers\CalibrationHelpers$(_mt)$(_D).lib"
-ONEFACTOR_LIB        = \
-         "ShortRateModels\OneFactorModels\OneFactorModels$(_mt)$(_D).lib"
-TWOFACTOR_LIB        = \
-         "ShortRateModels\TwoFactorModels\TwoFactorModels$(_mt)$(_D).lib"
 TERMSTRUCT_LIB       = "TermStructures\TermStructures$(_mt)$(_D).lib"
 UTILITIES_LIB        = "Utilities\Utilities$(_mt)$(_D).lib"
 VOLATILITY_LIB       = "Volatilities\Volatilities$(_mt)$(_D).lib"
 
 QUANTLIB_OBJS = \
     $(CALENDAR_LIB) \
-    $(CALIBRATION_LIB) \
     $(CASHFLOWS_LIB) \
     $(CURRENCIES_LIB) \
     $(CORE_OBJS) \
@@ -84,25 +69,16 @@ QUANTLIB_OBJS = \
     $(FDM_LIB) \
     $(INDEXES_LIB) \
     $(INSTRUMENTS_LIB) \
-    $(SHORTRATEMODELS_LIB) \
     $(LATTICES_LIB) \
     $(MATH_LIB) \
     $(MONTECARLO_LIB) \
-    $(ONEFACTOR_LIB) \
     $(OPTIMIZATION_LIB) \
     $(PRICER_LIB) \
     $(PRICING_ENGINES_LIB) \
     $(PROCESSES_LIB) \
-    $(ASIAN_ENGINES_LIB) \
-    $(BARRIER_ENGINES_LIB) \
-    $(BASKET_ENGINES_LIB) \
-    $(CAPFLOOR_ENGINES_LIB) \
-    $(CLIQUET_ENGINES_LIB) \
-    $(SWAPTION_ENGINES_LIB) \
-    $(VANILLA_ENGINES_LIB) \
     $(RNG_LIB) \
+    $(SHORTRATEMODELS_LIB) \
     $(TERMSTRUCT_LIB) \
-    $(TWOFACTOR_LIB) \
     $(UTILITIES_LIB) \
     $(VOLATILITY_LIB)
 
@@ -187,6 +163,8 @@ SubLibraries:
     $(MAKE)
     cd ..\Instruments
     $(MAKE)
+    cd ..\Lattices
+    $(MAKE)
     cd ..\Math
     $(MAKE)
     cd ..\MonteCarlo
@@ -197,25 +175,11 @@ SubLibraries:
     $(MAKE)
     cd ..\PricingEngines
     $(MAKE)
-    cd Asian
-    $(MAKE)
-    cd ..\Barrier
-    $(MAKE)
-    cd ..\Basket
-    $(MAKE)
-    cd ..\CapFloor
-    $(MAKE)
-    cd ..\Cliquet
-    $(MAKE)
-    cd ..\Swaption
-    $(MAKE)
-    cd ..\Vanilla
-    $(MAKE)
-    cd ..\..\Processes
+    cd ..\Processes
     $(MAKE)
     cd ..\RandomNumbers
     $(MAKE)
-    cd ..\Lattices
+    cd ..\ShortRateModels
     $(MAKE)
     cd ..\TermStructures
     $(MAKE)
@@ -223,15 +187,6 @@ SubLibraries:
     $(MAKE)
     cd ..\Volatilities
     $(MAKE)
-    cd ..\ShortRateModels
-    $(MAKE)
-    cd CalibrationHelpers
-    $(MAKE)
-    cd ..\OneFactorModels
-    $(MAKE)
-    cd ..\TwoFactorModels
-    $(MAKE)
-    cd ..
     cd ..
 
 
@@ -251,7 +206,11 @@ clean::
     $(MAKE) clean
     cd ..\Instruments
     $(MAKE) clean
+    cd ..\Lattices
+    $(MAKE) clean
     cd ..\Math
+    $(MAKE) clean
+    cd ..\MonteCarlo
     $(MAKE) clean
     cd ..\Optimization
     $(MAKE) clean
@@ -259,39 +218,16 @@ clean::
     $(MAKE) clean
     cd ..\PricingEngines
     $(MAKE) clean
-    cd Asian
-    $(MAKE) clean
-    cd ..\Barrier
-    $(MAKE) clean
-    cd ..\Basket
-    $(MAKE) clean
-    cd ..\Cliquet
-    $(MAKE) clean
-    cd ..\CapFloor
-    $(MAKE) clean
-    cd ..\Swaption
-    $(MAKE) clean
-    cd ..\Vanilla
-    $(MAKE) clean
-    cd ..\..\Processes
+    cd ..\Processes
     $(MAKE) clean
     cd ..\RandomNumbers
     $(MAKE) clean
-    cd ..\Lattices
+    cd ..\ShortRateModels
     $(MAKE) clean
     cd ..\TermStructures
     $(MAKE) clean
     cd ..\Volatilities
     $(MAKE) clean
-    cd ..\ShortRateModels
-    $(MAKE) clean
-    cd CalibrationHelpers
-    $(MAKE) clean
-    cd ..\OneFactorModels
-    $(MAKE) clean
-    cd ..\TwoFactorModels
-    $(MAKE) clean
-    cd ..
     cd ..
     if exist *.obj*                    del /q *.obj*
     if exist *.lib                     del /q *.lib

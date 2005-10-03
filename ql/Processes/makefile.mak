@@ -24,10 +24,14 @@ INCLUDE_DIR      = ..\..
 # Object files
 OBJS = \
     "blackscholesprocess.obj$(_mt)$(_D)" \
+    "capletlmmprocess.obj$(_mt)$(_D)" \
+    "eulerdiscretization.obj$(_mt)$(_D)" \
     "geometricbrownianprocess.obj$(_mt)$(_D)" \
+    "hestonprocess.obj$(_mt)$(_D)" \
     "merton76process.obj$(_mt)$(_D)" \
     "ornsteinuhlenbeckprocess.obj$(_mt)$(_D)" \
-    "squarerootprocess.obj$(_mt)$(_D)"
+    "squarerootprocess.obj$(_mt)$(_D)" \
+    "stochasticprocessarray.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32

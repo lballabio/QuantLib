@@ -20,7 +20,7 @@
 #include <ql/PricingEngines/Vanilla/batesengine.hpp>
 #include <ql/Instruments/payoffs.hpp>
 
-#if !defined(QL_PATCH_MSVC6)
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
 namespace QuantLib {
 

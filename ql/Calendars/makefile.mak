@@ -24,12 +24,14 @@ INCLUDE_DIR    = ..\..
 # Object files
 OBJS = \
     "beijing.obj$(_mt)$(_D)" \
+    "bombay.obj$(_mt)$(_D)" \
     "bratislava.obj$(_mt)$(_D)" \
     "budapest.obj$(_mt)$(_D)" \
     "copenhagen.obj$(_mt)$(_D)" \
     "germany.obj$(_mt)$(_D)" \
     "helsinki.obj$(_mt)$(_D)" \
     "hongkong.obj$(_mt)$(_D)" \
+    "istanbul.obj$(_mt)$(_D)" \
     "italy.obj$(_mt)$(_D)" \
     "johannesburg.obj$(_mt)$(_D)" \
     "jointcalendar.obj$(_mt)$(_D)" \
@@ -40,6 +42,7 @@ OBJS = \
     "singapore.obj$(_mt)$(_D)" \
     "stockholm.obj$(_mt)$(_D)" \
     "sydney.obj$(_mt)$(_D)" \
+    "taipei.obj$(_mt)$(_D)" \
     "taiwan.obj$(_mt)$(_D)" \
     "target.obj$(_mt)$(_D)" \
     "tokyo.obj$(_mt)$(_D)" \

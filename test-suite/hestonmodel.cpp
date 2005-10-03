@@ -47,7 +47,7 @@ QL_END_TEST_LOCALS(HestonModelTest)
 
 
 void HestonModelTest::testBlackCalibration() {
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE(
        "Testing Heston model calibration using a flat volatility surface...");
@@ -145,7 +145,7 @@ void HestonModelTest::testBlackCalibration() {
 
 
 void HestonModelTest::testDAXCalibration() {
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
     /* this example is taken from A. Sepp
        Pricing European-Style Options under Jump Diffusion Processes
@@ -250,7 +250,7 @@ void HestonModelTest::testDAXCalibration() {
 }
 
 void HestonModelTest::testAnalyticVsBlack() {
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE("Testing analytic Heston engine against Black formula...");
 
@@ -305,7 +305,7 @@ void HestonModelTest::testAnalyticVsBlack() {
 
 
 void HestonModelTest::testAnalyticVsCached() {
-#ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE("Testing analytic Heston engine against cached values...");
 
@@ -411,6 +411,7 @@ void HestonModelTest::testAnalyticVsCached() {
 
 
 void HestonModelTest::testMcVsCached() {
+    #if !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE(
                 "Testing Monte Carlo Heston engine against cached values...");
@@ -470,11 +471,12 @@ void HestonModelTest::testMcVsCached() {
     }
 
     QL_TEST_TEARDOWN
+    #endif
 }
 
 
 void HestonModelTest::testEngines() {
-    #ifndef QL_PATCH_MSVC6
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE(
        "Testing Monte Carlo Heston engine against analytic Heston engine...");

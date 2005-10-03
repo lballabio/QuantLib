@@ -21,8 +21,12 @@
     \brief general differential operator for one-factor interest rate models
 */
 
-#ifndef quantlib_finite_differences_one_factor_operator_h
-#define quantlib_finite_differences_one_factor_operator_h
+#ifndef quantlib_finite_differences_one_factor_operator_hpp
+#define quantlib_finite_differences_one_factor_operator_hpp
+
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
 
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/ShortRateModels/onefactormodel.hpp>
@@ -57,5 +61,6 @@ namespace QuantLib {
 
 }
 
+#endif
 
 #endif

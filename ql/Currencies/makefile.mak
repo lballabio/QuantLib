@@ -30,7 +30,6 @@ CC        = bcc32
 TLIB      = tlib
 
 
-
 # Options
 CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR) -w-8070
 
@@ -68,9 +67,6 @@ TLIB_OPTS    = /P128
 Currencies$(_mt)$(_D).lib:: $(OBJS)
     if exist Currencies$(_mt)$(_D).lib     del Currencies$(_mt)$(_D).lib
     $(TLIB) $(TLIB_OPTS) "Currencies$(_mt)$(_D).lib" /a $(OBJS)
-
-
-
 
 
 # Clean up

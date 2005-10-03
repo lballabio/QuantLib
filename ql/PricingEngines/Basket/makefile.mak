@@ -33,7 +33,6 @@ CC        = bcc32
 TLIB      = tlib
 
 
-
 # Options
 CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR) -w-8070
 

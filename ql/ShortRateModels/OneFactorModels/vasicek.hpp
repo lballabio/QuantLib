@@ -21,8 +21,12 @@
     \brief Vasicek model class
 */
 
-#ifndef quantlib_one_factor_models_vasicek_hpp
-#define quantlib_one_factor_models_vasicek_hpp
+#ifndef quantlib_vasicek_hpp
+#define quantlib_vasicek_hpp
+
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
 
 #include <ql/ShortRateModels/onefactormodel.hpp>
 #include <ql/Processes/ornsteinuhlenbeckprocess.hpp>
@@ -107,3 +111,6 @@ namespace QuantLib {
 
 
 #endif
+
+#endif
+

@@ -17,6 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
+
 #include <ql/ShortRateModels/OneFactorModels/vasicek.hpp>
 #include <ql/PricingEngines/blackmodel.hpp>
 
@@ -64,3 +68,6 @@ namespace QuantLib {
     }
 
 }
+
+#endif
+

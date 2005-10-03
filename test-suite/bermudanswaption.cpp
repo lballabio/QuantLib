@@ -91,6 +91,7 @@ QL_END_TEST_LOCALS(BermudanSwaptionTest)
 
 
 void BermudanSwaptionTest::testCachedValues() {
+    #if !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE("Testing Bermudan swaption against cached values...");
 
@@ -178,6 +179,7 @@ void BermudanSwaptionTest::testCachedValues() {
                     << "expected:   " << otmValue);
 
     QL_TEST_TEARDOWN
+    #endif
 }
 
 
