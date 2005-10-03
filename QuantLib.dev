@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=624
+UnitCount=640
 Type=2
 Ver=1
 ObjFiles=
@@ -4957,67 +4957,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit493]
-FileName=ql\config.ansi.hpp
-CompileCpp=1
-Folder=QuantLib
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit494]
-FileName=ql\config.bcc.hpp
-CompileCpp=1
-Folder=QuantLib
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit495]
-FileName=ql\config.mingw.hpp
-CompileCpp=1
-Folder=QuantLib
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit496]
-FileName=ql\config.msvc.hpp
-CompileCpp=1
-Folder=QuantLib
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit497]
-FileName=ql\config.mwcw.hpp
-CompileCpp=1
-Folder=QuantLib
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit498]
-FileName=ql\core.hpp
-CompileCpp=1
-Folder=QuantLib
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit499]
 FileName=ql\currency.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5027,7 +4967,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit500]
+[Unit496]
 FileName=ql\date.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5037,7 +4977,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit501]
+[Unit497]
 FileName=ql\daycounter.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5047,7 +4987,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit502]
+[Unit498]
 FileName=ql\discretizedasset.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5057,7 +4997,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit503]
+[Unit499]
 FileName=ql\errors.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5067,7 +5007,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit504]
+[Unit500]
 FileName=ql\exchangerate.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5077,7 +5017,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit505]
+[Unit501]
 FileName=ql\exercise.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5087,7 +5027,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit506]
+[Unit502]
 FileName=ql\grid.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5097,7 +5037,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit507]
+[Unit503]
 FileName=ql\history.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5107,7 +5047,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit508]
+[Unit504]
 FileName=ql\index.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5117,7 +5057,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit509]
+[Unit505]
 FileName=ql\instrument.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5127,7 +5067,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit510]
+[Unit506]
 FileName=ql\interestrate.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5137,7 +5077,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit511]
+[Unit507]
 FileName=ql\money.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5147,7 +5087,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit512]
+[Unit508]
 FileName=ql\numericalmethod.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5157,7 +5097,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit513]
+[Unit509]
 FileName=ql\option.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5167,7 +5107,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit514]
+[Unit510]
 FileName=ql\payoff.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5177,7 +5117,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit515]
+[Unit511]
 FileName=ql\pricingengine.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5187,7 +5127,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit516]
+[Unit512]
 FileName=ql\qldefines.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5197,7 +5137,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit517]
+[Unit513]
 FileName=ql\quantlib.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5207,7 +5147,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit518]
+[Unit514]
 FileName=ql\quote.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5217,7 +5157,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit519]
+[Unit515]
 FileName=ql\schedule.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5227,7 +5167,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit520]
+[Unit516]
 FileName=ql\settings.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5237,7 +5177,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit521]
+[Unit517]
 FileName=ql\solver1d.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5247,7 +5187,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit522]
+[Unit518]
 FileName=ql\stochasticprocess.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5257,7 +5197,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit523]
+[Unit519]
 FileName=ql\swaptionvolstructure.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5267,7 +5207,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit524]
+[Unit520]
 FileName=ql\termstructure.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5277,7 +5217,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit525]
+[Unit521]
 FileName=ql\types.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5287,7 +5227,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit526]
+[Unit522]
 FileName=ql\userconfig.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5297,7 +5237,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit527]
+[Unit523]
 FileName=ql\argsandresults.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5307,7 +5247,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit528]
+[Unit524]
 FileName=ql\Instruments\fixedcouponbond.hpp
 CompileCpp=1
 Folder=Instruments
@@ -5317,7 +5257,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit529]
+[Unit525]
 FileName=ql\Instruments\bond.cpp
 CompileCpp=1
 Folder=Instruments
@@ -5327,7 +5267,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit530]
+[Unit526]
 FileName=ql\Instruments\bond.hpp
 CompileCpp=1
 Folder=Instruments
@@ -5337,7 +5277,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit531]
+[Unit527]
 FileName=ql\Instruments\fixedcouponbond.cpp
 CompileCpp=1
 Folder=Instruments
@@ -5347,7 +5287,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit532]
+[Unit528]
 FileName=ql\handle.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5357,7 +5297,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit533]
+[Unit529]
 FileName=ql\yieldtermstructure.hpp
 CompileCpp=1
 Folder=QuantLib
@@ -5367,7 +5307,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit534]
+[Unit530]
 FileName=ql\Calendars\prague.hpp
 CompileCpp=1
 Folder=Calendars
@@ -5377,7 +5317,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit535]
+[Unit531]
 FileName=ql\Calendars\bratislava.cpp
 CompileCpp=1
 Folder=Calendars
@@ -5387,7 +5327,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit536]
+[Unit532]
 FileName=ql\Calendars\bratislava.hpp
 CompileCpp=1
 Folder=Calendars
@@ -5397,7 +5337,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit537]
+[Unit533]
 FileName=ql\Calendars\prague.cpp
 CompileCpp=1
 Folder=Calendars
@@ -5407,7 +5347,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit538]
+[Unit534]
 FileName=ql\CashFlows\indexedcashflowvectors.hpp
 CompileCpp=1
 Folder=CashFlows
@@ -5417,7 +5357,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit539]
+[Unit535]
 FileName=ql\FiniteDifferences\bsmtermoperator.hpp
 CompileCpp=1
 Folder=FiniteDifferences
@@ -5427,7 +5367,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit540]
+[Unit536]
 FileName=ql\FiniteDifferences\bsmtermoperator.cpp
 CompileCpp=1
 Folder=FiniteDifferences
@@ -5437,7 +5377,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit541]
+[Unit537]
 FileName=ql\FiniteDifferences\parallelevolver.hpp
 CompileCpp=1
 Folder=FiniteDifferences
@@ -5447,7 +5387,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit542]
+[Unit538]
 FileName=ql\FiniteDifferences\operatortraits.hpp
 CompileCpp=1
 Folder=FiniteDifferences
@@ -5457,7 +5397,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit543]
+[Unit539]
 FileName=ql\Instruments\floatingratebond.hpp
 CompileCpp=1
 Folder=Instruments
@@ -5467,7 +5407,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit544]
+[Unit540]
 FileName=ql\Instruments\floatingratebond.cpp
 CompileCpp=1
 Folder=Instruments
@@ -5477,7 +5417,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit545]
+[Unit541]
 FileName=ql\Instruments\zerocouponbond.hpp
 CompileCpp=1
 Folder=Instruments
@@ -5487,7 +5427,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit546]
+[Unit542]
 FileName=ql\Instruments\zerocouponbond.cpp
 CompileCpp=1
 Folder=Instruments
@@ -5497,7 +5437,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit547]
+[Unit543]
 FileName=ql\Math\forwardflatinterpolation.hpp
 CompileCpp=1
 Folder=Math
@@ -5507,7 +5447,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit548]
+[Unit544]
 FileName=ql\Math\backwardflatinterpolation.hpp
 CompileCpp=1
 Folder=Math
@@ -5517,7 +5457,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit549]
+[Unit545]
 FileName=ql\PricingEngines\greeks.hpp
 CompileCpp=1
 Folder=PricingEngines
@@ -5527,7 +5467,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit550]
+[Unit546]
 FileName=ql\PricingEngines\greeks.cpp
 CompileCpp=1
 Folder=PricingEngines
@@ -5537,7 +5477,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit551]
+[Unit547]
 FileName=ql\PricingEngines\Vanilla\fdvanillaengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5547,7 +5487,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit552]
+[Unit548]
 FileName=ql\PricingEngines\Vanilla\fdamericanengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5557,7 +5497,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit553]
+[Unit549]
 FileName=ql\PricingEngines\Vanilla\fdbermudanengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5567,7 +5507,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit554]
+[Unit550]
 FileName=ql\PricingEngines\Vanilla\fddividendamericanengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5577,7 +5517,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit555]
+[Unit551]
 FileName=ql\PricingEngines\Vanilla\fddividendengine.cpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5587,7 +5527,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit556]
+[Unit552]
 FileName=ql\PricingEngines\Vanilla\fddividendengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5597,7 +5537,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit557]
+[Unit553]
 FileName=ql\PricingEngines\Vanilla\fddividendeuropeanengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5607,7 +5547,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit558]
+[Unit554]
 FileName=ql\PricingEngines\Vanilla\fddividendshoutengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5617,7 +5557,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit559]
+[Unit555]
 FileName=ql\PricingEngines\Vanilla\fdeuropeanengine.cpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5627,7 +5567,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit560]
+[Unit556]
 FileName=ql\PricingEngines\Vanilla\fdeuropeanengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5637,7 +5577,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit561]
+[Unit557]
 FileName=ql\PricingEngines\Vanilla\fdmultiperiodengine.cpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5647,7 +5587,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit562]
+[Unit558]
 FileName=ql\PricingEngines\Vanilla\fdmultiperiodengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5657,7 +5597,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit563]
+[Unit559]
 FileName=ql\PricingEngines\Vanilla\fdshoutengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5667,7 +5607,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit564]
+[Unit560]
 FileName=ql\PricingEngines\Vanilla\fdstepconditionengine.cpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5677,7 +5617,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit565]
+[Unit561]
 FileName=ql\PricingEngines\Vanilla\fdstepconditionengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5687,7 +5627,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit566]
+[Unit562]
 FileName=ql\PricingEngines\Vanilla\fdvanillaengine.cpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -5697,7 +5637,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit567]
+[Unit563]
 FileName=ql\Processes\squarerootprocess.hpp
 CompileCpp=1
 Folder=Processes
@@ -5707,7 +5647,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit568]
+[Unit564]
 FileName=ql\Processes\all.hpp
 CompileCpp=1
 Folder=Processes
@@ -5717,7 +5657,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit569]
+[Unit565]
 FileName=ql\Processes\blackscholesprocess.cpp
 CompileCpp=1
 Folder=Processes
@@ -5727,7 +5667,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit570]
+[Unit566]
 FileName=ql\Processes\blackscholesprocess.hpp
 CompileCpp=1
 Folder=Processes
@@ -5737,7 +5677,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit571]
+[Unit567]
 FileName=ql\Processes\geometricbrownianprocess.cpp
 CompileCpp=1
 Folder=Processes
@@ -5747,7 +5687,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit572]
+[Unit568]
 FileName=ql\Processes\geometricbrownianprocess.hpp
 CompileCpp=1
 Folder=Processes
@@ -5757,7 +5697,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit573]
+[Unit569]
 FileName=ql\Processes\merton76process.cpp
 CompileCpp=1
 Folder=Processes
@@ -5767,7 +5707,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit574]
+[Unit570]
 FileName=ql\Processes\merton76process.hpp
 CompileCpp=1
 Folder=Processes
@@ -5777,7 +5717,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit575]
+[Unit571]
 FileName=ql\Processes\ornsteinuhlenbeckprocess.cpp
 CompileCpp=1
 Folder=Processes
@@ -5787,7 +5727,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit576]
+[Unit572]
 FileName=ql\Processes\ornsteinuhlenbeckprocess.hpp
 CompileCpp=1
 Folder=Processes
@@ -5797,7 +5737,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit577]
+[Unit573]
 FileName=ql\Processes\squarerootprocess.cpp
 CompileCpp=1
 Folder=Processes
@@ -5807,7 +5747,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit578]
+[Unit574]
 FileName=ql\TermStructures\bootstraptraits.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5817,7 +5757,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit579]
+[Unit575]
 FileName=ql\TermStructures\forwardcurve.hpp
 CompileCpp=1
 Folder=TermStructures
@@ -5827,10 +5767,50 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit580]
+[Unit576]
 FileName=ql\TermStructures\piecewiseyieldcurve.hpp
 CompileCpp=1
 Folder=TermStructures
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit577]
+FileName=ql\Utilities\dataparsers.hpp
+CompileCpp=1
+Folder=Utilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit578]
+FileName=ql\Utilities\dataformatters.cpp
+CompileCpp=1
+Folder=Utilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit579]
+FileName=ql\Utilities\dataformatters.hpp
+CompileCpp=1
+Folder=Utilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit580]
+FileName=ql\Utilities\dataparsers.cpp
+CompileCpp=1
+Folder=Utilities
 Compile=1
 Link=1
 Priority=1000
@@ -5848,46 +5828,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit581]
-FileName=ql\Utilities\dataparsers.hpp
-CompileCpp=1
-Folder=Utilities
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit582]
-FileName=ql\Utilities\dataformatters.cpp
-CompileCpp=1
-Folder=Utilities
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit583]
-FileName=ql\Utilities\dataformatters.hpp
-CompileCpp=1
-Folder=Utilities
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit584]
-FileName=ql\Utilities\dataparsers.cpp
-CompileCpp=1
-Folder=Utilities
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit585]
 FileName=ql\Utilities\tracing.hpp
 CompileCpp=1
 Folder=Utilities
@@ -5897,7 +5837,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit586]
+[Unit582]
 FileName=ql\Utilities\disposable.hpp
 CompileCpp=1
 Folder=Utilities
@@ -5907,7 +5847,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit587]
+[Unit583]
 FileName=ql\Utilities\null.hpp
 CompileCpp=1
 Folder=Utilities
@@ -5917,7 +5857,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit588]
+[Unit584]
 FileName=ql\Utilities\strings.hpp
 CompileCpp=1
 Folder=Utilities
@@ -5927,7 +5867,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit589]
+[Unit585]
 FileName=ql\Utilities\tracing.cpp
 CompileCpp=1
 Folder=Utilities
@@ -5937,7 +5877,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit590]
+[Unit586]
 FileName=ql\Indexes\zibor.hpp
 CompileCpp=1
 Folder=Indexes
@@ -5947,7 +5887,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit591]
+[Unit587]
 FileName=ql\Indexes\cdor.hpp
 CompileCpp=1
 Folder=Indexes
@@ -5957,7 +5897,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit592]
+[Unit588]
 FileName=ql\Indexes\tibor.hpp
 CompileCpp=1
 Folder=Indexes
@@ -5967,7 +5907,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit593]
+[Unit589]
 FileName=ql\Lattices\lattice1d.hpp
 CompileCpp=1
 Folder=Lattices
@@ -5977,7 +5917,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit594]
+[Unit590]
 FileName=ql\timegrid.cpp
 CompileCpp=1
 Folder=QuantLib
@@ -5987,7 +5927,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit595]
+[Unit591]
 FileName=ql\Math\tqreigendecomposition.hpp
 CompileCpp=1
 Folder=Math
@@ -5997,7 +5937,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit596]
+[Unit592]
 FileName=ql\Math\gaussianorthogonalpolynomial.cpp
 CompileCpp=1
 Folder=Math
@@ -6007,7 +5947,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit597]
+[Unit593]
 FileName=ql\Math\gaussianorthogonalpolynomial.hpp
 CompileCpp=1
 Folder=Math
@@ -6017,7 +5957,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit598]
+[Unit594]
 FileName=ql\Math\gaussianquadratures.cpp
 CompileCpp=1
 Folder=Math
@@ -6027,7 +5967,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit599]
+[Unit595]
 FileName=ql\Math\gaussianquadratures.hpp
 CompileCpp=1
 Folder=Math
@@ -6037,7 +5977,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit600]
+[Unit596]
 FileName=ql\Math\tqreigendecomposition.cpp
 CompileCpp=1
 Folder=Math
@@ -6047,7 +5987,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit601]
+[Unit597]
 FileName=ql\Processes\eulerdiscretization.hpp
 CompileCpp=1
 Folder=Processes
@@ -6057,7 +5997,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit602]
+[Unit598]
 FileName=ql\Processes\eulerdiscretization.cpp
 CompileCpp=1
 Folder=Processes
@@ -6067,7 +6007,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit603]
+[Unit599]
 FileName=ql\PricingEngines\Vanilla\mceuropeanhestonengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -6077,7 +6017,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit604]
+[Unit600]
 FileName=ql\PricingEngines\Vanilla\mchestonengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -6087,7 +6027,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit605]
+[Unit601]
 FileName=ql\Processes\stochasticprocessarray.hpp
 CompileCpp=1
 Folder=Processes
@@ -6097,7 +6037,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit606]
+[Unit602]
 FileName=ql\Processes\hestonprocess.cpp
 CompileCpp=1
 Folder=Processes
@@ -6107,7 +6047,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit607]
+[Unit603]
 FileName=ql\Processes\hestonprocess.hpp
 CompileCpp=1
 Folder=Processes
@@ -6117,7 +6057,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit608]
+[Unit604]
 FileName=ql\Processes\stochasticprocessarray.cpp
 CompileCpp=1
 Folder=Processes
@@ -6127,7 +6067,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit609]
+[Unit605]
 FileName=ql\ShortRateModels\TwoFactorModels\hestonmodel.hpp
 CompileCpp=1
 Folder=ShortRateModels/TwoFactorModels
@@ -6137,7 +6077,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit610]
+[Unit606]
 FileName=ql\ShortRateModels\TwoFactorModels\hestonmodel.cpp
 CompileCpp=1
 Folder=ShortRateModels/TwoFactorModels
@@ -6147,7 +6087,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit611]
+[Unit607]
 FileName=ql\ShortRateModels\CalibrationHelpers\hestonmodelhelper.hpp
 CompileCpp=1
 Folder=ShortRateModels/CalibrationHelpers
@@ -6157,7 +6097,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit612]
+[Unit608]
 FileName=ql\ShortRateModels\CalibrationHelpers\hestonmodelhelper.cpp
 CompileCpp=1
 Folder=ShortRateModels/CalibrationHelpers
@@ -6167,7 +6107,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit613]
+[Unit609]
 FileName=ql\PricingEngines\Vanilla\analytichestonengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -6177,7 +6117,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit614]
+[Unit610]
 FileName=ql\PricingEngines\Vanilla\analytichestonengine.cpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -6187,7 +6127,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit615]
+[Unit611]
 FileName=ql\CashFlows\analysis.hpp
 CompileCpp=1
 Folder=CashFlows
@@ -6197,7 +6137,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit616]
+[Unit612]
 FileName=ql\CashFlows\analysis.cpp
 CompileCpp=1
 Folder=CashFlows
@@ -6207,7 +6147,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit617]
+[Unit613]
 FileName=ql\Calendars\istanbul.hpp
 CompileCpp=1
 Folder=Calendars
@@ -6217,7 +6157,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit618]
+[Unit614]
 FileName=ql\Calendars\istanbul.cpp
 CompileCpp=1
 Folder=Calendars
@@ -6227,7 +6167,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit619]
+[Unit615]
 FileName=ql\Indexes\libor.hpp
 CompileCpp=1
 Folder=Indexes
@@ -6237,7 +6177,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit620]
+[Unit616]
 FileName=ql\Indexes\libor.cpp
 CompileCpp=1
 Folder=Indexes
@@ -6247,7 +6187,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit621]
+[Unit617]
 FileName=ql\ShortRateModels\TwoFactorModels\batesmodel.hpp
 CompileCpp=1
 Folder=ShortRateModels/TwoFactorModels
@@ -6257,7 +6197,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit622]
+[Unit618]
 FileName=ql\ShortRateModels\TwoFactorModels\batesmodel.cpp
 CompileCpp=1
 Folder=ShortRateModels/TwoFactorModels
@@ -6267,7 +6207,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit623]
+[Unit619]
 FileName=ql\PricingEngines\Vanilla\batesengine.hpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
@@ -6277,10 +6217,230 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit624]
+[Unit620]
 FileName=ql\PricingEngines\Vanilla\batesengine.cpp
 CompileCpp=1
 Folder=PricingEngines/Vanilla
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit621]
+FileName=ql\timegrid.hpp
+CompileCpp=1
+Folder=QuantLib
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit622]
+FileName=ql\Calendars\bombay.hpp
+CompileCpp=1
+Folder=Calendars
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit623]
+FileName=ql\Calendars\bombay.cpp
+CompileCpp=1
+Folder=Calendars
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit624]
+FileName=ql\Calendars\taipei.hpp
+CompileCpp=1
+Folder=Calendars
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit493]
+FileName=ql\config.mingw.hpp
+CompileCpp=1
+Folder=QuantLib
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit494]
+FileName=ql\core.hpp
+CompileCpp=1
+Folder=QuantLib
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit625]
+FileName=ql\Calendars\taipei.cpp
+CompileCpp=1
+Folder=Calendars
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit626]
+FileName=ql\Indexes\nzdlibor.hpp
+CompileCpp=1
+Folder=Indexes
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit627]
+FileName=ql\Indexes\dkklibor.hpp
+CompileCpp=1
+Folder=Indexes
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit628]
+FileName=ql\Indexes\eurlibor.hpp
+CompileCpp=1
+Folder=Indexes
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit629]
+FileName=ql\Indexes\jibar.hpp
+CompileCpp=1
+Folder=Indexes
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit630]
+FileName=ql\Instruments\callabilityschedule.hpp
+CompileCpp=1
+Folder=Instruments
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit631]
+FileName=ql\Instruments\dividendschedule.hpp
+CompileCpp=1
+Folder=Instruments
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit632]
+FileName=ql\Math\convergencestatistics.hpp
+CompileCpp=1
+Folder=Math
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit633]
+FileName=ql\Math\sampledcurve.hpp
+CompileCpp=1
+Folder=Math
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit634]
+FileName=ql\Processes\capletlmmprocess.hpp
+CompileCpp=1
+Folder=Processes
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit635]
+FileName=ql\Processes\capletlmmprocess.cpp
+CompileCpp=1
+Folder=Processes
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit636]
+FileName=ql\TermStructures\bondhelpers.hpp
+CompileCpp=1
+Folder=TermStructures
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit637]
+FileName=ql\TermStructures\bondhelpers.cpp
+CompileCpp=1
+Folder=TermStructures
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit638]
+FileName=ql\Utilities\observablevalue.hpp
+CompileCpp=1
+Folder=Utilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit639]
+FileName=ql\Utilities\strings.cpp
+CompileCpp=1
+Folder=Utilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit640]
+FileName=ql\Volatilities\capletvariancecurve.hpp
+CompileCpp=1
+Folder=Volatilities
 Compile=1
 Link=1
 Priority=1000

@@ -226,6 +226,8 @@ clean::
     $(MAKE) clean
     cd ..\TermStructures
     $(MAKE) clean
+    cd ..\Utilities
+    $(MAKE) clean
     cd ..\Volatilities
     $(MAKE) clean
     cd ..
