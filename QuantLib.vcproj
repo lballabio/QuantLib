@@ -1526,9 +1526,6 @@
 				RelativePath="ql\CashFlows\inarrearindexedcoupon.hpp">
 			</File>
 			<File
-				RelativePath="ql\CashFlows\indexcashflowvectors.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\CashFlows\indexedcashflowvectors.hpp">
 			</File>
 			<File
@@ -2749,9 +2746,6 @@
 			</File>
 			<File
 				RelativePath="ql\Instruments\cliquetoption.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\Instruments\convertiblebond.hpp">
 			</File>
 			<File
 				RelativePath="ql\Instruments\core.hpp">
@@ -4508,9 +4502,6 @@
 				RelativePath="ql\Math\interpolation2D.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\interpolationtraits.hpp">
-			</File>
-			<File
 				RelativePath="ql\Math\kronrodintegral.hpp">
 			</File>
 			<File
@@ -4527,9 +4518,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\Math\multicubicspline.hpp">
-			</File>
-			<File
-				RelativePath="ql\Math\multivariateaccumulator.hpp">
 			</File>
 			<File
 				RelativePath="ql\Math\normaldistribution.cpp">
@@ -4733,6 +4721,9 @@
 				RelativePath=".\ql\Math\rounding.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Math\sampledcurve.hpp">
+			</File>
+			<File
 				RelativePath="ql\Math\segmentintegral.hpp">
 			</File>
 			<File
@@ -4887,7 +4878,13 @@
 			Name="MonteCarlo"
 			Filter="">
 			<File
+				RelativePath=".\ql\MonteCarlo\all.hpp">
+			</File>
+			<File
 				RelativePath="ql\MonteCarlo\brownianbridge.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MonteCarlo\core.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\MonteCarlo\getcovariance.cpp">
@@ -4926,6 +4923,9 @@
 		<Filter
 			Name="Optimization"
 			Filter="">
+			<File
+				RelativePath=".\ql\Optimization\all.hpp">
+			</File>
 			<File
 				RelativePath="ql\Optimization\armijo.cpp">
 				<FileConfiguration
@@ -5054,6 +5054,9 @@
 			</File>
 			<File
 				RelativePath="ql\Optimization\constraint.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\core.hpp">
 			</File>
 			<File
 				RelativePath="ql\Optimization\costfunction.hpp">
@@ -5204,7 +5207,13 @@
 			Name="Patterns"
 			Filter="">
 			<File
+				RelativePath=".\ql\Patterns\all.hpp">
+			</File>
+			<File
 				RelativePath="ql\Patterns\bridge.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Patterns\composite.hpp">
 			</File>
 			<File
 				RelativePath="ql\Patterns\curiouslyrecurring.hpp">
@@ -5942,6 +5951,9 @@
 				Name="Barrier"
 				Filter="">
 				<File
+					RelativePath=".\ql\PricingEngines\Barrier\all.hpp">
+				</File>
+				<File
 					RelativePath="ql\PricingEngines\Barrier\analyticbarrierengine.cpp">
 					<FileConfiguration
 						Name="Debug MTDLL|Win32">
@@ -6268,6 +6280,9 @@
 				Name="Forward"
 				Filter="">
 				<File
+					RelativePath=".\ql\PricingEngines\Forward\all.hpp">
+				</File>
+				<File
 					RelativePath="ql\PricingEngines\Forward\forwardengine.hpp">
 				</File>
 				<File
@@ -6277,6 +6292,9 @@
 			<Filter
 				Name="Quanto"
 				Filter="">
+				<File
+					RelativePath=".\ql\PricingEngines\Quanto\all.hpp">
+				</File>
 				<File
 					RelativePath="ql\PricingEngines\Quanto\quantoengine.hpp">
 				</File>
@@ -6544,6 +6562,12 @@
 				</File>
 				<File
 					RelativePath="ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\batesengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\batesengine.hpp">
 				</File>
 				<File
 					RelativePath="ql\PricingEngines\Vanilla\binomialengine.hpp">
@@ -7019,10 +7043,16 @@
 			Name="RandomNumbers"
 			Filter="">
 			<File
+				RelativePath=".\ql\RandomNumbers\all.hpp">
+			</File>
+			<File
 				RelativePath="ql\RandomNumbers\boxmullergaussianrng.hpp">
 			</File>
 			<File
 				RelativePath="ql\RandomNumbers\centrallimitgaussianrng.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\RandomNumbers\core.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\RandomNumbers\faurersg.cpp">
@@ -7092,12 +7122,6 @@
 			</File>
 			<File
 				RelativePath="ql\RandomNumbers\haltonrsg.hpp">
-			</File>
-			<File
-				RelativePath="ql\RandomNumbers\inversecumgaussianrng.hpp">
-			</File>
-			<File
-				RelativePath="ql\RandomNumbers\inversecumgaussianrsg.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\RandomNumbers\inversecumulativerng.hpp">
@@ -8159,6 +8183,12 @@
 				Name="TwoFactorModels"
 				Filter="">
 				<File
+					RelativePath=".\ql\ShortRateModels\TwoFactorModels\batesmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\TwoFactorModels\batesmodel.hpp">
+				</File>
+				<File
 					RelativePath="ql\ShortRateModels\TwoFactorModels\g2.cpp">
 					<FileConfiguration
 						Name="Debug MTDLL|Win32">
@@ -8232,6 +8262,9 @@
 		<Filter
 			Name="Solvers1D"
 			Filter="">
+			<File
+				RelativePath=".\ql\Solvers1D\all.hpp">
+			</File>
 			<File
 				RelativePath="ql\Solvers1D\bisection.hpp">
 			</File>
@@ -8322,6 +8355,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\TermStructures\all.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\TermStructures\bondhelpers.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\TermStructures\bondhelpers.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\TermStructures\bootstraptraits.hpp">
@@ -8622,12 +8661,6 @@
 				RelativePath=".\ql\Utilities\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\Utilities\combiningiterator.hpp">
-			</File>
-			<File
-				RelativePath="ql\Utilities\couplingiterator.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\Utilities\dataformatters.cpp">
 			</File>
 			<File
@@ -8643,22 +8676,16 @@
 				RelativePath=".\ql\Utilities\disposable.hpp">
 			</File>
 			<File
-				RelativePath="ql\Utilities\filteringiterator.hpp">
-			</File>
-			<File
-				RelativePath="ql\Utilities\iteratorcategories.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\Utilities\null.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Utilities\observablevalue.hpp">
 			</File>
 			<File
-				RelativePath="ql\Utilities\processingiterator.hpp">
+				RelativePath="ql\Utilities\steppingiterator.hpp">
 			</File>
 			<File
-				RelativePath="ql\Utilities\steppingiterator.hpp">
+				RelativePath=".\ql\Utilities\strings.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\Utilities\strings.hpp">
@@ -8673,6 +8700,9 @@
 		<Filter
 			Name="Volatilities"
 			Filter="">
+			<File
+				RelativePath=".\ql\Volatilities\all.hpp">
+			</File>
 			<File
 				RelativePath="ql\Volatilities\blackconstantvol.hpp">
 			</File>
@@ -8809,6 +8839,9 @@
 				RelativePath=".\ql\Volatilities\capletconstantvol.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Volatilities\capletvariancecurve.hpp">
+			</File>
+			<File
 				RelativePath="ql\Volatilities\impliedvoltermstructure.hpp">
 			</File>
 			<File
@@ -8925,6 +8958,12 @@
 				RelativePath=".\ql\Processes\blackscholesprocess.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Processes\capletlmmprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\capletlmmprocess.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Processes\eulerdiscretization.cpp">
 			</File>
 			<File
@@ -8969,9 +9008,6 @@
 		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp">
-		</File>
-		<File
-			RelativePath=".\ql\basetermstructure.hpp">
 		</File>
 		<File
 			RelativePath="ql\calendar.cpp">
@@ -9043,19 +9079,7 @@
 			RelativePath="ql\cashflow.hpp">
 		</File>
 		<File
-			RelativePath="ql\config.ansi.hpp">
-		</File>
-		<File
-			RelativePath="ql\config.bcc.hpp">
-		</File>
-		<File
-			RelativePath=".\ql\config.mingw.hpp">
-		</File>
-		<File
 			RelativePath="ql\config.msvc.hpp">
-		</File>
-		<File
-			RelativePath="ql\config.mwcw.hpp">
 		</File>
 		<File
 			RelativePath="ql\core.hpp">
@@ -9194,9 +9218,6 @@
 		</File>
 		<File
 			RelativePath="ql\discretizedasset.hpp">
-		</File>
-		<File
-			RelativePath="ql\disposable.hpp">
 		</File>
 		<File
 			RelativePath="ql\errors.cpp">
@@ -9358,9 +9379,6 @@
 			RelativePath=".\ql\money.hpp">
 		</File>
 		<File
-			RelativePath="ql\null.hpp">
-		</File>
-		<File
 			RelativePath="ql\numericalmethod.hpp">
 		</File>
 		<File
@@ -9380,9 +9398,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\quote.hpp">
-		</File>
-		<File
-			RelativePath="ql\relinkablehandle.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\schedule.cpp">

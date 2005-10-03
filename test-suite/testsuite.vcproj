@@ -506,6 +506,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\array.cpp">
+			</File>
+			<File
 				RelativePath="asianoptions.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -684,6 +687,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\batesmodel.cpp">
 			</File>
 			<File
 				RelativePath=".\bermudanswaption.cpp">
@@ -1551,6 +1557,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\libormarketmodelprocess.cpp">
 			</File>
 			<File
 				RelativePath="lowdiscrepancysequences.cpp">
@@ -2490,6 +2499,9 @@
 				RelativePath="americanoption.hpp">
 			</File>
 			<File
+				RelativePath=".\array.hpp">
+			</File>
+			<File
 				RelativePath="asianoptions.hpp">
 			</File>
 			<File
@@ -2497,6 +2509,9 @@
 			</File>
 			<File
 				RelativePath="basketoption.hpp">
+			</File>
+			<File
+				RelativePath=".\batesmodel.hpp">
 			</File>
 			<File
 				RelativePath=".\bermudanswaption.hpp">
@@ -2568,6 +2583,9 @@
 				RelativePath="jumpdiffusion.hpp">
 			</File>
 			<File
+				RelativePath=".\libormarketmodelprocess.hpp">
+			</File>
+			<File
 				RelativePath="lowdiscrepancysequences.hpp">
 			</File>
 			<File
@@ -2608,6 +2626,9 @@
 			</File>
 			<File
 				RelativePath=".\rounding.hpp">
+			</File>
+			<File
+				RelativePath=".\sampledcurve.hpp">
 			</File>
 			<File
 				RelativePath=".\shortratemodels.hpp">

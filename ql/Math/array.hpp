@@ -213,9 +213,15 @@ namespace QuantLib {
     }
 
     inline const Array& Array::operator+=(const Array& v) {
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(disable:4267)
+		#endif
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be added");
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(default:4267)
+		#endif
         std::transform(begin(),end(),v.begin(),begin(),
                        std::plus<Real>());
         return *this;
@@ -228,9 +234,15 @@ namespace QuantLib {
     }
 
     inline const Array& Array::operator-=(const Array& v) {
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(disable:4267)
+		#endif
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be subtracted");
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(default:4267)
+		#endif
         std::transform(begin(),end(),v.begin(),begin(),
                        std::minus<Real>());
         return *this;
@@ -243,9 +255,15 @@ namespace QuantLib {
     }
 
     inline const Array& Array::operator*=(const Array& v) {
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(disable:4267)
+		#endif
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be multiplied");
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(default:4267)
+		#endif
         std::transform(begin(),end(),v.begin(),begin(),
                        std::multiplies<Real>());
         return *this;
@@ -258,9 +276,15 @@ namespace QuantLib {
     }
 
     inline const Array& Array::operator/=(const Array& v) {
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(disable:4267)
+		#endif
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be divided");
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(default:4267)
+		#endif
         std::transform(begin(),end(),v.begin(),begin(),
                        std::divides<Real>());
         return *this;
@@ -337,9 +361,15 @@ namespace QuantLib {
     // dot product
 
     inline Real DotProduct(const Array& v1, const Array& v2) {
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(disable:4267)
+		#endif
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be multiplied");
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(default:4267)
+		#endif
         return std::inner_product(v1.begin(),v1.end(),v2.begin(),0.0);
     }
 
@@ -363,9 +393,15 @@ namespace QuantLib {
     // binary operators
 
     inline const Disposable<Array> operator+(const Array& v1, const Array& v2) {
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(disable:4267)
+		#endif
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be added");
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(default:4267)
+		#endif
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
                        std::plus<Real>());
@@ -387,9 +423,15 @@ namespace QuantLib {
     }
 
     inline const Disposable<Array> operator-(const Array& v1, const Array& v2) {
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(disable:4267)
+		#endif
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be subtracted");
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(default:4267)
+		#endif
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
                        std::minus<Real>());
@@ -411,9 +453,15 @@ namespace QuantLib {
     }
 
     inline const Disposable<Array> operator*(const Array& v1, const Array& v2) {
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(disable:4267)
+		#endif
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be multiplied");
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(default:4267)
+		#endif
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
                        std::multiplies<Real>());
@@ -435,9 +483,15 @@ namespace QuantLib {
     }
 
     inline const Disposable<Array> operator/(const Array& v1, const Array& v2) {
+ 		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(disable:4267)
+		#endif
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be divided");
+		#if defined(QL_PATCH_MSVC71)
+		#pragma warning(default:4267)
+		#endif
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
                        std::divides<Real>());

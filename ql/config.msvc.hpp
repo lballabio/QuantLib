@@ -38,13 +38,6 @@
    do not modify the following definitions.
  *******************************************/
 
-// disable useless warning
-// 'identifier' : decorated name length exceeded,
-//                name was truncated in debug info
-#pragma warning(disable: 4786)
-#pragma warning(disable: 4503)
-
-
 // force undefining min and max macros
 #ifndef NOMINMAX
 #  define NOMINMAX
@@ -172,6 +165,9 @@
 #  define HAVE_INCOMPLETE_ITERATOR_SUPPORT
 #  define REQUIRES_DUMMY_RETURN
 #  define QL_LIB_TOOLSET "vc6"
+// decorated name length exceeded, name was truncated in debug info
+#  pragma warning(disable: 4786)
+#  pragma warning(disable: 4503)
 #elif (_MSC_VER == 1300)
 // move inside here configs specific to VC++ 7.0
 // Warning: QuantLib was never been compiled with VC++ 7.0,
@@ -184,6 +180,8 @@
 #  define QL_LIB_TOOLSET "vc71"
 #  define QL_PATCH_MSVC71
 #  define QL_WORKING_BOOST_STREAMS
+// for some reason, Koenig lookup emits a warning
+#  pragma warning(disable: 4675)
 #elif (_MSC_VER == 1400)
 // move inside here configs specific to VC++ 8 (2005)
 #  define QL_LIB_TOOLSET "vc80"
