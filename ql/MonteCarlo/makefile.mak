@@ -1,6 +1,6 @@
 
 .autodepend
-.silent
+#.silent
 
 !ifdef _DEBUG
 !ifndef _RTLDLL

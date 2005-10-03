@@ -2,7 +2,7 @@
 # makefile for test-suite.cpp under Borland C++
 
 .autodepend
-.silent
+#.silent
 
 !ifdef _DEBUG
 !ifndef _RTLDLL
@@ -145,6 +145,7 @@ check: $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe
 
 # Clean up
 clean::
-    if exist *.obj*                   del /q *.obj*
+    if exist *.obj*                  del /q *.obj*
+    if exist *.lib*                  del /q *.lib*
     if exist $(EXE_DIR)\*-bcb*.tds   del /q $(EXE_DIR)\*-bcb*.tds
     if exist $(EXE_DIR)\*-bcb*.exe   del /q $(EXE_DIR)\*-bcb*.exe

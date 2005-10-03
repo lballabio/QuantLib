@@ -2,7 +2,7 @@
 # makefile for BermudanSwaption.cpp under Borland C++
 
 .autodepend
-.silent
+#.silent
 
 !ifdef _DEBUG
 !ifndef _RTLDLL

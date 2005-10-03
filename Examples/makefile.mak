@@ -2,9 +2,12 @@
 # makefile for QuantLib Examples under Borland C++
 
 .autodepend
-.silent
+#.silent
 
 # MAKE Options
+
+MAKE = $(MAKE) -fmakefile.mak
+
 !ifdef __MT__
     MAKE = $(MAKE) -D__MT__
 !endif

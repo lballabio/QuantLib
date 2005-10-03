@@ -1,6 +1,6 @@
 
 .autodepend
-.silent
+#.silent
 
 # Debug version
 !ifdef _DEBUG

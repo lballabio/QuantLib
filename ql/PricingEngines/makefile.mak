@@ -1,8 +1,8 @@
 
 .autodepend
-.silent
+#.silent
 
-MAKE = $(MAKE)
+MAKE = $(MAKE) -fmakefile.mak
 
 !ifdef _DEBUG
 !ifndef _RTLDLL

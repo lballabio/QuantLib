@@ -4,6 +4,8 @@
 .autodepend
 #.silent
 
+MAKE = $(MAKE) 
+
 # Tools to be used
 SED       = sed
 !ifdef NODOXYGEN

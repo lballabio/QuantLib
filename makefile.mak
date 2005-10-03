@@ -2,7 +2,7 @@
 # main makefile for QuantLib under Borland C++
 
 .autodepend
-.silent
+#.silent
 
 MAKE = $(MAKE) -fmakefile.mak -DVERSION=0.3.11 -DVERSION_STRING=0_3_11
 
