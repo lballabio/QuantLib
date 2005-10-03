@@ -13,3 +13,6 @@ libCalibrationHelpers_la_SOURCES = \
     swaptionhelper.cpp
 
 noinst_LTLIBRARIES = libCalibrationHelpers.la
+
+EXTRA_DIST = makefile.mak
+

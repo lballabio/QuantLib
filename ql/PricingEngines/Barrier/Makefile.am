@@ -12,3 +12,6 @@ libBarrierEngines_la_SOURCES = \
 	mcbarrierengine.cpp
 
 noinst_LTLIBRARIES = libBarrierEngines.la
+
+EXTRA_DIST = makefile.mak
+

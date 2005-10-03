@@ -15,3 +15,6 @@ libCurrencies_la_SOURCES = \
 	exchangeratemanager.cpp
 
 noinst_LTLIBRARIES = libCurrencies.la
+
+EXTRA_DIST = makefile.mak
+

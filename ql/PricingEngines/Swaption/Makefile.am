@@ -17,3 +17,6 @@ libSwaptionEngines_la_SOURCES = \
     treeswaptionengine.cpp
 
 noinst_LTLIBRARIES = libSwaptionEngines.la
+
+EXTRA_DIST = makefile.mak
+

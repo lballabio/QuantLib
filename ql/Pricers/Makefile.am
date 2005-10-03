@@ -28,3 +28,6 @@ libPricers_la_SOURCES = \
     singleassetoption.cpp
 
 noinst_LTLIBRARIES = libPricers.la
+
+EXTRA_DIST = makefile.mak
+

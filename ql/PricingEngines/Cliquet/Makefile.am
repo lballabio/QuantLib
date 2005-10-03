@@ -13,3 +13,5 @@ libCliquetEngines_la_SOURCES = \
 
 noinst_LTLIBRARIES = libCliquetEngines.la
 
+EXTRA_DIST = makefile.mak
+

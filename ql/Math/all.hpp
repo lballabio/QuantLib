@@ -48,15 +48,14 @@
 #include <ql/Math/lexicographicalview.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
-#ifndef QL_PATCH_BORLAND
-#   include <ql/Math/multicubicspline.hpp>
-#endif
+#include <ql/Math/multicubicspline.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/poissondistribution.hpp>
 #include <ql/Math/primenumbers.hpp>
 #include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/riskstatistics.hpp>
 #include <ql/Math/rounding.hpp>
+#include <ql/Math/sampledcurve.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/simpsonintegral.hpp>
 #include <ql/Math/svd.hpp>

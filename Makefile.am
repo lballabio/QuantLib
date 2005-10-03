@@ -25,6 +25,7 @@ EXTRA_DIST = \
 	QuantLib.vcproj \
 	QuantLib_vc8.sln \
 	QuantLib_vc8.vcproj \
+	makefile.mak \
 	Readme.txt \
 	autogen.sh
 

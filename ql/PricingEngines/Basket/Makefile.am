@@ -14,3 +14,6 @@ libBasketEngines_la_SOURCES = \
 	stulzengine.cpp
 
 noinst_LTLIBRARIES = libBasketEngines.la
+
+EXTRA_DIST = makefile.mak
+

@@ -29,3 +29,6 @@ libIndexes_la_SOURCES = \
     indexmanager.cpp
 
 noinst_LTLIBRARIES = libIndexes.la
+
+EXTRA_DIST = makefile.mak
+

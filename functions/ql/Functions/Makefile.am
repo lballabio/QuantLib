@@ -13,7 +13,8 @@ EXTRA_DIST = \
 	QuantLibFunctions.dsp \
 	QuantLibFunctions.vcproj \
 	QuantLibFunctions_vc8.vcproj \
-	QuantLibFunctions.dev
+	QuantLibFunctions.dev \
+	makefile.mak
 
 lib_LTLIBRARIES = libQuantLibFunctions.la
 libQuantLibFunctions_la_LDFLAGS = -release $(PACKAGE_VERSION)

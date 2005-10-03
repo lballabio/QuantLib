@@ -143,7 +143,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(BOOST_TEST_CASE(startTimer));
-    test->add(SampledCurveTest::suite());
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -187,6 +186,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(RiskStatisticsTest::suite());
     test->add(RngTraitsTest::suite());
     test->add(RoundingTest::suite());
+    test->add(SampledCurveTest::suite());
     test->add(ShortRateModelTest::suite());
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());

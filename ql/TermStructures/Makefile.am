@@ -33,3 +33,6 @@ libTermStructures_la_SOURCES = \
     ratehelpers.cpp
 
 noinst_LTLIBRARIES = libTermStructures.la
+
+EXTRA_DIST = makefile.mak
+

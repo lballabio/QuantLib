@@ -26,3 +26,5 @@ libShortRateModels_la_LIBADD = \
     OneFactorModels/libOneFactorModels.la \
     TwoFactorModels/libTwoFactorModels.la
 
+EXTRA_DIST = makefile.mak
+

@@ -31,3 +31,6 @@ libCashFlows_la_SOURCES = \
     timebasket.cpp
 
 noinst_LTLIBRARIES = libCashFlows.la
+
+EXTRA_DIST = makefile.mak
+

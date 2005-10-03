@@ -33,3 +33,6 @@ libPricingEngines_la_LIBADD = \
     Cliquet/libCliquetEngines.la \
     Swaption/libSwaptionEngines.la \
     Vanilla/libVanillaEngines.la
+
+EXTRA_DIST = makefile.mak
+

@@ -21,3 +21,6 @@ libMonteCarlo_la_SOURCES = \
 	getcovariance.cpp
 
 noinst_LTLIBRARIES = libMonteCarlo.la
+
+EXTRA_DIST = makefile.mak
+

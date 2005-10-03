@@ -17,3 +17,6 @@ libOneFactorModels_la_SOURCES = \
     vasicek.cpp
 
 noinst_LTLIBRARIES = libOneFactorModels.la
+
+EXTRA_DIST = makefile.mak
+

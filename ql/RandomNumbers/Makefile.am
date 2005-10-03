@@ -32,3 +32,6 @@ libRandomNumbers_la_SOURCES = \
 	sobolrsg.cpp
 
 noinst_LTLIBRARIES = libRandomNumbers.la
+
+EXTRA_DIST = makefile.mak
+

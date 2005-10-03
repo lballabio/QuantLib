@@ -24,3 +24,6 @@ libOptimization_la_SOURCES = \
     steepestdescent.cpp
 
 noinst_LTLIBRARIES = libOptimization.la
+
+EXTRA_DIST = makefile.mak
+

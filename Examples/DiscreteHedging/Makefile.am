@@ -15,6 +15,7 @@ EXTRA_DIST = \
     DiscreteHedging.dsp \
     DiscreteHedging.vcproj \
     DiscreteHedging_vc8.vcproj \
+    makefile.mak \
     ReadMe.txt
 
 .PHONY: examples

@@ -13,3 +13,6 @@ libTwoFactorModels_la_SOURCES = \
     hestonmodel.cpp
 
 noinst_LTLIBRARIES = libTwoFactorModels.la
+
+EXTRA_DIST = makefile.mak
+

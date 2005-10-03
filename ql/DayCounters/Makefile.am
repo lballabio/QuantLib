@@ -17,3 +17,6 @@ libDayCounters_la_SOURCES = \
     thirty360.cpp
 
 noinst_LTLIBRARIES = libDayCounters.la
+
+EXTRA_DIST = makefile.mak
+

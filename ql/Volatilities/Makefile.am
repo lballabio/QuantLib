@@ -22,3 +22,6 @@ libVolatilities_la_SOURCES = \
     localvolsurface.cpp
 
 noinst_LTLIBRARIES = libVolatilities.la
+
+EXTRA_DIST = makefile.mak
+

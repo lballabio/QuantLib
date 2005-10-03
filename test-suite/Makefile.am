@@ -84,7 +84,8 @@ EXTRA_DIST = \
 	testsuite.dsp \
 	testsuite.vcproj \
 	testsuite_vc8.vcproj \
-	testsuite.dev
+	testsuite.dev \
+	makefile.mak
 
 else
 
@@ -94,6 +95,7 @@ EXTRA_DIST = \
 	testsuite.dsp \
 	testsuite.vcproj \
 	testsuite_vc8.vcproj \
-	testsuite.dev
+	testsuite.dev \
+	makefile.mak
 
 endif

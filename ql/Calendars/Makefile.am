@@ -67,3 +67,6 @@ libCalendars_la_SOURCES = \
 	zurich.cpp
 
 noinst_LTLIBRARIES = libCalendars.la
+
+EXTRA_DIST = makefile.mak
+

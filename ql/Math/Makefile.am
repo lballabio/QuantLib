@@ -44,6 +44,7 @@ include_HEADERS = \
 	pseudosqrt.hpp \
 	riskstatistics.hpp \
 	rounding.hpp \
+	sampledcurve.hpp \
 	segmentintegral.hpp \
 	sequencestatistics.hpp \
 	simpsonintegral.hpp \
@@ -78,3 +79,6 @@ libMath_la_SOURCES = \
 
 
 noinst_LTLIBRARIES = libMath.la
+
+EXTRA_DIST = makefile.mak
+

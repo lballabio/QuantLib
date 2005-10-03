@@ -18,3 +18,6 @@ libLattices_la_SOURCES = \
     trinomialtree.cpp
 
 noinst_LTLIBRARIES = libLattices.la
+
+EXTRA_DIST = makefile.mak
+

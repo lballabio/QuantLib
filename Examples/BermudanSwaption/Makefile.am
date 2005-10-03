@@ -15,6 +15,7 @@ EXTRA_DIST = \
     BermudanSwaption.dsp \
     BermudanSwaption.vcproj \
     BermudanSwaption_vc8.vcproj \
+    makefile.mak \
     ReadMe.txt
 
 .PHONY: examples

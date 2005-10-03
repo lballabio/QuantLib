@@ -26,3 +26,6 @@ libProcesses_la_SOURCES = \
 	stochasticprocessarray.cpp
 
 noinst_LTLIBRARIES = libProcesses.la
+
+EXTRA_DIST = makefile.mak
+

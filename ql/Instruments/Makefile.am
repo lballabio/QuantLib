@@ -56,3 +56,6 @@ libInstruments_la_SOURCES = \
     zerocouponbond.cpp
 
 noinst_LTLIBRARIES = libInstruments.la
+
+EXTRA_DIST = makefile.mak
+

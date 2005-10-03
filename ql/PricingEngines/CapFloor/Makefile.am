@@ -16,3 +16,6 @@ libCapFloorEngines_la_SOURCES = \
     treecapfloorengine.cpp
 
 noinst_LTLIBRARIES = libCapFloorEngines.la
+
+EXTRA_DIST = makefile.mak
+
