@@ -33,7 +33,15 @@ namespace QuantLib {
         \todo replace with a more general (not "centered") function:
               valueAt(Real spot, const Array& a);
     */
-    Real valueAtCenter(const Array& a);
+    
+    template <class T>
+    Real valueAtCenter(const T& a) {
+        Size jmid = a.size()/2;
+        if (a.size() % 2 == 1)
+            return a[jmid];
+        else
+            return (a[jmid]+a[jmid-1])/2.0;
+    }
 
     /*! mid-point first derivative
 
@@ -42,8 +50,19 @@ namespace QuantLib {
                                 const Array& a,
                                 const Array& grid);
     */
-    Real firstDerivativeAtCenter(const Array& a,
-                                 const Array& grid);
+    template <class T>
+    Real firstDerivativeAtCenter(const T& a, const T& g) {
+        QL_REQUIRE(a.size()==g.size(),
+                   "a and g must be of the same size");
+        QL_REQUIRE(a.size()>=3,
+                   "the size of the two vectors must be at least 3");
+        Size jmid = a.size()/2;
+        if (a.size() % 2 == 1)
+            return (a[jmid+1]-a[jmid-1])/(g[jmid+1]-g[jmid-1]);
+        else
+            return (a[jmid]-a[jmid-1])/(g[jmid]-g[jmid-1]);
+    }
+
 
     /*! mid-point second derivative
 
@@ -52,9 +71,24 @@ namespace QuantLib {
                                  const Array& a,
                                  const Array& grid);
     */
-    Real secondDerivativeAtCenter(const Array& a,
-                                  const Array& grid);
-
+    template <class T>
+    Real secondDerivativeAtCenter(const T& a, const T& g) {
+        QL_REQUIRE(a.size()==g.size(),
+                   "a and g must be of the same size");
+        QL_REQUIRE(a.size()>=4,
+                   "the size of the two vectors must be at least 4");
+        Size jmid = a.size()/2;
+        if (a.size() % 2 == 1) {
+            Real deltaPlus = (a[jmid+1]-a[jmid])/(g[jmid+1]-g[jmid]);
+            Real deltaMinus = (a[jmid]-a[jmid-1])/(g[jmid]-g[jmid-1]);
+            Real dS = (g[jmid+1]-g[jmid-1])/2.0;
+            return (deltaPlus-deltaMinus)/dS;
+        } else {
+            Real deltaPlus = (a[jmid+1]-a[jmid-1])/(g[jmid+1]-g[jmid-1]);
+            Real deltaMinus = (a[jmid]-a[jmid-2])/(g[jmid]-g[jmid-2]);
+            return (deltaPlus-deltaMinus)/(g[jmid]-g[jmid-1]);
+        }
+    }
 }
 
 
