@@ -220,6 +220,9 @@ namespace QuantLib {
 
         // Number of paths
         Size N = requiredSamples_;
+        // Add an extra path if N is odd so that antithetic paths
+        // don't break.
+        N += (N%2);
 
         // set up the basis functions
         std::vector<boost::shared_ptr<BasisFunction> > basisFunctions;

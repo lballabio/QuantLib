@@ -31,6 +31,7 @@ class BasketOptionTest {
     static void testBarraquandThreeValues();
     static void testTavellaValues();
     static void testOneDAmericanValues();
+    static void testOddSamples();
     static boost::unit_test_framework::test_suite* suite();
 };
 

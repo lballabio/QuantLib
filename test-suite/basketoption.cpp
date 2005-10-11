@@ -744,6 +744,87 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     }
 }
+/*! This unit test is a a regression test to check for a crash in 
+  ! monte carlo if the required sample is odd.  The crash occurred
+  ! because the samples array size was off by one when antithetic 
+  ! paths were added.
+*/
+
+void BasketOptionTest::testOddSamples() {
+
+    BOOST_MESSAGE("Test engine using odd sample number");
+
+    QL_TEST_START_TIMING
+    Size requiredSamples = 10001; // The important line
+    Size timeSteps = 53;
+    BasketOptionOneData values[] = {
+        //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
+        { Option::Put, 100.00,  80.00,   0.0, 0.06,   0.5, 0.4,  21.6059, 1e-2 }
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+
+    boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
+
+
+
+    BigNatural seed = 0;
+    boost::shared_ptr<PricingEngine> mcLSMCEngine(
+        new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
+
+    boost::shared_ptr<StochasticProcess1D> stochProcess1(new
+        BlackScholesProcess(Handle<Quote>(spot1),
+                            Handle<YieldTermStructure>(qTS),
+                            Handle<YieldTermStructure>(rTS),
+                            Handle<BlackVolTermStructure>(volTS1)));
+
+    std::vector<boost::shared_ptr<StochasticProcess1D> > procs;
+    procs.push_back(stochProcess1);
+
+    Matrix correlation(1, 1, 1.0);
+
+    boost::shared_ptr<StochasticProcess> process(
+                               new StochasticProcessArray(procs,correlation));
+
+    for (Size i=0; i<LENGTH(values); i++) {
+        boost::shared_ptr<PlainVanillaPayoff> payoff(new
+            PlainVanillaPayoff(values[i].type, values[i].strike));
+
+        Date exDate = today + Integer(values[i].t*360+0.5);
+        boost::shared_ptr<Exercise> exercise(new AmericanExercise(today,
+                                                                  exDate));
+
+        spot1 ->setValue(values[i].s);
+        vol1  ->setValue(values[i].v);
+        rRate ->setValue(values[i].r);
+        qRate ->setValue(values[i].q);
+
+        BasketOption basketOption(BasketOption::Max, process,
+                                  payoff, exercise, mcLSMCEngine);
+
+        Real calculated = basketOption.NPV();
+        Real expected = values[i].result;
+        // Real errorEstimate = basketOption.errorEstimate();
+        Real relError = relativeError(calculated, expected, values[i].s);
+        // Real error = std::fabs(calculated-expected);
+
+        if (relError > values[i].tol) {
+            BOOST_FAIL("expected value: " << values[i].result << "\n"
+                       << "calculated:     " << calculated);
+        }
+
+    }
+}
 
 
 test_suite* BasketOptionTest::suite() {
@@ -752,6 +833,7 @@ test_suite* BasketOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testBarraquandThreeValues));
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testTavellaValues));
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
+    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOddSamples));
     return suite;
 }
 
