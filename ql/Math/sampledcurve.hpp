@@ -31,11 +31,15 @@ namespace QuantLib {
 
     class SampledCurve {
     public:
-        SampledCurve(Size gridSize) {
+        SampledCurve(Size gridSize=0) {
             gridSize_ = gridSize;
             grid_ = Array(gridSize);
             values_ = Array(gridSize);
         } 
+        inline SampledCurve::SampledCurve(const SampledCurve &from) 
+            : gridSize_(from.gridSize_),
+              grid_(from.grid_),
+              values_(from.values_) {};
 
         void setLogSpacing(Real min, Real max) {
             Real gridLogSpacing =
@@ -62,7 +66,7 @@ namespace QuantLib {
         
         template <class F>
         void sample(F &f) {
-            for(Size j=0; j < grid_.size(); j++) 
+            for(Size j=0; j < size(); j++) 
                 values_[j] = f(grid_[j]);
         }
 
@@ -85,6 +89,23 @@ namespace QuantLib {
         Real & value(int i) {
             return values_[i];
         }
+        Size size() {
+            return gridSize_;
+        }
+        inline void SampledCurve::swap(SampledCurve &from) {
+            using std::swap;
+            swap(gridSize_, from.gridSize_);
+            grid_.swap(from.grid_);
+            values_.swap(from.values_);
+        }
+
+        inline SampledCurve& 
+        SampledCurve::operator=(const SampledCurve& from) {
+            SampledCurve temp(from);
+            swap(temp);
+            return *this;
+        }
+
     private:
         Size gridSize_;
         Array grid_;
