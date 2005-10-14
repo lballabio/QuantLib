@@ -752,7 +752,7 @@ void BasketOptionTest::testOneDAmericanValues() {
 
 void BasketOptionTest::testOddSamples() {
 
-    BOOST_MESSAGE("Test engine using odd sample number");
+    BOOST_MESSAGE("Test antithetic engine using odd sample number");
 
     QL_TEST_START_TIMING
     Size requiredSamples = 10001; // The important line
@@ -780,7 +780,8 @@ void BasketOptionTest::testOddSamples() {
 
     BigNatural seed = 0;
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
-        new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
+        new MCAmericanBasketEngine(requiredSamples, timeSteps, seed,
+                                   true));
 
     boost::shared_ptr<StochasticProcess1D> stochProcess1(new
         BlackScholesProcess(Handle<Quote>(spot1),

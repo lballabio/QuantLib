@@ -222,7 +222,8 @@ namespace QuantLib {
         Size N = requiredSamples_;
         // Add an extra path if N is odd so that antithetic paths
         // don't break.
-        N += (N%2);
+        if (antitheticSampling_)
+            N += (N%2);
 
         // set up the basis functions
         std::vector<boost::shared_ptr<BasisFunction> > basisFunctions;
@@ -446,11 +447,16 @@ namespace QuantLib {
 
         // generate the paths
         std::vector<MultiPath> multipaths(N);
-        for (i=0; i<N/2; i++) {
-            multipaths[i] = multipathGenerator->next().value;
-            multipaths[N/2+i] = multipathGenerator->antithetic().value;
+        if (antitheticSampling_) {
+            for (i=0; i<N/2; i++) {
+                multipaths[i] = multipathGenerator->next().value;
+                multipaths[N/2+i] = multipathGenerator->antithetic().value;
+            }
+        } else {
+            for (i=0; i<N; i++) {
+                multipaths[i] = multipathGenerator->next().value;
+            }
         }
-
         // initialise rollback vector with payoff
         std::vector<Real> normalizedContinuationValue(N);
         for (i=0; i<N; i++) {

@@ -41,14 +41,16 @@ namespace QuantLib {
       public:
         MCAmericanBasketEngine(Size requiredSamples,
                                Size timeSteps,
-                               BigNatural seed = 0)
+                               BigNatural seed = 0,
+                               bool antitheticSampling = false)
         : requiredSamples_(requiredSamples), timeSteps_(timeSteps),
-          seed_(seed) {}
+          seed_(seed), antitheticSampling_(antitheticSampling) {}
         void calculate() const;
       private:
         Size requiredSamples_;
         Size timeSteps_;
         BigNatural seed_;
+        bool antitheticSampling_;
     };
 
 }
