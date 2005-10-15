@@ -126,8 +126,7 @@ namespace QuantLib {
 
         //! solve linear system with SOR approach
         template <class T>
-        Disposable<T>
-        TridiagonalOperator::SOR(const T& rhs, Real tol) const {
+        Disposable<T> SOR(const T& rhs, Real tol) const {
             QL_REQUIRE(rhs.size()==size(), "rhs has the wrong size");
 
             // initial guess
