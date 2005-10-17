@@ -101,6 +101,13 @@ namespace QuantLib {
         return itmCashProbability_;
     }
 
+    SampledCurve OneAssetOption::priceCurve() const {
+        calculate();
+        QL_REQUIRE(!priceCurve_.empty(),
+                   "price curve not provided");
+        return priceCurve_;
+    }
+
     Volatility OneAssetOption::impliedVolatility(Real targetValue,
                                                  Real accuracy,
                                                  Size maxEvaluations,
@@ -121,6 +128,7 @@ namespace QuantLib {
         NPV_ = delta_ = deltaForward_ = elasticity_ = gamma_ = theta_ =
             thetaPerDay_ = vega_ = rho_ = dividendRho_ =
             itmCashProbability_ = 0.0;
+        priceCurve_ = SampledCurve();
     }
 
     void OneAssetOption::setupArguments(Arguments* args) const {
@@ -175,6 +183,11 @@ namespace QuantLib {
         elasticity_         = moreResults->elasticity;
         thetaPerDay_        = moreResults->thetaPerDay;
         itmCashProbability_ = moreResults->itmCashProbability;
+
+        const PriceCurve* priceCurveResults =
+            dynamic_cast<const PriceCurve*>(engine_->results());
+        priceCurve_ = priceCurveResults->priceCurve;
+
     }
 
 

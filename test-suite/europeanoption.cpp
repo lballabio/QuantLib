@@ -1236,6 +1236,93 @@ void EuropeanOptionTest::testFdGreeks() {
     QL_TEST_TEARDOWN
 }
 
+void EuropeanOptionTest::testPriceCurve() {
+
+    BOOST_MESSAGE("Testing European price curves...");
+
+    /* The data below are from
+       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
+    */
+    EuropeanOptionData values[] = {
+      // pag 2-8
+      //        type, strike,   spot,    q,    r,    t,  vol,   value
+      { Option::Call,  65.00,  60.00, 0.00, 0.08, 0.25, 0.30,  2.1334},
+      { Option::Put,   95.00, 100.00, 0.05, 0.10, 0.50, 0.20,  2.4648},
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+    Size timeSteps = 300;
+    Size gridPoints = 300;
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<PricingEngine> 
+        engine(new FDEuropeanEngine(timeSteps, gridPoints));
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(values[i].type, values[i].strike));
+        Date exDate = today + timeToDays(values[i].t);
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
+
+        EuropeanOption option(stochProcess, payoff, exercise, engine);
+        SampledCurve price_curve = option.priceCurve();
+        if (price_curve.size() == 0) {
+            REPORT_FAILURE("no price curve", payoff, exercise, values[i].s,
+                           values[i].q, values[i].r, today,
+                           values[i].v, values[i].result, 0.0,
+                           0.0, 0.0);
+            continue;
+        }
+        
+        // Ignore the end points
+        Size start = price_curve.size() / 4;
+        Size end = price_curve.size() * 3 / 4;
+        for (Size i=start; i < end; i++) {
+            spot->setValue(price_curve.gridValue(i));
+            boost::shared_ptr<BlackScholesProcess> 
+                stochProcess1(new BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
+
+            EuropeanOption option1(stochProcess, payoff, exercise, engine);
+            Real calculated = option1.NPV();
+            Real error = std::fabs(calculated-price_curve.value(i));
+            Real tolerance = 1e-3;
+            if (error>tolerance) {
+                REPORT_FAILURE("price curve error", payoff, exercise, 
+                               price_curve.gridValue(i),
+                               values[i].q, values[i].r, today,
+                               values[i].v, 
+                               price_curve.value(i), calculated,
+                               error, tolerance);
+                break;
+            }
+        }
+    }
+
+}
+
+
 test_suite* EuropeanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("European option tests");
 
@@ -1255,6 +1342,8 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testFdGreeks));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
+
     return suite;
 }
 

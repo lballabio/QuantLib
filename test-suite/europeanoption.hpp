@@ -42,6 +42,7 @@ class EuropeanOptionTest {
     static void testFdGreeks();
     static void testQmcEngines();
     static void testMcEngines();
+    static void testPriceCurve();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -98,20 +98,24 @@ namespace QuantLib {
             else
                 endDate = dt;
 
-            model_->rollback(prices_, beginDate, endDate,
+            model_->rollback(prices_.values(), 
+                             beginDate, endDate,
                              timeStepPerPeriod_, *stepCondition_);
             if (j >= 0)
                 executeIntermediateStep(j);
         } while (--j >= firstIndex);
 
-        model_->rollback(prices_, dt, 0, 1, *stepCondition_);
+        model_->rollback(prices_.values(), dt, 0, 1, *stepCondition_);
 
         if(firstDateIsZero)
             executeIntermediateStep(0);
 
-        results->value = valueAtCenter(prices_);
-        results->delta = firstDerivativeAtCenter(prices_, grid_);
-        results->gamma = secondDerivativeAtCenter(prices_, grid_);
+        results->value = valueAtCenter(prices_.values());
+        results->delta = firstDerivativeAtCenter(prices_.values(), 
+                                                 prices_.grid());
+        results->gamma = secondDerivativeAtCenter(prices_.values(), 
+                                                  prices_.grid());
+        results->priceCurve = prices_;
     }
 
     void FDMultiPeriodEngine::initializeStepCondition() const{

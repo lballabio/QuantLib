@@ -26,6 +26,7 @@
 
 #include <ql/Instruments/oneassetoption.hpp>
 #include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
+#include <ql/Math/sampledcurve.hpp>
 
 namespace QuantLib {
 
@@ -40,9 +41,10 @@ namespace QuantLib {
       public:
         FDEuropeanEngine(Size timeSteps=100, Size gridPoints=100,
                          bool timeDependent = false)
-        : FDVanillaEngine(timeSteps, gridPoints, timeDependent) {}
+        : FDVanillaEngine(timeSteps, gridPoints, timeDependent),
+        prices_(gridPoints){}
       private:
-        mutable Array prices_;
+        mutable SampledCurve prices_;
         void calculate() const;
     };
 

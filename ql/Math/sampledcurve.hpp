@@ -46,10 +46,8 @@ namespace QuantLib {
                 (std::log(max) - std::log(min)) / (gridSize_ -1);
             Real edx = std::exp(gridLogSpacing);
             grid_[0] = min;
-            values_[0] = 0.0;
             for (Size j=1; j < gridSize_; j++) {
                 grid_[j] = grid_[j-1]*edx;
-                values_[j] = 0.0;
             }
         }
 
@@ -57,10 +55,8 @@ namespace QuantLib {
             Real gridSpacing =
                 (max - min) / (gridSize_ -1);
             grid_[0] = min;
-            values_[0] = 0.0;
             for (Size j=1; j < gridSize_; j++) {
                 grid_[j] = grid_[j-1] + gridSpacing;
-                values_[j] = 0.0;
             }
         }
         
@@ -86,7 +82,11 @@ namespace QuantLib {
             return values_;
         }
 
-        Real & value(int i) {
+        Real & gridValue(Size i) {
+            return grid_[i];
+        }
+        
+        Real & value(Size i) {
             return values_[i];
         }
         Size size() {
@@ -106,6 +106,9 @@ namespace QuantLib {
             return *this;
         }
 
+        inline bool empty() const {
+            return gridSize_ == 0;
+        }
     private:
         Size gridSize_;
         Array grid_;

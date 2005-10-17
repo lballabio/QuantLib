@@ -53,7 +53,7 @@ namespace QuantLib {
                 ->zeroRate(residualTime, Continuous);
 
             stepCondition_ = boost::shared_ptr<StandardStepCondition>(
-                                          new ShoutCondition(intrinsicValues_,
+                              new ShoutCondition(intrinsicValues_.values(),
                                                              residualTime,
                                                              riskFreeRate));
         }

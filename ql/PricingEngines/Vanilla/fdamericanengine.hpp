@@ -52,7 +52,7 @@ namespace QuantLib {
         }
         void initializeStepCondition() const {
             stepCondition_ = boost::shared_ptr<StandardStepCondition>(
-                                     new AmericanCondition(intrinsicValues_));
+                             new AmericanCondition(intrinsicValues_.values()));
         }
     };
 

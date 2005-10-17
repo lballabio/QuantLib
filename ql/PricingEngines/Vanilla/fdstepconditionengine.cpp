@@ -48,8 +48,8 @@ namespace QuantLib {
         operatorSet.push_back(finiteDifferenceOperator_);
         operatorSet.push_back(controlOperator_);
 
-        arraySet.push_back(prices_);
-        arraySet.push_back(controlPrices_);
+        arraySet.push_back(prices_.values());
+        arraySet.push_back(controlPrices_.values());
 
         bcSet.push_back(BCs_);
         bcSet.push_back(controlBCs_);
@@ -87,12 +87,17 @@ namespace QuantLib {
         results->value = valueAtCenter(prices)
             - valueAtCenter(controlPrices)
             + black.value();
-        results->delta = firstDerivativeAtCenter(prices, grid_)
-            - firstDerivativeAtCenter(controlPrices, grid_)
+        results->delta = firstDerivativeAtCenter(prices, 
+                                                 prices_.grid())
+            - firstDerivativeAtCenter(controlPrices, 
+                                      controlPrices_.grid())
             + black.delta(spot);
-        results->gamma = secondDerivativeAtCenter(prices, grid_)
-            - secondDerivativeAtCenter(controlPrices, grid_)
+        results->gamma = secondDerivativeAtCenter(prices, 
+                                                  prices_.grid())
+            - secondDerivativeAtCenter(controlPrices, 
+                                       controlPrices_.grid())
             + black.gamma(spot);
+        results->priceCurve = prices_;
     }
 
 }

@@ -44,9 +44,8 @@ namespace QuantLib {
     void FDVanillaEngine::setGridLimits(Real center, Time t) const {
         center_ = center;
         Size newGridPoints = safeGridPoints(gridPoints_, t);
-        if (newGridPoints > grid_.size()) {
-            grid_ = Array(newGridPoints);
-            intrinsicValues_ = Array(newGridPoints);
+        if (newGridPoints > intrinsicValues_.size()) {
+            intrinsicValues_ = SampledCurve(newGridPoints);
         }
 
         Real volSqrtTime = std::sqrt(process_->blackVolatility()
@@ -81,33 +80,31 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::initializeGrid() const {
-        gridLogSpacing_ = (std::log(sMax_)-std::log(sMin_))/(grid_.size()-1);
-        Real edx = std::exp(gridLogSpacing_);
-        grid_[0] = sMin_;
-        for (Size j=1; j<grid_.size(); j++)
-            grid_[j] = grid_[j-1]*edx;
+        intrinsicValues_.setLogSpacing(sMin_, sMax_);
     }
 
     void FDVanillaEngine::initializeInitialCondition() const {
-        for(Size j = 0; j < grid_.size(); j++)
-            intrinsicValues_[j] = (*payoff_)(grid_[j]);
+        intrinsicValues_.sample(*payoff_);
     }
 
     void FDVanillaEngine::initializeOperator() const {
         if (timeDependent_)
-            finiteDifferenceOperator_ = BSMTermOperator(grid_, process_,
-                                                        getResidualTime());
+            finiteDifferenceOperator_ = 
+                BSMTermOperator(intrinsicValues_.grid(), process_,
+                                getResidualTime());
         else
-            finiteDifferenceOperator_ = BSMOperator(grid_, process_,
-                                                    getResidualTime());
+            finiteDifferenceOperator_ = 
+                BSMOperator(intrinsicValues_.grid(), process_,
+                            getResidualTime());
 
         BCs_[0] = boost::shared_ptr<bc_type>(new NeumannBC(
-                                      intrinsicValues_[1]-intrinsicValues_[0],
+                                      intrinsicValues_.value(1)-
+                                      intrinsicValues_.value(0),
                                       NeumannBC::Lower));
         BCs_[1] = boost::shared_ptr<bc_type>(new NeumannBC(
-                                      intrinsicValues_[grid_.size()-1] -
-                                      intrinsicValues_[grid_.size()-2],
-                                      NeumannBC::Upper));
+                       intrinsicValues_.value(intrinsicValues_.size()-1) -
+                       intrinsicValues_.value(intrinsicValues_.size()-2),
+                       NeumannBC::Upper));
     }
 
     Time FDVanillaEngine::getResidualTime() const {

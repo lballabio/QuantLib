@@ -28,6 +28,7 @@
 #include <ql/option.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/quote.hpp>
+#include <ql/Math/sampledcurve.hpp>
 
 namespace QuantLib {
 
@@ -58,6 +59,7 @@ namespace QuantLib {
         Real rho() const;
         Real dividendRho() const;
         Real itmCashProbability() const;
+        SampledCurve priceCurve() const;
         //@}
         /*! \warning currently, this method returns the Black-Scholes
                      implied volatility. It will give unconsistent
@@ -87,6 +89,7 @@ namespace QuantLib {
         // results
         mutable Real delta_, deltaForward_, elasticity_, gamma_, theta_,
             thetaPerDay_, vega_, rho_, dividendRho_, itmCashProbability_;
+        mutable SampledCurve priceCurve_;
         // arguments
         boost::shared_ptr<StochasticProcess> stochasticProcess_;
       private:
@@ -114,11 +117,13 @@ namespace QuantLib {
 
     //! %Results from single-asset option calculation
     class OneAssetOption::results : public Value,
-                                    public Greeks,
-                                    public MoreGreeks {
+                          public PriceCurve,
+                          public Greeks,
+                          public MoreGreeks {
       public:
         void reset() {
             Value::reset();
+            PriceCurve::reset();
             Greeks::reset();
             MoreGreeks::reset();
         }

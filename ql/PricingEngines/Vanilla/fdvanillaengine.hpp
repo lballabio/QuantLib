@@ -30,6 +30,7 @@
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Math/sampledcurve.hpp>
 
 namespace QuantLib {
 
@@ -45,10 +46,10 @@ namespace QuantLib {
                         bool timeDependent = false)
         : timeSteps_(timeSteps), gridPoints_(gridPoints),
           timeDependent_(timeDependent), 
-          grid_(gridPoints), intrinsicValues_(gridPoints), BCs_(2) {}
+          intrinsicValues_(gridPoints), BCs_(2) {}
         virtual ~FDVanillaEngine() {};
         // accessors
-        const Array& grid() const { return grid_; }
+        const Array& grid() const { return intrinsicValues_.grid(); }
       protected:
         // methods
         virtual void setupArguments(const OneAssetOption::arguments* args) 
@@ -67,10 +68,9 @@ namespace QuantLib {
         mutable boost::shared_ptr<BlackScholesProcess> process_;
         mutable Real requiredGridValue_;
         mutable Date exerciseDate_;
-        mutable Array grid_;
         mutable boost::shared_ptr<Payoff> payoff_;
         mutable TridiagonalOperator finiteDifferenceOperator_;
-        mutable Array intrinsicValues_;
+        mutable SampledCurve intrinsicValues_;
         typedef BoundaryCondition<TridiagonalOperator> bc_type;
         mutable std::vector<boost::shared_ptr<bc_type> > BCs_;
         // temporaries

@@ -36,7 +36,7 @@ namespace QuantLib {
                             bool timeDependent = false);
         mutable const DividendSchedule* schedule_;
         Size timeStepPerPeriod_;
-        mutable Array prices_;
+        mutable SampledCurve prices_;
         void setupArguments(const OneAssetOption::arguments* args,
                             const DividendSchedule *schedule) const {
             FDVanillaEngine::setupArguments(args);

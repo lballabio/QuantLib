@@ -35,16 +35,19 @@ namespace QuantLib {
 
         prices_ = intrinsicValues_;
 
-        model.rollback(prices_, getResidualTime(),
+        model.rollback(prices_.values(), getResidualTime(),
                        0, timeSteps_);
 
-        results_.value = valueAtCenter(prices_);
-        results_.delta = firstDerivativeAtCenter(prices_, grid_);
-        results_.gamma = secondDerivativeAtCenter(prices_, grid_);
+        results_.value = valueAtCenter(prices_.values());
+        results_.delta = firstDerivativeAtCenter(prices_.values(), 
+                                                 prices_.grid());
+        results_.gamma = secondDerivativeAtCenter(prices_.values(), 
+                                                  prices_.grid());
         results_.theta = blackScholesTheta(process_,
                                            results_.value,
                                            results_.delta,
                                            results_.gamma);
+        results_.priceCurve = prices_;
     }
 
 }

@@ -28,6 +28,7 @@
 #include <ql/pricingengine.hpp>
 #include <ql/errors.hpp>
 #include <ql/Utilities/null.hpp>
+#include <ql/Math/sampledcurve.hpp>
 
 namespace QuantLib {
 
@@ -88,6 +89,16 @@ namespace QuantLib {
         //@}
       protected:
         boost::shared_ptr<PricingEngine> engine_;
+    };
+
+    //! pricing results
+    class PriceCurve : public virtual Results {
+      public:
+        PriceCurve() { reset(); }
+        void reset() {
+            priceCurve = Null<SampledCurve>();
+        }
+        SampledCurve priceCurve;
     };
 
     //! pricing results

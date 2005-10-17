@@ -41,10 +41,10 @@ namespace QuantLib {
           controlBCs_(2), controlPrices_(gridPoints) {}
       protected:
         mutable boost::shared_ptr<StandardStepCondition> stepCondition_;
-        mutable Array prices_;
+        mutable SampledCurve prices_;
         mutable TridiagonalOperator controlOperator_;
         mutable std::vector<boost::shared_ptr<bc_type> > controlBCs_;
-        mutable Array controlPrices_;
+        mutable SampledCurve controlPrices_;
         virtual void initializeStepCondition() const = 0;
         void calculate(OneAssetOption::results* result) const;
     };

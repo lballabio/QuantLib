@@ -56,18 +56,19 @@ namespace QuantLib {
             sMax_ = newSMax;
             sMin_ = center_/(sMax_/center_);
         }
-        Array oldGrid = grid_ + getDividend(step);
-
+        Array oldGrid = prices_.grid() + getDividend(step);
         initializeGrid();
+        prices_.setLogSpacing(sMin_, sMax_);
+
         initializeInitialCondition();
         // This operation was faster than the obvious:
         //     movePricesBeforeExDiv(initialPrices_, grid_, oldGrid);
 
-        movePricesBeforeExDiv(prices_, grid_, oldGrid);
+        movePricesBeforeExDiv(prices_.values(), prices_.grid(), oldGrid);
         initializeOperator();
         initializeModel();
         initializeStepCondition();
-        stepCondition_ -> applyTo(prices_, getDividendTime(step));
+        stepCondition_ -> applyTo(prices_.values(), getDividendTime(step));
     }
 
     void FDDividendEngine::movePricesBeforeExDiv(Array& prices,
