@@ -63,8 +63,8 @@ namespace QuantLib {
         model.rollback(arraySet, getResidualTime(),
                        0.0, timeSteps_, conditionSet);
 
-        Array prices = arraySet[0];
-        Array controlPrices = arraySet[1];
+        prices_.values() = arraySet[0];
+        controlPrices_.values() = arraySet[1];
 
         boost::shared_ptr<StrikedTypePayoff> striked_payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
@@ -84,18 +84,14 @@ namespace QuantLib {
         BlackFormula black(forwardPrice, riskFreeDiscount, 
                            variance, striked_payoff);
 
-        results->value = valueAtCenter(prices)
-            - valueAtCenter(controlPrices)
+        results->value = prices_.valueAtCenter()
+            - controlPrices_.valueAtCenter()
             + black.value();
-        results->delta = firstDerivativeAtCenter(prices, 
-                                                 prices_.grid())
-            - firstDerivativeAtCenter(controlPrices, 
-                                      controlPrices_.grid())
+        results->delta = prices_.firstDerivativeAtCenter()
+            - controlPrices_.firstDerivativeAtCenter()
             + black.delta(spot);
-        results->gamma = secondDerivativeAtCenter(prices, 
-                                                  prices_.grid())
-            - secondDerivativeAtCenter(controlPrices, 
-                                       controlPrices_.grid())
+        results->gamma = prices_.secondDerivativeAtCenter()
+            - controlPrices_.secondDerivativeAtCenter()
             + black.gamma(spot);
         results->priceCurve = prices_;
     }

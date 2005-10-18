@@ -38,11 +38,9 @@ namespace QuantLib {
         model.rollback(prices_.values(), getResidualTime(),
                        0, timeSteps_);
 
-        results_.value = valueAtCenter(prices_.values());
-        results_.delta = firstDerivativeAtCenter(prices_.values(), 
-                                                 prices_.grid());
-        results_.gamma = secondDerivativeAtCenter(prices_.values(), 
-                                                  prices_.grid());
+        results_.value = prices_.valueAtCenter();
+        results_.delta = prices_.firstDerivativeAtCenter();
+        results_.gamma = prices_.secondDerivativeAtCenter();
         results_.theta = blackScholesTheta(process_,
                                            results_.value,
                                            results_.delta,

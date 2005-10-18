@@ -109,6 +109,49 @@ namespace QuantLib {
         inline bool empty() const {
             return gridSize_ == 0;
         }
+        
+        Real valueAtCenter() {
+            QL_REQUIRE(!empty(),
+                       "size must not be empty");
+            Size jmid = size()/2;
+            if (size() % 2 == 1)
+                return values_[jmid];
+            else
+                return (values_[jmid]+values_[jmid-1])/2.0;
+        }
+
+        Real firstDerivativeAtCenter() {
+            QL_REQUIRE(size()>=3,
+                       "the size of the two vectors must be at least 3");
+            Size jmid = size()/2;
+            if (size() % 2 == 1)
+                return (values_[jmid+1]-values_[jmid-1])/
+                    (grid_[jmid+1]-grid_[jmid-1]);
+            else
+                return (values_[jmid]-values_[jmid-1])/
+                    (grid_[jmid]-grid_[jmid-1]);
+        }
+
+        Real secondDerivativeAtCenter() {
+            QL_REQUIRE(size()>=4,
+                       "the size of the two vectors must be at least 4");
+            Size jmid = size()/2;
+            if (size() % 2 == 1) {
+                Real deltaPlus = (values_[jmid+1]-values_[jmid])/
+                    (grid_[jmid+1]-grid_[jmid]);
+                Real deltaMinus = (values_[jmid]-values_[jmid-1])/
+                    (grid_[jmid]-grid_[jmid-1]);
+                Real dS = (grid_[jmid+1]-grid_[jmid-1])/2.0;
+                return (deltaPlus-deltaMinus)/dS;
+            } else {
+                Real deltaPlus = (values_[jmid+1]-values_[jmid-1])/
+                    (grid_[jmid+1]-grid_[jmid-1]);
+                Real deltaMinus = (values_[jmid]-values_[jmid-2])/
+                    (grid_[jmid]-grid_[jmid-2]);
+                return (deltaPlus-deltaMinus)/
+                    (grid_[jmid]-grid_[jmid-1]);
+            }
+        }
     private:
         Size gridSize_;
         Array grid_;

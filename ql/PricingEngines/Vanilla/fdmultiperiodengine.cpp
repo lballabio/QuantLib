@@ -110,11 +110,9 @@ namespace QuantLib {
         if(firstDateIsZero)
             executeIntermediateStep(0);
 
-        results->value = valueAtCenter(prices_.values());
-        results->delta = firstDerivativeAtCenter(prices_.values(), 
-                                                 prices_.grid());
-        results->gamma = secondDerivativeAtCenter(prices_.values(), 
-                                                  prices_.grid());
+        results->value = prices_.valueAtCenter();
+        results->delta = prices_.firstDerivativeAtCenter();
+        results->gamma = prices_.secondDerivativeAtCenter();
         results->priceCurve = prices_;
     }
 
