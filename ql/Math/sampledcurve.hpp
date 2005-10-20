@@ -26,7 +26,7 @@
 #include <ql/types.hpp>
 
 namespace QuantLib {
-    //! This class contains a sampled curve.  
+    //! This class contains a sampled curve.
     /*! Initially the class will contain one indexed curve */
 
     class SampledCurve {
@@ -35,11 +35,7 @@ namespace QuantLib {
             gridSize_ = gridSize;
             grid_ = Array(gridSize);
             values_ = Array(gridSize);
-        } 
-        inline SampledCurve::SampledCurve(const SampledCurve &from) 
-            : gridSize_(from.gridSize_),
-              grid_(from.grid_),
-              values_(from.values_) {};
+        }
 
         void setLogSpacing(Real min, Real max) {
             Real gridLogSpacing =
@@ -59,10 +55,10 @@ namespace QuantLib {
                 grid_[j] = grid_[j-1] + gridSpacing;
             }
         }
-        
+
         template <class F>
         void sample(F &f) {
-            for(Size j=0; j < size(); j++) 
+            for(Size j=0; j < size(); j++)
                 values_[j] = f(grid_[j]);
         }
 
@@ -77,7 +73,7 @@ namespace QuantLib {
         Array & grid() {
             return grid_;
         }
-        
+
         Array & values() {
             return values_;
         }
@@ -85,22 +81,23 @@ namespace QuantLib {
         Real & gridValue(Size i) {
             return grid_[i];
         }
-        
+
         Real & value(Size i) {
             return values_[i];
         }
+
         Size size() {
             return gridSize_;
         }
-        inline void SampledCurve::swap(SampledCurve &from) {
+
+        void swap(SampledCurve &from) {
             using std::swap;
             swap(gridSize_, from.gridSize_);
             grid_.swap(from.grid_);
             values_.swap(from.values_);
         }
 
-        inline SampledCurve& 
-        SampledCurve::operator=(const SampledCurve& from) {
+        SampledCurve& operator=(const SampledCurve& from) {
             SampledCurve temp(from);
             swap(temp);
             return *this;
@@ -109,7 +106,7 @@ namespace QuantLib {
         inline bool empty() const {
             return gridSize_ == 0;
         }
-        
+
         Real valueAtCenter() {
             QL_REQUIRE(!empty(),
                        "size must not be empty");
@@ -152,12 +149,16 @@ namespace QuantLib {
                     (grid_[jmid]-grid_[jmid-1]);
             }
         }
-    private:
+      private:
         Size gridSize_;
         Array grid_;
         Array values_;
-  };
- typedef SampledCurve SampledCurveSet;
+    };
+
+    typedef SampledCurve SampledCurveSet;
+
 }
+
+
 #endif
 
