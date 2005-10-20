@@ -73,7 +73,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-sgd-0_3_11.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-sgd-0_3_12.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool
@@ -153,7 +153,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-s-0_3_11.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-s-0_3_12.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool
@@ -233,7 +233,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-0_3_11.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-0_3_12.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool
@@ -311,7 +311,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-sgd-0_3_11.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-sgd-0_3_12.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool
@@ -391,7 +391,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-s-0_3_11.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-s-0_3_12.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool
@@ -469,7 +469,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-gd-0_3_11.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-gd-0_3_12.lib"
 				SuppressStartupBanner="TRUE"
 			/>
 			<Tool

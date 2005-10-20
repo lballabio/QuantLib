@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_11.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_12.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug"
 
@@ -76,7 +76,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_11.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_12.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release MTDLL"
 
@@ -98,8 +98,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_11.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_11.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_12.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_12.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug MTDLL"
 
@@ -121,8 +121,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_11.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_11.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_12.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_12.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release SingleThread"
 
@@ -144,8 +144,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_11.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_11.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_12.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_12.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug SingleThread"
 
@@ -167,8 +167,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_11.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_11.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_12.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_12.lib"
 
 !ENDIF 
 

@@ -11,7 +11,7 @@ n  is an ordinal number; 0 is only allowed when l equals f
 e.g. R010300a2 stands for Release 1.3.1a2
      R000501f0 stands for Release 0.5.1
 
-The current version number is 0.3.11 - 000311f0
+The current version number is 0.3.12 - 000312f0
 
 This version number is in:
     QuantLib/dev_tools/version_number.txt,
@@ -21,19 +21,29 @@ This version number is in:
     QuantLib/QuantLib_vc8.vcproj,
     QuantLib/QuantLib.dsp,
     QuantLib/QuantLib.dev,
+    QuantLib/makefile.mak,
     QuantLib/ql/qldefines.hpp,
     QuantLib/functions/ql/Functions/QuantLibFunctions.vcproj
     QuantLib/functions/ql/Functions/QuantLibFunctions_vc8.vcproj
     QuantLib/functions/ql/Functions/QuantLibFunctions.dsp
     QuantLib/functions/ql/Functions/QuantLibFunctions.dev
-
-    QuantLib-SWIG/SWIG/ql.i
-    QuantLib-SWIG/Python/setup.py
-    QuantLib-SWIG/Python/QuantLib-Python.spec
-    QuantLib-SWIG/Ruby/setup.rb
-    QuantLib-SWIG/Ruby/QuantLib-Ruby.spec
-    QuantLib-SWIG/MzScheme/setup.scm
+    QuantLib/test-suite/testsuite.vcproj
+    QuantLib/test-suite/testsuite_vc8.vcproj
+    QuantLib/test-suite/testsuite.dsp
+    QuantLib/test-suite/testsuite.dev
+    QuantLib/Examples/AmericanOption/AmericanOption.dev
+    QuantLib/Examples/BermudanSwaption/BermudanSwaption.dev
+    QuantLib/Examples/DiscreteHedging/DiscreteHedging.dev
+    QuantLib/Examples/EuropeanOption/EuropeanOption.dev
+    QuantLib/Examples/Swap/Swap.dev
+    
+    QuantLib-SWIG/configure.ac
     QuantLib-SWIG/Guile/setup.scm
+    QuantLib-SWIG/MzScheme/setup.scm
+    QuantLib-SWIG/Perl/Makefile.PL
+    QuantLib-SWIG/Python/setup.py
+    QuantLib-SWIG/Ruby/setup.rb
+    QuantLib-SWIG/SWIG/ql.i
 
     QuantLib-Excel/QuantLibXL.nsi
     QuantLib-Excel/qlxl/qlxl.hpp

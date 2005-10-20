@@ -35,7 +35,7 @@
 				PrecompiledHeaderFile=".\build\vc71\DebugMTDLL/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc71\DebugMTDLL/"
 				ObjectFile=".\build\vc71\DebugMTDLL/"
-				ProgramDataBaseFileName=".\lib\QuantLib-vc71-mt-gd-0_3_11"
+				ProgramDataBaseFileName=".\lib\QuantLib-vc71-mt-gd-0_3_12"
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc71\DebugMTDLL/"
 				WarningLevel="3"
@@ -46,7 +46,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc71-mt-gd-0_3_11.lib"
+				OutputFile=".\lib\QuantLib-vc71-mt-gd-0_3_12.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -110,7 +110,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc71-s-0_3_11.lib"
+				OutputFile=".\lib\QuantLib-vc71-s-0_3_12.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -174,7 +174,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc71-mt-s-0_3_11.lib"
+				OutputFile=".\lib\QuantLib-vc71-mt-s-0_3_12.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -238,7 +238,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc71-mt-0_3_11.lib"
+				OutputFile=".\lib\QuantLib-vc71-mt-0_3_12.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -287,7 +287,7 @@
 				PrecompiledHeaderFile=".\build\vc71\Debug/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc71\Debug/"
 				ObjectFile=".\build\vc71\Debug/"
-				ProgramDataBaseFileName=".\lib\QuantLib-vc71-mt-sgd-0_3_11"
+				ProgramDataBaseFileName=".\lib\QuantLib-vc71-mt-sgd-0_3_12"
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc71\Debug/"
 				WarningLevel="3"
@@ -298,7 +298,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc71-mt-sgd-0_3_11.lib"
+				OutputFile=".\lib\QuantLib-vc71-mt-sgd-0_3_12.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -347,7 +347,7 @@
 				PrecompiledHeaderFile=".\build\vc71\DebugST/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc71\DebugST/"
 				ObjectFile=".\build\vc71\DebugST/"
-				ProgramDataBaseFileName=".\lib\QuantLib-vc71-sgd-0_3_11"
+				ProgramDataBaseFileName=".\lib\QuantLib-vc71-sgd-0_3_12"
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc71\DebugST/"
 				WarningLevel="3"
@@ -358,7 +358,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc71-sgd-0_3_11.lib"
+				OutputFile=".\lib\QuantLib-vc71-sgd-0_3_12.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
