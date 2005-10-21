@@ -52,8 +52,8 @@ namespace QuantLib {
         void executeIntermediateStep(Size ) const {
             Size size = intrinsicValues_.size();
             for (Size j=0; j<size; j++)
-                prices_.values(j) = std::max(prices_.values(j),
-                                               intrinsicValues_.values(j));
+                prices_.value(j) = std::max(prices_.value(j),
+                                            intrinsicValues_.value(j));
         }
     };
 
