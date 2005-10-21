@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = BermudanSwaption
+TESTS = BermudanSwaption
 else
 EXTRA_PROGRAMS = BermudanSwaption
 CLEANFILES = BermudanSwaption
@@ -18,8 +19,12 @@ EXTRA_DIST = \
     makefile.mak \
     ReadMe.txt
 
-.PHONY: examples
+.PHONY: examples check-examples
+
 examples: BermudanSwaption
+
+check-examples: examples
+	./BermudanSwaption$(EXEEXT)
 
 dist-hook:
 	mkdir -p $(distdir)/bin

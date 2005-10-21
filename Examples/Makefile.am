@@ -7,12 +7,20 @@ SUBDIRS =  \
     DiscreteHedging \
     EuropeanOption \
     Swap
+SUBDIR_CHECKS = $(SUBDIRS:%=%.check)
 
 EXTRA_DIST = \
     makefile.mak \
     README.txt
 
-.PHONY: examples $(SUBDIRS)
+%.check:
+	$(MAKE) -C $* check-examples
+
+.PHONY: examples check-examples $(SUBDIRS)
+
 examples: $(SUBDIRS)
+
+check-examples: $(SUBDIR_CHECKS)
+
 $(SUBDIRS):
 	$(MAKE) -C $@ examples

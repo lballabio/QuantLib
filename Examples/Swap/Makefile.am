@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = SwapValuation
+TESTS = SwapValuation
 else
 EXTRA_PROGRAMS = SwapValuation
 CLEANFILES = SwapValuation
@@ -18,8 +19,12 @@ EXTRA_DIST = \
     makefile.mak \
     README.txt
 
-.PHONY: examples
+.PHONY: examples check-examples
+
 examples: SwapValuation
+
+check-examples: examples
+	./SwapValuation$(EXEEXT)
 
 dist-hook:
 	mkdir -p $(distdir)/bin

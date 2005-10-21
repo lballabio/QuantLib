@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = EuropeanOption
+TESTS = EuropeanOption
 else
 EXTRA_PROGRAMS = EuropeanOption
 CLEANFILES = EuropeanOption
@@ -18,8 +19,12 @@ EXTRA_DIST = \
     makefile.mak \
     ReadMe.txt
 
-.PHONY: examples
+.PHONY: examples check-examples
+
 examples: EuropeanOption
+
+check-examples: examples
+	./EuropeanOption$(EXEEXT)
 
 dist-hook:
 	mkdir -p $(distdir)/bin

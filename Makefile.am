@@ -29,9 +29,11 @@ EXTRA_DIST = \
 	Readme.txt \
 	autogen.sh
 
-.PHONY: examples
+.PHONY: examples check-examples
 examples:
 	$(MAKE) -C Examples examples
+check-examples:
+	$(MAKE) -C Examples check-examples
 
 .PHONY: docs docs-man docs-online docs-dist docs-clean
 BASEPATH = @abs_top_srcdir@

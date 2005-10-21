@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = DiscreteHedging
+TESTS = DiscreteHedging
 else
 EXTRA_PROGRAMS = DiscreteHedging
 CLEANFILES = DiscreteHedging
@@ -18,8 +19,12 @@ EXTRA_DIST = \
     makefile.mak \
     ReadMe.txt
 
-.PHONY: examples
+.PHONY: examples check-examples
+
 examples: DiscreteHedging
+
+check-examples: examples
+	./DiscreteHedging$(EXEEXT)
 
 dist-hook:
 	mkdir -p $(distdir)/bin

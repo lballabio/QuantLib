@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = AmericanOption
+TESTS = AmericanOption
 else
 EXTRA_PROGRAMS = AmericanOption
 CLEANFILES = AmericanOption
@@ -18,8 +19,12 @@ EXTRA_DIST = \
     makefile.mak \
     ReadMe.txt
 
-.PHONY: examples
+.PHONY: examples check-examples
+
 examples: AmericanOption
+
+check-examples: examples
+	./AmericanOption$(EXEEXT)
 
 dist-hook:
 	mkdir -p $(distdir)/bin
