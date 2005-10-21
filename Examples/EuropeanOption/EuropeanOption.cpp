@@ -2,7 +2,7 @@
 
 /*!
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,7 +19,9 @@
 */
 
 #include <ql/quantlib.hpp>
+#include <boost/timer.hpp>
 #include <iostream>
+#include <iomanip>
 
 using namespace QuantLib;
 
@@ -68,6 +70,9 @@ int main(int, char* [])
 {
     try {
         QL_IO_INIT
+
+        boost::timer timer;
+        std::cout << std::endl;
 
         std::cout << "Using " << QL_VERSION << std::endl << std::endl;
 
@@ -353,6 +358,19 @@ int main(int, char* [])
         std::cout << method << "\t"
                   << value << "\t" << "N/A\t\t"
                   << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+
+        Real seconds = timer.elapsed();
+        Integer hours = int(seconds/3600);
+        seconds -= hours * 3600;
+        Integer minutes = int(seconds/60);
+        seconds -= minutes * 60;
+        std::cout << " \nRun completed in ";
+        if (hours > 0)
+            std::cout << hours << " h ";
+        if (hours > 0 || minutes > 0)
+            std::cout << minutes << " m ";
+        std::cout << std::fixed << std::setprecision(0)
+                  << seconds << " s\n" << std::endl;
 
         return 0;
     } catch (std::exception& e) {
