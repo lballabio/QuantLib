@@ -50,7 +50,7 @@
 
     \ref faq_platforms
     - \ref faq_dot_net "Does QuantLib support .NET?"
-
+    - \ref faq_excel "What's the difference between QuantLibXL and QuantLibAddin"
 
     <hr>
 
@@ -368,7 +368,7 @@
     <http://sourceforge.net/mailarchive/forum.php?forum=quantlib-users>
     to catch up on the posts you missed.
 
-    \section faq_platforms QuantLib cross-platform support
+    \section faq_platforms QuantLib cross-platform support/extensions
 
     <strong>
     \anchor faq_dot_net
@@ -379,4 +379,34 @@
     <http://www.quantlib.net> and <http://www.capetools.net> have been 
     "external" attempts which now look like abandoned projects. As 
     such nobody but their authors could help you.
+
+    <strong>
+    \anchor faq_excel
+    What's the difference between QuantLibXL and QuantLibAddin?
+    </strong>
+
+    <table>
+    <tr>
+    <td><b>Feature</b></td>
+    <td><b>QuantLibXL</b></td>
+    <td><b>QuantLibAddin</b></td>
+    </tr>
+    <tr>
+    <td><b>Design</b></td>
+    <td>Procedural and stateless.  Each function returns a value, no state persists within the library</td>
+    <td>Object oriented and stateful.  Calling a function instantiates an object in the repository - objects may be interrogated, updated, or passed as inputs to constructors/member functions of other objects.</td>
+    </tr>
+    <tr>
+    <td><b>Lifecycle</b></td>
+    <td>Stable, discontinued.  Last updated for QuantLib 0.3.8</td>
+    <td>Prototype which at the time of this writing is under active development</td>
+    </tr>
+    <tr>
+    <td><b>Platforms</b></td>
+    <td>Microsoft Excel</td>
+    <td>Microsoft Excel, OpenOffice.org Calc (Windows and Linux), Guile, C/C++</td>
+    </tr>
+    </table>
+
 */
+
