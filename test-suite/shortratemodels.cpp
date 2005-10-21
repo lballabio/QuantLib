@@ -112,7 +112,9 @@ void ShortRateModelTest::testCachedHullWhite() {
 
 test_suite* ShortRateModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Short-rate model tests");
+    #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
+    #endif
     return suite;
 }
 

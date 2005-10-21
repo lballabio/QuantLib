@@ -725,12 +725,8 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 
 }
 
-#ifdef QL_PATCH_BORLAND
 void InterpolationTest::testMultiSpline() {
-    BOOST_ERROR("\n  N-dimensional cubic spline test SKIPPED!!!");
-}
-#else
-void InterpolationTest::testMultiSpline() {
+    #if !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE("Testing N-dimensional cubic spline...");
 
@@ -831,8 +827,8 @@ void InterpolationTest::testMultiSpline() {
                 << "\n    tolerance:    " << tolerance);
         }
     }
+    #endif
 }
-#endif // QL_PATCH_BORLAND
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
@@ -848,7 +844,9 @@ test_suite* InterpolationTest::suite() {
                         &InterpolationTest::testSplineOnGaussianValues));
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSplineErrorOnGaussianValues));
+    #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testMultiSpline));
+    #endif
     return suite;
 }
 

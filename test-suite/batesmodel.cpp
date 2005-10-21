@@ -445,10 +445,11 @@ void BatesModelTest::testDAXCalibration() {
 
 test_suite* BatesModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bates model tests");
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testAnalyticVsBlack));
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testAnalyticVsJumpDiffusion));
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testDAXCalibration));
-
+    #endif
     return suite;
 }
 

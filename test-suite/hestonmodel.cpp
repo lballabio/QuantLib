@@ -555,13 +555,17 @@ void HestonModelTest::testEngines() {
 
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testBlackCalibration));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testDAXCalibration));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
-    suite->add(BOOST_TEST_CASE(&HestonModelTest::testMcVsCached));
     // this passes but takes way too long
     // suite->add(BOOST_TEST_CASE(&HestonModelTest::testEngines));
+    #endif
+    #if !defined(QL_PATCH_BORLAND)
+    suite->add(BOOST_TEST_CASE(&HestonModelTest::testMcVsCached));
+    #endif
     return suite;
 }
 

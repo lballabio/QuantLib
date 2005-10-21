@@ -473,6 +473,7 @@ void PiecewiseYieldCurveTest::testObservability() {
 
 test_suite* PiecewiseYieldCurveTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLogLinearDiscountConsistency));
     suite->add(BOOST_TEST_CASE(
@@ -491,6 +492,7 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     // suite->add(BOOST_TEST_CASE(
     //              &PiecewiseYieldCurveTest::testSplineForwardConsistency));
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
+    #endif
     return suite;
 }
 

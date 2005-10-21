@@ -185,7 +185,9 @@ void BermudanSwaptionTest::testCachedValues() {
 
 test_suite* BermudanSwaptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bermudan swaption tests");
+    #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&BermudanSwaptionTest::testCachedValues));
+    #endif
     return suite;
 }
 
