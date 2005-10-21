@@ -55,7 +55,7 @@ namespace QuantLib {
         BlackVarianceCurve blackCurve_;
     };
 
-    CapletVarianceCurve::CapletVarianceCurve(
+    inline CapletVarianceCurve::CapletVarianceCurve(
                                 const Date& referenceDate,
                                 const std::vector<Date>& dates,
                                 const std::vector<Volatility>& capletVolCurve,
@@ -83,7 +83,7 @@ namespace QuantLib {
         return blackCurve_.maxStrike();
     }
 
-    inline 
+    inline
     Volatility CapletVarianceCurve::volatilityImpl(Time t, Rate r) const {
         return blackCurve_.blackVol(t, r, true);
     }

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2005 Serkan Atalik
+ Copyright (C) 2005 Sercan Atalik
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

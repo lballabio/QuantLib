@@ -90,6 +90,14 @@ install-data-hook:
 depend:
 	makedepend $(INCLUDES) -- $(CFLAGS) -- $(SOURCES)
 
+if ENABLE_STATIC
+
+install-exec-hook:
+	mv $(libdir)/libQuantLib.a $(libdir)/libQuantLib-$(PACKAGE_VERSION).a
+	$(LN_S) $(libdir)/libQuantLib-$(PACKAGE_VERSION).a $(libdir)/libQuantLib.a
+
+endif
+
 
 lib_LTLIBRARIES = libQuantLib.la
 libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)

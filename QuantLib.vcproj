@@ -2369,6 +2369,9 @@
 				RelativePath=".\ql\Indexes\tibor.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\trlibor.hpp">
+			</File>
+			<File
 				RelativePath="ql\Indexes\usdlibor.hpp">
 			</File>
 			<File

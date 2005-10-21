@@ -795,6 +795,10 @@ SOURCE=.\ql\Indexes\tibor.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Indexes\trlibor.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Indexes\usdlibor.hpp
 # End Source File
 # Begin Source File

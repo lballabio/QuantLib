@@ -49,20 +49,31 @@ namespace QuantLib {
         QL_REQUIRE(d1<=d2,
                    "invalid reference period: the start date "
                    << d1 << " is later than the end date " << d2);
+
+        // when the reference period is not specified, try taking
+        // it equal to (d1,d2)
         Date refPeriodStart = (d3 != Date() ? d3 : d1);
         Date refPeriodEnd = (d4 != Date() ? d4 : d2);
+
         QL_REQUIRE(refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
-                   "invalid reference period."
-                   << "Date 1: " << d1
-                   << "  Date 2: " << d2
-                   << "  Reference period Start: " << refPeriodStart
-                   << ",  Reference period end: " << refPeriodEnd);
+                   "invalid reference period: "
+                   << "date 1: " << d1
+                   << ", date 2: " << d2
+                   << ", reference period start: " << refPeriodStart
+                   << ", reference period end: " << refPeriodEnd);
 
         // estimate roughly the length in months of a period
         Integer months =
             Integer(0.5+12*Real(refPeriodEnd-refPeriodStart)/365);
-        QL_REQUIRE(months != 0,
-                   "number of months does not divide 12 exactly");
+
+        // for short periods...
+        if (months == 0) {
+            // ...take the reference period as 1 year from d1
+            refPeriodStart = d1;
+            refPeriodEnd = d1 + 1*Years;
+            months = 12;
+        }
+
         Time period = Real(months)/12.0;
 
         if (d2 <= refPeriodEnd) {

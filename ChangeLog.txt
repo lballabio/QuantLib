@@ -1,3 +1,566 @@
+2005-10-04 10:08  Luigi Ballabio
+
+	* ql/: capvolstructures.hpp (1.18.2.1), swaptionvolstructure.hpp
+	(1.18.2.1), Processes/capletlmmprocess.hpp (1.1.2.1):
+
+	Doc fixes (thanks to Gary Kennedy)
+
+2005-10-03 14:46  Luigi Ballabio
+
+	* makefile.mak (1.61), ql/Calendars/makefile.mak (1.33),
+	ql/CashFlows/makefile.mak (1.26), ql/Currencies/makefile.mak (1.3),
+	ql/DayCounters/makefile.mak (1.23),
+	ql/FiniteDifferences/onefactoroperator.cpp (1.22),
+	ql/FiniteDifferences/onefactoroperator.hpp (1.22),
+	ql/Indexes/makefile.mak (1.23), ql/Lattices/makefile.mak (1.29),
+	ql/Math/gaussianorthogonalpolynomial.cpp (1.2),
+	ql/Math/makefile.mak (1.40), ql/MonteCarlo/makefile.mak (1.32),
+	ql/Optimization/makefile.mak (1.21), ql/Pricers/makefile.mak
+	(1.49), ql/PricingEngines/makefile.mak (1.36),
+	ql/PricingEngines/Asian/makefile.mak (1.11),
+	ql/PricingEngines/Barrier/makefile.mak (1.11),
+	ql/PricingEngines/Basket/makefile.mak (1.10),
+	ql/PricingEngines/CapFloor/makefile.mak (1.10),
+	ql/PricingEngines/CapFloor/treecapfloorengine.cpp (1.8),
+	ql/PricingEngines/CapFloor/treecapfloorengine.hpp (1.7),
+	ql/PricingEngines/Cliquet/makefile.mak (1.13),
+	ql/PricingEngines/Swaption/jamshidianswaptionengine.cpp (1.5),
+	ql/PricingEngines/Swaption/jamshidianswaptionengine.hpp (1.5),
+	ql/PricingEngines/Swaption/makefile.mak (1.12),
+	ql/PricingEngines/Vanilla/analytichestonengine.cpp (1.4),
+	ql/PricingEngines/Vanilla/analytichestonengine.hpp (1.6),
+	ql/PricingEngines/Vanilla/batesengine.cpp (1.3),
+	ql/PricingEngines/Vanilla/batesengine.hpp (1.4),
+	ql/PricingEngines/Vanilla/makefile.mak (1.18), ql/makefile.mak
+	(1.72), ql/Processes/capletlmmprocess.cpp (1.2),
+	ql/Processes/hestonprocess.cpp (1.6), ql/Processes/makefile.mak
+	(1.4), ql/ShortRateModels/makefile.mak (1.18),
+	ql/ShortRateModels/onefactormodel.cpp (1.20),
+	ql/ShortRateModels/onefactormodel.hpp (1.23),
+	ql/ShortRateModels/CalibrationHelpers/makefile.mak (1.17),
+	ql/ShortRateModels/OneFactorModels/blackkarasinski.cpp (1.24),
+	ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp (1.24),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.cpp (1.31),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.hpp (1.28),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp
+	(1.32),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
+	(1.29), ql/ShortRateModels/OneFactorModels/hullwhite.cpp (1.28),
+	ql/ShortRateModels/OneFactorModels/hullwhite.hpp (1.30),
+	ql/ShortRateModels/OneFactorModels/vasicek.cpp (1.16),
+	ql/ShortRateModels/OneFactorModels/vasicek.hpp (1.20),
+	ql/ShortRateModels/TwoFactorModels/makefile.mak (1.17),
+	ql/TermStructures/makefile.mak (1.28), test-suite/batesmodel.cpp
+	(1.5), test-suite/bermudanswaption.cpp (1.6),
+	test-suite/distributions.cpp (1.30), test-suite/hestonmodel.cpp
+	(1.10), test-suite/makefile.mak (1.55),
+	test-suite/shortratemodels.cpp (1.8):
+
+	Some fixes for Borland
+
+2005-10-03 11:06  Luigi Ballabio
+
+	* QuantLib.vcproj (1.56), ql/config.msvc.hpp (1.72),
+	ql/Math/array.hpp (1.23), test-suite/testsuite.vcproj (1.35):
+
+	Fixes for VC++7.1
+
+2005-10-03 04:47  Joseph Wang
+
+	* ql/Math/sampledcurve.hpp (1.1):
+
+	Add sampledcurve.hpp
+
+2005-10-02 08:10  Joseph Wang
+
+	* test-suite/: Makefile.am (1.63), quantlibtestsuite.cpp (1.107),
+	sampledcurve.cpp (1.1), sampledcurve.hpp (1.1), testsuite.dsp
+	(1.53), testsuite.vcproj (1.34):
+
+	Added sampled curve tests
+
+2005-09-30 17:45  Luigi Ballabio
+
+	* QuantLib.dsp (1.266), ql/qldefines.hpp (1.99), ql/settings.hpp
+	(1.15), ql/Patterns/singleton.hpp (1.10),
+	ql/PricingEngines/Vanilla/analytichestonengine.cpp (1.3),
+	ql/PricingEngines/Vanilla/analytichestonengine.hpp (1.5),
+	ql/PricingEngines/Vanilla/batesengine.cpp (1.2),
+	ql/PricingEngines/Vanilla/batesengine.hpp (1.3),
+	ql/Utilities/strings.hpp (1.5), test-suite/batesmodel.cpp (1.4),
+	test-suite/hestonmodel.cpp (1.9),
+	test-suite/libormarketmodelprocess.cpp (1.2),
+	test-suite/testsuite.dsp (1.52):
+
+	Fixes for VC++6
+
+2005-09-30 13:39  Luigi Ballabio
+
+	* ql/PricingEngines/Vanilla/fdbermudanengine.hpp (1.7):
+
+	Fixed signature mismatch in virtual method (thanks to Enrico
+	Michelotti)
+
+2005-09-29 10:37  Luigi Ballabio
+
+	* News.txt (1.95), configure.ac (1.70), Docs/pages/config.docs
+	(1.6), Examples/AmericanOption/AmericanOption.cpp (1.42),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.78),
+	Examples/DiscreteHedging/DiscreteHedging.cpp (1.57),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.125),
+	Examples/Swap/swapvaluation.cpp (1.65), ql/settings.hpp (1.14),
+	ql/userconfig.hpp (1.19), ql/Patterns/singleton.hpp (1.9),
+	test-suite/quantlibtestsuite.cpp (1.106):
+
+	Added hook for multiple sessions to Singleton
+
+2005-09-27 09:19  Luigi Ballabio
+
+	* News.txt (1.94), ql/types.hpp (1.20), ql/Currencies/america.hpp
+	(1.5), ql/Currencies/asia.hpp (1.6), ql/Currencies/europe.hpp
+	(1.6), ql/Currencies/exchangeratemanager.cpp (1.9),
+	ql/Currencies/exchangeratemanager.hpp (1.7),
+	ql/Currencies/oceania.hpp (1.5):
+
+	New Turkish lira added
+
+2005-09-23 16:38  Luigi Ballabio
+
+	* News.txt (1.93), ql/Processes/Makefile.am (1.6),
+	ql/Processes/all.hpp (1.4), ql/Processes/capletlmmprocess.cpp
+	(1.1), ql/Processes/capletlmmprocess.hpp (1.1),
+	ql/Volatilities/capletvariancecurve.hpp (1.2),
+	test-suite/Makefile.am (1.62),
+	test-suite/libormarketmodelprocess.cpp (1.1),
+	test-suite/libormarketmodelprocess.hpp (1.1),
+	test-suite/quantlibtestsuite.cpp (1.105):
+
+	Added stochastic process for caplet Libor market model (thanks to
+	Klaus Spanderen)
+
+2005-09-23 09:55  Luigi Ballabio
+
+	* ql/: capvolstructures.hpp (1.18), swaptionvolstructure.hpp
+	(1.18), voltermstructure.hpp (1.37), Volatilities/Makefile.am
+	(1.17), Volatilities/all.hpp (1.4),
+	Volatilities/capflatvolvector.hpp (1.28),
+	Volatilities/capletconstantvol.hpp (1.11),
+	Volatilities/capletvariancecurve.hpp (1.1),
+	Volatilities/swaptionvolmatrix.hpp (1.31):
+
+	Added extrapolation to swaption, cap and caplet volatility
+	structures
+
+2005-09-22 09:02  Luigi Ballabio
+
+	* News.txt (1.92),
+	ql/PricingEngines/Asian/analytic_discr_geom_av_price.cpp (1.15),
+	ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp (1.6),
+	test-suite/asianoptions.cpp (1.54):
+
+	Added vega to analytic discrete-averaging Asian engine (thanks to
+	Gary Kennedy)
+
+2005-09-19 13:55  Luigi Ballabio
+
+	* ql/PricingEngines/Vanilla/batesengine.hpp (1.2):
+
+	Documentation fix (thanks to Gary Kennedy)
+
+2005-09-19 02:22  Joseph Wang
+
+	* ql/Processes/defaultable.hpp (1.3):
+
+	Add new defaultable types
+
+2005-09-18 08:21  Joseph Wang
+
+	* ql/Processes/defaultable.hpp (1.2):
+
+	On second thought.  Use multi-interheritance for defaultable
+	processes rather than templating.
+
+2005-09-18 08:14  Joseph Wang
+
+	* ql/FiniteDifferences/parallelevolver.hpp (1.4),
+	ql/Processes/defaultable.hpp (1.1), test-suite/Makefile.am (1.60),
+	test-suite/defaultable.cpp (1.1):
+
+	Add defaultable process
+
+2005-09-15 11:45  Luigi Ballabio
+
+	* ql/Math/bivariatenormaldistribution.hpp (1.13),
+	test-suite/basketoption.cpp (1.47):
+
+	Switched to new bivariate implementation
+
+2005-09-13 15:34  Joseph Wang
+
+	* ql/: Instruments/oneassetoption.hpp (1.18),
+	Instruments/oneassetstrikedoption.hpp (1.18),
+	Instruments/vanillaoption.hpp (1.51),
+	PricingEngines/Vanilla/fdamericanengine.hpp (1.6),
+	PricingEngines/Vanilla/fddividendshoutengine.hpp (1.5),
+	PricingEngines/Vanilla/fdeuropeanengine.cpp (1.7),
+	PricingEngines/Vanilla/fdeuropeanengine.hpp (1.7),
+	PricingEngines/Vanilla/fdmultiperiodengine.hpp (1.6),
+	PricingEngines/Vanilla/fdshoutengine.hpp (1.6),
+	PricingEngines/Vanilla/fdstepconditionengine.cpp (1.6),
+	PricingEngines/Vanilla/fdvanillaengine.cpp (1.7),
+	PricingEngines/Vanilla/fdvanillaengine.hpp (1.9):
+
+	Added oneassetoption and oneassetstriked option engine.
+
+	Some more refactoring of the fd classes.  Trying to remove as much
+	references to the option arguments.
+
+2005-09-13 08:56  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/: fdamericanengine.hpp (1.5),
+	fdbermudanengine.hpp (1.6), fddividendamericanengine.hpp (1.4),
+	fddividendengine.hpp (1.5), fddividendeuropeanengine.hpp (1.5),
+	fddividendshoutengine.hpp (1.4), fdeuropeanengine.cpp (1.6),
+	fdeuropeanengine.hpp (1.6), fdmultiperiodengine.cpp (1.4),
+	fdmultiperiodengine.hpp (1.5), fdshoutengine.hpp (1.5),
+	fdstepconditionengine.hpp (1.6), fdvanillaengine.hpp (1.8):
+
+	Start of general refactoring of fd files.  This moves the
+	definition of the argument pointer out of the constructor.
+
+2005-09-08 10:56  Luigi Ballabio
+
+	* ql/Instruments/: fixedcouponbond.cpp (1.10), fixedcouponbond.hpp
+	(1.8):
+
+	Added optional longFinal flag to FixedCouponBond (thanks to Plamen
+	Neykov)
+
+2005-09-07 17:05  Luigi Ballabio
+
+	* LICENSE.TXT (1.21), News.txt (1.91),
+	ql/TermStructures/Makefile.am (1.25), ql/TermStructures/all.hpp
+	(1.7), ql/TermStructures/bondhelpers.cpp (1.1),
+	ql/TermStructures/bondhelpers.hpp (1.1),
+	ql/TermStructures/ratehelpers.hpp (1.50),
+	test-suite/piecewiseyieldcurve.cpp (1.11):
+
+	Added fixed-coupon bond helper for curve bootstrapping (thanks to
+	Toyin Akin)
+
+2005-09-04 18:25  Joseph Wang
+
+	* ql/Instruments/convertiblebond.hpp (1.4):
+
+	add in tboafo's changes
+
+2005-08-29 15:29  Luigi Ballabio
+
+	* News.txt (1.90), ql/Math/bivariatenormaldistribution.cpp (1.13),
+	ql/Math/bivariatenormaldistribution.hpp (1.12),
+	ql/Math/gaussianquadratures.cpp (1.3),
+	ql/Math/gaussianquadratures.hpp (1.3), test-suite/distributions.cpp
+	(1.29), test-suite/gaussianquadratures.cpp (1.3),
+	test-suite/gaussianquadratures.hpp (1.2):
+
+	Added tabulated Gauss-Legendre quadratures and more precise
+	implementation of bivariate cumulative normal distribution (thanks
+	to Gary Kennedy)
+
+2005-08-26 15:04  Luigi Ballabio
+
+	* ql/TermStructures/piecewiseyieldcurve.hpp (1.14):
+
+	Fix for evaluation date change (thanks to Aurelien Chanudet)
+
+2005-08-26 05:32  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/: fdmultiperiodengine.hpp (1.4),
+	fdvanillaengine.cpp (1.6), fdvanillaengine.hpp (1.7):
+
+	Replaced getYearFraction with method from process
+
+2005-08-23 16:05  Luigi Ballabio
+
+	* ql/: date.cpp (1.49), qldefines.hpp (1.98),
+	RandomNumbers/seedgenerator.cpp (1.7), Utilities/Makefile.am
+	(1.16), Utilities/dataparsers.cpp (1.3), Utilities/strings.cpp
+	(1.1), Utilities/strings.hpp (1.4):
+
+	Include a few system headers only when needed
+
+2005-08-21 17:01  Plamen Neykov
+
+	* ql/schedule.cpp (1.8):
+
+	Fix of a possible crash if the schdule has only one period
+
+2005-08-19 16:42  Luigi Ballabio
+
+	* Contributors.txt (1.32), configure.ac (1.69),
+	Docs/pages/authors.docs (1.40):
+
+	Added support for relative paths in configure options (thanks to
+	Antoine Cellerier)
+
+2005-08-19 15:41  Luigi Ballabio
+
+	* acinclude.m4 (1.18), configure.ac (1.68), ql/Makefile.am (1.79),
+	ql/config.ansi.hpp (1.35), ql/config.bcc.hpp (1.36),
+	ql/config.mingw.hpp (1.8), ql/config.msvc.hpp (1.71),
+	ql/config.mwcw.hpp (1.32), ql/qldefines.hpp (1.97):
+
+	Rename conflicting autoconf defines when installing config.hpp
+
+2005-08-18 19:21  Luigi Ballabio
+
+	* ql/timegrid.hpp (1.8), ql/CashFlows/cashflowvectors.cpp (1.43),
+	ql/CashFlows/indexedcashflowvectors.hpp (1.3),
+	ql/FiniteDifferences/americancondition.hpp (1.29),
+	ql/FiniteDifferences/shoutcondition.hpp (1.27), ql/Math/array.hpp
+	(1.22), ql/Math/matrix.hpp (1.45), ql/MonteCarlo/path.hpp (1.31),
+	ql/Optimization/armijo.cpp (1.22), ql/Patterns/singleton.hpp (1.8),
+	test-suite/Makefile.am (1.59), test-suite/array.cpp (1.1),
+	test-suite/array.hpp (1.1), test-suite/quantlibtestsuite.cpp
+	(1.104):
+
+	A couple more Boost facilities used instead of homegrown code
+
+2005-07-28 15:16  Luigi Ballabio
+
+	* ql/TermStructures/piecewiseyieldcurve.hpp (1.13),
+	test-suite/piecewiseyieldcurve.cpp (1.10):
+
+	Fixed PiecewiseYieldCurve recalculation (thanks to Plamen Neykov)
+
+2005-07-27 23:01  Eric Ehlers
+
+	* Docs/pages/faq.docs (1.18):
+
+	add FAQ for .NET support
+
+2005-07-27 15:20  Luigi Ballabio
+
+	* News.txt (1.89), ql/PricingEngines/Vanilla/Makefile.am (1.22),
+	ql/PricingEngines/Vanilla/all.hpp (1.11),
+	ql/PricingEngines/Vanilla/analytichestonengine.cpp (1.2),
+	ql/PricingEngines/Vanilla/analytichestonengine.hpp (1.3),
+	ql/PricingEngines/Vanilla/batesengine.cpp (1.1),
+	ql/PricingEngines/Vanilla/batesengine.hpp (1.1),
+	ql/ShortRateModels/all.hpp (1.3),
+	ql/ShortRateModels/CalibrationHelpers/hestonmodelhelper.cpp (1.3),
+	ql/ShortRateModels/TwoFactorModels/Makefile.am (1.6),
+	ql/ShortRateModels/TwoFactorModels/batesmodel.cpp (1.1),
+	ql/ShortRateModels/TwoFactorModels/batesmodel.hpp (1.1),
+	ql/ShortRateModels/TwoFactorModels/hestonmodel.cpp (1.2),
+	ql/ShortRateModels/TwoFactorModels/hestonmodel.hpp (1.2),
+	test-suite/Makefile.am (1.57), test-suite/batesmodel.cpp (1.1),
+	test-suite/batesmodel.hpp (1.1), test-suite/hestonmodel.cpp (1.6),
+	test-suite/quantlibtestsuite.cpp (1.103):
+
+	Added Bates stochastic-volatility model thanks to Klaus Spanderen)
+
+2005-07-21 17:05  Luigi Ballabio
+
+	* Contributors.txt (1.31), Docs/pages/authors.docs (1.39),
+	ql/Instruments/simpleswap.cpp (1.58), ql/Instruments/simpleswap.hpp
+	(1.53), ql/PricingEngines/Swaption/jamshidianswaptionengine.cpp
+	(1.4), ql/ShortRateModels/twofactormodel.hpp (1.20),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.43),
+	ql/ShortRateModels/TwoFactorModels/g2.cpp (1.27),
+	test-suite/shortratemodels.cpp (1.7):
+
+	Fixes for G2 model (thanks to Marco Tarenghi)
+
+2005-07-21 16:53  Ferdinando Ametrano
+
+	* QuantLib.nsi (1.112):
+
+	no message
+
+2005-07-21 16:27  Ferdinando Ametrano
+
+	* QuantLib.nsi (1.111), QuantLib.vcproj (1.55):
+
+	VC7.1 catching up
+
+2005-07-20 17:45  Luigi Ballabio
+
+	* News.txt (1.88), configure.ac (1.67), ql/errors.cpp (1.13),
+	ql/userconfig.hpp (1.18):
+
+	Added configuration option for adding current function information
+	to error messages
+
+2005-07-20 14:55  Luigi Ballabio
+
+	* ql/date.hpp (1.49):
+
+	Encapsulated IMM enumeration into struct scope
+
+2005-07-20 09:07  Luigi Ballabio
+
+	* ql/yieldtermstructure.hpp (1.3):
+
+	Changed par-rate interface
+
+2005-07-19 11:13  Luigi Ballabio
+
+	* ql/Optimization/leastsquare.hpp (1.30):
+
+	Missing virtual destructor added
+
+2005-07-13 12:37  Luigi Ballabio
+
+	* Announce.txt (1.4), Makefile.am (1.97), Docs/Makefile.am (1.76),
+	Docs/pages/faq.docs (1.17), Examples/Makefile.am (1.23),
+	Examples/AmericanOption/Makefile.am (1.7),
+	Examples/BermudanSwaption/Makefile.am (1.13),
+	Examples/DiscreteHedging/Makefile.am (1.20),
+	Examples/EuropeanOption/Makefile.am (1.14),
+	Examples/Swap/Makefile.am (1.15),
+	functions/ql/Functions/Makefile.am (1.9), ql/Makefile.am (1.78),
+	ql/config.msvc.hpp (1.70), ql/Calendars/Makefile.am (1.29),
+	ql/CashFlows/Makefile.am (1.17), ql/Currencies/Makefile.am (1.6),
+	ql/DayCounters/Makefile.am (1.12), ql/FiniteDifferences/Makefile.am
+	(1.19), ql/Indexes/Makefile.am (1.16), ql/Instruments/Makefile.am
+	(1.31), ql/Lattices/Makefile.am (1.12), ql/Math/Makefile.am (1.47),
+	ql/MonteCarlo/Makefile.am (1.33), ql/Optimization/Makefile.am
+	(1.9), ql/Pricers/Makefile.am (1.46), ql/PricingEngines/Makefile.am
+	(1.42), ql/PricingEngines/Asian/Makefile.am (1.8),
+	ql/PricingEngines/Barrier/Makefile.am (1.7),
+	ql/PricingEngines/Basket/Makefile.am (1.5),
+	ql/PricingEngines/CapFloor/Makefile.am (1.4),
+	ql/PricingEngines/Cliquet/Makefile.am (1.8),
+	ql/PricingEngines/Forward/Makefile.am (1.4),
+	ql/PricingEngines/Quanto/Makefile.am (1.4),
+	ql/PricingEngines/Swaption/Makefile.am (1.6),
+	ql/PricingEngines/Vanilla/Makefile.am (1.21),
+	ql/Processes/Makefile.am (1.5), ql/RandomNumbers/Makefile.am
+	(1.23), ql/ShortRateModels/Makefile.am (1.6),
+	ql/ShortRateModels/CalibrationHelpers/Makefile.am (1.5),
+	ql/ShortRateModels/OneFactorModels/Makefile.am (1.4),
+	ql/ShortRateModels/TwoFactorModels/Makefile.am (1.5),
+	ql/TermStructures/Makefile.am (1.24),
+	ql/TermStructures/piecewiseyieldcurve.hpp (1.12),
+	ql/Utilities/Makefile.am (1.15), ql/Volatilities/Makefile.am
+	(1.16), test-suite/Makefile.am (1.56),
+	test-suite/piecewiseyieldcurve.cpp (1.9):
+
+	Merged 0.3.10 branch
+
+2005-07-07 09:24  Luigi Ballabio
+
+	* ChangeLog.txt (1.49), Contributors.txt (1.30), LICENSE.TXT
+	(1.20), QuantLib.dev (1.14), QuantLib.dsp (1.265), QuantLib.vcproj
+	(1.54), QuantLib_vc8.sln (1.2), QuantLib_vc8.vcproj (1.4),
+	acinclude.m4 (1.17), Docs/pages/authors.docs (1.38),
+	Docs/pages/faq.docs (1.16), Docs/pages/history.docs (1.23),
+	Docs/pages/license.docs (1.17), Docs/pages/overview.docs (1.20),
+	Examples/AmericanOption/AmericanOption.dev (1.4),
+	Examples/AmericanOption/AmericanOption.dsp (1.13),
+	Examples/AmericanOption/AmericanOption.vcproj (1.13),
+	Examples/AmericanOption/AmericanOption_vc8.vcproj (1.2),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.77),
+	Examples/BermudanSwaption/BermudanSwaption.dev (1.4),
+	Examples/BermudanSwaption/BermudanSwaption.dsp (1.20),
+	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.13),
+	Examples/BermudanSwaption/BermudanSwaption_vc8.vcproj (1.2),
+	Examples/DiscreteHedging/DiscreteHedging.dev (1.4),
+	Examples/DiscreteHedging/DiscreteHedging.dsp (1.22),
+	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.13),
+	Examples/DiscreteHedging/DiscreteHedging_vc8.vcproj (1.2),
+	Examples/EuropeanOption/EuropeanOption.dev (1.4),
+	Examples/EuropeanOption/EuropeanOption.dsp (1.20),
+	Examples/EuropeanOption/EuropeanOption.vcproj (1.13),
+	Examples/EuropeanOption/EuropeanOption_vc8.vcproj (1.2),
+	Examples/Swap/Swap.dev (1.4), Examples/Swap/Swap.dsp (1.21),
+	Examples/Swap/Swap.vcproj (1.13), Examples/Swap/Swap_vc8.vcproj
+	(1.2), dev_tools/version_number.txt (1.47),
+	functions/ql/Functions/QuantLibFunctions_vc8.vcproj (1.3),
+	ql/config.msvc.hpp (1.69), ql/qldefines.hpp (1.96), ql/timegrid.hpp
+	(1.7), ql/Calendars/Makefile.am (1.28), ql/Calendars/all.hpp
+	(1.13), ql/Calendars/copenhagen.cpp (1.6),
+	ql/Calendars/copenhagen.hpp (1.7), ql/Calendars/istanbul.cpp (1.2),
+	ql/Calendars/istanbul.hpp (1.2),
+	ql/FiniteDifferences/operatortraits.hpp (1.6),
+	ql/FiniteDifferences/parallelevolver.hpp (1.3),
+	ql/Instruments/bond.hpp (1.11), ql/Instruments/fixedcouponbond.cpp
+	(1.9), ql/Instruments/floatingratebond.cpp (1.4),
+	ql/Instruments/zerocouponbond.cpp (1.3),
+	ql/Math/gaussianquadratures.cpp (1.2), ql/Math/multicubicspline.hpp
+	(1.10), ql/Math/tqreigendecomposition.cpp (1.2),
+	ql/Patterns/observable.hpp (1.25),
+	ql/PricingEngines/Barrier/analyticbarrierengine.cpp (1.23),
+	ql/PricingEngines/Barrier/analyticbarrierengine.hpp (1.9),
+	ql/PricingEngines/Basket/mcamericanbasketengine.cpp (1.37),
+	ql/PricingEngines/Vanilla/fddividendeuropeanengine.hpp (1.4),
+	ql/PricingEngines/Vanilla/mcdigitalengine.hpp (1.41),
+	ql/TermStructures/piecewiseyieldcurve.hpp (1.11),
+	test-suite/Makefile.am (1.55), test-suite/americanoption.hpp
+	(1.10), test-suite/bonds.cpp (1.17), test-suite/covariance.cpp
+	(1.31), test-suite/distributions.cpp (1.28),
+	test-suite/factorial.cpp (1.22), test-suite/gaussianquadratures.cpp
+	(1.2), test-suite/hestonmodel.cpp (1.5),
+	test-suite/interpolations.cpp (1.28),
+	test-suite/lowdiscrepancysequences.cpp (1.74),
+	test-suite/pathgenerator.cpp (1.11), test-suite/rounding.cpp (1.8),
+	test-suite/swap.cpp (1.43), test-suite/swaption.cpp (1.43),
+	test-suite/termstructures.cpp (1.41), test-suite/testsuite.dsp
+	(1.51), test-suite/testsuite.vcproj (1.33),
+	test-suite/testsuite_vc8.vcproj (1.4), test-suite/utilities.hpp
+	(1.26):
+
+	Merged 0.3.10 branch
+
+2005-07-04 18:26  Luigi Ballabio
+
+	* acinclude.m4 (1.16.4.1), test-suite/Makefile.am (1.54.2.1),
+	test-suite/bonds.cpp (1.15.2.1), test-suite/covariance.cpp
+	(1.30.2.1), test-suite/distributions.cpp (1.27.2.1),
+	test-suite/factorial.cpp (1.21.2.1), test-suite/interpolations.cpp
+	(1.27.2.1), test-suite/lowdiscrepancysequences.cpp (1.73.2.1),
+	test-suite/rounding.cpp (1.7.2.1), test-suite/swap.cpp (1.42.2.1),
+	test-suite/swaption.cpp (1.42.2.1), test-suite/termstructures.cpp
+	(1.40.2.1), test-suite/utilities.hpp (1.25.2.1):
+
+	check and workaround for Boost 1.32
+
+2005-07-03 09:55  Joseph Wang
+
+	* ql/Patterns/observable.hpp (1.24):
+
+	Add forward declaration for Observer to allow compile.
+
+2005-06-24 17:00  Ferdinando Ametrano
+
+	* QuantLib.vcproj (1.52.2.3), test-suite/hestonmodel.cpp (1.4.2.4):
+
+	VC7.1 catching up
+
+2005-06-24 16:56  Ferdinando Ametrano
+
+	* ql/TermStructures/piecewiseyieldcurve.hpp (1.10.2.1):
+
+	VC7.1 catching up
+
+2005-06-24 16:25  Ferdinando Ametrano
+
+	* QuantLib.vcproj (1.52.2.2), ql/timegrid.hpp (1.6.2.1),
+	test-suite/hestonmodel.cpp (1.4.2.3), test-suite/testsuite.vcproj
+	(1.31.2.2):
+
+	VC7.1 catching up
+
+2005-06-24 09:26  Luigi Ballabio
+
+	* News.txt (1.87), ql/Calendars/Makefile.am (1.27),
+	ql/Calendars/all.hpp (1.12), ql/Calendars/bombay.cpp (1.1),
+	ql/Calendars/bombay.hpp (1.1), ql/Calendars/taipei.cpp (1.1),
+	ql/Calendars/taipei.hpp (1.1):
+
+	Bombay and Taipei calendars added
+
 2005-06-20 15:15  Luigi Ballabio
 
 	* ql/Patterns/observable.hpp (1.23.2.1):
@@ -10,6 +573,58 @@
 
 	Added missing method body (thanks to Mirko Raso)
 
+2005-06-08 16:05  Luigi Ballabio
+
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.56),
+	ql/MonteCarlo/mctraits.hpp (1.19), ql/MonteCarlo/mctypedefs.hpp
+	(1.38), ql/Pricers/mccliquetoption.cpp (1.42),
+	ql/Pricers/mccliquetoption.hpp (1.27),
+	ql/Pricers/mcdiscretearithmeticaso.cpp (1.45),
+	ql/Pricers/mcdiscretearithmeticaso.hpp (1.29),
+	ql/Pricers/mceverest.cpp (1.51), ql/Pricers/mceverest.hpp (1.31),
+	ql/Pricers/mchimalaya.cpp (1.56), ql/Pricers/mchimalaya.hpp (1.29),
+	ql/Pricers/mcmaxbasket.cpp (1.51), ql/Pricers/mcmaxbasket.hpp
+	(1.31), ql/Pricers/mcpagoda.cpp (1.55), ql/Pricers/mcpagoda.hpp
+	(1.32), ql/Pricers/mcperformanceoption.cpp (1.37),
+	ql/Pricers/mcperformanceoption.hpp (1.24),
+	ql/PricingEngines/Asian/mcdiscreteasianengine.hpp (1.11),
+	ql/PricingEngines/Barrier/mcbarrierengine.hpp (1.34),
+	ql/PricingEngines/Basket/mcbasketengine.hpp (1.36),
+	ql/PricingEngines/Vanilla/mchestonengine.hpp (1.2),
+	ql/PricingEngines/Vanilla/mcvanillaengine.hpp (1.29):
+
+	Renamed Single/MultiAsset traits to Single/MultiVariate
+
+2005-06-08 12:35  Luigi Ballabio
+
+	* News.txt (1.86), ql/Indexes/Makefile.am (1.15),
+	ql/Indexes/all.hpp (1.5), ql/Indexes/dkklibor.hpp (1.1),
+	ql/Indexes/euribor.hpp (1.26), ql/Indexes/eurlibor.hpp (1.1),
+	ql/Indexes/nzdlibor.hpp (1.1), ql/Indexes/usdlibor.hpp (1.29):
+
+	Added DKKLibor, EURLibor, NZDLibor
+
+2005-06-07 17:55  Luigi Ballabio
+
+	* News.txt (1.85), ql/Indexes/Makefile.am (1.14),
+	ql/Indexes/audlibor.hpp (1.24), ql/Indexes/cadlibor.hpp (1.24),
+	ql/Indexes/chflibor.hpp (1.21), ql/Indexes/core.hpp (1.5),
+	ql/Indexes/gbplibor.hpp (1.29), ql/Indexes/jpylibor.hpp (1.22),
+	ql/Indexes/libor.cpp (1.1), ql/Indexes/libor.hpp (1.1),
+	ql/Indexes/usdlibor.hpp (1.28), ql/Indexes/xibor.cpp (1.28),
+	ql/Indexes/xibor.hpp (1.41), test-suite/bermudanswaption.cpp (1.5),
+	test-suite/shortratemodels.cpp (1.6):
+
+	More accurate LIBOR calendars (thanks to Daniele de Francesco)
+
+2005-06-06 11:44  Luigi Ballabio
+
+	* ql/Indexes/Makefile.am (1.13), ql/Indexes/all.hpp (1.4),
+	ql/Indexes/jibar.hpp (1.1), ql/Indexes/zarlibor.hpp (1.23),
+	test-suite/compoundforward.cpp (1.36):
+
+	File renamed
+
 2005-06-03 15:21  Luigi Ballabio
 
 	* Contributors.txt (1.29.2.1), News.txt (1.84.2.2),
@@ -19,6 +634,148 @@
 	(1.1.2.1), ql/Calendars/istanbul.hpp (1.1.2.1):
 
 	Istanbul calendar added (thanks to Serkan Atalik)
+
+2005-06-03 09:46  Luigi Ballabio
+
+	* ql/stochasticprocess.cpp (1.20), ql/stochasticprocess.hpp (1.29),
+	ql/Instruments/asianoption.cpp (1.25),
+	ql/Instruments/asianoption.hpp (1.25),
+	ql/Instruments/barrieroption.cpp (1.36),
+	ql/Instruments/barrieroption.hpp (1.32),
+	ql/Instruments/basketoption.cpp (1.15),
+	ql/Instruments/basketoption.hpp (1.19),
+	ql/Instruments/cliquetoption.cpp (1.7),
+	ql/Instruments/cliquetoption.hpp (1.20),
+	ql/Instruments/convertiblebond.hpp (1.3),
+	ql/Instruments/dividendvanillaoption.cpp (1.10),
+	ql/Instruments/dividendvanillaoption.hpp (1.9),
+	ql/Instruments/europeanoption.cpp (1.6),
+	ql/Instruments/europeanoption.hpp (1.9),
+	ql/Instruments/forwardvanillaoption.cpp (1.33),
+	ql/Instruments/forwardvanillaoption.hpp (1.33),
+	ql/Instruments/multiassetoption.cpp (1.19),
+	ql/Instruments/multiassetoption.hpp (1.15),
+	ql/Instruments/oneassetoption.cpp (1.25),
+	ql/Instruments/oneassetoption.hpp (1.17),
+	ql/Instruments/oneassetstrikedoption.cpp (1.20),
+	ql/Instruments/oneassetstrikedoption.hpp (1.17),
+	ql/Instruments/quantoforwardvanillaoption.cpp (1.31),
+	ql/Instruments/quantoforwardvanillaoption.hpp (1.27),
+	ql/Instruments/quantovanillaoption.cpp (1.38),
+	ql/Instruments/quantovanillaoption.hpp (1.35),
+	ql/Instruments/vanillaoption.cpp (1.50),
+	ql/Instruments/vanillaoption.hpp (1.50),
+	ql/MonteCarlo/multipathgenerator.hpp (1.68),
+	ql/Pricers/mceverest.cpp (1.50), ql/Pricers/mchimalaya.cpp (1.55),
+	ql/Pricers/mcmaxbasket.cpp (1.50), ql/Pricers/mcpagoda.cpp (1.54),
+	ql/PricingEngines/Forward/forwardengine.hpp (1.26),
+	ql/PricingEngines/Quanto/quantoengine.hpp (1.20),
+	ql/PricingEngines/Vanilla/jumpdiffusionengine.cpp (1.35),
+	ql/Processes/eulerdiscretization.cpp (1.5),
+	ql/Processes/eulerdiscretization.hpp (1.5),
+	ql/Processes/hestonprocess.cpp (1.5),
+	ql/Processes/hestonprocess.hpp (1.5),
+	ql/Processes/stochasticprocessarray.hpp (1.5),
+	ql/ShortRateModels/CalibrationHelpers/hestonmodelhelper.cpp (1.2),
+	test-suite/basketoption.cpp (1.46), test-suite/cliquetoption.cpp
+	(1.29), test-suite/digitaloption.cpp (1.56),
+	test-suite/jumpdiffusion.cpp (1.41), test-suite/pathgenerator.cpp
+	(1.10):
+
+	Renamed GenericStochasticProcess to StochasticProcess (not
+	specifying is generic enough.)
+
+2005-06-01 10:19  Luigi Ballabio
+
+	* ql/Instruments/: callabilityschedule.hpp (1.2),
+	convertiblebond.hpp (1.2), dividendschedule.hpp (1.4):
+
+	Fixed copyright
+
+2005-06-01 05:07  Joseph Wang
+
+	* test-suite/bonds.cpp (1.16),
+	ql/Instruments/callabilityschedule.hpp (1.1),
+	ql/Instruments/convertiblebond.hpp (1.1),
+	ql/Instruments/dividendschedule.hpp (1.3):
+
+	Add convertible bond class
+
+2005-05-30 09:14  Luigi Ballabio
+
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.55),
+	ql/MonteCarlo/multipath.hpp (1.27),
+	ql/MonteCarlo/multipathgenerator.hpp (1.67), ql/MonteCarlo/path.hpp
+	(1.30), ql/MonteCarlo/pathgenerator.hpp (1.74),
+	ql/Pricers/mccliquetoption.cpp (1.41),
+	ql/Pricers/mccliquetoption.hpp (1.26),
+	ql/Pricers/mcdiscretearithmeticaso.cpp (1.44),
+	ql/Pricers/mchimalaya.cpp (1.54), ql/Pricers/mcpagoda.cpp (1.53),
+	ql/Pricers/mcperformanceoption.cpp (1.36),
+	ql/PricingEngines/Asian/mc_discr_arith_av_price.cpp (1.4),
+	ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp (1.14),
+	ql/PricingEngines/Asian/mc_discr_geom_av_price.cpp (1.6),
+	ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp (1.13),
+	ql/PricingEngines/Barrier/mcbarrierengine.cpp (1.15),
+	ql/PricingEngines/Basket/mcamericanbasketengine.cpp (1.36),
+	ql/PricingEngines/Basket/mcamericanbasketengine.hpp (1.15),
+	ql/PricingEngines/Vanilla/mcdigitalengine.cpp (1.16):
+
+	Restored Path::operator[]
+
+2005-05-27 13:22  Luigi Ballabio
+
+	* QuantLib.dev (1.13), QuantLib.dsp (1.264), QuantLib.nsi (1.110),
+	QuantLib.vcproj (1.53), QuantLib_vc8.vcproj (1.3), configure.ac
+	(1.66), Examples/DiscreteHedging/DiscreteHedging.cpp (1.54),
+	dev_tools/version_number.txt (1.46),
+	functions/ql/Functions/QuantLibFunctions.dev (1.9),
+	functions/ql/Functions/QuantLibFunctions.dsp (1.14),
+	functions/ql/Functions/QuantLibFunctions.vcproj (1.14),
+	functions/ql/Functions/QuantLibFunctions_vc8.vcproj (1.2),
+	ql/qldefines.hpp (1.95), ql/settings.hpp (1.13),
+	ql/stochasticprocess.cpp (1.19), ql/stochasticprocess.hpp (1.28),
+	ql/Indexes/zarlibor.hpp (1.22), ql/Instruments/basketoption.cpp
+	(1.14), ql/Instruments/basketoption.hpp (1.18),
+	ql/Instruments/multiassetoption.cpp (1.18),
+	ql/Instruments/multiassetoption.hpp (1.14), ql/Lattices/tree.hpp
+	(1.27), ql/MonteCarlo/mctraits.hpp (1.18),
+	ql/MonteCarlo/multipath.hpp (1.26),
+	ql/MonteCarlo/multipathgenerator.hpp (1.66), ql/MonteCarlo/path.hpp
+	(1.29), ql/MonteCarlo/pathgenerator.hpp (1.73),
+	ql/Pricers/mccliquetoption.cpp (1.40),
+	ql/Pricers/mcdiscretearithmeticaso.cpp (1.43),
+	ql/Pricers/mceverest.cpp (1.49), ql/Pricers/mchimalaya.cpp (1.53),
+	ql/Pricers/mcmaxbasket.cpp (1.49), ql/Pricers/mcpagoda.cpp (1.52),
+	ql/Pricers/mcperformanceoption.cpp (1.35),
+	ql/PricingEngines/greeks.cpp (1.4), ql/PricingEngines/greeks.hpp
+	(1.4), ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp (1.13),
+	ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp (1.12),
+	ql/PricingEngines/Barrier/mcbarrierengine.cpp (1.14),
+	ql/PricingEngines/Basket/mcamericanbasketengine.cpp (1.35),
+	ql/PricingEngines/Basket/mcbasketengine.cpp (1.11),
+	ql/PricingEngines/Vanilla/mcdigitalengine.cpp (1.15),
+	ql/PricingEngines/Vanilla/mceuropeanengine.hpp (1.41),
+	ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp (1.4),
+	ql/Processes/blackscholesprocess.cpp (1.5),
+	ql/Processes/blackscholesprocess.hpp (1.5),
+	ql/Processes/eulerdiscretization.cpp (1.4),
+	ql/Processes/eulerdiscretization.hpp (1.4),
+	ql/Processes/hestonprocess.cpp (1.4),
+	ql/Processes/hestonprocess.hpp (1.4),
+	ql/Processes/merton76process.hpp (1.5),
+	ql/Processes/stochasticprocessarray.cpp (1.4),
+	ql/Processes/stochasticprocessarray.hpp (1.4),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.46),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.hpp (1.21),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.42),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp (1.19),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.cpp (1.30),
+	test-suite/pathgenerator.cpp (1.9), test-suite/testsuite.dev (1.2),
+	test-suite/testsuite.vcproj (1.32), test-suite/testsuite_vc8.vcproj
+	(1.3):
+
+	Bumped version number and removed deprecated code
 
 2005-05-25 12:25  Luigi Ballabio
 
@@ -96,7 +853,7 @@
 
 	New path class storing the asset values
 
-2005-05-20 09:28  drjoe
+2005-05-20 09:28  Joseph Wang
 
 	* ql/PricingEngines/Vanilla/: fdamericanengine.hpp (1.4),
 	fdshoutengine.hpp (1.4), fdstepconditionengine.cpp (1.5),
@@ -105,14 +862,14 @@
 	modify step condition pricing engines so that the engine interface
 	is in the concrete class rather than in the abstract class.
 
-2005-05-20 08:59  drjoe
+2005-05-20 08:59  Joseph Wang
 
 	* ql/PricingEngines/Vanilla/fddividendshoutengine.hpp (1.3),
 	test-suite/dividendoption.cpp (1.7):
 
 	move engine definition to concrete class.
 
-2005-05-20 08:38  drjoe
+2005-05-20 08:38  Joseph Wang
 
 	* ql/: schedule.hpp (1.6),
 	PricingEngines/Vanilla/fdbermudanengine.hpp (1.4),
@@ -132,7 +889,7 @@
 
 	Fixed copyright
 
-2005-05-19 07:29  drjoe
+2005-05-19 07:29  Joseph Wang
 
 	* ql/Instruments/: dividendschedule.hpp (1.1),
 	dividendvanillaoption.hpp (1.7):
@@ -197,7 +954,7 @@
 
 	Clean-up of Doxygen comments
 
-2005-05-08 21:33  drjoe
+2005-05-08 21:33  Joseph Wang
 
 	* ql/PricingEngines/Vanilla/: fdvanillaengine.cpp (1.5),
 	fdvanillaengine.hpp (1.6):
@@ -205,7 +962,7 @@
 	Generalize a bit.  Make this work for all OneAssetOptions, not
 	merely Vanilla options.
 
-2005-05-07 05:25  drjoe
+2005-05-07 05:25  Joseph Wang
 
 	* ql/Patterns/visitor.hpp (1.10):
 
@@ -2076,7 +2833,7 @@
 
 	Enforced self-consistent headers
 
-2005-03-17 05:02  drjoe
+2005-03-17 05:02  Joseph Wang
 
 	* ql/timegrid.hpp (1.4):
 
@@ -2873,7 +3630,7 @@
 
 	More formatters replaced
 
-2005-01-27 20:05  ericehlers
+2005-01-27 20:05  Eric Ehlers
 
 	* Docs/pages/install.docs (1.14):
 
@@ -6718,7 +7475,7 @@
 
 	Added missing data
 
-2004-08-19 08:38  dicesare
+2004-08-19 08:38  Nicolas Di Césaré
 
 	* ql/TermStructures/: ratehelpers.cpp (1.54), ratehelpers.hpp
 	(1.44):
@@ -6726,7 +7483,7 @@
 	replace dayCounter of dummyIndex with the correct one for Euribor
 	index (Act360)
 
-2004-08-19 08:27  dicesare
+2004-08-19 08:27  Nicolas Di Césaré
 
 	* test-suite/: capfloor.cpp (1.38), swap.cpp (1.24), swaption.cpp
 	(1.30):
@@ -6734,7 +7491,7 @@
 	Add QL_USE_INDEXED_COUPON flag to switch between ParCoupon and
 	UpFrontIndexedCoupon in SimpleSwap. Default is undefined
 
-2004-08-19 08:24  dicesare
+2004-08-19 08:24  Nicolas Di Césaré
 
 	* ql/: userconfig.hpp (1.11), Instruments/simpleswap.cpp (1.51):
 
@@ -6887,7 +7644,7 @@
 
 	VC7 catching up
 
-2004-08-16 22:31  dicesare
+2004-08-16 22:31  Nicolas Di Césaré
 
 	* ql/CashFlows/indexcashflowvectors.hpp (1.20):
 
@@ -6958,19 +7715,19 @@
 
 	A currency object is now less expensive to create or copy
 
-2004-08-04 21:17  dicesare
+2004-08-04 21:17  Nicolas Di Césaré
 
 	* ql/CashFlows/indexcashflowvectors.hpp (1.19):
 
 	Correction of msvc6 bug with template function
 
-2004-08-03 21:46  dicesare
+2004-08-03 21:46  Nicolas Di Césaré
 
 	* ql/exercise.cpp (1.10):
 
 	Type for BermudanExercise is "Bermudan" and not "American".
 
-2004-08-03 21:42  dicesare
+2004-08-03 21:42  Nicolas Di Césaré
 
 	* ql/basicdataformatters.hpp (1.7):
 
@@ -8083,14 +8840,14 @@
 
 	Moved QUEP 6 implementation to its own branch
 
-2004-05-25 14:12  andrelouw
+2004-05-25 14:12  André Louw
 
 	* ql/: TermStructures/ratehelpers.cpp (1.47),
 	basicdataformatters.cpp (1.5):
 
 	Implementation of QUEP 6
 
-2004-05-25 14:03  andrelouw
+2004-05-25 14:03  André Louw
 
 	* ql/Indexes/: audlibor.hpp (1.15), cadlibor.hpp (1.15),
 	chflibor.hpp (1.13), euribor.hpp (1.18), gbplibor.hpp (1.20),
@@ -8099,7 +8856,7 @@
 
 	Implementation of QUEP 6
 
-2004-05-25 12:49  andrelouw
+2004-05-25 12:49  André Louw
 
 	* ql/Currencies/: Makefile.am (1.1), all.hpp (1.1), audcurrency.cpp
 	(1.1), audcurrency.hpp (1.1), cadcurrency.cpp (1.1),
@@ -8115,13 +8872,13 @@
 
 	Implementation of QUEP 6
 
-2004-05-25 12:46  andrelouw
+2004-05-25 12:46  André Louw
 
 	* ql/currency.hpp (1.12):
 
 	Implementation of QUEP 6
 
-2004-05-25 12:11  andrelouw
+2004-05-25 12:11  André Louw
 
 	* ql/Math/: rounding.cpp (1.2), rounding.hpp (1.6):
 
@@ -9085,13 +9842,13 @@
 
 	Rationalized types a bit
 
-2004-05-05 07:58  andrelouw
+2004-05-05 07:58  André Louw
 
 	* ql/types.hpp (1.12):
 
 	Decimal type added as typedef to double.
 
-2004-05-04 15:46  andrelouw
+2004-05-04 15:46  André Louw
 
 	* ql/Math/rounding.hpp (1.2):
 
@@ -9112,7 +9869,7 @@
 
 	Fixes for VC++6
 
-2004-05-04 14:34  andrelouw
+2004-05-04 14:34  André Louw
 
 	* ql/Math/: Makefile.am (1.40), all.hpp (1.4), rounding.hpp (1.1):
 
@@ -9137,7 +9894,7 @@
 
 	Constness added
 
-2004-05-04 06:32  andrelouw
+2004-05-04 06:32  André Louw
 
 	* ql/TermStructures/: discountcurve.cpp (1.28), discountcurve.hpp
 	(1.27), extendeddiscountcurve.cpp (1.10), extendeddiscountcurve.hpp
@@ -9145,7 +9902,7 @@
 
 	Changed interpolation to be changeable by sub classes.
 
-2004-05-04 06:31  andrelouw
+2004-05-04 06:31  André Louw
 
 	* ql/TermStructures/: compoundforward.cpp (1.37),
 	compoundforward.hpp (1.27):
@@ -13148,13 +13905,13 @@
 
 	Some work on SVD
 
-2004-02-23 10:59  andrelouw
+2004-02-23 10:59  André Louw
 
 	* ql/Calendars/johannesburg.cpp (1.11):
 
 	Fixed compile error
 
-2004-02-23 10:57  andrelouw
+2004-02-23 10:57  André Louw
 
 	* ql/Calendars/johannesburg.cpp (1.10):
 
@@ -18506,13 +19263,13 @@
 
 	Too much pruning of header inclusions
 
-2003-08-01 17:41  nielses
+2003-08-01 17:41  Niels Elken Sønderby
 
 	* Docs/pages/authors.docs (1.20.2.1):
 
 	Corrected errornous link and added link to nielses.dk
 
-2003-08-01 17:39  nielses
+2003-08-01 17:39  Niels Elken Sønderby
 
 	* ql/Math/kronrodintegral.hpp (1.1.8.1):
 
@@ -18670,7 +19427,7 @@
 
 	theta is defined with a minus sign in front
 
-2003-07-28 10:28  andrelouw
+2003-07-28 10:28  André Louw
 
 	* test-suite/: Makefile.am (1.14.8.2), compoundforward.cpp
 	(1.1.2.1), compoundforward.hpp (1.1.2.1), quantlibtestsuite.cpp
@@ -18678,13 +19435,13 @@
 
 	Test for CompoundForward Termstructure
 
-2003-07-28 10:09  andrelouw
+2003-07-28 10:09  André Louw
 
 	* ql/Instruments/: swap.cpp (1.19.2.1), swap.hpp (1.15.2.1):
 
 	Removed fairRate calculation (not always valid)
 
-2003-07-28 10:07  andrelouw
+2003-07-28 10:07  André Louw
 
 	* ql/Instruments/: simpleswap.cpp (1.24.2.1), simpleswap.hpp
 	(1.27.2.1):
@@ -18692,33 +19449,33 @@
 	Added constructor using pre-constructed Scheduler to build swap
 	legs.
 
-2003-07-28 10:05  andrelouw
+2003-07-28 10:05  André Louw
 
 	* ql/CashFlows/: cashflowvectors.cpp (1.22.2.1),
 	cashflowvectors.hpp (1.17.2.1):
 
 	Added constructor using pre-constructed Scheduler to build vectors.
 
-2003-07-28 10:03  andrelouw
+2003-07-28 10:03  André Louw
 
 	* ql/CashFlows/basispointsensitivity.hpp (1.5.2.1):
 
 	Reverted to STL functions for comparison.
 
-2003-07-28 10:02  andrelouw
+2003-07-28 10:02  André Louw
 
 	* ql/: scheduler.cpp (1.13.2.1), scheduler.hpp (1.13.2.2):
 
 	Added seperate named-parameter-like MakeScheduler constructor for
 	Scheduler.
 
-2003-07-28 09:59  andrelouw
+2003-07-28 09:59  André Louw
 
 	* ql/: date.cpp (1.27.2.1), date.hpp (1.22.2.1):
 
 	Removed constructor from string - moved to SWIG interface file.
 
-2003-07-28 09:58  andrelouw
+2003-07-28 09:58  André Louw
 
 	* ql/: calendar.cpp (1.14.2.1), calendar.hpp (1.24.2.1):
 
@@ -18899,7 +19656,7 @@
 
 	few Borland warning avoided
 
-2003-07-24 20:02  nehal1974
+2003-07-24 20:02  Nehal Patel
 
 	* ql/Lattices/lattice2d.cpp (1.7):
 
@@ -18917,7 +19674,7 @@
 
 	Now compiling with the current code base
 
-2003-07-24 18:47  nehal1974
+2003-07-24 18:47  Nehal Patel
 
 	* ql/Lattices/lattice2d.cpp (1.6):
 
@@ -19178,7 +19935,7 @@
 
 	updated
 
-2003-07-22 12:44  andrelouw
+2003-07-22 12:44  André Louw
 
 	* ql/TermStructures/: compoundforward.cpp (1.24),
 	compoundforward.hpp (1.17), discountcurve.cpp (1.19),
@@ -19187,48 +19944,48 @@
 	Refactoring and simplification. Proper calculation of rates on non
 	compounding boundaries.
 
-2003-07-22 12:40  andrelouw
+2003-07-22 12:40  André Louw
 
 	* ql/TermStructures/: flatforward.hpp (1.25),
 	piecewiseflatforward.cpp (1.34), piecewiseflatforward.hpp (1.30):
 
 	Specific implementation of compound forward rate from zero yield.
 
-2003-07-22 12:38  andrelouw
+2003-07-22 12:38  André Louw
 
 	* ql/termstructure.hpp (1.32):
 
 	Added compound forward and zero coupon implementations.
 
-2003-07-22 12:37  andrelouw
+2003-07-22 12:37  André Louw
 
 	* ql/TermStructures/: ratehelpers.cpp (1.34), ratehelpers.hpp
 	(1.29):
 
 	Added Futures rate helper with specified maturity date.
 
-2003-07-22 12:20  andrelouw
+2003-07-22 12:20  André Louw
 
 	* ql/Instruments/: swap.cpp (1.19), swap.hpp (1.15):
 
 	Added bucketed bps calculation as well as simple fairRate
 	calculation.
 
-2003-07-22 12:18  andrelouw
+2003-07-22 12:18  André Louw
 
 	* ql/Instruments/: simpleswap.cpp (1.24), simpleswap.hpp (1.27):
 
 	Added swap constructor using specified maturity date as well as
 	added functionality in Scheduler.
 
-2003-07-22 12:15  andrelouw
+2003-07-22 12:15  André Louw
 
 	* ql/CashFlows/basispointsensitivity.hpp (1.4):
 
 	Added date bucketed basis point sensitivity based on 1st derivative
 	of zero coupon rate.
 
-2003-07-22 11:57  andrelouw
+2003-07-22 11:57  André Louw
 
 	* ql/: scheduler.cpp (1.13), scheduler.hpp (1.13),
 	CashFlows/cashflowvectors.cpp (1.22), CashFlows/cashflowvectors.hpp
@@ -19239,20 +19996,20 @@
 	cashflow vector using specified vectors of nominals,couponRates and
 	dates.
 
-2003-07-22 11:49  andrelouw
+2003-07-22 11:49  André Louw
 
 	* ql/marketelement.hpp (1.13):
 
 	Only notify observers when value actually changed.
 
-2003-07-22 11:48  andrelouw
+2003-07-22 11:48  André Louw
 
 	* ql/: dataparsers.cpp (1.7), dataparsers.hpp (1.7), date.cpp
 	(1.27), date.hpp (1.22):
 
 	Added parsing of input date string using supplied format string.
 
-2003-07-22 11:45  andrelouw
+2003-07-22 11:45  André Louw
 
 	* ql/: calendar.cpp (1.14), calendar.hpp (1.24):
 
@@ -19261,7 +20018,7 @@
 	day of month all resulting dates will also be last business day of
 	month.
 
-2003-07-22 11:31  andrelouw
+2003-07-22 11:31  André Louw
 
 	* ql/Calendars/johannesburg.cpp (1.7):
 
@@ -19395,7 +20152,7 @@
 	Old class Grid no longer exists, use CenteredGrid to obtain the
 	same result.
 
-2003-07-04 22:09  dicesare
+2003-07-04 22:09  Nicolas Di Césaré
 
 	* QuantLib.dsp (1.160):
 
@@ -22966,7 +23723,7 @@
 
 	fixed copyright and formatting
 
-2003-02-22 19:20  dicesare
+2003-02-22 19:20  Nicolas Di Césaré
 
 	* ql/CashFlows/: inarrearindexedcoupon.hpp (1.1),
 	indexcashflowvectors.hpp (1.1), indexedcoupon.hpp (1.1),
@@ -24026,7 +24783,7 @@
 
 	Merged changes made on 0.3.1 branch
 
-2003-01-28 14:42  stochastix
+2003-01-28 14:42  Jens Thiel
 
 	* ql/Calendars/tokyo.cpp (1.6):
 
@@ -24073,19 +24830,19 @@
 
 	Test suite completed
 
-2003-01-10 19:21  stochastix
+2003-01-10 19:21  Jens Thiel
 
 	* ql/Calendars/london.cpp (1.10.8.2):
 
 	Luigi's modify-copyr.sh approach ;-) was to agressive
 
-2003-01-10 15:38  stochastix
+2003-01-10 15:38  Jens Thiel
 
 	* ql/: FiniteDifferences/mixedscheme.hpp (1.5), date.cpp (1.21):
 
 	fixed warning with vc7
 
-2003-01-10 15:37  stochastix
+2003-01-10 15:37  Jens Thiel
 
 	* ql/TermStructures/piecewiseflatforward.cpp (1.26):
 
@@ -25367,13 +26124,13 @@
 
 	Fixed xibor observability
 
-2002-07-12 23:36  stochastix
+2002-07-12 23:36  Jens Thiel
 
 	* ql/TermStructures/zerospreadedtermstructure.hpp (1.6):
 
 	a call to forward(t,bool) was left from Nando's renaming 2002/06/24
 
-2002-07-12 13:55  stochastix
+2002-07-12 13:55  Jens Thiel
 
 	* ql/TermStructures/zerospreadedtermstructure.hpp (1.5):
 
@@ -25418,7 +26175,7 @@
 
 	AffineTermstructure:	* Time maxTime() removed
 
-2002-07-08 09:51  andrelouw
+2002-07-08 09:51  André Louw
 
 	* ql/Math/: interpolation.hpp (1.12), loglinearinterpolation.hpp
 	(1.9):
@@ -25692,7 +26449,7 @@
 
 	How on earth could Borland compile _that_?
 
-2002-06-11 10:18  andrelouw
+2002-06-11 10:18  André Louw
 
 	* ql/Instruments/swap.hpp (1.10):
 
@@ -25901,7 +26658,7 @@
 
 	Removed requirements from constructor
 
-2002-05-24 10:57  andrelouw
+2002-05-24 10:57  André Louw
 
 	* ql/TermStructures/piecewiseflatforward.cpp (1.20):
 
@@ -25911,7 +26668,7 @@
 	results in a out-of-range exception on discounts_[n-1] ->n being 0!
 	Fix: Return 1.0 as discount.
 
-2002-05-24 10:49  andrelouw
+2002-05-24 10:49  André Louw
 
 	* ql/Instruments/swap.hpp (1.8):
 
@@ -26096,7 +26853,7 @@
 
 	Removed gcc warning
 
-2002-05-06 10:26  andrelouw
+2002-05-06 10:26  André Louw
 
 	* ql/TermStructures/compoundforward.cpp (1.12):
 
@@ -26155,7 +26912,7 @@
 	added missing BermudanSwaption example fixed distributed
 	documentation
 
-2002-05-03 11:07  andrelouw
+2002-05-03 11:07  André Louw
 
 	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.16),
 	Examples/Swap/swapvaluation.cpp (1.26),
@@ -26165,7 +26922,7 @@
 	Modified SwapRateHelper to accept TimeUnit when constructing.
 	Modified existing examples to use new constructors.
 
-2002-05-03 10:59  andrelouw
+2002-05-03 10:59  André Louw
 
 	* ql/: Makefile.am (1.20), dataparsers.cpp (1.1), dataparsers.hpp
 	(1.1), date.cpp (1.19):
@@ -26283,7 +27040,7 @@
 
 	updated
 
-2002-04-30 13:48  andrelouw
+2002-04-30 13:48  André Louw
 
 	* ql/TermStructures/: compoundforward.cpp (1.11),
 	compoundforward.hpp (1.7):
@@ -26303,7 +27060,7 @@
 
 	UK bank holidays fix.  Thanks to Jon Davidson
 
-2002-04-30 08:39  andrelouw
+2002-04-30 08:39  André Louw
 
 	* ql/TermStructures/: compoundforward.cpp (1.9),
 	compoundforward.hpp (1.6):
@@ -26312,7 +27069,7 @@
 	zeroYieldImpl and forwardImpl.	Fix potential problem with
 	improperly initialized iterators.
 
-2002-04-30 08:34  andrelouw
+2002-04-30 08:34  André Louw
 
 	* ql/date.hpp (1.17):
 
@@ -26324,7 +27081,7 @@
 
 	The payment date could be after the end of the accrual period
 
-2002-04-29 17:23  andrelouw
+2002-04-29 17:23  André Louw
 
 	* ql/TermStructures/discountcurve.cpp (1.7):
 
@@ -26459,7 +27216,7 @@
 
 	Assigned copyright to Andre
 
-2002-04-23 07:18  andrelouw
+2002-04-23 07:18  André Louw
 
 	* ql/TermStructures/compoundforward.cpp (1.6):
 
@@ -26480,7 +27237,7 @@
 
 	More autoconfiscated time functions and types
 
-2002-04-22 18:29  andrelouw
+2002-04-22 18:29  André Louw
 
 	* ql/TermStructures/compoundforward.cpp (1.5):
 
@@ -26501,7 +27258,7 @@
 
 	Renamed Solver1D::lowBound and hiBound
 
-2002-04-22 15:46  andrelouw
+2002-04-22 15:46  André Louw
 
 	* ql/TermStructures/: compoundforward.cpp (1.4),
 	compoundforward.hpp (1.4), discountcurve.cpp (1.2),
@@ -26531,7 +27288,7 @@
 
 	added gotcha
 
-2002-04-22 13:10  andrelouw
+2002-04-22 13:10  André Louw
 
 	* ql/TermStructures/: compoundforward.cpp (1.2),
 	compoundforward.hpp (1.2):
@@ -26544,14 +27301,14 @@
 
 	bug fixed
 
-2002-04-22 12:30  andrelouw
+2002-04-22 12:30  André Louw
 
 	* QuantLib.dsp (1.90):
 
 	Added LogLinearInterpolation, DiscountCurve TermStructure and
 	CompoundForward TermStructure
 
-2002-04-22 12:23  andrelouw
+2002-04-22 12:23  André Louw
 
 	* ql/: quantlib.hpp (1.57), Math/loglinearinterpolation.hpp (1.1),
 	TermStructures/Makefile.am (1.7),
@@ -26563,13 +27320,13 @@
 	Add DiscountCurve TermStructure, CompoundForward TermStructure,
 	LogLinear interpolation.
 
-2002-04-22 12:20  andrelouw
+2002-04-22 12:20  André Louw
 
 	* ql/: calendar.cpp (1.9), calendar.hpp (1.14):
 
 	Advance calendar using a Period instance.
 
-2002-04-22 12:18  andrelouw
+2002-04-22 12:18  André Louw
 
 	* ql/: date.cpp (1.17), date.hpp (1.15):
 
@@ -26657,7 +27414,7 @@
 
 	updated
 
-2002-04-16 11:20  andrelouw
+2002-04-16 11:20  André Louw
 
 	* TODO.txt (1.83):
 

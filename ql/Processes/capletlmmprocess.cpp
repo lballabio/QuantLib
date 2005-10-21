@@ -44,7 +44,7 @@ namespace QuantLib {
           fixingDates_  (len_),
           accrualPeriod_(len_) {
 
-        const Matrix& components =
+        Matrix components =
             (!volaComp.empty() ? volaComp : Matrix(len_-1, 1, 1.0));
 
         QL_REQUIRE(   components.rows() == len_-1
@@ -117,7 +117,7 @@ namespace QuantLib {
         Array f(size(), 0.0);
         const Size m = nextResetDate(t);
 
-        for (Size k=0; k<size(); ++k) {
+        for (Size k=m; k<size(); ++k) {
             for (Size i=m; i<=k; ++i) {
                 f[k]+= delta_[i]*x[i]*lambdaSquare_[i-m][k-m]
                        / (1+delta_[i]*x[i]);

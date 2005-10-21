@@ -217,6 +217,10 @@
     sub-directory named "build" in the same directory as the Dev-C++
     project, and retry.
 
+    Also, a user reported that this was necessary but not
+    sufficient. His workaround was to change the relative paths in
+    Project Options / Build Options to absolute paths (e.g., ".\lib"
+    to "C:\QuantLib-0.3.11\lib").
 
     <strong>
     \anchor faq_compiling_missing_boost

@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=640
+UnitCount=641
 Type=2
 Ver=1
 ObjFiles=
@@ -6441,6 +6441,16 @@ BuildCmd=
 FileName=ql\Volatilities\capletvariancecurve.hpp
 CompileCpp=1
 Folder=Volatilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit641]
+FileName=ql\Indexes\trlibor.hpp
+CompileCpp=1
+Folder=Indexes
 Compile=1
 Link=1
 Priority=1000

@@ -18,6 +18,43 @@
 
 /*! \page history Version history
 
+    <strong>Release 0.3.11 - October 2005</strong>
+
+    GLOBAL FEATURES
+    - Added configuration option for adding current function
+      information to error messages.
+    - Added hook for multiple sessions to Singleton.
+
+    CALENDARS
+    - Added Bombay and Taipei calendars.
+
+    CURRENCIES
+    - Added new Turkish lira.
+
+    INDEXES
+    - More accurate LIBOR calendars (thanks to Daniele de Francesco.)
+    - Added DKKLibor, EURLibor, and NZDLibor indexes.
+    - Added TRLibor index (thanks to Sercan Atalik.)
+
+    PRICING ENGINES
+    - Added Bates stochastic-volatility model; tests provided (thanks
+      to Klaus Spanderen.)
+    - Added vega to analytic discrete-averaging Asian engine; test
+      provided (thanks to Gary Kennedy.)
+    - Added stochastic process for caplet Libor market model; tests
+      provided (thanks to Klaus Spanderen.)
+
+    TERM STRUCTURES
+    - Added fixed-coupon bond helper for curve bootstrapping (thanks
+      to Toyin Akin.)
+
+    MATH
+    - Added tabulated Gauss-Legendre quadratures (thanks to Gary
+      Kennedy.)
+    - Added more precise implementation of bivariate cumulative normal
+      distribution (thanks to Gary Kennedy.)
+
+
     <strong>Release 0.3.10 - July 14th, 2005</strong>
 
     GLOBAL FEATURES

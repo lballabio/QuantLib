@@ -35,6 +35,7 @@
 #include <ql/Indexes/jpylibor.hpp>
 #include <ql/Indexes/nzdlibor.hpp>
 #include <ql/Indexes/tibor.hpp>
+#include <ql/Indexes/trlibor.hpp>
 #include <ql/Indexes/usdlibor.hpp>
 #include <ql/Indexes/zibor.hpp>
 

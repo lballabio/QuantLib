@@ -29,6 +29,8 @@
 #include <functional>
 #include <vector>
 
+#if !defined(QL_PATCH_BORLAND)
+
 namespace QuantLib {
 
     namespace detail {
@@ -565,6 +567,8 @@ namespace QuantLib {
 
 }
 
+
+#endif
 
 #endif
 

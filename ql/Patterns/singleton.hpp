@@ -24,7 +24,7 @@
 #ifndef quantlib_singleton_hpp
 #define quantlib_singleton_hpp
 
-#include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 #include <map>

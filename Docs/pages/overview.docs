@@ -21,7 +21,8 @@
 
     The %QuantLib project is at this time in <em>beta</em> status.
 
-    The following list is an overview of the existing code base.
+    The following list is a (possibly outdated) overview of the
+    existing code base.
 
     The <a href="http://lists.sourceforge.net/lists/listinfo/quantlib-users">
     QuantLib-users</a> and <a
@@ -38,13 +39,7 @@
     - Weekday, month, frequency, time unit enumerations.
     - Period class (eg. 1y, 30d, 2m, etc.)
     - IMM calculation.
-    - Calendars: Beijing, Budapest, Copenhagen, Frankfurt, Helsinki,
-      Hong Kong, Italy (Settlement, Exchange), Johannesburg, Oslo, Riyadh,
-      Seoul, Singapore, Stockholm,
-      Sydney, Taiwan, TARGET, Tokyo, Toronto,
-      United Kingdom (Settlement, Exchange, Metals),
-      United States (Settlement, Exchange, GovermentBond), Xetra,
-      Warsaw, Wellington, Zurich.
+    - More than 30 business calendars.
     - NullCalendar (no holidays) for theoretical calculations.
     - Joint calendars made up as holiday union or intersection of base
       calendars.
@@ -173,7 +168,6 @@
     - Extend to local volatility.
     - Two-dimension schemes.
     - Improve boundary conditions.
-    - Adapt to the new pricing engine framework.
     - Use DiscretisedAsset instead of array?
     - Use TimeGrid
     - Use assetGrid
@@ -195,7 +189,6 @@
     To do:
     - Merge finite differences with the lattice framework. Use same rollback
       scheme.
-    - Evaluate proposed templatization
     - Trinomial trees
     - Implied trinomial trees
     - Calculate binomial tree greeks
@@ -241,7 +234,9 @@
       (Cox-Ross-Rubinstein, Jarrow-Rudd, additive equiprobabilities,
       Trigeorgis, Tian, Leisen-Reimer), Bjerksund and Stensland
       approximation for American, integral European, Merton 76
-      jump-diffusion, Monte Carlo digital, Monte Carlo European.
+      jump-diffusion, Monte Carlo digital, Monte Carlo European,
+      Bates and Heston models, finite-difference European, Bermudan
+      and American.
     - Engines for options described by "barrier" set of parameters: analytic
       down/up in/out, Monte Carlo down/up in/out
     - Engines for Asian options:
@@ -280,12 +275,6 @@
     - Cliquet option
     - Analytic discrete geometric average-price option (European exercise).
     - Analytic discrete geometric average-strike option (European exercise).
-    - Finite difference American option.
-    - Bermudan option.
-    - Finite difference American option with discrete dividends (buggy).
-    - Finite difference European option with discrete dividends.
-    - Finite difference Shout option with discrete dividends (buggy).
-    - Finite difference European option (Black-Scholes).
     - Monte Carlo cliquet option.
     - Monte Carlo discrete arithmetic average-price option.
     - Monte Carlo discrete arithmetic average-strike option.
@@ -372,17 +361,14 @@
     <strong>Credit derivatives</strong>
 
     To do:
-    - Introduce BET and double BET.
-    - Valuation of credit default swap.
-    - Bootstrapping of default probability from bond, CDS, etc.
-
+    - everything.
 
 
 
     <strong>Test suite</strong>
 
     Implemented by means of the Boost unit-test framework.
-    More than 190 automated tests.
+    More than 210 automated tests.
     \htmlonly
     An automatically-generated list is available <a href="test.html">here</a>.
     \endhtmlonly
@@ -392,7 +378,6 @@
 
 	To do:
     - Add covariance/correlation test for SequenceStatistics.
-    - Add single factor calibration and Bermudan pricing tests.
 	- Increase coverage.
 
 
@@ -400,7 +385,7 @@
 
     <strong>Miscellanea</strong>
     - Index classes for handling of fixed-income libor indexes (fixings,
-      forecasting, etc.): AUD, CAD, CHF, EUR, GBP, JPY, USD, ZAR, generic.
+      forecasting, etc.)
     - Cash-flow class.
     - Currency class and enumeration.
     - Money class with automatic exchange-rate capabilities.
@@ -417,7 +402,6 @@
     - User-configurable flag to disable usage of deprecated classes.
 
     To do:
-    - IRR, duration, convexity, etc. for a sequence of cash flows
     - Implement currency as per OMG definition
 
 
@@ -430,14 +414,6 @@
     To do:
     - Add a "Getting started" page to the site
 
-
-
-
-    <strong>Distribution</strong>
-    - Windows installer generated with NSIS.
-    - Included in the Debian distribution.
-    - RPMs available.
-    - Fink package available.
 
 */
 

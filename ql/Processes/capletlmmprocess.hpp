@@ -52,19 +52,20 @@ namespace QuantLib {
     class CapletLiborMarketModelProcess : public StochasticProcess {
       public:
         /*!
-          \param fixings   number of rate fixing
-          \param index     underlying Libor index
+          \param fixings             number of rate fixing
+          \param underlyingIndex     underlying Libor index
 
-          \param capletVol vola cap term structure. Used to bootstrap
-                           volatilities \f$ \Lambda_i \f$ of \f$ \F_i \f$.
+          \param capletVol cap volatility term structure. Used to
+                           bootstrap volatilities \f$ \Lambda_i \f$ of
+                           \f$ F_i \f$.
 
-          \param volatilityComponents \f$ lambda_{i,q}/\Lambda_i \f$,
-                     the ratio of the q-th component of the volatility
-                     of the forward rate to the total volatility of
-                     the forward rate. The number of columns of this
-                     matrix defines the number of factors of the
-                     model.
-         */
+          \param volatilityComponents \f$ \lambda_{i,q}/\Lambda_i \f$,
+                     the ratio of the \f$ q \f$-th component of the
+                     volatility of the forward rate to the total
+                     volatility of the forward rate. The number of
+                     columns of this matrix defines the number of
+                     factors of the model.
+        */
         CapletLiborMarketModelProcess(
             Size fixings,
             const boost::shared_ptr<Xibor>& underlyingIndex,

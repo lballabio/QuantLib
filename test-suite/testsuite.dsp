@@ -60,7 +60,7 @@ TargetDir=.\bin
 TargetName=QuantLib-test-suite-vc6-mt-s-0_3_12
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
-PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=short
+PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug"
@@ -91,7 +91,7 @@ TargetDir=.\bin
 TargetName=QuantLib-test-suite-vc6-mt-sgd-0_3_12
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
-PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
+PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release MTDLL"
@@ -123,7 +123,7 @@ TargetDir=.\bin
 TargetName=QuantLib-test-suite-vc6-mt-0_3_12
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
-PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=short
+PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug MTDLL"
@@ -155,7 +155,7 @@ TargetDir=.\bin
 TargetName=QuantLib-test-suite-vc6-mt-gd-0_3_12
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
-PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
+PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release SingleThread"
@@ -187,7 +187,7 @@ TargetDir=.\bin
 TargetName=QuantLib-test-suite-vc6-s-0_3_12
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
-PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=short
+PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug SingleThread"
@@ -219,7 +219,7 @@ TargetDir=.\bin
 TargetName=QuantLib-test-suite-vc6-sgd-0_3_12
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
-PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
+PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
 # End Special Build Tool
 
 !ENDIF 

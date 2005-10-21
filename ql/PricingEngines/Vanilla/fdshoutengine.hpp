@@ -27,6 +27,7 @@
 #include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/FiniteDifferences/shoutcondition.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {
 
@@ -37,7 +38,7 @@ namespace QuantLib {
               reproducing numerical derivatives.
     */
     class FDShoutEngine : public VanillaOption::engine,
-        public FDStepConditionEngine {
+                          public FDStepConditionEngine {
       public:
         FDShoutEngine(Size timeSteps=100, Size gridPoints=100,
                       bool timeDependent = false)

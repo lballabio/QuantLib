@@ -21,7 +21,8 @@
     Before installing QuantLib, make sure that you have a working
     Boost installation; see 
     http://www.boost.org/more/getting_started.html
-    for instructions.
+    for instructions. Boost 1.31 or later is required; Boost 1.33 is
+    suggested.
 
     \section linux Linux/Unix/Mac OS X/Cygwin
     A tarball of the source distribution is available from <br>

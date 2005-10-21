@@ -17,6 +17,7 @@ include_HEADERS = \
     jpylibor.hpp \
     nzdlibor.hpp \
     tibor.hpp \
+    trlibor.hpp \
     usdlibor.hpp \
     zibor.hpp \
     xibor.hpp \

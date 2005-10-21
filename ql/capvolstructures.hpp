@@ -79,7 +79,7 @@ namespace QuantLib {
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
 	  private:
-        void checkRange(Time, Real strike, bool extrapolate) const;
+        void checkRange(Time, Rate strike, bool extrapolate) const;
     };
 
     //! Caplet/floorlet forward-volatility structure
@@ -130,7 +130,7 @@ namespace QuantLib {
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
 	  private:
-        void checkRange(Time, Real strike, bool extrapolate) const;
+        void checkRange(Time, Rate strike, bool extrapolate) const;
     };
 
 

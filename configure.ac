@@ -58,6 +58,8 @@ AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_LIBTOOL
 
+AM_CONDITIONAL(ENABLE_STATIC, test "${enable_static}" == "yes")
+
 AC_LANG([C++])
 
 # Check for mandatory features

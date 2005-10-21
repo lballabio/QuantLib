@@ -211,7 +211,7 @@ namespace QuantLib {
 
 
 
-    EuropeanHestonPathPricer::EuropeanHestonPathPricer(
+    inline EuropeanHestonPathPricer::EuropeanHestonPathPricer(
                                                  Option::Type type,
                                                  Real underlying, Real strike,
                                                  DiscountFactor discount)
@@ -222,7 +222,7 @@ namespace QuantLib {
                    "strike less than zero not allowed");
     }
 
-    Real EuropeanHestonPathPricer::operator()(
+    inline Real EuropeanHestonPathPricer::operator()(
                                            const MultiPath& multiPath) const {
         const Path& path = multiPath[0];
         const Size n = multiPath.pathSize();

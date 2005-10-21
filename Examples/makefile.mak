@@ -29,8 +29,6 @@ MAKE = $(MAKE) -fmakefile.mak
 examples::
     cd AmericanOption
     $(MAKE)
-    cd ..\BermudanSwaption
-    $(MAKE)
     cd ..\DiscreteHedging
     $(MAKE)
     cd ..\EuropeanOption
@@ -42,8 +40,6 @@ examples::
 # Clean up
 clean::
     cd AmericanOption
-    $(MAKE) clean
-    cd ..\BermudanSwaption
     $(MAKE) clean
     cd ..\DiscreteHedging
     $(MAKE) clean

@@ -97,7 +97,7 @@ void BatesModelTest::testAnalyticVsBlack() {
     option.setPricingEngine(engine);
     Real calculated = option.NPV();
 
-    Real tolerance = 1.0e-7;
+    Real tolerance = 2.0e-7;
     Real error = std::fabs(calculated - expected);
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce Black price with BatesEngine"

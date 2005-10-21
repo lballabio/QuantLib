@@ -22,9 +22,7 @@
 #include "utilities.hpp"
 #include <ql/Utilities/null.hpp>
 #include <ql/Math/cubicspline.hpp>
-#ifndef QL_PATCH_BORLAND
 #include <ql/Math/multicubicspline.hpp>
-#endif
 #include <ql/Math/simpsonintegral.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>

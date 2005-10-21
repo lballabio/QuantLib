@@ -89,7 +89,7 @@ namespace QuantLib {
         virtual std::pair<Time,Time> convertDates(const Date& start,
                                                   const Period& length) const;
 	  private:
-        void checkRange(Time, Time, Real strike, bool extrapolate) const;
+        void checkRange(Time, Time, Rate strike, bool extrapolate) const;
     };
 
 

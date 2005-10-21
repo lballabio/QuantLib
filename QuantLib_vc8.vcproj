@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="QuantLib"
 	ProjectGUID="{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -2956,6 +2957,10 @@
 			</File>
 			<File
 				RelativePath=".\ql\Indexes\tibor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\trlibor.hpp"
 				>
 			</File>
 			<File
