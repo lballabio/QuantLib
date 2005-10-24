@@ -145,11 +145,6 @@ namespace QuantLib {
         boost::shared_ptr<discretization> discretization_;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to StochasticProcess */
-    typedef StochasticProcess GenericStochasticProcess;
-    #endif
-
 
     //! 1-dimensional stochastic process
     /*! This class describes a stochastic process governed by

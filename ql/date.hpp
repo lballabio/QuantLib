@@ -132,18 +132,6 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream&, Month);
 
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! Main cycle of the International Money Market (a.k.a. IMM) Months
-    /*! \ingroup datetime
-        \deprecated use IMM::Month instead
-    */
-    enum IMMMonth { H = 3,
-                    M = 6,
-                    U = 9,
-                    Z = 12
-    };
-    #endif
-
     //! Main cycle of the International Money Market (a.k.a. IMM) Months
     struct IMM {
         enum Month { H = 3, M = 6, U = 9, Z = 12 };

@@ -173,15 +173,6 @@ namespace QuantLib {
                      Frequency freq = Annual,
                      bool extrapolate = false) const;
 
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the overload taking a vector of times */
-        Rate parRate(Year tenor,
-                     Time t0,
-                     Frequency freq = Annual,
-                     bool extrapolate = false) const;
-        //@}
-        #endif
-
         //! \name Dates
         //@{
         //! the latest date for which the curve can return rates
@@ -333,20 +324,6 @@ namespace QuantLib {
         result *=  Real(freq)/sum;
         return result;
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline Rate YieldTermStructure::parRate(Year tenor, Time t0,
-                                            Frequency freq,
-                                            bool extrapolate) const {
-        checkRange(t0+tenor, extrapolate);
-        Real sum = 0.0;
-        for (Year i=1; i<=tenor; i++)
-            sum += discountImpl(t0+i);
-        Real result = discountImpl(t0)-discountImpl(t0+tenor);
-        result *=  Real(freq)/sum;
-        return result;
-    }
-    #endif
 
     // inline discount definitions
 
