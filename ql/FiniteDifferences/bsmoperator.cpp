@@ -39,12 +39,11 @@ namespace QuantLib {
     : TridiagonalOperator(grid.size()) {
         Real u = process->stateVariable()->value();
         Volatility sigma =
-            process->blackVolatility()->blackVol(residualTime,u);
+            process->diffusion(residualTime,u);
         Rate r = process->riskFreeRate()->zeroRate(residualTime,Continuous);
-        Rate q = process->dividendYield()->zeroRate(residualTime,Continuous);
         Array logGrid = Log(grid);
         Real sigma2 = sigma * sigma;
-        Real nu = r-q-sigma2/2;
+        Real nu = process->drift(residualTime,u);
         for (Size i=1; i < logGrid.size()-1; i++) {
             Real dxm = logGrid[i] - logGrid[i-1];
             Real dxp = logGrid[i+1] - logGrid[i];

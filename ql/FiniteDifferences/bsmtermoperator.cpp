@@ -50,14 +50,13 @@ namespace QuantLib {
                                               TridiagonalOperator& L) const {
         if (std::fabs(t) < 1e-8) t = 0;
         Real r = process_->riskFreeRate()->forwardRate(t,t,Continuous);
-        Real q = process_->dividendYield()->forwardRate(t,t,Continuous);
         QL_TRACE("BSMTermOperator::TimeSetter " << r << " " << q );
         for (Size i=1; i < logPriceGrid_.size() - 1; i++) {
             Real sigma =
-                process_->localVolatility()->localVol(t, priceGrid_[i]);
+                process_->diffusion(t, priceGrid_[i]);
             QL_TRACE("Sigma: " << i << sigma);
             Real sigma2 = sigma * sigma;
-            Real nu = r-q-sigma2/2;
+            Real nu = process_->drift(t, priceGrid_[i]);
             Real pd = -(sigma2/dxm_[i]-nu)/(dxm_[i] + dxp_[i]);
             Real pu = -(sigma2/dxp_[i]+nu)/(dxm_[i] + dxp_[i]);
             Real pm = sigma2/(dxm_[i] * dxp_[i])+r;
