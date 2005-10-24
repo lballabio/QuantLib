@@ -50,7 +50,7 @@ namespace QuantLib {
                                               TridiagonalOperator& L) const {
         if (std::fabs(t) < 1e-8) t = 0;
         Real r = process_->riskFreeRate()->forwardRate(t,t,Continuous);
-        QL_TRACE("BSMTermOperator::TimeSetter " << r << " " << q );
+        QL_TRACE("BSMTermOperator::TimeSetter " << r);
         for (Size i=1; i < logPriceGrid_.size() - 1; i++) {
             Real sigma =
                 process_->diffusion(t, priceGrid_[i]);
