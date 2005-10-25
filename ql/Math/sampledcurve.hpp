@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, Joseph Wang
+ Copyright (C) 2005 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,142 +20,149 @@
 /*! \file sampledcurve.hpp
     \brief a class that contains a sampled curve
 */
-#ifndef quantlib_sampledcurve_hpp
-#define quantlib_sampledcurve_hpp
+
+#ifndef quantlib_sampled_curve_hpp
+#define quantlib_sampled_curve_hpp
+
 #include <ql/Math/array.hpp>
-#include <ql/types.hpp>
 
 namespace QuantLib {
+
     //! This class contains a sampled curve.
     /*! Initially the class will contain one indexed curve */
-
     class SampledCurve {
-    public:
-        SampledCurve(Size gridSize=0) {
-            gridSize_ = gridSize;
-            grid_ = Array(gridSize);
-            values_ = Array(gridSize);
-        }
+      public:
+        SampledCurve(Size gridSize = 0);
+        SampledCurve& operator=(const SampledCurve&);
 
-        void setLogSpacing(Real min, Real max) {
-            Real gridLogSpacing =
-                (std::log(max) - std::log(min)) / (gridSize_ -1);
-            Real edx = std::exp(gridLogSpacing);
-            grid_[0] = min;
-            for (Size j=1; j < gridSize_; j++) {
-                grid_[j] = grid_[j-1]*edx;
-            }
-        }
+        //! \name inspectors
+        //@{
+        const Array& grid() const;
+        Array& grid();
+        const Array& values() const;
+        Array& values();
+        Real gridValue(Size i) const;
+        Real& gridValue(Size i);
+        Real value(Size i) const;
+        Real& value(Size i);
+        Size size() const;
+        bool empty() const;
+        //@}
 
-        void setLinearSpacing(Real min, Real max) {
-            Real gridSpacing =
-                (max - min) / (gridSize_ -1);
-            grid_[0] = min;
-            for (Size j=1; j < gridSize_; j++) {
-                grid_[j] = grid_[j-1] + gridSpacing;
-            }
-        }
-
+        //! \name modifiers
+        //@{
+        void setGrid(const Array&);
+        void setValues(const Array&);
+        void setLogSpacing(Real min, Real max);
+        void setLinearSpacing(Real min, Real max);
         template <class F>
-        void sample(F &f) {
-            for(Size j=0; j < size(); j++)
+        void sample(const F& f) {
+            for(Size j=0; j<size(); j++)
                 values_[j] = f(grid_[j]);
         }
+        //@}
 
-        void setGrid(const Array &g) {
-            grid_ = g;
-        }
+        //! \name calculations
+        //@{
+        /*! \todo replace or complement with a more general function
+                  valueAt(spot)
+        */
+        Real valueAtCenter() const;
+        /*! \todo replace or complement with a more general function
+                  firstDerivativeAt(spot)
+        */
+        Real firstDerivativeAtCenter() const;
+        /*! \todo replace or complement with a more general function
+                  secondDerivativeAt(spot)
+        */
+        Real secondDerivativeAtCenter() const;
+        //@}
 
-        void setValues(const Array &g) {
-            values_ = g;
-        }
-
-        Array & grid() {
-            return grid_;
-        }
-
-        Array & values() {
-            return values_;
-        }
-
-        Real & gridValue(Size i) {
-            return grid_[i];
-        }
-
-        Real & value(Size i) {
-            return values_[i];
-        }
-
-        Size size() {
-            return gridSize_;
-        }
-
-        void swap(SampledCurve &from) {
-            using std::swap;
-            swap(gridSize_, from.gridSize_);
-            grid_.swap(from.grid_);
-            values_.swap(from.values_);
-        }
-
-        SampledCurve& operator=(const SampledCurve& from) {
-            SampledCurve temp(from);
-            swap(temp);
-            return *this;
-        }
-
-        inline bool empty() const {
-            return gridSize_ == 0;
-        }
-
-        Real valueAtCenter() {
-            QL_REQUIRE(!empty(),
-                       "size must not be empty");
-            Size jmid = size()/2;
-            if (size() % 2 == 1)
-                return values_[jmid];
-            else
-                return (values_[jmid]+values_[jmid-1])/2.0;
-        }
-
-        Real firstDerivativeAtCenter() {
-            QL_REQUIRE(size()>=3,
-                       "the size of the two vectors must be at least 3");
-            Size jmid = size()/2;
-            if (size() % 2 == 1)
-                return (values_[jmid+1]-values_[jmid-1])/
-                    (grid_[jmid+1]-grid_[jmid-1]);
-            else
-                return (values_[jmid]-values_[jmid-1])/
-                    (grid_[jmid]-grid_[jmid-1]);
-        }
-
-        Real secondDerivativeAtCenter() {
-            QL_REQUIRE(size()>=4,
-                       "the size of the two vectors must be at least 4");
-            Size jmid = size()/2;
-            if (size() % 2 == 1) {
-                Real deltaPlus = (values_[jmid+1]-values_[jmid])/
-                    (grid_[jmid+1]-grid_[jmid]);
-                Real deltaMinus = (values_[jmid]-values_[jmid-1])/
-                    (grid_[jmid]-grid_[jmid-1]);
-                Real dS = (grid_[jmid+1]-grid_[jmid-1])/2.0;
-                return (deltaPlus-deltaMinus)/dS;
-            } else {
-                Real deltaPlus = (values_[jmid+1]-values_[jmid-1])/
-                    (grid_[jmid+1]-grid_[jmid-1]);
-                Real deltaMinus = (values_[jmid]-values_[jmid-2])/
-                    (grid_[jmid]-grid_[jmid-2]);
-                return (deltaPlus-deltaMinus)/
-                    (grid_[jmid]-grid_[jmid-1]);
-            }
-        }
+        //! \name utilities
+        //@{
+        void swap(SampledCurve&);
+        //@}
       private:
         Size gridSize_;
         Array grid_;
         Array values_;
     };
 
+    /* \relates SampledCurve */
+    void swap(SampledCurve&, SampledCurve&);
+
     typedef SampledCurve SampledCurveSet;
+
+
+    // inline definitions
+
+    inline SampledCurve::SampledCurve(Size gridSize)
+    : gridSize_(gridSize), grid_(gridSize), values_(gridSize) {}
+
+    inline SampledCurve& SampledCurve::operator=(const SampledCurve& from) {
+        SampledCurve temp(from);
+        swap(temp);
+        return *this;
+    }
+
+    inline Array& SampledCurve::grid() {
+        return grid_;
+    }
+
+    inline const Array& SampledCurve::grid() const {
+        return grid_;
+    }
+
+    inline const Array& SampledCurve::values() const {
+        return values_;
+    }
+
+    inline Array& SampledCurve::values() {
+        return values_;
+    }
+
+    inline Real SampledCurve::gridValue(Size i) const {
+        return grid_[i];
+    }
+
+    inline Real& SampledCurve::gridValue(Size i) {
+        return grid_[i];
+    }
+
+    inline Real SampledCurve::value(Size i) const {
+        return values_[i];
+    }
+
+    inline Real& SampledCurve::value(Size i) {
+        return values_[i];
+    }
+
+    inline Size SampledCurve::size() const {
+        return gridSize_;
+    }
+
+    inline bool SampledCurve::empty() const {
+        return gridSize_ == 0;
+    }
+
+    inline void SampledCurve::setGrid(const Array &g) {
+        grid_ = g;
+    }
+
+    inline void SampledCurve::setValues(const Array &g) {
+        values_ = g;
+    }
+
+    inline void SampledCurve::swap(SampledCurve& from) {
+        using std::swap;
+        swap(gridSize_, from.gridSize_);
+        grid_.swap(from.grid_);
+        values_.swap(from.values_);
+    }
+
+    inline void swap(SampledCurve& c1, SampledCurve& c2) {
+        c1.swap(c2);
+    }
 
 }
 

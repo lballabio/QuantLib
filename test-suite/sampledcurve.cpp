@@ -27,7 +27,7 @@ using namespace boost::unit_test_framework;
 
 class FSquared : std::unary_function<Real,Real> {
 public:
-    Real operator()(Real x) { return x*x;};
+    Real operator()(Real x) const { return x*x;};
 };
 
 void SampledCurveTest::testConstruction() {
