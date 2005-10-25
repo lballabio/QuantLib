@@ -73,90 +73,15 @@ namespace QuantLib {
         TridiagonalOperator& operator=(const TridiagonalOperator&);
         #endif
         TridiagonalOperator(const Disposable<TridiagonalOperator>&);
-        TridiagonalOperator& operator=(
-                                       const Disposable<TridiagonalOperator>&);
+        TridiagonalOperator& operator=(const Disposable<TridiagonalOperator>&);
         //! \name Operator interface
         //@{
         //! apply operator to a given array
-        template <class T>
-        Disposable<T> applyTo(const T& v) const {
-            QL_REQUIRE(v.size()==size(),
-                       "vector of the wrong size (" << v.size()
-                       << "instead of " << size() << ")"  );
-            T result(size());
-            std::transform(diagonal_.begin(),
-                           diagonal_.end(),
-                           v.begin(),
-                           result.begin(),
-                           std::multiplies<Real>());
-            
-            // matricial product
-            result[0] += upperDiagonal_[0]*v[1];
-            for (Size j=1;j<=size()-2;j++)
-                result[j] += lowerDiagonal_[j-1]*v[j-1]+ 
-                    upperDiagonal_[j]*v[j+1];
-            result[size()-1] += lowerDiagonal_[size()-2]*v[size()-2];
-            
-            return result;
-        }
-
+        Disposable<Array> applyTo(const Array& v) const;
         //! solve linear system for a given right-hand side
-        template <class T>
-        Disposable<T> solveFor(const T& rhs) const  {
-            QL_REQUIRE(rhs.size()==size(), "rhs has the wrong size");
-            
-            T result(size()), tmp(size());
-            
-            Real bet=diagonal_[0];
-            QL_REQUIRE(bet != 0.0, "division by zero");
-            result[0] = rhs[0]/bet;
-            Size j;
-            for (j=1;j<=size()-1;j++){
-                tmp[j]=upperDiagonal_[j-1]/bet;
-                bet=diagonal_[j]-lowerDiagonal_[j-1]*tmp[j];
-                QL_ENSURE(bet != 0.0, "division by zero");
-                result[j] = (rhs[j]-lowerDiagonal_[j-1]*result[j-1])/bet;
-            }
-            // cannot be j>=0 with Size j
-            for (j=size()-2;j>0;j--)
-                result[j] -= tmp[j+1]*result[j+1];
-            result[0] -= tmp[1]*result[1];
-            return result;
-        }
-
+        Disposable<Array> solveFor(const Array& rhs) const;
         //! solve linear system with SOR approach
-        template <class T>
-        Disposable<T> SOR(const T& rhs, Real tol) const {
-            QL_REQUIRE(rhs.size()==size(), "rhs has the wrong size");
-
-            // initial guess
-            T result = rhs;
-            
-            // solve tridiagonal system with SOR technique
-            Size sorIteration, i;
-            Real omega = 1.5;
-            Real err = 2.0*tol;
-            Real temp;
-            for (sorIteration=0; err>tol ; sorIteration++) {
-                QL_REQUIRE(sorIteration<100000,
-                           "tolerance (" << tol << ") not reached in "
-                           << sorIteration << " iterations. "
-                           << "The error still is " << err);
-                err=0.0;
-                for (i=1; i<size()-2 ; i++) {
-                    temp = omega * (rhs[i]     -
-                                    upperDiagonal_[i]   * result[i+1]-
-                                    diagonal_[i]        * result[i] -
-                                    lowerDiagonal_[i-1] * result[i-1]) /
-                        diagonal_[i];
-                    err += temp * temp;
-                    result[i] += temp;
-                }
-            }
-            return result;
-        }
-
-
+        Disposable<Array> SOR(const Array& rhs, Real tol) const;
         //! identity instance
         static Disposable<TridiagonalOperator> identity(Size size);
         //@}
