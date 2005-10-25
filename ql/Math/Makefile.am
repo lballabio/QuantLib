@@ -73,6 +73,7 @@ libMath_la_SOURCES = \
 	primenumbers.cpp \
 	pseudosqrt.cpp \
 	rounding.cpp \
+	sampledcurve.cpp \
 	svd.cpp \
 	symmetricschurdecomposition.cpp \
 	tqreigendecomposition.cpp

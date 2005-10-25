@@ -744,15 +744,15 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     }
 }
-/*! This unit test is a a regression test to check for a crash in 
-  ! monte carlo if the required sample is odd.  The crash occurred
-  ! because the samples array size was off by one when antithetic 
-  ! paths were added.
-*/
 
+/* This unit test is a a regression test to check for a crash in
+   monte carlo if the required sample is odd.  The crash occurred
+   because the samples array size was off by one when antithetic
+   paths were added.
+*/
 void BasketOptionTest::testOddSamples() {
 
-    BOOST_MESSAGE("Test antithetic engine using odd sample number");
+    BOOST_MESSAGE("Testing antithetic engine using odd sample number...");
 
     QL_TEST_START_TIMING
     Size requiredSamples = 10001; // The important line
