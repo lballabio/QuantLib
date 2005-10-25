@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 StatPro Italia srl
+ Copyright (C) 2005 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,19 +22,17 @@
     \brief compute value, first, and second derivatives at grid center
 */
 
-#ifndef quantlib_finite_difference_value_at_center_h
-#define quantlib_finite_difference_value_at_center_h
+#ifndef quantlib_finite_difference_value_at_center_hpp
+#define quantlib_finite_difference_value_at_center_hpp
 
 #include <ql/Math/array.hpp>
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     /*! mid-point value
-
-        \todo replace with a more general (not "centered") function:
-              valueAt(Real spot, const Array& a);
+        \deprecated use SampledCurve instead
     */
-    
     template <class T>
     Real valueAtCenter(const T& a) {
         Size jmid = a.size()/2;
@@ -44,11 +43,7 @@ namespace QuantLib {
     }
 
     /*! mid-point first derivative
-
-        \todo replace with a more general (not "centered") function:
-              firstDerivativeAt(Real spot,
-                                const Array& a,
-                                const Array& grid);
+        \deprecated use SampledCurve instead
     */
     template <class T>
     Real firstDerivativeAtCenter(const T& a, const T& g) {
@@ -65,11 +60,7 @@ namespace QuantLib {
 
 
     /*! mid-point second derivative
-
-        \todo replace with a more general (not "centered") function:
-              secondDerivativeAt(Real spot,
-                                 const Array& a,
-                                 const Array& grid);
+        \deprecated use SampledCurve instead
     */
     template <class T>
     Real secondDerivativeAtCenter(const T& a, const T& g) {
@@ -89,6 +80,8 @@ namespace QuantLib {
             return (deltaPlus-deltaMinus)/(g[jmid]-g[jmid-1]);
         }
     }
+    #endif
+
 }
 
 

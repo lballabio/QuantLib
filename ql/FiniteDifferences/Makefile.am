@@ -32,8 +32,7 @@ libFiniteDifferences_la_SOURCES = \
     bsmoperator.cpp \
     bsmtermoperator.cpp \
     onefactoroperator.cpp \
-    tridiagonaloperator.cpp \
-    valueatcenter.cpp
+    tridiagonaloperator.cpp
 
 noinst_LTLIBRARIES = libFiniteDifferences.la
 
