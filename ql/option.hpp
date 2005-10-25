@@ -27,6 +27,7 @@
 #include <ql/instrument.hpp>
 #include <ql/payoff.hpp>
 #include <ql/exercise.hpp>
+#include <ql/Math/sampledcurve.hpp>
 
 namespace QuantLib {
 
@@ -70,6 +71,16 @@ namespace QuantLib {
         // shouldn't be here
         // it should be moved elsewhere
         std::vector<Time> stoppingTimes;
+    };
+
+    //! additional pricing results
+    class PriceCurve : public virtual Results {
+      public:
+        PriceCurve() { reset(); }
+        void reset() {
+            priceCurve = Null<SampledCurve>();
+        }
+        SampledCurve priceCurve;
     };
 
     //! additional %option results
