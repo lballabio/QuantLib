@@ -164,6 +164,14 @@ namespace QuantLib {
         c1.swap(c2);
     }
 
+    inline std::ostream& operator<<(std::ostream& out, 
+                                    const SampledCurve& a) {
+        out << "[ " << a.grid() << "; " 
+            << a.values() << " ]";
+        return out;
+    }
+
+
 }
 
 
