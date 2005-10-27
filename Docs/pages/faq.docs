@@ -50,7 +50,7 @@
 
     \ref faq_platforms
     - \ref faq_dot_net "Does QuantLib support .NET?"
-    - \ref faq_excel "What's the difference between QuantLibXL and QuantLibAddin"
+    - \ref faq_excel "What's the difference between QuantLibXL and QuantLibAddin?"
 
     <hr>
 
@@ -230,8 +230,13 @@
 
     As mentioned in the readme, QuantLib depends on the Boost library
     (http://www.boost.org). You must download and install it before
-    building QuantLib.
+    building QuantLib. After installation, you might have to setup
+    your IDE so that the Boost headers are in its include path.
 
+    At the time of this writing, it is somewhat difficult to modify
+    the include path of the latest Visual C++ Express Beta.
+    Instructions to perform such operation are available at
+    <http://forums.microsoft.com/msdn/ShowPost.aspx?PostID=2995>.
 
     <strong>
     \anchor faq_linking_libboost_unit
