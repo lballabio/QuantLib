@@ -20,6 +20,7 @@ include_HEADERS = \
 	impliciteuler.hpp \
 	mixedscheme.hpp\
     onefactoroperator.hpp \
+    operatorfactory.hpp \
     operatortraits.hpp \
     parallelevolver.hpp \
     shoutcondition.hpp \
