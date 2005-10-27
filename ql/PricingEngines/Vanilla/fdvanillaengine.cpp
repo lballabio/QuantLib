@@ -21,8 +21,7 @@
 
 #include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
 #include <ql/Instruments/payoffs.hpp>
-#include <ql/FiniteDifferences/bsmoperator.hpp>
-#include <ql/FiniteDifferences/bsmtermoperator.hpp>
+#include <ql/FiniteDifferences/operatorfactory.hpp>
 
 namespace QuantLib {
     const Real FDVanillaEngine::safetyZoneFactor_ = 1.1;
@@ -88,14 +87,11 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::initializeOperator() const {
-        if (timeDependent_)
-            finiteDifferenceOperator_ = 
-                BSMTermOperator(intrinsicValues_.grid(), process_,
-                                getResidualTime());
-        else
-            finiteDifferenceOperator_ = 
-                BSMOperator(intrinsicValues_.grid(), process_,
-                            getResidualTime());
+        finiteDifferenceOperator_ =
+            OperatorFactory::getOperator(process_,
+                                         intrinsicValues_.grid(),
+                                         getResidualTime(),
+                                         timeDependent_);
 
         BCs_[0] = boost::shared_ptr<bc_type>(new NeumannBC(
                                       intrinsicValues_.value(1)-

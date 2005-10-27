@@ -26,11 +26,12 @@
 #ifndef quantlib_fd_vanilla_engine_hpp
 #define quantlib_fd_vanilla_engine_hpp
 
-#include <ql/Instruments/oneassetoption.hpp>
+
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/sampledcurve.hpp>
+#include <ql/Instruments/oneassetoption.hpp>
 
 namespace QuantLib {
 
