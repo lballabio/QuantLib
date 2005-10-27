@@ -44,15 +44,13 @@ namespace QuantLib {
         virtual ~OneFactorModel() {}
 
         class ShortRateDynamics;
+        class ShortRateTree;
 
         //! returns the short-rate dynamics
         virtual boost::shared_ptr<ShortRateDynamics> dynamics() const = 0;
 
         //! Return by default a trinomial recombining tree
         boost::shared_ptr<NumericalMethod> tree(const TimeGrid& grid) const;
-
-      protected:
-        class ShortRateTree;
     };
 
     //! Base class describing the short-rate dynamics
