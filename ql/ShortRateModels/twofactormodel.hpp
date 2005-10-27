@@ -95,6 +95,10 @@ namespace QuantLib {
         Real correlation() const {
             return correlation_;
         }
+
+        //! Joint process of the two variables
+        boost::shared_ptr<StochasticProcess> process() const;
+
       private:
         boost::shared_ptr<StochasticProcess1D> xProcess_, yProcess_;
         Real correlation_;

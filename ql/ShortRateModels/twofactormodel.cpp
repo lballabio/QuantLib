@@ -19,6 +19,7 @@
 */
 
 #include <ql/ShortRateModels/twofactormodel.hpp>
+#include <ql/Processes/stochasticprocessarray.hpp>
 
 namespace QuantLib {
 
@@ -45,5 +46,17 @@ namespace QuantLib {
     : Lattice2D<TwoFactorModel::ShortRateTree,TrinomialTree>(
                                        tree1, tree2, dynamics->correlation()),
       dynamics_(dynamics) {}
+
+    boost::shared_ptr<StochasticProcess>
+    TwoFactorModel::ShortRateDynamics::process() const {
+        Matrix correlation(2,2);
+        correlation[0][0] = correlation[1][1] = 1.0;
+        correlation[0][1] = correlation[1][0] = correlation_;
+        std::vector<boost::shared_ptr<StochasticProcess1D> > processes;
+        processes[0] = xProcess_;
+        processes[1] = yProcess_;
+        return boost::shared_ptr<StochasticProcess>(
+                           new StochasticProcessArray(processes,correlation));
+    }
 
 }
