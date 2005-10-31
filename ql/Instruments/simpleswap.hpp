@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -76,10 +76,16 @@ namespace QuantLib {
         // other
         void setupArguments(Arguments* args) const;
       private:
+        void setupExpired() const;
+        void performCalculations() const;
         bool payFixedRate_;
         Rate fixedRate_;
         Spread spread_;
         Real nominal_;
+        // results
+        mutable Real fixedLegBPS_, floatingLegBPS_;
+        mutable Rate fairRate_;
+        mutable Spread fairSpread_;
     };
 
     //! %Arguments for simple swap calculation
@@ -103,26 +109,22 @@ namespace QuantLib {
     };
 
     //! %Results from simple swap calculation
-    class SimpleSwap::results : public Value {};
+    class SimpleSwap::results : public Value {
+      public:
+        Real fixedLegBPS;
+        Real floatingLegBPS;
+        Rate fairRate;
+        Spread fairSpread;
+        results() { reset(); }
+        void reset() {
+            fixedLegBPS = floatingLegBPS = Null<Real>();
+            fairRate = Null<Rate>();
+            fairSpread = Null<Spread>();
+        }
+    };
 
 
     // inline definitions
-
-    inline Rate SimpleSwap::fairRate() const {
-        return fixedRate_ - NPV()/fixedLegBPS();
-    }
-
-    inline Spread SimpleSwap::fairSpread() const {
-        return spread_ - NPV()/floatingLegBPS();
-    }
-
-    inline Real SimpleSwap::fixedLegBPS() const {
-        return (payFixedRate_ ? firstLegBPS() : secondLegBPS());
-    }
-
-    inline Real SimpleSwap::floatingLegBPS() const {
-        return (payFixedRate_ ? secondLegBPS() : firstLegBPS());
-    }
 
     inline Rate SimpleSwap::fixedRate() const {
         return fixedRate_;

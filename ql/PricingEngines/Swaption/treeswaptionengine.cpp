@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,40 @@
 #include <ql/PricingEngines/Swaption/discretizedswaption.hpp>
 
 namespace QuantLib {
+
+    TreeSimpleSwapEngine::TreeSimpleSwapEngine(
+                               const boost::shared_ptr<ShortRateModel>& model,
+                               Size timeSteps)
+    : LatticeShortRateModelEngine<SimpleSwap::arguments, SimpleSwap::results>
+    (model, timeSteps) {}
+
+    TreeSimpleSwapEngine::TreeSimpleSwapEngine(
+                               const boost::shared_ptr<ShortRateModel>& model,
+                               const TimeGrid& timeGrid)
+    : LatticeShortRateModelEngine<SimpleSwap::arguments, SimpleSwap::results>
+    (model, timeGrid) {}
+
+    void TreeSimpleSwapEngine::calculate() const {
+
+        QL_REQUIRE(model_, "no model specified");
+
+        DiscretizedSwap swap(arguments_);
+        std::vector<Time> times = swap.mandatoryTimes();
+
+        boost::shared_ptr<NumericalMethod> lattice;
+        if (lattice_) {
+            lattice = lattice_;
+        } else {
+            TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
+            lattice = model_->tree(timeGrid);
+        }
+
+        swap.initialize(lattice, times.back());
+        swap.rollback(0.0);
+
+        results_.value = swap.presentValue();
+    }
+
 
     TreeSwaptionEngine::TreeSwaptionEngine(
                                const boost::shared_ptr<ShortRateModel>& model,

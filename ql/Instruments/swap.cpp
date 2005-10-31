@@ -57,8 +57,8 @@ namespace QuantLib {
         QL_REQUIRE(!termStructure_.empty(), "no term structure set");
         Date settlement = termStructure_->referenceDate();
         NPV_ = 0.0;
-        Real firstLegNPV_ = 0.0;
-        Real secondLegNPV_ = 0.0;
+        Real firstLegNPV = 0.0;
+        Real secondLegNPV = 0.0;
 
         // subtract first leg cash flows
         for (Size i=0; i<firstLeg_.size(); i++) {
@@ -68,7 +68,7 @@ namespace QuantLib {
             #else
             if (cashFlowDate > settlement) {
             #endif
-                firstLegNPV_ -= firstLeg_[i]->amount() *
+                firstLegNPV -= firstLeg_[i]->amount() *
                     termStructure_->discount(cashFlowDate);
             }
         }
@@ -82,13 +82,13 @@ namespace QuantLib {
             #else
             if (cashFlowDate > settlement) {
             #endif
-                secondLegNPV_ += secondLeg_[j]->amount() *
+                secondLegNPV += secondLeg_[j]->amount() *
                     termStructure_->discount(cashFlowDate);
             }
         }
         secondLegBPS_ = BasisPointSensitivity(secondLeg_, termStructure_);
 
-        NPV_ = firstLegNPV_ + secondLegNPV_;
+        NPV_ = firstLegNPV + secondLegNPV;
     }
 
     Date Swap::startDate() const {

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -133,6 +133,62 @@ namespace QuantLib {
             arguments->floatingSpreads[i] = coupon->spread();
             if (resetTime < 0.0 && paymentTime >= 0.0)
                 arguments->currentFloatingCoupon = coupon->amount();
+        }
+    }
+
+    Rate SimpleSwap::fairRate() const {
+        calculate();
+        QL_REQUIRE(fairRate_ != Null<Rate>(), "result not available");
+        return fairRate_;
+    }
+
+    Spread SimpleSwap::fairSpread() const {
+        calculate();
+        QL_REQUIRE(fairSpread_ != Null<Spread>(), "result not available");
+        return fairSpread_;
+    }
+
+    Real SimpleSwap::fixedLegBPS() const {
+        calculate();
+        QL_REQUIRE(fixedLegBPS_ != Null<Real>(), "result not available");
+        return fixedLegBPS_;
+    }
+
+    Real SimpleSwap::floatingLegBPS() const {
+        calculate();
+        QL_REQUIRE(floatingLegBPS_ != Null<Real>(), "result not available");
+        return floatingLegBPS_;
+    }
+
+    void SimpleSwap::setupExpired() const {
+        Swap::setupExpired();
+        fixedLegBPS_ = floatingLegBPS_ = 0.0;
+        fairRate_ = Null<Rate>();
+        fairSpread_ = Null<Spread>();
+    }
+
+    void SimpleSwap::performCalculations() const {
+        if (engine_) {
+            Instrument::performCalculations();
+            const SimpleSwap::results* results =
+                dynamic_cast<const SimpleSwap::results*>(engine_->results());
+            fixedLegBPS_ = results->fixedLegBPS;
+            floatingLegBPS_ = results->floatingLegBPS;
+            fairRate_ = results->fairRate;
+            fairSpread_ = results->fairSpread;
+            if (payFixedRate_) {
+                firstLegBPS_ = fixedLegBPS_;
+                secondLegBPS_ = floatingLegBPS_;
+            } else {
+                firstLegBPS_ = floatingLegBPS_;
+                secondLegBPS_ = fixedLegBPS_;
+            }
+        } else {
+            Swap::performCalculations();
+            fixedLegBPS_ = payFixedRate_ ? firstLegBPS() : secondLegBPS();
+            floatingLegBPS_ = payFixedRate_ ? secondLegBPS() : firstLegBPS();
+            fairRate_ = fixedRate_ - NPV_/fixedLegBPS_;
+            fairSpread_ = spread_ - NPV_/floatingLegBPS_;
         }
     }
 

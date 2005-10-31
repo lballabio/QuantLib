@@ -21,10 +21,12 @@
 #include "utilities.hpp"
 #include <ql/ShortRateModels/OneFactorModels/hullwhite.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
-#include <ql/PricingEngines/Swaption/jamshidianswaptionengine.hpp>
+#include <ql/PricingEngines/Swaption/all.hpp>
 #include <ql/Indexes/euribor.hpp>
-#include <ql/DayCounters/thirty360.hpp>
+#include <ql/Indexes/indexmanager.hpp>
+#include <ql/DayCounters/all.hpp>
 #include <ql/Optimization/simplex.hpp>
+#include <ql/TermStructures/discountcurve.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -110,10 +112,116 @@ void ShortRateModelTest::testCachedHullWhite() {
 }
 
 
+void ShortRateModelTest::testSwaps() {
+    #if !defined(QL_PATCH_BORLAND)
+
+    BOOST_MESSAGE("Testing Hull-White swap pricing against known values...");
+
+    QL_TEST_BEGIN
+
+    Date today = Settings::instance().evaluationDate();
+    Calendar calendar = TARGET();
+    Date settlement = calendar.advance(today,2,Days);
+
+    Date dates[] = {
+        settlement,
+        calendar.advance(settlement,1,Weeks),
+        calendar.advance(settlement,1,Months),
+        calendar.advance(settlement,3,Months),
+        calendar.advance(settlement,6,Months),
+        calendar.advance(settlement,9,Months),
+        calendar.advance(settlement,1,Years),
+        calendar.advance(settlement,2,Years),
+        calendar.advance(settlement,3,Years),
+        calendar.advance(settlement,5,Years),
+        calendar.advance(settlement,10,Years),
+        calendar.advance(settlement,15,Years)
+    };
+    DiscountFactor discounts[] = {
+        1.0,
+        0.999258,
+        0.996704,
+        0.990809,
+        0.981798,
+        0.972570,
+        0.963430,
+        0.929532,
+        0.889267,
+        0.803693,
+        0.596903,
+        0.433022
+    };
+
+    Handle<YieldTermStructure> termStructure;
+    termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
+       new DiscountCurve(
+           std::vector<Date>(dates,dates+LENGTH(dates)),
+           std::vector<DiscountFactor>(discounts,discounts+LENGTH(discounts)),
+           Actual365Fixed())));
+
+    boost::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+
+    Integer start[] = { -3, 0, 3 };
+    Integer length[] = { 2, 5, 10 };
+    Rate rates[] = { 0.02, 0.04, 0.06 };
+    boost::shared_ptr<Xibor> euribor(new Euribor(6,Months,termStructure));
+
+    boost::shared_ptr<PricingEngine> engine(
+                                         new TreeSimpleSwapEngine(model,120));
+
+    Real tolerance = 1.0e-9;
+    for (Size i=0; i<LENGTH(start); i++) {
+
+        Date startDate = calendar.advance(settlement,start[i],Months);
+        if (startDate < today) {
+            Date fixingDate = calendar.advance(startDate,-2,Days);
+            History pastFixings(std::vector<Date>(1,fixingDate),
+                                std::vector<Rate>(1,0.03));
+            IndexManager::instance().setHistory(euribor->name(),
+                                                pastFixings);
+        }
+
+        for (Size j=0; j<LENGTH(length); j++) {
+
+            Date maturity = calendar.advance(startDate,length[i],Years);
+            Schedule fixedSchedule(calendar,startDate,maturity,
+                                   Annual,Unadjusted);
+            Schedule floatSchedule(calendar,startDate,maturity,
+                                   Semiannual,Following);
+
+            for (Size k=0; k<LENGTH(rates); k++) {
+
+                SimpleSwap swap(true, 1000000.0,
+                                fixedSchedule, rates[k], Thirty360(),
+                                floatSchedule, euribor, 2, 0.0,
+                                termStructure);
+                Real expected = swap.NPV();
+                swap.setPricingEngine(engine);
+                Real calculated = swap.NPV();
+
+                Real error = std::fabs(expected-calculated);
+                if (error > tolerance) {
+                    BOOST_ERROR("Failed to reproduce swap NPV:"
+                                << QL_FIXED << std::setprecision(9)
+                                << "\n    calculated: " << calculated
+                                << "\n    expected:   " << expected
+                                << QL_SCIENTIFIC
+                                << "\n    error:      " << error);
+                }
+            }
+        }
+    }
+
+    QL_TEST_TEARDOWN
+    #endif
+}
+
+
 test_suite* ShortRateModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Short-rate model tests");
     #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
+    suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testSwaps));
     #endif
     return suite;
 }
