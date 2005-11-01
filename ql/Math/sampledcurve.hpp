@@ -25,6 +25,7 @@
 #define quantlib_sampled_curve_hpp
 
 #include <ql/Math/array.hpp>
+#include <ql/grid.hpp>
 
 namespace QuantLib {
 
@@ -33,6 +34,7 @@ namespace QuantLib {
     class SampledCurve {
       public:
         SampledCurve(Size gridSize = 0);
+        SampledCurve(const Array &grid);
         SampledCurve& operator=(const SampledCurve&);
 
         //! \name inspectors
@@ -53,8 +55,6 @@ namespace QuantLib {
         //@{
         void setGrid(const Array&);
         void setValues(const Array&);
-        void setLogSpacing(Real min, Real max);
-        void setLinearSpacing(Real min, Real max);
         template <class F>
         void sample(const F& f) {
             for(Size j=0; j<size(); j++)
@@ -81,9 +81,11 @@ namespace QuantLib {
         //! \name utilities
         //@{
         void swap(SampledCurve&);
+        void setLogGrid(Real min, Real max) {
+            setGrid(BoundedLogGrid(min, max, size()-1));
+        }
         //@}
       private:
-        Size gridSize_;
         Array grid_;
         Array values_;
     };
@@ -97,7 +99,10 @@ namespace QuantLib {
     // inline definitions
 
     inline SampledCurve::SampledCurve(Size gridSize)
-    : gridSize_(gridSize), grid_(gridSize), values_(gridSize) {}
+    : grid_(gridSize), values_(gridSize) {}
+
+    inline SampledCurve::SampledCurve(const Array& grid) 
+        : grid_(grid), values_(grid.size()) {}
 
     inline SampledCurve& SampledCurve::operator=(const SampledCurve& from) {
         SampledCurve temp(from);
@@ -138,11 +143,11 @@ namespace QuantLib {
     }
 
     inline Size SampledCurve::size() const {
-        return gridSize_;
+        return grid_.size();
     }
 
     inline bool SampledCurve::empty() const {
-        return gridSize_ == 0;
+        return grid_.empty();
     }
 
     inline void SampledCurve::setGrid(const Array &g) {
@@ -155,7 +160,6 @@ namespace QuantLib {
 
     inline void SampledCurve::swap(SampledCurve& from) {
         using std::swap;
-        swap(gridSize_, from.gridSize_);
         grid_.swap(from.grid_);
         values_.swap(from.values_);
     }

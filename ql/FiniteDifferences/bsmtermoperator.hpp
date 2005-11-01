@@ -26,6 +26,7 @@
 
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Math/transformedgrid.hpp>
 
 namespace QuantLib {
 
@@ -47,10 +48,7 @@ namespace QuantLib {
                        const boost::shared_ptr<BlackScholesProcess>&);
             void setTime(Time t, TridiagonalOperator&) const;
           private:
-            Array priceGrid_;
-            Array logPriceGrid_;
-            Array dxp_;
-            Array dxm_;
+            LogGrid grid_;
             boost::shared_ptr<BlackScholesProcess> process_;
         };
     };

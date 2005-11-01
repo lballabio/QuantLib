@@ -58,7 +58,7 @@ namespace QuantLib {
         }
         Array oldGrid = prices_.grid() + getDividend(step);
         initializeGrid();
-        prices_.setLogSpacing(sMin_, sMax_);
+        prices_.setLogGrid(sMin_, sMax_);
 
         initializeInitialCondition();
         // This operation was faster than the obvious:

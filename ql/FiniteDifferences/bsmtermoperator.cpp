@@ -35,15 +35,7 @@ namespace QuantLib {
     BSMTermOperator::TimeSetter::TimeSetter(
                         const Array& grid,
                         const boost::shared_ptr<BlackScholesProcess>& process)
-    : priceGrid_(grid),
-      logPriceGrid_(Log(priceGrid_)),
-      dxp_(grid.size()),
-      dxm_(grid.size()),
-      process_(process) {
-        for (Size i=1; i < logPriceGrid_.size() -1 ; i++) {
-            dxm_[i] = logPriceGrid_[i] - logPriceGrid_[i-1];
-            dxp_[i] = logPriceGrid_[i+1] - logPriceGrid_[i];
-        }
+    : grid_(grid), process_(process) {
     }
 
     void BSMTermOperator::TimeSetter::setTime(Time t,
@@ -51,15 +43,18 @@ namespace QuantLib {
         if (std::fabs(t) < 1e-8) t = 0;
         Real r = process_->riskFreeRate()->forwardRate(t,t,Continuous);
         QL_TRACE("BSMTermOperator::TimeSetter " << r);
-        for (Size i=1; i < logPriceGrid_.size() - 1; i++) {
+        for (Size i=1; i < grid_.size() - 1; i++) {
             Real sigma =
-                process_->diffusion(t, priceGrid_[i]);
+                process_->diffusion(t, grid_.grid(i));
             QL_TRACE("Sigma: " << i << sigma);
             Real sigma2 = sigma * sigma;
-            Real nu = process_->drift(t, priceGrid_[i]);
-            Real pd = -(sigma2/dxm_[i]-nu)/(dxm_[i] + dxp_[i]);
-            Real pu = -(sigma2/dxp_[i]+nu)/(dxm_[i] + dxp_[i]);
-            Real pm = sigma2/(dxm_[i] * dxp_[i])+r;
+            Real nu = process_->drift(t, grid_.grid(i));
+            Real pd = -(sigma2/grid_.dxm(i)-nu)/
+                grid_.dx(i);
+            Real pu = -(sigma2/grid_.dxp(i)+nu)/
+                grid_.dx(i);
+            Real pm = sigma2/(grid_.dxm(i) * 
+                              grid_.dxp(i))+r;
             L.setMidRow(i, pd,pm,pu);
         }
     }

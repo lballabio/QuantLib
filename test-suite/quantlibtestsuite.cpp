@@ -85,6 +85,7 @@
 #include "termstructures.hpp"
 #include "tqreigendecomposition.hpp"
 #include "tracing.hpp"
+#include "transformedgrid.hpp"
 // to be deprecated
 #include "old_pricers.hpp"
 
@@ -195,6 +196,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TermStructureTest::suite());
     test->add(TqrEigenDecompositionTest::suite());
     test->add(TracingTest::suite());
+    test->add(TransformedGridTest::suite());
     // tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());
 

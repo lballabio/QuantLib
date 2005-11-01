@@ -51,6 +51,18 @@ namespace QuantLib {
         return result;
     }
 
+    inline Disposable<Array> BoundedLogGrid(Real xMin, Real xMax,
+                                            Size steps) {
+        Array result(steps+1);
+        Real gridLogSpacing = (std::log(xMax) - std::log(xMin)) / 
+            (steps);
+        Real edx = std::exp(gridLogSpacing);
+        result[0] = xMin;
+        for (Size j=1; j < steps+1; j++) {
+            result[j] = result[j-1]*edx;
+        }
+        return result;
+    }
 }
 
 

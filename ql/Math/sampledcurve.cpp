@@ -20,24 +20,6 @@
 #include <ql/Math/sampledcurve.hpp>
 
 namespace QuantLib {
-
-    void SampledCurve::setLogSpacing(Real min, Real max) {
-        Real gridLogSpacing = (std::log(max) - std::log(min)) / (gridSize_ -1);
-        Real edx = std::exp(gridLogSpacing);
-        grid_[0] = min;
-        for (Size j=1; j < gridSize_; j++) {
-            grid_[j] = grid_[j-1]*edx;
-        }
-    }
-
-    void SampledCurve::setLinearSpacing(Real min, Real max) {
-        Real gridSpacing = (max - min) / (gridSize_ -1);
-        grid_[0] = min;
-        for (Size j=1; j < gridSize_; j++) {
-            grid_[j] = grid_[j-1] + gridSpacing;
-        }
-    }
-
     Real SampledCurve::valueAtCenter() const {
         QL_REQUIRE(!empty(), "empty sampled curve");
         Size jmid = size()/2;

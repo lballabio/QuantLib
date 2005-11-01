@@ -21,6 +21,7 @@
 
 #include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
 #include <ql/Instruments/payoffs.hpp>
+#include <ql/grid.hpp>
 #include <ql/FiniteDifferences/operatorfactory.hpp>
 
 namespace QuantLib {
@@ -79,7 +80,7 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::initializeGrid() const {
-        intrinsicValues_.setLogSpacing(sMin_, sMax_);
+        intrinsicValues_.setLogGrid(sMin_, sMax_);
     }
 
     void FDVanillaEngine::initializeInitialCondition() const {

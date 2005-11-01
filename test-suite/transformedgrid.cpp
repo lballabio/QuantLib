@@ -17,51 +17,41 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "sampledcurve.hpp"
+#include "transformedgrid.hpp"
 #include "utilities.hpp"
-#include <ql/Math/sampledcurve.hpp>
+#include <ql/Math/transformedgrid.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/grid.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-class FSquared : std::unary_function<Real,Real> {
+class PlusOne : std::unary_function<Real,Real> {
 public:
-    Real operator()(Real x) const { return x*x;};
+    Real operator()(Real x) const { return x+1;};
 };
 
-void SampledCurveTest::testConstruction() {
+void TransformedGridTest::testConstruction() {
 
-    BOOST_MESSAGE("Testing sampled curve construction...");
+    BOOST_MESSAGE("Testing transformed grid construction...");
 
     QL_TEST_BEGIN
-        SampledCurve curve(BoundedGrid(-10.0,10.0,100));
-    FSquared f2;
-    curve.sample(f2);
-    Real expected = 100.0;
-    if (std::fabs(curve.value(0) - expected) > 1e-5) {
-        BOOST_ERROR("function sampling failed");
+    PlusOne p1;
+    Array grid = BoundedGrid(0, 100, 100);
+    TransformedGrid tg(grid, p1);
+    if (std::fabs(tg.grid(0) - 0.0) > 1e-5) {
+        BOOST_ERROR("grid creation failed");
     }
 
-    curve.value(0) = 2.0;
-    if (std::fabs(curve.value(0) - 2.0) > 1e-5) {
-        BOOST_ERROR("curve value setting failed");
+    if (std::fabs(tg.transformedGrid(0) - 1.0) > 1e-5) {
+        BOOST_ERROR("grid transformation failed");
     }
-
-    Array& grid = curve.values();
-    grid[1] = 3.0;
-    if (std::fabs(curve.value(1) - 3.0) > 1e-5) {
-        BOOST_ERROR("curve value grid failed");
-    }
-
-
     QL_TEST_END
 }
 
-test_suite* SampledCurveTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("sampled curve tests");
-    suite->add(BOOST_TEST_CASE(&SampledCurveTest::testConstruction));
+test_suite* TransformedGridTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("transformed grid");
+    suite->add(BOOST_TEST_CASE(&TransformedGridTest::testConstruction));
     return suite;
 }
 
