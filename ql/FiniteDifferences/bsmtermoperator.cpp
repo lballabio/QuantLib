@@ -19,6 +19,7 @@
 
 #include <ql/FiniteDifferences/bsmtermoperator.hpp>
 #include <ql/Utilities/tracing.hpp>
+#include <ql/FiniteDifferences/pde.hpp>
 
 namespace QuantLib {
 
@@ -26,38 +27,21 @@ namespace QuantLib {
                         const Array& grid,
                         const boost::shared_ptr<BlackScholesProcess>& process,
                         Time residualTime)
-    : TridiagonalOperator(grid.size()) {
+        : TridiagonalOperator(grid.size()) {
         timeSetter_ = boost::shared_ptr<TimeSetter>(
-                                               new TimeSetter(grid, process));
+                                                    new TimeSetter(grid, process));
         setTime(residualTime);
     }
 
     BSMTermOperator::TimeSetter::TimeSetter(
                         const Array& grid,
                         const boost::shared_ptr<BlackScholesProcess>& process)
-    : grid_(grid), process_(process) {
+    : grid_(grid), pde_(process) {
     }
 
     void BSMTermOperator::TimeSetter::setTime(Time t,
                                               TridiagonalOperator& L) const {
-        if (std::fabs(t) < 1e-8) t = 0;
-        Real r = process_->riskFreeRate()->forwardRate(t,t,Continuous);
-        QL_TRACE("BSMTermOperator::TimeSetter " << r);
-        for (Size i=1; i < grid_.size() - 1; i++) {
-            Real sigma =
-                process_->diffusion(t, grid_.grid(i));
-            QL_TRACE("Sigma: " << i << sigma);
-            Real sigma2 = sigma * sigma;
-            Real nu = process_->drift(t, grid_.grid(i));
-            Real pd = -(sigma2/grid_.dxm(i)-nu)/
-                grid_.dx(i);
-            Real pu = -(sigma2/grid_.dxp(i)+nu)/
-                grid_.dx(i);
-            Real pm = sigma2/(grid_.dxm(i) * 
-                              grid_.dxp(i))+r;
-            L.setMidRow(i, pd,pm,pu);
-        }
+        pde_.generateOperator(t, grid_, L);
     }
-
 }
 

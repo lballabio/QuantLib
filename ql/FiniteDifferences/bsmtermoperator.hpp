@@ -27,6 +27,7 @@
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/transformedgrid.hpp>
+#include <ql/FiniteDifferences/pde.hpp>
 
 namespace QuantLib {
 
@@ -49,7 +50,7 @@ namespace QuantLib {
             void setTime(Time t, TridiagonalOperator&) const;
           private:
             LogGrid grid_;
-            boost::shared_ptr<BlackScholesProcess> process_;
+            BSMPde pde_;
         };
     };
 
