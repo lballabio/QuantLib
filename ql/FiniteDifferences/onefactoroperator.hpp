@@ -30,9 +30,10 @@
 
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/ShortRateModels/onefactormodel.hpp>
+#include <ql/Math/transformedgrid.hpp>
+#include <ql/FiniteDifferences/pdeshortrate.hpp>
 
 namespace QuantLib {
-
     //! Interest-rate single factor model differential operator
     /*! \ingroup findiff */
     class OneFactorOperator : public TridiagonalOperator {
@@ -43,22 +44,20 @@ namespace QuantLib {
             const boost::shared_ptr<OneFactorModel::ShortRateDynamics>&);
         virtual ~OneFactorOperator() {}
 
-        class SpecificTimeSetter;
+        class TimeSetter;
     };
 
-    class OneFactorOperator::SpecificTimeSetter
+    class OneFactorOperator::TimeSetter
         : public TridiagonalOperator::TimeSetter{
       public:
-        SpecificTimeSetter(
-            Real x0, Real dx,
-            const boost::shared_ptr<OneFactorModel::ShortRateDynamics>&);
-        virtual ~SpecificTimeSetter() {}
+        TimeSetter(const Array &grid,
+                   const boost::shared_ptr<OneFactorModel::ShortRateDynamics>&);
+        virtual ~TimeSetter() {}
         virtual void setTime(Time t, TridiagonalOperator& L) const;
       private:
-        Real x0_, dx_;
-        boost::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics_;
+        TransformedGrid grid_;
+        PdeShortRate pde_;
     };
-
 }
 
 #endif

@@ -19,7 +19,7 @@
 
 #include <ql/FiniteDifferences/bsmoperator.hpp>
 #include <ql/Math/transformedgrid.hpp>
-#include <ql/FiniteDifferences/pde.hpp>
+#include <ql/FiniteDifferences/pdebsm.hpp>
 
 namespace QuantLib {
     BSMOperator::BSMOperator(Size size, Real dx, Rate r,
@@ -39,7 +39,7 @@ namespace QuantLib {
                         Time residualTime)
     : TridiagonalOperator(grid.size()) {
         LogGrid logGrid(grid);
-        BSMPde pde(process);
+        PdeBSM pde(process);
         PdeConstantCoeff(pde, residualTime, 
                          process->stateVariable()->value());
         pde.generateOperator(residualTime, logGrid, *this);

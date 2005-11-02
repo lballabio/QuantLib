@@ -19,11 +19,14 @@ include_HEADERS = \
 	finitedifferencemodel.hpp \
 	impliciteuler.hpp \
 	mixedscheme.hpp\
-    onefactoroperator.hpp \
-    operatorfactory.hpp \
-    operatortraits.hpp \
-    parallelevolver.hpp \
-    shoutcondition.hpp \
+	onefactoroperator.hpp \
+	operatorfactory.hpp \
+	operatortraits.hpp \
+	parallelevolver.hpp \
+	pde.hpp \
+	pdebsm.hpp \
+	pdeshortrate.hpp \
+	shoutcondition.hpp \
 	stepcondition.hpp \
 	tridiagonaloperator.hpp \
 	valueatcenter.hpp

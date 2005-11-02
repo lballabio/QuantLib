@@ -27,39 +27,19 @@ namespace QuantLib {
           const Array& grid,
           const boost::shared_ptr<OneFactorModel::ShortRateDynamics>& process)
     : TridiagonalOperator(grid.size()) {
-        timeSetter_ = boost::shared_ptr<TridiagonalOperator::TimeSetter>(
-                 new SpecificTimeSetter(grid[0], grid[1] - grid[0], process));
+        timeSetter_ = boost::shared_ptr<TimeSetter>(
+                 new TimeSetter(grid, process));
     }
 
-    OneFactorOperator::SpecificTimeSetter::SpecificTimeSetter(
-         Real x0, Real dx,
+    OneFactorOperator::TimeSetter::TimeSetter(const Array &grid,
          const boost::shared_ptr<OneFactorModel::ShortRateDynamics>& dynamics)
-    : x0_(x0), dx_(dx), dynamics_(dynamics) {}
+    : grid_(grid), pde_(dynamics) {}
 
-    void OneFactorOperator::SpecificTimeSetter::setTime(
+    void OneFactorOperator::TimeSetter::setTime(
                                             Time t,
                                             TridiagonalOperator& op) const {
-        Size length = op.size();
-        for (Size i=0; i<length; i++) {
-            Real x = x0_ + dx_*i;
-
-            Rate r = dynamics_->shortRate(t, x);
-            Real mu = dynamics_->process()->drift(t, x);
-            Real sigma = dynamics_->process()->diffusion(t, x);
-
-            Real sigma2 = sigma*sigma;
-            Real pdown = (- sigma2/(2.0*dx_*dx_) ) + mu/(2.0*dx_);
-            Real pm    = (+ sigma2/(dx_*dx_) )     + r;
-            Real pup   = (- sigma2/(2.0*dx_*dx_) ) - mu/(2.0*dx_);
-            if (i==0)
-                op.setFirstRow(pm, pup);
-            else if (i==(length - 1))
-                op.setLastRow(pdown, pm);
-            else
-                op.setMidRow(i, pdown, pm, pup);
-        }
+        pde_.generateOperator(t, grid_, op);
     }
-
 }
 
 #endif
