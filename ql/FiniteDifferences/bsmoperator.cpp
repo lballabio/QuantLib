@@ -40,8 +40,8 @@ namespace QuantLib {
     : TridiagonalOperator(grid.size()) {
         LogGrid logGrid(grid);
         PdeBSM pde(process);
-        PdeConstantCoeff(pde, residualTime, 
-                         process->stateVariable()->value());
-        pde.generateOperator(residualTime, logGrid, *this);
+        PdeConstantCoeff cc(pde, residualTime, 
+                            process->stateVariable()->value());
+        cc.generateOperator(residualTime, logGrid, *this);
     }
 }

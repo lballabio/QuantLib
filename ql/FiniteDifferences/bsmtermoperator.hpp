@@ -36,24 +36,7 @@ namespace QuantLib {
 
         \test coefficients are tested against constant BSM operator
     */
-    class BSMTermOperator : public TridiagonalOperator {
-      public:
-        BSMTermOperator() {}
-        BSMTermOperator(const Array& grid,
-                        const boost::shared_ptr<BlackScholesProcess>&,
-                        Time residualTime = 0.0);
-      protected:
-        class TimeSetter : public TridiagonalOperator::TimeSetter {
-          public:
-            TimeSetter(const Array& grid,
-                       const boost::shared_ptr<BlackScholesProcess>&);
-            void setTime(Time t, TridiagonalOperator&) const;
-          private:
-            LogGrid grid_;
-            PdeBSM pde_;
-        };
-    };
-
+    typedef PdeOperator<PdeBSM> BSMTermOperator;
 }
 
 

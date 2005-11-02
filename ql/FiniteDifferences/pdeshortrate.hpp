@@ -30,10 +30,9 @@
 namespace QuantLib {
     class PdeShortRate : public PdeSecondOrderParabolic {
     public:
-        PdeShortRate(const 
-                     boost::shared_ptr<OneFactorModel::ShortRateDynamics>& 
-                     d) : 
-            dynamics_(d) {};
+        typedef boost::shared_ptr<OneFactorModel::ShortRateDynamics> argument_type;
+        typedef TransformedGrid grid_type;
+        PdeShortRate(const argument_type& d) : dynamics_(d) {};
         virtual Real diffusion(Time t, Real x) const {
             return dynamics_->process()->diffusion(t, x);
         }
@@ -44,7 +43,7 @@ namespace QuantLib {
             return dynamics_->shortRate(t,x);
         }
     private:
-        const boost::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics_;
+        const argument_type dynamics_;
     };
 }
 

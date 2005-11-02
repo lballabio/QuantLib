@@ -36,28 +36,7 @@
 namespace QuantLib {
     //! Interest-rate single factor model differential operator
     /*! \ingroup findiff */
-    class OneFactorOperator : public TridiagonalOperator {
-      public:
-        OneFactorOperator() {}
-        OneFactorOperator(
-            const Array& grid,
-            const boost::shared_ptr<OneFactorModel::ShortRateDynamics>&);
-        virtual ~OneFactorOperator() {}
-
-        class TimeSetter;
-    };
-
-    class OneFactorOperator::TimeSetter
-        : public TridiagonalOperator::TimeSetter{
-      public:
-        TimeSetter(const Array &grid,
-                   const boost::shared_ptr<OneFactorModel::ShortRateDynamics>&);
-        virtual ~TimeSetter() {}
-        virtual void setTime(Time t, TridiagonalOperator& L) const;
-      private:
-        TransformedGrid grid_;
-        PdeShortRate pde_;
-    };
+    typedef PdeOperator<PdeShortRate> OneFactorOperator;
 }
 
 #endif

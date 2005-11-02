@@ -34,8 +34,6 @@ include_HEADERS = \
 libFiniteDifferences_la_SOURCES = \
     boundarycondition.cpp \
     bsmoperator.cpp \
-    bsmtermoperator.cpp \
-    onefactoroperator.cpp \
     tridiagonaloperator.cpp
 
 noinst_LTLIBRARIES = libFiniteDifferences.la

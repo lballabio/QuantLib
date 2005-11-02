@@ -26,13 +26,13 @@
 #define quantlib_pdebsm_hpp
 
 #include <ql/FiniteDifferences/pde.hpp>
-#include <ql/Math/transformedgrid.hpp>
 
 namespace QuantLib {
     class PdeBSM : public PdeSecondOrderParabolic {
     public:
-        PdeBSM(const boost::shared_ptr<BlackScholesProcess>& process) : 
-            process_(process) {};
+        typedef boost::shared_ptr<BlackScholesProcess> argument_type;
+        typedef LogGrid grid_type;
+        PdeBSM(const argument_type & process) : process_(process) {};
         virtual Real diffusion(Time t, Real x) const {
             return process_->diffusion(t, x);
         }
@@ -44,7 +44,7 @@ namespace QuantLib {
             return process_->riskFreeRate()->forwardRate(t,t,Continuous);
         }
     private:
-        const boost::shared_ptr<BlackScholesProcess> process_;
+        const argument_type process_;
     };
 }
 

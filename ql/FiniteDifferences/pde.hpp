@@ -52,7 +52,7 @@ namespace QuantLib {
         }
     };
 
-    class PdeConstantCoeff : PdeSecondOrderParabolic  {
+    class PdeConstantCoeff : public PdeSecondOrderParabolic  {
     public:
         PdeConstantCoeff(const PdeSecondOrderParabolic & pde,
                          Time t, Real x) {
@@ -73,6 +73,35 @@ namespace QuantLib {
         Real diffusion_; 
         Real drift_;
         Real discount_;
+    };
+    
+    template <class PdeClass>
+    class GenericTimeSetter:public TridiagonalOperator::TimeSetter {
+    public:
+        GenericTimeSetter(const Array &grid,
+                          const typename PdeClass::argument_type &process) :
+            grid_(grid), pde_(process) {};
+        void setTime(Time t,
+                     TridiagonalOperator &L) const {
+            pde_.generateOperator(t, grid_, L);
+        }
+    private:
+        typename PdeClass::grid_type grid_;
+        PdeClass pde_;
+    };
+    
+    template <class PdeClass>
+    class PdeOperator:public TridiagonalOperator {
+    public:
+        PdeOperator(const Array& grid,
+                    const typename PdeClass::argument_type &process,
+                    Time residualTime = 0.0) : 
+            TridiagonalOperator(grid.size()) {
+            timeSetter_ = 
+                boost::shared_ptr<GenericTimeSetter<PdeClass> >(
+                     new GenericTimeSetter<PdeClass>(grid, process));
+            setTime(residualTime);
+        }
     };
 }
 
