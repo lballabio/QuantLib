@@ -61,6 +61,7 @@
 #include <ql/Math/svd.hpp>
 #include <ql/Math/symmetriceigenvalues.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
+#include <ql/Math/transformedgrid.hpp>
 #include <ql/Math/trapezoidintegral.hpp>
 
 

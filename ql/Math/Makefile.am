@@ -53,6 +53,7 @@ include_HEADERS = \
 	symmetriceigenvalues.hpp \
 	symmetricschurdecomposition.hpp \
 	tqreigendecomposition.hpp \
+	transformedgrid.hpp \
 	trapezoidintegral.hpp
 
 libMath_la_SOURCES = \
