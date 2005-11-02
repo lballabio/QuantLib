@@ -19,9 +19,9 @@
 
 #include <ql/FiniteDifferences/bsmoperator.hpp>
 #include <ql/Math/transformedgrid.hpp>
+#include <ql/FiniteDifferences/pde.hpp>
 
 namespace QuantLib {
-
     BSMOperator::BSMOperator(Size size, Real dx, Rate r,
                              Rate q, Volatility sigma)
     : TridiagonalOperator(size) {
@@ -39,21 +39,9 @@ namespace QuantLib {
                         Time residualTime)
     : TridiagonalOperator(grid.size()) {
         LogGrid logGrid(grid);
-        Real u = process->stateVariable()->value();
-        Volatility sigma =
-            process->diffusion(residualTime,u);
-        Rate r = process->riskFreeRate()->zeroRate(residualTime,Continuous);
-        Real sigma2 = sigma * sigma;
-        Real nu = process->drift(residualTime,u);
-        for (Size i=1; i < logGrid.size()-1; i++) {
-            Real dxm = logGrid.dxm(i);
-            Real dxp = logGrid.dxp(i);
-            Real dx = logGrid.dx(i);
-            Real pd = -(sigma2/dxm-nu)/dx;
-            Real pu = -(sigma2/dxp+nu)/dx;
-            Real pm = sigma2/(dxm*dxp)+r;
-            setMidRow(i, pd,pm,pu);
-        }
+        BSMPde pde(process);
+        PdeConstantCoeff(pde, residualTime, 
+                         process->stateVariable()->value());
+        pde.generateOperator(residualTime, logGrid, *this);
     }
-
 }

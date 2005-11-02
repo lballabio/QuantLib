@@ -28,6 +28,7 @@
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/FiniteDifferences/bsmoperator.hpp>
 #include <ql/FiniteDifferences/bsmtermoperator.hpp>
+#include <ql/FiniteDifferences/onefactoroperator.hpp>
 
 namespace QuantLib {
 
@@ -38,18 +39,23 @@ namespace QuantLib {
     */
     class OperatorFactory {
       public:
-      static TridiagonalOperator 
-      getOperator(const boost::shared_ptr<BlackScholesProcess> &process,
-		  const Array &grid, 
-		  Time residualTime,
-		  bool timeDependent) {
-	if (timeDependent)
-	  return
-	    BSMTermOperator(grid, process, residualTime);
-        else
-	  return
-	    BSMOperator(grid, process, residualTime);
-      }
+        static TridiagonalOperator 
+        getOperator(const boost::shared_ptr<BlackScholesProcess> &process,
+                    const Array &grid, 
+                    Time residualTime,
+                    bool timeDependent) {
+            if (timeDependent)
+                return
+                    BSMTermOperator(grid, process, residualTime);
+            else
+                return
+                    BSMOperator(grid, process, residualTime);
+        };
+        static TridiagonalOperator
+        getOperator(const boost::shared_ptr<OneFactorModel::ShortRateDynamics> &process,
+                    const Array &grid) {
+            return OneFactorOperator(grid, process);
+        }
     };
 }
 

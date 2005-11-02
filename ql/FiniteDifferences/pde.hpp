@@ -29,46 +29,69 @@
 #include <ql/Math/transformedgrid.hpp>
 
 namespace QuantLib {
-  class PdeSecondOrderParabolic {
-  public:
-      virtual ~PdeSecondOrderParabolic() {};
-      virtual Real diffusion(Time t, Real x) const = 0;
-      virtual Real drift(Time t, Real x) const = 0;
-      virtual Real discount(Time t, Real x) const = 0;
-      virtual void generateOperator(Time t,
-                                    const TransformedGrid &tg,
-                                    TridiagonalOperator &L) const {
-          for (Size i=1; i < tg.size() - 1; i++) {
-              Real sigma = diffusion(t, tg.grid(i));
-              Real nu = drift(t, tg.grid(i));
-              Real r = discount(t, tg.grid(i));
-              Real sigma2 = sigma * sigma;
-              
-              Real pd = -(sigma2/tg.dxm(i)-nu)/ tg.dx(i);
-              Real pu = -(sigma2/tg.dxp(i)+nu)/ tg.dx(i);
-              Real pm = sigma2/(tg.dxm(i) * tg.dxp(i))+r;
-              L.setMidRow(i, pd,pm,pu);
-          }
-    }
-  };
+    class PdeSecondOrderParabolic {
+    public:
+        virtual ~PdeSecondOrderParabolic() {};
+        virtual Real diffusion(Time t, Real x) const = 0;
+        virtual Real drift(Time t, Real x) const = 0;
+        virtual Real discount(Time t, Real x) const = 0;
+        virtual void generateOperator(Time t,
+                                      const TransformedGrid &tg,
+                                      TridiagonalOperator &L) const {
+            for (Size i=1; i < tg.size() - 1; i++) {
+                Real sigma = diffusion(t, tg.grid(i));
+                Real nu = drift(t, tg.grid(i));
+                Real r = discount(t, tg.grid(i));
+                Real sigma2 = sigma * sigma;
+                
+                Real pd = -(sigma2/tg.dxm(i)-nu)/ tg.dx(i);
+                Real pu = -(sigma2/tg.dxp(i)+nu)/ tg.dx(i);
+                Real pm = sigma2/(tg.dxm(i) * tg.dxp(i))+r;
+                L.setMidRow(i, pd,pm,pu);
+            }
+        }
+    };
     
-  class BSMPde : public PdeSecondOrderParabolic {
-  public:
-    BSMPde(const boost::shared_ptr<BlackScholesProcess>& process) : 
-      process_(process) {};
-    Real diffusion(Time t, Real x) const {
-      return process_->diffusion(t, x);
-    }
-    Real drift(Time t, Real x) const {
-      return process_->drift(t, x);
-    }
-    Real discount(Time t, Real x) const {
-      if (std::fabs(t) < 1e-8) t = 0;
-      return process_->riskFreeRate()->forwardRate(t,t,Continuous);
-    }
-  private:
-    const boost::shared_ptr<BlackScholesProcess> process_;
-  };
+    class BSMPde : public PdeSecondOrderParabolic {
+    public:
+        BSMPde(const boost::shared_ptr<BlackScholesProcess>& process) : 
+            process_(process) {};
+        virtual Real diffusion(Time t, Real x) const {
+            return process_->diffusion(t, x);
+        }
+        virtual Real drift(Time t, Real x) const {
+            return process_->drift(t, x);
+        }
+        virtual Real discount(Time t, Real x) const {
+            if (std::fabs(t) < 1e-8) t = 0;
+            return process_->riskFreeRate()->forwardRate(t,t,Continuous);
+        }
+    private:
+        const boost::shared_ptr<BlackScholesProcess> process_;
+    };
+
+    class PdeConstantCoeff : PdeSecondOrderParabolic  {
+    public:
+        PdeConstantCoeff(const PdeSecondOrderParabolic & pde,
+                         Time t, Real x) {
+          diffusion_ = pde.diffusion(t, x);
+          drift_ = pde.drift(t, x);
+          discount_ = pde.discount(t, x);
+      }
+      virtual Real diffusion(Time t, Real x) const {
+          return diffusion_;
+      }
+      virtual Real drift(Time t, Real x) const {
+          return drift_;
+      }
+      virtual Real discount(Time t, Real x) const {
+          return discount_;
+      }
+    private:
+        Real diffusion_; 
+        Real drift_;
+        Real discount_;
+    };
 }
 
 
