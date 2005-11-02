@@ -1,7 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 StatPro Italia srl
  Copyright (C) 2005 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
@@ -43,7 +42,7 @@ namespace QuantLib {
                 Real nu = drift(t, tg.grid(i));
                 Real r = discount(t, tg.grid(i));
                 Real sigma2 = sigma * sigma;
-                
+
                 Real pd = -(sigma2/tg.dxm(i)-nu)/ tg.dx(i);
                 Real pu = -(sigma2/tg.dxp(i)+nu)/ tg.dx(i);
                 Real pm = sigma2/(tg.dxm(i) * tg.dxp(i))+r;
@@ -70,11 +69,11 @@ namespace QuantLib {
           return discount_;
       }
     private:
-        Real diffusion_; 
+        Real diffusion_;
         Real drift_;
         Real discount_;
     };
-    
+
     template <class PdeClass>
     class GenericTimeSetter:public TridiagonalOperator::TimeSetter {
     public:
@@ -89,15 +88,15 @@ namespace QuantLib {
         typename PdeClass::grid_type grid_;
         PdeClass pde_;
     };
-    
+
     template <class PdeClass>
     class PdeOperator:public TridiagonalOperator {
     public:
         PdeOperator(const Array& grid,
                     const typename PdeClass::argument_type &process,
-                    Time residualTime = 0.0) : 
+                    Time residualTime = 0.0) :
             TridiagonalOperator(grid.size()) {
-            timeSetter_ = 
+            timeSetter_ =
                 boost::shared_ptr<GenericTimeSetter<PdeClass> >(
                      new GenericTimeSetter<PdeClass>(grid, process));
             setTime(residualTime);

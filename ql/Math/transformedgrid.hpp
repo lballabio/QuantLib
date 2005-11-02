@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2002, 2003 Roman Gitlin
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2005 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,7 +31,7 @@
 namespace QuantLib {
 
     //! transformed grid
-    /*! This package encapuslates an array of grid points.  It is used primarily 
+    /*! This package encapuslates an array of grid points.  It is used primarily
      in PDE calculations.
     */
     class TransformedGrid {
@@ -52,7 +51,7 @@ namespace QuantLib {
             grid_(grid), transformedGrid_(grid.size()),
             dxm_(grid.size()), dxp_(grid.size()),
             dx_(grid.size()){
-            std::transform(grid_.begin(), 
+            std::transform(grid_.begin(),
                            grid_.end(),
                            transformedGrid_.begin(),
                            func);
@@ -67,14 +66,14 @@ namespace QuantLib {
         const Array &dxmArray() const { return dxm_;}
         const Array &dxpArray() const { return dxp_;}
         const Array &dxArray() const { return dx_;}
-        
+
         Real grid(Size i) const { return grid_[i];}
         Real transformedGrid(Size i) const { return transformedGrid_[i];}
         Real dxm(Size i) const { return dxm_[i];}
         Real dxp(Size i) const { return dxp_[i];}
         Real dx(Size i) const { return dx_[i];}
         Size size() const {return grid_.size();}
-        
+
     protected:
         Array grid_;
         Array transformedGrid_;
@@ -82,7 +81,7 @@ namespace QuantLib {
         Array dxp_;
         Array dx_;
     };
-    
+
     class LogGrid : public TransformedGrid {
     public:
         LogGrid(const Array &grid) :
