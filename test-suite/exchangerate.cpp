@@ -28,15 +28,15 @@ void ExchangeRateTest::testDirect() {
 
     BOOST_MESSAGE("Testing direct exchange rates...");
 
-    ExchangeRate eur_usd = ExchangeRate(EURCurrency(), USDCurrency(), 1.2042);
+    ExchangeRate eur_usd = ExchangeRate(EUR(), USD(), 1.2042);
 
-    Money m1(50000.0, EURCurrency());
-    Money m2(100000.0, USDCurrency());
+    Money m1(50000.0, EUR());
+    Money m2(100000.0, USD());
 
     Money::conversionType = Money::NoConversion;
 
     Money calculated = eur_usd.exchange(m1);
-    Money expected(m1.value()*eur_usd.rate(), USDCurrency());
+    Money expected(m1.value()*eur_usd.rate(), USD());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -45,7 +45,7 @@ void ExchangeRateTest::testDirect() {
     }
 
     calculated = eur_usd.exchange(m2);
-    expected = Money(m2.value()/eur_usd.rate(), EURCurrency());
+    expected = Money(m2.value()/eur_usd.rate(), EUR());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -58,18 +58,18 @@ void ExchangeRateTest::testDerived() {
 
     BOOST_MESSAGE("Testing derived exchange rates...");
 
-    ExchangeRate eur_usd = ExchangeRate(EURCurrency(), USDCurrency(), 1.2042);
-    ExchangeRate eur_gbp = ExchangeRate(EURCurrency(), GBPCurrency(), 0.6612);
+    ExchangeRate eur_usd = ExchangeRate(EUR(), USD(), 1.2042);
+    ExchangeRate eur_gbp = ExchangeRate(EUR(), GBP(), 0.6612);
 
     ExchangeRate derived = ExchangeRate::chain(eur_usd, eur_gbp);
 
-    Money m1(50000.0, GBPCurrency());
-    Money m2(100000.0, USDCurrency());
+    Money m1(50000.0, GBP());
+    Money m2(100000.0, USD());
 
     Money::conversionType = Money::NoConversion;
 
     Money calculated = derived.exchange(m1);
-    Money expected(m1.value()*eur_usd.rate()/eur_gbp.rate(), USDCurrency());
+    Money expected(m1.value()*eur_usd.rate()/eur_gbp.rate(), USD());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -78,7 +78,7 @@ void ExchangeRateTest::testDerived() {
     }
 
     calculated = derived.exchange(m2);
-    expected = Money(m2.value()*eur_gbp.rate()/eur_usd.rate(), GBPCurrency());
+    expected = Money(m2.value()*eur_gbp.rate()/eur_usd.rate(), GBP());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -94,23 +94,21 @@ void ExchangeRateTest::testDirectLookup() {
     ExchangeRateManager& rateManager = ExchangeRateManager::instance();
     rateManager.clear();
 
-    ExchangeRate eur_usd1 = ExchangeRate(EURCurrency(), USDCurrency(), 1.1983);
-    ExchangeRate eur_usd2 = ExchangeRate(USDCurrency(), EURCurrency(),
-                                         1.0/1.2042);
+    ExchangeRate eur_usd1 = ExchangeRate(EUR(), USD(), 1.1983);
+    ExchangeRate eur_usd2 = ExchangeRate(USD(), EUR(), 1.0/1.2042);
     rateManager.add(eur_usd1, Date(4,August,2004));
     rateManager.add(eur_usd2, Date(5,August,2004));
 
-    Money m1(50000.0, EURCurrency());
-    Money m2(100000.0, USDCurrency());
+    Money m1(50000.0, EUR());
+    Money m2(100000.0, USD());
 
     Money::conversionType = Money::NoConversion;
 
-    ExchangeRate eur_usd = rateManager.lookup(EURCurrency(),
-                                              USDCurrency(),
+    ExchangeRate eur_usd = rateManager.lookup(EUR(), USD(),
                                               Date(4,August,2004),
                                               ExchangeRate::Direct);
     Money calculated = eur_usd.exchange(m1);
-    Money expected(m1.value()*eur_usd1.rate(), USDCurrency());
+    Money expected(m1.value()*eur_usd1.rate(), USD());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -118,12 +116,11 @@ void ExchangeRateTest::testDirectLookup() {
                    << "    calculated: " << calculated);
     }
 
-    eur_usd = rateManager.lookup(EURCurrency(),
-                                 USDCurrency(),
+    eur_usd = rateManager.lookup(EUR(), USD(),
                                  Date(5,August,2004),
                                  ExchangeRate::Direct);
     calculated = eur_usd.exchange(m1);
-    expected = Money(m1.value()/eur_usd2.rate(), USDCurrency());
+    expected = Money(m1.value()/eur_usd2.rate(), USD());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -131,13 +128,12 @@ void ExchangeRateTest::testDirectLookup() {
                    << "    calculated: " << calculated);
     }
 
-    ExchangeRate usd_eur = rateManager.lookup(USDCurrency(),
-                                              EURCurrency(),
+    ExchangeRate usd_eur = rateManager.lookup(USD(), EUR(),
                                               Date(4,August,2004),
                                               ExchangeRate::Direct);
 
     calculated = usd_eur.exchange(m2);
-    expected = Money(m2.value()/eur_usd1.rate(), EURCurrency());
+    expected = Money(m2.value()/eur_usd1.rate(), EUR());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -145,13 +141,12 @@ void ExchangeRateTest::testDirectLookup() {
                    << "    calculated: " << calculated);
     }
 
-    usd_eur = rateManager.lookup(USDCurrency(),
-                                 EURCurrency(),
+    usd_eur = rateManager.lookup(USD(), EUR(),
                                  Date(5,August,2004),
                                  ExchangeRate::Direct);
 
     calculated = usd_eur.exchange(m2);
-    expected = Money(m2.value()*eur_usd2.rate(), EURCurrency());
+    expected = Money(m2.value()*eur_usd2.rate(), EUR());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -167,21 +162,20 @@ void ExchangeRateTest::testTriangulatedLookup() {
     ExchangeRateManager& rateManager = ExchangeRateManager::instance();
     rateManager.clear();
 
-    ExchangeRate eur_usd1 = ExchangeRate(EURCurrency(), USDCurrency(), 1.1983);
-    ExchangeRate eur_usd2 = ExchangeRate(EURCurrency(), USDCurrency(), 1.2042);
+    ExchangeRate eur_usd1 = ExchangeRate(EUR(), USD(), 1.1983);
+    ExchangeRate eur_usd2 = ExchangeRate(EUR(), USD(), 1.2042);
     rateManager.add(eur_usd1, Date(4,August,2004));
     rateManager.add(eur_usd2, Date(5,August,2004));
 
-    Money m1(50000000.0, ITLCurrency());
-    Money m2(100000.0, USDCurrency());
+    Money m1(50000000.0, ITL());
+    Money m2(100000.0, USD());
 
     Money::conversionType = Money::NoConversion;
 
-    ExchangeRate itl_usd = rateManager.lookup(ITLCurrency(),
-                                              USDCurrency(),
+    ExchangeRate itl_usd = rateManager.lookup(ITL(), USD(),
                                               Date(4,August,2004));
     Money calculated = itl_usd.exchange(m1);
-    Money expected(m1.value()*eur_usd1.rate()/1936.27, USDCurrency());
+    Money expected(m1.value()*eur_usd1.rate()/1936.27, USD());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -189,11 +183,10 @@ void ExchangeRateTest::testTriangulatedLookup() {
                    << "    calculated: " << calculated);
     }
 
-    itl_usd = rateManager.lookup(ITLCurrency(),
-                                 USDCurrency(),
+    itl_usd = rateManager.lookup(ITL(), USD(),
                                  Date(5,August,2004));
     calculated = itl_usd.exchange(m1);
-    expected = Money(m1.value()*eur_usd2.rate()/1936.27, USDCurrency());
+    expected = Money(m1.value()*eur_usd2.rate()/1936.27, USD());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -201,12 +194,11 @@ void ExchangeRateTest::testTriangulatedLookup() {
                    << "    calculated: " << calculated);
     }
 
-    ExchangeRate usd_itl = rateManager.lookup(USDCurrency(),
-                                              ITLCurrency(),
+    ExchangeRate usd_itl = rateManager.lookup(USD(), ITL(),
                                               Date(4,August,2004));
 
     calculated = usd_itl.exchange(m2);
-    expected = Money(m2.value()*1936.27/eur_usd1.rate(), ITLCurrency());
+    expected = Money(m2.value()*1936.27/eur_usd1.rate(), ITL());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -214,12 +206,11 @@ void ExchangeRateTest::testTriangulatedLookup() {
                    << "    calculated: " << calculated);
     }
 
-    usd_itl = rateManager.lookup(USDCurrency(),
-                                 ITLCurrency(),
+    usd_itl = rateManager.lookup(USD(), ITL(),
                                  Date(5,August,2004));
 
     calculated = usd_itl.exchange(m2);
-    expected = Money(m2.value()*1936.27/eur_usd2.rate(), ITLCurrency());
+    expected = Money(m2.value()*1936.27/eur_usd2.rate(), ITL());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -232,51 +223,49 @@ void ExchangeRateTest::testSmartLookup() {
 
     BOOST_MESSAGE("Testing lookup of derived exchange rates...");
 
-    Currency EUR = EURCurrency(), USD = USDCurrency(), GBP = GBPCurrency(),
-             CHF = CHFCurrency(), SEK = SEKCurrency(), JPY = JPYCurrency();
-
     ExchangeRateManager& rateManager = ExchangeRateManager::instance();
     rateManager.clear();
 
-    ExchangeRate eur_usd1 = ExchangeRate(EUR, USD, 1.1983);
-    ExchangeRate eur_usd2 = ExchangeRate(USD, EUR, 1.0/1.2042);
+    ExchangeRate eur_usd1 = ExchangeRate(EUR(), USD(), 1.1983);
+    ExchangeRate eur_usd2 = ExchangeRate(USD(), EUR(), 1.0/1.2042);
     rateManager.add(eur_usd1, Date(4,August,2004));
     rateManager.add(eur_usd2, Date(5,August,2004));
 
-    ExchangeRate eur_gbp1 = ExchangeRate(GBP, EUR, 1.0/0.6596);
-    ExchangeRate eur_gbp2 = ExchangeRate(EUR, GBP, 0.6612);
+    ExchangeRate eur_gbp1 = ExchangeRate(GBP(), EUR(), 1.0/0.6596);
+    ExchangeRate eur_gbp2 = ExchangeRate(EUR(), GBP(), 0.6612);
     rateManager.add(eur_gbp1, Date(4,August,2004));
     rateManager.add(eur_gbp2, Date(5,August,2004));
 
-    ExchangeRate usd_chf1 = ExchangeRate(USD, CHF, 1.2847);
-    ExchangeRate usd_chf2 = ExchangeRate(CHF, USD, 1.0/1.2774);
+    ExchangeRate usd_chf1 = ExchangeRate(USD(), CHF(), 1.2847);
+    ExchangeRate usd_chf2 = ExchangeRate(CHF(), USD(), 1.0/1.2774);
     rateManager.add(usd_chf1, Date(4,August,2004));
     rateManager.add(usd_chf2, Date(5,August,2004));
 
-    ExchangeRate chf_sek1 = ExchangeRate(SEK, CHF, 0.1674);
-    ExchangeRate chf_sek2 = ExchangeRate(CHF, SEK, 1.0/0.1677);
+    ExchangeRate chf_sek1 = ExchangeRate(SEK(), CHF(), 0.1674);
+    ExchangeRate chf_sek2 = ExchangeRate(CHF(), SEK(), 1.0/0.1677);
     rateManager.add(chf_sek1, Date(4,August,2004));
     rateManager.add(chf_sek2, Date(5,August,2004));
 
-    ExchangeRate jpy_sek1 = ExchangeRate(SEK, JPY, 14.5450);
-    ExchangeRate jpy_sek2 = ExchangeRate(JPY, SEK, 1.0/14.6110);
+    ExchangeRate jpy_sek1 = ExchangeRate(SEK(), JPY(), 14.5450);
+    ExchangeRate jpy_sek2 = ExchangeRate(JPY(), SEK(), 1.0/14.6110);
     rateManager.add(jpy_sek1, Date(4,August,2004));
     rateManager.add(jpy_sek2, Date(5,August,2004));
 
-    Money m1(100000.0, USD);
-    Money m2(100000.0, EUR);
-    Money m3(100000.0, GBP);
-    Money m4(100000.0, CHF);
-    Money m5(100000.0, SEK);
-    Money m6(100000.0, JPY);
+    Money m1(100000.0, USD());
+    Money m2(100000.0, EUR());
+    Money m3(100000.0, GBP());
+    Money m4(100000.0, CHF());
+    Money m5(100000.0, SEK());
+    Money m6(100000.0, JPY());
 
     Money::conversionType = Money::NoConversion;
 
     // two-rate chain
 
-    ExchangeRate usd_sek = rateManager.lookup(USD, SEK, Date(4,August,2004));
+    ExchangeRate usd_sek = rateManager.lookup(USD(), SEK(),
+                                              Date(4,August,2004));
     Money calculated = usd_sek.exchange(m1);
-    Money expected(m1.value()*usd_chf1.rate()/chf_sek1.rate(), SEK);
+    Money expected(m1.value()*usd_chf1.rate()/chf_sek1.rate(), SEK());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -284,9 +273,9 @@ void ExchangeRateTest::testSmartLookup() {
                    << "    calculated: " << calculated);
     }
 
-    usd_sek = rateManager.lookup(SEK, USD, Date(5,August,2004));
+    usd_sek = rateManager.lookup(SEK(), USD(), Date(5,August,2004));
     calculated = usd_sek.exchange(m5);
-    expected = Money(m5.value()*usd_chf2.rate()/chf_sek2.rate(), USD);
+    expected = Money(m5.value()*usd_chf2.rate()/chf_sek2.rate(), USD());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -296,10 +285,11 @@ void ExchangeRateTest::testSmartLookup() {
 
     // three-rate chain
 
-    ExchangeRate eur_sek = rateManager.lookup(EUR, SEK, Date(4,August,2004));
+    ExchangeRate eur_sek = rateManager.lookup(EUR(), SEK(),
+                                              Date(4,August,2004));
     calculated = eur_sek.exchange(m2);
     expected = Money(m2.value()*eur_usd1.rate()
-                               *usd_chf1.rate()/chf_sek1.rate(), SEK);
+                               *usd_chf1.rate()/chf_sek1.rate(), SEK());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -307,10 +297,10 @@ void ExchangeRateTest::testSmartLookup() {
                    << "    calculated: " << calculated);
     }
 
-    eur_sek = rateManager.lookup(SEK, EUR, Date(5,August,2004));
+    eur_sek = rateManager.lookup(SEK(), EUR(), Date(5,August,2004));
     calculated = eur_sek.exchange(m5);
     expected = Money(m5.value()*eur_usd2.rate()
-                               *usd_chf2.rate()/chf_sek2.rate(), EUR);
+                               *usd_chf2.rate()/chf_sek2.rate(), EUR());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -320,10 +310,11 @@ void ExchangeRateTest::testSmartLookup() {
 
     // four-rate chain
 
-    ExchangeRate eur_jpy = rateManager.lookup(EUR, JPY, Date(4,August,2004));
+    ExchangeRate eur_jpy = rateManager.lookup(EUR(), JPY(),
+                                              Date(4,August,2004));
     calculated = eur_jpy.exchange(m2);
     expected = Money(m2.value()*eur_usd1.rate()*usd_chf1.rate()
-                               *jpy_sek1.rate()/chf_sek1.rate(), JPY);
+                               *jpy_sek1.rate()/chf_sek1.rate(), JPY());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -331,10 +322,10 @@ void ExchangeRateTest::testSmartLookup() {
                    << "    calculated: " << calculated);
     }
 
-    eur_jpy = rateManager.lookup(JPY, EUR, Date(5,August,2004));
+    eur_jpy = rateManager.lookup(JPY(), EUR(), Date(5,August,2004));
     calculated = eur_jpy.exchange(m6);
     expected = Money(m6.value()*jpy_sek2.rate()*eur_usd2.rate()
-                               *usd_chf2.rate()/chf_sek2.rate(), EUR);
+                               *usd_chf2.rate()/chf_sek2.rate(), EUR());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -344,10 +335,11 @@ void ExchangeRateTest::testSmartLookup() {
 
     // five-rate chain
 
-    ExchangeRate gbp_jpy = rateManager.lookup(GBP, JPY, Date(4,August,2004));
+    ExchangeRate gbp_jpy = rateManager.lookup(GBP(), JPY(),
+                                              Date(4,August,2004));
     calculated = gbp_jpy.exchange(m3);
     expected = Money(m3.value()*eur_gbp1.rate()*eur_usd1.rate()*usd_chf1.rate()
-                               *jpy_sek1.rate()/chf_sek1.rate(), JPY);
+                               *jpy_sek1.rate()/chf_sek1.rate(), JPY());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -355,10 +347,10 @@ void ExchangeRateTest::testSmartLookup() {
                    << "    calculated: " << calculated);
     }
 
-    gbp_jpy = rateManager.lookup(JPY, GBP, Date(5,August,2004));
+    gbp_jpy = rateManager.lookup(JPY(), GBP(), Date(5,August,2004));
     calculated = gbp_jpy.exchange(m6);
     expected = Money(m6.value()*jpy_sek2.rate()*eur_usd2.rate()*usd_chf2.rate()
-                               *eur_gbp2.rate()/chf_sek2.rate(), GBP);
+                               *eur_gbp2.rate()/chf_sek2.rate(), GBP());
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"

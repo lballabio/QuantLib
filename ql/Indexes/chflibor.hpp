@@ -45,7 +45,7 @@ namespace QuantLib {
         CHFLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Libor("CHFLibor", n, units, 2, CHFCurrency(),
+        : Libor("CHFLibor", n, units, 2, CHF(),
                 UnitedKingdom(UnitedKingdom::Exchange), Zurich(),
                 ModifiedFollowing, dc, h) {}
     };

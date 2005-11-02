@@ -44,7 +44,7 @@ namespace QuantLib {
         Cdor(Integer n, TimeUnit units,
              const Handle<YieldTermStructure>& h,
              const DayCounter& dc = Actual360())
-        : Xibor("CDOR", n, units, 2, CADCurrency(),
+        : Xibor("CDOR", n, units, 2, CAD(),
                 Toronto(), ModifiedFollowing, dc, h) {}
     };
 

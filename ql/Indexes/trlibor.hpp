@@ -41,7 +41,7 @@ namespace QuantLib {
         TRLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Xibor("TRLibor", n, units, 0, TRYCurrency(),
+        : Xibor("TRLibor", n, units, 0, TRY(),
                 Istanbul(),
                 ModifiedFollowing, dc, h) {}
     };

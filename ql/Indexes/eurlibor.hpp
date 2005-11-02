@@ -44,7 +44,7 @@ namespace QuantLib {
         EURLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Libor("EURLibor", n, units, 2, EURCurrency(),
+        : Libor("EURLibor", n, units, 2, EUR(),
                 TARGET(), TARGET(),
                 ModifiedFollowing, dc, h) {}
     };

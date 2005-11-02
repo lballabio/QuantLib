@@ -42,7 +42,7 @@ namespace QuantLib {
         NZDLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Libor("NZDLibor", n, units, 2, NZDCurrency(),
+        : Libor("NZDLibor", n, units, 2, NZD(),
                 UnitedKingdom(UnitedKingdom::Exchange), Wellington(),
                 ModifiedFollowing, dc, h) {}
     };

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,9 +37,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class AUDCurrency : public Currency {
+    class AUD : public Currency {
       public:
-        AUDCurrency() {
+        AUD() {
             static boost::shared_ptr<Data> audData(
                                       new Data("Australian dollar", "AUD", 36,
                                                "A$", "", 100,
@@ -48,6 +48,10 @@ namespace QuantLib {
             data_ = audData;
         }
     };
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to AUD */
+    typedef AUD AUDCurrency;
+    #endif
 
     //! New Zealand dollar
     /*! The ISO three-letter code is NZD; the numeric code is 554.
@@ -55,9 +59,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class NZDCurrency : public Currency {
+    class NZD : public Currency {
       public:
-        NZDCurrency() {
+        NZD() {
             static boost::shared_ptr<Data> nzdData(
                                     new Data("New Zealand dollar", "NZD", 554,
                                              "NZ$", "", 100,
@@ -66,6 +70,10 @@ namespace QuantLib {
             data_ = nzdData;
         }
     };
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to NZD */
+    typedef NZD NZDCurrency;
+    #endif
 
 }
 

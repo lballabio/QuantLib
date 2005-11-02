@@ -42,7 +42,7 @@ namespace QuantLib {
         DKKLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Libor("DKKLibor", n, units, 2, DKKCurrency(),
+        : Libor("DKKLibor", n, units, 2, DKK(),
                 UnitedKingdom(UnitedKingdom::Exchange), Copenhagen(),
                 ModifiedFollowing, dc, h) {}
     };
