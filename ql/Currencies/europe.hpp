@@ -50,7 +50,7 @@ namespace QuantLib {
     };
     #ifndef QL_DISABLE_DEPRECATED
     /*! \deprecated renamed to BLG */
-    typedef BLG BLGCurrency;
+    typedef BGL BGLCurrency;
     #endif
 
     //! Belarussian ruble
