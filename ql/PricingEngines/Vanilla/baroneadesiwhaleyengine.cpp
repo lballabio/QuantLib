@@ -75,7 +75,7 @@ namespace QuantLib {
                                                   cumNormalDist(d1)) * Si / Q;
             bi =  dividendDiscount * cumNormalDist(d1) * (1 - 1/Q) +
                 (1 - dividendDiscount *
-                 cumNormalDist(d1) / std::sqrt(variance)) / Q;
+                 cumNormalDist.derivative(d1) / std::sqrt(variance)) / Q;
             while (std::fabs(LHS - RHS)/payoff->strike() > tolerance) {
                 Si = (payoff->strike() + RHS - bi * Si) / (1 - bi);
                 forwardSi = Si * dividendDiscount / riskFreeDiscount;
@@ -110,7 +110,7 @@ namespace QuantLib {
                                    variance, payoff).value() -
                     (1 - dividendDiscount * cumNormalDist(-d1)) * Si / Q;
                 bi = -dividendDiscount * cumNormalDist(-d1) * (1 - 1 / Q)
-                    - (1 + dividendDiscount * cumNormalDist(-d1)
+                    - (1 + dividendDiscount * cumNormalDist.derivative(-d1)
                        / std::sqrt(variance)) / Q;
             }
             break;
