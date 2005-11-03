@@ -34,38 +34,6 @@ namespace QuantLib {
 #endif
 
 
-// This will be included in the library after a bit of redesign
-class WeightedPayoff {
-    public:
-        WeightedPayoff(Option::Type type,
-               Time maturity,
-               Real strike,
-               Real s0,
-               Volatility sigma,
-               Rate r,
-               Rate q)
-        : type_(type), maturity_(maturity),
-        strike_(strike),
-        s0_(s0),
-        sigma_(sigma),r_(r), q_(q){}
-
-        Real operator()(Real x) const {
-           Real nuT = (r_-q_-0.5*sigma_*sigma_)*maturity_;
-           return std::exp(-r_*maturity_)
-               *PlainVanillaPayoff(type_, strike_)(s0_*std::exp(x))
-               *std::exp(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))
-               /std::sqrt(2.0*M_PI*sigma_*sigma_*maturity_);
-        }
-private:
-    Option::Type type_;
-    Time maturity_;
-    Real strike_;
-    Real s0_;
-    Volatility sigma_;
-    Rate r_,q_;
-};
-
-
 int main(int, char* [])
 {
     try {
@@ -73,8 +41,6 @@ int main(int, char* [])
 
         boost::timer timer;
         std::cout << std::endl;
-
-        std::cout << "Using " << QL_VERSION << std::endl << std::endl;
 
         // our option
         Option::Type type(Option::Call);
@@ -89,12 +55,10 @@ int main(int, char* [])
 
         Date exerciseDate(17, May, 1999);
         DayCounter dayCounter = Actual365Fixed();
-        Time maturity = dayCounter.yearFraction(settlementDate,
-                                                exerciseDate);
 
         Volatility volatility = 0.10;
-        std::cout << "option type = "  << type << std::endl;
-        std::cout << "Time to maturity = "        << maturity
+        std::cout << "Option type = "  << type << std::endl;
+        std::cout << "Exercise date = "        << exerciseDate
                   << std::endl;
         std::cout << "Underlying price = "        << underlying
                   << std::endl;
@@ -108,18 +72,8 @@ int main(int, char* [])
                   << std::endl;
         std::cout << std::endl;
 
-        Date midlifeDate(19, November, 1998);
-        std::vector<Date> exDates(2);
-        exDates[0]=midlifeDate;
-        exDates[1]=exerciseDate;
-
         boost::shared_ptr<Exercise> exercise(
                                           new EuropeanExercise(exerciseDate));
-        boost::shared_ptr<Exercise> amExercise(
-                                          new AmericanExercise(settlementDate,
-                                                               exerciseDate));
-        boost::shared_ptr<Exercise> berExercise(new BermudanExercise(exDates));
-
 
         Handle<Quote> underlyingH(
             boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
@@ -135,48 +89,13 @@ int main(int, char* [])
             boost::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(settlementDate, volatility, dayCounter)));
 
-        std::vector<Date> dates(4);
-        dates[0] = settlementDate + 1*Months;
-        dates[1] = exerciseDate;
-        dates[2] = exerciseDate + 6*Months;
-        dates[3] = exerciseDate + 12*Months;
-        std::vector<Real> strikes(4);
-        strikes[0] = underlying*0.9;
-        strikes[1] = underlying;
-        strikes[2] = underlying*1.1;
-        strikes[3] = underlying*1.2;
-
-        Matrix vols(4,4);
-        vols[0][0] = volatility*1.1;
-                     vols[0][1] = volatility;
-                                  vols[0][2] = volatility*0.9;
-                                               vols[0][3] = volatility*0.8;
-        vols[1][0] = volatility*1.1;
-                     vols[1][1] = volatility;
-                                  vols[1][2] = volatility*0.9;
-                                               vols[1][3] = volatility*0.8;
-        vols[2][0] = volatility*1.1;
-                     vols[2][1] = volatility;
-                                  vols[2][2] = volatility*0.9;
-                                               vols[2][3] = volatility*0.8;
-        vols[3][0] = volatility*1.1;
-                     vols[3][1] = volatility;
-                                  vols[3][2] = volatility*0.9;
-                                               vols[3][3] = volatility*0.8;
-
-        Handle<BlackVolTermStructure> blackSurface(
-            boost::shared_ptr<BlackVolTermStructure>(
-                new BlackVarianceSurface(settlementDate, dates,
-                                         strikes, vols, dayCounter)));
-
-
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(type, strike));
 
         boost::shared_ptr<BlackScholesProcess> stochasticProcess(new
-            BlackScholesProcess(underlyingH, flatDividendTS,
+            BlackScholesProcess(underlyingH,
+                                flatDividendTS,
                                 flatTermStructure,
-                                //  blackSurface
                                 flatVolTS));
 
         EuropeanOption option(stochasticProcess, payoff, exercise);
@@ -185,11 +104,16 @@ int main(int, char* [])
         std::string method;
         Real value, discrepancy, rightValue, relativeDiscrepancy;
 
-        std::cout << std::endl << std::endl;
+        std::cout << std::endl;
 
         // write column headings
-        std::cout << "Method\t\tValue\t\tEstimatedError\tDiscrepancy"
-                     "\tRel. Discr." << std::endl;
+        Size widths[] = { 19, 13, 16, 14, 14 };
+        std::cout << std::setw(widths[0]) << std::left << "Method"
+                  << std::setw(widths[1]) << std::left << "Value"
+                  << std::setw(widths[2]) << std::left << "Error estimate"
+                  << std::setw(widths[3]) << std::left << "Discrepancy"
+                  << std::setw(widths[4]) << std::left << "Rel. Discr."
+                  << std::endl;
 
         // method: Black-Scholes Engine
         method = "Black-Scholes";
@@ -198,9 +122,14 @@ int main(int, char* [])
         rightValue = value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << "N/A"
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << "N/A"
+                  << std::endl;
 
 
         // method: Integral
@@ -210,34 +139,15 @@ int main(int, char* [])
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
-/*
-        // method: Integral
-        method = "Binary Cash";
-        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-            new IntegralCashOrNothingEngine(1.0)));
-        value = option.NPV();
-        discrepancy = std::fabs(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
-
-        // method: Integral
-        method = "Binary Asset";
-        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-            new IntegralAssetOrNothingEngine()));
-        value = option.NPV();
-        discrepancy = std::fabs(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
-
-*/
         Size timeSteps = 801;
 
         // Binomial Method (JR)
@@ -247,9 +157,14 @@ int main(int, char* [])
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
 
         // Binomial Method (CRR)
@@ -259,9 +174,14 @@ int main(int, char* [])
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Equal Probability Additive Binomial Tree (EQP)
         method = "Additive (EQP)";
@@ -270,9 +190,14 @@ int main(int, char* [])
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Equal Jumps Additive Binomial Tree (Trigeorgis)
         method = "Bin. Trigeorgis";
@@ -281,9 +206,14 @@ int main(int, char* [])
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Tian Binomial Tree (third moment matching)
         method = "Binomial Tian";
@@ -292,9 +222,14 @@ int main(int, char* [])
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Leisen-Reimer Binomial Tree
         method = "Binomial LR";
@@ -303,9 +238,14 @@ int main(int, char* [])
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Finite Differences
 
@@ -317,9 +257,14 @@ int main(int, char* [])
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Monte Carlo Method
         timeSteps = 1;
@@ -338,9 +283,14 @@ int main(int, char* [])
         Real errorEstimate = option.errorEstimate();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << errorEstimate << "\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << errorEstimate
+                  << std::setw(widths[3]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         method = "MC (Sobol)";
         timeSteps = 1;
@@ -355,9 +305,14 @@ int main(int, char* [])
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-                  << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[4]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         Real seconds = timer.elapsed();
         Integer hours = int(seconds/3600);

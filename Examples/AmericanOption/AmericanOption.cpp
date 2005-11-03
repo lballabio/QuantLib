@@ -43,8 +43,6 @@ int main(int, char* [])
         boost::timer timer;
         std::cout << std::endl;
 
-        std::cout << "Using " << QL_VERSION << std::endl << std::endl;
-
         // our option
         Option::Type type(Option::Put);
         Real underlying = 36;
@@ -59,11 +57,9 @@ int main(int, char* [])
 
         Date exerciseDate(17, May, 1999);
         DayCounter dayCounter = Actual365Fixed();
-        Time maturity = dayCounter.yearFraction(settlementDate,
-                                                exerciseDate);
 
-        std::cout << "option type = "  << type << std::endl;
-        std::cout << "Time to maturity = "        << maturity
+        std::cout << "Option type = "  << type << std::endl;
+        std::cout << "Exercise date = "        << exerciseDate
                   << std::endl;
         std::cout << "Underlying price = "        << underlying
                   << std::endl;
@@ -92,17 +88,9 @@ int main(int, char* [])
                   << std::setw(widths[3]) << std::left << "Rel. Discr."
                   << std::endl;
 
-        Date midlifeDate(19, November, 1998);
-        std::vector<Date> exDates(2);
-        exDates[0]=midlifeDate;
-        exDates[1]=exerciseDate;
-
         boost::shared_ptr<Exercise> exercise(
-                                          new EuropeanExercise(exerciseDate));
-        boost::shared_ptr<Exercise> amExercise(
                                           new AmericanExercise(settlementDate,
                                                                exerciseDate));
-        boost::shared_ptr<Exercise> berExercise(new BermudanExercise(exDates));
 
 
         Handle<Quote> underlyingH(
@@ -119,31 +107,6 @@ int main(int, char* [])
             boost::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(settlementDate, volatility, dayCounter)));
 
-        std::vector<Date> dates(4);
-        dates[0] = settlementDate + 1*Months;
-        dates[1] = exerciseDate;
-        dates[2] = exerciseDate + 6*Months;
-        dates[3] = exerciseDate + 12*Months;
-        std::vector<Real> strikes(4);
-        strikes[0] = underlying*0.9;
-        strikes[1] = underlying;
-        strikes[2] = underlying*1.1;
-        strikes[3] = underlying*1.2;
-
-        Matrix vols(4,4);
-        vols[0][0] = volatility*1.1; vols[0][1] = volatility;
-            vols[0][2] = volatility*0.9; vols[0][3] = volatility*0.8;
-        vols[1][0] = volatility*1.1; vols[1][1] = volatility;
-            vols[1][2] = volatility*0.9; vols[1][3] = volatility*0.8;
-        vols[2][0] = volatility*1.1; vols[2][1] = volatility;
-            vols[2][2] = volatility*0.9; vols[2][3] = volatility*0.8;
-        vols[3][0] = volatility*1.1; vols[3][1] = volatility;
-            vols[3][2] = volatility*0.9; vols[3][3] = volatility*0.8;
-        Handle<BlackVolTermStructure> blackSurface(
-            boost::shared_ptr<BlackVolTermStructure>(new
-                BlackVarianceSurface(settlementDate, dates,
-                                     strikes, vols, dayCounter)));
-
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(type, strike));
 
@@ -154,22 +117,8 @@ int main(int, char* [])
                 flatTermStructure,
                 flatVolTS));
 
-        // European option
-        VanillaOption euroOption(stochasticProcess, payoff, exercise,
-            boost::shared_ptr<PricingEngine>(new AnalyticEuropeanEngine()));
-
-        // method: Black Scholes Engine
-        method = "equivalent European option";
-        value = euroOption.NPV();
-        std::cout << std::setw(widths[0]) << std::left << method
-                  << std::fixed
-                  << std::setw(widths[1]) << std::left << value
-                  << std::setw(widths[2]) << std::left << "N/A"
-                  << std::setw(widths[3]) << std::left << "N/A"
-                  << std::endl;
-
         // American option
-        VanillaOption option(stochasticProcess, payoff, amExercise);
+        VanillaOption option(stochasticProcess, payoff, exercise);
 
         // target value
         method = "reference value";
