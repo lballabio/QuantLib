@@ -50,30 +50,32 @@ namespace QuantLib {
             }
         }
     };
-
+    
+    template <class PdeClass>
     class PdeConstantCoeff : public PdeSecondOrderParabolic  {
     public:
-        PdeConstantCoeff(const PdeSecondOrderParabolic & pde,
+        PdeConstantCoeff(const typename PdeClass::argument_type &process,
                          Time t, Real x) {
-          diffusion_ = pde.diffusion(t, x);
-          drift_ = pde.drift(t, x);
-          discount_ = pde.discount(t, x);
-      }
-      virtual Real diffusion(Time t, Real x) const {
-          return diffusion_;
-      }
-      virtual Real drift(Time t, Real x) const {
-          return drift_;
-      }
-      virtual Real discount(Time t, Real x) const {
+            PdeClass pde(process);
+            diffusion_ = pde.diffusion(t, x);
+            drift_ = pde.drift(t, x);
+            discount_ = pde.discount(t, x);
+        }
+        virtual Real diffusion(Time t, Real x) const {
+            return diffusion_;
+        }
+        virtual Real drift(Time t, Real x) const {
+            return drift_;
+        }
+        virtual Real discount(Time t, Real x) const {
           return discount_;
-      }
+        }
     private:
         Real diffusion_;
         Real drift_;
         Real discount_;
     };
-
+    
     template <class PdeClass>
     class GenericTimeSetter:public TridiagonalOperator::TimeSetter {
     public:

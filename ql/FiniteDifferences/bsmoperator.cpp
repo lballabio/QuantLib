@@ -38,10 +38,9 @@ namespace QuantLib {
                         const boost::shared_ptr<BlackScholesProcess>& process,
                         Time residualTime)
     : TridiagonalOperator(grid.size()) {
-        LogGrid logGrid(grid);
-        PdeBSM pde(process);
-        PdeConstantCoeff cc(pde, residualTime, 
-                            process->stateVariable()->value());
+        PdeBSM::grid_type  logGrid(grid);
+        PdeConstantCoeff<PdeBSM> cc(process, residualTime, 
+                                    process->stateVariable()->value());
         cc.generateOperator(residualTime, logGrid, *this);
     }
 }
