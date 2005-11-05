@@ -79,8 +79,8 @@ namespace QuantLib {
     template <class PdeClass>
     class GenericTimeSetter:public TridiagonalOperator::TimeSetter {
     public:
-        GenericTimeSetter(const Array &grid,
-                          const typename PdeClass::argument_type &process) :
+        template <class T>
+        GenericTimeSetter(const Array &grid, T process) :
             grid_(grid), pde_(process) {};
         void setTime(Time t,
                      TridiagonalOperator &L) const {
@@ -94,8 +94,9 @@ namespace QuantLib {
     template <class PdeClass>
     class PdeOperator:public TridiagonalOperator {
     public:
+        template <class T>
         PdeOperator(const Array& grid,
-                    const typename PdeClass::argument_type &process,
+                    T process,
                     Time residualTime = 0.0) :
             TridiagonalOperator(grid.size()) {
             timeSetter_ =
