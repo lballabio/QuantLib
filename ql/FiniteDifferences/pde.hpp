@@ -50,7 +50,7 @@ namespace QuantLib {
             }
         }
     };
-    
+
     template <class PdeClass>
     class PdeConstantCoeff : public PdeSecondOrderParabolic  {
     public:
@@ -75,13 +75,13 @@ namespace QuantLib {
         Real drift_;
         Real discount_;
     };
-    
+
     template <class PdeClass>
     class GenericTimeSetter:public TridiagonalOperator::TimeSetter {
     public:
         template <class T>
         GenericTimeSetter(const Array &grid, T process) :
-            grid_(grid), pde_(process) {};
+            grid_(grid), pde_(process) {}
         void setTime(Time t,
                      TridiagonalOperator &L) const {
             pde_.generateOperator(t, grid_, L);
