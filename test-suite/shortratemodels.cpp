@@ -121,6 +121,7 @@ void ShortRateModelTest::testSwaps() {
 
     Date today = Settings::instance().evaluationDate();
     Calendar calendar = TARGET();
+    today = calendar.adjust(today);
     Date settlement = calendar.advance(today,2,Days);
 
     Date dates[] = {
