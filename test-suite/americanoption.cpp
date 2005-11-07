@@ -48,8 +48,10 @@ using namespace boost::unit_test_framework;
                << "    reference date:   " << today << "\n" \
                << "    maturity:         " << exercise->lastDate() << "\n" \
                << "    volatility:       " << io::volatility(v) << "\n\n" \
+               << QL_FIXED << std::setprecision(4) \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
+               << QL_SCIENTIFIC \
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
@@ -88,7 +90,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
     */
     AmericanOptionData values[] = {
-      //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
+      //        type, strike,   spot,    q,    r,    t,  vol,   value
       { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.15,  0.0206 },
       { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8771 },
       { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.15, 10.0089 },
@@ -139,7 +141,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
     boost::shared_ptr<PricingEngine> engine(
                                     new BaroneAdesiWhaleyApproximationEngine);
 
-    Real tolerance = 1.0e-2;
+    Real tolerance = 3.0e-3;
 
     for (Size i=0; i<LENGTH(values); i++) {
 
