@@ -48,23 +48,26 @@ namespace QuantLib {
             Real bT = std::log(dD/rfD);
             Real rT = std::log(1.0/rfD);
 
-            Real Beta = (0.5 - bT/variance) +
+            Real beta = (0.5 - bT/variance) +
                 std::sqrt(std::pow((bT/variance - 0.5), Real(2.0))
                           + 2.0 * rT/variance);
-            Real BInfinity = Beta / (Beta - 1.0) * X;
+            Real BInfinity = beta / (beta - 1.0) * X;
             // Real B0 = std::max(X, std::log(rfD) / std::log(dD) * X);
             Real B0 = std::max(X, rT / (rT - bT) * X);
             Real ht = -(bT + 2.0*std::sqrt(variance)) * B0 / (BInfinity - B0);
 
             // investigate what happen to I for dD->0.0
             Real I = B0 + (BInfinity - B0) * (1 - std::exp(ht));
-            if (S >= I)
+            QL_REQUIRE(I >= X,
+                       "Bjerksund-Stensland approximation not applicable "
+                       "to this set of parameters");
+            if (S >= I) {
                 return S - X;
-            else {
+            } else {
                 // investigate what happen to alpha for dD->0.0
-                Real alpha = (I - X) * std::pow(I, (-Beta));
-                return alpha * std::pow(S, Beta)
-                    - alpha * phi(S, Beta, I, I, rT, bT, variance)
+                Real alpha = (I - X) * std::pow(I, (-beta));
+                return alpha * std::pow(S, beta)
+                    - alpha * phi(S, beta, I, I, rT, bT, variance)
                     +         phi(S,  1.0, I, I, rT, bT, variance)
                     -         phi(S,  1.0, X, I, rT, bT, variance)
                     -    X *  phi(S,  0.0, I, I, rT, bT, variance)
@@ -84,27 +87,39 @@ namespace QuantLib {
         QL_REQUIRE(!ex->payoffAtExpiry(),
                    "payoff at expiry not handled");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-striked payoff given");
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-plain payoff given");
 
         boost::shared_ptr<BlackScholesProcess> process =
             boost::dynamic_pointer_cast<BlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        Real variance = process->blackVolatility()->blackVariance(
-            ex->lastDate(), payoff->strike());
-        DiscountFactor dividendDiscount = process->dividendYield()->discount(
-            ex->lastDate());
-        DiscountFactor riskFreeDiscount = process->riskFreeRate()->discount(
-            ex->lastDate());
+        Real variance =
+            process->blackVolatility()->blackVariance(ex->lastDate(),
+                                                      payoff->strike());
+        DiscountFactor dividendDiscount =
+            process->dividendYield()->discount(ex->lastDate());
+        DiscountFactor riskFreeDiscount =
+            process->riskFreeRate()->discount(ex->lastDate());
         Real spot = process->stateVariable()->value();
-        Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
-        BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
+        Real strike = payoff->strike();
 
-        if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
-            // early exercise never optimal
+        if (payoff->optionType()==Option::Put) {
+            // use put-call simmetry
+            std::swap(spot, strike);
+            std::swap(riskFreeDiscount, dividendDiscount);
+            payoff = boost::shared_ptr<PlainVanillaPayoff>(
+                                new PlainVanillaPayoff(Option::Call, strike));
+        }
+
+        if (dividendDiscount>=1.0) {
+            // early exercise is never optimal - use Black formula
+            Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
+            BlackFormula black(forwardPrice, riskFreeDiscount,
+                               variance, payoff);
+
             results_.value        = black.value();
             results_.delta        = black.delta(spot);
             results_.deltaForward = black.deltaForward();
@@ -133,29 +148,13 @@ namespace QuantLib {
             results_.strikeSensitivity  = black.strikeSensitivity();
             results_.itmCashProbability = black.itmCashProbability();
         } else {
-            // early exercise can be optimal
-            switch (payoff->optionType()) {
-                case Option::Call:
-                    results_.value = americanCallApproximation(
-                        spot,
-                        payoff->strike(),
-                        riskFreeDiscount,
-                        dividendDiscount,
-                        variance);
-                    break;
-                case Option::Put:
-                    // Use put-call simmetry
-                    results_.value = americanCallApproximation(
-                        payoff->strike(),
-                        spot,
-                        dividendDiscount,
-                        riskFreeDiscount,
-                        variance);
-                    break;
-                default:
-                    QL_FAIL("unknown option type");
-            }
-        } // end of "early exercise can be optimal"
+            // early exercise can be optimal - use approximation
+            results_.value = americanCallApproximation(spot,
+                                                       strike,
+                                                       riskFreeDiscount,
+                                                       dividendDiscount,
+                                                       variance);
+        }
     }
 
 }
