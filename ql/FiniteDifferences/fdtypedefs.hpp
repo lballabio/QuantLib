@@ -41,6 +41,7 @@ namespace QuantLib {
 
     //! default choice for step condition
     typedef StepCondition<Array> StandardStepCondition;
+    typedef CurveDependentStepCondition<Array> StandardCurveDependentStepCondition;
 
 }
 

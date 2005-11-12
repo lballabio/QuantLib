@@ -35,10 +35,8 @@ namespace QuantLib {
         lock in a minimum value for the payoff at one (shout) time
         during the option's life. The minimum value is the option's
         intrinsic value at the shout time.
-
-        \todo unify the intrinsicValues/Payoff thing
     */
-    class ShoutCondition : public StandardStepCondition {
+    class ShoutCondition : public StandardCurveDependentStepCondition {
       public:
         ShoutCondition(Option::Type type,
                        Real strike,
@@ -50,39 +48,30 @@ namespace QuantLib {
         void applyTo(Array& a,
                      Time t) const;
       private:
-        Array intrinsicValues_;
-        boost::shared_ptr<Payoff> payoff_;
+        virtual Real applyToValue(Real current,
+                                  Real intrinsic) const {
+            return std::max(current, disc_ * intrinsic );
+        }
         Time resTime_;
         Rate rate_;
+        mutable DiscountFactor disc_;
     };
 
     inline ShoutCondition::ShoutCondition(Option::Type type,
                                           Real strike, Time resTime,
                                           Rate rate)
-    : payoff_(new PlainVanillaPayoff(type, strike)),
+    : StandardCurveDependentStepCondition(type, strike),
       resTime_(resTime), rate_(rate) {}
 
     inline ShoutCondition::ShoutCondition(const Array& intrinsicValues,
                                           Time resTime, Rate rate)
-    : intrinsicValues_(intrinsicValues), resTime_(resTime), rate_(rate) {}
-
+        : StandardCurveDependentStepCondition(intrinsicValues), 
+          resTime_(resTime), rate_(rate) {}
+    
     inline void ShoutCondition::applyTo(Array& a, Time t) const {
-
-        DiscountFactor disc = std::exp(-rate_ * (t - resTime_));
-
-        if (!intrinsicValues_.empty()) {
-            QL_REQUIRE(intrinsicValues_.size() == a.size(),
-                       "size mismatch");
-            for (Size i = 0; i < a.size(); i++)
-                a[i] = std::max(a[i],
-                                disc * intrinsicValues_[i] );
-        } else {
-            for (Size i = 0; i < a.size(); i++)
-                a[i] = std::max(a[i],
-                                (*payoff_)(a[i]) * disc);
-        }
+        disc_ = std::exp(-rate_ * (t - resTime_));
+        StandardCurveDependentStepCondition::applyTo(a, t);
     }
-
 }
 
 

@@ -32,41 +32,19 @@ namespace QuantLib {
 
     //! American exercise condition.
     /*! \todo unify the intrinsicValues/Payoff thing */
-    class AmericanCondition : public StandardStepCondition {
-      public:
+    class AmericanCondition : 
+        public StandardCurveDependentStepCondition {
+    public:
         AmericanCondition(Option::Type type,
-                          Real strike);
-        AmericanCondition(const Array& intrinsicValues);
-        void applyTo(Array& a, Time t) const;
-      private:
-        Array intrinsicValues_;
-        boost::shared_ptr<Payoff> payoff_;
-    };
-
-
-    // inline definitions
-
-    inline AmericanCondition::AmericanCondition(Option::Type type,
-                                                Real strike)
-    : payoff_(new PlainVanillaPayoff(type, strike)) {}
-
-    inline AmericanCondition::AmericanCondition(const Array& intrinsicValues)
-    : intrinsicValues_(intrinsicValues) {}
-
-    inline void AmericanCondition::applyTo(Array& a, Time) const {
-
-        if (!intrinsicValues_.empty()) {
-            QL_REQUIRE(intrinsicValues_.size() == a.size(),
-                       "size mismatch");
-            for (Size i = 0; i < a.size(); i++)
-                a[i] = std::max(a[i], intrinsicValues_[i]);
-        } else {
-            for (Size i = 0; i < a.size(); i++)
-                a[i] = std::max(a[i], (*payoff_)(a[i]));
+                          Real strike)
+            : StandardCurveDependentStepCondition(type, strike) {};
+        AmericanCondition(const Array& intrinsicValues)
+            : StandardCurveDependentStepCondition(intrinsicValues) {};
+    private:
+        Real applyToValue(Real current, Real intrinsic) const {
+            return std::max(current, intrinsic);
         }
-
-    }
-
+    };
 }
 
 

@@ -25,6 +25,7 @@
 #define quantlib_step_condition_hpp
 
 #include <ql/types.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
 
@@ -35,6 +36,74 @@ namespace QuantLib {
       public:
         virtual ~StepCondition() {}
         virtual void applyTo(array_type& a, Time t) const = 0;
+    };
+
+    /*! Abstract base class which allows step conditions to use both payoff and
+      array functions */
+    /*! \ingroup findiff */
+
+    template <class array_type>
+    class CurveDependentStepCondition : 
+        public StepCondition<array_type> {
+    public:
+        void applyTo(Array &a, Time t) const {
+            for (Size i = 0; i < a.size(); i++) {
+                a[i] =
+                    applyToValue(a[i], getValue(a,i));
+            }
+        }
+    protected:
+        CurveDependentStepCondition(Option::Type type, Real strike) 
+            : curveItem_(new PayoffWrapper(type, strike)) {};
+        CurveDependentStepCondition(const Payoff *p) 
+            : curveItem_(new PayoffWrapper(p)) {};
+        CurveDependentStepCondition(const array_type & a) 
+            : curveItem_(new ArrayWrapper(a)) {};
+        class CurveWrapper;
+
+        boost::shared_ptr<CurveWrapper> curveItem_;
+        Real getValue(const array_type &a, Size index) const {
+            return curveItem_->getValue(a, index);
+        }
+
+        virtual Real applyToValue(Real current, Real intrinsic) const {
+            QL_REQUIRE(false, 
+                       "UNIMPLEMENTED FUNCTION CurveDependentStepCondition::ApplyToValue");
+            return 0.0;
+        }
+
+        class CurveWrapper {
+        public:
+            virtual ~CurveWrapper() {};
+            virtual Real getValue(const array_type &a,
+                                  int i) = 0;
+        };
+
+        class ArrayWrapper : public CurveWrapper {
+        private:
+            array_type value_;
+        public:
+            ArrayWrapper (const array_type &a) :
+                value_(a) {}
+            
+            Real getValue(const array_type &a,
+                          int i) {
+                return value_[i];
+            }
+        };
+        class PayoffWrapper : public CurveWrapper {
+        private:
+            boost::shared_ptr<Payoff> payoff_;
+        public:
+            PayoffWrapper (const Payoff * p)
+                : payoff_(p) {};
+            PayoffWrapper (Option::Type type, Real strike) 
+                : payoff_(new PlainVanillaPayoff(type, strike)) {};
+            Real getValue(const array_type &a,
+                          int i) {
+                return (*payoff_)(a[i]);
+            }
+        };
     };
 
 
