@@ -39,13 +39,15 @@ namespace QuantLib {
               checking it against analytic results.
     */
     template <class RNG = PseudoRandom, class S = Statistics>
-    class MCEuropeanEngine : public MCVanillaEngine<RNG,S> {
+    class MCEuropeanEngine : public MCVanillaEngine<SingleVariate<RNG>,S> {
       public:
-        typedef typename MCVanillaEngine<RNG,S>::path_generator_type
+        typedef
+        typename MCVanillaEngine<SingleVariate<RNG>,S>::path_generator_type
             path_generator_type;
-        typedef typename MCVanillaEngine<RNG,S>::path_pricer_type
+        typedef
+        typename MCVanillaEngine<SingleVariate<RNG>,S>::path_pricer_type
             path_pricer_type;
-        typedef typename MCVanillaEngine<RNG,S>::stats_type
+        typedef typename MCVanillaEngine<SingleVariate<RNG>,S>::stats_type
             stats_type;
         // constructor
         MCEuropeanEngine(Size timeSteps,
@@ -113,15 +115,15 @@ namespace QuantLib {
                                               Real requiredTolerance,
                                               Size maxSamples,
                                               BigNatural seed)
-    : MCVanillaEngine<RNG,S>(timeSteps,
-                             timeStepsPerYear,
-                             brownianBridge,
-                             antitheticVariate,
-                             controlVariate,
-                             requiredSamples,
-                             requiredTolerance,
-                             maxSamples,
-                             seed) {}
+    : MCVanillaEngine<SingleVariate<RNG>,S>(timeSteps,
+                                            timeStepsPerYear,
+                                            brownianBridge,
+                                            antitheticVariate,
+                                            controlVariate,
+                                            requiredSamples,
+                                            requiredTolerance,
+                                            maxSamples,
+                                            seed) {}
 
 
     template <class RNG, class S>

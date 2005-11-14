@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,8 +22,8 @@
     \brief Monte Carlo vanilla option engine
 */
 
-#ifndef quantlib_mcvanilla_engine_h
-#define quantlib_mcvanilla_engine_h
+#ifndef quantlib_mcvanilla_engine_hpp
+#define quantlib_mcvanilla_engine_hpp
 
 #include <ql/PricingEngines/mcsimulation.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
@@ -32,26 +32,25 @@ namespace QuantLib {
 
     //! Pricing engine for vanilla options using Monte Carlo simulation
     /*! \ingroup vanillaengines */
-    template<class RNG = PseudoRandom, class S = Statistics>
+    template<class MC, class S = Statistics>
     class MCVanillaEngine : public VanillaOption::engine,
-                            public McSimulation<SingleVariate<RNG>, S> {
+                            public McSimulation<MC, S> {
       public:
         void calculate() const {
-            McSimulation<SingleVariate<RNG>,S>::calculate(requiredTolerance_,
-                                                          requiredSamples_,
-                                                          maxSamples_);
+            McSimulation<MC,S>::calculate(requiredTolerance_,
+                                          requiredSamples_,
+                                          maxSamples_);
             results_.value = this->mcModel_->sampleAccumulator().mean();
-            if (RNG::allowsErrorEstimate)
+            if (MC::allowsErrorEstimate)
             results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
       protected:
-        typedef
-        typename McSimulation<SingleVariate<RNG>,S>::path_generator_type
+        typedef typename McSimulation<MC,S>::path_generator_type
             path_generator_type;
-        typedef typename McSimulation<SingleVariate<RNG>,S>::path_pricer_type
+        typedef typename McSimulation<MC,S>::path_pricer_type
             path_pricer_type;
-        typedef typename McSimulation<SingleVariate<RNG>,S>::stats_type
+        typedef typename McSimulation<MC,S>::stats_type
             stats_type;
         // constructor
         MCVanillaEngine(Size timeSteps,
@@ -78,28 +77,27 @@ namespace QuantLib {
 
     // template definitions
 
-    template<class RNG, class S>
-    inline MCVanillaEngine<RNG,S>::MCVanillaEngine(Size timeSteps,
-                                                   Size timeStepsPerYear,
-                                                   bool brownianBridge,
-                                                   bool antitheticVariate,
-                                                   bool controlVariate,
-                                                   Size requiredSamples,
-                                                   Real requiredTolerance,
-                                                   Size maxSamples,
-                                                   BigNatural seed)
-    : McSimulation<SingleVariate<RNG>,S>(antitheticVariate, controlVariate),
+    template<class MC, class S>
+    inline MCVanillaEngine<MC,S>::MCVanillaEngine(Size timeSteps,
+                                                  Size timeStepsPerYear,
+                                                  bool brownianBridge,
+                                                  bool antitheticVariate,
+                                                  bool controlVariate,
+                                                  Size requiredSamples,
+                                                  Real requiredTolerance,
+                                                  Size maxSamples,
+                                                  BigNatural seed)
+    : McSimulation<MC,S>(antitheticVariate, controlVariate),
       timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {}
 
-    template<class RNG, class S>
-    inline
-    Real MCVanillaEngine<RNG,S>::controlVariateValue() const {
+    template<class MC, class S>
+    inline Real MCVanillaEngine<MC,S>::controlVariateValue() const {
 
         boost::shared_ptr<PricingEngine> controlPE =
-                this->controlPricingEngine();
+            this->controlPricingEngine();
             QL_REQUIRE(controlPE,
                        "engine does not provide "
                        "control variation pricing engine");
@@ -118,8 +116,8 @@ namespace QuantLib {
     }
 
 
-    template <class RNG, class S>
-    inline TimeGrid MCVanillaEngine<RNG,S>::timeGrid() const {
+    template <class MC, class S>
+    inline TimeGrid MCVanillaEngine<MC,S>::timeGrid() const {
         Date lastExerciseDate = this->arguments_.exercise->lastDate();
         Time t = this->arguments_.stochasticProcess->time(lastExerciseDate);
         if (this->timeSteps_ != Null<Size>()) {
@@ -132,21 +130,20 @@ namespace QuantLib {
         }
     }
 
-    template<class RNG, class S>
+    template<class MC, class S>
     inline
-    boost::shared_ptr<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type>
-    MCVanillaEngine<RNG,S>::pathGenerator() const {
+    boost::shared_ptr<QL_TYPENAME MCVanillaEngine<MC,S>::path_generator_type>
+    MCVanillaEngine<MC,S>::pathGenerator() const {
 
-        boost::shared_ptr<StochasticProcess1D> process =
-            boost::dynamic_pointer_cast<StochasticProcess1D>(
-                                          this->arguments_.stochasticProcess);
-        QL_REQUIRE(process, "1-D process required");
+        typedef typename MC::rng_traits RNG;
+
+        Size dimensions = arguments_.stochasticProcess->factors();
         TimeGrid grid = this->timeGrid();
-        typename RNG::rsg_type gen =
-            RNG::make_sequence_generator(grid.size()-1,seed_);
+        typename RNG::rsg_type generator =
+            RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
         return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(process,
-                                                 grid, gen, brownianBridge_));
+                   new path_generator_type(arguments_.stochasticProcess,
+                                           grid, generator, brownianBridge_));
     }
 
 }

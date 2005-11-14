@@ -2,3 +2,6 @@
 - SimpleSwap can now be set an engine. If none was set, the old
   cash-flow-based calculation is used.
 
+- Generalized McVanillaEngine so that it can manage n-dimensional processes;
+  it now subsumes McHestonEngine.
+

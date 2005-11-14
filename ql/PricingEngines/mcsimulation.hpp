@@ -31,11 +31,11 @@
 namespace QuantLib {
 
     //! base class for Monte Carlo engines
-    /*! Eventually this class might offer greeks methods.
-        Deriving a class from McEngine gives an easy way to write
-        a Monte Carlo engine.
+    /*! Eventually this class might offer greeks methods.  Deriving a
+        class from McSimulation gives an easy way to write a Monte
+        Carlo engine.
 
-        See McVanillaEngine as an example of one factor engine.
+        See McVanillaEngine as an example.
     */
 
     template <class MC, class S = Statistics>

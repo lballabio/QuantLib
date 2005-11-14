@@ -47,7 +47,6 @@
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp>
-#include <ql/PricingEngines/Vanilla/mchestonengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
 
 

@@ -30,7 +30,6 @@ include_HEADERS = \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
     mceuropeanhestonengine.hpp \
-    mchestonengine.hpp \
     mcvanillaengine.hpp
 
 libVanillaEngines_la_SOURCES = \

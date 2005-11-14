@@ -24,7 +24,7 @@
 #ifndef quantlib_mc_european_heston_engine_hpp
 #define quantlib_mc_european_heston_engine_hpp
 
-#include <ql/PricingEngines/Vanilla/mchestonengine.hpp>
+#include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
 
 namespace QuantLib {
 
@@ -35,9 +35,10 @@ namespace QuantLib {
               reproducing results available in web/literature
     */
     template <class RNG = PseudoRandom, class S = Statistics>
-    class MCEuropeanHestonEngine : public MCHestonEngine<RNG,S> {
+    class MCEuropeanHestonEngine
+        : public MCVanillaEngine<MultiVariate<RNG>,S> {
       public:
-        typedef typename MCHestonEngine<RNG,S>::path_pricer_type
+        typedef typename MCVanillaEngine<MultiVariate<RNG>,S>::path_pricer_type
             path_pricer_type;
         MCEuropeanHestonEngine(Size timeSteps,
                                Size timeStepsPerYear,
@@ -95,9 +96,10 @@ namespace QuantLib {
                 Size timeSteps, Size timeStepsPerYear, bool antitheticVariate,
                 Size requiredSamples, Real requiredTolerance,
                 Size maxSamples, BigNatural seed)
-    : MCHestonEngine<RNG, S>(timeSteps, timeStepsPerYear, antitheticVariate,
-                             requiredSamples, requiredTolerance,
-                             maxSamples, seed) {}
+    : MCVanillaEngine<MultiVariate<RNG>, S>(timeSteps, timeStepsPerYear,
+                                            false, antitheticVariate, false,
+                                            requiredSamples, requiredTolerance,
+                                            maxSamples, seed) {}
 
 
     template <class RNG, class S>
