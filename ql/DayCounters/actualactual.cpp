@@ -42,13 +42,11 @@ namespace QuantLib {
     Time ActualActual::ISMA_Impl::yearFraction(const Date& d1, const Date& d2,
                                                const Date& d3,
                                                const Date& d4) const {
-
         if (d1 == d2)
             return 0.0;
 
-        QL_REQUIRE(d1<=d2,
-                   "invalid reference period: the start date "
-                   << d1 << " is later than the end date " << d2);
+        if (d1 > d2)
+            return -yearFraction(d2,d1,d3,d4);
 
         // when the reference period is not specified, try taking
         // it equal to (d1,d2)
@@ -140,12 +138,11 @@ namespace QuantLib {
     Time ActualActual::ISDA_Impl::yearFraction(const Date& d1, const Date& d2,
                                                const Date&,
                                                const Date&) const {
-        QL_REQUIRE(d2>=d1,
-                   "invalid reference period: the start date "
-                   << d1 << " is later than the end date " << d2);
-
         if (d1 == d2)
             return 0.0;
+
+        if (d1 > d2)
+            return -yearFraction(d2,d1,Date(),Date());
 
         Integer y1 = d1.year(), y2 = d2.year();
         Real dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
@@ -159,12 +156,11 @@ namespace QuantLib {
 
     Time ActualActual::AFB_Impl::yearFraction(const Date& d1, const Date& d2,
                                               const Date&, const Date&) const {
-        QL_REQUIRE(d1<=d2,
-                   "invalid reference period: the start date "
-                   << d1 << " is later than the end date " << d2);
-
         if (d1 == d2)
             return 0.0;
+
+        if (d1 > d2)
+            return -yearFraction(d2,d1,Date(),Date());
 
         Date newD2=d2, temp=d2;
         Time sum = 0.0;
