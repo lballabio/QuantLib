@@ -129,9 +129,16 @@ namespace QuantLib {
         OneFactorAffineModel(Size nArguments)
         : OneFactorModel(nArguments) {}
 
+        virtual Real discountBond(Time now,
+                                  Time maturity,
+                                  Array factors) const {
+            return discountBond(now, maturity, factors[0]);
+        }
+
         Real discountBond(Time now, Time maturity, Rate rate) const {
             return A(now, maturity)*std::exp(-B(now, maturity)*rate);
         }
+
         DiscountFactor discount(Time t) const {
             Real x0 = dynamics()->process()->x0();
             Rate r0 = dynamics()->shortRate(0.0, x0);
@@ -147,3 +154,4 @@ namespace QuantLib {
 #endif
 
 #endif
+

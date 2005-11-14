@@ -63,10 +63,21 @@ namespace QuantLib {
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
+        virtual Real discountBond(Time now,
+                                  Time maturity,
+                                  Array factors) const {
+            QL_REQUIRE(factors.size()>1,
+                       "g2 model needs two factors to compute discount bond");
+            return discountBond(now, maturity, factors[0], factors[1]);
+        }
+
+        Real discountBond(Time, Time, Rate, Rate) const;
+
         Real discountBondOption(Option::Type type,
                                 Real strike,
                                 Time maturity,
                                 Time bondMaturity) const;
+
         Real swaption(const Swaption::arguments& arguments,
                       Real range,
                       Size intervals) const;
@@ -184,3 +195,4 @@ namespace QuantLib {
 
 
 #endif
+

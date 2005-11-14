@@ -5,3 +5,4 @@
 - Generalized McVanillaEngine so that it can manage n-dimensional processes;
   it now subsumes McHestonEngine.
 
+- Added weight to short-rate model calibration (thanks to Enrico Michelotti.)

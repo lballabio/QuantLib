@@ -67,6 +67,10 @@ namespace QuantLib {
         return std::sqrt(value);
     }
 
+    Real G2::discountBond(Time t, Time T, Real x, Real y) const {
+        return A(t,T) * std::exp(-B(a(),(T-t))*x-B(b(),(T-t))*y);
+    }
+
     Real G2::discountBondOption(Option::Type type, Real strike, Time maturity,
         Time bondMaturity) const {
 
@@ -222,3 +226,4 @@ namespace QuantLib {
     }
 
 }
+

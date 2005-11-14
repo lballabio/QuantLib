@@ -34,8 +34,11 @@ namespace QuantLib {
         CalibrationFunction(
                   ShortRateModel* model,
                   const std::vector<boost::shared_ptr<CalibrationHelper> >&
-                                                                  instruments)
-        : model_(model, no_deletion), instruments_(instruments) {}
+                                                                  instruments,
+                  const std::vector<Real>& weights)
+        : model_(model, no_deletion), instruments_(instruments),
+          weights_(weights) {}
+
         virtual ~CalibrationFunction() {}
 
         virtual Real value(const Array& params) const {
@@ -44,7 +47,7 @@ namespace QuantLib {
             Real value = 0.0;
             for (Size i=0; i<instruments_.size(); i++) {
                 Real diff = instruments_[i]->calibrationError();
-                value += diff*diff;
+                value += diff*diff*weights_[i];
             }
 
             return std::sqrt(value);
@@ -53,20 +56,28 @@ namespace QuantLib {
       private:
         boost::shared_ptr<ShortRateModel> model_;
         const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments_;
+        std::vector<Real> weights_;
     };
 
     void ShortRateModel::calibrate(
         const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments,
         OptimizationMethod& method,
-        const Constraint& additionalConstraint) {
+        const Constraint& additionalConstraint,
+        const std::vector<Real>& weights) {
+
+        QL_REQUIRE(weights.empty() ||
+                   weights.size() == instruments.size(),
+                   "mismatch between number of instruments and weights");
 
         Constraint c;
         if (additionalConstraint.isNull())
             c = *constraint_;
         else
             c = CompositeConstraint(*constraint_,additionalConstraint);
-
-        CalibrationFunction f(this, instruments);
+        std::vector<Real> w = weights.empty() ?
+                              std::vector<Real>(instruments.size(), 1.0):
+                              weights;
+        CalibrationFunction f(this, instruments, w);
 
         method.setInitialValue(params());
         method.endCriteria().setPositiveOptimization();
@@ -104,3 +115,4 @@ namespace QuantLib {
     }
 
 }
+

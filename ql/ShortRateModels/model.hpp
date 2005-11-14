@@ -43,6 +43,10 @@ namespace QuantLib {
         //! Implied discount curve
         virtual DiscountFactor discount(Time t) const = 0;
 
+        virtual Real discountBond(Time now,
+                                    Time maturity,
+                                    Array factors) const = 0;
+
         virtual Real discountBondOption(Option::Type type,
                                         Real strike,
                                         Time maturity,
@@ -88,7 +92,8 @@ namespace QuantLib {
         void calibrate(
                    const std::vector<boost::shared_ptr<CalibrationHelper> >&,
                    OptimizationMethod& method,
-                   const Constraint& constraint = Constraint());
+                   const Constraint& constraint = Constraint(),
+                   const std::vector<Real>& weights = std::vector<Real>());
 
         const boost::shared_ptr<Constraint>& constraint() const;
 
@@ -147,3 +152,4 @@ namespace QuantLib {
 
 
 #endif
+
