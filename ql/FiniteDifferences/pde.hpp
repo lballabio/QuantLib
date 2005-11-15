@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file valueatcenter.hpp
-    \brief compute value, first, and second derivatives at grid center
+/*! \file pde.hpp
+    \brief General class for one dimensional PDE's
 */
 
 #ifndef quantlib_pde_hpp
