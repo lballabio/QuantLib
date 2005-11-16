@@ -58,8 +58,10 @@ namespace QuantLib {
         void setValues(const Array&);
         template <class F>
         void sample(const F& f) {
-            for(Size j=0; j<size(); j++)
-                values_[j] = f(grid_[j]);
+            Array::iterator i, j;
+            for(i=grid_.begin(), j = values_.begin(); 
+                i != grid_.end(); i++, j++)
+                *j = f(*i);
         }
         //@}
 
