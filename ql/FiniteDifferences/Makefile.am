@@ -29,7 +29,8 @@ include_HEADERS = \
 	shoutcondition.hpp \
 	stepcondition.hpp \
 	tridiagonaloperator.hpp \
-	valueatcenter.hpp
+	valueatcenter.hpp \
+	zerocondition.hpp
 
 libFiniteDifferences_la_SOURCES = \
     boundarycondition.cpp \

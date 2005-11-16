@@ -26,7 +26,6 @@ namespace QuantLib {
 
     void FDStepConditionEngine::calculate(OneAssetOption::results* results) const {
         setGridLimits();
-        initializeGrid();
         initializeInitialCondition();
         initializeOperator();
         initializeStepCondition();

@@ -49,10 +49,31 @@ void SampledCurveTest::testConstruction() {
         BOOST_ERROR("curve value setting failed");
     }
 
-    Array& grid = curve.values();
-    grid[1] = 3.0;
+    Array& value = curve.values();
+    value[1] = 3.0;
     if (std::fabs(curve.value(1) - 3.0) > 1e-5) {
         BOOST_ERROR("curve value grid failed");
+    }
+
+    curve.shiftGrid(10.0);
+    if (std::fabs(curve.gridValue(0) - 0.0) > 1e-5) {
+        BOOST_ERROR("sample curve shift grid failed");
+    }
+    if (std::fabs(curve.value(0) - 2.0) > 1e-5) {
+        BOOST_ERROR("sample curve shift grid - value failed");
+    }
+
+    curve.sample(f2);
+    curve.regrid(BoundedGrid(0.0,20.0,200));
+    for (Size i=0; i < curve.size(); i++) {
+        Real grid(curve.gridValue(i));
+        Real value(curve.value(i));
+        Real calculated(f2(grid));
+        if(std::fabs(value - calculated) > 1e-2) {
+            BOOST_ERROR("sample curve regriding failed" <<
+                        i << " " << grid << " " 
+                        << value << " " << calculated);
+        }
     }
 
 

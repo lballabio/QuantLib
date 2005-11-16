@@ -25,6 +25,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+class FSquared : std::unary_function<Real,Real> {
+public:
+    Real operator()(Real x) const { return x*x;};
+};
+
 void ArrayTest::testConstruction() {
 
     BOOST_MESSAGE("Testing array construction...");
@@ -154,6 +159,21 @@ void ArrayTest::testConstruction() {
             BOOST_ERROR(io::ordinal(i) << " element not moved correctly"
                         << "\n    required:  " << value
                         << "\n    resulting: " << a9[i]);
+    }
+
+    // transform
+    Array a10(5);
+    for (i=0; i < a10.size(); i++) {
+        a10[i] = i;
+    }
+    FSquared f2;
+    a10.transform(f2);
+    for (i=0; i < a10.size(); i++) {
+        Real calculated = f2(static_cast<Real>(i));
+        if (std::fabs(a10[i] -  calculated) >= 1e-5) {
+            BOOST_ERROR("Array transform test failed " << a10[i] << " " 
+                        << calculated);
+        }
     }
 
     QL_TEST_END

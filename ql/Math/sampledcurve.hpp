@@ -26,6 +26,7 @@
 
 #include <ql/Math/array.hpp>
 #include <ql/grid.hpp>
+#include <ql/Math/cubicspline.hpp>
 
 namespace QuantLib {
 
@@ -83,6 +84,45 @@ namespace QuantLib {
         void swap(SampledCurve&);
         void setLogGrid(Real min, Real max) {
             setGrid(BoundedLogGrid(min, max, size()-1));
+        }
+        void regridLogGrid(Real min, Real max) {
+            regrid(BoundedLogGrid(min, max, size()-1),
+                   std::ptr_fun<Real,Real>(std::log));
+        }
+        void shiftGrid(Real s) {
+            grid_ += s;
+        }
+        void regrid(const Array &new_grid);
+        template <class T>
+        void regrid(const Array &new_grid,
+                    T func) {
+            Array transformed_grid(grid_.size());
+            
+            std::transform(grid_.begin(), grid_.end(),
+                           transformed_grid.begin(), func);
+            NaturalCubicSpline priceSpline(transformed_grid.begin(), 
+                                           transformed_grid.end(),
+                                           values_.begin());
+
+            values_ = new_grid;
+            values_.transform(func);            
+            for (Array::iterator j = values_.begin(); 
+                 j != values_.end(); j++) {
+                *j = priceSpline(*j, true);
+            } 
+            grid_ = new_grid;
+        }
+
+        template <class T>
+        inline const SampledCurve& transform(T x) {
+            values_.transform(x);
+            return *this;
+        }
+
+        template <class T>
+        inline const SampledCurve& transformGrid(T x) {
+            grid_.transform(x);
+            return *this;
         }
         //@}
       private:

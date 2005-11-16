@@ -114,7 +114,14 @@ namespace QuantLib {
         //! \name Utilities
         //@{
         void swap(Array&);  // never throws
+        template <class T> 
+        inline const Array &transform(T x) {
+            std::transform(begin(),end(),begin(), x);
+            return *this;
+        }
         //@}
+
+        
       private:
         boost::scoped_array<Real> data_;
         Size n_;
@@ -226,6 +233,7 @@ namespace QuantLib {
                        std::plus<Real>());
         return *this;
     }
+    
 
     inline const Array& Array::operator+=(Real x) {
         std::transform(begin(),end(),begin(),

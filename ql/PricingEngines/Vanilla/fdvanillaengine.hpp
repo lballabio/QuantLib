@@ -57,7 +57,6 @@ namespace QuantLib {
             const;
         virtual void setGridLimits() const;
         virtual void setGridLimits(Real, Time) const;
-        virtual void initializeGrid() const;
         virtual void initializeInitialCondition() const;
         virtual void initializeOperator() const;
         virtual Time getResidualTime() const;

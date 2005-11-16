@@ -27,7 +27,6 @@ namespace QuantLib {
     void FDEuropeanEngine::calculate() const {
         setupArguments(&arguments_);
         setGridLimits();
-        initializeGrid();
         initializeInitialCondition();
         initializeOperator();
 

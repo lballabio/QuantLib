@@ -79,11 +79,8 @@ namespace QuantLib {
         }
     }
 
-    void FDVanillaEngine::initializeGrid() const {
-        intrinsicValues_.setLogGrid(sMin_, sMax_);
-    }
-
     void FDVanillaEngine::initializeInitialCondition() const {
+        intrinsicValues_.setLogGrid(sMin_, sMax_);
         intrinsicValues_.sample(*payoff_);
     }
 

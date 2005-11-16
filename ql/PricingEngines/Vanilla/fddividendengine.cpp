@@ -18,8 +18,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
-#include <ql/Math/cubicspline.hpp>
-#include <ql/FiniteDifferences/valueatcenter.hpp>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -56,43 +55,16 @@ namespace QuantLib {
             sMax_ = newSMax;
             sMin_ = center_/(sMax_/center_);
         }
-        Array oldGrid = prices_.grid() + getDividend(step);
-        initializeGrid();
-        prices_.setLogGrid(sMin_, sMax_);
 
         initializeInitialCondition();
-        // This operation was faster than the obvious:
-        //     movePricesBeforeExDiv(initialPrices_, grid_, oldGrid);
 
-        movePricesBeforeExDiv(prices_.values(), prices_.grid(), oldGrid);
+        prices_.shiftGrid(getDividend(step));
+        prices_.regrid(intrinsicValues_.grid(),
+                       std::ptr_fun<Real,Real>(std::log));
+
         initializeOperator();
         initializeModel();
         initializeStepCondition();
         stepCondition_ -> applyTo(prices_.values(), getDividendTime(step));
     }
-
-    void FDDividendEngine::movePricesBeforeExDiv(Array& prices,
-                                                 const Array& newGrid,
-                                                 const Array& oldGrid) const {
-        Size j, gridSize = oldGrid.size();
-
-        std::vector<Real> logOldGrid(0);
-        std::vector<Real> tmpPrices(0);
-
-        for (j = 0; j<gridSize; j++) {
-            Real p = prices[j];
-            Real g = oldGrid[j];
-            if (g > 0) {
-                logOldGrid.push_back(std::log(g));
-                tmpPrices.push_back(p);
-            }
-        }
-
-        NaturalCubicSpline priceSpline(logOldGrid.begin(), logOldGrid.end(),
-                                       tmpPrices.begin());
-        for (j = 0; j < gridSize; j++) {
-            prices[j] = priceSpline(std::log(newGrid[j]), true);
-        }
-    }
-
 }

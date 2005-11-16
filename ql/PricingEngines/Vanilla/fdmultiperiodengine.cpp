@@ -19,6 +19,7 @@
 
 #include <ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
+#include <iostream>
 
 namespace QuantLib {
     DividendSchedule FDMultiPeriodEngine::emptySchedule;
@@ -79,7 +80,6 @@ namespace QuantLib {
             dt = firstNonZeroDate/2.0;
 
         setGridLimits();
-        initializeGrid();
         initializeInitialCondition();
         initializeOperator();
         initializeModel();
