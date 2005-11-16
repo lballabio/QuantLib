@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,11 +21,13 @@
 #include "interpolations.hpp"
 #include "utilities.hpp"
 #include <ql/Utilities/null.hpp>
+#include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/multicubicspline.hpp>
 #include <ql/Math/simpsonintegral.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -830,6 +832,57 @@ void InterpolationTest::testMultiSpline() {
     #endif
 }
 
+namespace {
+
+    struct NotThrown {};
+
+}
+
+void InterpolationTest::testAsFunctor() {
+
+    BOOST_MESSAGE("Testing use of interpolations as functors...");
+
+    const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
+
+    Interpolation f = LinearInterpolation(BEGIN(x), END(x), BEGIN(y));
+
+    const Real x2[] = { -2.0, -1.0, 0.0, 1.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
+    Size N = LENGTH(x2);
+    std::vector<Real> y2(N);
+    Real tolerance = 1.0e-12;
+
+    // case 1: extrapolation not allowed
+    try {
+        std::transform(BEGIN(x2), END(x2), y2.begin(), f);
+        throw NotThrown();
+    }
+    catch (Error&) {
+        // as expected; do nothing
+    }
+    catch (NotThrown&) {
+        QL_FAIL("failed to throw exception when trying to extrapolate");
+    }
+
+
+    // case 2: enable extrapolation
+    f.enableExtrapolation();
+    y2 = std::vector<Real>(N);
+    std::transform(BEGIN(x2), END(x2), y2.begin(), f);
+    for (Size i=0; i<N; i++) {
+        Real expected = 5.0-x2[i];
+        if (std::fabs(y2[i]-expected) > tolerance)
+            BOOST_ERROR(
+                "failed to reproduce " << io::ordinal(i+1) << " expected data"
+                << QL_FIXED
+                << "\n    expected:   " << expected
+                << "\n    calculated: " << y2[i]
+                << QL_SCIENTIFIC
+                << "\n    error:      " << std::fabs(y2[i]-expected));
+    }
+}
+
+
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testSplineOnGenericValues));
@@ -847,6 +900,7 @@ test_suite* InterpolationTest::suite() {
     #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testMultiSpline));
     #endif
+    suite->add(BOOST_TEST_CASE(&InterpolationTest::testAsFunctor));
     return suite;
 }
 

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +26,7 @@
 #define quantlib_interpolation2D_hpp
 
 #include <ql/Patterns/bridge.hpp>
+#include <ql/Math/extrapolation.hpp>
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
 
@@ -52,7 +53,8 @@ namespace QuantLib {
         the tabulated function values.
     */
     class Interpolation2D
-        : public Bridge<Interpolation2D,Interpolation2DImpl> {
+        : public Bridge<Interpolation2D,Interpolation2DImpl>,
+          public Extrapolator {
       public:
         typedef Real first_argument_type;
         typedef Real second_argument_type;
@@ -137,8 +139,9 @@ namespace QuantLib {
             impl_->calculate();
         }
       protected:
-        void checkRange(Real x, Real y, bool allowExtrapolation) const {
-            QL_REQUIRE(allowExtrapolation || impl_->isInRange(x,y),
+        void checkRange(Real x, Real y, bool extrapolate) const {
+            QL_REQUIRE(extrapolate || allowsExtrapolation() ||
+                       impl_->isInRange(x,y),
                        "interpolation range is ["
                        << impl_->xMin() << ", " << impl_->xMax()
                        << "] x ["

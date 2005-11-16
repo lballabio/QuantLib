@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +26,7 @@
 #define quantlib_interpolation_hpp
 
 #include <ql/Patterns/bridge.hpp>
+#include <ql/Math/extrapolation.hpp>
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
 
@@ -51,7 +52,8 @@ namespace QuantLib {
         discretized values of a variable and a function of the former,
         respectively.
     */
-    class Interpolation : public Bridge<Interpolation,InterpolationImpl> {
+    class Interpolation : public Bridge<Interpolation,InterpolationImpl>,
+                          public Extrapolator {
       public:
         typedef Real argument_type;
         typedef Real result_type;
@@ -120,8 +122,9 @@ namespace QuantLib {
             impl_->calculate();
         }
       protected:
-        void checkRange(Real x, bool allowExtrapolation) const {
-            QL_REQUIRE(allowExtrapolation || impl_->isInRange(x),
+        void checkRange(Real x, bool extrapolate) const {
+            QL_REQUIRE(extrapolate || allowsExtrapolation() ||
+                       impl_->isInRange(x),
                        "interpolation range is ["
                        << impl_->xMin() << ", " << impl_->xMax()
                        << "]: extrapolation at " << x << " not allowed");
