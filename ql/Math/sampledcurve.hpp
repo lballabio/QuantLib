@@ -59,7 +59,7 @@ namespace QuantLib {
         template <class F>
         void sample(const F& f) {
             Array::iterator i, j;
-            for(i=grid_.begin(), j = values_.begin(); 
+            for(i=grid_.begin(), j = values_.begin();
                 i != grid_.end(); i++, j++)
                 *j = f(*i);
         }
@@ -99,31 +99,34 @@ namespace QuantLib {
         void regrid(const Array &new_grid,
                     T func) {
             Array transformed_grid(grid_.size());
-            
+
             std::transform(grid_.begin(), grid_.end(),
                            transformed_grid.begin(), func);
-            NaturalCubicSpline priceSpline(transformed_grid.begin(), 
+            NaturalCubicSpline priceSpline(transformed_grid.begin(),
                                            transformed_grid.end(),
                                            values_.begin());
 
             values_ = new_grid;
-            values_.transform(func);            
-            for (Array::iterator j = values_.begin(); 
+            std::transform(values_.begin(), values_.end(),
+                           values_.begin(), func);
+            for (Array::iterator j = values_.begin();
                  j != values_.end(); j++) {
                 *j = priceSpline(*j, true);
-            } 
+            }
             grid_ = new_grid;
         }
 
         template <class T>
         inline const SampledCurve& transform(T x) {
-            values_.transform(x);
+            std::transform(values_.begin(), values_.end(),
+                           values_.begin(), x);
             return *this;
         }
 
         template <class T>
         inline const SampledCurve& transformGrid(T x) {
-            grid_.transform(x);
+            std::transform(grid_.begin(), grid_.end(),
+                           grid_.begin(), x);
             return *this;
         }
         //@}
@@ -143,7 +146,7 @@ namespace QuantLib {
     inline SampledCurve::SampledCurve(Size gridSize)
     : grid_(gridSize), values_(gridSize) {}
 
-    inline SampledCurve::SampledCurve(const Array& grid) 
+    inline SampledCurve::SampledCurve(const Array& grid)
         : grid_(grid), values_(grid.size()) {}
 
     inline SampledCurve& SampledCurve::operator=(const SampledCurve& from) {
@@ -210,9 +213,9 @@ namespace QuantLib {
         c1.swap(c2);
     }
 
-    inline std::ostream& operator<<(std::ostream& out, 
+    inline std::ostream& operator<<(std::ostream& out,
                                     const SampledCurve& a) {
-        out << "[ " << a.grid() << "; " 
+        out << "[ " << a.grid() << "; "
             << a.values() << " ]";
         return out;
     }

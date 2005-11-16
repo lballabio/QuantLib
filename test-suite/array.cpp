@@ -167,11 +167,11 @@ void ArrayTest::testConstruction() {
         a10[i] = i;
     }
     FSquared f2;
-    a10.transform(f2);
+    std::transform(a10.begin(), a10.end(), a10.begin(), f2);
     for (i=0; i < a10.size(); i++) {
         Real calculated = f2(static_cast<Real>(i));
         if (std::fabs(a10[i] -  calculated) >= 1e-5) {
-            BOOST_ERROR("Array transform test failed " << a10[i] << " " 
+            BOOST_ERROR("Array transform test failed " << a10[i] << " "
                         << calculated);
         }
     }
