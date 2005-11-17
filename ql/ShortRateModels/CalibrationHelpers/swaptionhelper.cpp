@@ -53,7 +53,7 @@ namespace QuantLib {
                                index->frequency(),
                                index->businessDayConvention());
 
-        Rate fixedRate = 0.04;//dummy value
+        Rate fixedRate = 0.0;  //dummy value
         swap_ = boost::shared_ptr<SimpleSwap>(
                       new SimpleSwap(false, 1.0, fixedSchedule, fixedRate,
                                      fixedLegDayCounter, floatSchedule,
