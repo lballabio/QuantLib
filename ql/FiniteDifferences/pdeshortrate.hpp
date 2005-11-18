@@ -25,6 +25,7 @@
 #define quantlib_pdeshortrate_hpp
 
 #include <ql/FiniteDifferences/pde.hpp>
+#include <ql/ShortRateModels/onefactormodel.hpp>
 
 namespace QuantLib {
     class PdeShortRate : public PdeSecondOrderParabolic {

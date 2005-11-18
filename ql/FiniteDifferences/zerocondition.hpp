@@ -33,9 +33,9 @@ namespace QuantLib {
     template <class array_type>
     class ZeroCondition :  public StepCondition<array_type> {
     public:
-        void applyTo(array_type&, Time) const {
+        void applyTo(array_type& a, Time) const {
             for(Size i=0; i < a.size(); i++) {
-                a[i] = std:max(a[i], 0.0);
+                a[i] = std::max(a[i], 0.0);
             }
         }
     };

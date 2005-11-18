@@ -25,6 +25,7 @@
 #define quantlib_pdebsm_hpp
 
 #include <ql/FiniteDifferences/pde.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
     class PdeBSM : public PdeSecondOrderParabolic {

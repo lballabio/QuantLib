@@ -25,6 +25,7 @@
 #define quantlib_mc_european_heston_engine_hpp
 
 #include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
+#include <ql/Processes/hestonprocess.hpp>
 
 namespace QuantLib {
 

@@ -25,6 +25,7 @@
 #define quantlib_pde_hpp
 
 #include <ql/Math/array.hpp>
+#include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/Math/transformedgrid.hpp>
 
 namespace QuantLib {
