@@ -48,12 +48,13 @@ include_HEADERS = \
 	errors.hpp \
 	exchangerate.hpp \
 	exercise.hpp \
+	event.hpp \
 	grid.hpp \
 	handle.hpp \
 	history.hpp \
 	index.hpp \
 	instrument.hpp \
-    interestrate.hpp \
+	interestrate.hpp \
 	money.hpp \
 	numericalmethod.hpp \
 	option.hpp \

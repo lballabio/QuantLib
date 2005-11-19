@@ -17,35 +17,29 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cashflow.hpp
-    \brief Base class for cash flows
+/*! \file event.hpp
+    \brief Base class for events associated with a given date
 */
 
-#ifndef quantlib_cash_flow_hpp
-#define quantlib_cash_flow_hpp
+#ifndef quantlib_event_hpp
+#define quantlib_event_hpp
 
 #include <ql/date.hpp>
-#include <ql/event.hpp>
 #include <ql/Patterns/observable.hpp>
 #include <ql/Patterns/visitor.hpp>
 
 namespace QuantLib {
 
-    //! Base class for cash flows
+    //! Base class for event
     /*! This class is purely virtual and acts as a base class for the actual
-        cash flow implementations.
+        event implementations.
     */
-    class CashFlow : public Event {
+    class Event : public Observable {
       public:
-        virtual ~CashFlow() {}
-        //! \name CashFlow interface
+        virtual ~Event() {}
+        //! \name Event interface
         //@{
-        //! returns the amount of the cash flow
-        /*! \note The amount is not discounted, i.e., it is the actual
-                  amount paid at the cash flow date.
-        */
-        virtual Real amount() const = 0;
-        //! \note This is inheirited from the event class
+        //! returns the Event at which the cash flow is settled
         virtual Date date() const = 0;
         //@}
         //! \name Visitability
@@ -57,12 +51,12 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline void CashFlow::accept(AcyclicVisitor& v) {
-        Visitor<CashFlow>* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
+    inline void Event::accept(AcyclicVisitor& v) {
+        Visitor<Event>* v1 = dynamic_cast<Visitor<Event>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
-            QL_FAIL("not a cash flow visitor");
+            QL_FAIL("not an event visitor");
     }
 
 }
