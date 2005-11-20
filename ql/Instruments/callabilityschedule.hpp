@@ -26,6 +26,7 @@
 #define quantlib_callability_schedule_hpp
 
 #include <ql/date.hpp>
+#include <ql/event.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -33,16 +34,19 @@ namespace QuantLib {
     class Price {
       public:
         enum Type { Dirty, Clean };
-        Real price;
-        Type type;
+        Real price_;
+        Type type_;
     };
 
-    class Callability {
+    class Callability : public Event {
       public:
         enum Type { Call, Put };
-        Price price;
-        Type type;
-        Date date;
+        Price price_;
+        Type type_;
+        Date date_;
+        Date date() {
+            return date_;
+        }
     };
 
     typedef std::vector<Callability> CallabilitySchedule;
