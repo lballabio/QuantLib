@@ -40,11 +40,11 @@ namespace QuantLib {
         Date settlementDate = process->riskFreeRate()->referenceDate();
         Real riskless = 0.0;
         Size i;
-        for (i=0; i<arguments_.dividends.size(); i++)
-            if (arguments_.dividendDates[i] >= settlementDate)
-                riskless += arguments_.dividends[i] *
+        for (i=0; i<arguments_.cashFlow.size(); i++)
+            if (arguments_.cashFlow[i]->date() >= settlementDate)
+                riskless += arguments_.cashFlow[i]->amount() *
                     process->riskFreeRate()
-                    ->discount(arguments_.dividendDates[i]);
+                    ->discount(arguments_.cashFlow[i]->date());
         Real spot = process->stateVariable()->value() - riskless;
 
         DiscountFactor dividendDiscount =
@@ -74,15 +74,15 @@ namespace QuantLib {
         results_.vega = black.vega(t);
 
         Real delta_theta = 0.0, delta_rho = 0.0;
-        for (i = 0; i < arguments_.dividends.size(); i++) {
-            Date d = arguments_.dividendDates[i];
+        for (i = 0; i < arguments_.cashFlow.size(); i++) {
+            Date d = arguments_.cashFlow[i]->date();
             if (d >= settlementDate) {
-                delta_theta -= arguments_.dividends[i] *
+                delta_theta -= arguments_.cashFlow[i]->amount() *
                   process->riskFreeRate()->zeroRate(d,rfdc,Continuous,Annual)*
                   process->riskFreeRate()->discount(d);
                 Time t = rfdc.yearFraction(
                     process->riskFreeRate()->referenceDate(), d);
-                delta_rho += arguments_.dividends[i] * t *
+                delta_rho += arguments_.cashFlow[i]->amount() * t *
                              process->riskFreeRate()->discount(t);
             }
         }

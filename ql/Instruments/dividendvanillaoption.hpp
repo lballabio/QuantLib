@@ -26,6 +26,7 @@
 
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Instruments/dividendschedule.hpp>
+#include <ql/cashflow.hpp>
 
 namespace QuantLib {
 
@@ -46,8 +47,7 @@ namespace QuantLib {
       protected:
         void setupArguments(Arguments*) const;
       private:
-        std::vector<Date> dividendDates_;
-        std::vector<Real> dividends_;
+        std::vector<boost::shared_ptr<CashFlow> > cashFlow_;
     };
 
 

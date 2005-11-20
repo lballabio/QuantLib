@@ -34,17 +34,20 @@ namespace QuantLib {
       protected:
         FDMultiPeriodEngine(Size gridPoints=100, Size timeSteps=100,
                             bool timeDependent = false);
-        mutable const DividendSchedule* schedule_;
+        mutable std::vector<boost::shared_ptr<Event> >  schedule_;
         Size timeStepPerPeriod_;
         mutable SampledCurve prices_;
         void setupArguments(const OneAssetOption::arguments* args,
                             const DividendSchedule *schedule) const {
             FDVanillaEngine::setupArguments(args);
-            schedule_ = schedule;
+            schedule_.clear();
+            schedule_.insert(schedule_.begin(),
+                             schedule->cashFlow.begin(),
+                             schedule->cashFlow.end());
         };
         void setupArguments(const OneAssetOption::arguments* args) {
             FDVanillaEngine::setupArguments(args);
-            schedule_ = &emptySchedule;
+            schedule_.clear();
         };
 
         void calculate(OneAssetOption::results* result) const;
@@ -54,7 +57,7 @@ namespace QuantLib {
         virtual void initializeStepCondition() const;
         virtual void initializeModel() const;
         Time getDividendTime(int i) const {
-            return process_->time(schedule_->dividendDates[i]);
+            return process_->time(schedule_[i]->date());
         }
     private:
         static DividendSchedule emptySchedule;

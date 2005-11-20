@@ -26,32 +26,14 @@
 #define quantlib_dividend_schedule_hpp
 
 #include <ql/date.hpp>
+#include <ql/cashflow.hpp>
 #include <vector>
 
 namespace QuantLib {
-
     class DividendSchedule {
       public:
-        std::vector<Date> dividendDates;
-        std::vector<Real> dividends;
+        std::vector<boost::shared_ptr<CashFlow> > cashFlow;
     };
-
-    #if 0
-
-    // This is a much better schedule class, that tboafo came up with.
-
-    class Dividend {
-      public:
-        enum Type { Cash, Yield };
-        Real amount;
-        Type type;
-        Date date;
-    };
-
-    typedef vector<Dividend> DividendSchedule;
-
-    #endif
-
 }
 
 

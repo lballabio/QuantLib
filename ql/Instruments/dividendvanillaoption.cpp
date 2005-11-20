@@ -19,6 +19,7 @@
 
 #include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/CashFlows/cashflowvectors.hpp>
 
 namespace QuantLib {
 
@@ -30,7 +31,8 @@ namespace QuantLib {
         const std::vector<Real>& dividends,
         const boost::shared_ptr<PricingEngine>& engine)
     : VanillaOption(process, payoff, exercise, engine),
-      dividendDates_(dividendDates), dividends_(dividends) {}
+      cashFlow_(DividendVector(dividendDates, dividends)) {
+    }
 
     void DividendVanillaOption::setupArguments(Arguments* args) const {
         VanillaOption::setupArguments(args);
@@ -39,8 +41,7 @@ namespace QuantLib {
             dynamic_cast<DividendVanillaOption::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong engine type");
 
-        arguments->dividendDates = dividendDates_;
-        arguments->dividends = dividends_;
+        arguments->cashFlow = cashFlow_;
     }
 
 
@@ -52,16 +53,12 @@ namespace QuantLib {
         VanillaOption::arguments::validate();
         #endif
 
-        QL_REQUIRE(dividends.size() == dividendDates.size(),
-                   "the number of dividends is different from "
-                   "the number of dates");
-
         Date exerciseDate = exercise->lastDate();
 
-        for (Size i = 0; i < dividends.size(); i++) {
-            QL_REQUIRE(dividendDates[i] <= exerciseDate,
+        for (Size i = 0; i < cashFlow.size(); i++) {
+            QL_REQUIRE(cashFlow[i]->date() <= exerciseDate,
                        "the " << io::ordinal(i) << " dividend date ("
-                       << dividendDates[i]
+                       << cashFlow[i]->date()
                        << ") is later than the exercise date ("
                        << exerciseDate << ")");
         }

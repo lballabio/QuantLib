@@ -46,7 +46,13 @@ namespace QuantLib {
             return std::accumulate(A.begin(), A.end(), 0.0);
         }
         Real getDividend(int i) const {
-            return schedule_->dividends[i];
+            const CashFlow *dividend =
+                dynamic_cast<const CashFlow *>(schedule_[i].get());
+            if (dividend) {
+                return dividend->amount();
+            } else {
+                return 0.0;
+            }
         }
     };
 

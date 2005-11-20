@@ -31,7 +31,7 @@ namespace QuantLib {
 
     void FDMultiPeriodEngine::calculate(OneAssetOption::results* results) const {
         Time beginDate, endDate;
-        Size dateNumber = schedule_->dividendDates.size();
+        Size dateNumber = schedule_.size();
         bool lastDateIsResTime = false;
         Integer firstIndex = -1;
         Integer lastIndex = dateNumber - 1;

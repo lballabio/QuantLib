@@ -59,6 +59,12 @@ namespace QuantLib {
         ,
         const DayCounter& dayCounter = DayCounter());
 
+    //! helper function building a sequence of dividends
+    std::vector<boost::shared_ptr<CashFlow> >
+    DividendVector(
+                   const std::vector<Date>& dividendDates,
+                   const std::vector<Real>& dividends);
+
 }
 
 
