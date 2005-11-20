@@ -25,6 +25,7 @@
 #define quantlib_fd_dividend_engine_hpp
 
 #include <ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp>
+#include <ql/cashflow.hpp>
 
 namespace QuantLib {
 

@@ -24,10 +24,9 @@
 #ifndef quantlib_fd_multi_period_engine_hpp
 #define quantlib_fd_multi_period_engine_hpp
 
-#include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
-#include <ql/Instruments/dividendschedule.hpp>
+#include <ql/event.hpp>
 
 namespace QuantLib {
     class FDMultiPeriodEngine : public FDVanillaEngine {
@@ -38,12 +37,9 @@ namespace QuantLib {
         Size timeStepPerPeriod_;
         mutable SampledCurve prices_;
         void setupArguments(const OneAssetOption::arguments* args,
-                            const DividendSchedule *schedule) const {
+                 std::vector<boost::shared_ptr<Event> >  schedule) const {
             FDVanillaEngine::setupArguments(args);
-            schedule_.clear();
-            schedule_.insert(schedule_.begin(),
-                             schedule->cashFlow.begin(),
-                             schedule->cashFlow.end());
+            schedule_ = schedule;
         };
         void setupArguments(const OneAssetOption::arguments* args) {
             FDVanillaEngine::setupArguments(args);
@@ -59,8 +55,6 @@ namespace QuantLib {
         Time getDividendTime(int i) const {
             return process_->time(schedule_[i]->date());
         }
-    private:
-        static DividendSchedule emptySchedule;
     };
 
 }

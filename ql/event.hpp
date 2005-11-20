@@ -39,7 +39,7 @@ namespace QuantLib {
         virtual ~Event() {}
         //! \name Event interface
         //@{
-        //! returns the Event at which the cash flow is settled
+        //! returns the date at which the event occurs
         virtual Date date() const = 0;
         //@}
         //! \name Visitability
@@ -59,6 +59,19 @@ namespace QuantLib {
             QL_FAIL("not an event visitor");
     }
 
+    //! \name SimpleEvent implementation
+    class SimpleEvent : public Observable {
+    private:
+        Date date_;
+    public:
+        SimpleEvent(const Date& d) :
+            date_(d) {};
+        virtual ~SimpleEvent() {};
+        inline SimpleEvent & operator = (const Date &d) {
+            date_ = d;
+            return *this;
+        };
+    };
 }
 
 

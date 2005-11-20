@@ -22,7 +22,6 @@
 #include <iostream>
 
 namespace QuantLib {
-    DividendSchedule FDMultiPeriodEngine::emptySchedule;
     FDMultiPeriodEngine::
     FDMultiPeriodEngine(Size gridPoints, Size timeSteps,
                         bool timeDependent)
