@@ -9,6 +9,7 @@ include_HEADERS = \
         basispointsensitivity.hpp \
         cashflowvectors.hpp \
         coupon.hpp \
+        dividend.hpp \
         fixedratecoupon.hpp \
         floatingratecoupon.hpp \
         inarrearindexedcoupon.hpp \
