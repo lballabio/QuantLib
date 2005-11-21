@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,42 +37,70 @@ namespace QuantLib {
         if ((w == Saturday || w == Sunday)
             // New Year's Day
             || (d == 1 && m == January)
-            // Peace Day
+            // Peace Memorial Day
             || (d == 28 && m == February)
-            // Labour Day
+            // Labor Day
             || (d == 1 && m == May)
-            // National Day
+            // Double Tenth
             || (d == 10 && m == October)
-
-            // Lunar New Year 2004
-            || ((d == 21 || d==22 || d==23 || d==24 || d==26 )
-                && m == January && y==2004)
-            // Lunar New Year 2005
-            || ((d == 8 || d==9 || d==10 || d==11 )
-                && m == February && y==2005)
-            // Lunar New Year 2006
-            || ((d == 28 || d==29 || d==30 || d==31 )
-                && m == January && y==2006)
-            // Tomb Sweeping Day 2004
-            || (d == 4 && m == April && y==2004)
-            // Tomb Sweeping Day 2005
-            || (d == 5 && m == April && y==2005)
-            // Tomb Sweeping Day 2006
-            || (d == 5 && m == April && y==2006)
-            // Dragon Boat Day 2004
-            || (d == 22 && m == June && y==2004)
-            // Dragon Boat Day 2005
-            || (d == 11 && m == June && y==2005)
-            // Dragon Boat Day 2006
-            || (d == 31 && m == May && y==2006)
-            // Mid-Autumn Festival 2004
-            || (d == 28 && m == September && y==2004)
-            // Mid-Autumn Festival 2005
-            || (d == 18 && m == September && y==2005)
-            // Mid-Autumn Festival 2006
-            || (d == 6 && m == October && y==2006)
             )
             return false;
+
+        if (y == 2002) {
+            // Dragon Boat Festival and Moon Festival fall on Saturday
+            if (// Chinese Lunar New Year
+                (d >= 9 && d <= 17 && m == February)
+                // Tomb Sweeping Day
+                || (d == 5 && m == April)
+                )
+                return false;
+        }
+        if (y == 2003) {
+            // Tomb Sweeping Day falls on Saturday
+            if (// Chinese Lunar New Year
+                ((d >= 31 && m == January) || (d <= 5 && m == February))
+                // Dragon Boat Festival
+                || (d == 4 && m == June)
+                // Moon Festival
+                || (d == 11 && m == September)
+                )
+                return false;
+        }
+        if (y == 2004) {
+            // Tomb Sweeping Day falls on Sunday
+            if (// Chinese Lunar New Year
+                (d >= 21 && d <= 26 && m == January)
+                // Dragon Boat Festival
+                || (d == 22 && m == June)
+                // Moon Festival
+                || (d == 28 && m == September)
+                )
+                return false;
+        }
+        if (y == 2005) {
+            // Dragon Boat and Moon Festival fall on Saturday or Sunday
+            if (// Chinese Lunar New Year
+                (d >= 6 && d <= 13 && m == February)
+                // Tomb Sweeping Day
+                || (d == 5 && m == April)
+                // make up for Labor Day, not seen in other years
+                || (d == 2 && m == May)
+                )
+                return false;
+        }
+        if (y == 2006) {
+            // Dragon Boat and Moon Festival fall on Saturday or Sunday
+            if (// Chinese Lunar New Year
+                ((d >= 28 && m == January) || (d <= 5 && m == February))
+                // Tomb Sweeping Day
+                || (d == 5 && m == April)
+                // Dragon Boat Festival
+                || (d == 31 && m == May)
+                // Moon Festival
+                || (d == 6 && m == October)
+                )
+                return false;
+        }
         return true;
     }
 

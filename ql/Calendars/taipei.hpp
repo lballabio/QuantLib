@@ -24,43 +24,14 @@
 #ifndef quantlib_taipei_calendar_hpp
 #define quantlib_taipei_calendar_hpp
 
-#include <ql/calendar.hpp>
+#include <ql/Calendars/taiwan.hpp>
 
 namespace QuantLib {
 
-    //! %Taipei calendar
-    /*! Holidays
-        (data from <http://www.tse.com.tw/en/trading/trading_days.php>):
-        <ul>
-        <li>Saturdays</li>
-        <li>Sundays</li>
-        <li>New Year's Day, January 1st</li>
-        <li>Peace Memorial Day, February 28</li>
-        <li>Labor Day, May 1st</li>
-        <li>Double Tenth National Day, October 10th</li>
-        </ul>
-
-        Other holidays for which no rule is given (data available for
-        2002-2005 only:)
-        <ul>
-        <li>Chinese Lunar New Year</li>
-        <li>Tomb Sweeping Day</li>
-        <li>Dragon Boat Festival</li>
-        <li>Moon Festival</li>
-        </ul>
-
-        \ingroup calendars
-    */
-    class Taipei : public Calendar {
-      private:
-        class Impl : public Calendar::Impl {
-          public:
-            std::string name() const { return "Taipei"; }
-            bool isBusinessDay(const Date&) const;
-        };
-      public:
-        Taipei();
-    };
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated Use Taiwan instead */
+    typedef Taiwan Taipei;
+    #endif
 
 }
 

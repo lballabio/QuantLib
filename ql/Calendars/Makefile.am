@@ -55,7 +55,6 @@ libCalendars_la_SOURCES = \
 	singapore.cpp \
 	stockholm.cpp \
 	sydney.cpp \
-	taipei.cpp \
 	taiwan.cpp \
 	target.cpp \
 	tokyo.cpp \

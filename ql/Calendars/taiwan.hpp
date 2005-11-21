@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,34 +22,33 @@
     \brief Taiwan calendar
 */
 
-#ifndef quantlib_taiwan_calendar_h
-#define quantlib_taiwan_calendar_h
+#ifndef quantlib_taiwan_calendar_hpp
+#define quantlib_taiwan_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
     //! %Taiwan calendar
-    /*! Holidays:
+    /*! Holidays
+        (data from <http://www.tse.com.tw/en/trading/trading_days.php>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st</li>
-        <li>Peace Day, February 28th</li>
+        <li>Peace Memorial Day, February 28</li>
         <li>Labor Day, May 1st</li>
-        <li>National Day, October 10th</li>
+        <li>Double Tenth National Day, October 10th</li>
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2006 only:)
+        (data available for 2002-2006 only:)
         <ul>
-        <li>Lunar New Year</li>
+        <li>Chinese Lunar New Year</li>
         <li>Tomb Sweeping Day</li>
-        <li>Dragon Boat Day</li>
-        <li>Mid-Autumn Festival</li>
+        <li>Dragon Boat Festival</li>
+        <li>Moon Festival</li>
         </ul>
-
-        Data from http://www.taifex.com.tw
 
         \ingroup calendars
     */
