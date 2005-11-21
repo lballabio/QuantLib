@@ -40,7 +40,7 @@ namespace QuantLib {
         : FDMultiPeriodEngine(timeSteps, gridPoints,
                               timeDependent) {}
         void calculate() const {
-            setupArguments(&arguments_, &arguments_);
+            setupArguments(&arguments_, arguments_.getEventList());
             FDMultiPeriodEngine::calculate(&results_);
         }
       protected:
