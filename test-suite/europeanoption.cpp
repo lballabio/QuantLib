@@ -27,6 +27,7 @@
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/integralengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
@@ -72,6 +73,7 @@ struct EuropeanOptionData {
 enum EngineType { Analytic,
                   JR, CRR, EQP, TGEO, TIAN, LR,
                   FiniteDifferences,
+                  Integral,
                   PseudoMonteCarlo, QuasiMonteCarlo };
 
 boost::shared_ptr<VanillaOption>
@@ -118,6 +120,10 @@ makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
         engine = boost::shared_ptr<PricingEngine>(
                 new FDEuropeanEngine(binomialSteps,samples));
         break;
+      case Integral:
+          engine = boost::shared_ptr<PricingEngine>(
+                new IntegralEngine());                                     
+          break;
       case PseudoMonteCarlo:
         engine = MakeMCEuropeanEngine<PseudoRandom>().withSteps(1)
                                                      .withSamples(samples)
@@ -159,6 +165,8 @@ std::string engineTypeToString(EngineType type) {
         return "LeisenReimer";
       case FiniteDifferences:
         return "FiniteDifferences";
+    case Integral:
+        return "Integral";
       case PseudoMonteCarlo:
         return "MonteCarlo";
       case QuasiMonteCarlo:
@@ -1098,6 +1106,19 @@ void EuropeanOptionTest::testFdEngines() {
                           timeSteps,gridPoints,relativeTol);
 }
 
+void EuropeanOptionTest::testIntegralEngines() {
+
+    BOOST_MESSAGE("Testing integral engines "
+                  "against analytic results...");
+
+    EngineType engines[] = { Integral };
+    Size timeSteps = 300;
+    Size gridPoints = 300;
+    Real relativeTol = 0.0001;
+    testEngineConsistency(engines,LENGTH(engines),
+                          timeSteps,gridPoints,relativeTol);
+}
+
 void EuropeanOptionTest::testMcEngines() {
 
     BOOST_MESSAGE("Testing Monte Carlo European engines "
@@ -1339,6 +1360,7 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testTIANBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testLRBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testFdEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testIntegralEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testFdGreeks));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testQmcEngines));

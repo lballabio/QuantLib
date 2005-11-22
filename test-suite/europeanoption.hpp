@@ -39,6 +39,7 @@ class EuropeanOptionTest {
     static void testTIANBinomialEngines();
     static void testLRBinomialEngines();
     static void testFdEngines();
+    static void testIntegralEngines();
     static void testFdGreeks();
     static void testQmcEngines();
     static void testMcEngines();

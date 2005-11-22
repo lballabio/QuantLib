@@ -25,7 +25,7 @@
 #ifndef quantlib_integral_engine_hpp
 #define quantlib_integral_engine_hpp
 
-#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/oneassetstrikedoption.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +35,7 @@ namespace QuantLib {
 
         \ingroup vanillaengines
     */
-    class IntegralEngine : public VanillaOption::engine {
+    class IntegralEngine : public OneAssetStrikedOption::engine {
       public:
         void calculate() const;
     };
