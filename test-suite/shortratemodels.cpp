@@ -172,7 +172,7 @@ void ShortRateModelTest::testSwaps() {
     boost::shared_ptr<PricingEngine> engine(
                                          new TreeSimpleSwapEngine(model,120));
 
-    Real tolerance = 1.0e-9;
+    Real tolerance = 1.0e-8;
     for (Size i=0; i<LENGTH(start); i++) {
 
         Date startDate = calendar.advance(settlement,start[i],Months);
