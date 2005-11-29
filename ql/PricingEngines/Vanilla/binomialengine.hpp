@@ -26,6 +26,7 @@
 #define quantlib_binomial_engine_hpp
 
 #include <ql/Lattices/binomialtree.hpp>
+#include <ql/Lattices/bsmlattice.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
@@ -95,6 +96,21 @@ namespace QuantLib {
         boost::shared_ptr<StochasticProcess1D> bs(new
             BlackScholesProcess(Handle<Quote>(process->stateVariable()),
                                 flatDividends, flatRiskFree, flatVol));
+
+		// adjust the bermudan exercise times according to the tree steps
+		Time dt = maturity/timeSteps_;
+		for (Size k=0; k<arguments_.stoppingTimes.size(); ++k) {
+			Integer step = Integer(arguments_.stoppingTimes[k]/dt);
+			Time residual = arguments_.stoppingTimes[k]/dt - step;
+			if (close(residual, 0.0)) {
+                ; // do nothing
+            } else if (residual > 0.5) {
+				arguments_.stoppingTimes[k] = dt*(step+1);
+			} else {
+				arguments_.stoppingTimes[k] = dt*step;
+			}
+		}
+
         boost::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,
                                         payoff->strike()));
 

@@ -6,3 +6,7 @@
   it now subsumes McHestonEngine.
 
 - Added weight to short-rate model calibration (thanks to Enrico Michelotti.)
+
+- Added pricing of Bermudan options on binomial trees (thanks to Enrico
+  Michelotti.)
+
