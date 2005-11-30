@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="QuantLib"
 	ProjectGUID="{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
-	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -1229,10 +1228,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\taipei.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Calendars\taipei.hpp"
 				>
 			</File>
@@ -1898,6 +1893,10 @@
 			</File>
 			<File
 				RelativePath="ql\CashFlows\coupon.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\dividend.hpp"
 				>
 			</File>
 			<File
@@ -2585,10 +2584,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\bsmtermoperator.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\FiniteDifferences\bsmtermoperator.hpp"
 				>
 			</File>
@@ -2637,80 +2632,11 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\onefactoroperator.cpp"
+				RelativePath="ql\FiniteDifferences\onefactoroperator.hpp"
 				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\onefactoroperator.hpp"
+				RelativePath=".\ql\FiniteDifferences\operatorfactory.hpp"
 				>
 			</File>
 			<File
@@ -2719,6 +2645,18 @@
 			</File>
 			<File
 				RelativePath=".\ql\FiniteDifferences\parallelevolver.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\pde.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\pdebsm.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\pdeshortrate.hpp"
 				>
 			</File>
 			<File
@@ -2807,80 +2745,11 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\valueatcenter.cpp"
+				RelativePath="ql\FiniteDifferences\valueatcenter.hpp"
 				>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\valueatcenter.hpp"
+				RelativePath=".\ql\FiniteDifferences\zerocondition.hpp"
 				>
 			</File>
 		</Filter>
@@ -3430,6 +3299,10 @@
 			</File>
 			<File
 				RelativePath="ql\Instruments\cliquetoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\convertiblebond.hpp"
 				>
 			</File>
 			<File
@@ -5858,6 +5731,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Math\sampledcurve.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Math\sampledcurve.hpp"
 				>
 			</File>
@@ -6041,6 +5918,10 @@
 			</File>
 			<File
 				RelativePath=".\ql\Math\tqreigendecomposition.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Math\transformedgrid.hpp"
 				>
 			</File>
 			<File
@@ -8718,6 +8599,14 @@
 					RelativePath=".\ql\PricingEngines\Cliquet\analyticperformanceengine.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Cliquet\mccliquetengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Cliquet\mccliquetengine.hpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -11090,6 +10979,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Processes\defaultable.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Processes\eulerdiscretization.cpp"
 				>
 			</File>
@@ -11236,7 +11129,23 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\config.ansi.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\config.bcc.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\config.mingw.hpp"
+			>
+		</File>
+		<File
 			RelativePath="ql\config.msvc.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\config.mwcw.hpp"
 			>
 		</File>
 		<File
@@ -11484,6 +11393,10 @@
 		</File>
 		<File
 			RelativePath="ql\errors.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\event.hpp"
 			>
 		</File>
 		<File

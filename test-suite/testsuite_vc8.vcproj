@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="testsuite"
 	ProjectGUID="{A613045C-34AF-4706-AA3C-730C92524F74}"
-	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -1369,6 +1368,10 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\defaultable.cpp"
+				>
 			</File>
 			<File
 				RelativePath="digitaloption.cpp"
@@ -3045,6 +3048,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\transformedgrid.cpp"
+				>
+			</File>
+			<File
 				RelativePath="utilities.cpp"
 				>
 				<FileConfiguration
@@ -3332,6 +3339,10 @@
 			</File>
 			<File
 				RelativePath=".\tracing.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\transformedgrid.hpp"
 				>
 			</File>
 			<File

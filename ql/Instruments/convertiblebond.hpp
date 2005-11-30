@@ -49,8 +49,7 @@ namespace QuantLib {
                         const boost::shared_ptr<StochasticProcess>& stochProc,
                         const boost::shared_ptr<StrikedTypePayoff>& payoff,
                         const boost::shared_ptr<Exercise>& exercise,
-                        const boost::shared_ptr<PricingEngine>& engine =
-                        boost::shared_ptr<PricingEngine>(),
+                        const boost::shared_ptr<PricingEngine>& engine,
                         // Convertible parameters
                         Real  conversionRatio, 
                         const DividendSchedule&  dividends,
