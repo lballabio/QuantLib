@@ -1,40 +1,47 @@
 
-span.googlestyle {
-    font-family: arial,sans-serif; font-size: 80%
+#container {
+    width: 100%;
+}
+
+#menu {
+    float: left;
+    width: 20%;
+    margin: 0;
+    margin-bottom: 1em;
+    padding: 1em;
+    background-color: #ccccff;
+    border: 1px solid gray;
+}
+
+#content {
+    margin-left: 25%;
+    padding: 1em;
+    vertical-align: top;
+}
+
+.footer {
+    clear: both;
+    margin: 0;
+    padding: .5em;
+    text-align: center;
+    border-top: 1px solid gray;
 }
 
 a:active { text-decoration: none }
 
-table.layout {
-    width: 100%;
+ul.navbarlist {
     padding-left: 1em;
-    padding-right: 1em;
-    border-left: 0;
-    border-right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    font-family: georgia, verdana, arial, sans-serif;
+    margin-left: 0;
 }
 
-td.main {
-    font-family: georgia, verdana, arial, sans-serif;
-    vertical-align: top;
-}
-
-td.navbar {
-    width: 20%;
-    font-family: verdana, arial, sans-serif;
-    color: #000;
-    background-color: #ccccff;
-    border-width: 1px;
-    border-color: #000;
-    vertical-align: top;
-    padding: 1em;
+li.navlink {
+    font-weight: normal;
+    font-size: 90%;
+    list-style:none;
+    margin: 0;
 }
 
 .navbartitle { text-align: center }
-
-a.navlink { font-weight: normal }
 
 .hide { display: none }
 
@@ -49,7 +56,7 @@ a.navlink { font-weight: normal }
 .button { border-style: none }
 
 .center { text-align: center }
-
+.left { text-align: left }
 .right { text-align: right }
 
 OL.navlinklist{
@@ -64,6 +71,9 @@ pre {
     font-family: monospace;
 }
 
+span.googlestyle {
+    font-family: arial,sans-serif; font-size: 80%
+}
 
 .rule { margin-top: 2em }
 .recom { }
@@ -86,13 +96,13 @@ H2 {
        font-size: 120%;
 }
 H3 {
-       font-size: 110%;
+       font-size: 100%;
 }
 CAPTION { font-weight: bold }
 DIV.qindex {
 	width: 100%;
-	background-color: #eeeeff;
-	border: 1px solid #b0b0b0;
+	background-color: #e8eef2;
+	border: 1px solid #84b0c7;
 	text-align: center;
 	margin: 2px;
 	padding: 2px;
@@ -100,12 +110,23 @@ DIV.qindex {
 }
 DIV.nav {
 	width: 100%;
-	background-color: #eeeeff;
-	border: 1px solid #b0b0b0;
+	background-color: #e8eef2;
+	border: 1px solid #84b0c7;
 	text-align: center;
 	margin: 2px;
 	padding: 2px;
 	line-height: 140%;
+}
+DIV.navtab {
+       background-color: #e8eef2;
+       border: 1px solid #84b0c7;
+       text-align: center;
+       margin: 2px;
+       margin-right: 15px;
+       padding: 2px;
+}
+TD.navtab {
+       font-size: 70%;
 }
 A.qindex {
        text-decoration: none;
@@ -143,7 +164,8 @@ A.codeRef:visited { font-weight: normal; color: #0000FF}
 A:hover { text-decoration: none; background-color: #f2f2ff }
 DL.el { margin-left: -1cm }
 .fragment {
-       font-family: monospace
+       font-family: Fixed, monospace;
+       font-size: 95%;
 }
 PRE.fragment {
 	border: 1px solid #CCCCCC;
@@ -180,7 +202,7 @@ BODY {
 	margin-left: 20px;
 }
 TD.indexkey {
-	background-color: #eeeeff;
+	background-color: #e8eef2;
 	font-weight: bold;
 	padding-right  : 10px;
 	padding-top    : 2px;
@@ -193,7 +215,7 @@ TD.indexkey {
 	border: 1px solid #CCCCCC;
 }
 TD.indexvalue {
-	background-color: #eeeeff;
+	background-color: #e8eef2;
 	font-style: italic;
 	padding-right  : 10px;
 	padding-top    : 2px;
@@ -348,24 +370,25 @@ FORM.search {
 INPUT.search { font-size: 75%;
                color: #000080;
                font-weight: normal;
-               background-color: #eeeeff;
+               background-color: #e8eef2;
 }
 TD.tiny      { font-size: 75%;
 }
 a {
-	color: #252E78;
+	color: #1A41A8;
 }
 a:visited {
-	color: #3D2185;
+	color: #2A3798;
 }
 .dirtab { padding: 4px;
           border-collapse: collapse;
-          border: 1px solid #b0b0b0;
+          border: 1px solid #84b0c7;
 }
-TH.dirtab { background: #eeeeff;
+TH.dirtab { background: #e8eef2;
             font-weight: bold;
 }
 HR { height: 1px;
      border: none;
      border-top: 1px solid black;
 }
+

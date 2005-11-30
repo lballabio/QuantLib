@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file valueatcenter.hpp
-    \brief compute value, first, and second derivatives at grid center
+/*! \file pdebsm.hpp
+    \brief Black-Scholes-Merton PDE
 */
 
 #ifndef quantlib_pdebsm_hpp
