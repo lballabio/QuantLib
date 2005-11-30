@@ -30,7 +30,7 @@ namespace QuantLib {
 
     Disposable<Array> CenteredGrid(Real center, Real dx, Size steps);
     Disposable<Array> BoundedGrid(Real xMin, Real xMax, Size steps);
-    Disposable<Array> BoundedLogGrid(Real xMax, Real xMax, Size steps);
+    Disposable<Array> BoundedLogGrid(Real xMin, Real xMax, Size steps);
 
     // inline definitions
 
