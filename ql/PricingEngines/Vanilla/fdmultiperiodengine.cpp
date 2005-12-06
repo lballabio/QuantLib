@@ -19,7 +19,6 @@
 
 #include <ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
-#include <iostream>
 
 namespace QuantLib {
     FDMultiPeriodEngine::
@@ -30,7 +29,7 @@ namespace QuantLib {
 
     void FDMultiPeriodEngine::calculate(OneAssetOption::results* results) const {
         Time beginDate, endDate;
-        Size dateNumber = schedule_.size();
+        Size dateNumber = stoppingTimes_.size();
         bool lastDateIsResTime = false;
         Integer firstIndex = -1;
         Integer lastIndex = dateNumber - 1;
@@ -69,9 +68,6 @@ namespace QuantLib {
             }
         }
 
-        if(lastDateIsResTime)
-            executeIntermediateStep(dateNumber - 1);
-
         Time dt = getResidualTime()/(timeStepPerPeriod_*(dateNumber+1));
 
         // Ensure that dt is always smaller than the first non-zero date
@@ -85,6 +81,9 @@ namespace QuantLib {
         initializeStepCondition();
 
         prices_ = intrinsicValues_;
+        if(lastDateIsResTime)
+            executeIntermediateStep(dateNumber - 1);
+
         Integer j = lastIndex;
         do{
             if (j == Integer(dateNumber) - 1)
@@ -97,7 +96,7 @@ namespace QuantLib {
             else
                 endDate = dt;
 
-            model_->rollback(prices_.values(), 
+            model_->rollback(prices_.values(),
                              beginDate, endDate,
                              timeStepPerPeriod_, *stepCondition_);
             if (j >= 0)

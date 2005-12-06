@@ -48,7 +48,7 @@ namespace QuantLib {
         }
         Real getDividend(int i) const {
             const CashFlow *dividend =
-                dynamic_cast<const CashFlow *>(schedule_[i].get());
+                dynamic_cast<const CashFlow *>(events_[i].get());
             if (dividend) {
                 return dividend->amount();
             } else {

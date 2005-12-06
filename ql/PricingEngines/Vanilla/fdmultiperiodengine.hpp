@@ -29,21 +29,28 @@
 #include <ql/event.hpp>
 
 namespace QuantLib {
+
     class FDMultiPeriodEngine : public FDVanillaEngine {
       protected:
         FDMultiPeriodEngine(Size gridPoints=100, Size timeSteps=100,
                             bool timeDependent = false);
-        mutable std::vector<boost::shared_ptr<Event> >  schedule_;
+        mutable std::vector<boost::shared_ptr<Event> > events_;
+        mutable std::vector<Time> stoppingTimes_;
         Size timeStepPerPeriod_;
         mutable SampledCurve prices_;
-        void setupArguments(const OneAssetOption::arguments* args,
-                 std::vector<boost::shared_ptr<Event> >  schedule) const {
+        void setupArguments(
+               const OneAssetOption::arguments* args,
+               const std::vector<boost::shared_ptr<Event> >& schedule) const {
             FDVanillaEngine::setupArguments(args);
-            schedule_ = schedule;
+            events_ = schedule;
+            stoppingTimes_.clear();
+            for (Size i=0; i<schedule.size(); i++)
+                stoppingTimes_.push_back(process_->time(events_[i]->date()));
         };
-        void setupArguments(const OneAssetOption::arguments* args) {
+        void setupArguments(const OneAssetOption::arguments* args) const {
             FDVanillaEngine::setupArguments(args);
-            schedule_.clear();
+            events_.clear();
+            stoppingTimes_ = args->stoppingTimes;
         };
 
         void calculate(OneAssetOption::results* result) const;
@@ -53,7 +60,7 @@ namespace QuantLib {
         virtual void initializeStepCondition() const;
         virtual void initializeModel() const;
         Time getDividendTime(int i) const {
-            return process_->time(schedule_[i]->date());
+            return stoppingTimes_[i];
         }
     };
 
