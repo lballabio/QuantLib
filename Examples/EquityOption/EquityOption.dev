@@ -1,6 +1,6 @@
 [Project]
-FileName=EuropeanOption.dev
-Name=EuropeanOption
+FileName=EquityOption.dev
+Name=EquityOption
 Ver=1
 IsCpp=1
 Type=1
@@ -12,14 +12,14 @@ Libs=..\..\lib
 UnitCount=2
 Folders="Header Files","Resource Files","Source Files"
 ObjFiles=
-PrivateResource=EuropeanOption_private.rc
+PrivateResource=EquityOption_private.rc
 ResourceIncludes=
 MakeIncludes=
 Icon=
 ExeOutput=bin
 ObjectOutput=build\mingw
 OverrideOutput=1
-OverrideOutputName=EuropeanOption-mgw.exe
+OverrideOutputName=EquityOption-mgw.exe
 HostApplication=
 CommandLine=
 UseCustomMakefile=0
@@ -30,7 +30,7 @@ CompilerSet=0
 CompilerSettings=0000000000000000000000
 
 [Unit1]
-FileName=EuropeanOption.cpp
+FileName=EquityOption.cpp
 Folder="Source Files"
 Compile=1
 CompileCpp=1

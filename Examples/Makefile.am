@@ -2,10 +2,9 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 SUBDIRS =  \
-    AmericanOption \
     BermudanSwaption \
     DiscreteHedging \
-    EuropeanOption \
+    EquityOption \
     Swap
 SUBDIR_CHECKS = $(SUBDIRS:%=%.check)
 

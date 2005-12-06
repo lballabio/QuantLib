@@ -10,3 +10,5 @@
 - Added pricing of Bermudan options on binomial trees (thanks to Enrico
   Michelotti.)
 
+- Merged American and European option examples; added Bermudan option.
+

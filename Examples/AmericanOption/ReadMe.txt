@@ -1,1 +1,0 @@
-Calculates America options using Monte Carlo simulation

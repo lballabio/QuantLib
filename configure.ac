@@ -332,6 +332,7 @@ AC_CONFIG_FILES([
     Examples/AmericanOption/Makefile
     Examples/BermudanSwaption/Makefile
     Examples/DiscreteHedging/Makefile
+    Examples/EquityOption/Makefile
     Examples/EuropeanOption/Makefile
     Examples/Swap/Makefile
     test-suite/Makefile])
