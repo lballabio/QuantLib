@@ -329,11 +329,9 @@ AC_CONFIG_FILES([
     man/Makefile
     Docs/Makefile
     Examples/Makefile
-    Examples/AmericanOption/Makefile
     Examples/BermudanSwaption/Makefile
     Examples/DiscreteHedging/Makefile
     Examples/EquityOption/Makefile
-    Examples/EuropeanOption/Makefile
     Examples/Swap/Makefile
     test-suite/Makefile])
 AC_CONFIG_FILES([quantlib-config],[chmod +x quantlib-config])
