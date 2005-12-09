@@ -51,7 +51,8 @@ namespace QuantLib {
     }
 
     void Swap::setupExpired() const {
-        NPV_ = firstLegBPS_= secondLegBPS_ = 0.0;
+        Instrument::setupExpired();
+        firstLegBPS_= secondLegBPS_ = 0.0;
     }
 
     void Swap::performCalculations() const {
@@ -60,6 +61,7 @@ namespace QuantLib {
 
         NPV_ = - Cashflows::npv(firstLeg_,termStructure_)
                + Cashflows::npv(secondLeg_,termStructure_);
+        errorEstimate_ = Null<Real>();
 
         firstLegBPS_ = - Cashflows::bps(firstLeg_, termStructure_);
         secondLegBPS_ = + Cashflows::bps(secondLeg_, termStructure_);
