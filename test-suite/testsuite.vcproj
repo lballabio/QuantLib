@@ -2432,6 +2432,9 @@
 				RelativePath=".\tracing.cpp">
 			</File>
 			<File
+				RelativePath=".\transformedgrid.cpp">
+			</File>
+			<File
 				RelativePath="utilities.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2653,6 +2656,9 @@
 			</File>
 			<File
 				RelativePath=".\tracing.hpp">
+			</File>
+			<File
+				RelativePath=".\transformedgrid.hpp">
 			</File>
 			<File
 				RelativePath="utilities.hpp">

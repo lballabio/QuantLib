@@ -967,9 +967,6 @@
 				RelativePath="ql\Calendars\sydney.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\taipei.cpp">
-			</File>
-			<File
 				RelativePath=".\ql\Calendars\taipei.hpp">
 			</File>
 			<File
@@ -2071,9 +2068,6 @@
 				RelativePath="ql\FiniteDifferences\bsmoperator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\bsmtermoperator.cpp">
-			</File>
-			<File
 				RelativePath=".\ql\FiniteDifferences\bsmtermoperator.hpp">
 			</File>
 			<File
@@ -2108,66 +2102,6 @@
 			</File>
 			<File
 				RelativePath="ql\FiniteDifferences\mixedscheme.hpp">
-			</File>
-			<File
-				RelativePath="ql\FiniteDifferences\onefactoroperator.cpp">
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="ql\FiniteDifferences\onefactoroperator.hpp">
@@ -2246,66 +2180,6 @@
 			</File>
 			<File
 				RelativePath="ql\FiniteDifferences\tridiagonaloperator.hpp">
-			</File>
-			<File
-				RelativePath="ql\FiniteDifferences\valueatcenter.cpp">
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="ql\FiniteDifferences\valueatcenter.hpp">
@@ -4722,6 +4596,9 @@
 			</File>
 			<File
 				RelativePath=".\ql\Math\rounding.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\sampledcurve.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\Math\sampledcurve.hpp">

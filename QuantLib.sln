@@ -1,20 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmericanOption", "Examples\AmericanOption\AmericanOption.vcproj", "{EF6D982C-CF99-4442-B297-776DBECFAFC9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BermudanSwaption", "Examples\BermudanSwaption\BermudanSwaption.vcproj", "{B96E9E0A-99DA-4E9F-B8D0-941F46CDF634}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DiscreteHedging", "Examples\DiscreteHedging\DiscreteHedging.vcproj", "{C3E22CAD-0CAF-42DC-ADE0-B2FF4F644BCE}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EuropeanOption", "Examples\EuropeanOption\EuropeanOption.vcproj", "{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
@@ -39,6 +29,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Swap", "Examples\Swap\Swap.
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EquityOption", "Examples\EquityOption\EquityOption.vcproj", "{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -49,18 +43,6 @@ Global
 		Release SingleThread = Release SingleThread
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Debug.ActiveCfg = Debug|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Debug.Build.0 = Debug|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Debug MTDLL.ActiveCfg = Debug MTDLL|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Debug MTDLL.Build.0 = Debug MTDLL|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Debug SingleThread.ActiveCfg = Debug SingleThread|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Debug SingleThread.Build.0 = Debug SingleThread|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release.ActiveCfg = Release|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release.Build.0 = Release|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release MTDLL.ActiveCfg = Release MTDLL|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release MTDLL.Build.0 = Release MTDLL|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release SingleThread.ActiveCfg = Release SingleThread|Win32
-		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release SingleThread.Build.0 = Release SingleThread|Win32
 		{B96E9E0A-99DA-4E9F-B8D0-941F46CDF634}.Debug.ActiveCfg = Debug|Win32
 		{B96E9E0A-99DA-4E9F-B8D0-941F46CDF634}.Debug.Build.0 = Debug|Win32
 		{B96E9E0A-99DA-4E9F-B8D0-941F46CDF634}.Debug MTDLL.ActiveCfg = Debug MTDLL|Win32
@@ -85,18 +67,6 @@ Global
 		{C3E22CAD-0CAF-42DC-ADE0-B2FF4F644BCE}.Release MTDLL.Build.0 = Release MTDLL|Win32
 		{C3E22CAD-0CAF-42DC-ADE0-B2FF4F644BCE}.Release SingleThread.ActiveCfg = Release SingleThread|Win32
 		{C3E22CAD-0CAF-42DC-ADE0-B2FF4F644BCE}.Release SingleThread.Build.0 = Release SingleThread|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Debug.ActiveCfg = Debug|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Debug.Build.0 = Debug|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Debug MTDLL.ActiveCfg = Debug MTDLL|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Debug MTDLL.Build.0 = Debug MTDLL|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Debug SingleThread.ActiveCfg = Debug SingleThread|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Debug SingleThread.Build.0 = Debug SingleThread|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Release.ActiveCfg = Release|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Release.Build.0 = Release|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Release MTDLL.ActiveCfg = Release MTDLL|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Release MTDLL.Build.0 = Release MTDLL|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Release SingleThread.ActiveCfg = Release SingleThread|Win32
-		{5F9D1A29-C09D-4842-ABA6-BF1103FF1045}.Release SingleThread.Build.0 = Release SingleThread|Win32
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}.Debug.ActiveCfg = Debug|Win32
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}.Debug.Build.0 = Debug|Win32
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}.Debug MTDLL.ActiveCfg = Debug MTDLL|Win32
@@ -145,6 +115,18 @@ Global
 		{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}.Release MTDLL.Build.0 = Release MTDLL|Win32
 		{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}.Release SingleThread.ActiveCfg = Release SingleThread|Win32
 		{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}.Release SingleThread.Build.0 = Release SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug.ActiveCfg = Debug|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug.Build.0 = Debug|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug MTDLL.ActiveCfg = Debug MTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug MTDLL.Build.0 = Debug MTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug SingleThread.ActiveCfg = Debug SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug SingleThread.Build.0 = Debug SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release.ActiveCfg = Release|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release.Build.0 = Release|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release MTDLL.ActiveCfg = Release MTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release MTDLL.Build.0 = Release MTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release SingleThread.ActiveCfg = Release SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release SingleThread.Build.0 = Release SingleThread|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
