@@ -82,6 +82,7 @@ QL_TESTS = \
     "termstructures.obj$(_mt)$(_D)" \
     "tqreigendecomposition.obj$(_mt)$(_D)" \
     "tracing.obj$(_mt)$(_D)" \
+    "transformedgrid.obj$(_mt)$(_D)" \
     "utilities.obj$(_mt)$(_D)"
 
 # Tools to be used

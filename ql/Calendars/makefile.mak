@@ -42,7 +42,6 @@ OBJS = \
     "singapore.obj$(_mt)$(_D)" \
     "stockholm.obj$(_mt)$(_D)" \
     "sydney.obj$(_mt)$(_D)" \
-    "taipei.obj$(_mt)$(_D)" \
     "taiwan.obj$(_mt)$(_D)" \
     "target.obj$(_mt)$(_D)" \
     "tokyo.obj$(_mt)$(_D)" \

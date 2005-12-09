@@ -25,10 +25,7 @@ INCLUDE_DIR    = ..\..
 OBJS = \
     "boundarycondition.obj$(_mt)$(_D)" \
     "bsmoperator.obj$(_mt)$(_D)" \
-    "bsmtermoperator.obj$(_mt)$(_D)" \
-    "onefactoroperator.obj$(_mt)$(_D)" \
-    "tridiagonaloperator.obj$(_mt)$(_D)" \
-    "valueatcenter.obj$(_mt)$(_D)"
+    "tridiagonaloperator.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32

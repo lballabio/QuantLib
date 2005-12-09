@@ -27,11 +27,9 @@ MAKE = $(MAKE) -fmakefile.mak
 # Primary target:
 # QuantLib Examples
 examples::
-    cd AmericanOption
+    cd DiscreteHedging
     $(MAKE)
-    cd ..\DiscreteHedging
-    $(MAKE)
-    cd ..\EuropeanOption
+    cd ..\EquityOption
     $(MAKE)
     cd ..\Swap
     $(MAKE)
@@ -39,11 +37,9 @@ examples::
 
 # Clean up
 clean::
-    cd AmericanOption
+    cd DiscreteHedging
     $(MAKE) clean
-    cd ..\DiscreteHedging
-    $(MAKE) clean
-    cd ..\EuropeanOption
+    cd ..\EquityOption
     $(MAKE) clean
     cd ..\Swap
     $(MAKE) clean
