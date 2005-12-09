@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=109
+UnitCount=111
 Type=1
 Ver=1
 ObjFiles=
@@ -1129,6 +1129,26 @@ BuildCmd=
 
 [Unit109]
 FileName=sampledcurve.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit110]
+FileName=transformedgrid.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit111]
+FileName=transformedgrid.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
