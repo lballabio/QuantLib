@@ -34,11 +34,11 @@ namespace QuantLib {
     : Bond(dayCounter, calendar, convention, settlementDays, discountCurve) {
 
         issueDate_ = datedDate_ = issueDate;
-        maturityDate_ = maturityDate;
+        maturityDate_ = calendar.adjust(maturityDate,convention);
         frequency_ = Once;
 
         redemption_ = boost::shared_ptr<CashFlow>(
-                                 new SimpleCashFlow(redemption,maturityDate));
+                                new SimpleCashFlow(redemption,maturityDate_));
 
         cashFlows_ = std::vector<boost::shared_ptr<CashFlow> >();
     }

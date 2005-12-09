@@ -614,7 +614,7 @@ void BondTest::testCachedFloating() {
                            ModifiedFollowing, 100.0,
                            riskFreeRate);
 
-    Real cachedPrice1 = 99.862096;
+    Real cachedPrice1 = 99.874645;
 
     Real price = bond1.cleanPrice();
     if (std::fabs(price-cachedPrice1) > tolerance) {
@@ -639,7 +639,7 @@ void BondTest::testCachedFloating() {
                            ModifiedFollowing, 100.0,
                            discountCurve);
 
-    Real cachedPrice2 = 97.941146;
+    Real cachedPrice2 = 97.955904;
 
     price = bond2.cleanPrice();
     if (std::fabs(price-cachedPrice2) > tolerance) {
@@ -670,7 +670,7 @@ void BondTest::testCachedFloating() {
                            ModifiedFollowing, 100.0,
                            discountCurve);
 
-    Real cachedPrice3 = 98.480701;
+    Real cachedPrice3 = 98.495458;
 
     price = bond3.cleanPrice();
     if (std::fabs(price-cachedPrice3) > tolerance) {

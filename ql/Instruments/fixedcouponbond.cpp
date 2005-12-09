@@ -42,11 +42,11 @@ namespace QuantLib {
 
         issueDate_ = issueDate;
         datedDate_ = datedDate;
-        maturityDate_ = maturityDate;
+        maturityDate_ = calendar.adjust(maturityDate,convention);
         frequency_ = couponFrequency;
 
         redemption_ = boost::shared_ptr<CashFlow>(
-                                 new SimpleCashFlow(redemption,maturityDate));
+                                new SimpleCashFlow(redemption,maturityDate_));
 
         Schedule schedule(calendar, datedDate, maturityDate,
                           couponFrequency, convention,
