@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
  Copyright (C) 2003 Decillion Pty(Ltd)
 
  This file is part of QuantLib, a free-software/open-source library
@@ -19,34 +19,19 @@
 */
 
 #include <ql/CashFlows/basispointsensitivity.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 
-    void BPSCalculator::visit(Coupon& c) {
-        // add BPS of the coupon
-        result_ += c.accrualPeriod() *
-                   c.nominal() *
-            termStructure_->discount(c.date());
-    }
-
-    void BPSCalculator::visit(CashFlow&) {}
-
+    #ifndef QL_DISABLE_DEPRECATED
     Real BasisPointSensitivity(
                          const std::vector<boost::shared_ptr<CashFlow> >& leg,
                          const Handle<YieldTermStructure>& ts) {
-        Date settlement = ts->referenceDate();
-        BPSCalculator calc(ts);
-        for (Size i=0; i<leg.size(); i++)
-            #if QL_TODAYS_PAYMENTS
-            if (leg[i]->date() >= settlement)
-            #else
-            if (leg[i]->date() > settlement)
-            #endif
-                leg[i]->accept(calc);
-        return calc.result();
+        return Cashflows::bps(leg,ts);
     }
+    #endif
 
-
+    #ifndef QL_DISABLE_DEPRECATED
     void BPSBasketCalculator::visit(Coupon& c) {
         Date today = Settings::instance().evaluationDate(),
              accrualStart = c.accrualStartDate(),
@@ -108,6 +93,7 @@ namespace QuantLib {
                 leg[i]->accept(calc);
         return calc.result();
     }
+    #endif
 
 }
 

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
  Copyright (C) 2003 Decillion Pty(Ltd)
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,34 +31,16 @@
 
 namespace QuantLib {
 
-    //! basis point sensitivity (BPS) calculator
-    /*! Instances of this class accumulate the BPS of each
-        cash flow they visit, returning the sum through their
-        result() method.
-    */
-    class BPSCalculator : public AcyclicVisitor,
-                          public Visitor<CashFlow>,
-                          public Visitor<Coupon> {
-      public:
-        BPSCalculator(const Handle<YieldTermStructure>& ts)
-        : termStructure_(ts), result_(0.0) {}
-        //! \name Visitor interface
-        //@{
-        virtual void visit(Coupon&);
-        virtual void visit(CashFlow&);
-        //@}
-        Real result() const { return result_; }
-      private:
-        Handle<YieldTermStructure> termStructure_;
-        Real result_;
-    };
-
+    #ifndef QL_DISABLE_DEPRECATED
     //! Collective basis-point sensitivity of a cash-flow sequence
+    /*! \deprecated use Cashflows::bps instead */
     Real BasisPointSensitivity(
                              const std::vector<boost::shared_ptr<CashFlow> >&,
                              const Handle<YieldTermStructure>&);
+    #endif
 
 
+    #ifndef QL_DISABLE_DEPRECATED
     /*! \bug this class must still be checked. It is not guaranteed
              to yield the right results.
     */
@@ -91,6 +73,7 @@ namespace QuantLib {
                              const std::vector<boost::shared_ptr<CashFlow> >&,
                              const Handle<YieldTermStructure>&,
                              Integer basis);
+    #endif
 
 }
 

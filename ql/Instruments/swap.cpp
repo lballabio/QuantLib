@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,6 +19,7 @@
 
 #include <ql/Instruments/swap.hpp>
 #include <ql/CashFlows/basispointsensitivity.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 
@@ -56,39 +57,12 @@ namespace QuantLib {
     void Swap::performCalculations() const {
         QL_REQUIRE(!termStructure_.empty(), "no term structure set");
         Date settlement = termStructure_->referenceDate();
-        NPV_ = 0.0;
-        Real firstLegNPV = 0.0;
-        Real secondLegNPV = 0.0;
 
-        // subtract first leg cash flows
-        for (Size i=0; i<firstLeg_.size(); i++) {
-            Date cashFlowDate = firstLeg_[i]->date();
-            #if QL_TODAYS_PAYMENTS
-            if (cashFlowDate >= settlement) {
-            #else
-            if (cashFlowDate > settlement) {
-            #endif
-                firstLegNPV -= firstLeg_[i]->amount() *
-                    termStructure_->discount(cashFlowDate);
-            }
-        }
-        firstLegBPS_ = - BasisPointSensitivity(firstLeg_, termStructure_);
+        NPV_ = - Cashflows::npv(firstLeg_,termStructure_)
+               + Cashflows::npv(secondLeg_,termStructure_);
 
-        // add second leg cash flows
-        for (Size j=0; j<secondLeg_.size(); j++) {
-            Date cashFlowDate = secondLeg_[j]->date();
-            #if QL_TODAYS_PAYMENTS
-            if (cashFlowDate >= settlement) {
-            #else
-            if (cashFlowDate > settlement) {
-            #endif
-                secondLegNPV += secondLeg_[j]->amount() *
-                    termStructure_->discount(cashFlowDate);
-            }
-        }
-        secondLegBPS_ = BasisPointSensitivity(secondLeg_, termStructure_);
-
-        NPV_ = firstLegNPV + secondLegNPV;
+        firstLegBPS_ = - Cashflows::bps(firstLeg_, termStructure_);
+        secondLegBPS_ = + Cashflows::bps(secondLeg_, termStructure_);
     }
 
     Date Swap::startDate() const {
@@ -132,6 +106,7 @@ namespace QuantLib {
         return secondLegBPS_;
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     TimeBasket Swap::sensitivity(Integer basis) const {
         calculate();
         TimeBasket basket = BasisPointSensitivityBasket(firstLeg_,
@@ -142,5 +117,6 @@ namespace QuantLib {
                                               basis);
         return basket;
     }
+    #endif
 
 }

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Charles Whitmore
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,7 +45,7 @@ namespace QuantLib {
         Cashflows(const Cashflows&);
       public:
         //! NPV of the cash flows.
-        /*! THe NPV is the sum of the cash flows, each discounted
+        /*! The NPV is the sum of the cash flows, each discounted
             according to the given term structure.
         */
         static Real npv(const std::vector<boost::shared_ptr<CashFlow> >&,
@@ -56,6 +57,26 @@ namespace QuantLib {
             and the relative frequency and day counter.
         */
         static Real npv(const std::vector<boost::shared_ptr<CashFlow> >&,
+                        const InterestRate&,
+                        Date settlementDate = Date());
+
+        //! Basis-point sensitivity of the cash flows.
+        /*! The result is the change in NPV due to a uniform
+            1-basis-point change in the rate paid by the cash
+            flows. The change for each coupon is discounted according
+            to the given term structure.
+        */
+        static Real bps(const std::vector<boost::shared_ptr<CashFlow> >&,
+                        const Handle<YieldTermStructure>&);
+        //! Basis-point sensitivity of the cash flows.
+        /*! The result is the change in NPV due to a uniform
+            1-basis-point change in the rate paid by the cash
+            flows. The change for each coupon is discounted according
+            to the given constant interest rate.  The result is
+            affected by the choice of the interest-rate compounding
+            and the relative frequency and day counter.
+        */
+        static Real bps(const std::vector<boost::shared_ptr<CashFlow> >&,
                         const InterestRate&,
                         Date settlementDate = Date());
 

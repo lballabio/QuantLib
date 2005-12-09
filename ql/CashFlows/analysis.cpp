@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Charles Whitmore
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +19,7 @@
 */
 
 #include <ql/CashFlows/analysis.hpp>
+#include <ql/CashFlows/coupon.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
@@ -64,16 +66,41 @@ namespace QuantLib {
             Date settlementDate_;
         };
 
+        class BPSCalculator : public AcyclicVisitor,
+                              public Visitor<CashFlow>,
+                              public Visitor<Coupon> {
+          public:
+            BPSCalculator(const Handle<YieldTermStructure>& termStructure)
+            : termStructure_(termStructure), result_(0.0) {}
+            void visit(Coupon& c)  {
+                result_ += c.accrualPeriod() *
+                           c.nominal() *
+                           termStructure_->discount(c.date());
+            }
+            void visit(CashFlow&) {}
+            Real result() const { return result_; }
+          private:
+            Handle<YieldTermStructure> termStructure_;
+            Real result_;
+        };
+
     }
 
 
     Real Cashflows::npv(
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
                    const Handle<YieldTermStructure>& discountCurve) {
+        const Date& settlementDate = discountCurve->referenceDate();
         Real totalNPV = 0.0;
-        for (Size i = 0; i <cashflows.size(); i++)
-            totalNPV += cashflows[i]->amount() *
-                        discountCurve->discount(cashflows[i]->date());
+        for (Size i = 0; i <cashflows.size(); i++) {
+            #if QL_TODAYS_PAYMENTS
+            if (cashflows[i]->date() >= settlementDate)
+            #else
+            if (cashflows[i]->date() > settlementDate)
+            #endif
+                totalNPV += cashflows[i]->amount() *
+                            discountCurve->discount(cashflows[i]->date());
+        }
         return totalNPV;
     }
 
@@ -89,6 +116,34 @@ namespace QuantLib {
         return npv(cashflows, Handle<YieldTermStructure>(flatRate));
     }
 
+    Real Cashflows::bps(
+                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const Handle<YieldTermStructure>& discountCurve) {
+        const Date& settlementDate = discountCurve->referenceDate();
+        BPSCalculator calc(discountCurve);
+        for (Size i = 0; i <cashflows.size(); i++) {
+            #if QL_TODAYS_PAYMENTS
+            if (cashflows[i]->date() >= settlementDate)
+            #else
+            if (cashflows[i]->date() > settlementDate)
+            #endif
+                cashflows[i]->accept(calc);
+        }
+        return calc.result();
+    }
+
+    Real Cashflows::bps(
+                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const InterestRate& irr,
+                   Date settlementDate) {
+        if (settlementDate == Date())
+            settlementDate = Settings::instance().evaluationDate();
+        boost::shared_ptr<YieldTermStructure> flatRate(
+                 new FlatForward(settlementDate, irr.rate(), irr.dayCounter(),
+                                 irr.compounding(), irr.frequency()));
+        return bps(cashflows, Handle<YieldTermStructure>(flatRate));
+    }
+
     Rate Cashflows::irr(
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
                    Real marketPrice,
@@ -100,19 +155,28 @@ namespace QuantLib {
                    Size maxIterations,
                    Rate guess) {
 
+        if (settlementDate == Date())
+            settlementDate = Settings::instance().evaluationDate();
+
         // depending on the sign of the market price, check that cash
         // flows of the opposite sign have been specified (otherwise
         // IRR is nonsensical.)
-        
+
         Integer lastSign = sign(-marketPrice),
                 signChanges = 0;
         for (Size i = 0; i < cashflows.size(); i++) {
-            Integer thisSign = sign(cashflows[i]->amount());
-            if (lastSign * thisSign < 0) // sign change
-                signChanges++;
+            #if QL_TODAYS_PAYMENTS
+            if (cashflows[i]->date() >= settlementDate) {
+            #else
+            if (cashflows[i]->date() > settlementDate) {
+            #endif
+                Integer thisSign = sign(cashflows[i]->amount());
+                if (lastSign * thisSign < 0) // sign change
+                    signChanges++;
 
-            if (thisSign != 0)
-                lastSign = thisSign;
+                if (thisSign != 0)
+                    lastSign = thisSign;
+            }
         }
         QL_REQUIRE(signChanges > 0,
                   "the given cash flows cannot result in the given market "
@@ -137,9 +201,6 @@ namespace QuantLib {
         };
         */
 
-        if (settlementDate == Date())
-            settlementDate = Settings::instance().evaluationDate();
-
         Brent solver;
         solver.setMaxEvaluations(maxIterations);
         return solver.solve(irrFinder(cashflows, marketPrice, dayCounter,
@@ -159,10 +220,16 @@ namespace QuantLib {
 
         Real totalConvexity = 0.0;
         for (Size i = 0; i < cashflows.size(); i++) {
-            Time t = dayCounter.yearFraction(settlementDate,
-                                             cashflows[i]->date());
-            DiscountFactor discount = r.discountFactor(t);
-            totalConvexity += t * t * cashflows[i]->amount() * discount;
+            #if QL_TODAYS_PAYMENTS
+            if (cashflows[i]->date() >= settlementDate) {
+            #else
+            if (cashflows[i]->date() > settlementDate) {
+            #endif
+                Time t = dayCounter.yearFraction(settlementDate,
+                                                 cashflows[i]->date());
+                DiscountFactor discount = r.discountFactor(t);
+                totalConvexity += t * t * cashflows[i]->amount() * discount;
+            }
         }
         return totalConvexity;
     }
@@ -187,17 +254,23 @@ namespace QuantLib {
         }
 
         for (Size i = 0; i < cashflows.size(); i++) {
-            Time t = rate.dayCounter().yearFraction(settlementDate,
-                                                    cashflows[i]->date());
-            Real c = cashflows[i]->amount();
-            DiscountFactor discount;
-            if (type == Duration::Macaulay)
-                discount = std::exp(-y*t);
-            else
-                discount = rate.discountFactor(t);
+            #if QL_TODAYS_PAYMENTS
+            if (cashflows[i]->date() >= settlementDate) {
+            #else
+            if (cashflows[i]->date() > settlementDate) {
+            #endif
+                Time t = rate.dayCounter().yearFraction(settlementDate,
+                                                        cashflows[i]->date());
+                Real c = cashflows[i]->amount();
+                DiscountFactor discount;
+                if (type == Duration::Macaulay)
+                    discount = std::exp(-y*t);
+                else
+                    discount = rate.discountFactor(t);
 
-            totalNPV += c * discount;
-            totalDuration += t * c * discount;
+                totalNPV += c * discount;
+                totalDuration += t * c * discount;
+            }
         }
         totalNPV -= marketPrice;
 

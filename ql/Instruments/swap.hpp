@@ -52,10 +52,13 @@ namespace QuantLib {
         Date maturity() const;
         Real firstLegBPS() const;
         Real secondLegBPS() const;
-        /*! \bug this method must still be checked. It is not guaranteed
-                 to yield the right results.
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \bug this method is not guaranteed to yield the right
+                 results.
+            \deprecated this method will be removed in future releases.
         */
         TimeBasket sensitivity(Integer basis = 2) const;
+        #endif
         //@}
       protected:
         // methods
