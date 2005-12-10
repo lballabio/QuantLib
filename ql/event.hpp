@@ -59,16 +59,15 @@ namespace QuantLib {
             QL_FAIL("not an event visitor");
     }
 
-    //! \name SimpleEvent implementation
-    class SimpleEvent : public Observable {
-    private:
-        Date date_;
+    //! \name DateEvent implementation
+    /*! This class is an adapater between a date and the Event interface
+     */
+    class DateEvent : public Event, public Date {
     public:
-        SimpleEvent(const Date& d) :
-            date_(d) {};
-        virtual ~SimpleEvent() {};
-        inline SimpleEvent & operator = (const Date &d) {
-            date_ = d;
+        DateEvent() : Event(), Date() {};
+        DateEvent(const Date& d) : Event(), Date(d) {};
+        virtual ~DateEvent() {};
+        virtual Date date() const {
             return *this;
         };
     };
