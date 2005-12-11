@@ -43,11 +43,8 @@ namespace QuantLib {
             lastPayment = std::max(lastPayment, (*i)->date());
         for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
             lastPayment = std::max(lastPayment, (*i)->date());
-        #if QL_TODAYS_PAYMENTS
-        return lastPayment < termStructure_->referenceDate();
-        #else
-        return lastPayment <= termStructure_->referenceDate();
-        #endif
+        DateEvent event(lastPayment);
+        return event.hasOccurred(termStructure_->referenceDate());
     }
 
     void Swap::setupExpired() const {

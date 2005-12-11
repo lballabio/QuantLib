@@ -93,11 +93,7 @@ namespace QuantLib {
         const Date& settlementDate = discountCurve->referenceDate();
         Real totalNPV = 0.0;
         for (Size i = 0; i <cashflows.size(); i++) {
-            #if QL_TODAYS_PAYMENTS
-            if (cashflows[i]->date() >= settlementDate)
-            #else
-            if (cashflows[i]->date() > settlementDate)
-            #endif
+            if (!cashflows[i]->hasOccurred(settlementDate)) 
                 totalNPV += cashflows[i]->amount() *
                             discountCurve->discount(cashflows[i]->date());
         }
@@ -122,11 +118,7 @@ namespace QuantLib {
         const Date& settlementDate = discountCurve->referenceDate();
         BPSCalculator calc(discountCurve);
         for (Size i = 0; i <cashflows.size(); i++) {
-            #if QL_TODAYS_PAYMENTS
-            if (cashflows[i]->date() >= settlementDate)
-            #else
-            if (cashflows[i]->date() > settlementDate)
-            #endif
+            if (!cashflows[i]->hasOccurred(settlementDate))
                 cashflows[i]->accept(calc);
         }
         return calc.result();
@@ -165,11 +157,7 @@ namespace QuantLib {
         Integer lastSign = sign(-marketPrice),
                 signChanges = 0;
         for (Size i = 0; i < cashflows.size(); i++) {
-            #if QL_TODAYS_PAYMENTS
-            if (cashflows[i]->date() >= settlementDate) {
-            #else
-            if (cashflows[i]->date() > settlementDate) {
-            #endif
+            if (!cashflows[i]->hasOccurred(settlementDate)) {
                 Integer thisSign = sign(cashflows[i]->amount());
                 if (lastSign * thisSign < 0) // sign change
                     signChanges++;
@@ -220,11 +208,7 @@ namespace QuantLib {
 
         Real totalConvexity = 0.0;
         for (Size i = 0; i < cashflows.size(); i++) {
-            #if QL_TODAYS_PAYMENTS
-            if (cashflows[i]->date() >= settlementDate) {
-            #else
-            if (cashflows[i]->date() > settlementDate) {
-            #endif
+            if (!cashflows[i]->hasOccurred(settlementDate)) {
                 Time t = dayCounter.yearFraction(settlementDate,
                                                  cashflows[i]->date());
                 DiscountFactor discount = r.discountFactor(t);
@@ -254,11 +238,7 @@ namespace QuantLib {
         }
 
         for (Size i = 0; i < cashflows.size(); i++) {
-            #if QL_TODAYS_PAYMENTS
-            if (cashflows[i]->date() >= settlementDate) {
-            #else
-            if (cashflows[i]->date() > settlementDate) {
-            #endif
+            if (!cashflows[i]->hasOccurred(settlementDate)) {
                 Time t = rate.dayCounter().yearFraction(settlementDate,
                                                         cashflows[i]->date());
                 Real c = cashflows[i]->amount();

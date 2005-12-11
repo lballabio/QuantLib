@@ -113,7 +113,7 @@ namespace QuantLib {
         BusinessDayConvention businessDayConvention_;
 		DayCounter dayCount_;
 
-        Date issueDate_, datedDate_, maturityDate_;
+        DateEvent issueDate_, datedDate_, maturityDate_;
         Frequency frequency_;
         std::vector<boost::shared_ptr<CashFlow> > cashFlows_;
         boost::shared_ptr<CashFlow> redemption_;

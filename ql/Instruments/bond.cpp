@@ -48,12 +48,7 @@ namespace QuantLib {
             Date lastDate = Date();
 
             for (Size i=0; i<cashflows.size(); ++i) {
-                // discard expired coupons
-                #if QL_TODAYS_PAYMENTS
-                if (cashflows[i]->date() < settlement)
-                #else
-                if (cashflows[i]->date() <= settlement)
-                #endif
+                if (cashflows[i]->hasOccurred(settlement))
                     continue;
 
                 Date couponDate = cashflows[i]->date();
@@ -80,11 +75,7 @@ namespace QuantLib {
                 price += amount * discount;
             }
 
-            #if QL_TODAYS_PAYMENTS
-            if (redemption->date() >= settlement) {
-            #else
-            if (redemption->date() > settlement) {
-            #endif
+            if (!redemption->hasOccurred(settlement)) {
                 Date redemptionDate = redemption->date();
                 Real amount = redemption->amount();
                 if (lastDate == Date()) {
@@ -154,7 +145,7 @@ namespace QuantLib {
         Date d = calendar_.advance(Settings::instance().evaluationDate(),
                                    settlementDays_, Days);
         // ...but the bond won't be traded until the issue date.
-        return std::max(d, issueDate_);
+        return std::max(d, issueDate_.date());
     }
 
     Real Bond::cleanPrice() const {
@@ -212,11 +203,7 @@ namespace QuantLib {
 
         for (Size i = 0; i < cashFlows_.size(); ++i) {
             // the first coupon paying after d is the one we're after
-            #if QL_TODAYS_PAYMENTS
-            if (cashFlows_[i]->date() >= settlement) {
-            #else
-            if (cashFlows_[i]->date() > settlement) {
-            #endif
+            if (!cashFlows_[i]->hasOccurred(settlement)) {
                 boost::shared_ptr<Coupon> coupon =
                     boost::dynamic_pointer_cast<Coupon>(cashFlows_[i]);
                 if (coupon)
@@ -229,11 +216,7 @@ namespace QuantLib {
     }
 
     bool Bond::isExpired() const {
-        #if QL_TODAYS_PAYMENTS
-        return maturityDate_ < settlementDate();
-        #else
-        return maturityDate_ <= settlementDate();
-        #endif
+        return maturityDate_.hasOccurred(settlementDate());
     }
 
     void Bond::performCalculations() const {
@@ -247,12 +230,7 @@ namespace QuantLib {
         for (Size i=0; i<cashFlows_.size(); i++) {
 
             Date d = cashFlows_[i]->date();
-
-            #if QL_TODAYS_PAYMENTS
-            if (d >= settlement) {
-            #else
-            if (d > settlement) {
-            #endif
+            if (!cashFlows_[i]->hasOccurred(settlement)) {
                 NPV_ += cashFlows_[i]->amount() * discountCurve_->discount(d);
             }
         }

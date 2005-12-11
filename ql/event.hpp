@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     //! Base class for event
-    /*! This class is purely virtual and acts as a base class for the actual
+    /*! This class acts as a base class for the actual
         event implementations.
     */
     class Event : public Observable {
@@ -46,6 +46,30 @@ namespace QuantLib {
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
+
+        //! returns true if an event has occurred on input date  
+        // If QL_TODAYS_PAYMENT is true, then a payment event has not occurred
+        // if the input date is the same as the event date, and so includeToday
+        // should be defaulted to false.
+        //
+        // This should be the only place in the code that is affected directly
+        // by QL_TODAYS_PAYMENT
+        //
+        // \today make QL_TODAYS_PAYMENT dynamically configurable
+
+        bool hasOccurred(const Date &d,
+#if QL_TODAYS_PAYMENTS
+                         bool includeToday = false
+#else
+                         bool includeToday = true
+#endif
+                         ) const {
+            if (includeToday) {
+                return date() <= d;
+            } else {
+                return date() < d;
+            }
+        }
     };
 
 
@@ -60,8 +84,11 @@ namespace QuantLib {
     }
 
     //! \name DateEvent implementation
-    /*! This class is an adapater between a date and the Event interface
+    /*! This class is an adapter between a Date and the Event interface.
+     * The main use of this class is to make the hasOccurred method of the Event
+     * interface, visible to ordinary Dates.
      */
+
     class DateEvent : public Event, public Date {
     public:
         DateEvent() : Event(), Date() {};
