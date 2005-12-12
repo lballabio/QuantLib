@@ -145,7 +145,7 @@ namespace QuantLib {
         Date d = calendar_.advance(Settings::instance().evaluationDate(),
                                    settlementDays_, Days);
         // ...but the bond won't be traded until the issue date.
-        return std::max(d, issueDate_.date());
+        return std::max(d, issueDate_);
     }
 
     Real Bond::cleanPrice() const {
@@ -216,7 +216,7 @@ namespace QuantLib {
     }
 
     bool Bond::isExpired() const {
-        return maturityDate_.hasOccurred(settlementDate());
+        return redemption_->hasOccurred(settlementDate());
     }
 
     void Bond::performCalculations() const {

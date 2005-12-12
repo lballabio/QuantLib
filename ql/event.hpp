@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2005 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,35 +41,36 @@ namespace QuantLib {
         //@{
         //! returns the date at which the event occurs
         virtual Date date() const = 0;
+
+        //! returns true if an event has already occurred before a date
+        /*! If QL_TODAYS_PAYMENT is true, then a payment event has not
+            occurred if the input date is the same as the event date,
+            and so includeToday should be defaulted to true.
+
+            This should be the only place in the code that is affected
+            directly by QL_TODAYS_PAYMENT
+
+            \todo make QL_TODAYS_PAYMENT dynamically configurable?
+        */
+        bool hasOccurred(const Date &d,
+                         #if QL_TODAYS_PAYMENTS
+                         bool includeToday = true
+                         #else
+                         bool includeToday = false
+                         #endif
+                         ) const {
+            if (includeToday) {
+                return date() < d;
+            } else {
+                return date() <= d;
+            }
+        }
         //@}
+
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
-
-        //! returns true if an event has occurred on input date  
-        // If QL_TODAYS_PAYMENT is true, then a payment event has not occurred
-        // if the input date is the same as the event date, and so includeToday
-        // should be defaulted to false.
-        //
-        // This should be the only place in the code that is affected directly
-        // by QL_TODAYS_PAYMENT
-        //
-        // \today make QL_TODAYS_PAYMENT dynamically configurable
-
-        bool hasOccurred(const Date &d,
-#if QL_TODAYS_PAYMENTS
-                         bool includeToday = false
-#else
-                         bool includeToday = true
-#endif
-                         ) const {
-            if (includeToday) {
-                return date() <= d;
-            } else {
-                return date() < d;
-            }
-        }
     };
 
 
@@ -83,21 +84,6 @@ namespace QuantLib {
             QL_FAIL("not an event visitor");
     }
 
-    //! \name DateEvent implementation
-    /*! This class is an adapter between a Date and the Event interface.
-     * The main use of this class is to make the hasOccurred method of the Event
-     * interface, visible to ordinary Dates.
-     */
-
-    class DateEvent : public Event, public Date {
-    public:
-        DateEvent() : Event(), Date() {};
-        DateEvent(const Date& d) : Event(), Date(d) {};
-        virtual ~DateEvent() {};
-        virtual Date date() const {
-            return *this;
-        };
-    };
 }
 
 

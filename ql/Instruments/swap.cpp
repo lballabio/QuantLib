@@ -37,14 +37,15 @@ namespace QuantLib {
     }
 
     bool Swap::isExpired() const {
-        Date lastPayment = Date::minDate();
+        Date settlement = termStructure_->referenceDate();
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
         for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
-            lastPayment = std::max(lastPayment, (*i)->date());
+            if (!(*i)->hasOccurred(settlement))
+                return false;
         for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
-            lastPayment = std::max(lastPayment, (*i)->date());
-        DateEvent event(lastPayment);
-        return event.hasOccurred(termStructure_->referenceDate());
+            if (!(*i)->hasOccurred(settlement))
+                return false;
+        return true;
     }
 
     void Swap::setupExpired() const {
