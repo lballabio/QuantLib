@@ -25,6 +25,7 @@
 #include <ql/Calendars/beijing.hpp>
 #include <ql/Calendars/bombay.hpp>
 #include <ql/Calendars/bratislava.hpp>
+#include <ql/Calendars/brazil.hpp>
 #include <ql/Calendars/budapest.hpp>
 #include <ql/Calendars/copenhagen.hpp>
 #include <ql/Calendars/germany.hpp>

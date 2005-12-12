@@ -20,6 +20,7 @@
 
 #include "calendars.hpp"
 #include <ql/calendar.hpp>
+#include <ql/Calendars/brazil.hpp>
 #include <ql/Calendars/germany.hpp>
 #include <ql/Calendars/italy.hpp>
 #include <ql/Calendars/target.hpp>
@@ -686,8 +687,56 @@ void CalendarTest::testItalyExchange() {
                    << " calculated holidays");
 }
 
+void CalendarTest::testBrazil() {
+    BOOST_MESSAGE("Testing Brazil holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    //expectedHol.push_back(Date(1,January,2005)); // Saturday
+    expectedHol.push_back(Date(7,February,2005));
+    expectedHol.push_back(Date(8,February,2005));
+    expectedHol.push_back(Date(25,March,2005));
+    expectedHol.push_back(Date(21,April,2005));
+    //expectedHol.push_back(Date(1,May,2005)); // Sunday
+    expectedHol.push_back(Date(26,May,2005));
+    expectedHol.push_back(Date(7,September,2005));
+    expectedHol.push_back(Date(12,October,2005));
+    expectedHol.push_back(Date(2,November,2005));
+    expectedHol.push_back(Date(15,November,2005));
+    //expectedHol.push_back(Date(25,December,2005)); // Sunday
+
+    //expectedHol.push_back(Date(1,January,2006)); // Sunday
+    expectedHol.push_back(Date(27,February,2006));
+    expectedHol.push_back(Date(28,February,2006));
+    expectedHol.push_back(Date(14,April,2006));
+    expectedHol.push_back(Date(21,April,2006));
+    expectedHol.push_back(Date(1,May,2006));
+    expectedHol.push_back(Date(15,June,2006));
+    expectedHol.push_back(Date(7,September,2006));
+    expectedHol.push_back(Date(12,October,2006));
+    expectedHol.push_back(Date(2,November,2006));
+    expectedHol.push_back(Date(15,November,2006));
+    expectedHol.push_back(Date(25,December,2006));
+
+    Calendar c = Brazil();
+    std::vector<Date> hol = holidayList(c, Date(1,January,2005),
+                                           Date(31,December,2006));
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
+    }
+    if (hol.size()!=expectedHol.size())
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
+}
+
+
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
+
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testBrazil));
 
 //    suite->add(BOOST_TEST_CASE(&CalendarTest::testItalySettlement));
     suite->add(BOOST_TEST_CASE(&CalendarTest::testItalyExchange));

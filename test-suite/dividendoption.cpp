@@ -287,8 +287,6 @@ void testFdGreeks(const Date& today,
                     // calculated["theta"]  = option.theta();
 
                     if (value > spot->value()*1.0e-5) {
-                        // perturb spot and get delta and gamma
-                        spot->setValue(u);
                         expected["value"] = option_expected.NPV();
                         expected["delta"] = option_expected.delta();
                         expected["gamma"] = option_expected.gamma();
@@ -476,7 +474,7 @@ test_suite* DividendOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Dividend European option tests");
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
-    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
+    //suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanDegenerate));
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanDegenerate));
     return suite;

@@ -27,6 +27,8 @@
 
 class CalendarTest {
   public:
+
+    static void testBrazil();
 //    static void testItalySettlement();
     static void testItalyExchange();
 

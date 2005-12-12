@@ -2,9 +2,9 @@
 We gratefully acknowledge contributions from Xavier Abulker, Toyin
 Akin, Sercan Atalik, James Battle, Christopher Baus, Thomas Becker,
 Adolfo Benin, Luca Berardi, David Binderman, Antoine Cellerier,
-Aurelien Chanudet, Jon Davidson, Daniele De Francesco, Matteo
-Gallivanoni, Roman Gitlin, Tomoya Kawanishi, Gary Kennedy, Enrico
-Michelotti, Gilbert Peffer, Walter Penschke, Gianni Piolanti, Peter
-Schmitteckert, David Schwartz, Maxim Sokolov, Klaus Spanderen, Marco
-Tarenghi, Charles Whitmore, Bernd Johannes Wuebben, and Jeff Yu.
+Aurelien Chanudet, Jon Davidson, Daniele De Francesco, Piter Dias,
+Matteo Gallivanoni, Roman Gitlin, Tomoya Kawanishi, Gary Kennedy,
+Enrico Michelotti, Gilbert Peffer, Walter Penschke, Gianni Piolanti,
+Peter Schmitteckert, David Schwartz, Maxim Sokolov, Klaus Spanderen,
+Marco Tarenghi, Charles Whitmore, Bernd Johannes Wuebben, and Jeff Yu.
 

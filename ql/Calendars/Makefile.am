@@ -7,6 +7,7 @@ include_HEADERS = \
 	beijing.hpp \
 	bombay.hpp \
 	bratislava.hpp \
+	brazil.hpp \
 	budapest.hpp \
 	copenhagen.hpp \
 	germany.hpp \
@@ -39,6 +40,7 @@ libCalendars_la_SOURCES = \
 	beijing.cpp \
 	bombay.cpp \
 	bratislava.cpp \
+	brazil.cpp \
 	budapest.cpp \
 	copenhagen.cpp \
 	germany.cpp \

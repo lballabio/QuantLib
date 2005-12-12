@@ -12,3 +12,5 @@
 
 - Merged American and European option examples; added Bermudan option.
 
+- Added Brazil calendar (thanks to Piter Dias.)
+
