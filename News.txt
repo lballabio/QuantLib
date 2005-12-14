@@ -14,3 +14,5 @@
 
 - Added Brazil calendar (thanks to Piter Dias.)
 
+- Separated accrual and payment conventions for bonds.
+

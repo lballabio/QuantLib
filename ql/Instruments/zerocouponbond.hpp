@@ -41,7 +41,7 @@ namespace QuantLib {
                        Integer settlementDays,
                        const DayCounter& dayCounter,
                        const Calendar& calendar,
-                       BusinessDayConvention convention = Following,
+                       BusinessDayConvention paymentConvention = Following,
                        Real redemption = 100.0,
                        const Handle<YieldTermStructure>& discountCurve
                                               = Handle<YieldTermStructure>());

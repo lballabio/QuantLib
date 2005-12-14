@@ -68,7 +68,8 @@ void BondTest::testYield() {
     Real coupons[] = { 0.02, 0.05, 0.08 };
     Frequency frequencies[] = { Semiannual, Annual };
     DayCounter bondDayCount = Thirty360();
-    BusinessDayConvention convention = ModifiedFollowing;
+    BusinessDayConvention accrualConvention = Unadjusted;
+    BusinessDayConvention paymentConvention = ModifiedFollowing;
     Real redemption = 100.0;
 
     Rate yields[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -86,8 +87,9 @@ void BondTest::testYield() {
 
               FixedCouponBond bond(issue, dated, maturity, settlementDays,
                                    std::vector<Rate>(1, coupons[k]),
-                                   frequencies[l], bondDayCount,
-                                   calendar, convention, redemption);
+                                   frequencies[l], calendar, bondDayCount,
+                                   accrualConvention, paymentConvention,
+                                   redemption);
 
               for (Size m=0; m<LENGTH(yields); m++) {
 
@@ -141,7 +143,8 @@ void BondTest::testTheoretical() {
     Real coupons[] = { 0.02, 0.05, 0.08 };
     Frequency frequencies[] = { Semiannual, Annual };
     DayCounter bondDayCount = Actual360();
-    BusinessDayConvention convention = ModifiedFollowing;
+    BusinessDayConvention accrualConvention = Unadjusted;
+    BusinessDayConvention paymentConvention = ModifiedFollowing;
     Real redemption = 100.0;
 
     Rate yields[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -160,9 +163,9 @@ void BondTest::testTheoretical() {
 
             FixedCouponBond bond(issue, dated, maturity, settlementDays,
                                  std::vector<Rate>(1, coupons[k]),
-                                 frequencies[l], bondDayCount,
-                                 calendar, convention, redemption,
-                                 discountCurve);
+                                 frequencies[l], calendar, bondDayCount,
+                                 accrualConvention, paymentConvention,
+                                 redemption, discountCurve);
 
             for (Size m=0; m<LENGTH(yields); m++) {
 
@@ -234,9 +237,9 @@ void BondTest::testCached() {
                           settlementDays,
                           std::vector<Rate>(1, 0.025),
                           Semiannual,
-                          bondDayCount, bondCalendar,
-                          Unadjusted, 100.0,
-                          discountCurve);
+                          bondCalendar, bondDayCount,
+                          Unadjusted, ModifiedFollowing,
+                          100.0, discountCurve);
 
     Real marketPrice1 = 99.203125;
     Rate marketYield1 = 0.02925;
@@ -247,9 +250,9 @@ void BondTest::testCached() {
                           settlementDays,
                           std::vector<Rate>(1, 0.035),
                           Semiannual,
-                          bondDayCount, bondCalendar,
-                          Unadjusted, 100.0,
-                          discountCurve);
+                          bondCalendar, bondDayCount,
+                          Unadjusted, ModifiedFollowing,
+                          100.0, discountCurve);
 
     Real marketPrice2 = 99.6875;
     Rate marketYield2 = 0.03569;
@@ -365,9 +368,9 @@ void BondTest::testCached() {
                           settlementDays,
                           std::vector<Rate>(1, 0.02875),
                           Semiannual,
-                          ActualActual(ActualActual::ISMA),
                           UnitedStates(UnitedStates::Exchange),
-                          Unadjusted, 100.0);
+                          ActualActual(ActualActual::ISMA),
+                          Unadjusted, ModifiedFollowing, 100.0);
 
     Rate marketYield3 = 0.02997;
 
@@ -425,10 +428,10 @@ void BondTest::testCachedZero() {
                          settlementDays,
                          ActualActual(ActualActual::ISMA),
                          UnitedStates(UnitedStates::Exchange),
-                         Unadjusted, 100.0,
+                         ModifiedFollowing, 100.0,
                          discountCurve);
 
-    Real cachedPrice1 = 88.536968;
+    Real cachedPrice1 = 88.551726;
 
     Real price = bond1.cleanPrice();
     if (std::fabs(price-cachedPrice1) > tolerance) {
@@ -444,7 +447,7 @@ void BondTest::testCachedZero() {
                          settlementDays,
                          ActualActual(ActualActual::ISMA),
                          UnitedStates(UnitedStates::Exchange),
-                         Unadjusted, 100.0,
+                         ModifiedFollowing, 100.0,
                          discountCurve);
 
     Real cachedPrice2 = 91.278949;
@@ -463,7 +466,7 @@ void BondTest::testCachedZero() {
                          settlementDays,
                          ActualActual(ActualActual::ISMA),
                          UnitedStates(UnitedStates::Exchange),
-                         Unadjusted, 100.0,
+                         ModifiedFollowing, 100.0,
                          discountCurve);
 
     Real cachedPrice3 = 94.098006;
@@ -505,12 +508,12 @@ void BondTest::testCachedFixed() {
                           settlementDays,
                           std::vector<Rate>(1, 0.02875),
                           Semiannual,
-                          ActualActual(ActualActual::ISMA),
                           UnitedStates(UnitedStates::Exchange),
-                          Unadjusted, 100.0,
-                          discountCurve);
+                          ActualActual(ActualActual::ISMA),
+                          Unadjusted, ModifiedFollowing,
+                          100.0, discountCurve);
 
-    Real cachedPrice1 = 99.283249;
+    Real cachedPrice1 = 99.298100;
 
     Real price = bond1.cleanPrice();
     if (std::fabs(price-cachedPrice1) > tolerance) {
@@ -535,12 +538,12 @@ void BondTest::testCachedFixed() {
                           settlementDays,
                           couponRates,
                           Semiannual,
-                          ActualActual(ActualActual::ISMA),
                           UnitedStates(UnitedStates::Exchange),
-                          Unadjusted, 100.0,
-                          discountCurve);
+                          ActualActual(ActualActual::ISMA),
+                          Unadjusted, ModifiedFollowing,
+                          100.0, discountCurve);
 
-    Real cachedPrice2 = 100.319269;
+    Real cachedPrice2 = 100.334149;
 
     price = bond2.cleanPrice();
     if (std::fabs(price-cachedPrice2) > tolerance) {
@@ -559,13 +562,13 @@ void BondTest::testCachedFixed() {
                           settlementDays,
                           couponRates,
                           Semiannual,
-                          ActualActual(ActualActual::ISMA),
                           UnitedStates(UnitedStates::Exchange),
-                          Unadjusted, 100.0,
-                          discountCurve,
+                          ActualActual(ActualActual::ISMA),
+                          Unadjusted, ModifiedFollowing,
+                          100.0, discountCurve,
                           Date(30,November,2008));
 
-    Real cachedPrice3 = 100.382672;
+    Real cachedPrice3 = 100.382794;
 
     price = bond3.cleanPrice();
     if (std::fabs(price-cachedPrice3) > tolerance) {
@@ -609,10 +612,10 @@ void BondTest::testCachedFloating() {
                            index, fixingDays,
                            std::vector<Spread>(),
                            Semiannual,
-                           ActualActual(ActualActual::ISMA),
                            UnitedStates(UnitedStates::Exchange),
-                           ModifiedFollowing, 100.0,
-                           riskFreeRate);
+                           ActualActual(ActualActual::ISMA),
+                           ModifiedFollowing, ModifiedFollowing,
+                           100.0, riskFreeRate);
 
     Real cachedPrice1 = 99.874645;
 
@@ -634,10 +637,10 @@ void BondTest::testCachedFloating() {
                            index, fixingDays,
                            std::vector<Spread>(),
                            Semiannual,
-                           ActualActual(ActualActual::ISMA),
                            UnitedStates(UnitedStates::Exchange),
-                           ModifiedFollowing, 100.0,
-                           discountCurve);
+                           ActualActual(ActualActual::ISMA),
+                           ModifiedFollowing, ModifiedFollowing,
+                           100.0, discountCurve);
 
     Real cachedPrice2 = 97.955904;
 
@@ -665,10 +668,10 @@ void BondTest::testCachedFloating() {
                            index, fixingDays,
                            spreads,
                            Semiannual,
-                           ActualActual(ActualActual::ISMA),
                            UnitedStates(UnitedStates::Exchange),
-                           ModifiedFollowing, 100.0,
-                           discountCurve);
+                           ActualActual(ActualActual::ISMA),
+                           ModifiedFollowing, ModifiedFollowing,
+                           100.0, discountCurve);
 
     Real cachedPrice3 = 98.495458;
 

@@ -51,9 +51,19 @@ namespace QuantLib {
     */
     class Bond : public Instrument {
       protected:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the other constructor */
         Bond(const DayCounter& dayCount,
              const Calendar& calendar,
              BusinessDayConvention businessDayConvention,
+             Integer settlementDays,
+             const Handle<YieldTermStructure>& discountCurve
+                                              = Handle<YieldTermStructure>());
+        #endif
+        Bond(const DayCounter& dayCount,
+             const Calendar& calendar,
+             BusinessDayConvention accrualConvention,
+             BusinessDayConvention paymentConvention,
              Integer settlementDays,
              const Handle<YieldTermStructure>& discountCurve
                                               = Handle<YieldTermStructure>());
@@ -64,7 +74,14 @@ namespace QuantLib {
         const std::vector<boost::shared_ptr<CashFlow> >& cashflows() const;
         const boost::shared_ptr<CashFlow>& redemption() const;
         const Calendar& calendar() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use either paymentConvention() or
+                        accrualConvention()
+        */
         BusinessDayConvention businessDayConvention() const;
+        #endif
+        BusinessDayConvention accrualConvention() const;
+        BusinessDayConvention paymentConvention() const;
         const DayCounter& dayCounter() const;
         Frequency frequency() const;
         boost::shared_ptr<YieldTermStructure> discountCurve() const;
@@ -110,7 +127,7 @@ namespace QuantLib {
         void performCalculations() const;
         Integer settlementDays_;
         Calendar calendar_;
-        BusinessDayConvention businessDayConvention_;
+        BusinessDayConvention accrualConvention_, paymentConvention_;
 		DayCounter dayCount_;
 
         Date issueDate_, datedDate_, maturityDate_;
@@ -137,8 +154,18 @@ namespace QuantLib {
         return calendar_;
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline BusinessDayConvention Bond::businessDayConvention() const {
-        return businessDayConvention_;
+        return paymentConvention_;
+    }
+    #endif
+
+    inline BusinessDayConvention Bond::accrualConvention() const {
+        return accrualConvention_;
+    }
+
+    inline BusinessDayConvention Bond::paymentConvention() const {
+        return paymentConvention_;
     }
 
     inline const DayCounter& Bond::dayCounter() const {

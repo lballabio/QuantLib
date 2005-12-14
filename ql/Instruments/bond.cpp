@@ -129,12 +129,28 @@ namespace QuantLib {
     }
 
 
+    #ifndef QL_DISABLE_DEPRECATED
     Bond::Bond(const DayCounter& dayCount, const Calendar& calendar,
                BusinessDayConvention businessDayConvention,
                Integer settlementDays,
                const Handle<YieldTermStructure>& discountCurve)
     : settlementDays_(settlementDays), calendar_(calendar),
-      businessDayConvention_(businessDayConvention), dayCount_(dayCount),
+      accrualConvention_(businessDayConvention),
+      paymentConvention_(businessDayConvention), dayCount_(dayCount),
+      frequency_(NoFrequency), discountCurve_(discountCurve) {
+        registerWith(Settings::instance().evaluationDate());
+        registerWith(discountCurve_);
+    }
+    #endif
+
+    Bond::Bond(const DayCounter& dayCount, const Calendar& calendar,
+               BusinessDayConvention accrualConvention,
+               BusinessDayConvention paymentConvention,
+               Integer settlementDays,
+               const Handle<YieldTermStructure>& discountCurve)
+    : settlementDays_(settlementDays), calendar_(calendar),
+      accrualConvention_(accrualConvention),
+      paymentConvention_(paymentConvention), dayCount_(dayCount),
       frequency_(NoFrequency), discountCurve_(discountCurve) {
         registerWith(Settings::instance().evaluationDate());
         registerWith(discountCurve_);

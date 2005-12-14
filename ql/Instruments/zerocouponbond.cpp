@@ -28,13 +28,14 @@ namespace QuantLib {
                              Integer settlementDays,
                              const DayCounter& dayCounter,
                              const Calendar& calendar,
-                             BusinessDayConvention convention,
+                             BusinessDayConvention paymentConvention,
                              Real redemption,
                              const Handle<YieldTermStructure>& discountCurve)
-    : Bond(dayCounter, calendar, convention, settlementDays, discountCurve) {
+    : Bond(dayCounter, calendar, Unadjusted, paymentConvention,
+           settlementDays, discountCurve) {
 
         issueDate_ = datedDate_ = issueDate;
-        maturityDate_ = calendar.adjust(maturityDate,convention);
+        maturityDate_ = calendar.adjust(maturityDate,paymentConvention);
         frequency_ = Once;
 
         redemption_ = boost::shared_ptr<CashFlow>(

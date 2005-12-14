@@ -35,6 +35,8 @@ namespace QuantLib {
     */
     class FixedCouponBondHelper : public RateHelper {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the other constructor */
         FixedCouponBondHelper(const Handle<Quote>& cleanPrice,
                               const Date& issueDate,
                               const Date& datedDate,
@@ -48,6 +50,23 @@ namespace QuantLib {
                               Real redemption = 100.0,
                               const Date& stub = Date(),
                               bool fromEnd = true);
+        #endif
+        FixedCouponBondHelper(const Handle<Quote>& cleanPrice,
+                              const Date& issueDate,
+                              const Date& datedDate,
+                              const Date& maturityDate,
+                              Integer settlementDays,
+                              const std::vector<Rate>& coupons,
+                              Frequency frequency,
+                              const Calendar& calendar,
+                              const DayCounter& dayCounter,
+                              BusinessDayConvention accrualConvention =
+                                                                    Following,
+                              BusinessDayConvention paymentConvention =
+                                                                    Following,
+                              Real redemption = 100.0,
+                              const Date& stub = Date(),
+                              bool fromEnd = true);
         Real impliedQuote() const;
         Date latestDate() const;
         void setTermStructure(YieldTermStructure*);
@@ -58,7 +77,7 @@ namespace QuantLib {
         Frequency frequency_;
         DayCounter dayCounter_;
         Calendar calendar_;
-        BusinessDayConvention businessDayConvention_;
+        BusinessDayConvention accrualConvention_, paymentConvention_;
         Real redemption_;
         Date stub_;
         bool fromEnd_;

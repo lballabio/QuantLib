@@ -182,7 +182,8 @@ void setup() {
                                                     bondSettlementDays,
                                                     coupons,
                                                     bondData[i].frequency,
-                                                    bondDayCounter, calendar,
+                                                    calendar, bondDayCounter,
+                                                    bondConvention,
                                                     bondConvention,
                                                     bondRedemption));
     }
@@ -269,8 +270,9 @@ void testCurveConsistency(const T&, const I& interpolator) {
 
         FixedCouponBond bond(issue, issue, maturity, bondSettlementDays,
                              coupons, bondData[i].frequency,
-                             bondDayCounter, calendar,
-                             bondConvention, bondRedemption, curveHandle);
+                             calendar, bondDayCounter,
+                             bondConvention, bondConvention,
+                             bondRedemption, curveHandle);
         Real expectedPrice = bondData[i].price,
              estimatedPrice = bond.cleanPrice();
         Real tolerance = 1.0e-9;
