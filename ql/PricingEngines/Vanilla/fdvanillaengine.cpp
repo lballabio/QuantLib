@@ -25,15 +25,19 @@
 #include <ql/FiniteDifferences/operatorfactory.hpp>
 
 namespace QuantLib {
+
     const Real FDVanillaEngine::safetyZoneFactor_ = 1.1;
 
     void FDVanillaEngine::setGridLimits() const {
         setGridLimits(process_->stateVariable()->value(),
                       getResidualTime());
     }
-    void FDVanillaEngine::setupArguments(const OneAssetOption::arguments*args) const {
+
+    void FDVanillaEngine::setupArguments(
+                                 const OneAssetOption::arguments*args) const {
         process_ =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(args->stochasticProcess);
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                     args->stochasticProcess);
         QL_REQUIRE(process_, "Black-Scholes process required");
         exerciseDate_ = args->exercise->lastDate();
         payoff_ = args->payoff;
@@ -56,14 +60,14 @@ namespace QuantLib {
         Real minMaxFactor = std::exp(4.0 * prefactor * volSqrtTime);
         sMin_ = center_/minMaxFactor;  // underlying grid min value
         sMax_ = center_*minMaxFactor;  // underlying grid max value
-        insureStrikeInGrid();
+        ensureStrikeInGrid();
     }
 
-    void FDVanillaEngine::insureStrikeInGrid() const {
-        // insure strike is included in the grid
+    void FDVanillaEngine::ensureStrikeInGrid() const {
+        // ensure strike is included in the grid
         boost::shared_ptr<StrikedTypePayoff> striked_payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
-        if (!striked_payoff) 
+        if (!striked_payoff)
             return;
         Real requiredGridValue = striked_payoff->strike();
 

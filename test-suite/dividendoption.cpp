@@ -21,10 +21,12 @@
 #include "utilities.hpp"
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/dividendvanillaoption.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendshoutengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
@@ -60,6 +62,101 @@ void teardown() {
 }
 
 QL_END_TEST_LOCALS(DividendOptionTest)
+
+
+void DividendOptionTest::testEuropeanValues() {
+
+    BOOST_MESSAGE(
+              "Testing dividend European option values with no dividends...");
+
+    QL_TEST_BEGIN
+
+    Real tolerance = 1.0e-5;
+
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+    Real underlyings[] = { 100.0 };
+    Rate qRates[] = { 0.00, 0.10, 0.30 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    Integer lengths[] = { 1, 2 };
+    Volatility vols[] = { 0.05, 0.20, 0.70 };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+    Settings::instance().evaluationDate() = today;
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+
+    for (Size i=0; i<LENGTH(types); i++) {
+      for (Size j=0; j<LENGTH(strikes); j++) {
+        for (Size k=0; k<LENGTH(lengths); k++) {
+          Date exDate = today + lengths[k]*Years;
+          boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+          std::vector<Date> dividendDates;
+          std::vector<Real> dividends;
+          for (Date d = today + 3*Months;
+                    d < exercise->lastDate();
+                    d += 6*Months) {
+              dividendDates.push_back(d);
+              dividends.push_back(0.0);
+          }
+
+          boost::shared_ptr<StrikedTypePayoff> payoff(
+                                new PlainVanillaPayoff(types[i], strikes[j]));
+
+          boost::shared_ptr<PricingEngine> engine(
+                                          new AnalyticDividendEuropeanEngine);
+
+          boost::shared_ptr<PricingEngine> ref_engine(
+                                                  new AnalyticEuropeanEngine);
+
+          boost::shared_ptr<BlackScholesProcess> stochProcess(
+              new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+
+          DividendVanillaOption option(stochProcess, payoff, exercise,
+                                       dividendDates, dividends, engine);
+
+          VanillaOption ref_option(stochProcess, payoff, exercise, ref_engine);
+
+          for (Size l=0; l<LENGTH(underlyings); l++) {
+            for (Size m=0; m<LENGTH(qRates); m++) {
+              for (Size n=0; n<LENGTH(rRates); n++) {
+                for (Size p=0; p<LENGTH(vols); p++) {
+                    Real u = underlyings[l];
+                    Rate q = qRates[m],
+                         r = rRates[n];
+                    Volatility v = vols[p];
+                    spot->setValue(u);
+                    qRate->setValue(q);
+                    rRate->setValue(r);
+                    vol->setValue(v);
+
+                    Real calculated = option.NPV();
+                    Real expected = ref_option.NPV();
+                    Real error = std::fabs(calculated-expected);
+                    if (error > tolerance) {
+                        REPORT_FAILURE("value", payoff, exercise,
+                                       u, q, r, today, v,
+                                       expected, calculated,
+                                       error, tolerance);
+                    }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    QL_TEST_TEARDOWN
+}
 
 
 void DividendOptionTest::testEuropeanGreeks() {
@@ -210,6 +307,105 @@ void DividendOptionTest::testEuropeanGreeks() {
 }
 
 
+void DividendOptionTest::testFdEuropeanValues() {
+
+    BOOST_MESSAGE(
+              "Testing finite-difference dividend European option values...");
+
+    QL_TEST_BEGIN
+
+    Real tolerance = 1.0e-2;
+
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+    Real underlyings[] = { 100.0 };
+    Rate qRates[] = { 0.00, 0.10, 0.30 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    Integer lengths[] = { 1, 2 };
+    Volatility vols[] = { 0.05, 0.20, 0.40 };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+    Settings::instance().evaluationDate() = today;
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+
+    for (Size i=0; i<LENGTH(types); i++) {
+      for (Size j=0; j<LENGTH(strikes); j++) {
+        for (Size k=0; k<LENGTH(lengths); k++) {
+          Date exDate = today + lengths[k]*Years;
+          boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+          std::vector<Date> dividendDates;
+          std::vector<Real> dividends;
+          for (Date d = today + 3*Months;
+                    d < exercise->lastDate();
+                    d += 6*Months) {
+              dividendDates.push_back(d);
+              dividends.push_back(5.0);
+          }
+
+          boost::shared_ptr<StrikedTypePayoff> payoff(
+                                new PlainVanillaPayoff(types[i], strikes[j]));
+
+          boost::shared_ptr<PricingEngine> engine(
+                                                new FDDividendEuropeanEngine);
+
+          boost::shared_ptr<PricingEngine> ref_engine(
+                                          new AnalyticDividendEuropeanEngine);
+
+          boost::shared_ptr<BlackScholesProcess> stochProcess(
+              new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+
+          DividendVanillaOption option(stochProcess, payoff, exercise,
+                                       dividendDates, dividends, engine);
+
+          DividendVanillaOption ref_option(stochProcess, payoff, exercise,
+                                           dividendDates, dividends,
+                                           ref_engine);
+
+          for (Size l=0; l<LENGTH(underlyings); l++) {
+            for (Size m=0; m<LENGTH(qRates); m++) {
+              for (Size n=0; n<LENGTH(rRates); n++) {
+                for (Size p=0; p<LENGTH(vols); p++) {
+                    Real u = underlyings[l];
+                    Rate q = qRates[m],
+                         r = rRates[n];
+                    Volatility v = vols[p];
+                    spot->setValue(u);
+                    qRate->setValue(q);
+                    rRate->setValue(r);
+                    vol->setValue(v);
+
+                    Real calculated = option.NPV();
+                    if (calculated > spot->value()*1.0e-5) {
+                        Real expected = ref_option.NPV();
+                        Real error = std::fabs(calculated-expected);
+                        if (error > tolerance) {
+                            REPORT_FAILURE("value", payoff, exercise,
+                                           u, q, r, today, v,
+                                           expected, calculated,
+                                           error, tolerance);
+                        }
+                    }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    QL_TEST_TEARDOWN
+}
+
+
 QL_BEGIN_TEST_LOCALS(DividendOptionTest)
 
 void testFdGreeks(const Date& today,
@@ -217,17 +413,16 @@ void testFdGreeks(const Date& today,
                   const boost::shared_ptr<PricingEngine>& engine) {
 
     std::map<std::string,Real> calculated, expected, tolerance;
-    tolerance["value"] = 5.0e-3;
-    tolerance["delta"] = 5.0e-3;
-    tolerance["gamma"] = 5.0e-3;
+    tolerance["delta"] = 1.0e-3;
+    tolerance["gamma"] = 1.0e-3;
     // tolerance["theta"] = 1.0e-2;
 
     Option::Type types[] = { Option::Call, Option::Put };
     Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
     Real underlyings[] = { 100.0 };
-    Rate qRates[] = { 0.00, 0.10, 0.30 };
+    Rate qRates[] = { 0.00, 0.10, 0.20 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Volatility vols[] = { 0.05, 0.20, 0.70 };
+    Volatility vols[] = { 0.05, 0.20, 0.50 };
 
     DayCounter dc = Actual360();
 
@@ -260,13 +455,6 @@ void testFdGreeks(const Date& today,
             DividendVanillaOption option(stochProcess, payoff, exercise,
                                          dividendDates, dividends, engine);
 
-
-            boost::shared_ptr<PricingEngine> analytic_engine(
-                         new AnalyticDividendEuropeanEngine);
-
-            DividendVanillaOption option_expected(stochProcess, payoff, exercise,
-                                                  dividendDates, dividends, engine);
-
             for (Size l=0; l<LENGTH(underlyings); l++) {
              for (Size m=0; m<LENGTH(qRates); m++) {
                 for (Size n=0; n<LENGTH(rRates); n++) {
@@ -281,15 +469,22 @@ void testFdGreeks(const Date& today,
                     vol->setValue(v);
 
                     Real value = option.NPV();
-                    calculated["value"] = value;
                     calculated["delta"]  = option.delta();
                     calculated["gamma"]  = option.gamma();
                     // calculated["theta"]  = option.theta();
 
                     if (value > spot->value()*1.0e-5) {
-                        expected["value"] = option_expected.NPV();
-                        expected["delta"] = option_expected.delta();
-                        expected["gamma"] = option_expected.gamma();
+                        // perturb spot and get delta and gamma
+                        Real du = u*1.0e-4;
+                        spot->setValue(u+du);
+                        Real value_p = option.NPV(),
+                             delta_p = option.delta();
+                        spot->setValue(u-du);
+                        Real value_m = option.NPV(),
+                             delta_m = option.delta();
+                        spot->setValue(u);
+                        expected["delta"] = (value_p - value_m)/(2*du);
+                        expected["gamma"] = (delta_p - delta_m)/(2*du);
 
                         // perturb date and get theta
                         /*
@@ -340,7 +535,8 @@ void DividendOptionTest::testFdEuropeanGreeks() {
     Settings::instance().evaluationDate() = today;
     Integer lengths[] = { 1, 2 };
 
-    boost::shared_ptr<PricingEngine> engine(new FDDividendEuropeanEngine);
+    boost::shared_ptr<PricingEngine> engine(
+                                       new FDDividendEuropeanEngine);
 
     for (Size i=0; i<LENGTH(lengths); i++) {
         Date exDate = today + lengths[i]*Years;
@@ -356,7 +552,7 @@ void DividendOptionTest::testFdAmericanGreeks() {
              "Testing finite-differences dividend American option greeks...");
 
     QL_TEST_BEGIN
-        /*
+
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
     Integer lengths[] = { 1, 2 };
@@ -369,7 +565,7 @@ void DividendOptionTest::testFdAmericanGreeks() {
                                           new AmericanExercise(today,exDate));
         testFdGreeks(today,exercise,engine);
     }
-        */
+
     QL_TEST_TEARDOWN
 }
 
@@ -472,8 +668,10 @@ void DividendOptionTest::testFdAmericanDegenerate() {
 
 test_suite* DividendOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Dividend European option tests");
+    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanValues));
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
-    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
+    //suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
+    //suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
     //suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanDegenerate));
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanDegenerate));

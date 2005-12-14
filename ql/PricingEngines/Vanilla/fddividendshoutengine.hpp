@@ -30,7 +30,10 @@
 namespace QuantLib {
 
     //! Finite-differences shout engine with dividends
-    /*! \ingroup vanillaengines */
+    /*! \ingroup vanillaengines
+
+        \bug results are not overly reliable.
+    */
     class FDDividendShoutEngine : public DividendVanillaOption::engine,
         public FDDividendEngine {
       public:
@@ -40,7 +43,7 @@ namespace QuantLib {
                                timeSteps, gridPoints,
                                timeDependent) {}
         void calculate() const {
-            setupArguments(&arguments_, 
+            setupArguments(&arguments_,
                            arguments_.getEventList());
             FDDividendEngine::calculate(&results_);
         }

@@ -39,14 +39,12 @@ namespace QuantLib {
         : FDMultiPeriodEngine(timeSteps, gridPoints,
                               timeDependent) {}
       private:
+        void setGridLimits() const;
         void executeIntermediateStep(Size step) const;
         void movePricesBeforeExDiv(Array& prices,
                                    const Array& newGrid,
                                    const Array& oldGrid) const;
-        Real addElements(const std::vector<Real>& A) const{
-            return std::accumulate(A.begin(), A.end(), 0.0);
-        }
-        Real getDividend(int i) const {
+        Real getDividend(Size i) const {
             const CashFlow *dividend =
                 dynamic_cast<const CashFlow *>(events_[i].get());
             if (dividend) {

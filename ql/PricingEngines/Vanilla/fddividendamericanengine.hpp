@@ -38,6 +38,7 @@ namespace QuantLib {
         - the invariance of the results upon addition of null
           dividends is tested.
 
+        \bug results are not overly reliable.
         \bug method impliedVolatility() utterly fails
     */
     class FDDividendAmericanEngine : public DividendVanillaOption::engine,
@@ -48,7 +49,7 @@ namespace QuantLib {
                                  bool timeDependent = false)
         : FDDividendEngine(timeSteps, gridPoints, timeDependent) {}
         void calculate() const {
-            setupArguments(&arguments_, 
+            setupArguments(&arguments_,
                            arguments_.getEventList());
             FDDividendEngine::calculate(&results_);
         }

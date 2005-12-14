@@ -36,6 +36,8 @@ namespace QuantLib {
           reproducing numerical derivatives.
         - the invariance of the results upon addition of null
           dividends is tested.
+
+        \bug results are not overly reliable.
     */
     class FDDividendEuropeanEngine :  public DividendVanillaOption::engine,
         public FDDividendEngine {
@@ -45,7 +47,7 @@ namespace QuantLib {
                                  bool timeDependent = false)
         : FDDividendEngine(timeSteps, gridPoints, timeDependent) {}
         void calculate() const {
-            setupArguments(&arguments_, 
+            setupArguments(&arguments_,
                            arguments_.getEventList());
             FDDividendEngine::calculate(&results_);
         }

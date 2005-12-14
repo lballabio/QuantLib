@@ -18,7 +18,6 @@
 */
 
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
-#include <iostream>
 
 namespace QuantLib {
 
@@ -41,12 +40,24 @@ namespace QuantLib {
     }
     */
 
+    void FDDividendEngine::setGridLimits() const {
+        Real paidDividends = 0.0;
+        for (Size i=0; i<events_.size(); i++) {
+            if (getDividendTime(i) >= 0.0)
+                paidDividends += getDividend(i);
+        }
+        FDVanillaEngine::setGridLimits(
+                             process_->stateVariable()->value()-paidDividends,
+                             getResidualTime());
+    }
+
     void FDDividendEngine::executeIntermediateStep(Size step) const{
 
         Real newSMin = sMin_ + getDividend(step);
         Real newSMax = sMax_ + getDividend(step);
 
-        setGridLimits(center_ + getDividend(step), getResidualTime());
+        FDVanillaEngine::setGridLimits(center_ + getDividend(step),
+                                       getResidualTime());
         if (sMin_ < newSMin) {
             sMin_ = newSMin;
             sMax_ = center_/(sMin_/center_);
@@ -67,4 +78,5 @@ namespace QuantLib {
         initializeStepCondition();
         stepCondition_ -> applyTo(prices_.values(), getDividendTime(step));
     }
+
 }

@@ -27,7 +27,9 @@
 
 class DividendOptionTest {
   public:
+    static void testEuropeanValues();
     static void testEuropeanGreeks();
+    static void testFdEuropeanValues();
     static void testFdEuropeanGreeks();
     static void testFdAmericanGreeks();
     static void testFdEuropeanDegenerate();

@@ -59,7 +59,7 @@ namespace QuantLib {
         virtual void executeIntermediateStep(Size step) const = 0;
         virtual void initializeStepCondition() const;
         virtual void initializeModel() const;
-        Time getDividendTime(int i) const {
+        Time getDividendTime(Size i) const {
             return stoppingTimes_[i];
         }
     };

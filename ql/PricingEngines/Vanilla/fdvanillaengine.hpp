@@ -26,7 +26,6 @@
 #ifndef quantlib_fd_vanilla_engine_hpp
 #define quantlib_fd_vanilla_engine_hpp
 
-
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
@@ -36,24 +35,24 @@
 namespace QuantLib {
 
     //! Finite-differences pricing engine for BSM one asset options
-    /*! \ingroup vanillaengines 
-      
-    The name is a misnomer as this is a base class for any finite difference
-    scheme.  It's main job is to handle grid layout. */
+    /*! The name is a misnomer as this is a base class for any finite
+        difference scheme.  Its main job is to handle grid layout.
 
+        \ingroup vanillaengines
+    */
     class FDVanillaEngine {
       public:
         FDVanillaEngine(Size timeSteps, Size gridPoints,
                         bool timeDependent = false)
         : timeSteps_(timeSteps), gridPoints_(gridPoints),
-          timeDependent_(timeDependent), 
+          timeDependent_(timeDependent),
           intrinsicValues_(gridPoints), BCs_(2) {}
         virtual ~FDVanillaEngine() {};
         // accessors
         const Array& grid() const { return intrinsicValues_.grid(); }
       protected:
         // methods
-        virtual void setupArguments(const OneAssetOption::arguments* args) 
+        virtual void setupArguments(const OneAssetOption::arguments* args)
             const;
         virtual void setGridLimits() const;
         virtual void setGridLimits(Real, Time) const;
@@ -81,7 +80,7 @@ namespace QuantLib {
         mutable Real gridLogSpacing_;
         Size safeGridPoints(Size gridPoints,
                             Time residualTime) const;
-        void insureStrikeInGrid() const;
+        void ensureStrikeInGrid() const;
         static const Real safetyZoneFactor_;
     };
 
