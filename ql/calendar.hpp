@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -139,6 +139,15 @@ namespace QuantLib {
             Monday for a given year.
         */
         class WesternImpl : public CalendarImpl {
+          protected:
+            //! expressed relative to first day of year
+            static Day easterMonday(Year y);
+        };
+        //! partial calendar implementation
+        /*! This class provides the means of determining the Easter
+            Monday for a given year.
+        */
+        class OrthodoxImpl : public CalendarImpl {
           protected:
             //! expressed relative to first day of year
             static Day easterMonday(Year y);

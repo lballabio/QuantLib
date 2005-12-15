@@ -4,6 +4,7 @@ includedir = $(prefix)/include/ql/Calendars
 
 include_HEADERS = \
 	all.hpp \
+	argentina.hpp \
 	beijing.hpp \
 	bombay.hpp \
 	bratislava.hpp \
@@ -13,10 +14,13 @@ include_HEADERS = \
 	germany.hpp \
 	helsinki.hpp \
 	hongkong.hpp \
-	italy.hpp \
+	iceland.hpp \
+	indonesia.hpp \
 	istanbul.hpp \
+	italy.hpp \
 	johannesburg.hpp \
 	jointcalendar.hpp \
+	mexico.hpp \
 	nullcalendar.hpp \
 	oslo.hpp \
 	prague.hpp \
@@ -30,6 +34,7 @@ include_HEADERS = \
 	target.hpp \
 	tokyo.hpp \
 	toronto.hpp \
+	ukraine.hpp \
 	unitedkingdom.hpp \
 	unitedstates.hpp \
 	warsaw.hpp \
@@ -37,6 +42,7 @@ include_HEADERS = \
 	zurich.hpp
 
 libCalendars_la_SOURCES = \
+	argentina.cpp \
 	beijing.cpp \
 	bombay.cpp \
 	bratislava.cpp \
@@ -46,10 +52,13 @@ libCalendars_la_SOURCES = \
 	germany.cpp \
 	helsinki.cpp \
 	hongkong.cpp \
-	italy.cpp \
+	iceland.cpp \
+	indonesia.cpp \
 	istanbul.cpp \
+	italy.cpp \
 	johannesburg.cpp \
 	jointcalendar.cpp \
+	mexico.cpp \
 	oslo.cpp \
 	prague.cpp \
 	riyadh.cpp \
@@ -61,6 +70,7 @@ libCalendars_la_SOURCES = \
 	target.cpp \
 	tokyo.cpp \
 	toronto.cpp \
+	ukraine.cpp \
 	unitedkingdom.cpp \
 	unitedstates.cpp \
 	warsaw.cpp \

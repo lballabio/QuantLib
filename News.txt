@@ -12,7 +12,9 @@
 
 - Merged American and European option examples; added Bermudan option.
 
-- Added Brazil calendar (thanks to Piter Dias.)
+- Added Brazilian calendar (thanks to Piter Dias.)
 
 - Separated accrual and payment conventions for bonds.
+
+- Added Argentinian, Icelandic, Indonesian, Mexican, and Ukrainian calendars.
 

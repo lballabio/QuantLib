@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +22,7 @@
 
 #include <ql/qldefines.hpp>
 
+#include <ql/Calendars/argentina.hpp>
 #include <ql/Calendars/beijing.hpp>
 #include <ql/Calendars/bombay.hpp>
 #include <ql/Calendars/bratislava.hpp>
@@ -31,10 +32,13 @@
 #include <ql/Calendars/germany.hpp>
 #include <ql/Calendars/helsinki.hpp>
 #include <ql/Calendars/hongkong.hpp>
-#include <ql/Calendars/italy.hpp>
+#include <ql/Calendars/iceland.hpp>
+#include <ql/Calendars/indonesia.hpp>
 #include <ql/Calendars/istanbul.hpp>
+#include <ql/Calendars/italy.hpp>
 #include <ql/Calendars/johannesburg.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
+#include <ql/Calendars/mexico.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Calendars/oslo.hpp>
 #include <ql/Calendars/prague.hpp>
@@ -48,6 +52,7 @@
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/toronto.hpp>
+#include <ql/Calendars/ukraine.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
 #include <ql/Calendars/unitedstates.hpp>
 #include <ql/Calendars/warsaw.hpp>
