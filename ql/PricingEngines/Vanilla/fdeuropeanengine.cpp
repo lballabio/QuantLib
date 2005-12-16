@@ -29,6 +29,7 @@ namespace QuantLib {
         setGridLimits();
         initializeInitialCondition();
         initializeOperator();
+        initializeBoundaryConditions();
 
         StandardFiniteDifferenceModel model(finiteDifferenceOperator_, BCs_);
 

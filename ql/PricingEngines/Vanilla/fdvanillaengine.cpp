@@ -31,6 +31,7 @@ namespace QuantLib {
     void FDVanillaEngine::setGridLimits() const {
         setGridLimits(process_->stateVariable()->value(),
                       getResidualTime());
+        ensureStrikeInGrid();
     }
 
     void FDVanillaEngine::setupArguments(
@@ -60,7 +61,6 @@ namespace QuantLib {
         Real minMaxFactor = std::exp(4.0 * prefactor * volSqrtTime);
         sMin_ = center_/minMaxFactor;  // underlying grid min value
         sMax_ = center_*minMaxFactor;  // underlying grid max value
-        ensureStrikeInGrid();
     }
 
     void FDVanillaEngine::ensureStrikeInGrid() const {
@@ -94,7 +94,9 @@ namespace QuantLib {
                                          intrinsicValues_.grid(),
                                          getResidualTime(),
                                          timeDependent_);
+    }
 
+    void FDVanillaEngine::initializeBoundaryConditions() const {
         BCs_[0] = boost::shared_ptr<bc_type>(new NeumannBC(
                                       intrinsicValues_.value(1)-
                                       intrinsicValues_.value(0),

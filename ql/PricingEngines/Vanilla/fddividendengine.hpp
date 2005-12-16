@@ -41,9 +41,6 @@ namespace QuantLib {
       private:
         void setGridLimits() const;
         void executeIntermediateStep(Size step) const;
-        void movePricesBeforeExDiv(Array& prices,
-                                   const Array& newGrid,
-                                   const Array& oldGrid) const;
         Real getDividend(Size i) const {
             const CashFlow *dividend =
                 dynamic_cast<const CashFlow *>(events_[i].get());

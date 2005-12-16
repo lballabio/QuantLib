@@ -57,6 +57,7 @@ namespace QuantLib {
         virtual void setGridLimits() const;
         virtual void setGridLimits(Real, Time) const;
         virtual void initializeInitialCondition() const;
+        virtual void initializeBoundaryConditions() const;
         virtual void initializeOperator() const;
         virtual Time getResidualTime() const;
         // removed - replace with getProcess()->time(d) const
@@ -75,12 +76,12 @@ namespace QuantLib {
         // temporaries
         mutable Real sMin_, center_, sMax_;
       protected:
+        void ensureStrikeInGrid() const;
       private:
         // temporaries
         mutable Real gridLogSpacing_;
         Size safeGridPoints(Size gridPoints,
                             Time residualTime) const;
-        void ensureStrikeInGrid() const;
         static const Real safetyZoneFactor_;
     };
 

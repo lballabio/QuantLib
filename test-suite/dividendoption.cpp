@@ -413,8 +413,8 @@ void testFdGreeks(const Date& today,
                   const boost::shared_ptr<PricingEngine>& engine) {
 
     std::map<std::string,Real> calculated, expected, tolerance;
-    tolerance["delta"] = 1.0e-3;
-    tolerance["gamma"] = 1.0e-3;
+    tolerance["delta"] = 5.0e-3;
+    tolerance["gamma"] = 7.0e-3;
     // tolerance["theta"] = 1.0e-2;
 
     Option::Type types[] = { Option::Call, Option::Put };
@@ -671,8 +671,8 @@ test_suite* DividendOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanValues));
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
     //suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
-    //suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
-    //suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
+    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
+    suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdEuropeanDegenerate));
     suite->add(BOOST_TEST_CASE(&DividendOptionTest::testFdAmericanDegenerate));
     return suite;

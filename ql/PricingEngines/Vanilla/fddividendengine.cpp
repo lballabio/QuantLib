@@ -18,6 +18,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -46,35 +47,30 @@ namespace QuantLib {
             if (getDividendTime(i) >= 0.0)
                 paidDividends += getDividend(i);
         }
+
         FDVanillaEngine::setGridLimits(
                              process_->stateVariable()->value()-paidDividends,
                              getResidualTime());
+        ensureStrikeInGrid();
     }
 
     void FDDividendEngine::executeIntermediateStep(Size step) const{
+        sMin_ += getDividend(step);
+        sMax_ += getDividend(step);
+        center_ += getDividend(step);
 
-        Real newSMin = sMin_ + getDividend(step);
-        Real newSMax = sMax_ + getDividend(step);
-
-        FDVanillaEngine::setGridLimits(center_ + getDividend(step),
-                                       getResidualTime());
-        if (sMin_ < newSMin) {
-            sMin_ = newSMin;
-            sMax_ = center_/(sMin_/center_);
-        }
-        if (sMax_ > newSMax) {
-            sMax_ = newSMax;
-            sMin_ = center_/(sMax_/center_);
-        }
-
+        intrinsicValues_.shiftGrid(getDividend(step));
         initializeInitialCondition();
+        //std::cout << "Step " << step << " " << getDividend(step) << " "
+        //          << getDividend(step) << std::endl;
 
+        //std::cout << "before " << prices_ << std::endl; 
         prices_.shiftGrid(getDividend(step));
-        prices_.regrid(intrinsicValues_.grid(),
-                       std::ptr_fun<Real,Real>(std::log));
+        //std::cout << "after " << prices_ << std::endl; 
 
         initializeOperator();
         initializeModel();
+
         initializeStepCondition();
         stepCondition_ -> applyTo(prices_.values(), getDividendTime(step));
     }

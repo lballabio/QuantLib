@@ -28,6 +28,7 @@ namespace QuantLib {
         setGridLimits();
         initializeInitialCondition();
         initializeOperator();
+        initializeBoundaryConditions();
         initializeStepCondition();
 
         typedef StandardSystemFiniteDifferenceModel model_type;

@@ -77,6 +77,7 @@ namespace QuantLib {
         setGridLimits();
         initializeInitialCondition();
         initializeOperator();
+        initializeBoundaryConditions();
         initializeModel();
         initializeStepCondition();
 
