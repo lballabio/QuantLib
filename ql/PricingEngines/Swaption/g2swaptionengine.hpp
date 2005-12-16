@@ -31,7 +31,11 @@
 namespace QuantLib {
 
     //! %Swaption priced by means of the Black formula
-    /*! \ingroup swaptionengines */
+    /*! \ingroup swaptionengines 
+
+        \warning The engine assumes that the exercise date equals the
+                 start date of the passed swap.
+    */
     class G2SwaptionEngine : public GenericModelEngine<G2, Swaption::arguments,
                                                            Swaption::results> {
       public:

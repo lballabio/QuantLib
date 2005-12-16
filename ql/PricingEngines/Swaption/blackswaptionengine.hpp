@@ -31,7 +31,11 @@
 namespace QuantLib {
 
     //! Black-formula swaption engine
-    /*! \ingroup swaptionengines */
+    /*! \ingroup swaptionengines
+
+        \warning The engine assumes that the exercise date equals the
+                 start date of the passed swap.
+    */
     class BlackSwaptionEngine : public GenericModelEngine<BlackModel,
                                                           Swaption::arguments,
                                                           Swaption::results> {
