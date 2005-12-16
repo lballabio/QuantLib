@@ -80,14 +80,12 @@ namespace QuantLib {
                 delta_theta -= arguments_.cashFlow[i]->amount() *
                   process->riskFreeRate()->zeroRate(d,rfdc,Continuous,Annual)*
                   process->riskFreeRate()->discount(d);
-                Time t = rfdc.yearFraction(
-                    process->riskFreeRate()->referenceDate(), d);
+                Time t = process->time(d);
                 delta_rho += arguments_.cashFlow[i]->amount() * t *
                              process->riskFreeRate()->discount(t);
             }
         }
-        t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                              arguments_.exercise->lastDate());
+        t = process->time(arguments_.exercise->lastDate());
         try {
             results_.theta = black.theta(spot, t) +
                              delta_theta * black.delta(spot);
