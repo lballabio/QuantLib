@@ -36,7 +36,7 @@ using namespace boost::unit_test_framework;
 #define REPORT_FAILURE(greekName, barrierType, barrier, rebate, payoff, \
                        exercise, s, q, r, today, v, expected, calculated, \
                        error, tolerance) \
-    BOOST_FAIL("\n" << barrierTypeToString(barrierType) << " " \
+    BOOST_ERROR("\n" << barrierTypeToString(barrierType) << " " \
                << exerciseTypeToString(exercise) << " " \
                << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
@@ -336,9 +336,9 @@ void BarrierOptionTest::testBabsiriValues() {
         bool antitheticVariate = false;
         bool controlVariate = false;
         bool brownianBridge = true;
-        Size requiredSamples = 131071;
+        Size requiredSamples = 131071; // 2^17-1
         Real requiredTolerance = Null<Real>();
-        Size maxSamples = 1000000;
+        Size maxSamples = 1048575; // 2^20-1
         bool isBiased = false;
         long seed = 5;
 
@@ -442,9 +442,9 @@ void BarrierOptionTest::testBeagleholeValues() {
         bool brownianBridge = true;
         bool antitheticVariate = false;
         bool controlVariate = false;
-        Size requiredSamples = 131071;
+        Size requiredSamples = 131071; // 2^17-1
         Real requiredTolerance = Null<Real>();
-        Size maxSamples = 1000000;
+        Size maxSamples = 1048575; // 2^20-1
         bool isBiased = false;
         long seed = 10;
         boost::shared_ptr<PricingEngine> mcEngine(

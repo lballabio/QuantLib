@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003 Neil Firth
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,14 +30,14 @@ namespace QuantLib {
                     Option::Type type,
                     Real underlying,
                     Real strike,
-                    DiscountFactor discount,
+                    const std::vector<DiscountFactor>& discounts,
                     const boost::shared_ptr<StochasticProcess1D>& diffProcess,
                     const PseudoRandom::ursg_type& sequenceGen)
     : underlying_(underlying),
       barrierType_(barrierType), barrier_(barrier),
       rebate_(rebate), diffProcess_(diffProcess),
       sequenceGen_(sequenceGen), payoff_(type, strike),
-      discount_(discount) {
+      discounts_(discounts) {
         QL_REQUIRE(underlying>0.0,
                    "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
@@ -48,10 +48,12 @@ namespace QuantLib {
 
 
     Real BarrierPathPricer::operator()(const Path& path) const {
+        static Size null = Null<Size>();
         Size n = path.length();
         QL_REQUIRE(n>1, "the path cannot be empty");
 
         bool isOptionActive = false;
+        Size knockNode = null;
         Real asset_price = underlying_;
         Real new_asset_price;
         Real x, y;
@@ -75,6 +77,8 @@ namespace QuantLib {
                 y = asset_price * std::exp(y);
                 if (y <= barrier_) {
                     isOptionActive = true;
+                    if (knockNode == null)
+                        knockNode = i+1;
                 }
                 asset_price = new_asset_price;
             }
@@ -92,6 +96,8 @@ namespace QuantLib {
                 y = asset_price * std::exp(y);
                 if (y >= barrier_) {
                     isOptionActive = true;
+                    if (knockNode == null)
+                        knockNode = i+1;
                 }
                 asset_price = new_asset_price;
             }
@@ -109,6 +115,8 @@ namespace QuantLib {
                 y = asset_price * std::exp(y);
                 if (y <= barrier_) {
                     isOptionActive = false;
+                    if (knockNode == null)
+                        knockNode = i+1;
                 }
                 asset_price = new_asset_price;
             }
@@ -126,6 +134,8 @@ namespace QuantLib {
                 y = asset_price * std::exp(y);
                 if (y >= barrier_) {
                     isOptionActive = false;
+                    if (knockNode == null)
+                        knockNode = i+1;
                 }
                 asset_price = new_asset_price;
             }
@@ -135,24 +145,33 @@ namespace QuantLib {
         }
 
         if (isOptionActive) {
-            return payoff_(asset_price) * discount_;
+            return payoff_(asset_price) * discounts_.back();
         } else {
-            return 0.0;
+            switch (barrierType_) {
+              case Barrier::UpIn:
+              case Barrier::DownIn:
+                return rebate_*discounts_.back();
+              case Barrier::UpOut:
+              case Barrier::DownOut:
+                return rebate_*discounts_[knockNode];
+              default:
+                QL_FAIL("unknown barrier type");
+            }
         }
     }
 
 
     BiasedBarrierPathPricer::BiasedBarrierPathPricer(
-                                      Barrier::Type barrierType,
-                                      Real barrier,
-                                      Real rebate,
-                                      Option::Type type,
-                                      Real underlying,
-                                      Real strike,
-                                      DiscountFactor discount)
+                                 Barrier::Type barrierType,
+                                 Real barrier,
+                                 Real rebate,
+                                 Option::Type type,
+                                 Real underlying,
+                                 Real strike,
+                                 const std::vector<DiscountFactor>& discounts)
     : underlying_(underlying),
       barrierType_(barrierType), barrier_(barrier),
-      rebate_(rebate), payoff_(type, strike), discount_(discount) {
+      rebate_(rebate), payoff_(type, strike), discounts_(discounts) {
         QL_REQUIRE(underlying>0.0,
                    "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
@@ -163,10 +182,12 @@ namespace QuantLib {
 
 
     Real BiasedBarrierPathPricer::operator()(const Path& path) const {
+        static Size null = Null<Size>();
         Size n = path.length();
         QL_REQUIRE(n>1, "the path cannot be empty");
 
         bool isOptionActive = false;
+        Size knockNode = null;
         Real asset_price = underlying_;
         Size i;
 
@@ -175,32 +196,44 @@ namespace QuantLib {
             isOptionActive = false;
             for (i = 1; i < n; i++) {
                 asset_price = path[i];
-                if (asset_price <= barrier_)
+                if (asset_price <= barrier_) {
                     isOptionActive = true;
+                    if (knockNode == null)
+                        knockNode = i+1;
+                }
             }
             break;
           case Barrier::UpIn:
             isOptionActive = false;
             for (i = 1; i < n; i++) {
                 asset_price = path[i];
-                if (asset_price >= barrier_)
+                if (asset_price >= barrier_) {
                     isOptionActive = true;
+                    if (knockNode == null)
+                        knockNode = i+1;
+                }
             }
             break;
           case Barrier::DownOut:
             isOptionActive = true;
             for (i = 1; i < n; i++) {
                 asset_price = path[i];
-                if (asset_price <= barrier_)
+                if (asset_price <= barrier_) {
                     isOptionActive = false;
+                    if (knockNode == null)
+                        knockNode = i+1;
+                }
             }
             break;
           case Barrier::UpOut:
             isOptionActive = true;
             for (i = 1; i < n; i++) {
                 asset_price = path[i];
-                if (asset_price >= barrier_)
+                if (asset_price >= barrier_) {
                     isOptionActive = false;
+                    if (knockNode == null)
+                        knockNode = i+1;
+                }
             }
             break;
           default:
@@ -208,9 +241,18 @@ namespace QuantLib {
         }
 
         if (isOptionActive) {
-            return payoff_(asset_price) * discount_;
+            return payoff_(asset_price) * discounts_.back();
         } else {
-            return 0.0;
+            switch (barrierType_) {
+              case Barrier::UpIn:
+              case Barrier::DownIn:
+                return rebate_*discounts_.back();
+              case Barrier::UpOut:
+              case Barrier::DownOut:
+                return rebate_*discounts_[knockNode];
+              default:
+                QL_FAIL("unknown barrier type");
+            }
         }
     }
 

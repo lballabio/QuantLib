@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Neil Firth
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -106,7 +106,7 @@ namespace QuantLib {
                     Option::Type type,
                     Real underlying,
                     Real strike,
-                    DiscountFactor discount,
+                    const std::vector<DiscountFactor>& discounts,
                     const boost::shared_ptr<StochasticProcess1D>& diffProcess,
                     const PseudoRandom::ursg_type& sequenceGen);
         Real operator()(const Path& path) const;
@@ -118,7 +118,7 @@ namespace QuantLib {
         boost::shared_ptr<StochasticProcess1D> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
         PlainVanillaPayoff payoff_;
-        DiscountFactor discount_;
+        std::vector<DiscountFactor> discounts_;
     };
 
 
@@ -130,7 +130,7 @@ namespace QuantLib {
                                 Option::Type type,
                                 Real underlying,
                                 Real strike,
-                                DiscountFactor discount);
+                                const std::vector<DiscountFactor>& discounts);
         Real operator()(const Path& path) const;
       private:
         Real underlying_;
@@ -138,7 +138,7 @@ namespace QuantLib {
         Real barrier_;
         Real rebate_;
         PlainVanillaPayoff payoff_;
-        DiscountFactor discount_;
+        std::vector<DiscountFactor> discounts_;
     };
 
 
@@ -202,6 +202,11 @@ namespace QuantLib {
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
+        TimeGrid grid = timeGrid();
+        std::vector<DiscountFactor> discounts(grid.size());
+        for (Size i=0; i<grid.size(); i++)
+            discounts[i] = process->riskFreeRate()->discount(grid[i]);
+
         // do this with template parameters?
         if (isBiased_) {
             return boost::shared_ptr<
@@ -213,12 +218,10 @@ namespace QuantLib {
                        payoff->optionType(),
                        payoff->strike(),
                        process->stateVariable()->value(),
-                       process->riskFreeRate()->discount(timeGrid().back())));
+                       discounts));
         } else {
-            TimeGrid grid = timeGrid();
             PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                                 PseudoRandom::urng_type(5));
-
             return boost::shared_ptr<
                         QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
@@ -228,7 +231,7 @@ namespace QuantLib {
                     payoff->optionType(),
                     payoff->strike(),
                     process->stateVariable()->value(),
-                    process->riskFreeRate()->discount(grid.back()),
+                    discounts,
                     process,
                     sequenceGen));
         }
