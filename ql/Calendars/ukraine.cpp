@@ -21,13 +21,13 @@
 
 namespace QuantLib {
 
-    Ukraine::Ukraine() {
+    Ukraine::Ukraine(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Ukraine::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new Ukraine::UseImpl);
         impl_ = impl;
     }
 
-    bool Ukraine::Impl::isBusinessDay(const Date& date) const {
+    bool Ukraine::UseImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();

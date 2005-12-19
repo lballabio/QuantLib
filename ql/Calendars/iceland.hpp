@@ -18,7 +18,7 @@
 */
 
 /*! \file iceland.hpp
-    \brief Icelandic calendar
+    \brief Icelandic calendars
 */
 
 #ifndef quantlib_iceland_calendar_hpp
@@ -28,8 +28,8 @@
 
 namespace QuantLib {
 
-    //! %Icelandic calendar
-    /*! Holidays
+    //! Icelandic calendars
+    /*! Holidays for the Iceland stock exchange
         (data from <http://www.icex.is/is/calendar?languageID=1>):
         <ul>
         <li>Saturdays</li>
@@ -52,13 +52,15 @@ namespace QuantLib {
     */
     class Iceland : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class IcexImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Iceland"; }
+            std::string name() const { return "Iceland stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Iceland();
+        enum Market { ICEX    //!< Iceland stock exchange
+        };
+        Iceland(Market m = ICEX);
     };
 
 }

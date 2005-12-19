@@ -43,7 +43,7 @@ namespace QuantLib {
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Libor("NZDLibor", n, units, 2, NZD(),
-                UnitedKingdom(UnitedKingdom::Exchange), Wellington(),
+                UnitedKingdom(UnitedKingdom::Exchange), NewZealand(),
                 ModifiedFollowing, dc, h) {}
     };
 

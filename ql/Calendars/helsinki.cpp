@@ -21,13 +21,13 @@
 
 namespace QuantLib {
 
-    Helsinki::Helsinki() {
+    Finland::Finland() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Helsinki::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new Finland::Impl);
         impl_ = impl;
     }
 
-    bool Helsinki::Impl::isBusinessDay(const Date& date) const {
+    bool Finland::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();

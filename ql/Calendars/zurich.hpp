@@ -18,17 +18,17 @@
 */
 
 /*! \file zurich.hpp
-    \brief Zurich calendar
+    \brief Swiss calendar
 */
 
-#ifndef quantlib_zurich_calendar_h
-#define quantlib_zurich_calendar_h
+#ifndef quantlib_swiss_calendar_hpp
+#define quantlib_swiss_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Zurich calendar
+    //! Swiss calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -47,16 +47,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Zurich : public Calendar {
+    class Switzerland : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Zurich"; }
+            std::string name() const { return "Switzerland"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Zurich();
+        Switzerland();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Switzerland */
+    typedef Switzerland Zurich;
+    #endif
 
 }
 

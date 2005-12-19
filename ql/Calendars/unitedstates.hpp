@@ -110,7 +110,7 @@ namespace QuantLib {
             std::string name() const { return "US settlement"; }
             bool isBusinessDay(const Date&) const;
         };
-        class ExchangeImpl : public Calendar::WesternImpl {
+        class NyseImpl : public Calendar::WesternImpl {
           public:
             std::string name() const { return "New York stock exchange"; }
             bool isBusinessDay(const Date&) const;
@@ -122,9 +122,11 @@ namespace QuantLib {
         };
       public:
         //! US calendars
-        enum Market { Settlement,     //!< generic settlement calendar
-                      Exchange,       //!< New York stock-exchange calendar
-                      GovernmentBond  //|< government-bond calendar
+        enum Market { Settlement = 0,     //!< generic settlement calendar
+                      Exchange = 1,       /*!< New York stock exchange calendar
+                                               \deprecated use NYSE instead */
+                      NYSE = 2,           //!< New York stock exchange calendar
+                      GovernmentBond = 3  //|< government-bond calendar
         };
         UnitedStates(Market market = Settlement);
     };

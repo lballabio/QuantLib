@@ -18,7 +18,7 @@
 */
 
 /*! \file indonesia.hpp
-    \brief Indonesian calendar
+    \brief Indonesian calendars
 */
 
 #ifndef quantlib_indonesia_calendar_hpp
@@ -28,8 +28,8 @@
 
 namespace QuantLib {
 
-    //! %Indonesian calendar
-    /*! Holidays
+    //! %Indonesian calendars
+    /*! Holidays for the Jakarta stock exchange
         (data from <http://www.jsx.co.id/trading.asp?cmd=menu3>):
         <ul>
         <li>Saturdays</li>
@@ -57,13 +57,15 @@ namespace QuantLib {
     */
     class Indonesia : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class BejImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Indonesia"; }
+            std::string name() const { return "Jakarta stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Indonesia();
+        enum Market { BEJ    //!< Jakarta stock exchange
+        };
+        Indonesia(Market m = BEJ);
     };
 
 }

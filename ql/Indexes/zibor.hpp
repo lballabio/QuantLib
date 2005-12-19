@@ -45,7 +45,7 @@ namespace QuantLib {
               const Handle<YieldTermStructure>& h,
               const DayCounter& dc = Actual360())
         : Xibor("Zibor", n, units, 2, CHF(),
-                Zurich(), ModifiedFollowing, dc, h) {}
+                Switzerland(), ModifiedFollowing, dc, h) {}
     };
 
 }

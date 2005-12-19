@@ -18,18 +18,19 @@
 */
 
 /*! \file bratislava.hpp
-    \brief Bratislava calendar
+    \brief Slovak calendars
 */
 
-#ifndef quantlib_bratislava_calendar_hpp
-#define quantlib_bratislava_calendar_hpp
+#ifndef quantlib_slovak_calendar_hpp
+#define quantlib_slovak_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Bratislava calendar
-    /*! Holidays (see http://www.bsse.sk/):
+    //! Slovak calendars
+    /*! Holidays for the Bratislava stock exchange
+        (data from <http://www.bsse.sk/>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -52,16 +53,23 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Bratislava : public Calendar {
+    class Slovakia : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class BsseImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Bratislava"; }
+            std::string name() const { return "Bratislava stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Bratislava();
+        enum Market { BSSE    //!< Bratislava stock exchange
+        };
+        Slovakia(Market m = BSSE);
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated use Slovakia(Slovakia::BSSE) */
+    typedef Slovakia Bratislava;
+    #endif
 
 }
 

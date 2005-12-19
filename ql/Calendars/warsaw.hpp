@@ -18,17 +18,17 @@
 */
 
 /*! \file warsaw.hpp
-    \brief Warsaw calendar
+    \brief Polish calendar
 */
 
-#ifndef quantlib_warsaw_calendar_h
-#define quantlib_warsaw_calendar_h
+#ifndef quantlib_polish_calendar_hpp
+#define quantlib_polish_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Warsaw calendar
+    //! Polish calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -47,16 +47,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Warsaw : public Calendar {
+    class Poland : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Warsaw"; }
+            std::string name() const { return "Poland"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Warsaw();
+        Poland();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Poland */
+    typedef Poland Warsaw;
+    #endif
 
 }
 

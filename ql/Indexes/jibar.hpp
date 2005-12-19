@@ -42,7 +42,7 @@ namespace QuantLib {
               const Handle<YieldTermStructure>& h,
               const DayCounter& dc = Actual365Fixed())
         : Xibor("Jibar", n, units, 0, ZAR(),
-                Johannesburg(), ModifiedFollowing, dc, h) {}
+                SouthAfrica(), ModifiedFollowing, dc, h) {}
     };
 
 }

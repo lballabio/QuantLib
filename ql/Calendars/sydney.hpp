@@ -18,17 +18,17 @@
 */
 
 /*! \file sydney.hpp
-    \brief Sydney calendar
+    \brief Australian calendar
 */
 
-#ifndef quantlib_sydney_calendar_h
-#define quantlib_sydney_calendar_h
+#ifndef quantlib_australian_calendar_hpp
+#define quantlib_australian_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Sydney calendar (New South Wales, Australia)
+    //! Australian calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -48,16 +48,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Sydney : public Calendar {
+    class Australia : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Sydney"; }
+            std::string name() const { return "Australia"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Sydney();
+        Australia();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Australia */
+    typedef Australia Sydney;
+    #endif
 
 }
 

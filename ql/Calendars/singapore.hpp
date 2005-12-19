@@ -18,18 +18,19 @@
 */
 
 /*! \file singapore.hpp
-    \brief Singapore calendar
+    \brief Singapore calendars
 */
 
-#ifndef quantlib_singapore_calendar_h
-#define quantlib_singapore_calendar_h
+#ifndef quantlib_singapore_calendar_hpp
+#define quantlib_singapore_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Singapore calendar
-    /*! Holidays:
+    //! %Singapore calendars
+    /*! Holidays for the Singapore exchange
+        (data from <http://www.ses.com.sg>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -52,19 +53,19 @@ namespace QuantLib {
         <li>Hari Raya Puasa</li>
         </ul>
 
-        Data from http://www.asx.com.au and http://www.ses.com.sg
-
         \ingroup calendars
     */
     class Singapore : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class SgxImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Singapore"; }
+            std::string name() const { return "Singapore exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Singapore();
+        enum Market { SGX    //!< Singapore exchange
+        };
+        Singapore(Market m = SGX);
     };
 
 }

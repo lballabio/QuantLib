@@ -21,13 +21,13 @@
 
 namespace QuantLib {
 
-    Indonesia::Indonesia() {
+    Indonesia::Indonesia(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Indonesia::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new Indonesia::BejImpl);
         impl_ = impl;
     }
 
-    bool Indonesia::Impl::isBusinessDay(const Date& date) const {
+    bool Indonesia::BejImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();

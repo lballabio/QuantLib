@@ -18,17 +18,17 @@
 */
 
 /*! \file beijing.hpp
-    \brief Beijing calendar
+    \brief Chinese calendar
 */
 
-#ifndef quantlib_beijing_calendar_hpp
-#define quantlib_beijing_calendar_hpp
+#ifndef quantlib_chinese_calendar_hpp
+#define quantlib_chinese_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Beijing calendar
+    //! Chinese calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -47,18 +47,23 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Beijing : public Calendar {
+    class China : public Calendar {
       private:
         class Impl : public Calendar::Impl {
           public:
-            std::string name() const { return "Beijing"; }
+            std::string name() const { return "China"; }
             bool isBusinessDay(const Date&) const;
             //! expressed relative to first day of year
             static Day springFestival(Year y);
         };
       public:
-        Beijing();
+        China();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to China */
+    typedef China Beijing;
+    #endif
 
 }
 

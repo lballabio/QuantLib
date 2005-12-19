@@ -18,42 +18,41 @@
 */
 
 /*! \file hongkong.hpp
-    \brief Hong Kong calendar
+    \brief Hong Kong calendars
 */
 
-#ifndef quantlib_hongkong_calendar_h
-#define quantlib_hongkong_calendar_h
+#ifndef quantlib_hongkong_calendar_hpp
+#define quantlib_hongkong_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! Hong Kong calendar
+    //! Hong Kong calendars
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
-        <li>New Year's Day, January 1st</li>
+        <li>New Year's Day, January 1st (possibly moved to Monday)</li>
         <li>Ching Ming Festival, April 5th </li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
         <li>Labor Day, May 1st</li>
-        <li>SAR Establishment Day, July 1st </li>
-        <li>National Day, October 1st </li>
-        <li>Christmas, December 25th </li>
-        <li>Boxing Day, December 26th </li>
-        <li>Christmas Holiday, December 27th </li>
+        <li>SAR Establishment Day, July 1st</li>
+        <li>National Day, October 1st (possibly moved to Monday)</li>
+        <li>Christmas, December 25th</li>
+        <li>Boxing Day, December 26th (possibly moved to Monday)</li>
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004/2005 only:)
+        (data available for 2004-2006 only:)
         <ul>
         <li>Lunar New Year</li>
         <li>Chinese New Year</li>
         <li>Buddha's birthday</li>
         <li>Tuen NG Festival</li>
-        <li>Mid-autumn fest</li>
-        <li>Chung Yeung fest</li>
+        <li>Mid-autumn Festival</li>
+        <li>Chung Yeung Festival</li>
         </ul>
 
         Data from http://www.hkex.com.hk
@@ -62,13 +61,15 @@ namespace QuantLib {
     */
     class HongKong : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class HkexImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "HongKong"; }
+            std::string name() const { return "Hong Kong stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        HongKong();
+        enum Market { HKEx    //!< Hong Kong stock exchange
+        };
+        HongKong(Market m = HKEx);
     };
 
 }

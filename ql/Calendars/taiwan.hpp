@@ -19,18 +19,18 @@
 */
 
 /*! \file taiwan.hpp
-    \brief Taiwan calendar
+    \brief Taiwanese calendars
 */
 
-#ifndef quantlib_taiwan_calendar_hpp
-#define quantlib_taiwan_calendar_hpp
+#ifndef quantlib_taiwanese_calendar_hpp
+#define quantlib_taiwanese_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Taiwan calendar
-    /*! Holidays
+    //! Taiwanese calendars
+    /*! Holidays for the Taiwan stock exchange
         (data from <http://www.tse.com.tw/en/trading/trading_days.php>):
         <ul>
         <li>Saturdays</li>
@@ -54,13 +54,15 @@ namespace QuantLib {
     */
     class Taiwan : public Calendar {
       private:
-        class Impl : public Calendar::Impl {
+        class TsecImpl : public Calendar::Impl {
           public:
-            std::string name() const { return "Taiwan"; }
+            std::string name() const { return "Taiwan stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Taiwan();
+        enum Market { TSEC    //!< Taiwan stock exchange
+        };
+        Taiwan(Market m = TSEC);
     };
 
 }

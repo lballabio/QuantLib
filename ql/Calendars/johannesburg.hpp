@@ -18,17 +18,17 @@
 */
 
 /*! \file johannesburg.hpp
-    \brief Johannesburg calendar
+    \brief South-African calendar
 */
 
-#ifndef quantlib_johannesburg_calendar_h
-#define quantlib_johannesburg_calendar_h
+#ifndef quantlib_south_african_calendar_hpp
+#define quantlib_south_african_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Johannesburg calendar
+    //! South-African calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -51,16 +51,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Johannesburg : public Calendar {
+    class SouthAfrica : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Johannesburg"; }
+            std::string name() const { return "South Africa"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Johannesburg();
+        SouthAfrica();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to SouthAfrica */
+    typedef SouthAfrica Johannesburg;
+    #endif
 
 }
 

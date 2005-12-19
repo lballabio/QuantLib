@@ -19,13 +19,13 @@
 
 namespace QuantLib {
 
-    Istanbul::Istanbul() {
+    Turkey::Turkey() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Istanbul::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new Turkey::Impl);
         impl_ = impl;
     }
 
-    bool Istanbul::Impl::isBusinessDay(const Date& date) const {
+    bool Turkey::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();

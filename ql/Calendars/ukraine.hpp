@@ -18,18 +18,18 @@
 */
 
 /*! \file ukraine.hpp
-    \brief Ukrainian calendar
+    \brief Ukrainian calendars
 */
 
-#ifndef quantlib_ukraine_calendar_hpp
-#define quantlib_ukraine_calendar_hpp
+#ifndef quantlib_ukrainian_calendar_hpp
+#define quantlib_ukrainian_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Ukrainian calendar
-    /*! Holidays
+    //! Ukrainian calendars
+    /*! Holidays for the Ukrainian stock exchange
         (data from <http://www.ukrse.kiev.ua/eng/>):
         <ul>
         <li>Saturdays</li>
@@ -51,13 +51,15 @@ namespace QuantLib {
     */
     class Ukraine : public Calendar {
       private:
-        class Impl : public Calendar::OrthodoxImpl {
+        class UseImpl : public Calendar::OrthodoxImpl {
           public:
-            std::string name() const { return "Ukraine"; }
+            std::string name() const { return "Ukrainian stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Ukraine();
+        enum Market { USE    //!< Ukrainian stock exchange
+        };
+        Ukraine(Market m = USE);
     };
 
 }

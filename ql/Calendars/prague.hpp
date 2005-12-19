@@ -18,18 +18,18 @@
 */
 
 /*! \file prague.hpp
-    \brief Prague calendar
+    \brief Czech calendars
 */
 
-#ifndef quantlib_prague_calendar_hpp
-#define quantlib_prague_calendar_hpp
+#ifndef quantlib_czech_calendar_hpp
+#define quantlib_czech_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Prague calendar
-    /*! Holidays (see http://www.pse.cz/):
+    //! Czech calendars
+    /*! Holidays for the Prague stock exchange (see http://www.pse.cz/):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -49,16 +49,23 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Prague : public Calendar {
+    class CzechRepublic : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class PseImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Prague"; }
+            std::string name() const { return "Prague stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Prague();
+        enum Market { PSE    //!< Prague stock exchange
+        };
+        CzechRepublic(Market m = PSE);
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated Use CzechRepublic(CzechRepublic::PSE) */
+    typedef CzechRepublic Prague;
+    #endif
 
 }
 

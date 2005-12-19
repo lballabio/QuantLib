@@ -18,18 +18,18 @@
 */
 
 /*! \file argentina.hpp
-    \brief Argentinian calendar
+    \brief Argentinian calendars
 */
 
-#ifndef quantlib_argentina_calendar_hpp
-#define quantlib_argentina_calendar_hpp
+#ifndef quantlib_argentinian_calendar_hpp
+#define quantlib_argentinian_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Argentinian calendar
-    /*! Holidays
+    //! Argentinian calendars
+    /*! Holidays for the Buenos Aires stock exchange
         (data from <http://www.merval.sba.com.ar/>):
         <ul>
         <li>Saturdays</li>
@@ -54,13 +54,15 @@ namespace QuantLib {
     */
     class Argentina : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class MervalImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Argentina"; }
+            std::string name() const { return "Buenos Aires stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Argentina();
+        enum Market { Merval   //!< Buenos Aires stock exchange calendar
+        };
+        Argentina(Market m = Merval);
     };
 
 }

@@ -29,7 +29,7 @@
 namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated Use Taiwan instead */
+    /*! \deprecated Use Taiwan(Taiwan::TSEC) */
     typedef Taiwan Taipei;
     #endif
 

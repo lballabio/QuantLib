@@ -18,18 +18,19 @@
 */
 
 /*! \file bombay.hpp
-    \brief Bombay calendar
+    \brief Indian calendars
 */
 
-#ifndef quantlib_bombay_calendar_hpp
-#define quantlib_bombay_calendar_hpp
+#ifndef quantlib_indian_calendar_hpp
+#define quantlib_indian_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Bombay calendar
-    /*! Holidays (data from <http://www.nse-india.com/>):
+    //! Indian calendars
+    /*! Holidays for the National Stock Exchange
+        (data from <http://www.nse-india.com/>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -58,16 +59,25 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Bombay : public Calendar {
+    class India : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class NseImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Bombay"; }
+            std::string name() const {
+                return "National Stock Exchange of India";
+            }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Bombay();
+        enum Market { NSE    //!< National Stock Exchange
+        };
+        India(Market m = NSE);
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated use India(India::NSE) */
+    typedef India Bombay;
+    #endif
 
 }
 

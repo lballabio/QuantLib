@@ -21,13 +21,13 @@
 
 namespace QuantLib {
 
-    HongKong::HongKong() {
+    HongKong::HongKong(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new HongKong::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new HongKong::HkexImpl);
         impl_ = impl;
     }
 
-    bool HongKong::Impl::isBusinessDay(const Date& date) const {
+    bool HongKong::HkexImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();
@@ -36,7 +36,8 @@ namespace QuantLib {
 
         if ((w == Saturday || w == Sunday)
             // New Year's Day
-            || (d == 1 && m == January)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
+                && m == January)
             // Ching Ming Festival
             || (d == 5 && m == April)
             // Good Friday
@@ -48,37 +49,57 @@ namespace QuantLib {
             // SAR Establishment Day
             || (d == 1 && m == July)
             // National Day
-            || (d == 1 && m == October)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
+                && m == October)
             // Christmas Day
             || (d == 25 && m == December)
             // Boxing Day
-            || (d == 26 && m == December)
-            // Christmas Holiday
-            || (d == 27 && m == December)
-
-            // Lunar New Year 2004
-            || ((d==22 || d==23 || d==24) && m == January && y==2004)
-            // Chinese New Year 2005
-            || ((d==9 || d==10 || d==11) && m == February && y==2005)
-
-            // Buddha's birthday 2004
-            || (d == 26 && m == May && y==2004)
-            // Buddha's birthday 2005
-            || (d == 16 && m == May && y==2005)
-            // Tuen NG Festival 2004
-            || (d == 22 && m == June && y==2004)
-            // Tuen NG Festival 2005
-            || (d == 11 && m == June && y==2005)
-            // Day after mid-autumn fest 2004
-            || (d == 29 && m == September && y==2004)
-            // Mid-autumn fest 2005
-            || (d == 19 && m == September && y==2005)
-            // Chung Yeung fest 2004
-            || (d == 29 && m == September && y==2004)
-            // Chung Yeung fest 2005
-            || (d == 11 && m == October && y==2005)
-            )
+            || ((d == 26 || ((d == 27 || d == 28) && w == Monday))
+                && m == December))
             return false;
+
+        if (y == 2004) {
+            if (// Lunar New Year
+                ((d==22 || d==23 || d==24) && m == January)
+                // Buddha's birthday
+                || (d == 26 && m == May)
+                // Tuen NG festival
+                || (d == 22 && m == June)
+                // Mid-autumn festival
+                || (d == 29 && m == September)
+                // Chung Yeung
+                || (d == 29 && m == September))
+                return false;
+        }
+
+        if (y == 2005) {
+            if (// Lunar New Year
+                ((d==9 || d==10 || d==11) && m == February)
+                // Buddha's birthday
+                || (d == 16 && m == May)
+                // Tuen NG festival
+                || (d == 11 && m == June)
+                // Mid-autumn festival
+                || (d == 19 && m == September)
+                // Chung Yeung festival
+                || (d == 11 && m == October))
+            return false;
+        }
+
+        if (y == 2006) {
+            if (// Lunar New Year
+                ((d >= 28 && d <= 31) && m == January)
+                // Buddha's birthday
+                || (d == 5 && m == May)
+                // Tuen NG festival
+                || (d == 31 && m == May)
+                // Mid-autumn festival
+                || (d == 7 && m == October)
+                // Chung Yeung festival
+                || (d == 30 && m == October))
+            return false;
+        }
+
         return true;
     }
 

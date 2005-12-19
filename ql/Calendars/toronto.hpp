@@ -18,17 +18,17 @@
 */
 
 /*! \file toronto.hpp
-    \brief Toronto calendar
+    \brief Canadian calendar
 */
 
-#ifndef quantlib_toronto_calendar_h
-#define quantlib_toronto_calendar_h
+#ifndef quantlib_canadian_calendar_hpp
+#define quantlib_canadian_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Toronto calendar
+    //! Canadian calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -49,16 +49,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Toronto : public Calendar {
+    class Canada : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Toronto"; }
+            std::string name() const { return "Canada"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Toronto();
+        Canada();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Canada */
+    typedef Canada Toronto;
+    #endif
 
 }
 

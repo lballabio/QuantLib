@@ -90,7 +90,7 @@ void CalendarTest::testJointCalendars() {
     Calendar c1 = TARGET(),
              c2 = UnitedKingdom(),
              c3 = UnitedStates(UnitedStates::Exchange),
-             c4 = Tokyo();
+             c4 = Japan();
 
     Calendar c12h = JointCalendar(c1,c2,JoinHolidays),
              c12b = JointCalendar(c1,c2,JoinBusinessDays),

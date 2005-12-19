@@ -1,4 +1,5 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
 /*
  Copyright (C) 2003 StatPro Italia srl
 
@@ -17,17 +18,17 @@
 */
 
 /*! \file copenhagen.hpp
-    \brief Copenhagen calendar
+    \brief Danish calendar
 */
 
-#ifndef quantlib_copenhagen_calendar_h
-#define quantlib_copenhagen_calendar_h
+#ifndef quantlib_danish_calendar_hpp
+#define quantlib_danish_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Copenhagen calendar
+    //! Danish calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -46,16 +47,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Copenhagen : public Calendar {
+    class Denmark : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Copenhagen"; }
+            std::string name() const { return "Denmark"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Copenhagen();
+        Denmark();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Denmark */
+    typedef Denmark Copenhagen;
+    #endif
 
 }
 

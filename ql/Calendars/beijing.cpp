@@ -21,13 +21,13 @@
 
 namespace QuantLib {
 
-    Beijing::Beijing() {
+    China::China() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Beijing::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new China::Impl);
         impl_ = impl;
     }
 
-    bool Beijing::Impl::isBusinessDay(const Date& date) const {
+    bool China::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();
@@ -52,7 +52,7 @@ namespace QuantLib {
         return true;
     }
 
-    Day Beijing::Impl::springFestival(Year y) {
+    Day China::Impl::springFestival(Year y) {
         static const Day SpringFestival[] = {
             31,  51,  39,  29,  47,  36,  25,  44,  33,  22,   // 1900-1909
             41,  30,  49,  37,  26,  45,  34,  23,  42,  32,   // 1910-1919

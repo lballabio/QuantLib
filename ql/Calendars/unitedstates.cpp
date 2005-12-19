@@ -27,8 +27,8 @@ namespace QuantLib {
         // implementation instance
         static boost::shared_ptr<Calendar::Impl> settlementImpl(
                                         new UnitedStates::SettlementImpl);
-        static boost::shared_ptr<Calendar::Impl> exchangeImpl(
-                                        new UnitedStates::ExchangeImpl);
+        static boost::shared_ptr<Calendar::Impl> nyseImpl(
+                                        new UnitedStates::NyseImpl);
         static boost::shared_ptr<Calendar::Impl> governmentImpl(
                                         new UnitedStates::GovernmentBondImpl);
         switch (market) {
@@ -36,7 +36,8 @@ namespace QuantLib {
             impl_ = settlementImpl;
             break;
           case Exchange:
-            impl_ = exchangeImpl;
+          case NYSE:
+            impl_ = nyseImpl;
             break;
           case GovernmentBond:
             impl_ = governmentImpl;
@@ -82,7 +83,7 @@ namespace QuantLib {
     }
 
 
-    bool UnitedStates::ExchangeImpl::isBusinessDay(const Date& date) const {
+    bool UnitedStates::NyseImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();

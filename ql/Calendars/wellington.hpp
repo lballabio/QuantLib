@@ -18,17 +18,17 @@
 */
 
 /*! \file wellington.hpp
-    \brief Wellington calendar
+    \brief New Zealand calendar
 */
 
-#ifndef quantlib_wellington_calendar_h
-#define quantlib_wellington_calendar_h
+#ifndef quantlib_new_zealand_calendar_hpp
+#define quantlib_new_zealand_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Wellington calendar
+    //! New Zealand calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -48,21 +48,26 @@ namespace QuantLib {
         <li>Boxing Day, December 26th (possibly moved to Monday or
             Tuesday)</li>
         </ul>
-        \note The holiday rules for Wellington were documented by
-        David Gilbert for IDB (http://www.jrefinery.com/ibd/)
+        \note The holiday rules for New Zealand were documented by
+              David Gilbert for IDB (http://www.jrefinery.com/ibd/)
 
         \ingroup calendars
     */
-    class Wellington : public Calendar {
+    class NewZealand : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Wellington"; }
+            std::string name() const { return "New Zealand"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Wellington();
+        NewZealand();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to NewZealand */
+    typedef NewZealand Wellington;
+    #endif
 
 }
 

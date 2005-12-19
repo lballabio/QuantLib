@@ -18,18 +18,19 @@
 */
 
 /*! \file seoul.hpp
-    \brief South Korea calendar
+    \brief South Korean calendars
 */
 
-#ifndef quantlib_seoul_calendar_h
-#define quantlib_seoul_calendar_h
+#ifndef quantlib_south_korean_calendar_hpp
+#define quantlib_south_korean_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Seoul calendar
-    /*! Holidays:
+    //! South Korean calendars
+    /*! Holidays for the Korea exchange
+        (data from <http://www.kofex.com>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -54,20 +55,25 @@ namespace QuantLib {
         <li>Harvest Moon Day</li>
         </ul>
 
-        Data from http://www.kofex.com
-
         \ingroup calendars
     */
-    class Seoul : public Calendar {
+    class SouthKorea : public Calendar {
       private:
-        class Impl : public Calendar::Impl {
+        class KrxImpl : public Calendar::Impl {
           public:
-            std::string name() const { return "Seoul"; }
+            std::string name() const { return "Korea exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Seoul();
+        enum Market { KRX    //!< Korea exchange
+        };
+        SouthKorea(Market m = KRX);
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated use SouthKorea(SouthKorea::KRX) */
+    typedef SouthKorea Seoul;
+    #endif
 
 }
 

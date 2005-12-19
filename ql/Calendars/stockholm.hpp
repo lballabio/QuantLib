@@ -18,30 +18,30 @@
 */
 
 /*! \file stockholm.hpp
-    \brief Stockholm calendar
+    \brief Swedish calendar
 */
 
-#ifndef quantlib_stockholm_calendar_h
-#define quantlib_stockholm_calendar_h
+#ifndef quantlib_swedish_calendar_hpp
+#define quantlib_swedish_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Stockholm calendar
+    //! Swedish calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
+        <li>New Year's Day, January 1st</li>
+        <li>Epiphany, January 6th</li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
         <li>Ascension</li>
         <li>Whit(Pentecost) Monday </li>
-        <li>Midsummer Eve (Friday between June 18-24)</li>
-        <li>New Year's Day, January 1st</li>
-        <li>Epiphany, January 6th</li>
         <li>May Day, May 1st</li>
         <li>National Day, June 6th</li>
+        <li>Midsummer Eve (Friday between June 18-24)</li>
         <li>Christmas Eve, December 24th</li>
         <li>Christmas Day, December 25th</li>
         <li>Boxing Day, December 26th</li>
@@ -50,16 +50,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Stockholm : public Calendar {
+    class Sweden : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Stockholm"; }
+            std::string name() const { return "Sweden"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Stockholm();
+        Sweden();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Sweden */
+    typedef Sweden Stockholm;
+    #endif
 
 }
 

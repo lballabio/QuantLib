@@ -16,17 +16,17 @@
 */
 
 /*! \file istanbul.hpp
-    \brief Istanbul calendar
+    \brief Turkish calendar
 */
 
-#ifndef quantlib_istanbul_calendar_hpp
-#define quantlib_istanbul_calendar_hpp
+#ifndef quantlib_turkish_calendar_hpp
+#define quantlib_turkish_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Istanbul calendar
+    //! Turkish calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -39,16 +39,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Istanbul : public Calendar {
+    class Turkey : public Calendar {
       private:
         class Impl : public Calendar::Impl {
           public:
-            std::string name() const { return "Istanbul"; }
+            std::string name() const { return "Turkey"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Istanbul();
+        Turkey();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Turkey */
+    typedef Turkey Istanbul;
+    #endif
 
 }
 

@@ -18,17 +18,17 @@
 */
 
 /*! \file riyadh.hpp
-    \brief Riyadh calendar
+    \brief Saudi Arabian calendar
 */
 
-#ifndef quantlib_riyadh_calendar_h
-#define quantlib_riyadh_calendar_h
+#ifndef quantlib_saudi_arabian_calendar_hpp
+#define quantlib_saudi_arabian_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Riyadh calendar
+    //! Saudi Arabian calendar
     /*! Holidays:
         <ul>
         <li>Fridays</li>
@@ -43,16 +43,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Riyadh : public Calendar {
+    class SaudiArabia : public Calendar {
       private:
         class Impl : public Calendar::Impl {
           public:
-            std::string name() const { return "Riyadh"; }
+            std::string name() const { return "Saudi Arabia"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Riyadh();
+        SaudiArabia();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to SaudiArabia */
+    typedef SaudiArabia Riyadh;
+    #endif
 
 }
 

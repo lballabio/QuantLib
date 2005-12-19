@@ -45,7 +45,7 @@ namespace QuantLib {
               const Handle<YieldTermStructure>& h,
               const DayCounter& dc = Actual365Fixed())
         : Xibor("Tibor", n, units, 2, JPY(),
-                Tokyo(), ModifiedFollowing, dc, h) {}
+                Japan(), ModifiedFollowing, dc, h) {}
     };
 
 }

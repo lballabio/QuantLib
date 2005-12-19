@@ -18,17 +18,17 @@
 */
 
 /*! \file oslo.hpp
-    \brief Oslo calendar
+    \brief Norwegian calendar
 */
 
-#ifndef quantlib_oslo_calendar_h
-#define quantlib_oslo_calendar_h
+#ifndef quantlib_norwegian_calendar_hpp
+#define quantlib_norwegian_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Oslo calendar
+    //! Norwegian calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -47,16 +47,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Oslo : public Calendar {
+    class Norway : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Oslo"; }
+            std::string name() const { return "Norway"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Oslo();
+        Norway();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Norway */
+    typedef Norway Oslo;
+    #endif
 
 }
 

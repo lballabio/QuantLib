@@ -22,13 +22,13 @@
 
 namespace QuantLib {
 
-    Taiwan::Taiwan() {
+    Taiwan::Taiwan(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Taiwan::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new Taiwan::TsecImpl);
         impl_ = impl;
     }
 
-    bool Taiwan::Impl::isBusinessDay(const Date& date) const {
+    bool Taiwan::TsecImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();

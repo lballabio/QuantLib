@@ -21,13 +21,13 @@
 
 namespace QuantLib {
 
-    Singapore::Singapore() {
+    Singapore::Singapore(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Singapore::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new Singapore::SgxImpl);
         impl_ = impl;
     }
 
-    bool Singapore::Impl::isBusinessDay(const Date& date) const {
+    bool Singapore::SgxImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();

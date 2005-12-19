@@ -18,17 +18,17 @@
 */
 
 /*! \file tokyo.hpp
-    \brief Tokyo calendar
+    \brief Japanese calendar
 */
 
-#ifndef quantlib_tokyo_calendar_h
-#define quantlib_tokyo_calendar_h
+#ifndef quantlib_japanese_calendar_hpp
+#define quantlib_japanese_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Tokyo calendar
+    //! Japanese calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -58,16 +58,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Tokyo : public Calendar {
+    class Japan : public Calendar {
       private:
         class Impl : public Calendar::Impl {
           public:
-            std::string name() const { return "Tokyo"; }
+            std::string name() const { return "Japan"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Tokyo();
+        Japan();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Japan */
+    typedef Japan Tokyo;
+    #endif
 
 }
 

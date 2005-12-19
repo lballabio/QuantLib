@@ -18,17 +18,17 @@
 */
 
 /*! \file budapest.hpp
-    \brief Budapest calendar
+    \brief Hungarian calendar
 */
 
-#ifndef quantlib_budapest_calendar_h
-#define quantlib_budapest_calendar_h
+#ifndef quantlib_hungarian_calendar_hpp
+#define quantlib_hungarian_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Budapest calendar
+    //! Hungarian calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -47,16 +47,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Budapest : public Calendar {
+    class Hungary : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Budapest"; }
+            std::string name() const { return "Hungary"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Budapest();
+        Hungary();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Hungary */
+    typedef Hungary Budapest;
+    #endif
 
 }
 

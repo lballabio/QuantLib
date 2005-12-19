@@ -18,17 +18,17 @@
 */
 
 /*! \file helsinki.hpp
-    \brief Helsinki calendar
+    \brief Finnish calendar
 */
 
-#ifndef quantlib_helsinki_calendar_h
-#define quantlib_helsinki_calendar_h
+#ifndef quantlib_finnish_calendar_hpp
+#define quantlib_finnish_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Helsinki calendar
+    //! Finnish calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
@@ -48,16 +48,21 @@ namespace QuantLib {
 
         \ingroup calendars
     */
-    class Helsinki : public Calendar {
+    class Finland : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Helsinki"; }
+            std::string name() const { return "Finland"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Helsinki();
+        Finland();
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Finland */
+    typedef Finland Helsinki;
+    #endif
 
 }
 

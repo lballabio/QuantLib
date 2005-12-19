@@ -106,7 +106,7 @@ namespace QuantLib {
         };
         class FrankfurtStockExchangeImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Frankfurt Stock Exchange"; }
+            std::string name() const { return "Frankfurt stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
         class XetraImpl : public Calendar::WesternImpl {

@@ -1,4 +1,5 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
 /*
  Copyright (C) 2003 StatPro Italia srl
 
@@ -20,13 +21,13 @@
 
 namespace QuantLib {
 
-    Copenhagen::Copenhagen() {
+    Denmark::Denmark() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Copenhagen::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new Denmark::Impl);
         impl_ = impl;
     }
 
-    bool Copenhagen::Impl::isBusinessDay(const Date& date) const {
+    bool Denmark::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();

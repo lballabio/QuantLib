@@ -78,7 +78,7 @@ boost::shared_ptr<CompoundForward> termStructure;
 void setup() {
 
     // data
-    calendar = Johannesburg();
+    calendar = SouthAfrica();
     settlementDays = 0;
     fixingDays = 0;
     today = calendar.adjust(Date::todaysDate());

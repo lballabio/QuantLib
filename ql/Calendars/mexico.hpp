@@ -18,7 +18,7 @@
 */
 
 /*! \file mexico.hpp
-    \brief Mexican calendar
+    \brief Mexican calendars
 */
 
 #ifndef quantlib_mexico_calendar_hpp
@@ -28,8 +28,8 @@
 
 namespace QuantLib {
 
-    //! %Mexican calendar
-    /*! Holidays
+    //! %Mexican calendars
+    /*! Holidays for the Mexican stock exchange
         (data from <http://www.bmv.com.mx/>):
         <ul>
         <li>Saturdays</li>
@@ -49,13 +49,15 @@ namespace QuantLib {
     */
     class Mexico : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class BmvImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Mexico"; }
+            std::string name() const { return "Mexican stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Mexico();
+        enum Market { BMV    //!< Mexican stock exchange
+        };
+        Mexico(Market m = BMV);
     };
 
 }

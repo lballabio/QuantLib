@@ -21,13 +21,13 @@
 
 namespace QuantLib {
 
-    Mexico::Mexico() {
+    Mexico::Mexico(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Mexico::Impl);
+        static boost::shared_ptr<Calendar::Impl> impl(new Mexico::BmvImpl);
         impl_ = impl;
     }
 
-    bool Mexico::Impl::isBusinessDay(const Date& date) const {
+    bool Mexico::BmvImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();

@@ -18,17 +18,17 @@
 */
 
 /*! \file brazil.hpp
-    \brief Brazil calendar
+    \brief Brazilian calendar
 */
 
-#ifndef quantlib_brazil_calendar_hpp
-#define quantlib_brazil_calendar_hpp
+#ifndef quantlib_brazilian_calendar_hpp
+#define quantlib_brazilian_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Brazil calendar
+    //! Brazilian calendar
     /*! Banking holidays:
         <ul>
         <li>Saturdays</li>
