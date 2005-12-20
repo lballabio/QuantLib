@@ -50,6 +50,13 @@ namespace QuantLib {
                 return 0.0;
             }
         }
+        Real getDiscountedDividend(Size i) const {
+            Real dividend = getDividend(i);
+            Real discount = 
+                process_->riskFreeRate()->
+                discount(events_[i]->date());
+            return dividend * discount;
+        }
     };
 
 }

@@ -41,11 +41,19 @@ namespace QuantLib {
     }
     */
 
+    // The value of the x axis is the NPV of the underlying minus the 
+    // value of the paid dividends.
+
+    // Note that to get the PDE to work, I have to scale the values
+    // and not shift them.  This means that the price curve assumes
+    // that the dividends are scaled with the value of the underlying.
+    //
+
     void FDDividendEngine::setGridLimits() const {
         Real paidDividends = 0.0;
         for (Size i=0; i<events_.size(); i++) {
             if (getDividendTime(i) >= 0.0)
-                paidDividends += getDividend(i);
+                paidDividends += getDiscountedDividend(i);
         }
 
         FDVanillaEngine::setGridLimits(
@@ -55,19 +63,15 @@ namespace QuantLib {
     }
 
     void FDDividendEngine::executeIntermediateStep(Size step) const{
-        sMin_ += getDividend(step);
-        sMax_ += getDividend(step);
-        center_ += getDividend(step);
+        Real scaleFactor = getDiscountedDividend(step) / 
+            center_ + 1.0;
+        sMin_ *= scaleFactor;
+        sMax_ *= scaleFactor;
+        center_ *= scaleFactor;
 
-        intrinsicValues_.shiftGrid(getDividend(step));
+        intrinsicValues_.scaleGrid(scaleFactor);
         initializeInitialCondition();
-        //std::cout << "Step " << step << " " << getDividend(step) << " "
-        //          << getDividend(step) << std::endl;
-
-        //std::cout << "before " << prices_ << std::endl; 
-        prices_.shiftGrid(getDividend(step));
-        //std::cout << "after " << prices_ << std::endl; 
-
+        prices_.scaleGrid(scaleFactor);
         initializeOperator();
         initializeModel();
 
