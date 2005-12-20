@@ -94,6 +94,10 @@ namespace QuantLib {
         void shiftGrid(Real s) {
             grid_ += s;
         }
+        void scaleGrid(Real s) {
+            grid_ *= s;
+        }
+
         void regrid(const Array &new_grid);
         template <class T>
         void regrid(const Array &new_grid,
@@ -219,8 +223,6 @@ namespace QuantLib {
             << a.values() << " ]";
         return out;
     }
-
-
 }
 
 
