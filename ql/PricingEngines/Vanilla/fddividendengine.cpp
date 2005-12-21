@@ -49,7 +49,7 @@ namespace QuantLib {
     // that the dividends are scaled with the value of the underlying.
     //
 
-    void FDDividendEngine::setGridLimits() const {
+    void FDDividendEngineMerton73::setGridLimits() const {
         Real paidDividends = 0.0;
         for (Size i=0; i<events_.size(); i++) {
             if (getDividendTime(i) >= 0.0)
@@ -62,7 +62,7 @@ namespace QuantLib {
         ensureStrikeInGrid();
     }
 
-    void FDDividendEngine::executeIntermediateStep(Size step) const{
+    void FDDividendEngineMerton73::executeIntermediateStep(Size step) const{
         Real scaleFactor = getDiscountedDividend(step) / 
             center_ + 1.0;
         sMin_ *= scaleFactor;
@@ -72,6 +72,34 @@ namespace QuantLib {
         intrinsicValues_.scaleGrid(scaleFactor);
         initializeInitialCondition();
         prices_.scaleGrid(scaleFactor);
+        initializeOperator();
+        initializeModel();
+
+        initializeStepCondition();
+        stepCondition_ -> applyTo(prices_.values(), getDividendTime(step));
+    }
+
+    void FDDividendEngineShift::setGridLimits() const {
+        Real paidDividends = 0.0;
+        for (Size i=0; i<events_.size(); i++) {
+            if (getDividendTime(i) >= 0.0)
+                paidDividends += getDividend(i);
+        }
+
+        FDVanillaEngine::setGridLimits(
+                             process_->stateVariable()->value()-paidDividends,
+                             getResidualTime());
+        ensureStrikeInGrid();
+    }
+
+    void FDDividendEngineShift::executeIntermediateStep(Size step) const{
+        sMin_ += getDividend(step);
+        sMax_ += getDividend(step);
+        center_ += getDividend(step);
+
+        intrinsicValues_.shiftGrid(getDividend(step));
+        initializeInitialCondition();
+        prices_.scaleGrid(getDividend(step));
         initializeOperator();
         initializeModel();
 
