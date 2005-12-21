@@ -43,8 +43,7 @@ namespace QuantLib {
                                timeSteps, gridPoints,
                                timeDependent) {}
         void calculate() const {
-            setupArguments(&arguments_,
-                           arguments_.getEventList());
+            setupArguments(&arguments_);
             FDDividendEngine::calculate(&results_);
         }
       protected:
