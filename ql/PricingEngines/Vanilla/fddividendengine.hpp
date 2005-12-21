@@ -31,9 +31,10 @@
 namespace QuantLib {
 
     //! Abstract base class for dividend engines
-    //! \todo The dividend class really needs to be made more sophisticated
-    // to distinguish between fixed dividends and fractional dividends
-
+    /*! \todo The dividend class really needs to be made more
+              sophisticated to distinguish between fixed dividends and
+              fractional dividends
+    */
     class FDDividendEngineBase : public FDMultiPeriodEngine {
     public:
         FDDividendEngineBase(Size timeSteps = 100,
@@ -42,7 +43,7 @@ namespace QuantLib {
             : FDMultiPeriodEngine(timeSteps, gridPoints,
                                   timeDependent) {}
     protected:
-        void setupArguments(const DividendVanillaOption::arguments *args) 
+        void setupArguments(const DividendVanillaOption::arguments *args)
             const {
             FDMultiPeriodEngine::setupArguments(args, args->getEventList());
         }
@@ -64,7 +65,7 @@ namespace QuantLib {
         }
         Real getDiscountedDividend(Size i) const {
             Real dividend = getDividend(i);
-            Real discount = 
+            Real discount =
                 process_->riskFreeRate()->
                 discount(events_[i]->date()) /
                 process_->dividendYield()->
@@ -73,17 +74,16 @@ namespace QuantLib {
         }
     };
 
-    //! Finite-differences pricing engine for dividend options using 
+    //! Finite-differences pricing engine for dividend options using
     // escowed dividend model
     /*! \ingroup vanillaengines */
     /* The merton 73 engine is the classic engine described in most
-       derivatives texts.  However, Haug, Haug, and Lewis in 
-       "Back to Basics: a new approach to the discrete dividend 
+       derivatives texts.  However, Haug, Haug, and Lewis in
+       "Back to Basics: a new approach to the discrete dividend
        problem" argues that this scheme underprices call options.
        This is set as the default engine, because it is consistent
        with the analytic version.
     */
-
     class FDDividendEngineMerton73 : public FDDividendEngineBase {
       public:
         FDDividendEngineMerton73(Size timeSteps = 100,
@@ -96,7 +96,7 @@ namespace QuantLib {
         void executeIntermediateStep(Size step) const;
     };
 
-    //! Finite-differences pricing engine for dividend options using 
+    //! Finite-differences pricing engine for dividend options using
     // shifted dividends
     /*! \ingroup vanillaengines */
     /* This engine uses the same algorithm that was used in quantlib
@@ -118,9 +118,9 @@ namespace QuantLib {
         void executeIntermediateStep(Size step) const;
     };
 
-
     // Use Merton73 engine as default.
-#define  FDDividendEngine FDDividendEngineMerton73
+    typedef FDDividendEngineMerton73 FDDividendEngine;
+
 }
 
 
