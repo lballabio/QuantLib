@@ -33,7 +33,7 @@ namespace QuantLib {
     class DividendSchedule {
       public:
         std::vector<boost::shared_ptr<CashFlow> > cashFlow;
-        std::vector<boost::shared_ptr<Event > > getEventList() {
+        std::vector<boost::shared_ptr<Event > > getEventList() const {
             std::vector<boost::shared_ptr<Event > > event_list;
             event_list.insert(event_list.begin(),
                               cashFlow.begin(),
