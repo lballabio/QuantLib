@@ -122,11 +122,11 @@ namespace QuantLib {
         };
       public:
         //! US calendars
-        enum Market { Settlement = 0,     //!< generic settlement calendar
-                      Exchange = 1,       /*!< New York stock exchange calendar
+        enum Market { Settlement,     //!< generic settlement calendar
+                      Exchange,       /*!< New York stock exchange calendar
                                                \deprecated use NYSE instead */
-                      NYSE = 2,           //!< New York stock exchange calendar
-                      GovernmentBond = 3  //|< government-bond calendar
+                      NYSE,           //!< New York stock exchange calendar
+                      GovernmentBond  //|< government-bond calendar
         };
         UnitedStates(Market market = Settlement);
     };
