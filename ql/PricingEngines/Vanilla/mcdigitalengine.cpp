@@ -26,22 +26,17 @@ namespace QuantLib {
     DigitalPathPricer::DigitalPathPricer(
                     const boost::shared_ptr<CashOrNothingPayoff>& payoff,
                     const boost::shared_ptr<AmericanExercise>& exercise,
-                    Real underlying,
                     const Handle<YieldTermStructure>& discountTS,
                     const boost::shared_ptr<StochasticProcess1D>& diffProcess,
                     const PseudoRandom::ursg_type& sequenceGen)
-    : payoff_(payoff), exercise_(exercise),
-      underlying_(underlying), diffProcess_(diffProcess),
-      sequenceGen_(sequenceGen), discountTS_(discountTS) {
-        QL_REQUIRE(underlying>0.0,
-                   "underlying less/equal zero not allowed");
-    }
+    : payoff_(payoff), exercise_(exercise), diffProcess_(diffProcess),
+      sequenceGen_(sequenceGen), discountTS_(discountTS) {}
 
     Real DigitalPathPricer::operator()(const Path& path) const {
         Size n = path.length();
         QL_REQUIRE(n>1, "the path cannot be empty");
 
-        Real log_asset_price = std::log(underlying_);
+        Real log_asset_price = std::log(path.front());
         Real x, y;
         Volatility vol;
         TimeGrid timeGrid = path.timeGrid();

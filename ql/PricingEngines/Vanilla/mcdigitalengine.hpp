@@ -112,7 +112,6 @@ namespace QuantLib {
         DigitalPathPricer(
                     const boost::shared_ptr<CashOrNothingPayoff>& payoff,
                     const boost::shared_ptr<AmericanExercise>& exercise,
-                    Real underlying,
                     const Handle<YieldTermStructure>& discountTS,
                     const boost::shared_ptr<StochasticProcess1D>& diffProcess,
                     const PseudoRandom::ursg_type& sequenceGen);
@@ -120,7 +119,6 @@ namespace QuantLib {
       private:
         boost::shared_ptr<CashOrNothingPayoff> payoff_;
         boost::shared_ptr<AmericanExercise> exercise_;
-        Real underlying_;
         boost::shared_ptr<StochasticProcess1D> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
         Handle<YieldTermStructure> discountTS_;
@@ -179,7 +177,6 @@ namespace QuantLib {
           new DigitalPathPricer(
             payoff,
             exercise,
-            process->stateVariable()->value(),
             Handle<YieldTermStructure>(process->riskFreeRate()),
             process,
             sequenceGen));

@@ -78,13 +78,10 @@ namespace QuantLib {
     class EuropeanHestonPathPricer : public PathPricer<MultiPath> {
       public:
         EuropeanHestonPathPricer(Option::Type type,
-                                 Real underlying,
                                  Real strike,
                                  DiscountFactor discount);
-
         Real operator()(const MultiPath& Multipath) const;
       private:
-        Real underlying_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
     };
@@ -122,7 +119,6 @@ namespace QuantLib {
             QL_TYPENAME MCEuropeanHestonEngine<RNG,S>::path_pricer_type>(
                    new EuropeanHestonPathPricer(
                                         payoff->optionType(),
-                                        process->s0(),
                                         payoff->strike(),
                                         process->riskFreeRate()->discount(
                                                    this->timeGrid().back())));
@@ -216,11 +212,9 @@ namespace QuantLib {
 
     inline EuropeanHestonPathPricer::EuropeanHestonPathPricer(
                                                  Option::Type type,
-                                                 Real underlying, Real strike,
+                                                 Real strike,
                                                  DiscountFactor discount)
-    : underlying_(underlying), payoff_(type, strike), discount_(discount) {
-        QL_REQUIRE(underlying>0.0,
-                   "underlying less/equal zero not allowed");
+    : payoff_(type, strike), discount_(discount) {
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
     }

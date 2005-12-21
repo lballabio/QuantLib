@@ -91,12 +91,10 @@ namespace QuantLib {
     class EuropeanPathPricer : public PathPricer<Path> {
       public:
         EuropeanPathPricer(Option::Type type,
-                           Real underlying,
                            Real strike,
                            DiscountFactor discount);
         Real operator()(const Path& path) const;
       private:
-        Real underlying_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
     };
@@ -145,7 +143,6 @@ namespace QuantLib {
                        QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>(
           new EuropeanPathPricer(
               payoff->optionType(),
-              process->stateVariable()->value(),
               payoff->strike(),
               process->riskFreeRate()->discount(this->timeGrid().back())));
     }
@@ -249,13 +246,10 @@ namespace QuantLib {
 
 
 
-    inline EuropeanPathPricer::EuropeanPathPricer(
-                            Option::Type type,
-                            Real underlying, Real strike,
-                            DiscountFactor discount)
-    : underlying_(underlying), payoff_(type, strike), discount_(discount) {
-        QL_REQUIRE(underlying>0.0,
-                   "underlying less/equal zero not allowed");
+    inline EuropeanPathPricer::EuropeanPathPricer(Option::Type type,
+                                                  Real strike,
+                                                  DiscountFactor discount)
+    : payoff_(type, strike), discount_(discount) {
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
     }

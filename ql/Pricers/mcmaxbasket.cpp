@@ -27,20 +27,11 @@ namespace QuantLib {
 
         class MaxBasketPathPricer : public PathPricer<MultiPath> {
           public:
-            MaxBasketPathPricer(const std::vector<Real>& underlying,
-                                DiscountFactor discount)
-            : underlying_(underlying), discount_(discount) {
-                for (Size i=0; i<underlying_.size(); i++) {
-                    QL_REQUIRE(underlying_[i]>0.0,
-                               "underlying less/equal zero not allowed");
-                }
-            }
+            MaxBasketPathPricer(DiscountFactor discount)
+            : discount_(discount) {}
 
             Real operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
-                QL_REQUIRE(underlying_.size() == numAssets,
-                           "the multi-path must contain "
-                           << underlying_.size() << " assets");
 
                 Real maxPrice = QL_MIN_REAL;
                 for (Size j = 0; j < numAssets; j++)
@@ -50,7 +41,6 @@ namespace QuantLib {
             }
 
           private:
-            std::vector<Real> underlying_;
             DiscountFactor discount_;
         };
 
@@ -105,7 +95,7 @@ namespace QuantLib {
         // initialize the path pricer
         DiscountFactor discount = riskFreeRate->discount(residualTime);
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
-                               new MaxBasketPathPricer(underlying, discount));
+                                           new MaxBasketPathPricer(discount));
 
         // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiVariate<

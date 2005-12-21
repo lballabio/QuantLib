@@ -104,14 +104,12 @@ namespace QuantLib {
                     Real barrier,
                     Real rebate,
                     Option::Type type,
-                    Real underlying,
                     Real strike,
                     const std::vector<DiscountFactor>& discounts,
                     const boost::shared_ptr<StochasticProcess1D>& diffProcess,
                     const PseudoRandom::ursg_type& sequenceGen);
         Real operator()(const Path& path) const;
       private:
-        Real underlying_;
         Barrier::Type barrierType_;
         Real barrier_;
         Real rebate_;
@@ -128,12 +126,10 @@ namespace QuantLib {
                                 Real barrier,
                                 Real rebate,
                                 Option::Type type,
-                                Real underlying,
                                 Real strike,
                                 const std::vector<DiscountFactor>& discounts);
         Real operator()(const Path& path) const;
       private:
-        Real underlying_;
         Barrier::Type barrierType_;
         Real barrier_;
         Real rebate_;
@@ -217,7 +213,6 @@ namespace QuantLib {
                        arguments_.rebate,
                        payoff->optionType(),
                        payoff->strike(),
-                       process->stateVariable()->value(),
                        discounts));
         } else {
             PseudoRandom::ursg_type sequenceGen(grid.size()-1,
@@ -230,7 +225,6 @@ namespace QuantLib {
                     arguments_.rebate,
                     payoff->optionType(),
                     payoff->strike(),
-                    process->stateVariable()->value(),
                     discounts,
                     process,
                     sequenceGen));

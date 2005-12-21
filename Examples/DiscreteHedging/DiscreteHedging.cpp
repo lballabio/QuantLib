@@ -121,15 +121,13 @@ class ReplicationPathPricer : public PathPricer<Path> {
   public:
     // real constructor
     ReplicationPathPricer(Option::Type type,
-                          Real underlying,
                           Real strike,
                           Rate r,
                           Time maturity,
                           Volatility sigma)
-    : type_(type), underlying_(underlying),
-      strike_(strike), r_(r), maturity_(maturity), sigma_(sigma) {
+    : type_(type), strike_(strike),
+      r_(r), maturity_(maturity), sigma_(sigma) {
         QL_REQUIRE(strike_ > 0.0, "strike must be positive");
-        QL_REQUIRE(underlying_ > 0.0, "underlying must be positive");
         QL_REQUIRE(r_ >= 0.0,
                    "risk free rate (r) must be positive or zero");
         QL_REQUIRE(maturity_ > 0.0, "maturity must be positive");
@@ -142,7 +140,7 @@ class ReplicationPathPricer : public PathPricer<Path> {
 
   private:
     Option::Type type_;
-    Real underlying_, strike_;
+    Real strike_;
     Rate r_;
     Time maturity_;
     Volatility sigma_;
@@ -220,7 +218,7 @@ Real ReplicationPathPricer::operator()(const Path& path) const {
     Time t = 0;
 
     // stock value at t=0
-    Real stock = underlying_;
+    Real stock = path.front();
 
     // money account at t=0
     Real money_account = 0.0;
@@ -340,8 +338,8 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     // of the stock. The path pricer knows how to price a path using its
     // value() method
     boost::shared_ptr<PathPricer<Path> > myPathPricer(new
-        ReplicationPathPricer(payoff_.optionType(), s0_,
-            payoff_.strike(), r_, maturity_, sigma_));
+        ReplicationPathPricer(payoff_.optionType(), payoff_.strike(),
+                              r_, maturity_, sigma_));
 
     // a statistics accumulator for the path-dependant Profit&Loss values
     Statistics statisticsAccumulator;

@@ -27,16 +27,9 @@ namespace QuantLib {
                                       BasketOption::BasketType basketType,
                                       Option::Type type,
                                       Real strike,
-                                      Array underlying,
                                       DiscountFactor discount)
-    : basketType_(basketType), underlying_(underlying),
-      payoff_(type, strike), discount_(discount) {
+    : basketType_(basketType), payoff_(type, strike), discount_(discount) {
 
-        // check underlying is not zero
-        for (Size i = 0; i < underlying.size(); i++) {
-            QL_REQUIRE(underlying[i]>0.0,
-                       "underlying less/equal zero not allowed");
-        }
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
     }

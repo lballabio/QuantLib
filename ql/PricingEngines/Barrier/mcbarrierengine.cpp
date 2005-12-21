@@ -28,18 +28,14 @@ namespace QuantLib {
                     Real barrier,
                     Real rebate,
                     Option::Type type,
-                    Real underlying,
                     Real strike,
                     const std::vector<DiscountFactor>& discounts,
                     const boost::shared_ptr<StochasticProcess1D>& diffProcess,
                     const PseudoRandom::ursg_type& sequenceGen)
-    : underlying_(underlying),
-      barrierType_(barrierType), barrier_(barrier),
+    : barrierType_(barrierType), barrier_(barrier),
       rebate_(rebate), diffProcess_(diffProcess),
       sequenceGen_(sequenceGen), payoff_(type, strike),
       discounts_(discounts) {
-        QL_REQUIRE(underlying>0.0,
-                   "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
         QL_REQUIRE(barrier>0.0,
@@ -54,7 +50,7 @@ namespace QuantLib {
 
         bool isOptionActive = false;
         Size knockNode = null;
-        Real asset_price = underlying_;
+        Real asset_price = path.front();
         Real new_asset_price;
         Real x, y;
         Volatility vol;
@@ -166,14 +162,10 @@ namespace QuantLib {
                                  Real barrier,
                                  Real rebate,
                                  Option::Type type,
-                                 Real underlying,
                                  Real strike,
                                  const std::vector<DiscountFactor>& discounts)
-    : underlying_(underlying),
-      barrierType_(barrierType), barrier_(barrier),
+    : barrierType_(barrierType), barrier_(barrier),
       rebate_(rebate), payoff_(type, strike), discounts_(discounts) {
-        QL_REQUIRE(underlying>0.0,
-                   "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
         QL_REQUIRE(barrier>0.0,
@@ -188,7 +180,7 @@ namespace QuantLib {
 
         bool isOptionActive = false;
         Size knockNode = null;
-        Real asset_price = underlying_;
+        Real asset_price = path.front();
         Size i;
 
         switch (barrierType_) {

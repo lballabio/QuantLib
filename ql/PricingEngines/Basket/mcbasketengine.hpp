@@ -84,12 +84,10 @@ namespace QuantLib {
         EuropeanMultiPathPricer(BasketOption::BasketType basketType,
                                 Option::Type type,
                                 Real strike,
-                                Array underlying,
                                 DiscountFactor discount);
         Real operator()(const MultiPath& multiPath) const;
       private:
         BasketOption::BasketType basketType_;
-        Array underlying_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
     };
@@ -150,8 +148,6 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        Array underlying = arguments_.stochasticProcess->initialValues();
-
         boost::shared_ptr<StochasticProcessArray> processes =
             boost::dynamic_pointer_cast<StochasticProcessArray>(
                                            arguments_.stochasticProcess);
@@ -167,7 +163,6 @@ namespace QuantLib {
                 arguments_.basketType,
                 payoff->optionType(),
                 payoff->strike(),
-                underlying,
                 process->riskFreeRate()->discount(
                                            arguments_.exercise->lastDate())));
     }
