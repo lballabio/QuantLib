@@ -25,7 +25,7 @@
 #define quantlib_fd_dividend_engine_hpp
 
 #include <ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp>
-#include <ql/Instruments/dividendvanillaoption.hpp>
+
 #include <ql/cashflow.hpp>
 
 namespace QuantLib {
@@ -35,6 +35,7 @@ namespace QuantLib {
               sophisticated to distinguish between fixed dividends and
               fractional dividends
     */
+    class Arguments;
     class FDDividendEngineBase : public FDMultiPeriodEngine {
     public:
         FDDividendEngineBase(Size timeSteps = 100,
@@ -43,15 +44,7 @@ namespace QuantLib {
             : FDMultiPeriodEngine(timeSteps, gridPoints,
                                   timeDependent) {}
     protected:
-        void setupArguments(const DividendVanillaOption::arguments *args)
-            const {
-            FDMultiPeriodEngine::setupArguments(args, args->getEventList());
-        }
-
-        void setupArguments(const OneAssetOption::arguments *args,
-          const std::vector<boost::shared_ptr<Event> >& schedule) const {
-            FDMultiPeriodEngine::setupArguments(args, schedule);
-        }
+        virtual void setupArguments(const Arguments *a) const;
         void setGridLimits() const = 0;
         void executeIntermediateStep(Size step) const = 0;
         Real getDividend(Size i) const {

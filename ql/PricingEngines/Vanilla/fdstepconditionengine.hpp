@@ -46,7 +46,7 @@ namespace QuantLib {
         mutable std::vector<boost::shared_ptr<bc_type> > controlBCs_;
         mutable SampledCurve controlPrices_;
         virtual void initializeStepCondition() const = 0;
-        void calculate(OneAssetOption::results* result) const;
+        virtual void calculate(Results* result) const;
     };
 
 }

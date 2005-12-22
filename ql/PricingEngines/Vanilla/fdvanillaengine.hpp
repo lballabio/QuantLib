@@ -30,7 +30,8 @@
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/sampledcurve.hpp>
-#include <ql/Instruments/oneassetoption.hpp>
+#include <ql/payoff.hpp>
+
 
 namespace QuantLib {
 
@@ -40,6 +41,8 @@ namespace QuantLib {
 
         \ingroup vanillaengines
     */
+    class Arguments;
+    class Results;
     class FDVanillaEngine {
       public:
         FDVanillaEngine(Size timeSteps, Size gridPoints,
@@ -52,8 +55,7 @@ namespace QuantLib {
         const Array& grid() const { return intrinsicValues_.grid(); }
       protected:
         // methods
-        virtual void setupArguments(const OneAssetOption::arguments* args)
-            const;
+        virtual void setupArguments(const Arguments* args) const;
         virtual void setGridLimits() const;
         virtual void setGridLimits(Real, Time) const;
         virtual void initializeInitialCondition() const;

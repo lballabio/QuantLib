@@ -27,7 +27,10 @@ namespace QuantLib {
     : FDVanillaEngine(gridPoints, timeSteps, timeDependent),
       timeStepPerPeriod_(timeSteps) {}
 
-    void FDMultiPeriodEngine::calculate(OneAssetOption::results* results) const {
+    void FDMultiPeriodEngine::calculate(Results* r) const {
+        OneAssetOption::results *results =
+            dynamic_cast<OneAssetOption::results *>(r);
+        QL_REQUIRE(results, "incorrect argument type");
         Time beginDate, endDate;
         Size dateNumber = stoppingTimes_.size();
         bool lastDateIsResTime = false;

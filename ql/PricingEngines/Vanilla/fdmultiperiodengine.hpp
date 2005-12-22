@@ -26,6 +26,7 @@
 
 #include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
+#include <ql/Instruments/oneassetoption.hpp>
 #include <ql/event.hpp>
 
 namespace QuantLib {
@@ -38,8 +39,8 @@ namespace QuantLib {
         mutable std::vector<Time> stoppingTimes_;
         Size timeStepPerPeriod_;
         mutable SampledCurve prices_;
-        void setupArguments(
-               const OneAssetOption::arguments* args,
+        virtual void setupArguments(
+               const Arguments* args,
                const std::vector<boost::shared_ptr<Event> >& schedule) const {
             FDVanillaEngine::setupArguments(args);
             events_ = schedule;
@@ -47,13 +48,16 @@ namespace QuantLib {
             for (Size i=0; i<schedule.size(); i++)
                 stoppingTimes_.push_back(process_->time(events_[i]->date()));
         };
-        void setupArguments(const OneAssetOption::arguments* args) const {
-            FDVanillaEngine::setupArguments(args);
+        virtual void setupArguments(const Arguments* a) const {
+            FDVanillaEngine::setupArguments(a);
+            const OneAssetOption::arguments *args =
+                dynamic_cast<const OneAssetOption::arguments*>(a);
+            QL_REQUIRE(args, "incorrect argument type");
             events_.clear();
             stoppingTimes_ = args->stoppingTimes;
         };
 
-        void calculate(OneAssetOption::results* result) const;
+        virtual void calculate(Results* result) const;
         mutable boost::shared_ptr<StandardStepCondition > stepCondition_;
         mutable boost::shared_ptr<StandardFiniteDifferenceModel> model_;
         virtual void executeIntermediateStep(Size step) const = 0;

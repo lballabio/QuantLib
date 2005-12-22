@@ -21,10 +21,13 @@
 #include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
+#include <ql/Instruments/oneassetoption.hpp>
 
 namespace QuantLib {
 
-    void FDStepConditionEngine::calculate(OneAssetOption::results* results) const {
+    void FDStepConditionEngine::calculate(Results* r) const {
+        OneAssetOption::results * results =
+            dynamic_cast<OneAssetOption::results *>(r);
         setGridLimits();
         initializeInitialCondition();
         initializeOperator();

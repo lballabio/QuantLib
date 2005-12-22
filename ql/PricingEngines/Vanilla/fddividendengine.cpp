@@ -18,7 +18,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
-#include <iostream>
+#include <ql/Instruments/dividendvanillaoption.hpp>
 
 namespace QuantLib {
 
@@ -31,7 +31,7 @@ namespace QuantLib {
         DiscountFactor discount = std::exp(-riskFreeRate_*residualTime_);
         DiscountFactor qDiscount = std::exp(-dividendYield_*residualTime_);
         Real forward = spot*qDiscount/discount;
-        Real variance = volatility_*volatility_*residualTime_;
+xi        Real variance = volatility_*volatility_*residualTime_;
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                              new PlainVanillaPayoff(payoff_));
         // theta, rho, and dividend rho should be corrected. However,
@@ -40,6 +40,14 @@ namespace QuantLib {
                        new BlackFormula(forward, discount, variance, payoff));
     }
     */
+
+    void FDDividendEngineBase::setupArguments(const Arguments *a) const {
+        const DividendVanillaOption::arguments *args =
+            dynamic_cast<const DividendVanillaOption::arguments *>(a);
+        QL_REQUIRE(args, "incorrect argument type");
+        FDMultiPeriodEngine::setupArguments(a, args->getEventList());
+    }
+
 
     // The value of the x axis is the NPV of the underlying minus the 
     // value of the paid dividends.

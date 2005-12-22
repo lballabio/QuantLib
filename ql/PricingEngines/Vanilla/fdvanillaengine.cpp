@@ -23,6 +23,7 @@
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/grid.hpp>
 #include <ql/FiniteDifferences/operatorfactory.hpp>
+#include <ql/Instruments/oneassetoption.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +36,10 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::setupArguments(
-                                 const OneAssetOption::arguments*args) const {
+                                 const Arguments* a) const {
+        const OneAssetOption::arguments * args =
+            dynamic_cast<const OneAssetOption::arguments *>(a);
+        QL_REQUIRE(args, "incorrect argument type");
         process_ =
             boost::dynamic_pointer_cast<BlackScholesProcess>(
                                                      args->stochasticProcess);
