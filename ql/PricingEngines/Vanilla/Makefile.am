@@ -27,6 +27,7 @@ include_HEADERS = \
     fdshoutengine.hpp \
     fdstepconditionengine.hpp \
     fdvanillaengine.hpp \
+    fdconditions.hpp \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
     mceuropeanhestonengine.hpp \

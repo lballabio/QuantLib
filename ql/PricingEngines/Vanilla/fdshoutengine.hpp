@@ -25,8 +25,7 @@
 #define quantlib_fd_shout_engine_hpp
 
 #include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
-#include <ql/FiniteDifferences/fdtypedefs.hpp>
-#include <ql/FiniteDifferences/shoutcondition.hpp>
+#include <ql/PricingEngines/Vanilla/fdconditions.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {
@@ -38,28 +37,18 @@ namespace QuantLib {
               reproducing numerical derivatives.
     */
     class FDShoutEngine : public VanillaOption::engine,
-                          public FDStepConditionEngine {
+                          public FDShoutCondition<FDStepConditionEngine> {
       public:
         FDShoutEngine(Size timeSteps=100, Size gridPoints=100,
                       bool timeDependent = false)
-        : FDStepConditionEngine(timeSteps, gridPoints, timeDependent) {}
+        : FDShoutCondition<FDStepConditionEngine>
+        (timeSteps, gridPoints, timeDependent) {}
       private:
         void calculate() const {
             setupArguments(&arguments_);
             FDStepConditionEngine::calculate(&results_);
         }
-        void initializeStepCondition() const {
-            Time residualTime = getResidualTime();
-            Rate riskFreeRate = process_->riskFreeRate()
-                ->zeroRate(residualTime, Continuous);
-
-            stepCondition_ = boost::shared_ptr<StandardStepCondition>(
-                              new ShoutCondition(intrinsicValues_.values(),
-                                                             residualTime,
-                                                             riskFreeRate));
-        }
     };
-
 }
 
 

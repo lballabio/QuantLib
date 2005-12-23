@@ -25,7 +25,7 @@
 #define quantlib_fd_dividend_american_engine_hpp
 
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
-#include <ql/FiniteDifferences/americancondition.hpp>
+#include <ql/PricingEngines/Vanilla/fdconditions.hpp>
 
 namespace QuantLib {
 
@@ -42,23 +42,17 @@ namespace QuantLib {
         \bug method impliedVolatility() utterly fails
     */
     class FDDividendAmericanEngine : public DividendVanillaOption::engine,
-        public FDDividendEngine {
+        public FDAmericanCondition<FDDividendEngine> {
       public:
         FDDividendAmericanEngine(Size timeSteps = 100,
                                  Size gridPoints = 100,
                                  bool timeDependent = false)
-        : FDDividendEngine(timeSteps, gridPoints, timeDependent) {}
+        : FDAmericanCondition<FDDividendEngine>(timeSteps, gridPoints, timeDependent) {}
         void calculate() const {
             setupArguments(&arguments_);
             FDDividendEngine::calculate(&results_);
         }
-      protected:
-        void initializeStepCondition() const {
-            stepCondition_ = boost::shared_ptr<StandardStepCondition>(
-                     new AmericanCondition(intrinsicValues_.values()));
-        }
     };
-
 }
 
 

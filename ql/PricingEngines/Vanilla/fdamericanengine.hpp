@@ -25,8 +25,10 @@
 #define quantlib_fd_american_engine_hpp
 
 #include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdconditions.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
-#include <ql/FiniteDifferences/americancondition.hpp>
+
+
 
 namespace QuantLib {
 
@@ -40,19 +42,15 @@ namespace QuantLib {
           reproducing numerical derivatives.
     */
     class FDAmericanEngine : public OneAssetOption::engine,
-        public FDStepConditionEngine {
+        public FDAmericanCondition<FDStepConditionEngine> {
       public:
         FDAmericanEngine(Size timeSteps=100, Size gridPoints=100,
                          bool timeDependent = false)
-        : FDStepConditionEngine(timeSteps, gridPoints, timeDependent) {}
+        : FDAmericanCondition<FDStepConditionEngine>(timeSteps, gridPoints, timeDependent) {}
       private:
         void calculate() const {
             setupArguments(&arguments_);
             FDStepConditionEngine::calculate(&results_);
-        }
-        void initializeStepCondition() const {
-            stepCondition_ = boost::shared_ptr<StandardStepCondition>(
-                             new AmericanCondition(intrinsicValues_.values()));
         }
     };
 

@@ -35,30 +35,18 @@ namespace QuantLib {
         \bug results are not overly reliable.
     */
     class FDDividendShoutEngine : public DividendVanillaOption::engine,
-        public FDDividendEngine {
+        public FDShoutCondition<FDDividendEngine> {
       public:
         FDDividendShoutEngine(Size timeSteps = 100, Size gridPoints = 100,
                               bool timeDependent = false)
-            : FDDividendEngine(
+            : FDShoutCondition<FDDividendEngine>(
                                timeSteps, gridPoints,
                                timeDependent) {}
         void calculate() const {
             setupArguments(&arguments_);
             FDDividendEngine::calculate(&results_);
         }
-      protected:
-        void initializeStepCondition() const {
-            Time residualTime = getResidualTime();
-            Rate riskFreeRate = process_->riskFreeRate()
-                ->zeroRate(residualTime, Continuous);
-
-            stepCondition_ = boost::shared_ptr<StandardStepCondition>(
-                          new ShoutCondition(intrinsicValues_.values(),
-                                                             residualTime,
-                                                             riskFreeRate));
-        }
     };
-
 }
 
 
