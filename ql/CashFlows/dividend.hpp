@@ -32,20 +32,57 @@ namespace QuantLib {
     /*! This cash flow pays a predetermined amount at a given date. */
     class Dividend : public CashFlow {
       public:
-        Dividend(Real amount, const Date& date)
-        : amount_(amount), date_(date) {}
+        Dividend(const Date& date)
+        : date_(date) {}
         //! \name CashFlow interface
         //@{
-        Real amount() const { return amount_; }
-        Date date() const { return date_; }
+        virtual Date date() const { return date_; }
+        virtual Real amount() const = 0;
         //@}
+        virtual Real amount(Real underlying) const = 0;
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
-      private:
-        Real amount_;
+    protected:
         Date date_;
+    };
+
+    //! Predetermined cash flow
+    /*! This cash flow pays a predetermined amount at a given date. */
+    class FixedDividend : public Dividend {
+      public:
+        FixedDividend(Real amount, const Date& date)
+        : Dividend(date), amount_(amount) {}
+        //! \name CashFlow interface
+        //@{
+        virtual Real amount() const { return amount_; }
+        virtual Real amount(Real underlying) const { return amount_;}
+        //@}
+    protected:
+        Real amount_;
+    };
+
+    //! Predetermined cash flow
+    /*! This cash flow pays a predetermined amount at a given date. */
+    class FractionalDividend : public Dividend {
+      public:
+        FractionalDividend(Real rate, const Date& date)
+        : Dividend(date), rate_(rate), nominal_(0.0) {}
+
+        FractionalDividend(Real rate, Real nominal, const Date& date)
+        : Dividend(date), rate_(rate), nominal_(nominal) {}
+        //! \name CashFlow interface
+        //@{
+        virtual Real amount() const { return rate_ * nominal_; }
+        virtual Real amount(Real underlying) const 
+             { return rate_ * underlying;}
+        virtual Real rate() const { return rate_; }
+        virtual Real nominal() const { return nominal_;}
+        //@}
+    protected:
+        Real rate_;
+        Real nominal_;
     };
 
 

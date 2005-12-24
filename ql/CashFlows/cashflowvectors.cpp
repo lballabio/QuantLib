@@ -151,7 +151,8 @@ namespace QuantLib {
 
         for (dd = dividendDates.begin(), d = dividends.begin();
              dd != dividendDates.end(); dd++, d++) {
-            items.push_back(boost::shared_ptr<CashFlow>(new Dividend(*d, *dd)));
+            items.push_back(boost::shared_ptr<CashFlow>(new FixedDividend(*d, 
+                                                                          *dd)));
         }
         return items;
     }
