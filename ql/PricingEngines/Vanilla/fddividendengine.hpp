@@ -113,7 +113,6 @@ namespace QuantLib {
 
     // Use Merton73 engine as default.
     typedef FDDividendEngineMerton73 FDDividendEngine;
-
 }
 
 

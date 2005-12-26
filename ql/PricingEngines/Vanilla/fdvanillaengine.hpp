@@ -87,7 +87,18 @@ namespace QuantLib {
         static const Real safetyZoneFactor_;
     };
 
+    template <typename base, typename engine>
+    class FDEngineAdapter : public base, public engine {
+    public:
+        FDEngineAdapter(Size timeSteps=100, Size gridPoints=100,
+                         bool timeDependent = false)
+            : base(timeSteps, gridPoints,timeDependent) {};
+    private:
+        void calculate() const {
+            base::setupArguments(&(this->arguments_));
+            base::calculate(&(this->results_));
+        }
+    };
 }
-
 
 #endif

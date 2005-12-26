@@ -34,19 +34,9 @@ namespace QuantLib {
 
         \bug results are not overly reliable.
     */
-    class FDDividendShoutEngine : public DividendVanillaOption::engine,
-        public FDShoutCondition<FDDividendEngine> {
-      public:
-        FDDividendShoutEngine(Size timeSteps = 100, Size gridPoints = 100,
-                              bool timeDependent = false)
-            : FDShoutCondition<FDDividendEngine>(
-                               timeSteps, gridPoints,
-                               timeDependent) {}
-        void calculate() const {
-            setupArguments(&arguments_);
-            FDDividendEngine::calculate(&results_);
-        }
-    };
+    typedef FDEngineAdapter<FDShoutCondition<FDDividendEngine>,
+                            DividendVanillaOption::engine>
+    FDDividendShoutEngine;
 }
 
 

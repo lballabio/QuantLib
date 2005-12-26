@@ -36,22 +36,9 @@ namespace QuantLib {
           reproducing numerical derivatives.
         - the invariance of the results upon addition of null
           dividends is tested.
-
-        \bug results are not overly reliable.
     */
-    class FDDividendEuropeanEngine :  public DividendVanillaOption::engine,
-        public FDDividendEngine {
-      public:
-        FDDividendEuropeanEngine(Size timeSteps = 100,
-                                 Size gridPoints = 100,
-                                 bool timeDependent = false)
-        : FDDividendEngine(timeSteps, gridPoints, timeDependent) {}
-        void calculate() const {
-            setupArguments(&arguments_);
-            FDDividendEngine::calculate(&results_);
-        }
-    };
-
+    typedef FDEngineAdapter<FDDividendEngine, DividendVanillaOption::engine>
+    FDDividendEuropeanEngine;
 }
 
 

@@ -36,19 +36,9 @@ namespace QuantLib {
         \test the correctness of the returned greeks is tested by
               reproducing numerical derivatives.
     */
-    class FDShoutEngine : public VanillaOption::engine,
-                          public FDShoutCondition<FDStepConditionEngine> {
-      public:
-        FDShoutEngine(Size timeSteps=100, Size gridPoints=100,
-                      bool timeDependent = false)
-        : FDShoutCondition<FDStepConditionEngine>
-        (timeSteps, gridPoints, timeDependent) {}
-      private:
-        void calculate() const {
-            setupArguments(&arguments_);
-            FDStepConditionEngine::calculate(&results_);
-        }
-    };
+    typedef FDEngineAdapter<FDShoutCondition<FDStepConditionEngine>,
+                            VanillaOption::engine>
+    FDShoutEngine;
 }
 
 

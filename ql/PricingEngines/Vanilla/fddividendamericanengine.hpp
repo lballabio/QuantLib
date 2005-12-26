@@ -41,18 +41,9 @@ namespace QuantLib {
         \bug results are not overly reliable.
         \bug method impliedVolatility() utterly fails
     */
-    class FDDividendAmericanEngine : public DividendVanillaOption::engine,
-        public FDAmericanCondition<FDDividendEngine> {
-      public:
-        FDDividendAmericanEngine(Size timeSteps = 100,
-                                 Size gridPoints = 100,
-                                 bool timeDependent = false)
-        : FDAmericanCondition<FDDividendEngine>(timeSteps, gridPoints, timeDependent) {}
-        void calculate() const {
-            setupArguments(&arguments_);
-            FDDividendEngine::calculate(&results_);
-        }
-    };
+    typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngine>,
+                            DividendVanillaOption::engine> 
+    FDDividendAmericanEngine;
 }
 
 

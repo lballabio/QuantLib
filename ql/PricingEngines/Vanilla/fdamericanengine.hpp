@@ -41,18 +41,9 @@ namespace QuantLib {
         - the correctness of the returned greeks is tested by
           reproducing numerical derivatives.
     */
-    class FDAmericanEngine : public OneAssetOption::engine,
-        public FDAmericanCondition<FDStepConditionEngine> {
-      public:
-        FDAmericanEngine(Size timeSteps=100, Size gridPoints=100,
-                         bool timeDependent = false)
-        : FDAmericanCondition<FDStepConditionEngine>(timeSteps, gridPoints, timeDependent) {}
-      private:
-        void calculate() const {
-            setupArguments(&arguments_);
-            FDStepConditionEngine::calculate(&results_);
-        }
-    };
+    typedef FDEngineAdapter<FDAmericanCondition<FDStepConditionEngine>,
+                            OneAssetOption::engine> 
+    FDAmericanEngine;
 
 }
 
