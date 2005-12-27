@@ -37,8 +37,17 @@ namespace QuantLib {
         - the invariance of the results upon addition of null
           dividends is tested.
     */
-    typedef FDEngineAdapter<FDDividendEngine, DividendVanillaOption::engine>
+    typedef FDEngineAdapter<FDDividendEngine, 
+                            DividendVanillaOption::engine>
     FDDividendEuropeanEngine;
+
+    typedef FDEngineAdapter<FDDividendEngineMerton73, 
+                            DividendVanillaOption::engine>
+    FDDividendEuropeanEngineMerton73;
+    
+    typedef FDEngineAdapter<FDDividendEngineShiftScale, 
+                            DividendVanillaOption::engine>
+    FDDividendEuropeanEngineShiftScale;
 }
 
 

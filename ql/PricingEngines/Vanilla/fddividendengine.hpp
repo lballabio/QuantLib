@@ -25,8 +25,7 @@
 #define quantlib_fd_dividend_engine_hpp
 
 #include <ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp>
-
-#include <ql/cashflow.hpp>
+#include <ql/CashFlows/dividend.hpp>
 
 namespace QuantLib {
 
@@ -47,9 +46,9 @@ namespace QuantLib {
         virtual void setupArguments(const Arguments *a) const;
         void setGridLimits() const = 0;
         void executeIntermediateStep(Size step) const = 0;
-        Real getDividend(Size i) const {
-            const CashFlow *dividend =
-                dynamic_cast<const CashFlow *>(events_[i].get());
+        Real getDividendAmount(Size i) const {
+            const Dividend *dividend =
+                dynamic_cast<const Dividend *>(events_[i].get());
             if (dividend) {
                 return dividend->amount();
             } else {
@@ -57,7 +56,7 @@ namespace QuantLib {
             }
         }
         Real getDiscountedDividend(Size i) const {
-            Real dividend = getDividend(i);
+            Real dividend = getDividendAmount(i);
             Real discount =
                 process_->riskFreeRate()->
                 discount(events_[i]->date()) /
@@ -99,9 +98,9 @@ namespace QuantLib {
        \todo Review literature to see whether this is described
     */
 
-    class FDDividendEngineShift : public FDDividendEngineBase {
+    class FDDividendEngineShiftScale : public FDDividendEngineBase {
       public:
-        FDDividendEngineShift(Size timeSteps = 100,
+        FDDividendEngineShiftScale(Size timeSteps = 100,
                          Size gridPoints = 100,
                          bool timeDependent = false)
         : FDDividendEngineBase(timeSteps, gridPoints,

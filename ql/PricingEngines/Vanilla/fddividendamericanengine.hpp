@@ -44,6 +44,14 @@ namespace QuantLib {
     typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngine>,
                             DividendVanillaOption::engine> 
     FDDividendAmericanEngine;
+
+    typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngineMerton73>,
+                            DividendVanillaOption::engine> 
+    FDDividendAmericanEngineMerton73;
+
+    typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngineShiftScale>,
+                            DividendVanillaOption::engine> 
+    FDDividendAmericanEngineShiftScale;
 }
 
 

@@ -20,6 +20,7 @@
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
 #include <ql/Instruments/dividendvanillaoption.hpp>
 
+
 namespace QuantLib {
 
     /*
@@ -70,6 +71,7 @@ xi        Real variance = volatility_*volatility_*residualTime_;
         ensureStrikeInGrid();
     }
 
+    // TODO:  Make this work for both fixed and scaled dividends
     void FDDividendEngineMerton73::executeIntermediateStep(Size step) const{
         Real scaleFactor = getDiscountedDividend(step) / 
             center_ + 1.0;
@@ -87,27 +89,46 @@ xi        Real variance = volatility_*volatility_*residualTime_;
         stepCondition_ -> applyTo(prices_.values(), getDividendTime(step));
     }
 
-    void FDDividendEngineShift::setGridLimits() const {
-        Real paidDividends = 0.0;
+    class DividendAdder : std::unary_function<Real,Real> {
+    private:
+        const Dividend *dividend;
+    public:
+        DividendAdder (const Dividend *d) {
+            dividend = d;
+        }
+        Real operator() (Real x) const {
+            return x + dividend->amount(x);
+        }
+    };
+
+    void FDDividendEngineShiftScale::setGridLimits() const {
+        Real underlying = process_->stateVariable()->value();
         for (Size i=0; i<events_.size(); i++) {
-            if (getDividendTime(i) >= 0.0)
-                paidDividends += getDividend(i);
+            const Dividend *dividend =
+                dynamic_cast<const Dividend *>(events_[i].get());
+            if (!dividend) continue;
+            if (getDividendTime(i) < 0.0) continue;
+            underlying -= dividend->amount(underlying);
         }
 
-        FDVanillaEngine::setGridLimits(
-                             process_->stateVariable()->value()-paidDividends,
-                             getResidualTime());
+        FDVanillaEngine::setGridLimits(underlying,
+                                       getResidualTime());
         ensureStrikeInGrid();
     }
 
-    void FDDividendEngineShift::executeIntermediateStep(Size step) const{
-        sMin_ += getDividend(step);
-        sMax_ += getDividend(step);
-        center_ += getDividend(step);
+    void FDDividendEngineShiftScale::executeIntermediateStep(Size step) const{
+        const Dividend *dividend =
+            dynamic_cast<const Dividend *>(events_[step].get());
+        if (!dividend) return;
+        DividendAdder adder(dividend);
+        sMin_ = adder(sMin_);
+        sMax_ = adder(sMax_);
+        center_ = adder(center_);
+        intrinsicValues_.transformGrid(adder);
 
-        intrinsicValues_.shiftGrid(getDividend(step));
         initializeInitialCondition();
-        prices_.scaleGrid(getDividend(step));
+        prices_.transformGrid(adder);
+
         initializeOperator();
         initializeModel();
 
