@@ -44,6 +44,7 @@ namespace QuantLib {
         <li>Passion of Christ</li>
         <li>Carnival</li>
         <li>Corpus Christi</li>
+        </ul>
 
         \ingroup calendars
 

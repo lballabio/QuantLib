@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2003 StatPro Italia srl
+ Copyright (C) 2000-2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,10 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \example AmericanOption.cpp
-    This example calculates American options using different methods
-*/
-
 /*! \example BermudanSwaption.cpp
     This is an example of using the %QuantLib short rate models.
 */
@@ -28,10 +24,10 @@
     This is an example of using the %QuantLib Monte Carlo framework.
 */
 
-/*! \example EuropeanOption.cpp
-    This example calculates European options using different methods
-    while testing call-put parity.
-*/
+/*! \example EquityOption.cpp
+    This example evaluates European, American and Bermudan options
+    using different methods
+ */
 
 /*! \example swapvaluation.cpp
     This is an example of using the %QuantLib Term Structure for pricing
