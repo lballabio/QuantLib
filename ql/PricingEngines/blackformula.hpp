@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,6 +35,9 @@ namespace QuantLib {
              forward, rho, dividend rho, vega, and strike sensitivity.
     */
     class BlackFormula {
+      private:
+        class Calculator;
+        friend class Calculator;
       public:
         BlackFormula(Real forward,
                      DiscountFactor discount,
@@ -68,32 +72,9 @@ namespace QuantLib {
         Real forward_, discount_, variance_;
         Real stdDev_, strike_;
         Real D1_, D2_, alpha_, beta_, DalphaDd1_, DbetaDd2_;
-        Real cum_d1_, cum_d2_;
+        Real n_d1_, cum_d1_, n_d2_, cum_d2_;
         Real X_, DXDs_, DXDstrike_;
     };
-
-
-    // inline definitions
-
-    inline Real BlackFormula::thetaPerDay(Real spot, Time maturity) const {
-        return theta(spot, maturity)/365.0;
-    }
-
-    inline Real BlackFormula::itmCashProbability() const {
-        return cum_d2_;
-    }
-
-    inline Real BlackFormula::itmAssetProbability() const {
-        return cum_d1_;
-    }
-
-    inline Real BlackFormula::alpha() const {
-        return alpha_;
-    }
-
-    inline Real BlackFormula::beta() const {
-        return beta_;
-    }
 
 }
 

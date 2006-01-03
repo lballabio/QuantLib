@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,26 @@
 #include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
+
+    class BlackFormula::Calculator : public AcyclicVisitor,
+                                     public Visitor<Payoff>,
+                                     public Visitor<PlainVanillaPayoff>,
+                                     public Visitor<CashOrNothingPayoff>,
+                                     public Visitor<AssetOrNothingPayoff>,
+                                     public Visitor<GapPayoff>,
+                                     public Visitor<SuperSharePayoff> {
+      private:
+        BlackFormula& black_;
+      public:
+        Calculator(BlackFormula& black) : black_(black) {}
+        void visit(Payoff&);
+        void visit(PlainVanillaPayoff&);
+        void visit(CashOrNothingPayoff&);
+        void visit(AssetOrNothingPayoff&);
+        void visit(GapPayoff&);
+        void visit(SuperSharePayoff&);
+    };
+
 
     BlackFormula::BlackFormula(
                            Real forward, DiscountFactor discount,
@@ -43,11 +64,10 @@ namespace QuantLib {
         stdDev_ = std::sqrt(variance);
         strike_ = payoff->strike();
 
-        Real n_d1, n_d2;
         if (variance>=QL_EPSILON) {
             if (strike_==0.0) {
-                n_d1 = 0.0;
-                n_d2 = 0.0;
+                n_d1_ = 0.0;
+                n_d2_ = 0.0;
                 cum_d1_ = 1.0;
                 cum_d2_= 1.0;
             } else {
@@ -56,8 +76,8 @@ namespace QuantLib {
                 CumulativeNormalDistribution f;
                 cum_d1_ = f(D1_);
                 cum_d2_= f(D2_);
-                n_d1 = f.derivative(D1_);
-                n_d2 = f.derivative(D2_);
+                n_d1_ = f.derivative(D1_);
+                n_d2_ = f.derivative(D2_);
             }
         } else {
             if (forward>strike_) {
@@ -67,8 +87,8 @@ namespace QuantLib {
                 cum_d1_ = 0.0;
                 cum_d2_= 0.0;
             }
-            n_d1 = 0.0;
-            n_d2 = 0.0;
+            n_d1_ = 0.0;
+            n_d2_ = 0.0;
         }
 
         X_ = strike_;
@@ -84,15 +104,15 @@ namespace QuantLib {
         switch (payoff->optionType()) {
           case Option::Call:
             alpha_     =  cum_d1_;//  N(d1)
-            DalphaDd1_ =    n_d1; //  n(d1)
+            DalphaDd1_ =    n_d1_;//  n(d1)
             beta_      = -cum_d2_;// -N(d2)
-            DbetaDd2_  = -  n_d2; // -n(d2)
+            DbetaDd2_  = -  n_d2_;// -n(d2)
             break;
           case Option::Put:
             alpha_     = -1.0+cum_d1_;// -N(-d1)
-            DalphaDd1_ =        n_d1; //  n( d1)
+            DalphaDd1_ =        n_d1_;//  n( d1)
             beta_      =  1.0-cum_d2_;//  N(-d2)
-            DbetaDd2_  =     -  n_d2; // -n( d2)
+            DbetaDd2_  =     -  n_d2_;// -n( d2)
             break;
           default:
             QL_FAIL("invalid option type");
@@ -100,76 +120,57 @@ namespace QuantLib {
 
         // now dispatch on type.
 
-        /* note: if we suspected that plain-vanilla payoffs are the
-           ones used most of the times, we could add here the following:
+        Calculator calc(*this);
+        payoff->accept(calc);
+    }
 
-            boost::shared_ptr<PlainVanillaPayoff> pv =
-                boost::dynamic_pointer_cast<PlainVanillaPayoff>(payoff);
-            if (pv)
-                return;
+    void BlackFormula::Calculator::visit(Payoff&) {
+        QL_FAIL("unsupported payoff type");
+    }
 
-           and save the time that would be spent in the four dynamic
-           casts below (which would all be executed since they would
-           all fail.)
-        */
+    void BlackFormula::Calculator::visit(PlainVanillaPayoff&) {}
 
-        // binary cash-or-nothing payoff?
-        boost::shared_ptr<CashOrNothingPayoff> coo =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
-        if (coo) {
-            alpha_ = DalphaDd1_ = 0.0;
-            X_ = coo->cashPayoff();
-            DXDstrike_ = 0.0;
-            switch (payoff->optionType()) {
-              case Option::Call:
-                beta_     = cum_d2_;// N(d2)
-                DbetaDd2_ =   n_d2; // n(d2)
-                break;
-              case Option::Put:
-                beta_     = 1.0-cum_d2_;//  N(-d2)
-                DbetaDd2_ =    -  n_d2; // -n( d2)
-                break;
-              default:
-                QL_FAIL("invalid option type");
-            }
-            return;
+    void BlackFormula::Calculator::visit(CashOrNothingPayoff& payoff) {
+        black_.alpha_ = black_.DalphaDd1_ = 0.0;
+        black_.X_ = payoff.cashPayoff();
+        black_.DXDstrike_ = 0.0;
+        switch (payoff.optionType()) {
+          case Option::Call:
+            black_.beta_     = black_.cum_d2_;
+            black_.DbetaDd2_ = black_.n_d2_;
+            break;
+          case Option::Put:
+            black_.beta_     = 1.0-black_.cum_d2_;
+            black_.DbetaDd2_ =    -black_.n_d2_;
+            break;
+          default:
+            QL_FAIL("invalid option type");
         }
+    }
 
-        // binary asset-or-nothing payoff?
-        boost::shared_ptr<AssetOrNothingPayoff> aoo =
-            boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
-        if (aoo) {
-            beta_ = DbetaDd2_ = 0.0;
-            switch (payoff->optionType()) {
-              case Option::Call:
-                alpha_     =  cum_d1_;//  N(d1)
-                DalphaDd1_ =    n_d1; //  n(d1)
-                break;
-              case Option::Put:
-                alpha_     = 1.0-cum_d1_;//  N(-d1)
-                DalphaDd1_ =    -  n_d1; // -n( d1)
-                break;
-              default:
-                QL_FAIL("invalid option type");
-            }
-            return;
+    void BlackFormula::Calculator::visit(AssetOrNothingPayoff& payoff) {
+        black_.beta_ = black_.DbetaDd2_ = 0.0;
+        switch (payoff.optionType()) {
+          case Option::Call:
+            black_.alpha_     = black_.cum_d1_;
+            black_.DalphaDd1_ = black_.n_d1_;
+            break;
+          case Option::Put:
+            black_.alpha_     = 1.0-black_.cum_d1_;
+            black_.DalphaDd1_ = -black_.n_d1_;
+            break;
+          default:
+            QL_FAIL("invalid option type");
         }
+    }
 
-        // binary gap payoff?
-        boost::shared_ptr<GapPayoff> gap =
-            boost::dynamic_pointer_cast<GapPayoff>(payoff);
-        if (gap) {
-            X_ = gap->strikePayoff();
-            DXDstrike_ = 0.0;
-            return;
-        }
+    void BlackFormula::Calculator::visit(GapPayoff& payoff) {
+        black_.X_ = payoff.strikePayoff();
+        black_.DXDstrike_ = 0.0;
+    }
 
-        // binary super-share payoff?
-        boost::shared_ptr<SuperSharePayoff> ss =
-            boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
-        if (ss) {
-            QL_FAIL("binary super-share payoff not handled yet");
-        }
+    void BlackFormula::Calculator::visit(SuperSharePayoff& payoff) {
+        QL_FAIL("binary super-share payoff not handled yet");
     }
 
     Real BlackFormula::value() const {
@@ -288,6 +289,25 @@ namespace QuantLib {
         }
     }
 
+    Real BlackFormula::thetaPerDay(Real spot, Time maturity) const {
+        return theta(spot, maturity)/365.0;
+    }
+
+    Real BlackFormula::vega(Time maturity) const {
+        QL_REQUIRE(maturity>=0.0,
+                   "negative maturity not allowed");
+
+        Real temp = std::log(strike_/forward_)/variance_;
+        // actually DalphaDsigma / SQRT(T)
+        Real DalphaDsigma = DalphaDd1_*(temp+0.5);
+        Real DbetaDsigma  = DbetaDd2_ *(temp-0.5);
+
+        Real temp2 = DalphaDsigma * forward_ + DbetaDsigma * X_;
+
+        return discount_ * std::sqrt(maturity) * temp2;
+
+    }
+
     Real BlackFormula::rho(Time maturity) const {
         QL_REQUIRE(maturity>=0.0,
                    "negative maturity not allowed");
@@ -313,19 +333,12 @@ namespace QuantLib {
         return maturity * discount_ * temp;
     }
 
-    Real BlackFormula::vega(Time maturity) const {
-        QL_REQUIRE(maturity>=0.0,
-                   "negative maturity not allowed");
+    Real BlackFormula::itmCashProbability() const {
+        return cum_d2_;
+    }
 
-        Real temp = std::log(strike_/forward_)/variance_;
-        // actually DalphaDsigma / SQRT(T)
-        Real DalphaDsigma = DalphaDd1_*(temp+0.5);
-        Real DbetaDsigma  = DbetaDd2_ *(temp-0.5);
-
-        Real temp2 = DalphaDsigma * forward_ + DbetaDsigma * X_;
-
-        return discount_ * std::sqrt(maturity) * temp2;
-
+    Real BlackFormula::itmAssetProbability() const {
+        return cum_d1_;
     }
 
     Real BlackFormula::strikeSensitivity() const {
@@ -338,6 +351,14 @@ namespace QuantLib {
             DalphaDstrike * forward_ + DbetaDstrike * X_ + beta_ * DXDstrike_;
 
         return discount_ * temp2;
+    }
+
+    Real BlackFormula::alpha() const {
+        return alpha_;
+    }
+
+    Real BlackFormula::beta() const {
+        return beta_;
     }
 
 }
