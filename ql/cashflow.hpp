@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,16 +24,13 @@
 #ifndef quantlib_cash_flow_hpp
 #define quantlib_cash_flow_hpp
 
-#include <ql/date.hpp>
 #include <ql/event.hpp>
-#include <ql/Patterns/observable.hpp>
-#include <ql/Patterns/visitor.hpp>
 
 namespace QuantLib {
 
     //! Base class for cash flows
-    /*! This class is purely virtual and acts as a base class for the actual
-        cash flow implementations.
+    /*! This class is purely virtual and acts as a base class for the
+        actual cash flow implementations.
     */
     class CashFlow : public Event {
       public:
@@ -62,7 +59,7 @@ namespace QuantLib {
         if (v1 != 0)
             v1->visit(*this);
         else
-            QL_FAIL("not a cash flow visitor");
+            Event::accept(v);
     }
 
 }

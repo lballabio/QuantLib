@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,8 @@
 #define quantlib_payoff_hpp
 
 #include <ql/types.hpp>
+#include <ql/Patterns/visitor.hpp>
+#include <ql/errors.hpp>
 #include <functional>
 
 namespace QuantLib {
@@ -33,8 +36,26 @@ namespace QuantLib {
     class Payoff : std::unary_function<Real,Real> {
       public:
         virtual ~Payoff() {}
+        //! \name Payoff interface
+        //@{
         virtual Real operator()(Real price) const = 0;
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
+        //@}
     };
+
+
+    // inline definitions
+
+    inline void Payoff::accept(AcyclicVisitor& v) {
+        Visitor<Payoff>* v1 = dynamic_cast<Visitor<Payoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            QL_FAIL("not a payoff visitor");
+    }
 
 }
 

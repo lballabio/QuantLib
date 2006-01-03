@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -60,6 +61,7 @@ namespace QuantLib {
                            Real strike)
         : StrikedTypePayoff(type, strike) {}
         Real operator()(Real price) const;
+        virtual void accept(AcyclicVisitor&);
     };
 
     inline Real PlainVanillaPayoff::operator()(Real price) const {
@@ -73,6 +75,15 @@ namespace QuantLib {
         }
     }
 
+    inline void PlainVanillaPayoff::accept(AcyclicVisitor& v) {
+        Visitor<PlainVanillaPayoff>* v1 =
+            dynamic_cast<Visitor<PlainVanillaPayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
+    }
+
 
     //! %Payoff with strike expressed as percentage
     class PercentageStrikePayoff : public StrikedTypePayoff {
@@ -84,6 +95,7 @@ namespace QuantLib {
                        "negative moneyness not allowed");
         }
         Real operator()(Real price) const;
+        virtual void accept(AcyclicVisitor&);
     };
 
     inline Real PercentageStrikePayoff::operator()(Real price) const {
@@ -97,6 +109,15 @@ namespace QuantLib {
         }
     }
 
+    inline void PercentageStrikePayoff::accept(AcyclicVisitor& v) {
+        Visitor<PercentageStrikePayoff>* v1 =
+            dynamic_cast<Visitor<PercentageStrikePayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
+    }
+
 
     //! Binary cash-or-nothing payoff
     class CashOrNothingPayoff : public StrikedTypePayoff {
@@ -107,6 +128,7 @@ namespace QuantLib {
         : StrikedTypePayoff(type, strike), cashPayoff_(cashPayoff) {}
         Real operator()(Real price) const;
         Real cashPayoff() const { return cashPayoff_;}
+        virtual void accept(AcyclicVisitor&);
       private:
         Real cashPayoff_;
     };
@@ -122,14 +144,24 @@ namespace QuantLib {
         }
     }
 
+    inline void CashOrNothingPayoff::accept(AcyclicVisitor& v) {
+        Visitor<CashOrNothingPayoff>* v1 =
+            dynamic_cast<Visitor<CashOrNothingPayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
+    }
+
 
     //! Binary asset-or-nothing payoff
     class AssetOrNothingPayoff : public StrikedTypePayoff {
-    public:
+      public:
         AssetOrNothingPayoff(Option::Type type,
                              Real strike)
         : StrikedTypePayoff(type, strike) {}
         Real operator()(Real price) const;
+        virtual void accept(AcyclicVisitor&);
     };
 
     inline Real AssetOrNothingPayoff::operator()(Real price) const {
@@ -143,17 +175,27 @@ namespace QuantLib {
         }
     }
 
+    inline void AssetOrNothingPayoff::accept(AcyclicVisitor& v) {
+        Visitor<AssetOrNothingPayoff>* v1 =
+            dynamic_cast<Visitor<AssetOrNothingPayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
+    }
+
 
     //! Binary gap payoff
     class GapPayoff : public StrikedTypePayoff {
-    public:
+      public:
         GapPayoff(Option::Type type,
                   Real strike,
                   Real strikePayoff)
         : StrikedTypePayoff(type, strike), strikePayoff_(strikePayoff) {}
         Real operator()(Real price) const;
         Real strikePayoff() const { return strikePayoff_;}
-    private:
+        virtual void accept(AcyclicVisitor&);
+      private:
         Real strikePayoff_;
     };
 
@@ -168,16 +210,26 @@ namespace QuantLib {
         }
     }
 
+    inline void GapPayoff::accept(AcyclicVisitor& v) {
+        Visitor<GapPayoff>* v1 =
+            dynamic_cast<Visitor<GapPayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
+    }
+
     //! Binary supershare payoff
     class SuperSharePayoff : public StrikedTypePayoff {
-    public:
+      public:
         SuperSharePayoff(Option::Type type,
                          Real strike,
                          Real strikeIncrement)
         : StrikedTypePayoff(type, strike), strikeIncrement_(strikeIncrement) {}
         Real operator()(Real price) const;
         Real strikeIncrement() const { return strikeIncrement_;}
-    private:
+        virtual void accept(AcyclicVisitor&);
+      private:
         Real strikeIncrement_;
     };
 
@@ -194,6 +246,15 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown/illegal option type");
         }
+    }
+
+    inline void SuperSharePayoff::accept(AcyclicVisitor& v) {
+        Visitor<SuperSharePayoff>* v1 =
+            dynamic_cast<Visitor<SuperSharePayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
     }
 
 }
