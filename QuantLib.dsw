@@ -3,21 +3,6 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "AmericanOption"=.\Examples\AmericanOption\AmericanOption.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name QuantLib
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "BermudanSwaption"=.\Examples\BermudanSwaption\BermudanSwaption.dsp - Package Owner=<4>
 
 Package=<5>
@@ -48,7 +33,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "EuropeanOption"=.\Examples\EuropeanOption\EuropeanOption.dsp - Package Owner=<4>
+Project: "EquityOption"=.\Examples\EquityOption\EquityOption.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -56,9 +41,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name QuantLib
-    End Project Dependency
 }}}
 
 ###############################################################################

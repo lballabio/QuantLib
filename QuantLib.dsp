@@ -219,6 +219,14 @@ SOURCE=.\ql\Calendars\all.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\argentina.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\argentina.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\beijing.cpp
 # End Source File
 # Begin Source File
@@ -240,6 +248,14 @@ SOURCE=.\ql\Calendars\bratislava.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\bratislava.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\brazil.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\brazil.hpp
 # End Source File
 # Begin Source File
 
@@ -283,6 +299,22 @@ SOURCE=.\ql\Calendars\hongkong.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\iceland.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\iceland.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\indonesia.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\indonesia.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\istanbul.cpp
 # End Source File
 # Begin Source File
@@ -312,6 +344,14 @@ SOURCE=.\ql\Calendars\jointcalendar.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\jointcalendar.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\mexico.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\mexico.hpp
 # End Source File
 # Begin Source File
 
@@ -375,10 +415,6 @@ SOURCE=.\ql\Calendars\sydney.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\taipei.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Calendars\taipei.hpp
 # End Source File
 # Begin Source File
@@ -412,6 +448,14 @@ SOURCE=.\ql\Calendars\toronto.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\toronto.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\ukraine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\ukraine.hpp
 # End Source File
 # Begin Source File
 
@@ -627,10 +671,6 @@ SOURCE=.\ql\FiniteDifferences\bsmoperator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\FiniteDifferences\bsmtermoperator.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\FiniteDifferences\bsmtermoperator.hpp
 # End Source File
 # Begin Source File
@@ -679,10 +719,6 @@ SOURCE=.\ql\FiniteDifferences\mixedscheme.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\FiniteDifferences\onefactoroperator.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\FiniteDifferences\onefactoroperator.hpp
 # End Source File
 # Begin Source File
@@ -708,10 +744,6 @@ SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.cpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
 # End Source File
 # Begin Source File
 
@@ -1296,6 +1328,14 @@ SOURCE=.\ql\Math\rounding.cpp
 # Begin Source File
 
 SOURCE=.\ql\Math\rounding.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\sampledcurve.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\sampledcurve.hpp
 # End Source File
 # Begin Source File
 

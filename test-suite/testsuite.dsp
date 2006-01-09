@@ -453,6 +453,10 @@ SOURCE=.\tracing.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\transformedgrid.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\utilities.cpp
 # End Source File
 # End Group
@@ -666,6 +670,10 @@ SOURCE=.\tqreigendecomposition.hpp
 # Begin Source File
 
 SOURCE=.\tracing.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\transformedgrid.hpp
 # End Source File
 # Begin Source File
 

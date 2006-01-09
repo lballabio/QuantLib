@@ -900,7 +900,9 @@ test_suite* InterpolationTest::suite() {
     #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testMultiSpline));
     #endif
+    #if !defined(QL_PATCH_MSVC6)
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testAsFunctor));
+    #endif
     return suite;
 }
 
