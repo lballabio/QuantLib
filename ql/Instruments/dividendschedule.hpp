@@ -30,6 +30,7 @@
 #include <vector>
 
 namespace QuantLib {
+
     class DividendSchedule {
       public:
         std::vector<boost::shared_ptr<CashFlow> > cashFlow;
@@ -40,6 +41,7 @@ namespace QuantLib {
             return event_list;
         }
     };
+
 }
 
 
