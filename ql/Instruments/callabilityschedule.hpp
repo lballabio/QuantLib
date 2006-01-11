@@ -44,7 +44,7 @@ namespace QuantLib {
         Price price_;
         Type type_;
         Date date_;
-        Date date() {
+        Date date() const {
             return date_;
         }
     };
