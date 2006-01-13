@@ -47,14 +47,14 @@ namespace QuantLib {
       protected:
         void setupArguments(Arguments*) const;
       private:
-        std::vector<boost::shared_ptr<CashFlow> > cashFlow_;
+        DividendSchedule cashFlow_;
     };
 
 
     //! %Arguments for dividend vanilla option calculation
-    class DividendVanillaOption::arguments : public VanillaOption::arguments,
-                                             public DividendSchedule {
+    class DividendVanillaOption::arguments : public VanillaOption::arguments {
       public:
+        DividendSchedule cashFlow;
         arguments() {}
         void validate() const;
     };

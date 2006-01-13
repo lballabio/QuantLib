@@ -46,7 +46,7 @@ xi        Real variance = volatility_*volatility_*residualTime_;
         const DividendVanillaOption::arguments *args =
             dynamic_cast<const DividendVanillaOption::arguments *>(a);
         QL_REQUIRE(args, "incorrect argument type");
-        FDMultiPeriodEngine::setupArguments(a, args->getEventList());
+        FDMultiPeriodEngine::setupArguments(a, args->cashFlow.getEventList());
     }
 
 
