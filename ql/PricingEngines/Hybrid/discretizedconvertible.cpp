@@ -31,11 +31,11 @@ namespace QuantLib {
     void DiscretizedConvertible::reset(Size size) {
 
 		Size i = arguments_.cashFlows.size()-1;
-		
+
 		values_ = Array(size, arguments_.cashFlows[i]->amount());  // Set to bond redemption values + accrued interest if any.
 
         //values_ = Array(size, arguments_.redemption);  // Set to bond redemption values.
-		conversionProbability_ = Array(size, 0.0);	
+		conversionProbability_ = Array(size, 0.0);
 		spreadAdjustRate_ = Array(size, 0.0);
 
         // initialise Put, Call and dividend provisions.
@@ -56,41 +56,41 @@ namespace QuantLib {
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
 
         // Load Call/Put values that coincide with time steps.
-        for (Size i=0; i<arguments_.callability.size(); i++) 
+        for (Size i=0; i<arguments_.callability.size(); i++)
         {
 
 			Time period = dayCounter.yearFraction(settlementDate,
                               arguments_.callability[i].date());
-                                                                               
+
             //! Find time step which coincides with call, put provisions.
             Size j = method()->timeGrid().findIndex(period);
-            
-			// Add accrued interest to call and put values if any.   
+
+			// Add accrued interest to call and put values if any.
             if (arguments_.callability[i].type() == Callability::Call )
 
-				callValues_[j] = arguments_.callability[i].price().amount() + 
-				                 cvbond_->accruedAmount(arguments_.callability[i].date());
+				callValues_[j] = arguments_.callability[i].price().amount() +
+				                 arguments_.accruedAmounts[i];
 
             else if (arguments_.callability[i].type() == Callability::Put )
 
                 putValues_[j] = arguments_.callability[i].price().amount() +
-				                cvbond_->accruedAmount(arguments_.callability[i].date());
- 	 
+                                arguments_.accruedAmounts[i];
+
         }
 
 
         adjustValues();
 
         Real creditSpread = arguments_.creditSpread->value();
-        
+
         Date exercise = arguments_.exercise->lastDate();
 
         Rate riskFreeRate = process->riskFreeRate()->zeroRate(exercise, rfdc,
-                                              Continuous, NoFrequency); 
+                                              Continuous, NoFrequency);
 
 		Array grid = method()->grid(time());
 
-		
+
 		//boost::shared_ptr<BlackScholesLattice> lattice =
         //    boost::dynamic_pointer_cast<BlackScholesLattice>(method());
 
@@ -102,29 +102,29 @@ namespace QuantLib {
         // nodes
         //Size i = size;
 
-        for (Size j=0; j<values_.size(); j++) 
+        for (Size j=0; j<values_.size(); j++)
         {
 
            if ( values_[j] == arguments_.conversionRatio*grid[j] )
            {
 
                conversionProbability_[j] = 1.0;
-        
+
            }
 
            //! Calculate blended discount rate to be used on roll back.
-           spreadAdjustRate_[j] =  conversionProbability_[j] * riskFreeRate + 
+           spreadAdjustRate_[j] =  conversionProbability_[j] * riskFreeRate +
                                     (1-conversionProbability_[j])*(riskFreeRate + creditSpread);
-    
+
 
         }
 
         // Load present Value of each cash dividend that coincide with time steps.
-        for (Size i=0; i<arguments_.dividends.size(); i++) 
+        for (Size i=0; i<arguments_.dividends.size(); i++)
         {
 
 			Time period = dayCounter.yearFraction(settlementDate,arguments_.dividends[i]->date());
-                                                                               
+
             //! Find time step which coincides with cash dividend.
             Size j = method()->timeGrid().findIndex(period);
 
@@ -132,12 +132,12 @@ namespace QuantLib {
             {
 				dividendValues_[j] = arguments_.dividends[i]->amount() *
                            process->riskFreeRate()->discount(arguments_.dividends[i]->date());
-                   
+
             }
- 	 
+
          }
 
-         
+
     }
 
     void DiscretizedConvertible::postAdjustValuesImpl() {
@@ -191,7 +191,7 @@ namespace QuantLib {
 		DayCounter dayCounter = Actual365Fixed();
 
         Time maturity = dayCounter.yearFraction(settlementDate,arguments_.exercise->lastDate());
-                                                         
+
         if ( time() == maturity )
 
            // At maturity apply condition for terminal nodes
@@ -205,7 +205,7 @@ namespace QuantLib {
 
 
         else
-                   
+
             // check for whether bonds are called or puttable and test whether conversion is
            // optimal.
            for (Size j=0; j<values_.size(); j++) {

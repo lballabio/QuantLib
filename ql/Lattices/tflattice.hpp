@@ -21,8 +21,8 @@
     \brief Binomial trees under the TsiveriotisFernandes Binomial tree model
 */
 
-#ifndef quantlib_lattices_tf_lattice_h
-#define quantlib_lattices_tf_lattice_h
+#ifndef quantlib_lattices_tf_lattice_hpp
+#define quantlib_lattices_tf_lattice_hpp
 
 #include <ql/Lattices/bsmlattice.hpp>
 #include <ql/PricingEngines/Hybrid/discretizedconvertible.hpp>
@@ -31,28 +31,28 @@
 
 namespace QuantLib {
 
-    //! Simple binomial lattice approximating the TsiveriotisFernandesLattice model
+    //! Binomial lattice approximating the Tsiveriotis-Fernandes model
     /*! \ingroup lattices */
 	template <class T>
     class TsiveriotisFernandesLattice : public BlackScholesLattice<T> {
       public:
         TsiveriotisFernandesLattice(const boost::shared_ptr<T>& tree,
-                  Rate riskFreeRate,
-                  Time end,
-                  Size steps,
-                  Real creditSpread,
-                  Volatility volatility,
-                  Spread divYield,
-				  const boost::shared_ptr<ConvertibleBond>& cvbond);
-				  //const ConvertibleBond& cvbond);
+                                    Rate riskFreeRate,
+                                    Time end,
+                                    Size steps,
+                                    Real creditSpread,
+                                    Volatility volatility,
+                                    Spread divYield);
 
         Rate riskFreeRate() const { return riskFreeRate_; };
         Real creditSpread() const { return creditSpread_; };
         Real dt() const {return dt_;};
 
       protected:
-        void stepback(Size i, const Array& values, const Array& conversionProbability, 
-                      const Array& spreadAdjustRate, Array& newValues,Array& newConversionProbability, 
+        void stepback(Size i, const Array& values,
+                      const Array& conversionProbability,
+                      const Array& spreadAdjustRate,
+                      Array& newValues, Array& newConversionProbability,
                       Array& newSpreadAdjustRate) const;
         void rollback(DiscretizedConvertible&, Time to) const;
         void partialRollback(DiscretizedConvertible&, Time to) const;
@@ -60,21 +60,20 @@ namespace QuantLib {
       private:
         Real pd_, pu_,creditSpread_,dt_;
         Rate riskFreeRate_;
-		boost::shared_ptr<ConvertibleBond> cvbond_;
-        
     };
 
 
 	// template definitions
 
     template <class T>
-    TsiveriotisFernandesLattice<T>::TsiveriotisFernandesLattice ( const boost::shared_ptr<T>& tree,
-                          Rate riskFreeRate,
-                          Time end, Size steps, Real creditSpread, 
-                          Volatility sigma,Spread divYield, const boost::shared_ptr<ConvertibleBond>& cvbond)
-    : BlackScholesLattice<T>(tree,riskFreeRate,end,steps)
-    { 
-       
+    TsiveriotisFernandesLattice<T>::TsiveriotisFernandesLattice(
+                                             const boost::shared_ptr<T>& tree,
+                                             Rate riskFreeRate,
+                                             Time end, Size steps,
+                                             Real creditSpread,
+                                             Volatility sigma, Spread divYield)
+    : BlackScholesLattice<T>(tree,riskFreeRate,end,steps) {
+
         dt_ = end/steps;
 
         Real a = std::exp((riskFreeRate-divYield)*dt_);
@@ -90,52 +89,58 @@ namespace QuantLib {
         riskFreeRate_ = riskFreeRate;
         creditSpread_ = creditSpread;
 
-		cvbond_ = cvbond;
-
         QL_REQUIRE(pu_<=1.0, "negative probability");
         QL_REQUIRE(pu_>=0.0, "negative probability");
-  
-        
     }
 
     template <class T>
-    void TsiveriotisFernandesLattice<T>::stepback(Size i, const Array& values, const Array& conversionProbability, 
-                             const Array& spreadAdjustRate, Array& newValues, Array& newConversionProbability, 
-                             Array& newSpreadAdjustRate) const {
+    void TsiveriotisFernandesLattice<T>::stepback(
+              Size i, const Array& values, const Array& conversionProbability,
+              const Array& spreadAdjustRate, Array& newValues,
+              Array& newConversionProbability,
+              Array& newSpreadAdjustRate) const {
 
-        for (Size j=0; j<T::size(i); j++)
-        {
+        for (Size j=0; j<T::size(i); j++) {
 
-            // new conversion probability is calculated via backward induction using up and down probabilities
-            // on tree on previous conversion probabilities, ie weighted average of previous probabilities.
-            newConversionProbability[j]=pd_*conversionProbability[j]+ pu_*conversionProbability[j+1];
+            // new conversion probability is calculated via backward
+            // induction using up and down probabilities on tree on
+            // previous conversion probabilities, ie weighted average
+            // of previous probabilities.
+            newConversionProbability[j] =
+                pd_*conversionProbability[j]+ pu_*conversionProbability[j+1];
 
             // Use blended discounting rate
-            newSpreadAdjustRate[j] =  newConversionProbability[j] * riskFreeRate_ + 
-                                        (1-newConversionProbability[j])*(riskFreeRate_ + creditSpread_);
+            newSpreadAdjustRate[j] =
+                newConversionProbability[j] * riskFreeRate_ +
+                (1-newConversionProbability[j])*(riskFreeRate_+creditSpread_);
 
 			Integer timeLength = Integer(T::t_[i]*T::arguments_.dayCounter);
 
-			Date periodDate = T::calendar.advance(T::arguments_.settlementDays,timeLength, Days);
-			
+			Date periodDate = T::calendar.advance(T::arguments_.settlementDays,
+                                                  timeLength, Days);
+
 			Real accruedInterest = cvbond_->accruedAmount(periodDate);
 
-            //Holding Value ie if not callable or puttable, add accrued Interest if any.
-            newValues[j] = (pd_*(values[j] + accruedInterest)/(1+(spreadAdjustRate[j]*dt_))) + 
-				           (pu_*(values[j+1] + accruedInterest)/(1+(spreadAdjustRate[j+1]*dt_)));         
-   
+            //Holding Value ie if not callable or puttable, add
+            //accrued Interest if any.
+            newValues[j] =
+                (pd_*(values[j]+accruedInterest)/(1+(spreadAdjustRate[j]*dt_)))
+              + (pu_*(values[j+1] + accruedInterest)/(1+(spreadAdjustRate[j+1]*dt_)));
+
         }
     }
 
     template <class T>
-	void TsiveriotisFernandesLattice<T>::rollback(DiscretizedConvertible& asset, Time to) const {
+	void TsiveriotisFernandesLattice<T>::rollback(
+                               DiscretizedConvertible& asset, Time to) const {
         partialRollback(asset,to);
         asset.adjustValues();
     }
 
 
 	template <class T>
-	void TsiveriotisFernandesLattice<T>::partialRollback(DiscretizedConvertible& asset, Time to) const {
+	void TsiveriotisFernandesLattice<T>::partialRollback(
+                               DiscretizedConvertible& asset, Time to) const {
 
         Time from = asset.time();
 
@@ -155,10 +160,10 @@ namespace QuantLib {
             Array newSpreadAdjustRate(T::size(i));
             Array newConversionProbability(T::size(i));
 
-            stepback(i, asset.values(), asset.conversionProbability(), 
+            stepback(i, asset.values(), asset.conversionProbability(),
                      asset.spreadAdjustRate(), newValues,
-                     newConversionProbability,newSpreadAdjustRate); 
-            
+                     newConversionProbability,newSpreadAdjustRate);
+
             asset.time() = T::t_[i];
             asset.values() = newValues;
             asset.spreadAdjustRate()=newSpreadAdjustRate;

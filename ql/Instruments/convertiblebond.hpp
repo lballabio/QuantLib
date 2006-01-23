@@ -93,35 +93,26 @@ namespace QuantLib {
                         const Handle<YieldTermStructure>& discountCurve
                                               = Handle<YieldTermStructure>());
 
-        ConvertibleBond(
-                  Real conversionRatio,
-                  const DividendSchedule&  dividends,
-                  const CallabilitySchedule& callability,
-                  const Handle<Quote>& creditSpread,
-                  const Date& issueDate,
-                  Integer settlementDays,
-                  const DayCounter& dayCounter,
-                  const Schedule& schedule,
-                  Real redemption,
-                  const std::vector<boost::shared_ptr<CashFlow> >& cashFlows);
-
         Real conversionRatio() const { return conversionRatio_; }
         const DividendSchedule& dividends() const { return dividends_; }
         const CallabilitySchedule& callability() const { return callability_; }
         const Handle<Quote>& creditSpread() const { return creditSpread_; }
 
+        void performCalculations() const;
       private:
         Real conversionRatio_;
         CallabilitySchedule callability_;
         DividendSchedule dividends_;
         Handle<Quote> creditSpread_;
+        boost::shared_ptr<option> option_;
     };
 
     class ConvertibleBond::option : public OneAssetStrikedOption {
       public:
         class arguments;
         class engine;
-        option(const boost::shared_ptr<StochasticProcess>& process,
+        option(const ConvertibleBond* bond,
+               const boost::shared_ptr<StochasticProcess>& process,
                const boost::shared_ptr<StrikedTypePayoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,
                const boost::shared_ptr<PricingEngine>& engine,
@@ -139,7 +130,8 @@ namespace QuantLib {
 
         void setupArguments(Arguments*) const;
       private:
-        Real  conversionRatio_;
+        const ConvertibleBond* bond_;
+        Real conversionRatio_;
         CallabilitySchedule callability_;
         DividendSchedule  dividends_;
         Handle<Quote> creditSpread_;
@@ -159,6 +151,7 @@ namespace QuantLib {
         Real conversionRatio;
         DividendSchedule  dividends;
         CallabilitySchedule callability;
+        std::vector<Real> accruedAmounts;
         Handle<Quote> creditSpread;
         std::vector<boost::shared_ptr<CashFlow> > cashFlows;
         DayCounter dayCounter;

@@ -59,63 +59,14 @@ namespace QuantLib {
                                   std::vector<Real>(1, redemption),
                                   coupons,dayCounter);
 
-        option(process, payoff, exercise, engine, conversionRatio, dividends,
-               callability, creditSpread, cashFlows_, dayCounter, schedule,
-               issueDate, settlementDays, redemption, discountCurve);
+        option_ = boost::shared_ptr<option>(
+                           new option(this, process, payoff, exercise, engine,
+                                      conversionRatio, dividends, callability,
+                                      creditSpread, cashFlows_, dayCounter,
+                                      schedule, issueDate, settlementDays,
+                                      redemption, discountCurve));
 
     }
-
-
-    ConvertibleBond::ConvertibleBond(
-            Real  conversionRatio,
-            const DividendSchedule&  dividends,
-            const CallabilitySchedule& callability,
-            const Handle<Quote>& creditSpread,
-            const Date& issueDate,
-            Integer settlementDays,
-            const DayCounter& dayCounter,
-            const Schedule& schedule,
-            Real redemption,
-            const std::vector<boost::shared_ptr<CashFlow> >& cashFlows)
-    : Bond(dayCounter, schedule.calendar(), schedule.businessDayConvention(),
-           settlementDays),
-      conversionRatio_(conversionRatio), callability_(callability),
-      dividends_(dividends), creditSpread_(creditSpread) {
-
-        issueDate_ = issueDate;
-        datedDate_ = schedule.startDate();
-        maturityDate_ =schedule.endDate();
-        frequency_ = schedule.frequency();
-        redemption_ = boost::shared_ptr<CashFlow>(
-                                new SimpleCashFlow(redemption,maturityDate_));
-
-        cashFlows_ = cashFlows;
-    }
-
-    // Constructor for option class in ConvertibleBond class
-    ConvertibleBond::option::option(
-            const boost::shared_ptr<StochasticProcess>& process,
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise,
-            const boost::shared_ptr<PricingEngine>& engine,
-            Real  conversionRatio,
-            const DividendSchedule&  dividends,
-            const CallabilitySchedule& callability,
-            const Handle<Quote>& creditSpread,
-            const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
-            const DayCounter& dayCounter,
-            const Schedule& schedule,
-            const Date& issueDate,
-            Integer settlementDays,
-            Real redemption,
-            const Handle<YieldTermStructure>& discountCurve)
-    : OneAssetStrikedOption(process, payoff, exercise, engine),
-      conversionRatio_(conversionRatio), callability_(callability),
-      dividends_(dividends), creditSpread_(creditSpread),
-      cashFlows_(cashFlows), dayCounter_(dayCounter),
-      issueDate_(issueDate), schedule_(schedule),
-      discountCurve_(discountCurve), settlementDays_(settlementDays),
-      redemption_(redemption) {}
 
 
     // constructor for floating rate coupon convertible bond.
@@ -159,9 +110,12 @@ namespace QuantLib {
                                    #endif
                                    );
 
-        option(process, payoff, exercise, engine, conversionRatio, dividends,
-               callability, creditSpread, cashFlows_,dayCounter, schedule,
-               issueDate, settlementDays, redemption, discountCurve);
+        option_ = boost::shared_ptr<option>(
+                           new option(this, process, payoff, exercise, engine,
+                                      conversionRatio, dividends, callability,
+                                      creditSpread, cashFlows_, dayCounter,
+                                      schedule, issueDate, settlementDays,
+                                      redemption, discountCurve));
 
     }
 
@@ -195,11 +149,47 @@ namespace QuantLib {
 
         cashFlows_ = std::vector<boost::shared_ptr<CashFlow> >();
 
-        option(process, payoff, exercise, engine, conversionRatio, dividends,
-               callability, creditSpread, cashFlows_,dayCounter, schedule,
-               issueDate, settlementDays, redemption, discountCurve);
+        option_ = boost::shared_ptr<option>(
+                           new option(this, process, payoff, exercise, engine,
+                                      conversionRatio, dividends, callability,
+                                      creditSpread, cashFlows_, dayCounter,
+                                      schedule, issueDate, settlementDays,
+                                      redemption, discountCurve));
 
     }
+
+    void ConvertibleBond::performCalculations() const {
+        NPV_ = option_->NPV();
+        errorEstimate_ = Null<Real>();
+    }
+
+
+    // Constructor for option class in ConvertibleBond class
+    ConvertibleBond::option::option(
+            const ConvertibleBond* bond,
+            const boost::shared_ptr<StochasticProcess>& process,
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise,
+            const boost::shared_ptr<PricingEngine>& engine,
+            Real  conversionRatio,
+            const DividendSchedule&  dividends,
+            const CallabilitySchedule& callability,
+            const Handle<Quote>& creditSpread,
+            const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
+            const DayCounter& dayCounter,
+            const Schedule& schedule,
+            const Date& issueDate,
+            Integer settlementDays,
+            Real redemption,
+            const Handle<YieldTermStructure>& discountCurve)
+    : OneAssetStrikedOption(process, payoff, exercise, engine),
+      bond_(bond), conversionRatio_(conversionRatio),
+      callability_(callability), dividends_(dividends),
+      creditSpread_(creditSpread), cashFlows_(cashFlows),
+      dayCounter_(dayCounter), issueDate_(issueDate), schedule_(schedule),
+      discountCurve_(discountCurve), settlementDays_(settlementDays),
+      redemption_(redemption) {}
+
 
 
     void ConvertibleBond::option::setupArguments(Arguments* args) const {
@@ -214,11 +204,15 @@ namespace QuantLib {
 
         moreArgs->dividends.clear();
         moreArgs->callability.clear();
+        moreArgs->accruedAmounts.clear();
         moreArgs->cashFlows.clear();
         moreArgs->schedule.clear();
 
         moreArgs->dividends = dividends_;
         moreArgs->callability = callability_;
+        for (Size i=0; i<callability_.size(); i++)
+            moreArgs->accruedAmounts.push_back(
+                                bond_->accruedAmount(callability_[i].date()));
         moreArgs->cashFlows = cashFlows_;
         moreArgs->creditSpread = creditSpread_;
         moreArgs->dayCounter = dayCounter_;

@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
         Real underlying = 36.0;
 		Real conversionRatio = 2.0;
         Real strike = 40.0;
-        Real spreadRate = 0.5;
+        Real spreadRate = 0.005;
 
         Spread dividendYield = 0.00;
         Rate riskFreeRate = 0.06;
@@ -164,23 +164,18 @@ int main(int argc, char* argv[])
 
 		Size timeSteps = 801;
 
-		Handle<Quote> CreditSpread(
+		Handle<Quote> creditSpread(
             boost::shared_ptr<Quote>(new SimpleQuote(spreadRate)));
 
-		boost::shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
-
-//		Handle<YieldTermStructure> discountCurve(flatRate(today,rate,dayCounter));
-
+		boost::shared_ptr<SimpleQuote> rate(new SimpleQuote(riskFreeRate));
 
 		Handle<YieldTermStructure> discountCurve(boost::shared_ptr<YieldTermStructure>(
                           new FlatForward(today, Handle<Quote>(rate), dayCounter)));
 
 		boost::shared_ptr<PricingEngine> engine(new BinomialConvertibleEngine<CoxRossRubinstein>(timeSteps));
 
-		//boost::shared_ptr<PricingEngine> engine(new BinomialVanillaEngine<CoxRossRubinstein>(timeSteps));
-
 		ConvertibleBond eurocvbond(stochasticProcess, payoff, exercise,engine,conversionRatio,
-                                   dividends,callability,CreditSpread,issueDate,settlementDays,
+                                   dividends,callability,creditSpread,issueDate,settlementDays,
                                    coupons,bondDayCount,schedule,redemption,discountCurve);
 
 	    value = eurocvbond.NPV();

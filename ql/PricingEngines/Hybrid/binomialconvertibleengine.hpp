@@ -94,25 +94,16 @@ namespace QuantLib {
             BlackScholesProcess(Handle<Quote>(process->stateVariable()),
                                 flatDividends, flatRiskFree, flatVol));
         boost::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,
-                                           payoff->strike(),arguments_.dividends));
+                                        payoff->strike(),
+                                        arguments_.dividends));
 
         Real creditSpread = arguments_.creditSpread->value();
 
-		boost::shared_ptr<ConvertibleBond> cvbond(new
-            ConvertibleBond(arguments_.conversionRatio, arguments_.dividends, arguments_.callability,
-			                arguments_.creditSpread,arguments_.issueDate,arguments_.settlementDays,
-							arguments_.dayCounter,arguments_.schedule,arguments_.redemption,arguments_.cashFlows));
-        
-		//ConvertibleBond cvbond(arguments_.conversionRatio, arguments_.dividends, arguments_.callability,
-		//	                   arguments_.creditSpread,arguments_.issueDate,arguments_.settlementDays,
-		//					   arguments_.dayCounter,arguments_.schedule,arguments_.redemption,arguments_.cashFlows);
-		
-
 		boost::shared_ptr<NumericalMethod> lattice(
-            new TsiveriotisFernandesLattice<T>(tree, riskFreeRate, maturity, timeSteps_,
-                                            creditSpread,v,q,cvbond));
+              new TsiveriotisFernandesLattice<T>(tree,riskFreeRate,maturity,
+                                                 timeSteps_,creditSpread,v,q));
 
-        DiscretizedConvertible convertible(arguments_,cvbond);
+        DiscretizedConvertible convertible(arguments_);
 
         convertible.initialize(lattice, maturity);
         convertible.rollback(0.0);
