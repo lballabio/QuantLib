@@ -394,6 +394,12 @@
 				RelativePath=".\ql\Calendars\all.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Calendars\argentina.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\argentina.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Calendars\beijing.cpp">
 			</File>
 			<File
@@ -410,6 +416,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\Calendars\bratislava.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\brazil.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\brazil.hpp">
 			</File>
 			<File
 				RelativePath="ql\Calendars\budapest.cpp">
@@ -613,6 +625,18 @@
 				RelativePath=".\ql\Calendars\hongkong.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Calendars\iceland.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\iceland.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\indonesia.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\indonesia.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Calendars\istanbul.cpp">
 			</File>
 			<File
@@ -749,6 +773,12 @@
 			</File>
 			<File
 				RelativePath="ql\Calendars\jointcalendar.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\mexico.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\mexico.hpp">
 			</File>
 			<File
 				RelativePath="ql\Calendars\nullcalendar.hpp">
@@ -1163,6 +1193,12 @@
 			</File>
 			<File
 				RelativePath="ql\Calendars\toronto.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\ukraine.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\ukraine.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Calendars\unitedkingdom.cpp">
@@ -2625,6 +2661,12 @@
 				RelativePath="ql\Instruments\cliquetoption.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\convertiblebond.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\convertiblebond.hpp">
+			</File>
+			<File
 				RelativePath="ql\Instruments\core.hpp">
 			</File>
 			<File
@@ -3554,6 +3596,9 @@
 			</File>
 			<File
 				RelativePath="ql\Lattices\lattice2d.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Lattices\tflattice.hpp">
 			</File>
 			<File
 				RelativePath="ql\Lattices\tree.hpp">
@@ -6916,6 +6961,22 @@
 				</File>
 				<File
 					RelativePath=".\ql\PricingEngines\Cliquet\analyticperformanceengine.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="Hybrid"
+				Filter="">
+				<File
+					RelativePath=".\ql\PricingEngines\Hybrid\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Hybrid\binomialconvertibleengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Hybrid\discretizedconvertible.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Hybrid\discretizedconvertible.hpp">
 				</File>
 			</Filter>
 		</Filter>

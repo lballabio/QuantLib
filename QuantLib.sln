@@ -33,6 +33,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EquityOption", "Examples\Eq
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConvertibleBonds", "Examples\ConvertibleBonds\ConvertibleBonds.vcproj", "{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -115,6 +119,18 @@ Global
 		{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}.Release MTDLL.Build.0 = Release MTDLL|Win32
 		{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}.Release SingleThread.ActiveCfg = Release SingleThread|Win32
 		{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}.Release SingleThread.Build.0 = Release SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug.ActiveCfg = Debug|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug.Build.0 = Debug|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug MTDLL.ActiveCfg = Debug MTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug MTDLL.Build.0 = Debug MTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug SingleThread.ActiveCfg = Debug SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug SingleThread.Build.0 = Debug SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release.ActiveCfg = Release|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release.Build.0 = Release|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release MTDLL.ActiveCfg = Release MTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release MTDLL.Build.0 = Release MTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release SingleThread.ActiveCfg = Release SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release SingleThread.Build.0 = Release SingleThread|Win32
 		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug.ActiveCfg = Debug|Win32
 		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug.Build.0 = Debug|Win32
 		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug MTDLL.ActiveCfg = Debug MTDLL|Win32

@@ -26,8 +26,8 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 class FSquared : std::unary_function<Real,Real> {
-public:
-    Real operator()(Real x) const { return x*x;};
+  public:
+    Real operator()(Real x) const { return x*x; }
 };
 
 void ArrayTest::testConstruction() {
@@ -167,7 +167,7 @@ void ArrayTest::testConstruction() {
         a10[i] = i;
     }
     FSquared f2;
-    std::transform(a10.begin(), a10.end(), a10.begin(), f2);
+    std::transform(a10.begin(), a10.end(), a10.begin(), FSquared());
     for (i=0; i < a10.size(); i++) {
         Real calculated = f2(static_cast<Real>(i));
         if (std::fabs(a10[i] -  calculated) >= 1e-5) {

@@ -18,6 +18,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "ConvertibleBonds"=.\Examples\ConvertibleBonds\ConvertibleBonds.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "DiscreteHedging"=.\Examples\DiscreteHedging\DiscreteHedging.dsp - Package Owner=<4>
 
 Package=<5>

@@ -3,8 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="ConvertibleBonds"
-	ProjectGUID="{EF6D982C-CF99-4442-B297-776DBECFAFC9}"
-	SignManifests="true"
+	ProjectGUID="{7C32702E-ED12-49F1-B476-656DD1EBCE66}"
 	>
 	<Platforms>
 		<Platform

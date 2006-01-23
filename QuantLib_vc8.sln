@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Swap", "Examples\Swap\Swap_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EquityOption", "Examples\EquityOption\EquityOption_vc8.vcproj", "{EF6D982C-CF99-4442-B297-776DBECFAFC9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConvertibleBonds", "Examples\ConvertibleBonds\ConvertibleBonds_vc8.vcproj", "{7C32702E-ED12-49F1-B476-656DD1EBCE66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug MTDLL|Win32 = Debug MTDLL|Win32
@@ -121,6 +123,18 @@ Global
 		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release SingleThread|Win32.Build.0 = Release SingleThread|Win32
 		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release|Win32.ActiveCfg = Release|Win32
 		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release|Win32.Build.0 = Release|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Debug MTDLL|Win32.ActiveCfg = Debug MTDLL|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Debug MTDLL|Win32.Build.0 = Debug MTDLL|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Debug SingleThread|Win32.ActiveCfg = Debug SingleThread|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Debug SingleThread|Win32.Build.0 = Debug SingleThread|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Debug|Win32.Build.0 = Debug|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Release MTDLL|Win32.ActiveCfg = Release MTDLL|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Release MTDLL|Win32.Build.0 = Release MTDLL|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Release SingleThread|Win32.ActiveCfg = Release SingleThread|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Release SingleThread|Win32.Build.0 = Release SingleThread|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Release|Win32.ActiveCfg = Release|Win32
+		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
