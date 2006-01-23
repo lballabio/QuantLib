@@ -3,7 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/PricingEngines
 
 SUBDIRS = Asian Barrier Basket CapFloor Cliquet \
-          Forward Quanto Swaption Vanilla Hybrid
+          Forward Hybrid Quanto Swaption Vanilla
 
 include_HEADERS = \
     all.hpp \

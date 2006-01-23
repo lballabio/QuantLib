@@ -3,10 +3,10 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 SUBDIRS =  \
     BermudanSwaption \
+    ConvertibleBonds \
     DiscreteHedging \
     EquityOption \
-    Swap \
-    ConvertibleBonds
+    Swap
 
 SUBDIR_CHECKS = $(SUBDIRS:%=%.check)
 

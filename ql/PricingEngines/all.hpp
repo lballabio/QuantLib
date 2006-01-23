@@ -33,10 +33,10 @@
 #include <ql/PricingEngines/CapFloor/all.hpp>
 #include <ql/PricingEngines/Cliquet/all.hpp>
 #include <ql/PricingEngines/Forward/all.hpp>
+#include <ql/PricingEngines/Hybrid/all.hpp>
 #include <ql/PricingEngines/Quanto/all.hpp>
 #include <ql/PricingEngines/Swaption/all.hpp>
 #include <ql/PricingEngines/Vanilla/all.hpp>
-#include <ql/PricingEngines/Hybrid/all.hpp>
 
 
 #endif

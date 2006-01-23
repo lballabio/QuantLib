@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class DiscretizedConvertible : public DiscretizedAsset {
       public:
-        DiscretizedConvertible(const ConvertibleBond::option::arguments& args, 
+        DiscretizedConvertible(const ConvertibleBond::option::arguments& args,
 			                   const boost::shared_ptr<ConvertibleBond>& cvbond)
         : arguments_(args), cvbond_(cvbond) {}
 
@@ -70,5 +70,5 @@ namespace QuantLib {
 
 
 }
-	
+
 #endif
