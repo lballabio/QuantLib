@@ -11,6 +11,7 @@ include_HEADERS = \
     lattice1d.hpp \
     lattice2d.hpp \
     tree.hpp \
+    tflattice.hpp \
     trinomialtree.hpp
 
 libLattices_la_SOURCES = \

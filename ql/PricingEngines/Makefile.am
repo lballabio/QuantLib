@@ -3,7 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/PricingEngines
 
 SUBDIRS = Asian Barrier Basket CapFloor Cliquet \
-          Forward Quanto Swaption Vanilla
+          Forward Quanto Swaption Vanilla Hybrid
 
 include_HEADERS = \
     all.hpp \
@@ -32,7 +32,8 @@ libPricingEngines_la_LIBADD = \
     CapFloor/libCapFloorEngines.la \
     Cliquet/libCliquetEngines.la \
     Swaption/libSwaptionEngines.la \
-    Vanilla/libVanillaEngines.la
+    Vanilla/libVanillaEngines.la \
+    Hybrid/libHybridEngines.la
 
 EXTRA_DIST = makefile.mak
 

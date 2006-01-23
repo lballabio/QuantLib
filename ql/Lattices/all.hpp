@@ -27,6 +27,8 @@
 #include <ql/Lattices/bsmlattice.hpp>
 #include <ql/Lattices/lattice2d.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
+#include <ql/Lattices/tflattice.hpp>
+
 
 
 #endif

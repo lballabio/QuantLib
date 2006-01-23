@@ -4,6 +4,7 @@
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005 Theo Boafo
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,8 @@
 
 #include <ql/stochasticprocess.hpp>
 #include <ql/Lattices/tree.hpp>
+#include <ql/Instruments/dividendschedule.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -45,7 +48,39 @@ namespace QuantLib {
             dt_ = end/steps;
             driftPerStep_ = process->drift(0.0, x0_) * dt_;
         }
-        Size size(Size i) const {
+
+		BinomialTree(const boost::shared_ptr<StochasticProcess1D>& stochprocess,
+                           Time end, Size steps, const DividendSchedule&  dividends)
+		: Tree<T>(steps+1) {
+
+			boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(stochprocess);
+
+			QL_REQUIRE(process, "Black-Scholes process required");
+
+			Date settlementDate = process->riskFreeRate()->referenceDate();
+
+			Real discountDiv = 0.0;
+
+			Size i;
+
+			for (i=0; i<dividends.size(); i++)
+				if (dividends[i]->date() >= settlementDate)
+					discountDiv += dividends[i]->amount() *
+						process->riskFreeRate()->discount(dividends[i]->date());
+
+			// Reduce Spot value by discounted dividends amount.
+			x0_ = process->stateVariable()->value() - discountDiv;
+
+			dt_ = end/steps;
+			driftPerStep_ = process->drift(0.0, x0_) * dt_;
+
+
+		}
+
+
+		
+		Size size(Size i) const {
             return i+1;
         }
         Size descendant(Size, Size index, Size branch) const {
@@ -88,6 +123,13 @@ namespace QuantLib {
                         Time end,
                         Size steps)
         : BinomialTree<T>(process, end, steps) {}
+		EqualJumpsBinomialTree(
+                           const boost::shared_ptr<StochasticProcess1D>& process,
+                           Time end,
+                           Size steps,
+                           const DividendSchedule&  dividends)
+        : BinomialTree<T>(process, end, steps,dividends) {}
+
         Real underlying(Size i, Size index) const {
             BigInteger j = 2*BigInteger(index) - BigInteger(i);
             // exploiting equal jump and the x0_ tree centering
@@ -122,7 +164,15 @@ namespace QuantLib {
                         Time end,
                         Size steps,
                         Real strike);
-    };
+
+		CoxRossRubinstein(const boost::shared_ptr<StochasticProcess1D>& process,
+                          Time end,
+                          Size steps,
+                          Real strike,
+                          const DividendSchedule&  dividends);
+
+		
+		};
 
 
     //! Additive equal probabilities binomial tree

@@ -5,7 +5,9 @@ SUBDIRS =  \
     BermudanSwaption \
     DiscreteHedging \
     EquityOption \
-    Swap
+    Swap \
+    ConvertibleBonds
+
 SUBDIR_CHECKS = $(SUBDIRS:%=%.check)
 
 EXTRA_DIST = \

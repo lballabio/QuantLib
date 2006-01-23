@@ -34,6 +34,7 @@ namespace QuantLib {
     //! Payment schedule
     class Schedule {
       public:
+        Schedule() {};
         Schedule(const Calendar& calendar,
                  const Date& startDate, const Date& endDate,
                  Frequency frequency, BusinessDayConvention convention,

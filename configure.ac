@@ -310,6 +310,7 @@ AC_CONFIG_FILES([
     ql/PricingEngines/CapFloor/Makefile
     ql/PricingEngines/Cliquet/Makefile
     ql/PricingEngines/Forward/Makefile
+    ql/PricingEngines/Hybrid/Makefile
     ql/PricingEngines/Quanto/Makefile
     ql/PricingEngines/Swaption/Makefile
     ql/PricingEngines/Vanilla/Makefile
@@ -330,6 +331,7 @@ AC_CONFIG_FILES([
     Docs/Makefile
     Examples/Makefile
     Examples/BermudanSwaption/Makefile
+    Examples/ConvertibleBonds/Makefile
     Examples/DiscreteHedging/Makefile
     Examples/EquityOption/Makefile
     Examples/Swap/Makefile

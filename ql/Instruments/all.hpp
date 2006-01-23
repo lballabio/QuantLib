@@ -28,6 +28,7 @@
 #include <ql/Instruments/bond.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/cliquetoption.hpp>
+#include <ql/Instruments/convertiblebond.hpp>
 #include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/Instruments/europeanoption.hpp>
 #include <ql/Instruments/fixedcouponbond.hpp>
