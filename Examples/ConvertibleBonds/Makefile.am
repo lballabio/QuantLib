@@ -11,14 +11,14 @@ endif
 ConvertibleBond_SOURCES = ConvertibleBonds.cpp utilities.cpp
 ConvertibleBond_LDADD = ../../ql/libQuantLib.la
 
-EXTRA_DIST = 
+EXTRA_DIST =
 
 .PHONY: examples check-examples
 
 examples: ConvertibleBond
 
 check-examples: examples
-	./convertiblebond$(EXEEXT)
+	./ConvertibleBond$(EXEEXT)
 
 dist-hook:
 	mkdir -p $(distdir)/bin

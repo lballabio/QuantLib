@@ -34,14 +34,13 @@ namespace QuantLib {
     //! Payment schedule
     class Schedule {
       public:
-        Schedule() {};
         Schedule(const Calendar& calendar,
                  const Date& startDate, const Date& endDate,
                  Frequency frequency, BusinessDayConvention convention,
                  const Date& stubDate = Date(),
                  bool startFromEnd = false, bool longFinal = false);
         Schedule(const std::vector<Date>&,
-                 const Calendar& calendar = NullCalendar(), 
+                 const Calendar& calendar = NullCalendar(),
                  BusinessDayConvention convention = Unadjusted);
         //! \name Date access
         //@{
