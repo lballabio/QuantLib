@@ -3,57 +3,64 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="ConvertibleBonds"
-	ProjectGUID="{A4D7E7F0-D1C0-4E29-BD83-D208708D42AC}">
+	ProjectGUID="{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}"
+	SccProjectName=""
+	SccLocalPath="">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
 	</Platforms>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory=".\build\vc71\Debug"
-			IntermediateDirectory=".\build\vc71\Debug"
+			Name="Release MTDLL|Win32"
+			OutputDirectory=".\build\vc71\ReleaseMTDLL"
+			IntermediateDirectory=".\build\vc71\ReleaseMTDLL"
 			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
+				Optimization="2"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="FALSE"
 				ImproveFloatingPointConsistency="TRUE"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\.."
-				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
-				MinimalRebuild="FALSE"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
 				DisableLanguageExtensions="TRUE"
 				ForceConformanceInForLoopScope="TRUE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				AssemblerListingLocation=".\build\vc71\Debug/"
-				ObjectFile=".\build\vc71\Debug/"
-				ProgramDataBaseFileName=".\build\vc71\Debug/"
+				PrecompiledHeaderFile=".\build\vc71\ReleaseMTDLL/ConvertibleBonds.pch"
+				AssemblerListingLocation=".\build\vc71\ReleaseMTDLL/"
+				ObjectFile=".\build\vc71\ReleaseMTDLL/"
+				ProgramDataBaseFileName=".\build\vc71\ReleaseMTDLL/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc71\Debug/"
+				BrowseInformationFile=".\build\vc71\ReleaseMTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				CompileOnly="TRUE"
-				DebugInformationFormat="4"
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib"
-				OutputFile=".\bin/ConvertibleBonds.exe"
-				LinkIncremental="2"
+				OutputFile=".\bin/ConvertibleBonds-vc71-mt.exe"
+				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\vc71\Debug/ConvertibleBonds.pdb"
+				ProgramDatabaseFile=".\build\vc71\ReleaseMTDLL/ConvertibleBonds.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCMIDLTool"
+				TypeLibraryName=".\build\vc71\ReleaseMTDLL/ConvertibleBonds.tlb"
+				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -61,7 +68,78 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug SingleThread|Win32"
+			OutputDirectory=".\build\vc71\DebugST"
+			IntermediateDirectory=".\build\vc71\DebugST"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				EnableIntrinsicFunctions="FALSE"
+				ImproveFloatingPointConsistency="TRUE"
+				AdditionalIncludeDirectories="..\.."
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="5"
+				DisableLanguageExtensions="TRUE"
+				ForceConformanceInForLoopScope="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="quantlib.hpp"
+				PrecompiledHeaderFile=".\build\vc71\DebugST/ConvertibleBonds.pch"
+				AssemblerListingLocation=".\build\vc71\DebugST/"
+				ObjectFile=".\build\vc71\DebugST/"
+				ProgramDataBaseFileName=".\build\vc71\DebugST/"
+				BrowseInformation="1"
+				BrowseInformationFile=".\build\vc71\DebugST/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile=".\bin/ConvertibleBonds-vc71-sgd.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="..\..\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\build\vc71\DebugST/ConvertibleBonds.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\build\vc71\DebugST/ConvertibleBonds.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -75,35 +153,54 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
-			ConfigurationType="1">
+			OutputDirectory=".\build\vc71\Release"
+			IntermediateDirectory=".\build\vc71\Release"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				InlineFunctionExpansion="1"
-				OmitFramePointers="TRUE"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				MinimalRebuild="FALSE"
-				RuntimeLibrary="4"
-				UsePrecompiledHeader="0"
-				WarningLevel="4"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="FALSE"
+				ImproveFloatingPointConsistency="TRUE"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\.."
+				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				DisableLanguageExtensions="TRUE"
+				ForceConformanceInForLoopScope="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="quantlib.hpp"
+				PrecompiledHeaderFile=".\build\vc71\Release/ConvertibleBonds.pch"
+				AssemblerListingLocation=".\build\vc71\Release/"
+				ObjectFile=".\build\vc71\Release/"
+				ProgramDataBaseFileName=".\build\vc71\Release/"
+				BrowseInformation="1"
+				BrowseInformationFile=".\build\vc71\Release/"
+				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				CompileOnly="TRUE"
-				DebugInformationFormat="3"/>
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib"
-				OutputFile="$(outdir)/ConvertibleBonds.exe"
+				OutputFile=".\bin/ConvertibleBonds-vc71-mt-s.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(outdir)/ConvertibleBonds.pdb"
-				SubSystem="1"/>
+				AdditionalLibraryDirectories="..\..\lib"
+				ProgramDatabaseFile=".\build\vc71\Release/ConvertibleBonds.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCMIDLTool"
+				TypeLibraryName=".\build\vc71\Release/ConvertibleBonds.tlb"
+				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -111,7 +208,218 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\build\vc71\Debug"
+			IntermediateDirectory=".\build\vc71\Debug"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				EnableIntrinsicFunctions="FALSE"
+				ImproveFloatingPointConsistency="TRUE"
+				AdditionalIncludeDirectories="..\.."
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				DisableLanguageExtensions="TRUE"
+				ForceConformanceInForLoopScope="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="quantlib.hpp"
+				PrecompiledHeaderFile=".\build\vc71\Debug/ConvertibleBonds.pch"
+				AssemblerListingLocation=".\build\vc71\Debug/"
+				ObjectFile=".\build\vc71\Debug/"
+				ProgramDataBaseFileName=".\build\vc71\Debug/"
+				BrowseInformation="1"
+				BrowseInformationFile=".\build\vc71\Debug/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile=".\bin/ConvertibleBonds-vc71-mt-sgd.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="..\..\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\build\vc71\Debug/ConvertibleBonds.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\build\vc71\Debug/ConvertibleBonds.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release SingleThread|Win32"
+			OutputDirectory=".\build\vc71\ReleaseST"
+			IntermediateDirectory=".\build\vc71\ReleaseST"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="FALSE"
+				ImproveFloatingPointConsistency="TRUE"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\.."
+				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
+				StringPooling="TRUE"
+				RuntimeLibrary="4"
+				EnableFunctionLevelLinking="TRUE"
+				DisableLanguageExtensions="TRUE"
+				ForceConformanceInForLoopScope="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="quantlib.hpp"
+				PrecompiledHeaderFile=".\build\vc71\ReleaseST/ConvertibleBonds.pch"
+				AssemblerListingLocation=".\build\vc71\ReleaseST/"
+				ObjectFile=".\build\vc71\ReleaseST/"
+				ProgramDataBaseFileName=".\build\vc71\ReleaseST/"
+				BrowseInformation="1"
+				BrowseInformationFile=".\build\vc71\ReleaseST/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile=".\bin/ConvertibleBonds-vc71-s.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="..\..\lib"
+				ProgramDatabaseFile=".\build\vc71\ReleaseST/ConvertibleBonds.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\build\vc71\ReleaseST/ConvertibleBonds.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug MTDLL|Win32"
+			OutputDirectory=".\build\vc71\DebugMTDLL"
+			IntermediateDirectory=".\build\vc71\DebugMTDLL"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				EnableIntrinsicFunctions="FALSE"
+				ImproveFloatingPointConsistency="TRUE"
+				AdditionalIncludeDirectories="..\.."
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				DisableLanguageExtensions="TRUE"
+				ForceConformanceInForLoopScope="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="quantlib.hpp"
+				PrecompiledHeaderFile=".\build\vc71\DebugMTDLL/ConvertibleBonds.pch"
+				AssemblerListingLocation=".\build\vc71\DebugMTDLL/"
+				ObjectFile=".\build\vc71\DebugMTDLL/"
+				ProgramDataBaseFileName=".\build\vc71\DebugMTDLL/"
+				BrowseInformation="1"
+				BrowseInformationFile=".\build\vc71\DebugMTDLL/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile=".\bin/ConvertibleBonds-vc71-mt-gd.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="..\..\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\build\vc71\DebugMTDLL/ConvertibleBonds.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\build\vc71\DebugMTDLL/ConvertibleBonds.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -129,21 +437,78 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;odl;idl;hpj;bat;asm">
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath=".\ConvertibleBonds.cpp">
+				RelativePath="ConvertibleBonds.cpp">
+				<FileConfiguration
+					Name="Release MTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug MTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc">
+			Filter="h;hpp;hxx;hm;inl">
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
 		<File
-			RelativePath=".\readme.txt">
+			RelativePath="ReadMe.txt">
 		</File>
 	</Files>
 	<Globals>

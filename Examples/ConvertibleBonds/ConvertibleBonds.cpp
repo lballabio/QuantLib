@@ -1,6 +1,4 @@
-// ConvertibleBonds.cpp : Defines the entry point for the console application.
 
-//#include "utilities.hpp"
 #include <ql/quantlib.hpp>
 #include <iostream>
 
@@ -62,11 +60,11 @@ int main(int argc, char* argv[])
 
         Real callPrices[] = {101.5,100.85};
         Real putPrices[]= {100.95};
- 
+
         // Load Call schedules
-        for (Size i=0; i<LENGTH(callLength); i++) 
+        for (Size i=0; i<LENGTH(callLength); i++)
         {
-	  callability.push_back( 
+	  callability.push_back(
 	    Callability(Price(callPrices[i],
 			      Price::Clean),
 			Callability::Call,
@@ -76,18 +74,18 @@ int main(int argc, char* argv[])
         // Load Put schedules
         Size i = LENGTH(callLength);
 
-		for (Size j=0; j<LENGTH(putLength); j++) 
+		for (Size j=0; j<LENGTH(putLength); j++)
         {
 
 	  callability.push_back(
 	      Callability(Price(putPrices[j],
 				Price::Clean),
 			  Callability::Put,
-			  calendar.advance(today,putLength[j], Years)));	 
+			  calendar.advance(today,putLength[j], Years)));
         }
-  
+
         // Assume Dividends are paid every 6 months.
-        Size k=0;  
+        Size k=0;
         for (Date d = today + 6*Months;
              d < exerciseDate;
              d += 6*Months) {
@@ -154,7 +152,7 @@ int main(int argc, char* argv[])
             boost::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(settlementDate, volatility, dayCounter)));
 
-		
+
 		boost::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
 
 		boost::shared_ptr<BlackScholesProcess> stochasticProcess(new
@@ -170,10 +168,10 @@ int main(int argc, char* argv[])
             boost::shared_ptr<Quote>(new SimpleQuote(spreadRate)));
 
 		boost::shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
-            
+
 //		Handle<YieldTermStructure> discountCurve(flatRate(today,rate,dayCounter));
 
-            
+
 		Handle<YieldTermStructure> discountCurve(boost::shared_ptr<YieldTermStructure>(
                           new FlatForward(today, Handle<Quote>(rate), dayCounter)));
 
@@ -186,7 +184,7 @@ int main(int argc, char* argv[])
                                    coupons,bondDayCount,schedule,redemption,discountCurve);
 
 	    value = eurocvbond.NPV();
-        
+
 // American exercise convertible
 //ConvertibleBond americancvbond(stochasticProcess, payoff, amExercise,
 //            boost::shared_ptr<PricingEngine>(

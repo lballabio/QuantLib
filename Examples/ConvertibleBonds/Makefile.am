@@ -2,23 +2,29 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 if AUTO_EXAMPLES
-bin_PROGRAMS = ConvertibleBond
-TESTS = ConvertibleBond
+bin_PROGRAMS = ConvertibleBonds
+TESTS = ConvertibleBonds
 else
-EXTRA_PROGRAMS = ConvertibleBond
-CLEANFILES = ConvertibleBond
+EXTRA_PROGRAMS = ConvertibleBonds
+CLEANFILES = ConvertibleBonds
 endif
-ConvertibleBond_SOURCES = ConvertibleBonds.cpp utilities.cpp
-ConvertibleBond_LDADD = ../../ql/libQuantLib.la
+ConvertibleBonds_SOURCES = ConvertibleBonds.cpp
+ConvertibleBonds_LDADD = ../../ql/libQuantLib.la
 
-EXTRA_DIST =
+EXTRA_DIST = \
+    ConvertibleBonds.dev \
+    ConvertibleBonds.dsp \
+    ConvertibleBonds.vcproj \
+    ConvertibleBonds.vcproj \
+    makefile.mak \
+    ReadMe.txt
 
 .PHONY: examples check-examples
 
-examples: ConvertibleBond
+examples: ConvertibleBonds
 
 check-examples: examples
-	./ConvertibleBond$(EXEEXT)
+	./ConvertibleBonds$(EXEEXT)
 
 dist-hook:
 	mkdir -p $(distdir)/bin
