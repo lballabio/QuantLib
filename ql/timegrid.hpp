@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -147,6 +147,7 @@ namespace QuantLib {
         //! \name Time grid interface
         //@{
         Size findIndex(Time t) const;
+        Size closestIndex(Time t) const;
         const std::vector<Time>& mandatoryTimes() const {
             return mandatoryTimes_;
         }

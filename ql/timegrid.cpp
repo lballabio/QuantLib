@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,6 +38,23 @@ namespace QuantLib {
         mandatoryTimes_[0] = end;
 
         dt_ = std::vector<Time>(steps,dt);
+    }
+
+    Size TimeGrid::closestIndex(Time t) const {
+        const_iterator begin = times_.begin(), end = times_.end();
+        const_iterator result = std::lower_bound(begin, end, t);
+        if (result == begin) {
+            return 0;
+        } else if (result == end) {
+            return size()-1;
+        } else {
+            Time dt1 = *result - t;
+            Time dt2 = t - *(result-1);
+            if (dt1 < dt2)
+                return result-begin;
+            else
+                return (result-begin)-1;
+        }
     }
 
 
