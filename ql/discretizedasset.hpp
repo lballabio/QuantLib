@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -215,8 +215,7 @@ namespace QuantLib {
 
     inline bool DiscretizedAsset::isOnTime(Time t) const {
         const TimeGrid& grid = method()->timeGrid();
-        Time gridTime = grid[grid.findIndex(t)];
-        return close_enough(gridTime,time());
+        return close_enough(grid.closestTime(t),time());
     }
 
 

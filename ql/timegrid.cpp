@@ -40,6 +40,43 @@ namespace QuantLib {
         dt_ = std::vector<Time>(steps,dt);
     }
 
+    Size TimeGrid::index(Time t) const {
+        Size i = closestIndex(t);
+        if (close_enough(t,times_[i])) {
+            return i;
+        } else {
+            if (t < times_.front()) {
+                QL_FAIL("using inadequate time grid: all nodes "
+                        "are later than the required time t = "
+                        << std::setprecision(12) << t
+                        << " (earliest node is t1 = "
+                        << std::setprecision(12) << times_.front() << ")");
+            } else if (t > times_.back()) {
+                QL_FAIL("using inadequate time grid: all nodes "
+                        "are earlier than the required time t = "
+                        << std::setprecision(12) << t
+                        << " (latest node is t1 = "
+                        << std::setprecision(12) << times_.back() << ")");
+            } else {
+                Size j, k;
+                if (t > times_[i]) {
+                    j = i;
+                    k = i+1;
+                } else {
+                    j = i-1;
+                    k = i;
+                }
+                QL_FAIL("using inadequate time grid: the nodes closest "
+                        "to the required time t = "
+                        << std::setprecision(12) << t
+                        << " are t1 = "
+                        << std::setprecision(12) << times_[j]
+                        << " and t2 = "
+                        << std::setprecision(12) << times_[k]);
+            }
+        }
+    }
+
     Size TimeGrid::closestIndex(Time t) const {
         const_iterator begin = times_.begin(), end = times_.end();
         const_iterator result = std::lower_bound(begin, end, t);
@@ -57,7 +94,7 @@ namespace QuantLib {
         }
     }
 
-
+    #ifndef QL_DISABLE_DEPRECATED
     Size TimeGrid::findIndex(Time t) const {
         const_iterator result =
             std::find_if(times_.begin(), times_.end(),
@@ -92,6 +129,7 @@ namespace QuantLib {
         }
         return result - times_.begin();
     }
+    #endif
 
 }
 

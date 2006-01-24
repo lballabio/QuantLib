@@ -119,13 +119,13 @@ namespace QuantLib {
 
     template <class Impl>
     Real Lattice<Impl>::presentValue(DiscretizedAsset& asset) const {
-        Size i = t_.findIndex(asset.time());
+        Size i = t_.index(asset.time());
         return DotProduct(asset.values(), statePrices(i));
     }
 
     template <class Impl>
     void Lattice<Impl>::initialize(DiscretizedAsset& asset, Time t) const {
-        Size i = t_.findIndex(t);
+        Size i = t_.index(t);
         asset.time() = t;
         asset.reset(this->impl().size(i));
     }
@@ -149,8 +149,8 @@ namespace QuantLib {
                    "cannot roll the asset back to" << to
                    << " (it is already at t = " << from << ")");
 
-        Integer iFrom = Integer(t_.findIndex(from));
-        Integer iTo = Integer(t_.findIndex(to));
+        Integer iFrom = Integer(t_.index(from));
+        Integer iTo = Integer(t_.index(to));
 
         for (Integer i=iFrom-1; i>=iTo; i--) {
             Array newValues(this->impl().size(i));

@@ -146,8 +146,18 @@ namespace QuantLib {
         //@}
         //! \name Time grid interface
         //@{
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use index() instead */
         Size findIndex(Time t) const;
+        #endif
+        //! returns the index i such that grid[i] = t
+        Size index(Time t) const;
+        //! returns the index i such that grid[i] is closest to t
         Size closestIndex(Time t) const;
+        //! returns the time on the grid closest to the given t
+        Time closestTime(Time t) const {
+            return times_[closestIndex(t)];
+        }
         const std::vector<Time>& mandatoryTimes() const {
             return mandatoryTimes_;
         }

@@ -63,7 +63,7 @@ namespace QuantLib {
                               arguments_.callability[i].date());
 
             //! Find time step which coincides with call, put provisions.
-            Size j = method()->timeGrid().findIndex(period);
+            Size j = method()->timeGrid().index(period);
 
 			// Add accrued interest to call and put values if any.
             if (arguments_.callability[i].type() == Callability::Call )
@@ -126,7 +126,7 @@ namespace QuantLib {
 			Time period = dayCounter.yearFraction(settlementDate,arguments_.dividends[i]->date());
 
             //! Find time step which coincides with cash dividend.
-            Size j = method()->timeGrid().findIndex(period);
+            Size j = method()->timeGrid().index(period);
 
             if (arguments_.dividends[i]->date() >= settlementDate)
             {
@@ -176,7 +176,7 @@ namespace QuantLib {
 
  //       boost::shared_ptr<Tree> tree(lattice->tree());
 
-        Size i = method()->timeGrid().findIndex(time());
+        Size i = method()->timeGrid().index(time());
 
         //        Real tempvalue = 0.0;
 

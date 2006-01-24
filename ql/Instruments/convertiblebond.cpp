@@ -43,7 +43,7 @@ namespace QuantLib {
             Real redemption,
             const Handle<YieldTermStructure>& discountCurve)
     : Bond(dayCounter, schedule.calendar(), schedule.businessDayConvention(),
-           settlementDays,discountCurve),
+           schedule.businessDayConvention(), settlementDays,discountCurve),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
 
@@ -89,7 +89,7 @@ namespace QuantLib {
             Real redemption,
             const Handle<YieldTermStructure>& discountCurve)
     : Bond(dayCounter, schedule.calendar(), schedule.businessDayConvention(),
-           settlementDays, discountCurve),
+           schedule.businessDayConvention(), settlementDays, discountCurve),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
 
@@ -136,7 +136,7 @@ namespace QuantLib {
             Real  redemption,
             const Handle<YieldTermStructure>& discountCurve)
     : Bond(dayCounter, schedule.calendar(), schedule.businessDayConvention(),
-           settlementDays,discountCurve),
+           schedule.businessDayConvention(), settlementDays,discountCurve),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
 
