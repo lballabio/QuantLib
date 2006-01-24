@@ -119,7 +119,7 @@ namespace QuantLib {
 			Date periodDate = T::calendar.advance(T::arguments_.settlementDays,
                                                   timeLength, Days);
 
-			Real accruedInterest = cvbond_->accruedAmount(periodDate);
+			Real accruedInterest = T::accruedAmount(periodDate);
 
             //Holding Value ie if not callable or puttable, add
             //accrued Interest if any.
