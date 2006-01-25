@@ -98,18 +98,11 @@ namespace QuantLib {
                                 flatDividends, flatRiskFree, flatVol));
 
 		// adjust the bermudan exercise times according to the tree steps
-		Time dt = maturity/timeSteps_;
+        TimeGrid grid(maturity, timeSteps_);
 		for (Size k=0; k<arguments_.stoppingTimes.size(); ++k) {
-			Integer step = Integer(arguments_.stoppingTimes[k]/dt);
-			Time residual = arguments_.stoppingTimes[k]/dt - step;
-			if (close(residual, 0.0)) {
-                ; // do nothing
-            } else if (residual > 0.5) {
-				arguments_.stoppingTimes[k] = dt*(step+1);
-			} else {
-				arguments_.stoppingTimes[k] = dt*step;
-			}
-		}
+            arguments_.stoppingTimes[k] =
+                grid.closestTime(arguments_.stoppingTimes[k]);
+        }
 
         boost::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,
                                         payoff->strike()));
