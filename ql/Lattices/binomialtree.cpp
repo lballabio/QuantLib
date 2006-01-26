@@ -4,7 +4,6 @@
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2005 StatPro Italia srl
- Copyright (C) 2005 Theo Boafo
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,21 +45,6 @@ namespace QuantLib {
         QL_REQUIRE(pu_<=1.0, "negative probability");
         QL_REQUIRE(pu_>=0.0, "negative probability");
     }
-
-    CoxRossRubinstein::CoxRossRubinstein(
-                          const boost::shared_ptr<StochasticProcess1D>& process,
-                          Time end, Size steps, Real strike,
-                          const DividendSchedule&  dividends )
-    : EqualJumpsBinomialTree<CoxRossRubinstein>(process, end, steps, dividends) {
-
-		dx_ = process->stdDeviation(0.0, x0_, dt_);
-        pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
-        pd_ = 1.0 - pu_;
-
-        QL_REQUIRE(pu_<=1.0, "negative probability");
-        QL_REQUIRE(pu_>=0.0, "negative probability");
-    }
-
 
 
     AdditiveEQPBinomialTree::AdditiveEQPBinomialTree(

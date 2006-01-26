@@ -202,27 +202,42 @@ namespace QuantLib {
 
         moreArgs->conversionRatio = conversionRatio_;
 
-        moreArgs->dividends.clear();
-        moreArgs->callability.clear();
-        moreArgs->accruedAmounts.clear();
-        moreArgs->cashFlows.clear();
-        moreArgs->schedule.clear();
-
         moreArgs->dividends = dividends_;
-        moreArgs->callability = callability_;
-        for (Size i=0; i<callability_.size(); i++)
-            moreArgs->accruedAmounts.push_back(
-                                bond_->accruedAmount(callability_[i].date()));
-        moreArgs->cashFlows = cashFlows_;
+
+        Size i;
+
+        moreArgs->callabilityTimes = std::vector<Time>(callability_.size());
+        moreArgs->callabilityTypes =
+            std::vector<Callability::Type>(callability_.size());
+        moreArgs->callabilityPrices = std::vector<Real>(callability_.size());
+        for (i=0; i<callability_.size(); i++) {
+            moreArgs->callabilityTypes[i] = callability_[i].type();
+            moreArgs->callabilityTimes[i] =
+                dayCounter_.yearFraction(discountCurve_->referenceDate(),
+                                         callability_[i].date());
+            moreArgs->callabilityPrices[i] = callability_[i].price().amount();
+            if (callability_[i].price().type() == Price::Dirty)
+                moreArgs->callabilityPrices[i] -=
+                    bond_->accruedAmount(callability_[i].date());
+        }
+
+        const std::vector<boost::shared_ptr<CashFlow> >& cashflows =
+                                                           bond_->cashflows();
+        moreArgs->couponTimes = std::vector<Time>(cashflows.size());
+        moreArgs->couponAmounts = std::vector<Real>(cashflows.size());
+        for (i=0; i<cashflows.size(); i++) {
+            moreArgs->couponTimes[i] =
+                dayCounter_.yearFraction(discountCurve_->referenceDate(),
+                                         cashflows[i]->date());
+            moreArgs->couponAmounts[i] = cashflows[i]->amount();
+        }
+
         moreArgs->creditSpread = creditSpread_;
         moreArgs->dayCounter = dayCounter_;
-        std::copy(schedule_.begin(), schedule_.end(),
-                  std::back_inserter(moreArgs->schedule));
         moreArgs->issueDate = issueDate_;
         moreArgs->settlementDays = settlementDays_;
         moreArgs->discountCurve = discountCurve_;
         moreArgs->redemption = redemption_;
-
     }
 
 
@@ -235,12 +250,28 @@ namespace QuantLib {
         OneAssetStrikedOption::arguments::validate();
         #endif
 
-        QL_REQUIRE(conversionRatio != Null<Real>(), "null conversionRatio");
-
+        QL_REQUIRE(conversionRatio != Null<Real>(), "null conversion ratio");
         QL_REQUIRE(conversionRatio > 0.0,
-                   "positive conversionRatio required: "
+                   "positive conversion ratio required: "
                    << conversionRatio << " not allowed");
 
+        QL_REQUIRE(redemption != Null<Real>(), "null redemption");
+        QL_REQUIRE(redemption >= 0.0,
+                   "positive redemption required: "
+                   << redemption << " not allowed");
+
+        QL_REQUIRE(settlementDays != Null<Integer>(), "null settlement days");
+        QL_REQUIRE(settlementDays >= 0,
+                   "positive settlement days required: "
+                   << settlementDays << " not allowed");
+
+        QL_REQUIRE(callabilityTimes.size() == callabilityTypes.size(),
+                   "different number of callability times and types");
+        QL_REQUIRE(callabilityTimes.size() == callabilityPrices.size(),
+                   "different number of callability times and prices");
+
+        QL_REQUIRE(couponTimes.size() == couponAmounts.size(),
+                   "different number of coupon times and amounts");
     }
 
 }

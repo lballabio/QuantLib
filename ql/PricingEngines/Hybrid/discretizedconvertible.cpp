@@ -23,141 +23,99 @@
 #include <ql/Instruments/callabilityschedule.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/PricingEngines/Hybrid/discretizedconvertible.hpp>
-
 #include <vector>
 
 namespace QuantLib {
 
-    void DiscretizedConvertible::reset(Size size) {
+    DiscretizedConvertible::DiscretizedConvertible(
+                               const ConvertibleBond::option::arguments& args)
+    : arguments_(args) {
 
-		Size i = arguments_.cashFlows.size()-1;
-
-		values_ = Array(size, arguments_.cashFlows[i]->amount());  // Set to bond redemption values + accrued interest if any.
-
-        //values_ = Array(size, arguments_.redemption);  // Set to bond redemption values.
-		conversionProbability_ = Array(size, 0.0);
-		spreadAdjustRate_ = Array(size, 0.0);
-
-        // initialise Put, Call and dividend provisions.
-        putValues_ = Array(size, 0.0);
-        callValues_ = Array(size, 0.0);
-        dividendValues_ = Array(size, 0.0);
-
-        DayCounter dayCounter = Actual365Fixed();
+        dividendValues_ = Array(arguments_.dividends.size(), 0.0);
 
 		boost::shared_ptr<BlackScholesProcess> process =
             boost::dynamic_pointer_cast<BlackScholesProcess>(
                                                 arguments_.stochasticProcess);
-
         QL_REQUIRE(process, "Black-Scholes process required");
 
         Date settlementDate = process->riskFreeRate()->referenceDate();
+        for (Size i=0; i<arguments_.dividends.size(); i++) {
+            if (arguments_.dividends[i]->date() >= settlementDate) {
+				dividendValues_[i] =
+                    arguments_.dividends[i]->amount() *
+                    process->riskFreeRate()->discount(
+                                             arguments_.dividends[i]->date());
+            }
+        }
+    }
+
+    void DiscretizedConvertible::reset(Size size) {
+
+        // Set to bond redemption values
+        values_ = Array(size, arguments_.redemption);
+
+        // coupon amounts should be added when adjusting
+		// values_ = Array(size, arguments_.cashFlows.back()->amount());
+
+		conversionProbability_ = Array(size, 0.0);
+		spreadAdjustedRate_ = Array(size, 0.0);
+
+		boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
 
-        // Load Call/Put values that coincide with time steps.
-        for (Size i=0; i<arguments_.callability.size(); i++)
-        {
-
-			Time period = dayCounter.yearFraction(settlementDate,
-                              arguments_.callability[i].date());
-
-            //! Find time step which coincides with call, put provisions.
-            Size j = method()->timeGrid().index(period);
-
-			// Add accrued interest to call and put values if any.
-            if (arguments_.callability[i].type() == Callability::Call )
-
-				callValues_[j] = arguments_.callability[i].price().amount() +
-				                 arguments_.accruedAmounts[i];
-
-            else if (arguments_.callability[i].type() == Callability::Put )
-
-                putValues_[j] = arguments_.callability[i].price().amount() +
-                                arguments_.accruedAmounts[i];
-
-        }
-
-
+        // this takes care of convertibility and conversion probabilities
         adjustValues();
 
         Real creditSpread = arguments_.creditSpread->value();
 
         Date exercise = arguments_.exercise->lastDate();
 
-        Rate riskFreeRate = process->riskFreeRate()->zeroRate(exercise, rfdc,
+        Rate riskFreeRate =
+            process->riskFreeRate()->zeroRate(exercise, rfdc,
                                               Continuous, NoFrequency);
 
-		Array grid = method()->grid(time());
-
-
-		//boost::shared_ptr<BlackScholesLattice> lattice =
-        //    boost::dynamic_pointer_cast<BlackScholesLattice>(method());
-
-        //QL_REQUIRE(lattice, "non-Black-Scholes lattice given");
-
-        //boost::shared_ptr<Tree> tree(lattice->tree());
-
-		// Load Conversion probabilites depending on whether conversion is likely at terminal
-        // nodes
-        //Size i = size;
-
-        for (Size j=0; j<values_.size(); j++)
-        {
-
-           if ( values_[j] == arguments_.conversionRatio*grid[j] )
-           {
-
-               conversionProbability_[j] = 1.0;
-
-           }
-
-           //! Calculate blended discount rate to be used on roll back.
-           spreadAdjustRate_[j] =  conversionProbability_[j] * riskFreeRate +
-                                    (1-conversionProbability_[j])*(riskFreeRate + creditSpread);
-
-
+        // Calculate blended discount rate to be used on roll back.
+        for (Size j=0; j<values_.size(); j++) {
+           spreadAdjustedRate_[j] =
+               conversionProbability_[j] * riskFreeRate +
+               (1-conversionProbability_[j])*(riskFreeRate + creditSpread);
         }
-
-        // Load present Value of each cash dividend that coincide with time steps.
-        for (Size i=0; i<arguments_.dividends.size(); i++)
-        {
-
-			Time period = dayCounter.yearFraction(settlementDate,arguments_.dividends[i]->date());
-
-            //! Find time step which coincides with cash dividend.
-            Size j = method()->timeGrid().index(period);
-
-            if (arguments_.dividends[i]->date() >= settlementDate)
-            {
-				dividendValues_[j] = arguments_.dividends[i]->amount() *
-                           process->riskFreeRate()->discount(arguments_.dividends[i]->date());
-
-            }
-
-         }
-
-
     }
 
     void DiscretizedConvertible::postAdjustValuesImpl() {
 
-        Time now = time();
         Size i;
+
+        for (i=0; i<arguments_.callabilityTimes.size(); i++) {
+            if (isOnTime(arguments_.callabilityTimes[i]))
+                applyCallability(i);
+        }
+
+        for (i=0; i<arguments_.couponTimes.size(); i++) {
+            if (isOnTime(arguments_.couponTimes[i]))
+                addCoupon(i);
+        }
+
+        // add dividends somehow
+
         switch (arguments_.exercise->type()) {
           case Exercise::American:
-            if (now <= arguments_.stoppingTimes[1] &&
-                now >= arguments_.stoppingTimes[0])
-                applySpecificCondition();
+            if (time() <= arguments_.stoppingTimes[1] &&
+                time() >= arguments_.stoppingTimes[0])
+                applyConvertibility();
             break;
           case Exercise::European:
             if (isOnTime(arguments_.stoppingTimes[0]))
-                applySpecificCondition();
+                applyConvertibility();
             break;
           case Exercise::Bermudan:
             for (i = 0; i<arguments_.stoppingTimes.size(); i++) {
                 if (isOnTime(arguments_.stoppingTimes[i]))
-                    applySpecificCondition();
+                    applyConvertibility();
             }
             break;
           default:
@@ -165,61 +123,40 @@ namespace QuantLib {
         }
     }
 
-    void DiscretizedConvertible::applySpecificCondition() {
-
+    void DiscretizedConvertible::applyConvertibility() {
 		Array grid = method()->grid(time());
+        for (Size j=0; j<values_.size(); j++) {
+            Real payoff = arguments_.conversionRatio*grid[j];
+            if (values_[j] < payoff) {
+                values_[j] = payoff;
+                conversionProbability_[j] = 1.0;
+            }
+        }
+    }
 
- //       boost::shared_ptr<BlackScholesLattice> lattice =
- //           boost::dynamic_pointer_cast<BlackScholesLattice>(method());
+    void DiscretizedConvertible::applyCallability(Size i) {
+        Size j;
+        switch (arguments_.callabilityTypes[i]) {
+          case Callability::Call:
+            for (j=0; j<values_.size(); j++) {
+                values_[j] = std::min(values_[j],
+                                      arguments_.callabilityPrices[i]);
+            }
+            break;
+          case Callability::Put:
+            for (j=0; j<values_.size(); j++) {
+                values_[j] = std::max(values_[j],
+                                      arguments_.callabilityPrices[i]);
+            }
+            break;
+          default:
+            QL_FAIL("unknown callability type");
+        }
+    }
 
- //       QL_REQUIRE(lattice, "non-Black-Scholes lattice given");
-
- //       boost::shared_ptr<Tree> tree(lattice->tree());
-
-        Size i = method()->timeGrid().index(time());
-
-        //        Real tempvalue = 0.0;
-
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-
-        QL_REQUIRE(process, "Black-Scholes process required");
-
-		Date settlementDate = process->riskFreeRate()->referenceDate();
-
-		DayCounter dayCounter = Actual365Fixed();
-
-        Time maturity = dayCounter.yearFraction(settlementDate,arguments_.exercise->lastDate());
-
-        if ( time() == maturity )
-
-           // At maturity apply condition for terminal nodes
-           for (Size j=0; j<values_.size(); j++) {
-
-              // Add present value of Dividend if any to underlying price value at node
-              values_[j] =
-				  std::max(values_[j],
-                         (arguments_.conversionRatio*(grid[j] + dividendValues_[i])));
-          }
-
-
-        else
-
-            // check for whether bonds are called or puttable and test whether conversion is
-           // optimal.
-           for (Size j=0; j<values_.size(); j++) {
-
-              Real tempValue = std::max(putValues_[i],std::min(values_[j],callValues_[i]));
-
-              // Add present value of Dividend if any to underlying price value at node
-              values_[j] =
-                std::max(tempValue,
-                         (arguments_.conversionRatio*(grid[j] + dividendValues_[i])));
-
-          }
+    void DiscretizedConvertible::addCoupon(Size i) {
+        values_ += arguments_.couponAmounts[i];
     }
 
 }
-
 

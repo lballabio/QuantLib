@@ -215,7 +215,7 @@ namespace QuantLib {
 
     inline bool DiscretizedAsset::isOnTime(Time t) const {
         const TimeGrid& grid = method()->timeGrid();
-        return close_enough(grid.closestTime(t),time());
+        return close_enough(grid[grid.index(t)],time());
     }
 
 

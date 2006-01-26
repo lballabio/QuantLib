@@ -148,14 +148,18 @@ namespace QuantLib {
     class ConvertibleBond::option::arguments
         : public OneAssetStrikedOption::arguments {
       public:
+        arguments()
+        : conversionRatio(Null<Real>()), settlementDays(Null<Integer>()),
+          redemption(Null<Real>()) {}
         Real conversionRatio;
-        DividendSchedule  dividends;
-        CallabilitySchedule callability;
-        std::vector<Real> accruedAmounts;
         Handle<Quote> creditSpread;
-        std::vector<boost::shared_ptr<CashFlow> > cashFlows;
+        DividendSchedule dividends;
+        std::vector<Time> callabilityTimes;
+        std::vector<Callability::Type> callabilityTypes;
+        std::vector<Real> callabilityPrices;
+        std::vector<Time> couponTimes;
+        std::vector<Real> couponAmounts;
         DayCounter dayCounter;
-        std::vector<Date> schedule;
         Handle<YieldTermStructure> discountCurve;
         Date issueDate;
         Integer settlementDays;

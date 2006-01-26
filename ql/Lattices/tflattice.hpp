@@ -18,7 +18,7 @@
 */
 
 /*! \file tflattice.hpp
-    \brief Binomial trees under the TsiveriotisFernandes Binomial tree model
+    \brief Binomial Tsiveriotis-Fernandes tree model
 */
 
 #ifndef quantlib_lattices_tf_lattice_hpp
@@ -51,11 +51,11 @@ namespace QuantLib {
       protected:
         void stepback(Size i, const Array& values,
                       const Array& conversionProbability,
-                      const Array& spreadAdjustRate,
+                      const Array& spreadAdjustedRate,
                       Array& newValues, Array& newConversionProbability,
-                      Array& newSpreadAdjustRate) const;
-        void rollback(DiscretizedConvertible&, Time to) const;
-        void partialRollback(DiscretizedConvertible&, Time to) const;
+                      Array& newSpreadAdjustedRate) const;
+        void rollback(DiscretizedAsset&, Time to) const;
+        void partialRollback(DiscretizedAsset&, Time to) const;
 
       private:
         Real pd_, pu_,creditSpread_,dt_;
@@ -85,7 +85,6 @@ namespace QuantLib {
         pu_ = (a-d)/(u-d);
         pd_ = 1 - pu_;
 
-
         riskFreeRate_ = riskFreeRate;
         creditSpread_ = creditSpread;
 
@@ -96,11 +95,11 @@ namespace QuantLib {
     template <class T>
     void TsiveriotisFernandesLattice<T>::stepback(
               Size i, const Array& values, const Array& conversionProbability,
-              const Array& spreadAdjustRate, Array& newValues,
+              const Array& spreadAdjustedRate, Array& newValues,
               Array& newConversionProbability,
-              Array& newSpreadAdjustRate) const {
+              Array& newSpreadAdjustedRate) const {
 
-        for (Size j=0; j<T::size(i); j++) {
+        for (Size j=0; j<this->size(i); j++) {
 
             // new conversion probability is calculated via backward
             // induction using up and down probabilities on tree on
@@ -110,29 +109,33 @@ namespace QuantLib {
                 pd_*conversionProbability[j]+ pu_*conversionProbability[j+1];
 
             // Use blended discounting rate
-            newSpreadAdjustRate[j] =
+            newSpreadAdjustedRate[j] =
                 newConversionProbability[j] * riskFreeRate_ +
                 (1-newConversionProbability[j])*(riskFreeRate_+creditSpread_);
 
-			Integer timeLength = Integer(T::t_[i]*T::arguments_.dayCounter);
+			// Integer timeLength = Integer(this->t_[i]*365);
 
-			Date periodDate = T::calendar.advance(T::arguments_.settlementDays,
-                                                  timeLength, Days);
+			//Date periodDate =
+            // T::calendar.advance(T::arguments_.settlementDays,
+            //                     timeLength, Days);
 
-			Real accruedInterest = T::accruedAmount(periodDate);
+			// Real accruedInterest = T::accruedAmount(periodDate);
 
             //Holding Value ie if not callable or puttable, add
             //accrued Interest if any.
+            //newValues[j] =
+            //    (pd_*(values[j]+accruedInterest)/(1+(spreadAdjustedRate[j]*dt_)))
+            //  + (pu_*(values[j+1] + accruedInterest)/(1+(spreadAdjustedRate[j+1]*dt_)));
             newValues[j] =
-                (pd_*(values[j]+accruedInterest)/(1+(spreadAdjustRate[j]*dt_)))
-              + (pu_*(values[j+1] + accruedInterest)/(1+(spreadAdjustRate[j+1]*dt_)));
+                (pd_*values[j]/(1+(spreadAdjustedRate[j]*dt_)))
+              + (pu_*values[j+1]/(1+(spreadAdjustedRate[j+1]*dt_)));
 
         }
     }
 
     template <class T>
 	void TsiveriotisFernandesLattice<T>::rollback(
-                               DiscretizedConvertible& asset, Time to) const {
+                                     DiscretizedAsset& asset, Time to) const {
         partialRollback(asset,to);
         asset.adjustValues();
     }
@@ -140,7 +143,7 @@ namespace QuantLib {
 
 	template <class T>
 	void TsiveriotisFernandesLattice<T>::partialRollback(
-                               DiscretizedConvertible& asset, Time to) const {
+                                     DiscretizedAsset& asset, Time to) const {
 
         Time from = asset.time();
 
@@ -151,32 +154,33 @@ namespace QuantLib {
                    "cannot roll the asset back to" << to
                    << " (it is already at t = " << from << ")");
 
-        Integer iFrom = Integer(T::t_.findIndex(from));
-        Integer iTo = Integer(T::t_.findIndex(to));
+        DiscretizedConvertible& convertible =
+            dynamic_cast<DiscretizedConvertible&>(asset);
+
+        Integer iFrom = Integer(this->t_.index(from));
+        Integer iTo = Integer(this->t_.index(to));
 
         for (Integer i=iFrom-1; i>=iTo; i--) {
 
-            Array newValues(T::size(i));
-            Array newSpreadAdjustRate(T::size(i));
-            Array newConversionProbability(T::size(i));
+            Array newValues(this->size(i));
+            Array newSpreadAdjustedRate(this->size(i));
+            Array newConversionProbability(this->size(i));
 
-            stepback(i, asset.values(), asset.conversionProbability(),
-                     asset.spreadAdjustRate(), newValues,
-                     newConversionProbability,newSpreadAdjustRate);
+            stepback(i, convertible.values(),
+                     convertible.conversionProbability(),
+                     convertible.spreadAdjustedRate(), newValues,
+                     newConversionProbability,newSpreadAdjustedRate);
 
-            asset.time() = T::t_[i];
-            asset.values() = newValues;
-            asset.spreadAdjustRate()=newSpreadAdjustRate;
-            asset.conversionProbability()=newConversionProbability;
-
+            convertible.time() = this->t_[i];
+            convertible.values() = newValues;
+            convertible.spreadAdjustedRate() = newSpreadAdjustedRate;
+            convertible.conversionProbability() = newConversionProbability;
 
             // skip the very last adjustment
             if (i != iTo)
-                asset.adjustValues();
+                convertible.adjustValues();
         }
     }
-
-
 
 }
 
