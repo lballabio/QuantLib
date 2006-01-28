@@ -110,13 +110,14 @@ namespace QuantLib {
                                            transformed_grid.end(),
                                            values_.begin());
 
-            values_ = new_grid;
-            std::transform(values_.begin(), values_.end(),
-                           values_.begin(), func);
-            for (Array::iterator j = values_.begin();
-                 j != values_.end(); j++) {
+            Array newValues = new_grid;
+            std::transform(newValues.begin(), newValues.end(),
+                           newValues.begin(), func);
+            for (Array::iterator j = newValues.begin();
+                 j != newValues.end(); j++) {
                 *j = priceSpline(*j, true);
             }
+            values_.swap(newValues);
             grid_ = new_grid;
         }
 

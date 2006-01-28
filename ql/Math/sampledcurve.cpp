@@ -20,6 +20,7 @@
 #include <ql/Math/sampledcurve.hpp>
 
 namespace QuantLib {
+
     Real SampledCurve::valueAtCenter() const {
         QL_REQUIRE(!empty(), "empty sampled curve");
         Size jmid = size()/2;
@@ -66,16 +67,17 @@ namespace QuantLib {
     void SampledCurve::regrid(const Array &new_grid) {
         NaturalCubicSpline priceSpline(grid_.begin(), grid_.end(),
                                        values_.begin());
-        values_ = Array(new_grid.size());
+        Array newValues(new_grid.size());
         Array::iterator val;
         Array::const_iterator grid;
-        for (val = values_.begin(), grid = new_grid.begin() ;
+        for (val = newValues.begin(), grid = new_grid.begin() ;
              grid != new_grid.end();
              val++, grid++) {
             *val = priceSpline(*grid, true);
         }
+        values_.swap(newValues);
         grid_ = new_grid;
     }
-}
 
+}
 

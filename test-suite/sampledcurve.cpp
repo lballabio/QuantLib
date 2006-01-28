@@ -36,7 +36,7 @@ void SampledCurveTest::testConstruction() {
     BOOST_MESSAGE("Testing sampled curve construction...");
 
     QL_TEST_BEGIN
-        SampledCurve curve(BoundedGrid(-10.0,10.0,100));
+    SampledCurve curve(BoundedGrid(-10.0,10.0,100));
     FSquared f2;
     curve.sample(f2);
     Real expected = 100.0;
@@ -65,14 +65,17 @@ void SampledCurveTest::testConstruction() {
 
     curve.sample(f2);
     curve.regrid(BoundedGrid(0.0,20.0,200));
+    Real tolerance = 1.0e-2;
     for (Size i=0; i < curve.size(); i++) {
-        Real grid(curve.gridValue(i));
-        Real value(curve.value(i));
-        Real calculated(f2(grid));
-        if(std::fabs(value - calculated) > 1e-2) {
-            BOOST_ERROR("sample curve regriding failed" <<
-                        i << " " << grid << " " 
-                        << value << " " << calculated);
+        Real grid = curve.gridValue(i);
+        Real value = curve.value(i);
+        Real expected = f2(grid);
+        if (std::fabs(value - expected) > tolerance) {
+            BOOST_ERROR("sample curve regriding failed"
+                        << "\n    at " << io::ordinal(i+1) << " point "
+                        << "(x = " << grid << ")"
+                        << "\n    grid value: " << value
+                        << "\n    expected:   " << expected);
         }
     }
 
