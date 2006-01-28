@@ -159,6 +159,7 @@ namespace QuantLib {
     }
 
     void ConvertibleBond::performCalculations() const {
+        option_->setPricingEngine(engine_);
         NPV_ = option_->NPV();
         errorEstimate_ = Null<Real>();
     }

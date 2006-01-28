@@ -1,19 +1,48 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*!
+ Copyright (C) 2006 Theo Boafo
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
 
 #include <ql/quantlib.hpp>
+#include <boost/timer.hpp>
 #include <iostream>
+#include <iomanip>
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
 
+#if defined(QL_ENABLE_SESSIONS)
+namespace QuantLib {
+
+    Integer sessionId() { return 0; }
+
+}
+#endif
+
+
 int main(int argc, char* argv[])
 {
-
-  try {
+    try {
 
 		QL_IO_INIT
 
-		std::cout << "Using " << QL_VERSION << std::endl << std::endl;
+        boost::timer timer;
+        std::cout << std::endl;
 
 		Option::Type type(Option::Put);
         Real underlying = 36.0;
@@ -101,17 +130,22 @@ int main(int argc, char* argv[])
                   << std::endl;
         std::cout << std::endl;
 
-        std::string method = "Tsiveriotis-Fernandes";
-
-        Real value;
-
+        std::string method;
         std::cout << std::endl ;
 
         // write column headings
-        Size widths[] = { 35, 14 };
-        std::cout << std::setw(widths[0]) << std::left << "Method"
-                  << std::setw(widths[1]) << std::left << "Value"
+        Size widths[] = { 35, 14, 14 };
+        Size totalWidth = widths[0] + widths[1] + widths[2];
+        std::string rule(totalWidth, '-'), dblrule(totalWidth, '=');
+
+        std::cout << dblrule << std::endl;
+        std::cout << "Tsiveriotis-Fernandes method" << std::endl;
+        std::cout << dblrule << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << "Tree type"
+                  << std::setw(widths[1]) << std::left << "European"
+                  << std::setw(widths[1]) << std::left << "American"
                   << std::endl;
+        std::cout << rule << std::endl;
 
         boost::shared_ptr<Exercise> exercise(
                                           new EuropeanExercise(exerciseDate));
@@ -156,23 +190,102 @@ int main(int argc, char* argv[])
                     new FlatForward(today, Handle<Quote>(rate), dayCounter)));
 
 		boost::shared_ptr<PricingEngine> engine(
-                 new BinomialConvertibleEngine<CoxRossRubinstein>(timeSteps));
+                 new BinomialConvertibleEngine<JarrowRudd>(timeSteps));
 
-		ConvertibleBond eurocvbond(stochasticProcess, payoff, exercise,
+		ConvertibleBond europeanBond(stochasticProcess, payoff, exercise,
                                    engine, conversionRatio, dividends,
                                    callability, creditSpread, issueDate,
                                    settlementDays, coupons, bondDayCount,
                                    schedule, redemption, discountCurve);
 
-	    value = eurocvbond.NPV();
+		ConvertibleBond americanBond(stochasticProcess, payoff, amExercise,
+                                     engine, conversionRatio, dividends,
+                                     callability, creditSpread, issueDate,
+                                     settlementDays, coupons, bondDayCount,
+                                     schedule, redemption, discountCurve);
 
-
+        method = "Jarrow-Rudd";
+        europeanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                       new BinomialConvertibleEngine<JarrowRudd>(timeSteps)));
+        americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                       new BinomialConvertibleEngine<JarrowRudd>(timeSteps)));
 		std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
-                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[1]) << std::left << europeanBond.NPV()
+                  << std::setw(widths[2]) << std::left << americanBond.NPV()
                   << std::endl;
 
+        method = "Cox-Ross-Rubinstein";
+        europeanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                new BinomialConvertibleEngine<CoxRossRubinstein>(timeSteps)));
+        americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                new BinomialConvertibleEngine<CoxRossRubinstein>(timeSteps)));
+		std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanBond.NPV()
+                  << std::setw(widths[2]) << std::left << americanBond.NPV()
+                  << std::endl;
 
+        method = "Additive equiprobabilities";
+        europeanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+          new BinomialConvertibleEngine<AdditiveEQPBinomialTree>(timeSteps)));
+        americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+          new BinomialConvertibleEngine<AdditiveEQPBinomialTree>(timeSteps)));
+		std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanBond.NPV()
+                  << std::setw(widths[2]) << std::left << americanBond.NPV()
+                  << std::endl;
+
+        method = "Trigeorgis";
+        europeanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                       new BinomialConvertibleEngine<Trigeorgis>(timeSteps)));
+        americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                       new BinomialConvertibleEngine<Trigeorgis>(timeSteps)));
+		std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanBond.NPV()
+                  << std::setw(widths[2]) << std::left << americanBond.NPV()
+                  << std::endl;
+
+        method = "Tian";
+        europeanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                             new BinomialConvertibleEngine<Tian>(timeSteps)));
+        americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                             new BinomialConvertibleEngine<Tian>(timeSteps)));
+		std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanBond.NPV()
+                  << std::setw(widths[2]) << std::left << americanBond.NPV()
+                  << std::endl;
+
+        method = "Leisen-Reimer";
+        europeanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                     new BinomialConvertibleEngine<LeisenReimer>(timeSteps)));
+        americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                     new BinomialConvertibleEngine<LeisenReimer>(timeSteps)));
+		std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanBond.NPV()
+                  << std::setw(widths[2]) << std::left << americanBond.NPV()
+                  << std::endl;
+
+        std::cout << dblrule << std::endl;
+
+        Real seconds = timer.elapsed();
+        Integer hours = int(seconds/3600);
+        seconds -= hours * 3600;
+        Integer minutes = int(seconds/60);
+        seconds -= minutes * 60;
+        std::cout << " \nRun completed in ";
+        if (hours > 0)
+            std::cout << hours << " h ";
+        if (hours > 0 || minutes > 0)
+            std::cout << minutes << " m ";
+        std::cout << std::fixed << std::setprecision(0)
+                  << seconds << " s\n" << std::endl;
+
+        return 0;
     } catch (std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

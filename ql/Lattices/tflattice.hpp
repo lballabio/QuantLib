@@ -113,19 +113,6 @@ namespace QuantLib {
                 newConversionProbability[j] * riskFreeRate_ +
                 (1-newConversionProbability[j])*(riskFreeRate_+creditSpread_);
 
-			// Integer timeLength = Integer(this->t_[i]*365);
-
-			//Date periodDate =
-            // T::calendar.advance(T::arguments_.settlementDays,
-            //                     timeLength, Days);
-
-			// Real accruedInterest = T::accruedAmount(periodDate);
-
-            //Holding Value ie if not callable or puttable, add
-            //accrued Interest if any.
-            //newValues[j] =
-            //    (pd_*(values[j]+accruedInterest)/(1+(spreadAdjustedRate[j]*dt_)))
-            //  + (pu_*(values[j+1] + accruedInterest)/(1+(spreadAdjustedRate[j+1]*dt_)));
             newValues[j] =
                 (pd_*values[j]/(1+(spreadAdjustedRate[j]*dt_)))
               + (pu_*values[j+1]/(1+(spreadAdjustedRate[j+1]*dt_)));
