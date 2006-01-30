@@ -1,6 +1,6 @@
 QuantLib is
     Copyright (C) 2002, 2003, 2004, 2005 Ferdinando Ametrano
-    Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005 StatPro Italia srl
+    Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006 StatPro Italia srl
 
     Copyright (C) 2002, 2003, 2004 Decillion Pty(Ltd)
     Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
@@ -24,6 +24,8 @@ QuantLib is
     Copyright (C) 2004, 2005 Klaus Spanderen
     Copyright (C) 2005 Joseph Wang
     Copyright (C) 2005 Charles Whitmore
+
+    Copyright (C) 2005, 2006 Theo Boafo
 
 
 Redistribution and use in source and binary forms, with or without

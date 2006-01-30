@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
- Copyright (C) 2005 Theo Boafo
+ Copyright (C) 2005, 2006 Theo Boafo
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

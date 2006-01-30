@@ -18,3 +18,5 @@
 
 - Added Argentinian, Icelandic, Indonesian, Mexican, and Ukrainian calendars.
 
+- Added convertible bonds (thanks to Theo Boafo.)
+
