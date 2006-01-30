@@ -196,13 +196,13 @@ int main(int argc, char* argv[])
                                    engine, conversionRatio, dividends,
                                    callability, creditSpread, issueDate,
                                    settlementDays, coupons, bondDayCount,
-                                   schedule, redemption, discountCurve);
+                                   schedule, redemption);
 
 		ConvertibleBond americanBond(stochasticProcess, payoff, amExercise,
                                      engine, conversionRatio, dividends,
                                      callability, creditSpread, issueDate,
                                      settlementDays, coupons, bondDayCount,
-                                     schedule, redemption, discountCurve);
+                                     schedule, redemption);
 
         method = "Jarrow-Rudd";
         europeanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(

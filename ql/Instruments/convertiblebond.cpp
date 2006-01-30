@@ -22,6 +22,7 @@
 #include <ql/CashFlows/indexedcashflowvectors.hpp>
 #include <ql/CashFlows/upfrontindexedcoupon.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
+#include <ql/TermStructures/forwardspreadedtermstructure.hpp>
 
 namespace QuantLib {
 
@@ -40,31 +41,31 @@ namespace QuantLib {
             const std::vector<Rate>& coupons,
             const DayCounter& dayCounter,
             const Schedule& schedule,
-            Real redemption,
-            const Handle<YieldTermStructure>& discountCurve)
+            Real redemption)
     : Bond(dayCounter, schedule.calendar(), schedule.businessDayConvention(),
-           schedule.businessDayConvention(), settlementDays,discountCurve),
+           schedule.businessDayConvention(), settlementDays),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
 
         issueDate_ = issueDate;
         datedDate_ = schedule.startDate();
-        maturityDate_ =schedule.endDate();
+        maturityDate_ = schedule.endDate();
         frequency_ = schedule.frequency();
+
         redemption_ = boost::shared_ptr<CashFlow>(
                                 new SimpleCashFlow(redemption,maturityDate_));
 
         cashFlows_ =
             FixedRateCouponVector(schedule, schedule.businessDayConvention(),
                                   std::vector<Real>(1, redemption),
-                                  coupons,dayCounter);
+                                  coupons, dayCounter);
 
         option_ = boost::shared_ptr<option>(
                            new option(this, process, payoff, exercise, engine,
                                       conversionRatio, dividends, callability,
                                       creditSpread, cashFlows_, dayCounter,
                                       schedule, issueDate, settlementDays,
-                                      redemption, discountCurve));
+                                      redemption));
 
     }
 
@@ -86,10 +87,9 @@ namespace QuantLib {
             const std::vector<Spread>& spreads,
             const DayCounter& dayCounter,
             const Schedule& schedule,
-            Real redemption,
-            const Handle<YieldTermStructure>& discountCurve)
+            Real redemption)
     : Bond(dayCounter, schedule.calendar(), schedule.businessDayConvention(),
-           schedule.businessDayConvention(), settlementDays, discountCurve),
+           schedule.businessDayConvention(), settlementDays),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
 
@@ -97,6 +97,7 @@ namespace QuantLib {
         datedDate_ = schedule.startDate();
         maturityDate_ = schedule.endDate();
         frequency_ = schedule.frequency();
+
         redemption_ = boost::shared_ptr<CashFlow>(
                                 new SimpleCashFlow(redemption,maturityDate_));
 
@@ -115,7 +116,7 @@ namespace QuantLib {
                                       conversionRatio, dividends, callability,
                                       creditSpread, cashFlows_, dayCounter,
                                       schedule, issueDate, settlementDays,
-                                      redemption, discountCurve));
+                                      redemption));
 
     }
 
@@ -133,10 +134,9 @@ namespace QuantLib {
             Integer settlementDays,
             const DayCounter& dayCounter,
             const Schedule& schedule,
-            Real  redemption,
-            const Handle<YieldTermStructure>& discountCurve)
+            Real  redemption)
     : Bond(dayCounter, schedule.calendar(), schedule.businessDayConvention(),
-           schedule.businessDayConvention(), settlementDays,discountCurve),
+           schedule.businessDayConvention(), settlementDays),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
 
@@ -144,6 +144,7 @@ namespace QuantLib {
         datedDate_ = schedule.startDate();
         maturityDate_ = schedule.endDate();
         frequency_ = schedule.frequency();
+
         redemption_ = boost::shared_ptr<CashFlow>(
                                 new SimpleCashFlow(redemption,maturityDate_));
 
@@ -154,7 +155,7 @@ namespace QuantLib {
                                       conversionRatio, dividends, callability,
                                       creditSpread, cashFlows_, dayCounter,
                                       schedule, issueDate, settlementDays,
-                                      redemption, discountCurve));
+                                      redemption));
 
     }
 
@@ -181,15 +182,13 @@ namespace QuantLib {
             const Schedule& schedule,
             const Date& issueDate,
             Integer settlementDays,
-            Real redemption,
-            const Handle<YieldTermStructure>& discountCurve)
+            Real redemption)
     : OneAssetStrikedOption(process, payoff, exercise, engine),
       bond_(bond), conversionRatio_(conversionRatio),
       callability_(callability), dividends_(dividends),
       creditSpread_(creditSpread), cashFlows_(cashFlows),
       dayCounter_(dayCounter), issueDate_(issueDate), schedule_(schedule),
-      discountCurve_(discountCurve), settlementDays_(settlementDays),
-      redemption_(redemption) {}
+      settlementDays_(settlementDays), redemption_(redemption) {}
 
 
 
@@ -202,10 +201,16 @@ namespace QuantLib {
         QL_REQUIRE(moreArgs != 0, "wrong argument type");
 
         moreArgs->conversionRatio = conversionRatio_;
-
         moreArgs->dividends = dividends_;
 
         Size i;
+        Date settlement = bond_->settlementDate();
+
+        moreArgs->stoppingTimes = std::vector<Time>(exercise_->dates().size());
+        for (Size i=0; i<exercise_->dates().size(); i++) {
+            moreArgs->stoppingTimes[i] =
+                dayCounter_.yearFraction(settlement, exercise_->date(i));
+        }
 
         moreArgs->callabilityTimes = std::vector<Time>(callability_.size());
         moreArgs->callabilityTypes =
@@ -214,8 +219,7 @@ namespace QuantLib {
         for (i=0; i<callability_.size(); i++) {
             moreArgs->callabilityTypes[i] = callability_[i].type();
             moreArgs->callabilityTimes[i] =
-                dayCounter_.yearFraction(discountCurve_->referenceDate(),
-                                         callability_[i].date());
+                dayCounter_.yearFraction(settlement, callability_[i].date());
             moreArgs->callabilityPrices[i] = callability_[i].price().amount();
             if (callability_[i].price().type() == Price::Dirty)
                 moreArgs->callabilityPrices[i] -=
@@ -228,16 +232,15 @@ namespace QuantLib {
         moreArgs->couponAmounts = std::vector<Real>(cashflows.size());
         for (i=0; i<cashflows.size(); i++) {
             moreArgs->couponTimes[i] =
-                dayCounter_.yearFraction(discountCurve_->referenceDate(),
-                                         cashflows[i]->date());
+                dayCounter_.yearFraction(settlement, cashflows[i]->date());
             moreArgs->couponAmounts[i] = cashflows[i]->amount();
         }
 
         moreArgs->creditSpread = creditSpread_;
         moreArgs->dayCounter = dayCounter_;
         moreArgs->issueDate = issueDate_;
+        moreArgs->settlementDate = settlement;
         moreArgs->settlementDays = settlementDays_;
-        moreArgs->discountCurve = discountCurve_;
         moreArgs->redemption = redemption_;
     }
 
@@ -260,6 +263,8 @@ namespace QuantLib {
         QL_REQUIRE(redemption >= 0.0,
                    "positive redemption required: "
                    << redemption << " not allowed");
+
+        QL_REQUIRE(settlementDate != Date(), "null settlement date");
 
         QL_REQUIRE(settlementDays != Null<Integer>(), "null settlement days");
         QL_REQUIRE(settlementDays >= 0,

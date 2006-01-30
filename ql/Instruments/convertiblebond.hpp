@@ -54,9 +54,7 @@ namespace QuantLib {
                         const std::vector<Rate>& coupons,
                         const DayCounter& dayCounter,
                         const Schedule& schedule,
-                        Real redemption = 100,
-                        const Handle<YieldTermStructure>& discountCurve =
-                                                Handle<YieldTermStructure>());
+                        Real redemption = 100);
         // constructor for floating rate convertible bond
         ConvertibleBond(const boost::shared_ptr<StochasticProcess>& process,
                         const boost::shared_ptr<StrikedTypePayoff>& payoff,
@@ -73,9 +71,7 @@ namespace QuantLib {
                         const std::vector<Spread>& spreads,
                         const DayCounter& dayCounter,
                         const Schedule& schedule,
-                        Real redemption = 100,
-                        const Handle<YieldTermStructure>& discountCurve
-                                              = Handle<YieldTermStructure>());
+                        Real redemption = 100);
         // constructor for zero rate convertible bond
         ConvertibleBond(const boost::shared_ptr<StochasticProcess>& process,
                         const boost::shared_ptr<StrikedTypePayoff>& payoff,
@@ -89,9 +85,7 @@ namespace QuantLib {
                         Integer settlementDays,
                         const DayCounter& dayCounter,
                         const Schedule& schedule,
-                        Real redemption = 100,
-                        const Handle<YieldTermStructure>& discountCurve
-                                              = Handle<YieldTermStructure>());
+                        Real redemption = 100);
 
         Real conversionRatio() const { return conversionRatio_; }
         const DividendSchedule& dividends() const { return dividends_; }
@@ -106,6 +100,9 @@ namespace QuantLib {
         Handle<Quote> creditSpread_;
         boost::shared_ptr<option> option_;
     };
+
+
+
 
     class ConvertibleBond::option : public OneAssetStrikedOption {
       public:
@@ -125,8 +122,7 @@ namespace QuantLib {
                const Schedule& schedule,
                const Date& issueDate,
                Integer settlementDays,
-               Real redemption,
-               const Handle<YieldTermStructure>& discountCurve);
+               Real redemption);
 
         void setupArguments(Arguments*) const;
       private:
@@ -139,7 +135,6 @@ namespace QuantLib {
         DayCounter dayCounter_;
         Date issueDate_;
         Schedule schedule_;
-        Handle<YieldTermStructure> discountCurve_;
         Integer settlementDays_;
         Real redemption_;
     };
@@ -160,8 +155,8 @@ namespace QuantLib {
         std::vector<Time> couponTimes;
         std::vector<Real> couponAmounts;
         DayCounter dayCounter;
-        Handle<YieldTermStructure> discountCurve;
         Date issueDate;
+        Date settlementDate;
         Integer settlementDays;
         Real redemption;
         void validate() const;

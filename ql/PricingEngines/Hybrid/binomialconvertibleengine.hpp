@@ -103,7 +103,8 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        Time maturity = rfdc.yearFraction(referenceDate, maturityDate);
+        Time maturity = rfdc.yearFraction(arguments_.settlementDate,
+                                          maturityDate);
 
         boost::shared_ptr<StochasticProcess1D> bs(
                             new BlackScholesProcess(underlying, flatDividends,
