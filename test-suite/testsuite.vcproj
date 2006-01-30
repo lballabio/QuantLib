@@ -881,6 +881,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\convertiblebonds.cpp">
+			</File>
+			<File
 				RelativePath="covariance.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2533,6 +2536,9 @@
 			</File>
 			<File
 				RelativePath="compoundforward.hpp">
+			</File>
+			<File
+				RelativePath=".\convertiblebonds.hpp">
 			</File>
 			<File
 				RelativePath="covariance.hpp">

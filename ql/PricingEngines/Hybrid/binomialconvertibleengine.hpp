@@ -24,8 +24,7 @@
 #ifndef quantlib_binomial_convertible_engine_hpp
 #define quantlib_binomial_convertible_engine_hpp
 
-#include <ql/Lattices/binomialtree.hpp>
-#include <ql/Math/normaldistribution.hpp>
+#include <ql/Lattices/tflattice.hpp>
 #include <ql/PricingEngines/Hybrid/discretizedconvertible.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/TermStructures/flatforward.hpp>

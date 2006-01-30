@@ -40,6 +40,7 @@ QL_TESTS = \
     "capfloor.obj$(_mt)$(_D)" \
     "cliquetoption.obj$(_mt)$(_D)" \
     "compoundforward.obj$(_mt)$(_D)" \
+    "convertiblebonds.obj$(_mt)$(_D)" \
     "covariance.obj$(_mt)$(_D)" \
     "dates.obj$(_mt)$(_D)" \
     "daycounters.obj$(_mt)$(_D)" \

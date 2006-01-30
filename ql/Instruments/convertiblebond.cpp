@@ -49,8 +49,13 @@ namespace QuantLib {
         maturityDate_ = schedule.endDate();
         frequency_ = schedule.frequency();
 
+        setPricingEngine(engine);
+
         redemption_ = boost::shared_ptr<CashFlow>(
                                 new SimpleCashFlow(redemption,maturityDate_));
+
+        registerWith(process);
+        registerWith(creditSpread);
     }
 
     void ConvertibleBond::performCalculations() const {

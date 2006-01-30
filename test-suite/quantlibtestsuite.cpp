@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,6 +45,7 @@
 #include "capfloor.hpp"
 #include "cliquetoption.hpp"
 #include "compoundforward.hpp"
+#include "convertiblebonds.hpp"
 #include "covariance.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
@@ -157,6 +158,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CapFloorTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CompoundForwardTest::suite());
+    test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(DateTest::suite());
     test->add(DayCounterTest::suite());
