@@ -65,6 +65,15 @@ namespace QuantLib {
         boost::shared_ptr<option> option_;
     };
 
+
+    //! convertible zero-coupon bond
+    /*! \warning At this time, discrete dividends are not managed.
+
+        \warning Most methods inherited from Bond (such as yield or
+                 the yield-based dirtyPrice and cleanPrice) refer to
+                 the underlying plain-vanilla bond and do not take
+                 convertibility and callability into account.
+    */
     class ConvertibleZeroCouponBond : public ConvertibleBond {
       public:
         ConvertibleZeroCouponBond(
@@ -82,6 +91,15 @@ namespace QuantLib {
                           Real redemption = 100);
     };
 
+
+    //! convertible fixed-coupon bond
+    /*! \warning At this time, discrete dividends are not managed.
+
+        \warning Most methods inherited from Bond (such as yield or
+                 the yield-based dirtyPrice and cleanPrice) refer to
+                 the underlying plain-vanilla bond and do not take
+                 convertibility and callability into account.
+    */
     class ConvertibleFixedCouponBond : public ConvertibleBond {
       public:
         ConvertibleFixedCouponBond(
@@ -101,6 +119,14 @@ namespace QuantLib {
     };
 
 
+    //! convertible floating-rate bond
+    /*! \warning At this time, discrete dividends are not managed.
+
+        \warning Most methods inherited from Bond (such as yield or
+                 the yield-based dirtyPrice and cleanPrice) refer to
+                 the underlying plain-vanilla bond and do not take
+                 convertibility and callability into account.
+    */
     class ConvertibleFloatingRateBond : public ConvertibleBond {
       public:
         ConvertibleFloatingRateBond(

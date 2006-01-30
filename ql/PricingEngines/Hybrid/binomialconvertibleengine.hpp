@@ -33,10 +33,11 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for convertibles using binomial trees
+    //! Binomial Tsiveriotis-Fernandes engine for convertible bonds
+    /*  \ingroup hybridengines
 
-    /*    \test the correctness of the returned value is tested by
-              checking it against analytic results.
+        \test the correctness of the returned value is tested by
+              checking it against known results in a few corner cases.
     */
     template <class T>
     class BinomialConvertibleEngine : public ConvertibleBond::option::engine {
