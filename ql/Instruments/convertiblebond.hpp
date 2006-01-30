@@ -46,7 +46,6 @@ namespace QuantLib {
         const Handle<Quote>& creditSpread() const { return creditSpread_; }
       protected:
         ConvertibleBond(const boost::shared_ptr<StochasticProcess>& process,
-                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
                         const boost::shared_ptr<Exercise>& exercise,
                         const boost::shared_ptr<PricingEngine>& engine,
                         Real conversionRatio,
@@ -70,7 +69,6 @@ namespace QuantLib {
       public:
         ConvertibleZeroCouponBond(
                           const boost::shared_ptr<StochasticProcess>& process,
-                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
                           const boost::shared_ptr<Exercise>& exercise,
                           const boost::shared_ptr<PricingEngine>& engine,
                           Real conversionRatio,
@@ -88,7 +86,6 @@ namespace QuantLib {
       public:
         ConvertibleFixedCouponBond(
                           const boost::shared_ptr<StochasticProcess>& process,
-                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
                           const boost::shared_ptr<Exercise>& exercise,
                           const boost::shared_ptr<PricingEngine>& engine,
                           Real conversionRatio,
@@ -108,7 +105,6 @@ namespace QuantLib {
       public:
         ConvertibleFloatingRateBond(
                           const boost::shared_ptr<StochasticProcess>& process,
-                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
                           const boost::shared_ptr<Exercise>& exercise,
                           const boost::shared_ptr<PricingEngine>& engine,
                           Real conversionRatio,
@@ -132,7 +128,6 @@ namespace QuantLib {
         class engine;
         option(const ConvertibleBond* bond,
                const boost::shared_ptr<StochasticProcess>& process,
-               const boost::shared_ptr<StrikedTypePayoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,
                const boost::shared_ptr<PricingEngine>& engine,
                Real conversionRatio,

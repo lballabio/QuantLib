@@ -46,7 +46,6 @@ int main(int argc, char* argv[])
 
 		Option::Type type(Option::Put);
         Real underlying = 36.0;
-        Real strike = 40.0;
         Real spreadRate = 0.005;
 
         Spread dividendYield = 0.02;
@@ -120,8 +119,6 @@ int main(int argc, char* argv[])
                   << std::endl;
         std::cout << "Underlying price = "        << underlying
                   << std::endl;
-        std::cout << "Strike = "                  << strike
-                  << std::endl;
         std::cout << "Risk-free interest rate = " << io::rate(riskFreeRate)
                   << std::endl;
         std::cout << "Dividend yield = " << io::rate(dividendYield)
@@ -169,9 +166,6 @@ int main(int argc, char* argv[])
                 new BlackConstantVol(settlementDate, volatility, dayCounter)));
 
 
-		boost::shared_ptr<StrikedTypePayoff> payoff(
-                                        new PlainVanillaPayoff(type, strike));
-
 		boost::shared_ptr<BlackScholesProcess> stochasticProcess(
                                     new BlackScholesProcess(underlyingH,
                                                             flatDividendTS,
@@ -193,13 +187,13 @@ int main(int argc, char* argv[])
                  new BinomialConvertibleEngine<JarrowRudd>(timeSteps));
 
 		ConvertibleFixedCouponBond europeanBond(
-                                stochasticProcess, payoff, exercise, engine,
+                                stochasticProcess, exercise, engine,
                                 conversionRatio, dividends, callability,
                                 creditSpread, issueDate, settlementDays,
                                 coupons, bondDayCount, schedule, redemption);
 
 		ConvertibleFixedCouponBond americanBond(
-                                stochasticProcess, payoff, amExercise, engine,
+                                stochasticProcess, amExercise, engine,
                                 conversionRatio, dividends, callability,
                                 creditSpread, issueDate, settlementDays,
                                 coupons, bondDayCount, schedule, redemption);
