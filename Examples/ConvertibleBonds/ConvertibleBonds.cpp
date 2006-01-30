@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
              d += 6*Months) {
             dividends.push_back(
                       boost::shared_ptr<CashFlow>(new FixedDividend(1.0, d)));
-        }*/ 
+        }*/
 
         DayCounter dayCounter = Actual365Fixed();
         Time maturity = dayCounter.yearFraction(settlementDate,
@@ -192,17 +192,17 @@ int main(int argc, char* argv[])
 		boost::shared_ptr<PricingEngine> engine(
                  new BinomialConvertibleEngine<JarrowRudd>(timeSteps));
 
-		ConvertibleBond europeanBond(stochasticProcess, payoff, exercise,
-                                   engine, conversionRatio, dividends,
-                                   callability, creditSpread, issueDate,
-                                   settlementDays, coupons, bondDayCount,
-                                   schedule, redemption);
+		ConvertibleFixedCouponBond europeanBond(
+                                stochasticProcess, payoff, exercise, engine,
+                                conversionRatio, dividends, callability,
+                                creditSpread, issueDate, settlementDays,
+                                coupons, bondDayCount, schedule, redemption);
 
-		ConvertibleBond americanBond(stochasticProcess, payoff, amExercise,
-                                     engine, conversionRatio, dividends,
-                                     callability, creditSpread, issueDate,
-                                     settlementDays, coupons, bondDayCount,
-                                     schedule, redemption);
+		ConvertibleFixedCouponBond americanBond(
+                                stochasticProcess, payoff, amExercise, engine,
+                                conversionRatio, dividends, callability,
+                                creditSpread, issueDate, settlementDays,
+                                coupons, bondDayCount, schedule, redemption);
 
         method = "Jarrow-Rudd";
         europeanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(

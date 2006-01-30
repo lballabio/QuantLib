@@ -40,60 +40,25 @@ namespace QuantLib {
     class ConvertibleBond : public Bond {
       public:
         class option;
-        // constructor for fixed rate ConvertibleBond
-        ConvertibleBond(const boost::shared_ptr<StochasticProcess>& process,
-                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                        const boost::shared_ptr<Exercise>& exercise,
-                        const boost::shared_ptr<PricingEngine>& engine,
-                        Real conversionRatio,
-                        const DividendSchedule&  dividends,
-                        const CallabilitySchedule& callability,
-                        const Handle<Quote>& creditSpread,
-                        const Date& issueDate,
-                        Integer settlementDays,
-                        const std::vector<Rate>& coupons,
-                        const DayCounter& dayCounter,
-                        const Schedule& schedule,
-                        Real redemption = 100);
-        // constructor for floating rate convertible bond
-        ConvertibleBond(const boost::shared_ptr<StochasticProcess>& process,
-                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                        const boost::shared_ptr<Exercise>& exercise,
-                        const boost::shared_ptr<PricingEngine>& engine,
-                        Real conversionRatio,
-                        const DividendSchedule&  dividends,
-                        const CallabilitySchedule& callability,
-                        const Handle<Quote>& creditSpread,
-                        const Date& issueDate,
-                        Integer settlementDays,
-                        const boost::shared_ptr<Xibor>& index,
-                        Integer fixingDays,
-                        const std::vector<Spread>& spreads,
-                        const DayCounter& dayCounter,
-                        const Schedule& schedule,
-                        Real redemption = 100);
-        // constructor for zero rate convertible bond
-        ConvertibleBond(const boost::shared_ptr<StochasticProcess>& process,
-                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                        const boost::shared_ptr<Exercise>& exercise,
-                        const boost::shared_ptr<PricingEngine>& engine,
-                        Real conversionRatio,
-                        const DividendSchedule&  dividends,
-                        const CallabilitySchedule& callability,
-                        const Handle<Quote>& creditSpread,
-                        const Date& issueDate,
-                        Integer settlementDays,
-                        const DayCounter& dayCounter,
-                        const Schedule& schedule,
-                        Real redemption = 100);
-
         Real conversionRatio() const { return conversionRatio_; }
         const DividendSchedule& dividends() const { return dividends_; }
         const CallabilitySchedule& callability() const { return callability_; }
         const Handle<Quote>& creditSpread() const { return creditSpread_; }
-
+      protected:
+        ConvertibleBond(const boost::shared_ptr<StochasticProcess>& process,
+                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                        const boost::shared_ptr<Exercise>& exercise,
+                        const boost::shared_ptr<PricingEngine>& engine,
+                        Real conversionRatio,
+                        const DividendSchedule&  dividends,
+                        const CallabilitySchedule& callability,
+                        const Handle<Quote>& creditSpread,
+                        const Date& issueDate,
+                        Integer settlementDays,
+                        const DayCounter& dayCounter,
+                        const Schedule& schedule,
+                        Real redemption);
         void performCalculations() const;
-      private:
         Real conversionRatio_;
         CallabilitySchedule callability_;
         DividendSchedule dividends_;
@@ -101,7 +66,64 @@ namespace QuantLib {
         boost::shared_ptr<option> option_;
     };
 
+    class ConvertibleZeroCouponBond : public ConvertibleBond {
+      public:
+        ConvertibleZeroCouponBond(
+                          const boost::shared_ptr<StochasticProcess>& process,
+                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                          const boost::shared_ptr<Exercise>& exercise,
+                          const boost::shared_ptr<PricingEngine>& engine,
+                          Real conversionRatio,
+                          const DividendSchedule&  dividends,
+                          const CallabilitySchedule& callability,
+                          const Handle<Quote>& creditSpread,
+                          const Date& issueDate,
+                          Integer settlementDays,
+                          const DayCounter& dayCounter,
+                          const Schedule& schedule,
+                          Real redemption = 100);
+    };
 
+    class ConvertibleFixedCouponBond : public ConvertibleBond {
+      public:
+        ConvertibleFixedCouponBond(
+                          const boost::shared_ptr<StochasticProcess>& process,
+                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                          const boost::shared_ptr<Exercise>& exercise,
+                          const boost::shared_ptr<PricingEngine>& engine,
+                          Real conversionRatio,
+                          const DividendSchedule&  dividends,
+                          const CallabilitySchedule& callability,
+                          const Handle<Quote>& creditSpread,
+                          const Date& issueDate,
+                          Integer settlementDays,
+                          const std::vector<Rate>& coupons,
+                          const DayCounter& dayCounter,
+                          const Schedule& schedule,
+                          Real redemption = 100);
+    };
+
+
+    class ConvertibleFloatingRateBond : public ConvertibleBond {
+      public:
+        ConvertibleFloatingRateBond(
+                          const boost::shared_ptr<StochasticProcess>& process,
+                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                          const boost::shared_ptr<Exercise>& exercise,
+                          const boost::shared_ptr<PricingEngine>& engine,
+                          Real conversionRatio,
+                          const DividendSchedule&  dividends,
+                          const CallabilitySchedule& callability,
+                          const Handle<Quote>& creditSpread,
+                          const Date& issueDate,
+                          Integer settlementDays,
+                          const boost::shared_ptr<Xibor>& index,
+                          Integer fixingDays,
+                          const std::vector<Spread>& spreads,
+                          const DayCounter& dayCounter,
+                          const Schedule& schedule,
+                          Real redemption = 100);
+    };
 
 
     class ConvertibleBond::option : public OneAssetStrikedOption {
