@@ -25,7 +25,6 @@
 #ifndef quantlib_dividend_schedule_hpp
 #define quantlib_dividend_schedule_hpp
 
-#include <ql/date.hpp>
 #include <ql/cashflow.hpp>
 #include <vector>
 
