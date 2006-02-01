@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/ShortRateModels/TwoFactorModels
 
 include_HEADERS = \
+    all.hpp \
     batesmodel.hpp \
     g2.hpp \
     hestonmodel.hpp

@@ -5,10 +5,12 @@ includedir = $(prefix)/include/ql/Processes
 include_HEADERS = \
 	all.hpp \
 	blackscholesprocess.hpp \
-	capletlmmprocess.hpp \
 	eulerdiscretization.hpp \
 	geometricbrownianprocess.hpp \
 	hestonprocess.hpp \
+	lfmcovarparam.hpp \
+	lfmhullwhiteparam.hpp \
+	lfmprocess.hpp \
 	merton76process.hpp \
 	ornsteinuhlenbeckprocess.hpp \
 	squarerootprocess.hpp \
@@ -16,10 +18,12 @@ include_HEADERS = \
 
 libProcesses_la_SOURCES = \
 	blackscholesprocess.cpp \
-	capletlmmprocess.cpp \
 	eulerdiscretization.cpp \
 	geometricbrownianprocess.cpp \
 	hestonprocess.cpp \
+	lfmcovarparam.cpp \
+	lfmhullwhiteparam.cpp \
+	lfmprocess.cpp \
 	merton76process.cpp \
 	ornsteinuhlenbeckprocess.cpp \
 	squarerootprocess.cpp \

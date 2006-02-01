@@ -32,8 +32,9 @@ namespace QuantLib {
                               const boost::shared_ptr<Xibor>& index,
                               Frequency fixedLegFrequency,
                               const DayCounter& fixedLegDayCounter,
-                              const Handle<YieldTermStructure>& termStructure)
-    : CalibrationHelper(volatility,termStructure) {
+                              const Handle<YieldTermStructure>& termStructure,
+                              bool calibrateVolatility)
+    : CalibrationHelper(volatility,termStructure, calibrateVolatility) {
 
         Calendar calendar = index->calendar();
         Period indexTenor = index->tenor();

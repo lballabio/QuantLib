@@ -38,7 +38,8 @@ namespace QuantLib {
                        const boost::shared_ptr<Xibor>& index,
                        Frequency fixedLegFrequency,
                        const DayCounter& fixedLegDayCounter,
-                       const Handle<YieldTermStructure>& termStructure);
+                       const Handle<YieldTermStructure>& termStructure,
+                       bool calibrateVolatility = false);
 
         virtual void addTimesTo(std::list<Time>& times) const;
 

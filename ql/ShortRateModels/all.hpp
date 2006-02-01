@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,18 +22,12 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/ShortRateModels/core.hpp>
-
-#include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
-#include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
-#include <ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp>
-#include <ql/ShortRateModels/OneFactorModels/coxingersollross.hpp>
-#include <ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp>
-#include <ql/ShortRateModels/OneFactorModels/hullwhite.hpp>
-#include <ql/ShortRateModels/OneFactorModels/vasicek.hpp>
-#include <ql/ShortRateModels/TwoFactorModels/batesmodel.hpp>
-#include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
-#include <ql/ShortRateModels/TwoFactorModels/hestonmodel.hpp>
 #include <ql/ShortRateModels/parameter.hpp>
+
+#include <ql/ShortRateModels/CalibrationHelpers/all.hpp>
+#include <ql/ShortRateModels/OneFactorModels/all.hpp>
+#include <ql/ShortRateModels/TwoFactorModels/all.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/all.hpp>
 
 
 #endif

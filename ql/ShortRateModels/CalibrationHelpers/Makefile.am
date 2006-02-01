@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/ShortRateModels/CalibrationHelpers
 
 include_HEADERS = \
+    all.hpp \
     caphelper.hpp \
     hestonmodelhelper.hpp \
     swaptionhelper.hpp

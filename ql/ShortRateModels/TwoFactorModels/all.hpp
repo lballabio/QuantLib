@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,14 +17,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_swaption_all_hpp
-#define quantlib_pricing_engines_swaption_all_hpp
+#ifndef quantlib_two_factor_models_all_hpp
+#define quantlib_two_factor_models_all_hpp
 
-#include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/g2swaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/jamshidianswaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/discretizedswaption.hpp>
-#include <ql/PricingEngines/Swaption/lfmswaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/treeswaptionengine.hpp>
+#include <ql/qldefines.hpp>
+#include <ql/ShortRateModels/TwoFactorModels/batesmodel.hpp>
+#include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
+#include <ql/ShortRateModels/TwoFactorModels/hestonmodel.hpp>
+
 
 #endif

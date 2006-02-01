@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/ShortRateModels/OneFactorModels
 
 include_HEADERS = \
+    all.hpp \
     blackkarasinski.hpp \
     coxingersollross.hpp \
     extendedcoxingersollross.hpp \

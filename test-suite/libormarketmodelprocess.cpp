@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2005, 2006 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,8 +16,10 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 #include "libormarketmodelprocess.hpp"
 #include "utilities.hpp"
+
 #include <ql/timegrid.hpp>
 #include <ql/RandomNumbers/rngtraits.hpp>
 #include <ql/MonteCarlo/multipathgenerator.hpp>
@@ -27,7 +29,7 @@
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/Volatilities/capletconstantvol.hpp>
 #include <ql/Volatilities/capletvariancecurve.hpp>
-#include <ql/Processes/capletlmmprocess.hpp>
+#include <ql/Processes/lfmhullwhiteparam.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -35,22 +37,6 @@ using namespace boost::unit_test_framework;
 QL_BEGIN_TEST_LOCALS(LiborMarketModelProcessTest)
 
 Size len = 10;
-
-boost::shared_ptr<CapletVarianceCurve> makeCapVolCurve(const Date& refDate) {
-    Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
-                         15.78, 15.40, 15.21, 14.86, 14.54};
-
-    std::vector<Date> dates;
-    std::vector<Volatility> capletVols;
-    for (Size i=0; i < 10; ++i) {
-        capletVols.push_back(vols[i]/100);
-        dates.push_back(refDate+Period(i+1, Years));
-    }
-
-    return boost::shared_ptr<CapletVarianceCurve>(
-                         new CapletVarianceCurve(refDate, dates,
-                                                 capletVols, ActualActual()));
-}
 
 boost::shared_ptr<Xibor> makeIndex() {
     DayCounter dayCounter = Actual360();
@@ -79,14 +65,44 @@ boost::shared_ptr<Xibor> makeIndex() {
     return index;
 }
 
-boost::shared_ptr<CapletLiborMarketModelProcess>
+
+boost::shared_ptr<CapletVarianceCurve>
+makeCapVolCurve(const Date& todaysDate) {
+    Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
+                         15.78, 15.40, 15.21, 14.86, 14.54};
+
+    std::vector<Date> dates;
+    std::vector<Volatility> capletVols;
+    boost::shared_ptr<LiborForwardModelProcess> process(
+        new LiborForwardModelProcess(len+1, makeIndex()));
+
+    for (Size i=0; i < len; ++i) {
+        capletVols.push_back(vols[i]/100);
+        dates.push_back(process->fixingDates()[i+1]);
+    }
+
+    return boost::shared_ptr<CapletVarianceCurve>(
+                         new CapletVarianceCurve(todaysDate, dates,
+                                                 capletVols, ActualActual()));
+}
+
+boost::shared_ptr<LiborForwardModelProcess>
 makeProcess(const Matrix& volaComp = Matrix()) {
+    Size factors = (volaComp.empty() ? 1 : volaComp.columns());
+
     boost::shared_ptr<Xibor> index = makeIndex();
-    return boost::shared_ptr<CapletLiborMarketModelProcess>(
-        new CapletLiborMarketModelProcess(
-                     len, index,
-                     makeCapVolCurve(index->termStructure()->referenceDate()),
-                     volaComp));
+    boost::shared_ptr<LiborForwardModelProcess> process(
+        new LiborForwardModelProcess(len, index));
+
+    boost::shared_ptr<LfmCovarianceParameterization> fct(
+        new LfmHullWhiteParameterization(
+            process,
+            makeCapVolCurve(Settings::instance().evaluationDate()),
+            volaComp * transpose(volaComp), factors));
+
+    process->setCovarParam(fct);
+
+    return process;
 }
 
 void teardown() {
@@ -120,7 +136,19 @@ void LiborMarketModelProcessTest::testInitialisation() {
 
         termStructure.linkTo(flatRate(settlementDate, 0.04, dayCounter));
 
-        CapletLiborMarketModelProcess process(60, index, capletVol);
+        LiborForwardModelProcess process(60, index);
+
+        std::vector<Time> fixings = process.fixingTimes();
+        for (Size i=1; i < fixings.size()-1; ++i) {
+            Size ileft  = process.nextIndexReset(fixings[i]-0.000001);
+            Size iright = process.nextIndexReset(fixings[i]+0.000001);
+            Size ii     = process.nextIndexReset(fixings[i]);
+
+            if ((ileft != i) || (iright != i+1) || (ii != i+1)) {
+                BOOST_ERROR("Failed to next index resets");
+            }
+        }
+
     }
 
     QL_TEST_TEARDOWN
@@ -131,18 +159,44 @@ void LiborMarketModelProcessTest::testLambdaBootstrapping() {
 
     QL_TEST_BEGIN
 
-    Real tolerance = 1e-8;
-    Volatility lambdaExpected[] = {14.30102976,19.37000802,16.00220245,
-                                   15.99965627,14.05756850,13.57282207,
-                                   12.79058927,13.69861487,11.61842263};
+    Real tolerance = 1e-10;
+    Volatility lambdaExpected[]= {14.3010297550, 19.3821411939, 15.9816590141,
+                                  15.9953118303, 14.0570815635, 13.5687599894,
+                                  12.7477197786, 13.7056638165, 11.6191989567};
 
-    boost::shared_ptr<CapletLiborMarketModelProcess> process = makeProcess();
+    boost::shared_ptr<LiborForwardModelProcess> process = makeProcess();
+
+    Matrix covar = process->covariance(0.0, Null<Array>(), 1.0);
 
     for (Size i=0; i<9; ++i) {
-        if (std::fabs(process->lambda(i) - lambdaExpected[i]/100) > tolerance)
+        const Real calculated = std::sqrt(covar[i+1][i+1]);
+        const Real expected   = lambdaExpected[i]/100;
+
+        if (std::fabs(calculated - expected) > tolerance)
             BOOST_ERROR("Failed to reproduce expected lambda values"
-                        << "\n    calculated: " << process->lambda(i)
-                        << "\n    expected:   " << lambdaExpected[i]/100);
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected);
+    }
+
+    boost::shared_ptr<LfmCovarianceParameterization> param =
+        process->covarParam();
+
+    std::vector<Time> tmp = process->fixingTimes();
+    TimeGrid grid(tmp.begin(), tmp.end(), 14);
+
+    for (Size t=0; t<grid.size(); ++t) {
+        Matrix diff = (param->integratedCovariance(grid[t])
+        - param->LfmCovarianceParameterization::integratedCovariance(grid[t]));
+
+        for (Size i=0; i<diff.rows(); ++i) {
+            for (Size j=0; j<diff.columns(); ++j) {
+                if (std::abs(diff[i][j]) > tolerance) {
+                     BOOST_ERROR("Failed to reproduce integrated covariance"
+                        << "\n    calculated: " << diff[i][j]
+                        << "\n    expected:   " << 0);
+                }
+            }
+        }
     }
 
     QL_TEST_TEARDOWN
@@ -154,26 +208,26 @@ void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
     QL_TEST_BEGIN
 
     /* factor loadings are taken from Hull & White article
+       plus extra normalisation to get orthogonal eigenvectors
        http://www.rotman.utoronto.ca/~amackay/fin/libormktmodel2.pdf */
-    Real compValues[] = {0.852, 0.467, 0.236,
-                         0.917, 0.377, 0.127,
-                         0.964, 0.264, 0.000,
-                         0.982, 0.135,-0.136,
-                         0.964, 0.000,-0.267,
-                         0.982,-0.135,-0.136,
-                         0.964,-0.264, 0.000,
-                         0.917,-0.377, 0.127,
-                         0.852,-0.467, 0.236};
+    Real compValues[] = {0.85549771, 0.46707264, 0.22353259,
+                         0.91915359, 0.37716089, 0.11360610,
+                         0.96438280, 0.26413316,-0.01412414,
+                         0.97939148, 0.13492952,-0.15028753,
+                         0.95970595,-0.00000000,-0.28100621,
+                         0.97939148,-0.13492952,-0.15028753,
+                         0.96438280,-0.26413316,-0.01412414,
+                         0.91915359,-0.37716089, 0.11360610,
+                         0.85549771,-0.46707264, 0.22353259};
 
     Matrix volaComp(9,3);
     std::copy(compValues, compValues+9*3, volaComp.begin());
 
-    boost::shared_ptr<CapletLiborMarketModelProcess> process1 = makeProcess();
-    boost::shared_ptr<CapletLiborMarketModelProcess> process2 = makeProcess(
+    boost::shared_ptr<LiborForwardModelProcess> process1 = makeProcess();
+    boost::shared_ptr<LiborForwardModelProcess> process2 = makeProcess(
                                                                     volaComp);
-
     std::vector<Time> tmp = process1->fixingTimes();
-    TimeGrid grid(tmp.begin(), tmp.end());
+    TimeGrid grid(tmp.begin(), tmp.end(),12);
 
     Size i;
     std::vector<Size> location;
@@ -195,7 +249,7 @@ void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
     MultiPathGenerator<rsg_type> generator1(process1, grid, rsg1, false);
     MultiPathGenerator<rsg_type> generator2(process2, grid, rsg2, false);
 
-    const Size nrTrails = 100000;
+    const Size nrTrails = 250000;
     std::vector<GeneralStatistics> stat1(process1->size());
     std::vector<GeneralStatistics> stat2(process2->size());
     std::vector<GeneralStatistics> stat3(process2->size()-1);
@@ -210,33 +264,37 @@ void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
             rates2[j] = path2.value[j][location[j]];
         }
 
-        for (Size k=0; k<process1->size(); ++k) {
-            // caplet payoff function, cap rate at 4%
-            Real payoff1 = std::max(rates1[k] - 0.04, 0.0)
-                          * process1->accrualPeriod(k);
+        std::vector<DiscountFactor> dis1 = process1->discountBond(rates1);
+        std::vector<DiscountFactor> dis2 = process2->discountBond(rates2);
 
-            Real payoff2 = std::max(rates2[k] - 0.04, 0.0)
-                          * process2->accrualPeriod(k);
-            stat1[k].add(process1->discountBond(rates1, k) * payoff1);
-            stat2[k].add(process2->discountBond(rates2, k) * payoff2);
+        for (Size k=0; k<process1->size(); ++k) {
+            Real accrualPeriod =  process1->accrualEndTimes()[k]
+                                - process1->accrualStartTimes()[k];
+            // caplet payoff function, cap rate at 4%
+            Real payoff1 = std::max(rates1[k] - 0.04, 0.0) * accrualPeriod;
+
+            Real payoff2 = std::max(rates2[k] - 0.04, 0.0) * accrualPeriod;
+            stat1[k].add(dis1[k] * payoff1);
+            stat2[k].add(dis2[k] * payoff2);
 
             if (k != 0) {
                 // ratchet cap payoff function
                 Real payoff3 =  std::max(rates2[k] - (rates2[k-1]+0.0025), 0.0)
-                              * process2->accrualPeriod(k);
-                stat3[k-1].add(process2->discountBond(rates2, k) * payoff3);
+                              * accrualPeriod;
+                stat3[k-1].add(dis2[k] * payoff3);
             }
         }
+
     }
 
-    Real capletNpv[] = {0.00000000,0.00000284,0.00253328,
-                        0.00957727,0.01774680,0.02521635,
-                        0.03160823,0.03664568,0.03979225,
-                        0.04182989};
+    Real capletNpv[] = {0.000000000000, 0.000002841629, 0.002533279333,
+                        0.009577143571, 0.017746502618, 0.025216116835,
+                        0.031608230268, 0.036645683881, 0.039792254012,
+                        0.041829864365};
 
-    Real ratchetNpv[] = {0.008265,0.008275,0.008215,
-                         0.008297,0.008380,0.008435,
-                         0.008412,0.008178,0.007952};
+    Real ratchetNpv[] = {0.0082644895, 0.0082754754, 0.0082159966,
+                         0.0082982822, 0.0083803357, 0.0084366961,
+                         0.0084173270, 0.0081803406, 0.0079533814};
 
     for (Size k=0; k < process1->size(); ++k) {
 
@@ -284,11 +342,11 @@ test_suite* LiborMarketModelProcessTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Libor market model process tests");
 
     suite->add(BOOST_TEST_CASE(
-        &LiborMarketModelProcessTest::testInitialisation));
+         &LiborMarketModelProcessTest::testInitialisation));
     suite->add(BOOST_TEST_CASE(
-        &LiborMarketModelProcessTest::testLambdaBootstrapping));
+         &LiborMarketModelProcessTest::testLambdaBootstrapping));
     suite->add(BOOST_TEST_CASE(
-        &LiborMarketModelProcessTest::testMonteCarloCapletPricing));
+          &LiborMarketModelProcessTest::testMonteCarloCapletPricing));
     return suite;
 }
 

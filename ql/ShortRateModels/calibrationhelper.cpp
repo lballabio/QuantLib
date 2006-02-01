@@ -48,4 +48,26 @@ namespace QuantLib {
         return solver.solve(f,accuracy,volatility_->value(),minVol,maxVol);
     }
 
+    Real CalibrationHelper::calibrationError() {
+        if (calibrateVolatility_) {
+            const Real lowerPrice = blackPrice(0.001);
+            const Real upperPrice = blackPrice(10);
+            const Real modelPrice = modelValue();
+
+            Volatility implied;
+            if (modelPrice <= lowerPrice)
+                implied = 0.001;
+            else
+                if (modelPrice >= upperPrice)
+                    implied = 10.0;
+                else
+                    implied = this->impliedVolatility(
+                                        modelPrice, 1e-8, 5000, 0.001, 10);
+
+            return implied - volatility_->value();
+        }
+        else {
+            return std::fabs(marketValue() - modelValue())/marketValue();
+        }
+    }
 }

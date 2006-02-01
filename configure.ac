@@ -320,6 +320,7 @@ AC_CONFIG_FILES([
     ql/ShortRateModels/CalibrationHelpers/Makefile
     ql/ShortRateModels/OneFactorModels/Makefile
     ql/ShortRateModels/TwoFactorModels/Makefile
+    ql/ShortRateModels/LiborMarketModels/Makefile
     ql/Solvers1D/Makefile
     ql/TermStructures/Makefile
     ql/Utilities/Makefile

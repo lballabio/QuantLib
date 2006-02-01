@@ -31,8 +31,9 @@ namespace QuantLib {
                          Frequency fixedLegFrequency,
                          const DayCounter& fixedLegDayCounter,
                          bool includeFirstSwaplet,
-                         const Handle<YieldTermStructure>& termStructure)
-    : CalibrationHelper(volatility,termStructure) {
+                         const Handle<YieldTermStructure>& termStructure,
+                         bool calibrateVolatility)
+    : CalibrationHelper(volatility,termStructure,calibrateVolatility) {
 
         Period indexTenor = index->tenor();
         Rate fixedRate = 0.04; // dummy value
@@ -44,7 +45,6 @@ namespace QuantLib {
             startDate = termStructure->referenceDate() + indexTenor;
             maturity = termStructure->referenceDate() + length;
         }
-
         boost::shared_ptr<Xibor> dummyIndex(
                                      new Xibor("dummy",
                                                indexTenor.length(),

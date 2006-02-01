@@ -20,3 +20,5 @@
 
 - Added convertible bonds (thanks to Theo Boafo.)
 
+- Added Libor market model (thanks to Klaus Spanderen.)
+

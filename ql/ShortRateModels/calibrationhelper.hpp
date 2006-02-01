@@ -34,8 +34,11 @@ namespace QuantLib {
     class CalibrationHelper : public Observer, public Observable {
       public:
         CalibrationHelper(const Handle<Quote>& volatility,
-                          const Handle<YieldTermStructure>& termStructure)
-        : volatility_(volatility), termStructure_(termStructure) {
+                          const Handle<YieldTermStructure>& termStructure,
+                          bool calibrateVolatility = false)
+        : volatility_         (volatility),
+          termStructure_      (termStructure),
+          calibrateVolatility_(calibrateVolatility) {
             blackModel_ = boost::shared_ptr<BlackModel>(
                                   new BlackModel(volatility_,termStructure_));
             registerWith(volatility_);
@@ -53,9 +56,7 @@ namespace QuantLib {
         virtual Real modelValue() const = 0;
 
         //! returns the error resulting from the model valuation
-        virtual Real calibrationError() {
-            return std::fabs(marketValue() - modelValue())/marketValue();
-        }
+        virtual Real calibrationError();
 
         virtual void addTimesTo(std::list<Time>& times) const = 0;
 
@@ -82,6 +83,7 @@ namespace QuantLib {
 
       private:
         class ImpliedVolatilityHelper;
+        const bool calibrateVolatility_;
     };
 
 }

@@ -99,7 +99,7 @@ namespace QuantLib {
 
         //! Returns array of arguments on which calibration is done
         Disposable<Array> params() const;
-        void setParams(const Array& params);
+        virtual void setParams(const Array& params);
       protected:
         virtual void generateArguments() {}
 

@@ -17,21 +17,34 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_libor_market_model_process_hpp
-#define quantlib_test_libor_market_model_process_hpp
+/*! \file lmfixedvolmodel.hpp
+    \brief model of constant volatilities for libor market models
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_libor_market_fixed_volatility_model_hpp
+#define quantlib_libor_market_fixed_volatility_model_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/ShortRateModels/LiborMarketModels/lmvolmodel.hpp>
 
-class LiborMarketModelProcessTest {
-  public:
-    static void testInitialisation();
-    static void testLambdaBootstrapping();
-    static void testMonteCarloCapletPricing();
-    static boost::unit_test_framework::test_suite* suite();
-};
+namespace QuantLib {
+
+    class LmFixedVolatilityModel : public LmVolatilityModel {
+      public:
+        LmFixedVolatilityModel(const Array& volatilities,
+                               const std::vector<Time>& startTimes);
+
+        Disposable<Array> volatility(
+             Time t, const Array& x = Null<Array>()) const;
+        Volatility volatility(Size i, Time t, const Array& x) const;
+
+      private:
+        void generateArguments();
+
+        const Array volatilities_;
+        const std::vector<Time> startTimes_;
+    };
+
+}
 
 
 #endif

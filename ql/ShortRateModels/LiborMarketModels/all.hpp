@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,14 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_swaption_all_hpp
-#define quantlib_pricing_engines_swaption_all_hpp
+#ifndef quantlib_libor_market_model_all_hpp
+#define quantlib_libor_market_model_all_hpp
 
-#include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/g2swaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/jamshidianswaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/discretizedswaption.hpp>
-#include <ql/PricingEngines/Swaption/lfmswaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/treeswaptionengine.hpp>
+#include <ql/qldefines.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lfmcovarproxy.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmexpcorrmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmvolmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/liborforwardmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmfixedvolmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmcorrmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmlinexpvolmodel.hpp>
+
 
 #endif

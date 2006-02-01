@@ -8,12 +8,14 @@ include_HEADERS = \
     g2swaptionengine.hpp \
     jamshidianswaptionengine.hpp \
     discretizedswaption.hpp \
+    lfmswaptionengine.hpp \
     treeswaptionengine.hpp
 
 libSwaptionEngines_la_SOURCES = \
     blackswaptionengine.cpp \
     jamshidianswaptionengine.cpp \
     discretizedswaption.cpp \
+    lfmswaptionengine.cpp \
     treeswaptionengine.cpp
 
 noinst_LTLIBRARIES = libSwaptionEngines.la

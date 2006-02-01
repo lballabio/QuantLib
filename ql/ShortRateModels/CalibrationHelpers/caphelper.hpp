@@ -40,7 +40,8 @@ namespace QuantLib {
                   Frequency fixedLegFrequency,
                   const DayCounter& fixedLegDayCounter,
                   bool includeFirstSwaplet,
-                  const Handle<YieldTermStructure>& termStructure);
+                  const Handle<YieldTermStructure>& termStructure,
+                  bool calibrateVolatility = false);
 
         virtual void addTimesTo(std::list<Time>& times) const;
 
