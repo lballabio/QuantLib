@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,6 +34,7 @@
     - \ref faq_compiling_missing_boost "I get a compile error about a missing boost header."
     - \ref faq_linking_libboost_unit "I encounter a linking error about a boost library."
     - \ref faq_compiling_boost_1_32 "I encounter a number of compile errors when building the test-suite."
+    - \ref faq_compiling_solaris "I'm having trouble building QuantLib with the Sun Studio 11 compiler."
 
     \ref faq_testing
     - \ref faq_testing_darwin "The QuantLib test-suite fails under Mac OS X."
@@ -290,6 +291,22 @@
     \endcode
     Also, this problem has been worked around in QuantLib itself since
     version 0.3.10. You might want to upgrade your QuantLib installation.
+
+    <strong>
+    \anchor faq_compiling_solaris
+    I'm having trouble building QuantLib with the Sun Studio 11 compiler.
+    </strong>
+
+    If the error you're getting resembles to
+    \code
+>> Assertion:   (../lnk/init.cc, line 1032)
+    while processing ../../ql/history.hpp at line 135.
+*** Error code 1 
+    \endcode
+    you need to patch your compiler. Sun makes the needed patches
+    available at
+   <http://developers.sun.com/prodtech/cc/downloads/patches/ss11_patches.html>;
+    you need the ones labeled as "Compilers back-end" and "C++".
 
 
     \section faq_testing Testing QuantLib

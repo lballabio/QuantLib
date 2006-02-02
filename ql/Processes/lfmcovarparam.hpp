@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file lfmcovarparm.hpp
+/*! \file lfmcovarparam.hpp
     \brief volatility & correlation function for libor forward model process
 */
 
