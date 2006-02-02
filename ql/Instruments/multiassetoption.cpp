@@ -30,8 +30,7 @@ namespace QuantLib {
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : Option(payoff, exercise, engine), stochasticProcess_(process) {
-    }
+    : Option(payoff, exercise, engine), stochasticProcess_(process) {}
 
     bool MultiAssetOption::isExpired() const {
         return exercise_->lastDate() < Settings::instance().evaluationDate();
@@ -94,20 +93,11 @@ namespace QuantLib {
         }
     }
 
-    void MultiAssetOption::performCalculations() const {
-        Option::performCalculations();
-        const Greeks* results =
-            dynamic_cast<const Greeks*>(engine_->results());
+    void MultiAssetOption::fetchResults(const Results* r) const {
+        Option::fetchResults(r);
+        const Greeks* results = dynamic_cast<const Greeks*>(r);
         QL_ENSURE(results != 0,
                   "no greeks returned from pricing engine");
-        /* no check on null values - just copy.
-           this allows:
-           a) to decide in derived options what to do when null
-           results are returned (throw? numerical calculation?)
-           b) to implement slim engines which only calculate the
-           value---of course care must be taken not to call
-           the greeks methods when using these.
-        */
         delta_          = results->delta;
         gamma_          = results->gamma;
         theta_          = results->theta;

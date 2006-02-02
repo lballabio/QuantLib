@@ -54,7 +54,6 @@ namespace QuantLib {
                           boost::shared_ptr<PricingEngine>());
         void setupArguments(Arguments*) const;
       protected:
-        void performCalculations() const;
         // arguments
         Barrier::Type barrierType_;
         Real barrier_;

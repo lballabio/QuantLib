@@ -125,7 +125,8 @@ namespace QuantLib {
     }
 
     void OneAssetOption::setupExpired() const {
-        NPV_ = delta_ = deltaForward_ = elasticity_ = gamma_ = theta_ =
+        Option::setupExpired();
+        delta_ = deltaForward_ = elasticity_ = gamma_ = theta_ =
             thetaPerDay_ = vega_ = rho_ = dividendRho_ =
             itmCashProbability_ = 0.0;
         priceCurve_ = SampledCurve();
@@ -146,10 +147,9 @@ namespace QuantLib {
         }
     }
 
-    void OneAssetOption::performCalculations() const {
-        Option::performCalculations();
-        const Greeks* results =
-            dynamic_cast<const Greeks*>(engine_->results());
+    void OneAssetOption::fetchResults(const Results* r) const {
+        Option::fetchResults(r);
+        const Greeks* results = dynamic_cast<const Greeks*>(r);
         QL_ENSURE(results != 0,
                   "no greeks returned from pricing engine");
         /* no check on null values - just copy.
@@ -167,8 +167,7 @@ namespace QuantLib {
         rho_            = results->rho;
         dividendRho_    = results->dividendRho;
 
-        const MoreGreeks* moreResults =
-            dynamic_cast<const MoreGreeks*>(engine_->results());
+        const MoreGreeks* moreResults = dynamic_cast<const MoreGreeks*>(r);
         QL_ENSURE(moreResults != 0,
                   "no more greeks returned from pricing engine");
         /* no check on null values - just copy.
@@ -185,9 +184,10 @@ namespace QuantLib {
         itmCashProbability_ = moreResults->itmCashProbability;
 
         const PriceCurve* priceCurveResults =
-            dynamic_cast<const PriceCurve*>(engine_->results());
+            dynamic_cast<const PriceCurve*>(r);
+        QL_ENSURE(moreResults != 0,
+                  "no price curve returned from pricing engine");
         priceCurve_ = priceCurveResults->priceCurve;
-
     }
 
 

@@ -58,11 +58,6 @@ namespace QuantLib {
 
     }
 
-    void BarrierOption::performCalculations() const {
-        // enforce in this class any check on engine/payoff
-        OneAssetStrikedOption::performCalculations();
-    }
-
     void BarrierOption::arguments::validate() const {
         #if defined(QL_PATCH_MSVC6)
         OneAssetStrikedOption::arguments copy = *this;

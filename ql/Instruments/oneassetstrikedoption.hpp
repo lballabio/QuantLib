@@ -22,8 +22,8 @@
     \brief Option on a single asset with striked payoff
 */
 
-#ifndef quantlib_oneassetstriked_option_h
-#define quantlib_oneassetstriked_option_h
+#ifndef quantlib_oneassetstriked_option_hpp
+#define quantlib_oneassetstriked_option_hpp
 
 #include <ql/Instruments/oneassetoption.hpp>
 #include <ql/Instruments/payoffs.hpp>
@@ -44,8 +44,9 @@ namespace QuantLib {
         Real strikeSensitivity() const;
         //@}
         void setupArguments(Arguments*) const;
+        void fetchResults(const Results*) const;
       protected:
-        void performCalculations() const;
+        void setupExpired() const;
         // results
         mutable Real strikeSensitivity_;
     };

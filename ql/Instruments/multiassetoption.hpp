@@ -55,9 +55,9 @@ namespace QuantLib {
         Real dividendRho() const;
         //@}
         void setupArguments(Arguments*) const;
+        void fetchResults(const Results*) const;
       protected:
         void setupExpired() const;
-        void performCalculations() const;
         // results
         mutable Real delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;

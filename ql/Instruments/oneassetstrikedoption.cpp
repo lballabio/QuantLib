@@ -49,20 +49,16 @@ namespace QuantLib {
         moreArgs->payoff = payoff_;
     }
 
-    void OneAssetStrikedOption::performCalculations() const {
-        OneAssetOption::performCalculations();
-        const MoreGreeks* results =
-            dynamic_cast<const MoreGreeks*>(engine_->results());
+    void OneAssetStrikedOption::setupExpired() const {
+        OneAssetOption::setupExpired();
+        strikeSensitivity_ = 0.0;
+    }
+
+    void OneAssetStrikedOption::fetchResults(const Results* r) const {
+        OneAssetOption::fetchResults(r);
+        const MoreGreeks* results = dynamic_cast<const MoreGreeks*>(r);
         QL_ENSURE(results != 0,
                   "no more-greeks returned from pricing engine");
-        /* no check on null values - just copy.
-           this allows:
-           a) to decide in derived options what to do when null
-           results are returned (throw? numerical calculation?)
-           b) to implement slim engines which only calculate the
-           value---of course care must be taken not to call
-           the greeks methods when using these.
-        */
         strikeSensitivity_ = results->strikeSensitivity;
     }
 

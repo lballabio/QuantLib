@@ -170,19 +170,6 @@ namespace QuantLib {
     void SimpleSwap::performCalculations() const {
         if (engine_) {
             Instrument::performCalculations();
-            const SimpleSwap::results* results =
-                dynamic_cast<const SimpleSwap::results*>(engine_->results());
-            fixedLegBPS_ = results->fixedLegBPS;
-            floatingLegBPS_ = results->floatingLegBPS;
-            fairRate_ = results->fairRate;
-            fairSpread_ = results->fairSpread;
-            if (payFixedRate_) {
-                firstLegBPS_ = fixedLegBPS_;
-                secondLegBPS_ = floatingLegBPS_;
-            } else {
-                firstLegBPS_ = floatingLegBPS_;
-                secondLegBPS_ = fixedLegBPS_;
-            }
         } else {
             Swap::performCalculations();
             fixedLegBPS_ = payFixedRate_ ? firstLegBPS() : secondLegBPS();
@@ -192,6 +179,22 @@ namespace QuantLib {
         }
     }
 
+    void SimpleSwap::fetchResults(const Results* r) const {
+        Instrument::fetchResults(r);
+        const SimpleSwap::results* results =
+            dynamic_cast<const SimpleSwap::results*>(r);
+        fixedLegBPS_ = results->fixedLegBPS;
+        floatingLegBPS_ = results->floatingLegBPS;
+        fairRate_ = results->fairRate;
+        fairSpread_ = results->fairSpread;
+        if (payFixedRate_) {
+            firstLegBPS_ = fixedLegBPS_;
+            secondLegBPS_ = floatingLegBPS_;
+        } else {
+            firstLegBPS_ = floatingLegBPS_;
+            secondLegBPS_ = fixedLegBPS_;
+        }
+    }
 
     void SimpleSwap::arguments::validate() const {
         QL_REQUIRE(nominal != Null<Real>(),

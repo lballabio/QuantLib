@@ -21,8 +21,8 @@
     \brief Quanto version of a vanilla option
 */
 
-#ifndef quantlib_quanto_vanilla_option_h
-#define quantlib_quanto_vanilla_option_h
+#ifndef quantlib_quanto_vanilla_option_hpp
+#define quantlib_quanto_vanilla_option_hpp
 
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Quanto/quantoengine.hpp>
@@ -52,9 +52,9 @@ namespace QuantLib {
         Real qlambda() const;
         //@}
         void setupArguments(Arguments*) const;
+        void fetchResults(const Results*) const;
       protected:
         void setupExpired() const;
-        void performCalculations() const;
         // arguments
         Handle<YieldTermStructure> foreignRiskFreeTS_;
         Handle<BlackVolTermStructure> exchRateVolTS_;

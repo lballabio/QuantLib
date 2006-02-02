@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -58,11 +58,16 @@ namespace QuantLib {
         */
         void setPricingEngine(const boost::shared_ptr<PricingEngine>&);
         //@}
-        /*! When a derived argument structure is defined for an instrument,
-            this method should be overridden to fill it. This is mandatory
-            in case a pricing engine is used.
+        /*! When a derived argument structure is defined for an
+            instrument, this method should be overridden to fill
+            it. This is mandatory in case a pricing engine is used.
         */
         virtual void setupArguments(Arguments*) const;
+        /*! When a derived result structure is defined for an
+            instrument, this method should be overridden to read from
+            it. This is mandatory in case a pricing engine is used.
+        */
+        virtual void fetchResults(const Results*) const;
       protected:
         //! \name Calculations
         //@{
@@ -141,7 +146,11 @@ namespace QuantLib {
         setupArguments(engine_->arguments());
         engine_->arguments()->validate();
         engine_->calculate();
-        const Value* results = dynamic_cast<const Value*>(engine_->results());
+        fetchResults(engine_->results());
+    }
+
+    inline void Instrument::fetchResults(const Results* r) const {
+        const Value* results = dynamic_cast<const Value*>(r);
         QL_ENSURE(results != 0,
                   "no results returned from pricing engine");
         NPV_ = results->value;

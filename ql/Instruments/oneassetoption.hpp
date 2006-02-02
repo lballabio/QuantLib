@@ -83,9 +83,9 @@ namespace QuantLib {
                                      Volatility maxVol = QL_MAX_VOLATILITY)
                                                                         const;
         void setupArguments(Arguments*) const;
+        void fetchResults(const Results*) const;
       protected:
         void setupExpired() const;
-        void performCalculations() const;
         // results
         mutable Real delta_, deltaForward_, elasticity_, gamma_, theta_,
             thetaPerDay_, vega_, rho_, dividendRho_, itmCashProbability_;

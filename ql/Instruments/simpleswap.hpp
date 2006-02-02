@@ -75,6 +75,7 @@ namespace QuantLib {
         const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg() const;
         // other
         void setupArguments(Arguments* args) const;
+        void fetchResults(const Results*) const;
       private:
         void setupExpired() const;
         void performCalculations() const;

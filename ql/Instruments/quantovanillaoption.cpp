@@ -79,23 +79,10 @@ namespace QuantLib {
 
     }
 
-    void QuantoVanillaOption::performCalculations() const {
-        Option::performCalculations();
-
-        const VanillaOption::results* vanillaResults =
-            dynamic_cast<const VanillaOption::results*>(engine_->results());
-        QL_ENSURE(vanillaResults != 0,
-                  "no vanilla results returned from pricing engine");
-        delta_       = vanillaResults->delta;
-        gamma_       = vanillaResults->gamma;
-        theta_       = vanillaResults->theta;
-        vega_        = vanillaResults->vega;
-        rho_         = vanillaResults->rho;
-        dividendRho_ = vanillaResults->dividendRho;
-
+    void QuantoVanillaOption::fetchResults(const Results* r) const {
+        VanillaOption::fetchResults(r);
         const QuantoVanillaOption::results* quantoResults =
-            dynamic_cast<const QuantoVanillaOption::results*>(
-                                                          engine_->results());
+            dynamic_cast<const QuantoVanillaOption::results*>(r);
         QL_ENSURE(quantoResults != 0,
                   "no quanto results returned from pricing engine");
         qrho_        = quantoResults->qrho;

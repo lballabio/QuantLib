@@ -42,26 +42,18 @@ namespace QuantLib {
 
     }
 
-    void ForwardVanillaOption::performCalculations() const {
-        if (isExpired()) {
-            NPV_ = delta_ = gamma_ = theta_ =
-                vega_ =   rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
-        } else {
-            Option::performCalculations();
-
-            const ForwardVanillaOption::results* results =
-                dynamic_cast<const ForwardVanillaOption::results*>(
-                                                          engine_->results());
-            QL_ENSURE(results != 0,
-                      "no results returned from pricing engine");
-            delta_       = results->delta;
-            gamma_       = results->gamma;
-            theta_       = results->theta;
-            vega_        = results->vega;
-            rho_         = results->rho;
-            dividendRho_ = results->dividendRho;
-
-        }
+    void ForwardVanillaOption::fetchResults(const Results* r) const {
+        VanillaOption::fetchResults(r);
+        const ForwardVanillaOption::results* results =
+            dynamic_cast<const ForwardVanillaOption::results*>(r);
+        QL_ENSURE(results != 0,
+                  "no results returned from pricing engine");
+        delta_       = results->delta;
+        gamma_       = results->gamma;
+        theta_       = results->theta;
+        vega_        = results->vega;
+        rho_         = results->rho;
+        dividendRho_ = results->dividendRho;
     }
 
 }

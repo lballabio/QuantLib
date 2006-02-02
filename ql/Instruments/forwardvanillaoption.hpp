@@ -21,8 +21,8 @@
     \brief Forward version of a vanilla option
 */
 
-#ifndef quantlib_forward_vanilla_option_h
-#define quantlib_forward_vanilla_option_h
+#ifndef quantlib_forward_vanilla_option_hpp
+#define quantlib_forward_vanilla_option_hpp
 
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Forward/forwardengine.hpp>
@@ -45,8 +45,7 @@ namespace QuantLib {
             const boost::shared_ptr<Exercise>& exercise,
             const boost::shared_ptr<PricingEngine>& engine);
         void setupArguments(Arguments*) const;
-      protected:
-        void performCalculations() const;
+        void fetchResults(const Results*) const;
       private:
         // arguments
         Real moneyness_;
