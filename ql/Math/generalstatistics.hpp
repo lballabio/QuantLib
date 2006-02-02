@@ -112,8 +112,7 @@ namespace QuantLib {
         */
         template <class Func, class Predicate>
         std::pair<Real,Size> expectationValue(const Func& f,
-                                              const Predicate& inRange)
-            const {
+                                              const Predicate& inRange) const {
             Real num = 0.0, den = 0.0;
             Size N = 0;
             std::vector<std::pair<Real,Real> >::const_iterator i;
@@ -126,7 +125,7 @@ namespace QuantLib {
                 }
             }
             if (N == 0)
-                return std::make_pair(Null<Real>(),0);
+                return std::make_pair<Real,Size>(Null<Real>(),0);
             else
                 return std::make_pair(num/den,N);
         }
