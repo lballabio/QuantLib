@@ -67,8 +67,9 @@ void setup() {
     settlementDays_ = 3;
 
     issueDate_ = calendar_.advance(today_,2,Days);
-    maturityDate_ = calendar_.advance(issueDate_, 10, Years,
-                                      ModifiedFollowing);
+    maturityDate_ = calendar_.advance(issueDate_, 10, Years);
+    // reset to avoid inconsistencies as the schedule is backwards
+    issueDate_ = calendar_.advance(maturityDate_, -10, Years);
 
     underlying_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(50.0)));
     dividendYield_.linkTo(flatRate(today_, 0.02, dayCounter_));
@@ -309,7 +310,7 @@ void ConvertibleBondTest::testOption() {
 
     VanillaOption euOption(process_, payoff, euExercise, vanillaEngine);
 
-    Real tolerance = 3.0e-2;
+    Real tolerance = 5.0e-2;
 
     Real expected = redemption_ * riskFreeRate_->discount(maturityDate_)
                   + conversionRatio_* euOption.NPV();

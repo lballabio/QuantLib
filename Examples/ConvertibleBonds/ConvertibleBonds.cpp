@@ -64,9 +64,8 @@ int main(int argc, char* argv[])
 
 		Settings::instance().evaluationDate() = today;
         Date settlementDate = calendar.advance(today, settlementDays, Days);
-        Date exerciseDate = calendar.advance(today, length, Years);
-
-		Date issueDate = today;
+        Date exerciseDate = calendar.advance(settlementDate, length, Years);
+		Date issueDate = calendar.advance(exerciseDate, -length, Years);
 
 		BusinessDayConvention convention = ModifiedFollowing;
 
