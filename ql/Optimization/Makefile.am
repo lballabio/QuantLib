@@ -11,7 +11,9 @@ include_HEADERS = \
     costfunction.hpp \
     criteria.hpp \
     leastsquare.hpp \
+    levenbergmarquardt.hpp \
     linesearch.hpp \
+    lmdif.hpp \
     method.hpp \
     problem.hpp \
     simplex.hpp \
@@ -20,6 +22,8 @@ include_HEADERS = \
 libOptimization_la_SOURCES = \
     armijo.cpp \
     conjugategradient.cpp \
+    levenbergmarquardt.cpp \
+    lmdif.cpp \
     simplex.cpp \
     steepestdescent.cpp
 

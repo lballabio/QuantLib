@@ -34,6 +34,11 @@ namespace QuantLib {
         virtual ~CostFunction() {}
         //! method to overload to compute the cost functon value in x
         virtual Real value(const Array& x) const = 0;
+        //! const function value for least square optimization
+        virtual Disposable<Array> values(const Array& x) const {
+            Array tmp(1, value(x));
+            return tmp;
+        }
 
         //! method to overload to compute grad_f, the first derivative of
         //  the cost function with respect to x

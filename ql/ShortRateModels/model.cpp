@@ -52,6 +52,19 @@ namespace QuantLib {
 
             return std::sqrt(value);
         }
+
+        virtual Disposable<Array> values(const Array& params) const {
+            model_->setParams(params);
+
+            Array values(instruments_.size());
+            for (Size i=0; i<instruments_.size(); i++) {
+                values[i] = instruments_[i]->calibrationError()
+                           *std::sqrt(weights_[i]);
+            }
+
+            return values;
+        }
+
         virtual Real finiteDifferenceEpsilon() const { return 1e-6; }
       private:
         boost::shared_ptr<ShortRateModel> model_;

@@ -40,6 +40,9 @@ namespace QuantLib {
         //! call cost function computation and increment evaluation counter
         Real value(const Array& x) const;
 
+        //! call cost values computation and increment evaluation counter
+        Disposable<Array> values(const Array& x) const;
+
         //! call cost function gradient computation and increment
         //  evaluation counter
         void gradient(Array& grad_f, const Array& x) const;
@@ -76,6 +79,11 @@ namespace QuantLib {
     inline Real Problem::value(const Array& x) const {
         method_.functionEvaluation()++;
         return costFunction_.value(x);
+    }
+
+    inline Disposable<Array> Problem::values(const Array& x) const {
+        method_.functionEvaluation()++;
+        return costFunction_.values(x);
     }
 
     inline void Problem::gradient(Array& grad_f, const Array& x) const {

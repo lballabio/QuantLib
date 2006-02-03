@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2006 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,20 +17,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_optimization_all_hpp
-#define quantlib_optimization_all_hpp
+/*! \file lmdif.hpp
+    \brief wrapper for MINPACK minimization routine
+*/
 
-#include <ql/qldefines.hpp>
-#include <ql/Optimization/core.hpp>
+#ifndef quantlib_optimization_lmdif_hpp
+#define quantlib_optimization_lmdif_hpp
 
-#include <ql/Optimization/armijo.hpp>
-#include <ql/Optimization/conjugategradient.hpp>
-#include <ql/Optimization/leastsquare.hpp>
-#include <ql/Optimization/levenbergmarquardt.hpp>
-#include <ql/Optimization/linesearch.hpp>
-#include <ql/Optimization/lmdif.hpp>
-#include <ql/Optimization/simplex.hpp>
-#include <ql/Optimization/steepestdescent.hpp>
+namespace QuantLib {
+
+    namespace MINPACK {
+
+        void lmdif(int m,int n,double* x,double* fvec,double ftol,
+                   double xtol,double gtol,int maxfev,double epsfcn,
+                   double* diag, int mode, double factor,
+                   int nprint, int* info,int* nfev,double* fjac,
+                   int ldfjac,int* ipvt,double* qtf,
+                   double* wa1,double* wa2,double* wa3,double* wa4);
+    }
+
+}
 
 
 #endif

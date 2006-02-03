@@ -1,5 +1,5 @@
 
-- SimpleSwap can now be set an engine. If none was set, the old
+- SimpleSwap can now be set an engine. If none is set, the old
   cash-flow-based calculation is used.
 
 - Generalized McVanillaEngine so that it can manage n-dimensional processes;
@@ -21,4 +21,6 @@
 - Added convertible bonds (thanks to Theo Boafo.)
 
 - Added Libor market model (thanks to Klaus Spanderen.)
+
+- Added Levenberg-Marquardt optimization method (thanks to Klaus Spanderen.)
 
