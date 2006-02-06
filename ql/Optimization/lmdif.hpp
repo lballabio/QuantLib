@@ -24,6 +24,8 @@
 #ifndef quantlib_optimization_lmdif_hpp
 #define quantlib_optimization_lmdif_hpp
 
+#include <ql/qldefines.hpp>
+
 namespace QuantLib {
 
     namespace MINPACK {

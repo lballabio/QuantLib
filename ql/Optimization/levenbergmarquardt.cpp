@@ -19,7 +19,6 @@
 
 #include <ql/Optimization/lmdif.hpp>
 #include <ql/Optimization/levenbergmarquardt.hpp>
-#include <boost/scoped_ptr.hpp>
 
 namespace QuantLib {
 

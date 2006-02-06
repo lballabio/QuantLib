@@ -8,17 +8,16 @@
  * of Argonne National Laboratories MINPACK
  *
  * C translation by Steve Moshier
- * 
+ *
  * Copyright (C) Steve Moshier
  *
  * What you see here may be used freely but it comes with no support
  * or guarantee.
  */
 
-/****************Sample main program******************/
-#include <math.h>
-#include <stdio.h>
 #include <ql/Optimization/levenbergmarquardt.hpp>
+#include <cmath>
+#include <cstdio>
 
 namespace QuantLib {
   namespace MINPACK {
