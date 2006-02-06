@@ -45,7 +45,6 @@ namespace QuantLib {
         void addTimesTo(std::list<Time>&) const {}
         Real modelValue() const;
         Real blackPrice(Real volatility) const;
-        Real calibrationError();
         Time maturity() const  { return tau_; }
       private:
         Handle<YieldTermStructure> dividendYield_;
@@ -54,7 +53,6 @@ namespace QuantLib {
         const Time tau_;
         const Real s0_;
         const Real strikePrice_;
-        const bool calibrateVolatility_;
     };
 
 }

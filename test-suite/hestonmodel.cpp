@@ -27,12 +27,12 @@
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
-#include <ql/Optimization/simplex.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/TermStructures/zerocurve.hpp>
 #include <ql/TermStructures/flatforward.hpp>
+#include <ql/Optimization/levenbergmarquardt.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -99,9 +99,6 @@ void HestonModelTest::testBlackCalibration() {
         }
     }
 
-    Simplex om(0.1, 1e-9);
-    om.setEndCriteria(EndCriteria(400, 1e-7));
-
     for (Real sigma = 0.1; sigma < 0.9; sigma += 0.2) {
         boost::shared_ptr<HestonProcess> process(
                                      new HestonProcess(riskFreeTS, dividendTS,
@@ -115,9 +112,10 @@ void HestonModelTest::testBlackCalibration() {
         for (Size i = 0; i < options.size(); ++i)
             options[i]->setPricingEngine(engine);
 
+        LevenbergMarquardt om;
         model->calibrate(options, om);
 
-        Real tolerance = 1.0e-4;
+        Real tolerance = 1.0e-3;
 
         if (model->sigma() > tolerance) {
             BOOST_ERROR("Failed to reproduce expected sigma"
@@ -229,8 +227,7 @@ void HestonModelTest::testDAXCalibration() {
     for (i = 0; i < options.size(); ++i)
         options[i]->setPricingEngine(engine);
 
-    Simplex om(0.1, 1e-9);
-    om.setEndCriteria(EndCriteria(1000, 1e-7));
+    LevenbergMarquardt om;
     model->calibrate(options, om);
 
     Real sse = 0;

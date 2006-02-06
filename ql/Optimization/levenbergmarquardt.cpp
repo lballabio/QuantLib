@@ -23,6 +23,7 @@
 namespace QuantLib {
 
     const Problem* LevenbergMarquardt::_thisP(0);
+    Array LevenbergMarquardt::_initCostValues(0);
 
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
                                            Real ftol, Real xtol,
@@ -36,8 +37,9 @@ namespace QuantLib {
 
     void LevenbergMarquardt::minimize(const Problem& P) const {
         _thisP = &P;
+        _initCostValues = P.costFunction().values(x());
 
-        int m = P.costFunction().values(x()).size();
+        int m = _initCostValues.size();
         int n = x().size();
         boost::scoped_array<double> xx(new double[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
@@ -92,9 +94,16 @@ namespace QuantLib {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
 
-        const Array& tmp = _thisP->values(xt);
+        // constraint handling needs some improvement in the future
+        // starting point shouldn't be close to a constraint violation
+        Array result;
+        if (_thisP->constraint().test(xt)) {
+            const Array& tmp = _thisP->values(xt);
+            std::copy(tmp.begin(), tmp.end(), fvec);
+        } else {
+            std::copy(_initCostValues.begin(), _initCostValues.end(), fvec);
+        }
 
-        std::copy(tmp.begin(), tmp.end(), fvec);
     }
 
 }

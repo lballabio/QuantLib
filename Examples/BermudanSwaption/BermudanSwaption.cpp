@@ -54,8 +54,7 @@ void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
                                                                       helpers,
                     Real lambda) {
 
-    LevenbergMarquardt om(1e-8,1e-8,1e-8,1e-8,10000); //(lambda, 1e-9);
-    //om.setEndCriteria(EndCriteria(10000, 1e-7));
+    LevenbergMarquardt om;
     model->calibrate(helpers, om);
 
     // Output the implied Black volatilities

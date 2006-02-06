@@ -21,10 +21,10 @@
 #include "utilities.hpp"
 
 #include <ql/Indexes/euribor.hpp>
-#include <ql/Optimization/simplex.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/TermStructures/zerocurve.hpp>
 #include <ql/Processes/lfmhullwhiteparam.hpp>
+#include <ql/Optimization/levenbergmarquardt.hpp>
 
 #include <ql/Math/generalstatistics.hpp>
 #include <ql/RandomNumbers/rngtraits.hpp>
@@ -270,7 +270,7 @@ void LiborMarketModelTest::testCalibration() {
     // set-up the model
     boost::shared_ptr<LmVolatilityModel> volaModel(
                 new LmLinearExponentialVolatilityModel(process->fixingTimes(),
-                                                       0.5,0.6,0.1,0.01));
+                                                       0.5,0.6,0.1,0.1));
 
     boost::shared_ptr<LmCorrelationModel> corrModel(
                                 new LmExponentialCorrelationModel(size, 0.8));
@@ -321,8 +321,7 @@ void LiborMarketModelTest::testCalibration() {
         }
     }
 
-    Simplex om(0.1, 1e-5);
-    om.setEndCriteria(EndCriteria(10000, 1e-5));
+    LevenbergMarquardt om;
     model->calibrate(calibrationHelper, om);
 
     // measure the calibration error

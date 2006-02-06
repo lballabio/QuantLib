@@ -62,7 +62,7 @@ namespace QuantLib {
                     implied = 10.0;
                 else
                     implied = this->impliedVolatility(
-                                        modelPrice, 1e-8, 5000, 0.001, 10);
+                                        modelPrice, 1e-12, 5000, 0.001, 10);
 
             return implied - volatility_->value();
         }

@@ -24,9 +24,9 @@
 #include <ql/Instruments/europeanoption.hpp>
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/TermStructures/flatforward.hpp>
-#include <ql/Optimization/simplex.hpp>
 #include <ql/TermStructures/zerocurve.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Optimization/levenbergmarquardt.hpp>
 #include <ql/PricingEngines/Vanilla/batesengine.hpp>
 #include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
@@ -313,24 +313,19 @@ void BatesModelTest::testDAXCalibration() {
 
     Real kappa = 1.0;
     Real theta = v0;
-    Real sigma = 1.0e-4;
+    Real sigma = 1.0;
     Real rho = 0.0;
 
-    boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(1.1098));
-    boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(-0.1285));
-    boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.1702));
+   boost::shared_ptr<HestonProcess> process(new HestonProcess(
+        riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
 
-    // this is the merton76 option
-    boost::shared_ptr<StochasticProcess> mertonProcess(
-        new Merton76Process(s0, dividendTS, riskFreeTS,
-                            Handle<BlackVolTermStructure>(volTS),
-                            Handle<Quote>(jumpIntensity),
-                            Handle<Quote>(meanLogJump),
-                            Handle<Quote>(jumpVol)));
+   boost::shared_ptr<BatesModel> batesModel(
+        new BatesModel(process,1.1098, -0.1285, 0.1702));
 
+   boost::shared_ptr<PricingEngine> batesEngine(
+       new BatesEngine(batesModel));
 
     std::vector<boost::shared_ptr<CalibrationHelper> > options;
-    std::vector<boost::shared_ptr<EuropeanOption> > merton76options;
 
     for (Size s = 0; s < 13; ++s) {
         for (Size m = 0; m < 8; ++m) {
@@ -344,56 +339,12 @@ void BatesModelTest::testDAXCalibration() {
                         new HestonModelHelper(maturity, calendar,
                                               s0->value(), strike[s], vol,
                                               riskFreeTS, dividendTS, true)));
-
-            boost::shared_ptr<Exercise> exercise(
-                new EuropeanExercise(settlementDate+maturity));
-            boost::shared_ptr<StrikedTypePayoff> payoff(
-                new PlainVanillaPayoff(Option::Call, strike[s]));
-            merton76options.push_back(
-                boost::shared_ptr<EuropeanOption>(new EuropeanOption(
-                    mertonProcess, payoff, exercise)));
+            options.back()->setPricingEngine(batesEngine);
         }
     }
 
-   boost::shared_ptr<HestonProcess> process(new HestonProcess(
-        riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
-
-   boost::shared_ptr<BatesModel> batesModel(
-       new BatesModel(process,
-                      jumpIntensity->value(),
-                      meanLogJump->value(),
-                      jumpVol->value()));
-
-   boost::shared_ptr<PricingEngine> batesEngine(
-       new BatesEngine(batesModel));
-
-    // set-up the merton engine
-    boost::shared_ptr<VanillaOption::engine> baseEngine(
-        new AnalyticEuropeanEngine);
-    boost::shared_ptr<PricingEngine> mertonEngine(
-        new JumpDiffusionEngine(baseEngine, 1e-10, 1000));
-
-    Real tolerance = 5e-6;
-    // compare Merton76 and Bates engine
-    for (Size i = 0; i < options.size(); ++i) {
-        options[i]->setPricingEngine(batesEngine);
-        merton76options[i]->setPricingEngine(mertonEngine);
-
-        Real calculated = options[i]->modelValue();
-        Real expected   = merton76options[i]->NPV();
-        Real error = std::fabs(calculated-expected)/expected;
-
-        if (error > tolerance)
-            BOOST_ERROR("failed to reproduce Merton76 price with Bates engine"
-                        << "\n    calculated: " << calculated
-                        << "\n    expected:   " << expected
-                        << "\n    error:      " << QL_SCIENTIFIC << error);
-    }
-
     // check calibration engine
-
-    Simplex om(0.6, 1e-7);
-    om.setEndCriteria(EndCriteria(1000, 1e-6));
+    LevenbergMarquardt om;
     batesModel->calibrate(options, om);
 
     Real expected = 36.6;
@@ -422,11 +373,11 @@ void BatesModelTest::testDAXCalibration() {
             boost::shared_ptr<BatesDoubleExpDetJumpModel>(
                 new BatesDoubleExpDetJumpModel(process, 1.0)))) );
 
-    Real expectedValues[] = { 5127.9866758,
-                              4947.3386181,
-                              5529.0099857};
+    Real expectedValues[] = { 5896.37,
+                              5499.29,
+                              6497.89};
 
-    tolerance=0.1;
+    Real tolerance=0.1;
     for (Size i = 0; i < pricingEngines.size(); ++i) {
         for (Size j = 0; j < options.size(); ++j) {
             options[j]->setPricingEngine(pricingEngines[i]);
