@@ -265,10 +265,10 @@ void CapFloorTest::testParity() {
                                               convention_);
             Schedule schedule(calendar_,startDate,maturity,
                               frequency_,convention_);
-            SimpleSwap swap(true,nominals_[0],
-                            schedule,strikes[j],index_->dayCounter(),
-                            schedule,index_,fixingDays_,0.0,
-                            termStructure_);
+            VanillaSwap swap(true,nominals_[0],
+                             schedule,strikes[j],index_->dayCounter(),
+                             schedule,index_,fixingDays_,0.0,
+                             index_->dayCounter(), termStructure_);
             if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
                 BOOST_FAIL(
                     "put/call parity violated:\n"

@@ -143,10 +143,10 @@ void CompoundForwardTest::testSuppliedRates() {
                                          convention);
         Schedule schedule(calendar,settlement,maturity,
                           frequency,convention);
-        SimpleSwap swap(true,100.0,
-                        schedule,0.0,dayCounter,
-                        schedule,index,fixingDays,0.0,
-                        liborHandle);
+        VanillaSwap swap(true,100.0,
+                         schedule,0.0,dayCounter,
+                         schedule,index,fixingDays,0.0,
+                         index->dayCounter(),liborHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
@@ -183,10 +183,10 @@ void CompoundForwardTest::testConvertedRates() {
                                          convention);
         Schedule schedule(calendar,settlement,maturity,
                           frequency,convention);
-        SimpleSwap swap(true,100.0,
-                        schedule,0.0,dayCounter,
-                        schedule,index,fixingDays,0.0,
-                        liborHandle);
+        VanillaSwap swap(true,100.0,
+                         schedule,0.0,dayCounter,
+                         schedule,index,fixingDays,0.0,
+                         index->dayCounter(),liborHandle);
         DayCounter tsdc  = termStructure->dayCounter();
         Rate expectedRate = termStructure->compoundForward(swap.maturity(),
                                                            frequency);

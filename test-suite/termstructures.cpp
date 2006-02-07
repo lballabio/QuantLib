@@ -88,7 +88,8 @@ void setup() {
                                              swapData[i].n, swapData[i].units,
                                              settlementDays_, calendar_,
                                              Annual, Unadjusted, Thirty360(),
-                                             Semiannual, ModifiedFollowing));
+                                             Semiannual, ModifiedFollowing,
+                                             Actual360()));
     }
     termStructure_ = boost::shared_ptr<YieldTermStructure>(
               new PiecewiseFlatForward(settlement, instruments, Actual360()));

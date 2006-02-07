@@ -52,7 +52,7 @@ namespace QuantLib {
       public:
         class arguments;
         class results;
-        Swaption(const boost::shared_ptr<SimpleSwap>& swap,
+        Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                  const boost::shared_ptr<Exercise>& exercise,
                  const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine);
@@ -60,12 +60,12 @@ namespace QuantLib {
         void setupArguments(Arguments*) const;
       private:
         // arguments
-        boost::shared_ptr<SimpleSwap> swap_;
+        boost::shared_ptr<VanillaSwap> swap_;
         Handle<YieldTermStructure> termStructure_;
     };
 
     //! %Arguments for swaption calculation
-    class Swaption::arguments : public SimpleSwap::arguments,
+    class Swaption::arguments : public VanillaSwap::arguments,
                                 public Option::arguments {
       public:
         arguments() : fairRate(Null<Real>()),

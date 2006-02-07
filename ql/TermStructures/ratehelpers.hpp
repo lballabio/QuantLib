@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,7 +39,6 @@ namespace QuantLib {
         available rate helpers, though - only SwapRateHelper contains a
         Swap instrument for the time being.
     */
-
     class RateHelper : public Observer, public Observable {
       public:
         RateHelper(const Handle<Quote>& quote);
@@ -82,7 +81,7 @@ namespace QuantLib {
     };
 
 
-    //! Deposit rate
+    //! Deposit rate helper
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
@@ -116,7 +115,7 @@ namespace QuantLib {
     };
 
 
-    //! Forward rate agreement
+    //! Forward rate agreement helper
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
 
@@ -151,7 +150,7 @@ namespace QuantLib {
     };
 
 
-    //! Interest-rate futures
+    //! Interest-rate futures helper
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
@@ -189,7 +188,7 @@ namespace QuantLib {
     };
 
 
-    //! %Swap rate
+    //! %Swap rate helper
     /*! \todo currency and day counter of Xibor should be added to
               obtain well-defined SwapRateHelper
 		\warning This class assumes that the settlement date
@@ -197,6 +196,8 @@ namespace QuantLib {
     */
     class SwapRateHelper : public RateHelper {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use one of the other constructors */
         SwapRateHelper(const Handle<Quote>& rate,
                        Integer n, TimeUnit units,
                        Integer settlementDays,
@@ -208,6 +209,7 @@ namespace QuantLib {
                        // floating leg
                        Frequency floatingFrequency,
                        BusinessDayConvention floatingConvention);
+        /*! \deprecated use one of the other constructors */
         SwapRateHelper(Rate rate,
                        Integer n, TimeUnit units,
                        Integer settlementDays,
@@ -219,6 +221,31 @@ namespace QuantLib {
                        // floating leg
                        Frequency floatingFrequency,
                        BusinessDayConvention floatingConvention);
+        #endif
+        SwapRateHelper(const Handle<Quote>& rate,
+                       Integer n, TimeUnit units,
+                       Integer settlementDays,
+                       const Calendar& calendar,
+                       // fixed leg
+                       Frequency fixedFrequency,
+                       BusinessDayConvention fixedConvention,
+                       const DayCounter& fixedDayCount,
+                       // floating leg
+                       Frequency floatingFrequency,
+                       BusinessDayConvention floatingConvention,
+                       const DayCounter& floatingDayCount);
+        SwapRateHelper(Rate rate,
+                       Integer n, TimeUnit units,
+                       Integer settlementDays,
+                       const Calendar& calendar,
+                       // fixed leg
+                       Frequency fixedFrequency,
+                       BusinessDayConvention fixedConvention,
+                       const DayCounter& fixedDayCount,
+                       // floating leg
+                       Frequency floatingFrequency,
+                       BusinessDayConvention floatingConvention,
+                       const DayCounter& floatingDayCount);
         Real impliedQuote() const;
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
@@ -231,9 +258,9 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention fixedConvention_, floatingConvention_;
         Frequency fixedFrequency_, floatingFrequency_;
-        DayCounter fixedDayCount_;
+        DayCounter fixedDayCount_, floatingDayCount_;
         Date settlement_, latestDate_;
-        boost::shared_ptr<SimpleSwap> swap_;
+        boost::shared_ptr<VanillaSwap> swap_;
         Handle<YieldTermStructure> termStructureHandle_;
     };
 

@@ -49,18 +49,18 @@ Handle<YieldTermStructure> termStructure_;
 
 // utilities
 
-boost::shared_ptr<SimpleSwap> makeSwap(Rate fixedRate) {
+boost::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) {
     Date start = calendar_.advance(settlement_,startYears_,Years);
     Date maturity = calendar_.advance(start,length_,Years);
     Schedule fixedSchedule(calendar_,start,maturity,
                            fixedFrequency_,fixedConvention_);
     Schedule floatSchedule(calendar_,start,maturity,
                            floatingFrequency_,floatingConvention_);
-    return boost::shared_ptr<SimpleSwap>(
-            new SimpleSwap(payFixed_,nominal_,
-                           fixedSchedule,fixedRate,fixedDayCount_,
-                           floatSchedule,index_,fixingDays_,0.0,
-                           termStructure_));
+    return boost::shared_ptr<VanillaSwap>(
+            new VanillaSwap(payFixed_,nominal_,
+                            fixedSchedule,fixedRate,fixedDayCount_,
+                            floatSchedule,index_,fixingDays_,0.0,
+                            index_->dayCounter(),termStructure_));
 }
 
 void setup() {
@@ -107,9 +107,9 @@ void BermudanSwaptionTest::testCachedValues() {
 
     Rate atmRate = makeSwap(0.0)->fairRate();
 
-    boost::shared_ptr<SimpleSwap> itmSwap = makeSwap(0.8*atmRate);
-    boost::shared_ptr<SimpleSwap> atmSwap = makeSwap(atmRate);
-    boost::shared_ptr<SimpleSwap> otmSwap = makeSwap(1.2*atmRate);
+    boost::shared_ptr<VanillaSwap> itmSwap = makeSwap(0.8*atmRate);
+    boost::shared_ptr<VanillaSwap> atmSwap = makeSwap(atmRate);
+    boost::shared_ptr<VanillaSwap> otmSwap = makeSwap(1.2*atmRate);
 
     Real a = 0.048696, sigma = 0.0058904;
     boost::shared_ptr<ShortRateModel> model(new HullWhite(termStructure_,

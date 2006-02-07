@@ -29,9 +29,11 @@
 
 namespace QuantLib {
 
+    //! calibration helper for ATM swaption
     class SwaptionHelper : public CalibrationHelper {
       public:
-        // Constructor for ATM swaption
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the other constructor */
         SwaptionHelper(const Period& maturity,
                        const Period& length,
                        const Handle<Quote>& volatility,
@@ -40,16 +42,22 @@ namespace QuantLib {
                        const DayCounter& fixedLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
                        bool calibrateVolatility = false);
-
+        #endif
+        SwaptionHelper(const Period& maturity,
+                       const Period& length,
+                       const Handle<Quote>& volatility,
+                       const boost::shared_ptr<Xibor>& index,
+                       Frequency fixedLegFrequency,
+                       const DayCounter& fixedLegDayCounter,
+                       const DayCounter& floatingLegDayCounter,
+                       const Handle<YieldTermStructure>& termStructure,
+                       bool calibrateVolatility = false);
         virtual void addTimesTo(std::list<Time>& times) const;
-
         virtual Real modelValue() const;
-
         virtual Real blackPrice(Volatility volatility) const;
-
       private:
         Rate exerciseRate_;
-        boost::shared_ptr<SimpleSwap> swap_;
+        boost::shared_ptr<VanillaSwap> swap_;
         boost::shared_ptr<Swaption> swaption_;
     };
 

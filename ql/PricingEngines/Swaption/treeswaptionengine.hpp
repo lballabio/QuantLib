@@ -33,16 +33,21 @@ namespace QuantLib {
     //! Numerical lattice engine for simple swaps
     /*! \test calculations are checked against known good results
     */
-    class TreeSimpleSwapEngine
-    : public LatticeShortRateModelEngine<SimpleSwap::arguments,
-                                         SimpleSwap::results> {
+    class TreeVanillaSwapEngine
+    : public LatticeShortRateModelEngine<VanillaSwap::arguments,
+                                         VanillaSwap::results> {
       public:
-        TreeSimpleSwapEngine(const boost::shared_ptr<ShortRateModel>&,
-                             Size timeSteps);
-        TreeSimpleSwapEngine(const boost::shared_ptr<ShortRateModel>&,
-                             const TimeGrid& timeGrid) ;
+        TreeVanillaSwapEngine(const boost::shared_ptr<ShortRateModel>&,
+                              Size timeSteps);
+        TreeVanillaSwapEngine(const boost::shared_ptr<ShortRateModel>&,
+                              const TimeGrid& timeGrid) ;
         void calculate() const;
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to TreeVanillaSwapEngine */
+    typedef TreeVanillaSwapEngine TreeSimpleSwapEngine;
+    #endif
 
 
     //! Numerical lattice engine for swaptions

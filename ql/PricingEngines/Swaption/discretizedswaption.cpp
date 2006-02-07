@@ -22,7 +22,7 @@
 
 namespace QuantLib {
 
-    DiscretizedSwap::DiscretizedSwap(const SimpleSwap::arguments& args)
+    DiscretizedSwap::DiscretizedSwap(const VanillaSwap::arguments& args)
     : arguments_(args) {}
 
     void DiscretizedSwap::reset(Size size) {

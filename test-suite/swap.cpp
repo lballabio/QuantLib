@@ -52,19 +52,19 @@ Handle<YieldTermStructure> termStructure_;
 
 // utilities
 
-boost::shared_ptr<SimpleSwap> makeSwap(Integer length, Rate fixedRate,
-                                       Spread floatingSpread) {
+boost::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
+                                        Spread floatingSpread) {
     Date maturity = calendar_.advance(settlement_,length,Years,
                                       floatingConvention_);
     Schedule fixedSchedule(calendar_,settlement_,maturity,
                            fixedFrequency_,fixedConvention_);
     Schedule floatSchedule(calendar_,settlement_,maturity,
                            floatingFrequency_,floatingConvention_);
-    return boost::shared_ptr<SimpleSwap>(
-            new SimpleSwap(payFixed_,nominal_,
-                           fixedSchedule,fixedRate,fixedDayCount_,
-                           floatSchedule,index_,fixingDays_,floatingSpread,
-                           termStructure_));
+    return boost::shared_ptr<VanillaSwap>(
+            new VanillaSwap(payFixed_,nominal_,
+                            fixedSchedule,fixedRate,fixedDayCount_,
+                            floatSchedule,index_,fixingDays_,floatingSpread,
+                            index_->dayCounter(),termStructure_));
 }
 
 void setup() {
@@ -106,7 +106,7 @@ void SwapTest::testFairRate() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(spreads); j++) {
 
-            boost::shared_ptr<SimpleSwap> swap =
+            boost::shared_ptr<VanillaSwap> swap =
                 makeSwap(lengths[i],0.0,spreads[j]);
             swap = makeSwap(lengths[i],swap->fairRate(),spreads[j]);
             if (std::fabs(swap->NPV()) > 1.0e-10) {
@@ -137,7 +137,7 @@ void SwapTest::testFairSpread() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(rates); j++) {
 
-            boost::shared_ptr<SimpleSwap> swap =
+            boost::shared_ptr<VanillaSwap> swap =
                 makeSwap(lengths[i],rates[j],0.0);
             swap = makeSwap(lengths[i],rates[j],swap->fairSpread());
             if (std::fabs(swap->NPV()) > 1.0e-10) {
@@ -169,7 +169,7 @@ void SwapTest::testRateDependency() {
             // store the results for different rates...
             std::vector<Real> swap_values;
             for (Size k=0; k<LENGTH(rates); k++) {
-                boost::shared_ptr<SimpleSwap> swap =
+                boost::shared_ptr<VanillaSwap> swap =
                     makeSwap(lengths[i],rates[k],spreads[j]);
                 swap_values.push_back(swap->NPV());
             }
@@ -209,7 +209,7 @@ void SwapTest::testSpreadDependency() {
             // store the results for different spreads...
             std::vector<Real> swap_values;
             for (Size k=0; k<LENGTH(spreads); k++) {
-                boost::shared_ptr<SimpleSwap> swap =
+                boost::shared_ptr<VanillaSwap> swap =
                     makeSwap(lengths[i],rates[j],spreads[k]);
                 swap_values.push_back(swap->NPV());
             }
@@ -313,12 +313,12 @@ void SwapTest::testCachedValue() {
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
     termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
 
-    boost::shared_ptr<SimpleSwap> swap = makeSwap(10, 0.06, 0.001);
-#ifndef QL_USE_INDEXED_COUPON
+    boost::shared_ptr<VanillaSwap> swap = makeSwap(10, 0.06, 0.001);
+    #ifndef QL_USE_INDEXED_COUPON
     Real cachedNPV   = -5.872863313209;
-#else
+    #else
     Real cachedNPV   = -5.872342992212;
-#endif
+    #endif
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_ERROR("failed to reproduce cached swap value:\n"

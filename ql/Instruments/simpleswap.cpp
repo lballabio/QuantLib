@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2000-2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,16 +24,17 @@
 
 namespace QuantLib {
 
-    SimpleSwap::SimpleSwap(bool payFixedRate,
-                           Real nominal,
-                           const Schedule& fixedSchedule,
-                           Rate fixedRate,
-                           const DayCounter& fixedDayCount,
-                           const Schedule& floatSchedule,
-                           const boost::shared_ptr<Xibor>& index,
-                           Integer indexFixingDays,
-                           Spread spread,
-                           const Handle<YieldTermStructure>& termStructure)
+    #ifndef QL_DISABLE_DEPRECATED
+    VanillaSwap::VanillaSwap(bool payFixedRate,
+                             Real nominal,
+                             const Schedule& fixedSchedule,
+                             Rate fixedRate,
+                             const DayCounter& fixedDayCount,
+                             const Schedule& floatSchedule,
+                             const boost::shared_ptr<Xibor>& index,
+                             Integer indexFixingDays,
+                             Spread spread,
+                             const Handle<YieldTermStructure>& termStructure)
     : Swap(std::vector<boost::shared_ptr<CashFlow> >(),
            std::vector<boost::shared_ptr<CashFlow> >(),
            termStructure),
@@ -70,11 +71,60 @@ namespace QuantLib {
             secondLeg_ = fixedLeg;
         }
     }
+    #endif
+
+    VanillaSwap::VanillaSwap(bool payFixedRate,
+                             Real nominal,
+                             const Schedule& fixedSchedule,
+                             Rate fixedRate,
+                             const DayCounter& fixedDayCount,
+                             const Schedule& floatSchedule,
+                             const boost::shared_ptr<Xibor>& index,
+                             Integer indexFixingDays,
+                             Spread spread,
+                             const DayCounter& floatingDayCount,
+                             const Handle<YieldTermStructure>& termStructure)
+    : Swap(std::vector<boost::shared_ptr<CashFlow> >(),
+           std::vector<boost::shared_ptr<CashFlow> >(),
+           termStructure),
+      payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread),
+      nominal_(nominal) {
+
+        BusinessDayConvention convention =
+            floatSchedule.businessDayConvention();
+
+        std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
+            FixedRateCouponVector(fixedSchedule,
+                                  convention,
+                                  std::vector<Real>(1,nominal),
+                                  std::vector<Rate>(1,fixedRate),
+                                  fixedDayCount);
+
+        std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
+            FloatingRateCouponVector(floatSchedule,
+                                     convention,
+                                     std::vector<Real>(1,nominal),
+                                     index, indexFixingDays,
+                                     std::vector<Spread>(1,spread),
+                                     floatingDayCount);
+        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
+
+        for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
+            registerWith(*i);
+
+        if (payFixedRate_) {
+            firstLeg_ = fixedLeg;
+            secondLeg_ = floatingLeg;
+        } else {
+            firstLeg_ = floatingLeg;
+            secondLeg_ = fixedLeg;
+        }
+    }
 
 
-    void SimpleSwap::setupArguments(Arguments* args) const {
-        SimpleSwap::arguments* arguments =
-            dynamic_cast<SimpleSwap::arguments*>(args);
+    void VanillaSwap::setupArguments(Arguments* args) const {
+        VanillaSwap::arguments* arguments =
+            dynamic_cast<VanillaSwap::arguments*>(args);
 
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
@@ -136,38 +186,38 @@ namespace QuantLib {
         }
     }
 
-    Rate SimpleSwap::fairRate() const {
+    Rate VanillaSwap::fairRate() const {
         calculate();
         QL_REQUIRE(fairRate_ != Null<Rate>(), "result not available");
         return fairRate_;
     }
 
-    Spread SimpleSwap::fairSpread() const {
+    Spread VanillaSwap::fairSpread() const {
         calculate();
         QL_REQUIRE(fairSpread_ != Null<Spread>(), "result not available");
         return fairSpread_;
     }
 
-    Real SimpleSwap::fixedLegBPS() const {
+    Real VanillaSwap::fixedLegBPS() const {
         calculate();
         QL_REQUIRE(fixedLegBPS_ != Null<Real>(), "result not available");
         return fixedLegBPS_;
     }
 
-    Real SimpleSwap::floatingLegBPS() const {
+    Real VanillaSwap::floatingLegBPS() const {
         calculate();
         QL_REQUIRE(floatingLegBPS_ != Null<Real>(), "result not available");
         return floatingLegBPS_;
     }
 
-    void SimpleSwap::setupExpired() const {
+    void VanillaSwap::setupExpired() const {
         Swap::setupExpired();
         fixedLegBPS_ = floatingLegBPS_ = 0.0;
         fairRate_ = Null<Rate>();
         fairSpread_ = Null<Spread>();
     }
 
-    void SimpleSwap::performCalculations() const {
+    void VanillaSwap::performCalculations() const {
         if (engine_) {
             Instrument::performCalculations();
         } else {
@@ -179,10 +229,10 @@ namespace QuantLib {
         }
     }
 
-    void SimpleSwap::fetchResults(const Results* r) const {
+    void VanillaSwap::fetchResults(const Results* r) const {
         Instrument::fetchResults(r);
-        const SimpleSwap::results* results =
-            dynamic_cast<const SimpleSwap::results*>(r);
+        const VanillaSwap::results* results =
+            dynamic_cast<const VanillaSwap::results*>(r);
         fixedLegBPS_ = results->fixedLegBPS;
         floatingLegBPS_ = results->floatingLegBPS;
         fairRate_ = results->fairRate;
@@ -196,7 +246,7 @@ namespace QuantLib {
         }
     }
 
-    void SimpleSwap::arguments::validate() const {
+    void VanillaSwap::arguments::validate() const {
         QL_REQUIRE(nominal != Null<Real>(),
                    "nominal null or not set");
         QL_REQUIRE(fixedResetTimes.size() == fixedPayTimes.size(),

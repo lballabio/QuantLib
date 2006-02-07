@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2000-2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    //! Simple fixed-rate vs Libor swap
+    //! Plain-vanilla swap
     /*! \ingroup instruments
 
         \test
@@ -47,20 +47,34 @@ namespace QuantLib {
         - the correctness of the returned value is tested by checking
           it against a known good value.
     */
-    class SimpleSwap : public Swap {
+    class VanillaSwap : public Swap {
       public:
         class arguments;
         class results;
-        SimpleSwap(bool payFixedRate,
-                   Real nominal,
-                   const Schedule& fixedSchedule,
-                   Rate fixedRate,
-                   const DayCounter& fixedDayCount,
-                   const Schedule& floatSchedule,
-                   const boost::shared_ptr<Xibor>& index,
-                   Integer indexFixingDays,
-                   Spread spread,
-                   const Handle<YieldTermStructure>& termStructure);
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the other constructor */
+        VanillaSwap(bool payFixedRate,
+                    Real nominal,
+                    const Schedule& fixedSchedule,
+                    Rate fixedRate,
+                    const DayCounter& fixedDayCount,
+                    const Schedule& floatSchedule,
+                    const boost::shared_ptr<Xibor>& index,
+                    Integer indexFixingDays,
+                    Spread spread,
+                    const Handle<YieldTermStructure>& termStructure);
+        #endif
+        VanillaSwap(bool payFixedRate,
+                    Real nominal,
+                    const Schedule& fixedSchedule,
+                    Rate fixedRate,
+                    const DayCounter& fixedDayCount,
+                    const Schedule& floatSchedule,
+                    const boost::shared_ptr<Xibor>& index,
+                    Integer indexFixingDays,
+                    Spread spread,
+                    const DayCounter& floatingDayCount,
+                    const Handle<YieldTermStructure>& termStructure);
         // results
         Rate fairRate() const;
         Spread fairSpread() const;
@@ -89,8 +103,14 @@ namespace QuantLib {
         mutable Spread fairSpread_;
     };
 
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to PlainSwap */
+    typedef PlainVanillaSwap SimpleSwap;
+    #endif
+
+
     //! %Arguments for simple swap calculation
-    class SimpleSwap::arguments : public virtual Arguments {
+    class VanillaSwap::arguments : public virtual Arguments {
       public:
         arguments() : payFixed(false),
                       nominal(Null<Real>()),
@@ -110,7 +130,7 @@ namespace QuantLib {
     };
 
     //! %Results from simple swap calculation
-    class SimpleSwap::results : public Value {
+    class VanillaSwap::results : public Value {
       public:
         Real fixedLegBPS;
         Real floatingLegBPS;
@@ -127,29 +147,29 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Rate SimpleSwap::fixedRate() const {
+    inline Rate VanillaSwap::fixedRate() const {
         return fixedRate_;
     }
 
-    inline Spread SimpleSwap::spread() const {
+    inline Spread VanillaSwap::spread() const {
         return spread_;
     }
 
-    inline Real SimpleSwap::nominal() const {
+    inline Real VanillaSwap::nominal() const {
         return nominal_;
     }
 
-    inline bool SimpleSwap::payFixedRate() const {
+    inline bool VanillaSwap::payFixedRate() const {
         return payFixedRate_;
     }
 
     inline const std::vector<boost::shared_ptr<CashFlow> >&
-    SimpleSwap::fixedLeg() const {
+    VanillaSwap::fixedLeg() const {
         return (payFixedRate_ ? firstLeg_ : secondLeg_);
     }
 
     inline const std::vector<boost::shared_ptr<CashFlow> >&
-    SimpleSwap::floatingLeg() const {
+    VanillaSwap::floatingLeg() const {
         return (payFixedRate_ ? secondLeg_ : firstLeg_);
     }
 

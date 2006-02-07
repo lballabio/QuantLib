@@ -80,7 +80,7 @@ void ShortRateModelTest::testCachedHullWhite() {
                                                 Handle<Quote>(vol),
                                                 index,
                                                 Annual, Thirty360(),
-                                                termStructure));
+                                                Actual360(), termStructure));
         helper->setPricingEngine(boost::shared_ptr<PricingEngine>(
                                         new JamshidianSwaptionEngine(model)));
         swaptions.push_back(helper);
@@ -170,7 +170,7 @@ void ShortRateModelTest::testSwaps() {
     boost::shared_ptr<Xibor> euribor(new Euribor(6,Months,termStructure));
 
     boost::shared_ptr<PricingEngine> engine(
-                                         new TreeSimpleSwapEngine(model,120));
+                                        new TreeVanillaSwapEngine(model,120));
 
     Real tolerance = 1.0e-8;
     for (Size i=0; i<LENGTH(start); i++) {
@@ -194,10 +194,10 @@ void ShortRateModelTest::testSwaps() {
 
             for (Size k=0; k<LENGTH(rates); k++) {
 
-                SimpleSwap swap(true, 1000000.0,
-                                fixedSchedule, rates[k], Thirty360(),
-                                floatSchedule, euribor, 2, 0.0,
-                                termStructure);
+                VanillaSwap swap(true, 1000000.0,
+                                 fixedSchedule, rates[k], Thirty360(),
+                                 floatSchedule, euribor, 2, 0.0,
+                                 Actual360(), termStructure);
                 Real expected = swap.NPV();
                 swap.setPricingEngine(engine);
                 Real calculated = swap.NPV();

@@ -23,19 +23,19 @@
 
 namespace QuantLib {
 
-    TreeSimpleSwapEngine::TreeSimpleSwapEngine(
+    TreeVanillaSwapEngine::TreeVanillaSwapEngine(
                                const boost::shared_ptr<ShortRateModel>& model,
                                Size timeSteps)
-    : LatticeShortRateModelEngine<SimpleSwap::arguments, SimpleSwap::results>
+    : LatticeShortRateModelEngine<VanillaSwap::arguments, VanillaSwap::results>
     (model, timeSteps) {}
 
-    TreeSimpleSwapEngine::TreeSimpleSwapEngine(
+    TreeVanillaSwapEngine::TreeVanillaSwapEngine(
                                const boost::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid)
-    : LatticeShortRateModelEngine<SimpleSwap::arguments, SimpleSwap::results>
+    : LatticeShortRateModelEngine<VanillaSwap::arguments, VanillaSwap::results>
     (model, timeGrid) {}
 
-    void TreeSimpleSwapEngine::calculate() const {
+    void TreeVanillaSwapEngine::calculate() const {
 
         QL_REQUIRE(model_, "no model specified");
 

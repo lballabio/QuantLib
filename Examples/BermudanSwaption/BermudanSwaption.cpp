@@ -117,30 +117,30 @@ int main(int, char* [])
                                fixedLegFrequency,fixedLegConvention);
         Schedule floatSchedule(calendar,startDate,maturity,
                                floatingLegFrequency,floatingLegConvention);
-        boost::shared_ptr<SimpleSwap> swap(new SimpleSwap(
+        boost::shared_ptr<VanillaSwap> swap(new VanillaSwap(
             payFixedRate, 1000.0,
             fixedSchedule, dummyFixedRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, fixingDays, 0.0,
-            rhTermStructure));
+            indexSixMonths->dayCounter(), rhTermStructure));
         Rate fixedATMRate = swap->fairRate();
         Rate fixedOTMRate = fixedATMRate * 1.2;
         Rate fixedITMRate = fixedATMRate * 0.8;
 
-        boost::shared_ptr<SimpleSwap> atmSwap(new SimpleSwap(
+        boost::shared_ptr<VanillaSwap> atmSwap(new VanillaSwap(
             payFixedRate, 1000.0,
             fixedSchedule, fixedATMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, fixingDays, 0.0,
-            rhTermStructure));
-        boost::shared_ptr<SimpleSwap> otmSwap(new SimpleSwap(
+            indexSixMonths->dayCounter(), rhTermStructure));
+        boost::shared_ptr<VanillaSwap> otmSwap(new VanillaSwap(
             payFixedRate, 1000.0,
             fixedSchedule, fixedOTMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, fixingDays, 0.0,
-            rhTermStructure));
-        boost::shared_ptr<SimpleSwap> itmSwap(new SimpleSwap(
+            indexSixMonths->dayCounter(), rhTermStructure));
+        boost::shared_ptr<VanillaSwap> itmSwap(new VanillaSwap(
             payFixedRate, 1000.0,
             fixedSchedule, fixedITMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, fixingDays, 0.0,
-            rhTermStructure));
+            indexSixMonths->dayCounter(), rhTermStructure));
 
         // defining the swaptions to be used in model calibration
         std::vector<Period> swaptionMaturities;
@@ -166,6 +166,7 @@ int main(int, char* [])
                                Handle<Quote>(vol),
                                indexSixMonths,
                                indexSixMonths->frequency(),
+                               indexSixMonths->dayCounter(),
                                indexSixMonths->dayCounter(),
                                rhTermStructure)));
             swaptions.back()->addTimesTo(times);

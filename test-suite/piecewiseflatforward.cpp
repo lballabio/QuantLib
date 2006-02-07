@@ -131,7 +131,7 @@ void setup() {
                                    settlementDays, calendar,
                                    fixedLegFrequency, fixedLegConvention,
                                    fixedLegDayCounter, floatingLegFrequency,
-                                   floatingLegConvention));
+                                   floatingLegConvention, Actual360()));
     }
 
     // instantiate curve
@@ -185,10 +185,10 @@ void PiecewiseFlatForwardTest::testConsistency() {
                                fixedLegFrequency,fixedLegConvention);
         Schedule floatSchedule(calendar,settlement,maturity,
                                floatingLegFrequency,floatingLegConvention);
-        SimpleSwap swap(true,100.0,
-                        fixedSchedule,0.0,fixedLegDayCounter,
-                        floatSchedule,index,fixingDays,0.0,
-                        euriborHandle);
+        VanillaSwap swap(true,100.0,
+                         fixedSchedule,0.0,fixedLegDayCounter,
+                         floatSchedule,index,fixingDays,0.0,
+                         Actual360(),euriborHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {

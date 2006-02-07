@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    Swaption::Swaption(const boost::shared_ptr<SimpleSwap>& swap,
+    Swaption::Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                        const boost::shared_ptr<Exercise>& exercise,
                        const Handle<YieldTermStructure>& termStructure,
                        const boost::shared_ptr<PricingEngine>& engine)
@@ -74,10 +74,10 @@ namespace QuantLib {
 
     void Swaption::arguments::validate() const {
         #if defined(QL_PATCH_MSVC6)
-        SimpleSwap::arguments copy = *this;
+        VanillaSwap::arguments copy = *this;
         copy.validate();
         #else
-        SimpleSwap::arguments::validate();
+        VanillaSwap::arguments::validate();
         #endif
 
         QL_REQUIRE(fixedRate != Null<Real>(),

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -224,7 +224,7 @@ namespace QuantLib {
         return maturity_;
     }
 
-
+    #ifndef QL_DISABLE_DEPRECATED
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    Integer n, TimeUnit units,
                                    Integer settlementDays,
@@ -240,7 +240,8 @@ namespace QuantLib {
       floatingConvention_(floatingConvention),
       fixedFrequency_(fixedFrequency),
       floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount) {
+      fixedDayCount_(fixedDayCount),
+      floatingDayCount_(Actual360()) {
         registerWith(Settings::instance().evaluationDate());
     }
 
@@ -259,7 +260,51 @@ namespace QuantLib {
       floatingConvention_(floatingConvention),
       fixedFrequency_(fixedFrequency),
       floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount) {
+      fixedDayCount_(fixedDayCount),
+      floatingDayCount_(Actual360()) {
+        registerWith(Settings::instance().evaluationDate());
+    }
+    #endif
+
+    SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
+                                   Integer n, TimeUnit units,
+                                   Integer settlementDays,
+                                   const Calendar& calendar,
+                                   Frequency fixedFrequency,
+                                   BusinessDayConvention fixedConvention,
+                                   const DayCounter& fixedDayCount,
+                                   Frequency floatingFrequency,
+                                   BusinessDayConvention floatingConvention,
+                                   const DayCounter& floatingDayCount)
+    : RateHelper(rate),
+      n_(n), units_(units), settlementDays_(settlementDays),
+      calendar_(calendar), fixedConvention_(fixedConvention),
+      floatingConvention_(floatingConvention),
+      fixedFrequency_(fixedFrequency),
+      floatingFrequency_(floatingFrequency),
+      fixedDayCount_(fixedDayCount),
+      floatingDayCount_(floatingDayCount) {
+        registerWith(Settings::instance().evaluationDate());
+    }
+
+    SwapRateHelper::SwapRateHelper(
+                            Rate rate,
+                            Integer n, TimeUnit units, Integer settlementDays,
+                            const Calendar& calendar,
+                            Frequency fixedFrequency,
+                            BusinessDayConvention fixedConvention,
+                            const DayCounter& fixedDayCount,
+                            Frequency floatingFrequency,
+                            BusinessDayConvention floatingConvention,
+                            const DayCounter& floatingDayCount)
+    : RateHelper(rate),
+      n_(n), units_(units), settlementDays_(settlementDays),
+      calendar_(calendar), fixedConvention_(fixedConvention),
+      floatingConvention_(floatingConvention),
+      fixedFrequency_(fixedFrequency),
+      floatingFrequency_(floatingFrequency),
+      fixedDayCount_(fixedDayCount),
+      floatingDayCount_(floatingDayCount) {
         registerWith(Settings::instance().evaluationDate());
     }
 
@@ -288,14 +333,14 @@ namespace QuantLib {
                                                Currency(),
                                                calendar_,
                                                floatingConvention_,
-                                               Actual360(),
+                                               floatingDayCount_,
                                                termStructureHandle_));
 
-        swap_ = boost::shared_ptr<SimpleSwap>(
-                   new SimpleSwap(true, 100.0,
-                                  fixedSchedule, 0.0, fixedDayCount_,
-                                  floatSchedule, dummyIndex, fixingDays, 0.0,
-                                  termStructureHandle_));
+        swap_ = boost::shared_ptr<VanillaSwap>(
+                   new VanillaSwap(true, 100.0,
+                                   fixedSchedule, 0.0, fixedDayCount_,
+                                   floatSchedule, dummyIndex, fixingDays, 0.0,
+                                   floatingDayCount_, termStructureHandle_));
 
         // Usually...
         latestDate_ = swap_->maturity();

@@ -32,14 +32,14 @@ namespace QuantLib {
 
     class DiscretizedSwap : public DiscretizedAsset {
       public:
-        DiscretizedSwap(const SimpleSwap::arguments&);
+        DiscretizedSwap(const VanillaSwap::arguments&);
         void reset(Size size);
         std::vector<Time> mandatoryTimes() const;
       protected:
         void preAdjustValuesImpl();
         void postAdjustValuesImpl();
       private:
-        SimpleSwap::arguments arguments_;
+        VanillaSwap::arguments arguments_;
     };
 
     class DiscretizedSwaption : public DiscretizedOption {

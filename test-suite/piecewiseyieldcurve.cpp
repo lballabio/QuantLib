@@ -169,7 +169,7 @@ void setup() {
                                    settlementDays, calendar,
                                    fixedLegFrequency, fixedLegConvention,
                                    fixedLegDayCounter, floatingLegFrequency,
-                                   floatingLegConvention));
+                                   floatingLegConvention, Actual360()));
     }
     for (i=0; i<bonds; i++) {
         Handle<Quote> p(prices[i]);
@@ -234,10 +234,10 @@ void testCurveConsistency(const T&, const I& interpolator) {
                                fixedLegFrequency,fixedLegConvention);
         Schedule floatSchedule(calendar,settlement,maturity,
                                floatingLegFrequency,floatingLegConvention);
-        SimpleSwap swap(true,100.0,
-                        fixedSchedule,0.0,fixedLegDayCounter,
-                        floatSchedule,index,fixingDays,0.0,
-                        curveHandle);
+        VanillaSwap swap(true,100.0,
+                         fixedSchedule,0.0,fixedLegDayCounter,
+                         floatSchedule,index,fixingDays,0.0,
+                         Actual360(),curveHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         #ifdef QL_PATCH_BORLAND

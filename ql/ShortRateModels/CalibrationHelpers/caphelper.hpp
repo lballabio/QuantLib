@@ -30,9 +30,9 @@
 
 namespace QuantLib {
 
+    //! calibration helper for ATM cap
     class CapHelper : public CalibrationHelper {
       public:
-        // Constructor for ATM cap
         CapHelper(const Period& length,
                   const Handle<Quote>& volatility,
                   const boost::shared_ptr<Xibor>& index,

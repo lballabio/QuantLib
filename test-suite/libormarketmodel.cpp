@@ -310,6 +310,7 @@ void LiborMarketModelTest::testCalibration() {
                 boost::shared_ptr<CalibrationHelper> swaptionHelper(
                     new SwaptionHelper(maturity, len, swaptionVol, index,
                                        frequency, dayCounter,
+                                       index->dayCounter(),
                                        termStructure, true));
 
                 swaptionHelper->setPricingEngine(
@@ -414,11 +415,12 @@ void LiborMarketModelTest::testSwaptionPricing() {
                               frequency, convention);
 
             Rate swapRate  = 0.0404;
-            boost::shared_ptr<SimpleSwap> forwardSwap(
-                new SimpleSwap(false, 1.0, schedule, swapRate,
-                               dayCounter, schedule, index,
-                               index->settlementDays(), 0.0,
-                               Handle<YieldTermStructure>(
+            boost::shared_ptr<VanillaSwap> forwardSwap(
+                new VanillaSwap(false, 1.0, schedule, swapRate,
+                                dayCounter, schedule, index,
+                                index->settlementDays(), 0.0,
+                                index->dayCounter(),
+                                Handle<YieldTermStructure>(
                                    index->termStructure())));
 
             // check forward pricing first
@@ -431,11 +433,12 @@ void LiborMarketModelTest::testSwaptionPricing() {
                             << "\n    expected:   " << expected);
 
             swapRate = forwardSwap->fairRate();
-            forwardSwap = boost::shared_ptr<SimpleSwap>(
-                new SimpleSwap(false, 1.0, schedule, swapRate,
-                               dayCounter, schedule, index,
-                               index->settlementDays(), 0.0,
-                               Handle<YieldTermStructure>(
+            forwardSwap = boost::shared_ptr<VanillaSwap>(
+                new VanillaSwap(false, 1.0, schedule, swapRate,
+                                dayCounter, schedule, index,
+                                index->settlementDays(), 0.0,
+                                index->dayCounter(),
+                                Handle<YieldTermStructure>(
                                    index->termStructure())));
 
             if (i == j && i<=size/2) {
