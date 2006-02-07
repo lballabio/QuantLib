@@ -105,7 +105,7 @@ namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
     /*! \deprecated renamed to PlainSwap */
-    typedef PlainVanillaSwap SimpleSwap;
+    typedef VanillaSwap SimpleSwap;
     #endif
 
 
