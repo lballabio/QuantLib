@@ -221,11 +221,12 @@ namespace QuantLib {
         if (engine_) {
             Instrument::performCalculations();
         } else {
+            static const Spread basisPoint = 1.0e-4;
             Swap::performCalculations();
             fixedLegBPS_ = payFixedRate_ ? firstLegBPS() : secondLegBPS();
             floatingLegBPS_ = payFixedRate_ ? secondLegBPS() : firstLegBPS();
-            fairRate_ = fixedRate_ - NPV_/fixedLegBPS_;
-            fairSpread_ = spread_ - NPV_/floatingLegBPS_;
+            fairRate_ = fixedRate_ - NPV_/(fixedLegBPS_/basisPoint);
+            fairSpread_ = spread_ - NPV_/(floatingLegBPS_/basisPoint);
         }
     }
 

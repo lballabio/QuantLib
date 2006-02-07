@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2005 Charles Whitmore
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -93,7 +93,7 @@ namespace QuantLib {
         const Date& settlementDate = discountCurve->referenceDate();
         Real totalNPV = 0.0;
         for (Size i = 0; i <cashflows.size(); i++) {
-            if (!cashflows[i]->hasOccurred(settlementDate)) 
+            if (!cashflows[i]->hasOccurred(settlementDate))
                 totalNPV += cashflows[i]->amount() *
                             discountCurve->discount(cashflows[i]->date());
         }
@@ -115,13 +115,14 @@ namespace QuantLib {
     Real Cashflows::bps(
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
                    const Handle<YieldTermStructure>& discountCurve) {
+        static const Spread basisPoint = 1.0e-4;
         const Date& settlementDate = discountCurve->referenceDate();
         BPSCalculator calc(discountCurve);
         for (Size i = 0; i <cashflows.size(); i++) {
             if (!cashflows[i]->hasOccurred(settlementDate))
                 cashflows[i]->accept(calc);
         }
-        return calc.result();
+        return basisPoint*calc.result();
     }
 
     Real Cashflows::bps(

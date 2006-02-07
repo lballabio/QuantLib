@@ -24,3 +24,7 @@
 
 - Added Levenberg-Marquardt optimization method (thanks to Klaus Spanderen.)
 
+- Modified basis-point sensitivity calculation so that it returns the
+  cash variation for a basis-point change in rate (it used to return
+  the figure to be multiplied by the variation in order to obtain the
+  same result.)

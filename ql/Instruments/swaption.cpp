@@ -54,8 +54,7 @@ namespace QuantLib {
         // Therefore, the spread on the floating leg is removed
         // and a corresponding correction is made on the fixed leg.
         Spread correction = swap_->spread() *
-            swap_->floatingLegBPS() /
-            swap_->fixedLegBPS();
+            swap_->floatingLegBPS() / swap_->fixedLegBPS();
         // the above is the opposite of the needed value since the
         // two BPSs have opposite sign; hence the + sign below
         arguments->fixedRate = swap_->fixedRate() + correction;

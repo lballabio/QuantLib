@@ -78,8 +78,7 @@ namespace QuantLib {
 
         boost::shared_ptr<Swap> swap(
                               new Swap(floatingLeg, fixedLeg, termStructure));
-        Rate fairRate = fixedRate -
-            swap->NPV()/swap->secondLegBPS();
+        Rate fairRate = fixedRate - swap->NPV()/(swap->secondLegBPS()/1.0e-4);
         engine_  = boost::shared_ptr<PricingEngine>();
         cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg,
                                               std::vector<Rate>(1, fairRate),

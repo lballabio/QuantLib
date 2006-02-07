@@ -70,14 +70,10 @@ namespace QuantLib {
       public:
         arguments() : fairRate(Null<Real>()),
                       fixedRate(Null<Real>()),
-                      fixedBPS(Null<Real>())
-//                      , exerciseType(Exercise::Type(-1))
-        {}
+                      fixedBPS(Null<Real>()) {}
         Rate fairRate;
         Rate fixedRate;
         Real fixedBPS;
-//        Exercise::Type exerciseType;
-//        std::vector<Time> exerciseTimes;
         void validate() const;
     };
 

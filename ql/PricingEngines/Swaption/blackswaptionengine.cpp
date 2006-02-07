@@ -22,9 +22,10 @@
 namespace QuantLib {
 
     void BlackSwaptionEngine::calculate() const {
+        static const Spread basisPoint = 1.0e-4;
         Time exercise = arguments_.stoppingTimes[0];
         Real w = arguments_.payFixed ? 1.0 : -1.0;
-        results_.value =  arguments_.fixedBPS *
+        results_.value =  (arguments_.fixedBPS/basisPoint) *
             BlackModel::formula(arguments_.fairRate,
                                 arguments_.fixedRate,
                                 model_->volatility()*std::sqrt(exercise), w);

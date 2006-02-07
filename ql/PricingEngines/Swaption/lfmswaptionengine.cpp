@@ -22,6 +22,7 @@
 namespace QuantLib {
 
     void LfmSwaptionEngine::calculate() const {
+        static const Spread basisPoint = 1.0e-4;
         const Time exercise = arguments_.stoppingTimes[0];
         const Time length   =  arguments_.fixedPayTimes.back()
                              - arguments_.fixedResetTimes[0];
@@ -30,7 +31,7 @@ namespace QuantLib {
                                            ->volatility(exercise, length,
                                                         arguments_.fairRate,
                                                         true);
-        results_.value =  arguments_.fixedBPS *
+        results_.value =  (arguments_.fixedBPS/basisPoint) *
             BlackModel::formula(arguments_.fairRate,
                                 arguments_.fixedRate,
                                 vol*std::sqrt(exercise), w);
