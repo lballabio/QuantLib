@@ -215,7 +215,7 @@ namespace QuantLib {
         DayCounter dayCounter = process->riskFreeRate()->dayCounter();
 
         moreArgs->stoppingTimes = std::vector<Time>(exercise_->dates().size());
-        for (Size i=0; i<exercise_->dates().size(); i++) {
+        for (i=0; i<exercise_->dates().size(); i++) {
             moreArgs->stoppingTimes[i] =
                 dayCounter.yearFraction(settlement, exercise_->date(i));
         }

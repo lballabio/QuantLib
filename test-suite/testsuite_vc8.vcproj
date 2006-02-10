@@ -44,7 +44,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\functions;.."
-				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				DisableLanguageExtensions="false"
@@ -145,7 +145,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\functions;.."
-				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
+				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -245,7 +245,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\functions;.."
-				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
+				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -343,7 +343,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\functions;.."
-				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				DisableLanguageExtensions="false"
@@ -444,7 +444,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\functions;.."
-				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;"
+				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -543,7 +543,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\functions;.."
-				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;"
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				DisableLanguageExtensions="false"
@@ -1149,6 +1149,10 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\convertiblebonds.cpp"
+				>
 			</File>
 			<File
 				RelativePath="covariance.cpp"
@@ -1980,6 +1984,10 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\libormarketmodel.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\libormarketmodelprocess.cpp"
@@ -3178,6 +3186,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\convertiblebonds.hpp"
+				>
+			</File>
+			<File
 				RelativePath="covariance.hpp"
 				>
 			</File>
@@ -3243,6 +3255,10 @@
 			</File>
 			<File
 				RelativePath="jumpdiffusion.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\libormarketmodel.hpp"
 				>
 			</File>
 			<File

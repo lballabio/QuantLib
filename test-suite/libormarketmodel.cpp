@@ -51,9 +51,8 @@ QL_BEGIN_TEST_LOCALS(LiborMarketModelTest)
 boost::shared_ptr<Xibor> makeIndex(std::vector<Date> dates,
                                    std::vector<Rate> rates) {
     DayCounter dayCounter = Actual360();
-    Handle<YieldTermStructure> termStructure(
-                      boost::shared_ptr<YieldTermStructure>(
-                                      new ZeroCurve(dates,rates,dayCounter)));
+
+    Handle<YieldTermStructure> termStructure;
 
     boost::shared_ptr<Xibor> index(new Euribor(6, Months, termStructure));
 
@@ -115,6 +114,7 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
 
     const Size size = 10;
     const Real tolerance = 1e-14;
+    Size i;
 
     boost::shared_ptr<LmCorrelationModel> corrModel(
                                 new LmExponentialCorrelationModel(size, 0.1));
@@ -122,7 +122,7 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
     Matrix recon = corrModel->correlation(0.0)
         - corrModel->pseudoSqrt(0.0)*transpose(corrModel->pseudoSqrt(0.0));
 
-    for (Size i=0; i<size; ++i) {
+    for (i=0; i<size; ++i) {
         for (Size j=0; j<size; ++j) {
             if (std::fabs(recon[i][j]) > tolerance)
                 BOOST_ERROR("Failed to reproduce correlation matrix"
@@ -132,7 +132,7 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
     }
 
     std::vector<Time> fixingTimes(size);
-    for (Size i=0; i<size; ++i) {
+    for (i=0; i<size; ++i) {
         fixingTimes[i] = 0.5*i;
     }
 
@@ -285,7 +285,8 @@ void LiborMarketModelTest::testCalibration() {
     // set-up calibration helper
     std::vector<boost::shared_ptr<CalibrationHelper> > calibrationHelper;
 
-    for (Size i=2; i < size; ++i) {
+    Size i;
+    for (i=2; i < size; ++i) {
         const Period maturity(i*12/frequency, Months);
         Handle<Quote> capVol(
             boost::shared_ptr<Quote>(new SimpleQuote(capVols[i-2])));
@@ -327,7 +328,7 @@ void LiborMarketModelTest::testCalibration() {
 
     // measure the calibration error
     Real calculated = 0.0;
-    for (Size i=0; i<calibrationHelper.size(); ++i) {
+    for (i=0; i<calibrationHelper.size(); ++i) {
         Real diff = calibrationHelper[i]->calibrationError();
         calculated += diff*diff;
     }
@@ -406,7 +407,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
     boost::shared_ptr<SwaptionVolatilityMatrix> m =
                 liborModel->getSwaptionVolatilityMatrix();
 
-    for (Size i=1; i < size; ++i) {
+    for (i=1; i < size; ++i) {
         for (Size j=1; j <= size-i; ++j) {
             Date fwdStart    = settlement + Period(6*i, Months);
             Date fwdMaturity = fwdStart + Period(6*j, Months);

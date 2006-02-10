@@ -117,8 +117,8 @@ namespace QuantLib {
                 return corrModel_->correlation(i, j, 0.0, x)
                         * volaModel_->integratedVariance(j, i, t, x);
             }
-            catch (Error &e) {
-                // okay procced with the
+            catch (Error&) {
+                // okay proceed with the
                 // slow numerical integration routine
             }
         }

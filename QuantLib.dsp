@@ -539,6 +539,10 @@ SOURCE=.\ql\CashFlows\coupon.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\CashFlows\dividend.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\CashFlows\fixedratecoupon.hpp
 # End Source File
 # Begin Source File
@@ -731,6 +735,18 @@ SOURCE=.\ql\FiniteDifferences\parallelevolver.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\FiniteDifferences\pde.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\pdebsm.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\pdeshortrate.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\FiniteDifferences\shoutcondition.hpp
 # End Source File
 # Begin Source File
@@ -748,6 +764,10 @@ SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.hpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\valueatcenter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\zerocondition.hpp
 # End Source File
 # End Group
 # Begin Group "Indexes"
@@ -904,6 +924,14 @@ SOURCE=.\ql\Instruments\cliquetoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\cliquetoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\convertiblebond.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\convertiblebond.hpp
 # End Source File
 # Begin Source File
 
@@ -1080,6 +1108,10 @@ SOURCE=.\ql\Lattices\lattice1d.hpp
 # Begin Source File
 
 SOURCE=.\ql\Lattices\lattice2d.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\tflattice.hpp
 # End Source File
 # Begin Source File
 
@@ -1383,6 +1415,10 @@ SOURCE=.\ql\Math\tqreigendecomposition.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\transformedgrid.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\trapezoidintegral.hpp
 # End Source File
 # End Group
@@ -1491,7 +1527,23 @@ SOURCE=.\ql\Optimization\leastsquare.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Optimization\levenbergmarquardt.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\levenbergmarquardt.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Optimization\linesearch.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\lmdif.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\lmdif.hpp
 # End Source File
 # Begin Source File
 
@@ -1858,6 +1910,10 @@ SOURCE=.\ql\PricingEngines\Vanilla\fdbermudanengine.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\fdconditions.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\fddividendamericanengine.hpp
 # End Source File
 # Begin Source File
@@ -2038,6 +2094,14 @@ SOURCE=.\ql\PricingEngines\Swaption\jamshidianswaptionengine.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Swaption\lfmswaptionengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Swaption\lfmswaptionengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Swaption\treeswaptionengine.cpp
 # End Source File
 # Begin Source File
@@ -2067,6 +2131,26 @@ SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.hpp
+# End Source File
+# End Group
+# Begin Group "Hybrid"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Hybrid\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Hybrid\binomialconvertibleengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Hybrid\discretizedconvertible.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Hybrid\discretizedconvertible.hpp
 # End Source File
 # End Group
 # Begin Source File
@@ -2238,6 +2322,10 @@ SOURCE=.\ql\RandomNumbers\sobolrsg.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\ShortRateModels\CalibrationHelpers\caphelper.cpp
 # End Source File
 # Begin Source File
@@ -2264,6 +2352,10 @@ SOURCE=.\ql\ShortRateModels\CalibrationHelpers\swaptionhelper.hpp
 # Begin Group "OneFactorModels"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\all.hpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\ql\ShortRateModels\OneFactorModels\blackkarasinski.cpp
@@ -2310,6 +2402,10 @@ SOURCE=.\ql\ShortRateModels\OneFactorModels\vasicek.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\ShortRateModels\TwoFactorModels\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\ShortRateModels\TwoFactorModels\batesmodel.cpp
 # End Source File
 # Begin Source File
@@ -2331,6 +2427,70 @@ SOURCE=.\ql\ShortRateModels\TwoFactorModels\hestonmodel.cpp
 # Begin Source File
 
 SOURCE=.\ql\ShortRateModels\TwoFactorModels\hestonmodel.hpp
+# End Source File
+# End Group
+# Begin Group "LiborMarketModels"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lfmcovarproxy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lfmcovarproxy.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\liborforwardmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\liborforwardmodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmcorrmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmcorrmodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmvolmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmvolmodel.hpp
 # End Source File
 # End Group
 # Begin Source File
@@ -2695,11 +2855,7 @@ SOURCE=.\ql\Processes\blackscholesprocess.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Processes\capletlmmprocess.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Processes\capletlmmprocess.hpp
+SOURCE=.\ql\Processes\defaultable.hpp
 # End Source File
 # Begin Source File
 
@@ -2724,6 +2880,30 @@ SOURCE=.\ql\Processes\hestonprocess.cpp
 # Begin Source File
 
 SOURCE=.\ql\Processes\hestonprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\lfmcovarparam.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\lfmcovarparam.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\lfmhullwhiteparam.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\lfmhullwhiteparam.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\lfmprocess.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\lfmprocess.hpp
 # End Source File
 # Begin Source File
 
@@ -2780,7 +2960,23 @@ SOURCE=.\ql\cashflow.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\config.ansi.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\config.bcc.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\config.mingw.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\config.msvc.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\config.mwcw.hpp
 # End Source File
 # Begin Source File
 
@@ -2821,6 +3017,10 @@ SOURCE=.\ql\errors.cpp
 # Begin Source File
 
 SOURCE=.\ql\errors.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\event.hpp
 # End Source File
 # Begin Source File
 

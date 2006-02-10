@@ -1064,6 +1064,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\defaultable.cpp">
+			</File>
+			<File
 				RelativePath="digitaloption.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -1560,6 +1563,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\libormarketmodel.cpp">
 			</File>
 			<File
 				RelativePath=".\libormarketmodelprocess.cpp">
@@ -2590,6 +2596,9 @@
 			</File>
 			<File
 				RelativePath="jumpdiffusion.hpp">
+			</File>
+			<File
+				RelativePath=".\libormarketmodel.hpp">
 			</File>
 			<File
 				RelativePath=".\libormarketmodelprocess.hpp">

@@ -1547,6 +1547,9 @@
 				RelativePath="ql\CashFlows\coupon.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\dividend.hpp">
+			</File>
+			<File
 				RelativePath="ql\CashFlows\fixedratecoupon.hpp">
 			</File>
 			<File
@@ -2143,10 +2146,22 @@
 				RelativePath="ql\FiniteDifferences\onefactoroperator.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\FiniteDifferences\operatorfactory.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\FiniteDifferences\operatortraits.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\FiniteDifferences\parallelevolver.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\pde.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\pdebsm.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\pdeshortrate.hpp">
 			</File>
 			<File
 				RelativePath="ql\FiniteDifferences\shoutcondition.hpp">
@@ -2219,6 +2234,9 @@
 			</File>
 			<File
 				RelativePath="ql\FiniteDifferences\valueatcenter.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\FiniteDifferences\zerocondition.hpp">
 			</File>
 		</Filter>
 		<Filter
@@ -4796,6 +4814,9 @@
 				RelativePath=".\ql\Math\tqreigendecomposition.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Math\transformedgrid.hpp">
+			</File>
+			<File
 				RelativePath="ql\Math\trapezoidintegral.hpp">
 			</File>
 		</Filter>
@@ -4993,7 +5014,19 @@
 				RelativePath="ql\Optimization\leastsquare.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Optimization\levenbergmarquardt.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\levenbergmarquardt.hpp">
+			</File>
+			<File
 				RelativePath="ql\Optimization\linesearch.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\lmdif.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\lmdif.hpp">
 			</File>
 			<File
 				RelativePath="ql\Optimization\method.hpp">
@@ -6630,6 +6663,9 @@
 					RelativePath=".\ql\PricingEngines\Vanilla\fdbermudanengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdconditions.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\PricingEngines\Vanilla\fddividendamericanengine.hpp">
 				</File>
 				<File
@@ -6936,6 +6972,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\PricingEngines\Swaption\jamshidianswaptionengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Swaption\lfmswaptionengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Swaption\lfmswaptionengine.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\PricingEngines\Swaption\treeswaptionengine.cpp">
@@ -7669,6 +7711,9 @@
 				Name="CalibrationHelpers"
 				Filter="">
 				<File
+					RelativePath=".\ql\ShortRateModels\CalibrationHelpers\all.hpp">
+				</File>
+				<File
 					RelativePath="ql\ShortRateModels\CalibrationHelpers\caphelper.cpp">
 					<FileConfiguration
 						Name="Debug MTDLL|Win32">
@@ -7804,6 +7849,9 @@
 			<Filter
 				Name="OneFactorModels"
 				Filter="">
+				<File
+					RelativePath=".\ql\ShortRateModels\OneFactorModels\all.hpp">
+				</File>
 				<File
 					RelativePath="ql\ShortRateModels\OneFactorModels\blackkarasinski.cpp">
 					<FileConfiguration
@@ -8124,6 +8172,9 @@
 				Name="TwoFactorModels"
 				Filter="">
 				<File
+					RelativePath=".\ql\ShortRateModels\TwoFactorModels\all.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\ShortRateModels\TwoFactorModels\batesmodel.cpp">
 				</File>
 				<File
@@ -8197,6 +8248,55 @@
 				</File>
 				<File
 					RelativePath=".\ql\ShortRateModels\TwoFactorModels\hestonmodel.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="LiborMarketModels"
+				Filter="">
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lfmcovarproxy.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lfmcovarproxy.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\liborforwardmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\liborforwardmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmcorrmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmcorrmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmvolmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmvolmodel.hpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -8899,10 +8999,7 @@
 				RelativePath=".\ql\Processes\blackscholesprocess.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\capletlmmprocess.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\Processes\capletlmmprocess.hpp">
+				RelativePath=".\ql\Processes\defaultable.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Processes\eulerdiscretization.cpp">
@@ -8921,6 +9018,24 @@
 			</File>
 			<File
 				RelativePath=".\ql\Processes\hestonprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmcovarparam.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmcovarparam.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmhullwhiteparam.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmhullwhiteparam.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmprocess.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Processes\merton76process.cpp">
@@ -9020,7 +9135,19 @@
 			RelativePath="ql\cashflow.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\config.ansi.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\config.bcc.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\config.mingw.hpp">
+		</File>
+		<File
 			RelativePath="ql\config.msvc.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\config.mwcw.hpp">
 		</File>
 		<File
 			RelativePath="ql\core.hpp">
@@ -9222,6 +9349,9 @@
 		</File>
 		<File
 			RelativePath="ql\errors.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\event.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\exchangerate.cpp">

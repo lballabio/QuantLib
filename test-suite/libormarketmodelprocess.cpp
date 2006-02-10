@@ -190,7 +190,7 @@ void LiborMarketModelProcessTest::testLambdaBootstrapping() {
 
         for (Size i=0; i<diff.rows(); ++i) {
             for (Size j=0; j<diff.columns(); ++j) {
-                if (std::abs(diff[i][j]) > tolerance) {
+                if (std::fabs(diff[i][j]) > tolerance) {
                      BOOST_ERROR("Failed to reproduce integrated covariance"
                         << "\n    calculated: " << diff[i][j]
                         << "\n    expected:   " << 0);

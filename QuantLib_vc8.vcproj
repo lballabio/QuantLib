@@ -42,7 +42,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;"
+				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				DisableLanguageExtensions="false"
@@ -126,7 +126,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;"
+				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -210,7 +210,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;"
+				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -294,7 +294,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;"
+				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -375,7 +375,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;"
+				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				DisableLanguageExtensions="false"
@@ -456,7 +456,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;"
+				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				DisableLanguageExtensions="false"
@@ -520,6 +520,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Calendars\argentina.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\argentina.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Calendars\beijing.cpp"
 				>
 			</File>
@@ -541,6 +549,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\Calendars\bratislava.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\brazil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\brazil.hpp"
 				>
 			</File>
 			<File
@@ -791,6 +807,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Calendars\iceland.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\iceland.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\indonesia.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\indonesia.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Calendars\istanbul.cpp"
 				>
 			</File>
@@ -958,6 +990,14 @@
 			</File>
 			<File
 				RelativePath="ql\Calendars\jointcalendar.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\mexico.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\mexico.hpp"
 				>
 			</File>
 			<File
@@ -1468,6 +1508,14 @@
 			</File>
 			<File
 				RelativePath="ql\Calendars\toronto.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\ukraine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Calendars\ukraine.hpp"
 				>
 			</File>
 			<File
@@ -3302,6 +3350,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\convertiblebond.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Instruments\convertiblebond.hpp"
 				>
 			</File>
@@ -4445,6 +4497,10 @@
 			</File>
 			<File
 				RelativePath="ql\Lattices\lattice2d.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Lattices\tflattice.hpp"
 				>
 			</File>
 			<File
@@ -6171,7 +6227,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Optimization\levenbergmarquardt.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\levenbergmarquardt.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Optimization\linesearch.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\lmdif.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\lmdif.hpp"
 				>
 			</File>
 			<File
@@ -8181,6 +8253,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\fdconditions.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\PricingEngines\Vanilla\fddividendamericanengine.hpp"
 					>
 				</File>
@@ -8568,6 +8644,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\PricingEngines\Swaption\lfmswaptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Swaption\lfmswaptionengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\PricingEngines\Swaption\treeswaptionengine.cpp"
 					>
 				</File>
@@ -8599,12 +8683,24 @@
 					RelativePath=".\ql\PricingEngines\Cliquet\analyticperformanceengine.hpp"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="Hybrid"
+				>
 				<File
-					RelativePath=".\ql\PricingEngines\Cliquet\mccliquetengine.cpp"
+					RelativePath=".\ql\PricingEngines\Hybrid\all.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Cliquet\mccliquetengine.hpp"
+					RelativePath=".\ql\PricingEngines\Hybrid\binomialconvertibleengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Hybrid\discretizedconvertible.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Hybrid\discretizedconvertible.hpp"
 					>
 				</File>
 			</Filter>
@@ -9454,6 +9550,10 @@
 				Name="CalibrationHelpers"
 				>
 				<File
+					RelativePath=".\ql\ShortRateModels\CalibrationHelpers\all.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\ShortRateModels\CalibrationHelpers\caphelper.cpp"
 					>
 					<FileConfiguration
@@ -9619,6 +9719,10 @@
 			<Filter
 				Name="OneFactorModels"
 				>
+				<File
+					RelativePath=".\ql\ShortRateModels\OneFactorModels\all.hpp"
+					>
+				</File>
 				<File
 					RelativePath="ql\ShortRateModels\OneFactorModels\blackkarasinski.cpp"
 					>
@@ -10009,6 +10113,10 @@
 				Name="TwoFactorModels"
 				>
 				<File
+					RelativePath=".\ql\ShortRateModels\TwoFactorModels\all.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\ShortRateModels\TwoFactorModels\batesmodel.cpp"
 					>
 				</File>
@@ -10099,6 +10207,70 @@
 				</File>
 				<File
 					RelativePath=".\ql\ShortRateModels\TwoFactorModels\hestonmodel.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="LiborMarketModels"
+				>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lfmcovarproxy.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lfmcovarproxy.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\liborforwardmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\liborforwardmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmcorrmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmcorrmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmvolmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmvolmodel.hpp"
 					>
 				</File>
 			</Filter>
@@ -10971,14 +11143,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Processes\capletlmmprocess.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\Processes\capletlmmprocess.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Processes\defaultable.hpp"
 				>
 			</File>
@@ -11004,6 +11168,30 @@
 			</File>
 			<File
 				RelativePath=".\ql\Processes\hestonprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmcovarparam.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmcovarparam.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmhullwhiteparam.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmhullwhiteparam.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Processes\lfmprocess.hpp"
 				>
 			</File>
 			<File

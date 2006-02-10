@@ -184,11 +184,16 @@
 #  pragma warning(disable: 4675)
 #elif (_MSC_VER == 1400)
 // move inside here configs specific to VC++ 8 (2005)
+#  ifndef _SCL_SECURE_NO_DEPRECATE
+#    define _SCL_SECURE_NO_DEPRECATE
+#  endif
+#  ifndef _CRT_SECURE_NO_DEPRECATE
+#    define _CRT_SECURE_NO_DEPRECATE
+#  endif
 #  define QL_LIB_TOOLSET "vc80"
 #  define QL_PATCH_MSVC80
 #  define QL_WORKING_BOOST_STREAMS
 #  pragma warning(disable: 4267)
-#  pragma warning(disable: 4996)
 #else
 #  error "unknown Microsoft compiler"
 #endif

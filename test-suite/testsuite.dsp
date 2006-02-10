@@ -285,6 +285,10 @@ SOURCE=.\compoundforward.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\convertiblebonds.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\covariance.cpp
 # End Source File
 # Begin Source File
@@ -294,6 +298,10 @@ SOURCE=.\dates.cpp
 # Begin Source File
 
 SOURCE=.\daycounters.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\defaultable.cpp
 # End Source File
 # Begin Source File
 
@@ -353,6 +361,10 @@ SOURCE=.\jumpdiffusion.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\libormarketmodel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\libormarketmodelprocess.cpp
 # End Source File
 # Begin Source File
@@ -390,6 +402,10 @@ SOURCE=.\piecewiseflatforward.cpp
 # Begin Source File
 
 SOURCE=.\piecewiseyieldcurve.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=".\QuantLib-test-suite_private.rc"
 # End Source File
 # Begin Source File
 
@@ -618,6 +634,10 @@ SOURCE=.\piecewiseflatforward.hpp
 # Begin Source File
 
 SOURCE=.\piecewiseyieldcurve.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=".\QuantLib-test-suite_private.h"
 # End Source File
 # Begin Source File
 

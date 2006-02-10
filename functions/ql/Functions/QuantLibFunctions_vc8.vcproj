@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="QuantLibFunctions"
 	ProjectGUID="{1D456CAA-C3F3-4BC5-BAFA-7831D584553A}"
-	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -43,7 +42,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\..,..\..\.."
-				PreprocessorDefinitions="WIN32; _DEBUG; ; _LIB"
+				PreprocessorDefinitions="WIN32; _DEBUG; _LIB; _SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				DisableLanguageExtensions="false"
@@ -74,7 +73,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-sgd-0_3_12.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -123,7 +122,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\..,..\..\.."
-				PreprocessorDefinitions="WIN32; NDEBUG; ; _LIB"
+				PreprocessorDefinitions="WIN32; NDEBUG;  _LIB; _SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -154,7 +153,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-s-0_3_12.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -203,7 +202,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\..,..\..\.."
-				PreprocessorDefinitions="WIN32; NDEBUG; ; _LIB"
+				PreprocessorDefinitions="WIN32; NDEBUG; _LIB; _SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -234,7 +233,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-0_3_12.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -281,7 +280,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\..,..\..\.."
-				PreprocessorDefinitions="WIN32; _DEBUG; ; _LIB"
+				PreprocessorDefinitions="WIN32; _DEBUG; _LIB; _SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				DisableLanguageExtensions="false"
@@ -312,7 +311,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-sgd-0_3_12.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -361,7 +360,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\..,..\..\.."
-				PreprocessorDefinitions="WIN32; NDEBUG; ; _LIB"
+				PreprocessorDefinitions="WIN32; NDEBUG; _LIB; _SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -392,7 +391,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-s-0_3_12.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -439,7 +438,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\..,..\..\.."
-				PreprocessorDefinitions="WIN32; _DEBUG; ; _LIB"
+				PreprocessorDefinitions="WIN32; _DEBUG; _LIB; _SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				DisableLanguageExtensions="false"
@@ -470,7 +469,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-gd-0_3_12.lib"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"

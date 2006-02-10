@@ -22,7 +22,7 @@
 
 namespace QuantLib {
 
-    const Problem* LevenbergMarquardt::_thisP(0);
+    const Problem* LevenbergMarquardt::_thisP = 0;
     Array LevenbergMarquardt::_initCostValues(0);
 
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
