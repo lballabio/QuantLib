@@ -30,6 +30,7 @@ OBJS = \
     "onefactormodel.obj$(_mt)$(_D)" \
     "twofactormodel.obj$(_mt)$(_D)" \
     "CalibrationHelpers\CalibrationHelpers$(_mt)$(_D).lib" \
+    "LiborMarketModels\LiborMarketModels$(_mt)$(_D).lib" \
     "OneFactorModels\OneFactorModels$(_mt)$(_D).lib" \
     "TwoFactorModels\TwoFactorModels$(_mt)$(_D).lib"
 
@@ -79,6 +80,8 @@ ShortRateModels$(_mt)$(_D).lib:: SubLibraries $(OBJS)
 SubLibraries:
     cd CalibrationHelpers
     $(MAKE)
+    cd ..\LiborMarketModels
+    $(MAKE)
     cd ..\OneFactorModels
     $(MAKE)
     cd ..\TwoFactorModels
@@ -91,6 +94,8 @@ clean::
     if exist *.obj$(_mt)$(_D)""    del /q *.obj
     if exist *.lib         del /q *.lib
     cd CalibrationHelpers
+    $(MAKE) clean
+    cd ..\LiborMarketModels
     $(MAKE) clean
     cd ..\OneFactorModels
     $(MAKE) clean

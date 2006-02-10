@@ -23,9 +23,8 @@ INCLUDE_DIR    = ..\..\..
 
 # Object files
 OBJS = \
-    "batesmodel.obj$(_mt)$(_D)" \
-    "g2.obj$(_mt)$(_D)" \
-    "hestonmodel.obj$(_mt)$(_D)"
+    "discretizedconvertible.obj$(_mt)$(_D)"
+
 
 # Tools to be used
 CC        = bcc32
@@ -66,16 +65,13 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-TwoFactorModels$(_mt)$(_D).lib:: $(OBJS)
-    if exist TwoFactorModels$(_mt)$(_D).lib     del TwoFactorModels$(_mt)$(_D).lib
-    $(TLIB) $(TLIB_OPTS) "TwoFactorModels$(_mt)$(_D).lib" /a $(OBJS)
-
-
-
+HybridEngines$(_mt)$(_D).lib:: $(OBJS)
+    if exist HybridEngines$(_mt)$(_D).lib     del HybridEngines$(_mt)$(_D).lib
+    $(TLIB) $(TLIB_OPTS) "HybridEngines$(_mt)$(_D).lib" /a $(OBJS)
 
 
 # Clean up
 clean::
-    if exist *.obj         del /q *.obj
+    if exist *.obj               del /q *.obj
     if exist *.obj$(_mt)$(_D)    del /q *.obj
-    if exist *.lib         del /q *.lib
+    if exist *.lib               del /q *.lib

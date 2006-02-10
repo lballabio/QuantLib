@@ -44,6 +44,7 @@ QL_TESTS = \
     "covariance.obj$(_mt)$(_D)" \
     "dates.obj$(_mt)$(_D)" \
     "daycounters.obj$(_mt)$(_D)" \
+    "defaultable.obj$(_mt)$(_D)" \
     "digitaloption.obj$(_mt)$(_D)" \
     "distributions.obj$(_mt)$(_D)" \
     "dividendoption.obj$(_mt)$(_D)" \
@@ -58,6 +59,7 @@ QL_TESTS = \
     "interestrates.obj$(_mt)$(_D)" \
     "interpolations.obj$(_mt)$(_D)" \
     "jumpdiffusion.obj$(_mt)$(_D)" \
+    "libormarketmodel.obj$(_mt)$(_D)" \
     "libormarketmodelprocess.obj$(_mt)$(_D)" \
     "lowdiscrepancysequences.obj$(_mt)$(_D)" \
     "matrices.obj$(_mt)$(_D)" \

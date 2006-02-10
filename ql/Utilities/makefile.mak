@@ -25,6 +25,7 @@ INCLUDE_DIR    = ..\..
 OBJS = \
     "dataformatters.obj$(_mt)$(_D)" \
     "dataparsers.obj$(_mt)$(_D)" \
+    "strings.obj$(_mt)$(_D)" \
     "tracing.obj$(_mt)$(_D)"
 
 # Tools to be used

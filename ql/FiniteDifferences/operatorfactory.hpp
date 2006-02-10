@@ -39,24 +39,25 @@ namespace QuantLib {
     */
     class OperatorFactory {
       public:
-        static TridiagonalOperator 
-        getOperator(const boost::shared_ptr<BlackScholesProcess> &process,
-                    const Array &grid, 
-                    Time residualTime,
-                    bool timeDependent) {
+        static TridiagonalOperator getOperator(
+                        const boost::shared_ptr<BlackScholesProcess> &process,
+                        const Array &grid,
+                        Time residualTime,
+                        bool timeDependent) {
             if (timeDependent)
-                return
-                    BSMTermOperator(grid, process, residualTime);
+                return BSMTermOperator(grid, process, residualTime);
             else
-                return
-                    BSMOperator(grid, process, residualTime);
+                return BSMOperator(grid, process, residualTime);
         };
-        static TridiagonalOperator
-        getOperator(const boost::shared_ptr<OneFactorModel::ShortRateDynamics> &process,
-                    const Array &grid) {
+        #ifndef QL_PATCH_BORLAND
+        static TridiagonalOperator getOperator(
+          const boost::shared_ptr<OneFactorModel::ShortRateDynamics> &process,
+          const Array &grid) {
             return OneFactorOperator(grid, process);
         }
+        #endif
     };
+
 }
 
 

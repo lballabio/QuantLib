@@ -89,8 +89,8 @@ namespace QuantLib {
         std::copy(xx.get(), xx.get()+n, x_.begin());
     }
 
-    void LevenbergMarquardt::fcn(int m, int n,
-                                 double* x, double* fvec, int* iflag) {
+    void LevenbergMarquardt::fcn(int, int n,
+                                 double* x, double* fvec, int*) {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
 

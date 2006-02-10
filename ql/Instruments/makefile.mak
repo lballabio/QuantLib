@@ -30,6 +30,7 @@ OBJS = \
     "bond.obj$(_mt)$(_D)" \
     "capfloor.obj$(_mt)$(_D)" \
     "cliquetoption.obj$(_mt)$(_D)" \
+    "convertiblebond.obj$(_mt)$(_D)" \
     "dividendvanillaoption.obj$(_mt)$(_D)" \
     "europeanoption.obj$(_mt)$(_D)" \
     "fixedcouponbond.obj$(_mt)$(_D)" \

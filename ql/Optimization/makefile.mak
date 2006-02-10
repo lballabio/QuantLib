@@ -25,6 +25,8 @@ INCLUDE_DIR    = ..\..
 OBJS = \
     "armijo.obj$(_mt)$(_D)" \
     "conjugategradient.obj$(_mt)$(_D)" \
+    "levenbergmarquardt.obj$(_mt)$(_D)" \
+    "lmdif.obj$(_mt)$(_D)" \
     "simplex.obj$(_mt)$(_D)" \
     "steepestdescent.obj$(_mt)$(_D)"
 

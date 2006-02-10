@@ -62,13 +62,13 @@ namespace QuantLib {
             drift_ = pde.drift(t, x);
             discount_ = pde.discount(t, x);
         }
-        virtual Real diffusion(Time t, Real x) const {
+        virtual Real diffusion(Time, Real) const {
             return diffusion_;
         }
-        virtual Real drift(Time t, Real x) const {
+        virtual Real drift(Time, Real) const {
             return drift_;
         }
-        virtual Real discount(Time t, Real x) const {
+        virtual Real discount(Time, Real) const {
           return discount_;
         }
     private:

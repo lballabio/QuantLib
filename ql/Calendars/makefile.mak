@@ -23,18 +23,23 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
+    "argentina.obj$(_mt)$(_D)" \
     "beijing.obj$(_mt)$(_D)" \
     "bombay.obj$(_mt)$(_D)" \
     "bratislava.obj$(_mt)$(_D)" \
+    "brazil.obj$(_mt)$(_D)" \
     "budapest.obj$(_mt)$(_D)" \
     "copenhagen.obj$(_mt)$(_D)" \
     "germany.obj$(_mt)$(_D)" \
     "helsinki.obj$(_mt)$(_D)" \
     "hongkong.obj$(_mt)$(_D)" \
+    "iceland.obj$(_mt)$(_D)" \
+    "indonesia.obj$(_mt)$(_D)" \
     "istanbul.obj$(_mt)$(_D)" \
     "italy.obj$(_mt)$(_D)" \
     "johannesburg.obj$(_mt)$(_D)" \
     "jointcalendar.obj$(_mt)$(_D)" \
+    "mexico.obj$(_mt)$(_D)" \
     "oslo.obj$(_mt)$(_D)" \
     "prague.obj$(_mt)$(_D)" \
     "riyadh.obj$(_mt)$(_D)" \
@@ -46,6 +51,7 @@ OBJS = \
     "target.obj$(_mt)$(_D)" \
     "tokyo.obj$(_mt)$(_D)" \
     "toronto.obj$(_mt)$(_D)" \
+    "ukraine.obj$(_mt)$(_D)" \
     "unitedkingdom.obj$(_mt)$(_D)" \
     "unitedstates.obj$(_mt)$(_D)" \
     "warsaw.obj$(_mt)$(_D)" \

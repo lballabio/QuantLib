@@ -29,7 +29,7 @@ namespace QuantLib {
 
     ConvertibleBond::ConvertibleBond(
             const boost::shared_ptr<StochasticProcess>& process,
-            const boost::shared_ptr<Exercise>& exercise,
+            const boost::shared_ptr<Exercise>&,
             const boost::shared_ptr<PricingEngine>& engine,
             Real conversionRatio,
             const DividendSchedule&  dividends,

@@ -240,6 +240,7 @@ int mod( int k, int m )
 return( k % m );
 }
 
+#if BUG
 void pmat( int m, int n, double* y  )
 {
 int i, j, k;
@@ -255,6 +256,7 @@ for( i=0; i<m; i++ )
 	printf( "\n" );
 	}
 }
+#endif
 
 /***********Sample of user supplied function****************
  * m = number of functions
@@ -1418,7 +1420,9 @@ if( nprint > 0 )
 		fcn(m,n,x,fvec,&iflag);
 		if(iflag < 0)
 			goto L300;
+        #if BUG
 		printf( "fnorm %.15e\n", enorm(m,fvec) );
+        #endif
 		}
 	}
 /*

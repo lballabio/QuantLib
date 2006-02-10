@@ -24,10 +24,12 @@ INCLUDE_DIR      = ..\..
 # Object files
 OBJS = \
     "blackscholesprocess.obj$(_mt)$(_D)" \
-    "capletlmmprocess.obj$(_mt)$(_D)" \
     "eulerdiscretization.obj$(_mt)$(_D)" \
     "geometricbrownianprocess.obj$(_mt)$(_D)" \
     "hestonprocess.obj$(_mt)$(_D)" \
+    "lfmcovarparam.obj$(_mt)$(_D)" \
+    "lfmhullwhiteparam.obj$(_mt)$(_D)" \
+    "lfmprocess.obj$(_mt)$(_D)" \
     "merton76process.obj$(_mt)$(_D)" \
     "ornsteinuhlenbeckprocess.obj$(_mt)$(_D)" \
     "squarerootprocess.obj$(_mt)$(_D)" \

@@ -34,6 +34,7 @@ OBJS = \
     "Basket\BasketEngines$(_mt)$(_D).lib" \
     "CapFloor\CapFloorEngines$(_mt)$(_D).lib" \
     "Cliquet\CliquetEngines$(_mt)$(_D).lib" \
+    "Hybrid\HybridEngines$(_mt)$(_D).lib" \
     "Swaption\SwaptionEngines$(_mt)$(_D).lib" \
     "Vanilla\VanillaEngines$(_mt)$(_D).lib"
 
@@ -91,6 +92,8 @@ SubLibraries:
     $(MAKE)
     cd ..\Cliquet
     $(MAKE)
+    cd ..\Hybrid
+    $(MAKE)
     cd ..\Swaption
     $(MAKE)
     cd ..\Vanilla
@@ -111,6 +114,8 @@ clean::
     cd ..\CapFloor
     $(MAKE) clean
     cd ..\Cliquet
+    $(MAKE) clean
+    cd ..\Hybrid
     $(MAKE) clean
     cd ..\Swaption
     $(MAKE) clean

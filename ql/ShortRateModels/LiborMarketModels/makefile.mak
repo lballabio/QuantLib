@@ -23,9 +23,13 @@ INCLUDE_DIR    = ..\..\..
 
 # Object files
 OBJS = \
-    "batesmodel.obj$(_mt)$(_D)" \
-    "g2.obj$(_mt)$(_D)" \
-    "hestonmodel.obj$(_mt)$(_D)"
+    "lfmcovarproxy.obj$(_mt)$(_D)" \
+    "liborforwardmodel.obj$(_mt)$(_D)" \
+    "lmcorrmodel.obj$(_mt)$(_D)" \
+    "lmexpcorrmodel.obj$(_mt)$(_D)" \
+    "lmfixedvolmodel.obj$(_mt)$(_D)" \
+    "lmlinexpvolmodel.obj$(_mt)$(_D)" \
+    "lmvolmodel.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
@@ -66,9 +70,9 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-TwoFactorModels$(_mt)$(_D).lib:: $(OBJS)
-    if exist TwoFactorModels$(_mt)$(_D).lib     del TwoFactorModels$(_mt)$(_D).lib
-    $(TLIB) $(TLIB_OPTS) "TwoFactorModels$(_mt)$(_D).lib" /a $(OBJS)
+LiborMarketModels$(_mt)$(_D).lib:: $(OBJS)
+    if exist LiborMarketModels$(_mt)$(_D).lib     del LiborMarketModels$(_mt)$(_D).lib
+    $(TLIB) $(TLIB_OPTS) "LiborMarketModels$(_mt)$(_D).lib" /a $(OBJS)
 
 
 
