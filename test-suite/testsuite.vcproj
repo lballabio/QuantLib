@@ -1064,9 +1064,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\defaultable.cpp">
-			</File>
-			<File
 				RelativePath="digitaloption.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">

@@ -11,5 +11,5 @@ build
 .deps
 .libs
 quantlib-test-suite.exe
-QuantLib-test-suite.layout
+*.layout
 QuantLib-test-suite_private.*

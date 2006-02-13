@@ -301,10 +301,6 @@ SOURCE=.\daycounters.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\defaultable.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\digitaloption.cpp
 # End Source File
 # Begin Source File
