@@ -379,6 +379,17 @@ namespace QuantLib {
         return (leapYear? MonthLeapOffset[m-1] : MonthOffset[m-1]);
     }
 
+    Date Date::fromIsoDate(const std::string &s) {
+        if (s.size() != 10) return Date();
+        if (s[4] != '-') return Date();
+        if (s[7] != '-') return Date();
+        int year(atoi(s.substr(0, 4).c_str()));
+        Month month = 
+            static_cast<Month>(atoi(s.substr(5, 2).c_str()));
+        int day(atoi(s.substr(8, 2).c_str()));
+        return Date(day, month, year);
+    }
+
     BigInteger Date::yearOffset(Year y) {
         // the list of all December 31st in the preceding year
         // e.g. for 1901 yearOffset[1] is 366, that is, December 31 1900

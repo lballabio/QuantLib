@@ -329,6 +329,9 @@ namespace QuantLib {
             \warning The result date is following or equal to the original date
         */
         static Date nextIMMdate(const Date& d);
+        //! returns a data object from an ISO date String YYYY-MM-DD
+        
+        static Date fromIsoDate(const std::string & s);
         //@}
       private:
         BigInteger serialNumber_;
