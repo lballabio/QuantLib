@@ -158,11 +158,26 @@ void DateTest::testConsistency() {
 
 }
 
+void DateTest::isoDates() {
+    BOOST_MESSAGE("Testing iso dates...");
+    std::string input_date("2006-01-15");
+    Date d = Date::fromIsoDate(input_date);
+    if (d.dayOfMonth() != 15 ||
+        d.month() != January ||
+        d.year() != 2006) {
+        BOOST_FAIL("Iso date failed\n"
+                   << " input date:    " << input_date << "\n"
+                   << " day of month:  " << d.dayOfMonth() << "\n"
+                   << " month:         " << d.month() << "\n"
+                   << " year:          " << d.year());
+    }
+}
 
 test_suite* DateTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");
     suite->add(BOOST_TEST_CASE(&DateTest::testConsistency));
     suite->add(BOOST_TEST_CASE(&DateTest::immDates));
+    suite->add(BOOST_TEST_CASE(&DateTest::isoDates));
     return suite;
 }
 
