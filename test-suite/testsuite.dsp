@@ -7,23 +7,23 @@
 CFG=testsuite - Win32 Debug SingleThread
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "testsuite.mak".
-!MESSAGE 
+!MESSAGE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "testsuite.mak" CFG="testsuite - Win32 Debug SingleThread"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "testsuite - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug" (based on "Win32 (x86) Console Application")
-!MESSAGE "testsuite - Win32 Release MTDLL" (based on "Win32 (x86) Console Application")
-!MESSAGE "testsuite - Win32 Debug MTDLL" (based on "Win32 (x86) Console Application")
+!MESSAGE "testsuite - Win32 Release CRTDLL" (based on "Win32 (x86) Console Application")
+!MESSAGE "testsuite - Win32 Debug CRTDLL" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Release SingleThread" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug SingleThread" (based on "Win32 (x86) Console Application")
-!MESSAGE 
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -54,10 +54,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"bin\QuantLib-test-suite-vc6-mt-s-0_3_12.exe" /libpath:"..\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"bin\QuantLib-test-suite-vc6-mt-s-0_3_13.exe" /libpath:"..\lib"
 # Begin Special Build Tool
 TargetDir=.\bin
-TargetName=QuantLib-test-suite-vc6-mt-s-0_3_12
+TargetName=QuantLib-test-suite-vc6-mt-s-0_3_13
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
 PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short
@@ -85,27 +85,27 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"bin\QuantLib-test-suite-vc6-mt-sgd-0_3_12.exe" /pdbtype:sept /libpath:"..\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"bin\QuantLib-test-suite-vc6-mt-sgd-0_3_13.exe" /pdbtype:sept /libpath:"..\lib"
 # Begin Special Build Tool
 TargetDir=.\bin
-TargetName=QuantLib-test-suite-vc6-mt-sgd-0_3_12
+TargetName=QuantLib-test-suite-vc6-mt-sgd-0_3_13
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
 PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
 # End Special Build Tool
 
-!ELSEIF  "$(CFG)" == "testsuite - Win32 Release MTDLL"
+!ELSEIF  "$(CFG)" == "testsuite - Win32 Release CRTDLL"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "ReleaseMTDLL"
-# PROP BASE Intermediate_Dir "ReleaseMTDLL"
+# PROP BASE Output_Dir "ReleaseCRTDLL"
+# PROP BASE Intermediate_Dir "ReleaseCRTDLL"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "build\vc6\ReleaseMTDLL"
-# PROP Intermediate_Dir "build\vc6\ReleaseMTDLL"
+# PROP Output_Dir "build\vc6\ReleaseCRTDLL"
+# PROP Intermediate_Dir "build\vc6\ReleaseCRTDLL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /I ".." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
@@ -117,27 +117,27 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /debug /machine:I386 /out:"bin\QuantLib-test-suite-vc6-mt-0_3_12.exe" /libpath:"..\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /debug /machine:I386 /out:"bin\QuantLib-test-suite-vc6-mt-0_3_13.exe" /libpath:"..\lib"
 # Begin Special Build Tool
 TargetDir=.\bin
-TargetName=QuantLib-test-suite-vc6-mt-0_3_12
+TargetName=QuantLib-test-suite-vc6-mt-0_3_13
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
 PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short
 # End Special Build Tool
 
-!ELSEIF  "$(CFG)" == "testsuite - Win32 Debug MTDLL"
+!ELSEIF  "$(CFG)" == "testsuite - Win32 Debug CRTDLL"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "DebugMTDLL"
-# PROP BASE Intermediate_Dir "DebugMTDLL"
+# PROP BASE Output_Dir "DebugCRTDLL"
+# PROP BASE Intermediate_Dir "DebugCRTDLL"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "build\vc6\DebugMTDLL"
-# PROP Intermediate_Dir "build\vc6\DebugMTDLL"
+# PROP Output_Dir "build\vc6\DebugCRTDLL"
+# PROP Intermediate_Dir "build\vc6\DebugCRTDLL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I ".." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
@@ -149,10 +149,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"bin\QuantLib-test-suite-vc6-mt-gd-0_3_12.exe" /pdbtype:sept /libpath:"..\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"bin\QuantLib-test-suite-vc6-mt-gd-0_3_13.exe" /pdbtype:sept /libpath:"..\lib"
 # Begin Special Build Tool
 TargetDir=.\bin
-TargetName=QuantLib-test-suite-vc6-mt-gd-0_3_12
+TargetName=QuantLib-test-suite-vc6-mt-gd-0_3_13
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
 PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
@@ -181,10 +181,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"..\lib"
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"bin\QuantLib-test-suite-vc6-s-0_3_12.exe" /libpath:"..\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"bin\QuantLib-test-suite-vc6-s-0_3_13.exe" /libpath:"..\lib"
 # Begin Special Build Tool
 TargetDir=.\bin
-TargetName=QuantLib-test-suite-vc6-s-0_3_12
+TargetName=QuantLib-test-suite-vc6-s-0_3_13
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
 PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short
@@ -213,23 +213,23 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\lib"
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"bin\QuantLib-test-suite-vc6-sgd-0_3_12.exe" /pdbtype:sept /libpath:"..\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"bin\QuantLib-test-suite-vc6-sgd-0_3_13.exe" /pdbtype:sept /libpath:"..\lib"
 # Begin Special Build Tool
 TargetDir=.\bin
-TargetName=QuantLib-test-suite-vc6-sgd-0_3_12
+TargetName=QuantLib-test-suite-vc6-sgd-0_3_13
 SOURCE="$(InputPath)"
 PostBuild_Desc=Auto run test
 PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
 # End Special Build Tool
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 
 # Name "testsuite - Win32 Release"
 # Name "testsuite - Win32 Debug"
-# Name "testsuite - Win32 Release MTDLL"
-# Name "testsuite - Win32 Debug MTDLL"
+# Name "testsuite - Win32 Release CRTDLL"
+# Name "testsuite - Win32 Debug CRTDLL"
 # Name "testsuite - Win32 Release SingleThread"
 # Name "testsuite - Win32 Debug SingleThread"
 # Begin Group "Source Files"
@@ -398,10 +398,6 @@ SOURCE=.\piecewiseflatforward.cpp
 # Begin Source File
 
 SOURCE=.\piecewiseyieldcurve.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=".\QuantLib-test-suite_private.rc"
 # End Source File
 # Begin Source File
 
@@ -630,10 +626,6 @@ SOURCE=.\piecewiseflatforward.hpp
 # Begin Source File
 
 SOURCE=.\piecewiseyieldcurve.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=".\QuantLib-test-suite_private.h"
 # End Source File
 # Begin Source File
 

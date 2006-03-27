@@ -19,8 +19,8 @@ CFG=QuantLib - Win32 Debug SingleThread
 !MESSAGE 
 !MESSAGE "QuantLib - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
-!MESSAGE "QuantLib - Win32 Release MTDLL" (based on "Win32 (x86) Static Library")
-!MESSAGE "QuantLib - Win32 Debug MTDLL" (based on "Win32 (x86) Static Library")
+!MESSAGE "QuantLib - Win32 Release CRTDLL" (based on "Win32 (x86) Static Library")
+!MESSAGE "QuantLib - Win32 Debug CRTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Release SingleThread" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug SingleThread" (based on "Win32 (x86) Static Library")
 !MESSAGE 
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_12.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_13.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -81,24 +81,24 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_12.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_13.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
 PreLink_Cmds=if not exist lib mkdir lib
 # End Special Build Tool
 
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release MTDLL"
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release CRTDLL"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "QuantLib___Win32_Release_MTDLL"
-# PROP BASE Intermediate_Dir "QuantLib___Win32_Release_MTDLL"
+# PROP BASE Output_Dir "QuantLib___Win32_Release_CRTDLL"
+# PROP BASE Intermediate_Dir "QuantLib___Win32_Release_CRTDLL"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "build\vc6\ReleaseMTDLL"
-# PROP Intermediate_Dir "build\vc6\ReleaseMTDLL"
+# PROP Output_Dir "build\vc6\ReleaseCRTDLL"
+# PROP Intermediate_Dir "build\vc6\ReleaseCRTDLL"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /FD /Oi- /c
 # ADD CPP /nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /FD /Oi- /c
@@ -109,24 +109,24 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-0_3_12.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-0_3_13.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
 PreLink_Cmds=if not exist lib mkdir lib
 # End Special Build Tool
 
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug CRTDLL"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "QuantLib___Win32_Debug_MTDLL"
-# PROP BASE Intermediate_Dir "QuantLib___Win32_Debug_MTDLL"
+# PROP BASE Output_Dir "QuantLib___Win32_Debug_CRTDLL"
+# PROP BASE Intermediate_Dir "QuantLib___Win32_Debug_CRTDLL"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "build\vc6\DebugMTDLL"
-# PROP Intermediate_Dir "build\vc6\DebugMTDLL"
+# PROP Output_Dir "build\vc6\DebugCRTDLL"
+# PROP Intermediate_Dir "build\vc6\DebugCRTDLL"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-gd-0_3_10" /FD /GZ /c
 # ADD CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-gd-0_3_10" /FD /GZ /c
@@ -137,7 +137,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_12.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_13.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -165,7 +165,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-s-0_3_12.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-s-0_3_13.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -193,7 +193,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-sgd-0_3_12.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-sgd-0_3_13.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -206,8 +206,8 @@ PreLink_Cmds=if not exist lib mkdir lib
 
 # Name "QuantLib - Win32 Release"
 # Name "QuantLib - Win32 Debug"
-# Name "QuantLib - Win32 Release MTDLL"
-# Name "QuantLib - Win32 Debug MTDLL"
+# Name "QuantLib - Win32 Release CRTDLL"
+# Name "QuantLib - Win32 Debug CRTDLL"
 # Name "QuantLib - Win32 Release SingleThread"
 # Name "QuantLib - Win32 Debug SingleThread"
 # Begin Group "Calendars"
@@ -2852,10 +2852,6 @@ SOURCE=.\ql\Processes\blackscholesprocess.cpp
 # Begin Source File
 
 SOURCE=.\ql\Processes\blackscholesprocess.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Processes\defaultable.hpp
 # End Source File
 # Begin Source File
 

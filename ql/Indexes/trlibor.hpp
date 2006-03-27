@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 Sercan Atalik
+ Copyright (C) 2005 Sercan Atalik
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,7 +41,7 @@ namespace QuantLib {
         TRLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Xibor("TRLibor", n, units, 0, TRY(),
+        : Xibor("TRLibor", n, units, 0, TRYCurrency(),
                 Turkey(), ModifiedFollowing, dc, h) {}
     };
 

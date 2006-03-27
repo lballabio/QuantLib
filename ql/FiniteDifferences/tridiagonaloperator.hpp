@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,8 +31,8 @@ namespace QuantLib {
 
     //! Base implementation for tridiagonal operator
     /*! \warning to use real time-dependant algebra, you must overload
-                 the corresponding operators in the inheriting time-dependent
-                 class
+                 the corresponding operators in the inheriting
+                 time-dependent class.
 
         \ingroup findiff
     */

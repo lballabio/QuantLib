@@ -42,7 +42,7 @@ namespace QuantLib {
         AUDLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Libor("AUDLibor", n, units, 2, AUD(),
+        : Libor("AUDLibor", n, units, 2, AUDCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange), Australia(),
                 ModifiedFollowing, dc, h) {}
     };

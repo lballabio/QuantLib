@@ -39,7 +39,7 @@ namespace QuantLib {
             at ftp://ftp.omg.org/pub/docs/formal/00-06-29.pdf
 
             \warning the names of the Floor and Ceiling methods might
-                     be misleading
+                     be misleading. Check the provided reference.
         */
         enum Type {
             None,    /*!< do not round: return the number unmodified */

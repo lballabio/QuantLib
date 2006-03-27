@@ -58,10 +58,11 @@ DividendSchedule no_dividends;
 Real redemption_, conversionRatio_;
 
 void setup() {
-    today_ = Date::todaysDate();
+    calendar_ = TARGET();
+
+    today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;
 
-    calendar_ = TARGET();
     dayCounter_ = Actual360();
     frequency_ = Annual;
     settlementDays_ = 3;

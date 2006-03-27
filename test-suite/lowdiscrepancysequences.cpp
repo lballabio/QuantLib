@@ -83,7 +83,7 @@ void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
     BOOST_MESSAGE("Testing randomized low-discrepancy sequences up to "
                   "dimension " << PPMT_MAX_DIM << "...");
 
-    RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(PPMT_MAX_DIM);
+    RandomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(PPMT_MAX_DIM);
     rldsg.nextSequence();
     rldsg.lastSequence();
     rldsg.nextRandomizer();
@@ -91,12 +91,12 @@ void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
     MersenneTwisterUniformRng t0;
     SobolRsg t1(PPMT_MAX_DIM);
     RandomSequenceGenerator<MersenneTwisterUniformRng> t2(PPMT_MAX_DIM);
-    RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg2(t1, t2);
+    RandomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg2(t1, t2);
     rldsg2.nextSequence();
     rldsg2.lastSequence();
     rldsg2.nextRandomizer();
 
-    RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg3(t1);
+    RandomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg3(t1);
     rldsg3.nextSequence();
     rldsg3.lastSequence();
     rldsg3.nextRandomizer();

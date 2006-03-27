@@ -45,7 +45,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-sgd-0_3_12.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-sgd-0_3_13.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -105,7 +105,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-s-0_3_12.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-s-0_3_13.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -129,9 +129,9 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release MTDLL|Win32"
-			OutputDirectory=".\build\vc71\ReleaseMTDLL"
-			IntermediateDirectory=".\build\vc71\ReleaseMTDLL"
+			Name="Release CRTDLL|Win32"
+			OutputDirectory=".\build\vc71\ReleaseCRTDLL"
+			IntermediateDirectory=".\build\vc71\ReleaseCRTDLL"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -153,10 +153,10 @@
 				ForceConformanceInForLoopScope="TRUE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\build\vc71\ReleaseMTDLL/QuantLibFunctions.pch"
-				AssemblerListingLocation=".\build\vc71\ReleaseMTDLL/"
-				ObjectFile=".\build\vc71\ReleaseMTDLL/"
-				ProgramDataBaseFileName=".\build\vc71\ReleaseMTDLL/"
+				PrecompiledHeaderFile=".\build\vc71\ReleaseCRTDLL/QuantLibFunctions.pch"
+				AssemblerListingLocation=".\build\vc71\ReleaseCRTDLL/"
+				ObjectFile=".\build\vc71\ReleaseCRTDLL/"
+				ProgramDataBaseFileName=".\build\vc71\ReleaseCRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				Detect64BitPortabilityProblems="TRUE"
@@ -165,7 +165,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-0_3_12.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-0_3_13.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -222,7 +222,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-sgd-0_3_12.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-sgd-0_3_13.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -282,7 +282,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-s-0_3_12.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-s-0_3_13.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -306,9 +306,9 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Debug MTDLL|Win32"
-			OutputDirectory=".\build\vc71\DebugMTDLL"
-			IntermediateDirectory=".\build\vc71\DebugMTDLL"
+			Name="Debug CRTDLL|Win32"
+			OutputDirectory=".\build\vc71\DebugCRTDLL"
+			IntermediateDirectory=".\build\vc71\DebugCRTDLL"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -326,10 +326,10 @@
 				ForceConformanceInForLoopScope="TRUE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\build\vc71\DebugMTDLL/QuantLibFunctions.pch"
-				AssemblerListingLocation=".\build\vc71\DebugMTDLL/"
-				ObjectFile=".\build\vc71\DebugMTDLL/"
-				ProgramDataBaseFileName=".\build\vc71\DebugMTDLL/"
+				PrecompiledHeaderFile=".\build\vc71\DebugCRTDLL/QuantLibFunctions.pch"
+				AssemblerListingLocation=".\build\vc71\DebugCRTDLL/"
+				ObjectFile=".\build\vc71\DebugCRTDLL/"
+				ProgramDataBaseFileName=".\build\vc71\DebugCRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				Detect64BitPortabilityProblems="TRUE"
@@ -339,7 +339,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-gd-0_3_12.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-gd-0_3_13.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -392,7 +392,7 @@
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32">
+					Name="Release CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -417,7 +417,7 @@
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug MTDLL|Win32">
+					Name="Debug CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -446,7 +446,7 @@
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32">
+					Name="Release CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -471,7 +471,7 @@
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug MTDLL|Win32">
+					Name="Debug CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -500,7 +500,7 @@
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32">
+					Name="Release CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -525,7 +525,7 @@
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug MTDLL|Win32">
+					Name="Debug CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"

@@ -69,10 +69,10 @@ int main(int argc, char* argv[])
 
 		BusinessDayConvention convention = ModifiedFollowing;
 
-		Frequency frequencies[] = { Semiannual, Annual };
+		Frequency frequency = Annual;
 
 		Schedule schedule(calendar,issueDate,exerciseDate,
-                          frequencies[1], convention,Date(), true);
+                          frequency, convention,Date(), true);
 
         DividendSchedule dividends;
         CallabilitySchedule callability;
@@ -92,14 +92,14 @@ int main(int argc, char* argv[])
             callability.push_back(
                    Callability(Price(callPrices[i], Price::Clean),
                                Callability::Call,
-                               calendar.advance(today,callLength[i], Years)));
+                               schedule.date(callLength[i])));
         }
 
 		for (Size j=0; j<LENGTH(putLength); j++) {
             callability.push_back(
 	               Callability(Price(putPrices[j], Price::Clean),
                                Callability::Put,
-                               calendar.advance(today,putLength[j], Years)));
+                               schedule.date(putLength[j])));
         }
 
         // Assume dividends are paid every 6 months.
@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
 		Handle<Quote> creditSpread(
                        boost::shared_ptr<Quote>(new SimpleQuote(spreadRate)));
 
-		boost::shared_ptr<SimpleQuote> rate(new SimpleQuote(riskFreeRate));
+		boost::shared_ptr<Quote> rate(new SimpleQuote(riskFreeRate));
 
 		Handle<YieldTermStructure> discountCurve(
                 boost::shared_ptr<YieldTermStructure>(

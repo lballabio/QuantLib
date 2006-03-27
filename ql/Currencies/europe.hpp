@@ -37,9 +37,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class BGL : public Currency {
+    class BGLCurrency : public Currency {
       public:
-        BGL() {
+        BGLCurrency() {
             static boost::shared_ptr<Data> bglData(
                                          new Data("Bulgarian lev", "BGL", 100,
                                                   "lv", "", 100,
@@ -48,10 +48,6 @@ namespace QuantLib {
             data_ = bglData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to BLG */
-    typedef BGL BGLCurrency;
-    #endif
 
     //! Belarussian ruble
     /*! The ISO three-letter code is BYR; the numeric code is 974.
@@ -59,9 +55,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class BYR : public Currency {
+    class BYRCurrency : public Currency {
       public:
-        BYR() {
+        BYRCurrency() {
             static boost::shared_ptr<Data> byrData(
                                      new Data("Belarussian ruble", "BYR", 974,
                                               "BR", "", 1,
@@ -70,10 +66,6 @@ namespace QuantLib {
             data_ = byrData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to BYR */
-    typedef BYR BYRCurrency;
-    #endif
 
     //! Swiss franc
     /*! The ISO three-letter code is CHF; the numeric code is 756.
@@ -81,9 +73,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class CHF : public Currency {
+    class CHFCurrency : public Currency {
       public:
-        CHF() {
+        CHFCurrency() {
             static boost::shared_ptr<Data> chfData(
                                            new Data("Swiss franc", "CHF", 756,
                                                     "SwF", "", 100,
@@ -92,10 +84,6 @@ namespace QuantLib {
             data_ = chfData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to CHF */
-    typedef CHF CHFCurrency;
-    #endif
 
     //! Cyprus pound
     /*! The ISO three-letter code is CYP; the numeric code is 196.
@@ -103,9 +91,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class CYP : public Currency {
+    class CYPCurrency : public Currency {
       public:
-        CYP() {
+        CYPCurrency() {
             static boost::shared_ptr<Data> cypData(
                                           new Data("Cyprus pound", "CYP", 196,
                                                    "\xA3" "C", "", 100,
@@ -114,10 +102,6 @@ namespace QuantLib {
             data_ = cypData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to CYP */
-    typedef CYP CYPCurrency;
-    #endif
 
     //! Czech koruna
     /*! The ISO three-letter code is CZK; the numeric code is 203.
@@ -125,9 +109,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class CZK : public Currency {
+    class CZKCurrency : public Currency {
       public:
-        CZK() {
+        CZKCurrency() {
             static boost::shared_ptr<Data> czkData(
                                           new Data("Czech koruna", "CZK", 203,
                                                    "Kc", "", 100,
@@ -136,10 +120,6 @@ namespace QuantLib {
             data_ = czkData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to CZK */
-    typedef CZK CZKCurrency;
-    #endif
 
     //! Danish krone
     /*! The ISO three-letter code is DKK; the numeric code is 208.
@@ -147,9 +127,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class DKK : public Currency {
+    class DKKCurrency : public Currency {
       public:
-        DKK() {
+        DKKCurrency() {
             static boost::shared_ptr<Data> dkkData(
                                           new Data("Danish krone", "DKK", 208,
                                                    "Dkr", "", 100,
@@ -158,10 +138,6 @@ namespace QuantLib {
             data_ = dkkData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to DKK */
-    typedef DKK DKKCurrency;
-    #endif
 
     //! Estonian kroon
     /*! The ISO three-letter code is EEK; the numeric code is 233.
@@ -169,9 +145,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class EEK : public Currency {
+    class EEKCurrency : public Currency {
       public:
-        EEK() {
+        EEKCurrency() {
             static boost::shared_ptr<Data> eekData(
                                         new Data("Estonian kroon", "EEK", 233,
                                                  "KR", "", 100,
@@ -180,10 +156,6 @@ namespace QuantLib {
             data_ = eekData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to EEK */
-    typedef EEK EEKCurrency;
-    #endif
 
     //! European Euro
     /*! The ISO three-letter code is EUR; the numeric code is 978.
@@ -191,9 +163,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class EUR : public Currency {
+    class EURCurrency : public Currency {
       public:
-        EUR() {
+        EURCurrency() {
             static boost::shared_ptr<Data> eurData(
                                          new Data("European Euro", "EUR", 978,
                                                   "", "", 100,
@@ -202,10 +174,6 @@ namespace QuantLib {
             data_ = eurData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to EUR */
-    typedef EUR EURCurrency;
-    #endif
 
     //! British pound sterling
     /*! The ISO three-letter code is GBP; the numeric code is 826.
@@ -213,9 +181,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class GBP : public Currency {
+    class GBPCurrency : public Currency {
       public:
-        GBP() {
+        GBPCurrency() {
             static boost::shared_ptr<Data> gbpData(
                                 new Data("British pound sterling", "GBP", 826,
                                          "\xA3", "p", 100,
@@ -224,10 +192,6 @@ namespace QuantLib {
             data_ = gbpData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to GBP */
-    typedef GBP GBPCurrency;
-    #endif
 
     //! Hungarian forint
     /*! The ISO three-letter code is HUF; the numeric code is 348.
@@ -235,9 +199,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class HUF : public Currency {
+    class HUFCurrency : public Currency {
       public:
-        HUF() {
+        HUFCurrency() {
             static boost::shared_ptr<Data> hufData(
                                       new Data("Hungarian forint", "HUF", 348,
                                                "Ft", "", 1,
@@ -246,10 +210,6 @@ namespace QuantLib {
             data_ = hufData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to HUF */
-    typedef HUF HUFCurrency;
-    #endif
 
     //! Iceland krona
     /*! The ISO three-letter code is ISK; the numeric code is 352.
@@ -257,9 +217,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class ISK : public Currency {
+    class ISKCurrency : public Currency {
       public:
-        ISK() {
+        ISKCurrency() {
             static boost::shared_ptr<Data> iskData(
                                          new Data("Iceland krona", "ISK", 352,
                                                   "IKr", "", 100,
@@ -268,10 +228,6 @@ namespace QuantLib {
             data_ = iskData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to ISK */
-    typedef ISK ISKCurrency;
-    #endif
 
     //! Lithuanian litas
     /*! The ISO three-letter code is LTL; the numeric code is 440.
@@ -279,9 +235,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class LTL : public Currency {
+    class LTLCurrency : public Currency {
       public:
-        LTL() {
+        LTLCurrency() {
             static boost::shared_ptr<Data> ltlData(
                                       new Data("Lithuanian litas", "LTL", 440,
                                                "Lt", "", 100,
@@ -290,10 +246,6 @@ namespace QuantLib {
             data_ = ltlData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to LTL */
-    typedef LTL LTLCurrency;
-    #endif
 
     //! Latvian lat
     /*! The ISO three-letter code is LVL; the numeric code is 428.
@@ -301,9 +253,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class LVL : public Currency {
+    class LVLCurrency : public Currency {
       public:
-        LVL() {
+        LVLCurrency() {
             static boost::shared_ptr<Data> lvlData(
                                            new Data("Latvian lat", "LVL", 428,
                                                     "Ls", "", 100,
@@ -312,10 +264,6 @@ namespace QuantLib {
             data_ = lvlData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to LVL */
-    typedef LVL LVLCurrency;
-    #endif
 
     //! Maltese lira
     /*! The ISO three-letter code is MTL; the numeric code is 470.
@@ -323,9 +271,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class MTL : public Currency {
+    class MTLCurrency : public Currency {
       public:
-        MTL() {
+        MTLCurrency() {
             static boost::shared_ptr<Data> mtlData(
                                           new Data("Maltese lira", "MTL", 470,
                                                    "Lm", "", 100,
@@ -334,10 +282,6 @@ namespace QuantLib {
             data_ = mtlData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to MTL */
-    typedef MTL MTLCurrency;
-    #endif
 
     //! Norwegian krone
     /*! The ISO three-letter code is NOK; the numeric code is 578.
@@ -345,9 +289,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class NOK : public Currency {
+    class NOKCurrency : public Currency {
       public:
-        NOK() {
+        NOKCurrency() {
             static boost::shared_ptr<Data> nokData(
                                        new Data("Norwegian krone", "NOK", 578,
                                                 "NKr", "", 100,
@@ -356,10 +300,6 @@ namespace QuantLib {
             data_ = nokData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to NOK */
-    typedef NOK NOKCurrency;
-    #endif
 
     //! Polish zloty
     /*! The ISO three-letter code is PLN; the numeric code is 985.
@@ -367,9 +307,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class PLN : public Currency {
+    class PLNCurrency : public Currency {
       public:
-        PLN() {
+        PLNCurrency() {
             static boost::shared_ptr<Data> plnData(
                                           new Data("Polish zloty", "PLN", 985,
                                                    "zl", "", 100,
@@ -378,10 +318,6 @@ namespace QuantLib {
             data_ = plnData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to PLN */
-    typedef PLN PLNCurrency;
-    #endif
 
     //! Romanian leu
     /*! The ISO three-letter code is ROL; the numeric code is 642.
@@ -389,9 +325,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class ROL : public Currency {
+    class ROLCurrency : public Currency {
       public:
-        ROL() {
+        ROLCurrency() {
             static boost::shared_ptr<Data> rolData(
                                           new Data("Romanian leu", "ROL", 642,
                                                    "L", "", 100,
@@ -400,10 +336,6 @@ namespace QuantLib {
             data_ = rolData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to ROL */
-    typedef ROL ROLCurrency;
-    #endif
 
     //! Swedish krona
     /*! The ISO three-letter code is SEK; the numeric code is 752.
@@ -411,9 +343,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class SEK : public Currency {
+    class SEKCurrency : public Currency {
       public:
-        SEK() {
+        SEKCurrency() {
             static boost::shared_ptr<Data> sekData(
                                          new Data("Swedish krona", "SEK", 752,
                                                   "kr", "", 100,
@@ -422,10 +354,6 @@ namespace QuantLib {
             data_ = sekData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to SEK */
-    typedef SEK SEKCurrency;
-    #endif
 
     //! Slovenian tolar
     /*! The ISO three-letter code is SIT; the numeric code is 705.
@@ -433,9 +361,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class SIT : public Currency {
+    class SITCurrency : public Currency {
       public:
-        SIT() {
+        SITCurrency() {
             static boost::shared_ptr<Data> sitData(
                                        new Data("Slovenian tolar", "SIT", 705,
                                                 "SlT", "", 100,
@@ -444,10 +372,6 @@ namespace QuantLib {
             data_ = sitData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to SIT */
-    typedef SIT SITCurrency;
-    #endif
 
     //! Slovak koruna
     /*! The ISO three-letter code is SKK; the numeric code is 703.
@@ -455,9 +379,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class SKK : public Currency {
+    class SKKCurrency : public Currency {
       public:
-        SKK() {
+        SKKCurrency() {
             static boost::shared_ptr<Data> skkData(
                                          new Data("Slovak koruna", "SKK", 703,
                                                   "Sk", "", 100,
@@ -466,10 +390,6 @@ namespace QuantLib {
             data_ = skkData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to SKK */
-    typedef SKK SKKCurrency;
-    #endif
 
     //! Turkish lira
     /*! The ISO three-letter code is TRL; the numeric code is 792.
@@ -479,9 +399,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class TRL : public Currency {
+    class TRLCurrency : public Currency {
       public:
-        TRL() {
+        TRLCurrency() {
             static boost::shared_ptr<Data> trlData(
                                           new Data("Turkish lira", "TRL", 792,
                                                    "TL", "", 100,
@@ -490,10 +410,6 @@ namespace QuantLib {
             data_ = trlData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to TRL */
-    typedef TRL TRLCurrency;
-    #endif
 
     //! New Turkish lira
     /*! The ISO three-letter code is TRY; the numeric code is 949.
@@ -501,9 +417,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class TRY : public Currency {
+    class TRYCurrency : public Currency {
       public:
-        TRY() {
+        TRYCurrency() {
             static boost::shared_ptr<Data> tryData(
                                       new Data("New Turkish lira", "TRY", 949,
                                                "YTL", "", 100,
@@ -512,10 +428,6 @@ namespace QuantLib {
             data_ = tryData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to TRY */
-    typedef TRY TRYCurrency;
-    #endif
 
 
     // currencies obsoleted by Euro
@@ -524,277 +436,253 @@ namespace QuantLib {
     /*! The ISO three-letter code was ATS; the numeric code was 40.
         It was divided in 100 groschen.
 
+        Obsoleted by the Euro since 1999.
+
         \ingroup currencies
     */
-    class ATS : public Currency {
+    class ATSCurrency : public Currency {
       public:
-        ATS() {
+        ATSCurrency() {
             static boost::shared_ptr<Data> atsData(
                                       new Data("Austrian shilling", "ATS", 40,
                                                "", "", 100,
                                                Rounding(),
                                                "%2% %1$.2f",
-                                               EUR()));
+                                               EURCurrency()));
             data_ = atsData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to ATS */
-    typedef ATS ATSCurrency;
-    #endif
 
     //! Belgian franc
-    /*! The ISO three-letter code is BEF; the numeric code is 56.
-        It has no subdivisions.
+    /*! The ISO three-letter code was BEF; the numeric code was 56.
+        It had no subdivisions.
+
+        Obsoleted by the Euro since 1999.
 
         \ingroup currencies
     */
-    class BEF : public Currency {
+    class BEFCurrency : public Currency {
       public:
-        BEF() {
+        BEFCurrency() {
             static boost::shared_ptr<Data> befData(
                                           new Data("Belgian franc", "BEF", 56,
                                                    "", "", 1,
                                                    Rounding(),
                                                    "%2% %1$.0f",
-                                                   EUR()));
+                                                   EURCurrency()));
             data_ = befData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to BEF */
-    typedef BEF BEFCurrency;
-    #endif
 
     //! Deutsche mark
     /*! The ISO three-letter code was DEM; the numeric code was 276.
         It was divided into 100 pfennig.
 
+        Obsoleted by the Euro since 1999.
+
         \ingroup currencies
     */
-    class DEM : public Currency {
+    class DEMCurrency : public Currency {
       public:
-        DEM() {
+        DEMCurrency() {
             static boost::shared_ptr<Data> demData(
                                          new Data("Deutsche mark", "DEM", 276,
                                                   "DM", "", 100,
                                                   Rounding(),
                                                   "%1$.2f %3%",
-                                                  EUR()));
+                                                  EURCurrency()));
             data_ = demData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to DEM */
-    typedef DEM DEMCurrency;
-    #endif
 
     //! Spanish peseta
-    /*! The ISO three-letter code is ESP; the numeric code is 724.
-        It is divided in 100 centimos.
+    /*! The ISO three-letter code was ESP; the numeric code was 724.
+        It was divided in 100 centimos.
+
+        Obsoleted by the Euro since 1999.
 
         \ingroup currencies
     */
-    class ESP : public Currency {
+    class ESPCurrency : public Currency {
       public:
-        ESP() {
+        ESPCurrency() {
             static boost::shared_ptr<Data> espData(
                                         new Data("Spanish peseta", "ESP", 724,
                                                  "Pta", "", 100,
                                                  Rounding(),
                                                  "%1$.0f %3%",
-                                                 EUR()));
+                                                 EURCurrency()));
             data_ = espData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to ESP */
-    typedef ESP ESPCurrency;
-    #endif
 
     //! Finnish markka
-    /*! The ISO three-letter code is FIM; the numeric code is 246.
-        It is divided in 100 penniä.
+    /*! The ISO three-letter code was FIM; the numeric code was 246.
+        It was divided in 100 penniä.
+
+        Obsoleted by the Euro since 1999.
 
         \ingroup currencies
     */
-    class FIM : public Currency {
+    class FIMCurrency : public Currency {
       public:
-        FIM() {
+        FIMCurrency() {
             static boost::shared_ptr<Data> fimData(
                                         new Data("Finnish markka", "FIM", 246,
                                                  "mk", "", 100,
                                                  Rounding(),
                                                  "%1$.2f %3%",
-                                                 EUR()));
+                                                 EURCurrency()));
             data_ = fimData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to FIM */
-    typedef FIM FIMCurrency;
-    #endif
 
     //! French franc
-    /*! The ISO three-letter code is FRF; the numeric code is 250.
-        It is divided in 100 centimes.
+    /*! The ISO three-letter code was FRF; the numeric code was 250.
+        It was divided in 100 centimes.
+
+        Obsoleted by the Euro since 1999.
 
         \ingroup currencies
     */
-    class FRF : public Currency {
+    class FRFCurrency : public Currency {
       public:
-        FRF() {
+        FRFCurrency() {
             static boost::shared_ptr<Data> frfData(
                                           new Data("French franc", "FRF", 250,
                                                    "", "", 100,
                                                    Rounding(),
                                                    "%1$.2f %2%",
-                                                   EUR()));
+                                                   EURCurrency()));
             data_ = frfData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to FRF */
-    typedef FRF FRFCurrency;
-    #endif
 
     //! Greek drachma
-    /*! The ISO three-letter code is GRD; the numeric code is 300.
-        It is divided in 100 lepta.
+    /*! The ISO three-letter code was GRD; the numeric code was 300.
+        It was divided in 100 lepta.
+
+        Obsoleted by the Euro since 2001.
 
         \ingroup currencies
     */
-    class GRD : public Currency {
+    class GRDCurrency : public Currency {
       public:
-        GRD() {
+        GRDCurrency() {
             static boost::shared_ptr<Data> grdData(
                                          new Data("Greek drachma", "GRD", 300,
                                                   "", "", 100,
                                                   Rounding(),
                                                   "%1$.2f %2%",
-                                                  EUR()));
+                                                  EURCurrency()));
             data_ = grdData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to GRD */
-    typedef GRD GRDCurrency;
-    #endif
 
     //! Irish punt
-    /*! The ISO three-letter code is IEP; the numeric code is 372.
-        It is divided in 100 pence.
+    /*! The ISO three-letter code was IEP; the numeric code was 372.
+        It was divided in 100 pence.
+
+        Obsoleted by the Euro since 1999.
 
         \ingroup currencies
     */
-    class IEP : public Currency {
+    class IEPCurrency : public Currency {
       public:
-        IEP() {
+        IEPCurrency() {
             static boost::shared_ptr<Data> iepData(
                                             new Data("Irish punt", "IEP", 372,
                                                      "", "", 100,
                                                      Rounding(),
                                                      "%2% %1$.2f",
-                                                     EUR()));
+                                                     EURCurrency()));
             data_ = iepData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to IEP */
-    typedef IEP IEPCurrency;
-    #endif
 
     //! Italian lira
     /*! The ISO three-letter code was ITL; the numeric code was 380.
         It had no subdivisions.
 
+        Obsoleted by the Euro since 1999.
+
         \ingroup currencies
     */
-    class ITL : public Currency {
+    class ITLCurrency : public Currency {
       public:
-        ITL() {
+        ITLCurrency() {
             static boost::shared_ptr<Data> itlData(
                                           new Data("Italian lira", "ITL", 380,
                                                    "L", "", 1,
                                                    Rounding(),
                                                    "%3% %1$.0f",
-                                                   EUR()));
+                                                   EURCurrency()));
             data_ = itlData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to ITL */
-    typedef ITL ITLCurrency;
-    #endif
 
     //! Luxembourg franc
-    /*! The ISO three-letter code is LUF; the numeric code is 442.
-        It is divided in 100 centimes.
+    /*! The ISO three-letter code was LUF; the numeric code was 442.
+        It was divided in 100 centimes.
+
+        Obsoleted by the Euro since 1999.
 
         \ingroup currencies
     */
-    class LUF : public Currency {
+    class LUFCurrency : public Currency {
       public:
-        LUF() {
+        LUFCurrency() {
             static boost::shared_ptr<Data> lufData(
                                       new Data("Luxembourg franc", "LUF", 442,
                                                "F", "", 100,
                                                Rounding(),
                                                "%1$.0f %3%",
-                                               EUR()));
+                                               EURCurrency()));
             data_ = lufData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to LUF */
-    typedef LUF LUFCurrency;
-    #endif
 
     //! Dutch guilder
-    /*! The ISO three-letter code is NLG; the numeric code is 528.
-        It is divided in 100 cents.
+    /*! The ISO three-letter code was NLG; the numeric code was 528.
+        It was divided in 100 cents.
+
+        Obsoleted by the Euro since 1999.
 
         \ingroup currencies
     */
-    class NLG : public Currency {
+    class NLGCurrency : public Currency {
       public:
-        NLG() {
+        NLGCurrency() {
             static boost::shared_ptr<Data> nlgData(
                                          new Data("Dutch guilder", "NLG", 528,
                                                   "f", "", 100,
                                                   Rounding(),
                                                   "%3% %1$.2f",
-                                                  EUR()));
+                                                  EURCurrency()));
             data_ = nlgData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to NLG */
-    typedef NLG NLGCurrency;
-    #endif
 
     //! Portuguese escudo
-    /*! The ISO three-letter code is PTE; the numeric code is 620.
-        It is divided in 100 centavos.
+    /*! The ISO three-letter code was PTE; the numeric code was 620.
+        It was divided in 100 centavos.
+
+        Obsoleted by the Euro since 1999.
 
         \ingroup currencies
     */
-    class PTE : public Currency {
+    class PTECurrency : public Currency {
       public:
-        PTE() {
+        PTECurrency() {
             static boost::shared_ptr<Data> pteData(
                                      new Data("Portuguese escudo", "PTE", 620,
                                               "Esc", "", 100,
                                               Rounding(),
                                               "%1$.0f %3%",
-                                              EUR()));
+                                              EURCurrency()));
             data_ = pteData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to PTE */
-    typedef PTE PTECurrency;
-    #endif
 
 }
 

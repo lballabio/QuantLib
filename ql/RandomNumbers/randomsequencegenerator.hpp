@@ -39,7 +39,7 @@ namespace QuantLib {
             RNG::sample_type RNG::next() const;
         \endcode
 
-        \warning do not use with low-discrepancy sequence generator
+        \warning do not use with low-discrepancy sequence generator.
     */
     template<class RNG>
     class RandomSequenceGenerator {

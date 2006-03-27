@@ -34,11 +34,13 @@ namespace QuantLib {
         Journal of Derivatives Winter 1999
         Ju, N.
 
-        \warning Barone-Adesi-Whaley critical commodity price calculation is
-        used, it has not been modified to see whether the method of Ju is
-        faster. Ju does not say how he solves the equation for the critical
-        stock price, e.g. Newton method. He just gives the solution.
-        The method of BAW gives answers to the same accuracy as in Ju (1999)
+        \warning Barone-Adesi-Whaley critical commodity price
+                 calculation is used, it has not been modified to see
+                 whether the method of Ju is faster. Ju does not say
+                 how he solves the equation for the critical stock
+                 price, e.g. Newton method. He just gives the
+                 solution.  The method of BAW gives answers to the
+                 same accuracy as in Ju (1999).
 
         \ingroup vanillaengines
 

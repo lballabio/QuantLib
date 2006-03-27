@@ -172,7 +172,12 @@ void ShortRateModelTest::testSwaps() {
     boost::shared_ptr<PricingEngine> engine(
                                         new TreeVanillaSwapEngine(model,120));
 
+    #if defined(QL_USE_INDEXED_COUPON)
+    Real tolerance = 3.0e-3;
+    #else
     Real tolerance = 1.0e-8;
+    #endif
+
     for (Size i=0; i<LENGTH(start); i++) {
 
         Date startDate = calendar.advance(settlement,start[i],Months);
@@ -202,14 +207,14 @@ void ShortRateModelTest::testSwaps() {
                 swap.setPricingEngine(engine);
                 Real calculated = swap.NPV();
 
-                Real error = std::fabs(expected-calculated);
+                Real error = std::fabs((expected-calculated)/expected);
                 if (error > tolerance) {
                     BOOST_ERROR("Failed to reproduce swap NPV:"
                                 << QL_FIXED << std::setprecision(9)
                                 << "\n    calculated: " << calculated
                                 << "\n    expected:   " << expected
                                 << QL_SCIENTIFIC
-                                << "\n    error:      " << error);
+                                << "\n    rel. error: " << error);
                 }
             }
         }

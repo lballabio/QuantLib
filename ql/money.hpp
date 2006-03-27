@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Decillion Pty(Ltd)
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -117,6 +117,15 @@ namespace QuantLib {
     /*! \relates Money */
     bool close_enough(const Money&, const Money&, Size n = 42);
 
+    // syntactic sugar
+
+    /*! \relates Money */
+    Money operator*(Decimal, const Currency&);
+    /*! \relates Money */
+    Money operator*(const Currency&, Decimal);
+
+    // formatting
+
     /*! \relates Money */
     std::ostream& operator<<(std::ostream&, const Money&);
 
@@ -201,6 +210,14 @@ namespace QuantLib {
 
     inline bool operator>=(const Money& m1, const Money& m2) {
         return m2 <= m1;
+    }
+
+    inline Money operator*(Decimal value, const Currency& c) {
+        return Money(value,c);
+    }
+
+    inline Money operator*(const Currency& c, Decimal value) {
+        return Money(value,c);
     }
 
 }

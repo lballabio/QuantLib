@@ -24,7 +24,9 @@
 #ifndef quantlib_fd_dividend_shout_engine_hpp
 #define quantlib_fd_dividend_shout_engine_hpp
 
+#include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdconditions.hpp>
 #include <ql/FiniteDifferences/shoutcondition.hpp>
 
 namespace QuantLib {

@@ -27,7 +27,8 @@ namespace QuantLib {
                                  const Date& referenceDate,
                                  const std::vector<Date>& dates,
                                  const std::vector<Volatility>& blackVolCurve,
-                                 const DayCounter& dayCounter)
+                                 const DayCounter& dayCounter,
+                                 bool forceMonotoneVariance)
     : BlackVarianceTermStructure(referenceDate),
       dayCounter_(dayCounter), maxDate_(dates.back()) {
 
@@ -51,7 +52,8 @@ namespace QuantLib {
                        "dates must be sorted unique!");
             variances_[j] = times_[j] *
                 blackVolCurve[j-1]*blackVolCurve[j-1];
-            QL_REQUIRE(variances_[j]>=variances_[j-1],
+            QL_REQUIRE(variances_[j]>=variances_[j-1]
+                       || !forceMonotoneVariance,
                        "variance must be non-decreasing");
         }
 

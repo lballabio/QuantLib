@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library

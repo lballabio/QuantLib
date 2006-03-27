@@ -37,9 +37,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class BDT : public Currency {
+    class BDTCurrency : public Currency {
       public:
-        BDT() {
+        BDTCurrency() {
             static boost::shared_ptr<Data> bdtData(
                                         new Data("Bangladesh taka", "BDT", 50,
                                                  "Bt", "", 100,
@@ -48,10 +48,6 @@ namespace QuantLib {
             data_ = bdtData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to BDT */
-    typedef BDT BDTCurrency;
-    #endif
 
     //! Chinese yuan
     /*! The ISO three-letter code is CNY; the numeric code is 156.
@@ -59,9 +55,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class CNY : public Currency {
+    class CNYCurrency : public Currency {
       public:
-        CNY() {
+        CNYCurrency() {
             static boost::shared_ptr<Data> cnyData(
                                           new Data("Chinese yuan", "CNY", 156,
                                                    "Y", "", 100,
@@ -70,10 +66,6 @@ namespace QuantLib {
             data_ = cnyData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to CNY */
-    typedef CNY CNYCurrency;
-    #endif
 
     //! Honk Kong dollar
     /*! The ISO three-letter code is HKD; the numeric code is 344.
@@ -81,9 +73,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class HKD : public Currency {
+    class HKDCurrency : public Currency {
       public:
-        HKD() {
+        HKDCurrency() {
             static boost::shared_ptr<Data> hkdData(
                                       new Data("Honk Kong dollar", "HKD", 344,
                                                "HK$", "", 100,
@@ -92,10 +84,6 @@ namespace QuantLib {
             data_ = hkdData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to HKD */
-    typedef HKD HKDCurrency;
-    #endif
 
     //! Israeli shekel
     /*! The ISO three-letter code is ILS; the numeric code is 376.
@@ -103,9 +91,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class ILS : public Currency {
+    class ILSCurrency : public Currency {
       public:
-        ILS() {
+        ILSCurrency() {
             static boost::shared_ptr<Data> ilsData(
                                         new Data("Israeli shekel", "ILS", 376,
                                                  "NIS", "", 100,
@@ -114,10 +102,6 @@ namespace QuantLib {
             data_ = ilsData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to ILS */
-    typedef ILS ILSCurrency;
-    #endif
 
     //! Indian rupee
     /*! The ISO three-letter code is INR; the numeric code is 356.
@@ -125,9 +109,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class INR : public Currency {
+    class INRCurrency : public Currency {
       public:
-        INR() {
+        INRCurrency() {
             static boost::shared_ptr<Data> inrData(
                                           new Data("Indian rupee", "INR", 356,
                                                    "Rs", "", 100,
@@ -136,10 +120,6 @@ namespace QuantLib {
             data_ = inrData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to INR */
-    typedef INR INRCurrency;
-    #endif
 
     //! Iraqi dinar
     /*! The ISO three-letter code is IQD; the numeric code is 368.
@@ -147,9 +127,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class IQD : public Currency {
+    class IQDCurrency : public Currency {
       public:
-        IQD() {
+        IQDCurrency() {
             static boost::shared_ptr<Data> iqdData(
                                            new Data("Iraqi dinar", "IQD", 368,
                                                     "ID", "", 1000,
@@ -158,10 +138,6 @@ namespace QuantLib {
             data_ = iqdData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to IQD */
-    typedef IQD IQDCurrency;
-    #endif
 
     //! Iranian rial
     /*! The ISO three-letter code is IRR; the numeric code is 364.
@@ -169,9 +145,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class IRR : public Currency {
+    class IRRCurrency : public Currency {
       public:
-        IRR() {
+        IRRCurrency() {
             static boost::shared_ptr<Data> irrData(
                                           new Data("Iranian rial", "IRR", 364,
                                                    "Rls", "", 1,
@@ -180,10 +156,6 @@ namespace QuantLib {
             data_ = irrData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to IRR */
-    typedef IRR IRRCurrency;
-    #endif
 
     //! Japanese yen
     /*! The ISO three-letter code is JPY; the numeric code is 392.
@@ -191,9 +163,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class JPY : public Currency {
+    class JPYCurrency : public Currency {
       public:
-        JPY() {
+        JPYCurrency() {
             static boost::shared_ptr<Data> jpyData(
                                           new Data("Japanese yen", "JPY", 392,
                                                    "\xA5", "", 100,
@@ -202,10 +174,6 @@ namespace QuantLib {
             data_ = jpyData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to JPY */
-    typedef JPY JPYCurrency;
-    #endif
 
     //! South-Korean won
     /*! The ISO three-letter code is KRW; the numeric code is 410.
@@ -213,9 +181,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class KRW : public Currency {
+    class KRWCurrency : public Currency {
       public:
-        KRW() {
+        KRWCurrency() {
             static boost::shared_ptr<Data> krwData(
                                       new Data("South-Korean won", "KRW", 410,
                                                "W", "", 100,
@@ -224,10 +192,6 @@ namespace QuantLib {
             data_ = krwData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to KRW */
-    typedef KRW KRWCurrency;
-    #endif
 
     //! Kuwaiti dinar
     /*! The ISO three-letter code is KWD; the numeric code is 414.
@@ -235,9 +199,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class KWD : public Currency {
+    class KWDCurrency : public Currency {
       public:
-        KWD() {
+        KWDCurrency() {
             static boost::shared_ptr<Data> kwdData(
                                          new Data("Kuwaiti dinar", "KWD", 414,
                                                   "KD", "", 1000,
@@ -246,10 +210,6 @@ namespace QuantLib {
             data_ = kwdData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to KWD */
-    typedef KWD KWDCurrency;
-    #endif
 
     //! Nepal rupee
     /*! The ISO three-letter code is NPR; the numeric code is 524.
@@ -257,9 +217,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class NPR : public Currency {
+    class NPRCurrency : public Currency {
       public:
-        NPR() {
+        NPRCurrency() {
             static boost::shared_ptr<Data> nprData(
                                            new Data("Nepal rupee", "NPR", 524,
                                                     "NRs", "", 100,
@@ -268,10 +228,6 @@ namespace QuantLib {
             data_ = nprData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to NPR */
-    typedef NPR NPRCurrency;
-    #endif
 
     //! Pakistani rupee
     /*! The ISO three-letter code is PKR; the numeric code is 586.
@@ -279,9 +235,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class PKR : public Currency {
+    class PKRCurrency : public Currency {
       public:
-        PKR() {
+        PKRCurrency() {
             static boost::shared_ptr<Data> pkrData(
                                        new Data("Pakistani rupee", "PKR", 586,
                                                 "Rs", "", 100,
@@ -290,10 +246,6 @@ namespace QuantLib {
             data_ = pkrData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to PKR */
-    typedef PKR PKRCurrency;
-    #endif
 
     //! Saudi riyal
     /*! The ISO three-letter code is SAR; the numeric code is 682.
@@ -301,9 +253,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class SAR : public Currency {
+    class SARCurrency : public Currency {
       public:
-        SAR() {
+        SARCurrency() {
             static boost::shared_ptr<Data> sarData(
                                            new Data("Saudi riyal", "SAR", 682,
                                                     "SRls", "", 100,
@@ -312,10 +264,6 @@ namespace QuantLib {
             data_ = sarData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to SAR */
-    typedef SAR SARCurrency;
-    #endif
 
     //! Singapore dollar
     /*! The ISO three-letter code is SGD; the numeric code is 702.
@@ -323,9 +271,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class SGD : public Currency {
+    class SGDCurrency : public Currency {
       public:
-        SGD() {
+        SGDCurrency() {
             static boost::shared_ptr<Data> sgdData(
                                       new Data("Singapore dollar", "SGD", 702,
                                                "S$", "", 100,
@@ -334,10 +282,6 @@ namespace QuantLib {
             data_ = sgdData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to SGD */
-    typedef SGD SGDCurrency;
-    #endif
 
     //! Thai baht
     /*! The ISO three-letter code is THB; the numeric code is 764.
@@ -345,9 +289,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class THB : public Currency {
+    class THBCurrency : public Currency {
       public:
-        THB() {
+        THBCurrency() {
             static boost::shared_ptr<Data> thbData(
                                              new Data("Thai baht", "THB", 764,
                                                       "Bht", "", 100,
@@ -356,10 +300,6 @@ namespace QuantLib {
             data_ = thbData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to THB */
-    typedef THB THBCurrency;
-    #endif
 
     //! Taiwan dollar
     /*! The ISO three-letter code is TWD; the numeric code is 901.
@@ -367,9 +307,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class TWD : public Currency {
+    class TWDCurrency : public Currency {
       public:
-        TWD() {
+        TWDCurrency() {
             static boost::shared_ptr<Data> twdData(
                                          new Data("Taiwan dollar", "TWD", 901,
                                                   "NT$", "", 100,
@@ -378,10 +318,6 @@ namespace QuantLib {
             data_ = twdData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to TWD */
-    typedef TWD TWDCurrency;
-    #endif
 
 }
 

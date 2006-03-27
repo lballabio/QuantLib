@@ -207,8 +207,10 @@ void CompoundForwardTest::testConvertedRates() {
 
 test_suite* CompoundForwardTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Compound forward tests");
+    #if !defined(QL_USE_INDEXED_COUPON)
     suite->add(BOOST_TEST_CASE(&CompoundForwardTest::testSuppliedRates));
     suite->add(BOOST_TEST_CASE(&CompoundForwardTest::testConvertedRates));
+    #endif
     return suite;
 }
 

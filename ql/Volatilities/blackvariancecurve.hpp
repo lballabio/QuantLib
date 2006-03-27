@@ -50,7 +50,8 @@ namespace QuantLib {
         BlackVarianceCurve(const Date& referenceDate,
                            const std::vector<Date>& dates,
                            const std::vector<Volatility>& blackVolCurve,
-                           const DayCounter& dayCounter);
+                           const DayCounter& dayCounter,
+                           bool forceMonotoneVariance = true);
         //! \name BlackVolTermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }

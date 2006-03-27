@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2000-2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -56,15 +56,15 @@
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "0.3.12-debug"
+    #define QL_VERSION "0.3.13-debug"
 #else
-    #define QL_VERSION "0.3.12"
+    #define QL_VERSION "0.3.13"
 #endif
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x000312f0
+#define QL_HEX_VERSION 0x000313f0
 //! version string for output lib name
-#define QL_LIB_VERSION "0_3_12"
+#define QL_LIB_VERSION "0_3_13"
 
 #if   defined(HAVE_CONFIG_H)    // Dynamically created by configure
     #include <ql/config.hpp>

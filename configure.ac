@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [0.3.12],
+AC_INIT([QuantLib], [0.3.13],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.50)
@@ -8,8 +8,9 @@ AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([ql/config.hpp])
 AM_INIT_AUTOMAKE([foreign])
 
-AC_COPYRIGHT([Copyright (C) 2004, 2005 Ferdinando Ametrano
-Copyright (C) 2000-2005 StatPro Italia srl
+AC_COPYRIGHT([
+Copyright (C) 2004, 2005 Ferdinando Ametrano
+Copyright (C) 2000-2006 StatPro Italia srl
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,6 +40,7 @@ AC_ARG_WITH([boost-include],
             [ql_boost_include_path="`cd ${withval} 2>/dev/null && pwd`"],
             [ql_boost_include_path=""])
 if test [ -n "$ql_boost_include_path" ] ; then
+   AC_SUBST([BOOST_INCLUDE],["-I${ql_boost_include_path}"])
    AC_SUBST([CPPFLAGS],["${CPPFLAGS} -I${ql_boost_include_path}"])
 fi
 AC_ARG_WITH([boost-lib],
@@ -47,6 +49,7 @@ AC_ARG_WITH([boost-lib],
             [ql_boost_lib_path="`cd ${withval} 2>/dev/null && pwd`"],
             [ql_boost_lib_path=""])
 if test [ -n "$ql_boost_lib_path" ] ; then
+   AC_SUBST([BOOST_LIB],["-L${ql_boost_lib_path}"])
    AC_SUBST([LDFLAGS],["${LDFLAGS} -L${ql_boost_lib_path}"])
 fi
 

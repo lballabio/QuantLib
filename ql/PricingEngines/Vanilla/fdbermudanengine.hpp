@@ -24,6 +24,7 @@
 #ifndef quantlib_fd_bermudan_engine_hpp
 #define quantlib_fd_bermudan_engine_hpp
 
+#include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp>
 
 namespace QuantLib {

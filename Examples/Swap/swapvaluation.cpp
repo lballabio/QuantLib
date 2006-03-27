@@ -245,7 +245,7 @@ int main(int, char* [])
         BusinessDayConvention swFixedLegConvention = Unadjusted;
         DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
         Frequency swFloatingLegFrequency = Semiannual;
-        DayCounter swFloatingLegDayCounter = Actual365Fixed();
+        DayCounter swFloatingLegDayCounter = Actual360();
 
         boost::shared_ptr<RateHelper> s2y(new SwapRateHelper(
             Handle<Quote>(s2yRate),
@@ -372,7 +372,7 @@ int main(int, char* [])
         BusinessDayConvention floatingLegConvention = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Rate fixedRate = 0.04;
-        DayCounter floatingLegDayCounter = Actual365Fixed();
+        DayCounter floatingLegDayCounter = Actual360();
 
         // floating leg
         Frequency floatingLegFrequency = Semiannual;

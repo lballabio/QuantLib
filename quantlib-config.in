@@ -39,10 +39,10 @@ while test $# -gt 0; do
       echo @PACKAGE_VERSION@
       ;;
     --cflags)
-      echo -I@includedir@
+      echo -I@includedir@ @BOOST_INCLUDE@
       ;;
     --libs)
-      echo -L@libdir@ -lQuantLib-@PACKAGE_VERSION@
+      echo -L@libdir@ @BOOST_LIB@ -lQuantLib-@PACKAGE_VERSION@
       ;;
     *)
       echo "${usage}" 1>&2

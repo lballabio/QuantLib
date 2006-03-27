@@ -19,7 +19,7 @@
 /*! \page install Installation
 
     Before installing QuantLib, make sure that you have a working
-    Boost installation; see 
+    Boost installation; see
     http://www.boost.org/more/getting_started.html
     for instructions. Boost 1.31 or later is required; Boost 1.33 is
     suggested.
@@ -43,7 +43,7 @@
     Before compiling the library, you might want to edit the file
     "ql/userconfig.hpp"; see the \ref config section for details.
 
-    Visual C++ 6.0/7.1 projects files are supplied for building the library.
+    Visual C++ 6.0/7.1/8.0 projects files are supplied for building the library.
 
     Dev-C++ project files are provided in order to make easier the usage of
     Mingw/GCC under Win32.

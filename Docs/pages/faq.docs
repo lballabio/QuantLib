@@ -46,6 +46,9 @@
     \ref faq_features
     - \ref faq_features_missing "Why is feature X missing from QuantLib?"
 
+    \ref faq_extensions
+    - \ref faq_addin_trouble "I'm having trouble building/using QuantLibAddin."
+
     \ref faq_lists
     - \ref faq_lists_disable "How do I prevent my auto-responder from posting to the list?"
 
@@ -359,6 +362,17 @@
     </strong>
 
     See the section '\ref faq_contributing' above.
+
+
+    \section faq_extensions QuantLib features
+
+    <strong>
+    \anchor faq_addin_trouble
+    I'm having trouble building/using QuantLibAddin.
+    </strong>
+
+    The QuantLibAddin project has its own troubleshooting page; see
+    <http://quantlib.org/quantlibaddin/troubleshooting.html>.
 
 
     \section faq_lists QuantLib mailing lists

@@ -37,9 +37,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class AUD : public Currency {
+    class AUDCurrency : public Currency {
       public:
-        AUD() {
+        AUDCurrency() {
             static boost::shared_ptr<Data> audData(
                                       new Data("Australian dollar", "AUD", 36,
                                                "A$", "", 100,
@@ -48,10 +48,6 @@ namespace QuantLib {
             data_ = audData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to AUD */
-    typedef AUD AUDCurrency;
-    #endif
 
     //! New Zealand dollar
     /*! The ISO three-letter code is NZD; the numeric code is 554.
@@ -59,9 +55,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class NZD : public Currency {
+    class NZDCurrency : public Currency {
       public:
-        NZD() {
+        NZDCurrency() {
             static boost::shared_ptr<Data> nzdData(
                                     new Data("New Zealand dollar", "NZD", 554,
                                              "NZ$", "", 100,
@@ -70,10 +66,6 @@ namespace QuantLib {
             data_ = nzdData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to NZD */
-    typedef NZD NZDCurrency;
-    #endif
 
 }
 

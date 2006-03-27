@@ -37,9 +37,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class ZAR : public Currency {
+    class ZARCurrency : public Currency {
       public:
-        ZAR() {
+        ZARCurrency() {
             static boost::shared_ptr<Data> zarData(
                                     new Data("South-African rand", "ZAR", 710,
                                              "R", "", 100,
@@ -48,10 +48,6 @@ namespace QuantLib {
             data_ = zarData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to ZAR */
-    typedef ZAR ZARCurrency;
-    #endif
 
 }
 

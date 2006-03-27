@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,7 +40,7 @@ namespace QuantLib {
     /*! Derived classes must fill the unitialized data members.
 
         \warning Most methods assume that the cashflows are stored
-                 sorted by date
+                 sorted by date, the redemption being the last one.
 
         \ingroup instruments
 
@@ -71,6 +71,9 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Date settlementDate() const;
+        /*! \warning unlike in previous versions, the returned vector
+                     now include the redemption as the last cash flow.
+        */
         const std::vector<boost::shared_ptr<CashFlow> >& cashflows() const;
         const boost::shared_ptr<CashFlow>& redemption() const;
         const Calendar& calendar() const;
@@ -89,10 +92,26 @@ namespace QuantLib {
         //! \name Calculations
         //@{
         //! theoretical clean price
-        /*! The default bond settlement is used for calculation. */
+        /*! The default bond settlement is used for calculation.
+
+            \warning the theoretical price calculated from a flat term
+                     structure might differ slightly from the price
+                     calculated from the corresponding yield by means
+                     of the other overload of this function. If the
+                     price from a constant yield is desired, it is
+                     advisable to use such other overload.
+        */
         Real cleanPrice() const;
         //! theoretical dirty price
-        /*! The default bond settlement is used for calculation. */
+        /*! The default bond settlement is used for calculation.
+
+            \warning the theoretical price calculated from a flat term
+                     structure might differ slightly from the price
+                     calculated from the corresponding yield by means
+                     of the other overload of this function. If the
+                     price from a constant yield is desired, it is
+                     advisable to use such other overload.
+        */
         Real dirtyPrice() const;
         //! theoretical bond yield
         /*! The default bond settlement and theoretical price are used
@@ -132,8 +151,7 @@ namespace QuantLib {
 
         Date issueDate_, datedDate_, maturityDate_;
         Frequency frequency_;
-        std::vector<boost::shared_ptr<CashFlow> > cashFlows_;
-        boost::shared_ptr<CashFlow> redemption_;
+        std::vector<boost::shared_ptr<CashFlow> > cashflows_;
         Handle<YieldTermStructure> discountCurve_;
     };
 
@@ -142,12 +160,11 @@ namespace QuantLib {
 
     inline
     const std::vector<boost::shared_ptr<CashFlow> >& Bond::cashflows() const {
-        return cashFlows_;
+        return cashflows_;
     }
 
-    inline
-    const boost::shared_ptr<CashFlow>& Bond::redemption() const {
-        return redemption_;
+    inline const boost::shared_ptr<CashFlow>& Bond::redemption() const {
+        return cashflows_.back();
     }
 
     inline const Calendar& Bond::calendar() const {

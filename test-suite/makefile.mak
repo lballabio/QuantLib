@@ -44,7 +44,6 @@ QL_TESTS = \
     "covariance.obj$(_mt)$(_D)" \
     "dates.obj$(_mt)$(_D)" \
     "daycounters.obj$(_mt)$(_D)" \
-    "defaultable.obj$(_mt)$(_D)" \
     "digitaloption.obj$(_mt)$(_D)" \
     "distributions.obj$(_mt)$(_D)" \
     "dividendoption.obj$(_mt)$(_D)" \
@@ -131,7 +130,7 @@ $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe:: $(EXE_DIR)
          del $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe
     $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) \
     -e"$(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-$(VERSION_STRING).exe" \
-    $(QL_TEST_LIB) libboost_unit_test_framework-bcb$(_mt)$(_D)-1_33.lib
+    $(QL_TEST_LIB) libboost_unit_test_framework-bcb$(_mt)$(_D)-1_33_1.lib
 
 $(EXE_DIR):
     if not exist .\bin md .\bin

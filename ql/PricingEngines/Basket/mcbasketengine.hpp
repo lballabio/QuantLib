@@ -67,7 +67,23 @@ namespace QuantLib {
       protected:
         // McSimulation implementation
         TimeGrid timeGrid() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const;
+        boost::shared_ptr<path_generator_type> pathGenerator() const {
+
+            boost::shared_ptr<PlainVanillaPayoff> payoff =
+                boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                                                           arguments_.payoff);
+            QL_REQUIRE(payoff, "non-plain payoff given");
+
+            Size numAssets = arguments_.stochasticProcess->size();
+
+            TimeGrid grid = timeGrid();
+            typename RNG::rsg_type gen =
+                RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
+
+            return boost::shared_ptr<path_generator_type>(
+                         new path_generator_type(arguments_.stochasticProcess,
+                                                 grid, gen, brownianBridge_));
+        }
         boost::shared_ptr<path_pricer_type> pathPricer() const;
         // Real controlVariateValue() const;
         // data members
@@ -117,26 +133,6 @@ namespace QuantLib {
                                        this->arguments_.exercise->lastDate());
 
         return TimeGrid(residualTime, maxTimeStepsPerYear_);
-    }
-
-    template<class RNG, class S>
-    inline
-    boost::shared_ptr<QL_TYPENAME MCBasketEngine<RNG,S>::path_generator_type>
-    MCBasketEngine<RNG,S>::pathGenerator() const {
-
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-plain payoff given");
-
-        Size numAssets = arguments_.stochasticProcess->size();
-
-        TimeGrid grid = timeGrid();
-        typename RNG::rsg_type gen =
-            RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
-
-        return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(arguments_.stochasticProcess,
-                                                 grid, gen, brownianBridge_));
     }
 
     template <class RNG, class S>

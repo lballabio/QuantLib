@@ -1,3 +1,1403 @@
+2006-03-14 05:59  Joseph Wang
+
+	* test-suite/: dates.cpp (1.16), dates.hpp (1.10):
+
+	Add item for ISO date converter
+
+2006-03-14 05:59  Joseph Wang
+
+	* ql/: date.cpp (1.50), date.hpp (1.51):
+
+	Add converter from iso format
+
+2006-03-04 19:11  Ferdinando Ametrano
+
+	* QuantLib.dsp (1.270.2.1), QuantLib.dsw (1.15.2.2), QuantLib.sln
+	(1.12.2.2), QuantLib.vcproj (1.61.2.1), QuantLib_vc8.sln (1.5.2.3),
+	QuantLib_vc8.vcproj (1.11.2.3), Docs/pages/install.docs (1.16.2.1),
+	Examples/BermudanSwaption/BermudanSwaption.dsp (1.20.4.1),
+	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.13.4.1),
+	Examples/BermudanSwaption/BermudanSwaption_vc8.vcproj (1.3.2.2),
+	Examples/ConvertibleBonds/ConvertibleBonds.dsp (1.1.2.2),
+	Examples/ConvertibleBonds/ConvertibleBonds.vcproj (1.2.2.1),
+	Examples/ConvertibleBonds/ConvertibleBonds_vc8.vcproj (1.3.2.2),
+	Examples/DiscreteHedging/DiscreteHedging.dsp (1.22.4.1),
+	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.13.4.1),
+	Examples/DiscreteHedging/DiscreteHedging_vc8.vcproj (1.3.2.2),
+	Examples/EquityOption/EquityOption.dsp (1.1.2.2),
+	Examples/EquityOption/EquityOption.vcproj (1.1.2.1),
+	Examples/EquityOption/EquityOption_vc8.vcproj (1.2.2.2),
+	Examples/Swap/Swap.dsp (1.21.4.1), Examples/Swap/Swap.vcproj
+	(1.13.4.1), Examples/Swap/Swap_vc8.vcproj (1.3.2.2),
+	functions/ql/Functions/QuantLibFunctions.dsp (1.15.2.1),
+	functions/ql/Functions/QuantLibFunctions.vcproj (1.15.2.1),
+	functions/ql/Functions/QuantLibFunctions_vc8.vcproj (1.5.2.2),
+	test-suite/testsuite.dsp (1.58.2.2), test-suite/testsuite.vcproj
+	(1.41.2.1), test-suite/testsuite_vc8.vcproj (1.12.2.2):
+
+	MTDLL configuration suffixes changed into CRTDLL suffixes, in order
+	to emphasize the fact that they refer to the C run time library.
+
+2006-03-03 17:26  Luigi Ballabio
+
+	* ql/CashFlows/: analysis.cpp (1.4.2.1), analysis.hpp (1.2.2.1):
+
+	Revamped duration and convexity calculations
+
+2006-03-03 14:00  Luigi Ballabio
+
+	* News.txt (1.109.2.1), Docs/pages/history.docs (1.26.2.3),
+	ql/Instruments/bond.cpp (1.14.2.1), ql/Instruments/bond.hpp
+	(1.14.2.3), ql/Instruments/convertiblebond.cpp (1.13.2.1),
+	ql/Instruments/convertiblebond.hpp (1.14.2.1),
+	ql/Instruments/fixedcouponbond.cpp (1.12.2.1),
+	ql/Instruments/floatingratebond.cpp (1.6.2.1),
+	ql/Instruments/zerocouponbond.cpp (1.5.2.1),
+	ql/Processes/lfmprocess.hpp (1.1.2.1):
+
+	The cash flows returned by the Bond::cashflows method now include
+	the redemption
+
+2006-02-27 17:51  Luigi Ballabio
+
+	* configure.ac (1.76.2.1), quantlib-config.in (1.7.10.1):
+
+	Added user-defined Boost paths to those returned by quantlib-config
+
+2006-02-22 15:12  Luigi Ballabio
+
+	* Announce.txt (1.5.2.1), Readme.txt (1.27.2.1), Docs/Makefile.am
+	(1.77.4.1), Docs/makefile.mak (1.40.4.1), Docs/quantlib.doxy
+	(1.100.2.1), Docs/quantlibheader.html (1.29.2.1),
+	Docs/pages/examples.docs (1.9.2.1), Docs/pages/history.docs
+	(1.26.2.1), ql/date.hpp (1.50.2.1),
+	ql/FiniteDifferences/tridiagonaloperator.hpp (1.42.2.2),
+	ql/Instruments/bond.hpp (1.14.2.1),
+	ql/Math/incrementalstatistics.hpp (1.15.6.1), ql/Math/rounding.hpp
+	(1.12.6.1), ql/PricingEngines/Asian/mcdiscreteasianengine.hpp
+	(1.11.4.2), ql/PricingEngines/Vanilla/juquadraticengine.hpp
+	(1.5.6.1), ql/RandomNumbers/randomizedlds.hpp (1.10.6.1),
+	ql/RandomNumbers/randomsequencegenerator.hpp (1.14.6.1),
+	ql/TermStructures/forwardspreadedtermstructure.hpp (1.36.6.1),
+	ql/TermStructures/zerospreadedtermstructure.hpp (1.37.6.1),
+	ql/Volatilities/impliedvoltermstructure.hpp (1.19.6.1),
+	test-suite/lowdiscrepancysequences.cpp (1.75.2.1):
+
+	Documentation fixes
+
+2006-02-22 12:36  Luigi Ballabio
+
+	* QuantLib_vc8.sln (1.5.2.1), QuantLib_vc8.vcproj (1.11.2.1),
+	Examples/ConvertibleBonds/ConvertibleBonds.dsp (1.1.2.1),
+	Examples/ConvertibleBonds/Makefile.am (1.3.2.1):
+
+	Fixes for VC projects
+
+2006-02-21 17:25  Luigi Ballabio
+
+	* ql/: Instruments/callabilityschedule.hpp (1.6.2.2),
+	PricingEngines/Vanilla/fdamericanengine.hpp (1.9.2.1),
+	PricingEngines/Vanilla/fdbermudanengine.hpp (1.12.2.1),
+	PricingEngines/Vanilla/fdconditions.hpp (1.1.2.1),
+	PricingEngines/Vanilla/fddividendamericanengine.hpp (1.11.2.1),
+	PricingEngines/Vanilla/fddividendeuropeanengine.hpp (1.10.2.1),
+	PricingEngines/Vanilla/fddividendshoutengine.hpp (1.12.2.1):
+
+	Fixed header self-consistency
+
+2006-02-21 15:09  Luigi Ballabio
+
+	* LICENSE.TXT (1.25.2.1), Docs/pages/license.docs (1.21.2.1),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.82.2.1),
+	dev_tools/check_copyrights.sh (1.1.2.1),
+	dev_tools/collect_copyrights.py (1.1.2.1),
+	ql/Calendars/argentina.cpp (1.2.2.1), ql/Calendars/argentina.hpp
+	(1.2.2.1), ql/Calendars/iceland.cpp (1.2.2.1),
+	ql/Calendars/iceland.hpp (1.2.2.1), ql/Calendars/indonesia.hpp
+	(1.2.2.1), ql/Calendars/mexico.cpp (1.2.2.1),
+	ql/Calendars/mexico.hpp (1.2.2.1), ql/Calendars/ukraine.cpp
+	(1.2.2.1), ql/Calendars/ukraine.hpp (1.2.2.1),
+	ql/FiniteDifferences/tridiagonaloperator.hpp (1.42.2.1),
+	ql/Indexes/trlibor.hpp (1.4.2.2), ql/Math/chisquaredistribution.cpp
+	(1.15.6.1), ql/Math/chisquaredistribution.hpp (1.13.6.1),
+	ql/Math/gammadistribution.cpp (1.15.6.1),
+	ql/Math/gammadistribution.hpp (1.12.6.1),
+	ql/Math/simpsonintegral.hpp (1.11.6.1),
+	ql/Math/trapezoidintegral.hpp (1.13.2.1),
+	ql/PricingEngines/Hybrid/discretizedconvertible.hpp (1.5.2.1),
+	ql/Processes/defaultable.hpp (1.3.4.1),
+	ql/TermStructures/affinetermstructure.cpp (1.28.6.1),
+	ql/TermStructures/affinetermstructure.hpp (1.31.6.1),
+	ql/TermStructures/compoundforward.cpp (1.54.6.1),
+	ql/TermStructures/compoundforward.hpp (1.45.6.1),
+	ql/TermStructures/discountcurve.hpp (1.46.6.1),
+	ql/TermStructures/extendeddiscountcurve.hpp (1.26.6.1):
+
+	Copyright fixes
+
+2006-02-10 16:55  Luigi Ballabio
+
+	* ql/Calendars/makefile.mak (1.36),
+	ql/FiniteDifferences/operatorfactory.hpp (1.3),
+	ql/FiniteDifferences/pde.hpp (1.11),
+	ql/Instruments/convertiblebond.cpp (1.13),
+	ql/Instruments/makefile.mak (1.40), ql/Math/makefile.mak (1.42),
+	ql/Optimization/levenbergmarquardt.cpp (1.5),
+	ql/Optimization/lmdif.cpp (1.4), ql/Optimization/makefile.mak
+	(1.23), ql/PricingEngines/makefile.mak (1.38),
+	ql/PricingEngines/Swaption/makefile.mak (1.14),
+	ql/Processes/makefile.mak (1.6), ql/ShortRateModels/makefile.mak
+	(1.20), ql/ShortRateModels/TwoFactorModels/makefile.mak (1.19),
+	ql/Utilities/makefile.mak (1.6), test-suite/makefile.mak (1.59),
+	ql/PricingEngines/Hybrid/makefile.mak (1.1),
+	ql/ShortRateModels/LiborMarketModels/makefile.mak (1.1):
+
+	Fixes (?) for Borland
+
+2006-02-10 14:51  Luigi Ballabio
+
+	* Examples/BermudanSwaption/BermudanSwaption_vc8.vcproj (1.3),
+	Examples/ConvertibleBonds/ConvertibleBonds_vc8.vcproj (1.3),
+	Examples/DiscreteHedging/DiscreteHedging_vc8.vcproj (1.3),
+	Examples/EquityOption/EquityOption_vc8.vcproj (1.2), QuantLib.dsp
+	(1.270), Examples/Swap/Swap_vc8.vcproj (1.3), QuantLib.vcproj
+	(1.61), QuantLib_vc8.vcproj (1.11),
+	functions/ql/Functions/QuantLibFunctions_vc8.vcproj (1.5),
+	ql/Instruments/convertiblebond.cpp (1.12),
+	ql/Optimization/levenbergmarquardt.cpp (1.4),
+	ql/ShortRateModels/LiborMarketModels/lfmcovarproxy.cpp (1.2),
+	ql/config.msvc.hpp (1.73),
+	ql/ShortRateModels/LiborMarketModels/lfmcovarproxy.hpp (1.2),
+	test-suite/libormarketmodel.cpp (1.4),
+	test-suite/libormarketmodelprocess.cpp (1.4),
+	test-suite/testsuite.dsp (1.57), test-suite/testsuite.vcproj
+	(1.40), test-suite/testsuite_vc8.vcproj (1.11):
+
+	Fixes for VC++
+
+2006-02-07 17:19  Luigi Ballabio
+
+	* News.txt (1.108), ql/CashFlows/analysis.cpp (1.4),
+	ql/Instruments/simpleswap.cpp (1.62), ql/Instruments/swaption.cpp
+	(1.53), ql/Instruments/swaption.hpp (1.49),
+	ql/PricingEngines/Swaption/blackswaptionengine.cpp (1.4),
+	ql/PricingEngines/Swaption/lfmswaptionengine.cpp (1.2),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.48):
+
+	Modified basis-point sensitivity calculation so that it returns the
+	cash variation for a basis-point change in rate
+
+2006-02-07 12:50  Luigi Ballabio
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.82),
+	Examples/Swap/swapvaluation.cpp (1.67),
+	ql/Instruments/simpleswap.cpp (1.61), ql/Instruments/simpleswap.hpp
+	(1.56), ql/Instruments/swaption.cpp (1.52),
+	ql/Instruments/swaption.hpp (1.48),
+	ql/PricingEngines/Swaption/discretizedswaption.cpp (1.10),
+	ql/PricingEngines/Swaption/discretizedswaption.hpp (1.11),
+	ql/PricingEngines/Swaption/treeswaptionengine.cpp (1.9),
+	ql/PricingEngines/Swaption/treeswaptionengine.hpp (1.8),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.hpp (1.23),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.46),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp (1.21),
+	ql/TermStructures/ratehelpers.cpp (1.61),
+	ql/TermStructures/ratehelpers.hpp (1.51),
+	test-suite/bermudanswaption.cpp (1.8), test-suite/capfloor.cpp
+	(1.51), test-suite/compoundforward.cpp (1.38),
+	test-suite/libormarketmodel.cpp (1.3),
+	test-suite/piecewiseflatforward.cpp (1.36),
+	test-suite/piecewiseyieldcurve.cpp (1.14),
+	test-suite/shortratemodels.cpp (1.14), test-suite/swap.cpp (1.45),
+	test-suite/swaption.cpp (1.44), test-suite/termstructures.cpp
+	(1.42):
+
+	Added floating-leg day counter to simple swap (renamed to
+	VanillaSwap in the meantime)
+
+2006-02-03 17:12  Luigi Ballabio
+
+	* News.txt (1.107), Examples/BermudanSwaption/BermudanSwaption.cpp
+	(1.80), ql/Optimization/Makefile.am (1.11), ql/Optimization/all.hpp
+	(1.3), ql/Optimization/costfunction.hpp (1.22),
+	ql/Optimization/levenbergmarquardt.cpp (1.1),
+	ql/Optimization/levenbergmarquardt.hpp (1.1),
+	ql/Optimization/lmdif.cpp (1.1), ql/Optimization/lmdif.hpp (1.1),
+	ql/Optimization/problem.hpp (1.13), ql/ShortRateModels/model.cpp
+	(1.27):
+
+	Added Levenberg-Marquardt optimization method (thanks to Klaus
+	Spanderen)
+
+2006-02-03 11:49  Luigi Ballabio
+
+	* test-suite/lowdiscrepancysequences.cpp (1.75):
+
+	Fix for 64-bit systems (thanks to Tamas Sashalmi)
+
+2006-02-02 16:44  Luigi Ballabio
+
+	* Docs/pages/faq.docs (1.22), ql/Processes/lfmcovarparam.hpp (1.2):
+
+	FAQ for Solaris
+
+2006-02-02 12:38  Luigi Ballabio
+
+	* ql/Math/generalstatistics.hpp (1.21):
+
+	Fix for Solaris
+
+2006-02-02 09:37  Luigi Ballabio
+
+	* ql/: instrument.hpp (1.41), Instruments/barrieroption.cpp (1.37),
+	Instruments/barrieroption.hpp (1.33),
+	Instruments/forwardvanillaoption.cpp (1.34),
+	Instruments/forwardvanillaoption.hpp (1.34),
+	Instruments/multiassetoption.cpp (1.20),
+	Instruments/multiassetoption.hpp (1.16),
+	Instruments/oneassetoption.cpp (1.27),
+	Instruments/oneassetoption.hpp (1.20),
+	Instruments/oneassetstrikedoption.cpp (1.21),
+	Instruments/oneassetstrikedoption.hpp (1.19),
+	Instruments/quantovanillaoption.cpp (1.39),
+	Instruments/quantovanillaoption.hpp (1.36),
+	Instruments/simpleswap.cpp (1.60), Instruments/simpleswap.hpp
+	(1.55):
+
+	Refactored engine-results extraction into its own method
+
+2006-02-01 13:43  Luigi Ballabio
+
+	* LICENSE.TXT (1.25), News.txt (1.106), configure.ac (1.76),
+	Docs/pages/license.docs (1.21),
+	ql/PricingEngines/Swaption/Makefile.am (1.8),
+	ql/PricingEngines/Swaption/all.hpp (1.6),
+	ql/PricingEngines/Swaption/lfmswaptionengine.cpp (1.1),
+	ql/PricingEngines/Swaption/lfmswaptionengine.hpp (1.1),
+	ql/Processes/Makefile.am (1.8), ql/Processes/all.hpp (1.5),
+	ql/Processes/capletlmmprocess.cpp (1.4),
+	ql/Processes/capletlmmprocess.hpp (1.3),
+	ql/Processes/lfmcovarparam.cpp (1.1),
+	ql/Processes/lfmcovarparam.hpp (1.1),
+	ql/Processes/lfmhullwhiteparam.cpp (1.1),
+	ql/Processes/lfmhullwhiteparam.hpp (1.1),
+	ql/Processes/lfmprocess.cpp (1.1), ql/Processes/lfmprocess.hpp
+	(1.1), ql/ShortRateModels/Makefile.am (1.8),
+	ql/ShortRateModels/all.hpp (1.4),
+	ql/ShortRateModels/calibrationhelper.cpp (1.12),
+	ql/ShortRateModels/calibrationhelper.hpp (1.27),
+	ql/ShortRateModels/model.hpp (1.36),
+	ql/ShortRateModels/CalibrationHelpers/Makefile.am (1.7),
+	ql/ShortRateModels/CalibrationHelpers/all.hpp (1.1),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.47),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.hpp (1.22),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.45),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp (1.20),
+	ql/ShortRateModels/LiborMarketModels/.cvsignore (1.1),
+	ql/ShortRateModels/LiborMarketModels/Makefile.am (1.1),
+	ql/ShortRateModels/LiborMarketModels/all.hpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lfmcovarproxy.cpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lfmcovarproxy.hpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/liborforwardmodel.cpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/liborforwardmodel.hpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lmcorrmodel.cpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lmcorrmodel.hpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lmexpcorrmodel.cpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lmexpcorrmodel.hpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lmfixedvolmodel.cpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lmfixedvolmodel.hpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lmlinexpvolmodel.cpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lmlinexpvolmodel.hpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lmvolmodel.cpp (1.1),
+	ql/ShortRateModels/LiborMarketModels/lmvolmodel.hpp (1.1),
+	ql/ShortRateModels/OneFactorModels/Makefile.am (1.6),
+	ql/ShortRateModels/OneFactorModels/all.hpp (1.1),
+	ql/ShortRateModels/TwoFactorModels/Makefile.am (1.8),
+	ql/ShortRateModels/TwoFactorModels/all.hpp (1.1),
+	test-suite/Makefile.am (1.67), test-suite/libormarketmodel.cpp
+	(1.1), test-suite/libormarketmodel.hpp (1.1),
+	test-suite/libormarketmodelprocess.cpp (1.3),
+	test-suite/libormarketmodelprocess.hpp (1.2),
+	test-suite/quantlibtestsuite.cpp (1.112):
+
+	Added Libor market model (thanks to Klaus Spanderen)
+
+2006-02-01 07:20  Joseph Wang
+
+	* ql/Instruments/dividendschedule.hpp (1.12):
+
+	Remove unneeded include
+
+2006-01-30 17:53  Luigi Ballabio
+
+	* Contributors.txt (1.35), LICENSE.TXT (1.24), News.txt (1.105),
+	Docs/pages/authors.docs (1.43), Docs/pages/license.docs (1.20),
+	Examples/ConvertibleBonds/ConvertibleBonds.cpp (1.9),
+	ql/Instruments/callabilityschedule.hpp (1.6),
+	ql/Instruments/convertiblebond.cpp (1.11),
+	ql/Instruments/convertiblebond.hpp (1.14),
+	ql/Instruments/dividendschedule.hpp (1.11),
+	ql/Lattices/tflattice.hpp (1.6),
+	ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp (1.8),
+	ql/PricingEngines/Hybrid/discretizedconvertible.cpp (1.5),
+	ql/PricingEngines/Hybrid/discretizedconvertible.hpp (1.5):
+
+	Attributions
+
+2006-01-30 15:50  Luigi Ballabio
+
+	* ql/Instruments/convertiblebond.cpp (1.10),
+	ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp (1.6),
+	test-suite/Makefile.am (1.66), test-suite/convertiblebonds.cpp
+	(1.1), test-suite/convertiblebonds.hpp (1.1),
+	test-suite/makefile.mak (1.58), test-suite/quantlibtestsuite.cpp
+	(1.111), test-suite/testsuite.vcproj (1.39):
+
+	More fixes; tests added
+
+2006-01-30 14:03  Luigi Ballabio
+
+	* Examples/ConvertibleBonds/ConvertibleBonds.cpp (1.8),
+	ql/Instruments/convertiblebond.cpp (1.9),
+	ql/Instruments/convertiblebond.hpp (1.12):
+
+	More fixes for convertibles
+
+2006-01-30 12:37  Luigi Ballabio
+
+	* Examples/ConvertibleBonds/ConvertibleBonds.cpp (1.7),
+	ql/Instruments/convertiblebond.cpp (1.8),
+	ql/Instruments/convertiblebond.hpp (1.11):
+
+	Separate classes for zero-coupon, fixed-coupon, and floating-rate
+	convertibles
+
+2006-01-30 12:02  Luigi Ballabio
+
+	* Examples/ConvertibleBonds/ConvertibleBonds.cpp (1.6),
+	ql/Instruments/convertiblebond.cpp (1.7),
+	ql/Instruments/convertiblebond.hpp (1.10),
+	ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp (1.5):
+
+	Removed a few unused arguments
+
+2006-01-28 14:39  Luigi Ballabio
+
+	* Examples/ConvertibleBonds/ConvertibleBonds.cpp (1.5),
+	ql/Instruments/convertiblebond.cpp (1.6), ql/Lattices/tflattice.hpp
+	(1.5), ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp
+	(1.4), test-suite/quantlibtestsuite.cpp (1.110):
+
+	Extended convertible-bond example, misc. fixes
+
+2006-01-28 14:39  Luigi Ballabio
+
+	* ql/Math/sampledcurve.cpp (1.4), ql/Math/sampledcurve.hpp (1.13),
+	test-suite/sampledcurve.cpp (1.5):
+
+	Fix for regriding
+
+2006-01-26 14:23  Luigi Ballabio
+
+	* Examples/ConvertibleBonds/ConvertibleBonds.cpp (1.4),
+	ql/discretizedasset.hpp (1.24), ql/Instruments/convertiblebond.cpp
+	(1.5), ql/Instruments/convertiblebond.hpp (1.9),
+	ql/Lattices/binomialtree.cpp (1.33), ql/Lattices/binomialtree.hpp
+	(1.26), ql/Lattices/tflattice.hpp (1.4),
+	ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp (1.3),
+	ql/PricingEngines/Hybrid/discretizedconvertible.cpp (1.4),
+	ql/PricingEngines/Hybrid/discretizedconvertible.hpp (1.4):
+
+	More work on convertibles. Still to do: - work out how to manage
+	discrete dividends - write tests
+
+2006-01-24 07:46  Joseph Wang
+
+	* ql/Lattices/tflattice.hpp (1.3):
+
+	Change to allow it to compile.
+
+2006-01-23 18:12  Luigi Ballabio
+
+	* Examples/ConvertibleBonds/ConvertibleBonds.cpp (1.3),
+	ql/Instruments/convertiblebond.cpp (1.3),
+	ql/Instruments/convertiblebond.hpp (1.8), ql/Lattices/tflattice.hpp
+	(1.2), ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp
+	(1.2), ql/PricingEngines/Hybrid/discretizedconvertible.cpp (1.2),
+	ql/PricingEngines/Hybrid/discretizedconvertible.hpp (1.3):
+
+	Working on convertible bonds; got the instrument to actually call
+	the engine.  Still some work to do in order to have it run
+	correctly.
+
+2006-01-23 06:31  Joseph Wang
+
+	* ql/Instruments/convertiblebond.cpp (1.1):
+
+	add one more file from tboafo
+
+2006-01-23 05:07  Joseph Wang
+
+	* configure.ac (1.75), Examples/Makefile.am (1.27),
+	Examples/ConvertibleBonds/ConvertibleBonds.cpp (1.1),
+	Examples/ConvertibleBonds/ConvertibleBonds.ncb (1.1),
+	Examples/ConvertibleBonds/ConvertibleBonds.sln (1.1),
+	Examples/ConvertibleBonds/ConvertibleBonds.suo (1.1),
+	Examples/ConvertibleBonds/ConvertibleBonds.vcproj (1.1),
+	Examples/ConvertibleBonds/Makefile.am (1.1),
+	Examples/ConvertibleBonds/Makefile.in (1.1),
+	Examples/ConvertibleBonds/utilities.cpp (1.1),
+	Examples/ConvertibleBonds/utilities.hpp (1.1), ql/schedule.hpp
+	(1.7), ql/Instruments/Makefile.am (1.34), ql/Instruments/all.hpp
+	(1.14), ql/Instruments/convertiblebond.hpp (1.6),
+	ql/Lattices/Makefile.am (1.14), ql/Lattices/all.hpp (1.3),
+	ql/Lattices/binomialtree.cpp (1.32), ql/Lattices/binomialtree.hpp
+	(1.25), ql/Lattices/tflattice.hpp (1.1),
+	ql/PricingEngines/Makefile.am (1.44), ql/PricingEngines/all.hpp
+	(1.11), ql/PricingEngines/Hybrid/Makefile.am (1.1),
+	ql/PricingEngines/Hybrid/Makefile.in (1.1),
+	ql/PricingEngines/Hybrid/all.hpp (1.1),
+	ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp (1.1),
+	ql/PricingEngines/Hybrid/discretizedconvertible.cpp (1.1),
+	ql/PricingEngines/Hybrid/discretizedconvertible.hpp (1.1):
+
+	Add tboafo's convertible bond changes.
+
+2006-01-13 15:40  Joseph Wang
+
+	* ql/: Instruments/dividendschedule.hpp (1.10),
+	Instruments/dividendvanillaoption.hpp (1.11),
+	PricingEngines/Vanilla/fddividendengine.cpp (1.12):
+
+	Restructure dividend schedule to remove an unnecessary field.  This
+	will make it easier to integrate Theo's convertible bond code.
+
+2006-01-11 04:37  Joseph Wang
+
+	* ql/Instruments/callabilityschedule.hpp (1.4):
+
+	const-ize to implement pure virtual in event
+
+2006-01-09 13:10  Marco Marchioro
+
+	* QuantLib.dsp (1.269), QuantLib.dsw (1.14),
+	ql/Instruments/dividendschedule.hpp (1.8),
+	test-suite/interpolations.cpp (1.32), test-suite/testsuite.dsp
+	(1.56):
+
+	Fixes for VC6
+
+2006-01-03 16:04  Luigi Ballabio
+
+	* ql/PricingEngines/: blackformula.cpp (1.12), blackformula.hpp
+	(1.20):
+
+	Switch-on-payoff in Black formula is now hidden behind a visitor
+
+2006-01-03 11:55  Luigi Ballabio
+
+	* ql/: cashflow.hpp (1.23), payoff.hpp (1.14),
+	Instruments/payoffs.hpp (1.17):
+
+	Added visitability to payoffs
+
+2006-01-03 10:51  Luigi Ballabio
+
+	* Docs/quantlib.doxy (1.100), Docs/pages/examples.docs (1.9),
+	ql/Calendars/brazil.hpp (1.3):
+
+	Doc fixes
+
+2005-12-27 02:43  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/: fddividendamericanengine.hpp (1.11),
+	fddividendengine.cpp (1.11), fddividendengine.hpp (1.16),
+	fddividendeuropeanengine.hpp (1.10), fddividendshoutengine.hpp
+	(1.12):
+
+	Add new dividend engines.  Make shift/scale engine work with fixed
+	and fractional dividends.
+
+2005-12-26 08:42  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/: fdamericanengine.hpp (1.9),
+	fddividendamericanengine.hpp (1.10), fddividendengine.hpp (1.15),
+	fddividendeuropeanengine.hpp (1.9), fddividendshoutengine.hpp
+	(1.11), fdshoutengine.hpp (1.10), fdvanillaengine.hpp (1.16):
+
+	Use template to remove a lot of redundant code in the FD engines.
+
+2005-12-24 05:22  Joseph Wang
+
+	* ql/CashFlows/: cashflowvectors.cpp (1.45), dividend.hpp (1.2):
+
+	Create two new subclasses.  Fixed and fractional dividends.
+
+2005-12-23 05:41  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/: Makefile.am (1.25),
+	fdamericanengine.hpp (1.8), fdconditions.hpp (1.1),
+	fddividendamericanengine.hpp (1.9), fddividendshoutengine.hpp
+	(1.10), fdshoutengine.hpp (1.9):
+
+	Refactor some common code into a template.
+
+2005-12-22 08:41  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/: fddividendengine.cpp (1.10),
+	fddividendengine.hpp (1.14), fdmultiperiodengine.cpp (1.12),
+	fdmultiperiodengine.hpp (1.12), fdstepconditionengine.cpp (1.11),
+	fdstepconditionengine.hpp (1.8), fdvanillaengine.cpp (1.14),
+	fdvanillaengine.hpp (1.15):
+
+	Change some of the arguments to more generic types to avoid
+	exposing implementation details in the header.
+
+2005-12-21 13:13  Luigi Ballabio
+
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.59),
+	ql/Pricers/mcmaxbasket.cpp (1.52),
+	ql/PricingEngines/Barrier/mcbarrierengine.cpp (1.17),
+	ql/PricingEngines/Barrier/mcbarrierengine.hpp (1.36),
+	ql/PricingEngines/Basket/mcbasketengine.cpp (1.12),
+	ql/PricingEngines/Basket/mcbasketengine.hpp (1.37),
+	ql/PricingEngines/Vanilla/mcdigitalengine.cpp (1.17),
+	ql/PricingEngines/Vanilla/mcdigitalengine.hpp (1.43),
+	ql/PricingEngines/Vanilla/mceuropeanengine.hpp (1.43),
+	ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp (1.8):
+
+	Removed now unnecessary parameters from path-pricer constructors
+
+2005-12-21 11:21  Luigi Ballabio
+
+	* ql/PricingEngines/Vanilla/fddividendengine.hpp (1.13):
+
+	Replaced #define with typedef
+
+2005-12-21 08:18  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/: fddividendamericanengine.hpp (1.8),
+	fddividendeuropeanengine.hpp (1.8), fddividendshoutengine.hpp
+	(1.9):
+
+	change calling method in fd dividend methods
+
+2005-12-21 07:58  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/: fddividendengine.cpp (1.9),
+	fddividendengine.hpp (1.12):
+
+	Refactoring to allow for several types of dividend engines.
+
+2005-12-21 07:06  Joseph Wang
+
+	* ql/Instruments/dividendschedule.hpp (1.7):
+
+	Set event list to const
+
+2005-12-20 09:35  Joseph Wang
+
+	* test-suite/dividendoption.cpp (1.12),
+	test-suite/dividendoption.hpp (1.4),
+	ql/PricingEngines/Vanilla/fddividendengine.cpp (1.8),
+	ql/PricingEngines/Vanilla/fddividendengine.hpp (1.11):
+
+	Fix finite difference dividend engine.	Had to do some calculations
+	from scratch, but finally concluded that the correct way to do the
+	calculation was to scale the grid by the discounted dividend value
+	rather than to shift it by the undiscounted dividend.
+
+2005-12-20 09:33  Joseph Wang
+
+	* ql/Math/sampledcurve.hpp (1.12):
+
+	Add in new method to scale the grid.  This is used in rewrite of
+	fddividendengine.cpp
+
+2005-12-20 09:32  Joseph Wang
+
+	* ql/FiniteDifferences/pdebsm.hpp (1.6):
+
+	Change interest rate counter to be consistent with definition in
+	other parts of quantlib.
+
+2005-12-19 14:29  Luigi Ballabio
+
+	* ql/Calendars/argentina.cpp (1.2), ql/Calendars/argentina.hpp
+	(1.2), ql/Calendars/beijing.cpp (1.5), ql/Calendars/beijing.hpp
+	(1.4), ql/Calendars/bombay.cpp (1.2), ql/Calendars/bombay.hpp
+	(1.2), ql/Calendars/bratislava.cpp (1.3),
+	ql/Calendars/bratislava.hpp (1.3), ql/Calendars/brazil.hpp (1.2),
+	ql/Calendars/budapest.cpp (1.10), ql/Calendars/budapest.hpp (1.11),
+	ql/Calendars/copenhagen.cpp (1.7), ql/Calendars/copenhagen.hpp
+	(1.8), ql/Calendars/germany.hpp (1.6), ql/Calendars/helsinki.cpp
+	(1.18), ql/Calendars/helsinki.hpp (1.20), ql/Calendars/hongkong.cpp
+	(1.4), ql/Calendars/hongkong.hpp (1.4), ql/Calendars/iceland.cpp
+	(1.2), ql/Calendars/iceland.hpp (1.2), ql/Calendars/indonesia.cpp
+	(1.2), ql/Calendars/indonesia.hpp (1.2), ql/Calendars/istanbul.cpp
+	(1.4), ql/Calendars/istanbul.hpp (1.4),
+	ql/Calendars/johannesburg.cpp (1.15), ql/Calendars/johannesburg.hpp
+	(1.12), ql/Calendars/mexico.cpp (1.2), ql/Calendars/mexico.hpp
+	(1.2), ql/Calendars/oslo.cpp (1.10), ql/Calendars/oslo.hpp (1.11),
+	ql/Calendars/prague.cpp (1.3), ql/Calendars/prague.hpp (1.3),
+	ql/Calendars/riyadh.cpp (1.4), ql/Calendars/riyadh.hpp (1.3),
+	ql/Calendars/seoul.cpp (1.5), ql/Calendars/seoul.hpp (1.4),
+	ql/Calendars/singapore.cpp (1.3), ql/Calendars/singapore.hpp (1.3),
+	ql/Calendars/stockholm.cpp (1.11), ql/Calendars/stockholm.hpp
+	(1.11), ql/Calendars/sydney.cpp (1.11), ql/Calendars/sydney.hpp
+	(1.13), ql/Calendars/taipei.hpp (1.3), ql/Calendars/taiwan.cpp
+	(1.6), ql/Calendars/taiwan.hpp (1.5), ql/Calendars/tokyo.cpp
+	(1.16), ql/Calendars/tokyo.hpp (1.13), ql/Calendars/toronto.cpp
+	(1.11), ql/Calendars/toronto.hpp (1.12), ql/Calendars/ukraine.cpp
+	(1.2), ql/Calendars/ukraine.hpp (1.2),
+	ql/Calendars/unitedstates.cpp (1.7), ql/Calendars/unitedstates.hpp
+	(1.8), ql/Calendars/warsaw.cpp (1.10), ql/Calendars/warsaw.hpp
+	(1.11), ql/Calendars/wellington.cpp (1.19),
+	ql/Calendars/wellington.hpp (1.20), ql/Calendars/zurich.cpp (1.19),
+	ql/Calendars/zurich.hpp (1.20), ql/Indexes/audlibor.hpp (1.26),
+	ql/Indexes/cadlibor.hpp (1.26), ql/Indexes/cdor.hpp (1.4),
+	ql/Indexes/chflibor.hpp (1.23), ql/Indexes/dkklibor.hpp (1.3),
+	ql/Indexes/jibar.hpp (1.3), ql/Indexes/jpylibor.hpp (1.24),
+	ql/Indexes/nzdlibor.hpp (1.3), ql/Indexes/tibor.hpp (1.4),
+	ql/Indexes/trlibor.hpp (1.4), ql/Indexes/zibor.hpp (1.4),
+	test-suite/calendars.cpp (1.26), test-suite/compoundforward.cpp
+	(1.37):
+
+	Moved more calendars from city to country and market
+
+2005-12-16 14:32  Luigi Ballabio
+
+	* ql/PricingEngines/Barrier/mcbarrierengine.cpp (1.16),
+	ql/PricingEngines/Barrier/mcbarrierengine.hpp (1.35),
+	test-suite/barrieroption.cpp (1.49):
+
+	Fixed MC barrier engine (thanks to Toyin Akin)
+
+2005-12-16 05:12  Joseph Wang
+
+	* test-suite/dividendoption.cpp (1.11),
+	ql/PricingEngines/Vanilla/fddividendengine.cpp (1.7),
+	ql/PricingEngines/Vanilla/fddividendengine.hpp (1.10),
+	ql/PricingEngines/Vanilla/fdeuropeanengine.cpp (1.11),
+	ql/PricingEngines/Vanilla/fdmultiperiodengine.cpp (1.11),
+	ql/PricingEngines/Vanilla/fdstepconditionengine.cpp (1.10),
+	ql/PricingEngines/Vanilla/fdvanillaengine.cpp (1.13),
+	ql/PricingEngines/Vanilla/fdvanillaengine.hpp (1.14):
+
+	Some refactoring in order to reduce the test failure with the
+	dividend engine.  With this change the Greeks are reasonable and
+	there are no obvious problems with the price curve, but the value
+	is still different from the one calculated by the analytic engine.
+	The greek test has been activated, but the values test is still
+	deactivated.
+
+2005-12-16 05:09  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.cpp
+	(1.13):
+
+	use time method of process.
+
+2005-12-15 17:09  Luigi Ballabio
+
+	* News.txt (1.104), ql/calendar.cpp (1.33), ql/calendar.hpp (1.47),
+	ql/Calendars/Makefile.am (1.33), ql/Calendars/all.hpp (1.15),
+	ql/Calendars/argentina.cpp (1.1), ql/Calendars/argentina.hpp (1.1),
+	ql/Calendars/iceland.cpp (1.1), ql/Calendars/iceland.hpp (1.1),
+	ql/Calendars/indonesia.cpp (1.1), ql/Calendars/indonesia.hpp (1.1),
+	ql/Calendars/mexico.cpp (1.1), ql/Calendars/mexico.hpp (1.1),
+	ql/Calendars/ukraine.cpp (1.1), ql/Calendars/ukraine.hpp (1.1):
+
+	Added Argentinian, Icelandic, Indonesian, Mexican, and Ukrainian
+	calendars
+
+2005-12-14 16:49  Luigi Ballabio
+
+	* News.txt (1.103), ql/Instruments/bond.cpp (1.14),
+	ql/Instruments/bond.hpp (1.14), ql/Instruments/fixedcouponbond.cpp
+	(1.12), ql/Instruments/fixedcouponbond.hpp (1.9),
+	ql/Instruments/floatingratebond.cpp (1.6),
+	ql/Instruments/floatingratebond.hpp (1.3),
+	ql/Instruments/zerocouponbond.cpp (1.5),
+	ql/Instruments/zerocouponbond.hpp (1.3),
+	ql/TermStructures/bondhelpers.cpp (1.2),
+	ql/TermStructures/bondhelpers.hpp (1.2), test-suite/bonds.cpp
+	(1.22), test-suite/piecewiseyieldcurve.cpp (1.13):
+
+	Separated accrual and payment conventions for bonds
+
+2005-12-14 12:58  Luigi Ballabio
+
+	* ql/PricingEngines/Vanilla/fddividendamericanengine.hpp (1.7),
+	ql/PricingEngines/Vanilla/fddividendengine.cpp (1.6),
+	ql/PricingEngines/Vanilla/fddividendengine.hpp (1.9),
+	ql/PricingEngines/Vanilla/fddividendeuropeanengine.hpp (1.7),
+	ql/PricingEngines/Vanilla/fddividendshoutengine.hpp (1.8),
+	ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp (1.11),
+	ql/PricingEngines/Vanilla/fdvanillaengine.cpp (1.12),
+	ql/PricingEngines/Vanilla/fdvanillaengine.hpp (1.13),
+	test-suite/dividendoption.cpp (1.10), test-suite/dividendoption.hpp
+	(1.3):
+
+	Fixed a bug with FD dividend options; there are still problems
+	though
+
+2005-12-12 14:44  Luigi Ballabio
+
+	* Contributors.txt (1.34), LICENSE.TXT (1.23), News.txt (1.102),
+	Docs/pages/authors.docs (1.42), Docs/pages/license.docs (1.19),
+	ql/Calendars/Makefile.am (1.32), ql/Calendars/all.hpp (1.14),
+	ql/Calendars/brazil.cpp (1.1), ql/Calendars/brazil.hpp (1.1),
+	test-suite/calendars.cpp (1.25), test-suite/calendars.hpp (1.14),
+	test-suite/dividendoption.cpp (1.9):
+
+	Added Brazil calendar (thanks to Piter Dias)
+
+2005-12-12 11:48  Luigi Ballabio
+
+	* ql/: event.hpp (1.5), Instruments/bond.cpp (1.13),
+	Instruments/bond.hpp (1.13), Instruments/swap.cpp (1.44):
+
+	Removed unnecessary DateEvent class
+
+2005-12-11 05:29  Joseph Wang
+
+	* ql/: event.hpp (1.4), CashFlows/analysis.cpp (1.3),
+	Instruments/bond.cpp (1.12), Instruments/bond.hpp (1.12),
+	Instruments/swap.cpp (1.43):
+
+	Refactored cashflows so that large numbers of QL_TODAYS_PAYMENT
+	defines are replaced by a single method and a single define.
+
+2005-12-10 11:15  Joseph Wang
+
+	* ql/event.hpp (1.3):
+
+	improved SimpleEvent by making it DateEvent and a subclass of Date
+	to inherit the Date functions.
+
+2005-12-09 16:04  Luigi Ballabio
+
+	* ql/Instruments/fixedcouponbond.cpp (1.11),
+	ql/Instruments/floatingratebond.cpp (1.5),
+	ql/Instruments/zerocouponbond.cpp (1.4), test-suite/bonds.cpp
+	(1.21):
+
+	Fix for bond redemption on holiday
+
+2005-12-09 14:15  Luigi Ballabio
+
+	* ql/Instruments/swap.cpp (1.42):
+
+	Correct management of errorEstimate_
+
+2005-12-09 13:06  Luigi Ballabio
+
+	* ql/: CashFlows/analysis.cpp (1.2), CashFlows/analysis.hpp (1.2),
+	CashFlows/basispointsensitivity.cpp (1.17),
+	CashFlows/basispointsensitivity.hpp (1.23), Instruments/swap.cpp
+	(1.41), Instruments/swap.hpp (1.36):
+
+	BPS calculation moved together with the other cash-flow analyses
+
+2005-12-06 12:13  Ferdinando Ametrano
+
+	* QuantLib_vc8.sln (1.4):
+
+	VC8 catching up
+
+2005-12-06 12:07  Ferdinando Ametrano
+
+	* test-suite/bonds.cpp (1.20):
+
+	ql/Instruments/convertiblebond.hpp does NOT compile with VC8
+	Boost1.33 and it is not needed anyway
+
+2005-12-06 10:36  Luigi Ballabio
+
+	* News.txt (1.101), configure.ac (1.73), Examples/Makefile.am
+	(1.26), Examples/EquityOption/.cvsignore (1.1),
+	Examples/EquityOption/EquityOption.cpp (1.1),
+	Examples/EquityOption/EquityOption.dev (1.1),
+	Examples/EquityOption/EquityOption.dsp (1.1),
+	Examples/EquityOption/EquityOption.vcproj (1.1),
+	Examples/EquityOption/EquityOption_vc8.vcproj (1.1),
+	Examples/EquityOption/Makefile.am (1.1),
+	Examples/EquityOption/ReadMe.txt (1.1),
+	Examples/EquityOption/makefile.mak (1.1):
+
+	Merged American and European option examples; added Bermudan option
+
+2005-12-06 10:19  Luigi Ballabio
+
+	* ql/PricingEngines/Vanilla/: fdbermudanengine.hpp (1.12),
+	fddividendengine.hpp (1.8), fdmultiperiodengine.cpp (1.10),
+	fdmultiperiodengine.hpp (1.10):
+
+	Fixes for Bermudan options
+
+2005-11-30 19:21  Ferdinando Ametrano
+
+	* QuantLib_vc8.vcproj (1.10), ql/Instruments/convertiblebond.hpp
+	(1.5), test-suite/testsuite_vc8.vcproj (1.10):
+
+	VC8 catching up
+
+2005-11-30 18:46  Ferdinando Ametrano
+
+	* ql/grid.hpp (1.28):
+
+	VC8 compile error (typo) fixed
+
+2005-11-30 12:11  Luigi Ballabio
+
+	* Docs/quantlib.css (1.13), Docs/quantlibfooter.html (1.15),
+	Docs/quantlibfooteronline.html (1.8), Docs/quantlibheader.html
+	(1.29), ql/FiniteDifferences/pdebsm.hpp (1.5):
+
+	Using CSS for layout in HTML docs
+
+2005-11-29 09:07  Luigi Ballabio
+
+	* News.txt (1.100), ql/PricingEngines/Vanilla/binomialengine.hpp
+	(1.28):
+
+	Added pricing of Bermudan options on binomial trees (thanks to
+	Enrico Michelotti)
+
+2005-11-22 07:33  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/integralengine.hpp (1.6),
+	test-suite/europeanoption.cpp (1.93), test-suite/europeanoption.hpp
+	(1.22):
+
+	Generalized integral engine to striked options.  Added test for
+	integral engine.
+
+2005-11-21 17:26  Luigi Ballabio
+
+	* ql/Calendars/: Makefile.am (1.31), taipei.cpp (1.2), taipei.hpp
+	(1.2), taiwan.cpp (1.5), taiwan.hpp (1.4):
+
+	Merged redundant Taipei calendar into Taiwan
+
+2005-11-21 17:24  Luigi Ballabio
+
+	* ql/PricingEngines/Vanilla/fdbermudanengine.hpp (1.11):
+
+	Fix for compilation of examples
+
+2005-11-20 23:21  Joseph Wang
+
+	* ql/Instruments/callabilityschedule.hpp (1.3),
+	test-suite/bonds.cpp (1.19):
+
+	Include convertible bond into bond unit test Redo callability
+	schedule so that it uses event structure
+
+2005-11-20 20:57  Joseph Wang
+
+	* ql/CashFlows/dividend.hpp (1.1):
+
+	Add dividend
+
+2005-11-20 17:47  Joseph Wang
+
+	* ql/: event.hpp (1.2), Instruments/dividendschedule.hpp (1.6),
+	PricingEngines/Vanilla/fddividendamericanengine.hpp (1.6),
+	PricingEngines/Vanilla/fddividendengine.hpp (1.7),
+	PricingEngines/Vanilla/fddividendeuropeanengine.hpp (1.6),
+	PricingEngines/Vanilla/fddividendshoutengine.hpp (1.7),
+	PricingEngines/Vanilla/fdmultiperiodengine.cpp (1.9),
+	PricingEngines/Vanilla/fdmultiperiodengine.hpp (1.9):
+
+	Changed the finite difference methods so that they take an array of
+	events rather than a dividend schedule object.	This decouples the
+	finite difference from the details of the instrument
+	implementation.  The next step is to create bermudan and shout
+	instruments.
+
+2005-11-20 08:12  Joseph Wang
+
+	* ql/: CashFlows/cashflowvectors.cpp (1.44),
+	CashFlows/cashflowvectors.hpp (1.33),
+	Instruments/dividendschedule.hpp (1.5),
+	Instruments/dividendvanillaoption.cpp (1.11),
+	Instruments/dividendvanillaoption.hpp (1.10),
+	PricingEngines/Vanilla/analyticdividendeuropeanengine.cpp (1.12),
+	PricingEngines/Vanilla/fddividendengine.hpp (1.6),
+	PricingEngines/Vanilla/fdmultiperiodengine.cpp (1.8),
+	PricingEngines/Vanilla/fdmultiperiodengine.hpp (1.8):
+
+	Implement dividends as cash flows.
+
+2005-11-19 05:39  Joseph Wang
+
+	* ql/: Makefile.am (1.82), cashflow.hpp (1.22), event.hpp (1.1):
+
+	Add event parent of cashflow
+
+2005-11-18 15:36  Luigi Ballabio
+
+	* ql/: FiniteDifferences/pde.hpp (1.10),
+	FiniteDifferences/pdebsm.hpp (1.4),
+	FiniteDifferences/pdeshortrate.hpp (1.4),
+	FiniteDifferences/zerocondition.hpp (1.2),
+	PricingEngines/Vanilla/mceuropeanhestonengine.hpp (1.7):
+
+	Checked headers for self-consistency
+
+2005-11-16 12:39  Luigi Ballabio
+
+	* ql/Math/interpolation.hpp (1.38), ql/Math/interpolation2D.hpp
+	(1.28), test-suite/interpolations.cpp (1.31),
+	test-suite/interpolations.hpp (1.11):
+
+	Enabled interpolations to extrapolate by default
+
+2005-11-16 06:22  Joseph Wang
+
+	* ql/Math/sampledcurve.hpp (1.10):
+
+	replace with iterators
+
+2005-11-16 04:29  Joseph Wang
+
+	* ql/FiniteDifferences/Makefile.am (1.25),
+	ql/FiniteDifferences/zerocondition.hpp (1.1), ql/Math/array.hpp
+	(1.24), ql/Math/sampledcurve.cpp (1.3), ql/Math/sampledcurve.hpp
+	(1.9), ql/PricingEngines/Vanilla/fddividendengine.cpp (1.5),
+	ql/PricingEngines/Vanilla/fdeuropeanengine.cpp (1.10),
+	ql/PricingEngines/Vanilla/fdmultiperiodengine.cpp (1.7),
+	ql/PricingEngines/Vanilla/fdstepconditionengine.cpp (1.9),
+	ql/PricingEngines/Vanilla/fdvanillaengine.cpp (1.11),
+	ql/PricingEngines/Vanilla/fdvanillaengine.hpp (1.12),
+	test-suite/array.cpp (1.2), test-suite/dividendoption.cpp (1.8),
+	test-suite/sampledcurve.cpp (1.4):
+
+	Combined initializeGrid into initializeInitialValue Major rework of
+	dividend engine with new unit test.  Previous engine was busted.
+	Added support functions to support major rework of dividend engine.
+
+2005-11-15 02:57  Joseph Wang
+
+	* ql/FiniteDifferences/pde.hpp (1.9):
+
+	Make doxygen documentation match class
+
+2005-11-14 17:10  Luigi Ballabio
+
+	* ql/DayCounters/actualactual.cpp (1.36):
+
+	Allowed negative year fractions in actual/actual day counters
+
+2005-11-14 15:16  Luigi Ballabio
+
+	* News.txt (1.99), ql/ShortRateModels/model.cpp (1.26),
+	ql/ShortRateModels/model.hpp (1.35),
+	ql/ShortRateModels/onefactormodel.hpp (1.25),
+	ql/ShortRateModels/TwoFactorModels/g2.cpp (1.28),
+	ql/ShortRateModels/TwoFactorModels/g2.hpp (1.33):
+
+	Added weight to short-rate model calibration and generic
+	discount-bond method to affine models (thanks to Enrico Michelotti)
+
+2005-11-14 11:47  Luigi Ballabio
+
+	* News.txt (1.98), ql/MonteCarlo/mctraits.hpp (1.22),
+	ql/MonteCarlo/pathgenerator.hpp (1.75),
+	ql/PricingEngines/mcsimulation.hpp (1.16),
+	ql/PricingEngines/Vanilla/Makefile.am (1.24),
+	ql/PricingEngines/Vanilla/all.hpp (1.12),
+	ql/PricingEngines/Vanilla/mcdigitalengine.hpp (1.42),
+	ql/PricingEngines/Vanilla/mceuropeanengine.hpp (1.42),
+	ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp (1.6),
+	ql/PricingEngines/Vanilla/mchestonengine.hpp (1.3),
+	ql/PricingEngines/Vanilla/mcvanillaengine.hpp (1.30):
+
+	Generalized McVanillaEngine to n-dimensional processes
+
+2005-11-13 01:30  Joseph Wang
+
+	* ql/grid.hpp (1.27):
+
+	forward declare BoundedLogGrid
+
+2005-11-12 06:55  Joseph Wang
+
+	* ql/FiniteDifferences/: americancondition.hpp (1.30),
+	fdtypedefs.hpp (1.14), shoutcondition.hpp (1.28), stepcondition.hpp
+	(1.20):
+
+	major refactor of step condition classes to use dynamic
+	polymorphism for internal representation of intrinsic curve.
+
+2005-11-10 17:17  Luigi Ballabio
+
+	* ql/PricingEngines/Vanilla/bjerksundstenslandengine.cpp (1.23):
+
+	Added check for values invalidating the Bjerksund-Stensland
+	approximation
+
+2005-11-07 16:55  Luigi Ballabio
+
+	* test-suite/americanoption.cpp (1.39):
+
+	Lowered tolerance after Barone-Adesi-Whaley bug fix (but not as
+	much as I would have liked)
+
+2005-11-07 11:38  Luigi Ballabio
+
+	* ql/FiniteDifferences/pde.hpp (1.8):
+
+	Fix for gcc 4.0.2
+
+2005-11-07 11:36  Joseph Wang
+
+	* test-suite/shortratemodels.cpp (1.11):
+
+	Adjust current day so that test will work on weekends.
+
+2005-11-06 00:06  Joseph Wang
+
+	* ql/: quote.hpp (1.8), FiniteDifferences/pde.hpp (1.7):
+
+	Templatize constructor Fix compile error in gcc 4.0.2
+
+2005-11-03 16:58  Joseph Wang
+
+	* ql/FiniteDifferences/: bsmoperator.cpp (1.24), pde.hpp (1.6):
+
+	Modify constant coefficent pde to use static binding.
+
+2005-11-03 11:53  Luigi Ballabio
+
+	* ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.cpp (1.22):
+
+	Bug fix (thanks to feynman44)
+
+2005-11-02 14:28  Luigi Ballabio
+
+	* ql/Currencies/africa.hpp (1.5), ql/Currencies/america.hpp (1.6),
+	ql/Currencies/asia.hpp (1.7), ql/Currencies/europe.hpp (1.7),
+	ql/Currencies/exchangeratemanager.cpp (1.10),
+	ql/Currencies/oceania.hpp (1.6), ql/Indexes/audlibor.hpp (1.25),
+	ql/Indexes/cadlibor.hpp (1.25), ql/Indexes/cdor.hpp (1.3),
+	ql/Indexes/chflibor.hpp (1.22), ql/Indexes/dkklibor.hpp (1.2),
+	ql/Indexes/euribor.hpp (1.27), ql/Indexes/eurlibor.hpp (1.2),
+	ql/Indexes/gbplibor.hpp (1.30), ql/Indexes/jibar.hpp (1.2),
+	ql/Indexes/jpylibor.hpp (1.23), ql/Indexes/nzdlibor.hpp (1.2),
+	ql/Indexes/tibor.hpp (1.3), ql/Indexes/trlibor.hpp (1.3),
+	ql/Indexes/usdlibor.hpp (1.30), ql/Indexes/zibor.hpp (1.3),
+	test-suite/exchangerate.cpp (1.5), test-suite/money.cpp (1.5),
+	test-suite/swap.cpp (1.44):
+
+	Shortened currency names
+
+2005-11-02 09:55  Luigi Ballabio
+
+	* ql/FiniteDifferences/pde.hpp (1.5),
+	ql/FiniteDifferences/pdebsm.hpp (1.3),
+	ql/FiniteDifferences/pdeshortrate.hpp (1.3),
+	ql/Math/transformedgrid.hpp (1.3), test-suite/transformedgrid.cpp
+	(1.2), test-suite/transformedgrid.hpp (1.2):
+
+	Given Joseph his copyrights
+
+2005-11-02 08:38  Joseph Wang
+
+	* ql/FiniteDifferences/: Makefile.am (1.24), bsmoperator.cpp
+	(1.23), bsmtermoperator.cpp (1.7), bsmtermoperator.hpp (1.7),
+	onefactoroperator.cpp (1.24), onefactoroperator.hpp (1.24), pde.hpp
+	(1.4), pdebsm.hpp (1.2), pdeshortrate.hpp (1.2):
+
+	Move grid information into PDE traits
+
+2005-11-02 06:33  Joseph Wang
+
+	* ql/: FiniteDifferences/Makefile.am (1.23),
+	FiniteDifferences/bsmoperator.cpp (1.22),
+	FiniteDifferences/bsmtermoperator.hpp (1.6),
+	FiniteDifferences/onefactoroperator.cpp (1.23),
+	FiniteDifferences/onefactoroperator.hpp (1.23),
+	FiniteDifferences/pde.hpp (1.3), FiniteDifferences/pdebsm.hpp
+	(1.1), FiniteDifferences/pdeshortrate.hpp (1.1),
+	Math/transformedgrid.hpp (1.2):
+
+	More refactoring.  Unify bsmoperator and onefactoroperator code.
+
+2005-11-02 02:04  Joseph Wang
+
+	* ql/FiniteDifferences/: bsmoperator.cpp (1.21), bsmoperator.hpp
+	(1.20), operatorfactory.hpp (1.2), pde.hpp (1.2):
+
+	Added onefactoroperator to operator factory.  More refactoring of
+	bsm operators.
+
+2005-11-01 08:09  Joseph Wang
+
+	* ql/FiniteDifferences/: bsmtermoperator.cpp (1.6),
+	bsmtermoperator.hpp (1.5), pde.hpp (1.1):
+
+	More BSM refactoring.  Where I'm going with this is to turn
+	bsmtermoperator and bsmoperator into "generic" parabolic PDE
+	operators.
+
+2005-11-01 05:56  Joseph Wang
+
+	* ql/grid.hpp (1.26), ql/FiniteDifferences/bsmoperator.cpp (1.20),
+	ql/FiniteDifferences/bsmtermoperator.cpp (1.5),
+	ql/FiniteDifferences/bsmtermoperator.hpp (1.4),
+	ql/Math/sampledcurve.cpp (1.2), ql/Math/sampledcurve.hpp (1.8),
+	ql/Math/transformedgrid.hpp (1.1),
+	ql/PricingEngines/Vanilla/fddividendengine.cpp (1.4),
+	ql/PricingEngines/Vanilla/fdvanillaengine.cpp (1.10),
+	test-suite/Makefile.am (1.65), test-suite/quantlibtestsuite.cpp
+	(1.109), test-suite/sampledcurve.cpp (1.3),
+	test-suite/transformedgrid.cpp (1.1),
+	test-suite/transformedgrid.hpp (1.1):
+
+	Refactored so that operators use transformed grid Refactored to
+	move things from sampled curve to grid.hpp
+
+2005-10-31 16:35  Luigi Ballabio
+
+	* News.txt (1.97), ql/Instruments/simpleswap.cpp (1.59),
+	ql/Instruments/simpleswap.hpp (1.54), ql/Instruments/swap.cpp
+	(1.40), ql/PricingEngines/Swaption/treeswaptionengine.cpp (1.8),
+	ql/PricingEngines/Swaption/treeswaptionengine.hpp (1.6),
+	test-suite/shortratemodels.cpp (1.10),
+	test-suite/shortratemodels.hpp (1.3):
+
+	SimpleSwap can now be set an engine. If none was set, the old
+	cash-flow-based calculation is used.
+
+2005-10-27 03:33  Joseph Wang
+
+	* ql/: FiniteDifferences/operatorfactory.hpp (1.1),
+	PricingEngines/Vanilla/fdvanillaengine.cpp (1.9),
+	PricingEngines/Vanilla/fdvanillaengine.hpp (1.11):
+
+	Abstracted operator creation into operator factory class.
+
+2005-10-27 01:52  Joseph Wang
+
+	* ql/Math/sampledcurve.hpp (1.7):
+
+	Put in a ostream << operator
+
+2005-10-25 17:23  Luigi Ballabio
+
+	* ql/FiniteDifferences/: tridiagonaloperator.cpp (1.36),
+	tridiagonaloperator.hpp (1.42):
+
+	Back to Array to make it explicit that we're in the linear algebra
+	domain (Disposable just works with Array anyway)
+
+2005-10-25 17:20  Luigi Ballabio
+
+	* ql/FiniteDifferences/: Makefile.am (1.21), valueatcenter.hpp
+	(1.16):
+
+	Deprecated in favour of SampledCurve
+
+2005-10-25 17:18  Luigi Ballabio
+
+	* ql/: instrument.hpp (1.40), option.hpp (1.39):
+
+	Moved declarations down the Instrument hierarchy to reduce
+	dependencies
+
+2005-10-25 17:17  Luigi Ballabio
+
+	* ql/Math/sampledcurve.cpp (1.1), ql/Math/sampledcurve.hpp (1.6),
+	test-suite/sampledcurve.cpp (1.2):
+
+	Added constness specification to methods; formatted for Doxygen
+
+2005-10-24 12:47  Luigi Ballabio
+
+	* ql/: date.hpp (1.50), stochasticprocess.hpp (1.31),
+	yieldtermstructure.hpp (1.4), MonteCarlo/mctraits.hpp (1.21):
+
+	Removed deprecated features
+
+2005-10-24 04:59  Joseph Wang
+
+	* ql/FiniteDifferences/: bsmoperator.cpp (1.19),
+	bsmtermoperator.cpp (1.3):
+
+	Use the process abstractions to pull out diffusion and drift
+
+2005-10-21 14:20  Luigi Ballabio
+
+	* Examples/: BermudanSwaption/BermudanSwaption.cpp (1.79),
+	DiscreteHedging/DiscreteHedging.cpp (1.58), Swap/swapvaluation.cpp
+	(1.66):
+
+	Added timing to examples
+
+2005-10-21 13:37  Eric Ehlers
+
+	* Docs/pages/faq.docs (1.20):
+
+	update faq
+
+2005-10-21 13:15  Luigi Ballabio
+
+	* test-suite/: batesmodel.cpp (1.7), bermudanswaption.cpp (1.7),
+	hestonmodel.cpp (1.11), interpolations.cpp (1.30),
+	piecewiseyieldcurve.cpp (1.12), shortratemodels.cpp (1.9):
+
+	More accurate count of performed tests
+
+2005-10-21 11:16  Luigi Ballabio
+
+	* Makefile.am (1.99), Examples/Makefile.am (1.25),
+	Examples/BermudanSwaption/Makefile.am (1.15),
+	Examples/DiscreteHedging/Makefile.am (1.22),
+	Examples/Swap/Makefile.am (1.17):
+
+	Added check-examples target to makefiles
+
+2005-10-21 09:46  Luigi Ballabio
+
+	* Announce.txt (1.5), ChangeLog.txt (1.50), Contributors.txt
+	(1.33), LICENSE.TXT (1.22), News.txt (1.96), QuantLib.dev (1.18),
+	QuantLib.dsp (1.268), QuantLib.vcproj (1.58), QuantLib_vc8.vcproj
+	(1.9), Readme.txt (1.27), configure.ac (1.72), Docs/quantlib.doxy
+	(1.99), Docs/pages/authors.docs (1.41), Docs/pages/faq.docs (1.19),
+	Docs/pages/history.docs (1.26), Docs/pages/install.docs (1.16),
+	Docs/pages/license.docs (1.18), Docs/pages/overview.docs (1.21),
+	Examples/makefile.mak (1.24), dev_tools/developers (1.4),
+	ql/Makefile.am (1.81), ql/capvolstructures.hpp (1.19),
+	ql/solver1d.hpp (1.34), ql/swaptionvolstructure.hpp (1.19),
+	ql/Calendars/istanbul.cpp (1.3), ql/Calendars/istanbul.hpp (1.3),
+	ql/DayCounters/actualactual.cpp (1.35), ql/Indexes/Makefile.am
+	(1.18), ql/Indexes/all.hpp (1.6), ql/Indexes/trlibor.hpp (1.2),
+	ql/Math/choleskydecomposition.cpp (1.9),
+	ql/Math/multicubicspline.hpp (1.11), ql/Math/trapezoidintegral.hpp
+	(1.13), ql/Patterns/singleton.hpp (1.11),
+	ql/PricingEngines/Vanilla/fdshoutengine.hpp (1.8),
+	ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp (1.5),
+	ql/Processes/capletlmmprocess.cpp (1.3),
+	ql/Processes/capletlmmprocess.hpp (1.2),
+	ql/Volatilities/capletvariancecurve.hpp (1.3),
+	test-suite/batesmodel.cpp (1.6), test-suite/interpolations.cpp
+	(1.29), test-suite/testsuite.dsp (1.55),
+	test-suite/testsuite.vcproj (1.37):
+
+	Merged 0.3.11 branch
+
+2005-10-21 02:26  Joseph Wang
+
+	* ql/PricingEngines/Vanilla/fdbermudanengine.hpp (1.9):
+
+	Simplify syntax.
+
+2005-10-20 16:39  Luigi Ballabio
+
+	* QuantLib.dev (1.17), QuantLib.dsp (1.267), QuantLib.nsi (1.113),
+	QuantLib.vcproj (1.57), QuantLib_vc8.vcproj (1.8), configure.ac
+	(1.71), makefile.mak (1.63),
+	Examples/BermudanSwaption/BermudanSwaption.dev (1.6),
+	Examples/DiscreteHedging/DiscreteHedging.dev (1.6),
+	Examples/Swap/Swap.dev (1.6), dev_tools/version_number.txt (1.48),
+	functions/ql/Functions/QuantLibFunctions.dev (1.10),
+	functions/ql/Functions/QuantLibFunctions.dsp (1.15),
+	functions/ql/Functions/QuantLibFunctions.vcproj (1.15),
+	functions/ql/Functions/QuantLibFunctions_vc8.vcproj (1.4),
+	ql/qldefines.hpp (1.100), test-suite/testsuite.dev (1.5),
+	test-suite/testsuite.dsp (1.54), test-suite/testsuite.vcproj
+	(1.36), test-suite/testsuite_vc8.vcproj (1.9):
+
+	Bumped version number to 0.3.12
+
+2005-10-20 16:39  Luigi Ballabio
+
+	* ql/: Math/sampledcurve.hpp (1.5),
+	PricingEngines/Vanilla/fdbermudanengine.hpp (1.8):
+
+	Fixes for gcc4
+
+2005-10-18 07:56  Joseph Wang
+
+	* ql/: Math/sampledcurve.hpp (1.4),
+	PricingEngines/Vanilla/fdeuropeanengine.cpp (1.9),
+	PricingEngines/Vanilla/fdmultiperiodengine.cpp (1.6),
+	PricingEngines/Vanilla/fdstepconditionengine.cpp (1.8):
+
+	encapsulate center at value item in sampled curve
+
+2005-10-17 11:06  Joseph Wang
+
+	* ql/instrument.hpp (1.39), ql/Instruments/oneassetoption.cpp
+	(1.26), ql/Instruments/oneassetoption.hpp (1.19),
+	ql/Math/sampledcurve.hpp (1.3),
+	ql/PricingEngines/Vanilla/fdamericanengine.hpp (1.7),
+	ql/PricingEngines/Vanilla/fddividendamericanengine.hpp (1.5),
+	ql/PricingEngines/Vanilla/fddividendengine.cpp (1.3),
+	ql/PricingEngines/Vanilla/fddividendshoutengine.hpp (1.6),
+	ql/PricingEngines/Vanilla/fdeuropeanengine.cpp (1.8),
+	ql/PricingEngines/Vanilla/fdeuropeanengine.hpp (1.8),
+	ql/PricingEngines/Vanilla/fdmultiperiodengine.cpp (1.5),
+	ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp (1.7),
+	ql/PricingEngines/Vanilla/fdshoutengine.hpp (1.7),
+	ql/PricingEngines/Vanilla/fdstepconditionengine.cpp (1.7),
+	ql/PricingEngines/Vanilla/fdstepconditionengine.hpp (1.7),
+	ql/PricingEngines/Vanilla/fdvanillaengine.cpp (1.8),
+	ql/PricingEngines/Vanilla/fdvanillaengine.hpp (1.10),
+	test-suite/europeanoption.cpp (1.92), test-suite/europeanoption.hpp
+	(1.21):
+
+	Major rework of finite difference engines to use sampled curve
+	class which will allow users to get price curve information.
+
+2005-10-14 08:42  Joseph Wang
+
+	* ql/PricingEngines/Basket/mcamericanbasketengine.cpp (1.41),
+	ql/PricingEngines/Basket/mcamericanbasketengine.hpp (1.16),
+	test-suite/basketoption.cpp (1.49):
+
+	add option to turn off antithetic variates in
+	mcamericanbasketengine
+
+2005-10-14 08:41  Joseph Wang
+
+	* ql/Math/sampledcurve.hpp (1.2):
+
+	more methods for SampledCurve object
+
+2005-10-11 03:09  Joseph Wang
+
+	* ql/PricingEngines/Basket/mcamericanbasketengine.cpp (1.40),
+	test-suite/basketoption.cpp (1.48), test-suite/basketoption.hpp
+	(1.9):
+
+	Fix crash in mcamericanbasketengine.cpp due to odd required
+	samples.  Added unit test to check fix.
+
+2005-10-10 11:51  Luigi Ballabio
+
+	* Contributors.txt (1.32.2.1), LICENSE.TXT (1.21.2.1), News.txt
+	(1.95.2.2), Docs/pages/authors.docs (1.40.2.1),
+	Docs/pages/history.docs (1.25.2.2), Docs/pages/license.docs
+	(1.17.2.1), ql/Calendars/istanbul.cpp (1.2.2.1),
+	ql/Calendars/istanbul.hpp (1.2.2.1), ql/Indexes/Makefile.am
+	(1.17.2.1), ql/Indexes/all.hpp (1.5.2.1), ql/Indexes/trlibor.hpp
+	(1.1.2.1):
+
+	Added TRLibor index (thanks to Sercan Atalik)
+
+2005-10-08 06:19  Joseph Wang
+
+	* ql/FiniteDifferences/: tridiagonaloperator.cpp (1.35),
+	tridiagonaloperator.hpp (1.40), valueatcenter.cpp (1.20),
+	valueatcenter.hpp (1.15):
+
+	Convert some functions into function templates so that it is less
+	dependent on array.
+
 2005-10-04 10:08  Luigi Ballabio
 
 	* ql/: capvolstructures.hpp (1.18.2.1), swaptionvolstructure.hpp
@@ -104,10 +1504,8 @@
 2005-09-29 10:37  Luigi Ballabio
 
 	* News.txt (1.95), configure.ac (1.70), Docs/pages/config.docs
-	(1.6), Examples/AmericanOption/AmericanOption.cpp (1.42),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.78),
+	(1.6), Examples/BermudanSwaption/BermudanSwaption.cpp (1.78),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.57),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.125),
 	Examples/Swap/swapvaluation.cpp (1.65), ql/settings.hpp (1.14),
 	ql/userconfig.hpp (1.19), ql/Patterns/singleton.hpp (1.9),
 	test-suite/quantlibtestsuite.cpp (1.106):
@@ -414,10 +1812,8 @@
 
 	* Announce.txt (1.4), Makefile.am (1.97), Docs/Makefile.am (1.76),
 	Docs/pages/faq.docs (1.17), Examples/Makefile.am (1.23),
-	Examples/AmericanOption/Makefile.am (1.7),
 	Examples/BermudanSwaption/Makefile.am (1.13),
 	Examples/DiscreteHedging/Makefile.am (1.20),
-	Examples/EuropeanOption/Makefile.am (1.14),
 	Examples/Swap/Makefile.am (1.15),
 	functions/ql/Functions/Makefile.am (1.9), ql/Makefile.am (1.78),
 	ql/config.msvc.hpp (1.70), ql/Calendars/Makefile.am (1.29),
@@ -457,10 +1853,6 @@
 	acinclude.m4 (1.17), Docs/pages/authors.docs (1.38),
 	Docs/pages/faq.docs (1.16), Docs/pages/history.docs (1.23),
 	Docs/pages/license.docs (1.17), Docs/pages/overview.docs (1.20),
-	Examples/AmericanOption/AmericanOption.dev (1.4),
-	Examples/AmericanOption/AmericanOption.dsp (1.13),
-	Examples/AmericanOption/AmericanOption.vcproj (1.13),
-	Examples/AmericanOption/AmericanOption_vc8.vcproj (1.2),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.77),
 	Examples/BermudanSwaption/BermudanSwaption.dev (1.4),
 	Examples/BermudanSwaption/BermudanSwaption.dsp (1.20),
@@ -470,10 +1862,6 @@
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.22),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.13),
 	Examples/DiscreteHedging/DiscreteHedging_vc8.vcproj (1.2),
-	Examples/EuropeanOption/EuropeanOption.dev (1.4),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.20),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.13),
-	Examples/EuropeanOption/EuropeanOption_vc8.vcproj (1.2),
 	Examples/Swap/Swap.dev (1.4), Examples/Swap/Swap.dsp (1.21),
 	Examples/Swap/Swap.vcproj (1.13), Examples/Swap/Swap_vc8.vcproj
 	(1.2), dev_tools/version_number.txt (1.47),
@@ -1212,10 +2600,8 @@
 
 2005-04-12 16:40  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.dev (1.3),
-	Examples/BermudanSwaption/BermudanSwaption.dev (1.3),
+	* Examples/BermudanSwaption/BermudanSwaption.dev (1.3),
 	Examples/DiscreteHedging/DiscreteHedging.dev (1.3),
-	Examples/EuropeanOption/EuropeanOption.dev (1.3),
 	Examples/Swap/Swap.dev (1.3), QuantLib.dev (1.11),
 	functions/ql/Functions/QuantLibFunctions.dev (1.7),
 	test-suite/QuantLib-test-suite.dev (1.11):
@@ -1224,11 +2610,9 @@
 
 2005-04-12 15:56  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.dsp (1.12),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.73),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.73),
 	Examples/BermudanSwaption/BermudanSwaption.dsp (1.19),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.21),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.19),
 	Examples/Swap/Swap.dsp (1.20), QuantLib.dsp (1.263),
 	ql/Lattices/Makefile.am (1.11), ql/Lattices/binomialtree.cpp
 	(1.29), ql/Lattices/binomialtree.hpp (1.23),
@@ -1267,18 +2651,12 @@
 	QuantLib_vc8.vcproj (1.2), memo.txt (1.5), Docs/Makefile.am (1.75),
 	Docs/pages/authors.docs (1.35), Docs/pages/faq.docs (1.15),
 	Docs/pages/history.docs (1.21),
-	Examples/AmericanOption/AmericanOption.dev (1.2),
-	Examples/AmericanOption/Makefile.am (1.6),
-	Examples/AmericanOption/makefile.mak (1.16),
 	Examples/BermudanSwaption/BermudanSwaption.dev (1.2),
 	Examples/BermudanSwaption/Makefile.am (1.12),
 	Examples/BermudanSwaption/makefile.mak (1.20),
 	Examples/DiscreteHedging/DiscreteHedging.dev (1.2),
 	Examples/DiscreteHedging/Makefile.am (1.19),
 	Examples/DiscreteHedging/makefile.mak (1.23),
-	Examples/EuropeanOption/EuropeanOption.dev (1.2),
-	Examples/EuropeanOption/Makefile.am (1.13),
-	Examples/EuropeanOption/makefile.mak (1.26),
 	Examples/Swap/Makefile.am (1.14), Examples/Swap/Swap.dev (1.2),
 	Examples/Swap/makefile.mak (1.23),
 	functions/ql/Functions/Makefile.am (1.8),
@@ -1482,10 +2860,8 @@
 
 2005-03-29 16:38  Ferdinando Ametrano
 
-	* Examples/AmericanOption/makefile.mak (1.15.2.1),
-	Examples/BermudanSwaption/makefile.mak (1.19.2.1),
+	* Examples/BermudanSwaption/makefile.mak (1.19.2.1),
 	Examples/DiscreteHedging/makefile.mak (1.22.2.1),
-	Examples/EuropeanOption/makefile.mak (1.25.2.1),
 	Examples/Swap/makefile.mak (1.22.2.1),
 	functions/ql/Functions/makefile.mak (1.7.2.1), ql/makefile.mak
 	(1.69.2.2), ql/Calendars/makefile.mak (1.30.2.2),
@@ -1607,13 +2983,11 @@
 
 2005-03-18 16:09  Luigi Ballabio
 
-	* News.txt (1.75), Examples/AmericanOption/AmericanOption.cpp
-	(1.41), Examples/BermudanSwaption/BermudanSwaption.cpp (1.72),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.123),
-	Examples/Swap/swapvaluation.cpp (1.64), ql/settings.hpp (1.11),
-	ql/termstructure.hpp (1.67), ql/CashFlows/parcoupon.cpp (1.22),
-	ql/Indexes/xibor.hpp (1.40), ql/Instruments/bond.cpp (1.10),
-	ql/Instruments/capfloor.cpp (1.65),
+	* News.txt (1.75), Examples/BermudanSwaption/BermudanSwaption.cpp
+	(1.72), Examples/Swap/swapvaluation.cpp (1.64), ql/settings.hpp
+	(1.11), ql/termstructure.hpp (1.67), ql/CashFlows/parcoupon.cpp
+	(1.22), ql/Indexes/xibor.hpp (1.40), ql/Instruments/bond.cpp
+	(1.10), ql/Instruments/capfloor.cpp (1.65),
 	ql/TermStructures/ratehelpers.cpp (1.60), ql/Utilities/Makefile.am
 	(1.14), ql/Utilities/all.hpp (1.7),
 	ql/Utilities/observablevalue.hpp (1.1),
@@ -1649,10 +3023,8 @@
 	Docs/pages/resources.docs (1.10), Docs/pages/termstructures.docs
 	(1.9), Docs/pages/usage.docs (1.19), Docs/pages/utilities.docs
 	(1.10), Docs/pages/where.docs (1.10),
-	Examples/AmericanOption/AmericanOption.cpp (1.40),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.71),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.51),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.122),
 	Examples/Swap/swapvaluation.cpp (1.63),
 	dev_tools/version_number.txt (1.45),
 	functions/ql/Functions/QuantLibFunctions.dev (1.6),
@@ -2216,10 +3588,8 @@
 	Docs/pages/termstructures.docs (1.8.4.1), Docs/pages/usage.docs
 	(1.18.2.1), Docs/pages/utilities.docs (1.9.8.1),
 	Docs/pages/where.docs (1.9.2.1),
-	Examples/AmericanOption/AmericanOption.cpp (1.39.2.1),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.70.2.1),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.50.2.1),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.121.2.1),
 	Examples/Swap/swapvaluation.cpp (1.62.2.1),
 	functions/ql/Functions/calendars.cpp (1.2.4.1),
 	functions/ql/Functions/calendars.hpp (1.1.6.1),
@@ -3149,8 +4519,7 @@
 
 2005-02-22 14:12  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.39),
-	ql/FiniteDifferences/Makefile.am (1.18),
+	* ql/FiniteDifferences/Makefile.am (1.18),
 	ql/FiniteDifferences/all.hpp (1.2),
 	ql/FiniteDifferences/boundarycondition.hpp (1.17),
 	ql/FiniteDifferences/core.hpp (1.2),
@@ -3506,7 +4875,6 @@
 2005-02-03 14:51  Luigi Ballabio
 
 	* Contributors.txt (1.26), Docs/pages/authors.docs (1.32),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.121),
 	ql/PricingEngines/Vanilla/Makefile.am (1.15),
 	ql/PricingEngines/Vanilla/all.hpp (1.5),
 	ql/PricingEngines/Vanilla/fdeuropeanengine.cpp (1.1),
@@ -3545,9 +4913,7 @@
 
 2005-02-02 14:21  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.38),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.120), ql/currency.hpp
-	(1.28), test-suite/americanoption.cpp (1.32),
+	* ql/currency.hpp (1.28), test-suite/americanoption.cpp (1.32),
 	test-suite/barrieroption.cpp (1.46), test-suite/basketoption.cpp
 	(1.40), test-suite/cliquetoption.cpp (1.23),
 	test-suite/covariance.cpp (1.28), test-suite/digitaloption.cpp
@@ -3596,9 +4962,7 @@
 
 2005-02-01 12:22  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.37),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.70),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.119),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.70),
 	Examples/Swap/swapvaluation.cpp (1.61),
 	functions/ql/Functions/mathf.hpp (1.4), ql/Makefile.am (1.73),
 	ql/basicdataformatters.cpp (1.17), ql/basicdataformatters.hpp
@@ -3638,10 +5002,8 @@
 
 2005-01-26 18:41  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.36),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.69),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.69),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.50),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.118),
 	Examples/Swap/swapvaluation.cpp (1.60), ql/Makefile.am (1.72),
 	ql/basicdataformatters.cpp (1.16), ql/basicdataformatters.hpp
 	(1.11), ql/core.hpp (1.10), ql/dataformatters.details.hpp (1.1),
@@ -3814,10 +5176,8 @@
 
 2005-01-14 20:42  Ferdinando Ametrano
 
-	* Makefile.am (1.94), Examples/AmericanOption/Makefile.am (1.5),
-	Examples/BermudanSwaption/Makefile.am (1.11),
+	* Makefile.am (1.94), Examples/BermudanSwaption/Makefile.am (1.11),
 	Examples/DiscreteHedging/Makefile.am (1.18),
-	Examples/EuropeanOption/Makefile.am (1.12),
 	Examples/Swap/Makefile.am (1.13),
 	functions/ql/Functions/Makefile.am (1.7), test-suite/Makefile.am
 	(1.45):
@@ -3881,10 +5241,6 @@
 
 	* .cvsignore (1.13), QuantLib.dsp (1.257), QuantLib.vcproj (1.50),
 	QuantLib_vc8.sln (1.1), QuantLib_vc8.vcproj (1.1),
-	Examples/AmericanOption/.cvsignore (1.10),
-	Examples/AmericanOption/AmericanOption.dsp (1.11),
-	Examples/AmericanOption/AmericanOption.vcproj (1.12),
-	Examples/AmericanOption/AmericanOption_vc8.vcproj (1.1),
 	Examples/BermudanSwaption/.cvsignore (1.15),
 	Examples/BermudanSwaption/BermudanSwaption.dsp (1.18),
 	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.12),
@@ -3893,10 +5249,6 @@
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.20),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.12),
 	Examples/DiscreteHedging/DiscreteHedging_vc8.vcproj (1.1),
-	Examples/EuropeanOption/.cvsignore (1.15),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.18),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.12),
-	Examples/EuropeanOption/EuropeanOption_vc8.vcproj (1.1),
 	Examples/Swap/.cvsignore (1.15), Examples/Swap/Swap.dsp (1.19),
 	Examples/Swap/Swap.vcproj (1.12), Examples/Swap/Swap_vc8.vcproj
 	(1.1), functions/ql/Functions/.cvsignore (1.6),
@@ -3924,34 +5276,26 @@
 
 2005-01-10 20:56  Ferdinando Ametrano
 
-	* Examples/AmericanOption/.cvsignore (1.8),
-	Examples/BermudanSwaption/.cvsignore (1.13),
+	* Examples/BermudanSwaption/.cvsignore (1.13),
 	Examples/DiscreteHedging/.cvsignore (1.13),
-	Examples/EuropeanOption/.cvsignore (1.13), Examples/Swap/.cvsignore
-	(1.13), test-suite/makefile.mak (1.51):
+	Examples/Swap/.cvsignore (1.13), test-suite/makefile.mak (1.51):
 
 	no message
 
 2005-01-10 20:52  Ferdinando Ametrano
 
-	* Examples/: AmericanOption/AmericanOption.dsp (1.10),
-	BermudanSwaption/BermudanSwaption.dsp (1.17),
-	DiscreteHedging/DiscreteHedging.dsp (1.19),
-	EuropeanOption/EuropeanOption.dsp (1.17), Swap/Swap.dsp (1.18):
+	* Examples/: BermudanSwaption/BermudanSwaption.dsp (1.17),
+	DiscreteHedging/DiscreteHedging.dsp (1.19), Swap/Swap.dsp (1.18):
 
 	all the binaries in the same folder
 
 2005-01-10 20:45  Ferdinando Ametrano
 
-	* Examples/: AmericanOption/.cvsignore (1.7),
-	AmericanOption/AmericanOption.vcproj (1.11),
-	AmericanOption/makefile.mak (1.15), BermudanSwaption/.cvsignore
-	(1.12), BermudanSwaption/BermudanSwaption.vcproj (1.11),
+	* Examples/: BermudanSwaption/.cvsignore (1.12),
+	BermudanSwaption/BermudanSwaption.vcproj (1.11),
 	BermudanSwaption/makefile.mak (1.19), DiscreteHedging/.cvsignore
 	(1.12), DiscreteHedging/DiscreteHedging.vcproj (1.11),
-	DiscreteHedging/makefile.mak (1.22), EuropeanOption/.cvsignore
-	(1.12), EuropeanOption/EuropeanOption.vcproj (1.11),
-	EuropeanOption/makefile.mak (1.25), Swap/.cvsignore (1.12),
+	DiscreteHedging/makefile.mak (1.22), Swap/.cvsignore (1.12),
 	Swap/Swap.vcproj (1.11), Swap/makefile.mak (1.22):
 
 	all the binaries in the same folder
@@ -3960,18 +5304,12 @@
 
 	* QuantLib.dsp (1.256), QuantLib.mak (1.235), QuantLib.vcproj
 	(1.48), Docs/pages/usage.docs (1.18),
-	Examples/AmericanOption/AmericanOption.dsp (1.9),
-	Examples/AmericanOption/AmericanOption.mak (1.18),
-	Examples/AmericanOption/AmericanOption.vcproj (1.10),
 	Examples/BermudanSwaption/BermudanSwaption.dsp (1.16),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.39),
 	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.10),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.18),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.57),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.10),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.16),
-	Examples/EuropeanOption/EuropeanOption.mak (1.57),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.10),
 	Examples/Swap/Swap.dsp (1.17), Examples/Swap/Swap.mak (1.55),
 	Examples/Swap/Swap.vcproj (1.10),
 	functions/ql/Functions/QuantLibFunctions.dsp (1.11),
@@ -3985,14 +5323,11 @@
 
 2005-01-10 19:46  Ferdinando Ametrano
 
-	* Examples/: AmericanOption/.cvsignore (1.6),
-	AmericanOption/AmericanOption.dev (1.1),
-	BermudanSwaption/.cvsignore (1.11),
+	* Examples/: BermudanSwaption/.cvsignore (1.11),
 	BermudanSwaption/BermudanSwaption.dev (1.1),
 	DiscreteHedging/.cvsignore (1.11),
-	DiscreteHedging/DiscreteHedging.dev (1.1),
-	EuropeanOption/.cvsignore (1.11), EuropeanOption/EuropeanOption.dev
-	(1.1), Swap/.cvsignore (1.11), Swap/Swap.dev (1.1):
+	DiscreteHedging/DiscreteHedging.dev (1.1), Swap/.cvsignore (1.11),
+	Swap/Swap.dev (1.1):
 
 	added Dev-C++ project files.  Some investigation is needed: a)
 	DiscreteHedging, BermudanSwaption, and Swap have many compilation
@@ -4145,9 +5480,7 @@
 
 2004-12-30 12:44  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.35),
-	Examples/DiscreteHedging/DiscreteHedging.cpp (1.49),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.117),
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.49),
 	Examples/Swap/swapvaluation.cpp (1.59), ql/interestrate.cpp (1.11),
 	ql/solver1d.hpp (1.28), ql/stochasticprocess.cpp (1.12),
 	ql/voltermstructure.cpp (1.22), ql/voltermstructure.hpp (1.33),
@@ -4668,10 +6001,8 @@
 
 2004-11-03 20:54  Ferdinando Ametrano
 
-	* Examples/AmericanOption/AmericanOption.mak (1.17),
-	Examples/BermudanSwaption/BermudanSwaption.mak (1.38),
+	* Examples/BermudanSwaption/BermudanSwaption.mak (1.38),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.56),
-	Examples/EuropeanOption/EuropeanOption.mak (1.56),
 	Examples/Swap/Swap.mak (1.54),
 	functions/ql/Functions/QuantLibFunctions.dsp (1.9),
 	functions/ql/Functions/makefile.mak (1.6), ql/makefile.mak (1.66),
@@ -4832,9 +6163,7 @@
 
 2004-10-25 15:00  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.33),
-	Examples/DiscreteHedging/DiscreteHedging.cpp (1.47),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.115),
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.47),
 	Examples/Swap/swapvaluation.cpp (1.57),
 	functions/ql/Functions/vols.cpp (1.4),
 	functions/ql/Functions/vols.hpp (1.5), ql/basetermstructure.hpp
@@ -5335,8 +6664,7 @@
 
 2004-10-12 10:12  Ferdinando Ametrano
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.32),
-	Examples/DiscreteHedging/DiscreteHedging.cpp (1.46),
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.46),
 	functions/ql/Functions/vols.cpp (1.3),
 	functions/ql/Functions/vols.hpp (1.4), ql/capvolstructures.hpp
 	(1.14), ql/schedule.hpp (1.3), ql/settings.hpp (1.5),
@@ -5653,10 +6981,8 @@
 
 2004-10-07 13:01  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.31),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.66),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.66),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.45),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.114),
 	Examples/Swap/swapvaluation.cpp (1.55),
 	functions/ql/Functions/calendars.cpp (1.2), ql/calendar.cpp (1.31),
 	ql/capvolstructures.hpp (1.12), ql/date.cpp (1.38), ql/date.hpp
@@ -5818,13 +7144,6 @@
 	gbplibor.hpp (1.26), zarlibor.hpp (1.19):
 
 	in accord with 2000 ISDA definitions
-
-2004-10-05 16:17  Ferdinando Ametrano
-
-	* Examples/: AmericanOption/AmericanOption.cpp (1.30),
-	EuropeanOption/EuropeanOption.cpp (1.113):
-
-	in accord to ISDA documentation. Added "1/1" convention
 
 2004-10-05 16:11  Ferdinando Ametrano
 
@@ -6103,10 +7422,9 @@
 
 2004-09-24 16:55  Ferdinando Ametrano
 
-	* QuantLib.mak (1.227), Examples/AmericanOption/AmericanOption.mak
-	(1.16), Examples/BermudanSwaption/BermudanSwaption.mak (1.37),
+	* QuantLib.mak (1.227),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.37),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.55),
-	Examples/EuropeanOption/EuropeanOption.mak (1.55),
 	Examples/Swap/Swap.mak (1.53),
 	functions/ql/Functions/QuantLibFunctions.mak (1.7),
 	test-suite/testsuite.dsp (1.42), test-suite/testsuite.mak (1.61):
@@ -6638,10 +7956,8 @@
 2004-09-13 19:05  Luigi Ballabio
 
 	* News.txt (1.45), Docs/pages/termstructures.docs (1.8),
-	Examples/AmericanOption/AmericanOption.cpp (1.29),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.65),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.42),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.112),
 	Examples/Swap/swapvaluation.cpp (1.52), ql/Makefile.am (1.65),
 	ql/basetermstructure.hpp (1.1), ql/core.hpp (1.8),
 	ql/stochasticprocess.cpp (1.6), ql/stochasticprocess.hpp (1.19),
@@ -7372,10 +8688,8 @@
 2004-08-19 18:24  Ferdinando Ametrano
 
 	* QuantLib.vcproj (1.30),
-	Examples/AmericanOption/AmericanOption.vcproj (1.9),
 	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.9),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.9),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.9),
 	Examples/Swap/Swap.vcproj (1.9),
 	functions/ql/Functions/QuantLibFunctions.vcproj (1.7),
 	ql/basicdataformatters.hpp (1.10), ql/config.msvc.hpp (1.50),
@@ -7440,10 +8754,8 @@
 2004-08-19 15:23  Ferdinando Ametrano
 
 	* QuantLib.vcproj (1.29),
-	Examples/AmericanOption/AmericanOption.vcproj (1.8),
 	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.8),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.8),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.8),
 	Examples/Swap/Swap.vcproj (1.8),
 	functions/ql/Functions/QuantLibFunctions.vcproj (1.6),
 	ql/disposable.hpp (1.7), ql/money.hpp (1.2), ql/solver1d.hpp
@@ -7539,10 +8851,8 @@
 
 2004-08-17 15:11  Ferdinando Ametrano
 
-	* Examples/AmericanOption/AmericanOption.vcproj (1.7),
-	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.7),
+	* Examples/BermudanSwaption/BermudanSwaption.vcproj (1.7),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.7),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.7),
 	Examples/Swap/Swap.vcproj (1.7), test-suite/testsuite.vcproj
 	(1.18):
 
@@ -7551,10 +8861,8 @@
 2004-08-17 13:53  Ferdinando Ametrano
 
 	* QuantLib.vcproj (1.28),
-	Examples/AmericanOption/AmericanOption.vcproj (1.6),
 	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.6),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.6),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.6),
 	Examples/Swap/Swap.vcproj (1.6),
 	functions/ql/Functions/QuantLibFunctions.vcproj (1.5),
 	test-suite/testsuite.vcproj (1.17):
@@ -7846,10 +9154,8 @@
 2004-07-07 19:09  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.243), QuantLib.mak (1.222),
-	Examples/AmericanOption/AmericanOption.mak (1.15),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.36),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.54),
-	Examples/EuropeanOption/EuropeanOption.mak (1.54),
 	Examples/Swap/Swap.mak (1.52),
 	functions/ql/Functions/QuantLibFunctions.dsp (1.7),
 	functions/ql/Functions/QuantLibFunctions.mak (1.6),
@@ -7860,10 +9166,8 @@
 2004-07-07 19:00  Ferdinando Ametrano
 
 	* QuantLib.sln (1.9), QuantLib.vcproj (1.26), makefile.mak (1.57),
-	Examples/AmericanOption/AmericanOption.vcproj (1.5),
 	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.5),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.5),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.5),
 	Examples/Swap/Swap.vcproj (1.5),
 	functions/ql/Functions/makefile.mak (1.5), ql/makefile.mak (1.59),
 	ql/Pricers/makefile.mak (1.46),
@@ -7924,15 +9228,10 @@
 	Docs/pages/history.docs (1.16), Docs/pages/overview.docs (1.17),
 	Docs/pages/usage.docs (1.15), Examples/.cvsignore (1.2),
 	Examples/Examples.dsw (1.7), Examples/Examples.sln (1.2),
-	Examples/Makefile.am (1.22), Examples/AmericanOption/.cvsignore
-	(1.5), Examples/AmericanOption/AmericanOption.mak (1.14),
-	Examples/BermudanSwaption/.cvsignore (1.10),
-	Examples/BermudanSwaption/BermudanSwaption.mak (1.35),
+	Examples/Makefile.am (1.22), Examples/BermudanSwaption/.cvsignore
+	(1.10), Examples/BermudanSwaption/BermudanSwaption.mak (1.35),
 	Examples/DiscreteHedging/.cvsignore (1.10),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.53),
-	Examples/EuropeanOption/.cvsignore (1.10),
-	Examples/EuropeanOption/EuropeanOption.mak (1.53),
-	Examples/EuropeanOption/quanto.leftover (1.4),
 	Examples/Swap/.cvsignore (1.10), Examples/Swap/Swap.mak (1.51),
 	config/.cvsignore (1.4), dev_tools/tgz2zip (1.4),
 	functions/.cvsignore (1.2), functions/ql/.cvsignore (1.2),
@@ -7970,10 +9269,8 @@
 2004-07-06 20:01  Ferdinando Ametrano
 
 	* QuantLib.mak (1.220.2.1), QuantLib.nsi (1.100.2.1),
-	Examples/AmericanOption/AmericanOption.mak (1.13.2.1),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.34.2.1),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.52.2.1),
-	Examples/EuropeanOption/EuropeanOption.mak (1.52.2.1),
 	Examples/Swap/Swap.mak (1.50.2.1), test-suite/testsuite.mak
 	(1.57.2.1):
 
@@ -8040,10 +9337,9 @@
 
 2004-06-28 17:38  Luigi Ballabio
 
-	* quantlib.el (1.10), Examples/AmericanOption/AmericanOption.cpp
-	(1.28), Examples/BermudanSwaption/BermudanSwaption.cpp (1.63),
+	* quantlib.el (1.10),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.63),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.40),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.111),
 	Examples/Swap/swapvaluation.cpp (1.51), ql/quote.hpp (1.2),
 	ql/relinkablehandle.hpp (1.23), ql/stochasticprocess.cpp (1.5),
 	ql/stochasticprocess.hpp (1.18),
@@ -8353,8 +9649,7 @@
 
 2004-06-08 15:50  Luigi Ballabio
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.110),
-	ql/PricingEngines/Vanilla/mceuropeanengine.hpp (1.19),
+	* ql/PricingEngines/Vanilla/mceuropeanengine.hpp (1.19),
 	test-suite/europeanoption.cpp (1.67):
 
 	Made syntax palatable to VC6
@@ -8432,10 +9727,9 @@
 
 2004-06-07 12:51  Ferdinando Ametrano
 
-	* QuantLib.mak (1.219), Examples/AmericanOption/AmericanOption.mak
-	(1.13), Examples/BermudanSwaption/BermudanSwaption.mak (1.34),
+	* QuantLib.mak (1.219),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.34),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.52),
-	Examples/EuropeanOption/EuropeanOption.mak (1.52),
 	Examples/Swap/Swap.mak (1.50),
 	functions/ql/Functions/QuantLibFunctions.mak (1.5),
 	test-suite/testsuite.mak (1.57):
@@ -8576,15 +9870,11 @@
 
 2004-06-03 11:14  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.dsp (1.8),
-	Examples/AmericanOption/AmericanOption.mak (1.12),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.58),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.58),
 	Examples/BermudanSwaption/BermudanSwaption.dsp (1.15),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.33),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.17),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.51),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.15),
-	Examples/EuropeanOption/EuropeanOption.mak (1.51),
 	Examples/Swap/Swap.dsp (1.16), Examples/Swap/Swap.mak (1.49),
 	QuantLib.mak (1.217), functions/ql/Functions/QuantLibFunctions.dsp
 	(1.5), ql/dataformatters.cpp (1.36), ql/dataformatters.hpp (1.35),
@@ -9225,10 +10515,8 @@
 
 2004-05-14 14:08  Luigi Ballabio
 
-	* Examples/: AmericanOption/AmericanOption.cpp (1.27),
-	BermudanSwaption/BermudanSwaption.cpp (1.54),
-	DiscreteHedging/DiscreteHedging.cpp (1.39),
-	EuropeanOption/EuropeanOption.cpp (1.109), Swap/swapvaluation.cpp
+	* Examples/: BermudanSwaption/BermudanSwaption.cpp (1.54),
+	DiscreteHedging/DiscreteHedging.cpp (1.39), Swap/swapvaluation.cpp
 	(1.48):
 
 	Real, Integer and such are now used throughout the library
@@ -9598,7 +10886,6 @@
 2004-05-11 16:19  Luigi Ballabio
 
 	* acinclude.m4 (1.10), configure.ac (1.43), quantlib.el (1.6),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.108),
 	ql/basicdataformatters.cpp (1.4), ql/basicdataformatters.hpp (1.2),
 	ql/calendar.cpp (1.24), ql/calendar.hpp (1.37),
 	ql/capvolstructures.hpp (1.9), ql/cashflow.hpp (1.19),
@@ -10065,12 +11352,6 @@
 
 	Calibration helpers are no longer set a default Black engine
 
-2004-04-27 11:50  Luigi Ballabio
-
-	* Examples/AmericanOption/AmericanOption.cpp (1.26):
-
-	typos
-
 2004-04-27 11:49  Luigi Ballabio
 
 	* ql/Calendars/: singapore.cpp (1.1), singapore.hpp (1.1):
@@ -10360,10 +11641,9 @@
 
 2004-04-21 11:39  Ferdinando Ametrano
 
-	* Examples/: AmericanOption/AmericanOption.vcproj (1.4),
-	BermudanSwaption/BermudanSwaption.vcproj (1.4),
-	DiscreteHedging/DiscreteHedging.vcproj (1.4),
-	EuropeanOption/EuropeanOption.vcproj (1.4), Swap/Swap.vcproj (1.4):
+	* Examples/: BermudanSwaption/BermudanSwaption.vcproj (1.4),
+	DiscreteHedging/DiscreteHedging.vcproj (1.4), Swap/Swap.vcproj
+	(1.4):
 
 	updated
 
@@ -10422,9 +11702,7 @@
 
 2004-04-19 19:01  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.25),
-	Examples/DiscreteHedging/DiscreteHedging.cpp (1.36),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.107),
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.36),
 	ql/diffusionprocess.cpp (1.17), ql/diffusionprocess.hpp (1.29),
 	ql/stochasticprocess.hpp (1.10), ql/Instruments/asianoption.cpp
 	(1.13), ql/Instruments/asianoption.hpp (1.15),
@@ -10616,10 +11894,8 @@
 2004-04-13 15:16  Ferdinando Ametrano
 
 	* QuantLib.vcproj (1.7), makefile.mak (1.55),
-	Examples/AmericanOption/makefile.mak (1.14),
 	Examples/BermudanSwaption/makefile.mak (1.18),
 	Examples/DiscreteHedging/makefile.mak (1.21),
-	Examples/EuropeanOption/makefile.mak (1.24),
 	Examples/Swap/makefile.mak (1.21),
 	functions/ql/Functions/makefile.mak (1.2), ql/makefile.mak (1.54),
 	ql/Calendars/makefile.mak (1.25), ql/CashFlows/makefile.mak (1.22),
@@ -10878,8 +12154,7 @@
 
 2004-04-08 15:01  Luigi Ballabio
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.106),
-	ql/Instruments/Makefile.am (1.24), ql/Instruments/all.hpp (1.5),
+	* ql/Instruments/Makefile.am (1.24), ql/Instruments/all.hpp (1.5),
 	ql/Instruments/europeanoption.cpp (1.1),
 	ql/Instruments/europeanoption.hpp (1.1),
 	test-suite/europeanoption.cpp (1.54), test-suite/jumpdiffusion.cpp
@@ -10889,14 +12164,10 @@
 
 2004-04-08 12:21  Ferdinando Ametrano
 
-	* Examples/: AmericanOption/AmericanOption.dsp (1.7),
-	AmericanOption/AmericanOption.mak (1.11),
-	BermudanSwaption/BermudanSwaption.dsp (1.14),
+	* Examples/: BermudanSwaption/BermudanSwaption.dsp (1.14),
 	BermudanSwaption/BermudanSwaption.mak (1.32),
 	DiscreteHedging/DiscreteHedging.dsp (1.16),
-	DiscreteHedging/DiscreteHedging.mak (1.50),
-	EuropeanOption/EuropeanOption.dsp (1.14),
-	EuropeanOption/EuropeanOption.mak (1.50), Swap/Swap.dsp (1.15),
+	DiscreteHedging/DiscreteHedging.mak (1.50), Swap/Swap.dsp (1.15),
 	Swap/Swap.mak (1.48):
 
 	VC6 catching up
@@ -11023,10 +12294,8 @@
 
 2004-04-07 09:32  Ferdinando Ametrano
 
-	* Examples/: Swap/makefile.mak (1.20), EuropeanOption/makefile.mak
-	(1.23), DiscreteHedging/makefile.mak (1.20),
-	BermudanSwaption/makefile.mak (1.17), AmericanOption/makefile.mak
-	(1.13):
+	* Examples/: Swap/makefile.mak (1.20), DiscreteHedging/makefile.mak
+	(1.20), BermudanSwaption/makefile.mak (1.17):
 
 	removing unnecessary warning suppression
 
@@ -11117,7 +12386,6 @@
 2004-04-06 17:03  Luigi Ballabio
 
 	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.34),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.105),
 	ql/Pricers/Makefile.am (1.40), ql/Pricers/all.hpp (1.3),
 	ql/Pricers/continuousgeometricapo.hpp (1.15),
 	ql/Pricers/europeanoption.cpp (1.19), ql/Pricers/europeanoption.hpp
@@ -11198,10 +12466,9 @@
 
 2004-04-06 09:34  Ferdinando Ametrano
 
-	* QuantLib.sln (1.3), Examples/AmericanOption/AmericanOption.vcproj
-	(1.3), Examples/BermudanSwaption/BermudanSwaption.vcproj (1.3),
+	* QuantLib.sln (1.3),
+	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.3),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.3),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.3),
 	Examples/Swap/Swap.vcproj (1.3), test-suite/testsuite.vcproj (1.6):
 
 	VC71 linking warning avoided
@@ -11209,10 +12476,8 @@
 2004-04-05 17:52  Ferdinando Ametrano
 
 	* QuantLib.sln (1.2), QuantLib.vcproj (1.3),
-	Examples/AmericanOption/AmericanOption.vcproj (1.2),
 	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.2),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.2),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.2),
 	Examples/Swap/Swap.vcproj (1.2), test-suite/makefile.mak (1.38),
 	test-suite/testsuite.vcproj (1.5):
 
@@ -11233,14 +12498,10 @@
 2004-04-05 16:39  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.227), QuantLib.mak (1.205),
-	Examples/AmericanOption/AmericanOption.dsp (1.6),
-	Examples/AmericanOption/AmericanOption.mak (1.10),
 	Examples/BermudanSwaption/BermudanSwaption.dsp (1.13),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.31),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.15),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.49),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.13),
-	Examples/EuropeanOption/EuropeanOption.mak (1.49),
 	Examples/Swap/Swap.dsp (1.14), Examples/Swap/Swap.mak (1.47):
 
 	Visual C++: added single thread configurations
@@ -11249,23 +12510,18 @@
 
 	* QuantLib.dsp (1.226), QuantLib.mak (1.204), makefile.mak (1.54),
 	Examples/makefile.mak (1.22),
-	Examples/AmericanOption/AmericanOption.dsp (1.5),
-	Examples/AmericanOption/AmericanOption.mak (1.9),
-	Examples/AmericanOption/makefile.mak (1.12),
 	Examples/BermudanSwaption/BermudanSwaption.dsp (1.12),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.30),
 	Examples/BermudanSwaption/makefile.mak (1.16),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.14),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.48),
 	Examples/DiscreteHedging/makefile.mak (1.19),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.12),
-	Examples/EuropeanOption/EuropeanOption.mak (1.48),
-	Examples/EuropeanOption/makefile.mak (1.22), Examples/Swap/Swap.dsp
-	(1.13), Examples/Swap/Swap.mak (1.46), Examples/Swap/makefile.mak
-	(1.19), ql/makefile.mak (1.51), ql/Calendars/makefile.mak (1.24),
-	ql/CashFlows/makefile.mak (1.21), ql/DayCounters/makefile.mak
-	(1.20), ql/FiniteDifferences/makefile.mak (1.20),
-	ql/Indexes/makefile.mak (1.18), ql/Instruments/makefile.mak (1.32),
+	Examples/Swap/Swap.dsp (1.13), Examples/Swap/Swap.mak (1.46),
+	Examples/Swap/makefile.mak (1.19), ql/makefile.mak (1.51),
+	ql/Calendars/makefile.mak (1.24), ql/CashFlows/makefile.mak (1.21),
+	ql/DayCounters/makefile.mak (1.20),
+	ql/FiniteDifferences/makefile.mak (1.20), ql/Indexes/makefile.mak
+	(1.18), ql/Instruments/makefile.mak (1.32),
 	ql/Lattices/makefile.mak (1.26), ql/Math/makefile.mak (1.36),
 	ql/Optimization/makefile.mak (1.18), ql/Pricers/makefile.mak
 	(1.41), ql/PricingEngines/makefile.mak (1.31),
@@ -11348,10 +12604,9 @@
 
 2004-04-05 12:49  Ferdinando Ametrano
 
-	* Examples/: makefile.mak (1.21), AmericanOption/AmericanOption.cpp
-	(1.24), BermudanSwaption/BermudanSwaption.cpp (1.52),
-	DiscreteHedging/DiscreteHedging.cpp (1.33),
-	EuropeanOption/EuropeanOption.cpp (1.104), Swap/swapvaluation.cpp
+	* Examples/: makefile.mak (1.21),
+	BermudanSwaption/BermudanSwaption.cpp (1.52),
+	DiscreteHedging/DiscreteHedging.cpp (1.33), Swap/swapvaluation.cpp
 	(1.47):
 
 	Borland warning avoided
@@ -11422,14 +12677,11 @@
 
 2004-04-04 18:28  Ferdinando Ametrano
 
-	* Examples/: makefile.mak (1.20), AmericanOption/AmericanOption.dsp
-	(1.4), AmericanOption/makefile.mak (1.11),
+	* Examples/: makefile.mak (1.20),
 	BermudanSwaption/BermudanSwaption.dsp (1.11),
 	BermudanSwaption/makefile.mak (1.15),
 	DiscreteHedging/DiscreteHedging.dsp (1.13),
-	DiscreteHedging/makefile.mak (1.18),
-	EuropeanOption/EuropeanOption.dsp (1.11),
-	EuropeanOption/makefile.mak (1.21), Swap/Swap.dsp (1.12),
+	DiscreteHedging/makefile.mak (1.18), Swap/Swap.dsp (1.12),
 	Swap/Swap.mak (1.45), Swap/makefile.mak (1.18):
 
 	a) working toward multiple Borland configuration support.  b)
@@ -11703,10 +12955,8 @@
 
 2004-03-30 10:50  Ferdinando Ametrano
 
-	* Examples/AmericanOption/makefile.mak (1.10),
-	Examples/BermudanSwaption/makefile.mak (1.14),
+	* Examples/BermudanSwaption/makefile.mak (1.14),
 	Examples/DiscreteHedging/makefile.mak (1.17),
-	Examples/EuropeanOption/makefile.mak (1.20),
 	Examples/Swap/makefile.mak (1.17), ql/makefile.mak (1.47),
 	ql/Calendars/makefile.mak (1.22), ql/CashFlows/makefile.mak (1.19),
 	ql/DayCounters/makefile.mak (1.18),
@@ -11742,10 +12992,8 @@
 
 2004-03-29 18:17  Ferdinando Ametrano
 
-	* Examples/AmericanOption/makefile.mak (1.9),
-	Examples/BermudanSwaption/makefile.mak (1.13),
+	* Examples/BermudanSwaption/makefile.mak (1.13),
 	Examples/DiscreteHedging/makefile.mak (1.16),
-	Examples/EuropeanOption/makefile.mak (1.19),
 	Examples/Swap/makefile.mak (1.16), ql/makefile.mak (1.46),
 	ql/Calendars/makefile.mak (1.21), ql/CashFlows/makefile.mak (1.18),
 	ql/DayCounters/makefile.mak (1.17),
@@ -11870,14 +13118,10 @@
 	* .cvsignore (1.10), Makefile.am (1.86), QuantLib.nsi (1.96),
 	QuantLib.sln (1.1), QuantLib.vcproj (1.1), Examples/Examples.sln
 	(1.1), Examples/Makefile.am (1.21),
-	Examples/AmericanOption/AmericanOption.vcproj (1.1),
-	Examples/AmericanOption/Makefile.am (1.4),
 	Examples/BermudanSwaption/BermudanSwaption.vcproj (1.1),
 	Examples/BermudanSwaption/Makefile.am (1.10),
 	Examples/DiscreteHedging/DiscreteHedging.vcproj (1.1),
 	Examples/DiscreteHedging/Makefile.am (1.17),
-	Examples/EuropeanOption/EuropeanOption.vcproj (1.1),
-	Examples/EuropeanOption/Makefile.am (1.11),
 	Examples/Swap/Makefile.am (1.12), Examples/Swap/Swap.vcproj (1.1),
 	test-suite/Makefile.am (1.30), test-suite/testsuite.vcproj (1.1):
 
@@ -11899,11 +13143,8 @@
 2004-03-25 17:52  Luigi Ballabio
 
 	* quantlib.el (1.4), Docs/pages/coreclasses.docs (1.9),
-	Examples/AmericanOption/AmericanOption.cpp (1.23),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.51),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.29),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.103),
-	Examples/EuropeanOption/quanto.leftover (1.3),
 	Examples/Swap/swapvaluation.cpp (1.46), ql/calendar.hpp (1.32),
 	ql/daycounter.hpp (1.26), ql/diffusionprocess.cpp (1.15),
 	ql/discretizedasset.hpp (1.7), ql/instrument.hpp (1.31),
@@ -12220,39 +13461,36 @@
 	(1.11), test-suite/lowdiscrepancysequences.cpp (1.40),
 	test-suite/old_pricers.cpp (1.31), test-suite/quantlibtestsuite.cpp
 	(1.64), test-suite/swaption.cpp (1.19), test-suite/testsuite.mak
-	(1.45), Examples/AmericanOption/AmericanOption.cpp (1.22),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.102),
-	Examples/EuropeanOption/quanto.leftover (1.2),
-	Examples/Swap/swapvaluation.cpp (1.44), Docs/.cvsignore (1.4),
-	Docs/Makefile.am (1.61), Docs/README.txt (1.26), Docs/quantlib.doxy
-	(1.81), Docs/quantlibheader.html (1.20), Docs/userman.tex (1.6),
-	Docs/pages/authors.docs (1.26), Docs/pages/coreclasses.docs (1.8),
-	Docs/pages/currencies.docs (1.7), Docs/pages/datetime.docs (1.7),
-	Docs/pages/findiff.docs (1.9), Docs/pages/fixedincome.docs (1.11),
-	Docs/pages/history.docs (1.14), Docs/pages/index.docs (1.9),
-	Docs/pages/install.docs (1.9), Docs/pages/instruments.docs (1.10),
-	Docs/pages/lattices.docs (1.6), Docs/pages/license.docs (1.16),
-	Docs/pages/math.docs (1.10), Docs/pages/mcarlo.docs (1.15),
-	Docs/pages/overview.docs (1.9), Docs/pages/patterns.docs (1.6),
-	Docs/pages/platforms.docs (1.11), Docs/pages/resources.docs (1.7),
-	Docs/pages/termstructures.docs (1.6), Docs/pages/usage.docs (1.14),
-	Docs/pages/utilities.docs (1.8), Docs/pages/where.docs (1.8),
-	dev_tools/developers (1.2), ql/Makefile.am (1.51), ql/calendar.cpp
-	(1.18), ql/calendar.hpp (1.31), ql/config.bcc.hpp (1.25),
-	ql/config.msvc.hpp (1.43), ql/core.hpp (1.3), ql/dataformatters.cpp
-	(1.30), ql/dataparsers.cpp (1.12), ql/date.cpp (1.31),
-	ql/diffusionprocess.cpp (1.13), ql/diffusionprocess.hpp (1.27),
-	ql/discretizedasset.cpp (1.5), ql/exercise.cpp (1.8),
-	ql/exercise.hpp (1.30), ql/grid.cpp (1.13), ql/makefile.mak (1.45),
-	ql/numericalmethod.hpp (1.13), ql/option.hpp (1.26), ql/payoff.hpp
-	(1.10), ql/qldefines.hpp (1.67), ql/quantlib.hpp (1.145),
-	ql/relinkablehandle.hpp (1.19), ql/scheduler.cpp (1.21),
-	ql/solver1d.hpp (1.20), ql/swaptionvolstructure.hpp (1.10),
-	ql/termstructure.hpp (1.38), ql/voltermstructure.cpp (1.14),
-	ql/voltermstructure.hpp (1.21), ql/Calendars/budapest.cpp (1.7),
-	ql/Calendars/copenhagen.cpp (1.3), ql/Calendars/frankfurt.cpp
-	(1.16), ql/Calendars/helsinki.cpp (1.15),
-	ql/Calendars/johannesburg.cpp (1.12),
+	(1.45), Examples/Swap/swapvaluation.cpp (1.44), Docs/.cvsignore
+	(1.4), Docs/Makefile.am (1.61), Docs/README.txt (1.26),
+	Docs/quantlib.doxy (1.81), Docs/quantlibheader.html (1.20),
+	Docs/userman.tex (1.6), Docs/pages/authors.docs (1.26),
+	Docs/pages/coreclasses.docs (1.8), Docs/pages/currencies.docs
+	(1.7), Docs/pages/datetime.docs (1.7), Docs/pages/findiff.docs
+	(1.9), Docs/pages/fixedincome.docs (1.11), Docs/pages/history.docs
+	(1.14), Docs/pages/index.docs (1.9), Docs/pages/install.docs (1.9),
+	Docs/pages/instruments.docs (1.10), Docs/pages/lattices.docs (1.6),
+	Docs/pages/license.docs (1.16), Docs/pages/math.docs (1.10),
+	Docs/pages/mcarlo.docs (1.15), Docs/pages/overview.docs (1.9),
+	Docs/pages/patterns.docs (1.6), Docs/pages/platforms.docs (1.11),
+	Docs/pages/resources.docs (1.7), Docs/pages/termstructures.docs
+	(1.6), Docs/pages/usage.docs (1.14), Docs/pages/utilities.docs
+	(1.8), Docs/pages/where.docs (1.8), dev_tools/developers (1.2),
+	ql/Makefile.am (1.51), ql/calendar.cpp (1.18), ql/calendar.hpp
+	(1.31), ql/config.bcc.hpp (1.25), ql/config.msvc.hpp (1.43),
+	ql/core.hpp (1.3), ql/dataformatters.cpp (1.30), ql/dataparsers.cpp
+	(1.12), ql/date.cpp (1.31), ql/diffusionprocess.cpp (1.13),
+	ql/diffusionprocess.hpp (1.27), ql/discretizedasset.cpp (1.5),
+	ql/exercise.cpp (1.8), ql/exercise.hpp (1.30), ql/grid.cpp (1.13),
+	ql/makefile.mak (1.45), ql/numericalmethod.hpp (1.13),
+	ql/option.hpp (1.26), ql/payoff.hpp (1.10), ql/qldefines.hpp
+	(1.67), ql/quantlib.hpp (1.145), ql/relinkablehandle.hpp (1.19),
+	ql/scheduler.cpp (1.21), ql/solver1d.hpp (1.20),
+	ql/swaptionvolstructure.hpp (1.10), ql/termstructure.hpp (1.38),
+	ql/voltermstructure.cpp (1.14), ql/voltermstructure.hpp (1.21),
+	ql/Calendars/budapest.cpp (1.7), ql/Calendars/copenhagen.cpp (1.3),
+	ql/Calendars/frankfurt.cpp (1.16), ql/Calendars/helsinki.cpp
+	(1.15), ql/Calendars/johannesburg.cpp (1.12),
 	ql/Calendars/jointcalendar.cpp (1.8), ql/Calendars/london.cpp
 	(1.16), ql/Calendars/london.hpp (1.16), ql/Calendars/milan.cpp
 	(1.15), ql/Calendars/newyork.cpp (1.16), ql/Calendars/newyork.hpp
@@ -13105,9 +14343,7 @@
 
 2004-03-17 10:01  Luigi Ballabio
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.101.2.2),
-	Examples/EuropeanOption/quanto.leftover (1.1.2.1),
-	test-suite/jumpdiffusion.cpp (1.10.2.5):
+	* test-suite/jumpdiffusion.cpp (1.10.2.5):
 
 	Minor cleanup for release
 
@@ -13130,10 +14366,9 @@
 
 	improved error messages
 
-2004-03-16 18:32  Luigi Ballabio
+2004-03-16 18:33  Luigi Ballabio
 
-	* Examples/: EuropeanOption/EuropeanOption.cpp (1.101.2.1),
-	Swap/swapvaluation.cpp (1.43.2.1):
+	* Examples/Swap/swapvaluation.cpp (1.43.2.1):
 
 	Cleaned-up output
 
@@ -13515,10 +14750,10 @@
 
 2004-03-13 23:07  Ferdinando Ametrano
 
-	* BUGS.txt (1.1.2.1), Examples/AmericanOption/AmericanOption.cpp
-	(1.21.2.1), ql/PricingEngines/Vanilla/bjerksundstenslandengine.cpp
-	(1.6.2.1), ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp
-	(1.2.2.1), test-suite/americanoption.cpp (1.12.2.1):
+	* BUGS.txt (1.1.2.1),
+	ql/PricingEngines/Vanilla/bjerksundstenslandengine.cpp (1.6.2.1),
+	ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp (1.2.2.1),
+	test-suite/americanoption.cpp (1.12.2.1):
 
 	Bjerksund-Stensland bug fixed
 
@@ -13539,9 +14774,8 @@
 2004-03-11 11:42  Luigi Ballabio
 
 	* QuantLib.nsi (1.93), configure.ac (1.32), Docs/quantlib.doxy
-	(1.80), Examples/AmericanOption/AmericanOption.cpp (1.21),
-	dev_tools/version_number.txt (1.36), ql/qldefines.hpp (1.66),
-	ql/Instruments/oneassetstrikedoption.cpp (1.10),
+	(1.80), dev_tools/version_number.txt (1.36), ql/qldefines.hpp
+	(1.66), ql/Instruments/oneassetstrikedoption.cpp (1.10),
 	ql/Instruments/oneassetstrikedoption.hpp (1.10),
 	ql/Math/Makefile.am (1.38), ql/Math/all.hpp (1.2),
 	ql/Math/choleskydecomposition.cpp (1.1),
@@ -14583,9 +15817,8 @@
 
 2004-01-09 10:53  Ferdinando Ametrano
 
-	* Examples/: AmericanOption/.cvsignore (1.4),
-	BermudanSwaption/.cvsignore (1.9), DiscreteHedging/.cvsignore
-	(1.9), EuropeanOption/.cvsignore (1.9), Swap/.cvsignore (1.9):
+	* Examples/: BermudanSwaption/.cvsignore (1.9),
+	DiscreteHedging/.cvsignore (1.9), Swap/.cvsignore (1.9):
 
 	ignore *.obj and *.exe
 
@@ -14613,12 +15846,6 @@
 	* test-suite/digitaloption.cpp (1.10):
 
 	commenting out the MC test for the time being
-
-2004-01-08 19:20  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.101):
-
-	small changes
 
 2004-01-08 19:07  Luigi Ballabio
 
@@ -14687,12 +15914,6 @@
 	(1.44), test-suite/jumpdiffusion.cpp (1.7):
 
 	Reordered headers
-
-2004-01-08 18:41  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.100):
-
-	removed unused variable
 
 2004-01-08 18:14  Ferdinando Ametrano
 
@@ -14952,12 +16173,6 @@
 
 	working on Merton76
 
-2004-01-05 08:36  Ferdinando Ametrano
-
-	* Examples/AmericanOption/AmericanOption.cpp (1.20):
-
-	few more digits
-
 2004-01-02 18:13  Luigi Ballabio
 
 	* test-suite/: americanoption.cpp (1.6), asianoptions.cpp (1.8):
@@ -15005,11 +16220,9 @@
 2003-12-31 21:59  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.210), QuantLib.mak (1.191), TODO.txt (1.126),
-	Examples/AmericanOption/AmericanOption.cpp (1.19),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.99), ql/Makefile.am
-	(1.49), ql/quantlib.hpp (1.143), ql/stochasticprocess.hpp (1.4),
-	ql/Instruments/asianoption.cpp (1.8),
-	ql/Instruments/asianoption.hpp (1.8),
+	ql/Makefile.am (1.49), ql/quantlib.hpp (1.143),
+	ql/stochasticprocess.hpp (1.4), ql/Instruments/asianoption.cpp
+	(1.8), ql/Instruments/asianoption.hpp (1.8),
 	ql/Instruments/barrieroption.cpp (1.20),
 	ql/Instruments/barrieroption.hpp (1.18),
 	ql/Instruments/binarybarrieroption.cpp (1.5),
@@ -15220,10 +16433,8 @@
 2003-12-26 11:10  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.208), QuantLib.mak (1.189),
-	Examples/AmericanOption/AmericanOption.cpp (1.18),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.48),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.98), ql/option.hpp
-	(1.24), ql/Instruments/asianoption.cpp (1.7),
+	ql/option.hpp (1.24), ql/Instruments/asianoption.cpp (1.7),
 	ql/Instruments/asianoption.hpp (1.7),
 	ql/Instruments/barrieroption.cpp (1.19),
 	ql/Instruments/barrieroption.hpp (1.17),
@@ -15343,11 +16554,9 @@
 
 	adding one-touch option, that is american binary options
 
-2003-12-22 20:32  Ferdinando Ametrano
+2003-12-22 20:34  Ferdinando Ametrano
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.17),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.97), QuantLib.dsp
-	(1.207), QuantLib.mak (1.188), TODO.txt (1.125),
+	* QuantLib.dsp (1.207), QuantLib.mak (1.188), TODO.txt (1.125),
 	test-suite/testsuite.mak (1.35):
 
 	using Exercise everywhere
@@ -15469,12 +16678,6 @@
 
 	(barrier) BinaryOption renamed as BinaryBarrierOption
 
-2003-12-22 10:21  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.96):
-
-	using OptionTypeFormatter
-
 2003-12-22 10:13  Ferdinando Ametrano
 
 	* test-suite/: binaryoption.cpp (1.18), europeanoption.cpp (1.30),
@@ -15490,8 +16693,7 @@
 
 2003-12-21 12:43  Ferdinando Ametrano
 
-	* TODO.txt (1.124), Examples/AmericanOption/AmericanOption.cpp
-	(1.16), Examples/EuropeanOption/EuropeanOption.cpp (1.95):
+	* TODO.txt (1.124):
 
 	Payoff as input, instead of (type, strike) couple
 
@@ -15626,8 +16828,7 @@
 2003-12-18 12:47  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.202), QuantLib.mak (1.183), TODO.txt (1.123),
-	Examples/AmericanOption/AmericanOption.cpp (1.14), ql/option.hpp
-	(1.22), ql/Instruments/Makefile.am (1.19),
+	ql/option.hpp (1.22), ql/Instruments/Makefile.am (1.19),
 	ql/Instruments/asianoption.cpp (1.1),
 	ql/Instruments/asianoption.hpp (1.1),
 	ql/Instruments/barrieroption.cpp (1.15),
@@ -15638,8 +16839,7 @@
 	ql/Instruments/oneassetstrikedoption.cpp (1.1),
 	ql/Instruments/oneassetstrikedoption.hpp (1.1),
 	ql/Instruments/vanillaoption.cpp (1.36),
-	ql/Instruments/vanillaoption.hpp (1.34),
-	Examples/AmericanOption/AmericanOption.cpp (1.15):
+	ql/Instruments/vanillaoption.hpp (1.34):
 
 	OneAssetOption and OneAssetStrikedOption instrumets introduced
 
@@ -15815,9 +17015,7 @@
 
 2003-12-15 14:51  Ferdinando Ametrano
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.13),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.94),
-	ql/diffusionprocess.hpp (1.26), ql/Instruments/vanillaoption.cpp
+	* ql/diffusionprocess.hpp (1.26), ql/Instruments/vanillaoption.cpp
 	(1.33), ql/Instruments/vanillaoption.hpp (1.31),
 	ql/Lattices/binomialtree.cpp (1.16), ql/Lattices/binomialtree.hpp
 	(1.13), ql/PricingEngines/analyticeuropeanengine.cpp (1.15),
@@ -15927,10 +17125,8 @@
 2003-12-11 11:10  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.195), QuantLib.mak (1.177),
-	Examples/AmericanOption/AmericanOption.mak (1.8),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.29),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.47),
-	Examples/EuropeanOption/EuropeanOption.mak (1.47),
 	Examples/Swap/Swap.mak (1.44), ql/Math/Makefile.am (1.28),
 	ql/Math/cholesky.cpp (1.4), ql/Math/cholesky.hpp (1.4),
 	ql/Math/makefile.mak (1.27), ql/Math/matrix.cpp (1.20),
@@ -15957,10 +17153,8 @@
 2003-12-10 18:18  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.194), QuantLib.mak (1.176),
-	Examples/AmericanOption/AmericanOption.mak (1.7),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.28),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.46),
-	Examples/EuropeanOption/EuropeanOption.mak (1.46),
 	Examples/Swap/Swap.mak (1.43), ql/errors.hpp (1.14),
 	ql/Math/matrix.cpp (1.18), ql/Math/matrix.hpp (1.20),
 	test-suite/old_pricers.cpp (1.27), test-suite/testsuite.mak (1.28):
@@ -16108,9 +17302,7 @@
 
 2003-12-01 11:39  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.12),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.47),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.93),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.47),
 	Examples/Swap/swapvaluation.cpp (1.43), ql/blackmodel.hpp (1.13),
 	ql/marketelement.hpp (1.17), ql/Instruments/barrieroption.cpp
 	(1.11), ql/Instruments/barrieroption.hpp (1.11),
@@ -16195,10 +17387,8 @@
 
 2003-11-27 15:40  Ferdinando Ametrano
 
-	* Examples/AmericanOption/makefile.mak (1.8),
-	Examples/BermudanSwaption/makefile.mak (1.12),
+	* Examples/BermudanSwaption/makefile.mak (1.12),
 	Examples/DiscreteHedging/makefile.mak (1.15),
-	Examples/EuropeanOption/makefile.mak (1.18),
 	Examples/Swap/makefile.mak (1.15), ql/makefile.mak (1.40),
 	ql/Calendars/makefile.mak (1.19), ql/CashFlows/makefile.mak (1.17),
 	ql/DayCounters/makefile.mak (1.16),
@@ -16234,7 +17424,6 @@
 
 	* acinclude.m4 (1.8), configure.ac (1.28),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.46),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.92),
 	Examples/Swap/swapvaluation.cpp (1.42), ql/config.ansi.hpp (1.22),
 	ql/config.bcc.hpp (1.23), ql/config.msvc.hpp (1.41),
 	ql/config.mwcw.hpp (1.21), ql/diffusionprocess.cpp (1.12),
@@ -16353,10 +17542,8 @@
 2003-11-20 18:54  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.189), QuantLib.mak (1.175), makefile.mak (1.49),
-	Examples/AmericanOption/AmericanOption.mak (1.6),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.27),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.45),
-	Examples/EuropeanOption/EuropeanOption.mak (1.45),
 	Examples/Swap/Swap.mak (1.42), ql/quantlib.hpp (1.132),
 	ql/Math/Makefile.am (1.26), ql/Math/makefile.mak (1.24),
 	ql/Math/multivariateaccumulator.cpp (1.19),
@@ -16426,10 +17613,9 @@
 
 2003-11-19 11:07  Ferdinando Ametrano
 
-	* QuantLib.mak (1.174), Examples/AmericanOption/AmericanOption.mak
-	(1.5), Examples/BermudanSwaption/BermudanSwaption.mak (1.26),
+	* QuantLib.mak (1.174),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.26),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.44),
-	Examples/EuropeanOption/EuropeanOption.mak (1.44),
 	Examples/Swap/Swap.mak (1.41), test-suite/testsuite.mak (1.26):
 
 	R000304f0-branch-merge1 merged into trunk
@@ -16442,14 +17628,10 @@
 	Docs/pages/authors.docs (1.25), Docs/pages/history.docs (1.13),
 	Docs/pages/license.docs (1.15), Docs/pages/platforms.docs (1.10),
 	Docs/pages/usage.docs (1.13),
-	Examples/AmericanOption/AmericanOption.dsp (1.3),
-	Examples/AmericanOption/AmericanOption.mak (1.4),
 	Examples/BermudanSwaption/BermudanSwaption.dsp (1.10),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.25),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.12),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.43),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.10),
-	Examples/EuropeanOption/EuropeanOption.mak (1.43),
 	Examples/Swap/Swap.dsp (1.11), Examples/Swap/Swap.mak (1.40),
 	dev_tools/QLdebugzip.bat (1.2), ql/argsandresults.hpp (1.16),
 	ql/config.msvc.hpp (1.40), ql/diffusionprocess.cpp (1.11),
@@ -16470,10 +17652,8 @@
 
 2003-11-18 20:52  Ferdinando Ametrano
 
-	* Examples/AmericanOption/makefile.mak (1.7),
-	Examples/BermudanSwaption/makefile.mak (1.11),
+	* Examples/BermudanSwaption/makefile.mak (1.11),
 	Examples/DiscreteHedging/makefile.mak (1.14),
-	Examples/EuropeanOption/makefile.mak (1.17),
 	Examples/Swap/makefile.mak (1.14), ql/makefile.mak (1.39),
 	ql/Calendars/makefile.mak (1.18), ql/CashFlows/makefile.mak (1.16),
 	ql/DayCounters/makefile.mak (1.15),
@@ -16554,14 +17734,10 @@
 
 2003-11-13 14:47  Ferdinando Ametrano
 
-	* Examples/: AmericanOption/AmericanOption.dsp (1.2.2.2),
-	AmericanOption/AmericanOption.mak (1.3.2.2),
-	BermudanSwaption/BermudanSwaption.dsp (1.9.2.2),
+	* Examples/: BermudanSwaption/BermudanSwaption.dsp (1.9.2.2),
 	BermudanSwaption/BermudanSwaption.mak (1.24.2.2),
 	DiscreteHedging/DiscreteHedging.dsp (1.11.2.2),
-	DiscreteHedging/DiscreteHedging.mak (1.42.2.2),
-	EuropeanOption/EuropeanOption.dsp (1.9.2.2),
-	EuropeanOption/EuropeanOption.mak (1.42.2.2):
+	DiscreteHedging/DiscreteHedging.mak (1.42.2.2):
 
 	English language instead of Russian ;-) Really!
 
@@ -16576,14 +17752,10 @@
 
 	* QuantLib.dsp (1.184.2.2), QuantLib.mak (1.171.2.2),
 	Docs/pages/usage.docs (1.12.2.1),
-	Examples/AmericanOption/AmericanOption.dsp (1.2.2.1),
-	Examples/AmericanOption/AmericanOption.mak (1.3.2.1),
 	Examples/BermudanSwaption/BermudanSwaption.dsp (1.9.2.1),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.24.2.1),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.11.2.1),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.42.2.1),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.9.2.1),
-	Examples/EuropeanOption/EuropeanOption.mak (1.42.2.1),
 	Examples/Swap/Swap.dsp (1.10.2.1), Examples/Swap/Swap.mak
 	(1.39.2.1), ql/config.msvc.hpp (1.39.2.1), test-suite/testsuite.dsp
 	(1.17.2.1), test-suite/testsuite.mak (1.24.2.1):
@@ -16593,9 +17765,7 @@
 
 2003-11-11 16:40  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.11),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.44),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.91),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.44),
 	Examples/Swap/swapvaluation.cpp (1.41), ql/diffusionprocess.cpp
 	(1.10), ql/history.hpp (1.18), ql/quantlib.hpp (1.130),
 	ql/termstructure.hpp (1.36), ql/voltermstructure.hpp (1.17),
@@ -16658,10 +17828,8 @@
 
 2003-11-11 09:31  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.10),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.43),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.90), ql/quantlib.hpp
-	(1.129), ql/solver1d.hpp (1.17),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.43),
+	ql/quantlib.hpp (1.129), ql/solver1d.hpp (1.17),
 	ql/FiniteDifferences/onefactoroperator.cpp (1.17),
 	ql/FiniteDifferences/onefactoroperator.hpp (1.17),
 	ql/Instruments/capfloor.cpp (1.45),
@@ -16752,10 +17920,8 @@
 
 2003-11-10 12:59  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.9),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.42),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.42),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.28),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.89),
 	ql/blackmodel.hpp (1.12), ql/calendar.hpp (1.28),
 	ql/capvolstructures.hpp (1.8), ql/cashflow.hpp (1.15),
 	ql/daycounter.hpp (1.23), ql/index.hpp (1.15), ql/instrument.hpp
@@ -16957,9 +18123,7 @@
 
 2003-11-07 18:09  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.8),
-	Examples/DiscreteHedging/DiscreteHedging.cpp (1.27),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.88), ql/array.hpp
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.27), ql/array.hpp
 	(1.20), ql/blackmodel.hpp (1.11), ql/dataformatters.cpp (1.26),
 	ql/dataformatters.hpp (1.23), ql/quantlib.hpp (1.127),
 	ql/Lattices/lattice2d.hpp (1.7),
@@ -17069,9 +18233,7 @@
 
 2003-11-07 13:52  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.7),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.41),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.87),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.41),
 	Examples/Swap/swapvaluation.cpp (1.40), ql/instrument.hpp (1.23),
 	ql/quantlib.hpp (1.126), ql/Instruments/barrieroption.cpp (1.7),
 	ql/Instruments/barrieroption.hpp (1.10),
@@ -17215,9 +18377,7 @@
 
 2003-11-06 16:13  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.6),
-	Examples/BermudanSwaption/BermudanSwaption.cpp (1.39),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.86),
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.39),
 	Examples/Swap/swapvaluation.cpp (1.38), ql/daycounter.hpp (1.22),
 	ql/quantlib.hpp (1.123), ql/DayCounters/actual360.hpp (1.15),
 	ql/DayCounters/actual365.hpp (1.15),
@@ -17366,8 +18526,7 @@
 
 2003-11-04 18:31  Luigi Ballabio
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.85),
-	ql/quantlib.hpp (1.119), ql/Pricers/Makefile.am (1.36),
+	* ql/quantlib.hpp (1.119), ql/Pricers/Makefile.am (1.36),
 	ql/Pricers/makefile.mak (1.34), ql/Pricers/mceuropean.cpp (1.20),
 	ql/Pricers/mceuropean.hpp (1.21), test-suite/old_pricers.cpp
 	(1.21):
@@ -17465,10 +18624,8 @@
 
 2003-11-03 13:58  Ferdinando Ametrano
 
-	* Examples/AmericanOption/.cvsignore (1.3),
-	Examples/BermudanSwaption/.cvsignore (1.8),
-	Examples/DiscreteHedging/.cvsignore (1.8),
-	Examples/EuropeanOption/.cvsignore (1.8), Examples/Swap/.cvsignore
+	* Examples/BermudanSwaption/.cvsignore (1.8),
+	Examples/DiscreteHedging/.cvsignore (1.8), Examples/Swap/.cvsignore
 	(1.8), ql/.cvsignore (1.11), ql/Calendars/.cvsignore (1.7),
 	ql/CashFlows/.cvsignore (1.7), ql/DayCounters/.cvsignore (1.7),
 	ql/FiniteDifferences/.cvsignore (1.7), ql/Indexes/.cvsignore (1.7),
@@ -17526,10 +18683,8 @@
 	Docs/pages/resources.docs (1.6), Docs/pages/termstructures.docs
 	(1.5), Docs/pages/usage.docs (1.11), Docs/pages/utilities.docs
 	(1.7), Docs/pages/where.docs (1.7),
-	Examples/AmericanOption/AmericanOption.cpp (1.5),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.36),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.26),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.84),
 	Examples/Swap/swapvaluation.cpp (1.36), dev_tools/update_copyright
 	(1.2), ql/argsandresults.hpp (1.15), ql/array.hpp (1.19),
 	ql/blackmodel.hpp (1.10), ql/calendar.cpp (1.16), ql/calendar.hpp
@@ -17999,14 +19154,10 @@
 
 2003-10-23 17:58  Luigi Ballabio
 
-	* Examples/AmericanOption/AmericanOption.dsp (1.2),
-	Examples/AmericanOption/AmericanOption.mak (1.3),
-	Examples/BermudanSwaption/BermudanSwaption.dsp (1.9),
+	* Examples/BermudanSwaption/BermudanSwaption.dsp (1.9),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.24),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.11),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.42),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.9),
-	Examples/EuropeanOption/EuropeanOption.mak (1.42),
 	Examples/Swap/Swap.dsp (1.10), Examples/Swap/Swap.mak (1.39),
 	QuantLib.dsp (1.183), QuantLib.mak (1.171),
 	test-suite/testsuite.dsp (1.17), test-suite/testsuite.mak (1.24):
@@ -18164,9 +19315,8 @@
 
 2003-10-14 18:08  Luigi Ballabio
 
-	* QuantLib.dsp (1.178), Examples/EuropeanOption/EuropeanOption.cpp
-	(1.83), ql/diffusionprocess.cpp (1.8), ql/quantlib.hpp (1.115),
-	ql/PricingEngines/Makefile.am (1.23),
+	* QuantLib.dsp (1.178), ql/diffusionprocess.cpp (1.8),
+	ql/quantlib.hpp (1.115), ql/PricingEngines/Makefile.am (1.23),
 	ql/PricingEngines/mcengine.hpp (1.34),
 	ql/PricingEngines/mceuropeanengine.hpp (1.1),
 	ql/Volatilities/blackvariancecurve.hpp (1.19),
@@ -18392,10 +19542,8 @@
 
 2003-10-09 16:52  Ferdinando Ametrano
 
-	* Examples/AmericanOption/makefile.mak (1.6),
-	Examples/BermudanSwaption/makefile.mak (1.10),
+	* Examples/BermudanSwaption/makefile.mak (1.10),
 	Examples/DiscreteHedging/makefile.mak (1.13),
-	Examples/EuropeanOption/makefile.mak (1.16),
 	Examples/Swap/makefile.mak (1.13), ql/Calendars/makefile.mak
 	(1.17), ql/CashFlows/makefile.mak (1.14),
 	ql/DayCounters/makefile.mak (1.14),
@@ -18422,12 +19570,6 @@
 	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.35):
 
 	Applied patch 811713
-
-2003-10-09 16:23  Luigi Ballabio
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.81):
-
-	Sync with new arg names
 
 2003-10-09 16:21  Luigi Ballabio
 
@@ -18610,10 +19752,8 @@
 
 2003-09-30 15:24  Ferdinando Ametrano
 
-	* Examples/AmericanOption/makefile.mak (1.5),
-	Examples/BermudanSwaption/makefile.mak (1.9),
+	* Examples/BermudanSwaption/makefile.mak (1.9),
 	Examples/DiscreteHedging/makefile.mak (1.12),
-	Examples/EuropeanOption/makefile.mak (1.15),
 	Examples/Swap/makefile.mak (1.12), ql/Calendars/makefile.mak
 	(1.16), ql/CashFlows/makefile.mak (1.13),
 	ql/DayCounters/makefile.mak (1.13),
@@ -18724,11 +19864,10 @@
 
 2003-09-25 12:34  Luigi Ballabio
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.80),
-	ql/instrument.hpp (1.20), ql/Instruments/capfloor.cpp (1.36),
-	ql/Instruments/swaption.cpp (1.31),
-	ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.17),
-	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.14):
+	* ql/: instrument.hpp (1.20), Instruments/capfloor.cpp (1.36),
+	Instruments/swaption.cpp (1.31),
+	ShortRateModels/CalibrationHelpers/caphelper.cpp (1.17),
+	ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.14):
 
 	Small refinements to Instrument::setPricingEngine()
 
@@ -18919,11 +20058,10 @@
 
 2003-09-09 18:21  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/makefile.mak (1.14), ql/makefile.mak
-	(1.33), ql/Calendars/makefile.mak (1.15), ql/CashFlows/makefile.mak
-	(1.12), ql/DayCounters/makefile.mak (1.11),
-	ql/FiniteDifferences/makefile.mak (1.12), ql/Indexes/makefile.mak
-	(1.10), ql/Instruments/makefile.mak (1.18),
+	* ql/makefile.mak (1.33), ql/Calendars/makefile.mak (1.15),
+	ql/CashFlows/makefile.mak (1.12), ql/DayCounters/makefile.mak
+	(1.11), ql/FiniteDifferences/makefile.mak (1.12),
+	ql/Indexes/makefile.mak (1.10), ql/Instruments/makefile.mak (1.18),
 	ql/Lattices/makefile.mak (1.18), ql/Math/makefile.mak (1.20),
 	ql/MonteCarlo/makefile.mak (1.19), ql/Optimization/makefile.mak
 	(1.10), ql/Pricers/makefile.mak (1.28),
@@ -18940,10 +20078,8 @@
 
 2003-09-09 17:20  Ferdinando Ametrano
 
-	* Examples/AmericanOption/makefile.mak (1.4),
-	Examples/BermudanSwaption/makefile.mak (1.8),
+	* Examples/BermudanSwaption/makefile.mak (1.8),
 	Examples/DiscreteHedging/makefile.mak (1.11),
-	Examples/EuropeanOption/makefile.mak (1.13),
 	Examples/Swap/makefile.mak (1.11), makefile.mak (1.47),
 	test-suite/.cvsignore (1.8), test-suite/makefile.mak (1.11):
 
@@ -19005,12 +20141,9 @@
 
 2003-09-08 18:44  Ferdinando Ametrano
 
-	* Examples/: AmericanOption/.cvsignore (1.2),
-	AmericanOption/makefile.mak (1.3), BermudanSwaption/.cvsignore
-	(1.7), BermudanSwaption/makefile.mak (1.7),
-	DiscreteHedging/.cvsignore (1.7), DiscreteHedging/makefile.mak
-	(1.10), EuropeanOption/.cvsignore (1.7),
-	EuropeanOption/makefile.mak (1.12), Swap/.cvsignore (1.7),
+	* Examples/: BermudanSwaption/.cvsignore (1.7),
+	BermudanSwaption/makefile.mak (1.7), DiscreteHedging/.cvsignore
+	(1.7), DiscreteHedging/makefile.mak (1.10), Swap/.cvsignore (1.7),
 	Swap/makefile.mak (1.10):
 
 	Borland *.obj in build/Borland dir
@@ -19103,12 +20236,8 @@
 	Docs/makefile.mak (1.33), Docs/quantlib.doxy (1.71),
 	Docs/quantlibheader.html (1.18), Docs/pages/Makefile.am (1.9),
 	Docs/pages/authors.docs (1.21), Docs/pages/examples.docs (1.6),
-	Examples/AmericanOption/AmericanOption.cpp (1.3),
-	Examples/AmericanOption/AmericanOption.mak (1.2),
-	Examples/AmericanOption/Makefile.am (1.2),
 	Examples/BermudanSwaption/Makefile.am (1.8),
 	Examples/DiscreteHedging/Makefile.am (1.15),
-	Examples/EuropeanOption/Makefile.am (1.9),
 	Examples/Swap/Makefile.am (1.10), man/AmericanOption.1 (1.2),
 	man/BermudanSwaption.1 (1.2), man/DiscreteHedging.1 (1.3),
 	man/EuropeanOption.1 (1.3), man/Makefile.am (1.5),
@@ -19395,12 +20524,6 @@
 	tests should work for Borland too if one has a working Borland
 	cppunit lib
 
-2003-07-29 12:22  Ferdinando Ametrano
-
-	* Examples/AmericanOption/AmericanOption.cpp (1.2.2.2):
-
-	there is still a bug. See the valuation of the Call option
-
 2003-07-29 12:21  Ferdinando Ametrano
 
 	* ql/: CashFlows/basispointsensitivity.hpp (1.5.2.2),
@@ -19499,10 +20622,8 @@
 2003-07-26 21:51  Luigi Ballabio
 
 	* Makefile.am (1.79.2.2), configure.ac (1.16.2.1),
-	Examples/AmericanOption/Makefile.am (1.1.2.1),
 	Examples/BermudanSwaption/Makefile.am (1.7.2.1),
 	Examples/DiscreteHedging/Makefile.am (1.14.2.1),
-	Examples/EuropeanOption/Makefile.am (1.8.2.1),
 	Examples/Swap/Makefile.am (1.9.2.1), ql/Instruments/swaption.cpp
 	(1.28.8.1), test-suite/Makefile.am (1.14.8.1):
 
@@ -19520,12 +20641,6 @@
 	* ql/scheduler.hpp (1.13.2.1):
 
 	false is a bool, 0 is not
-
-2003-07-25 19:10  Luigi Ballabio
-
-	* Examples/AmericanOption/AmericanOption.cpp (1.2.2.1):
-
-	Less samples and more time steps
 
 2003-07-25 19:10  Luigi Ballabio
 
@@ -19600,12 +20715,6 @@
 
 	Bumped version number
 
-2003-07-25 11:09  Luigi Ballabio
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.79):
-
-	Bypassed mysterious problem with VC++
-
 2003-07-25 11:00  Ferdinando Ametrano
 
 	* QuantLib.nsi (1.81):
@@ -19615,10 +20724,8 @@
 2003-07-25 10:59  Luigi Ballabio
 
 	* makefile.mak (1.44), Examples/makefile.mak (1.18),
-	Examples/AmericanOption/makefile.mak (1.2),
 	Examples/BermudanSwaption/makefile.mak (1.6),
 	Examples/DiscreteHedging/makefile.mak (1.9),
-	Examples/EuropeanOption/makefile.mak (1.11),
 	Examples/Swap/makefile.mak (1.9):
 
 	Examples build conditionally with Borland
@@ -19650,9 +20757,8 @@
 
 2003-07-24 20:35  Ferdinando Ametrano
 
-	* Examples/AmericanOption/AmericanOption.cpp (1.2),
-	ql/dataparsers.cpp (1.8), ql/PricingEngines/americanmcengines.cpp
-	(1.3), ql/PricingEngines/americanmcengines.hpp (1.2):
+	* ql/: dataparsers.cpp (1.8), PricingEngines/americanmcengines.cpp
+	(1.3), PricingEngines/americanmcengines.hpp (1.2):
 
 	few Borland warning avoided
 
@@ -19664,7 +20770,7 @@
 
 2003-07-24 19:06  Luigi Ballabio
 
-	* QuantLib.dsw (1.10), Examples/AmericanOption/.cvsignore (1.1):
+	* QuantLib.dsw (1.10):
 
 	Added project to workspace
 
@@ -19713,15 +20819,10 @@
 
 2003-07-24 17:39  Ferdinando Ametrano
 
-	* History.txt (1.17), News.txt (1.26),
-	Examples/AmericanOption/Makefile.am (1.1),
-	Examples/AmericanOption/ReadMe.txt (1.1),
-	Examples/AmericanOption/makefile.mak (1.1),
-	Examples/EuropeanOption/ReadMe.txt (1.2), ql/Math/Makefile.am
-	(1.22), ql/Math/makefile.mak (1.16), ql/PricingEngines/Makefile.am
-	(1.18), ql/PricingEngines/makefile.mak (1.14), QuantLib.dsp
-	(1.164), QuantLib.mak (1.153),
-	Examples/AmericanOption/AmericanOption.dsp (1.1):
+	* History.txt (1.17), News.txt (1.26), ql/Math/Makefile.am (1.22),
+	ql/Math/makefile.mak (1.16), ql/PricingEngines/Makefile.am (1.18),
+	ql/PricingEngines/makefile.mak (1.14), QuantLib.dsp (1.164),
+	QuantLib.mak (1.153):
 
 	catching up with Neil's commit
 
@@ -19730,12 +20831,6 @@
 	* ql/quantlib.hpp (1.108):
 
 	Added svd.hpp and americanmcengines.hpp
-
-2003-07-24 17:05  Neil Firth
-
-	* Examples/AmericanOption/AmericanOption.cpp (1.1):
-
-	Examples of use of Pricing Engines for American options
 
 2003-07-24 16:58  Neil Firth
 
@@ -19793,7 +20888,6 @@
 	* Makefile.am (1.78), Examples/Makefile.am (1.19),
 	Examples/BermudanSwaption/Makefile.am (1.7),
 	Examples/DiscreteHedging/Makefile.am (1.14),
-	Examples/EuropeanOption/Makefile.am (1.8),
 	Examples/Swap/Makefile.am (1.9):
 
 	Examples not in "make all"
@@ -19834,8 +20928,7 @@
 
 2003-07-23 15:18  Marco Marchioro
 
-	* Examples/: DiscreteHedging/DiscreteHedging.cpp (1.25),
-	EuropeanOption/EuropeanOption.cpp (1.78):
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.25):
 
 	PlainPayoff divided into two: PlainVanillaPayoff and
 	StrikedTypePayoff
@@ -20255,8 +21348,7 @@
 
 2003-05-22 17:29  Luigi Ballabio
 
-	* QuantLib.dsp (1.158), QuantLib.mak (1.150),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.77), ql/Makefile.am
+	* QuantLib.dsp (1.158), QuantLib.mak (1.150), ql/Makefile.am
 	(1.36), ql/makefile.mak (1.29), ql/solver1d.cpp (1.12),
 	ql/solver1d.hpp (1.13), ql/Instruments/vanillaoption.hpp (1.18),
 	ql/Pricers/jamshidianswaption.cpp (1.16),
@@ -20317,8 +21409,6 @@
 	Examples/BermudanSwaption/makefile.mak (1.5),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.24),
 	Examples/DiscreteHedging/makefile.mak (1.8),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.76),
-	Examples/EuropeanOption/makefile.mak (1.10),
 	Examples/Swap/makefile.mak (1.8), Examples/Swap/swapvaluation.cpp
 	(1.35), config/Makefile.am (1.4), dev_tools/backupcvstree.py (1.2),
 	dev_tools/downloadrelease.py (1.4), man/Makefile.am (1.4),
@@ -20719,7 +21809,6 @@
 2003-05-12 15:11  Luigi Ballabio
 
 	* QuantLib.dsp (1.157), QuantLib.mak (1.149),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.75),
 	ql/MonteCarlo/mctraits.hpp (1.2), ql/MonteCarlo/mctypedefs.hpp
 	(1.22), ql/MonteCarlo/montecarlomodel.hpp (1.23),
 	ql/Pricers/mcbasket.cpp (1.17), ql/Pricers/mcbasket.hpp (1.16),
@@ -20757,12 +21846,11 @@
 2003-05-09 13:22  Luigi Ballabio
 
 	* QuantLib.nsi (1.78), configure.ac (1.11), Docs/quantlib.doxy
-	(1.67), Docs/pages/mcarlo.docs (1.12),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.74),
-	dev_tools/version_number.txt (1.29), ql/qldefines.hpp (1.52),
-	ql/Math/riskstatistics.hpp (1.4), ql/MonteCarlo/Makefile.am (1.22),
-	ql/MonteCarlo/mctraits.hpp (1.1), ql/MonteCarlo/mctypedefs.hpp
-	(1.21), ql/MonteCarlo/montecarlomodel.hpp (1.22),
+	(1.67), Docs/pages/mcarlo.docs (1.12), dev_tools/version_number.txt
+	(1.29), ql/qldefines.hpp (1.52), ql/Math/riskstatistics.hpp (1.4),
+	ql/MonteCarlo/Makefile.am (1.22), ql/MonteCarlo/mctraits.hpp (1.1),
+	ql/MonteCarlo/mctypedefs.hpp (1.21),
+	ql/MonteCarlo/montecarlomodel.hpp (1.22),
 	ql/MonteCarlo/pathgenerator.hpp (1.36), ql/Pricers/mcbasket.cpp
 	(1.16), ql/Pricers/mcbasket.hpp (1.15),
 	ql/Pricers/mccliquetoption.cpp (1.12),
@@ -20877,8 +21965,7 @@
 2003-05-05 11:59  Ferdinando Ametrano
 
 	* Examples/: makefile.mak (1.15), BermudanSwaption/makefile.mak
-	(1.4), DiscreteHedging/makefile.mak (1.7),
-	EuropeanOption/makefile.mak (1.9), Swap/makefile.mak (1.7):
+	(1.4), DiscreteHedging/makefile.mak (1.7), Swap/makefile.mak (1.7):
 
 	no message
 
@@ -21028,8 +22115,6 @@
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.23),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.10),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.41),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.8),
-	Examples/EuropeanOption/EuropeanOption.mak (1.41),
 	Examples/Swap/Swap.dsp (1.9), Examples/Swap/Swap.mak (1.38):
 
 	allowing optimization, enabling profile
@@ -21139,8 +22224,7 @@
 
 	* Docs/.cvsignore (1.3), Examples/BermudanSwaption/.cvsignore
 	(1.6), Examples/DiscreteHedging/.cvsignore (1.6),
-	Examples/EuropeanOption/.cvsignore (1.6), Examples/Swap/.cvsignore
-	(1.6):
+	Examples/Swap/.cvsignore (1.6):
 
 	cvs ignore: Makefile.in
 
@@ -21270,21 +22354,12 @@
 
 	QuEP 9 implemented
 
-2003-04-17 11:35  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.73):
-
-	cleanup
-
 2003-04-17 10:34  Ferdinando Ametrano
 
 	* Examples/BermudanSwaption/BermudanSwaption.dsp (1.7),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.22),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.9),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.40),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.72),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.7),
-	Examples/EuropeanOption/EuropeanOption.mak (1.40),
 	Examples/Swap/Swap.dsp (1.8), Examples/Swap/Swap.mak (1.37),
 	test-suite/testsuite.mak (1.18), test-suite/testsuite.dsp (1.12):
 
@@ -21319,8 +22394,7 @@
 
 	* TODO.txt (1.110), makefile.mak (1.41),
 	Examples/BermudanSwaption/.cvsignore (1.5),
-	Examples/DiscreteHedging/.cvsignore (1.5),
-	Examples/EuropeanOption/.cvsignore (1.5), Examples/Swap/.cvsignore
+	Examples/DiscreteHedging/.cvsignore (1.5), Examples/Swap/.cvsignore
 	(1.5), ql/Math/matrix.hpp (1.12), ql/Math/sequencestatistics.hpp
 	(1.12), test-suite/.cvsignore (1.5), test-suite/makefile.mak (1.4):
 
@@ -21330,10 +22404,9 @@
 
 	* QuantLib.dsp (1.151), QuantLib.mak (1.145),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.23),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.71), ql/quantlib.hpp
-	(1.103), ql/riskstatistics.hpp (1.16), ql/Math/Makefile.am (1.17),
-	ql/Math/discrepancystatistics.cpp (1.3),
-	ql/Math/discrepancystatistics.hpp (1.5),
+	ql/quantlib.hpp (1.103), ql/riskstatistics.hpp (1.16),
+	ql/Math/Makefile.am (1.17), ql/Math/discrepancystatistics.cpp
+	(1.3), ql/Math/discrepancystatistics.hpp (1.5),
 	ql/Math/gaussianstatistics.cpp (1.2),
 	ql/Math/gaussianstatistics.hpp (1.2), ql/Math/generalstatistics.cpp
 	(1.1), ql/Math/generalstatistics.hpp (1.1),
@@ -21384,8 +22457,7 @@
 
 	* QuantLib.dsp (1.150), QuantLib.mak (1.144), makefile.mak (1.40),
 	Docs/Examples/history_iterators.cpp (1.9),
-	Examples/DiscreteHedging/DiscreteHedging.cpp (1.22),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.70), ql/history.hpp
+	Examples/DiscreteHedging/DiscreteHedging.cpp (1.22), ql/history.hpp
 	(1.15), ql/quantlib.hpp (1.102), ql/riskstatistics.hpp (1.15),
 	ql/Math/Makefile.am (1.16), ql/Math/discrepancystatistics.hpp
 	(1.4), ql/Math/gaussianstatistics.cpp (1.1),
@@ -21913,8 +22985,7 @@
 
 	* QuantLib.dsp (1.148), QuantLib.mak (1.142),
 	Docs/Examples/history_iterators.cpp (1.8),
-	Examples/DiscreteHedging/DiscreteHedging.cpp (1.21),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.69), ql/history.hpp
+	Examples/DiscreteHedging/DiscreteHedging.cpp (1.21), ql/history.hpp
 	(1.13), ql/quantlib.hpp (1.101), ql/riskstatistics.hpp (1.12),
 	ql/Math/discrepancystatistic.hpp (1.2),
 	ql/Math/discrepancystatistics.hpp (1.1), ql/Math/hstatistic.cpp
@@ -22034,8 +23105,7 @@
 
 2003-04-10 09:54  Ferdinando Ametrano
 
-	* Examples/: DiscreteHedging/DiscreteHedging.cpp (1.20),
-	EuropeanOption/EuropeanOption.cpp (1.68):
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.20):
 
 	Statistics renamed Statistic
 
@@ -22142,8 +23212,6 @@
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.21),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.8),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.39),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.6),
-	Examples/EuropeanOption/EuropeanOption.mak (1.39),
 	Examples/Swap/Swap.dsp (1.7), Examples/Swap/Swap.mak (1.36),
 	test-suite/testsuite.dsp (1.11), test-suite/testsuite.mak (1.17):
 
@@ -22198,8 +23266,6 @@
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.19),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.7),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.38),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.5),
-	Examples/EuropeanOption/EuropeanOption.mak (1.38),
 	Examples/Swap/Swap.dsp (1.6), Examples/Swap/Swap.mak (1.35),
 	ql/Math/cubicspline.hpp (1.21), ql/Math/interpolation.hpp (1.15),
 	ql/RandomNumbers/mt19937uniformrng.hpp (1.4),
@@ -22222,10 +23288,7 @@
 	Examples/BermudanSwaption/makefile.mak (1.3),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.6),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.37),
-	Examples/DiscreteHedging/makefile.mak (1.6),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.4),
-	Examples/EuropeanOption/EuropeanOption.mak (1.37),
-	Examples/EuropeanOption/makefile.mak (1.8), Examples/Swap/Swap.dsp
+	Examples/DiscreteHedging/makefile.mak (1.6), Examples/Swap/Swap.dsp
 	(1.5), Examples/Swap/Swap.mak (1.34), Examples/Swap/makefile.mak
 	(1.6), ql/qldefines.hpp (1.49), ql/quantlib.hpp (1.95),
 	ql/RandomNumbers/mt19937uniformrng.cpp (1.2),
@@ -22247,9 +23310,8 @@
 
 2003-04-02 09:48  Ferdinando Ametrano
 
-	* QuantLib.dsp (1.140), QuantLib.mak (1.135),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.67), ql/payoff.hpp
-	(1.2), ql/FiniteDifferences/americancondition.hpp (1.8),
+	* QuantLib.dsp (1.140), QuantLib.mak (1.135), ql/payoff.hpp (1.2),
+	ql/FiniteDifferences/americancondition.hpp (1.8),
 	ql/FiniteDifferences/shoutcondition.hpp (1.8),
 	ql/MonteCarlo/arithmeticapopathpricer.hpp (1.9),
 	ql/MonteCarlo/arithmeticasopathpricer.cpp (1.11),
@@ -22300,8 +23362,7 @@
 2003-04-01 11:36  Ferdinando Ametrano
 
 	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.18),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.66), ql/exercise.cpp
-	(1.2), ql/exercise.hpp (1.21),
+	ql/exercise.cpp (1.2), ql/exercise.hpp (1.21),
 	ql/FiniteDifferences/americancondition.hpp (1.7),
 	ql/FiniteDifferences/shoutcondition.hpp (1.7),
 	ql/Instruments/vanillaoption.cpp (1.14),
@@ -22347,7 +23408,6 @@
 2003-03-31 18:57  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.139), QuantLib.mak (1.134), TODO.txt (1.108),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.65),
 	ql/PricingEngines/Makefile.am (1.14),
 	ql/PricingEngines/integraleuropeanengine.cpp (1.1),
 	ql/PricingEngines/makefile.mak (1.10),
@@ -22490,12 +23550,6 @@
 
 	Template argument name fixed
 
-2003-03-23 16:15  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.64):
-
-	working on cliquet and MC framework
-
 2003-03-23 16:09  Ferdinando Ametrano
 
 	* ql/MonteCarlo/brownianbridge.hpp (1.6):
@@ -22611,10 +23665,8 @@
 2003-03-22 17:21  Luigi Ballabio
 
 	* Docs/Makefile.am (1.54), Docs/quantlib.doxy (1.63),
-	Docs/quantlibheader.html (1.16),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.63),
-	ql/diffusionprocess.cpp (1.4), ql/grid.cpp (1.6), ql/grid.hpp
-	(1.12):
+	Docs/quantlibheader.html (1.16), ql/diffusionprocess.cpp (1.4),
+	ql/grid.cpp (1.6), ql/grid.hpp (1.12):
 
 	Misc. fixes
 
@@ -22627,17 +23679,9 @@
 
 2003-03-20 17:05  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.61),
-	ql/MonteCarlo/brownianbridge.hpp (1.5),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.62):
+	* ql/MonteCarlo/brownianbridge.hpp (1.5):
 
 	BrownianBridge QuantLibfied
-
-2003-03-20 16:52  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.60):
-
-	clean up
 
 2003-03-20 16:11  Ferdinando Ametrano
 
@@ -22655,7 +23699,6 @@
 2003-03-20 12:15  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.138), QuantLib.mak (1.133),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.59),
 	ql/MonteCarlo/Makefile.am (1.20), ql/MonteCarlo/brownianbridge.cpp
 	(1.3), ql/MonteCarlo/makefile.mak (1.14),
 	ql/MonteCarlo/pathgenerator.hpp (1.30),
@@ -22758,16 +23801,13 @@
 	* Examples/: BermudanSwaption/BermudanSwaption.dsp (1.2),
 	BermudanSwaption/BermudanSwaption.mak (1.17),
 	DiscreteHedging/DiscreteHedging.dsp (1.5),
-	DiscreteHedging/DiscreteHedging.mak (1.36),
-	EuropeanOption/EuropeanOption.dsp (1.3),
-	EuropeanOption/EuropeanOption.mak (1.36):
+	DiscreteHedging/DiscreteHedging.mak (1.36):
 
 	QL_DEBUG undefined in project settings
 
 2003-03-19 15:47  Ferdinando Ametrano
 
-	* Examples/: DiscreteHedging/DiscreteHedging.cpp (1.16),
-	EuropeanOption/EuropeanOption.cpp (1.58):
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.16):
 
 	old PathPricer(s), PathGenerators, etc are available with a
 	trailing _old
@@ -22834,8 +23874,7 @@
 
 2003-03-19 13:28  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.57),
-	ql/config.bcc.hpp (1.16), ql/config.msvc.hpp (1.28):
+	* ql/: config.bcc.hpp (1.16), config.msvc.hpp (1.28):
 
 	defined QL_DEBUG when _DEBUG (Visual) or DEBUG (Borland) is defined
 
@@ -22908,15 +23947,13 @@
 
 2003-03-18 11:23  Luigi Ballabio
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.56),
-	ql/PricingEngines/mcengine.hpp (1.15):
+	* ql/PricingEngines/mcengine.hpp (1.15):
 
 	Redundant naming
 
 2003-03-18 10:39  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.55),
-	ql/PricingEngines/mcengine.hpp (1.14):
+	* ql/PricingEngines/mcengine.hpp (1.14):
 
 	fix
 
@@ -22935,8 +23972,7 @@
 
 2003-03-17 20:38  Ferdinando Ametrano
 
-	* QuantLib.dsp (1.133), QuantLib.mak (1.128),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.54), ql/quantlib.hpp
+	* QuantLib.dsp (1.133), QuantLib.mak (1.128), ql/quantlib.hpp
 	(1.91), ql/MonteCarlo/pathgenerator.hpp (1.27),
 	ql/PricingEngines/Makefile.am (1.13),
 	ql/PricingEngines/makefile.mak (1.9),
@@ -22946,8 +23982,7 @@
 
 2003-03-17 18:22  Ferdinando Ametrano
 
-	* QuantLib.mak (1.127), Examples/EuropeanOption/EuropeanOption.cpp
-	(1.52), ql/MonteCarlo/pathgenerator.hpp (1.25),
+	* QuantLib.mak (1.127), ql/MonteCarlo/pathgenerator.hpp (1.25),
 	ql/PricingEngines/mcengine.hpp (1.11):
 
 	MC engines now use sequence generators
@@ -22976,12 +24011,6 @@
 
 	not silent anymore (not here at least)
 
-2003-03-17 16:46  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/makefile.mak (1.7):
-
-	reverting wrong changes
-
 2003-03-17 16:35  Ferdinando Ametrano
 
 	* ql/Math/primenumbers.hpp (1.3):
@@ -22991,8 +24020,7 @@
 2003-03-17 13:39  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.132), QuantLib.mak (1.126), makefile.mak (1.34),
-	Examples/EuropeanOption/makefile.mak (1.6), ql/quantlib.hpp (1.89),
-	ql/MonteCarlo/sample.hpp (1.6),
+	ql/quantlib.hpp (1.89), ql/MonteCarlo/sample.hpp (1.6),
 	ql/RandomNumbers/inversecumgaussianrsg.hpp (1.2):
 
 	updated
@@ -23137,7 +24165,6 @@
 
 	* ChangeLog.txt (1.31),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.15),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.51),
 	ql/config.msvc.hpp (1.26), ql/quantlib.hpp (1.86),
 	ql/Math/chisquaredistribution.cpp (1.5),
 	ql/Math/chisquaredistribution.hpp (1.4),
@@ -23249,11 +24276,9 @@
 
 	Visual again
 
-2003-03-10 19:35  Ferdinando Ametrano
+2003-03-10 19:36  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.50),
-	Examples/EuropeanOption/EuropeanOption.mak (1.35),
-	ql/Volatilities/localvolsurface.hpp (1.4):
+	* ql/Volatilities/localvolsurface.hpp (1.4):
 
 	McEngine now uses local vol. PAINFULLY slow!
 
@@ -23310,13 +24335,6 @@
 
 	more efficient null strike/time derivatives
 
-2003-03-09 23:48  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.49):
-
-	trying to switch to black vol surface (and implied local vol).	It
-	doesn't work yet
-
 2003-03-09 23:45  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.128), QuantLib.mak (1.122), TODO.txt (1.101):
@@ -23342,12 +24360,6 @@
 
 	added cpp file
 
-2003-03-08 21:36  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.48):
-
-	added local volatility
-
 2003-03-08 21:27  Ferdinando Ametrano
 
 	* ql/voltermstructure.cpp (1.7):
@@ -23368,8 +24380,8 @@
 
 2003-03-07 17:33  Ferdinando Ametrano
 
-	* QuantLib.dsp (1.127), Examples/EuropeanOption/EuropeanOption.cpp
-	(1.47), ql/quantlib.hpp (1.84), ql/Volatilities/Makefile.am (1.10),
+	* QuantLib.dsp (1.127), ql/quantlib.hpp (1.84),
+	ql/Volatilities/Makefile.am (1.10),
 	ql/Volatilities/blackvariancecurve.hpp (1.11),
 	ql/Volatilities/blackvariancesurface.hpp (1.11),
 	ql/Volatilities/localvolcurve.hpp (1.3),
@@ -23441,12 +24453,6 @@
 	Black Scholes diffusion process with time/asset dependant
 	parameters
 
-2003-03-06 15:43  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.46):
-
-	using new path generator for the new mcpricingengine
-
 2003-03-06 15:41  Ferdinando Ametrano
 
 	* ql/PricingEngines/mcengine.hpp (1.7):
@@ -23494,8 +24500,6 @@
 
 	* QuantLib.dsp (1.126), QuantLib.mak (1.121), TODO.txt (1.98),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.16),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.45),
-	Examples/EuropeanOption/EuropeanOption.mak (1.34),
 	Examples/Swap/Swap.mak (1.33):
 
 	updated version
@@ -23571,12 +24575,6 @@
 	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.14):
 
 	ExercisePayoff moved into exercise.xpp file
-
-2003-02-28 18:59  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.44):
-
-	added Tian binomial tree
 
 2003-02-28 18:53  Ferdinando Ametrano
 
@@ -23733,9 +24731,8 @@
 
 2003-02-22 01:35  Ferdinando Ametrano
 
-	* QuantLib.mak (1.118), TODO.txt (1.97),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.43), ql/exercise.hpp
-	(1.19), ql/PricingEngines/analyticalvanillaengine.cpp (1.2),
+	* QuantLib.mak (1.118), TODO.txt (1.97), ql/exercise.hpp (1.19),
+	ql/PricingEngines/analyticalvanillaengine.cpp (1.2),
 	ql/PricingEngines/binomialvanillaengine.cpp (1.3),
 	ql/PricingEngines/discretizedvanillaoption.cpp (1.10),
 	ql/PricingEngines/discretizedvanillaoption.hpp (1.8),
@@ -23777,21 +24774,19 @@
 
 2003-02-20 03:34  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.42),
-	ql/diffusionprocess.hpp (1.17), ql/Lattices/binomialtree.cpp (1.6),
-	ql/Lattices/binomialtree.hpp (1.6), ql/Lattices/bsmlattice.cpp
-	(1.6), ql/Lattices/bsmlattice.hpp (1.4),
-	ql/PricingEngines/binomialvanillaengine.cpp (1.2),
-	ql/PricingEngines/discretizedvanillaoption.cpp (1.9),
-	ql/PricingEngines/vanillaengines.hpp (1.12):
+	* ql/: diffusionprocess.hpp (1.17), Lattices/binomialtree.cpp
+	(1.6), Lattices/binomialtree.hpp (1.6), Lattices/bsmlattice.cpp
+	(1.6), Lattices/bsmlattice.hpp (1.4),
+	PricingEngines/binomialvanillaengine.cpp (1.2),
+	PricingEngines/discretizedvanillaoption.cpp (1.9),
+	PricingEngines/vanillaengines.hpp (1.12):
 
 	introduced additive binomial trees.  All binomial trees now use
 	DiffusionProcess
 
 2003-02-19 17:06  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.41),
-	ql/PricingEngines/mcengine.hpp (1.5):
+	* ql/PricingEngines/mcengine.hpp (1.5):
 
 	MC control variate: a step forward
 
@@ -23817,8 +24812,7 @@
 
 2003-02-18 19:12  Ferdinando Ametrano
 
-	* TODO.txt (1.96), Examples/EuropeanOption/EuropeanOption.cpp
-	(1.40), ql/MonteCarlo/montecarlomodel.hpp (1.19),
+	* TODO.txt (1.96), ql/MonteCarlo/montecarlomodel.hpp (1.19),
 	ql/PricingEngines/mcengine.hpp (1.4):
 
 	pricing engine framework: working towards MC control variation
@@ -23829,8 +24823,6 @@
 	* QuantLib.mak (1.116),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.15),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.35),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.39),
-	Examples/EuropeanOption/EuropeanOption.mak (1.33),
 	Examples/Swap/Swap.mak (1.32), ql/Pricers/mceuropean.cpp (1.8),
 	ql/PricingEngines/mcengine.hpp (1.2),
 	ql/PricingEngines/vanillaengines.hpp (1.11),
@@ -23871,7 +24863,6 @@
 	QuantLib.mak (1.115),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.14),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.34),
-	Examples/EuropeanOption/EuropeanOption.mak (1.32),
 	Examples/Swap/Swap.mak (1.31), test-suite/testsuite.mak (1.8):
 
 	first attempt at a Monte Carlo pricing engine
@@ -23879,8 +24870,7 @@
 2003-02-14 18:10  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.121), QuantLib.mak (1.114), TODO.txt (1.95),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.38), ql/quantlib.hpp
-	(1.80), ql/PricingEngines/Makefile.am (1.10),
+	ql/quantlib.hpp (1.80), ql/PricingEngines/Makefile.am (1.10),
 	ql/PricingEngines/analyticalvanillaengine.cpp (1.1),
 	ql/PricingEngines/binomialvanillaengine.cpp (1.1),
 	ql/PricingEngines/europeanFDengine.cpp (1.2),
@@ -23929,8 +24919,6 @@
 2003-02-13 17:48  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.120), QuantLib.mak (1.113),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.37),
-	Examples/EuropeanOption/EuropeanOption.mak (1.31),
 	ql/PricingEngines/Makefile.am (1.9),
 	ql/PricingEngines/europeanFDengine.cpp (1.1),
 	ql/PricingEngines/europeanMCengine.cpp (1.1),
@@ -23942,9 +24930,8 @@
 2003-02-13 14:24  Luigi Ballabio
 
 	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.28),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.36), ql/cashflow.hpp
-	(1.9), ql/handle.hpp (1.12), ql/marketelement.hpp (1.10),
-	ql/quantlib.hpp (1.78), ql/relinkablehandle.hpp (1.13),
+	ql/cashflow.hpp (1.9), ql/handle.hpp (1.12), ql/marketelement.hpp
+	(1.10), ql/quantlib.hpp (1.78), ql/relinkablehandle.hpp (1.13),
 	ql/CashFlows/Makefile.am (1.8),
 	ql/CashFlows/basispointsensitivity.hpp (1.1),
 	ql/CashFlows/coupon.hpp (1.12), ql/CashFlows/fixedratecoupon.hpp
@@ -23989,8 +24976,7 @@
 
 2003-02-12 18:55  Ferdinando Ametrano
 
-	* QuantLib.dsp (1.119), QuantLib.mak (1.112), TODO.txt (1.94),
-	Examples/EuropeanOption/EuropeanOption.mak (1.30):
+	* QuantLib.dsp (1.119), QuantLib.mak (1.112), TODO.txt (1.94):
 
 	updated
 
@@ -24050,20 +25036,12 @@
 	compounded engines do work.  Coumpound engine of coupounded engines
 	still need work
 
-2003-02-11 19:25  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.34):
-
-	pricing engine framework: a step forward
-
 2003-02-11 19:11  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.33),
-	ql/PricingEngines/forwardengines.hpp (1.8),
-	ql/PricingEngines/forwardperformancevanillaanalyticengine.cpp
-	(1.7), ql/PricingEngines/forwardvanillaanalyticengine.cpp (1.7),
-	ql/PricingEngines/quantoengines.hpp (1.9),
-	ql/PricingEngines/quantovanillaanalyticengine.cpp (1.11):
+	* ql/PricingEngines/: forwardengines.hpp (1.8),
+	forwardperformancevanillaanalyticengine.cpp (1.7),
+	forwardvanillaanalyticengine.cpp (1.7), quantoengines.hpp (1.9),
+	quantovanillaanalyticengine.cpp (1.11):
 
 	pricing engine framework: a step forward
 
@@ -24078,7 +25056,6 @@
 	* QuantLib.mak (1.110),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.13),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.33),
-	Examples/EuropeanOption/EuropeanOption.mak (1.29),
 	Examples/Swap/Swap.mak (1.30), ql/PricingEngines/quantoengines.hpp
 	(1.8), test-suite/testsuite.mak (1.7):
 
@@ -24114,15 +25091,13 @@
 
 2003-02-06 19:02  Ferdinando Ametrano
 
-	* QuantLib.dsp (1.117), QuantLib.mak (1.108),
-	Examples/EuropeanOption/EuropeanOption.mak (1.28):
+	* QuantLib.dsp (1.117), QuantLib.mak (1.108):
 
 	quanto-forward coumpounded engine.  it does not work yet
 
 2003-02-06 18:57  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.32),
-	ql/Instruments/Makefile.am (1.13), ql/Instruments/makefile.mak
+	* ql/Instruments/Makefile.am (1.13), ql/Instruments/makefile.mak
 	(1.14), ql/Instruments/quantoforwardvanillaoption.cpp (1.1),
 	ql/Instruments/quantoforwardvanillaoption.hpp (1.1), QuantLib.mak
 	(1.107), test-suite/testsuite.mak (1.5):
@@ -24175,7 +25150,6 @@
 2003-02-06 15:48  Luigi Ballabio
 
 	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.27),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.31),
 	ql/relinkablehandle.hpp (1.12),
 	ql/PricingEngines/forwardperformancevanillaanalyticengine.cpp
 	(1.6), ql/PricingEngines/forwardvanillaanalyticengine.cpp (1.6),
@@ -24224,8 +25198,7 @@
 
 2003-02-06 11:07  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.30),
-	ql/exercise.hpp (1.18), ql/Instruments/forwardvanillaoption.cpp
+	* ql/exercise.hpp (1.18), ql/Instruments/forwardvanillaoption.cpp
 	(1.8), ql/Instruments/forwardvanillaoption.hpp (1.6),
 	ql/Instruments/quantovanillaoption.cpp (1.9),
 	ql/Instruments/quantovanillaoption.hpp (1.6),
@@ -24266,9 +25239,7 @@
 2003-02-05 18:55  Ferdinando Ametrano
 
 	* Examples/: BermudanSwaption/BermudanSwaption.mak (1.11),
-	DiscreteHedging/DiscreteHedging.mak (1.31),
-	EuropeanOption/EuropeanOption.cpp (1.29),
-	EuropeanOption/EuropeanOption.mak (1.27), Swap/Swap.mak (1.28):
+	DiscreteHedging/DiscreteHedging.mak (1.31), Swap/Swap.mak (1.28):
 
 	dividends allowed examples of the new pricing engine framework
 
@@ -24347,10 +25318,9 @@
 
 2003-02-04 18:29  Ferdinando Ametrano
 
-	* QuantLib.dsw (1.7), QuantLib.mak (1.104),
-	Examples/EuropeanOption/EuropeanOption.mak (1.26),
-	Examples/Swap/Swap.mak (1.27), test-suite/testsuite.dsp (1.1),
-	test-suite/testsuite.mak (1.1):
+	* QuantLib.dsw (1.7), QuantLib.mak (1.104), Examples/Swap/Swap.mak
+	(1.27), test-suite/testsuite.dsp (1.1), test-suite/testsuite.mak
+	(1.1):
 
 	integrating test suite in VC++ first step
 
@@ -24477,7 +25447,6 @@
 	Docs/pages/utilities.docs (1.6), Docs/pages/where.docs (1.6),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.26),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.13),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.28),
 	Examples/Swap/swapvaluation.cpp (1.34), dev_tools/checkin_test.py
 	(1.2), dev_tools/releaseprocess.txt (1.13),
 	dev_tools/version_number.txt (1.28), ql/argsandresults.hpp (1.8),
@@ -24862,8 +25831,6 @@
 	Examples/BermudanSwaption/makefile.mak (1.2),
 	Examples/DiscreteHedging/Makefile.am (1.13),
 	Examples/DiscreteHedging/makefile.mak (1.5),
-	Examples/EuropeanOption/Makefile.am (1.7),
-	Examples/EuropeanOption/makefile.mak (1.5),
 	Examples/Swap/Makefile.am (1.8), Examples/Swap/makefile.mak (1.5),
 	test-suite/.cvsignore (1.1), test-suite/CPPUNIT-COPYING (1.1),
 	test-suite/Makefile.am (1.1), test-suite/README.txt (1.1),
@@ -24951,7 +25918,6 @@
 	* LICENSE.TXT (1.13.22.1),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.25.2.1),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.12.8.1),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.27.8.1),
 	Examples/Swap/swapvaluation.cpp (1.33.2.1), ql/argsandresults.hpp
 	(1.7.8.1), ql/array.hpp (1.11.8.1), ql/blackmodel.hpp (1.6.10.1),
 	ql/calendar.cpp (1.10.8.1), ql/calendar.hpp (1.18.8.1),
@@ -25351,8 +26317,7 @@
 2002-12-11 09:49  Ferdinando Ametrano
 
 	* Examples/: BermudanSwaption/Makefile.am (1.5),
-	DiscreteHedging/Makefile.am (1.12), EuropeanOption/Makefile.am
-	(1.6), Swap/Makefile.am (1.7):
+	DiscreteHedging/Makefile.am (1.12), Swap/Makefile.am (1.7):
 
 	this way it works under cygwin\nhope it doens't break other
 	platforms\nfeedback welcome
@@ -25434,7 +26399,6 @@
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.24),
 	Examples/BermudanSwaption/Makefile.am (1.4),
 	Examples/DiscreteHedging/Makefile.am (1.11),
-	Examples/EuropeanOption/Makefile.am (1.5),
 	Examples/Swap/Makefile.am (1.6), config/.cvsignore (1.2),
 	ql/.cvsignore (1.5), ql/Makefile.am (1.26), ql/history.hpp (1.11),
 	ql/qldefines.hpp (1.45), ql/Calendars/Makefile.am (1.12),
@@ -25485,7 +26449,6 @@
 	(1.3.22.1), Examples/Makefile.am (1.15.8.1),
 	Examples/BermudanSwaption/Makefile.am (1.3.2.1),
 	Examples/DiscreteHedging/Makefile.am (1.10.2.1),
-	Examples/EuropeanOption/Makefile.am (1.4.2.1),
 	Examples/Swap/Makefile.am (1.5.2.1), config/.cvsignore (1.1.2.1),
 	ql/.cvsignore (1.4.2.1), ql/Makefile.am (1.25.2.1),
 	ql/qldefines.hpp (1.44.2.1), ql/Calendars/Makefile.am (1.10.16.1),
@@ -25650,12 +26613,6 @@
 
 	Spring cleaning
 
-2002-10-27 13:55  Luigi Ballabio
-
-	* Examples/EuropeanOption/EuropeanOption.old (1.2):
-
-	no message
-
 2002-10-25 16:58  Luigi Ballabio
 
 	* ql/FiniteDifferences/: boundarycondition.cpp (1.1), Makefile.am
@@ -25713,7 +26670,6 @@
 	* darwin.setup (1.3),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.23),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.12),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.27),
 	Examples/Swap/swapvaluation.cpp (1.32), ql/array.hpp (1.11),
 	ql/qldefines.hpp (1.43), ql/Indexes/xibormanager.cpp (1.7),
 	ql/Indexes/xibormanager.hpp (1.8), ql/Pricers/europeanoption.cpp
@@ -25902,7 +26858,6 @@
 2002-09-11 17:38  Luigi Ballabio
 
 	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.22),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.26),
 	Examples/Swap/swapvaluation.cpp (1.31), ql/termstructure.hpp
 	(1.26), ql/TermStructures/affinetermstructure.cpp (1.6),
 	ql/TermStructures/affinetermstructure.hpp (1.9),
@@ -25939,8 +26894,7 @@
 
 2002-07-26 18:00  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.25),
-	Examples/Swap/swapvaluation.cpp (1.28), ql/termstructure.hpp
+	* Examples/Swap/swapvaluation.cpp (1.28), ql/termstructure.hpp
 	(1.25), ql/TermStructures/affinetermstructure.cpp (1.5),
 	ql/TermStructures/affinetermstructure.hpp (1.8),
 	ql/TermStructures/compoundforward.cpp (1.16),
@@ -25992,8 +26946,7 @@
 2002-07-24 11:57  Ferdinando Ametrano
 
 	* Examples/BermudanSwaption/.cvsignore (1.3),
-	Examples/DiscreteHedging/.cvsignore (1.3),
-	Examples/EuropeanOption/.cvsignore (1.3), Examples/Swap/.cvsignore
+	Examples/DiscreteHedging/.cvsignore (1.3), Examples/Swap/.cvsignore
 	(1.3), ql/.cvsignore (1.4), ql/Calendars/.cvsignore (1.2),
 	ql/CashFlows/.cvsignore (1.2), ql/DayCounters/.cvsignore (1.2),
 	ql/FiniteDifferences/.cvsignore (1.2), ql/Indexes/.cvsignore (1.2),
@@ -26012,8 +26965,7 @@
 2002-07-24 11:44  Ferdinando Ametrano
 
 	* .cvsignore (1.3), Examples/BermudanSwaption/.cvsignore (1.2),
-	Examples/DiscreteHedging/.cvsignore (1.2),
-	Examples/EuropeanOption/.cvsignore (1.2), Examples/Swap/.cvsignore
+	Examples/DiscreteHedging/.cvsignore (1.2), Examples/Swap/.cvsignore
 	(1.2), ql/.cvsignore (1.3), ql/Calendars/.cvsignore (1.1),
 	ql/CashFlows/.cvsignore (1.1), ql/DayCounters/.cvsignore (1.1),
 	ql/FiniteDifferences/.cvsignore (1.1), ql/Indexes/.cvsignore (1.1),
@@ -26045,7 +26997,6 @@
 	* QuantLib.dsp (1.105), QuantLib.mak (1.96),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.10),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.30),
-	Examples/EuropeanOption/EuropeanOption.mak (1.25),
 	Examples/Swap/Swap.mak (1.26), ql/Volatilities/blackconstantvol.hpp
 	(1.2), ql/Volatilities/blackvariancecurve.hpp (1.7):
 
@@ -26145,8 +27096,7 @@
 2002-07-11 16:52  Luigi Ballabio
 
 	* Examples/BermudanSwaption/.cvsignore (1.1),
-	Examples/DiscreteHedging/.cvsignore (1.1),
-	Examples/EuropeanOption/.cvsignore (1.1), Examples/Swap/.cvsignore
+	Examples/DiscreteHedging/.cvsignore (1.1), Examples/Swap/.cvsignore
 	(1.1), ql/.cvsignore (1.2):
 
 	Some more cvs ignoring
@@ -26222,7 +27172,6 @@
 2002-06-24 18:16  Ferdinando Ametrano
 
 	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.19),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.24),
 	Examples/Swap/swapvaluation.cpp (1.27),
 	ql/TermStructures/flatforward.hpp (1.15):
 
@@ -26242,8 +27191,6 @@
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.18),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.9),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.29),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.23),
-	Examples/EuropeanOption/EuropeanOption.mak (1.24),
 	Examples/Swap/Swap.mak (1.25), ql/termstructure.hpp (1.23),
 	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp
 	(1.5),
@@ -26298,8 +27245,7 @@
 2002-06-24 11:57  Luigi Ballabio
 
 	* Examples/: BermudanSwaption/Makefile.am (1.3),
-	DiscreteHedging/Makefile.am (1.10), EuropeanOption/Makefile.am
-	(1.4), Swap/Makefile.am (1.5):
+	DiscreteHedging/Makefile.am (1.10), Swap/Makefile.am (1.5):
 
 	Take gcc flags from environment
 
@@ -26478,8 +27424,7 @@
 
 2002-06-10 19:34  Ferdinando Ametrano
 
-	* QuantLib.dsp (1.100), QuantLib.mak (1.91),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.22):
+	* QuantLib.dsp (1.100), QuantLib.mak (1.91):
 
 	1) pushing further the engine framework. It doesn't work yet 2)
 	introducing Black vol surface. It doesn't work yet
@@ -26500,9 +27445,8 @@
 
 2002-06-09 22:25  Ferdinando Ametrano
 
-	* QuantLib.dsp (1.99), QuantLib.mak (1.90),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.21), ql/Makefile.am
-	(1.24), ql/quantlib.hpp (1.63), ql/voltermstructure.hpp (1.1),
+	* QuantLib.dsp (1.99), QuantLib.mak (1.90), ql/Makefile.am (1.24),
+	ql/quantlib.hpp (1.63), ql/voltermstructure.hpp (1.1),
 	ql/Instruments/Makefile.am (1.11),
 	ql/Instruments/forwardvanillaoption.cpp (1.1),
 	ql/Instruments/forwardvanillaoption.hpp (1.1),
@@ -26530,8 +27474,6 @@
 	* QuantLib.dsp (1.98), QuantLib.mak (1.89), QuantLib.nsi (1.74),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.8),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.28),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.20),
-	Examples/EuropeanOption/EuropeanOption.mak (1.23),
 	Examples/Swap/Swap.mak (1.24), ql/Makefile.am (1.23),
 	ql/argsandresults.hpp (1.7), ql/makefile.mak (1.18), ql/option.cpp
 	(1.12), ql/pricingengine.hpp (1.2), ql/quantlib.hpp (1.62),
@@ -26584,20 +27526,13 @@
 
 	updated
 
-2002-06-02 01:27  Ferdinando Ametrano
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.19):
-
-	added analytic pricing engine
-
 2002-06-02 01:06  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.96), QuantLib.mak (1.87), TODO.txt (1.90),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.17),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.18), ql/Makefile.am
-	(1.22), ql/argsandresults.hpp (1.6), ql/option.cpp (1.11),
-	ql/option.hpp (1.11), ql/pricingengine.hpp (1.1), ql/quantlib.hpp
-	(1.61), ql/Instruments/Makefile.am (1.9),
+	ql/Makefile.am (1.22), ql/argsandresults.hpp (1.6), ql/option.cpp
+	(1.11), ql/option.hpp (1.11), ql/pricingengine.hpp (1.1),
+	ql/quantlib.hpp (1.61), ql/Instruments/Makefile.am (1.9),
 	ql/Instruments/capfloor.hpp (1.28), ql/Instruments/makefile.mak
 	(1.10), ql/Instruments/plainoption.cpp (1.12),
 	ql/Instruments/plainoption.hpp (1.14), ql/Instruments/swaption.cpp
@@ -26700,7 +27635,6 @@
 	* QuantLib.dsp (1.95), QuantLib.mak (1.86),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.7),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.27),
-	Examples/EuropeanOption/EuropeanOption.mak (1.22),
 	Examples/Swap/Swap.mak (1.23), ql/quantlib.hpp (1.60),
 	ql/MonteCarlo/cliquetoptionpathpricer.cpp (1.1),
 	ql/MonteCarlo/cliquetoptionpathpricer.hpp (1.1),
@@ -26784,7 +27718,6 @@
 
 	* TODO.txt (1.88), Examples/BermudanSwaption/BermudanSwaption.mak
 	(1.6), Examples/DiscreteHedging/DiscreteHedging.mak (1.26),
-	Examples/EuropeanOption/EuropeanOption.mak (1.21),
 	Examples/Swap/Swap.mak (1.22):
 
 	updated
@@ -26942,7 +27875,6 @@
 	* QuantLib.mak (1.80.2.1), Docs/pages/mcarlo.docs (1.5.18.3),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.4.2.1),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.24.2.1),
-	Examples/EuropeanOption/EuropeanOption.mak (1.19.2.1),
 	Examples/Swap/Swap.mak (1.20.4.1), dev_tools/releaseprocess.txt
 	(1.9.18.2):
 
@@ -27136,7 +28068,6 @@
 
 	* QuantLib.mak (1.83), TODO.txt (1.85),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.15),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.17),
 	Examples/Swap/swapvaluation.cpp (1.25), ql/termstructure.hpp
 	(1.21), ql/TermStructures/affinetermstructure.cpp (1.2),
 	ql/TermStructures/affinetermstructure.hpp (1.3),
@@ -27178,7 +28109,6 @@
 	* QuantLib.dsp (1.92), TODO.txt (1.84),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.5),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.25),
-	Examples/EuropeanOption/EuropeanOption.mak (1.20),
 	Examples/Swap/Swap.mak (1.21), ql/quantlib.hpp (1.58),
 	ql/termstructure.hpp (1.20), ql/TermStructures/Makefile.am (1.9),
 	ql/TermStructures/discountcurve.cpp (1.3),
@@ -27437,7 +28367,6 @@
 	* QuantLib.dsp (1.89), QuantLib.dsw (1.6), QuantLib.mak (1.80),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.4),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.24),
-	Examples/EuropeanOption/EuropeanOption.mak (1.19),
 	ql/Pricers/binomialplainoption.cpp (1.2):
 
 	MS VC++ catching up
@@ -27447,12 +28376,6 @@
 	* ql/: Lattices/makefile.mak (1.13), Pricers/makefile.mak (1.19):
 
 	Update makefile.mak files.
-
-2002-04-15 06:06  Sadruddin Rejeb
-
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.16):
-
-	Added binomial method pricing (JR & CRR).
 
 2002-04-15 06:04  Sadruddin Rejeb
 
@@ -27680,7 +28603,6 @@
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.13),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.3),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.23),
-	Examples/EuropeanOption/EuropeanOption.mak (1.18),
 	Examples/Swap/Swap.mak (1.19):
 
 	updating MS VC makefiles
@@ -27931,7 +28853,6 @@
 	Examples/Examples.dsw (1.5),
 	Examples/BermudanSwaption/BermudanSwaption.mak (1.2),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.22),
-	Examples/EuropeanOption/EuropeanOption.mak (1.17),
 	Examples/Swap/Swap.mak (1.18), ql/makefile.mak (1.15),
 	ql/Lattices/makefile.mak (1.12), ql/ShortRateModels/model.hpp
 	(1.3), ql/ShortRateModels/TwoFactorModels/g2.cpp (1.2):
@@ -28097,8 +29018,7 @@
 2002-03-21 15:48  Ferdinando Ametrano
 
 	* QuantLib.nsi (1.69), Examples/DiscreteHedging/DiscreteHedging.mak
-	(1.21), Examples/EuropeanOption/EuropeanOption.mak (1.16),
-	Examples/Swap/Swap.mak (1.17):
+	(1.21), Examples/Swap/Swap.mak (1.17):
 
 	removed project dependencies: they make makefile not portable
 
@@ -28156,8 +29076,7 @@
 2002-03-19 09:24  Ferdinando Ametrano
 
 	* QuantLib.mak (1.74), Examples/DiscreteHedging/DiscreteHedging.mak
-	(1.20), Examples/EuropeanOption/EuropeanOption.mak (1.15),
-	Examples/Swap/Swap.mak (1.16):
+	(1.20), Examples/Swap/Swap.mak (1.16):
 
 	updated
 
@@ -28183,8 +29102,7 @@
 2002-03-15 09:23  Ferdinando Ametrano
 
 	* QuantLib.dsp (1.85), Examples/DiscreteHedging/DiscreteHedging.mak
-	(1.19), Examples/EuropeanOption/EuropeanOption.mak (1.14),
-	Examples/Swap/Swap.mak (1.15):
+	(1.19), Examples/Swap/Swap.mak (1.15):
 
 	MS VC++ project updated
 
@@ -28668,7 +29586,6 @@
 
 	* News.txt (1.20), QuantLib.dsp (1.80),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.18),
-	Examples/EuropeanOption/EuropeanOption.mak (1.13),
 	Examples/Swap/Swap.mak (1.14),
 	ql/FiniteDifferences/cranknicolson.hpp (1.12),
 	ql/FiniteDifferences/expliciteuler.hpp (1.8),
@@ -28769,7 +29686,6 @@
 
 	* QuantLib.dsp (1.78), QuantLib.mak (1.68), configure.in (1.69),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.17),
-	Examples/EuropeanOption/EuropeanOption.mak (1.12),
 	Examples/Swap/Swap.mak (1.13), ql/Makefile.am (1.14),
 	ql/makefile.mak (1.10), ql/quantlib.hpp (1.46):
 
@@ -28903,7 +29819,6 @@
 
 	* QuantLib.dsp (1.75), QuantLib.mak (1.65),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.16),
-	Examples/EuropeanOption/EuropeanOption.mak (1.11),
 	Examples/Swap/Swap.mak (1.12), ql/Optimization/costfunction.hpp
 	(1.9), ql/Optimization/powell.cpp (1.3),
 	ql/Optimization/simplex.cpp (1.2),
@@ -29001,7 +29916,6 @@
 
 	* QuantLib.mak (1.64), TODO.txt (1.80),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.15),
-	Examples/EuropeanOption/EuropeanOption.mak (1.10),
 	Examples/Swap/Swap.mak (1.11):
 
 	updated
@@ -29025,7 +29939,6 @@
 
 	* QuantLib.mak (1.63), TODO.txt (1.79),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.14),
-	Examples/EuropeanOption/EuropeanOption.mak (1.9),
 	Examples/Swap/Swap.mak (1.10), ql/config.msvc.hpp (1.10):
 
 	updated
@@ -29176,7 +30089,6 @@
 2002-01-16 15:40  Ferdinando Ametrano
 
 	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.11),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.15),
 	Examples/Swap/swapvaluation.cpp (1.19),
 	ql/Utilities/combiningiterator.hpp (1.4),
 	ql/Utilities/couplingiterator.hpp (1.5),
@@ -29410,7 +30322,6 @@
 
 	* QuantLib.dsp (1.71), QuantLib.mak (1.60), makefile.mak (1.28),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.13),
-	Examples/EuropeanOption/EuropeanOption.mak (1.8),
 	Examples/Swap/Swap.mak (1.9):
 
 	changed MS VC++ PDB settings
@@ -29440,8 +30351,6 @@
 	* QuantLib.dsp (1.70), QuantLib.mak (1.59),
 	Examples/DiscreteHedging/DiscreteHedging.dsp (1.4),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.12),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.2),
-	Examples/EuropeanOption/EuropeanOption.mak (1.7),
 	Examples/Swap/Swap.dsp (1.2), Examples/Swap/Swap.mak (1.8),
 	ql/config.msvc.hpp (1.8):
 
@@ -29474,7 +30383,7 @@
 2002-01-11 17:01  Ferdinando Ametrano
 
 	* Examples/: makefile.mak (1.8), DiscreteHedging/makefile.mak
-	(1.4), EuropeanOption/makefile.mak (1.4), Swap/makefile.mak (1.4):
+	(1.4), Swap/makefile.mak (1.4):
 
 	fixed Borland compilation
 
@@ -29594,7 +30503,7 @@
 2002-01-10 15:48  Ferdinando Ametrano
 
 	* LICENSE.TXT (1.8), Examples/DiscreteHedging/DiscreteHedging.cpp
-	(1.10), Examples/EuropeanOption/EuropeanOption.cpp (1.14):
+	(1.10):
 
 	new copyright and license agreement
 
@@ -29656,7 +30565,7 @@
 2002-01-09 12:16  Ferdinando Ametrano
 
 	* LICENSE.TXT (1.7), Examples/DiscreteHedging/DiscreteHedging.cpp
-	(1.9), Examples/EuropeanOption/EuropeanOption.cpp (1.13):
+	(1.9):
 
 	new copyright and license agreement
 
@@ -29887,7 +30796,6 @@
 	Docs/pages/termstructures.docs (1.3), Docs/pages/usage.docs (1.3),
 	Docs/pages/utilities.docs (1.3), Docs/pages/where.docs (1.4),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.8),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.12),
 	Examples/Swap/swapvaluation.cpp (1.17), dev_tools/licensein.txt
 	(1.1), ql/argsandresults.hpp (1.4), ql/array.hpp (1.6),
 	ql/asset.hpp (1.2), ql/calendar.cpp (1.6), ql/calendar.hpp (1.11),
@@ -29903,7 +30811,6 @@
 2002-01-08 17:53  Luigi Ballabio
 
 	* Examples/DiscreteHedging/Makefile.am (1.8),
-	Examples/EuropeanOption/Makefile.am (1.2),
 	Examples/Swap/Makefile.am (1.2), ql/option.cpp (1.5), ql/option.hpp
 	(1.6), ql/Pricers/binaryoption.cpp (1.6):
 
@@ -30079,9 +30986,8 @@
 
 2002-01-04 17:30  Luigi Ballabio
 
-	* acconfig.h (1.5), configure.in (1.61),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.11), ql/array.hpp
-	(1.5), ql/config.ansi.hpp (1.4), ql/config.bcc.hpp (1.3),
+	* acconfig.h (1.5), configure.in (1.61), ql/array.hpp (1.5),
+	ql/config.ansi.hpp (1.4), ql/config.bcc.hpp (1.3),
 	ql/config.decc.hpp (1.3), ql/config.msvc.hpp (1.5),
 	ql/config.mwcw.hpp (1.3), ql/constraint.hpp (1.6),
 	ql/dataformatters.cpp (1.5), ql/date.cpp (1.11), ql/date.hpp (1.9),
@@ -30162,7 +31068,6 @@
 
 	* makefile.mak (1.27), Examples/makefile.mak (1.7),
 	Examples/DiscreteHedging/makefile.mak (1.3),
-	Examples/EuropeanOption/makefile.mak (1.3),
 	Examples/Swap/makefile.mak (1.3), ql/makefile.mak (1.8):
 
 	Added check target
@@ -30366,10 +31271,9 @@
 
 2001-12-17 17:27  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.10),
-	ql/Pricers/fddividendshoutoption.cpp (1.2),
-	ql/Pricers/fddividendshoutoption.hpp (1.2),
-	ql/Pricers/fdeuropean.cpp (1.2), ql/Pricers/fdeuropean.hpp (1.2):
+	* ql/Pricers/: fddividendshoutoption.cpp (1.2),
+	fddividendshoutoption.hpp (1.2), fdeuropean.cpp (1.2),
+	fdeuropean.hpp (1.2):
 
 	Finite Difference pricers now start with 'Fd' letters
 
@@ -30581,18 +31485,15 @@
 
 2001-12-13 13:47  Ferdinando Ametrano
 
-	* News.txt (1.12), TODO.txt (1.69),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.9),
-	ql/Pricers/mcpricer.hpp (1.11):
+	* News.txt (1.12), TODO.txt (1.69), ql/Pricers/mcpricer.hpp (1.11):
 
 	improved convergence in MCPricer
 
 2001-12-12 19:46  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.8),
-	ql/MonteCarlo/multipathgenerator.hpp (1.16), ql/MonteCarlo/path.hpp
-	(1.6), ql/MonteCarlo/pathgenerator.hpp (1.14),
-	ql/Pricers/mcpricer.hpp (1.10):
+	* ql/: MonteCarlo/multipathgenerator.hpp (1.16),
+	MonteCarlo/path.hpp (1.6), MonteCarlo/pathgenerator.hpp (1.14),
+	Pricers/mcpricer.hpp (1.10):
 
 	Path and MultiPath are now time-aware improved convergence in
 	MCPricer
@@ -30736,8 +31637,8 @@
 2001-12-03 16:55  Ferdinando Ametrano
 
 	* QuantLib.mak (1.51), Examples/DiscreteHedging/DiscreteHedging.mak
-	(1.11), Examples/EuropeanOption/EuropeanOption.mak (1.6),
-	Examples/Swap/Swap.mak (1.7), dev_tools/releaseprocess.txt (1.5):
+	(1.11), Examples/Swap/Swap.mak (1.7), dev_tools/releaseprocess.txt
+	(1.5):
 
 	trying to compile on Win32
 
@@ -30892,7 +31793,6 @@
 
 	* QuantLib.dsp (1.62), QuantLib.mak (1.48),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.10),
-	Examples/EuropeanOption/EuropeanOption.mak (1.5),
 	Examples/Swap/Swap.mak (1.6), ql/FiniteDifferences/makefile.mak
 	(1.3), ql/Instruments/makefile.mak (1.4):
 
@@ -30983,7 +31883,6 @@
 
 	* ChangeLog.txt (1.5), QuantLib.mak (1.47),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.9),
-	Examples/EuropeanOption/EuropeanOption.mak (1.4),
 	Examples/Swap/Swap.mak (1.5):
 
 	R000201-branch-merge1 merged into trunk
@@ -30997,8 +31896,6 @@
 	Docs/pages/mcarlo.docs (1.2), Docs/pages/pricers.docs (1.2),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.7),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.8),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.7),
-	Examples/EuropeanOption/EuropeanOption.mak (1.3),
 	Examples/Swap/Swap.mak (1.4), dev_tools/releaseprocess.txt (1.3),
 	dev_tools/version_number.txt (1.4), ql/argsandresults.hpp (1.3),
 	ql/array.hpp (1.4), ql/calendar.cpp (1.5), ql/calendar.hpp (1.10),
@@ -31229,7 +32126,6 @@
 
 	* QuantLib.mak (1.45.2.2),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.7.2.1),
-	Examples/EuropeanOption/EuropeanOption.mak (1.2.4.1),
 	Examples/Swap/Swap.mak (1.3.4.1):
 
 	PathPricer and MultiPathPricer merged into PathPricer
@@ -31251,7 +32147,6 @@
 
 	* Docs/pages/mcarlo.docs (1.1.2.3),
 	Examples/DiscreteHedging/DiscreteHedging.cpp (1.6.4.1),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.6.4.1),
 	ql/quantlib.hpp (1.24.2.2), ql/MonteCarlo/Makefile.am (1.14.2.1),
 	ql/MonteCarlo/arithmeticapopathpricer.cpp (1.1.2.3),
 	ql/MonteCarlo/arithmeticapopathpricer.hpp (1.1.2.2),
@@ -32122,8 +33017,7 @@
 2001-11-09 15:30  Ferdinando Ametrano
 
 	* TODO.txt (1.55), Examples/DiscreteHedging/DiscreteHedging.cpp
-	(1.6), Examples/EuropeanOption/EuropeanOption.cpp (1.6),
-	ql/dataformatters.cpp (1.3), ql/errors.hpp (1.5),
+	(1.6), ql/dataformatters.cpp (1.3), ql/errors.hpp (1.5),
 	ql/Calendars/frankfurt.cpp (1.5), ql/Calendars/helsinki.cpp (1.5),
 	ql/Calendars/london.cpp (1.5), ql/Calendars/milan.cpp (1.5),
 	ql/Calendars/newyork.cpp (1.5), ql/Calendars/target.cpp (1.5),
@@ -32182,8 +33076,7 @@
 2001-11-08 13:26  Ferdinando Ametrano
 
 	* QuantLib.mak (1.44), Examples/DiscreteHedging/DiscreteHedging.mak
-	(1.5), Examples/EuropeanOption/EuropeanOption.mak (1.2),
-	Examples/Swap/Swap.mak (1.3):
+	(1.5), Examples/Swap/Swap.mak (1.3):
 
 	MS VC++ makefiles updated
 
@@ -32282,9 +33175,8 @@
 
 2001-11-07 01:48  Ferdinando Ametrano
 
-	* TODO.txt (1.53), Examples/EuropeanOption/EuropeanOption.cpp
-	(1.5), Examples/Swap/swapvaluation.cpp (1.10), ql/calendar.cpp
-	(1.3), ql/Instruments/plainoption.hpp (1.3),
+	* TODO.txt (1.53), Examples/Swap/swapvaluation.cpp (1.10),
+	ql/calendar.cpp (1.3), ql/Instruments/plainoption.hpp (1.3),
 	ql/Pricers/americanoption.hpp (1.4), ql/Pricers/barrieroption.cpp
 	(1.4), ql/Pricers/barrieroption.hpp (1.4),
 	ql/Pricers/bermudanoption.cpp (1.4), ql/Pricers/bermudanoption.hpp
@@ -32330,8 +33222,7 @@
 
 2001-11-06 16:21  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.4),
-	Examples/Swap/swapvaluation.cpp (1.9), ql/array.hpp (1.3),
+	* Examples/Swap/swapvaluation.cpp (1.9), ql/array.hpp (1.3),
 	ql/calendar.hpp (1.7), ql/cashflow.hpp (1.4), ql/date.cpp (1.8),
 	ql/date.hpp (1.7), ql/daycounter.hpp (1.6), ql/history.hpp (1.5),
 	ql/index.hpp (1.5), ql/instrument.hpp (1.5), ql/qldefines.hpp
@@ -32495,7 +33386,6 @@
 
 	* QuantLib.dsp (1.55.2.1), QuantLib.mak (1.42.2.1), QuantLib.nsi
 	(1.45.2.1), Examples/DiscreteHedging/DiscreteHedging.mak (1.4.2.1),
-	Examples/EuropeanOption/EuropeanOption.mak (1.1.2.1),
 	Examples/Swap/Swap.mak (1.2.2.1), ql/makefile.mak (1.5.2.2),
 	ql/quantlib.hpp (1.17.2.2):
 
@@ -32585,9 +33475,8 @@
 
 2001-10-30 16:04  Ferdinando Ametrano
 
-	* Examples/EuropeanOption/EuropeanOption.cpp (1.3), ql/quantlib.hpp
-	(1.17), ql/MonteCarlo/montecarlomodel.hpp (1.10),
-	ql/RandomNumbers/knuthuniformrng.hpp (1.2):
+	* ql/: quantlib.hpp (1.17), MonteCarlo/montecarlomodel.hpp (1.10),
+	RandomNumbers/knuthuniformrng.hpp (1.2):
 
 	random number generators moved under RandomNumbers folder and
 	namespace
@@ -33199,8 +34088,7 @@
 2001-10-16 12:05  Ferdinando Ametrano
 
 	* Examples/: DiscreteHedging/DiscreteHedging.cpp (1.5),
-	EuropeanOption/EuropeanOption.cpp (1.2), Swap/swapvaluation.cpp
-	(1.6):
+	Swap/swapvaluation.cpp (1.6):
 
 	#include <ql/quantlib.hpp> instead of #include "ql/quantlib.hpp"
 
@@ -33213,9 +34101,8 @@
 
 2001-10-15 17:00  Luigi Ballabio
 
-	* Examples/: DiscreteHedging/makefile.mak (1.2),
-	EuropeanOption/makefile.mak (1.2), Swap/makefile.mak (1.2),
-	Swap/swapvaluation.cpp (1.5):
+	* Examples/: DiscreteHedging/makefile.mak (1.2), Swap/makefile.mak
+	(1.2), Swap/swapvaluation.cpp (1.5):
 
 	Disabled inlining for Borland C++ (it was leading to strange
 	crashes)
@@ -33261,14 +34148,7 @@
 	* QuantLib.dsw (1.5), QuantLib.nsi (1.42), TODO.txt (1.36),
 	configure.in (1.44), Docs/examples.docs (1.5), Docs/quantlib.doxy
 	(1.35), Examples/Examples.dsw (1.4), Examples/Makefile.am (1.14),
-	Examples/configure.in (1.3), Examples/makefile.mak (1.6),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.1),
-	Examples/EuropeanOption/EuropeanOption.dsp (1.1),
-	Examples/EuropeanOption/EuropeanOption.mak (1.1),
-	Examples/EuropeanOption/EuropeanOption.old (1.1),
-	Examples/EuropeanOption/Makefile.am (1.1),
-	Examples/EuropeanOption/ReadMe.txt (1.1),
-	Examples/EuropeanOption/makefile.mak (1.1):
+	Examples/configure.in (1.3), Examples/makefile.mak (1.6):
 
 	Parities renamed to EuropeanOption
 

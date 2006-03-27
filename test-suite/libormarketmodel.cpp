@@ -170,7 +170,7 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
 
         for (Size k=0; k<size; ++k) {
             Real expected = 0;
-            if (k>=2*t) {
+            if (k>2*t) {
                 const Real T = fixingTimes[k];
                 expected=(a*(T-t)+d)*std::exp(-b*(T-t)) + c;
             }
@@ -192,7 +192,11 @@ void LiborMarketModelTest::testCapletPricing() {
     QL_TEST_BEGIN
 
     const Size size = 10;
+    #if defined(QL_USE_INDEXED_COUPON)
+    const Real tolerance = 1e-5;
+    #else
     const Real tolerance = 1e-12;
+    #endif
 
     boost::shared_ptr<Xibor> index = makeIndex();
     boost::shared_ptr<LiborForwardModelProcess> process(
@@ -242,7 +246,11 @@ void LiborMarketModelTest::testCalibration() {
     QL_TEST_BEGIN
 
     const Size size = 15;
+    #if defined(QL_USE_INDEXED_COUPON)
+    const Real tolerance = 1e-3;
+    #else
     const Real tolerance = 1e-4;
+    #endif
 
     Volatility capVols[] = {0.145708,0.158465,0.166248,0.168672,
                             0.169007,0.167956,0.166261,0.164239,
@@ -348,7 +356,11 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
     const Size size  = 10;
     const Size steps = 8*size;
+    #if defined(QL_USE_INDEXED_COUPON)
+    const Real tolerance = 1e-6;
+    #else
     const Real tolerance = 1e-12;
+    #endif
 
     std::vector<Date> dates;
     std::vector<Rate> rates;
@@ -499,5 +511,4 @@ test_suite* LiborMarketModelTest::suite() {
 
     return suite;
 }
-
 

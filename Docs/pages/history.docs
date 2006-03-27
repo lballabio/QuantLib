@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2000-2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +18,45 @@
 
 /*! \page history Version history
 
-    <strong>Release 0.3.11 - October 2005</strong>
+    <strong>Release 0.3.12 - March 2006</strong>
+
+    CALENDARS
+    - Added Brazilian calendar (thanks to Piter Dias.)
+    - Added Argentinian, Icelandic, Indonesian, Mexican, and Ukrainian
+      calendars.
+
+    INSTRUMENTS AND PRICING ENGINES
+    - Added convertible bonds (thanks to Theo Boafo.)
+    - The cash flows returned by the Bond::cashflows method now
+      include the redemption.
+    - SimpleSwap can now be set an engine. If none is set, the old
+      cash-flow-based calculation is used.
+    - Generalized McVanillaEngine so that it can manage n-dimensional
+      processes; it now subsumes McHestonEngine.
+    - Added pricing of Bermudan options on binomial trees (thanks to
+      Enrico Michelotti.)
+    - Separated accrual and payment conventions for bonds.
+    - Modified basis-point sensitivity calculation so that it returns
+      the cash variation for a basis-point change in rate (it used to
+      return the figure to be multiplied by the variation in order to
+      obtain the same result.)
+
+    MODELS
+    - Added weights to short-rate model calibration (thanks to Enrico
+      Michelotti.)
+    - Added Libor market model (thanks to Klaus Spanderen.)
+
+    OPTIMIZATION
+    - Added Levenberg-Marquardt optimization method (thanks to Klaus
+      Spanderen.)
+
+    EXAMPLES
+    - Merged American and European option examples; added Bermudan
+      option.
+    - Added convertible-bond example (thanks to Theo Boafo.)
+
+
+    <strong>Release 0.3.11 - October 20th, 2005</strong>
 
     GLOBAL FEATURES
     - Added configuration option for adding current function

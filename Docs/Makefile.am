@@ -148,6 +148,9 @@ tex-files: .time-stamp-tex
 	mv latex/bug.tex .bug.tex
 	$(SED) -e "s/section/chapter/" .bug.tex > latex/bug.tex
 	rm -f .bug.tex
+	mv latex/caveats.tex .caveats.tex
+	$(SED) -e "s/section/chapter/" .caveats.tex > latex/caveats.tex
+	rm -f .caveats.tex
 	mv latex/test.tex .test.tex
 	$(SED) -e "s/section/chapter/" .test.tex > latex/test.tex
 	rm -f .test.tex

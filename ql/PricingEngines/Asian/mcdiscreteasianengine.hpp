@@ -32,7 +32,7 @@
 namespace QuantLib {
 
     //! Pricing engine for discrete average Asians using Monte Carlo simulation
-    /*! \warning control-variate calculation is disabled under VC++6
+    /*! \warning control-variate calculation is disabled under VC++6.
 
         \ingroup asianengines
     */
@@ -69,7 +69,19 @@ namespace QuantLib {
       protected:
         // McSimulation implementation
         TimeGrid timeGrid() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const;
+        boost::shared_ptr<path_generator_type> pathGenerator() const {
+
+            boost::shared_ptr<BlackScholesProcess> process =
+                boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+            QL_REQUIRE(process, "Black-Scholes process required");
+            TimeGrid grid = this->timeGrid();
+            typename RNG::rsg_type gen =
+                RNG::make_sequence_generator(grid.size()-1,seed_);
+            return boost::shared_ptr<path_generator_type>(
+                         new path_generator_type(process,
+                                                 grid, gen, brownianBridge_));
+        }
         Real controlVariateValue() const;
         // data members
         Size maxTimeStepsPerYear_;
@@ -126,23 +138,6 @@ namespace QuantLib {
 
         // handle here maxStepsPerYear
         return TimeGrid(fixingTimes.begin(), fixingTimes.end());
-    }
-
-    template<class RNG, class S>
-    inline
-    boost::shared_ptr<QL_TYPENAME MCDiscreteAveragingAsianEngine<RNG,S>::path_generator_type>
-    MCDiscreteAveragingAsianEngine<RNG,S>::pathGenerator() const {
-
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-        TimeGrid grid = this->timeGrid();
-        typename RNG::rsg_type gen =
-            RNG::make_sequence_generator(grid.size()-1,seed_);
-        return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(process,
-                                                 grid, gen, brownianBridge_));
     }
 
     template<class RNG, class S>

@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=694
+UnitCount=693
 Type=2
 Ver=1
 ObjFiles=
@@ -18,7 +18,7 @@ Icon=
 ExeOutput=.\lib
 ObjectOutput=.\build\mingw
 OverrideOutput=1
-OverrideOutputName=libQuantLib-mgw-0_3_12.a
+OverrideOutputName=libQuantLib-mgw-0_3_13.a
 HostApplication=
 Folders=Calendars,CashFlows,Currencies,DayCounters,FiniteDifferences,Indexes,Instruments,Lattices,Math,MonteCarlo,Optimization,Patterns,Pricers,PricingEngines,PricingEngines/Asian,PricingEngines/Barrier,PricingEngines/Basket,PricingEngines/CapFloor,PricingEngines/Cliquet,PricingEngines/Hybrid,PricingEngines/Swaption,PricingEngines/Vanilla,Processes,RandomNumbers,ShortRateModels,ShortRateModels/CalibrationHelpers,ShortRateModels/LiborMarketModels,ShortRateModels/OneFactorModels,ShortRateModels/TwoFactorModels,Solvers1D,TermStructures,Utilities,Volatilities
 CommandLine=
@@ -6737,27 +6737,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit670]
-FileName=ql\Processes\defaultable.hpp
-CompileCpp=1
-Folder=Processes
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit671]
-FileName=ql\Processes\lfmcovarparam.cpp
-CompileCpp=1
-Folder=Processes
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit672]
 FileName=ql\Processes\lfmcovarparam.hpp
 CompileCpp=1
 Folder=Processes
@@ -6767,7 +6747,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit673]
+[Unit672]
 FileName=ql\Processes\lfmhullwhiteparam.cpp
 CompileCpp=1
 Folder=Processes
@@ -6777,7 +6757,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit674]
+[Unit673]
 FileName=ql\Processes\lfmhullwhiteparam.hpp
 CompileCpp=1
 Folder=Processes
@@ -6787,7 +6767,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit675]
+[Unit674]
 FileName=ql\Processes\lfmprocess.cpp
 CompileCpp=1
 Folder=Processes
@@ -6797,7 +6777,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit676]
+[Unit675]
 FileName=ql\ShortRateModels\CalibrationHelpers\all.hpp
 CompileCpp=1
 Folder=ShortRateModels/CalibrationHelpers
@@ -6807,7 +6787,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit677]
+[Unit676]
 FileName=ql\ShortRateModels\OneFactorModels\all.hpp
 CompileCpp=1
 Folder=ShortRateModels/OneFactorModels
@@ -6817,7 +6797,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit678]
+[Unit677]
 FileName=ql\ShortRateModels\TwoFactorModels\all.hpp
 CompileCpp=1
 Folder=ShortRateModels/TwoFactorModels
@@ -6827,7 +6807,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit679]
+[Unit678]
 FileName=ql\ShortRateModels\LiborMarketModels\lmvolmodel.hpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6837,7 +6817,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit680]
+[Unit679]
 FileName=ql\ShortRateModels\LiborMarketModels\all.hpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6847,7 +6827,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit681]
+[Unit680]
 FileName=ql\ShortRateModels\LiborMarketModels\lfmcovarproxy.cpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6857,7 +6837,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit682]
+[Unit681]
 FileName=ql\ShortRateModels\LiborMarketModels\lfmcovarproxy.hpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6867,7 +6847,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit683]
+[Unit682]
 FileName=ql\ShortRateModels\LiborMarketModels\liborforwardmodel.cpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6877,7 +6857,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit684]
+[Unit683]
 FileName=ql\ShortRateModels\LiborMarketModels\liborforwardmodel.hpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6887,7 +6867,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit685]
+[Unit684]
 FileName=ql\ShortRateModels\LiborMarketModels\lmcorrmodel.cpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6897,7 +6877,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit686]
+[Unit685]
 FileName=ql\ShortRateModels\LiborMarketModels\lmcorrmodel.hpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6907,7 +6887,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit687]
+[Unit686]
 FileName=ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.cpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6917,7 +6897,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit688]
+[Unit687]
 FileName=ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.hpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6927,7 +6907,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit689]
+[Unit688]
 FileName=ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.cpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6937,7 +6917,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit690]
+[Unit689]
 FileName=ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.hpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6947,7 +6927,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit691]
+[Unit690]
 FileName=ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.cpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6957,7 +6937,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit692]
+[Unit691]
 FileName=ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.hpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
@@ -6967,10 +6947,20 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit693]
+[Unit692]
 FileName=ql\ShortRateModels\LiborMarketModels\lmvolmodel.cpp
 CompileCpp=1
 Folder=ShortRateModels/LiborMarketModels
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit693]
+FileName=ql\event.hpp
+CompileCpp=1
+Folder=QuantLib
 Compile=1
 Link=1
 Priority=1000
@@ -6981,6 +6971,16 @@ BuildCmd=
 FileName=ql\event.hpp
 CompileCpp=1
 Folder=QuantLib
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit670]
+FileName=ql\Processes\lfmcovarparam.cpp
+CompileCpp=1
+Folder=Processes
 Compile=1
 Link=1
 Priority=1000

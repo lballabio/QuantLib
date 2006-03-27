@@ -45,7 +45,7 @@
 				PreprocessorDefinitions="WIN32; _DEBUG; _LIB; _SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				DisableLanguageExtensions="false"
+				DisableLanguageExtensions="true"
 				ForceConformanceInForLoopScope="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
@@ -72,7 +72,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-sgd-0_3_12.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-sgd-0_3_13.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -126,7 +126,7 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				DisableLanguageExtensions="false"
+				DisableLanguageExtensions="true"
 				ForceConformanceInForLoopScope="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
@@ -152,7 +152,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-s-0_3_12.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-s-0_3_13.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -172,9 +172,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release MTDLL|Win32"
-			OutputDirectory=".\build\vc80\ReleaseMTDLL"
-			IntermediateDirectory=".\build\vc80\ReleaseMTDLL"
+			Name="Release CRTDLL|Win32"
+			OutputDirectory=".\build\vc80\ReleaseCRTDLL"
+			IntermediateDirectory=".\build\vc80\ReleaseCRTDLL"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -206,14 +206,14 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				DisableLanguageExtensions="false"
+				DisableLanguageExtensions="true"
 				ForceConformanceInForLoopScope="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc80\ReleaseMTDLL/QuantLibFunctions.pch"
-				AssemblerListingLocation=".\build\vc80\ReleaseMTDLL/"
-				ObjectFile=".\build\vc80\ReleaseMTDLL/"
-				ProgramDataBaseFileName=".\build\vc80\ReleaseMTDLL/"
+				PrecompiledHeaderFile=".\build\vc80\ReleaseCRTDLL/QuantLibFunctions.pch"
+				AssemblerListingLocation=".\build\vc80\ReleaseCRTDLL/"
+				ObjectFile=".\build\vc80\ReleaseCRTDLL/"
+				ProgramDataBaseFileName=".\build\vc80\ReleaseCRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
@@ -232,7 +232,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-0_3_12.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-0_3_13.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -252,167 +252,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug SingleThread|Win32"
-			OutputDirectory=".\build\vc80\DebugSingleThread"
-			IntermediateDirectory=".\build\vc80\DebugSingleThread"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="..\..,..\..\.."
-				PreprocessorDefinitions="WIN32; _DEBUG; _LIB; _SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				DisableLanguageExtensions="false"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc80\DebugSingleThread/QuantLibFunctions.pch"
-				AssemblerListingLocation=".\build\vc80\DebugSingleThread/"
-				ObjectFile=".\build\vc80\DebugSingleThread/"
-				ProgramDataBaseFileName=".\build\vc80\DebugSingleThread/"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-sgd-0_3_12.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release SingleThread|Win32"
-			OutputDirectory=".\build\vc80\ReleaseSingleThread"
-			IntermediateDirectory=".\build\vc80\ReleaseSingleThread"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				EnableIntrinsicFunctions="false"
-				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..,..\..\.."
-				PreprocessorDefinitions="WIN32; NDEBUG; _LIB; _SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
-				StringPooling="true"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
-				DisableLanguageExtensions="false"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc80\ReleaseSingleThread/QuantLibFunctions.pch"
-				AssemblerListingLocation=".\build\vc80\ReleaseSingleThread/"
-				ObjectFile=".\build\vc80\ReleaseSingleThread/"
-				ProgramDataBaseFileName=".\build\vc80\ReleaseSingleThread/"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-s-0_3_12.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug MTDLL|Win32"
-			OutputDirectory=".\build\vc80\DebugMTDLL"
-			IntermediateDirectory=".\build\vc80\DebugMTDLL"
+			Name="Debug CRTDLL|Win32"
+			OutputDirectory=".\build\vc80\DebugCRTDLL"
+			IntermediateDirectory=".\build\vc80\DebugCRTDLL"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -441,14 +283,14 @@
 				PreprocessorDefinitions="WIN32; _DEBUG; _LIB; _SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				DisableLanguageExtensions="false"
+				DisableLanguageExtensions="true"
 				ForceConformanceInForLoopScope="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc80\DebugMTDLL/QuantLibFunctions.pch"
-				AssemblerListingLocation=".\build\vc80\DebugMTDLL/"
-				ObjectFile=".\build\vc80\DebugMTDLL/"
-				ProgramDataBaseFileName=".\build\vc80\DebugMTDLL/"
+				PrecompiledHeaderFile=".\build\vc80\DebugCRTDLL/QuantLibFunctions.pch"
+				AssemblerListingLocation=".\build\vc80\DebugCRTDLL/"
+				ObjectFile=".\build\vc80\DebugCRTDLL/"
+				ProgramDataBaseFileName=".\build\vc80\DebugCRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
@@ -468,7 +310,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-gd-0_3_12.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc80-mt-gd-0_3_13.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -524,7 +366,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -534,28 +376,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -591,7 +412,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -601,28 +422,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -658,7 +458,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -668,28 +468,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

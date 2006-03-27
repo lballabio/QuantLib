@@ -75,7 +75,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-sgd-0_3_12.exe"
+				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-sgd-0_3_13.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -176,7 +176,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-s-0_3_12.exe"
+				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-s-0_3_13.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
@@ -213,9 +213,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release SingleThread|Win32"
-			OutputDirectory=".\build\vc80\ReleaseST"
-			IntermediateDirectory=".\build\vc80\ReleaseST"
+			Name="Debug CRTDLL|Win32"
+			OutputDirectory=".\build\vc80\DebugCRTDLL"
+			IntermediateDirectory=".\build\vc80\DebugCRTDLL"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -235,107 +235,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc80\ReleaseST/testsuite.tlb"
-				HeaderFileName=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="false"
-				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\functions;.."
-				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
-				StringPooling="true"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
-				DisableLanguageExtensions="false"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc80\ReleaseST/testsuite.pch"
-				AssemblerListingLocation=".\build\vc80\ReleaseST/"
-				ObjectFile=".\build\vc80\ReleaseST/"
-				ProgramDataBaseFileName=".\build\vc80\ReleaseST/"
-				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc80\ReleaseST/"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				OutputFile=".\bin/QuantLib-test-suite-vc80-s-0_3_12.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\lib"
-				ProgramDatabaseFile=".\build\vc80\ReleaseST/testsuite.pdb"
-				SubSystem="1"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-				EmbedManifest="false"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Auto run test"
-				CommandLine="&quot;$(TargetDir)$(TargetName).exe&quot; --log_level=message --build_info=yes --result_code=no --report_level=short"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug MTDLL|Win32"
-			OutputDirectory=".\build\vc80\DebugMTDLL"
-			IntermediateDirectory=".\build\vc80\DebugMTDLL"
-			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc80\DebugMTDLL/testsuite.tlb"
+				TypeLibraryName=".\build\vc80\DebugCRTDLL/testsuite.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -350,12 +250,12 @@
 				ForceConformanceInForLoopScope="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc80\DebugMTDLL/testsuite.pch"
-				AssemblerListingLocation=".\build\vc80\DebugMTDLL/"
-				ObjectFile=".\build\vc80\DebugMTDLL/"
-				ProgramDataBaseFileName=".\build\vc80\DebugMTDLL/"
+				PrecompiledHeaderFile=".\build\vc80\DebugCRTDLL/testsuite.pch"
+				AssemblerListingLocation=".\build\vc80\DebugCRTDLL/"
+				ObjectFile=".\build\vc80\DebugCRTDLL/"
+				ProgramDataBaseFileName=".\build\vc80\DebugCRTDLL/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc80\DebugMTDLL/"
+				BrowseInformationFile=".\build\vc80\DebugCRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -374,12 +274,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-gd-0_3_12.exe"
+				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-gd-0_3_13.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\build\vc80\DebugMTDLL/testsuite.pdb"
+				ProgramDatabaseFile=".\build\vc80\DebugCRTDLL/testsuite.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -412,9 +312,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release MTDLL|Win32"
-			OutputDirectory=".\build\vc80\ReleaseMTDLL"
-			IntermediateDirectory=".\build\vc80\ReleaseMTDLL"
+			Name="Release CRTDLL|Win32"
+			OutputDirectory=".\build\vc80\ReleaseCRTDLL"
+			IntermediateDirectory=".\build\vc80\ReleaseCRTDLL"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -434,7 +334,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc80\ReleaseMTDLL/testsuite.tlb"
+				TypeLibraryName=".\build\vc80\ReleaseCRTDLL/testsuite.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -452,12 +352,12 @@
 				ForceConformanceInForLoopScope="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc80\ReleaseMTDLL/testsuite.pch"
-				AssemblerListingLocation=".\build\vc80\ReleaseMTDLL/"
-				ObjectFile=".\build\vc80\ReleaseMTDLL/"
-				ProgramDataBaseFileName=".\build\vc80\ReleaseMTDLL/"
+				PrecompiledHeaderFile=".\build\vc80\ReleaseCRTDLL/testsuite.pch"
+				AssemblerListingLocation=".\build\vc80\ReleaseCRTDLL/"
+				ObjectFile=".\build\vc80\ReleaseCRTDLL/"
+				ProgramDataBaseFileName=".\build\vc80\ReleaseCRTDLL/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc80\ReleaseMTDLL/"
+				BrowseInformationFile=".\build\vc80\ReleaseCRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -475,12 +375,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-0_3_12.exe"
+				OutputFile=".\bin/QuantLib-test-suite-vc80-mt-0_3_13.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\build\vc80\ReleaseMTDLL/testsuite.pdb"
+				ProgramDatabaseFile=".\build\vc80\ReleaseCRTDLL/testsuite.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -510,105 +410,6 @@
 				Name="VCPostBuildEventTool"
 				Description="Auto run test"
 				CommandLine="&quot;$(TargetDir)$(TargetName).exe&quot; --log_level=message --build_info=yes --result_code=no --report_level=short"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug SingleThread|Win32"
-			OutputDirectory=".\build\vc80\DebugST"
-			IntermediateDirectory=".\build\vc80\DebugST"
-			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc80\DebugST/testsuite.tlb"
-				HeaderFileName=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="..\functions;.."
-				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				DisableLanguageExtensions="false"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc80\DebugST/testsuite.pch"
-				AssemblerListingLocation=".\build\vc80\DebugST/"
-				ObjectFile=".\build\vc80\DebugST/"
-				ProgramDataBaseFileName=".\build\vc80\DebugST/"
-				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc80\DebugST/"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="4"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				OutputFile=".\bin/QuantLib-test-suite-vc80-sgd-0_3_12.exe"
-				LinkIncremental="2"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\lib"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\build\vc80\DebugST/testsuite.pdb"
-				SubSystem="1"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-				EmbedManifest="false"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Auto run test"
-				CommandLine="&quot;$(TargetDir)$(TargetName).exe&quot; --log_level=message --build_info=yes --result_code=no --report_level=short --catch_system_errors=no"
 			/>
 		</Configuration>
 	</Configurations>
@@ -646,18 +447,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -669,25 +459,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -723,18 +501,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -746,25 +513,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -796,18 +551,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -819,25 +563,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -869,18 +601,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -892,25 +613,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -954,18 +663,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -977,25 +675,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1027,18 +713,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1050,25 +725,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1104,18 +767,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1127,25 +779,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1181,18 +821,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1204,25 +833,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1254,18 +871,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1277,25 +883,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1327,18 +921,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1350,25 +933,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1400,18 +971,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1423,25 +983,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1473,18 +1021,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1496,25 +1033,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1550,18 +1075,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1573,25 +1087,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1627,18 +1129,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1650,25 +1141,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1712,18 +1191,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1735,25 +1203,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1785,18 +1241,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1808,25 +1253,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1862,18 +1295,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1885,25 +1307,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -1935,18 +1345,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1958,25 +1357,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2016,18 +1403,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2039,25 +1415,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2089,18 +1453,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2112,25 +1465,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2162,18 +1503,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2185,25 +1515,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2239,18 +1557,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2262,25 +1569,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2312,18 +1607,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2335,25 +1619,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2389,18 +1661,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2412,25 +1673,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2466,18 +1715,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2489,25 +1727,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2543,18 +1769,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2566,25 +1781,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2616,18 +1819,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2639,25 +1831,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2705,18 +1885,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2728,25 +1897,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2778,18 +1935,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2801,25 +1947,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2851,18 +1985,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2874,25 +1997,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2924,18 +2035,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2947,25 +2047,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -2997,18 +2085,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3020,25 +2097,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
@@ -3082,18 +2147,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32"
+					Name="Debug CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3105,25 +2159,13 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release MTDLL|Win32"
+					Name="Release CRTDLL|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>

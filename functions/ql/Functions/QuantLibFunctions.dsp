@@ -7,23 +7,23 @@
 CFG=QuantLibFunctions - Win32 Debug SingleThread
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "QuantLibFunctions.mak".
-!MESSAGE 
+!MESSAGE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "QuantLibFunctions.mak" CFG="QuantLibFunctions - Win32 Debug SingleThread"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "QuantLibFunctions - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLibFunctions - Win32 Debug" (based on "Win32 (x86) Static Library")
-!MESSAGE "QuantLibFunctions - Win32 Release MTDLL" (based on "Win32 (x86) Static Library")
-!MESSAGE "QuantLibFunctions - Win32 Debug MTDLL" (based on "Win32 (x86) Static Library")
+!MESSAGE "QuantLibFunctions - Win32 Release CRTDLL" (based on "Win32 (x86) Static Library")
+!MESSAGE "QuantLibFunctions - Win32 Debug CRTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLibFunctions - Win32 Release SingleThread" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLibFunctions - Win32 Debug SingleThread" (based on "Win32 (x86) Static Library")
-!MESSAGE 
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_12.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_13.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug"
 
@@ -76,19 +76,19 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_12.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_13.lib"
 
-!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release MTDLL"
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release CRTDLL"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "QuantLibFunctions___Win32_Release_MTDLL"
-# PROP BASE Intermediate_Dir "QuantLibFunctions___Win32_Release_MTDLL"
+# PROP BASE Output_Dir "QuantLibFunctions___Win32_Release_CRTDLL"
+# PROP BASE Intermediate_Dir "QuantLibFunctions___Win32_Release_CRTDLL"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "build\vc6\ReleaseMTDLL"
-# PROP Intermediate_Dir "build\vc6\ReleaseMTDLL"
+# PROP Output_Dir "build\vc6\ReleaseCRTDLL"
+# PROP Intermediate_Dir "build\vc6\ReleaseCRTDLL"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /YX /FD /c
@@ -98,20 +98,20 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_12.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_12.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_13.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_13.lib"
 
-!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug MTDLL"
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug CRTDLL"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "QuantLibFunctions___Win32_Debug_MTDLL"
-# PROP BASE Intermediate_Dir "QuantLibFunctions___Win32_Debug_MTDLL"
+# PROP BASE Output_Dir "QuantLibFunctions___Win32_Debug_CRTDLL"
+# PROP BASE Intermediate_Dir "QuantLibFunctions___Win32_Debug_CRTDLL"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "build\vc6\DebugMTDLL"
-# PROP Intermediate_Dir "build\vc6\DebugMTDLL"
+# PROP Output_Dir "build\vc6\DebugCRTDLL"
+# PROP Intermediate_Dir "build\vc6\DebugCRTDLL"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
 # ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
@@ -121,8 +121,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_12.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_12.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_13.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_13.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release SingleThread"
 
@@ -144,8 +144,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_12.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_12.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_13.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_13.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug SingleThread"
 
@@ -167,17 +167,17 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_12.lib"
-# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_12.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_13.lib"
+# ADD LIB32 /nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_13.lib"
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 
 # Name "QuantLibFunctions - Win32 Release"
 # Name "QuantLibFunctions - Win32 Debug"
-# Name "QuantLibFunctions - Win32 Release MTDLL"
-# Name "QuantLibFunctions - Win32 Debug MTDLL"
+# Name "QuantLibFunctions - Win32 Release CRTDLL"
+# Name "QuantLibFunctions - Win32 Debug CRTDLL"
 # Name "QuantLibFunctions - Win32 Release SingleThread"
 # Name "QuantLibFunctions - Win32 Debug SingleThread"
 # Begin Group "Source Files"

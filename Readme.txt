@@ -43,7 +43,9 @@ A list of changes since the previous release is available in News.txt
 (included in this distribution) while a list of past changes can be
 browsed at <http://quantlib.org/reference/history.html>.
 
-Known bugs are listed at <http://quantlib.org/reference/bug.html>.
+Known bugs are listed at <http://quantlib.org/reference/bug.html>;
+a list of caveats (which are not bugs, but rather issues that might be
+misleading) is available at <http://quantlib.org/reference/caveats.html>.
 
 A (hopefully growing) list of frequently-asked questions is available at
 <http://quantlib.org/reference/faq.html>.

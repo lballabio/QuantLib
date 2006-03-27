@@ -44,7 +44,7 @@ namespace QuantLib {
 
         for (Size i=0; i<size_; ++i) {
             const Time T = fixingTimes_[i];
-            if (T>=t) {
+            if (T>t) {
                 tmp[i] = (a*(T-t)+d)*std::exp(-b*(T-t)) + c;
             }
         }
@@ -61,7 +61,7 @@ namespace QuantLib {
 
         const Time T = fixingTimes_[i];
 
-        return (T>=t) ? (a*(T-t)+d)*std::exp(-b*(T-t)) + c : 0.0;
+        return (T>t) ? (a*(T-t)+d)*std::exp(-b*(T-t)) + c : 0.0;
     }
 
     Real LmLinearExponentialVolatilityModel::integratedVariance(

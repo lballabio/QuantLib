@@ -9,6 +9,9 @@ INSTRUMENTS AND PRICING ENGINES
 
 - Added convertible bonds (thanks to Theo Boafo.)
 
+- The cash flows returned by the Bond::cashflows method now include
+  the redemption.
+
 - SimpleSwap can now be set an engine. If none is set, the old
   cash-flow-based calculation is used.
 

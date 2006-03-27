@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -47,16 +47,17 @@ namespace QuantLib {
         maturityDate_ = calendar.adjust(maturityDate,convention);
         frequency_ = couponFrequency;
 
-        redemption_ = boost::shared_ptr<CashFlow>(
-                                new SimpleCashFlow(redemption,maturityDate_));
-
         Schedule schedule(calendar, datedDate, maturityDate,
                           couponFrequency, convention,
                           stub, fromEnd, longFinal);
 
-        cashFlows_ = FixedRateCouponVector(schedule, convention,
+        cashflows_ = FixedRateCouponVector(schedule, convention,
                                            std::vector<Real>(1, 100.0),
                                            coupons, dayCounter);
+        // redemption
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(
+                               new SimpleCashFlow(redemption,maturityDate_)));
+
     }
     #endif
 
@@ -82,16 +83,17 @@ namespace QuantLib {
         maturityDate_ = calendar.adjust(maturityDate,paymentConvention);
         frequency_ = couponFrequency;
 
-        redemption_ = boost::shared_ptr<CashFlow>(
-                                new SimpleCashFlow(redemption,maturityDate_));
-
         Schedule schedule(calendar, datedDate, maturityDate,
                           couponFrequency, accrualConvention,
                           stub, fromEnd, longFinal);
 
-        cashFlows_ = FixedRateCouponVector(schedule, paymentConvention,
+        cashflows_ = FixedRateCouponVector(schedule, paymentConvention,
                                            std::vector<Real>(1, 100.0),
                                            coupons, dayCounter);
+        // redemption
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(
+                               new SimpleCashFlow(redemption,maturityDate_)));
+
     }
 
 }

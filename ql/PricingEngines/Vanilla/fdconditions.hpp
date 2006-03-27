@@ -23,9 +23,11 @@
 
 #ifndef quantlib_fd_conditions_hpp
 #define quantlib_fd_conditions_hpp
+
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/FiniteDifferences/americancondition.hpp>
 #include <ql/FiniteDifferences/shoutcondition.hpp>
+#include <ql/interestrate.hpp>
 
 namespace QuantLib {
 
@@ -55,7 +57,7 @@ namespace QuantLib {
         Time residualTime = baseEngine::getResidualTime();
         Rate riskFreeRate = baseEngine::process_->riskFreeRate()
             ->zeroRate(residualTime, Continuous);
-        
+
         baseEngine::stepCondition_ = boost::shared_ptr<StandardStepCondition>(
              new ShoutCondition(baseEngine::intrinsicValues_.values(),
                                 residualTime,

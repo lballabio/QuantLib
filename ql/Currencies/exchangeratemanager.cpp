@@ -94,32 +94,32 @@ namespace QuantLib {
 
     void ExchangeRateManager::addKnownRates() {
         // currencies obsoleted by Euro
-        add(ExchangeRate(EUR(), ATS(), 13.7603),
+        add(ExchangeRate(EURCurrency(), ATSCurrency(), 13.7603),
             Date(1,January,1999), Date::maxDate());
-        add(ExchangeRate(EUR(), BEF(), 40.3399),
+        add(ExchangeRate(EURCurrency(), BEFCurrency(), 40.3399),
             Date(1,January,1999), Date::maxDate());
-        add(ExchangeRate(EUR(), DEM(), 1.95583),
+        add(ExchangeRate(EURCurrency(), DEMCurrency(), 1.95583),
             Date(1,January,1999), Date::maxDate());
-        add(ExchangeRate(EUR(), ESP(), 166.386),
+        add(ExchangeRate(EURCurrency(), ESPCurrency(), 166.386),
             Date(1,January,1999), Date::maxDate());
-        add(ExchangeRate(EUR(), FIM(), 5.94573),
+        add(ExchangeRate(EURCurrency(), FIMCurrency(), 5.94573),
             Date(1,January,1999), Date::maxDate());
-        add(ExchangeRate(EUR(), FRF(), 6.55957),
+        add(ExchangeRate(EURCurrency(), FRFCurrency(), 6.55957),
             Date(1,January,1999), Date::maxDate());
-        add(ExchangeRate(EUR(), GRD(), 340.750),
+        add(ExchangeRate(EURCurrency(), GRDCurrency(), 340.750),
             Date(1,January,2001), Date::maxDate());
-        add(ExchangeRate(EUR(), IEP(), 0.787564),
+        add(ExchangeRate(EURCurrency(), IEPCurrency(), 0.787564),
             Date(1,January,1999), Date::maxDate());
-        add(ExchangeRate(EUR(), ITL(), 1936.27),
+        add(ExchangeRate(EURCurrency(), ITLCurrency(), 1936.27),
             Date(1,January,1999), Date::maxDate());
-        add(ExchangeRate(EUR(), LUF(), 40.3399),
+        add(ExchangeRate(EURCurrency(), LUFCurrency(), 40.3399),
             Date(1,January,1999), Date::maxDate());
-        add(ExchangeRate(EUR(), NLG(), 2.20371),
+        add(ExchangeRate(EURCurrency(), NLGCurrency(), 2.20371),
             Date(1,January,1999), Date::maxDate());
-        add(ExchangeRate(EUR(), PTE(), 200.482),
+        add(ExchangeRate(EURCurrency(), PTECurrency(), 200.482),
             Date(1,January,1999), Date::maxDate());
         // other obsoleted currencies
-        add(ExchangeRate(TRY(), TRL(), 1000000.0),
+        add(ExchangeRate(TRYCurrency(), TRLCurrency(), 1000000.0),
             Date(1,January,2005), Date::maxDate());
     }
 

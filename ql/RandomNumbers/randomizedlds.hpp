@@ -46,7 +46,8 @@ namespace QuantLib {
 
         \pre LDS and PRS must have the same dimension \f$ N \f$
 
-        \warning Inverting LDS and PRS is possible, but it doesn't make sense
+        \warning Inverting LDS and PRS is possible, but it doesn't
+                 make sense.
 
         \todo implement the other randomization algorithms
 
@@ -54,13 +55,13 @@ namespace QuantLib {
     */
     template <class LDS,
               class PRS = RandomSequenceGenerator<MersenneTwisterUniformRng> >
-    class RamdomizedLDS {
+    class RandomizedLDS {
       public:
         typedef Sample<Array> sample_type;
-        RamdomizedLDS(const LDS& ldsg,
+        RandomizedLDS(const LDS& ldsg,
                       const PRS& prsg);
-        RamdomizedLDS(const LDS& ldsg);
-        RamdomizedLDS(Size dimensionality,
+        RandomizedLDS(const LDS& ldsg);
+        RandomizedLDS(Size dimensionality,
                       BigNatural ldsSeed = 0,
                       BigNatural prsSeed = 0);
         //! returns next sample using a given randomizing vector
@@ -83,7 +84,7 @@ namespace QuantLib {
     };
 
     template <class LDS, class PRS>
-    RamdomizedLDS<LDS, PRS>::RamdomizedLDS(const LDS& ldsg, const PRS& prsg)
+    RandomizedLDS<LDS, PRS>::RandomizedLDS(const LDS& ldsg, const PRS& prsg)
     : ldsg_(ldsg), pristineldsg_(ldsg),
       prsg_(prsg), dimension_(ldsg_.dimension()),
       x(Array(dimension_), 1.0), randomizer_(Array(dimension_), 1.0) {
@@ -98,7 +99,7 @@ namespace QuantLib {
     }
 
     template <class LDS, class PRS>
-    RamdomizedLDS<LDS, PRS>::RamdomizedLDS(const LDS& ldsg)
+    RandomizedLDS<LDS, PRS>::RandomizedLDS(const LDS& ldsg)
     : ldsg_(ldsg), pristineldsg_(ldsg),
       prsg_(ldsg_.dimension()), dimension_(ldsg_.dimension()),
       x(Array(dimension_), 1.0), randomizer_(Array(dimension_), 1.0) {
@@ -108,7 +109,7 @@ namespace QuantLib {
     }
 
     template <class LDS, class PRS>
-    RamdomizedLDS<LDS, PRS>::RamdomizedLDS(Size dimensionality,
+    RandomizedLDS<LDS, PRS>::RandomizedLDS(Size dimensionality,
                                            BigNatural ldsSeed,
                                            BigNatural prsSeed)
     : ldsg_(dimensionality, ldsSeed), pristineldsg_(dimensionality, ldsSeed),
@@ -119,8 +120,8 @@ namespace QuantLib {
     }
 
     template <class LDS, class PRS>
-    inline const typename RamdomizedLDS<LDS, PRS>::sample_type&
-    RamdomizedLDS<LDS, PRS>::nextSequence() const {
+    inline const typename RandomizedLDS<LDS, PRS>::sample_type&
+    RandomizedLDS<LDS, PRS>::nextSequence() const {
     typename LDS::sample_type sample =
         ldsg_.nextSequence();
     x.weight = randomizer_.weight * sample.weight;

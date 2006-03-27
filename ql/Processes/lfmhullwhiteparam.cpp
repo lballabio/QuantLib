@@ -28,8 +28,8 @@ namespace QuantLib {
         const boost::shared_ptr<CapletVolatilityStructure> & capletVol,
         const Matrix& correlation, Size factors)
     : LfmCovarianceParameterization(process->size(), factors),
-      diffusion_(size_-1, factors_),
-      process_  (process) {
+      diffusion_  (size_-1, factors_),
+      fixingTimes_(process->fixingTimes()) {
 
         Matrix sqrtCorr(size_-1, factors_, 1.0);
         if (correlation.empty()) {
@@ -88,10 +88,17 @@ namespace QuantLib {
         covariance_ = diffusion_ * transpose(diffusion_);
     }
 
+
+    Size LfmHullWhiteParameterization::nextIndexReset(Time t) const {
+        return std::upper_bound(fixingTimes_.begin(), fixingTimes_.end(), t)
+                 - fixingTimes_.begin();
+    }
+
+
     Disposable<Matrix> LfmHullWhiteParameterization::diffusion(
                                                  Time t, const Array&) const {
         Matrix tmp(size_, factors_, 0.0);
-        const Size m = process_->nextIndexReset(t);
+        const Size m = nextIndexReset(t);
 
         for (Size k=m; k<size_; ++k) {
             for (Size q=0; q<factors_; ++q) {
@@ -104,7 +111,7 @@ namespace QuantLib {
     Disposable<Matrix> LfmHullWhiteParameterization::covariance(
                                                  Time t, const Array&) const {
         Matrix tmp(size_, size_, 0.0);
-        const Size m = process_->nextIndexReset(t);
+        const Size m = nextIndexReset(t);
 
         for (Size k=m; k<size_; ++k) {
             for (Size i=m; i<size_; ++i) {
@@ -119,14 +126,14 @@ namespace QuantLib {
                                                  Time t, const Array&) const {
 
         Matrix tmp(size_, size_, 0.0);
-        std::vector<Time> fixingTimes = process_->fixingTimes();
 
-        Integer last = std::lower_bound(fixingTimes.begin(),
-                                        fixingTimes.end(), t)
-                      - fixingTimes.begin()-1;
+        Integer last = std::lower_bound(fixingTimes_.begin(),
+                                        fixingTimes_.end(), t)
+                      - fixingTimes_.begin()-1;
 
         for (Integer i=0; i<=last; ++i) {
-            const Time dt = ((i<last)? fixingTimes[i+1] : t ) - fixingTimes[i];
+            const Time dt = ((i<last)? fixingTimes_[i+1] : t )
+                - fixingTimes_[i];
 
             for (Size k=i; k<size_-1; ++k) {
                 for (Size l=i; l<size_-1; ++l) {

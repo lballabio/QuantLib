@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +24,7 @@
 #ifndef quantlib_observable_hpp
 #define quantlib_observable_hpp
 
-#include <ql/qldefines.hpp>
+#include <ql/errors.hpp>
 #include <boost/shared_ptr.hpp>
 #include <list>
 
@@ -107,8 +107,22 @@ namespace QuantLib {
     }
 
     inline void Observable::notifyObservers() {
-        for (iterator i=observers_.begin(); i!=observers_.end(); ++i)
-            (*i)->update();
+        bool successful = true;
+        for (iterator i=observers_.begin(); i!=observers_.end(); ++i) {
+            try {
+                (*i)->update();
+            } catch (...) {
+                // quite a dilemma. If we don't catch the exception,
+                // other observers will not receive the notification
+                // and might be left in an incorrect state. If we do
+                // catch it and continue the loop (as we do here) we
+                // lose the exception. The least evil might be to try
+                // and notify all observers, while raising an
+                // exception if something bad happened.
+                successful = false;
+            }
+        }
+        QL_ENSURE(successful, "could not notify one or more observers");
     }
 
 

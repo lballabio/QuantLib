@@ -33,6 +33,7 @@ namespace QuantLib {
     /*! \ingroup findiff */
     class BSMOperator : public TridiagonalOperator {
       public:
+        BSMOperator();
         BSMOperator(Size size, Real dx, Rate r, Rate q, Volatility sigma);
         BSMOperator(const Array& grid,
                     const boost::shared_ptr<BlackScholesProcess>&,

@@ -41,7 +41,7 @@ namespace QuantLib {
         Jibar(Integer n, TimeUnit units,
               const Handle<YieldTermStructure>& h,
               const DayCounter& dc = Actual365Fixed())
-        : Xibor("Jibar", n, units, 0, ZAR(),
+        : Xibor("Jibar", n, units, 0, ZARCurrency(),
                 SouthAfrica(), ModifiedFollowing, dc, h) {}
     };
 

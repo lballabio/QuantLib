@@ -35,7 +35,7 @@ namespace QuantLib {
         variance, skewness, kurtosis, error estimation, etc.)
 
         \warning high moments are numerically unstable for high
-                 average/standardDeviation ratios
+                 average/standardDeviation ratios.
     */
     class IncrementalStatistics {
       public:

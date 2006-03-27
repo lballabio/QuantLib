@@ -26,6 +26,8 @@
 #define quantlib_callability_schedule_hpp
 
 #include <ql/event.hpp>
+#include <ql/Utilities/null.hpp>
+#include <boost/optional.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -33,8 +35,12 @@ namespace QuantLib {
     class Price {
       public:
         enum Type { Dirty, Clean };
+        Price() : amount_(Null<Real>()) {}
         Price(Real amount, Type type) : amount_(amount), type_(type) {}
-        Real amount() const { return amount_; }
+        Real amount() const {
+            QL_REQUIRE(amount_ != Null<Real>(), "no amount given");
+            return amount_;
+        }
         Type type() const { return type_; }
       private:
         Real amount_;
@@ -44,13 +50,17 @@ namespace QuantLib {
     class Callability : public Event {
       public:
         enum Type { Call, Put };
-        Callability(Price price, Type type, Date date)
+        Callability() {}
+        Callability(const Price& price, Type type, const Date& date)
         : price_(price), type_(type), date_(date) {}
-        const Price& price() const { return price_; }
+        const Price& price() const {
+            QL_REQUIRE(price_, "no price given");
+            return *price_;
+        }
         Type type() const { return type_; }
         Date date() const { return date_; }
       private:
-        Price price_;
+        boost::optional<Price> price_;
         Type type_;
         Date date_;
     };

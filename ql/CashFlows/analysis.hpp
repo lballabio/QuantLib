@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2005 Charles Whitmore
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -96,45 +96,47 @@ namespace QuantLib {
                         Size maxIterations = 10000,
                         Rate guess = 0.05);
 
-        //! Cash-flow convexity
-        /*! The convexity is defined as
-            \f[
-            C = \sum t^2 c_t P_t
-            \f]
-            where \f$ c_t \f$ is the amount of the cash flow and \f$
-            P_t \f$ is the discount at time \f$ t \f$ as implied by
-            the given interest rate.
-        */
-        static Real convexity(const std::vector<boost::shared_ptr<CashFlow> >&,
-                              const InterestRate&,
-                              Date settlementDate = Date());
-
         //! Cash-flow duration.
-        /*! The simple duration is defined as
+        /*! The simple duration of a string of cash flows is defined as
             \f[
-            D_{\mathrm{simple}} = \frac{\sum t c_t P_t}{\sum c_t P_t}
+            D_{\mathrm{simple}} = \frac{\sum t_i c_i B(t_i)}{\sum c_i B(t_i)}
             \f]
-            where \f$ c_t \f$ is the amount of the cash flow and \f$
-            P_t \f$ is the discount at time \f$ t \f$ as implied by
-            the given interest rate.
+            where \f$ c_i \f$ is the amount of the \f$ i \f$-th cash
+            flow, \f$ t_i \f$ is its payment time, and \f$ B(t_i) \f$
+            is the corresponding discount according to the passed yield.
 
-            The modified duration is
+            The modified duration is defined as
             \f[
-            D_{\mathrm{modified}} = \frac{1}{y} D_{\mathrm{simple}}
+            D_{\mathrm{modified}} = -\frac{1}{P} \frac{\partial P}{\partial y}
             \f]
-            where \f$ y \f$ is the IRR.
+            where \f$ P \f$ is the present value of the cash flows
+            according to the given IRR \f$ y \f$.
 
-            Finally, the Macaulay duration is
+            The Macaulay duration is defined for a compounded IRR as
             \f[
-            D_{\mathrm{Macaulay}} = \frac{\sum t c_t P'_t}{\sum c_t P'_t}
+            D_{\mathrm{Macaulay}} = \left( 1 + \frac{y}{N} \right)
+                                    D_{\mathrm{modified}}
             \f]
-            where \f$ P'_t = e^{-yt} \f$ and \f$ y \f$ is the IRR.
+            where \f$ y \f$ is the IRR and \f$ N \f$ is the number of
+            cash flows per year.
         */
         static Time duration(const std::vector<boost::shared_ptr<CashFlow> >&,
-                             Real marketPrice,
-                             const InterestRate&,
-                             Duration::Type type = Duration::Simple,
+                             const InterestRate& y,
+                             Duration::Type type = Duration::Modified,
                              Date settlementDate = Date());
+
+
+        //! Cash-flow convexity
+        /*! The convexity of a string of cash flows is defined as
+            \f[
+            C = \frac{1}{P} \frac{\partial^2 P}{\partial y^2}
+            \f]
+            where \f$ P \f$ is the present value of the cash flows
+            according to the given IRR \f$ y \f$.
+        */
+        static Real convexity(const std::vector<boost::shared_ptr<CashFlow> >&,
+                              const InterestRate& y,
+                              Date settlementDate = Date());
     };
 
 }

@@ -480,8 +480,10 @@ test_suite* PiecewiseYieldCurveTest::suite() {
                  &PiecewiseYieldCurveTest::testLogLinearDiscountConsistency));
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearDiscountConsistency));
+    #if !defined(QL_USE_INDEXED_COUPON)
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLogLinearZeroConsistency));
+    #endif
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearZeroConsistency));
     suite->add(BOOST_TEST_CASE(

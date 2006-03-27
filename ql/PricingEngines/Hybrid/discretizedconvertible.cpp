@@ -128,7 +128,7 @@ namespace QuantLib {
 		Array grid = method()->grid(time());
         for (Size j=0; j<values_.size(); j++) {
             Real payoff = arguments_.conversionRatio*grid[j];
-            if (values_[j] < payoff) {
+            if (values_[j] <= payoff) {
                 values_[j] = payoff;
                 conversionProbability_[j] = 1.0;
             }
@@ -137,11 +137,15 @@ namespace QuantLib {
 
     void DiscretizedConvertible::applyCallability(Size i) {
         Size j;
+        Array grid = method()->grid(time());
         switch (arguments_.callabilityTypes[i]) {
           case Callability::Call:
             for (j=0; j<values_.size(); j++) {
-                values_[j] = std::min(values_[j],
-                                      arguments_.callabilityPrices[i]);
+                // exercising the callability might trigger conversion
+                values_[j] =
+                    std::min(std::max(arguments_.callabilityPrices[i],
+                                      arguments_.conversionRatio*grid[j]),
+                             values_[j]);
             }
             break;
           case Callability::Put:

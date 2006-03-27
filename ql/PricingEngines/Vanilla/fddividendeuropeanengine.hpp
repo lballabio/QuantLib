@@ -24,6 +24,7 @@
 #ifndef quantlib_fd_dividend_european_engine_hpp
 #define quantlib_fd_dividend_european_engine_hpp
 
+#include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
 
 namespace QuantLib {
@@ -37,15 +38,15 @@ namespace QuantLib {
         - the invariance of the results upon addition of null
           dividends is tested.
     */
-    typedef FDEngineAdapter<FDDividendEngine, 
+    typedef FDEngineAdapter<FDDividendEngine,
                             DividendVanillaOption::engine>
     FDDividendEuropeanEngine;
 
-    typedef FDEngineAdapter<FDDividendEngineMerton73, 
+    typedef FDEngineAdapter<FDDividendEngineMerton73,
                             DividendVanillaOption::engine>
     FDDividendEuropeanEngineMerton73;
-    
-    typedef FDEngineAdapter<FDDividendEngineShiftScale, 
+
+    typedef FDEngineAdapter<FDDividendEngineShiftScale,
                             DividendVanillaOption::engine>
     FDDividendEuropeanEngineShiftScale;
 }

@@ -38,10 +38,10 @@ namespace QuantLib {
         maturityDate_ = calendar.adjust(maturityDate,paymentConvention);
         frequency_ = Once;
 
-        redemption_ = boost::shared_ptr<CashFlow>(
-                                new SimpleCashFlow(redemption,maturityDate_));
-
-        cashFlows_ = std::vector<boost::shared_ptr<CashFlow> >();
+        cashflows_ = std::vector<boost::shared_ptr<CashFlow> >();
+        // redemption
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(
+                               new SimpleCashFlow(redemption,maturityDate_)));
     }
 
 }

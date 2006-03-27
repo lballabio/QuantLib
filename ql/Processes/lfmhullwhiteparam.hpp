@@ -53,8 +53,10 @@ namespace QuantLib {
             Time t, const Array& x = Null<Array>()) const;
 
       protected:
+        Size nextIndexReset(Time t) const;
+
         Matrix diffusion_, covariance_;
-        const boost::shared_ptr<LiborForwardModelProcess> process_;
+        std::vector<Time> fixingTimes_;
     };
 
 }

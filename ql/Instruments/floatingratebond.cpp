@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,14 +48,11 @@ namespace QuantLib {
         maturityDate_ = calendar.adjust(maturityDate,convention);
         frequency_ = couponFrequency;
 
-        redemption_ = boost::shared_ptr<CashFlow>(
-                                new SimpleCashFlow(redemption,maturityDate_));
-
         Schedule schedule(calendar, datedDate, maturityDate,
                           couponFrequency, convention,
                           stub, fromEnd);
 
-        cashFlows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
+        cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
                                              schedule, convention,
                                              std::vector<Real>(1, 100.0),
                                              index, fixingDays,
@@ -64,6 +61,10 @@ namespace QuantLib {
                                              , (const UpFrontIndexedCoupon*) 0
                                              #endif
                                              );
+        // redemption
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(
+                               new SimpleCashFlow(redemption,maturityDate_)));
+
         registerWith(index);
     }
     #endif
@@ -92,14 +93,11 @@ namespace QuantLib {
         maturityDate_ = calendar.adjust(maturityDate,paymentConvention);
         frequency_ = couponFrequency;
 
-        redemption_ = boost::shared_ptr<CashFlow>(
-                                new SimpleCashFlow(redemption,maturityDate_));
-
         Schedule schedule(calendar, datedDate, maturityDate,
                           couponFrequency, accrualConvention,
                           stub, fromEnd);
 
-        cashFlows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
+        cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
                                              schedule, paymentConvention,
                                              std::vector<Real>(1, 100.0),
                                              index, fixingDays,
@@ -108,6 +106,10 @@ namespace QuantLib {
                                              , (const UpFrontIndexedCoupon*) 0
                                              #endif
                                              );
+        // redemption
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(
+                               new SimpleCashFlow(redemption,maturityDate_)));
+
         registerWith(index);
     }
 

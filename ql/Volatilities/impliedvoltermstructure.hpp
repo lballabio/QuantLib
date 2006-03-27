@@ -37,7 +37,7 @@ namespace QuantLib {
         \warning It doesn't make financial sense to have an
                  asset-dependant implied Vol Term Structure.  This
                  class should be used with term structures that are
-                 time dependant only
+                 time dependant only.
     */
     class ImpliedVolTermStructure : public BlackVarianceTermStructure {
       public:

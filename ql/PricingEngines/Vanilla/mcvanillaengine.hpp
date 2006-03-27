@@ -64,7 +64,18 @@ namespace QuantLib {
                         BigNatural seed);
         // McSimulation implementation
         TimeGrid timeGrid() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const;
+        boost::shared_ptr<path_generator_type> pathGenerator() const {
+
+            typedef typename MC::rng_traits RNG;
+
+            Size dimensions = arguments_.stochasticProcess->factors();
+            TimeGrid grid = this->timeGrid();
+            typename RNG::rsg_type generator =
+                RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
+            return boost::shared_ptr<path_generator_type>(
+                   new path_generator_type(arguments_.stochasticProcess,
+                                           grid, generator, brownianBridge_));
+        }
         Real controlVariateValue() const;
         // data members
         Size timeSteps_, timeStepsPerYear_;
@@ -128,22 +139,6 @@ namespace QuantLib {
         } else {
             QL_FAIL("time steps not specified");
         }
-    }
-
-    template<class MC, class S>
-    inline
-    boost::shared_ptr<QL_TYPENAME MCVanillaEngine<MC,S>::path_generator_type>
-    MCVanillaEngine<MC,S>::pathGenerator() const {
-
-        typedef typename MC::rng_traits RNG;
-
-        Size dimensions = arguments_.stochasticProcess->factors();
-        TimeGrid grid = this->timeGrid();
-        typename RNG::rsg_type generator =
-            RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
-        return boost::shared_ptr<path_generator_type>(
-                   new path_generator_type(arguments_.stochasticProcess,
-                                           grid, generator, brownianBridge_));
     }
 
 }

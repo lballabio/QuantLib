@@ -42,7 +42,7 @@ namespace QuantLib {
         Euribor(Integer n, TimeUnit units,
                 const Handle<YieldTermStructure>& h,
                 const DayCounter& dc = Actual360())
-        : Xibor("Euribor", n, units, 2, EUR(),
+        : Xibor("Euribor", n, units, 2, EURCurrency(),
                 TARGET(),
                 ModifiedFollowing, dc, h) {}
     };

@@ -37,9 +37,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class ARS : public Currency {
+    class ARSCurrency : public Currency {
       public:
-        ARS() {
+        ARSCurrency() {
             static boost::shared_ptr<Data> arsData(
                                        new Data("Argentinian peso", "ARS", 32,
                                                 "", "", 100,
@@ -48,10 +48,6 @@ namespace QuantLib {
             data_ = arsData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to ARS */
-    typedef ARS ARSCurrency;
-    #endif
 
     //! Brazilian real
     /*! The ISO three-letter code is BRL; the numeric code is 986.
@@ -59,9 +55,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class BRL : public Currency {
+    class BRLCurrency : public Currency {
       public:
-        BRL() {
+        BRLCurrency() {
             static boost::shared_ptr<Data> brlData(
                                         new Data("Brazilian real", "BRL", 986,
                                                  "R$", "", 100,
@@ -70,10 +66,6 @@ namespace QuantLib {
             data_ = brlData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to BRL */
-    typedef BRL BRLCurrency;
-    #endif
 
     //! Canadian dollar
     /*! The ISO three-letter code is CAD; the numeric code is 124.
@@ -81,9 +73,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class CAD : public Currency {
+    class CADCurrency : public Currency {
       public:
-        CAD() {
+        CADCurrency() {
             static boost::shared_ptr<Data> cadData(
                                        new Data("Canadian dollar", "CAD", 124,
                                                 "Can$", "", 100,
@@ -92,10 +84,6 @@ namespace QuantLib {
             data_ = cadData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to CAD */
-    typedef CAD CADCurrency;
-    #endif
 
     //! Chilean peso
     /*! The ISO three-letter code is CLP; the numeric code is 152.
@@ -103,9 +91,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class CLP : public Currency {
+    class CLPCurrency : public Currency {
       public:
-        CLP() {
+        CLPCurrency() {
             static boost::shared_ptr<Data> clpData(
                                           new Data("Chilean peso", "CLP", 152,
                                                    "Ch$", "", 100,
@@ -114,10 +102,6 @@ namespace QuantLib {
             data_ = clpData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to CLP */
-    typedef CLP CLPCurrency;
-    #endif
 
     //! Colombian peso
     /*! The ISO three-letter code is COP; the numeric code is 170.
@@ -125,9 +109,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class COP : public Currency {
+    class COPCurrency : public Currency {
       public:
-        COP() {
+        COPCurrency() {
             static boost::shared_ptr<Data> copData(
                                         new Data("Colombian peso", "COP", 170,
                                                  "Col$", "", 100,
@@ -136,10 +120,6 @@ namespace QuantLib {
             data_ = copData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to COP */
-    typedef COP COPCurrency;
-    #endif
 
     //! Mexican peso
     /*! The ISO three-letter code is MXN; the numeric code is 484.
@@ -147,9 +127,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class MXN : public Currency {
+    class MXNCurrency : public Currency {
       public:
-        MXN() {
+        MXNCurrency() {
             static boost::shared_ptr<Data> mxnData(
                                           new Data("Mexican peso", "MXN", 484,
                                                    "Mex$", "", 100,
@@ -158,10 +138,6 @@ namespace QuantLib {
             data_ = mxnData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to MXN */
-    typedef MXN MXNCurrency;
-    #endif
 
     //! Trinidad & Tobago dollar
     /*! The ISO three-letter code is TTD; the numeric code is 780.
@@ -169,9 +145,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class TTD : public Currency {
+    class TTDCurrency : public Currency {
       public:
-        TTD() {
+        TTDCurrency() {
             static boost::shared_ptr<Data> ttdData(
                               new Data("Trinidad & Tobago dollar", "TTD", 780,
                                        "TT$", "", 100,
@@ -180,10 +156,6 @@ namespace QuantLib {
             data_ = ttdData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to TTD */
-    typedef TTD TTDCurrency;
-    #endif
 
     //! U.S. dollar
     /*! The ISO three-letter code is USD; the numeric code is 840.
@@ -191,9 +163,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class USD : public Currency {
+    class USDCurrency : public Currency {
       public:
-        USD() {
+        USDCurrency() {
             static boost::shared_ptr<Data> usdData(
                                            new Data("U.S. dollar", "USD", 840,
                                                     "$", "\xA2", 100,
@@ -202,10 +174,6 @@ namespace QuantLib {
             data_ = usdData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to USD */
-    typedef USD USDCurrency;
-    #endif
 
     //! Venezuelan bolivar
     /*! The ISO three-letter code is VEB; the numeric code is 862.
@@ -213,9 +181,9 @@ namespace QuantLib {
 
         \ingroup currencies
     */
-    class VEB : public Currency {
+    class VEBCurrency : public Currency {
       public:
-        VEB() {
+        VEBCurrency() {
             static boost::shared_ptr<Data> vebData(
                                     new Data("Venezuelan bolivar", "VEB", 862,
                                              "Bs", "", 100,
@@ -224,10 +192,6 @@ namespace QuantLib {
             data_ = vebData;
         }
     };
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to VEB */
-    typedef VEB VEBCurrency;
-    #endif
 
 }
 

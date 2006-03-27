@@ -50,6 +50,8 @@ namespace QuantLib {
 
         \test the correctness is tested by Monte-Carlo reproduction of
               caplet & ratchet NPVs and comparison with Black pricing.
+
+        \warning this class does not work correctly with Visual C++ 6.
     */
     class LiborForwardModelProcess : public StochasticProcess {
       public:

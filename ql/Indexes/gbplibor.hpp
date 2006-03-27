@@ -41,7 +41,7 @@ namespace QuantLib {
         GBPLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual365Fixed())
-        : Libor("GBPLibor", n, units, 0, GBP(),
+        : Libor("GBPLibor", n, units, 0, GBPCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange),
                 UnitedKingdom(UnitedKingdom::Exchange),
                 ModifiedFollowing, dc, h) {}

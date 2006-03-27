@@ -58,9 +58,7 @@ namespace QuantLib {
         //! returns the spreaded forward rate
         Rate forwardImpl(Time) const;
         //! returns the spreaded zero yield rate
-        /*! \warning This method must disappear should the spread
-                     become a curve
-        */
+        /* This method must disappear should the spread become a curve */
         Rate zeroYieldImpl(Time) const;
       private:
         Handle<YieldTermStructure> originalCurve_;

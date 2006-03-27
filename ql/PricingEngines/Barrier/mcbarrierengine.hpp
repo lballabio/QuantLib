@@ -84,7 +84,18 @@ namespace QuantLib {
       protected:
         // McSimulation implementation
         TimeGrid timeGrid() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const;
+        boost::shared_ptr<path_generator_type> pathGenerator() const {
+            boost::shared_ptr<BlackScholesProcess> process =
+                boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+            QL_REQUIRE(process, "Black-Scholes process required");
+            TimeGrid grid = timeGrid();
+            typename RNG::rsg_type gen =
+                RNG::make_sequence_generator(grid.size()-1,seed_);
+            return boost::shared_ptr<path_generator_type>(
+                         new path_generator_type(process,
+                                                 grid, gen, brownianBridge_));
+        }
         boost::shared_ptr<path_pricer_type> pathPricer() const;
         // Real controlVariateValue() const;
         // data members
@@ -165,23 +176,6 @@ namespace QuantLib {
         return TimeGrid(residualTime,
                         Size(std::max<Real>(residualTime*maxTimeStepsPerYear_,
                                             1.0)));
-    }
-
-    template <class RNG, class S>
-    inline
-    boost::shared_ptr<QL_TYPENAME MCBarrierEngine<RNG,S>::path_generator_type>
-    MCBarrierEngine<RNG,S>::pathGenerator() const
-    {
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
-                                                arguments_.stochasticProcess);
-        QL_REQUIRE(process, "Black-Scholes process required");
-        TimeGrid grid = timeGrid();
-        typename RNG::rsg_type gen =
-            RNG::make_sequence_generator(grid.size()-1,seed_);
-        return boost::shared_ptr<path_generator_type>(
-                         new path_generator_type(process,
-                                                 grid, gen, brownianBridge_));
     }
 
 

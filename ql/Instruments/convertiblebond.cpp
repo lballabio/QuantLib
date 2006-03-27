@@ -52,9 +52,6 @@ namespace QuantLib {
 
         setPricingEngine(engine);
 
-        redemption_ = boost::shared_ptr<CashFlow>(
-                                new SimpleCashFlow(redemption,maturityDate_));
-
         registerWith(process);
         registerWith(creditSpread);
     }
@@ -83,12 +80,15 @@ namespace QuantLib {
                       dividends, callability, creditSpread, issueDate,
                       settlementDays, dayCounter, schedule, redemption) {
 
-        cashFlows_ = std::vector<boost::shared_ptr<CashFlow> >();
+        cashflows_ = std::vector<boost::shared_ptr<CashFlow> >();
+        // redemption
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(
+                               new SimpleCashFlow(redemption,maturityDate_)));
 
         option_ = boost::shared_ptr<option>(
                            new option(this, process, exercise, engine,
                                       conversionRatio, dividends, callability,
-                                      creditSpread, cashFlows_, dayCounter,
+                                      creditSpread, cashflows_, dayCounter,
                                       schedule, issueDate, settlementDays,
                                       redemption));
     }
@@ -112,15 +112,18 @@ namespace QuantLib {
                       dividends, callability, creditSpread, issueDate,
                       settlementDays, dayCounter, schedule, redemption) {
 
-        cashFlows_ =
+        cashflows_ =
             FixedRateCouponVector(schedule, schedule.businessDayConvention(),
                                   std::vector<Real>(1, 100.0),
                                   coupons, dayCounter);
+        // redemption
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(
+                               new SimpleCashFlow(redemption,maturityDate_)));
 
         option_ = boost::shared_ptr<option>(
                            new option(this, process, exercise, engine,
                                       conversionRatio, dividends, callability,
-                                      creditSpread, cashFlows_, dayCounter,
+                                      creditSpread, cashflows_, dayCounter,
                                       schedule, issueDate, settlementDays,
                                       redemption));
     }
@@ -146,7 +149,7 @@ namespace QuantLib {
                       dividends, callability, creditSpread, issueDate,
                       settlementDays, dayCounter, schedule, redemption) {
 
-        cashFlows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
+        cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
                                    schedule, schedule.businessDayConvention(),
                                    std::vector<Real>(1, 100.0),
                                    index, fixingDays,
@@ -155,11 +158,14 @@ namespace QuantLib {
                                    , (const UpFrontIndexedCoupon*) 0
                                    #endif
                                    );
+        // redemption
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(
+                               new SimpleCashFlow(redemption,maturityDate_)));
 
         option_ = boost::shared_ptr<option>(
                            new option(this, process, exercise, engine,
                                       conversionRatio, dividends, callability,
-                                      creditSpread, cashFlows_, dayCounter,
+                                      creditSpread, cashflows_, dayCounter,
                                       schedule, issueDate, settlementDays,
                                       redemption));
     }
@@ -175,7 +181,7 @@ namespace QuantLib {
             const DividendSchedule&  dividends,
             const CallabilitySchedule& callability,
             const Handle<Quote>& creditSpread,
-            const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
+            const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
             const DayCounter& dayCounter,
             const Schedule& schedule,
             const Date& issueDate,
@@ -188,7 +194,7 @@ namespace QuantLib {
                     exercise, engine),
       bond_(bond), conversionRatio_(conversionRatio),
       callability_(callability), dividends_(dividends),
-      creditSpread_(creditSpread), cashFlows_(cashFlows),
+      creditSpread_(creditSpread), cashflows_(cashflows),
       dayCounter_(dayCounter), issueDate_(issueDate), schedule_(schedule),
       settlementDays_(settlementDays), redemption_(redemption) {}
 
@@ -220,28 +226,33 @@ namespace QuantLib {
                 dayCounter.yearFraction(settlement, exercise_->date(i));
         }
 
-        moreArgs->callabilityTimes = std::vector<Time>(callability_.size());
-        moreArgs->callabilityTypes =
-            std::vector<Callability::Type>(callability_.size());
-        moreArgs->callabilityPrices = std::vector<Real>(callability_.size());
+        moreArgs->callabilityTimes.clear();
+        moreArgs->callabilityTypes.clear();
+        moreArgs->callabilityPrices.clear();
         for (i=0; i<callability_.size(); i++) {
-            moreArgs->callabilityTypes[i] = callability_[i].type();
-            moreArgs->callabilityTimes[i] =
-                dayCounter.yearFraction(settlement, callability_[i].date());
-            moreArgs->callabilityPrices[i] = callability_[i].price().amount();
-            if (callability_[i].price().type() == Price::Dirty)
-                moreArgs->callabilityPrices[i] -=
-                    bond_->accruedAmount(callability_[i].date());
+            if (!callability_[i].hasOccurred(settlement)) {
+                moreArgs->callabilityTypes.push_back(callability_[i].type());
+                moreArgs->callabilityTimes.push_back(
+                             dayCounter.yearFraction(settlement,
+                                                     callability_[i].date()));
+                moreArgs->callabilityPrices.push_back(
+                                            callability_[i].price().amount());
+                if (callability_[i].price().type() == Price::Clean)
+                    moreArgs->callabilityPrices.back() +=
+                        bond_->accruedAmount(callability_[i].date());
+            }
         }
 
         const std::vector<boost::shared_ptr<CashFlow> >& cashflows =
                                                            bond_->cashflows();
-        moreArgs->couponTimes = std::vector<Time>(cashflows.size());
-        moreArgs->couponAmounts = std::vector<Real>(cashflows.size());
-        for (i=0; i<cashflows.size(); i++) {
-            moreArgs->couponTimes[i] =
-                dayCounter.yearFraction(settlement, cashflows[i]->date());
-            moreArgs->couponAmounts[i] = cashflows[i]->amount();
+        moreArgs->couponTimes.clear();
+        moreArgs->couponAmounts.clear();
+        for (i=0; i<cashflows.size()-1; i++) {
+            if (!cashflows[i]->hasOccurred(settlement)) {
+                moreArgs->couponTimes.push_back(
+                    dayCounter.yearFraction(settlement,cashflows[i]->date()));
+                moreArgs->couponAmounts.push_back(cashflows[i]->amount());
+            }
         }
 
         moreArgs->creditSpread = creditSpread_;

@@ -24,6 +24,7 @@
 #ifndef quantlib_fd_dividend_american_engine_hpp
 #define quantlib_fd_dividend_american_engine_hpp
 
+#include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdconditions.hpp>
 
@@ -42,15 +43,15 @@ namespace QuantLib {
         \bug method impliedVolatility() utterly fails
     */
     typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngine>,
-                            DividendVanillaOption::engine> 
+                            DividendVanillaOption::engine>
     FDDividendAmericanEngine;
 
     typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngineMerton73>,
-                            DividendVanillaOption::engine> 
+                            DividendVanillaOption::engine>
     FDDividendAmericanEngineMerton73;
 
     typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngineShiftScale>,
-                            DividendVanillaOption::engine> 
+                            DividendVanillaOption::engine>
     FDDividendAmericanEngineShiftScale;
 }
 

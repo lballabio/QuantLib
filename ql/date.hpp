@@ -326,7 +326,8 @@ namespace QuantLib {
             International Money Market section of the Chicago Mercantile
             Exchange.
 
-            \warning The result date is following or equal to the original date
+            \warning The result date is following or equal to the
+                     original date.
         */
         static Date nextIMMdate(const Date& d);
         //! returns a data object from an ISO date String YYYY-MM-DD

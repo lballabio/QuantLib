@@ -44,7 +44,7 @@ namespace QuantLib {
         Tibor(Integer n, TimeUnit units,
               const Handle<YieldTermStructure>& h,
               const DayCounter& dc = Actual365Fixed())
-        : Xibor("Tibor", n, units, 2, JPY(),
+        : Xibor("Tibor", n, units, 2, JPYCurrency(),
                 Japan(), ModifiedFollowing, dc, h) {}
     };
 

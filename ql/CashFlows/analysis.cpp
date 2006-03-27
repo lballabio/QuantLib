@@ -84,6 +84,92 @@ namespace QuantLib {
             Real result_;
         };
 
+        Real simpleDuration(
+                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const InterestRate& rate,
+                   Date settlementDate) {
+
+            Real P = 0.0;
+            Real tP = 0.0;
+
+            for (Size i=0; i<cashflows.size(); i++) {
+                if (!cashflows[i]->hasOccurred(settlementDate)) {
+                    Time t =
+                        rate.dayCounter().yearFraction(settlementDate,
+                                                       cashflows[i]->date());
+                    Real c = cashflows[i]->amount();
+                    DiscountFactor B = rate.discountFactor(t);
+
+                    P += c * B;
+                    tP += t * c * B;
+                }
+            }
+
+            if (P == 0.0)
+                // no cashflows
+                return 0.0;
+
+            return tP/P;
+        }
+
+        Real modifiedDuration(
+                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const InterestRate& rate,
+                   Date settlementDate) {
+
+            Real P = 0.0;
+            Real dPdy = 0.0;
+            Rate y = Rate(rate);
+            Integer N = rate.frequency();
+
+            for (Size i=0; i<cashflows.size(); i++) {
+                if (!cashflows[i]->hasOccurred(settlementDate)) {
+                    Time t =
+                        rate.dayCounter().yearFraction(settlementDate,
+                                                       cashflows[i]->date());
+                    Real c = cashflows[i]->amount();
+                    DiscountFactor B = rate.discountFactor(t);
+
+                    P += c * B;
+                    switch (rate.compounding()) {
+                      case Simple:
+                        dPdy -= c * B*B*t;
+                        break;
+                      case Compounded:
+                        dPdy -= c * B*t/(1+y/N);
+                        break;
+                      case Continuous:
+                        dPdy -= c * B*t;
+                        break;
+                      case SimpleThenCompounded:
+                      default:
+                        QL_FAIL("unsupported compounding type");
+                    }
+                }
+            }
+
+            if (P == 0.0)
+                // no cashflows
+                return 0.0;
+
+            return -dPdy/P;
+        }
+
+        Real macaulayDuration(
+                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const InterestRate& rate,
+                   Date settlementDate) {
+
+            Rate y = Rate(rate);
+            Integer N = rate.frequency();
+
+            QL_REQUIRE(rate.compounding() == Compounded,
+                       "compounded rate required");
+            QL_REQUIRE(N >= 1, "unsupported frequency");
+
+            return (1+y/N)*modifiedDuration(cashflows,rate,settlementDate);
+        }
+
     }
 
 
@@ -197,31 +283,8 @@ namespace QuantLib {
                             tolerance, guess, guess/10.0);
     }
 
-    Real Cashflows::convexity(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
-                   const InterestRate& r,
-                   Date settlementDate) {
-
-        if (settlementDate == Date())
-            settlementDate = Settings::instance().evaluationDate();
-
-        DayCounter dayCounter = r.dayCounter();
-
-        Real totalConvexity = 0.0;
-        for (Size i = 0; i < cashflows.size(); i++) {
-            if (!cashflows[i]->hasOccurred(settlementDate)) {
-                Time t = dayCounter.yearFraction(settlementDate,
-                                                 cashflows[i]->date());
-                DiscountFactor discount = r.discountFactor(t);
-                totalConvexity += t * t * cashflows[i]->amount() * discount;
-            }
-        }
-        return totalConvexity;
-    }
-
     Time Cashflows::duration(
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
-                   Real marketPrice,
                    const InterestRate& rate,
                    Duration::Type type,
                    Date settlementDate) {
@@ -229,45 +292,63 @@ namespace QuantLib {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
 
-        Real totalDuration = 0.0;
-        Real totalNPV = 0.0;
-
-        Rate y = 0.0;
-        if (type == Duration::Macaulay || type == Duration::Modified) {
-            y = irr(cashflows, marketPrice, rate.dayCounter(),
-                    rate.compounding(), rate.frequency(), settlementDate);
-        }
-
-        for (Size i = 0; i < cashflows.size(); i++) {
-            if (!cashflows[i]->hasOccurred(settlementDate)) {
-                Time t = rate.dayCounter().yearFraction(settlementDate,
-                                                        cashflows[i]->date());
-                Real c = cashflows[i]->amount();
-                DiscountFactor discount;
-                if (type == Duration::Macaulay)
-                    discount = std::exp(-y*t);
-                else
-                    discount = rate.discountFactor(t);
-
-                totalNPV += c * discount;
-                totalDuration += t * c * discount;
-            }
-        }
-        totalNPV -= marketPrice;
-
-        if (totalNPV == 0.0)
-            // what to do?
-            return 0.0;
-
-        switch (type){
-          case Duration::Modified:
-            return totalDuration / totalNPV / y;
+        switch (type) {
           case Duration::Simple:
+            return simpleDuration(cashflows,rate,settlementDate);
+          case Duration::Modified:
+            return modifiedDuration(cashflows,rate,settlementDate);
           case Duration::Macaulay:
-            return totalDuration/totalNPV;
+            return macaulayDuration(cashflows,rate,settlementDate);
           default:
             QL_FAIL("unknown duration type");
         }
+    }
+
+    Real Cashflows::convexity(
+                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const InterestRate& rate,
+                   Date settlementDate) {
+
+        if (settlementDate == Date())
+            settlementDate = Settings::instance().evaluationDate();
+
+        DayCounter dayCounter = rate.dayCounter();
+
+        Real P = 0.0;
+        Real d2Pdy2 = 0.0;
+        Rate y = Rate(rate);
+        Integer N = rate.frequency();
+
+        for (Size i=0; i<cashflows.size(); i++) {
+            if (!cashflows[i]->hasOccurred(settlementDate)) {
+                Time t = dayCounter.yearFraction(settlementDate,
+                                                 cashflows[i]->date());
+                Real c = cashflows[i]->amount();
+                DiscountFactor B = rate.discountFactor(t);
+
+                P += c * B;
+                switch (rate.compounding()) {
+                  case Simple:
+                    d2Pdy2 += c * 2.0*B*B*B*t*t;
+                    break;
+                  case Compounded:
+                    d2Pdy2 += c * B*t*(N*t+1)/(N*(1+y/N)*(1+y/N));
+                    break;
+                  case Continuous:
+                    d2Pdy2 += c * B*t*t;
+                    break;
+                  case SimpleThenCompounded:
+                  default:
+                    QL_FAIL("unsupported compounding type");
+                }
+            }
+        }
+
+        if (P == 0.0)
+            // no cashflows
+            return 0.0;
+
+        return d2Pdy2/P;
     }
 
 }

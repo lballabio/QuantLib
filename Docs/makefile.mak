@@ -119,6 +119,10 @@ tex-files:: tex-config
 	$(SED) -e "s/section/chapter/" oldbug.tex > bug.tex
 	del oldbug.tex
 
+	ren caveats.tex oldcaveats.tex
+	$(SED) -e "s/section/chapter/" oldcaveats.tex > caveats.tex
+	del oldcaveats.tex
+
 	ren test.tex oldtest.tex
 	$(SED) -e "s/section/chapter/" oldtest.tex > test.tex
 	del oldtest.tex

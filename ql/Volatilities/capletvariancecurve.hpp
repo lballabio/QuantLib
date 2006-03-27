@@ -61,7 +61,7 @@ namespace QuantLib {
                                 const std::vector<Volatility>& capletVolCurve,
                                 const DayCounter& dayCounter)
     : CapletVolatilityStructure(referenceDate),
-      blackCurve_(referenceDate, dates, capletVolCurve, dayCounter) {}
+      blackCurve_(referenceDate, dates, capletVolCurve, dayCounter, false) {}
 
     inline DayCounter CapletVarianceCurve::dayCounter() const {
         return blackCurve_.dayCounter();

@@ -15,7 +15,7 @@ EXTRA_DIST = \
     ConvertibleBonds.dev \
     ConvertibleBonds.dsp \
     ConvertibleBonds.vcproj \
-    ConvertibleBonds.vcproj \
+    ConvertibleBonds_vc8.vcproj \
     makefile.mak \
     ReadMe.txt
 

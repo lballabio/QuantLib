@@ -20,6 +20,10 @@
     This is an example of using the %QuantLib short rate models.
 */
 
+/*! \example ConvertibleBonds.cpp
+    This example evaluates convertible bond prices.
+*/
+
 /*! \example DiscreteHedging.cpp
     This is an example of using the %QuantLib Monte Carlo framework.
 */

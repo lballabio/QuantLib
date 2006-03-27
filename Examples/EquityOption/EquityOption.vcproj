@@ -12,9 +12,9 @@
 	</Platforms>
 	<Configurations>
 		<Configuration
-			Name="Release MTDLL|Win32"
-			OutputDirectory=".\build\vc71\ReleaseMTDLL"
-			IntermediateDirectory=".\build\vc71\ReleaseMTDLL"
+			Name="Release CRTDLL|Win32"
+			OutputDirectory=".\build\vc71\ReleaseCRTDLL"
+			IntermediateDirectory=".\build\vc71\ReleaseCRTDLL"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -37,12 +37,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\ReleaseMTDLL/EquityOption.pch"
-				AssemblerListingLocation=".\build\vc71\ReleaseMTDLL/"
-				ObjectFile=".\build\vc71\ReleaseMTDLL/"
-				ProgramDataBaseFileName=".\build\vc71\ReleaseMTDLL/"
+				PrecompiledHeaderFile=".\build\vc71\ReleaseCRTDLL/EquityOption.pch"
+				AssemblerListingLocation=".\build\vc71\ReleaseCRTDLL/"
+				ObjectFile=".\build\vc71\ReleaseCRTDLL/"
+				ProgramDataBaseFileName=".\build\vc71\ReleaseCRTDLL/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc71\ReleaseMTDLL/"
+				BrowseInformationFile=".\build\vc71\ReleaseCRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
@@ -54,12 +54,12 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc71\ReleaseMTDLL/EquityOption.pdb"
+				ProgramDatabaseFile=".\build\vc71\ReleaseCRTDLL/EquityOption.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\ReleaseMTDLL/EquityOption.tlb"
+				TypeLibraryName=".\build\vc71\ReleaseCRTDLL/EquityOption.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -363,9 +363,9 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Debug MTDLL|Win32"
-			OutputDirectory=".\build\vc71\DebugMTDLL"
-			IntermediateDirectory=".\build\vc71\DebugMTDLL"
+			Name="Debug CRTDLL|Win32"
+			OutputDirectory=".\build\vc71\DebugCRTDLL"
+			IntermediateDirectory=".\build\vc71\DebugCRTDLL"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -384,12 +384,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\DebugMTDLL/EquityOption.pch"
-				AssemblerListingLocation=".\build\vc71\DebugMTDLL/"
-				ObjectFile=".\build\vc71\DebugMTDLL/"
-				ProgramDataBaseFileName=".\build\vc71\DebugMTDLL/"
+				PrecompiledHeaderFile=".\build\vc71\DebugCRTDLL/EquityOption.pch"
+				AssemblerListingLocation=".\build\vc71\DebugCRTDLL/"
+				ObjectFile=".\build\vc71\DebugCRTDLL/"
+				ProgramDataBaseFileName=".\build\vc71\DebugCRTDLL/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc71\DebugMTDLL/"
+				BrowseInformationFile=".\build\vc71\DebugCRTDLL/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -403,12 +403,12 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\vc71\DebugMTDLL/EquityOption.pdb"
+				ProgramDatabaseFile=".\build\vc71\DebugCRTDLL/EquityOption.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\DebugMTDLL/EquityOption.tlb"
+				TypeLibraryName=".\build\vc71\DebugCRTDLL/EquityOption.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -441,7 +441,7 @@
 			<File
 				RelativePath="EquityOption.cpp">
 				<FileConfiguration
-					Name="Release MTDLL|Win32">
+					Name="Release CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -488,7 +488,7 @@
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug MTDLL|Win32">
+					Name="Debug CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"

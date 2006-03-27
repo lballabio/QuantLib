@@ -24,6 +24,7 @@
 #ifndef quantlib_fd_american_engine_hpp
 #define quantlib_fd_american_engine_hpp
 
+#include <ql/Instruments/oneassetoption.hpp>
 #include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdconditions.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
@@ -42,7 +43,7 @@ namespace QuantLib {
           reproducing numerical derivatives.
     */
     typedef FDEngineAdapter<FDAmericanCondition<FDStepConditionEngine>,
-                            OneAssetOption::engine> 
+                            OneAssetOption::engine>
     FDAmericanEngine;
 
 }

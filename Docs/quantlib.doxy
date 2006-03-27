@@ -24,7 +24,9 @@ DETAILS_AT_TOP         = YES
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 4
-ALIASES                = 
+ALIASES                = "warning=\xrefitem caveats \"Warning\" \"Caveats\""
+ALIASES               += "test=\xrefitem test \"Tests\" \"Test Suite\""
+ALIASES               += "bug=\xrefitem bug \"Bug\" \"Known Bugs\""
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
 BUILTIN_STL_SUPPORT    = YES
