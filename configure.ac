@@ -149,11 +149,13 @@ AC_ARG_ENABLE([error-lines],
                               the library.]),
               [ql_error_lines=$enableval],
               [ql_error_lines=no])
+AC_MSG_CHECKING([whether to add file and line information to errors])
 if test "$ql_error_lines" = "yes" ; then
    AC_DEFINE([QL_ERROR_LINES],[1],
              [Define this if error messages should include file and line
               information.])
 fi
+AC_MSG_RESULT([$ql_error_lines])
 
 AC_ARG_ENABLE([error-functions],
               AC_HELP_STRING([--enable-error-functions],
@@ -162,11 +164,13 @@ AC_ARG_ENABLE([error-functions],
                               the library.]),
               [ql_error_functions=$enableval],
               [ql_error_functions=no])
+AC_MSG_CHECKING([whether to add function information to errors])
 if test "$ql_error_functions" = "yes" ; then
    AC_DEFINE([QL_ERROR_FUNCTIONS],[1],
              [Define this if error messages should include current function
               information.])
 fi
+AC_MSG_RESULT([$ql_error_functions])
 
 AC_ARG_ENABLE([tracing],
               AC_HELP_STRING([--enable-tracing],
@@ -176,12 +180,15 @@ AC_ARG_ENABLE([tracing],
                               performance.]),
               [ql_tracing=$enableval],
               [ql_tracing=no])
+AC_MSG_CHECKING([whether to enable tracing])
 if test "$ql_tracing" = "yes" ; then
    AC_DEFINE([QL_ENABLE_TRACING],[1],
              [Define this if tracing messages should allowed (whether they
               are actually emitted will depend on run-time settings.)])
 fi
+AC_MSG_RESULT([$ql_tracing])
 
+AC_MSG_CHECKING([whether to enable indexed coupons])
 AC_ARG_ENABLE([indexed-coupons],
               AC_HELP_STRING([--enable-indexed-coupons],
                              [If enabled, indexed coupons (see the
@@ -195,7 +202,9 @@ if test "$ql_indexed_coupon" = "yes" ; then
              [Define this to use indexed coupons instead of par coupons in
               floating legs.])
 fi
+AC_MSG_RESULT([$ql_indexed_coupon])
 
+AC_MSG_CHECKING([whether to enable negative rates])
 AC_ARG_ENABLE([negative-rates],
               AC_HELP_STRING([--enable-negative-rates],
                              [If enabled, negative yield rates are allowed
@@ -209,7 +218,9 @@ if test "$ql_negative_rates" = "yes" ; then
              [Define this if negative yield rates should be allowed.
               This might not be safe.])
 fi
+AC_MSG_RESULT([$ql_negative_rates])
 
+AC_MSG_CHECKING([whether to enable extra safety checks])
 AC_ARG_ENABLE([extra-safety-checks],
               AC_HELP_STRING([--enable-extra-safety-checks],
                              [If enabled, extra run-time checks are added
@@ -222,7 +233,9 @@ if test "$ql_belt_and_braces" = "yes" ; then
              [Define this if extra safety checks should be performed.
               This can degrade performance.])
 fi
+AC_MSG_RESULT([$ql_belt_and_braces])
 
+AC_MSG_CHECKING([whether to enable early payments])
 AC_ARG_ENABLE([early-payments],
               AC_HELP_STRING([--enable-early-payments],
                              [If enabled (the default,) payments are
@@ -237,7 +250,9 @@ if test "$ql_early_payments" = "no" ; then
              [Define this if payments occurring today should enter the NPV
               of an instrument.])
 fi
+AC_MSG_RESULT([$ql_early_payments])
 
+AC_MSG_CHECKING([whether to enable deprecated code])
 AC_ARG_ENABLE([deprecated-code],
               AC_HELP_STRING([--enable-deprecated-code],
                              [If enabled (the default,) deprecated code
@@ -248,7 +263,9 @@ if test "$ql_use_deprecated_code" = "no" ; then
    AC_DEFINE([QL_DISABLE_DEPRECATED],[1],
              [Define this if you want to disable deprecated code.])
 fi
+AC_MSG_RESULT([$ql_use_deprecated_code])
 
+AC_MSG_CHECKING([whether to enable sessions])
 AC_ARG_ENABLE([sessions],
               AC_HELP_STRING([--enable-sessions],
                              [If enabled, singletons will return different
@@ -263,7 +280,9 @@ if test "$ql_use_sessions" = "yes" ; then
    AC_DEFINE([QL_ENABLE_SESSIONS],[1],
              [Define this if you want to enable sessions.])
 fi
+AC_MSG_RESULT([$ql_use_sessions])
 
+AC_MSG_CHECKING([whether to install examples])
 AC_ARG_ENABLE([examples],
               AC_HELP_STRING([--enable-examples],
                              [If enabled, examples are built and installed
@@ -273,6 +292,7 @@ AC_ARG_ENABLE([examples],
               [ql_install_examples=$enableval],
               [ql_install_examples=no])
 AM_CONDITIONAL(AUTO_EXAMPLES, test "$ql_install_examples" != "no")
+AC_MSG_RESULT([$ql_install_examples])
 
 
 # manual configurations for specific hosts
