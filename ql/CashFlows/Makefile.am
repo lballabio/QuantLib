@@ -6,7 +6,6 @@ include_HEADERS = \
         all.hpp \
         core.hpp \
         analysis.hpp \
-        basispointsensitivity.hpp \
         cashflowvectors.hpp \
         coupon.hpp \
         dividend.hpp \
@@ -24,7 +23,6 @@ include_HEADERS = \
 
 libCashFlows_la_SOURCES = \
     analysis.cpp \
-    basispointsensitivity.cpp \
     cashflowvectors.cpp \
     inarrearindexedcoupon.cpp \
     parcoupon.cpp \

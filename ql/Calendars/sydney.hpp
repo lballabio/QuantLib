@@ -59,11 +59,6 @@ namespace QuantLib {
         Australia();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Australia */
-    typedef Australia Sydney;
-    #endif
-
 }
 
 

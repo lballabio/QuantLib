@@ -25,32 +25,6 @@ namespace QuantLib {
         void no_deletion(YieldTermStructure*) {}
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    FixedCouponBondHelper::FixedCouponBondHelper(
-                                             const Handle<Quote>& cleanPrice,
-                                             const Date& issueDate,
-                                             const Date& datedDate,
-                                             const Date& maturityDate,
-                                             Integer settlementDays,
-                                             const std::vector<Rate>& coupons,
-                                             Frequency frequency,
-                                             const DayCounter& dayCounter,
-                                             const Calendar& calendar,
-                                             BusinessDayConvention convention,
-                                             Real redemption,
-                                             const Date& stub, bool fromEnd)
-	: RateHelper(cleanPrice),
-      issueDate_(issueDate), datedDate_(datedDate),
-      maturityDate_(maturityDate), settlementDays_(settlementDays),
-      coupons_(coupons), frequency_(frequency), dayCounter_(dayCounter),
-      calendar_(calendar), accrualConvention_(convention),
-      paymentConvention_(convention), redemption_(redemption),
-      stub_(stub), fromEnd_(fromEnd) {
-
-		registerWith(Settings::instance().evaluationDate());
-	}
-    #endif
-
     FixedCouponBondHelper::FixedCouponBondHelper(
                                       const Handle<Quote>& cleanPrice,
                                       const Date& issueDate,

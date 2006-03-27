@@ -29,7 +29,6 @@ include_HEADERS = \
 	singapore.hpp \
 	stockholm.hpp \
 	sydney.hpp \
-	taipei.hpp \
 	taiwan.hpp \
 	target.hpp \
 	tokyo.hpp \

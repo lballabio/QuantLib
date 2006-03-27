@@ -51,19 +51,6 @@ namespace QuantLib {
       public:
         class arguments;
         class results;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the other constructor */
-        VanillaSwap(bool payFixedRate,
-                    Real nominal,
-                    const Schedule& fixedSchedule,
-                    Rate fixedRate,
-                    const DayCounter& fixedDayCount,
-                    const Schedule& floatSchedule,
-                    const boost::shared_ptr<Xibor>& index,
-                    Integer indexFixingDays,
-                    Spread spread,
-                    const Handle<YieldTermStructure>& termStructure);
-        #endif
         VanillaSwap(bool payFixedRate,
                     Real nominal,
                     const Schedule& fixedSchedule,
@@ -102,11 +89,6 @@ namespace QuantLib {
         mutable Rate fairRate_;
         mutable Spread fairSpread_;
     };
-
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to PlainSwap */
-    typedef VanillaSwap SimpleSwap;
-    #endif
 
 
     //! %Arguments for simple swap calculation

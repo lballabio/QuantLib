@@ -24,55 +24,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    VanillaSwap::VanillaSwap(bool payFixedRate,
-                             Real nominal,
-                             const Schedule& fixedSchedule,
-                             Rate fixedRate,
-                             const DayCounter& fixedDayCount,
-                             const Schedule& floatSchedule,
-                             const boost::shared_ptr<Xibor>& index,
-                             Integer indexFixingDays,
-                             Spread spread,
-                             const Handle<YieldTermStructure>& termStructure)
-    : Swap(std::vector<boost::shared_ptr<CashFlow> >(),
-           std::vector<boost::shared_ptr<CashFlow> >(),
-           termStructure),
-      payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread),
-      nominal_(nominal) {
-
-        BusinessDayConvention convention =
-            floatSchedule.businessDayConvention();
-
-        std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
-            FixedRateCouponVector(fixedSchedule,
-                                  convention,
-                                  std::vector<Real>(1,nominal),
-                                  std::vector<Rate>(1,fixedRate),
-                                  fixedDayCount);
-
-        std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-            FloatingRateCouponVector(floatSchedule,
-                                     convention,
-                                     std::vector<Real>(1,nominal),
-                                     index, indexFixingDays,
-                                     std::vector<Spread>(1,spread),
-                                     index->dayCounter());
-        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
-
-        for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
-            registerWith(*i);
-
-        if (payFixedRate_) {
-            firstLeg_ = fixedLeg;
-            secondLeg_ = floatingLeg;
-        } else {
-            firstLeg_ = floatingLeg;
-            secondLeg_ = fixedLeg;
-        }
-    }
-    #endif
-
     VanillaSwap::VanillaSwap(bool payFixedRate,
                              Real nominal,
                              const Schedule& fixedSchedule,

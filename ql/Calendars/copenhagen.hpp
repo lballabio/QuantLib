@@ -58,11 +58,6 @@ namespace QuantLib {
         Denmark();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Denmark */
-    typedef Denmark Copenhagen;
-    #endif
-
 }
 
 

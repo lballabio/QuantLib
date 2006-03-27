@@ -74,11 +74,6 @@ namespace QuantLib {
         India(Market m = NSE);
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated use India(India::NSE) */
-    typedef India Bombay;
-    #endif
-
 }
 
 

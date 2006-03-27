@@ -38,24 +38,6 @@ namespace QuantLib {
     */
     class FixedCouponBond : public Bond {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the other constructor */
-        FixedCouponBond(const Date& issueDate,
-                        const Date& datedDate,
-                        const Date& maturityDate,
-                        Integer settlementDays,
-                        const std::vector<Rate>& coupons,
-                        Frequency couponFrequency,
-                        const DayCounter& dayCounter,
-                        const Calendar& calendar,
-                        BusinessDayConvention convention = Following,
-                        Real redemption = 100.0,
-                        const Handle<YieldTermStructure>& discountCurve
-                                              = Handle<YieldTermStructure>(),
-                        const Date& stub = Date(),
-                        bool fromEnd = true,
-                        bool longFinal = false);
-        #endif
         FixedCouponBond(const Date& issueDate,
                         const Date& datedDate,
                         const Date& maturityDate,

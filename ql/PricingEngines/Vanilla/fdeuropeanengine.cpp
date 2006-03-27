@@ -20,7 +20,6 @@
 #include <ql/PricingEngines/Vanilla/fdeuropeanengine.hpp>
 #include <ql/PricingEngines/greeks.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
-#include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
 

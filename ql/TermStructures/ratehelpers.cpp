@@ -224,47 +224,6 @@ namespace QuantLib {
         return maturity_;
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
-                                   Integer n, TimeUnit units,
-                                   Integer settlementDays,
-                                   const Calendar& calendar,
-                                   Frequency fixedFrequency,
-                                   BusinessDayConvention fixedConvention,
-                                   const DayCounter& fixedDayCount,
-                                   Frequency floatingFrequency,
-                                   BusinessDayConvention floatingConvention)
-    : RateHelper(rate),
-      n_(n), units_(units), settlementDays_(settlementDays),
-      calendar_(calendar), fixedConvention_(fixedConvention),
-      floatingConvention_(floatingConvention),
-      fixedFrequency_(fixedFrequency),
-      floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount),
-      floatingDayCount_(Actual360()) {
-        registerWith(Settings::instance().evaluationDate());
-    }
-
-    SwapRateHelper::SwapRateHelper(
-                            Rate rate,
-                            Integer n, TimeUnit units, Integer settlementDays,
-                            const Calendar& calendar,
-                            Frequency fixedFrequency,
-                            BusinessDayConvention fixedConvention,
-                            const DayCounter& fixedDayCount,
-                            Frequency floatingFrequency,
-                            BusinessDayConvention floatingConvention)
-    : RateHelper(rate),
-      n_(n), units_(units), settlementDays_(settlementDays),
-      calendar_(calendar), fixedConvention_(fixedConvention),
-      floatingConvention_(floatingConvention),
-      fixedFrequency_(fixedFrequency),
-      floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount),
-      floatingDayCount_(Actual360()) {
-        registerWith(Settings::instance().evaluationDate());
-    }
-    #endif
 
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    Integer n, TimeUnit units,

@@ -24,51 +24,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    FloatingRateBond::FloatingRateBond(
-                             const Date& issueDate,
-                             const Date& datedDate,
-                             const Date& maturityDate,
-                             Integer settlementDays,
-                             const boost::shared_ptr<Xibor>& index,
-                             Integer fixingDays,
-                             const std::vector<Spread>& spreads,
-                             Frequency couponFrequency,
-                             const DayCounter& dayCounter,
-                             const Calendar& calendar,
-                             BusinessDayConvention convention,
-                             Real redemption,
-                             const Handle<YieldTermStructure>& discountCurve,
-                             const Date& stub, bool fromEnd)
-    : Bond(dayCounter, calendar, convention, convention,
-           settlementDays, discountCurve) {
-
-        issueDate_ = issueDate;
-        datedDate_ = datedDate;
-        maturityDate_ = calendar.adjust(maturityDate,convention);
-        frequency_ = couponFrequency;
-
-        Schedule schedule(calendar, datedDate, maturityDate,
-                          couponFrequency, convention,
-                          stub, fromEnd);
-
-        cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
-                                             schedule, convention,
-                                             std::vector<Real>(1, 100.0),
-                                             index, fixingDays,
-                                             spreads, dayCounter
-                                             #ifdef QL_PATCH_MSVC6
-                                             , (const UpFrontIndexedCoupon*) 0
-                                             #endif
-                                             );
-        // redemption
-        cashflows_.push_back(boost::shared_ptr<CashFlow>(
-                               new SimpleCashFlow(redemption,maturityDate_)));
-
-        registerWith(index);
-    }
-    #endif
-
     FloatingRateBond::FloatingRateBond(
                              const Date& issueDate,
                              const Date& datedDate,

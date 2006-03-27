@@ -58,11 +58,6 @@ namespace QuantLib {
         Poland();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Poland */
-    typedef Poland Warsaw;
-    #endif
-
 }
 
 

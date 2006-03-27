@@ -18,7 +18,6 @@
 */
 
 #include <ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp>
-#include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
     FDMultiPeriodEngine::

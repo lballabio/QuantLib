@@ -196,32 +196,6 @@ namespace QuantLib {
     */
     class SwapRateHelper : public RateHelper {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use one of the other constructors */
-        SwapRateHelper(const Handle<Quote>& rate,
-                       Integer n, TimeUnit units,
-                       Integer settlementDays,
-                       const Calendar& calendar,
-                       // fixed leg
-                       Frequency fixedFrequency,
-                       BusinessDayConvention fixedConvention,
-                       const DayCounter& fixedDayCount,
-                       // floating leg
-                       Frequency floatingFrequency,
-                       BusinessDayConvention floatingConvention);
-        /*! \deprecated use one of the other constructors */
-        SwapRateHelper(Rate rate,
-                       Integer n, TimeUnit units,
-                       Integer settlementDays,
-                       const Calendar& calendar,
-                       // fixed leg
-                       Frequency fixedFrequency,
-                       BusinessDayConvention fixedConvention,
-                       const DayCounter& fixedDayCount,
-                       // floating leg
-                       Frequency floatingFrequency,
-                       BusinessDayConvention floatingConvention);
-        #endif
         SwapRateHelper(const Handle<Quote>& rate,
                        Integer n, TimeUnit units,
                        Integer settlementDays,

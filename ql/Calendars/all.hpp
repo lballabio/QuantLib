@@ -47,7 +47,6 @@
 #include <ql/Calendars/singapore.hpp>
 #include <ql/Calendars/stockholm.hpp>
 #include <ql/Calendars/sydney.hpp>
-#include <ql/Calendars/taipei.hpp>
 #include <ql/Calendars/taiwan.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/tokyo.hpp>

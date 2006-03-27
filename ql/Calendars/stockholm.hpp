@@ -61,11 +61,6 @@ namespace QuantLib {
         Sweden();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Sweden */
-    typedef Sweden Stockholm;
-    #endif
-
 }
 
 

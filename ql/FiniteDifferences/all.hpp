@@ -25,6 +25,7 @@
 
 #include <ql/FiniteDifferences/americancondition.hpp>
 #include <ql/FiniteDifferences/bsmoperator.hpp>
+#include <ql/FiniteDifferences/bsmtermoperator.hpp>
 #include <ql/FiniteDifferences/cranknicolson.hpp>
 #include <ql/FiniteDifferences/dminus.hpp>
 #include <ql/FiniteDifferences/dplus.hpp>
@@ -32,13 +33,14 @@
 #include <ql/FiniteDifferences/dzero.hpp>
 #include <ql/FiniteDifferences/expliciteuler.hpp>
 #include <ql/FiniteDifferences/impliciteuler.hpp>
+#include <ql/FiniteDifferences/mixedscheme.hpp>
 #include <ql/FiniteDifferences/onefactoroperator.hpp>
 #include <ql/FiniteDifferences/operatorfactory.hpp>
 #include <ql/FiniteDifferences/parallelevolver.hpp>
 #include <ql/FiniteDifferences/pdebsm.hpp>
 #include <ql/FiniteDifferences/pdeshortrate.hpp>
 #include <ql/FiniteDifferences/shoutcondition.hpp>
-#include <ql/FiniteDifferences/valueatcenter.hpp>
+#include <ql/FiniteDifferences/zerocondition.hpp>
 
 
 #endif

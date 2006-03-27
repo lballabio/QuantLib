@@ -64,11 +64,6 @@ namespace QuantLib {
         NewZealand();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to NewZealand */
-    typedef NewZealand Wellington;
-    #endif
-
 }
 
 

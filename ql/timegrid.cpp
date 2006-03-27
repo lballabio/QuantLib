@@ -94,42 +94,5 @@ namespace QuantLib {
         }
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    Size TimeGrid::findIndex(Time t) const {
-        const_iterator result =
-            std::find_if(times_.begin(), times_.end(),
-                         std::bind2nd(std::ptr_fun(close_enough),t));
-        if (result == end()) {
-            Size i;
-            for (i=0; i<size(); i++) {
-                if (times_[i] > t)
-                    break;
-            }
-            if (i == 0) {
-                QL_FAIL("using inadequate time grid: all nodes "
-                        "are later than the required time t = "
-                        << std::setprecision(12) << t
-                        << " (earliest node is t1 = "
-                        << std::setprecision(12) << times_.front() << ")");
-            } else if (i == size()) {
-                QL_FAIL("using inadequate time grid: all nodes "
-                        "are earlier than the required time t = "
-                        << std::setprecision(12) << t
-                        << " (latest node is t1 = "
-                        << std::setprecision(12) << times_.back() << ")");
-            } else {
-                QL_FAIL("using inadequate time grid: the nodes closest "
-                        "to the required time t = "
-                        << std::setprecision(12) << t
-                        << " are t1 = "
-                        << std::setprecision(12) << times_[i-1]
-                        << " and t2 = "
-                        << std::setprecision(12) << times_[i]);
-            }
-        }
-        return result - times_.begin();
-    }
-    #endif
-
 }
 

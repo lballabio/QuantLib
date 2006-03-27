@@ -58,11 +58,6 @@ namespace QuantLib {
         Hungary();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Hungary */
-    typedef Hungary Budapest;
-    #endif
-
 }
 
 

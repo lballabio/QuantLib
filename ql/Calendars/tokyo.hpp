@@ -69,11 +69,6 @@ namespace QuantLib {
         Japan();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Japan */
-    typedef Japan Tokyo;
-    #endif
-
 }
 
 

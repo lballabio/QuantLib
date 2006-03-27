@@ -59,11 +59,6 @@ namespace QuantLib {
         Finland();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Finland */
-    typedef Finland Helsinki;
-    #endif
-
 }
 
 

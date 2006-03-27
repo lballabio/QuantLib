@@ -66,11 +66,6 @@ namespace QuantLib {
         Slovakia(Market m = BSSE);
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated use Slovakia(Slovakia::BSSE) */
-    typedef Slovakia Bratislava;
-    #endif
-
 }
 
 

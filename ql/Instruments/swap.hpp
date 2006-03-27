@@ -27,7 +27,6 @@
 #include <ql/instrument.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <ql/cashflow.hpp>
-#include <ql/CashFlows/timebasket.hpp>
 
 namespace QuantLib {
 
@@ -52,13 +51,6 @@ namespace QuantLib {
         Date maturity() const;
         Real firstLegBPS() const;
         Real secondLegBPS() const;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \bug this method is not guaranteed to yield the right
-                 results.
-            \deprecated this method will be removed in future releases.
-        */
-        TimeBasket sensitivity(Integer basis = 2) const;
-        #endif
         //@}
       protected:
         // methods

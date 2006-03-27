@@ -70,11 +70,6 @@ namespace QuantLib {
         SouthKorea(Market m = KRX);
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated use SouthKorea(SouthKorea::KRX) */
-    typedef SouthKorea Seoul;
-    #endif
-
 }
 
 

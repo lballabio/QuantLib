@@ -54,11 +54,6 @@ namespace QuantLib {
         SaudiArabia();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to SaudiArabia */
-    typedef SaudiArabia Riyadh;
-    #endif
-
 }
 
 

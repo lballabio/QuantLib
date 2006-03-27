@@ -60,11 +60,6 @@ namespace QuantLib {
         Canada();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Canada */
-    typedef Canada Toronto;
-    #endif
-
 }
 
 

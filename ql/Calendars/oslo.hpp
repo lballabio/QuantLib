@@ -58,11 +58,6 @@ namespace QuantLib {
         Norway();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Norway */
-    typedef Norway Oslo;
-    #endif
-
 }
 
 

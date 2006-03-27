@@ -60,11 +60,6 @@ namespace QuantLib {
         China();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to China */
-    typedef China Beijing;
-    #endif
-
 }
 
 

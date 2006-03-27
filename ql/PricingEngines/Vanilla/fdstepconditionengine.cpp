@@ -20,7 +20,6 @@
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
-#include <ql/FiniteDifferences/valueatcenter.hpp>
 #include <ql/Instruments/oneassetoption.hpp>
 
 namespace QuantLib {
@@ -84,7 +83,7 @@ namespace QuantLib {
         Real spot = process_->stateVariable()->value();
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
-        BlackFormula black(forwardPrice, riskFreeDiscount, 
+        BlackFormula black(forwardPrice, riskFreeDiscount,
                            variance, striked_payoff);
 
         results->value = prices_.valueAtCenter()

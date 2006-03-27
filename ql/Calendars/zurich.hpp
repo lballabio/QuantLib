@@ -58,11 +58,6 @@ namespace QuantLib {
         Switzerland();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Switzerland */
-    typedef Switzerland Zurich;
-    #endif
-
 }
 
 

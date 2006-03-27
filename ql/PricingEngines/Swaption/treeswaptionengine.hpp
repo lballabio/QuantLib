@@ -44,11 +44,6 @@ namespace QuantLib {
         void calculate() const;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to TreeVanillaSwapEngine */
-    typedef TreeVanillaSwapEngine TreeSimpleSwapEngine;
-    #endif
-
 
     //! Numerical lattice engine for swaptions
     /*! \ingroup swaptionengines

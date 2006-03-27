@@ -51,15 +51,6 @@ namespace QuantLib {
     */
     class Bond : public Instrument {
       protected:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the other constructor */
-        Bond(const DayCounter& dayCount,
-             const Calendar& calendar,
-             BusinessDayConvention businessDayConvention,
-             Integer settlementDays,
-             const Handle<YieldTermStructure>& discountCurve
-                                              = Handle<YieldTermStructure>());
-        #endif
         Bond(const DayCounter& dayCount,
              const Calendar& calendar,
              BusinessDayConvention accrualConvention,
@@ -77,12 +68,6 @@ namespace QuantLib {
         const std::vector<boost::shared_ptr<CashFlow> >& cashflows() const;
         const boost::shared_ptr<CashFlow>& redemption() const;
         const Calendar& calendar() const;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use either paymentConvention() or
-                        accrualConvention()
-        */
-        BusinessDayConvention businessDayConvention() const;
-        #endif
         BusinessDayConvention accrualConvention() const;
         BusinessDayConvention paymentConvention() const;
         const DayCounter& dayCounter() const;
@@ -170,12 +155,6 @@ namespace QuantLib {
     inline const Calendar& Bond::calendar() const {
         return calendar_;
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline BusinessDayConvention Bond::businessDayConvention() const {
-        return paymentConvention_;
-    }
-    #endif
 
     inline BusinessDayConvention Bond::accrualConvention() const {
         return accrualConvention_;

@@ -62,11 +62,6 @@ namespace QuantLib {
         CzechRepublic(Market m = PSE);
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated Use CzechRepublic(CzechRepublic::PSE) */
-    typedef CzechRepublic Prague;
-    #endif
-
 }
 
 

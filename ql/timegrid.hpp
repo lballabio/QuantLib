@@ -146,10 +146,6 @@ namespace QuantLib {
         //@}
         //! \name Time grid interface
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use index() instead */
-        Size findIndex(Time t) const;
-        #endif
         //! returns the index i such that grid[i] = t
         Size index(Time t) const;
         //! returns the index i such that grid[i] is closest to t

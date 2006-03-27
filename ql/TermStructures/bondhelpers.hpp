@@ -35,22 +35,6 @@ namespace QuantLib {
     */
     class FixedCouponBondHelper : public RateHelper {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the other constructor */
-        FixedCouponBondHelper(const Handle<Quote>& cleanPrice,
-                              const Date& issueDate,
-                              const Date& datedDate,
-                              const Date& maturityDate,
-                              Integer settlementDays,
-                              const std::vector<Rate>& coupons,
-                              Frequency frequency,
-                              const DayCounter& dayCounter,
-                              const Calendar& calendar,
-                              BusinessDayConvention convention = Following,
-                              Real redemption = 100.0,
-                              const Date& stub = Date(),
-                              bool fromEnd = true);
-        #endif
         FixedCouponBondHelper(const Handle<Quote>& cleanPrice,
                               const Date& issueDate,
                               const Date& datedDate,

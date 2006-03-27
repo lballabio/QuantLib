@@ -50,11 +50,6 @@ namespace QuantLib {
         Turkey();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Turkey */
-    typedef Turkey Istanbul;
-    #endif
-
 }
 
 

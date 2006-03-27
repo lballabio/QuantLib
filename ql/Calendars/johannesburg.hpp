@@ -62,11 +62,6 @@ namespace QuantLib {
         SouthAfrica();
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to SouthAfrica */
-    typedef SouthAfrica Johannesburg;
-    #endif
-
 }
 
 

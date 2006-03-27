@@ -18,8 +18,8 @@
 */
 
 #include <ql/Instruments/swap.hpp>
-#include <ql/CashFlows/basispointsensitivity.hpp>
 #include <ql/CashFlows/analysis.hpp>
+#include <ql/CashFlows/coupon.hpp>
 
 namespace QuantLib {
 
@@ -105,18 +105,5 @@ namespace QuantLib {
         calculate();
         return secondLegBPS_;
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    TimeBasket Swap::sensitivity(Integer basis) const {
-        calculate();
-        TimeBasket basket = BasisPointSensitivityBasket(firstLeg_,
-                                                        termStructure_,
-                                                        basis);
-        basket += BasisPointSensitivityBasket(secondLeg_,
-                                              termStructure_,
-                                              basis);
-        return basket;
-    }
-    #endif
 
 }
