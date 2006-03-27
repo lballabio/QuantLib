@@ -63,6 +63,7 @@ include_HEADERS = \
 	qldefines.hpp \
 	quantlib.hpp \
 	quote.hpp \
+	quotetimeseries.hpp \
 	schedule.hpp \
 	settings.hpp \
 	solver1d.hpp \
@@ -71,6 +72,7 @@ include_HEADERS = \
 	termstructure.hpp \
 	timegrid.hpp \
 	types.hpp \
+	volatilitymodel.hpp \
 	voltermstructure.hpp \
 	yieldtermstructure.hpp
 
