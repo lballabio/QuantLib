@@ -21313,6 +21313,12 @@ static const long PrimitivePolynomialDegree18[]={
 #error too many polynomials requested. not provided by this file
 #endif
 
+#ifdef __cplusplus
+
+extern "C"
+
+#endif
+
 const long *const PrimitivePolynomials[N_MAX_DEGREE]={
    PrimitivePolynomialDegree01
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_01
