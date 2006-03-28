@@ -20,6 +20,7 @@
 
 #include "dates.hpp"
 #include <ql/date.hpp>
+#include <ql/Utilities/dataparsers.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -159,9 +160,9 @@ void DateTest::testConsistency() {
 }
 
 void DateTest::isoDates() {
-    BOOST_MESSAGE("Testing iso dates...");
+    BOOST_MESSAGE("Testing ISO dates...");
     std::string input_date("2006-01-15");
-    Date d = Date::fromIsoDate(input_date);
+    Date d = DateParser::parseISO(input_date);
     if (d.dayOfMonth() != 15 ||
         d.month() != January ||
         d.year() != 2006) {

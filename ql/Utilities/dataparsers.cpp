@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Decillion Pty(Ltd)
+ Copyright (C) 2006 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -80,6 +81,16 @@ namespace QuantLib {
             }
         }
         return Date(d,Month(m),y);
+    }
+
+    Date DateParser::parseISO(const std::string& str) {
+        QL_REQUIRE(str.size() == 10 && str[4] == '-' && str[7] == '-',
+                   "invalid format");
+        Integer year = std::atoi(str.substr(0, 4).c_str());
+        Month month =
+            static_cast<Month>(std::atoi(str.substr(5, 2).c_str()));
+        Integer day = std::atoi(str.substr(8, 2).c_str());
+        return Date(day, month, year);
     }
 
 }
