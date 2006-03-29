@@ -55,6 +55,7 @@
 
     \ref faq_platforms
     - \ref faq_dot_net "Does QuantLib support .NET?"
+    - \ref faq_fpml "Does QuantLib support FpML? Serialization?"
     - \ref faq_excel "What's the difference between QuantLibXL and QuantLibAddin?"
 
     <hr>
@@ -425,6 +426,24 @@
     <http://www.quantlib.net> and <http://www.capetools.net> have been 
     "external" attempts which now look like abandoned projects. As 
     such nobody but their authors could help you.
+
+    <strong>
+    \anchor faq_fpml
+    Does QuantLib support FpML? Serialization?
+    </strong>
+
+    Not yet.  The subject has been discussed in the mailing lists and a high
+    level design was sketched out:
+
+    <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=6507779&forum_id=4300">6-Feb-2005</a><br>
+    <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=6539684&forum_id=4300">9-Feb-2005</a><br>
+    <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=6540997&forum_id=4300">9-Feb-2005</a><br>
+    <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=6543552&forum_id=4300">9-Feb-2005</a><br>
+    <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=6700844&forum_id=4300">27-Feb-2005</a><br>
+
+    No further work has been done and help is needed in this area.  The next
+    step would be to formalize and document the proposed design, perhaps as a
+    <a href="http://quantlib.org/quep.shtml">QuEP</a>.
 
     <strong>
     \anchor faq_excel
