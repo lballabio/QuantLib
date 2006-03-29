@@ -50,6 +50,7 @@
     - \ref faq_addin_trouble "I'm having trouble building/using QuantLibAddin."
 
     \ref faq_lists
+    - \ref faq_lists_new_topic "How do I start a new topic?"
     - \ref faq_lists_disable "How do I prevent my auto-responder from posting to the list?"
 
     \ref faq_platforms
@@ -237,11 +238,6 @@
     building QuantLib. After installation, you might have to setup
     your IDE so that the Boost headers are in its include path.
 
-    At the time of this writing, it is somewhat difficult to modify
-    the include path of the latest Visual C++ Express Beta.
-    Instructions to perform such operation are available at
-    <http://forums.microsoft.com/msdn/ShowPost.aspx?PostID=2995>.
-
     <strong>
     \anchor faq_linking_libboost_unit
     When building the test-suite, I encounter a linking error about
@@ -376,6 +372,20 @@
 
 
     \section faq_lists QuantLib mailing lists
+
+    <strong>
+    \anchor faq_lists_new_topic
+    How do I start a new topic?
+    </strong>
+
+    Use the "New message" command on your mail client; do not reply to
+    another post and change the subject. Although seemingly more
+    convenient for you, replying will cause your message to appear in
+    the wrong thread in the mailing list archive, in the newsgroup
+    interface at Gmane, and in mail clients that support threads.
+    This brings a whole lot of inconvenience on a number of
+    people---possibly including you, as your message might be
+    overlooked by people not interested in the original topic.
 
     <strong>
     \anchor faq_lists_disable
