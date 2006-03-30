@@ -23,7 +23,8 @@ SUBDIRS = \
     Solvers1D \
     TermStructures \
     Utilities \
-    Volatilities
+    Volatilities \
+    VolatilityModels 
 
 EXTRA_DIST= \
 	config.ansi.hpp \
@@ -124,7 +125,8 @@ libQuantLib_la_LIBADD = \
     ShortRateModels/libShortRateModels.la \
     TermStructures/libTermStructures.la \
     Utilities/libUtilities.la \
-    Volatilities/libVolatilities.la
+    Volatilities/libVolatilities.la \
+    VolatilityModels/libVolatilityModels.la
 
 libQuantLib_la_SOURCES = \
     calendar.cpp \

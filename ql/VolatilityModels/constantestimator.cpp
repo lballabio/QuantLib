@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,34 +17,30 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file volatilitymodel.hpp
-    \brief Volatility term structures
-*/
-
-#ifndef quantlib_volatility_model_hpp
-#define quantlib_volatility_model_hpp
-
 #include <vector>
-#include <ql/types.hpp>
-#include <ql/timeseries.hpp>
+#include <ql/VolatilityModels/constantestimator.hpp>
 
 namespace QuantLib {
-    class Date;
-    class DayCounter;
-
-    /*! This abstract class defines the interface of concrete
-        volatility model
-
-        Volatilities are assumed to be expressed on an annual basis.
-    */
-    class VolatilityModel {
-      public:
-        virtual ~VolatilityModel() {};
-        virtual TimeSeries<Volatility>
-        calculate(const TimeSeries<Real> &quoteSeries) = 0;
-        virtual void calibrate(const TimeSeries<Real> &quoteSeries) = 0;
-    };
+  TimeSeries<Volatility> 
+  ConstantEstimator::calculate(const TimeSeries<Real> &quoteSeries) {
+    TimeSeries<Volatility> retval;
+    std::vector<Real> u;
+    Size i;
+    for (i=1; i < quoteSeries.size(); i++) {
+      u.push_back(std::log(quoteSeries.value(i)/
+			   quoteSeries.value(i-1)));
+    }
+    for (i=size_; i < quoteSeries.size(); i++) {
+      Size j;
+      Real sumu2=0.0, sumu=0.0;
+      for (j=i-size_; j <i; j++) {
+	sumu += u[i];
+	sumu2 += u[i]*u[i];
+      }
+      Real s = std::sqrt(sumu2/(Real)size_ - sumu / (Real) size_ / (Real) (size_+1));
+      retval.push_back(quoteSeries.date(i),
+		       s / std::sqrt(yearFraction_));
+    }
+    return retval;
+  }
 }
-
-
-#endif

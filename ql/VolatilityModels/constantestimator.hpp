@@ -22,14 +22,15 @@
     \brief Volatility term structures
 */
 
-#ifndef quantlib_volatility_model_hpp
-#define quantlib_volatility_model_hpp
+#ifndef quantlib_constant_estimator_hpp
+#define quantlib_constant_estimator_hpp
 
 #include <vector>
 #include <ql/types.hpp>
+#include <ql/volatilitymodel.hpp>
+#include <ql/timeseries.hpp>
 
 namespace QuantLib {
-    class QuoteTimeSeries;
 
     /*! This abstract class defines the interface of concrete
         volatility model
@@ -37,10 +38,15 @@ namespace QuantLib {
         Volatilities are assumed to be expressed on an annual basis.
     */
     class ConstantEstimator : public VolatilityModel {
+    private:
+        Size size_;
+        Time yearFraction_;
       public:
+        ConstantEstimator(Size size, Time yearFraction) : 
+            size_(size), yearFraction_(yearFraction){}; 
         TimeSeries<Volatility> 
-        calculate(const QuoteTimeSeries &) {};
-        void calibrate(const QuoteTimeSeries &) {};
+        calculate(const TimeSeries<Real> &quoteSeries);
+        void calibrate(const TimeSeries<Real> &quoteSeries) {};
     };
 }
 

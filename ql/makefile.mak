@@ -59,6 +59,7 @@ SHORTRATEMODELS_LIB  = "ShortRateModels\ShortRateModels$(_mt)$(_D).lib"
 TERMSTRUCT_LIB       = "TermStructures\TermStructures$(_mt)$(_D).lib"
 UTILITIES_LIB        = "Utilities\Utilities$(_mt)$(_D).lib"
 VOLATILITY_LIB       = "Volatilities\Volatilities$(_mt)$(_D).lib"
+VOLMODELS_LIB        = "Volatilities\VolatilityModel$(_mt)$(_D).lib"
 
 QUANTLIB_OBJS = \
     $(CALENDAR_LIB) \
@@ -80,7 +81,8 @@ QUANTLIB_OBJS = \
     $(SHORTRATEMODELS_LIB) \
     $(TERMSTRUCT_LIB) \
     $(UTILITIES_LIB) \
-    $(VOLATILITY_LIB)
+    $(VOLATILITY_LIB) \
+    $(VOLMODELS_LIB)
 
 # Tools to be used
 CC        = bcc32
