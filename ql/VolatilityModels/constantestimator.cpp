@@ -26,20 +26,28 @@ namespace QuantLib {
     TimeSeries<Volatility> retval;
     std::vector<Real> u;
     Size i;
-    for (i=1; i < quoteSeries.size(); i++) {
-      u.push_back(std::log(quoteSeries.value(i)/
-			   quoteSeries.value(i-1)));
+    TimeSeries<Real>::const_valid_iterator prev, next, cur;
+    for (cur = quoteSeries.vbegin(); 
+         cur != quoteSeries.vend(); 
+         cur++) {
+        prev = cur; prev--;
+        u.push_back(std::log(cur->second/
+			   prev->second));
     }
+    cur = quoteSeries.vbegin();
+    advance(cur, size_);
     for (i=size_; i < quoteSeries.size(); i++) {
       Size j;
       Real sumu2=0.0, sumu=0.0;
       for (j=i-size_; j <i; j++) {
-	sumu += u[i];
-	sumu2 += u[i]*u[i];
+          sumu += u[i];
+          sumu2 += u[i]*u[i];
       }
-      Real s = std::sqrt(sumu2/(Real)size_ - sumu / (Real) size_ / (Real) (size_+1));
-      retval.push_back(quoteSeries.date(i),
-		       s / std::sqrt(yearFraction_));
+      Real s = std::sqrt(sumu2/(Real)size_ - sumu / (Real) size_ / 
+                         (Real) (size_+1));
+      retval.insert(cur->first,
+                    s / std::sqrt(yearFraction_));
+      cur++;
     }
     return retval;
   }

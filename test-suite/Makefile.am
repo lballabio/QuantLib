@@ -53,11 +53,13 @@ QL_TESTS = \
 	swap.hpp swap.cpp \
 	swaption.hpp swaption.cpp \
 	termstructures.hpp termstructures.cpp \
+	timeseries.hpp timeseries.cpp \
 	transformedgrid.hpp transformedgrid.cpp \
 	tqreigendecomposition.hpp tqreigendecomposition.cpp \
 	tracing.hpp tracing.cpp \
 	old_pricers.hpp old_pricers.cpp \
-	utilities.hpp utilities.cpp
+	utilities.hpp utilities.cpp \
+	volatilitymodels.hpp volatilitymodels.cpp
 
 dist-hook:
 	mkdir -p $(distdir)/build

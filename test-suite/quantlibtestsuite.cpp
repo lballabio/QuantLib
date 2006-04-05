@@ -85,9 +85,11 @@
 #include "swap.hpp"
 #include "swaption.hpp"
 #include "termstructures.hpp"
+#include "timeseries.hpp"
 #include "tqreigendecomposition.hpp"
 #include "tracing.hpp"
 #include "transformedgrid.hpp"
+#include "volatilitymodels.hpp"
 // to be deprecated
 #include "old_pricers.hpp"
 
@@ -146,7 +148,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(BOOST_TEST_CASE(startTimer));
-
+    test->add(TimeSeriesTest::suite());
+    test->add(VolatilityModelsTest::suite());
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -199,6 +202,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SwapTest::suite());
     test->add(SwaptionTest::suite());
     test->add(TermStructureTest::suite());
+
     test->add(TqrEigenDecompositionTest::suite());
     test->add(TracingTest::suite());
     test->add(TransformedGridTest::suite());

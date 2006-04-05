@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2006 Joseph Wang http://www.gnacademy.org/joe
+                    China Derivatives Researcher
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,13 +18,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_cash_flows_core_hpp
-#define quantlib_cash_flows_core_hpp
+#ifndef quantlib_test_volatility_models_hpp
+#define quantlib_test_volatility_models_hpp
 
-#include <ql/qldefines.hpp>
-#include <ql/CashFlows/analysis.hpp>
-#include <ql/CashFlows/coupon.hpp>
-#include <ql/CashFlows/simplecashflow.hpp>
-#include <ql/CashFlows/timebasket.hpp>
+#include <boost/test/unit_test.hpp>
+
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
+
+class VolatilityModelsTest {
+  public:
+    static void testConstruction();
+    static boost::unit_test_framework::test_suite* suite();
+};
+
 
 #endif
