@@ -72,6 +72,7 @@ include_HEADERS = \
 	swaptionvolstructure.hpp \
 	termstructure.hpp \
 	timegrid.hpp \
+	timeseries.hpp \
 	types.hpp \
 	volatilitymodel.hpp \
 	voltermstructure.hpp \
