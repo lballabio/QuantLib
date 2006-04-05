@@ -21,8 +21,8 @@
     \brief Lexicographical 2-D view of a contiguous set of data.
 */
 
-#ifndef quantlib_lexicographical_view_h
-#define quantlib_lexicographical_view_h
+#ifndef quantlib_lexicographical_view_hpp
+#define quantlib_lexicographical_view_hpp
 
 #include <ql/Utilities/steppingiterator.hpp>
 #include <boost/iterator/reverse_iterator.hpp>

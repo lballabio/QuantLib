@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,7 +47,9 @@ namespace QuantLib {
         Size length() const;
         //! asset value at the \f$ i \f$-th point
         Real operator[](Size i) const;
+        Real at(Size i) const;
         Real& operator[](Size i);
+        Real& at(Size i);
         Real value(Size i) const;
         Real& value(Size i);
         //! time at the \f$ i \f$-th point
@@ -97,8 +100,16 @@ namespace QuantLib {
         return values_[i];
     }
 
+    inline Real Path::at(Size i) const {
+        return values_.at(i);
+    }
+
     inline Real& Path::operator[](Size i) {
         return values_[i];
+    }
+
+    inline Real& Path::at(Size i) {
+        return values_.at(i);
     }
 
     inline Real Path::value(Size i) const {

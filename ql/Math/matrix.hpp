@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -108,7 +109,9 @@ namespace QuantLib {
         //! \name Element access
         //@{
         const_row_iterator operator[](Size) const;
+        const_row_iterator at(Size) const;
         row_iterator operator[](Size);
+        row_iterator at(Size);
         Disposable<Array> diagonal(void) const;
         //@}
 
@@ -386,7 +389,18 @@ namespace QuantLib {
         return row_begin(i);
     }
 
+    inline Matrix::const_row_iterator
+    Matrix::at(Size i) const {
+        QL_REQUIRE(i < rows_, "matrix access out of range");
+        return row_begin(i);
+    }
+
     inline Matrix::row_iterator Matrix::operator[](Size i) {
+        return row_begin(i);
+    }
+
+    inline Matrix::row_iterator Matrix::at(Size i) {
+        QL_REQUIRE(i < rows_, "matrix access out of range");
         return row_begin(i);
     }
 
