@@ -166,8 +166,8 @@ int main(int argc, char* argv[])
                 new BlackConstantVol(settlementDate, volatility, dayCounter)));
 
 
-		boost::shared_ptr<BlackScholesProcess> stochasticProcess(
-                                    new BlackScholesProcess(underlyingH,
+		boost::shared_ptr<StochasticProcess> stochasticProcess(
+                              new BlackScholesMertonProcess(underlyingH,
                                                             flatDividendTS,
                                                             flatTermStructure,
                                                             flatVolTS));

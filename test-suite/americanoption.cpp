@@ -157,11 +157,11 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<StochasticProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(stochProcess, payoff, exercise,
                              engine);
@@ -219,11 +219,11 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<StochasticProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(stochProcess, payoff, exercise,
                              engine);
@@ -349,11 +349,11 @@ void AmericanOptionTest::testJuValues() {
         rRate->setValue(juValues[i].r);
         vol  ->setValue(juValues[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<StochasticProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(stochProcess, payoff, exercise,
                              engine);
@@ -401,11 +401,11 @@ void AmericanOptionTest::testFdValues() {
         rRate->setValue(juValues[i].r);
         vol  ->setValue(juValues[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<StochasticProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(stochProcess, payoff, exercise,
                              engine);
@@ -462,8 +462,8 @@ void testFdGreeks(const Engine&) {
                                          new AmericanExercise(today, exDate));
               boost::shared_ptr<StrikedTypePayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
-              boost::shared_ptr<BlackScholesProcess> stochProcess(
-                                  new BlackScholesProcess(Handle<Quote>(spot),
+              boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
               boost::shared_ptr<PricingEngine> engine(new Engine);
 

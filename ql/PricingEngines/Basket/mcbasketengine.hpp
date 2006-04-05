@@ -148,8 +148,8 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StochasticProcessArray>(
                                            arguments_.stochasticProcess);
         QL_REQUIRE(processes, "stochastic-process array required");
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                        processes->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 

@@ -57,8 +57,8 @@ namespace QuantLib {
     template <class T>
     void BinomialVanillaEngine<T>::calculate() const {
 
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                           this->arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
@@ -93,9 +93,10 @@ namespace QuantLib {
 
         Time maturity = rfdc.yearFraction(referenceDate, maturityDate);
 
-        boost::shared_ptr<StochasticProcess1D> bs(new
-            BlackScholesProcess(Handle<Quote>(process->stateVariable()),
-                                flatDividends, flatRiskFree, flatVol));
+        boost::shared_ptr<StochasticProcess1D> bs(
+                         new GeneralizedBlackScholesProcess(
+                                      Handle<Quote>(process->stateVariable()),
+                                      flatDividends, flatRiskFree, flatVol));
 
 		// adjust the bermudan exercise times according to the tree steps
         TimeGrid grid(maturity, timeSteps_);

@@ -157,11 +157,11 @@ void QuantoOptionTest::testValues() {
                   new QuantoEngine<VanillaOption::arguments,
                                    VanillaOption::results>(underlyingEngine));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(Handle<Quote>(spot),
-                                    Handle<YieldTermStructure>(qTS),
-                                    Handle<YieldTermStructure>(rTS),
-                                    Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<StochasticProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
+                                       Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -241,8 +241,8 @@ void QuantoOptionTest::testGreeks() {
     Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+    boost::shared_ptr<StochasticProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
                                                   new AnalyticEuropeanEngine);
@@ -446,11 +446,11 @@ void QuantoOptionTest::testForwardValues() {
               new QuantoEngine<ForwardVanillaOption::arguments,
                                ForwardVanillaOption::results>(forwardEngine));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(Handle<Quote>(spot),
-                                    Handle<YieldTermStructure>(qTS),
-                                    Handle<YieldTermStructure>(rTS),
-                                    Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<StochasticProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
+                                       Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -536,8 +536,8 @@ void QuantoOptionTest::testForwardGreeks() {
     Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+    boost::shared_ptr<StochasticProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
                                                   new AnalyticEuropeanEngine);
@@ -751,11 +751,11 @@ void QuantoOptionTest::testForwardPerformanceValues() {
               new QuantoEngine<ForwardVanillaOption::arguments,
                                ForwardVanillaOption::results>(forwardPerformanceEngine));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(Handle<Quote>(spot),
-                                    Handle<YieldTermStructure>(qTS),
-                                    Handle<YieldTermStructure>(rTS),
-                                    Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<StochasticProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
+                                       Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 

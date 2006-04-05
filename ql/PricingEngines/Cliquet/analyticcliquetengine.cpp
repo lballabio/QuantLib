@@ -42,8 +42,8 @@ namespace QuantLib {
                                                            arguments_.payoff);
         QL_REQUIRE(moneyness, "wrong payoff given");
 
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 

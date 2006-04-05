@@ -138,10 +138,10 @@ void PathGeneratorTest::testPathGenerator() {
     Handle<YieldTermStructure> q(flatRate(0.02, Actual360()));
     Handle<BlackVolTermStructure> sigma(flatVol(0.20, Actual360()));
     testSingle(boost::shared_ptr<StochasticProcess1D>(
-                                       new BlackScholesProcess(x0,q,r,sigma)),
+                                 new BlackScholesMertonProcess(x0,q,r,sigma)),
                "Black-Scholes", false, 26.13784357783, 467.2928562519);
     testSingle(boost::shared_ptr<StochasticProcess1D>(
-                                       new BlackScholesProcess(x0,q,r,sigma)),
+                                 new BlackScholesMertonProcess(x0,q,r,sigma)),
                "Black-Scholes", true, 60.28215551021, 202.6143139437);
 
     testSingle(boost::shared_ptr<StochasticProcess1D>(
@@ -182,11 +182,11 @@ void PathGeneratorTest::testMultiPathGenerator() {
     boost::shared_ptr<StochasticProcess> process;
 
     processes[0] = boost::shared_ptr<StochasticProcess1D>(
-                                       new BlackScholesProcess(x0,q,r,sigma));
+                                 new BlackScholesMertonProcess(x0,q,r,sigma));
     processes[1] = boost::shared_ptr<StochasticProcess1D>(
-                                       new BlackScholesProcess(x0,q,r,sigma));
+                                 new BlackScholesMertonProcess(x0,q,r,sigma));
     processes[2] = boost::shared_ptr<StochasticProcess1D>(
-                                       new BlackScholesProcess(x0,q,r,sigma));
+                                 new BlackScholesMertonProcess(x0,q,r,sigma));
     process = boost::shared_ptr<StochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     Real result1[] = {

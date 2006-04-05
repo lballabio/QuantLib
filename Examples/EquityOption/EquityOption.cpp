@@ -108,15 +108,12 @@ int main(int, char* [])
             boost::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(settlementDate, volatility, dayCounter)));
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(new
-            PlainVanillaPayoff(type, strike));
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                                        new PlainVanillaPayoff(type, strike));
 
-        boost::shared_ptr<BlackScholesProcess> stochasticProcess(new
-            BlackScholesProcess(
-                underlyingH,
-                flatDividendTS,
-                flatTermStructure,
-                flatVolTS));
+        boost::shared_ptr<StochasticProcess> stochasticProcess(
+                 new BlackScholesMertonProcess(underlyingH, flatDividendTS,
+                                               flatTermStructure, flatVolTS));
 
         // options
 

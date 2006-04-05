@@ -74,7 +74,7 @@ namespace QuantLib {
             Handle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
             processes[i] = boost::shared_ptr<StochasticProcess1D>(
-                                    new BlackScholesProcess(u,
+                         new GeneralizedBlackScholesProcess(u,
                                                             dividendYield[i],
                                                             riskFreeRate,
                                                             volatilities[i]));

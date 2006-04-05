@@ -255,16 +255,16 @@ void BasketOptionTest::testEuroTwoValues() {
         vol2  ->setValue(values[i].v2);
 
         boost::shared_ptr<StochasticProcess1D> stochProcess1(new
-            BlackScholesProcess(Handle<Quote>(spot1),
-                                Handle<YieldTermStructure>(qTS1),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS1)));
+            BlackScholesMertonProcess(Handle<Quote>(spot1),
+                                      Handle<YieldTermStructure>(qTS1),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS1)));
 
         boost::shared_ptr<StochasticProcess1D> stochProcess2(new
-            BlackScholesProcess(Handle<Quote>(spot2),
-                                Handle<YieldTermStructure>(qTS2),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS2)));
+            BlackScholesMertonProcess(Handle<Quote>(spot2),
+                                      Handle<YieldTermStructure>(qTS2),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS2)));
 
         std::vector<boost::shared_ptr<StochasticProcess1D> > procs;
         procs.push_back(stochProcess1);
@@ -436,22 +436,22 @@ void BasketOptionTest::testBarraquandThreeValues() {
         vol3  ->setValue(values[i].v3);
 
         boost::shared_ptr<StochasticProcess1D> stochProcess1(new
-            BlackScholesProcess(Handle<Quote>(spot1),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS1)));
+            BlackScholesMertonProcess(Handle<Quote>(spot1),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS1)));
 
         boost::shared_ptr<StochasticProcess1D> stochProcess2(new
-            BlackScholesProcess(Handle<Quote>(spot2),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS2)));
+            BlackScholesMertonProcess(Handle<Quote>(spot2),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS2)));
 
         boost::shared_ptr<StochasticProcess1D> stochProcess3(new
-            BlackScholesProcess(Handle<Quote>(spot3),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS3)));
+            BlackScholesMertonProcess(Handle<Quote>(spot3),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS3)));
 
         std::vector<boost::shared_ptr<StochasticProcess1D> > procs;
         procs.push_back(stochProcess1);
@@ -580,22 +580,22 @@ void BasketOptionTest::testTavellaValues() {
     vol3  ->setValue(values[0].v3);
 
     boost::shared_ptr<StochasticProcess1D> stochProcess1(new
-        BlackScholesProcess(Handle<Quote>(spot1),
-                            Handle<YieldTermStructure>(qTS),
-                            Handle<YieldTermStructure>(rTS),
-                            Handle<BlackVolTermStructure>(volTS1)));
+        BlackScholesMertonProcess(Handle<Quote>(spot1),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS1)));
 
     boost::shared_ptr<StochasticProcess1D> stochProcess2(new
-        BlackScholesProcess(Handle<Quote>(spot2),
-                            Handle<YieldTermStructure>(qTS),
-                            Handle<YieldTermStructure>(rTS),
-                            Handle<BlackVolTermStructure>(volTS2)));
+        BlackScholesMertonProcess(Handle<Quote>(spot2),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS2)));
 
     boost::shared_ptr<StochasticProcess1D> stochProcess3(new
-        BlackScholesProcess(Handle<Quote>(spot3),
-                            Handle<YieldTermStructure>(qTS),
-                            Handle<YieldTermStructure>(rTS),
-                            Handle<BlackVolTermStructure>(volTS3)));
+        BlackScholesMertonProcess(Handle<Quote>(spot3),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS3)));
 
     std::vector<boost::shared_ptr<StochasticProcess1D> > procs;
     procs.push_back(stochProcess1);
@@ -702,10 +702,10 @@ void BasketOptionTest::testOneDAmericanValues() {
         new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
     boost::shared_ptr<StochasticProcess1D> stochProcess1(new
-        BlackScholesProcess(Handle<Quote>(spot1),
-                            Handle<YieldTermStructure>(qTS),
-                            Handle<YieldTermStructure>(rTS),
-                            Handle<BlackVolTermStructure>(volTS1)));
+        BlackScholesMertonProcess(Handle<Quote>(spot1),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS1)));
 
     std::vector<boost::shared_ptr<StochasticProcess1D> > procs;
     procs.push_back(stochProcess1);
@@ -784,10 +784,10 @@ void BasketOptionTest::testOddSamples() {
                                    true));
 
     boost::shared_ptr<StochasticProcess1D> stochProcess1(new
-        BlackScholesProcess(Handle<Quote>(spot1),
-                            Handle<YieldTermStructure>(qTS),
-                            Handle<YieldTermStructure>(rTS),
-                            Handle<BlackVolTermStructure>(volTS1)));
+        BlackScholesMertonProcess(Handle<Quote>(spot1),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS1)));
 
     std::vector<boost::shared_ptr<StochasticProcess1D> > procs;
     procs.push_back(stochProcess1);

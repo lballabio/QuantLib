@@ -33,8 +33,8 @@ namespace QuantLib {
         QL_REQUIRE(payoff->strike()>0.0,
                    "strike must be positive");
 
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
@@ -122,8 +122,8 @@ namespace QuantLib {
     }
 
     Volatility AnalyticBarrierEngine::volatility() const {
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
         return process->blackVolatility()->blackVol(residualTime(), strike());
@@ -142,8 +142,8 @@ namespace QuantLib {
     }
 
     Rate AnalyticBarrierEngine::riskFreeRate() const {
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
         return process->riskFreeRate()->zeroRate(residualTime(), Continuous,
@@ -151,16 +151,16 @@ namespace QuantLib {
     }
 
     DiscountFactor AnalyticBarrierEngine::riskFreeDiscount() const {
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
         return process->riskFreeRate()->discount(residualTime());
     }
 
     Rate AnalyticBarrierEngine::dividendYield() const {
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
         return process->dividendYield()->zeroRate(residualTime(),
@@ -168,8 +168,8 @@ namespace QuantLib {
     }
 
     DiscountFactor AnalyticBarrierEngine::dividendDiscount() const {
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
         return process->dividendYield()->discount(residualTime());

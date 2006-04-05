@@ -318,7 +318,7 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
                           boost::shared_ptr<BlackVolTermStructure>(
                                new BlackConstantVol(today, sigma_, dayCount)));
     boost::shared_ptr<StochasticProcess1D> diffusion(
-                         new BlackScholesProcess(stateVariable, dividendYield,
+                   new BlackScholesMertonProcess(stateVariable, dividendYield,
                                                  riskFreeRate, volatility));
 
     // Black Scholes equation rules the path generator:

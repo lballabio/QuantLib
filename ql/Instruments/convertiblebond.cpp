@@ -211,8 +211,8 @@ namespace QuantLib {
         moreArgs->conversionRatio = conversionRatio_;
         moreArgs->dividends = dividends_;
 
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                           stochasticProcess_);
         QL_REQUIRE(process, "Black-Scholes process required");
 

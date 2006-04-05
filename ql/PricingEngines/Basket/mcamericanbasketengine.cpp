@@ -204,8 +204,8 @@ namespace QuantLib {
         boost::shared_ptr<StochasticProcessArray> processes =
             boost::dynamic_pointer_cast<StochasticProcessArray>(
                                                 arguments_.stochasticProcess);
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                        processes->process(0));
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         Rate r = process->riskFreeRate()->

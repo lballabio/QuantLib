@@ -20,7 +20,7 @@
 // TODO: Figure out why tests for options with both continuous and discrete
 // dividends fail.
 
-// TODO: Make the known value test work.  It is slightly off from the 
+// TODO: Make the known value test work.  It is slightly off from the
 // answer in Hull probably due to date conventions.
 
 #include "dividendoption.hpp"
@@ -123,8 +123,9 @@ void DividendOptionTest::testEuropeanValues() {
           boost::shared_ptr<PricingEngine> ref_engine(
                                                   new AnalyticEuropeanEngine);
 
-          boost::shared_ptr<BlackScholesProcess> stochProcess(
-              new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+          boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
           DividendVanillaOption option(stochProcess, payoff, exercise,
                                        dividendDates, dividends, engine);
@@ -148,7 +149,7 @@ void DividendOptionTest::testEuropeanValues() {
                     Real expected = ref_option.NPV();
                     Real error = std::fabs(calculated-expected);
                     if (error > tolerance) {
-                        REPORT_FAILURE("value start limit", 
+                        REPORT_FAILURE("value start limit",
                                        payoff, exercise,
                                        u, q, r, today, v,
                                        expected, calculated,
@@ -206,8 +207,9 @@ void DividendOptionTest::testEuropeanKnownValue() {
     boost::shared_ptr<PricingEngine> engine(
             new AnalyticDividendEuropeanEngine);
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+    boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
     DividendVanillaOption option(stochProcess, payoff, exercise,
             dividendDates, dividends, engine);
@@ -223,7 +225,7 @@ void DividendOptionTest::testEuropeanKnownValue() {
     Real calculated = option.NPV();
     Real error = std::fabs(calculated-expected);
     if (error > tolerance) {
-        REPORT_FAILURE("value start limit", 
+        REPORT_FAILURE("value start limit",
                        payoff, exercise,
                        u, q, r, today, v,
                        expected, calculated,
@@ -283,13 +285,14 @@ void DividendOptionTest::testEuropeanStartLimit() {
           boost::shared_ptr<PricingEngine> ref_engine(
                                                   new AnalyticEuropeanEngine);
 
-          boost::shared_ptr<BlackScholesProcess> stochProcess(
-              new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+          boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
           DividendVanillaOption option(stochProcess, payoff, exercise,
                                        dividendDates, dividends, engine);
 
-          VanillaOption ref_option(stochProcess, 
+          VanillaOption ref_option(stochProcess,
                                    payoff, exercise, ref_engine);
 
           for (Size l=0; l<LENGTH(underlyings); l++) {
@@ -372,8 +375,8 @@ void DividendOptionTest::testEuropeanEndLimit() {
 
 
           boost::shared_ptr<StrikedTypePayoff> refPayoff(
-                                new PlainVanillaPayoff(types[i], 
-                                                       strikes[j] + 
+                                new PlainVanillaPayoff(types[i],
+                                                       strikes[j] +
                                                        dividendValue));
 
           boost::shared_ptr<PricingEngine> engine(
@@ -382,13 +385,14 @@ void DividendOptionTest::testEuropeanEndLimit() {
           boost::shared_ptr<PricingEngine> ref_engine(
                                                   new AnalyticEuropeanEngine);
 
-          boost::shared_ptr<BlackScholesProcess> stochProcess(
-              new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+          boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
           DividendVanillaOption option(stochProcess, payoff, exercise,
                                        dividendDates, dividends, engine);
 
-          VanillaOption ref_option(stochProcess, refPayoff, 
+          VanillaOption ref_option(stochProcess, refPayoff,
                                    exercise, ref_engine);
 
           for (Size l=0; l<LENGTH(underlyings); l++) {
@@ -479,8 +483,9 @@ void DividendOptionTest::testEuropeanGreeks() {
           boost::shared_ptr<PricingEngine> engine(
                                           new AnalyticDividendEuropeanEngine);
 
-          boost::shared_ptr<BlackScholesProcess> stochProcess(
-              new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+          boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
           DividendVanillaOption option(stochProcess, payoff, exercise,
                                        dividendDates, dividends, engine);
@@ -587,7 +592,7 @@ void DividendOptionTest::testFdEuropeanValues() {
     Option::Type types[] = { Option::Call, Option::Put };
     Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
     Real underlyings[] = { 100.0 };
-    // Rate qRates[] = { 0.00, 0.10, 0.30 }; 
+    // Rate qRates[] = { 0.00, 0.10, 0.30 };
     // Analytic dividend may not be handling q correctly
     Rate qRates[] = { 0.00 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
@@ -630,8 +635,9 @@ void DividendOptionTest::testFdEuropeanValues() {
           boost::shared_ptr<PricingEngine> ref_engine(
                                           new AnalyticDividendEuropeanEngine);
 
-          boost::shared_ptr<BlackScholesProcess> stochProcess(
-              new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+          boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
           DividendVanillaOption option(stochProcess, payoff, exercise,
                                        dividendDates, dividends, engine);
@@ -719,8 +725,9 @@ void testFdGreeks(const Date& today,
             boost::shared_ptr<StrikedTypePayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
 
-            boost::shared_ptr<BlackScholesProcess> stochProcess(
-              new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+            boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
             DividendVanillaOption option(stochProcess, payoff, exercise,
                                          dividendDates, dividends, engine);
@@ -852,8 +859,9 @@ void testFdDegenerate(const Date& today,
     Handle<YieldTermStructure> qTS(flatRate(0.0, dc));
     Handle<BlackVolTermStructure> volTS(flatVol(0.282922, dc));
 
-    boost::shared_ptr<BlackScholesProcess> process(
-              new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+    boost::shared_ptr<StochasticProcess> process(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                   new PlainVanillaPayoff(Option::Call, 55.0));

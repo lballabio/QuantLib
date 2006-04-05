@@ -77,7 +77,7 @@ namespace QuantLib {
         Handle<BlackVolTermStructure> volTS(jdProcess->blackVolatility());
         baseArguments->stochasticProcess =
             boost::shared_ptr<StochasticProcess>(
-                            new BlackScholesProcess(stateVariable, dividendTS,
+                 new GeneralizedBlackScholesProcess(stateVariable, dividendTS,
                                                     riskFreeTS, volTS));
         baseArguments->validate();
 

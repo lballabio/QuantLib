@@ -106,11 +106,11 @@ void ForwardOptionTest::testValues() {
                  new ForwardEngine<VanillaOption::arguments,
                                    VanillaOption::results>(underlyingEngine));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(Handle<Quote>(spot),
-                                    Handle<YieldTermStructure>(qTS),
-                                    Handle<YieldTermStructure>(rTS),
-                                    Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<StochasticProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
+                                       Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -174,11 +174,11 @@ void ForwardOptionTest::testPerformanceValues() {
       new ForwardPerformanceEngine<VanillaOption::arguments,
                                    VanillaOption::results>(underlyingEngine));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(Handle<Quote>(spot),
-                                    Handle<YieldTermStructure>(qTS),
-                                    Handle<YieldTermStructure>(rTS),
-                                    Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<StochasticProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
+                                       Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -245,8 +245,8 @@ void testForwardGreeks() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+    boost::shared_ptr<StochasticProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
                                                   new AnalyticEuropeanEngine);

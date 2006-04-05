@@ -41,7 +41,7 @@ namespace QuantLib {
             dynamic_cast<const OneAssetOption::arguments *>(a);
         QL_REQUIRE(args, "incorrect argument type");
         process_ =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                      args->stochasticProcess);
         QL_REQUIRE(process_, "Black-Scholes process required");
         exerciseDate_ = args->exercise->lastDate();

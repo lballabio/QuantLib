@@ -74,7 +74,7 @@ void CliquetOptionTest::testValues() {
     boost::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine);
 
     boost::shared_ptr<StochasticProcess> process(
-               new BlackScholesProcess(Handle<Quote>(spot),
+         new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
@@ -139,8 +139,8 @@ void testOptionGreeks() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    boost::shared_ptr<BlackScholesProcess> process(
-               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+    boost::shared_ptr<StochasticProcess> process(
+         new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(moneyness); j++) {

@@ -219,8 +219,8 @@ namespace QuantLib {
         // Making it work for a generic process would need some reflection
         // technique (which is possible, but requires some thought, hence
         // its postponement.)
-        boost::shared_ptr<BlackScholesProcess> originalProcess =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> originalProcess =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                arguments_->stochasticProcess);
         QL_REQUIRE(originalProcess, "Black-Scholes process required");
         Handle<Quote> stateVariable(originalProcess->stateVariable());
@@ -230,8 +230,8 @@ namespace QuantLib {
                                             originalProcess->riskFreeRate());
         Handle<BlackVolTermStructure> volatility;
         boost::shared_ptr<StochasticProcess> process(
-               new BlackScholesProcess(stateVariable, dividendYield,
-                                       riskFreeRate, volatility));
+               new GeneralizedBlackScholesProcess(stateVariable, dividendYield,
+                                                  riskFreeRate, volatility));
 
         const boost::shared_ptr<BlackVolTermStructure>& blackVol =
             originalProcess->blackVolatility();

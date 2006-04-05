@@ -66,7 +66,7 @@ namespace QuantLib {
         const boost::shared_ptr<Quote>& logJumpVolatility() const;
         //@}
       private:
-        boost::shared_ptr<BlackScholesProcess> blackProcess_;
+        boost::shared_ptr<GeneralizedBlackScholesProcess> blackProcess_;
         Handle<Quote> jumpIntensity_, logMeanJump_, logJumpVolatility_;
     };
 

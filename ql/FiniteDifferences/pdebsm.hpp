@@ -28,9 +28,11 @@
 #include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
+
     class PdeBSM : public PdeSecondOrderParabolic {
-    public:
-        typedef boost::shared_ptr<BlackScholesProcess> argument_type;
+      public:
+        typedef boost::shared_ptr<GeneralizedBlackScholesProcess>
+                                                                argument_type;
         typedef LogGrid grid_type;
         PdeBSM(const argument_type & process) : process_(process) {};
         virtual Real diffusion(Time t, Real x) const {
@@ -47,6 +49,7 @@ namespace QuantLib {
     private:
         const argument_type process_;
     };
+
 }
 
 

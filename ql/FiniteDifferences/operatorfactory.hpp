@@ -40,10 +40,10 @@ namespace QuantLib {
     class OperatorFactory {
       public:
         static TridiagonalOperator getOperator(
-                        const boost::shared_ptr<BlackScholesProcess> &process,
-                        const Array &grid,
-                        Time residualTime,
-                        bool timeDependent) {
+             const boost::shared_ptr<GeneralizedBlackScholesProcess> &process,
+             const Array &grid,
+             Time residualTime,
+             bool timeDependent) {
             if (timeDependent)
                 return BSMTermOperator(grid, process, residualTime);
             else

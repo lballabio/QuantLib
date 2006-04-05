@@ -110,8 +110,8 @@ namespace QuantLib {
                 this->arguments_.payoff);
         QL_REQUIRE(argumentsPayoff, "wrong payoff given");
 
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                 this->arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
@@ -148,8 +148,9 @@ namespace QuantLib {
 
         originalArguments_->stochasticProcess =
             boost::shared_ptr<StochasticProcess>(
-                      new BlackScholesProcess(spot, dividendYield,
-                                              riskFreeRate, blackVolatility));
+                       new GeneralizedBlackScholesProcess(spot, dividendYield,
+                                                          riskFreeRate,
+                                                          blackVolatility));
 
         originalArguments_->exercise = this->arguments_.exercise;
 
@@ -167,8 +168,8 @@ namespace QuantLib {
     template<class ArgumentsType, class ResultsType>
     void ForwardEngine<ArgumentsType, ResultsType>::getOriginalResults()
                                                                       const {
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                 this->arguments_.stochasticProcess);
 
         DayCounter rfdc = process->riskFreeRate()->dayCounter();

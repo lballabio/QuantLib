@@ -78,7 +78,7 @@ void setup() {
     volatility_.linkTo(flatVol(today_, 0.15, dayCounter_));
 
     process_ = boost::shared_ptr<StochasticProcess>(
-                          new BlackScholesProcess(underlying_, dividendYield_,
+                    new BlackScholesMertonProcess(underlying_, dividendYield_,
                                                   riskFreeRate_, volatility_));
 
     creditSpread_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(0.005)));

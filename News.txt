@@ -1,47 +1,5 @@
 
-CALENDARS
-
-- Added Brazilian calendar (thanks to Piter Dias.)
-
-- Added Argentinian, Icelandic, Indonesian, Mexican, and Ukrainian calendars.
-
-INSTRUMENTS AND PRICING ENGINES
-
-- Added convertible bonds (thanks to Theo Boafo.)
-
-- The cash flows returned by the Bond::cashflows method now include
-  the redemption.
-
-- SimpleSwap can now be set an engine. If none is set, the old
-  cash-flow-based calculation is used.
-
-- Generalized McVanillaEngine so that it can manage n-dimensional
-  processes; it now subsumes McHestonEngine.
-
-- Added pricing of Bermudan options on binomial trees (thanks to Enrico
-  Michelotti.)
-
-- Separated accrual and payment conventions for bonds.
-
-- Modified basis-point sensitivity calculation so that it returns the
-  cash variation for a basis-point change in rate (it used to return
-  the figure to be multiplied by the variation in order to obtain the
-  same result.)
-
-MODELS
-
-- Added weights to short-rate model calibration (thanks to Enrico
-  Michelotti.)
-
-- Added Libor market model (thanks to Klaus Spanderen.)
-
-OPTIMIZATION
-
-- Added Levenberg-Marquardt optimization method (thanks to Klaus Spanderen.)
-
-EXAMPLES
-
-- Merged American and European option examples; added Bermudan option.
-
-- Added convertible-bond example (thanks to Theo Boafo.)
+- Renamed BlackScholedProcess to GeneralizedBlackScholedProcess;
+  specialized classes added for Black-Scholes, Merton, Black and
+  Garman-Kohlhagen processes.
 

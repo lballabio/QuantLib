@@ -29,8 +29,9 @@
 namespace QuantLib {
 
     //! default theta calculation for Black-Scholes options
-    Real blackScholesTheta(const boost::shared_ptr<BlackScholesProcess>&,
-                           Real value, Real delta, Real gamma);
+    Real blackScholesTheta(
+                     const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                     Real value, Real delta, Real gamma);
 
     //! default theta-per-day calculation
     Real defaultThetaPerDay(Real theta);

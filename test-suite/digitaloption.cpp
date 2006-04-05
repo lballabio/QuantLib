@@ -110,10 +110,10 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<StochasticProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, exercise, engine);
 
@@ -163,10 +163,10 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<StochasticProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, exercise, engine);
 
@@ -216,10 +216,10 @@ void DigitalOptionTest::testGapEuropeanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<StochasticProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, exercise, engine);
 
@@ -282,10 +282,10 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<StochasticProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
                           engine);
@@ -347,10 +347,10 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<StochasticProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
                           engine);
@@ -408,10 +408,10 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<StochasticProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
                           engine);
@@ -475,10 +475,10 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<StochasticProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
                           engine);
@@ -550,8 +550,9 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                             new CashOrNothingPayoff(types[i1],
                                                     strikes[i6], cashPayoff));
 
-          boost::shared_ptr<StochasticProcess> stochProcess(new
-                BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+          boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
           VanillaOption opt(stochProcess, payoff, exercises[j], engines[j]);
 
@@ -702,10 +703,10 @@ void DigitalOptionTest::testMCCashAtHit() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<StochasticProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         Size requiredSamples = Size(std::pow(2.0, 14)-1);
         boost::shared_ptr<PricingEngine> mcldEngine;

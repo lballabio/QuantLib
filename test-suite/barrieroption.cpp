@@ -225,11 +225,11 @@ void BarrierOptionTest::testHaugValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<StochasticProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         BarrierOption barrierOption(
                 values[i].barrierType,
@@ -305,11 +305,11 @@ void BarrierOptionTest::testBabsiriValues() {
         boost::shared_ptr<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(underlying),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<StochasticProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(underlying),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         // analytic
         BarrierOption barrierCallOption(
@@ -411,11 +411,11 @@ void BarrierOptionTest::testBeagleholeValues() {
         boost::shared_ptr<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(underlying),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<StochasticProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(underlying),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         // analytic
         BarrierOption barrierCallOption(

@@ -111,8 +111,9 @@ void OperatorTest::testBSMOperatorConsistency() {
     boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, q, dc);
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, sigma, dc);
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-               new BlackScholesProcess(Handle<Quote>(spot),
+    boost::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
+        new GeneralizedBlackScholesProcess(
+                                       Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));

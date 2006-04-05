@@ -71,8 +71,8 @@ namespace QuantLib {
         TimeGrid timeGrid() const;
         boost::shared_ptr<path_generator_type> pathGenerator() const {
 
-            boost::shared_ptr<BlackScholesProcess> process =
-                boost::dynamic_pointer_cast<BlackScholesProcess>(
+            boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+                boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
             QL_REQUIRE(process, "Black-Scholes process required");
             TimeGrid grid = this->timeGrid();
@@ -119,8 +119,8 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCDiscreteAveragingAsianEngine<RNG,S>::timeGrid() const {
 
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 

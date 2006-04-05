@@ -122,7 +122,7 @@ makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
         break;
       case Integral:
           engine = boost::shared_ptr<PricingEngine>(
-                new IntegralEngine());                                     
+                new IntegralEngine());
           break;
       case PseudoMonteCarlo:
         engine = MakeMCEuropeanEngine<PseudoRandom>().withSteps(1)
@@ -137,8 +137,8 @@ makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
         QL_FAIL("unknown engine type");
     }
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
-                 new BlackScholesProcess(Handle<Quote>(u),
+    boost::shared_ptr<StochasticProcess> stochProcess(
+           new BlackScholesMertonProcess(Handle<Quote>(u),
                                          Handle<YieldTermStructure>(q),
                                          Handle<YieldTermStructure>(r),
                                          Handle<BlackVolTermStructure>(vol)));
@@ -268,11 +268,11 @@ void EuropeanOptionTest::testValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<StochasticProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);
 
@@ -333,11 +333,11 @@ void EuropeanOptionTest::testGreekValues() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
-    boost::shared_ptr<BlackScholesProcess> stochProcess(new
-        BlackScholesProcess(Handle<Quote>(spot),
-                            Handle<YieldTermStructure>(qTS),
-                            Handle<YieldTermStructure>(rTS),
-                            Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<StochasticProcess> stochProcess(new
+        BlackScholesMertonProcess(Handle<Quote>(spot),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS)));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
     Date exDate;
@@ -624,9 +624,9 @@ void EuropeanOptionTest::testGreeks() {
                     GapPayoff(types[i], strikes[j], 100.0));
               }
 
-              boost::shared_ptr<BlackScholesProcess> stochProcess(
-                                 new BlackScholesProcess(Handle<Quote>(spot),
-                                                         qTS, rTS, volTS));
+              boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
               EuropeanOption option(stochProcess, payoff, exercise);
 
@@ -869,8 +869,8 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(Option::Call, 100.0));
 
-    boost::shared_ptr<BlackScholesProcess> process(
-             new BlackScholesProcess(underlying, qTS, rTS, volTS));
+    boost::shared_ptr<StochasticProcess> process(
+                  new BlackScholesMertonProcess(underlying, qTS, rTS, volTS));
 
     // link to the same stochastic process, which shouldn't be changed
     // by calling methods of either option
@@ -1183,9 +1183,9 @@ void EuropeanOptionTest::testFdGreeks() {
           boost::shared_ptr<StrikedTypePayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
 
-          boost::shared_ptr<BlackScholesProcess> stochProcess(
-                                 new BlackScholesProcess(Handle<Quote>(spot),
-                                                         qTS, rTS, volTS));
+          boost::shared_ptr<StochasticProcess> stochProcess(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
 
           boost::shared_ptr<PricingEngine> engine(new FDEuropeanEngine);
           EuropeanOption option(stochProcess, payoff, exercise, engine);
@@ -1283,7 +1283,7 @@ void EuropeanOptionTest::testPriceCurve() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-    boost::shared_ptr<PricingEngine> 
+    boost::shared_ptr<PricingEngine>
         engine(new FDEuropeanEngine(timeSteps, gridPoints));
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -1298,11 +1298,11 @@ void EuropeanOptionTest::testPriceCurve() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+        boost::shared_ptr<StochasticProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);
         SampledCurve price_curve = option.priceCurve();
@@ -1313,27 +1313,28 @@ void EuropeanOptionTest::testPriceCurve() {
                            0.0, 0.0);
             continue;
         }
-        
+
         // Ignore the end points
         Size start = price_curve.size() / 4;
         Size end = price_curve.size() * 3 / 4;
         for (Size i=start; i < end; i++) {
             spot->setValue(price_curve.gridValue(i));
-            boost::shared_ptr<BlackScholesProcess> 
-                stochProcess1(new BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<YieldTermStructure>(qTS),
-                                Handle<YieldTermStructure>(rTS),
-                                Handle<BlackVolTermStructure>(volTS)));
+            boost::shared_ptr<StochasticProcess> stochProcess1(
+                      new BlackScholesMertonProcess(
+                                       Handle<Quote>(spot),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
+                                       Handle<BlackVolTermStructure>(volTS)));
 
             EuropeanOption option1(stochProcess, payoff, exercise, engine);
             Real calculated = option1.NPV();
             Real error = std::fabs(calculated-price_curve.value(i));
             Real tolerance = 1e-3;
             if (error>tolerance) {
-                REPORT_FAILURE("price curve error", payoff, exercise, 
+                REPORT_FAILURE("price curve error", payoff, exercise,
                                price_curve.gridValue(i),
                                values[i].q, values[i].r, today,
-                               values[i].v, 
+                               values[i].v,
                                price_curve.value(i), calculated,
                                error, tolerance);
                 break;

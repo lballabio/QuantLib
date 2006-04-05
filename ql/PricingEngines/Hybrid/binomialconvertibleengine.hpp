@@ -54,8 +54,8 @@ namespace QuantLib {
     template <class T>
     void BinomialConvertibleEngine<T>::calculate() const {
 
-        boost::shared_ptr<BlackScholesProcess> process =
-            boost::dynamic_pointer_cast<BlackScholesProcess>(
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                           this->arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
@@ -108,7 +108,7 @@ namespace QuantLib {
                                           maturityDate);
 
         boost::shared_ptr<StochasticProcess1D> bs(
-                            new BlackScholesProcess(underlying, flatDividends,
+                 new GeneralizedBlackScholesProcess(underlying, flatDividends,
                                                     flatRiskFree, flatVol));
         boost::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,
                                         payoff->strike()));
