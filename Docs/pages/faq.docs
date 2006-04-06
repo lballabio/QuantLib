@@ -56,7 +56,6 @@
     \ref faq_platforms
     - \ref faq_dot_net "Does QuantLib support .NET?"
     - \ref faq_fpml "Does QuantLib support FpML? Serialization?"
-    - \ref faq_excel "What's the difference between QuantLibXL and QuantLibAddin?"
 
     <hr>
 
@@ -368,8 +367,8 @@
     I'm having trouble building/using QuantLibAddin.
     </strong>
 
-    The QuantLibAddin project has its own troubleshooting page; see
-    <http://quantlib.org/quantlibaddin/troubleshooting.html>.
+    The QuantLibAddin project has its own FAQ; see
+    <http://quantlib.org/quantlibaddin/faq.html>.
 
 
     \section faq_lists QuantLib mailing lists
@@ -444,34 +443,6 @@
     No further work has been done and help is needed in this area.  The next
     step would be to formalize and document the proposed design, perhaps as a
     <a href="http://quantlib.org/quep.shtml">QuEP</a>.
-
-    <strong>
-    \anchor faq_excel
-    What's the difference between QuantLibXL and QuantLibAddin?
-    </strong>
-
-    <table>
-    <tr>
-    <td><b>Feature</b></td>
-    <td><b>QuantLibXL</b></td>
-    <td><b>QuantLibAddin</b></td>
-    </tr>
-    <tr>
-    <td><b>Design</b></td>
-    <td>Procedural and stateless.  Each function returns a value, no state persists within the library</td>
-    <td>Object oriented and stateful.  Calling a function instantiates an object in the repository - objects may be interrogated, updated, or passed as inputs to constructors/member functions of other objects.</td>
-    </tr>
-    <tr>
-    <td><b>Lifecycle</b></td>
-    <td>Stable, discontinued.  Last updated for QuantLib 0.3.8</td>
-    <td>Prototype which at the time of this writing is under active development</td>
-    </tr>
-    <tr>
-    <td><b>Platforms</b></td>
-    <td>Microsoft Excel</td>
-    <td>Microsoft Excel, OpenOffice.org Calc (Windows and Linux), Guile, C/C++</td>
-    </tr>
-    </table>
 
 */
 
