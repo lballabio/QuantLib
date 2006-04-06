@@ -23,11 +23,9 @@ namespace QuantLib {
 
     void InArrearIndexedCoupon::setCapletVolatility(
                                  const Handle<CapletVolatilityStructure>& v) {
-        if (capletVolatility_)
-            unregisterWith(capletVolatility_);
+        unregisterWith(capletVolatility_);
         capletVolatility_ = v;
-        if (capletVolatility_)
-            registerWith(capletVolatility_);
+        registerWith(capletVolatility_);
         notifyObservers();
     }
 

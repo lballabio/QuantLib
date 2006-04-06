@@ -46,7 +46,7 @@ namespace QuantLib {
 
         arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
         arguments->exchRateVolTS = exchRateVolTS_;
-        QL_REQUIRE(correlation_, "null correlation given");
+        QL_REQUIRE(!correlation_.empty(), "null correlation given");
         arguments->correlation = correlation_->value();
 
         arguments->moneyness = moneyness_;

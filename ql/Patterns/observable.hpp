@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2006 StatPro Italia srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -59,29 +60,8 @@ namespace QuantLib {
         Observer& operator=(const Observer&);
         virtual ~Observer();
         // observer interface
-        template <class T>
-        void registerWith(const boost::shared_ptr<T>& h) {
-            if (h) {
-                boost::shared_ptr<Observable> obs = h;
-                observables_.push_front(obs);
-                obs->registerObserver(this);
-            }
-        }
-        template <class T>
-        void unregisterWith(const boost::shared_ptr<T>& h) {
-            if (h) {
-                boost::shared_ptr<Observable> obs = h;
-                for (iterator i=observables_.begin();
-                              i!=observables_.end();
-                              ++i) {
-                    if (*i == obs) {
-                        (*i)->unregisterObserver(this);
-                        observables_.erase(i);
-                        return;
-                    }
-                }
-            }
-        }
+        void registerWith(const boost::shared_ptr<Observable>&);
+        void unregisterWith(const boost::shared_ptr<Observable>&);
         /*! This method must be implemented in derived classes. An
             instance of %Observer does not call this method directly:
             instead, it will be called by the observables the instance
@@ -145,6 +125,29 @@ namespace QuantLib {
     inline Observer::~Observer() {
         for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
             (*i)->unregisterObserver(this);
+    }
+
+    inline void Observer::registerWith(
+                                     const boost::shared_ptr<Observable>& h) {
+        if (h) {
+            observables_.push_front(h);
+            h->registerObserver(this);
+        }
+    }
+
+    inline void Observer::unregisterWith(
+                                     const boost::shared_ptr<Observable>& h) {
+        if (h) {
+            for (iterator i=observables_.begin();
+                 i!=observables_.end();
+                 ++i) {
+                if (*i == h) {
+                    (*i)->unregisterObserver(this);
+                    observables_.erase(i);
+                    return;
+                }
+            }
+        }
     }
 
 }

@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -76,7 +77,9 @@ namespace QuantLib {
         \pre Class "Type" must inherit from Observable
     */
     template <class Type>
-    class Handle : public boost::shared_ptr<Link<Type> > {
+    class Handle {
+      private:
+        boost::shared_ptr<Link<Type> > link_;
       public:
         /*! \warning see the documentation of the Link class for
                      issues relatives to <tt>registerAsObserver</tt>.
@@ -92,9 +95,12 @@ namespace QuantLib {
         //! dereferencing
         const boost::shared_ptr<Type>& currentLink() const;
         const boost::shared_ptr<Type>& operator->() const;
-        //! Checks if the contained shared pointer points to anything
+        //! checks if the contained shared pointer points to anything
         bool empty() const;
+        //! allow registration as observable
+        operator boost::shared_ptr<Observable>() const;
     };
+
 
     // inline definitions
 
@@ -128,29 +134,32 @@ namespace QuantLib {
     template <class Type>
     inline Handle<Type>::Handle(const boost::shared_ptr<Type>& h,
                                 bool registerAsObserver)
-    : boost::shared_ptr<Link<Type> >(new Link<Type>(h,registerAsObserver)) {}
+    : link_(new Link<Type>(h,registerAsObserver)) {}
 
     template <class Type>
     inline void Handle<Type>::linkTo(const boost::shared_ptr<Type>& h,
                                      bool registerAsObserver) {
-        (**this).linkTo(h,registerAsObserver);
+        link_->linkTo(h,registerAsObserver);
     }
 
     template <class Type>
-    inline const boost::shared_ptr<Type>&
-    Handle<Type>::currentLink() const {
-        return (**this).currentLink();
+    inline const boost::shared_ptr<Type>& Handle<Type>::currentLink() const {
+        return link_->currentLink();
     }
 
     template <class Type>
-    inline const boost::shared_ptr<Type>&
-    Handle<Type>::operator->() const {
-        return (**this).currentLink();
+    inline const boost::shared_ptr<Type>& Handle<Type>::operator->() const {
+        return link_->currentLink();
     }
 
     template <class Type>
     inline bool Handle<Type>::empty() const {
-        return (**this).empty();
+        return link_->empty();
+    }
+
+    template <class Type>
+    inline Handle<Type>::operator boost::shared_ptr<Observable>() const {
+        return link_;
     }
 
 }
