@@ -32,6 +32,7 @@
 #include <ql/CashFlows/parcoupon.hpp>
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
 #include <ql/CashFlows/shortindexedcoupon.hpp>
+#include <ql/CashFlows/timebasket.hpp>
 #include <ql/CashFlows/upfrontindexedcoupon.hpp>
 
 

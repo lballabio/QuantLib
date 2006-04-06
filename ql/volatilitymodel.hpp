@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2006 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,13 +24,11 @@
 #ifndef quantlib_volatility_model_hpp
 #define quantlib_volatility_model_hpp
 
-#include <vector>
 #include <ql/types.hpp>
 #include <ql/timeseries.hpp>
+#include <vector>
 
 namespace QuantLib {
-    class Date;
-    class DayCounter;
 
     /*! This abstract class defines the interface of concrete
         volatility model
@@ -42,9 +39,10 @@ namespace QuantLib {
       public:
         virtual ~VolatilityModel() {};
         virtual TimeSeries<Volatility>
-        calculate(const TimeSeries<Real> &quoteSeries) = 0;
-        virtual void calibrate(const TimeSeries<Real> &quoteSeries) = 0;
+        calculate(const TimeSeries<Real>& quoteSeries) = 0;
+        virtual void calibrate(const TimeSeries<Real>& quoteSeries) = 0;
     };
+
 }
 
 

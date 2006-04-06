@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2006 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,18 +22,17 @@
 #include <ql/volatilitymodel.hpp>
 #include <ql/VolatilityModels/constantestimator.hpp>
 #include <ql/timeseries.hpp>
-#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 void VolatilityModelsTest::testConstruction() {
 
-    BOOST_MESSAGE("Testing volatility construction...");
+    BOOST_MESSAGE("Testing volatility model construction...");
 
     QL_TEST_BEGIN
 
-        TimeSeries<Real> ts;
+    TimeSeries<Real> ts;
     ts.insert(Date(25, March, 2005), 1.2);
     ts.insert(Date(29, March, 2005), 2.3);
     ts.insert(Date(15, March, 2005), 0.3);
@@ -41,6 +40,7 @@ void VolatilityModelsTest::testConstruction() {
     ConstantEstimator ce(1, 1.0/360.0);
     TimeSeries<Volatility> sv(ce.calculate(ts));
     TimeSeries<Volatility>::const_valid_iterator cur = sv.vbegin();
+
     QL_TEST_END
 }
 

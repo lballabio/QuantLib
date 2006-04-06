@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2006 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,18 +20,17 @@
 #include "timeseries.hpp"
 #include "utilities.hpp"
 #include <ql/timeseries.hpp>
-#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 void TimeSeriesTest::testConstruction() {
 
-    BOOST_MESSAGE("Testing test series construction...");
+    BOOST_MESSAGE("Testing time series construction...");
 
     QL_TEST_BEGIN
 
-        TimeSeries<Real> ts;
+    TimeSeries<Real> ts;
     ts.insert(Date(25, March, 2005), 1.2);
     ts.insert(Date(29, March, 2005), 2.3);
     ts.insert(Date(15, March, 2005), 0.3);
@@ -55,7 +54,6 @@ void TimeSeriesTest::testConstruction() {
     if (cur->second != 3.5) {
         BOOST_ERROR("set value operator not match" << cur->second << "\n");
     }
-
 
     QL_TEST_END
 }

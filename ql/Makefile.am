@@ -24,7 +24,7 @@ SUBDIRS = \
     TermStructures \
     Utilities \
     Volatilities \
-    VolatilityModels 
+    VolatilityModels
 
 EXTRA_DIST= \
 	config.ansi.hpp \
@@ -64,7 +64,6 @@ include_HEADERS = \
 	qldefines.hpp \
 	quantlib.hpp \
 	quote.hpp \
-	quotetimeseries.hpp \
 	schedule.hpp \
 	settings.hpp \
 	solver1d.hpp \

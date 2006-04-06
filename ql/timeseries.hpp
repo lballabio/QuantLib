@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2006 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,31 +32,18 @@
 
 namespace QuantLib {
 
-    /*! \example timeseries_iterators.cpp
-        This code exemplifies how to use TimeSeries iterators to perform
-        Gaussian statistic analyses on historical data.
-    */
-
     //! Container for historical data
     /*! This class acts as a generic repository for a set of historical data.
         Single data can be accessed through their date, while sets of
         consecutive data can be accessed through iterators.
-
-        A history can contain null data, which can either be returned or
-        skipped according to the chosen iterator type.
-
-        <b>Example: </b>
-        \link history_iterators.cpp
-        uses of history iterators
-        \endlink
     */
-
-    
     template <class T>
     class TimeSeries {
       private:
         std::map<Date, T> values_;
       public:
+        typedef typename std::vector<T>::const_iterator
+                                                   vector_const_iterator_type;
         /*! Default constructor */
         TimeSeries() {}
         /*! This constructor initializes the history with the given set of
@@ -67,10 +54,6 @@ namespace QuantLib {
             number of days from <b><i>firstDate</i></b> to
             <b><i>lastDate</i></b> included.
         */
-
-        typedef typename std::vector<T>::const_iterator
-            vector_const_iterator_type;
-
         template <class Iterator>
         TimeSeries(const Date& firstDate, const Date& lastDate,
                    Iterator begin, Iterator end) {
@@ -93,9 +76,7 @@ namespace QuantLib {
                 ++i;
                 ++d;
             }
-            
         }
-
         /*! This constructor initializes the history with the given set of
             values, corresponding to the date range between
             <b><i>firstDate</i></b> and <b><i>lastDate</i></b> included.
@@ -105,7 +86,7 @@ namespace QuantLib {
                  included.
         */
         TimeSeries(const Date& firstDate, const Date& lastDate,
-                const std::vector<T>& values);
+                   const std::vector<T>& values);
         /*! This constructor initializes the history with the given set of
             values, corresponding each to the element with the same index in
             the given set of dates. The whole date range between
@@ -127,15 +108,13 @@ namespace QuantLib {
                  included.
         */
         TimeSeries(const std::vector<Date>& dates,
-                const std::vector<T>& values);
+                   const std::vector<T>& values);
         //! \name Inspectors
         //@{
         //! returns the first date for which a historical datum exists
-        const Date& firstDate() const { 
-            return values_.begin()->first; }
+        const Date& firstDate() const { return values_.begin()->first; }
         //! returns the last date for which a historical datum exists
-        const Date& lastDate() const { 
-            return values_.rbegin()->first; }
+        const Date& lastDate() const { return values_.rbegin()->first; }
         //! returns the number of historical data including null ones
         Size size() const { return values_.size(); }
         //@}
@@ -152,7 +131,7 @@ namespace QuantLib {
             return values_[d];
         }
 
-        typedef typename std::map<Date,T>::const_iterator 
+        typedef typename std::map<Date,T>::const_iterator
         const_valid_iterator;
 
         // valid entry iterators
@@ -185,26 +164,26 @@ namespace QuantLib {
             return returnval;
         }
 
-        };
+    };
 
 
     // inline definitions
     template <class T>
-    TimeSeries<T>::TimeSeries(const Date& firstDate, 
+    TimeSeries<T>::TimeSeries(const Date& firstDate,
                               const Date& lastDate,
                               const std::vector<T>& values) {
         QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
         QL_REQUIRE(values.size() == Size((lastDate-firstDate)+1),
                    "history size incompatible with date range");
         Size i; Date d;
-        for(d = firstDate, i = 0; d <= lastDate; d++, i++) {
+        for (d = firstDate, i = 0; d <= lastDate; d++, i++) {
             values_[d] = values[i];
         }
     }
 
-        template <class T>
+    template <class T>
     TimeSeries<T>::TimeSeries(const std::vector<Date>& dates,
-                            const std::vector<T>& values) {
+                              const std::vector<T>& values) {
         QL_REQUIRE(dates.size() == values.size(),
                    "different size for date and value vectors");
         QL_REQUIRE(dates.size() >= 1,"null history given");
@@ -212,6 +191,7 @@ namespace QuantLib {
             values_[dates[i]] = values[i];
         }
     }
+
 }
 
 
