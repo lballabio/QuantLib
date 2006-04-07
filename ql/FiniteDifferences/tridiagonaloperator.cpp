@@ -106,16 +106,27 @@ namespace QuantLib {
                        "tolerance (" << tol << ") not reached in "
                        << sorIteration << " iterations. "
                        << "The error still is " << err);
-            err = 0.0;
-            for (i=1; i<size()-2 ; i++) {
-                temp = omega * (rhs[i]     -
-                                upperDiagonal_[i]   * result[i+1]-
-                                diagonal_[i]        * result[i] -
-                                lowerDiagonal_[i-1] * result[i-1]) /
-                    diagonal_[i];
+
+            temp = omega * (rhs[0]     -
+                            upperDiagonal_[0]   * result[1]-
+                            diagonal_[0]        * result[0])/diagonal_[0];
+            err = temp*temp;
+            result[0] += temp;
+
+            for (i=1; i<size()-1 ; i++) {
+                temp = omega *(rhs[i]     -
+                               upperDiagonal_[i]   * result[i+1]-
+                               diagonal_[i]        * result[i] -
+                               lowerDiagonal_[i-1] * result[i-1])/diagonal_[i];
                 err += temp * temp;
                 result[i] += temp;
             }
+
+            temp = omega * (rhs[i]     -
+                            diagonal_[i]        * result[i] -
+                            lowerDiagonal_[i-1] * result[i-1])/diagonal_[i];
+            err += temp*temp;
+            result[i] += temp;
         }
         return result;
     }
