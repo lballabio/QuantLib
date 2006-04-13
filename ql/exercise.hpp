@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,12 +34,26 @@ namespace QuantLib {
     //! Base exercise class
     class Exercise {
       public:
-        enum Type { Undefined = -1, American, Bermudan, European };
+        enum Type {
+            #ifndef QL_DISABLE_DEPRECATED
+            Undefined = -1,
+            #endif
+            American, Bermudan, European
+        };
         // constructor
-        Exercise(Type type = Undefined) : type_(type) {}
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated initialize the exercise type explicitly */
+        Exercise() : type_(Undefined) {}
+        #endif
+        explicit Exercise(Type type) : type_(type) {}
         virtual ~Exercise() {}
         // inspectors
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated no longer needed after initialization of an
+                        undefined exercise is forbidden
+        */
         bool isNull() const { return type_ == Undefined; }
+        #endif
         Type type() const { return type_; }
         Date date(Size index) const { return dates_[index]; }
         const std::vector<Date>& dates() const { return dates_; }
@@ -49,14 +64,14 @@ namespace QuantLib {
     };
 
     //! Early-exercise base class
-    /*! The payoff can be at exercise (default case) or at expiry
-
-        \todo derive a plain American Exercise class (no
-              earliestDate, no payoffAtExpiry)
-    */
+    /*! The payoff can be at exercise (the default) or at expiry */
     class EarlyExercise : public Exercise {
       public:
-        EarlyExercise(Type type = Undefined,
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated initialize the exercise type explicitly */
+        EarlyExercise() : payoffAtExpiry_(false) {}
+        #endif
+        EarlyExercise(Type type,
                       bool payoffAtExpiry = false)
         : Exercise(type), payoffAtExpiry_(payoffAtExpiry) {}
         bool payoffAtExpiry() const { return payoffAtExpiry_; }
@@ -65,17 +80,19 @@ namespace QuantLib {
     };
 
     //! American exercise
-    /*! An American option can be exercised at any time between two predefined
-        dates
+    /*! An American option can be exercised at any time between two
+        predefined dates; the first date might be omitted, in which
+        case the option can be exercised at any time before the expiry.
 
         \todo check that everywhere the American condition is applied
               from earliestDate and not earlier
-
     */
     class AmericanExercise : public EarlyExercise {
       public:
         AmericanExercise(const Date& earliestDate,
                          const Date& latestDate,
+                         bool payoffAtExpiry = false);
+        AmericanExercise(const Date& latestDate,
                          bool payoffAtExpiry = false);
     };
 
@@ -98,7 +115,6 @@ namespace QuantLib {
       public:
         EuropeanExercise(const Date& date);
     };
-
 
 }
 
