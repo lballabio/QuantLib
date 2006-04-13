@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -197,8 +198,8 @@ namespace QuantLib {
     }
 
     inline bool operator==(const Calendar& c1, const Calendar& c2) {
-        return (c1.isNull() && c2.isNull())
-            || (!c1.isNull() && !c2.isNull() && c1.name() == c2.name());
+        return (c1.empty() && c2.empty())
+            || (!c1.empty() && !c2.empty() && c1.name() == c2.name());
     }
 
     inline bool operator!=(const Calendar& c1, const Calendar& c2) {

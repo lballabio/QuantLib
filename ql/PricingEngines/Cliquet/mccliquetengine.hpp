@@ -145,14 +145,14 @@ namespace QuantLib {
 
             boost::shared_ptr<PathPricer<Path> >
                 controlPP = controlPathPricer();
-            QL_REQUIRE(!controlPP.isNull(),
+            QL_REQUIRE(controlPP,
                        "engine does not provide "
                        "control variation path pricer");
 
             boost::shared_ptr<PricingEngine> controlPE =
                 controlPricingEngine();
 
-            QL_REQUIRE(!controlPE.isNull(),
+            QL_REQUIRE(controlPE,
                        "engine does not provide "
                        "control variation pricing engine");
 

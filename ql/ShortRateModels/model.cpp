@@ -83,7 +83,7 @@ namespace QuantLib {
                    "mismatch between number of instruments and weights");
 
         Constraint c;
-        if (additionalConstraint.isNull())
+        if (additionalConstraint.empty())
             c = *constraint_;
         else
             c = CompositeConstraint(*constraint_,additionalConstraint);

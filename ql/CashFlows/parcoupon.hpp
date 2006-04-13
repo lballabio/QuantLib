@@ -80,7 +80,7 @@ namespace QuantLib {
     // inline definitions
 
     inline DayCounter ParCoupon::dayCounter() const {
-        return dayCounter_.isNull() ? index_->dayCounter() : dayCounter_;
+        return dayCounter_.empty() ? index_->dayCounter() : dayCounter_;
     }
 
     inline Date ParCoupon::fixingDate() const {

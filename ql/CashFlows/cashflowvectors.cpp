@@ -46,7 +46,7 @@ namespace QuantLib {
         Rate rate = couponRates[0];
         Real nominal = nominals[0];
         if (schedule.isRegular(1)) {
-            QL_REQUIRE(firstPeriodDayCount.isNull() ||
+            QL_REQUIRE(firstPeriodDayCount.empty() ||
                        firstPeriodDayCount == dayCount,
                        "regular first coupon "
                        "does not allow a first-period day count");
@@ -58,7 +58,7 @@ namespace QuantLib {
             Date reference = end - tenor*Months;
             reference = calendar.adjust(reference,
                                         schedule.businessDayConvention());
-            DayCounter dc = firstPeriodDayCount.isNull() ?
+            DayCounter dc = firstPeriodDayCount.empty() ?
                             dayCount :
                             firstPeriodDayCount;
             leg.push_back(boost::shared_ptr<CashFlow>(
@@ -151,7 +151,7 @@ namespace QuantLib {
 
         for (dd = dividendDates.begin(), d = dividends.begin();
              dd != dividendDates.end(); dd++, d++) {
-            items.push_back(boost::shared_ptr<CashFlow>(new FixedDividend(*d, 
+            items.push_back(boost::shared_ptr<CashFlow>(new FixedDividend(*d,
                                                                           *dd)));
         }
         return items;

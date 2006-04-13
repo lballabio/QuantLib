@@ -90,7 +90,7 @@ namespace QuantLib {
     : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
                          fixingDays, spread, refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter) {
-        if (dayCounter_.isNull()) {
+        if (dayCounter_.empty()) {
             boost::shared_ptr<Xibor> xibor =
                 boost::dynamic_pointer_cast<Xibor>(index);
             if (xibor)
