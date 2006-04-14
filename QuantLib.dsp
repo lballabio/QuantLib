@@ -415,10 +415,6 @@ SOURCE=.\ql\Calendars\sydney.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\taipei.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Calendars\taiwan.cpp
 # End Source File
 # Begin Source File
@@ -512,14 +508,6 @@ SOURCE=.\ql\CashFlows\analysis.cpp
 # Begin Source File
 
 SOURCE=.\ql\CashFlows\analysis.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\CashFlows\basispointsensitivity.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\CashFlows\basispointsensitivity.hpp
 # End Source File
 # Begin Source File
 
@@ -760,10 +748,6 @@ SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.cpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\FiniteDifferences\valueatcenter.hpp
 # End Source File
 # Begin Source File
 
@@ -2934,6 +2918,26 @@ SOURCE=.\ql\Processes\stochasticprocessarray.cpp
 SOURCE=.\ql\Processes\stochasticprocessarray.hpp
 # End Source File
 # End Group
+# Begin Group "VolatilityModels"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\VolatilityModels\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\VolatilityModels\constantestimator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\VolatilityModels\constantestimator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\VolatilityModels\garch.hpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\ql\argsandresults.hpp
@@ -3140,11 +3144,19 @@ SOURCE=.\ql\timegrid.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\timeseries.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\types.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\userconfig.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\volatilitymodel.hpp
 # End Source File
 # Begin Source File
 

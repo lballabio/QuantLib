@@ -35,7 +35,7 @@ namespace QuantLib {
                                  prev->second));
         }
         cur = quoteSeries.vbegin();
-        advance(cur, size_);
+        std::advance(cur, size_);
         for (i=size_; i < quoteSeries.size(); i++) {
             Size j;
             Real sumu2=0.0, sumu=0.0;

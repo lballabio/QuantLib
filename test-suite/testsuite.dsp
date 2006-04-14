@@ -7,23 +7,23 @@
 CFG=testsuite - Win32 Debug SingleThread
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "testsuite.mak".
-!MESSAGE
+!MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "testsuite.mak" CFG="testsuite - Win32 Debug SingleThread"
-!MESSAGE
+!MESSAGE 
 !MESSAGE Possible choices for configuration are:
-!MESSAGE
+!MESSAGE 
 !MESSAGE "testsuite - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Release CRTDLL" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug CRTDLL" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Release SingleThread" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug SingleThread" (based on "Win32 (x86) Console Application")
-!MESSAGE
+!MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -222,7 +222,7 @@ PostBuild_Desc=Auto run test
 PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
 # End Special Build Tool
 
-!ENDIF
+!ENDIF 
 
 # Begin Target
 
@@ -453,6 +453,10 @@ SOURCE=.\termstructures.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\timeseries.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\tqreigendecomposition.cpp
 # End Source File
 # Begin Source File
@@ -466,6 +470,10 @@ SOURCE=.\transformedgrid.cpp
 # Begin Source File
 
 SOURCE=.\utilities.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\volatilitymodels.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -673,6 +681,10 @@ SOURCE=.\termstructures.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\timeseries.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\tqreigendecomposition.hpp
 # End Source File
 # Begin Source File
@@ -686,6 +698,10 @@ SOURCE=.\transformedgrid.hpp
 # Begin Source File
 
 SOURCE=.\utilities.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\volatilitymodels.hpp
 # End Source File
 # End Group
 # Begin Group "Resource Files"

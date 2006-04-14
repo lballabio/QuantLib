@@ -24,7 +24,6 @@ INCLUDE_DIR    = ..\..
 # Object files
 OBJS = \
     "analysis.obj$(_mt)$(_D)" \
-    "basispointsensitivity.obj$(_mt)$(_D)" \
     "cashflowvectors.obj$(_mt)$(_D)" \
     "inarrearindexedcoupon.obj$(_mt)$(_D)" \
     "parcoupon.obj$(_mt)$(_D)" \

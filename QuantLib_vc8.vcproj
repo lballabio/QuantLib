@@ -919,10 +919,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\taipei.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Calendars\taiwan.cpp"
 				>
 			</File>
@@ -1292,60 +1288,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\CashFlows\analysis.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\CashFlows\basispointsensitivity.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\CashFlows\basispointsensitivity.hpp"
 				>
 			</File>
 			<File
@@ -2050,10 +1992,6 @@
 			</File>
 			<File
 				RelativePath="ql\FiniteDifferences\tridiagonaloperator.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\FiniteDifferences\valueatcenter.hpp"
 				>
 			</File>
 			<File
@@ -8343,6 +8281,26 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="VolatilityModels"
+			>
+			<File
+				RelativePath=".\ql\VolatilityModels\all.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\VolatilityModels\constantestimator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\VolatilityModels\constantestimator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\VolatilityModels\garch.hpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp"
 			>
@@ -8778,11 +8736,19 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\timeseries.hpp"
+			>
+		</File>
+		<File
 			RelativePath="ql\types.hpp"
 			>
 		</File>
 		<File
 			RelativePath="ql\userconfig.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\volatilitymodel.hpp"
 			>
 		</File>
 		<File

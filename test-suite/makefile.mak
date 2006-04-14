@@ -82,10 +82,12 @@ QL_TESTS = \
     "swap.obj$(_mt)$(_D)" \
     "swaption.obj$(_mt)$(_D)" \
     "termstructures.obj$(_mt)$(_D)" \
+    "timeseries.obj$(_mt)$(_D)" \
     "tqreigendecomposition.obj$(_mt)$(_D)" \
     "tracing.obj$(_mt)$(_D)" \
     "transformedgrid.obj$(_mt)$(_D)" \
-    "utilities.obj$(_mt)$(_D)"
+    "utilities.obj$(_mt)$(_D)" \
+    "volatilitymodels.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32

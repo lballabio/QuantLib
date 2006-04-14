@@ -2109,6 +2109,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\timeseries.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\tqreigendecomposition.cpp"
 				>
 			</File>
@@ -2169,6 +2173,10 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\volatilitymodels.cpp"
+				>
 			</File>
 		</Filter>
 		<Filter
@@ -2388,6 +2396,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\timeseries.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\tqreigendecomposition.hpp"
 				>
 			</File>
@@ -2401,6 +2413,10 @@
 			</File>
 			<File
 				RelativePath="utilities.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\volatilitymodels.hpp"
 				>
 			</File>
 		</Filter>
