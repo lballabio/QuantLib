@@ -27,7 +27,7 @@ namespace QuantLib {
                        BusinessDayConvention convention,
                        const Date& stubDate, bool startFromEnd,
                        bool longFinal)
-    : calendar_(calendar), frequency_(Frequency(frequency)),
+    : calendar_(calendar), frequency_(frequency),
       convention_(convention), stubDate_(stubDate),
       startFromEnd_(startFromEnd), longFinal_(longFinal),
       finalIsRegular_(true) {
