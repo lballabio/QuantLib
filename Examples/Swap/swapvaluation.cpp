@@ -383,8 +383,7 @@ int main(int, char* [])
         Integer lenghtInYears = 5;
         bool payFixedRate = true;
 
-        Date maturity = calendar.advance(settlementDate, lenghtInYears, Years,
-                                         floatingLegConvention);
+        Date maturity = settlementDate + lenghtInYears*Years;
         Schedule fixedSchedule(calendar, settlementDate, maturity,
                                fixedLegFrequency, fixedLegConvention);
         Schedule floatSchedule(calendar, settlementDate, maturity,
@@ -396,8 +395,7 @@ int main(int, char* [])
             floatingLegDayCounter, discountingTermStructure);
 
         Date fwdStart = calendar.advance(settlementDate, 1, Years);
-        Date fwdMaturity = calendar.advance(fwdStart, lenghtInYears, Years,
-                                            floatingLegConvention);
+        Date fwdMaturity = fwdStart + lenghtInYears*Years;
         Schedule fwdFixedSchedule(calendar, fwdStart, fwdMaturity,
                                   fixedLegFrequency, fixedLegConvention);
         Schedule fwdFloatSchedule(calendar, fwdStart, fwdMaturity,

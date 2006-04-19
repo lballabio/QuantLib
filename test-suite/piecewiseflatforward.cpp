@@ -178,9 +178,7 @@ void PiecewiseFlatForwardTest::testConsistency() {
     boost::shared_ptr<Xibor> index(new Euribor(12/floatingLegFrequency,Months,
                                                euriborHandle));
     for (i=0; i<swaps; i++) {
-        Date maturity = calendar.advance(settlement,
-                                         swapData[i].n,swapData[i].units,
-                                         floatingLegConvention);
+        Date maturity = settlement + swapData[i].n*swapData[i].units;
         Schedule fixedSchedule(calendar,settlement,maturity,
                                fixedLegFrequency,fixedLegConvention);
         Schedule floatSchedule(calendar,settlement,maturity,
@@ -236,8 +234,10 @@ void PiecewiseFlatForwardTest::testObservability() {
 
 test_suite* PiecewiseFlatForwardTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Piecewise flat forward tests");
+    #if defined(QL_PATCH_MSVC6) || defined(QL_PATCH_MSVC70)
     suite->add(BOOST_TEST_CASE(&PiecewiseFlatForwardTest::testConsistency));
     suite->add(BOOST_TEST_CASE(&PiecewiseFlatForwardTest::testObservability));
+    #endif
     return suite;
 }
 

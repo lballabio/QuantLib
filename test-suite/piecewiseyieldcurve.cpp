@@ -227,9 +227,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
     boost::shared_ptr<Xibor> index(new Euribor(12/floatingLegFrequency,
                                                Months, curveHandle));
     for (i=0; i<swaps; i++) {
-        Date maturity = calendar.advance(settlement,
-                                         swapData[i].n,swapData[i].units,
-                                         floatingLegConvention);
+        Date maturity = settlement + swapData[i].n*swapData[i].units;
         Schedule fixedSchedule(calendar,settlement,maturity,
                                fixedLegFrequency,fixedLegConvention);
         Schedule floatSchedule(calendar,settlement,maturity,

@@ -276,11 +276,10 @@ namespace QuantLib {
         RateHelper::setTermStructure(t);
         Date today = Settings::instance().evaluationDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);
-        Date endDate = calendar_.advance(settlement_, n_, units_,
-                                         floatingConvention_);
-        Schedule fixedSchedule(calendar_, settlement_, endDate,
+        Date maturity = settlement_ + n_*units_;
+        Schedule fixedSchedule(calendar_, settlement_, maturity,
                                fixedFrequency_, fixedConvention_);
-        Schedule floatSchedule(calendar_, settlement_, endDate,
+        Schedule floatSchedule(calendar_, settlement_, maturity,
                                floatingFrequency_, floatingConvention_);
         // dummy Libor index with curve/swap arguments
         Integer fixingDays = settlementDays_;
