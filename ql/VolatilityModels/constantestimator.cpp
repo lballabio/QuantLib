@@ -26,8 +26,10 @@ namespace QuantLib {
         TimeSeries<Volatility> retval;
         std::vector<Real> u;
         Size i;
-        TimeSeries<Real>::const_valid_iterator prev, next, cur;
-        for (cur = quoteSeries.vbegin();
+        TimeSeries<Real>::const_valid_iterator prev, next, cur, start;
+        start = quoteSeries.vbegin();
+        start++;
+        for (cur = start;
              cur != quoteSeries.vend();
              cur++) {
             prev = cur; prev--;
@@ -36,14 +38,15 @@ namespace QuantLib {
         }
         cur = quoteSeries.vbegin();
         std::advance(cur, size_);
+        // ICK.  This could probably be made a lot more efficient
         for (i=size_; i < quoteSeries.size(); i++) {
             Size j;
             Real sumu2=0.0, sumu=0.0;
             for (j=i-size_; j <i; j++) {
-                sumu += u[i];
-                sumu2 += u[i]*u[i];
+                sumu += u[j];
+                sumu2 += u[j]*u[j];
             }
-            Real s = std::sqrt(sumu2/(Real)size_ - sumu / (Real) size_ /
+            Real s = std::sqrt(sumu2/(Real)size_ - sumu*sumu / (Real) size_ /
                                (Real) (size_+1));
             retval.insert(cur->first,
                           s / std::sqrt(yearFraction_));
