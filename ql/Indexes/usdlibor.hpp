@@ -44,7 +44,7 @@ namespace QuantLib {
                  const DayCounter& dc = Actual360())
         : Libor("USDLibor", n, units, 2, USDCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange),
-                UnitedStates(UnitedStates::Exchange),
+                UnitedStates(UnitedStates::NYSE),
                 ModifiedFollowing, dc, h) {}
     };
 

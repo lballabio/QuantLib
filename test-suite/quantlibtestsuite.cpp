@@ -148,8 +148,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(BOOST_TEST_CASE(startTimer));
-    test->add(TimeSeriesTest::suite());
-    test->add(VolatilityModelsTest::suite());
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -202,10 +200,11 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SwapTest::suite());
     test->add(SwaptionTest::suite());
     test->add(TermStructureTest::suite());
-
+    test->add(TimeSeriesTest::suite());
     test->add(TqrEigenDecompositionTest::suite());
     test->add(TracingTest::suite());
     test->add(TransformedGridTest::suite());
+    test->add(VolatilityModelsTest::suite());
     // tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());
 

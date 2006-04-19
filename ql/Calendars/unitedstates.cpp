@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004, 2005 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,16 +32,20 @@ namespace QuantLib {
                                         new UnitedStates::NyseImpl);
         static boost::shared_ptr<Calendar::Impl> governmentImpl(
                                         new UnitedStates::GovernmentBondImpl);
+        static boost::shared_ptr<Calendar::Impl> nercImpl(
+                                        new UnitedStates::NercImpl);
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;
             break;
-          case Exchange:
           case NYSE:
             impl_ = nyseImpl;
             break;
           case GovernmentBond:
             impl_ = governmentImpl;
+            break;
+          case NERC:
+            impl_ = nercImpl;
             break;
           default:
             QL_FAIL("unknown market");
@@ -183,6 +188,28 @@ namespace QuantLib {
             // Christmas (Monday if Sunday or Friday if Saturday)
             || ((d == 25 || (d == 26 && w == Monday) ||
                  (d == 24 && w == Friday)) && m == December))
+            return false;
+        return true;
+    }
+
+
+    bool UnitedStates::NercImpl::isBusinessDay(const Date& date) const {
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth();
+        Month m = date.month();
+        if ((w == Saturday || w == Sunday)
+            // New Year's Day (possibly moved to Monday if on Sunday)
+            || ((d == 1 || (d == 2 && w == Monday)) && m == January)
+            // Memorial Day (last Monday in May)
+            || (d >= 25 && w == Monday && m == May)
+            // Independence Day (Monday if Sunday)
+            || ((d == 4 || (d == 5 && w == Monday)) && m == July)
+            // Labor Day (first Monday in September)
+            || (d <= 7 && w == Monday && m == September)
+            // Thanksgiving Day (fourth Thursday in November)
+            || ((d >= 22 && d <= 28) && w == Thursday && m == November)
+            // Christmas (Monday if Sunday)
+            || ((d == 25 || (d == 26 && w == Monday)) && m == December))
             return false;
         return true;
     }

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -98,6 +99,20 @@ namespace QuantLib {
             if Saturday)</li>
         </ul>
 
+        Holidays for the North American Energy Reliability Council
+        (data from http://www.nerc.com/~oc/offpeaks.html):
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st (possibly moved to Monday if
+            actually on Sunday)</li>
+        <li>Memorial Day, last Monday in May</li>
+        <li>Independence Day, July 4th (moved to Monday if Sunday)</li>
+        <li>Labor Day, first Monday in September</li>
+        <li>Thanksgiving Day, fourth Thursday in November</li>
+        <li>Christmas, December 25th (moved to Monday if Sunday)</li>
+        </ul>
+
         \ingroup calendars
 
         \test the correctness of the returned results is tested
@@ -120,13 +135,19 @@ namespace QuantLib {
             std::string name() const { return "US government bond market"; }
             bool isBusinessDay(const Date&) const;
         };
+        class NercImpl : public Calendar::WesternImpl {
+          public:
+            std::string name() const {
+                return "North American Energy Reliability Council";
+            }
+            bool isBusinessDay(const Date&) const;
+        };
       public:
         //! US calendars
         enum Market { Settlement,     //!< generic settlement calendar
-                      Exchange,       /*!< New York stock exchange calendar
-                                               \deprecated use NYSE instead */
                       NYSE,           //!< New York stock exchange calendar
-                      GovernmentBond  //|< government-bond calendar
+                      GovernmentBond, //!< government-bond calendar
+                      NERC            //!< off-peak days for NERC
         };
         UnitedStates(Market market = Settlement);
     };

@@ -3,3 +3,6 @@
   specialized classes added for Black-Scholes, Merton, Black and
   Garman-Kohlhagen processes.
 
+- Added NERC calendar (thanks to Joe Byers.)
+
+

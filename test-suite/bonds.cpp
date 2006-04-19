@@ -368,7 +368,7 @@ void BondTest::testCached() {
                           settlementDays,
                           std::vector<Rate>(1, 0.02875),
                           Semiannual,
-                          UnitedStates(UnitedStates::Exchange),
+                          UnitedStates(UnitedStates::GovernmentBond),
                           ActualActual(ActualActual::ISMA),
                           Unadjusted, ModifiedFollowing, 100.0);
 
@@ -427,7 +427,7 @@ void BondTest::testCachedZero() {
                          Date(30,November,2008),
                          settlementDays,
                          ActualActual(ActualActual::ISMA),
-                         UnitedStates(UnitedStates::Exchange),
+                         UnitedStates(UnitedStates::GovernmentBond),
                          ModifiedFollowing, 100.0,
                          discountCurve);
 
@@ -446,7 +446,7 @@ void BondTest::testCachedZero() {
                          Date(30,November,2007),
                          settlementDays,
                          ActualActual(ActualActual::ISMA),
-                         UnitedStates(UnitedStates::Exchange),
+                         UnitedStates(UnitedStates::GovernmentBond),
                          ModifiedFollowing, 100.0,
                          discountCurve);
 
@@ -465,7 +465,7 @@ void BondTest::testCachedZero() {
                          Date(30,November,2006),
                          settlementDays,
                          ActualActual(ActualActual::ISMA),
-                         UnitedStates(UnitedStates::Exchange),
+                         UnitedStates(UnitedStates::GovernmentBond),
                          ModifiedFollowing, 100.0,
                          discountCurve);
 
@@ -508,7 +508,7 @@ void BondTest::testCachedFixed() {
                           settlementDays,
                           std::vector<Rate>(1, 0.02875),
                           Semiannual,
-                          UnitedStates(UnitedStates::Exchange),
+                          UnitedStates(UnitedStates::GovernmentBond),
                           ActualActual(ActualActual::ISMA),
                           Unadjusted, ModifiedFollowing,
                           100.0, discountCurve);
@@ -538,7 +538,7 @@ void BondTest::testCachedFixed() {
                           settlementDays,
                           couponRates,
                           Semiannual,
-                          UnitedStates(UnitedStates::Exchange),
+                          UnitedStates(UnitedStates::GovernmentBond),
                           ActualActual(ActualActual::ISMA),
                           Unadjusted, ModifiedFollowing,
                           100.0, discountCurve);
@@ -562,7 +562,7 @@ void BondTest::testCachedFixed() {
                           settlementDays,
                           couponRates,
                           Semiannual,
-                          UnitedStates(UnitedStates::Exchange),
+                          UnitedStates(UnitedStates::GovernmentBond),
                           ActualActual(ActualActual::ISMA),
                           Unadjusted, ModifiedFollowing,
                           100.0, discountCurve,
@@ -612,7 +612,7 @@ void BondTest::testCachedFloating() {
                            index, fixingDays,
                            std::vector<Spread>(),
                            Semiannual,
-                           UnitedStates(UnitedStates::Exchange),
+                           UnitedStates(UnitedStates::GovernmentBond),
                            ActualActual(ActualActual::ISMA),
                            ModifiedFollowing, ModifiedFollowing,
                            100.0, riskFreeRate);
@@ -637,7 +637,7 @@ void BondTest::testCachedFloating() {
                            index, fixingDays,
                            std::vector<Spread>(),
                            Semiannual,
-                           UnitedStates(UnitedStates::Exchange),
+                           UnitedStates(UnitedStates::GovernmentBond),
                            ActualActual(ActualActual::ISMA),
                            ModifiedFollowing, ModifiedFollowing,
                            100.0, discountCurve);
@@ -668,7 +668,7 @@ void BondTest::testCachedFloating() {
                            index, fixingDays,
                            spreads,
                            Semiannual,
-                           UnitedStates(UnitedStates::Exchange),
+                           UnitedStates(UnitedStates::GovernmentBond),
                            ActualActual(ActualActual::ISMA),
                            ModifiedFollowing, ModifiedFollowing,
                            100.0, discountCurve);

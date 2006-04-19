@@ -39,7 +39,7 @@ void CalendarTest::testModifiedCalendars() {
     BOOST_MESSAGE("Testing calendar modification...");
 
     Calendar c1 = TARGET();
-    Calendar c2 = UnitedStates(UnitedStates::Exchange);
+    Calendar c2 = UnitedStates(UnitedStates::NYSE);
     Date d1(1,May,2004);      // holiday for both calendars
     Date d2(26,April,2004);   // business day
 
@@ -89,7 +89,7 @@ void CalendarTest::testJointCalendars() {
 
     Calendar c1 = TARGET(),
              c2 = UnitedKingdom(),
-             c3 = UnitedStates(UnitedStates::Exchange),
+             c3 = UnitedStates(UnitedStates::NYSE),
              c4 = Japan();
 
     Calendar c12h = JointCalendar(c1,c2,JoinHolidays),
@@ -254,7 +254,7 @@ void CalendarTest::testUSNewYorkStockExchange() {
     expectedHol.push_back(Date(23,November,2006));
     expectedHol.push_back(Date(25,December,2006));
 
-    Calendar c = UnitedStates(UnitedStates::Exchange);
+    Calendar c = UnitedStates(UnitedStates::NYSE);
     std::vector<Date> hol = holidayList(c, Date(1,January,2004),
                                            Date(31,December,2006));
 
