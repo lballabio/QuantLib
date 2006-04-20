@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006 Warren Chou
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,6 +53,29 @@ namespace QuantLib {
       protected:
         Real strike_;
     };
+
+
+    //! Payoff based on a floating strike
+    class FloatingTypePayoff : public TypePayoff {
+      public:
+        FloatingTypePayoff(Option::Type type)
+        : TypePayoff(type) {}
+        Real operator()(Real price) const;
+        virtual void accept(AcyclicVisitor&);
+    };
+
+    inline Real FloatingTypePayoff::operator()(Real) const {
+        QL_FAIL("floating payoff not handled");
+    }
+
+    inline void FloatingTypePayoff::accept(AcyclicVisitor& v) {
+        Visitor<FloatingTypePayoff>* v1 =
+            dynamic_cast<Visitor<FloatingTypePayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
+    }
 
 
     //! Plain-vanilla payoff

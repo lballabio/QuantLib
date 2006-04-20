@@ -34,6 +34,7 @@
 #include <ql/Instruments/fixedcouponbond.hpp>
 #include <ql/Instruments/floatingratebond.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
+#include <ql/Instruments/lookbackoption.hpp>
 #include <ql/Instruments/multiassetoption.hpp>
 #include <ql/Instruments/oneassetoption.hpp>
 #include <ql/Instruments/oneassetstrikedoption.hpp>

@@ -65,6 +65,7 @@
 #include "libormarketmodel.hpp"
 #include "libormarketmodelprocess.hpp"
 #include "jumpdiffusion.hpp"
+#include "lookbackoptions.hpp"
 #include "lowdiscrepancysequences.hpp"
 #include "matrices.hpp"
 #include "mersennetwister.hpp"
@@ -177,9 +178,10 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
     test->add(InterpolationTest::suite());
+    test->add(JumpDiffusionTest::suite());
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
-    test->add(JumpDiffusionTest::suite());
+    test->add(LookbackOptionTest::suite());
     test->add(LowDiscrepancyTest::suite());
     test->add(MatricesTest::suite());
     test->add(MersenneTwisterTest::suite());

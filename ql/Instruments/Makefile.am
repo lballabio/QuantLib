@@ -19,6 +19,7 @@ include_HEADERS = \
     fixedcouponbond.hpp \
     floatingratebond.hpp \
     forwardvanillaoption.hpp \
+    lookbackoption.hpp \
     multiassetoption.hpp \
     oneassetoption.hpp \
     oneassetstrikedoption.hpp \
@@ -45,6 +46,7 @@ libInstruments_la_SOURCES = \
     fixedcouponbond.cpp \
     floatingratebond.cpp \
     forwardvanillaoption.cpp \
+    lookbackoption.cpp \
     multiassetoption.cpp \
     oneassetoption.cpp \
     oneassetstrikedoption.cpp \

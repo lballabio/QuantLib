@@ -5,4 +5,5 @@
 
 - Added NERC calendar (thanks to Joe Byers.)
 
-
+- Added continuous fixed and floating lookback options (thanks to
+  Warren Chou.)

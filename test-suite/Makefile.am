@@ -33,6 +33,7 @@ QL_TESTS = \
 	jumpdiffusion.hpp jumpdiffusion.cpp \
 	libormarketmodel.hpp libormarketmodel.cpp \
 	libormarketmodelprocess.hpp libormarketmodelprocess.cpp \
+	lookbackoptions.hpp lookbackoptions.cpp \
 	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
 	matrices.hpp matrices.cpp \
 	mersennetwister.hpp mersennetwister.cpp \

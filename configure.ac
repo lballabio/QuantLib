@@ -334,6 +334,7 @@ AC_CONFIG_FILES([
     ql/PricingEngines/Cliquet/Makefile
     ql/PricingEngines/Forward/Makefile
     ql/PricingEngines/Hybrid/Makefile
+    ql/PricingEngines/Lookback/Makefile
     ql/PricingEngines/Quanto/Makefile
     ql/PricingEngines/Swaption/Makefile
     ql/PricingEngines/Vanilla/Makefile
