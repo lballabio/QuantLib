@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="testsuite"
 	ProjectGUID="{A613045C-34AF-4706-AA3C-730C92524F74}"
 	>
@@ -945,6 +945,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\defaultable.cpp"
+				>
+			</File>
+			<File
 				RelativePath="digitaloption.cpp"
 				>
 				<FileConfiguration
@@ -1374,6 +1378,10 @@
 			</File>
 			<File
 				RelativePath=".\libormarketmodelprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\lookbackoptions.cpp"
 				>
 			</File>
 			<File
@@ -2309,6 +2317,10 @@
 			</File>
 			<File
 				RelativePath=".\libormarketmodelprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\lookbackoptions.hpp"
 				>
 			</File>
 			<File
