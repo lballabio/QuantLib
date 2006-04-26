@@ -434,6 +434,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\prices.cpp"
+				>
+			</File>
+			<File
 				RelativePath="vols.cpp"
 				>
 				<FileConfiguration
@@ -494,6 +498,10 @@
 			</File>
 			<File
 				RelativePath="mathf.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\prices.hpp"
 				>
 			</File>
 			<File
