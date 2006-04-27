@@ -111,7 +111,7 @@ namespace QuantLib {
                  Real mean = 0.0,
                  Real standard_dev = 1.0);
 
-    Size primeNumbers(Size absoluteIndex);
+    BigNatural primeNumbers(Size absoluteIndex);
 
     Real rand();
     void randomize(BigNatural seed);

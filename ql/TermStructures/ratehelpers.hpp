@@ -118,8 +118,6 @@ namespace QuantLib {
     //! Forward rate agreement helper
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
-
-        \todo convexity adjustment should be implemented.
     */
     class FraRateHelper : public RateHelper {
       public:
@@ -153,6 +151,8 @@ namespace QuantLib {
     //! Interest-rate futures helper
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
+
+        \todo convexity adjustment should be implemented.
     */
     class FuturesRateHelper : public RateHelper {
       public:

@@ -67,7 +67,7 @@ namespace QuantLib {
             (probability);
     }
 
-    Size primeNumbers(Size absoluteIndex) {
+    BigNatural primeNumbers(Size absoluteIndex) {
         return PrimeNumbers::get(absoluteIndex);
     }
 
