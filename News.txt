@@ -7,3 +7,6 @@
 
 - Added continuous fixed and floating lookback options (thanks to
   Warren Chou.)
+
+- Added Hull-White and G2 processes for Monte Carlo simulation
+  (thanks to Banca Profilo.)

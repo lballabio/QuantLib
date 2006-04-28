@@ -7,12 +7,14 @@ include_HEADERS = \
     analyticcapfloorengine.hpp \
     blackcapfloorengine.hpp \
     discretizedcapfloor.hpp \
+    mchullwhiteengine.hpp \
     treecapfloorengine.hpp
 
 libCapFloorEngines_la_SOURCES = \
     analyticcapfloorengine.cpp \
     blackcapfloorengine.cpp \
     discretizedcapfloor.cpp \
+    mchullwhiteengine.cpp \
     treecapfloorengine.cpp
 
 noinst_LTLIBRARIES = libCapFloorEngines.la

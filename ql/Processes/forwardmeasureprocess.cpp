@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2006 Banca Profilo S.p.A.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,24 +17,32 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_processes_all_hpp
-#define quantlib_processes_all_hpp
-
-#include <ql/qldefines.hpp>
-
-#include <ql/Processes/blackscholesprocess.hpp>
-#include <ql/Processes/eulerdiscretization.hpp>
 #include <ql/Processes/forwardmeasureprocess.hpp>
-#include <ql/Processes/g2process.hpp>
-#include <ql/Processes/geometricbrownianprocess.hpp>
-#include <ql/Processes/hullwhiteprocess.hpp>
-#include <ql/Processes/lfmprocess.hpp>
-#include <ql/Processes/lfmcovarparam.hpp>
-#include <ql/Processes/lfmhullwhiteparam.hpp>
-#include <ql/Processes/merton76process.hpp>
-#include <ql/Processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/Processes/squarerootprocess.hpp>
-#include <ql/Processes/stochasticprocessarray.hpp>
+
+namespace QuantLib {
+
+    // base class
+
+    ForwardMeasureProcess::ForwardMeasureProcess(
+                                const boost::shared_ptr<discretization>& disc)
+    : StochasticProcess(disc) {}
+
+    void ForwardMeasureProcess::setForwardMeasureTime(Time T) {
+        T_ = T;
+        notifyObservers();
+    }
 
 
-#endif
+    // 1-D specialization
+
+    ForwardMeasureProcess1D::ForwardMeasureProcess1D(
+                                const boost::shared_ptr<discretization>& disc)
+    : StochasticProcess1D(disc) {}
+
+    void ForwardMeasureProcess1D::setForwardMeasureTime(Time T) {
+        T_ = T;
+        notifyObservers();
+    }
+
+}
+

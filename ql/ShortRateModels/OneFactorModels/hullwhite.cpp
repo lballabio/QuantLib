@@ -35,6 +35,8 @@ namespace QuantLib {
         b_ = NullParameter();
         lambda_ = NullParameter();
         generateArguments();
+
+        registerWith(termStructure);
     }
 
     boost::shared_ptr<NumericalMethod> HullWhite::tree(

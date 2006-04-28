@@ -38,6 +38,8 @@ namespace QuantLib {
         rho_   = ConstantParameter(rho,   BoundaryConstraint(-1.0, 1.0));
 
         generateArguments();
+
+        registerWith(termStructure);
     }
 
     boost::shared_ptr<TwoFactorModel::ShortRateDynamics> G2::dynamics() const {

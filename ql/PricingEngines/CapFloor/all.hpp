@@ -23,6 +23,7 @@
 #include <ql/PricingEngines/CapFloor/analyticcapfloorengine.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/PricingEngines/CapFloor/discretizedcapfloor.hpp>
+#include <ql/PricingEngines/CapFloor/mchullwhiteengine.hpp>
 #include <ql/PricingEngines/CapFloor/treecapfloorengine.hpp>
 
 

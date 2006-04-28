@@ -53,6 +53,7 @@ namespace QuantLib {
         enum Type { Cap, Floor, Collar };
         class arguments;
         class results;
+        class engine;
         CapFloor(Type type,
                  const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
                  const std::vector<Rate>& capRates,
@@ -164,6 +165,10 @@ namespace QuantLib {
 
     //! %Results from cap/floor calculation
     class CapFloor::results : public Value {};
+
+    //! base class for cap/floor engines
+    class CapFloor::engine
+        : public GenericEngine<CapFloor::arguments, CapFloor::results> {};
 
 }
 

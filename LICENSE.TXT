@@ -29,6 +29,7 @@ QuantLib is
     Copyright (C) 2005 Joseph Wang
     Copyright (C) 2005 Charles Whitmore
 
+    Copyright (C) 2006 Banca Profilo S.p.A.
     Copyright (C) 2006 Warren Chou
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo

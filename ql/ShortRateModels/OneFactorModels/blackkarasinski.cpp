@@ -65,6 +65,8 @@ namespace QuantLib {
       a_(arguments_[0]), sigma_(arguments_[1]) {
         a_ = ConstantParameter(a, PositiveConstraint());
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
+
+        registerWith(termStructure);
     }
 
     boost::shared_ptr<NumericalMethod>

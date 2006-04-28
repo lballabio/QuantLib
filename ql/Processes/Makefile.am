@@ -6,8 +6,11 @@ include_HEADERS = \
 	all.hpp \
 	blackscholesprocess.hpp \
 	eulerdiscretization.hpp \
+	forwardmeasureprocess.hpp \
+	g2process.hpp \
 	geometricbrownianprocess.hpp \
 	hestonprocess.hpp \
+	hullwhiteprocess.hpp \
 	lfmcovarparam.hpp \
 	lfmhullwhiteparam.hpp \
 	lfmprocess.hpp \
@@ -19,8 +22,11 @@ include_HEADERS = \
 libProcesses_la_SOURCES = \
 	blackscholesprocess.cpp \
 	eulerdiscretization.cpp \
+	forwardmeasureprocess.cpp \
+	g2process.cpp \
 	geometricbrownianprocess.cpp \
 	hestonprocess.cpp \
+	hullwhiteprocess.cpp \
 	lfmcovarparam.cpp \
 	lfmhullwhiteparam.cpp \
 	lfmprocess.cpp \
