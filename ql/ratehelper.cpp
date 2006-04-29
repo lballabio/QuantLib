@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/TermStructures/ratehelper.hpp>
+#include <ql/ratehelper.hpp>
 
 namespace QuantLib {
 
