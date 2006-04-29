@@ -20,6 +20,7 @@
 #include "piecewiseyieldcurve.hpp"
 #include "utilities.hpp"
 #include <ql/TermStructures/piecewiseyieldcurve.hpp>
+#include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/TermStructures/bondhelpers.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/DayCounters/actual360.hpp>

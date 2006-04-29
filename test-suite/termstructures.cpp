@@ -19,6 +19,7 @@
 
 #include "termstructures.hpp"
 #include "utilities.hpp"
+#include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/TermStructures/piecewiseflatforward.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>

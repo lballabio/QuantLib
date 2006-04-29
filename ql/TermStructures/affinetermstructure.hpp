@@ -27,7 +27,7 @@
 
 #include <ql/ShortRateModels/model.hpp>
 #include <ql/Optimization/method.hpp>
-#include <ql/TermStructures/ratehelpers.hpp>
+#include <ql/ratehelper.hpp>
 #include <ql/Patterns/lazyobject.hpp>
 
 namespace QuantLib {

@@ -24,8 +24,8 @@
 #ifndef quantlib_piecewise_yield_curve_hpp
 #define quantlib_piecewise_yield_curve_hpp
 
+#include <ql/ratehelper.hpp>
 #include <ql/TermStructures/discountcurve.hpp>
-#include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/TermStructures/bootstraptraits.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Solvers1D/brent.hpp>

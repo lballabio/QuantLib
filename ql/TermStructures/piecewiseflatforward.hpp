@@ -25,6 +25,7 @@
 #define quantlib_piecewise_flat_forward_curve_hpp
 
 #include <ql/qldefines.hpp>
+#include <ql/Math/cubicspline.hpp>
 
 #if !defined(QL_PATCH_MSVC6)
 
@@ -36,11 +37,17 @@ namespace QuantLib {
     /*! \ingroup yieldtermstructures */
     typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
 
+    typedef PiecewiseYieldCurve<ForwardRate,Cubic
+        //(CubicSpline::SecondDerivative, 0.0,
+        // CubicSpline::FirstDerivative, 0.0,
+        // true)
+    > PiecewiseMonotoneForward;
+
 }
 
 #else
 
-#include <ql/TermStructures/ratehelpers.hpp>
+#include <ql/ratehelper.hpp>
 
 namespace QuantLib {
 

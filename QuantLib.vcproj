@@ -9380,6 +9380,12 @@
 			RelativePath=".\ql\quote.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\ratehelper.cpp">
+		</File>
+		<File
+			RelativePath=".\ql\ratehelper.hpp">
+		</File>
+		<File
 			RelativePath=".\ql\schedule.cpp">
 		</File>
 		<File

@@ -25,7 +25,7 @@
 #define quantlib_bond_helpers_hpp
 
 #include <ql/Instruments/fixedcouponbond.hpp>
-#include <ql/TermStructures/ratehelpers.hpp>
+#include <ql/ratehelper.hpp>
 
 namespace QuantLib {
 

@@ -20,6 +20,7 @@
 #include "piecewiseflatforward.hpp"
 #include "utilities.hpp"
 #include <ql/TermStructures/piecewiseflatforward.hpp>
+#include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/thirty360.hpp>
