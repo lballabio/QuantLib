@@ -1064,6 +1064,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\defaultable.cpp">
+			</File>
+			<File
 				RelativePath="digitaloption.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -1566,6 +1569,9 @@
 			</File>
 			<File
 				RelativePath=".\libormarketmodelprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\lookbackoptions.cpp">
 			</File>
 			<File
 				RelativePath="lowdiscrepancysequences.cpp">
@@ -2605,6 +2611,9 @@
 			</File>
 			<File
 				RelativePath=".\libormarketmodelprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\lookbackoptions.hpp">
 			</File>
 			<File
 				RelativePath="lowdiscrepancysequences.hpp">

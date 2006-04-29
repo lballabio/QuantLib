@@ -2823,6 +2823,12 @@
 				RelativePath="ql\Instruments\forwardvanillaoption.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\lookbackoption.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\lookbackoption.hpp">
+			</File>
+			<File
 				RelativePath="ql\Instruments\multiassetoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
@@ -6952,6 +6958,25 @@
 					RelativePath=".\ql\PricingEngines\Hybrid\discretizedconvertible.hpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="Lookback"
+				Filter="">
+				<File
+					RelativePath=".\ql\PricingEngines\Lookback\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Lookback\analyticcontinuousfixedlookback.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Lookback\analyticcontinuousfixedlookback.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Lookback\analyticcontinuousfloatinglookback.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Lookback\analyticcontinuousfloatinglookback.hpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="RandomNumbers"
@@ -8483,66 +8508,6 @@
 			</File>
 			<File
 				RelativePath="ql\TermStructures\impliedtermstructure.hpp">
-			</File>
-			<File
-				RelativePath="ql\TermStructures\piecewiseflatforward.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="ql\TermStructures\piecewiseflatforward.hpp">
