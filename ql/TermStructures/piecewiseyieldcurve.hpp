@@ -28,6 +28,7 @@
 #include <ql/TermStructures/discountcurve.hpp>
 #include <ql/TermStructures/bootstraptraits.hpp>
 #include <ql/Math/linearinterpolation.hpp>
+#include <ql/Patterns/lazyobject.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
