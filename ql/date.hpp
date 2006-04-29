@@ -306,7 +306,7 @@ namespace QuantLib {
         //! whether a date is the last day of its month
         static bool isEOM(const Date& d);
         //! next given weekday following or equal to the given date
-        /*! E.g., the Friday following January 15th, 20 (a Tuesday)
+        /*! E.g., the Friday following Tuesday, January 15th, 2002
             was January 18th, 2002.
 
             see http://www.cpearson.com/excel/DateTimeWS.htm
