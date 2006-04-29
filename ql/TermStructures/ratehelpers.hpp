@@ -110,7 +110,7 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention convention_;
         DayCounter dayCounter_;
-        Date settlement_, maturity_;
+        Date start_, maturity_;
         Time yearFraction_;
     };
 
@@ -143,7 +143,7 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention convention_;
         DayCounter dayCounter_;
-        Date settlement_, start_, maturity_;
+        Date start_, maturity_;
         Time yearFraction_;
     };
 
@@ -178,12 +178,7 @@ namespace QuantLib {
         DiscountFactor discountGuess() const;
         Date latestDate() const;
       private:
-        Date immDate_;
-        Integer nMonths_;
-        Calendar calendar_;
-        BusinessDayConvention convention_;
-        DayCounter dayCounter_;
-        Date maturity_;
+        Date immDate_, maturity_;
         Time yearFraction_;
     };
 

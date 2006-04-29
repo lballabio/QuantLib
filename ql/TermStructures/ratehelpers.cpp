@@ -75,7 +75,7 @@ namespace QuantLib {
 
     Real DepositRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        return (termStructure_->discount(settlement_) /
+        return (termStructure_->discount(start_) /
                 termStructure_->discount(maturity_)-1.0) /
             yearFraction_;
     }
@@ -83,19 +83,19 @@ namespace QuantLib {
     DiscountFactor DepositRateHelper::discountGuess() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we'll play it safe - no extrapolation
-        if (termStructure_->maxDate() < settlement_)
+        if (termStructure_->maxDate() < start_)
             return Null<Real>();
         else
-            return termStructure_->discount(settlement_) /
+            return termStructure_->discount(start_) /
                 (1.0+quote_->value()*yearFraction_);
     }
 
     void DepositRateHelper::setTermStructure(YieldTermStructure* t) {
         RateHelper::setTermStructure(t);
         Date today = Settings::instance().evaluationDate();
-        settlement_ = calendar_.advance(today,settlementDays_,Days);
-        maturity_ = calendar_.advance(settlement_,n_,units_,convention_);
-        yearFraction_ = dayCounter_.yearFraction(settlement_,maturity_);
+        start_ = calendar_.advance(today,settlementDays_,Days);
+        maturity_ = calendar_.advance(start_,n_,units_,convention_);
+        yearFraction_ = dayCounter_.yearFraction(start_,maturity_);
     }
 
     Date DepositRateHelper::latestDate() const {
@@ -151,9 +151,9 @@ namespace QuantLib {
     void FraRateHelper::setTermStructure(YieldTermStructure* t) {
         RateHelper::setTermStructure(t);
         Date today = Settings::instance().evaluationDate();
-        settlement_ = calendar_.advance(today,settlementDays_,Days);
+        Date settlement = calendar_.advance(today,settlementDays_,Days);
         start_ = calendar_.advance(
-                               settlement_,monthsToStart_,Months,convention_);
+                               settlement,monthsToStart_,Months,convention_);
         maturity_ = calendar_.advance(
                        start_,monthsToEnd_-monthsToStart_,Months,convention_);
         yearFraction_ = dayCounter_.yearFraction(start_,maturity_);
@@ -171,12 +171,9 @@ namespace QuantLib {
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
                                          const DayCounter& dayCounter)
-    : RateHelper(price), immDate_(immDate),
-      nMonths_(nMonths),
-      calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter) {
-        maturity_ = calendar_.advance(immDate_, nMonths_, Months, convention_);
-        yearFraction_ = dayCounter_.yearFraction(immDate_, maturity_);
+    : RateHelper(price), immDate_(immDate) {
+        maturity_ = calendar.advance(immDate_, nMonths, Months, convention);
+        yearFraction_ = dayCounter.yearFraction(immDate_, maturity_);
     }
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
@@ -185,10 +182,8 @@ namespace QuantLib {
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
                                          const DayCounter& dayCounter)
-    : RateHelper(price), immDate_(immDate),
-      calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter), maturity_(matDate) {
-        yearFraction_ = dayCounter_.yearFraction(immDate_, maturity_);
+    : RateHelper(price), immDate_(immDate), maturity_(matDate) {
+        yearFraction_ = dayCounter.yearFraction(immDate_, maturity_);
     }
 
     FuturesRateHelper::FuturesRateHelper(Real price,
@@ -197,12 +192,9 @@ namespace QuantLib {
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
                                          const DayCounter& dayCounter)
-    : RateHelper(price), immDate_(immDate),
-      nMonths_(nMonths),
-      calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter) {
-        maturity_ = calendar_.advance(immDate_, nMonths_, Months, convention_);
-        yearFraction_ = dayCounter_.yearFraction(immDate_, maturity_);
+    : RateHelper(price), immDate_(immDate) {
+        maturity_ = calendar.advance(immDate_, nMonths, Months, convention);
+        yearFraction_ = dayCounter.yearFraction(immDate_, maturity_);
     }
 
     Real FuturesRateHelper::impliedQuote() const {
