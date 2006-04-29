@@ -147,7 +147,7 @@ namespace QuantLib {
         void insert(const Date &d, const T &value) {
             values_[d] = value;
         }
-        std::vector<Date> dates() {
+        std::vector<Date> dates() const {
             std::vector<Date> returnval;
             for (const_valid_iterator i = vbegin();
                  i != vend(); i++) {
@@ -155,7 +155,7 @@ namespace QuantLib {
             }
             return returnval;
         }
-        std::vector<T> values() {
+        std::vector<T> values() const {
             std::vector<T> returnval;
             for (const_valid_iterator i = vbegin();
                  i != vend(); i++) {
