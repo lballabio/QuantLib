@@ -23,111 +23,6 @@
 
 namespace QuantLib {
 
-    DepositRateHelper::DepositRateHelper(
-                       const Handle<Quote>& rate,
-                       Integer n, TimeUnit units, Integer settlementDays,
-                       const Calendar& calendar,
-                       BusinessDayConvention convention,
-                       const DayCounter& dayCounter)
-    : RateHelper(rate), n_(n), units_(units),
-      settlementDays_(settlementDays), calendar_(calendar),
-      convention_(convention), dayCounter_(dayCounter) {
-        registerWith(Settings::instance().evaluationDate());
-    }
-
-    DepositRateHelper::DepositRateHelper(
-                       Rate rate,
-                       Integer n, TimeUnit units, Integer settlementDays,
-                       const Calendar& calendar,
-                       BusinessDayConvention convention,
-                       const DayCounter& dayCounter)
-    : RateHelper(rate), n_(n), units_(units),
-      settlementDays_(settlementDays), calendar_(calendar),
-      convention_(convention), dayCounter_(dayCounter) {
-        registerWith(Settings::instance().evaluationDate());
-    }
-
-    Real DepositRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        return (termStructure_->discount(earliestDate_) /
-                termStructure_->discount(latestDate_)-1.0) /
-            yearFraction_;
-    }
-
-    DiscountFactor DepositRateHelper::discountGuess() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        // we'll play it safe - no extrapolation
-        if (termStructure_->maxDate() < earliestDate_)
-            return Null<Real>();
-        else
-            return termStructure_->discount(earliestDate_) /
-                (1.0+quote_->value()*yearFraction_);
-    }
-
-    void DepositRateHelper::setTermStructure(YieldTermStructure* t) {
-        RateHelper::setTermStructure(t);
-        Date today = Settings::instance().evaluationDate();
-        earliestDate_ = calendar_.advance(today,settlementDays_,Days);
-        latestDate_ = calendar_.advance(earliestDate_,n_,units_,convention_);
-        yearFraction_ = dayCounter_.yearFraction(earliestDate_,latestDate_);
-    }
-
-
-    FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
-                                 Integer monthsToStart, Integer monthsToEnd,
-                                 Integer settlementDays,
-                                 const Calendar& calendar,
-                                 BusinessDayConvention convention,
-                                 const DayCounter& dayCounter)
-    : RateHelper(rate),
-      monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
-      settlementDays_(settlementDays),
-      calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter) {
-        registerWith(Settings::instance().evaluationDate());
-    }
-
-    FraRateHelper::FraRateHelper(Rate rate,
-                                 Integer monthsToStart, Integer monthsToEnd,
-                                 Integer settlementDays,
-                                 const Calendar& calendar,
-                                 BusinessDayConvention convention,
-                                 const DayCounter& dayCounter)
-    : RateHelper(rate),
-      monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
-      settlementDays_(settlementDays),
-      calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter) {
-        registerWith(Settings::instance().evaluationDate());
-    }
-
-    Real FraRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        return (termStructure_->discount(earliestDate_) /
-                termStructure_->discount(latestDate_)-1.0) /
-            yearFraction_;
-    }
-
-    DiscountFactor FraRateHelper::discountGuess() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        // extrapolation shouldn't be needed if the input makes sense
-        // but we'll play it safe
-        return termStructure_->discount(earliestDate_,true) /
-            (1.0+quote_->value()*yearFraction_);
-    }
-
-    void FraRateHelper::setTermStructure(YieldTermStructure* t) {
-        RateHelper::setTermStructure(t);
-        Date today = Settings::instance().evaluationDate();
-        Date settlement = calendar_.advance(today,settlementDays_,Days);
-        earliestDate_ = calendar_.advance(
-                               settlement,monthsToStart_,Months,convention_);
-        latestDate_ = calendar_.advance(
-                       earliestDate_,monthsToEnd_-monthsToStart_,Months,convention_);
-        yearFraction_ = dayCounter_.yearFraction(earliestDate_,latestDate_);
-    }
-
-
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
                                          const Date& immDate,
                                          Integer nMonths,
@@ -180,6 +75,137 @@ namespace QuantLib {
     }
 
 
+
+
+
+    RelativeDateRateHelper::RelativeDateRateHelper(const Handle<Quote>& quote)
+    : RateHelper(quote),
+      evaluationDate_(Settings::instance().evaluationDate()) {
+        registerWith(Settings::instance().evaluationDate());
+    }
+
+    RelativeDateRateHelper::RelativeDateRateHelper(Real quote)
+    : RateHelper(quote),
+      evaluationDate_(Settings::instance().evaluationDate()) {
+        registerWith(Settings::instance().evaluationDate());
+    }
+
+
+
+
+
+
+
+    DepositRateHelper::DepositRateHelper(
+                       const Handle<Quote>& rate,
+                       Integer n, TimeUnit units, Integer settlementDays,
+                       const Calendar& calendar,
+                       BusinessDayConvention convention,
+                       const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate), n_(n), units_(units),
+      settlementDays_(settlementDays), calendar_(calendar),
+      convention_(convention), dayCounter_(dayCounter) {
+        initializeDates_();
+    }
+
+    DepositRateHelper::DepositRateHelper(
+                       Rate rate,
+                       Integer n, TimeUnit units, Integer settlementDays,
+                       const Calendar& calendar,
+                       BusinessDayConvention convention,
+                       const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate), n_(n), units_(units),
+      settlementDays_(settlementDays), calendar_(calendar),
+      convention_(convention), dayCounter_(dayCounter) {
+        initializeDates_();
+    }
+
+    Real DepositRateHelper::impliedQuote() const {
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        return (termStructure_->discount(earliestDate_) /
+                termStructure_->discount(latestDate_)-1.0) /
+            yearFraction_;
+    }
+
+    DiscountFactor DepositRateHelper::discountGuess() const {
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        // we'll play it safe - no extrapolation
+        if (termStructure_->maxDate() < earliestDate_)
+            return Null<Real>();
+        else
+            return termStructure_->discount(earliestDate_) /
+                (1.0+quote_->value()*yearFraction_);
+    }
+
+    void DepositRateHelper::initializeDates_() {
+        earliestDate_ = calendar_.advance(evaluationDate_,settlementDays_,Days);
+        latestDate_ = calendar_.advance(earliestDate_,n_,units_,convention_);
+        yearFraction_ = dayCounter_.yearFraction(earliestDate_,latestDate_);
+    }
+
+    void DepositRateHelper::setTermStructure(YieldTermStructure* t) {
+        RateHelper::setTermStructure(t);
+    }
+
+
+    FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
+                                 Integer monthsToStart, Integer monthsToEnd,
+                                 Integer settlementDays,
+                                 const Calendar& calendar,
+                                 BusinessDayConvention convention,
+                                 const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate),
+      monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
+      settlementDays_(settlementDays),
+      calendar_(calendar), convention_(convention),
+      dayCounter_(dayCounter) {
+        initializeDates_();
+    }
+
+    FraRateHelper::FraRateHelper(Rate rate,
+                                 Integer monthsToStart, Integer monthsToEnd,
+                                 Integer settlementDays,
+                                 const Calendar& calendar,
+                                 BusinessDayConvention convention,
+                                 const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate),
+      monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
+      settlementDays_(settlementDays),
+      calendar_(calendar), convention_(convention),
+      dayCounter_(dayCounter) {
+        initializeDates_();
+    }
+
+    Real FraRateHelper::impliedQuote() const {
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        return (termStructure_->discount(earliestDate_) /
+                termStructure_->discount(latestDate_)-1.0) /
+            yearFraction_;
+    }
+
+    DiscountFactor FraRateHelper::discountGuess() const {
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        // extrapolation shouldn't be needed if the input makes sense
+        // but we'll play it safe
+        return termStructure_->discount(earliestDate_,true) /
+            (1.0+quote_->value()*yearFraction_);
+    }
+
+    void FraRateHelper::initializeDates_() {
+        Date settlement = calendar_.advance(evaluationDate_,settlementDays_,Days);
+        earliestDate_ = calendar_.advance(
+                               settlement,monthsToStart_,Months,convention_);
+        latestDate_ = calendar_.advance(
+                       earliestDate_,monthsToEnd_-monthsToStart_,Months,convention_);
+        yearFraction_ = dayCounter_.yearFraction(earliestDate_,latestDate_);
+    }
+
+    void FraRateHelper::setTermStructure(YieldTermStructure* t) {
+        RateHelper::setTermStructure(t);
+    }
+
+
+
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    Integer n, TimeUnit units,
                                    Integer settlementDays,
@@ -190,7 +216,7 @@ namespace QuantLib {
                                    Frequency floatingFrequency,
                                    BusinessDayConvention floatingConvention,
                                    const DayCounter& floatingDayCount)
-    : RateHelper(rate),
+    : RelativeDateRateHelper(rate),
       n_(n), units_(units), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
       floatingConvention_(floatingConvention),
@@ -198,7 +224,7 @@ namespace QuantLib {
       floatingFrequency_(floatingFrequency),
       fixedDayCount_(fixedDayCount),
       floatingDayCount_(floatingDayCount) {
-        registerWith(Settings::instance().evaluationDate());
+        initializeDates_();
     }
 
     SwapRateHelper::SwapRateHelper(
@@ -211,7 +237,7 @@ namespace QuantLib {
                             Frequency floatingFrequency,
                             BusinessDayConvention floatingConvention,
                             const DayCounter& floatingDayCount)
-    : RateHelper(rate),
+    : RelativeDateRateHelper(rate),
       n_(n), units_(units), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
       floatingConvention_(floatingConvention),
@@ -219,26 +245,19 @@ namespace QuantLib {
       floatingFrequency_(floatingFrequency),
       fixedDayCount_(fixedDayCount),
       floatingDayCount_(floatingDayCount) {
-        registerWith(Settings::instance().evaluationDate());
+        initializeDates_();
     }
 
     namespace {
         void no_deletion(YieldTermStructure*) {}
     }
 
-    void SwapRateHelper::setTermStructure(YieldTermStructure* t) {
-        // do not set the relinkable handle as an observer -
-        // force recalculation when needed
-        termStructureHandle_.linkTo(
-                         boost::shared_ptr<YieldTermStructure>(t,no_deletion),
-                         false);
-        RateHelper::setTermStructure(t);
-        Date today = Settings::instance().evaluationDate();
-        settlement_ = calendar_.advance(today,settlementDays_,Days);
-        Date maturity = settlement_ + n_*units_;
-        Schedule fixedSchedule(calendar_, settlement_, maturity,
+    void SwapRateHelper::initializeDates_() {
+        earliestDate_ = calendar_.advance(evaluationDate_,settlementDays_,Days);
+        Date maturity = earliestDate_ + n_*units_;
+        Schedule fixedSchedule(calendar_, earliestDate_, maturity,
                                fixedFrequency_, fixedConvention_);
-        Schedule floatSchedule(calendar_, settlement_, maturity,
+        Schedule floatSchedule(calendar_, earliestDate_, maturity,
                                floatingFrequency_, floatingConvention_);
         // dummy Libor index with curve/swap arguments
         Integer fixingDays = settlementDays_;
@@ -276,9 +295,13 @@ namespace QuantLib {
         #endif
     }
 
-    Date SwapRateHelper::latestDate() const {
-        QL_REQUIRE(termStructure_ != 0, "null term structure set");
-        return latestDate_;
+    void SwapRateHelper::setTermStructure(YieldTermStructure* t) {
+        // do not set the relinkable handle as an observer -
+        // force recalculation when needed
+        termStructureHandle_.linkTo(
+                         boost::shared_ptr<YieldTermStructure>(t,no_deletion),
+                         false);
+        RateHelper::setTermStructure(t);
     }
 
     Real SwapRateHelper::impliedQuote() const {

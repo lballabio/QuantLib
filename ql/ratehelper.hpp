@@ -79,7 +79,7 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update() { notifyObservers(); }
+        virtual void update() { notifyObservers(); }
         //@}
       protected:
         Handle<Quote> quote_;
