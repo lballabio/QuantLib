@@ -64,6 +64,7 @@ include_HEADERS = \
 	qldefines.hpp \
 	quantlib.hpp \
 	quote.hpp \
+	ratehelper.hpp \
 	schedule.hpp \
 	settings.hpp \
 	solver1d.hpp \
@@ -138,6 +139,7 @@ libQuantLib_la_SOURCES = \
 	exercise.cpp \
     interestrate.cpp \
     money.cpp \
+	ratehelper.cpp \
     schedule.cpp \
 	stochasticprocess.cpp \
 	timegrid.cpp \
