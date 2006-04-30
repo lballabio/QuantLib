@@ -30,17 +30,24 @@
 
 namespace QuantLib {
 
-    /*! This abstract class defines the interface of concrete
-        volatility model
+    /*! The volatility model classes are of two types.  The first 
 
-        Volatilities are assumed to be expressed on an annual basis.
+
     */
-    class VolatilityModel {
-      public:
-        virtual ~VolatilityModel() {};
+    template <class T>
+    class LocalVolatilityEstimator {
+    public:
+        virtual ~LocalVolatilityEstimator() {};
         virtual TimeSeries<Volatility>
-        calculate(const TimeSeries<Real>& quoteSeries) = 0;
-        virtual void calibrate(const TimeSeries<Real>& quoteSeries) = 0;
+        calculate(const TimeSeries<T> &quoteSeries) = 0;
+    };
+
+    class VolatilityCompositor {
+      public:
+        virtual ~VolatilityCompositor() {};
+        virtual TimeSeries<Volatility>
+        calculate(const TimeSeries<Volatility>& volatilitySeries) = 0;
+        virtual void calibrate(const TimeSeries<Volatility>& volatilitySeries) = 0;
     };
 
 }

@@ -23,6 +23,6 @@
 #include <ql/qldefines.hpp>
 
 #include <ql/VolatilityModels/constantestimator.hpp>
-
+#include <ql/VolatilityModels/simplelocalestimator.hpp>
 
 #endif

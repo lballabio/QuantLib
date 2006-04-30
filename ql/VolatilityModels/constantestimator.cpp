@@ -20,26 +20,15 @@
 #include <ql/VolatilityModels/constantestimator.hpp>
 
 namespace QuantLib {
-
     TimeSeries<Volatility>
-    ConstantEstimator::calculate(const TimeSeries<Real>& quoteSeries) {
+    ConstantEstimator::calculate(const TimeSeries<Volatility>& volatilitySeries) {
         TimeSeries<Volatility> retval;
-        std::vector<Real> u;
-        Size i;
-        TimeSeries<Real>::const_valid_iterator prev, next, cur, start;
-        start = quoteSeries.vbegin();
-        start++;
-        for (cur = start;
-             cur != quoteSeries.vend();
-             cur++) {
-            prev = cur; prev--;
-            u.push_back(std::log(cur->second/
-                                 prev->second));
-        }
-        cur = quoteSeries.vbegin();
+        const std::vector<Volatility> u = volatilitySeries.values();
+        TimeSeries<Volatility>::const_valid_iterator prev, next, cur, start;
+        cur = volatilitySeries.vbegin();
         std::advance(cur, size_);
         // ICK.  This could probably be made a lot more efficient
-        for (i=size_; i < quoteSeries.size(); i++) {
+        for (Size i=size_; i < volatilitySeries.size(); i++) {
             Size j;
             Real sumu2=0.0, sumu=0.0;
             for (j=i-size_; j <i; j++) {

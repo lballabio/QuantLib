@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/VolatilityModels
 include_HEADERS = \
     all.hpp \
     constantestimator.hpp \
+    simplelocalestimator.hpp \
     garch.hpp 
 
 libVolatilityModels_la_SOURCES = \

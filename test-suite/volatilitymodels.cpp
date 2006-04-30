@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/volatilitymodel.hpp>
 #include <ql/VolatilityModels/constantestimator.hpp>
+#include <ql/VolatilityModels/simplelocalestimator.hpp>
 #include <ql/timeseries.hpp>
 
 using namespace QuantLib;
@@ -37,8 +38,11 @@ void VolatilityModelsTest::testConstruction() {
     ts.insert(Date(29, March, 2005), 2.3);
     ts.insert(Date(15, March, 2005), 0.3);
 
+    SimpleLocalEstimator sle;
+    TimeSeries<Volatility> locale(sle.calculate(ts));
+
     ConstantEstimator ce(1, 1.0/360.0);
-    TimeSeries<Volatility> sv(ce.calculate(ts));
+    TimeSeries<Volatility> sv(ce.calculate(locale));
     TimeSeries<Volatility>::const_valid_iterator cur = sv.vbegin();
 
     QL_TEST_END

@@ -17,15 +17,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file constantestimator.hpp
+/*! \file simplelocalestimator.hpp
     \brief Constant volatility estimator
 */
 
-#ifndef quantlib_constant_estimator_hpp
-#define quantlib_constant_estimator_hpp
+#ifndef quantlib_simple_local_estimator_hpp
+#define quantlib_simple_local_estimator_hpp
 
 #include <ql/volatilitymodel.hpp>
-#include <vector>
+#include <map>
 
 namespace QuantLib {
 
@@ -33,18 +33,27 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class ConstantEstimator : public VolatilityCompositor {
-      private:
-        Size size_;
-        Time yearFraction_;
+    class SimpleLocalEstimator : 
+        public LocalVolatilityEstimator<Real> {
       public:
-        ConstantEstimator(Size size, Time yearFraction)
-        : size_(size), yearFraction_(yearFraction) {}
+        SimpleLocalEstimator() {}
         TimeSeries<Volatility>
-        calculate(const TimeSeries<Volatility> &volatilitySeries);
-        void calibrate(const TimeSeries<Volatility> &volatilitySeries) {}
+        calculate(const TimeSeries<Real> &quoteSeries) {
+            TimeSeries<Volatility> retval;
+            TimeSeries<Volatility>::const_valid_iterator 
+                prev, next, cur, start;
+            start = quoteSeries.vbegin();
+            start++;
+            for (cur = start;
+                 cur != quoteSeries.vend();
+                 cur++) {
+                prev = cur; prev--;
+                retval.insert(cur->first, std::log(cur->second/
+                                     prev->second));
+            }
+            return retval;
+        }
     };
-
 }
 
 
