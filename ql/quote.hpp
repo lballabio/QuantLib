@@ -57,6 +57,42 @@ namespace QuantLib {
         Real value_;
     };
 
+    //! interval quote
+    class IntervalQuote : public Quote {
+    public:
+        enum price_type {Open, Close, High, Low};
+        IntervalQuote(Real o, Real c, Real h, Real l,
+                      price_type r = Close) :
+            open_(o), close_(c), high_(h), low_(l),
+        return_type_(r) {};
+        void setReturnType(price_type p) {
+            return_type_ = p;
+        }
+        Real value() const {
+            switch(return_type_) {
+            case Open:
+                return open_;
+                break;
+            case Close:
+                return close_;
+                break;
+            case High:
+                return high_;
+                break;
+            case Low:
+                return low_;
+                break;
+            }
+        }
+        void setValue(Real o, Real c, Real h, Real l) {
+            open_ = o; close_ = c;
+            high_ = h; low_ = l;
+        }
+    private:
+        Real open_, close_, high_, low_;
+        price_type return_type_;
+    };
+
 
     //! market element whose value depends on another market element
     /*! \test the correctness of the returned values is tested by
