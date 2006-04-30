@@ -6,7 +6,9 @@ include_HEADERS = \
 	calendars.hpp \
 	daycounters.hpp \
 	mathf.hpp \
+	prices.hpp \
 	qlfunctions.hpp \
+	termstructures.hpp \
 	vols.hpp
 
 EXTRA_DIST = \
@@ -23,7 +25,10 @@ libQuantLibFunctions_la_SOURCES = \
 	calendars.cpp \
 	daycounters.cpp \
 	mathf.cpp \
+    prices.cpp \
+    termstructures.cpp \
 	vols.cpp
 
 dist-hook:
 	mkdir -p $(distdir)/build
+

@@ -22,6 +22,7 @@
 
 #include <ql/Functions/qlfunctions.hpp>
 #include <ql/calendar.hpp>
+#include <ql/daycounter.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -32,7 +33,59 @@ namespace QuantLib {
                                   const Date& to,
                                   bool includeWeekEnds = false);
 
+    /*! return the evaluation date
+    */
+    Date evaluationDate();
+
+    /*! set the evaluation date
+    */
+    Date setEvaluationDate(const Date &evalDate);
+
+    /*! return the advanced date over a given calendar
+    */
+    Date advanceCalendar(
+            const Date &startDate,
+            const long &n,
+            const TimeUnit &timeUnits,
+            const Calendar &calendar,
+            const BusinessDayConvention &convention);
+
+    /*! return the year fraction with respect to a given day-counter convention
+    */
+    double yearFraction(
+        const DayCounter &dayCounter,
+        const Date &startDate,
+        const Date &endDate,
+        const Date &refStartDate,
+        const Date &refEndDate);    
+
+    //! whether or not the given date is an IMM date
+    inline bool isIMMdate(const Date& d) {
+        return QuantLib::Date::isIMMdate(d);
+    }
+
+    //! next IMM date following (or equal to) the given date
+    /*! returns the 1st delivery date for next contract listed in the
+        International Money Market section of the Chicago Mercantile
+        Exchange.
+
+        \warning The result date is following or equal to the
+                    original date.
+    */
+    inline QuantLib::Date nextIMMdate(const Date& d) {
+        return QuantLib::Date::nextIMMdate(d);
+    }
+
+    /*! return the day count with respect to a given day-counter
+        convention */
+    inline double dayCount(
+            const DayCounter &dayCount,
+            const Date &startDate,
+            const Date &endDate) {
+        return dayCount.dayCount(startDate, endDate);
+    }
+
 }
 
-
 #endif
+

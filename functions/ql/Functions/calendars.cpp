@@ -18,6 +18,7 @@
 */
 
 #include <ql/Functions/calendars.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 
@@ -44,4 +45,35 @@ namespace QuantLib {
 
     }
 
+    Date evaluationDate() {
+        return Settings::instance().evaluationDate();
+    }
+
+    Date setEvaluationDate(const Date &evalDate) {
+        Settings::instance().evaluationDate() = evalDate;
+        return evalDate;
+    }
+
+    Date advanceCalendar(
+            const Date &startDate,
+            const long &n,
+            const TimeUnit &timeUnits,
+            const Calendar &calendar,
+            const BusinessDayConvention &convention) {
+        return calendar.advance(startDate,
+                                n,
+                                timeUnits,
+                                convention);
+    }
+
+    double yearFraction(
+            const DayCounter &dayCounter,
+            const Date &startDate,
+            const Date &endDate,
+            const Date &refStartDate,
+            const Date &refEndDate) {
+        return dayCounter.yearFraction(startDate, endDate, refStartDate, refEndDate);
+    }
+
 }
+
