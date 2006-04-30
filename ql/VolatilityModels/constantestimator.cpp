@@ -38,7 +38,7 @@ namespace QuantLib {
             Real s = std::sqrt(sumu2/(Real)size_ - sumu*sumu / (Real) size_ /
                                (Real) (size_+1));
             retval.insert(cur->first,
-                          s / std::sqrt(yearFraction_));
+                          s);
             cur++;
         }
         return retval;

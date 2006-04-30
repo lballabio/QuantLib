@@ -36,10 +36,9 @@ namespace QuantLib {
     class ConstantEstimator : public VolatilityCompositor {
       private:
         Size size_;
-        Time yearFraction_;
       public:
-        ConstantEstimator(Size size, Time yearFraction)
-        : size_(size), yearFraction_(yearFraction) {}
+        ConstantEstimator(Size size)
+        : size_(size) {}
         TimeSeries<Volatility>
         calculate(const TimeSeries<Volatility> &volatilitySeries);
         void calibrate(const TimeSeries<Volatility> &volatilitySeries) {}

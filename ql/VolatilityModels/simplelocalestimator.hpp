@@ -35,8 +35,11 @@ namespace QuantLib {
     */
     class SimpleLocalEstimator : 
         public LocalVolatilityEstimator<Real> {
+    private:
+        Real yearFraction_;
       public:
-        SimpleLocalEstimator() {}
+        SimpleLocalEstimator(Real y) :
+        yearFraction_(y) {}
         TimeSeries<Volatility>
         calculate(const TimeSeries<Real> &quoteSeries) {
             TimeSeries<Volatility> retval;
@@ -48,8 +51,9 @@ namespace QuantLib {
                  cur != quoteSeries.vend();
                  cur++) {
                 prev = cur; prev--;
-                retval.insert(cur->first, std::log(cur->second/
-                                     prev->second));
+                retval.insert(cur->first, 
+                              std::abs(std::log(cur->second/
+                                     prev->second)));
             }
             return retval;
         }

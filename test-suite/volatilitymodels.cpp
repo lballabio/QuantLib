@@ -38,10 +38,10 @@ void VolatilityModelsTest::testConstruction() {
     ts.insert(Date(29, March, 2005), 2.3);
     ts.insert(Date(15, March, 2005), 0.3);
 
-    SimpleLocalEstimator sle;
+    SimpleLocalEstimator sle(1/360.0);
     TimeSeries<Volatility> locale(sle.calculate(ts));
 
-    ConstantEstimator ce(1, 1.0/360.0);
+    ConstantEstimator ce(1);
     TimeSeries<Volatility> sv(ce.calculate(locale));
     TimeSeries<Volatility>::const_valid_iterator cur = sv.vbegin();
 
