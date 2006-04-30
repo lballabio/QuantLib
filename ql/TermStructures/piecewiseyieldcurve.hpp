@@ -121,20 +121,6 @@ namespace QuantLib {
 
     #endif
 
-    // helper class
-
-    namespace detail {
-
-        class RateHelperSorter {
-          public:
-            bool operator()(const boost::shared_ptr<RateHelper>& h1,
-                            const boost::shared_ptr<RateHelper>& h2) const {
-                return (h1->latestDate() < h2->latestDate());
-            }
-        };
-
-    }
-
     // inline definitions
 
     template <class C, class I>

@@ -8970,6 +8970,9 @@
 			<File
 				RelativePath=".\ql\VolatilityModels\garch.hpp">
 			</File>
+			<File
+				RelativePath=".\ql\VolatilityModels\simplelocalestimator.hpp">
+			</File>
 		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp">

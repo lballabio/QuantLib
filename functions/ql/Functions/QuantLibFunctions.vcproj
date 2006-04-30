@@ -484,6 +484,9 @@
 				RelativePath=".\prices.cpp">
 			</File>
 			<File
+				RelativePath=".\termstructures.cpp">
+			</File>
+			<File
 				RelativePath="vols.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -555,6 +558,9 @@
 			</File>
 			<File
 				RelativePath=".\qlfunctions.hpp">
+			</File>
+			<File
+				RelativePath=".\termstructures.hpp">
 			</File>
 			<File
 				RelativePath="vols.hpp">
