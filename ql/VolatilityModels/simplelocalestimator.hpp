@@ -53,7 +53,8 @@ namespace QuantLib {
                 prev = cur; prev--;
                 retval.insert(cur->first, 
                               std::abs(std::log(cur->second/
-                                     prev->second)));
+                                     prev->second))/
+                              std::sqrt(yearFraction_));
             }
             return retval;
         }
