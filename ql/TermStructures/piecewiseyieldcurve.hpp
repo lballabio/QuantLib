@@ -169,7 +169,7 @@ namespace QuantLib {
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter, Real accuracy,
                const I& interpolator)
-    : base_curve(referenceDate,dayCounter,interpolator),
+    : base_curve(referenceDate, dayCounter, interpolator),
       instruments_(instruments), accuracy_(accuracy) {
         checkInstruments();
     }

@@ -37,12 +37,6 @@ namespace QuantLib {
     /*! \ingroup yieldtermstructures */
     typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
 
-    typedef PiecewiseYieldCurve<ForwardRate,Cubic
-        //(CubicSpline::SecondDerivative, 0.0,
-        // CubicSpline::FirstDerivative, 0.0,
-        // true)
-    > PiecewiseMonotoneForward;
-
 }
 
 #else
