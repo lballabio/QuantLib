@@ -438,6 +438,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\termstructures.cpp"
+				>
+			</File>
+			<File
 				RelativePath="vols.cpp"
 				>
 				<FileConfiguration
@@ -506,6 +510,10 @@
 			</File>
 			<File
 				RelativePath=".\qlfunctions.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\termstructures.hpp"
 				>
 			</File>
 			<File
