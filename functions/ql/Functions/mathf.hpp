@@ -106,7 +106,7 @@ namespace QuantLib {
     Real normDist(Real x,
                   Real mean = 0.0,
                   Real standard_dev = 1.0,
-                  bool cumulative = false);
+                  bool cumulative = true);
     Real normInv(Real probability,
                  Real mean = 0.0,
                  Real standard_dev = 1.0);
