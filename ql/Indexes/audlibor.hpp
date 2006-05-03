@@ -26,7 +26,7 @@
 
 #include <ql/Indexes/libor.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
-#include <ql/Calendars/sydney.hpp>
+#include <ql/Calendars/australia.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/oceania.hpp>
 

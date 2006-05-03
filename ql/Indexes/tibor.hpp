@@ -25,7 +25,7 @@
 #define quantlib_tibor_hpp
 
 #include <ql/Indexes/xibor.hpp>
-#include <ql/Calendars/tokyo.hpp>
+#include <ql/Calendars/japan.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Currencies/asia.hpp>
 

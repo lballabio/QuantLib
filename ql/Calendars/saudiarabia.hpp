@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2004 FIMAT Group
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,35 +17,41 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cdor.hpp
-    \brief %CDOR rate
+/*! \file saudiarabia.hpp
+    \brief Saudi Arabian calendar
 */
 
-#ifndef quantlib_cdor_hpp
-#define quantlib_cdor_hpp
+#ifndef quantlib_saudi_arabian_calendar_hpp
+#define quantlib_saudi_arabian_calendar_hpp
 
-#include <ql/Indexes/xibor.hpp>
-#include <ql/Calendars/canada.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Currencies/america.hpp>
+#include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %CDOR rate
-    /*! Canadian Dollar Offered Rate fixed by IDA.
+    //! Saudi Arabian calendar
+    /*! Holidays:
+        <ul>
+        <li>Fridays</li>
+        </ul>
 
-        \warning This is the rate fixed in Canada by IDA. Use CADLibor
-                 if you're interested in the London fixing by BBA.
+        Other holidays for which no rule is given
+        (data available for 2004-2005 only:)
+        <ul>
+        <li>EID AL-ADHA</li>
+        <li>EID AL-FITR</li>
+        </ul>
 
-        \todo check settlement days and day-count convention.
+        \ingroup calendars
     */
-    class Cdor : public Xibor {
+    class SaudiArabia : public Calendar {
+      private:
+        class Impl : public Calendar::Impl {
+          public:
+            std::string name() const { return "Saudi Arabia"; }
+            bool isBusinessDay(const Date&) const;
+        };
       public:
-        Cdor(Integer n, TimeUnit units,
-             const Handle<YieldTermStructure>& h,
-             const DayCounter& dc = Actual360())
-        : Xibor("CDOR", n, units, 2, CADCurrency(),
-                Canada(), ModifiedFollowing, dc, h) {}
+        SaudiArabia();
     };
 
 }

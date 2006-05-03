@@ -24,7 +24,6 @@
 
 #include <ql/Calendars/argentina.hpp>
 #include <ql/Calendars/australia.hpp>
-#include <ql/Calendars/bratislava.hpp>
 #include <ql/Calendars/brazil.hpp>
 #include <ql/Calendars/canada.hpp>
 #include <ql/Calendars/china.hpp>
@@ -41,7 +40,7 @@
 #include <ql/Calendars/japan.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
 #include <ql/Calendars/mexico.hpp>
-#include <ql/Calendars/newzeland.hpp>
+#include <ql/Calendars/newzealand.hpp>
 #include <ql/Calendars/norway.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Calendars/poland.hpp>

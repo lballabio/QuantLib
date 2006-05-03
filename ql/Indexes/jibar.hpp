@@ -25,7 +25,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #define quantlib_jibar_hpp
 
 #include <ql/Indexes/xibor.hpp>
-#include <ql/Calendars/johannesburg.hpp>
+#include <ql/Calendars/southafrica.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Currencies/africa.hpp>
 

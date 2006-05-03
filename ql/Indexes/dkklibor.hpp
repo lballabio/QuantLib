@@ -26,7 +26,7 @@
 
 #include <ql/Indexes/libor.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
-#include <ql/Calendars/copenhagen.hpp>
+#include <ql/Calendars/denmark.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/europe.hpp>
 

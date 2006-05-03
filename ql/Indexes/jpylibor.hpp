@@ -26,7 +26,7 @@
 
 #include <ql/Indexes/libor.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
-#include <ql/Calendars/tokyo.hpp>
+#include <ql/Calendars/japan.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/asia.hpp>
 

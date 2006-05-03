@@ -25,7 +25,7 @@
 #define quantlib_try_libor_hpp
 
 #include <ql/Indexes/xibor.hpp>
-#include <ql/Calendars/istanbul.hpp>
+#include <ql/Calendars/turkey.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/europe.hpp>
 
