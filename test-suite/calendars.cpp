@@ -26,7 +26,7 @@
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/unitedkingdom.hpp>
 #include <ql/Calendars/unitedstates.hpp>
-#include <ql/Calendars/tokyo.hpp>
+#include <ql/Calendars/japan.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
 #include <ql/Functions/calendars.hpp>
 #include <fstream>
