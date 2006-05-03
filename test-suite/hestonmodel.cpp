@@ -115,7 +115,7 @@ void HestonModelTest::testBlackCalibration() {
         LevenbergMarquardt om;
         model->calibrate(options, om);
 
-        Real tolerance = 1.0e-3;
+        Real tolerance = 2.0e-3;
 
         if (model->sigma() > tolerance) {
             BOOST_ERROR("Failed to reproduce expected sigma"
