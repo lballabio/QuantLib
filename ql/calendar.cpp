@@ -45,7 +45,11 @@ namespace QuantLib {
                           const Date& origin) const {
         QL_REQUIRE(d != Date(), "null date");
 
-        if (c == Unadjusted)
+        if (c == UnadjustedMonthEnd && origin != Date()
+            && isEndOfMonth(origin))
+            return Date::endOfMonth(d);
+
+        if (c == Unadjusted || c == UnadjustedMonthEnd)
             return d;
 
         Date d1 = d;

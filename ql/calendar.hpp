@@ -42,19 +42,27 @@ namespace QuantLib {
         Preceding,          /*!< Choose the first business day before
                                  the given holiday. */
         ModifiedPreceding,  /*!< Choose the first business day before
-                                 the given holiday unless it belongs to a
-                                 different month, in which case choose the
-                                 first business day after the holiday. */
+                                 the given holiday unless it belongs
+                                 to a different month, in which case
+                                 choose the first business day after
+                                 the holiday. */
         Following,          /*!< Choose the first business day after
                                  the given holiday. */
         ModifiedFollowing,  /*!< Choose the first business day after
-                                 the given holiday unless it belongs to a
-                                 different month, in which case choose the
-                                 first business day before the holiday. */
-        MonthEndReference   /*!< Choose the first business day after
-                                 the given holiday, if the original date falls
-                                 on last business day of month result reverts
-                                 to first business day before month-end */
+                                 the given holiday unless it belongs
+                                 to a different month, in which case
+                                 choose the first business day before
+                                 the holiday. */
+        MonthEndReference,  /*!< Choose the first business day after
+                                 the given holiday. If the original
+                                 date falls on last business day of
+                                 the month, choose the last business
+                                 day of the month */
+        UnadjustedMonthEnd  /*!< Do not adjust, unless the original
+                                 date falls on the last business day
+                                 of month. In this case, choose the
+                                 last day of the month regardless of
+                                 whether it is a business day. */
     };
 
     //! abstract base class for calendar implementations
