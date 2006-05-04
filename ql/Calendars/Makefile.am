@@ -5,76 +5,77 @@ includedir = $(prefix)/include/ql/Calendars
 include_HEADERS = \
 	all.hpp \
 	argentina.hpp \
-	beijing.hpp \
-	bombay.hpp \
-	bratislava.hpp \
+	australia.hpp \
 	brazil.hpp \
-	budapest.hpp \
-	copenhagen.hpp \
+	canada.hpp \
+	china.hpp \
+	czechrepublic.hpp \
+	denmark.hpp \
+	finland.hpp \
 	germany.hpp \
-	helsinki.hpp \
 	hongkong.hpp \
+	hungary.hpp \
 	iceland.hpp \
+	india.hpp \
 	indonesia.hpp \
-	istanbul.hpp \
 	italy.hpp \
-	johannesburg.hpp \
+	japan.hpp \
 	jointcalendar.hpp \
 	mexico.hpp \
+	newzealand.hpp \
 	nullcalendar.hpp \
-	oslo.hpp \
-	prague.hpp \
-	riyadh.hpp \
-	seoul.hpp \
+	norway.hpp \
+	poland.hpp \
+	saudiarabia.hpp \
+	southkorea.hpp \
 	singapore.hpp \
-	stockholm.hpp \
-	sydney.hpp \
+	slovakia.hpp \
+	southafrica.hpp \
+	sweden.hpp \
+	switzerland.hpp
 	taiwan.hpp \
 	target.hpp \
-	tokyo.hpp \
-	toronto.hpp \
+	turkey.hpp \
 	ukraine.hpp \
 	unitedkingdom.hpp \
-	unitedstates.hpp \
-	warsaw.hpp \
-	wellington.hpp \
-	zurich.hpp
+	unitedstates.hpp 
+
 
 libCalendars_la_SOURCES = \
 	argentina.cpp \
-	beijing.cpp \
-	bombay.cpp \
-	bratislava.cpp \
+	australia.cpp \
 	brazil.cpp \
-	budapest.cpp \
-	copenhagen.cpp \
+	canada.cpp \
+	china.cpp \
+	czechrepublic.cpp \
+	denmark.cpp \
+	finland.cpp \
 	germany.cpp \
-	helsinki.cpp \
 	hongkong.cpp \
+	hungary.cpp \
 	iceland.cpp \
+	india.cpp \
 	indonesia.cpp \
-	istanbul.cpp \
 	italy.cpp \
-	johannesburg.cpp \
+	japan.cpp \
 	jointcalendar.cpp \
 	mexico.cpp \
-	oslo.cpp \
-	prague.cpp \
-	riyadh.cpp \
-	seoul.cpp \
+	newzealand.cpp \
+	norway.cpp \
+	poland.cpp \
+	saudiarabia.cpp \
+	southkorea.cpp \
 	singapore.cpp \
-	stockholm.cpp \
-	sydney.cpp \
+	slovakia.cpp \
+	southafrica.cpp \
+	sweden.cpp \
+	switzerland.cpp
 	taiwan.cpp \
 	target.cpp \
-	tokyo.cpp \
-	toronto.cpp \
+	turkey.cpp \
 	ukraine.cpp \
 	unitedkingdom.cpp \
-	unitedstates.cpp \
-	warsaw.cpp \
-	wellington.cpp \
-	zurich.cpp
+	unitedstates.cpp 
 
 noinst_LTLIBRARIES = libCalendars.la
 
