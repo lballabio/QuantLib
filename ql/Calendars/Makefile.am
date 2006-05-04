@@ -23,22 +23,22 @@ include_HEADERS = \
 	jointcalendar.hpp \
 	mexico.hpp \
 	newzealand.hpp \
-	nullcalendar.hpp \
 	norway.hpp \
+	nullcalendar.hpp \
 	poland.hpp \
 	saudiarabia.hpp \
-	southkorea.hpp \
 	singapore.hpp \
 	slovakia.hpp \
 	southafrica.hpp \
+	southkorea.hpp \
 	sweden.hpp \
-	switzerland.hpp
+	switzerland.hpp \
 	taiwan.hpp \
 	target.hpp \
 	turkey.hpp \
 	ukraine.hpp \
 	unitedkingdom.hpp \
-	unitedstates.hpp 
+	unitedstates.hpp
 
 
 libCalendars_la_SOURCES = \
@@ -64,18 +64,18 @@ libCalendars_la_SOURCES = \
 	norway.cpp \
 	poland.cpp \
 	saudiarabia.cpp \
-	southkorea.cpp \
 	singapore.cpp \
 	slovakia.cpp \
 	southafrica.cpp \
+	southkorea.cpp \
 	sweden.cpp \
-	switzerland.cpp
+	switzerland.cpp \
 	taiwan.cpp \
 	target.cpp \
 	turkey.cpp \
 	ukraine.cpp \
 	unitedkingdom.cpp \
-	unitedstates.cpp 
+	unitedstates.cpp
 
 noinst_LTLIBRARIES = libCalendars.la
 
