@@ -330,6 +330,21 @@ namespace QuantLib {
                      original date.
         */
         static Date nextIMMdate(const Date& d);
+        /*! returns the IMM code for the given date
+            (e.g. H6 for March 15th, 2006).
+            
+            \warning It raise an exception if the input
+                     date is not an IMM date
+        */
+        static std::string IMMcode(const Date& date);
+        /*! returns the IMM date for the given IMM code
+            (e.g. March 15th, 2006 for H6).
+            
+        */
+        static Date IMMdate(
+            const std::string& IMMcode,
+            //const Date& referenceDate=Settings::instance().evaluationDate());
+            const Date& referenceDate);
         //@}
       private:
         BigInteger serialNumber_;

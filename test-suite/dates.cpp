@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -28,8 +29,22 @@ using namespace boost::unit_test_framework;
 void DateTest::immDates() {
     BOOST_MESSAGE("Testing IMM dates...");
 
+    const std::string IMMcodes[] = {
+        "H0", "M0", "U0", "Z0",
+        "H1", "M1", "U1", "Z1",
+        "H2", "M2", "U2", "Z2",
+        "H3", "M3", "U3", "Z3",
+        "H4", "M4", "U4", "Z4",
+        "H5", "M5", "U5", "Z5",
+        "H6", "M6", "U6", "Z6",
+        "H7", "M7", "U7", "Z7",
+        "H8", "M8", "U8", "Z8",
+        "H9", "M9", "U9", "Z9"
+    };
+
     Date counter = Date::minDate();
-    Date last = Date::maxDate() - 4*Months;
+    // 10 years of futures must not exceed Date::maxDate
+    Date last = Date::maxDate() - 121*Months;
     Date imm;
 
     while (counter<=last) {
@@ -52,6 +67,20 @@ void DateTest::immDates() {
                        << counter.weekday() << " " << counter
                        << " is already an IMM date, while nextIMM() returns "
                        << imm.weekday() << " " << imm);
+        // check that for every date IMMdate is the inverse of IMMcode
+        if (Date::IMMdate(Date::IMMcode(imm), counter) != imm)
+            BOOST_FAIL("\n  "
+                       << Date::IMMcode(imm)
+                       << " at calendar day " << counter
+                       << " is not the IMM code matching " << imm);
+        // check that for every date the 40 IMM codes refer to future dates
+        for (int i=0; i<40; i++) {
+            if (Date::IMMdate(IMMcodes[i], counter)<counter)
+                BOOST_FAIL("\n  "
+                       << Date::IMMdate(IMMcodes[i], counter)
+                       << " is wrong for " << IMMcodes[i]
+                       << " at reference date " << counter);
+        }
 
         counter = counter + 1;
     }

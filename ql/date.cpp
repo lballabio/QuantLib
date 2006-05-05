@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -20,9 +21,11 @@
 
 #include <ql/date.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/Utilities/strings.hpp>
 #include <sstream>
 #include <iomanip>
 #include <ctime>
+#include <iostream>
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::time; using ::time_t; using ::tm; using ::gmtime; }
 #endif
@@ -339,6 +342,67 @@ namespace QuantLib {
         }
 
         return nthWeekday(3, Wednesday, m, y);
+    }
+
+    std::string Date::IMMcode(const Date& date) {
+        QL_REQUIRE(isIMMdate(date),
+            date << " is not an IMM date");
+
+        std::ostringstream IMMcode;
+        unsigned int y = date.year() % 10;
+        switch(date.month()) {
+            case March: 
+                IMMcode << 'H' << y; 
+                break;
+            case June: 
+                IMMcode << 'M' << y; 
+                break;
+            case September: 
+                IMMcode << 'U' << y; 
+                break;
+            case December: 
+                IMMcode << 'Z' << y; 
+                break;
+            default:
+                QL_FAIL("something really bad: not an IMM month "
+                        "(and it should have been)");
+        }
+
+        QL_ENSURE(IMMcode.str().length()==2,
+                  "invalid IMM code result" << IMMcode.str());
+        return IMMcode.str();
+    }
+
+    Date Date::IMMdate(const std::string& IMMcode,
+                       const Date& referenceDate) {
+        QL_REQUIRE(IMMcode.length() == 2,
+            IMMcode << " is not a valid length IMM code");
+
+        std::string code = QuantLib::uppercase(IMMcode);
+        std::string ms = code.substr(0,1);
+        Month m;
+        if (ms=="H")
+            m = March; 
+        else if (ms=="M")
+            m = June; 
+        else if (ms=="U")
+            m = September; 
+        else if (ms=="Z")
+            m = December; 
+        else
+            QL_FAIL("invalid IMM month letter");
+
+        Year y = std::atoi(code.substr(1,1).c_str());
+        /* year<1900 are not valid QuantLib years: to avoid a run-time
+           exception few lines below we need to add 10 years right away */
+        if (y==0 && referenceDate.year()<=1909) y+=10;
+        Year referenceYear = (referenceDate.year() % 10);
+        y += referenceDate.year() - referenceYear;
+        Date result = Date::nextIMMdate(Date(1, m, y));
+        if (result<referenceDate)
+            return Date::nextIMMdate(Date(1, m, y+10));
+
+        return result;
     }
 
     Date Date::nextWeekday(const Date& d, Weekday dayOfWeek) {
