@@ -77,7 +77,7 @@ namespace QuantLib {
         Handle<BlackVolTermStructure> volTS(jdProcess->blackVolatility());
         baseArguments->stochasticProcess =
             boost::shared_ptr<StochasticProcess>(
-                 new GeneralizedBlackScholesProcess(stateVariable, dividendTS,
+                            new BlackScholesProcess(stateVariable, dividendTS,
                                                     riskFreeTS, volTS));
         baseArguments->validate();
 
@@ -89,7 +89,7 @@ namespace QuantLib {
         results_.delta       = 0.0;
         results_.gamma       = 0.0;
 //        results_.theta       = 0.0;
-//        results_.vega        = 0.0;
+        results_.vega        = 0.0;
         results_.rho         = 0.0;
         results_.dividendRho = 0.0;
 
@@ -119,7 +119,7 @@ namespace QuantLib {
             results_.delta       += weight * baseResults->delta;
             results_.gamma       += weight * baseResults->gamma;
 //            results_.theta       += weight * baseResults->theta;
-//            results_.vega        += weight * baseResults->vega;
+            results_.vega        += weight * (std::sqrt(variance/t)/v)* baseResults->vega;
             results_.rho         += weight * baseResults->rho;
             results_.dividendRho += weight * baseResults->dividendRho;
 
@@ -137,11 +137,11 @@ namespace QuantLib {
             lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->theta /
                (std::fabs(results_.theta)>QL_EPSILON ? results_.theta : 1.0)));
-
+*/
             lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->vega /
                (std::fabs(results_.vega)>QL_EPSILON ? results_.vega : 1.0)));
-*/
+
             lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->rho /
                (std::fabs(results_.rho)>QL_EPSILON ? results_.rho : 1.0)));

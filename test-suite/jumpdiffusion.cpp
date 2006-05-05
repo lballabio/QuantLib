@@ -449,7 +449,7 @@ void JumpDiffusionTest::testGreeks() {
 //                      calculated["theta"]  = option.theta();
                       calculated["rho"]    = option.rho();
                       calculated["divRho"] = option.dividendRho();
-//                      calculated["vega"]   = option.vega();
+                      calculated["vega"]   = option.vega();
 
                       if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
@@ -484,11 +484,11 @@ void JumpDiffusionTest::testGreeks() {
                           // perturb volatility and get vega
                           Volatility dv = v*1.0e-4;
                           vol->setValue(v+dv);
-                          // value_p = option.NPV();
+                          value_p = option.NPV();
                           vol->setValue(v-dv);
-                          // value_m = option.NPV();
+                          value_m = option.NPV();
                           vol->setValue(v);
-                          // expected["vega"] = (value_p - value_m)/(2*dv);
+                          expected["vega"] = (value_p - value_m)/(2*dv);
 
                           // get theta from time-shifted options
                           // expected["theta"] = (optionM.NPV() - optionP.NPV())/dT;
