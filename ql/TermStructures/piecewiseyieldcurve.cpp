@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,17 +17,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_functions_termstructures_h
-#define quantlib_functions_termstructures_h
-
 #include <ql/TermStructures/piecewiseyieldcurve.hpp>
 
 namespace QuantLib {
 
-    std::vector<boost::shared_ptr<RateHelper> > rateHelperSelection(
-        const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-        const std::vector<bool>& includeFlag,
-        int nFutures);
-}
+    RateHelper::RateHelper(const Handle<Quote>& quote)
+    : quote_(quote), termStructure_(0) {
+        registerWith(quote_);
+    }
 
-#endif
+    RateHelper::RateHelper(Real quote)
+    : quote_(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(quote)))),
+      termStructure_(0) {
+        registerWith(quote_);
+    }
+
+    void RateHelper::setTermStructure(YieldTermStructure* t) {
+        QL_REQUIRE(t != 0, "null term structure given");
+        termStructure_ = t;
+    }
+
+    Real RateHelper::quoteError() const {
+        return quote_->value()-impliedQuote();
+    }
+
+}

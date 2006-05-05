@@ -22,7 +22,6 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/TermStructures/affinetermstructure.hpp>
 #include <ql/TermStructures/bondhelpers.hpp>
 #include <ql/TermStructures/bootstraptraits.hpp>
 #include <ql/TermStructures/compoundforward.hpp>

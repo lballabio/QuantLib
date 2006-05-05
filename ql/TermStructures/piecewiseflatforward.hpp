@@ -24,12 +24,9 @@
 #ifndef quantlib_piecewise_flat_forward_curve_hpp
 #define quantlib_piecewise_flat_forward_curve_hpp
 
-#include <ql/qldefines.hpp>
-#include <ql/Math/cubicspline.hpp>
+#include <ql/TermStructures/piecewiseyieldcurve.hpp>
 
 #if !defined(QL_PATCH_MSVC6)
-
-#include <ql/TermStructures/piecewiseyieldcurve.hpp>
 
 namespace QuantLib {
 
@@ -40,8 +37,6 @@ namespace QuantLib {
 }
 
 #else
-
-#include <ql/ratehelper.hpp>
 
 namespace QuantLib {
 

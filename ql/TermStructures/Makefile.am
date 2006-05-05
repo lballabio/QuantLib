@@ -3,7 +3,6 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/TermStructures
 
 include_HEADERS = \
-    affinetermstructure.hpp \
     all.hpp \
     bondhelpers.hpp \
     bootstraptraits.hpp \
@@ -25,11 +24,11 @@ include_HEADERS = \
     zeroyieldstructure.hpp
 
 libTermStructures_la_SOURCES = \
-    affinetermstructure.cpp \
     bondhelpers.cpp \
     compoundforward.cpp \
     extendeddiscountcurve.cpp \
     piecewiseflatforward.cpp \
+    piecewiseyieldcurve.cpp \
     ratehelpers.cpp
 
 noinst_LTLIBRARIES = libTermStructures.la

@@ -24,8 +24,8 @@
 #ifndef quantlib_bond_helpers_hpp
 #define quantlib_bond_helpers_hpp
 
+#include <ql/TermStructures/piecewiseyieldcurve.hpp>
 #include <ql/Instruments/fixedcouponbond.hpp>
-#include <ql/ratehelper.hpp>
 
 namespace QuantLib {
 

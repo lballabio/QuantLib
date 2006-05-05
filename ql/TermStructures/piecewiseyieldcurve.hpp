@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +24,7 @@
 #ifndef quantlib_piecewise_yield_curve_hpp
 #define quantlib_piecewise_yield_curve_hpp
 
-#include <ql/ratehelper.hpp>
+#include <ql/quote.hpp>
 #include <ql/TermStructures/discountcurve.hpp>
 #include <ql/TermStructures/bootstraptraits.hpp>
 #include <ql/Math/linearinterpolation.hpp>
@@ -32,6 +32,77 @@
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
+
+    //! Base helper class for yield-curve bootstrapping
+    /*! This class provides an abstraction for the instruments used to
+        bootstrap a term structure.
+        It is advised that a rate helper for an instrument contains an
+        instance of the actual instrument class to ensure consistancy
+        between the algorithms used during bootstrapping and later
+        instrument pricing. This is not yet fully enforced in the
+        available rate helpers, though - only SwapRateHelper and
+        FixedCouponBondHelper contain their corresponding instrument
+        for the time being.
+    */
+    class RateHelper : public Observer, public Observable {
+      public:
+        RateHelper(const Handle<Quote>& quote);
+        RateHelper(Real quote);
+        virtual ~RateHelper() {}
+        //! \name RateHelper interface
+        //@{
+        Real quoteError() const;
+        Real referenceQuote() const { return quote_->value(); }
+        virtual Real impliedQuote() const = 0;
+        virtual DiscountFactor discountGuess() const {
+            return Null<Real>();
+        }
+        //! sets the term structure to be used for pricing
+        /*! \warning Being a pointer and not a shared_ptr, the term
+                     structure is not guaranteed to remain allocated
+                     for the whole life of the rate helper. It is
+                     responsibility of the programmer to ensure that
+                     the pointer remains valid. It is advised that
+                     rate helpers be used only in term structure
+                     constructors, setting the term structure to
+                     <b>this</b>, i.e., the one being constructed.
+        */
+        virtual void setTermStructure(YieldTermStructure*);
+        //! earliest relevant date
+        /*! The earliest date at which discounts are needed by the
+            helper in order to provide a quote.
+        */
+        virtual Date earliestDate() const { return earliestDate_;}
+        //! latest relevant date
+        /*! The latest date at which discounts are needed by the
+            helper in order to provide a quote. It does not
+            necessarily equal the maturity of the underlying
+            instrument.
+        */
+        virtual Date latestDate() const { return latestDate_;}
+        //@}
+        //! \name Observer interface
+        //@{
+        virtual void update() { notifyObservers(); }
+        //@}
+      protected:
+        Handle<Quote> quote_;
+        YieldTermStructure* termStructure_;
+        Date earliestDate_, latestDate_;
+    };
+
+    // helper class
+    namespace detail {
+
+        class RateHelperSorter {
+          public:
+            bool operator()(const boost::shared_ptr<RateHelper>& h1,
+                            const boost::shared_ptr<RateHelper>& h2) const {
+                return (h1->latestDate() < h2->latestDate());
+            }
+        };
+
+    }
 
     #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
