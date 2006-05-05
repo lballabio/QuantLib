@@ -1,9 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
- Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,6 +21,7 @@
 */
 
 #include <ql/date.hpp>
+#include <ql/settings.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Utilities/strings.hpp>
 #include <sstream>
@@ -351,17 +353,17 @@ namespace QuantLib {
         std::ostringstream IMMcode;
         unsigned int y = date.year() % 10;
         switch(date.month()) {
-            case March: 
-                IMMcode << 'H' << y; 
+            case March:
+                IMMcode << 'H' << y;
                 break;
-            case June: 
-                IMMcode << 'M' << y; 
+            case June:
+                IMMcode << 'M' << y;
                 break;
-            case September: 
-                IMMcode << 'U' << y; 
+            case September:
+                IMMcode << 'U' << y;
                 break;
-            case December: 
-                IMMcode << 'Z' << y; 
+            case December:
+                IMMcode << 'Z' << y;
                 break;
             default:
                 QL_FAIL("something really bad: not an IMM month "
@@ -374,17 +376,21 @@ namespace QuantLib {
     }
 
     Date Date::IMMdate(const std::string& IMMcode,
-                       const Date& referenceDate) {
+                       const Date& refDate) {
         QL_REQUIRE(IMMcode.length() == 2,
             IMMcode << " is not a valid length IMM code");
+
+        Date referenceDate = (refDate != Date() ?
+                              refDate :
+                              Settings::instance().evaluationDate());
 
         std::string code = QuantLib::uppercase(IMMcode);
         std::string ms = code.substr(0,1);
         Month m;
-        if (ms=="H")      m = March; 
-        else if (ms=="M") m = June; 
-        else if (ms=="U") m = September; 
-        else if (ms=="Z") m = December; 
+        if (ms=="H")      m = March;
+        else if (ms=="M") m = June;
+        else if (ms=="U") m = September;
+        else if (ms=="Z") m = December;
         else QL_FAIL("invalid IMM month letter");
 
         Year y = std::atoi(code.substr(1,1).c_str());

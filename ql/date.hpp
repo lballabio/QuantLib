@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2004, 2005 Ferdinando Ametrano
- Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -332,19 +333,17 @@ namespace QuantLib {
         static Date nextIMMdate(const Date& d);
         /*! returns the IMM code for the given date
             (e.g. H6 for March 15th, 2006).
-            
+
             \warning It raise an exception if the input
                      date is not an IMM date
         */
         static std::string IMMcode(const Date& date);
         /*! returns the IMM date for the given IMM code
             (e.g. March 15th, 2006 for H6).
-            
+
         */
-        static Date IMMdate(
-            const std::string& IMMcode,
-            //const Date& referenceDate=Settings::instance().evaluationDate());
-            const Date& referenceDate);
+        static Date IMMdate(const std::string& IMMcode,
+                            const Date& referenceDate = Date());
         //@}
       private:
         BigInteger serialNumber_;
