@@ -381,16 +381,11 @@ namespace QuantLib {
         std::string code = QuantLib::uppercase(IMMcode);
         std::string ms = code.substr(0,1);
         Month m;
-        if (ms=="H")
-            m = March; 
-        else if (ms=="M")
-            m = June; 
-        else if (ms=="U")
-            m = September; 
-        else if (ms=="Z")
-            m = December; 
-        else
-            QL_FAIL("invalid IMM month letter");
+        if (ms=="H")      m = March; 
+        else if (ms=="M") m = June; 
+        else if (ms=="U") m = September; 
+        else if (ms=="Z") m = December; 
+        else QL_FAIL("invalid IMM month letter");
 
         Year y = std::atoi(code.substr(1,1).c_str());
         /* year<1900 are not valid QuantLib years: to avoid a run-time
