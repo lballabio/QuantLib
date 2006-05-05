@@ -21,10 +21,10 @@
 #include <ql/Utilities/dataparsers.hpp>
 #include <ql/Utilities/strings.hpp>
 #include <ql/Utilities/null.hpp>
-#include <cstdlib>
+#include <boost/lexical_cast.hpp>
 #include <cctype>
 #if defined(BOOST_NO_STDC_NAMESPACE)
-    namespace std { using ::atoi; using ::toupper; }
+    namespace std { using ::toupper; }
 #endif
 
 namespace QuantLib {
@@ -35,13 +35,13 @@ namespace QuantLib {
         QL_REQUIRE(str.length()>1, "argument needs length of at least 2");
         Size iPos = str.find_first_of("DdWwMmYy");
         if (iPos != str.length()-1)
-            QL_FAIL("unknown units, input: '"+str+"'");
+            QL_FAIL("unknown units, input: '" << str << "'");
         char abbr = std::toupper(str[iPos]);
         if (abbr == 'D')      units = Days;
         else if (abbr == 'W') units = Weeks;
         else if (abbr == 'M') units = Months;
         else if (abbr == 'Y') units = Years;
-        return Period(std::atoi(str.c_str()), units);
+        return Period(boost::lexical_cast<Integer>(str.substr(0,iPos)), units);
     }
 
     std::vector<std::string> DateParser::split(const std::string& str,
@@ -71,11 +71,11 @@ namespace QuantLib {
         for (i=0;i<flist.size();i++) {
             std::string sub = flist[i];
             if (lowercase(sub) == "dd")
-                d = std::atoi(slist[i].c_str());
+                d = boost::lexical_cast<Integer>(slist[i]);
             else if (lowercase(sub) == "mm")
-                m = std::atoi(slist[i].c_str());
+                m = boost::lexical_cast<Integer>(slist[i]);
             else if (lowercase(sub) == "yyyy") {
-                y = std::atoi(slist[i].c_str());
+                y = boost::lexical_cast<Integer>(slist[i]);
                 if (y < 100)
                     y += 2000;
             }
@@ -86,10 +86,10 @@ namespace QuantLib {
     Date DateParser::parseISO(const std::string& str) {
         QL_REQUIRE(str.size() == 10 && str[4] == '-' && str[7] == '-',
                    "invalid format");
-        Integer year = std::atoi(str.substr(0, 4).c_str());
+        Integer year = boost::lexical_cast<Integer>(str.substr(0, 4));
         Month month =
-            static_cast<Month>(std::atoi(str.substr(5, 2).c_str()));
-        Integer day = std::atoi(str.substr(8, 2).c_str());
+            static_cast<Month>(boost::lexical_cast<Integer>(str.substr(5, 2)));
+        Integer day = boost::lexical_cast<Integer>(str.substr(8, 2));
         return Date(day, month, year);
     }
 

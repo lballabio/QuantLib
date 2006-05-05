@@ -24,6 +24,7 @@
 #include <ql/settings.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Utilities/strings.hpp>
+#include <boost/lexical_cast.hpp>
 #include <sstream>
 #include <iomanip>
 #include <ctime>
@@ -393,7 +394,7 @@ namespace QuantLib {
         else if (ms=="Z") m = December;
         else QL_FAIL("invalid IMM month letter");
 
-        Year y = std::atoi(code.substr(1,1).c_str());
+        Year y = boost::lexical_cast<Year>(code.substr(1,1));
         /* year<1900 are not valid QuantLib years: to avoid a run-time
            exception few lines below we need to add 10 years right away */
         if (y==0 && referenceDate.year()<=1909) y+=10;
