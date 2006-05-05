@@ -27,9 +27,26 @@
 namespace QuantLib {
 
     DayCounter dayCounterFromString(std::string s);
-    BigInteger accrualDays(DayCounter dc, Date d1, Date d2);
-    Time accrualFactor(DayCounter dc, Date d1, Date d2, Date d3, Date d4);
 
+    /*! return the day count with respect to a given day-counter
+        convention */
+    inline BigInteger dayCount(
+            const DayCounter &dayCount,
+            const Date &startDate,
+            const Date &endDate) {
+        return dayCount.dayCount(startDate, endDate);
+    }
+
+    /*! return the year fraction with respect to a given day-counter convention
+    */
+    inline Time yearFraction(
+            const DayCounter &dayCounter,
+            const Date &startDate,
+            const Date &endDate,
+            const Date &refStartDate,
+            const Date &refEndDate) {
+        return dayCounter.yearFraction(startDate, endDate, refStartDate, refEndDate);
+    }
 }
 
 

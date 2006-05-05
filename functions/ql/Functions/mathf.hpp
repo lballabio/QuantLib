@@ -23,6 +23,7 @@
 #include <ql/Functions/qlfunctions.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
+#include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/cubicspline.hpp>
 
 namespace QuantLib {
@@ -102,16 +103,28 @@ namespace QuantLib {
                        bool allowExtrapolation);
 
 
+    inline Real normDist(
+        Real x,
+        Real mean = 0.0,
+        Real standard_dev = 1.0,
+        bool cumulative = true) {
 
-    Real normDist(Real x,
-                  Real mean = 0.0,
-                  Real standard_dev = 1.0,
-                  bool cumulative = true);
-    Real normInv(Real probability,
-                 Real mean = 0.0,
-                 Real standard_dev = 1.0);
+        if (cumulative) {
+            return CumulativeNormalDistribution(mean, standard_dev)(x);
+        } else {
+            return NormalDistribution(mean, standard_dev)(x);
+        }
+    }
 
-    BigNatural primeNumbers(Size absoluteIndex);
+
+    inline Real normInv(
+        Real probability,
+        Real mean = 0.0,
+        Real standard_dev = 1.0) {
+        return InverseCumulativeNormal(mean, standard_dev)
+            (probability);
+    }
+
 
     Real rand();
     void randomize(BigNatural seed);
