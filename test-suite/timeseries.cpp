@@ -20,7 +20,6 @@
 #include "timeseries.hpp"
 #include "utilities.hpp"
 #include <ql/timeseries.hpp>
-#include <ql/Utilities/tsintervalquote.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -59,8 +58,8 @@ void TimeSeriesTest::testConstruction() {
     QL_TEST_END
 }
 
-void TimeSeriesTest::testIntervalQuote() {
-    BOOST_MESSAGE("Testing time series interval quote...");
+void TimeSeriesTest::testIntervalPrice() {
+    BOOST_MESSAGE("Testing time series interval price...");
     QL_TEST_BEGIN
     std::vector<Date> date;
     std::vector<Real> open, close, high, low;
@@ -79,8 +78,8 @@ void TimeSeriesTest::testIntervalQuote() {
     low.push_back(3.4);
     low.push_back(3.2);
     
-    TimeSeries<IntervalQuote> tsiq =
-        TimeSeriesIntervalQuoteHelper::create(date,
+    TimeSeries<IntervalPrice> tsiq =
+        TimeSeriesIntervalPriceHelper::create(date,
                                               open,
                                               close,
                                               high,

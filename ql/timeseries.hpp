@@ -192,6 +192,61 @@ namespace QuantLib {
         }
     }
 
+    //! interval price
+    class IntervalPrice {
+    public:
+        IntervalPrice(Real o, Real c, Real h, Real l) :
+            open_(o), close_(c), high_(h), low_(l) {};
+        void setValue(Real o, Real c, Real h, Real l) {
+            open_ = o; close_ = c;
+            high_ = h; low_ = l;
+        }
+        Real open() {return open_;}
+        Real close() {return close_;}
+        Real high() {return high_;}
+        Real low() {return low_;}
+    private:
+        Real open_, close_, high_, low_;
+    };
+
+    //! Create time series of interval prices
+    //! This should probably go somewhere other than timeseries
+    class TimeSeriesIntervalPriceHelper {  
+    public:
+        static 
+        TimeSeries<IntervalPrice> create(const std::vector<Date>& d,
+                                         const std::vector<Real>& open,
+                                         const std::vector<Real>& close,
+                                         const std::vector<Real>& high,
+                                         const std::vector<Real>& low) {
+            Size dsize = d.size();
+            QL_REQUIRE((open.size() == dsize &&
+                        close.size() == dsize &&
+		 high.size() == dsize &&
+                        low.size() == dsize),
+                       "size mismatch (" << dsize << ", "
+                       << open.size() << ", "
+                       << close.size() << ", "
+                       << high.size() << ", "
+                       << low.size() << ")");
+            TimeSeries<IntervalPrice> retval;
+            std::vector<Date>::const_iterator i;
+            std::vector<Real>::const_iterator openi, closei, highi, lowi;
+            openi = open.begin();
+            closei = close.begin();
+            highi = high.begin();
+            lowi = low.begin();
+            for (i = d.begin(); i != d.end(); i++) {
+                retval.insert(*i,
+                              IntervalPrice(*openi,
+                                            *closei,
+                                      *highi,
+                                            *lowi));
+                openi++; closei++; highi++; lowi++;
+            }
+            return retval;
+        };
+    };
 }
 
 

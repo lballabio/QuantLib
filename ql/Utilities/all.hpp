@@ -30,7 +30,5 @@
 #include <ql/Utilities/tracing.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 #include <ql/Utilities/strings.hpp>
-#include <ql/Utilities/tsintervalquote.hpp>
-
 
 #endif

@@ -11,8 +11,7 @@ include_HEADERS = \
     observablevalue.hpp \
     steppingiterator.hpp \
     strings.hpp \
-    tracing.hpp \
-    tsintervalquote.hpp
+    tracing.hpp
 
 libUtilities_la_SOURCES = \
     dataformatters.cpp \
