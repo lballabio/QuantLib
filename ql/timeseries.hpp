@@ -145,7 +145,7 @@ namespace QuantLib {
             return values_.find(d);
         }
         void insert(const Date &d, const T &value) {
-            values_[d] = value;
+            values_.insert(std::pair<const Date, T>(d, value));
         }
         std::vector<Date> dates() const {
             std::vector<Date> returnval;

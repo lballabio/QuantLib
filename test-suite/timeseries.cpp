@@ -20,6 +20,7 @@
 #include "timeseries.hpp"
 #include "utilities.hpp"
 #include <ql/timeseries.hpp>
+#include <ql/Utilities/tsintervalquote.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -43,7 +44,7 @@ void TimeSeriesTest::testConstruction() {
         BOOST_ERROR("value not match");
     }
 
-    ts.insert(Date(15, March, 2005), 4.0);
+    ts[Date(15, March, 2005)] =  4.0;
     cur = ts.vbegin();
     if (cur->second != 4.0) {
         BOOST_ERROR("replace value not match" << cur->second << "\n");
@@ -55,6 +56,36 @@ void TimeSeriesTest::testConstruction() {
         BOOST_ERROR("set value operator not match" << cur->second << "\n");
     }
 
+    QL_TEST_END
+}
+
+void TimeSeriesTest::testIntervalQuote() {
+    BOOST_MESSAGE("Testing time series interval quote...");
+    QL_TEST_BEGIN
+    std::vector<Date> date;
+    std::vector<Real> open, close, high, low;
+    date.push_back(Date(25, March, 2005));
+    date.push_back(Date(29, March, 2005));
+    
+    open.push_back(1.3);
+    open.push_back(2.3);
+
+    close.push_back(2.3);
+    close.push_back(3.4);
+
+    high.push_back(3.4);
+    high.push_back(3.5);
+
+    low.push_back(3.4);
+    low.push_back(3.2);
+    
+    TimeSeries<IntervalQuote> tsiq =
+        TimeSeriesIntervalQuoteHelper::create(date,
+                                              open,
+                                              close,
+                                              high,
+                                              low);
+    
     QL_TEST_END
 }
 

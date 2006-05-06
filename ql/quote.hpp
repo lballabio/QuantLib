@@ -68,20 +68,19 @@ namespace QuantLib {
         void setReturnType(price_type p) {
             return_type_ = p;
         }
-        Real value() const {
-            switch(return_type_) {
+        Real value() const { return value(return_type_);};
+        Real value(price_type p) const {
+            switch(p) {
             case Open:
                 return open_;
-                break;
             case Close:
                 return close_;
-                break;
             case High:
                 return high_;
-                break;
             case Low:
                 return low_;
-                break;
+            default:
+                QL_FAIL("unknown price_type in interval quote");
             }
         }
         void setValue(Real o, Real c, Real h, Real l) {
