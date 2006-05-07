@@ -195,6 +195,12 @@ namespace QuantLib {
     //! interval price
     class IntervalPrice {
     public:
+        IntervalPrice() :
+            open_(QL_NULL_REAL), 
+            close_(QL_NULL_REAL), 
+            high_(QL_NULL_REAL), 
+            low_(QL_NULL_REAL) {};
+
         IntervalPrice(Real o, Real c, Real h, Real l) :
             open_(o), close_(c), high_(h), low_(l) {};
         void setValue(Real o, Real c, Real h, Real l) {
