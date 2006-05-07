@@ -88,9 +88,13 @@ namespace QuantLib {
         //! read-only
         Real operator[](Size) const;
         Real at(Size) const;
+        Real front() const;
+        Real back() const;
         //! read-write
         Real& operator[](Size);
         Real& at(Size);
+        Real& front();
+        Real& back();
         //@}
         //! \name Inspectors
         //@{
@@ -313,6 +317,20 @@ namespace QuantLib {
         return data_.get()[i];
     }
 
+    inline Real Array::front() const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(n_>0, "array access out of range");
+        #endif
+        return data_.get()[0];
+    }
+
+    inline Real Array::back() const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(n_>0, "array access out of range");
+        #endif
+        return data_.get()[n_-1];
+    }
+
     inline Real& Array::operator[](Size i) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<n_, "array access out of range");
@@ -323,6 +341,20 @@ namespace QuantLib {
     inline Real& Array::at(Size i) {
         QL_REQUIRE(i<n_, "array access out of range");
         return data_.get()[i];
+    }
+
+    inline Real& Array::front() {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(n_>0, "array access out of range");
+        #endif
+        return data_.get()[0];
+    }
+
+    inline Real& Array::back() {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(n_>0, "array access out of range");
+        #endif
+        return data_.get()[n_-1];
     }
 
     inline Size Array::size() const {
@@ -566,9 +598,11 @@ namespace QuantLib {
     inline std::ostream& operator<<(std::ostream& out, const Array& a) {
         std::streamsize width = out.width();
         out << "[ ";
-        for (Integer n=0; n<Integer(a.size())-1; ++n)
-            out << std::setw(width) << a[n] << "; ";
-        out << std::setw(width) << a[a.size()-1];
+        if (!a.empty()) {
+            for (Size n=0; n<a.size()-1; ++n)
+                out << std::setw(width) << a[n] << "; ";
+            out << std::setw(width) << a.back();
+        }
         out << " ]";
         return out;
     }
