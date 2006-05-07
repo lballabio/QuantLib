@@ -195,6 +195,7 @@ namespace QuantLib {
     //! interval price
     class IntervalPrice {
     public:
+        enum Type {Open, Close, High, Low};
         IntervalPrice() :
             open_(QL_NULL_REAL), 
             close_(QL_NULL_REAL), 
@@ -207,10 +208,24 @@ namespace QuantLib {
             open_ = o; close_ = c;
             high_ = h; low_ = l;
         }
-        Real open() {return open_;}
-        Real close() {return close_;}
-        Real high() {return high_;}
-        Real low() {return low_;}
+        Real open() const {return open_;}
+        Real close() const {return close_;}
+        Real high() const {return high_;}
+        Real low() const {return low_;}
+        Real value(IntervalPrice::Type t) const {
+            switch(t) {
+            case Open:
+                return open();
+            case Close:
+                return close();
+            case High:
+                return high();
+            case Low:
+                return low();
+            default:
+                QL_FAIL("Unknown price type");
+            }
+        }
     private:
         Real open_, close_, high_, low_;
     };
@@ -224,7 +239,7 @@ namespace QuantLib {
                                          const std::vector<Real>& open,
                                          const std::vector<Real>& close,
                                          const std::vector<Real>& high,
-                                         const std::vector<Real>& low) {
+                                         const std::vector<Real>& low)  {
             Size dsize = d.size();
             QL_REQUIRE((open.size() == dsize &&
                         close.size() == dsize &&
@@ -252,6 +267,22 @@ namespace QuantLib {
             }
             return retval;
         };
+        static std::vector<Real> extractValues(const TimeSeries<IntervalPrice> &ts,
+                       enum IntervalPrice::Type t)  {
+            std::vector<Real> returnval;
+            for (TimeSeries<IntervalPrice>::const_valid_iterator i = ts.vbegin();
+                 i != ts.vend(); i++) {
+                returnval.push_back(i->second.value(t));
+            }
+            return returnval;
+        };
+
+        static TimeSeries<Real> 
+        extractComponent(const TimeSeries<IntervalPrice> &ts,
+                       enum IntervalPrice::Type t) {
+            return TimeSeries<Real>(ts.dates(),
+                                    extractValues(ts, t));
+        }
     };
 }
 
