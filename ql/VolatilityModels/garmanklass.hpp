@@ -32,6 +32,7 @@ namespace QuantLib {
     /*! This class implements a concrete volatility model based on 
       high low formulas using the method of Garman and Klass in their
       paper "On the Estimation of the Security Price from Historical Data"
+      at http://www.fea.com/resources/pdf/a_estimation_of_security_price.pdf
 
         Volatilities are assumed to be expressed on an annual basis.
     */
@@ -72,6 +73,9 @@ namespace QuantLib {
         }
     };
 
+    /*! This template factors out common functionality found in
+      classes which rely on the difference between the previous day's
+      close price and today's open price. */
 
     template <class T>
     class GarmanKlassOpenClose : public T {
