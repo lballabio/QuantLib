@@ -151,7 +151,7 @@ namespace QuantLib {
     protected:
         Real calculatePoint(const IntervalPrice &p) {
             Real u = std::log(p.high()/p.open());
-            Real d = std::log(p.low())/p.open();
+            Real d = std::log(p.low()/p.open());
             Real c = std::log(p.close()/p.open());
             return 0.511 * (u-d)*(u-d) -
                 0.019 * (c*(u+d)-2*u*d) -
