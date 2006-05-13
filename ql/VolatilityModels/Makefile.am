@@ -6,6 +6,7 @@ include_HEADERS = \
     all.hpp \
     constantestimator.hpp \
     simplelocalestimator.hpp \
+    garmanklass.hpp \
     garch.hpp 
 
 libVolatilityModels_la_SOURCES = \

@@ -22,6 +22,7 @@
 #include <ql/volatilitymodel.hpp>
 #include <ql/VolatilityModels/constantestimator.hpp>
 #include <ql/VolatilityModels/simplelocalestimator.hpp>
+#include <ql/VolatilityModels/garmanklass.hpp>
 #include <ql/timeseries.hpp>
 
 using namespace QuantLib;

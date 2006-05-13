@@ -24,5 +24,6 @@
 
 #include <ql/VolatilityModels/constantestimator.hpp>
 #include <ql/VolatilityModels/simplelocalestimator.hpp>
+#include <ql/VolatilityModels/garmanklass.hpp>
 
 #endif

@@ -43,7 +43,7 @@ namespace QuantLib {
         TimeSeries<Volatility>
         calculate(const TimeSeries<Real> &quoteSeries) {
             TimeSeries<Volatility> retval;
-            TimeSeries<Volatility>::const_valid_iterator 
+            TimeSeries<Real>::const_valid_iterator 
                 prev, next, cur, start;
             start = quoteSeries.vbegin();
             start++;
