@@ -10,7 +10,8 @@ include_HEADERS = \
     garch.hpp 
 
 libVolatilityModels_la_SOURCES = \
-    constantestimator.cpp
+    constantestimator.cpp \
+    garch.cpp
 
 noinst_LTLIBRARIES = libVolatilityModels.la
 
