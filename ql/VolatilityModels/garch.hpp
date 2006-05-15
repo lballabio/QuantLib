@@ -29,12 +29,11 @@
 
 namespace QuantLib {
 
-    /*! This class implements the GARCH volatility model
-
-        Volatilities are assumed to be expressed on an annual basis.
+    //! GARCH volatility model
+    /*! Volatilities are assumed to be expressed on an annual basis.
     */
     class Garch11 : public VolatilityCompositor {
-    private:
+      private:
         Real alpha_, beta_, gamma_, vl_;
       public:
         Garch11(Real a, Real b, Real vl) :
@@ -51,8 +50,8 @@ namespace QuantLib {
 
         void calibrate(const TimeSeries<Volatility>& quoteSeries);
     private:
-        Real Garch11::costFunction(const TimeSeries<Volatility>& qs,
-                                   Real alpha, Real beta, Real omega);
+        Real costFunction(const TimeSeries<Volatility>& qs,
+                          Real alpha, Real beta, Real omega);
     };
 
 }
