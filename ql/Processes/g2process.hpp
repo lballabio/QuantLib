@@ -29,7 +29,8 @@
 
 namespace QuantLib {
 
-    //! G2 stochastic process
+    //! %G2 stochastic process
+    /*! \ingroup processes */
     class G2Process : public StochasticProcess {
       public:
         G2Process(Real a, Real sigma, Real b, Real eta, Real rho);
@@ -57,7 +58,8 @@ namespace QuantLib {
         boost::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
     };
 
-    //! forward G2 stochastic process
+    //! forward %G2 stochastic process
+    /*! \ingroup processes */
     class G2ForwardProcess : public ForwardMeasureProcess {
       public:
         G2ForwardProcess(Real a, Real sigma, Real b, Real eta, Real rho);

@@ -40,6 +40,8 @@ namespace QuantLib {
         dW_1 dW_2 &=& \rho dt
         \end{array}
         \f]
+
+        \ingroup processes
     */
     class HestonProcess : public StochasticProcess {
       public:

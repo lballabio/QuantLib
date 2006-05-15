@@ -31,6 +31,7 @@
 namespace QuantLib {
 
     //! Hull-White stochastic process
+    /*! \ingroup processes */
     class HullWhiteProcess: public StochasticProcess1D {
       public:
         HullWhiteProcess(const Handle<YieldTermStructure>& h,
@@ -54,6 +55,7 @@ namespace QuantLib {
     };
 
     //! forward Hull-White stochastic process
+    /*! \ingroup processes */
     class HullWhiteForwardProcess: public ForwardMeasureProcess1D {
       public:
         HullWhiteForwardProcess(const Handle<YieldTermStructure>& h,

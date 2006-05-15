@@ -52,6 +52,8 @@ namespace QuantLib {
               caplet & ratchet NPVs and comparison with Black pricing.
 
         \warning this class does not work correctly with Visual C++ 6.
+
+        \ingroup processes
     */
     class LiborForwardModelProcess : public StochasticProcess {
       public:

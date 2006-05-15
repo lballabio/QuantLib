@@ -31,6 +31,8 @@ namespace QuantLib {
     //! forward-measure stochastic process
     /*! stochastic process whose dynamics are expressed in the forward
         measure.
+
+        \ingroup processes
     */
     class ForwardMeasureProcess : public StochasticProcess {
       public:
@@ -45,6 +47,8 @@ namespace QuantLib {
     //! forward-measure 1-D stochastic process
     /*! 1-D stochastic process whose dynamics are expressed in the
         forward measure.
+
+        \ingroup processes
     */
     class ForwardMeasureProcess1D : public StochasticProcess1D {
       public:

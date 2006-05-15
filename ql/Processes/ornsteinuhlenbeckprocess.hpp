@@ -35,6 +35,8 @@ namespace QuantLib {
         \f[
             dx = -a x_t dt + \sigma dW_t.
         \f]
+
+        \ingroup processes
     */
     class OrnsteinUhlenbeckProcess : public StochasticProcess1D {
       public:

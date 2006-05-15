@@ -36,6 +36,8 @@ namespace QuantLib {
         \f[
             dx = a (b - x_t) dt + \sigma \sqrt{x_t} dW_t.
         \f]
+
+        \ingroup processes
     */
     class SquareRootProcess : public StochasticProcess1D {
       public:

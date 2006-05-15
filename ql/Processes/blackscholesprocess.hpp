@@ -39,6 +39,8 @@ namespace QuantLib {
             dS(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt
                      + \sigma dW_t.
         \f]
+
+        \ingroup processes
     */
     class GeneralizedBlackScholesProcess : public StochasticProcess1D {
       public:
@@ -92,6 +94,8 @@ namespace QuantLib {
         \f[
             dS(t, S) = (r(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
         \f]
+
+        \ingroup processes
     */
     class BlackScholes73Process : public GeneralizedBlackScholesProcess {
       public:
@@ -110,6 +114,8 @@ namespace QuantLib {
             dS(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt
                      + \sigma dW_t.
         \f]
+
+        \ingroup processes
     */
     class BlackScholesMertonProcess : public GeneralizedBlackScholesProcess {
       public:
@@ -128,6 +134,8 @@ namespace QuantLib {
         \f[
             dS(t, S) = \frac{\sigma(t, S)^2}{2} dt + \sigma dW_t.
         \f]
+
+        \ingroup processes
     */
     class BlackProcess : public GeneralizedBlackScholesProcess {
       public:
@@ -146,6 +154,8 @@ namespace QuantLib {
             dS(t, S) = (r(t) - r_f(t) - \frac{\sigma(t, S)^2}{2}) dt
                      + \sigma dW_t.
         \f]
+
+        \ingroup processes
     */
     class GarmanKohlagenProcess : public GeneralizedBlackScholesProcess {
       public:

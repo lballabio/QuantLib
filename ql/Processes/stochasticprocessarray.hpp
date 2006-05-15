@@ -30,7 +30,8 @@
 
 namespace QuantLib {
 
-    //! Array of correlated 1-D stochastic processes
+    //! %Array of correlated 1-D stochastic processes
+    /*! \ingroup processes */
     class StochasticProcessArray : public StochasticProcess {
       public:
         StochasticProcessArray(

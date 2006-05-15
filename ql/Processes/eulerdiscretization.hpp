@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     //! Euler discretization for stochastic processes
+    /*! \ingroup processes */
     class EulerDiscretization
         : public StochasticProcess::discretization,
           public StochasticProcess1D::discretization {

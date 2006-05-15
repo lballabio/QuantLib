@@ -32,6 +32,7 @@
 namespace QuantLib {
 
     //! Merton-76 jump-diffusion process
+    /*! \ingroup processes */
     class Merton76Process : public StochasticProcess1D {
       public:
         Merton76Process(
