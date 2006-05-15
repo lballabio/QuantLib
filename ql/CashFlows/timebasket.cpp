@@ -26,8 +26,9 @@ namespace QuantLib {
                            const std::vector<Real>& values) {
         QL_REQUIRE(dates.size() == values.size(),
                    "number of dates differs from number of values");
+        super& self = *this;
         for (Size i = 0; i < dates.size(); i++)
-            (*this)[dates[i]] = values[i];
+            self[dates[i]] = values[i];
     }
 
     TimeBasket TimeBasket::rebin(const std::vector<Date>& buckets) const {
