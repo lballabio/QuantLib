@@ -1,6 +1,13 @@
 
+body {
+    font-family: georgia, verdana, arial, serif;
+    color: #000;
+    background: #fff;
+}
+
 #container {
     width: 100%;
+    line-height: 130%;
 }
 
 #menu {
@@ -9,14 +16,27 @@
     margin: 0;
     margin-bottom: 1em;
     padding: 1em;
-    background-color: #ccccff;
+	background-color: #e8eef2;
     border: 1px solid gray;
+}
+
+#profiles {
+    float: right;
+    margin: 0;
+    padding: 0;
 }
 
 #content {
     margin-left: 25%;
     padding: 1em;
     vertical-align: top;
+}
+
+#header {
+    margin-left: 2em;
+    text-align: left;
+    border-bottom: 1px solid gray;
+    margin-bottom: 1em;
 }
 
 .footer {
@@ -27,7 +47,29 @@
     border-top: 1px solid gray;
 }
 
-a:active { text-decoration: none }
+a:link {
+    color: blue;
+}
+
+a:visited {
+    color: purple;
+}
+
+a:hover {
+    color: green;
+}
+
+a:active {
+    color: red;
+}
+
+img.titleimage {
+    margin-top: 1em;
+}
+
+h3.subtitle {
+    margin-top: 2px;
+}
 
 ul.navbarlist {
     padding-left: 1em;
@@ -36,12 +78,31 @@ ul.navbarlist {
 
 li.navlink {
     font-weight: normal;
-    font-size: 90%;
+    font-size: 80%;
     list-style:none;
     margin: 0;
 }
 
-.navbartitle { text-align: center }
+.navbartitle {
+    text-align: center;
+}
+
+ul.profilelist {
+    width: auto;
+    padding: 0;
+    margin: 0;
+}
+
+li.profilelink {
+    float: left;
+    font-weight: normal;
+    font-size: 80%;
+    list-style:none;
+    margin-left: 1px;
+    padding: 5px;
+	background-color: #e8eef2;
+    border: 1px solid gray;
+}
 
 .hide { display: none }
 
@@ -75,6 +136,7 @@ span.googlestyle {
     font-family: arial,sans-serif; font-size: 80%
 }
 
+
 .rule { margin-top: 2em }
 .recom { }
 .rationale { FONT-SIZE: 0.95em }
@@ -83,9 +145,9 @@ span.googlestyle {
 /* Doxygen-generated CSS included below */
 
 BODY,H1,H2,H3,H4,H5,H6,P,CENTER,TD,TH,UL,DL,DIV {
-	font-family: Geneva, Arial, Helvetica, sans-serif;
+    font-family: georgia, verdana, arial, serif;
 }
-BODY,TD {
+TD {
        font-size: 90%;
 }
 H1 {
@@ -95,9 +157,9 @@ H1 {
 H2 {
        font-size: 120%;
 }
-H3 {
+/*H3 {
        font-size: 100%;
-}
+}*/
 CAPTION { font-weight: bold }
 DIV.qindex {
 	width: 100%;

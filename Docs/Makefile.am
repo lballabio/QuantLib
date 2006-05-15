@@ -5,6 +5,7 @@ EXTRA_DIST = \
              quantlibfooter.html \
              quantlibfooteronline.html \
              quantlibheader.html \
+             quantlibheaderonline.html \
              qlintro.tex \
              quantlibheader.tex \
              makefile.mak \
@@ -53,6 +54,7 @@ docs-html-dist: docs-html
 docs-online: .time-stamp-online
 .time-stamp-online: $(DOXYGEN_CONFIG) $(DOXYGEN_CUSTOM) $(DOXYGEN_INPUT)
 	$(SED) -e "s/quantlibfooter/quantlibfooteronline/" \
+           -e "s/quantlibheader/quantlibheaderonline/" \
            -e "s/GENERATE_HTML          = NO/GENERATE_HTML          = YES/" \
            -e "s/HTML_OUTPUT            = html/HTML_OUTPUT            = html-online/" \
            -e "s|ql_basepath|${BASEPATH}/|" \
