@@ -59,6 +59,18 @@ namespace QuantLib {
                                 convention);
     }
 
+    /* soon to be deprecated/removed */
+    inline bool isHoliday(const Calendar &calendar,
+                          const Date &date) {
+        return calendar.isHoliday(date);
+    }
+
+    /* soon to be deprecated/removed */
+    inline bool isEndOfMonth(const Calendar &calendar,
+                             const Date &date) {
+        return calendar.isEndOfMonth(date);
+    }
+
 
 }
 
