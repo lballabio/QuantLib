@@ -8,7 +8,6 @@ include_HEADERS = \
 	mathf.hpp \
 	prices.hpp \
 	qlfunctions.hpp \
-	termstructures.hpp \
 	vols.hpp
 
 EXTRA_DIST = \
@@ -26,7 +25,6 @@ libQuantLibFunctions_la_SOURCES = \
 	daycounters.cpp \
 	mathf.cpp \
     prices.cpp \
-    termstructures.cpp \
 	vols.cpp
 
 dist-hook:
