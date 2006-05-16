@@ -1,91 +1,91 @@
 /* -*- mode: c; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
-// This file contains 21200 polinomials, that is all primitive polynomials
-// modulo two up to degree 18. Another version does contain
-// 8129334 polinomials, that is all primitive polynomials
-// modulo two up to degree 27. Both are slightly edited versions of
-// PrimitivePolynomialsModuloTwoUpToDegree27.c
-//
-// © 2002 "Monte Carlo Methods in Finance"
-//
-//
-// =========================================================================
-// Copyright (C) 2002 Peter Jäckel "Monte Carlo Methods in Finance".
-// All rights reserved.
-//
-// Permission to use, copy, modify, and distribute this software is freely
-// granted, provided that this notice is preserved.
-// =========================================================================
+/* This file contains 21200 polinomials, that is all primitive polynomials
+   modulo two up to degree 18. Another version does contain
+   8129334 polinomials, that is all primitive polynomials
+   modulo two up to degree 27. Both are slightly edited versions of
+   PrimitivePolynomialsModuloTwoUpToDegree27.c
 
+   © 2002 "Monte Carlo Methods in Finance"
+
+
+   =========================================================================
+   Copyright (C) 2002 Peter Jäckel "Monte Carlo Methods in Finance".
+   All rights reserved.
+
+   Permission to use, copy, modify, and distribute this software is freely
+   granted, provided that this notice is preserved.
+   =========================================================================
+*/
 #include <ql/RandomNumbers/primitivepolynomials.h>
 
 static const long PrimitivePolynomialDegree01[]={
-0, // x+1 (1)(1)
+0, /* x+1 (1)(1) */
 -1 };
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_01
 static const long PrimitivePolynomialDegree02[]={
-1, // x^2+x+1 (1)1(1)
+1, /* x^2+x+1 (1)1(1) */
 -1 };
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_02
 static const long PrimitivePolynomialDegree03[]={
-1, // x^3    +x+1 (1)01(1)
-2, // x^3+x^2  +1 (1)10(1)
+1, /* x^3    +x+1 (1)01(1) */
+2, /* x^3+x^2  +1 (1)10(1) */
 -1 };
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_03
 static const long PrimitivePolynomialDegree04[]={
-1, // x^4+       +x+1 (1)001(1)
-4, // x^4+x^3+     +1 (1)100(1)
+1, /* x^4+       +x+1 (1)001(1) */
+4, /* x^4+x^3+     +1 (1)100(1) */
 -1 };
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_04
 static const long PrimitivePolynomialDegree05[]={
-2,  // x^5        +x^2  +1 (1)0010(1)
-4,  // x^5    +x^3      +1 (1)0100(1)
-7,  // x^5    +x^3+x^2+x+1 (1)0111(1)
-11, // x^5+x^4    +x^2+x+1 (1)1011(1)
-13, // x^5+x^4+x^3    +x+1 (1)1101(1)
-14, // x^5+x^4+x^3+x^2  +1 (1)1110(1)
+2,  /* x^5        +x^2  +1 (1)0010(1) */
+4,  /* x^5    +x^3      +1 (1)0100(1) */
+7,  /* x^5    +x^3+x^2+x+1 (1)0111(1) */
+11, /* x^5+x^4    +x^2+x+1 (1)1011(1) */
+13, /* x^5+x^4+x^3    +x+1 (1)1101(1) */
+14, /* x^5+x^4+x^3+x^2  +1 (1)1110(1) */
 -1 };
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_05
 static const long PrimitivePolynomialDegree06[]={
-1,  // x^6                +x+1 (1)00001(1)
-13, // x^6    +x^4+x^3    +x+1 (1)01101(1)
-16, // x^6+x^5              +1 (1)10000(1)
-19, // x^6            +x^2+x+1 (1)10011(1)
-22, // x^6+x^5    +x^3+x^2  +1 (1)10110(1)
-25, // x^6+x^5+x^4        +x+1 (1)11001(1)
+1,  /* x^6                +x+1 (1)00001(1) */
+13, /* x^6    +x^4+x^3    +x+1 (1)01101(1) */
+16, /* x^6+x^5              +1 (1)10000(1) */
+19, /* x^6            +x^2+x+1 (1)10011(1) */
+22, /* x^6+x^5    +x^3+x^2  +1 (1)10110(1) */
+25, /* x^6+x^5+x^4        +x+1 (1)11001(1) */
 -1 };
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_06
 static const long PrimitivePolynomialDegree07[]={
-1,  // x^7                    +x+1 (1)000001(1)
-4,  // x^7            +x^3      +1 (1)000100(1)
-7,  // x^7            +x^3+x^2+x+1 (1)000111(1)
-8,  // x^7        +x^4          +1 (1)001000(1)
-14, // x^7        +x^4+x^3+x^2  +1 (1)001110(1)
-19, // x^7    +x^5        +x^2+x+1 (1)010011(1)
-21, // x^7    +x^5    +x^3    +x+1 (1)010101(1)
-28, // x^7    +x^5+x^4+x^3      +1 (1)011100(1)
-31, // x^7    +x^5+x^4+x^3+x^2+x+1 (1)011111(1)
-32, // x^7+x^6                  +1 (1)100000(1)
-37, // x^7+x^6        +x^3    +x+1 (1)100101(1)
-41, // x^7+x^6    +x^4        +x+1 (1)101001(1)
-42, // x^7+x^6    +x^4    +x^2  +1 (1)101010(1)
-// 32 polynomials so far ... let's go ahead
-50, // x^7+x^6+x^5        +x^2  +1 (1)110010(1)
-55, // x^7+x^6+x^5    +x^3+x^2+x+1 (1)110111(1)
-56, // x^7+x^6+x^5+x^4          +1 (1)111000(1)
-59, // x^7+x^6+x^5+x^4    +x^2+x+1 (1)111011(1)
-62, // x^7+x^6+x^5+x^4+x^3+x^2  +1 (1)111110(1)
+1,  /* x^7                    +x+1 (1)000001(1) */
+4,  /* x^7            +x^3      +1 (1)000100(1) */
+7,  /* x^7            +x^3+x^2+x+1 (1)000111(1) */
+8,  /* x^7        +x^4          +1 (1)001000(1) */
+14, /* x^7        +x^4+x^3+x^2  +1 (1)001110(1) */
+19, /* x^7    +x^5        +x^2+x+1 (1)010011(1) */
+21, /* x^7    +x^5    +x^3    +x+1 (1)010101(1) */
+28, /* x^7    +x^5+x^4+x^3      +1 (1)011100(1) */
+31, /* x^7    +x^5+x^4+x^3+x^2+x+1 (1)011111(1) */
+32, /* x^7+x^6                  +1 (1)100000(1) */
+37, /* x^7+x^6        +x^3    +x+1 (1)100101(1) */
+41, /* x^7+x^6    +x^4        +x+1 (1)101001(1) */
+42, /* x^7+x^6    +x^4    +x^2  +1 (1)101010(1) */
+/* 32 polynomials so far ... let's go ahead */
+50, /* x^7+x^6+x^5        +x^2  +1 (1)110010(1) */
+55, /* x^7+x^6+x^5    +x^3+x^2+x+1 (1)110111(1) */
+56, /* x^7+x^6+x^5+x^4          +1 (1)111000(1) */
+59, /* x^7+x^6+x^5+x^4    +x^2+x+1 (1)111011(1) */
+62, /* x^7+x^6+x^5+x^4+x^3+x^2  +1 (1)111110(1) */
 -1 };
 #endif
 
@@ -21308,7 +21308,7 @@ static const long PrimitivePolynomialDegree18[]={
 -1 };
 #endif
 
-// download the 8129334 polinomials version if you need higher dimensions
+/* download the 8129334 polinomials version if you need higher dimensions */
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_18
 #error too many polynomials requested. not provided by this file
 #endif
