@@ -38,6 +38,10 @@ namespace QuantLib {
     class Observable {
         friend class Observer;
       public:
+        // constructors, assignment, destructor
+        Observable() {}
+        Observable(const Observable&);
+        Observable& operator=(const Observable&);
         virtual ~Observable() {}
         /*! This method should be called at the end of non-const methods
             or when the programmer desires to notify any changes.
@@ -75,6 +79,27 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    inline Observable::Observable(const Observable&) {
+        // the observer list is not copied; no observer asked to
+        // register with this object
+    }
+
+    /*! \warning notification is sent before the copy constructor has
+                 a chance of actually change the data
+                 members. Therefore, observers whose update() method
+                 tries to use their observables will not see the
+                 updated values. It is suggested that the update()
+                 method just raise a flag in order to trigger
+                 a later recalculation.
+    */
+    inline Observable& Observable::operator=(const Observable& o) {
+        // as above, the observer list is not copied. Moreover,
+        // observers of this object must be notified of the change
+        if (&o != this)
+            notifyObservers();
+        return *this;
+    }
 
     inline void Observable::registerObserver(Observer* o) {
         observers_.push_front(o);
