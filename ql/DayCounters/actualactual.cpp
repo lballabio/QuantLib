@@ -30,9 +30,6 @@ namespace QuantLib {
           case ISDA:
           case Historical:
           case Actual365:
-          case Act365:
-          case A365:
-          case ActAct:
             return boost::shared_ptr<DayCounter::Impl>(new ISDA_Impl);
           case AFB:
           case Euro:
