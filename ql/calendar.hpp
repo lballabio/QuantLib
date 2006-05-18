@@ -38,14 +38,7 @@ namespace QuantLib {
         \ingroup datetime
     */
     enum BusinessDayConvention {
-        Unadjusted,         /*!< Do not adjust. */
-        Preceding,          /*!< Choose the first business day before
-                                 the given holiday. */
-        ModifiedPreceding,  /*!< Choose the first business day before
-                                 the given holiday unless it belongs
-                                 to a different month, in which case
-                                 choose the first business day after
-                                 the holiday. */
+        // ISDA
         Following,          /*!< Choose the first business day after
                                  the given holiday. */
         ModifiedFollowing,  /*!< Choose the first business day after
@@ -53,16 +46,25 @@ namespace QuantLib {
                                  to a different month, in which case
                                  choose the first business day before
                                  the holiday. */
+        Preceding,          /*!< Choose the first business day before
+                                 the given holiday. */
+        // NON ISDA
+        ModifiedPreceding,  /*!< Choose the first business day before
+                                 the given holiday unless it belongs
+                                 to a different month, in which case
+                                 choose the first business day after
+                                 the holiday. */
         MonthEndReference,  /*!< Choose the first business day after
                                  the given holiday. If the original
                                  date falls on last business day of
                                  the month, choose the last business
                                  day of the month */
-        UnadjustedMonthEnd  /*!< Do not adjust, unless the original
+        UnadjustedMonthEnd, /*!< Do not adjust, unless the original
                                  date falls on the last business day
                                  of month. In this case, choose the
                                  last day of the month regardless of
                                  whether it is a business day. */
+        Unadjusted          /*!< Do not adjust. */
     };
 
     //! abstract base class for calendar implementations

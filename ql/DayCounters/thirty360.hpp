@@ -84,7 +84,7 @@ namespace QuantLib {
         static boost::shared_ptr<DayCounter::Impl> implementation(
                                                                 Convention c);
       public:
-        Thirty360(Convention c = Thirty360::USA)
+        Thirty360(Convention c = Thirty360::BondBasis)
         : DayCounter(implementation(c)) {}
     };
 
