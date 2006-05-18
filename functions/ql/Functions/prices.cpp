@@ -19,6 +19,7 @@
 
 #include <ql/Functions/prices.hpp>
 #include <ql/Utilities/null.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
@@ -34,7 +35,8 @@ namespace QuantLib {
             if (ask != Null<Real>() && ask != 0.0)          return ask;
             else if (last != Null<Real>() && last != 0.0)   return last;
             else if (close != Null<Real>() && close != 0.0) return close;
-            else                                            return Null<Real>();
+            //else                                            return Null<Real>();
+            else QL_FAIL("midEquivalent: insufficient inputs");
         }
     }
 }
