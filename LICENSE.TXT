@@ -31,6 +31,7 @@ QuantLib is
 
     Copyright (C) 2006 Banca Profilo S.p.A.
     Copyright (C) 2006 Warren Chou
+    Copyright (C) 2006 Richard Gould
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

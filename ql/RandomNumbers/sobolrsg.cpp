@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2006 Richard Gould
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -1249,7 +1250,8 @@ namespace QuantLib {
     const double SobolRsg::normalizationFactor_ =
         0.5/(1UL<<(SobolRsg::bits_-1));
 
-    SobolRsg::SobolRsg(Size dimensionality, unsigned long seed,
+    SobolRsg::SobolRsg(Size dimensionality,
+                       unsigned long seed,
                        DirectionIntegers directionIntegers)
     : dimensionality_(dimensionality), sequenceCounter_(0), firstDraw_(true),
       sequence_(Array(dimensionality), 1.0),
@@ -1426,6 +1428,23 @@ namespace QuantLib {
         for (k=0; k<dimensionality_; k++) {
             integerSequence_[k]=directionIntegers_[k][0];
         }
+    }
+
+    void SobolRsg::skipTo(unsigned long skip) {
+        unsigned long N = skip+1;
+        unsigned int ops = (unsigned int)(std::log((double)N)/M_LN2)+1;
+
+        // Convert to Gray code
+        unsigned long G = N ^ (N>>1);
+        for (Size k=0; k<dimensionality_; k++) {
+            integerSequence_[k] = 0;
+            for (Size index=0; index<ops; index++) {
+                if (G>>index & 1)
+                    integerSequence_[k] ^= directionIntegers_[k][index];
+            }
+        }
+
+        sequenceCounter_ = skip;
     }
 
 

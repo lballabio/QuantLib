@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2006 Richard Gould
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -99,6 +100,8 @@ namespace QuantLib {
         SobolRsg(Size dimensionality,
                  unsigned long seed = 0,
                  DirectionIntegers directionIntegers = Jaeckel);
+        /*! skip to the n-th sample in the low-discrepancy sequence */
+        void skipTo(unsigned long n);
         const std::vector<unsigned long>& nextInt32Sequence() const;
         const SobolRsg::sample_type& nextSequence() const {
             const std::vector<unsigned long>& v = nextInt32Sequence();

@@ -10,3 +10,7 @@
 
 - Added Hull-White and G2 processes for Monte Carlo simulation
   (thanks to Banca Profilo.)
+
+- Added possibility to skip directly to the n-th item in a Sobol
+  sequence (thanks to Richard Gould.)
+
