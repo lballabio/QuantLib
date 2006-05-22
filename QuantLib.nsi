@@ -9,7 +9,7 @@ SetCompressor lzma
 Name "QuantLib"
 Caption "QuantLib - Setup"
 #do not change the name below
-OutFile "..\QuantLib-Win32installer-${VER_NUMBER}.exe"
+OutFile "..\QuantLib-${VER_NUMBER}.exe"
 
 InstType "Full (w/ WinHelp Documentation)"
 InstType Minimal
@@ -23,8 +23,8 @@ CRCCheck on
 LicenseText "You must agree with the following license before installing:"
 LicenseData License.txt
 DirText "Please select a location to install QuantLib (or use the default):"
-InstallDir $PROGRAMFILES\QuantLib
-InstallDirRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib "Install_Dir"
+InstallDir $PROGRAMFILES\QuantLib-${VER_NUMBER}
+InstallDirRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib-${VER_NUMBER} "Install_Dir"
 AutoCloseWindow false
 ShowInstDetails hide
 SetDateSave on
@@ -36,7 +36,7 @@ SetDateSave on
 Section "-QuantLib"
 SectionIn 1 2
 # this directory must be created first, or the CreateShortCut will not work
-    CreateDirectory "$SMPROGRAMS\QuantLib"
+    CreateDirectory "$SMPROGRAMS\QuantLib-${VER_NUMBER}"
     SetOutPath $INSTDIR
 
     # these MUST be present
@@ -45,6 +45,7 @@ SectionIn 1 2
     File "News.txt"
     File "QuantLib.dsw"
     File "QuantLib.sln"
+    File "QuantLib_vc8.sln"
     File "QuantLib.dev"
 
     File "*.txt"
@@ -103,34 +104,36 @@ SectionIn 1 2
     File /r "Docs\makefile.mak"
 
     WriteRegStr HKEY_LOCAL_MACHINE \
-                "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
-                "DisplayName" "QuantLib (remove only)"
+			"Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib-${VER_NUMBER}" \
+			"DisplayName" "QuantLib ${VER_NUMBER} (remove only)"
+
     WriteRegStr HKEY_LOCAL_MACHINE \
-                "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
-                "UninstallString" '"QuantLibUninstall.exe"'
-    WriteRegStr HKEY_LOCAL_MACHINE \
-                "SOFTWARE\QuantLib" \
+	    "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib-${VER_NUMBER}" \
+	    "UninstallString" '"QuantLibUninstall.exe"'
+
+    WriteRegStr HKEY_CURRENT_USER "Environment" "QL_DIR" "$INSTDIR"
+
+    WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\QuantLib-${VER_NUMBER}" \
                 "Install_Dir" "$INSTDIR"
-    WriteRegStr HKEY_CURRENT_USER \
-                "Environment" \
-                "QL_DIR" "$INSTDIR"
-    CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall QuantLib.lnk" \
+
+    CreateShortCut "$SMPROGRAMS\QuantLib-${VER_NUMBER}\Uninstall QuantLib.lnk" \
                    "$INSTDIR\QuantLibUninstall.exe" \
                    "" "$INSTDIR\QuantLibUninstall.exe" 0
-    CreateShortCut "$SMPROGRAMS\QuantLib\README.txt.lnk" \
+
+    CreateShortCut "$SMPROGRAMS\QuantLib-${VER_NUMBER}\README.txt.lnk" \
                    "$INSTDIR\README.txt"
-    CreateShortCut "$SMPROGRAMS\QuantLib\LICENSE.txt.lnk" \
+    CreateShortCut "$SMPROGRAMS\QuantLib-${VER_NUMBER}\LICENSE.txt.lnk" \
                    "$INSTDIR\LICENSE.txt"
-    CreateShortCut "$SMPROGRAMS\QuantLib\What's new.lnk" \
+    CreateShortCut "$SMPROGRAMS\QuantLib-${VER_NUMBER}\What's new.lnk" \
                    "$INSTDIR\News.txt"
 
-    CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib VC 6 project workspace.lnk" \
+    CreateShortCut "$SMPROGRAMS\QuantLib-${VER_NUMBER}\QuantLib VC 6 project workspace.lnk" \
                    "$INSTDIR\QuantLib.dsw"
 
-    CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib VC 7 project workspace.lnk" \
+    CreateShortCut "$SMPROGRAMS\QuantLib-${VER_NUMBER}\QuantLib VC 7 project workspace.lnk" \
                    "$INSTDIR\QuantLib.sln"
 
-    CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib VC 8 project workspace.lnk" \
+    CreateShortCut "$SMPROGRAMS\QuantLib-${VER_NUMBER}\QuantLib VC 8 project workspace.lnk" \
                    "$INSTDIR\QuantLib_vc8.sln"
 
     WriteUninstaller "QuantLibUninstall.exe"
@@ -142,23 +145,19 @@ SectionIn 1
   SetOutPath "$INSTDIR\Docs"
   File /nonfatal "Docs\QuantLib-docs-${VER_NUMBER}.chm"
   IfFileExists "$INSTDIR\Docs\QuantLib-docs-${VER_NUMBER}.chm" 0 NoWinHelpDoc
-      CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (WinHelp).lnk" \
+      CreateShortCut "$SMPROGRAMS\QuantLib-${VER_NUMBER}\Documentation (WinHelp).lnk" \
                  "$INSTDIR\Docs\QuantLib-docs-${VER_NUMBER}.chm"
   NoWinHelpDoc:
 SectionEnd
 
 Section "Start Menu Group"
 SectionIn 1 2
-  SetOutPath $SMPROGRAMS\QuantLib
+  SetOutPath $SMPROGRAMS\QuantLib-${VER_NUMBER}
 
-#it doesn't work
-#  CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib Home Page.lnk" \
-#                 "http://quantlib.org/index.html"
-#this works
-  WriteINIStr "$SMPROGRAMS\QuantLib\QuantLib Home Page.url" \
+  WriteINIStr "$SMPROGRAMS\QuantLib-${VER_NUMBER}\QuantLib Home Page.url" \
               "InternetShortcut" "URL" "http://quantlib.org/"
 
-  CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib Directory.lnk" \
+  CreateShortCut "$SMPROGRAMS\QuantLib-${VER_NUMBER}\QuantLib Folder.lnk" \
                  "$INSTDIR"
 SectionEnd
 
@@ -177,14 +176,9 @@ UninstallText "This will uninstall QuantLib. Hit next to continue."
 
 Section "Uninstall"
     DeleteRegKey HKEY_LOCAL_MACHINE \
-        "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib"
-    DeleteRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib
+        "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib-${VER_NUMBER}"
+    DeleteRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib-${VER_NUMBER}
     DeleteRegValue HKEY_CURRENT_USER  "Environment" "QL_DIR"
-    Delete "$SMPROGRAMS\QuantLib\*.*"
-    RMDir "$SMPROGRAMS\QuantLib"
-    RMDir /r "$INSTDIR\Examples"
-    RMDir /r "$INSTDIR\Docs"
-    RMDir /r "$INSTDIR\ql"
-    RMDir /r "$INSTDIR\lib"
-    RMDir /r "$INSTDIR"
+    RMDir /r /REBOOTOK "$SMPROGRAMS\QuantLib-${VER_NUMBER}"
+    RMDir /r /REBOOTOK "$INSTDIR"
 SectionEnd
