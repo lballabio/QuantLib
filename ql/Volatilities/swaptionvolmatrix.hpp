@@ -67,7 +67,9 @@ namespace QuantLib {
         std::vector<Time> timeLengths_;
         Matrix volatilities_;
         Interpolation2D interpolation_;
-        Volatility volatilityImpl(Time start, Time length, Rate strike) const;
+        Volatility volatilityImpl(Time start,
+                                  Time length,
+                                  Rate strike) const;
         std::pair<Time,Time> convertDates(const Date& start,
                                           const Period& length) const;
     };
