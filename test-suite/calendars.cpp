@@ -732,6 +732,32 @@ void CalendarTest::testBrazil() {
                    << " calculated holidays");
 }
 
+void CalendarTest::testEndOfMonth() {
+    BOOST_MESSAGE("Testing end of month...");
+
+    Calendar c = TARGET(); // any calendar would be OK
+
+    Date eom, counter = Date::minDate();
+    Date last = Date::maxDate() - 2*Months;
+
+    while (counter<=last) {
+        eom = c.endOfMonth(counter);
+        // check that eom is eom
+        if (!c.isEndOfMonth(eom))
+            BOOST_FAIL("\n  "
+                       << eom.weekday() << " " << eom
+                       << " is not the last business day in "
+                       << eom.month() << " " << eom.year()
+                       << " according to " << c.name());
+        // check that eom is in the same month as counter
+        if (eom.month()!=counter.month())
+            BOOST_FAIL("\n  "
+                       << eom
+                       << " is not in the same month as "
+                       << counter);
+        counter = counter + 1;
+    }
+}
 
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
@@ -758,6 +784,8 @@ test_suite* CalendarTest::suite() {
 
     suite->add(BOOST_TEST_CASE(&CalendarTest::testModifiedCalendars));
     suite->add(BOOST_TEST_CASE(&CalendarTest::testJointCalendars));
+
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testEndOfMonth));
 
     return suite;
 }
