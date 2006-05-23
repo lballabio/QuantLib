@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,7 +32,10 @@
 #include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/Instruments/europeanoption.hpp>
 #include <ql/Instruments/fixedcouponbond.hpp>
+#include <ql/Instruments/fixedcouponbondforward.hpp>
 #include <ql/Instruments/floatingratebond.hpp>
+#include <ql/Instruments/forward.hpp>
+#include <ql/Instruments/forwardrateagreement.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/Instruments/lookbackoption.hpp>
 #include <ql/Instruments/multiassetoption.hpp>

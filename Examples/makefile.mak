@@ -33,6 +33,10 @@ examples::
     $(MAKE)
     cd ..\EquityOption
     $(MAKE)
+    cd ..\FRA
+    $(MAKE)
+    cd ..\Repo
+    $(MAKE)
     cd ..\Swap
     $(MAKE)
     cd ..
@@ -44,6 +48,10 @@ clean::
     cd ..\DiscreteHedging
     $(MAKE) clean
     cd ..\EquityOption
+    $(MAKE) clean
+    cd ..\FRA
+    $(MAKE) clean
+    cd ..\Repo
     $(MAKE) clean
     cd ..\Swap
     $(MAKE) clean

@@ -14,3 +14,5 @@
 - Added possibility to skip directly to the n-th item in a Sobol
   sequence (thanks to Richard Gould.)
 
+- Added FRA and forward fixed-coupon bonds; examples provided (thanks
+  to Allen Kuo)

@@ -10,7 +10,8 @@ AM_INIT_AUTOMAKE([foreign])
 
 AC_COPYRIGHT([
 Copyright (C) 2004, 2005 Ferdinando Ametrano
-Copyright (C) 2000-2006 StatPro Italia srl
+Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -360,6 +361,8 @@ AC_CONFIG_FILES([
     Examples/ConvertibleBonds/Makefile
     Examples/DiscreteHedging/Makefile
     Examples/EquityOption/Makefile
+    Examples/FRA/Makefile
+    Examples/Repo/Makefile
     Examples/Swap/Makefile
     test-suite/Makefile])
 AC_CONFIG_FILES([quantlib-config],[chmod +x quantlib-config])

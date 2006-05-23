@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,7 @@
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
+#include <ql/Instruments/forwardrateagreement.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
@@ -55,6 +56,14 @@ struct BondDatum {
 
 Datum depositData[] = {
     { 1, Weeks,  4.559 },
+    { 1, Months, 4.581 },
+    { 2, Months, 4.573 },
+    { 3, Months, 4.557 },
+    { 6, Months, 4.496 },
+    { 9, Months, 4.490 }
+};
+
+Datum fraData[] = {
     { 1, Months, 4.581 },
     { 2, Months, 4.573 },
     { 3, Months, 4.557 },
@@ -93,8 +102,8 @@ BondDatum bondData[] = {
 Calendar calendar;
 Integer settlementDays, fixingDays;
 Date today, settlement;
-BusinessDayConvention depoConvention;
-DayCounter depoDayCounter;
+BusinessDayConvention depoConvention, fraConvention;
+DayCounter depoDayCounter, fraDayCounter;
 BusinessDayConvention fixedLegConvention, floatingLegConvention;
 Frequency fixedLegFrequency;
 DayCounter fixedLegDayCounter;
@@ -104,9 +113,10 @@ DayCounter bondDayCounter;
 BusinessDayConvention bondConvention;
 Real bondRedemption;
 
-Size deposits, swaps, bonds;
-std::vector<boost::shared_ptr<SimpleQuote> > rates, prices;
-std::vector<boost::shared_ptr<RateHelper> > instruments, bondHelpers;
+Size deposits, fras, swaps, bonds;
+std::vector<boost::shared_ptr<SimpleQuote> > rates, fraRates, prices;
+std::vector<boost::shared_ptr<RateHelper> > instruments, fraHelpers,
+                                            bondHelpers;
 boost::shared_ptr<YieldTermStructure> termStructure;
 
 void setup() {
@@ -120,6 +130,8 @@ void setup() {
     settlement = calendar.advance(today,settlementDays,Days);
     depoConvention = ModifiedFollowing;
     depoDayCounter = Actual360();
+    fraConvention = ModifiedFollowing;
+    fraDayCounter = Actual360();
     fixedLegConvention = Unadjusted;
     floatingLegConvention = ModifiedFollowing;
     fixedLegFrequency = Annual;
@@ -131,11 +143,13 @@ void setup() {
     bondRedemption = 100.0;
 
     deposits = LENGTH(depositData);
+    fras = LENGTH(fraData);
     swaps = LENGTH(swapData);
     bonds = LENGTH(bondData);
 
     // market elements
     rates = std::vector<boost::shared_ptr<SimpleQuote> >(deposits+swaps);
+    fraRates = std::vector<boost::shared_ptr<SimpleQuote> >(fras);
     prices = std::vector<boost::shared_ptr<SimpleQuote> >(bonds);
     Size i;
     for (i=0; i<deposits; i++) {
@@ -146,14 +160,20 @@ void setup() {
         rates[i+deposits] = boost::shared_ptr<SimpleQuote>(
                                        new SimpleQuote(swapData[i].rate/100));
     }
+    for (i=0; i<fras; i++) {
+        fraRates[i] = boost::shared_ptr<SimpleQuote>(
+                                        new SimpleQuote(fraData[i].rate/100));
+    }
     for (i=0; i<bonds; i++) {
         prices[i] = boost::shared_ptr<SimpleQuote>(
-                                    new SimpleQuote(bondData[i].price));
+                                          new SimpleQuote(bondData[i].price));
     }
 
     // rate helpers
     instruments =
         std::vector<boost::shared_ptr<RateHelper> >(deposits+swaps);
+    fraHelpers =
+        std::vector<boost::shared_ptr<RateHelper> >(fras);
     bondHelpers =
         std::vector<boost::shared_ptr<RateHelper> >(bonds);
     for (i=0; i<deposits; i++) {
@@ -171,6 +191,13 @@ void setup() {
                                    fixedLegFrequency, fixedLegConvention,
                                    fixedLegDayCounter, floatingLegFrequency,
                                    floatingLegConvention, Actual360()));
+    }
+    for (i=0; i<fras; i++) {
+        Handle<Quote> r(fraRates[i]);
+        fraHelpers[i] = boost::shared_ptr<RateHelper>(
+              new FraRateHelper(r, fraData[i].n, fraData[i].n + 3,
+                                settlementDays, calendar,
+                                fraConvention, fraDayCounter));
     }
     for (i=0; i<bonds; i++) {
         Handle<Quote> p(prices[i]);
@@ -279,11 +306,40 @@ void testCurveConsistency(const T&, const I& interpolator) {
             BOOST_ERROR(io::ordinal(i) << " bond:\n"
                        << std::setprecision(8)
                        << "    estimated price: "
-                       << io::rate(estimatedPrice) << "\n"
+                       << estimatedPrice << "\n"
                        << "    expected price:  "
-                       << io::rate(expectedPrice));
+                       << expectedPrice);
         }
     }
+
+    // check FRA
+    termStructure = boost::shared_ptr<YieldTermStructure>(
+                          new PiecewiseYieldCurve<T,I>(settlement,fraHelpers,
+                                                       Actual360(), 1.0e-12,
+                                                       interpolator));
+    curveHandle.linkTo(termStructure);
+
+    for (i=0; i<fras; i++) {
+        Date start = calendar.advance(settlement,
+                                      fraData[i].n, fraData[i].units,
+                                      fraConvention);
+
+        ForwardRateAgreement fra(start, 3, Forward::Long, fraData[i].rate/100,
+                                 100.0, settlementDays, fraDayCounter,
+                                 calendar, fraConvention, curveHandle);
+        Rate expectedRate = fraData[i].rate/100,
+             estimatedRate = fra.forwardRate();
+        Real tolerance = 1.0e-9;
+        if (std::fabs(expectedRate-estimatedRate) > tolerance) {
+            BOOST_ERROR(io::ordinal(i) << " bond:\n"
+                       << std::setprecision(8)
+                       << "    estimated rate: "
+                       << io::rate(estimatedRate) << "\n"
+                       << "    expected rate:  "
+                       << io::rate(expectedRate));
+        }
+    }
+
 }
 
 #endif

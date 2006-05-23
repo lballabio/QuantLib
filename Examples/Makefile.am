@@ -6,6 +6,8 @@ SUBDIRS =  \
     ConvertibleBonds \
     DiscreteHedging \
     EquityOption \
+    FRA \
+    Repo \
     Swap
 
 SUBDIR_CHECKS = $(SUBDIRS:%=%.check)
