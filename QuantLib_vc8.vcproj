@@ -1997,11 +1997,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\fixedcouponbondforward.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\fixedcouponbondforward.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Instruments\floatingratebond.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ql\Instruments\floatingratebond.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\forward.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\forward.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\forwardrateagreement.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\forwardrateagreement.hpp"
 				>
 			</File>
 			<File

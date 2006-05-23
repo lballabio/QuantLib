@@ -951,11 +951,35 @@ SOURCE=.\ql\Instruments\fixedcouponbond.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\fixedcouponbondforward.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\fixedcouponbondforward.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\floatingratebond.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Instruments\floatingratebond.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\forward.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\forward.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\forwardrateagreement.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\forwardrateagreement.hpp
 # End Source File
 # Begin Source File
 

@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "BermudanSwaption"=".\Examples\BermudanSwaption\BermudanSwaption.dsp" - Package Owner=<4>
+Project: "BermudanSwaption"=.\Examples\BermudanSwaption\BermudanSwaption.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -18,7 +18,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ConvertibleBonds"=".\Examples\ConvertibleBonds\ConvertibleBonds.dsp" - Package Owner=<4>
+Project: "ConvertibleBonds"=.\Examples\ConvertibleBonds\ConvertibleBonds.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -33,7 +33,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DiscreteHedging"=".\Examples\DiscreteHedging\DiscreteHedging.dsp" - Package Owner=<4>
+Project: "DiscreteHedging"=.\Examples\DiscreteHedging\DiscreteHedging.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -48,7 +48,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "EquityOption"=".\Examples\EquityOption\EquityOption.dsp" - Package Owner=<4>
+Project: "EquityOption"=.\Examples\EquityOption\EquityOption.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -63,19 +63,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "QuantLib"=".\QuantLib.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "QuantLibFunctions"=".\FUNCTIONS\QL\FUNCTIONS\QuantLibFunctions.dsp" - Package Owner=<4>
+Project: "FRA"=.\Examples\FRA\FRA.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -90,7 +78,49 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Swap"=".\Examples\Swap\Swap.dsp" - Package Owner=<4>
+Project: "QuantLib"=.\QuantLib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "QuantLibFunctions"=.\FUNCTIONS\QL\FUNCTIONS\QuantLibFunctions.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name QuantLib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Repo"=.\Examples\Repo\Repo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name QuantLib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Swap"=.\Examples\Swap\Swap.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
