@@ -284,10 +284,6 @@
     - Monte Carlo pagoda option.
     - Monte Carlo forward performance option.
 
-    To do:
-    - Fix finite difference in presence of dividends
-    - All pricers should be moved to the pricing engine framework.
-
 
 
 
