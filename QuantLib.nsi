@@ -4,12 +4,13 @@
 SetCompressor lzma
 
 !define VER_NUMBER "0.3.13"
+!define /date NOW "%Y%m%d-%H_%M"
 
 # HEADER CONFIGURATION COMMANDS
 Name "QuantLib"
 Caption "QuantLib - Setup"
 #do not change the name below
-OutFile "..\QuantLib-${VER_NUMBER}.exe"
+OutFile "..\QuantLib-${VER_NUMBER}-${NOW}.exe"
 
 InstType "Full (w/ WinHelp Documentation)"
 InstType Minimal
