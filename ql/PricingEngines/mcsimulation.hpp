@@ -129,10 +129,6 @@ namespace QuantLib {
     template<class MC, class S>
     inline Real McSimulation<MC,S>::valueWithSamples(Size samples) const {
 
-        QL_REQUIRE(samples>=minSample_,
-                   "number of requested samples (" << samples
-                   << ") lower than minSample_ (" << minSample_ << ")");
-
         Size sampleNumber = mcModel_->sampleAccumulator().samples();
 
         QL_REQUIRE(samples>=sampleNumber,
@@ -196,12 +192,6 @@ namespace QuantLib {
 
     template<class MC, class S>
     inline Real McSimulation<MC,S>::errorEstimate() const {
-
-        Size sampleNumber = mcModel_->sampleAccumulator().samples();
-
-        QL_REQUIRE(sampleNumber>=minSample_,
-                   "number of simulated samples lower than minSample_");
-
         return mcModel_->sampleAccumulator().errorEstimate();
     }
 
