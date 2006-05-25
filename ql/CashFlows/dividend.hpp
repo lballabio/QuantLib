@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,7 +45,7 @@ namespace QuantLib {
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
-    protected:
+      protected:
         Date date_;
     };
 
@@ -54,12 +55,12 @@ namespace QuantLib {
       public:
         FixedDividend(Real amount, const Date& date)
         : Dividend(date), amount_(amount) {}
-        //! \name CashFlow interface
+        //! \name Dividend interface
         //@{
         virtual Real amount() const { return amount_; }
-        virtual Real amount(Real underlying) const { return amount_;}
+        virtual Real amount(Real underlying) const { return amount_; }
         //@}
-    protected:
+      protected:
         Real amount_;
     };
 
@@ -68,19 +69,26 @@ namespace QuantLib {
     class FractionalDividend : public Dividend {
       public:
         FractionalDividend(Real rate, const Date& date)
-        : Dividend(date), rate_(rate), nominal_(0.0) {}
+        : Dividend(date), rate_(rate), nominal_(Null<Real>()) {}
 
         FractionalDividend(Real rate, Real nominal, const Date& date)
         : Dividend(date), rate_(rate), nominal_(nominal) {}
-        //! \name CashFlow interface
+        //! \name Dividend interface
         //@{
-        virtual Real amount() const { return rate_ * nominal_; }
-        virtual Real amount(Real underlying) const 
-             { return rate_ * underlying;}
-        virtual Real rate() const { return rate_; }
-        virtual Real nominal() const { return nominal_;}
+        virtual Real amount() const {
+            QL_REQUIRE(nominal_ != Null<Real>(), "no nominal given");
+            return rate_ * nominal_;
+        }
+        virtual Real amount(Real underlying) const {
+            return rate_ * underlying;
+        }
         //@}
-    protected:
+        //! \name Inspectors
+        //@{
+        Real rate() const { return rate_; }
+        Real nominal() const { return nominal_; }
+        //@}
+      protected:
         Real rate_;
         Real nominal_;
     };
