@@ -209,7 +209,6 @@ namespace QuantLib {
         QL_REQUIRE(moreArgs != 0, "wrong argument type");
 
         moreArgs->conversionRatio = conversionRatio_;
-        moreArgs->dividends = dividends_;
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
@@ -252,6 +251,17 @@ namespace QuantLib {
                 moreArgs->couponTimes.push_back(
                     dayCounter.yearFraction(settlement,cashflows[i]->date()));
                 moreArgs->couponAmounts.push_back(cashflows[i]->amount());
+            }
+        }
+
+        moreArgs->dividends.clear();
+        moreArgs->dividendTimes.clear();
+        for (i=0; i<dividends_.size(); i++) {
+            if (!dividends_[i]->hasOccurred(settlement)) {
+                moreArgs->dividends.push_back(dividends_[i]);
+                moreArgs->dividendTimes.push_back(
+                              dayCounter.yearFraction(settlement,
+                                                      dividends_[i]->date()));
             }
         }
 

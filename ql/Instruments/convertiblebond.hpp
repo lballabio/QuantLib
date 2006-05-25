@@ -193,6 +193,7 @@ namespace QuantLib {
         Real conversionRatio;
         Handle<Quote> creditSpread;
         DividendSchedule dividends;
+        std::vector<Time> dividendTimes;
         std::vector<Time> callabilityTimes;
         std::vector<Callability::Type> callabilityTypes;
         std::vector<Real> callabilityPrices;

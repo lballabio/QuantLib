@@ -115,11 +115,11 @@ namespace QuantLib {
 
         Real creditSpread = arguments_.creditSpread->value();
 
-		boost::shared_ptr<NumericalMethod> lattice(
+        boost::shared_ptr<NumericalMethod> lattice(
               new TsiveriotisFernandesLattice<T>(tree,riskFreeRate,maturity,
                                                  timeSteps_,creditSpread,v,q));
 
-        // adjust coupon, convertibility,  and callability times to grid
+        // adjust times to grid
         TimeGrid grid(maturity, timeSteps_);
         for (i=0; i<arguments_.couponTimes.size(); i++)
             arguments_.couponTimes[i] =
@@ -130,6 +130,9 @@ namespace QuantLib {
         for (i=0; i<arguments_.callabilityTimes.size(); i++)
             arguments_.callabilityTimes[i] =
                 grid.closestTime(arguments_.callabilityTimes[i]);
+        for (i=0; i<arguments_.dividendTimes.size(); i++)
+            arguments_.dividendTimes[i] =
+                grid.closestTime(arguments_.dividendTimes[i]);
 
         DiscretizedConvertible convertible(arguments_);
 
