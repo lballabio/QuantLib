@@ -22,8 +22,8 @@
     \brief %calendar class
 */
 
-#ifndef quantlib_calendar_h
-#define quantlib_calendar_h
+#ifndef quantlib_calendar_hpp
+#define quantlib_calendar_hpp
 
 #include <ql/date.hpp>
 #include <ql/Patterns/bridge.hpp>
@@ -73,6 +73,7 @@ namespace QuantLib {
         virtual ~CalendarImpl() {}
         virtual std::string name() const = 0;
         virtual bool isBusinessDay(const Date&) const = 0;
+        virtual bool isWeekend(Weekday) const = 0;
         std::set<Date> addedHolidays, removedHolidays;
     };
 
@@ -84,9 +85,9 @@ namespace QuantLib {
         The Bridge pattern is used to provide the base behavior of the
         calendar, namely, to determine whether a date is a business day.
 
-		A calendar should be defined for specific exchange holiday schedule
-		or for general country holiday schedule. Legacy city holiday schedule
-		calendars will be moved to the exchange/country convention.
+        A calendar should be defined for specific exchange holiday schedule
+        or for general country holiday schedule. Legacy city holiday schedule
+        calendars will be moved to the exchange/country convention.
 
         \ingroup datetime
 
@@ -112,6 +113,10 @@ namespace QuantLib {
             market.
         */
         bool isHoliday(const Date& d) const;
+        /*! Returns <tt>true</tt> iff the weekday is part of the
+            weekend for the given market.
+        */
+        bool isWeekend(Weekday w) const;
         /*! Returns <tt>true</tt> iff the date is last business day for the
             month in given market.
         */
@@ -149,21 +154,25 @@ namespace QuantLib {
 
         //! partial calendar implementation
         /*! This class provides the means of determining the Easter
-            Monday for a given year.
+            Monday for a given year, as well as specifying Saturdays
+            and Sundays as weekend days.
         */
         class WesternImpl : public CalendarImpl {
           protected:
+            bool isWeekend(Weekday) const;
             //! expressed relative to first day of year
-            static Day easterMonday(Year y);
+            static Day easterMonday(Year);
         };
         //! partial calendar implementation
-        /*! This class provides the means of determining the Easter
-            Monday for a given year.
+        /*! This class provides the means of determining the Orthodox
+            Easter Monday for a given year, as well as specifying
+            Saturdays and Sundays as weekend days.
         */
         class OrthodoxImpl : public CalendarImpl {
           protected:
+            bool isWeekend(Weekday) const;
             //! expressed relative to first day of year
-            static Day easterMonday(Year y);
+            static Day easterMonday(Year);
         };
         /*! This default constructor returns a calendar with a null
             implementation, which is therefore unusable except as a
@@ -211,6 +220,10 @@ namespace QuantLib {
 
     inline bool Calendar::isHoliday(const Date& d) const {
         return !isBusinessDay(d);
+    }
+
+    inline bool Calendar::isWeekend(Weekday w) const {
+        return impl_->isWeekend(w);
     }
 
     inline bool operator==(const Calendar& c1, const Calendar& c2) {

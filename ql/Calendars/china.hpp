@@ -52,6 +52,7 @@ namespace QuantLib {
         class Impl : public Calendar::Impl {
           public:
             std::string name() const { return "China"; }
+            bool isWeekend(Weekday) const;
             bool isBusinessDay(const Date&) const;
             //! expressed relative to first day of year
             static Day springFestival(Year y);

@@ -27,6 +27,10 @@ namespace QuantLib {
         impl_ = impl;
     }
 
+    bool China::Impl::isWeekend(Weekday w) const {
+        return w == Saturday || w == Sunday;
+    }
+
     bool China::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
@@ -34,7 +38,7 @@ namespace QuantLib {
         Year y = date.year();
         Day dd = date.dayOfYear();
 
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
             // Labor Day

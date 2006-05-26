@@ -34,7 +34,7 @@ namespace QuantLib {
         Year y = date.year();
         Day em = easterMonday(y);
 
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day
             || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
                 && m == January)

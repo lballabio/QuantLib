@@ -57,7 +57,7 @@ namespace QuantLib {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
             // (or to Friday if on Saturday)
@@ -77,7 +77,7 @@ namespace QuantLib {
             || ((d >= 8 && d <= 14) && w == Monday && m == October)
             // Veteran's Day (Monday if Sunday or Friday if Saturday)
             || ((d == 11 || (d == 12 && w == Monday) ||
-				 (d == 10 && w == Friday)) && m == November)
+                 (d == 10 && w == Friday)) && m == November)
             // Thanksgiving Day (fourth Thursday in November)
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday or Friday if Saturday)
@@ -94,7 +94,7 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
         Day em = easterMonday(y);
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
             // Washington's birthday (third Monday in February)
@@ -162,7 +162,7 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
         Day em = easterMonday(y);
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
             // Martin Luther King's birthday (third Monday in January)
@@ -182,7 +182,7 @@ namespace QuantLib {
             || ((d >= 8 && d <= 14) && w == Monday && m == October)
             // Veteran's Day (Monday if Sunday or Friday if Saturday)
             || ((d == 11 || (d == 12 && w == Monday) ||
-				 (d == 10 && w == Friday)) && m == November)
+                 (d == 10 && w == Friday)) && m == November)
             // Thanksgiving Day (fourth Thursday in November)
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday or Friday if Saturday)
@@ -197,7 +197,7 @@ namespace QuantLib {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
             // Memorial Day (last Monday in May)

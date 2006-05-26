@@ -59,6 +59,26 @@ namespace QuantLib {
         return fullName;
     }
 
+    bool JointCalendar::Impl::isWeekend(Weekday w) const {
+        std::vector<Calendar>::const_iterator i;
+        switch (rule_) {
+          case JoinHolidays:
+            for (i=calendars_.begin(); i!=calendars_.end(); ++i) {
+                if (i->isWeekend(w))
+                    return true;
+            }
+            return false;
+          case JoinBusinessDays:
+            for (i=calendars_.begin(); i!=calendars_.end(); ++i) {
+                if (!i->isWeekend(w))
+                    return false;
+            }
+            return true;
+          default:
+            QL_FAIL("unknown joint calendar rule");
+        }
+    }
+
     bool JointCalendar::Impl::isBusinessDay(const Date& date) const {
         std::vector<Calendar>::const_iterator i;
         switch (rule_) {

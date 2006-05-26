@@ -27,24 +27,16 @@ namespace QuantLib {
         QL_REQUIRE(to>from, "'from' date must be lower than 'to' date");
         Date d = from;
         std::vector<Date> result;
-        while (d<=to) {
-            if (!calendar.isBusinessDay(d)) {
-                if (includeWeekEnds) {
-                    result.push_back(d);
-                } else if (d.weekday()==Saturday) {
-                    d += 1;
-                } else if (d.weekday()!=Sunday) {
-                    result.push_back(d);
-                }
-            }
-            d += 1;
+        for (Date d = from; d <= to; ++d) {
+            if (calendar.isHoliday(d)
+                && (includeWeekEnds || !calendar.isWeekend(d.weekday())))
+                result.push_back(d);
        }
 
 
        return result;
 
     }
-
 
 }
 

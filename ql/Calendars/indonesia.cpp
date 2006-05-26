@@ -35,7 +35,7 @@ namespace QuantLib {
         Day dd = date.dayOfYear();
         Day em = easterMonday(y);
 
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // Good Friday
             || (dd == em-3)
             // Ascension Thursday

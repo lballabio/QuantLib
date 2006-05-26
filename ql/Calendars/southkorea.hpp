@@ -62,6 +62,7 @@ namespace QuantLib {
         class KrxImpl : public Calendar::Impl {
           public:
             std::string name() const { return "Korea exchange"; }
+            bool isWeekend(Weekday) const;
             bool isBusinessDay(const Date&) const;
         };
       public:

@@ -27,13 +27,17 @@ namespace QuantLib {
         impl_ = impl;
     }
 
+    bool SouthKorea::KrxImpl::isWeekend(Weekday w) const {
+        return w == Saturday || w == Sunday;
+    }
+
     bool SouthKorea::KrxImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();
         Year y = date.year();
 
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
             // Independence Day

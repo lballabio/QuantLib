@@ -57,7 +57,7 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
         Day em = easterMonday(y);
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
             // Good Friday
@@ -93,7 +93,7 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
         Day em = easterMonday(y);
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
             // Good Friday
@@ -120,7 +120,7 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
         Day em = easterMonday(y);
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
             // Good Friday
@@ -147,7 +147,7 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
         Day em = easterMonday(y);
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
             // Good Friday

@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2004 Jeff Yu
 
  This file is part of QuantLib, a free-software/open-source library
@@ -118,6 +119,10 @@ namespace QuantLib {
 
    // Western calendars
 
+    bool Calendar::WesternImpl::isWeekend(Weekday w) const {
+        return w == Saturday || w == Sunday;
+    }
+
     Day Calendar::WesternImpl::easterMonday(Year y) {
         static const Day EasterMonday[] = {
             107,  98,  90, 103,  95, 114, 106,  91, 111, 102,   // 1900-1909
@@ -145,6 +150,10 @@ namespace QuantLib {
     }
 
     // Orthodox calendars
+
+    bool Calendar::OrthodoxImpl::isWeekend(Weekday w) const {
+        return w == Saturday || w == Sunday;
+    }
 
     Day Calendar::OrthodoxImpl::easterMonday(Year y) {
         static const Day EasterMonday[] = {

@@ -33,7 +33,7 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
         Day em = easterMonday(y);
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day (possibly moved to Monday or Tuesday)
             || ((d == 1 || (d == 3 && (w == Monday || w == Tuesday))) &&
                 m == January)

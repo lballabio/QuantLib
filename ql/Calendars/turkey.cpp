@@ -25,50 +25,54 @@ namespace QuantLib {
         impl_ = impl;
     }
 
+    bool Turkey::Impl::isWeekend(Weekday w) const {
+        return w == Saturday || w == Sunday;
+    }
+
     bool Turkey::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();
         Year y = date.year();
 
-		if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
-			// 23 nisan / National Holiday
-			|| (d == 23 && m == April)
-			// 19 may/ National Holiday
-			|| (d == 19 && m == May)
-			// 30 aug/ National Holiday
-			|| (d == 30 && m == August)
-			///29 ekim  National Holiday
-			|| (d == 29 && m == October))
+            // 23 nisan / National Holiday
+            || (d == 23 && m == April)
+            // 19 may/ National Holiday
+            || (d == 19 && m == May)
+            // 30 aug/ National Holiday
+            || (d == 30 && m == August)
+            ///29 ekim  National Holiday
+            || (d == 29 && m == October))
             return false;
 
         // Local Holidays
         if (y == 2004) {
-			// kurban
+            // kurban
             if ((m == February && d <= 4)
-			// ramazan
+            // ramazan
                 || (m == November && d >= 14 && d <= 16))
                 return false;
         } else if (y == 2005) {
-			// kurban
+            // kurban
             if ((m == January && d >= 19 && d <= 21)
-			// ramazan
+            // ramazan
                 || (m == November && d >= 2 && d <= 5))
                 return false;
         } else if (y == 2006) {
-			// kurban
+            // kurban
             if ((m == January && d >= 9 && d <= 13)
-			// ramazan
+            // ramazan
                 || (m == October && d >= 23 && d <= 25)
             // kurban
                 || (m == December && d >= 30))
                 return false;
         } else if (y == 2007) {
-			// kurban
+            // kurban
             if ((m == January && d <= 4)
-			// ramazan
+            // ramazan
                 || (m == October && d >= 11 && d <= 14)
             // kurban
                 || (m == December && d >= 19 && d <= 23))

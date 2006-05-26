@@ -28,6 +28,10 @@ namespace QuantLib {
         impl_ = impl;
     }
 
+    bool Japan::Impl::isWeekend(Weekday w) const {
+        return w == Saturday || w == Sunday;
+    }
+
     bool Japan::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
@@ -46,7 +50,7 @@ namespace QuantLib {
             Day(exact_autumnal_equinox_time
                 + moving_amount - number_of_leap_years);
         // checks
-        if ((w == Saturday || w == Sunday)
+        if (isWeekend(w)
             // New Year's Day
             || (d == 1  && m == January)
             // Bank Holiday
