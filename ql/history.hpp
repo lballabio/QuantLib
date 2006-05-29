@@ -118,8 +118,8 @@ namespace QuantLib {
                 const std::vector<Real>& values);
         //! \name Modifiers
         //@{
-        /*! update the History with the last value
-            \warning the date provided must be greater than or equal to the
+        /*! update the History with the last value(s)
+            \warning the dates provided must be greater than or equal to the
             last date for which a historical datum already exists
         */
         void addLastValues(const std::vector<Date>& dates,
