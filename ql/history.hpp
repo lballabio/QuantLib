@@ -28,6 +28,7 @@
 #include <ql/Utilities/null.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 #include <vector>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -115,6 +116,15 @@ namespace QuantLib {
         */
         History(const std::vector<Date>& dates,
                 const std::vector<Real>& values);
+        //! \name Modifiers
+        //@{
+        /*! update the History with the last value
+            \warning the date provided must be greater than or equal to the
+            last date for which a historical datum already exists
+        */
+        void addLastValues(const std::vector<Date>& dates,
+                           const std::vector<Real>& values);
+        //@}
         //! \name Inspectors
         //@{
         //! returns the first date for which a historical datum exists
@@ -289,11 +299,35 @@ namespace QuantLib {
                             const std::vector<Real>& values) {
         QL_REQUIRE(dates.size() == values.size(),
                    "different size for date and value vectors");
-        QL_REQUIRE(dates.size() >= 1,"null history given");
-        firstDate_ = lastDate_ = dates[0];
-        Real lastValue = values[0];
-        values_ = std::vector<Real>(1,lastValue);
-        for (Size i=1; i<dates.size(); i++) {
+        QL_REQUIRE(dates.size() >= 1, "null history given");
+
+        // it might be in reverse order
+        if (dates[dates.size()-1]<dates[0]) {
+            firstDate_ = lastDate_ = dates[dates.size()-1];
+            values_ = std::vector<Real>(1, values[dates.size()-1]);
+        } else {
+            firstDate_ = lastDate_ = dates[0];
+            values_ = std::vector<Real>(1, values[0]);
+        }
+        addLastValues(dates, values );
+    }
+
+    inline void History::addLastValues(const std::vector<Date>& ddates,
+                                       const std::vector<Real>& vvalues) {
+        QL_REQUIRE(ddates.size() == vvalues.size(),
+                   "different size for date and value vectors");
+        QL_REQUIRE(ddates.size() >= 1,"null history given");
+
+        // it might be in reverse order
+        std::vector<Date> dates(ddates);
+        std::vector<Real> values(vvalues);
+        if (ddates[ddates.size()-1]<ddates[0]) {
+            std::reverse_copy(ddates.begin(), ddates.end(), dates.begin());
+            std::reverse_copy(vvalues.begin(), vvalues.end(), values.begin());
+        }
+
+        Real lastValue = values_[values_.size()-1];
+        for (Size i=0; i<dates.size(); i++) {
             Date d = dates[i];
             Real x = values[i];
             QL_REQUIRE(d>=lastDate_,
