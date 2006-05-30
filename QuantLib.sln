@@ -49,6 +49,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Repo", "Examples\Repo\Repo.
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Replication", "Examples\Replication\Replication.vcproj", "{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -179,6 +184,18 @@ Global
 		{573F51B0-DEEF-4F64-9F15-B33B8A58325A}.Release CRTDLL.Build.0 = Release CRTDLL|Win32
 		{573F51B0-DEEF-4F64-9F15-B33B8A58325A}.Release SingleThread.ActiveCfg = Release SingleThread|Win32
 		{573F51B0-DEEF-4F64-9F15-B33B8A58325A}.Release SingleThread.Build.0 = Release SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug.ActiveCfg = Debug|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug.Build.0 = Debug|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug CRTDLL.ActiveCfg = Debug CRTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug CRTDLL.Build.0 = Debug CRTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug SingleThread.ActiveCfg = Debug SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Debug SingleThread.Build.0 = Debug SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release.ActiveCfg = Release|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release.Build.0 = Release|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release CRTDLL.ActiveCfg = Release CRTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release CRTDLL.Build.0 = Release CRTDLL|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release SingleThread.ActiveCfg = Release SingleThread|Win32
+		{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}.Release SingleThread.Build.0 = Release SingleThread|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

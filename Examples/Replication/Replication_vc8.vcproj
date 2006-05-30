@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="Replication"
-	ProjectGUID="{EF6D982C-CF99-4442-B297-776DBECFAFC9}"
+	ProjectGUID="{7FF22935-8C7D-4903-908C-B77A9CDBA840}"
 	>
 	<Platforms>
 		<Platform

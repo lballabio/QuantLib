@@ -105,6 +105,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Replication"=.\Examples\Replication\Replication.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name QuantLib
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Repo"=.\Examples\Repo\Repo.dsp - Package Owner=<4>
 
 Package=<5>

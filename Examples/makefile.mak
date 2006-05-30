@@ -35,6 +35,8 @@ examples::
     $(MAKE)
     cd ..\FRA
     $(MAKE)
+    cd ..\Replication
+    $(MAKE)
     cd ..\Repo
     $(MAKE)
     cd ..\Swap
@@ -50,6 +52,8 @@ clean::
     cd ..\EquityOption
     $(MAKE) clean
     cd ..\FRA
+    $(MAKE) clean
+    cd ..\Replication
     $(MAKE) clean
     cd ..\Repo
     $(MAKE) clean
