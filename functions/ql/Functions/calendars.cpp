@@ -24,7 +24,9 @@ namespace QuantLib {
     std::vector<Date> holidayList(const Calendar& calendar, const Date& from,
         const Date& to, bool includeWeekEnds) {
 
-        QL_REQUIRE(to>from, "'from' date must be lower than 'to' date");
+        QL_REQUIRE(to>from, "'from' date ("
+            << from << ") must be earlier than 'to' date ("
+            << to << ")");
         Date d = from;
         std::vector<Date> result;
         for (Date d = from; d <= to; ++d) {
