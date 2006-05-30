@@ -37,6 +37,11 @@
     This example evaluates a forward-rate agreement.
  */
 
+/*! \example Replication.cpp
+    This example uses the CompositeInstrument class to perform static
+    replication of a down-and-out barrier option.
+ */
+
 /*! \example Repo.cpp
     This example evaluates a repo on a fixed-coupon bond.
  */

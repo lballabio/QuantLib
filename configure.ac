@@ -362,6 +362,7 @@ AC_CONFIG_FILES([
     Examples/DiscreteHedging/Makefile
     Examples/EquityOption/Makefile
     Examples/FRA/Makefile
+    Examples/Replication/Makefile
     Examples/Repo/Makefile
     Examples/Swap/Makefile
     test-suite/Makefile])

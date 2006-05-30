@@ -16,3 +16,6 @@
 
 - Added FRA and forward fixed-coupon bonds; examples provided (thanks
   to Allen Kuo)
+
+- Added composite instrument; example provided.
+

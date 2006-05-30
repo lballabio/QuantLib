@@ -7,6 +7,7 @@ SUBDIRS =  \
     DiscreteHedging \
     EquityOption \
     FRA \
+    Replication \
     Repo \
     Swap
 
