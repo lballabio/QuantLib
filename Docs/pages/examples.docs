@@ -33,6 +33,14 @@
     using different methods
  */
 
+/*! \example FRA.cpp
+    This example evaluates a forward-rate agreement.
+ */
+
+/*! \example Repo.cpp
+    This example evaluates a repo on a fixed-coupon bond.
+ */
+
 /*! \example swapvaluation.cpp
     This is an example of using the %QuantLib Term Structure for pricing
     a simple swap.

@@ -53,6 +53,11 @@ namespace QuantLib {
            forwardRate(). In this case, the strike variable in the
            constructor is irrelevant and will be ignored.
 
+        <b>Example: </b>
+        \link FRA.cpp
+        valuation of a forward-rate agreement
+        \endlink
+
         \todo Add preconditions and tests
 
         \todo Should put an instance of ForwardRateAgreement in the
