@@ -7764,6 +7764,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\auto_link.hpp"
+			>
+		</File>
+		<File
 			RelativePath="ql\calendar.cpp"
 			>
 			<FileConfiguration

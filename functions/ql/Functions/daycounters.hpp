@@ -20,7 +20,6 @@
 #ifndef quantlib_functions_daycounters_h
 #define quantlib_functions_daycounters_h
 
-#include <ql/Functions/qlfunctions.hpp>
 #include <ql/daycounter.hpp>
 #include <string>
 

@@ -1,0 +1,73 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2006 Ferdinando Ametrano
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+#ifndef quantlib_functions_autolink_hpp
+#define quantlib_functions_autolink_hpp
+
+// select toolset:
+#if (_MSC_VER < 1200)
+#  error "unsupported Microsoft compiler"
+#elif (_MSC_VER == 1200)
+#  define QL_FUN_LIB_TOOLSET "vc6"
+#elif (_MSC_VER == 1300)
+#  define QL_FUN_LIB_TOOLSET "vc7"
+#elif (_MSC_VER == 1310)
+#  define QL_FUN_LIB_TOOLSET "vc71"
+#elif (_MSC_VER == 1400)
+#  define QL_FUN_LIB_TOOLSET "vc80"
+#else
+#  error "unknown Microsoft compiler"
+#endif
+
+
+/*** libraries to be linked ***/
+
+// select thread opt:
+#ifdef _MT
+#  define QL_FUN_LIB_THREAD_OPT "-mt"
+#else
+#  define QL_FUN_LIB_THREAD_OPT
+#endif
+
+// select linkage opt:
+#ifdef _DLL
+#  if defined(_DEBUG)
+#    define QL_FUN_LIB_RT_OPT "-gd"
+#  else
+#    define QL_FUN_LIB_RT_OPT
+#  endif
+#else
+#  if defined(_DEBUG)
+#    define QL_FUN_LIB_RT_OPT "-sgd"
+#  else
+#    define QL_FUN_LIB_RT_OPT "-s"
+#  endif
+#endif
+
+#define QL_FUN_LIB_NAME "QuantLibFunctions-" QL_FUN_LIB_TOOLSET QL_FUN_LIB_THREAD_OPT QL_FUN_LIB_RT_OPT "-" QL_FUN_LIB_VERSION ".lib"
+
+#if defined(_MSC_VER) || defined(__BORLANDC__)
+#  pragma comment(lib, QL_FUN_FUN_LIB_NAME)
+#  ifdef BOOST_LIB_DIAGNOSTIC
+#    pragma message("Linking to lib file: " QL_FUN_LIB_NAME)
+#  endif
+#endif
+
+
+#endif

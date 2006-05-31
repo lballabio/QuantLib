@@ -25,6 +25,8 @@
 
 #include <ql/core.hpp>
 
+#include <ql/auto_link.hpp>
+
 #include <ql/Calendars/all.hpp>
 #include <ql/CashFlows/all.hpp>
 #include <ql/Currencies/all.hpp>

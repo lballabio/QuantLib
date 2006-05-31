@@ -489,6 +489,10 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\auto_link.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\calendars.hpp"
 				>
 			</File>
@@ -502,10 +506,6 @@
 			</File>
 			<File
 				RelativePath=".\prices.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\qlfunctions.hpp"
 				>
 			</File>
 			<File

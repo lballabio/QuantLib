@@ -20,7 +20,6 @@
 #ifndef quantlib_functions_calendar_h
 #define quantlib_functions_calendar_h
 
-#include <ql/Functions/qlfunctions.hpp>
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/settings.hpp>

@@ -20,7 +20,6 @@
 #ifndef quantlib_functions_vols_h
 #define quantlib_functions_vols_h
 
-#include <ql/Functions/qlfunctions.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/daycounter.hpp>
 #include <vector>

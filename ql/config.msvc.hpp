@@ -153,9 +153,7 @@
 
 #define QL_PATCH_MSVC  // more granularity below
 
-//
 // select toolset:
-//
 #if (_MSC_VER < 1200)
 #  error "unsupported Microsoft compiler"
 #elif (_MSC_VER == 1200)
@@ -164,7 +162,6 @@
 #  define CHOKES_ON_TYPENAME
 #  define HAVE_INCOMPLETE_ITERATOR_SUPPORT
 #  define REQUIRES_DUMMY_RETURN
-#  define QL_LIB_TOOLSET "vc6"
 // decorated name length exceeded, name was truncated in debug info
 #  pragma warning(disable: 4786)
 #  pragma warning(disable: 4503)
@@ -172,12 +169,10 @@
 // move inside here configs specific to VC++ 7.0
 // Warning: QuantLib was never been compiled with VC++ 7.0,
 // the settings are just borrowed from 7.1
-#  define QL_LIB_TOOLSET "vc7"
 #  define QL_PATCH_MSVC70
 #  define QL_PATCH_MSVC71
 #elif (_MSC_VER == 1310)
 // move inside here configs specific to VC++ 7.1 (.Net 2003)
-#  define QL_LIB_TOOLSET "vc71"
 #  define QL_PATCH_MSVC71
 #  define QL_WORKING_BOOST_STREAMS
 // for some reason, Koenig lookup emits a warning
@@ -190,47 +185,11 @@
 #  ifndef _CRT_SECURE_NO_DEPRECATE
 #    define _CRT_SECURE_NO_DEPRECATE
 #  endif
-#  define QL_LIB_TOOLSET "vc80"
 #  define QL_PATCH_MSVC80
 #  define QL_WORKING_BOOST_STREAMS
 #  pragma warning(disable: 4267)
 #else
 #  error "unknown Microsoft compiler"
-#endif
-
-
-/*** libraries to be linked ***/
-
-//
-// select thread opt:
-//
-#ifdef _MT
-#  define QL_LIB_THREAD_OPT "-mt"
-#else
-#  define QL_LIB_THREAD_OPT
-#endif
-//
-// select linkage opt:
-//
-#ifdef _DLL
-#  if defined(_DEBUG)
-#    define QL_LIB_RT_OPT "-gd"
-#  else
-#    define QL_LIB_RT_OPT
-#  endif
-#else
-#  if defined(_DEBUG)
-#    define QL_LIB_RT_OPT "-sgd"
-#  else
-#    define QL_LIB_RT_OPT "-s"
-#  endif
-#endif
-
-#define QL_LIB_NAME "QuantLib-" QL_LIB_TOOLSET QL_LIB_THREAD_OPT QL_LIB_RT_OPT "-" QL_LIB_VERSION ".lib"
-
-#pragma comment(lib, QL_LIB_NAME)
-#ifdef BOOST_LIB_DIAGNOSTIC
-#  pragma message("Linking to lib file: " QL_LIB_NAME)
 #endif
 
 #ifndef _CPPRTTI

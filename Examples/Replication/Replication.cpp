@@ -24,7 +24,11 @@
     reader.
 */
 
-#include <ql/quantlib.hpp>
+// the only header you need to use QuantLib
+#define BOOST_LIB_DIAGNOSTIC
+#  include <ql/quantlib.hpp>
+#undef BOOST_LIB_DIAGNOSTIC
+
 #include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
