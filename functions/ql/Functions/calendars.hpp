@@ -34,7 +34,7 @@ namespace QuantLib {
     }
 
     /* soon to be deprecated/removed */
-    std::vector<Date> holidayList(const Calendar& calendar,
+    inline std::vector<Date> holidayList(const Calendar& calendar,
                                   const Date& from,
                                   const Date& to,
                                   bool includeWeekEnds = false) {
