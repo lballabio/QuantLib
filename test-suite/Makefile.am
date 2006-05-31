@@ -76,9 +76,7 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = quantlib-test-suite
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
-quantlib_test_suite_LDADD = \
-	${top_builddir}/ql/libQuantLib.la \
-	${top_builddir}/functions/ql/Functions/libQuantLibFunctions.la
+quantlib_test_suite_LDADD = ${top_builddir}/ql/libQuantLib.la
 quantlib_test_suite_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
 TESTS = quantlib-test-suite
