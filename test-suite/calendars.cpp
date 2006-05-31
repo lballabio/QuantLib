@@ -28,7 +28,6 @@
 #include <ql/Calendars/unitedstates.hpp>
 #include <ql/Calendars/japan.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
-#include <ql/Functions/calendars.hpp>
 #include <fstream>
 
 using namespace QuantLib;
@@ -176,8 +175,8 @@ void CalendarTest::testUSSettlement() {
     expectedHol.push_back(Date(26,December,2005));
 
     Calendar c = UnitedStates(UnitedStates::Settlement);
-    std::vector<Date> hol = holidayList(c, Date(1,January,2004),
-                                           Date(31,December,2005));
+    std::vector<Date> hol = Calendar::holidayList(c, Date( 1, January, 2004),
+                                                     Date(31,December, 2005));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was " << expectedHol[i]
@@ -206,7 +205,7 @@ void CalendarTest::testUSGovernmentBondMarket() {
     expectedHol.push_back(Date(24,December,2004));
 
     Calendar c = UnitedStates(UnitedStates::GovernmentBond);
-    std::vector<Date> hol = holidayList(c, Date(1,January,2004),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,2004),
                                            Date(31,December,2004));
 
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
@@ -255,7 +254,7 @@ void CalendarTest::testUSNewYorkStockExchange() {
     expectedHol.push_back(Date(25,December,2006));
 
     Calendar c = UnitedStates(UnitedStates::NYSE);
-    std::vector<Date> hol = holidayList(c, Date(1,January,2004),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,2004),
                                            Date(31,December,2006));
 
     Size i;
@@ -360,7 +359,7 @@ void CalendarTest::testTARGET() {
     expectedHol.push_back(Date(26,December,2006));
 
     Calendar c = TARGET();
-    std::vector<Date> hol = holidayList(c, Date(1,January,1999),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,1999),
                                            Date(31,December,2006));
 
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
@@ -396,7 +395,7 @@ void CalendarTest::testGermanyFrankfurt() {
     expectedHol.push_back(Date(31,December,2004));
 
     Calendar c = Germany(Germany::FrankfurtStockExchange);
-    std::vector<Date> hol = holidayList(c, Date(1,January,2003),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,2003),
                                            Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
@@ -430,7 +429,7 @@ void CalendarTest::testGermanyEurex() {
     expectedHol.push_back(Date(31,December,2004));
 
     Calendar c = Germany(Germany::Eurex);
-    std::vector<Date> hol = holidayList(c, Date(1,January,2003),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,2003),
                                            Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
@@ -464,7 +463,7 @@ void CalendarTest::testGermanyXetra() {
     expectedHol.push_back(Date(31,December,2004));
 
     Calendar c = Germany(Germany::Xetra);
-    std::vector<Date> hol = holidayList(c, Date(1,January,2003),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,2003),
                                            Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
@@ -519,7 +518,7 @@ void CalendarTest::testUKSettlement() {
     expectedHol.push_back(Date(26,December,2007));
 
     Calendar c = UnitedKingdom(UnitedKingdom::Settlement);
-    std::vector<Date> hol = holidayList(c, Date(1,January,2004),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,2004),
                                            Date(31,December,2007));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
@@ -574,7 +573,7 @@ void CalendarTest::testUKExchange() {
     expectedHol.push_back(Date(26,December,2007));
 
     Calendar c = UnitedKingdom(UnitedKingdom::Exchange);
-    std::vector<Date> hol = holidayList(c, Date(1,January,2004),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,2004),
                                            Date(31,December,2007));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
@@ -629,7 +628,7 @@ void CalendarTest::testUKMetals() {
     expectedHol.push_back(Date(26,December,2007));
 
     Calendar c = UnitedKingdom(UnitedKingdom::Metals);
-    std::vector<Date> hol = holidayList(c, Date(1,January,2004),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,2004),
                                            Date(31,December,2007));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
@@ -674,7 +673,7 @@ void CalendarTest::testItalyExchange() {
     expectedHol.push_back(Date(31,December,2004));
 
     Calendar c = Italy(Italy::Exchange);
-    std::vector<Date> hol = holidayList(c, Date(1,January,2002),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,2002),
                                            Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
@@ -719,7 +718,7 @@ void CalendarTest::testBrazil() {
     expectedHol.push_back(Date(25,December,2006));
 
     Calendar c = Brazil();
-    std::vector<Date> hol = holidayList(c, Date(1,January,2005),
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1,January,2005),
                                            Date(31,December,2006));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])

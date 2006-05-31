@@ -28,6 +28,7 @@
 #include <ql/date.hpp>
 #include <ql/Patterns/bridge.hpp>
 #include <set>
+#include <vector>
 
 namespace QuantLib {
 
@@ -128,6 +129,12 @@ namespace QuantLib {
         void addHoliday(const Date&);
         /*! Removes a date from the set of holidays for the given calendar. */
         void removeHoliday(const Date&);
+
+        //! Returns the holidays between two dates
+        static std::vector<Date> holidayList(const Calendar& calendar,
+                                             const Date& from,
+                                             const Date& to,
+                                             bool includeWeekEnds = false);
 
         /*! Adjusts a non-business day to the appropriate near business day
             with respect to the given convention.

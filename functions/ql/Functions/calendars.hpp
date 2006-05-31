@@ -27,22 +27,19 @@
 
 namespace QuantLib {
 
-    /*! get the evaluation date */
-    inline Date evaluationDate() {
-        return Settings::instance().evaluationDate();
-    }
-
     /*! set the evaluation date */
     inline Date setEvaluationDate(const Date &evalDate) {
         Settings::instance().evaluationDate() = evalDate;
         return evalDate;
     }
 
-    //! Returns the holidays between two dates
+    /* soon to be deprecated/removed */
     std::vector<Date> holidayList(const Calendar& calendar,
                                   const Date& from,
                                   const Date& to,
-                                  bool includeWeekEnds = false);
+                                  bool includeWeekEnds = false) {
+        return Calendar::holidayList(calendar, from, to, includeWeekEnds);
+    }
 
     /*! return the advanced date over a given calendar
     */

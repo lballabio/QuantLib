@@ -28,7 +28,6 @@
 #ifdef BOOST_MSVC
 #  define BOOST_LIB_DIAGNOSTIC
 #  include <ql/auto_link.hpp>
-#  include <ql/Functions/auto_link.hpp>
 #  define BOOST_LIB_NAME boost_unit_test_framework
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
