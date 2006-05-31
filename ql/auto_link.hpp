@@ -20,8 +20,6 @@
 
 #include <boost/config.hpp>
 
-#ifdef BOOST_MSVC
-
 // select toolset:
 #if (_MSC_VER < 1200)
 #  error "unsupported Microsoft compiler"
@@ -67,8 +65,6 @@
 #pragma comment(lib, QL_LIB_NAME)
 #ifdef BOOST_LIB_DIAGNOSTIC
 #  pragma message("Linking to lib file: " QL_LIB_NAME)
-#endif
-
 #endif
 
 #endif
