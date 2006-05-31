@@ -74,7 +74,8 @@ namespace QuantLib {
         QL_DUMMY_RETURN(Once)
     }
 
-    Rate Xibor::fixing(const Date& fixingDate) const {
+    Rate Xibor::fixing(const Date& fixingDate,
+                       bool forecastTodaysFixing) const {
         Date today = Settings::instance().evaluationDate();
         if (fixingDate < today) {
             // must have been fixed
@@ -84,7 +85,7 @@ namespace QuantLib {
                        "Missing " << name() << " fixing for " << fixingDate);
             return pastFixing;
         }
-        if (fixingDate == today) {
+        if ((fixingDate == today) && !forecastTodaysFixing) {
             // might have been fixed
             try {
                 Rate pastFixing =

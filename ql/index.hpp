@@ -39,6 +39,8 @@ namespace QuantLib {
         /*! \warning This method is used for output and comparison between
             indexes.
             It is <b>not</b> meant to be used for writing switch-on-type code.
+
+            \todo add methods returning InterestRate
         */
         virtual std::string name() const = 0;
         /*! \brief returns the fixing at the given date
@@ -46,7 +48,8 @@ namespace QuantLib {
             i.e., the real calendar date advanced by a number of
             settlement days.
         */
-        virtual Rate fixing(const Date& fixingDate) const = 0;
+        virtual Rate fixing(const Date& fixingDate,
+                            bool forecastTodaysFixing = false) const = 0;
     };
 
 }

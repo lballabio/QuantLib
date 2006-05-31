@@ -30,6 +30,7 @@
 namespace QuantLib {
 
     //! base class for LIBOR-like indexes
+    /*! \todo add methods returning InterestRate */
     class Xibor : public Index, public Observer {
       public:
         Xibor(const std::string& familyName,
@@ -39,10 +40,12 @@ namespace QuantLib {
               const Calendar& calendar,
               BusinessDayConvention convention,
               const DayCounter& dayCounter,
-              const Handle<YieldTermStructure>& h);
+              const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
         //! \name Index interface
         //@{
-        Rate fixing(const Date& fixingDate) const;
+        Rate fixing(const Date& fixingDate,
+                    bool forecastTodaysFixing = false) const;
         //@}
         //! \name Observer interface
         //@{
