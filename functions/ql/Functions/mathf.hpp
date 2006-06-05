@@ -22,8 +22,8 @@
 
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
-#include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/cubicspline.hpp>
+#include <ql/Math/primenumbers.hpp>
 
 namespace QuantLib {
 
@@ -102,27 +102,20 @@ namespace QuantLib {
                        bool allowExtrapolation);
 
 
-    inline Real normDist(
-        Real x,
-        Real mean = 0.0,
-        Real standard_dev = 1.0,
-        bool cumulative = true) {
 
-        if (cumulative) {
-            return CumulativeNormalDistribution(mean, standard_dev)(x);
-        } else {
-            return NormalDistribution(mean, standard_dev)(x);
-        }
+    Real normDist(Real x,
+                  Real mean = 0.0,
+                  Real standard_dev = 1.0,
+                  bool cumulative = false);
+    Real normInv(Real probability,
+                 Real mean = 0.0,
+                 Real standard_dev = 1.0);
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline Size primeNumbers(Size absoluteIndex) {
+        return PrimeNumbers::get(absoluteIndex);
     }
-
-
-    inline Real normInv(
-        Real probability,
-        Real mean = 0.0,
-        Real standard_dev = 1.0) {
-        return InverseCumulativeNormal(mean, standard_dev)
-            (probability);
-    }
+    #endif
 
 
     Real rand();

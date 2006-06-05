@@ -338,6 +338,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\calendars.cpp"
+				>
+			</File>
+			<File
 				RelativePath="daycounters.cpp"
 				>
 				<FileConfiguration

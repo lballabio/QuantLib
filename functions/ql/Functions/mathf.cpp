@@ -18,9 +18,9 @@
 */
 
 #include <ql/Functions/mathf.hpp>
+#include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/bicubicsplineinterpolation.hpp>
-#include <ql/Math/primenumbers.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 
 namespace QuantLib {
@@ -51,13 +51,27 @@ namespace QuantLib {
         return result;
     }
 
+    Real normDist(Real x, Real mean, Real standard_dev,
+                  bool cumulative) {
+        if (cumulative) {
+            return CumulativeNormalDistribution(mean, standard_dev)(x);
+        } else {
+            return NormalDistribution(mean, standard_dev)(x);
+        }
+    }
+
+
+    Real normInv(Real probability, Real mean, Real standard_dev) {
+        return InverseCumulativeNormal(mean, standard_dev)
+            (probability);
+    }
 
 
     static MersenneTwisterUniformRng rng;
+
     Real rand() {
         return rng.next().value;
     }
-
     void randomize(BigNatural seed) {
         rng = MersenneTwisterUniformRng(seed);
     }

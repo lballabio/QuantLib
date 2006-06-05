@@ -17,32 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_functions_calendar_h
-#define quantlib_functions_calendar_h
-
-#include <ql/calendar.hpp>
-#include <ql/settings.hpp>
-#include <vector>
+#include <ql/Functions/calendars.hpp>
 
 namespace QuantLib {
 
-    /*! set the evaluation date */
-    inline Date setEvaluationDate(const Date &evalDate) {
-        Settings::instance().evaluationDate() = evalDate;
-        return evalDate;
-    }
-
     #ifndef QL_DISABLE_DEPRECATED
-    /*! Returns the holidays between two dates
-        \deprecated use Calendar::holidayList instead
-    */
-    std::vector<Date> holidayList(const Calendar& calendar,
-                                  const Date& from,
-                                  const Date& to,
-                                  bool includeWeekEnds = false);
+    std::vector<Date> holidayList(const Calendar& calendar, const Date& from,
+        const Date& to, bool includeWeekEnds) {
 
+        QL_REQUIRE(to>from, "'from' date must be lower than 'to' date");
+        Date d = from;
+        std::vector<Date> result;
+        while (d<=to) {
+            if (!calendar.isBusinessDay(d)) {
+                if (includeWeekEnds) {
+                    result.push_back(d);
+                } else if (d.weekday()==Saturday) {
+                    d += 1;
+                } else if (d.weekday()!=Sunday) {
+                    result.push_back(d);
+                }
+            }
+            d += 1;
+       }
+
+       return result;
+
+    }
     #endif
+
 }
-
-
-#endif
