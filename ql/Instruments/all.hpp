@@ -44,7 +44,7 @@
 #include <ql/Instruments/oneassetstrikedoption.hpp>
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
 #include <ql/Instruments/quantovanillaoption.hpp>
-#include <ql/Instruments/simpleswap.hpp>
+#include <ql/Instruments/vanillaswap.hpp>
 #include <ql/Instruments/stock.hpp>
 #include <ql/Instruments/swap.hpp>
 #include <ql/Instruments/swaption.hpp>

@@ -25,7 +25,7 @@
 #define quantlib_ratehelpers_hpp
 
 #include <ql/TermStructures/piecewiseyieldcurve.hpp>
-#include <ql/Instruments/simpleswap.hpp>
+#include <ql/Instruments/vanillaswap.hpp>
 
 namespace QuantLib {
 

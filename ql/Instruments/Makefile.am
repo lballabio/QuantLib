@@ -4,7 +4,6 @@ includedir = $(prefix)/include/ql/Instruments
 
 include_HEADERS = \
     all.hpp \
-    core.hpp \
     asianoption.hpp \
     barrieroption.hpp \
     basketoption.hpp \
@@ -14,8 +13,9 @@ include_HEADERS = \
     cliquetoption.hpp \
     compositeinstrument.hpp \
     convertiblebond.hpp \
-    dividendvanillaoption.hpp \
+    core.hpp \
     dividendschedule.hpp \
+    dividendvanillaoption.hpp \
     europeanoption.hpp \
     fixedcouponbond.hpp \
     fixedcouponbondforward.hpp \
@@ -30,11 +30,11 @@ include_HEADERS = \
     payoffs.hpp \
     quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \
-    simpleswap.hpp \
     stock.hpp \
     swap.hpp \
     swaption.hpp \
     vanillaoption.hpp \
+    vanillaswap.hpp \
     zerocouponbond.hpp
 
 libInstruments_la_SOURCES = \
@@ -60,11 +60,11 @@ libInstruments_la_SOURCES = \
     oneassetstrikedoption.cpp \
     quantoforwardvanillaoption.cpp \
     quantovanillaoption.cpp \
-    simpleswap.cpp \
     stock.cpp \
     swap.cpp \
     swaption.cpp \
     vanillaoption.cpp \
+    vanillaswap.cpp \
     zerocouponbond.cpp
 
 noinst_LTLIBRARIES = libInstruments.la

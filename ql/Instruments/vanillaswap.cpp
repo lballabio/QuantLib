@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Instruments/simpleswap.hpp>
+#include <ql/Instruments/vanillaswap.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>

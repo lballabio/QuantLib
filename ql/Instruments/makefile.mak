@@ -41,11 +41,11 @@ OBJS = \
     "oneassetstrikedoption.obj$(_mt)$(_D)" \
     "quantoforwardvanillaoption.obj$(_mt)$(_D)" \
     "quantovanillaoption.obj$(_mt)$(_D)" \
-    "simpleswap.obj$(_mt)$(_D)" \
     "stock.obj$(_mt)$(_D)" \
     "swap.obj$(_mt)$(_D)" \
     "swaption.obj$(_mt)$(_D)" \
     "vanillaoption.obj$(_mt)$(_D)" \
+    "vanillaswap.obj$(_mt)$(_D)" \
     "zerocouponbond.obj$(_mt)$(_D)"
 
 # Tools to be used

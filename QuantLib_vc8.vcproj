@@ -2373,60 +2373,6 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Instruments\simpleswap.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Instruments\simpleswap.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Instruments\stock.cpp"
 				>
 				<FileConfiguration
@@ -2640,6 +2586,14 @@
 			</File>
 			<File
 				RelativePath="ql\Instruments\vanillaoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\vanillaswap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\vanillaswap.hpp"
 				>
 			</File>
 			<File

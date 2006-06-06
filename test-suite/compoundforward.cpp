@@ -21,7 +21,7 @@
 #include "utilities.hpp"
 #include <ql/TermStructures/compoundforward.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
-#include <ql/Instruments/simpleswap.hpp>
+#include <ql/Instruments/vanillaswap.hpp>
 #include <ql/Indexes/jibar.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <iomanip>

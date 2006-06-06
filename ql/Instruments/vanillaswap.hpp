@@ -21,8 +21,8 @@
     \brief Simple fixed-rate vs Libor swap
 */
 
-#ifndef quantlib_simple_swap_hpp
-#define quantlib_simple_swap_hpp
+#ifndef quantlib_vanilla_swap_hpp
+#define quantlib_vanilla_swap_hpp
 
 #include <ql/Instruments/swap.hpp>
 #include <ql/Indexes/xibor.hpp>

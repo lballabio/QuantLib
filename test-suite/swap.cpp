@@ -19,7 +19,7 @@
 
 #include "swap.hpp"
 #include "utilities.hpp"
-#include <ql/Instruments/simpleswap.hpp>
+#include <ql/Instruments/vanillaswap.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/thirty360.hpp>

@@ -20,7 +20,7 @@
 #include "capfloor.hpp"
 #include "utilities.hpp"
 #include <ql/Instruments/capfloor.hpp>
-#include <ql/Instruments/simpleswap.hpp>
+#include <ql/Instruments/vanillaswap.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>

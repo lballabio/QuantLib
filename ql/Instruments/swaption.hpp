@@ -26,7 +26,7 @@
 
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
-#include <ql/Instruments/simpleswap.hpp>
+#include <ql/Instruments/vanillaswap.hpp>
 
 namespace QuantLib {
 
