@@ -32,41 +32,56 @@
 
 /* Define this if error messages should include current function
    information. */
-// #define QL_ERROR_FUNCTIONS 1
+#ifndef QL_ERROR_FUNCTIONS
+//#   define QL_ERROR_FUNCTIONS
+#endif
 
 /* Define this if error messages should include file and line information. */
-// #define QL_ERROR_LINES 1
+#ifndef QL_ERROR_LINES
+//#   define QL_ERROR_LINES
+#endif
 
 /* Define this if tracing messages should be allowed (whether they are
    actually emitted will depend on run-time settings.) */
-// #define QL_ENABLE_TRACING 1
+#ifndef QL_ENABLE_TRACING
+//#   define QL_ENABLE_TRACING
+#endif
 
 /* Define this if negative yield rates should be allowed. This might not be
    safe. */
-// #define QL_NEGATIVE_RATES 1
+#ifndef QL_NEGATIVE_RATES
+//#   define QL_NEGATIVE_RATES
+#endif
 
 /* Define this if extra safety checks should be performed. This can degrade
    performance. */
-// #define QL_EXTRA_SAFETY_CHECKS 1
+#ifndef QL_EXTRA_SAFETY_CHECKS
+//#   define QL_EXTRA_SAFETY_CHECKS
+#endif
 
 /* Define this if payments occurring today should enter the NPV of an
    instrument. */
-// #define QL_TODAYS_PAYMENTS 1
+#ifndef QL_TODAYS_PAYMENTS
+//#   define QL_TODAYS_PAYMENTS
+#endif
 
 /* Define this if you want to disable deprecated code. */
 #ifndef QL_DISABLE_DEPRECATED
-    #define QL_DISABLE_DEPRECATED
+//#   define QL_DISABLE_DEPRECATED
 #endif
 
 /* Define this to use indexed coupons instead of par coupons in floating
    legs. */
-// #define QL_USE_INDEXED_COUPON
+#ifndef QL_USE_INDEXED_COUPON
+//#   define QL_USE_INDEXED_COUPON
+#endif
 
 /* Define this to have singletons return different instances for
    different sessions. You will have to provide and link with the
    library a sessionId() function in namespace QuantLib, returning a
    different session id for each session.*/
-// #define QL_ENABLE_SESSIONS
-
+#ifndef QL_ENABLE_SESSIONS
+//#   define QL_ENABLE_SESSIONS
+#endif
 
 #endif
