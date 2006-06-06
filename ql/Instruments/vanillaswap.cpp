@@ -35,9 +35,9 @@ namespace QuantLib {
                              Spread spread,
                              const DayCounter& floatingDayCount,
                              const Handle<YieldTermStructure>& termStructure)
-    : Swap(std::vector<boost::shared_ptr<CashFlow> >(),
+    : Swap(termStructure,
            std::vector<boost::shared_ptr<CashFlow> >(),
-           termStructure),
+           std::vector<boost::shared_ptr<CashFlow> >()),
       payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread),
       nominal_(nominal) {
 
@@ -63,12 +63,14 @@ namespace QuantLib {
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
             registerWith(*i);
 
+        legs_[0] = fixedLeg;
+        legs_[1] = floatingLeg;
         if (payFixedRate_) {
-            firstLeg_ = fixedLeg;
-            secondLeg_ = floatingLeg;
+            payer_[0]=-1.0;
+            payer_[1]=+1.0;
         } else {
-            firstLeg_ = floatingLeg;
-            secondLeg_ = fixedLeg;
+            payer_[0]=+1.0;
+            payer_[1]=-1.0;
         }
     }
 
@@ -151,19 +153,19 @@ namespace QuantLib {
 
     Real VanillaSwap::fixedLegBPS() const {
         calculate();
-        QL_REQUIRE(fixedLegBPS_ != Null<Real>(), "result not available");
-        return fixedLegBPS_;
+        QL_REQUIRE(legBPS_[0] != Null<Real>(), "result not available");
+        return legBPS_[0];
     }
 
     Real VanillaSwap::floatingLegBPS() const {
         calculate();
-        QL_REQUIRE(floatingLegBPS_ != Null<Real>(), "result not available");
-        return floatingLegBPS_;
+        QL_REQUIRE(legBPS_[1] != Null<Real>(), "result not available");
+        return legBPS_[1];
     }
 
     void VanillaSwap::setupExpired() const {
         Swap::setupExpired();
-        fixedLegBPS_ = floatingLegBPS_ = 0.0;
+        legBPS_[0] = legBPS_[1] = 0.0;
         fairRate_ = Null<Rate>();
         fairSpread_ = Null<Spread>();
     }
@@ -174,10 +176,8 @@ namespace QuantLib {
         } else {
             static const Spread basisPoint = 1.0e-4;
             Swap::performCalculations();
-            fixedLegBPS_ = payFixedRate_ ? firstLegBPS() : secondLegBPS();
-            floatingLegBPS_ = payFixedRate_ ? secondLegBPS() : firstLegBPS();
-            fairRate_ = fixedRate_ - NPV_/(fixedLegBPS_/basisPoint);
-            fairSpread_ = spread_ - NPV_/(floatingLegBPS_/basisPoint);
+            fairRate_ = fixedRate_ - NPV_/(legBPS_[0]/basisPoint);
+            fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
         }
     }
 
@@ -185,17 +185,8 @@ namespace QuantLib {
         Instrument::fetchResults(r);
         const VanillaSwap::results* results =
             dynamic_cast<const VanillaSwap::results*>(r);
-        fixedLegBPS_ = results->fixedLegBPS;
-        floatingLegBPS_ = results->floatingLegBPS;
         fairRate_ = results->fairRate;
         fairSpread_ = results->fairSpread;
-        if (payFixedRate_) {
-            firstLegBPS_ = fixedLegBPS_;
-            secondLegBPS_ = floatingLegBPS_;
-        } else {
-            firstLegBPS_ = floatingLegBPS_;
-            secondLegBPS_ = fixedLegBPS_;
-        }
     }
 
     void VanillaSwap::arguments::validate() const {

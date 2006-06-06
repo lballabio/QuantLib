@@ -72,8 +72,12 @@ namespace QuantLib {
         Spread spread() const;
         Real nominal() const;
         bool payFixedRate() const;
-        const std::vector<boost::shared_ptr<CashFlow> >& fixedLeg() const;
-        const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg() const;
+        const std::vector<boost::shared_ptr<CashFlow> >& fixedLeg() const {
+            return legs_[0];
+        }
+        const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg() const {
+            return legs_[1];
+        }
         // other
         void setupArguments(Arguments* args) const;
         void fetchResults(const Results*) const;
@@ -85,7 +89,6 @@ namespace QuantLib {
         Spread spread_;
         Real nominal_;
         // results
-        mutable Real fixedLegBPS_, floatingLegBPS_;
         mutable Rate fairRate_;
         mutable Spread fairSpread_;
     };
@@ -143,16 +146,6 @@ namespace QuantLib {
 
     inline bool VanillaSwap::payFixedRate() const {
         return payFixedRate_;
-    }
-
-    inline const std::vector<boost::shared_ptr<CashFlow> >&
-    VanillaSwap::fixedLeg() const {
-        return (payFixedRate_ ? firstLeg_ : secondLeg_);
-    }
-
-    inline const std::vector<boost::shared_ptr<CashFlow> >&
-    VanillaSwap::floatingLeg() const {
-        return (payFixedRate_ ? secondLeg_ : firstLeg_);
     }
 
 }

@@ -273,7 +273,7 @@ void SwapTest::testInArrears() {
                                                    nominals, index, fixingDays,
                                                    spreads, dayCounter);
 
-    Swap swap(floatingLeg,fixedLeg,termStructure_);
+    Swap swap(termStructure_,floatingLeg,fixedLeg);
 
     if (std::fabs(swap.NPV()) > 1.0e-4)
         BOOST_ERROR("While setting up test:\n"

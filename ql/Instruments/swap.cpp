@@ -23,62 +23,83 @@
 
 namespace QuantLib {
 
-    Swap::Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
-               const std::vector<boost::shared_ptr<CashFlow> >& secondLeg,
+
+    #ifndef QL_DISABLE_DEPRECATED
+    Swap::Swap(const SwapLeg& firstLeg,
+               const SwapLeg& secondLeg,
                const Handle<YieldTermStructure>& termStructure)
-    : firstLeg_(firstLeg), secondLeg_(secondLeg),
-      termStructure_(termStructure) {
+    : Swap(termStructure, firstLeg, secondLeg) {}
+    #endif
+
+    Swap::Swap(const Handle<YieldTermStructure>& termStructure,
+               const SwapLeg& firstLeg,
+               const SwapLeg& secondLeg)
+    : termStructure_(termStructure), legs_(2), payer_(2), legBPS_(2, 0.0) {
+        legs_[0] = firstLeg;
+        legs_[1] = secondLeg;
+        payer_[0] = -1.0;
+        payer_[1] =  1.0;
         registerWith(termStructure_);
-        std::vector<boost::shared_ptr<CashFlow> >::iterator i;
-        for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
+        SwapLeg::iterator i;
+        for (i = legs_[0].begin(); i!= legs_[0].end(); ++i)
             registerWith(*i);
-        for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
+        for (i = legs_[1].begin(); i!= legs_[1].end(); ++i)
             registerWith(*i);
+    }
+
+    Swap::Swap(const Handle<YieldTermStructure>& termStructure,
+               const std::vector<SwapLeg>& legs,
+               const std::vector<bool>& payer)
+    : termStructure_(termStructure), legs_(legs),
+      payer_(legs.size(), 1.0) , legBPS_(legs.size(), 0.0){
+        QL_REQUIRE(payer.size()==legs_.size(),
+            "payer/leg mismatch");
+        registerWith(termStructure_);
+        SwapLeg::iterator i;
+        for (Size j=0; j<legs_.size(); j++) {
+            if (payer[j]) payer_[j]=-1.0;
+            for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+                registerWith(*i);
+        }
     }
 
     bool Swap::isExpired() const {
         Date settlement = termStructure_->referenceDate();
-        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
-        for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
-            if (!(*i)->hasOccurred(settlement))
-                return false;
-        for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
-            if (!(*i)->hasOccurred(settlement))
-                return false;
+        SwapLeg::const_iterator i;
+        for (Size j=0; j<legs_.size(); j++) {
+            for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+                if (!(*i)->hasOccurred(settlement))
+                    return false;
+        }
         return true;
     }
 
     void Swap::setupExpired() const {
         Instrument::setupExpired();
-        firstLegBPS_= secondLegBPS_ = 0.0;
+        legBPS_= std::vector<Real>(legs_.size(), 0.0);
     }
 
     void Swap::performCalculations() const {
         QL_REQUIRE(!termStructure_.empty(), "no term structure set");
         Date settlement = termStructure_->referenceDate();
 
-        NPV_ = - Cashflows::npv(firstLeg_,termStructure_)
-               + Cashflows::npv(secondLeg_,termStructure_);
         errorEstimate_ = Null<Real>();
-
-        firstLegBPS_ = - Cashflows::bps(firstLeg_, termStructure_);
-        secondLegBPS_ = + Cashflows::bps(secondLeg_, termStructure_);
+        NPV_ = 0.0;
+        for (Size j=0; j<legs_.size(); j++) {
+            NPV_      += payer_[j]*Cashflows::npv(legs_[j], termStructure_);
+            legBPS_[j] = payer_[j]*Cashflows::bps(legs_[j], termStructure_);
+        }
     }
 
     Date Swap::startDate() const {
         Date d = Date::maxDate();
-        Size i;
-        for (i=0; i<firstLeg_.size(); i++) {
-            boost::shared_ptr<Coupon> c =
-                boost::dynamic_pointer_cast<Coupon>(firstLeg_[i]);
-            if (c)
-                d = std::min(d, c->accrualStartDate());
-        }
-        for (i=0; i<secondLeg_.size(); i++) {
-            boost::shared_ptr<Coupon> c =
-                boost::dynamic_pointer_cast<Coupon>(secondLeg_[i]);
-            if (c)
-                d = std::min(d, c->accrualStartDate());
+        for (Size j=0; j<legs_.size(); j++) {
+            for (Size i=0; i<legs_[j].size(); i++) {
+                boost::shared_ptr<Coupon> c =
+                    boost::dynamic_pointer_cast<Coupon>(legs_[j][i]);
+                if (c)
+                    d = std::min(d, c->accrualStartDate());
+            }
         }
         QL_REQUIRE(d != Date::maxDate(),
                    "not enough information available");
@@ -87,23 +108,12 @@ namespace QuantLib {
 
     Date Swap::maturity() const {
         Date d = Date::minDate();
-        Size i;
-        for (i=0; i<firstLeg_.size(); i++)
-            d = std::max(d, firstLeg_[i]->date());
-        for (i=0; i<secondLeg_.size(); i++)
-            d = std::max(d, secondLeg_[i]->date());
+        for (Size j=0; j<legs_.size(); j++) {
+            for (Size i=0; i<legs_[j].size(); i++)
+                d = std::max(d, legs_[j][i]->date());
+        }
         QL_REQUIRE(d != Date::minDate(), "empty swap");
         return d;
-    }
-
-    Real Swap::firstLegBPS() const {
-        calculate();
-        return firstLegBPS_;
-    }
-
-    Real Swap::secondLegBPS() const {
-        calculate();
-        return secondLegBPS_;
     }
 
 }
