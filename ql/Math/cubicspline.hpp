@@ -35,8 +35,6 @@ namespace QuantLib {
 
     namespace detail {
 
-        template <class I1, class I2> class CubicSplineImpl;
-
         class CoefficientHolder {
           public:
             CoefficientHolder(Size n)
