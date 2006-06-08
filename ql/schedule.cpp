@@ -126,8 +126,10 @@ namespace QuantLib {
             Size N = dates_.size();
             // possibly correct last inserted date
             if (dates_.back() > last) {
-                if (N > 1 && longFinal)
+                if (N > 1 && longFinal) {
                     dates_.pop_back();
+                    N--;
+                }
                 dates_.back() = last;
                 finalIsRegular_ = false;
             }
