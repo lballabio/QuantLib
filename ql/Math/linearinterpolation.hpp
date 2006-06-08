@@ -29,6 +29,11 @@
 
 namespace QuantLib {
 
+    enum LinearInterpolationType { LinearType,
+                                   BackwardFlatType,
+                                   ForwardFlatType
+    };
+
     namespace detail {
 
         template <class I1, class I2>
@@ -98,6 +103,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif
