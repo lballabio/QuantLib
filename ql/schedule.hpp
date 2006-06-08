@@ -36,10 +36,13 @@ namespace QuantLib {
     class Schedule {
       public:
         Schedule(const Calendar& calendar,
-                 const Date& startDate, const Date& endDate,
-                 Frequency frequency, BusinessDayConvention convention,
+                 const Date& startDate,
+                 const Date& endDate,
+                 Frequency frequency,
+                 BusinessDayConvention convention,
                  const Date& stubDate = Date(),
-                 bool startFromEnd = false, bool longFinal = false);
+                 bool startFromEnd = false,
+                 bool longFinal = false);
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
                  BusinessDayConvention convention = Unadjusted);
