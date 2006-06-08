@@ -63,7 +63,7 @@ namespace QuantLib {
         //@}
       protected:
         //! convexity adjustment for the given index fixing
-        virtual Rate convexityAdjustment(Rate fixing) const;
+        virtual Rate convexityAdjustment(Rate fixing) const { return 0.0; }
         Integer fixingDays_;
         Spread spread_;
     };
@@ -103,10 +103,6 @@ namespace QuantLib {
 
     inline Spread FloatingRateCoupon::spread() const {
         return spread_;
-    }
-
-    inline Rate FloatingRateCoupon::convexityAdjustment(Rate) const {
-        return 0.0;
     }
 
     inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {

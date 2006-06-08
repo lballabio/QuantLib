@@ -26,7 +26,7 @@ namespace QuantLib {
     ForwardRateAgreement::ForwardRateAgreement(
                            const Date& valueDate,
                            const Date& maturityDate,
-                           Forward::Type type,
+                           Instrument::Position type,
                            Rate strikeForwardRate,
                            Real notionalAmount,
                            Integer settlementDays,
@@ -71,7 +71,7 @@ namespace QuantLib {
     ForwardRateAgreement::ForwardRateAgreement(
                            const Date& valueDate,
                            Integer termMonths,
-                           Forward::Type type,
+                           Instrument::Position type,
                            Rate strikeForwardRate,
                            Real notionalAmount,
                            Integer settlementDays,

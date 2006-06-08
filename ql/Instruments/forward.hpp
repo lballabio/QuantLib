@@ -141,17 +141,17 @@ namespace QuantLib {
     //! Class for forward type payoffs
     class ForwardTypePayoff : public Payoff {
       public:
-        ForwardTypePayoff(Forward::Type type, Real strike)
+          ForwardTypePayoff(Instrument::Position type, Real strike)
         : type_(type),strike_(strike) {
             QL_REQUIRE(strike >= 0.0,"negative strike given");
         }
 
-        Forward::Type forwardType() const { return type_; };
+        Instrument::Position forwardType() const { return type_; };
         Real strike() const { return strike_; };
         Real operator()(Real price) const;
 
       protected:
-        Forward::Type type_;
+        Instrument::Position type_;
         Real strike_;
     };
 

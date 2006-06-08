@@ -84,7 +84,7 @@ namespace QuantLib {
         FixedCouponBondForward(
                     const Date& valueDate,
                     const Date& maturityDate,
-                    Forward::Type type,
+                    Instrument::Position type,
                     Real strike,
                     Integer settlementDays,
                     const DayCounter& dayCount,

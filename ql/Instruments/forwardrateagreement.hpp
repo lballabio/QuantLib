@@ -40,10 +40,10 @@ namespace QuantLib {
            (maturityDate - valueDate) is the tenor/term of the
            underlying loan or deposit
 
-        2. Choose Forward::Type = Long for an "FRA purchase" (future
+        2. Choose Instrument::Position = Long for an "FRA purchase" (future
            long loan, short deposit [borrower])
 
-        3. Choose Forward::Type = Short for an "FRA sale" (future short
+        3. Choose Instrument::Position = Short for an "FRA sale" (future short
            loan, long deposit [lender])
 
         4. If strike is given in the constructor, can calculate the NPV
@@ -91,7 +91,7 @@ namespace QuantLib {
         ForwardRateAgreement(
                            const Date& valueDate,
                            const Date& maturityDate,
-                           Forward::Type type,
+                           Instrument::Position type,
                            Rate strikeForwardRate,
                            Real notionalAmount,
                            Integer settlementDays,
@@ -110,7 +110,7 @@ namespace QuantLib {
         ForwardRateAgreement(
                            const Date& valueDate,
                            Integer termMonths,
-                           Forward::Type type,
+                           Instrument::Position type,
                            Rate strikeForwardRate,
                            Real notionalAmount,
                            Integer settlementDays,
@@ -143,7 +143,7 @@ namespace QuantLib {
 
       protected:
         void performCalculations() const;
-        Forward::Type fraType_;
+        Instrument::Position fraType_;
         //! aka FRA rate (the market forward rate)
         mutable InterestRate forwardRate_;
         //! aka FRA fixing rate, contract rate
