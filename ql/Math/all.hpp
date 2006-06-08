@@ -55,6 +55,7 @@
 #include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/riskstatistics.hpp>
 #include <ql/Math/rounding.hpp>
+#include <ql/Math/sabrinterpolation.hpp>
 #include <ql/Math/sampledcurve.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/simpsonintegral.hpp>
