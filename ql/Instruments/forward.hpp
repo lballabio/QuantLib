@@ -61,7 +61,6 @@ namespace QuantLib {
     */
     class Forward : public Instrument {
       public:
-        enum Type { Long, Short };
         //! \name Inspectors
         //@{
         virtual Date settlementDate() const;

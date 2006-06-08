@@ -39,6 +39,7 @@ namespace QuantLib {
     */
     class Instrument : public LazyObject {
       public:
+        enum Position { Long, Short };
         Instrument();
         //! \name Inspectors
         //@{
