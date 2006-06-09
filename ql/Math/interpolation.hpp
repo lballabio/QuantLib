@@ -77,7 +77,7 @@ namespace QuantLib {
                 return *(xEnd_-1);
             }
             bool isInRange(Real x) const {
-                return x >= xMin() && x <= xMax();
+                return (x-xMin()>=-QL_EPSILON) && (x-xMax()<=QL_EPSILON);
             }
           protected:
             Size locate(Real x) const {
