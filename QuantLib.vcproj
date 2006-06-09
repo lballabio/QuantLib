@@ -2619,6 +2619,12 @@
 				RelativePath="ql\Instruments\vanillaoption.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\vanillaswap.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\vanillaswap.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Instruments\zerocouponbond.cpp">
 			</File>
 			<File
@@ -3753,6 +3759,9 @@
 			</File>
 			<File
 				RelativePath=".\ql\Math\rounding.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\sabrinterpolation.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Math\sampledcurve.cpp">
