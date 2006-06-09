@@ -184,7 +184,7 @@ int main(int, char* []) {
         Integer fraSettlementDays = fixingDays;
         Calendar fraCalendar = calendar;
         BusinessDayConvention fraBusinessDayConvention = convention;
-        Forward::Type fraFwdType = Forward::Long;
+        Instrument::Position fraFwdType = Instrument::Long;
         Real fraNotional = 100.0;
         const Integer FraTermMonths = 3;
         Integer monthsToStart[] = { 1, 2, 3, 6, 9 };
