@@ -1812,6 +1812,12 @@
 				RelativePath="ql\Instruments\cliquetoption.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\compositeinstrument.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\compositeinstrument.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Instruments\convertiblebond.cpp">
 			</File>
 			<File
