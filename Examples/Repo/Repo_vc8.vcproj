@@ -15,8 +15,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release CRTDLL|Win32"
-			OutputDirectory=".\build\vc80\ReleaseCRTDLL"
-			IntermediateDirectory=".\build\vc80\ReleaseCRTDLL"
+			OutputDirectory=".\build\vc80\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -36,7 +36,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc80\ReleaseCRTDLL/Repo.tlb"
+				TypeLibraryName=".\build\vc80\$(ConfigurationName)/Repo.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -55,12 +55,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc80\ReleaseCRTDLL/Repo.pch"
-				AssemblerListingLocation=".\build\vc80\ReleaseCRTDLL/"
-				ObjectFile=".\build\vc80\ReleaseCRTDLL/"
-				ProgramDataBaseFileName=".\build\vc80\ReleaseCRTDLL/"
+				PrecompiledHeaderFile=".\build\vc80\$(ConfigurationName)/Repo.pch"
+				AssemblerListingLocation=".\build\vc80\$(ConfigurationName)/"
+				ObjectFile=".\build\vc80\$(ConfigurationName)/"
+				ProgramDataBaseFileName=".\build\vc80\$(ConfigurationName)/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc80\ReleaseCRTDLL/"
+				BrowseInformationFile=".\build\vc80\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -82,7 +82,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc80\ReleaseCRTDLL/Repo.pdb"
+				ProgramDatabaseFile=".\build\vc80\$(ConfigurationName)/Repo.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -114,8 +114,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\build\vc80\Release"
-			IntermediateDirectory=".\build\vc80\Release"
+			OutputDirectory=".\build\vc80\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -135,7 +135,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc80\Release/Repo.tlb"
+				TypeLibraryName=".\build\vc80\$(ConfigurationName)/Repo.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -154,12 +154,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc80\Release/Repo.pch"
-				AssemblerListingLocation=".\build\vc80\Release/"
-				ObjectFile=".\build\vc80\Release/"
-				ProgramDataBaseFileName=".\build\vc80\Release/"
+				PrecompiledHeaderFile=".\build\vc80\$(ConfigurationName)/Repo.pch"
+				AssemblerListingLocation=".\build\vc80\$(ConfigurationName)/"
+				ObjectFile=".\build\vc80\$(ConfigurationName)/"
+				ProgramDataBaseFileName=".\build\vc80\$(ConfigurationName)/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc80\Release/"
+				BrowseInformationFile=".\build\vc80\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -181,7 +181,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc80\Release/Repo.pdb"
+				ProgramDatabaseFile=".\build\vc80\$(ConfigurationName)/Repo.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -213,8 +213,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug CRTDLL|Win32"
-			OutputDirectory=".\build\vc80\DebugCRTDLL"
-			IntermediateDirectory=".\build\vc80\DebugCRTDLL"
+			OutputDirectory=".\build\vc80\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -234,7 +234,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc80\DebugCRTDLL/Repo.tlb"
+				TypeLibraryName=".\build\vc80\$(ConfigurationName)/Repo.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -250,12 +250,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc80\DebugCRTDLL/Repo.pch"
-				AssemblerListingLocation=".\build\vc80\DebugCRTDLL/"
-				ObjectFile=".\build\vc80\DebugCRTDLL/"
-				ProgramDataBaseFileName=".\build\vc80\DebugCRTDLL/"
+				PrecompiledHeaderFile=".\build\vc80\$(ConfigurationName)/Repo.pch"
+				AssemblerListingLocation=".\build\vc80\$(ConfigurationName)/"
+				ObjectFile=".\build\vc80\$(ConfigurationName)/"
+				ProgramDataBaseFileName=".\build\vc80\$(ConfigurationName)/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc80\DebugCRTDLL/"
+				BrowseInformationFile=".\build\vc80\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -279,7 +279,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\build\vc80\DebugCRTDLL/Repo.pdb"
+				ProgramDatabaseFile=".\build\vc80\$(ConfigurationName)/Repo.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -311,8 +311,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\build\vc80\Debug"
-			IntermediateDirectory=".\build\vc80\Debug"
+			OutputDirectory=".\build\vc80\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc80\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -332,7 +332,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc80\Debug/Repo.tlb"
+				TypeLibraryName=".\build\vc80\$(ConfigurationName)/Repo.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -348,12 +348,12 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc80\Debug/Repo.pch"
-				AssemblerListingLocation=".\build\vc80\Debug/"
-				ObjectFile=".\build\vc80\Debug/"
-				ProgramDataBaseFileName=".\build\vc80\Debug/"
+				PrecompiledHeaderFile=".\build\vc80\$(ConfigurationName)/Repo.pch"
+				AssemblerListingLocation=".\build\vc80\$(ConfigurationName)/"
+				ObjectFile=".\build\vc80\$(ConfigurationName)/"
+				ProgramDataBaseFileName=".\build\vc80\$(ConfigurationName)/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc80\Debug/"
+				BrowseInformationFile=".\build\vc80\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -377,7 +377,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\build\vc80\Debug/Repo.pdb"
+				ProgramDatabaseFile=".\build\vc80\$(ConfigurationName)/Repo.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
