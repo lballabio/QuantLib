@@ -13,8 +13,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release SingleThread|Win32"
-			OutputDirectory=".\build\vc71\ReleaseST"
-			IntermediateDirectory=".\build\vc71\ReleaseST"
+			OutputDirectory=".\build\vc71\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -37,12 +37,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\ReleaseST/DiscreteHedging.pch"
-				AssemblerListingLocation=".\build\vc71\ReleaseST/"
-				ObjectFile=".\build\vc71\ReleaseST/"
-				ProgramDataBaseFileName=".\build\vc71\ReleaseST/"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pch"
+				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
+				ObjectFile=".\build\vc71\$(ConfigurationName)/"
+				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc71\ReleaseST/"
+				BrowseInformationFile=".\build\vc71\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
@@ -54,12 +54,12 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc71\ReleaseST/DiscreteHedging.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\ReleaseST/DiscreteHedging.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/DiscreteHedging.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -84,8 +84,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\build\vc71\Release"
-			IntermediateDirectory=".\build\vc71\Release"
+			OutputDirectory=".\build\vc71\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -108,12 +108,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\Release/DiscreteHedging.pch"
-				AssemblerListingLocation=".\build\vc71\Release/"
-				ObjectFile=".\build\vc71\Release/"
-				ProgramDataBaseFileName=".\build\vc71\Release/"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pch"
+				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
+				ObjectFile=".\build\vc71\$(ConfigurationName)/"
+				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc71\Release/"
+				BrowseInformationFile=".\build\vc71\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
@@ -125,12 +125,12 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc71\Release/DiscreteHedging.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\Release/DiscreteHedging.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/DiscreteHedging.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -155,8 +155,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug SingleThread|Win32"
-			OutputDirectory=".\build\vc71\DebugST"
-			IntermediateDirectory=".\build\vc71\DebugST"
+			OutputDirectory=".\build\vc71\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -175,12 +175,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\DebugST/DiscreteHedging.pch"
-				AssemblerListingLocation=".\build\vc71\DebugST/"
-				ObjectFile=".\build\vc71\DebugST/"
-				ProgramDataBaseFileName=".\build\vc71\DebugST/"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pch"
+				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
+				ObjectFile=".\build\vc71\$(ConfigurationName)/"
+				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc71\DebugST/"
+				BrowseInformationFile=".\build\vc71\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -194,12 +194,12 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\vc71\DebugST/DiscreteHedging.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\DebugST/DiscreteHedging.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/DiscreteHedging.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -224,8 +224,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release CRTDLL|Win32"
-			OutputDirectory=".\build\vc71\ReleaseCRTDLL"
-			IntermediateDirectory=".\build\vc71\ReleaseCRTDLL"
+			OutputDirectory=".\build\vc71\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -247,12 +247,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\ReleaseCRTDLL/DiscreteHedging.pch"
-				AssemblerListingLocation=".\build\vc71\ReleaseCRTDLL/"
-				ObjectFile=".\build\vc71\ReleaseCRTDLL/"
-				ProgramDataBaseFileName=".\build\vc71\ReleaseCRTDLL/"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pch"
+				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
+				ObjectFile=".\build\vc71\$(ConfigurationName)/"
+				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc71\ReleaseCRTDLL/"
+				BrowseInformationFile=".\build\vc71\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
@@ -264,12 +264,12 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
-				ProgramDatabaseFile=".\build\vc71\ReleaseCRTDLL/DiscreteHedging.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\ReleaseCRTDLL/DiscreteHedging.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/DiscreteHedging.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -294,8 +294,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\build\vc71\Debug"
-			IntermediateDirectory=".\build\vc71\Debug"
+			OutputDirectory=".\build\vc71\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -314,12 +314,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\Debug/DiscreteHedging.pch"
-				AssemblerListingLocation=".\build\vc71\Debug/"
-				ObjectFile=".\build\vc71\Debug/"
-				ProgramDataBaseFileName=".\build\vc71\Debug/"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pch"
+				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
+				ObjectFile=".\build\vc71\$(ConfigurationName)/"
+				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc71\Debug/"
+				BrowseInformationFile=".\build\vc71\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -333,12 +333,12 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\vc71\Debug/DiscreteHedging.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\Debug/DiscreteHedging.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/DiscreteHedging.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -363,8 +363,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug CRTDLL|Win32"
-			OutputDirectory=".\build\vc71\DebugCRTDLL"
-			IntermediateDirectory=".\build\vc71\DebugCRTDLL"
+			OutputDirectory=".\build\vc71\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc71\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -383,12 +383,12 @@
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="quantlib.hpp"
-				PrecompiledHeaderFile=".\build\vc71\DebugCRTDLL/DiscreteHedging.pch"
-				AssemblerListingLocation=".\build\vc71\DebugCRTDLL/"
-				ObjectFile=".\build\vc71\DebugCRTDLL/"
-				ProgramDataBaseFileName=".\build\vc71\DebugCRTDLL/"
+				PrecompiledHeaderFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pch"
+				AssemblerListingLocation=".\build\vc71\$(ConfigurationName)/"
+				ObjectFile=".\build\vc71\$(ConfigurationName)/"
+				ProgramDataBaseFileName=".\build\vc71\$(ConfigurationName)/"
 				BrowseInformation="1"
-				BrowseInformationFile=".\build\vc71\DebugCRTDLL/"
+				BrowseInformationFile=".\build\vc71\$(ConfigurationName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -402,12 +402,12 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\build\vc71\DebugCRTDLL/DiscreteHedging.pdb"
+				ProgramDatabaseFile=".\build\vc71\$(ConfigurationName)/DiscreteHedging.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\build\vc71\DebugCRTDLL/DiscreteHedging.tlb"
+				TypeLibraryName=".\build\vc71\$(ConfigurationName)/DiscreteHedging.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
