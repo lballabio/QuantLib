@@ -33,6 +33,8 @@ namespace QuantLib {
 
     namespace detail {
 
+        template <class I1, class I2> class SABRInterpolationImpl;
+
         class SABRCoefficientHolder {
           public:
             SABRCoefficientHolder() {}
@@ -135,7 +137,7 @@ namespace QuantLib {
                 QL_REQUIRE(nu_>=0.0, "nu must be non negative");
                 QL_REQUIRE(alpha_>0.0, "alpha must be positive");
                 // ???
-                //MFN_REQUIRE_1( rho_*rho_<1,"double Sabr::blackVolatilityByApproximation(...) const", rho_); 
+                //MFN_REQUIRE_1( rho_*rho_<1,"double Sabr::blackVolatilityByApproximation(...) const", rho_);
 
             }
             Real value(Real x) const {
