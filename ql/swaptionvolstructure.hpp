@@ -77,9 +77,9 @@ namespace QuantLib {
         //! the largest length for which the term structure can return vols
         virtual Time maxTimeLength() const;
         //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const = 0;
+        virtual Rate minStrike() const = 0;
         //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const = 0;
+        virtual Rate maxStrike() const = 0;
         //@}
       protected:
         //! implements the actual volatility calculation in derived classes

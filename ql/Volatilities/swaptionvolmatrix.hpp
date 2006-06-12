@@ -57,8 +57,8 @@ namespace QuantLib {
         Time maxStartTime() const;
         Period maxLength() const;
         Time maxTimeLength() const;
-        Real minStrike() const;
-        Real maxStrike() const;
+        Rate minStrike() const;
+        Rate maxStrike() const;
       private:
         DayCounter dayCounter_;
         std::vector<Date> exerciseDates_;
@@ -129,11 +129,11 @@ namespace QuantLib {
         return timeLengths_.back();
     }
 
-    inline Real SwaptionVolatilityMatrix::minStrike() const {
+    inline Rate SwaptionVolatilityMatrix::minStrike() const {
         return QL_MIN_REAL;
     }
 
-    inline Real SwaptionVolatilityMatrix::maxStrike() const {
+    inline Rate SwaptionVolatilityMatrix::maxStrike() const {
         return QL_MAX_REAL;
     }
 
