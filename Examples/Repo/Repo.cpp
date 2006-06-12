@@ -112,7 +112,7 @@ int main(int, char* []) {
                                    Compounded,
                                    bondCouponFrequency)));
 
-        Instrument::Position fwdType = Forward::Long;
+        Position::Type fwdType = Position::Long;
         double dummyStrike = 91.5745;
 
         Handle<YieldTermStructure> repoCurve;

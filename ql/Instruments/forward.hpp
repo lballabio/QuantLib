@@ -25,6 +25,7 @@
 #define quantlib_forward_hpp
 
 #include <ql/instrument.hpp>
+#include <ql/position.hpp>
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/yieldtermstructure.hpp>
@@ -141,17 +142,17 @@ namespace QuantLib {
     //! Class for forward type payoffs
     class ForwardTypePayoff : public Payoff {
       public:
-          ForwardTypePayoff(Instrument::Position type, Real strike)
+        ForwardTypePayoff(Position::Type type, Real strike)
         : type_(type),strike_(strike) {
             QL_REQUIRE(strike >= 0.0,"negative strike given");
         }
 
-        Instrument::Position forwardType() const { return type_; };
+        Position::Type forwardType() const { return type_; };
         Real strike() const { return strike_; };
         Real operator()(Real price) const;
 
       protected:
-        Instrument::Position type_;
+        Position::Type type_;
         Real strike_;
     };
 
@@ -184,12 +185,12 @@ namespace QuantLib {
 
     inline Real ForwardTypePayoff::operator()(Real price) const {
         switch (type_) {
-          case Forward::Long:
+          case Position::Long:
             return (price-strike_);
-          case Forward::Short:
+          case Position::Short:
             return (strike_-price);
           default:
-            QL_FAIL("unknown/illegal forward type");
+            QL_FAIL("unknown/illegal position type");
         }
     }
 

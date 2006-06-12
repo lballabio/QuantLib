@@ -184,7 +184,7 @@ int main(int, char* []) {
         Integer fraSettlementDays = fixingDays;
         Calendar fraCalendar = calendar;
         BusinessDayConvention fraBusinessDayConvention = convention;
-        Instrument::Position fraFwdType = Instrument::Long;
+        Position::Type fraFwdType = Position::Long;
         Real fraNotional = 100.0;
         const Integer FraTermMonths = 3;
         Integer monthsToStart[] = { 1, 2, 3, 6, 9 };
@@ -256,7 +256,7 @@ int main(int, char* []) {
 
         cout << endl << endl;
         cout << "Now take a 100 basis-point upward shift in FRA quotes "
-             <<	"and examine NPV"
+             << "and examine NPV"
              << endl
              << endl;
 

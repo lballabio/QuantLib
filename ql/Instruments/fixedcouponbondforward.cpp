@@ -24,7 +24,7 @@ namespace QuantLib {
     FixedCouponBondForward::FixedCouponBondForward(
                     const Date& valueDate,
                     const Date& maturityDate,
-                    Instrument::Position type,
+                    Position::Type type,
                     Real strike,
                     Integer settlementDays,
                     const DayCounter& dayCount,
@@ -46,12 +46,12 @@ namespace QuantLib {
     Real FixedCouponBondForward::cleanForwardPrice() const {
         return forwardValue() -
                fixedCouponBond_->accruedAmount(maturityDate_);
-	}
+    }
 
 
     Real FixedCouponBondForward::forwardPrice() const {
         return forwardValue();
-	}
+    }
 
 
     Real FixedCouponBondForward::spotIncome(const Handle<YieldTermStructure>&

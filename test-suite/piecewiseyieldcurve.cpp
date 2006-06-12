@@ -324,7 +324,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
                                       fraData[i].n, fraData[i].units,
                                       fraConvention);
 
-        ForwardRateAgreement fra(start, 3, Forward::Long, fraData[i].rate/100,
+        ForwardRateAgreement fra(start, 3, Position::Long, fraData[i].rate/100,
                                  100.0, settlementDays, fraDayCounter,
                                  calendar, fraConvention, curveHandle);
         Rate expectedRate = fraData[i].rate/100,
