@@ -44,6 +44,7 @@ include_HEADERS = \
 	pseudosqrt.hpp \
 	riskstatistics.hpp \
 	rounding.hpp \
+	sabrinterpolation.hpp \
 	sampledcurve.hpp \
 	segmentintegral.hpp \
 	sequencestatistics.hpp \
