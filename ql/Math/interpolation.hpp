@@ -2,7 +2,8 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 
 #include <ql/Patterns/bridge.hpp>
 #include <ql/Math/extrapolation.hpp>
+#include <ql/Math/comparison.hpp>
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
 
@@ -77,7 +79,8 @@ namespace QuantLib {
                 return *(xEnd_-1);
             }
             bool isInRange(Real x) const {
-                return (x-xMin()>=-QL_EPSILON) && (x-xMax()<=QL_EPSILON);
+                Real x1 = xMin(), x2 = xMax();
+                return (x >= x1 && x <= x2) || close(x,x1) || close(x,x2);
             }
           protected:
             Size locate(Real x) const {
