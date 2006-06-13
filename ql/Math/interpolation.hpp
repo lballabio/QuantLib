@@ -96,6 +96,7 @@ namespace QuantLib {
         };
       public:
         Interpolation() {}
+        virtual ~Interpolation() {}
         Real operator()(Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);
             return impl_->value(x);
