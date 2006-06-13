@@ -23,6 +23,9 @@
 
 namespace QuantLib {
 
+    /*! FRA constructor with underlying loan/deposit having
+        tenor/term maturityDate-valueDate.
+    */
     ForwardRateAgreement::ForwardRateAgreement(
                            const Date& valueDate,
                            const Date& maturityDate,
@@ -67,7 +70,10 @@ namespace QuantLib {
         underlyingIncome_ = 0.0;
     }
 
-
+    /*! FRA constructor with maturityDate defined in terms of
+        months from valueDate. (termMonths = the term of the
+        underlying loan or deposit)
+    */
     ForwardRateAgreement::ForwardRateAgreement(
                            const Date& valueDate,
                            Integer termMonths,
@@ -111,6 +117,59 @@ namespace QuantLib {
         incomeDiscountCurve_ = discountCurve_;
     }
 
+    /*! FRA constructor using Index
+    */
+    ForwardRateAgreement::ForwardRateAgreement(
+                           const Date& valueDate,
+                           const Date& maturityDate,
+                           Position::Type type,
+                           Rate strikeForwardRate,
+                           Real notionalAmount,
+                           const boost::shared_ptr<Xibor>& index,
+                           //Integer settlementDays,
+                           //const DayCounter& dayCount,
+                           //const Calendar& calendar,
+                           //BusinessDayConvention businessDayConvention,
+                           const Handle<YieldTermStructure>& discountCurve,
+                           Compounding compounding)
+                           //Frequency frequency)
+    : Forward(index->dayCounter(), index->calendar(), index->businessDayConvention(), 
+              index->settlementDays(), boost::shared_ptr<Payoff>(), 
+              valueDate, maturityDate, discountCurve),
+      fraType_(type), notionalAmount_(notionalAmount),
+      compounding_(compounding), frequency_(index->frequency()) {
+
+        QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
+
+        // do I adjust this ?
+        // valueDate_ = calendar_.adjust(valueDate_,businessDayConvention_);
+        
+        forwardRate_ = InterestRate(index->fixing(valueDate_),
+                                    index->dayCounter(),
+                                    compounding_,
+                                    //index->compounding(), 
+                                    frequency_);
+
+        strikeForwardRate_ = InterestRate(strikeForwardRate, 
+                                          index->dayCounter(),
+                                          compounding_,
+                                          //index->compounding(), 
+                                          frequency_);
+
+        Real strike = notionalAmount_ *
+                      strikeForwardRate_.compoundFactor(valueDate_,
+                                                        maturityDate_);
+        payoff_ = boost::shared_ptr<Payoff>(new ForwardTypePayoff(fraType_,
+                                                                  strike));
+
+        // incomeDiscountCurve_ is irrelevant to an FRA
+        incomeDiscountCurve_ = discountCurve_;
+
+        // income is irrelevant to FRA - set it to zero
+        underlyingIncome_ = 0.0;
+    }
+
+
     Date ForwardRateAgreement::settlementDate() const {
         // take settlement at evaluationDate + settlementDays
         Date d = calendar_.advance(Settings::instance().evaluationDate(),
@@ -145,9 +204,10 @@ namespace QuantLib {
     }
 
     InterestRate ForwardRateAgreement::forwardRate() const {
-        return discountCurve_->forwardRate(valueDate_, maturityDate_,
-                                           dayCount_, compounding_,
-                                           frequency_);
+        //return discountCurve_->forwardRate(valueDate_, maturityDate_,
+        //                                   dayCount_, compounding_,
+        //                                   frequency_);
+        return forwardRate_;
     }
 
     void ForwardRateAgreement::performCalculations() const {
@@ -157,6 +217,5 @@ namespace QuantLib {
 
         Forward::performCalculations();
     }
-
 }
 

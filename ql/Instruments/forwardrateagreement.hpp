@@ -25,6 +25,7 @@
 #define quantlib_forward_rate_agreement_hpp
 
 #include <ql/Instruments/forward.hpp>
+#include <ql/Indexes/xibor.hpp>
 
 namespace QuantLib {
 
@@ -121,6 +122,25 @@ namespace QuantLib {
                                                  Handle<YieldTermStructure>(),
                            Compounding compounding = Simple,
                            Frequency frequency = Annual);
+        
+        /*! FRA constructor using Index.
+        */
+        ForwardRateAgreement(
+                           const Date& valueDate,
+                           const Date& maturityDate,
+                           Position::Type type,
+                           Rate strikeForwardRate,
+                           Real notionalAmount,
+                           const boost::shared_ptr<Xibor>& index,
+                           //Integer settlementDays,
+                           //const DayCounter& dayCount,
+                           //const Calendar& calendar,
+                           //BusinessDayConvention businessDayConvention,
+                           const Handle<YieldTermStructure>& discountCurve =
+                                                 Handle<YieldTermStructure>(),
+                           Compounding compounding = Simple);
+                           //Frequency frequency = Annual);
+ 
         //@}
 
         //! \name Calculations
