@@ -63,7 +63,7 @@ namespace QuantLib {
 
     }
 
-    //! %SABR interpolation between discrete points.
+    //! %SABR smile interpolation between discrete volatility points.
     /*! Blah blah.
 
         See XXX
@@ -88,27 +88,16 @@ namespace QuantLib {
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(impl_);
         }
-        Real expiry() const {
-            return coeffs_->t_;
-        }
-        Real forward() const {
-            return coeffs_->forward_;
-        }
-        Real beta() const {
-            return coeffs_->beta_;
-        }
-        Real nu() const {
-            return coeffs_->nu_;
-        }
-        Real alpha() const {
-            return coeffs_->alpha_;
-        }
-        Real rho() const {
-            return coeffs_->rho_;
-        }
+        Real expiry()  const { return coeffs_->t_; }
+        Real forward() const { return coeffs_->forward_; }
+        Real beta()    const { return coeffs_->beta_; }
+        Real nu()      const { return coeffs_->nu_; }
+        Real alpha()   const { return coeffs_->alpha_; }
+        Real rho()     const { return coeffs_->rho_; }
       private:
         boost::shared_ptr<detail::SABRCoefficientHolder> coeffs_;
     };
+
 
     namespace detail {
 
