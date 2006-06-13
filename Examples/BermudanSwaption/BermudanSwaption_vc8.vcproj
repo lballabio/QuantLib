@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="BermudanSwaption"
-	ProjectGUID="{B96E9E0A-99DA-4E9F-B8D0-941F46CDF634}"
+	ProjectGUID="{940A0AFC-9F9F-4797-A0FF-99543F67C1D9}"
 	>
 	<Platforms>
 		<Platform
