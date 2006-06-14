@@ -35,12 +35,10 @@ namespace QuantLib {
         virtual ~Extrapolator() {}
         //! \name modifiers
         //@{
-        //! set extrapolation flag in subsequent calls
-        void setExtrapolationFlag(bool b) { extrapolate_ = b; }
         //! enable extrapolation in subsequent calls
-        void enableExtrapolation() { extrapolate_ = true; }
+        void enableExtrapolation(bool b = true) { extrapolate_ = b; }
         //! disable extrapolation in subsequent calls
-        void disableExtrapolation() { extrapolate_ = false; }
+        void disableExtrapolation(bool b = true) { extrapolate_ = !b; }
         //@}
         //! \name inspectors
         //@{
