@@ -54,6 +54,9 @@ namespace QuantLib {
     };
 
     void JamshidianSwaptionEngine::calculate() const {
+
+        QL_REQUIRE(arguments_.settlementType==SettlementType::Physical, "cash settled swaptions not priced with JamshidianSwaptionEngine");
+
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "cannot use the Jamshidian decomposition "
                    "on exotic swaptions");
