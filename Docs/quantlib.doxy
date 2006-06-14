@@ -1,4 +1,4 @@
-# Doxyfile 1.4.6
+# Doxyfile 1.4.7
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -24,9 +24,9 @@ DETAILS_AT_TOP         = YES
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 4
-ALIASES                = "warning=\xrefitem caveats \"Warning\" \"Caveats\""
-ALIASES               += "test=\xrefitem test \"Tests\" \"Test Suite\""
-ALIASES               += "bug=\xrefitem bug \"Bug\" \"Known Bugs\""
+ALIASES                = "warning=\xrefitem caveats \"Warning\" \"Caveats\"" \
+                         "test=\xrefitem test \"Tests\" \"Test Suite\"" \
+                         "bug=\xrefitem bug \"Bug\" \"Known Bugs\""
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
 BUILTIN_STL_SUPPORT    = YES
@@ -103,6 +103,7 @@ INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
 REFERENCED_BY_RELATION = NO
 REFERENCES_RELATION    = NO
+REFERENCES_LINK_SOURCE = NO
 USE_HTAGS              = NO
 VERBATIM_HEADERS       = NO
 #---------------------------------------------------------------------------
@@ -227,6 +228,7 @@ TEMPLATE_RELATIONS     = NO
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = NO
 CALL_GRAPH             = NO
+CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = NO
 DOT_IMAGE_FORMAT       = png

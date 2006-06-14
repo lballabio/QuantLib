@@ -226,7 +226,7 @@ A.codeRef:visited { font-weight: normal; color: #0000FF}
 A:hover { text-decoration: none; background-color: #f2f2ff }
 DL.el { margin-left: -1cm }
 .fragment {
-       font-family: Fixed, monospace;
+       font-family: monospace, fixed;
        font-size: 95%;
 }
 PRE.fragment {
@@ -242,14 +242,7 @@ PRE.fragment {
 	padding-bottom: 4px;
 }
 DIV.ah { background-color: black; font-weight: bold; color: #ffffff; margin-bottom: 3px; margin-top: 3px }
-TD.md { background-color: #F4F4FB; font-weight: bold; }
-TD.mdPrefix {
-       background-color: #F4F4FB;
-       color: #606060;
-	font-size: 80%;
-}
-TD.mdname1 { background-color: #F4F4FB; font-weight: bold; color: #602020; }
-TD.mdname { background-color: #F4F4FB; font-weight: bold; color: #602020; width: 600px; }
+
 DIV.groupHeader {
        margin-left: 16px;
        margin-top: 12px;
@@ -302,13 +295,6 @@ SPAN.comment       { color: #800000 }
 SPAN.preprocessor  { color: #806020 }
 SPAN.stringliteral { color: #002080 }
 SPAN.charliteral   { color: #008080 }
-.mdTable {
-	border: 1px solid #868686;
-	background-color: #F4F4FB;
-}
-.mdRow {
-	padding: 8px 10px;
-}
 .mdescLeft {
        padding: 0px 8px 4px 8px;
 	font-size: 80%;
@@ -453,4 +439,66 @@ HR { height: 1px;
      border: none;
      border-top: 1px solid black;
 }
+
+/* Style for detailed member documentation */
+.memtemplate {
+  font-size: 80%;
+  color: #606060;
+  font-weight: normal;
+} 
+.memnav { 
+  background-color: #e8eef2;
+  border: 1px solid #84b0c7;
+  text-align: center;
+  margin: 2px;
+  margin-right: 15px;
+  padding: 2px;
+}
+.memitem {
+  padding: 4px;
+  background-color: #eef3f5;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #dedeee;
+  -moz-border-radius: 8px 8px 8px 8px;
+}
+.memname {
+  white-space: nowrap;
+  font-weight: bold;
+}
+.memdoc{
+  padding-left: 10px;
+}
+.memproto {
+  background-color: #d5e1e8;
+  width: 100%;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #84b0c7;
+  font-weight: bold;
+  -moz-border-radius: 8px 8px 8px 8px;
+}
+.paramkey {
+  text-align: right;
+}
+.paramtype {
+  white-space: nowrap;
+}
+.paramname {
+  color: #602020;
+  font-style: italic;
+}
+/* End Styling for detailed member documentation */
+
+/* for the tree view */
+.ftvtree {
+	font-family: sans-serif;
+	margin:0.5em;
+}
+.directory { font-size: 9pt; font-weight: bold; }
+.directory h3 { margin: 0px; margin-top: 1em; font-size: 11pt; }
+.directory > h3 { margin-top: 0; }
+.directory p { margin: 0px; white-space: nowrap; }
+.directory div { display: none; margin: 0px; }
+.directory img { vertical-align: -30%; }
 
