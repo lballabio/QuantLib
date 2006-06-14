@@ -144,8 +144,7 @@ namespace QuantLib {
                 };
               public:
                 SABRConstraint()
-                : Constraint(boost::shared_ptr<Constraint::Impl>(
-                                             new SABRConstraint::Impl)) {}
+                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
             };
 
           public:
