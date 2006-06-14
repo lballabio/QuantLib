@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,7 +26,6 @@
 #define quantlib_cap_volatility_structures_hpp
 
 #include <ql/termstructure.hpp>
-#include <ql/Math/extrapolation.hpp>
 
 namespace QuantLib {
 
@@ -33,8 +33,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         structures which will be derived from this one.
     */
-    class CapVolatilityStructure : public TermStructure,
-                                   public Extrapolator {
+    class CapVolatilityStructure : public TermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -66,10 +65,6 @@ namespace QuantLib {
         //@}
         //! \name Limits
         //@{
-        //! the latest date for which the term structure can return vols
-        virtual Date maxDate() const = 0;
-        //! the latest time for which the term structure can return vols
-        virtual Time maxTime() const;
         //! the minimum strike for which the term structure can return vols
         virtual Real minStrike() const = 0;
         //! the maximum strike for which the term structure can return vols
@@ -78,7 +73,7 @@ namespace QuantLib {
       protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
-	  private:
+      private:
         void checkRange(Time, Rate strike, bool extrapolate) const;
     };
 
@@ -86,8 +81,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of
         concrete structures which will be derived from this one.
     */
-    class CapletVolatilityStructure : public TermStructure,
-                                      public Extrapolator {
+    class CapletVolatilityStructure : public TermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -117,10 +111,6 @@ namespace QuantLib {
         //@}
         //! \name Limits
         //@{
-        //! the latest date for which the term structure can return vols
-        virtual Date maxDate() const = 0;
-        //! the latest time for which the term structure can return vols
-        virtual Time maxTime() const;
         //! the minimum strike for which the term structure can return vols
         virtual Real minStrike() const = 0;
         //! the maximum strike for which the term structure can return vols
@@ -129,7 +119,7 @@ namespace QuantLib {
       protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
-	  private:
+      private:
         void checkRange(Time, Rate strike, bool extrapolate) const;
     };
 
@@ -173,18 +163,9 @@ namespace QuantLib {
         return volatilityImpl(t,strike);
     }
 
-	inline Time CapVolatilityStructure::maxTime() const {
-        return timeFromReference(maxDate());
-    }
-
     inline void CapVolatilityStructure::checkRange(
                                      Time t, Rate k, bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0,
-                   "negative time (" << t << ") given");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   t <= maxTime(),
-                   "time (" << t << ") is past max curve time ("
-                   << maxTime() << ")");
+        TermStructure::checkRange(t, extrapolate);
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
                    "strike (" << k << ") is outside the curve domain ["
@@ -223,18 +204,9 @@ namespace QuantLib {
         return volatilityImpl(t,strike);
     }
 
-	inline Time CapletVolatilityStructure::maxTime() const {
-        return timeFromReference(maxDate());
-    }
-
     inline void CapletVolatilityStructure::checkRange(
                                      Time t, Rate k, bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0,
-                   "negative time (" << t << ") given");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   t <= maxTime(),
-                   "time (" << t << ") is past max curve time ("
-                   << maxTime() << ")");
+        TermStructure::checkRange(t, extrapolate);
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
                    "strike (" << k << ") is outside the curve domain ["

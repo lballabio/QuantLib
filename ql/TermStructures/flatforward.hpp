@@ -59,6 +59,7 @@ namespace QuantLib {
         Compounding compounding() const { return compounding_; }
         Frequency compoundingFrequency() const { return frequency_; }
         Date maxDate() const;
+        Time maxTime() const;
         void update();
       private:
         DiscountFactor discountImpl(Time) const;
@@ -120,6 +121,10 @@ namespace QuantLib {
 
     inline Date FlatForward::maxDate() const {
         return Date::maxDate();
+    }
+
+    inline Time FlatForward::maxTime() const {
+        return QL_MAX_REAL;
     }
 
     inline void FlatForward::update() {

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,10 +26,7 @@
 #define quantlib_vol_term_structures_hpp
 
 #include <ql/termstructure.hpp>
-#include <ql/quote.hpp>
-#include <ql/Math/extrapolation.hpp>
 #include <ql/Patterns/visitor.hpp>
-#include <vector>
 
 namespace QuantLib {
 
@@ -40,8 +37,7 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class BlackVolTermStructure : public TermStructure,
-                                  public Extrapolator {
+    class BlackVolTermStructure : public TermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -101,10 +97,6 @@ namespace QuantLib {
         //@}
         //! \name Limits
         //@{
-        //! the latest date for which the term structure can return vols
-        virtual Date maxDate() const = 0;
-        //! the latest time for which the term structure can return vols
-        Time maxTime() const;
         //! the minimum strike for which the term structure can return vols
         virtual Real minStrike() const = 0;
         //! the maximum strike for which the term structure can return vols
@@ -128,7 +120,7 @@ namespace QuantLib {
         //! Black volatility calculation
         virtual Volatility blackVolImpl(Time t, Real strike) const = 0;
         //@}
-	  private:
+      private:
         static const Time dT;
         void checkRange(Time, Real strike, bool extrapolate) const;
     };
@@ -216,8 +208,7 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class LocalVolTermStructure : public TermStructure,
-                                  public Extrapolator {
+    class LocalVolTermStructure : public TermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -247,10 +238,6 @@ namespace QuantLib {
         //@}
         //! \name Limits
         //@{
-        //! the latest date for which the term structure can return vols
-        virtual Date maxDate() const = 0;
-        //! the latest time for which the term structure can return vols
-        Time maxTime() const;
         //! the minimum strike for which the term structure can return vols
         virtual Real minStrike() const = 0;
         //! the maximum strike for which the term structure can return vols
@@ -289,10 +276,6 @@ namespace QuantLib {
     inline BlackVolTermStructure::BlackVolTermStructure(
                              Integer settlementDays, const Calendar& calendar)
     : TermStructure(settlementDays,calendar) {}
-
-	inline Time BlackVolTermStructure::maxTime() const {
-        return timeFromReference(maxDate());
-    }
 
     inline Volatility BlackVolTermStructure::blackVol(const Date& maturity,
                                                       Real strike,
@@ -336,11 +319,7 @@ namespace QuantLib {
 
     inline void BlackVolTermStructure::checkRange(Time t, Real k,
                                                   bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0,
-                   "negative time (" << t << ") given");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
-                   "time (" << t << ") is past max curve time ("
-                   << maxTime() << ")");
+        TermStructure::checkRange(t, extrapolate);
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
                    "strike (" << k << ") is outside the curve domain ["
@@ -414,10 +393,6 @@ namespace QuantLib {
                              Integer settlementDays, const Calendar& calendar)
     : TermStructure(settlementDays,calendar) {}
 
-    inline Time LocalVolTermStructure::maxTime() const {
-        return timeFromReference(maxDate());
-    }
-
     inline Volatility LocalVolTermStructure::localVol(const Date& d,
                                                       Real underlyingLevel,
                                                       bool extrapolate) const {
@@ -444,11 +419,7 @@ namespace QuantLib {
 
     inline void LocalVolTermStructure::checkRange(Time t, Real k,
                                                   bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0,
-                   "negative time (" << t << ") given");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
-                   "time (" << t << ") is past max curve time ("
-                   << maxTime() << ")");
+        TermStructure::checkRange(t, extrapolate);
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
                    "strike (" << k << ") is outside the curve domain ["

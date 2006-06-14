@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +26,7 @@
 #define quantlib_blackconstantvol_hpp
 
 #include <ql/voltermstructure.hpp>
+#include <ql/quote.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 
 namespace QuantLib {
@@ -55,6 +56,7 @@ namespace QuantLib {
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const;
+        Time maxTime() const;
         Real minStrike() const;
         Real maxStrike() const;
         //@}
@@ -111,6 +113,10 @@ namespace QuantLib {
 
     inline Date BlackConstantVol::maxDate() const {
         return Date::maxDate();
+    }
+
+    inline Time BlackConstantVol::maxTime() const {
+        return QL_MAX_REAL;
     }
 
     inline Real BlackConstantVol::minStrike() const {

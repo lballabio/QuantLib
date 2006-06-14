@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,13 +27,16 @@
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/settings.hpp>
+#include <ql/handle.hpp>
+#include <ql/Math/extrapolation.hpp>
 #include <ql/Utilities/null.hpp>
 
 namespace QuantLib {
 
     //! Basic term-structure functionality
     class TermStructure : public virtual Observer,
-                          public virtual Observable {
+                          public virtual Observable,
+                          public Extrapolator {
       public:
         /*! \name Constructors
 
@@ -74,6 +77,10 @@ namespace QuantLib {
         virtual const Date& referenceDate() const;
         //! the calendar used for reference date calculation
         virtual Calendar calendar() const;
+        //! the latest date for which the curve can return values
+        virtual Date maxDate() const = 0;
+        //! the latest time for which the curve can return values
+        virtual Time maxTime() const { return timeFromReference(maxDate()); }
         //! the day counter used for date/time conversion
         virtual DayCounter dayCounter() const = 0;
         //@}
@@ -85,6 +92,10 @@ namespace QuantLib {
       protected:
         //! date/time conversion
         Time timeFromReference(const Date& date) const;
+        //! date-range check
+        void checkRange(const Date&, bool extrapolate) const;
+        //! time-range check
+        void checkRange(Time, bool extrapolate) const;
       private:
         mutable Date referenceDate_;
         bool moving_;
@@ -131,6 +142,19 @@ namespace QuantLib {
 
     inline Time TermStructure::timeFromReference(const Date& d) const {
         return dayCounter().yearFraction(referenceDate(),d);
+    }
+
+    inline void TermStructure::checkRange(const Date& d,
+                                          bool extrapolate) const {
+        checkRange(timeFromReference(d),extrapolate);
+    }
+
+    inline void TermStructure::checkRange(Time t, bool extrapolate) const {
+        QL_REQUIRE(t >= 0.0,
+                   "negative time (" << t << ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
+                   "time (" << t << ") is past max curve time ("
+                            << maxTime() << ")");
     }
 
 }

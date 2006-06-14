@@ -2,7 +2,8 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,8 +28,6 @@
 
 #include <ql/termstructure.hpp>
 #include <ql/interestrate.hpp>
-#include <ql/handle.hpp>
-#include <ql/Math/extrapolation.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -46,8 +45,7 @@ namespace QuantLib {
 
         \test observability against evaluation date changes is checked.
     */
-    class YieldTermStructure : public TermStructure,
-                               public Extrapolator {
+    class YieldTermStructure : public TermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -173,14 +171,6 @@ namespace QuantLib {
                      Frequency freq = Annual,
                      bool extrapolate = false) const;
 
-        //! \name Dates
-        //@{
-        //! the latest date for which the curve can return rates
-        virtual Date maxDate() const = 0;
-
-        //! the latest time for which the curve can return rates
-        virtual Time maxTime() const { return timeFromReference(maxDate()); }
-        //@}
       protected:
         /*! \name Calculations
 
@@ -193,12 +183,6 @@ namespace QuantLib {
         //! discount calculation
         virtual DiscountFactor discountImpl(Time) const = 0;
         //@}
-      private:
-        void checkRange(const Date& d,
-                        bool extrapolate) const {
-            checkRange(timeFromReference(d),extrapolate);
-        }
-        void checkRange(Time, bool extrapolate) const;
     };
 
 
@@ -213,17 +197,7 @@ namespace QuantLib {
                                                   const Calendar& calendar)
     : TermStructure(settlementDays, calendar) {}
 
-    inline void YieldTermStructure::checkRange(Time t,
-                                               bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0,
-                   "negative time (" << t << ") given");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
-                   "time (" << t << ") is past max curve time ("
-                            << maxTime() << ")");
-    }
 
-
-    // inline zero definitions
 
     inline InterestRate YieldTermStructure::zeroRate(
                                                  const Date& d,
@@ -253,7 +227,6 @@ namespace QuantLib {
     }
 
 
-    // inline forward definitions
 
     inline InterestRate YieldTermStructure::forwardRate(
                                                 const Date& d1,
@@ -291,7 +264,6 @@ namespace QuantLib {
     }
 
 
-    // inline par rate definitions
 
     inline Rate YieldTermStructure::parRate(Integer tenor,
                                             const Date& startDate,
@@ -325,7 +297,7 @@ namespace QuantLib {
         return result;
     }
 
-    // inline discount definitions
+
 
     inline DiscountFactor YieldTermStructure::discount(const Date& d,
                                                        bool extrapolate)

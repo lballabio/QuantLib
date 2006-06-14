@@ -24,6 +24,7 @@
 #include <ql/exercise.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <ql/voltermstructure.hpp>
+#include <ql/quote.hpp>
 #include <ql/Patterns/observable.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <vector>

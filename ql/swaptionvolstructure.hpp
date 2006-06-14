@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,7 +26,6 @@
 #define quantlib_swaption_volatility_structure_hpp
 
 #include <ql/termstructure.hpp>
-#include <ql/Math/extrapolation.hpp>
 
 namespace QuantLib {
 
@@ -33,8 +33,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
     */
-    class SwaptionVolatilityStructure : public TermStructure,
-                                        public Extrapolator {
+    class SwaptionVolatilityStructure : public TermStructure {
       public:
         /*! \name Constructors
             See the TermStructure documentation for issues regarding
@@ -81,6 +80,8 @@ namespace QuantLib {
         //! the maximum strike for which the term structure can return vols
         virtual Rate maxStrike() const = 0;
         //@}
+        Date maxDate() const { return maxStartDate(); }
+        Time maxTime() const { return maxStartTime(); }
       protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time start, Time length,
@@ -88,7 +89,7 @@ namespace QuantLib {
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& start,
                                                   const Period& length) const;
-	  private:
+      private:
         void checkRange(Time, Time, Rate strike, bool extrapolate) const;
     };
 
@@ -126,11 +127,11 @@ namespace QuantLib {
         return volatilityImpl(start,length,strike);
     }
 
-	inline Time SwaptionVolatilityStructure::maxStartTime() const {
+    inline Time SwaptionVolatilityStructure::maxStartTime() const {
         return timeFromReference(maxStartDate());
     }
 
-	inline Time SwaptionVolatilityStructure::maxTimeLength() const {
+    inline Time SwaptionVolatilityStructure::maxTimeLength() const {
         return timeFromReference(referenceDate()+maxLength());
     }
 
@@ -145,14 +146,9 @@ namespace QuantLib {
 
     inline void SwaptionVolatilityStructure::checkRange(
                     Time start, Time length, Rate k, bool extrapolate) const {
-        QL_REQUIRE(start >= 0.0,
-                   "negative start time (" << start << ") given");
+        TermStructure::checkRange(start, extrapolate);
         QL_REQUIRE(length >= 0.0,
                    "negative length (" << length << ") given");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   start <= maxStartTime(),
-                   "start time (" << start << ") is past max curve time ("
-                   << maxStartTime() << ")");
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    length <= maxTimeLength(),
                    "length (" << length << ") is past max curve length ("

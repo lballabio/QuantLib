@@ -26,6 +26,7 @@
 
 #include <ql/voltermstructure.hpp>
 #include <ql/yieldtermstructure.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 

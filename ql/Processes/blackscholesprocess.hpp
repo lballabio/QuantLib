@@ -30,6 +30,7 @@
 #include <ql/Processes/eulerdiscretization.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <ql/voltermstructure.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
