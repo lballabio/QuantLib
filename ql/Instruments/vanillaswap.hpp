@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file simpleswap.hpp
+/*! \file vanillaswap.hpp
     \brief Simple fixed-rate vs Libor swap
 */
 
