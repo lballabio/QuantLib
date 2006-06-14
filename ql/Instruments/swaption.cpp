@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2006 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,14 +23,18 @@
 #include <ql/CashFlows/parcoupon.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
+#include <ql/DayCounters/all.hpp>
+#include <ql/CashFlows/analysis.hpp>
+
 namespace QuantLib {
 
     Swaption::Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                        const boost::shared_ptr<Exercise>& exercise,
                        const Handle<YieldTermStructure>& termStructure,
-                       const boost::shared_ptr<PricingEngine>& engine)
+                       const boost::shared_ptr<PricingEngine>& engine,
+                       SettlementType::Type delivery)
     : Option(boost::shared_ptr<Payoff>(), exercise, engine), swap_(swap),
-      termStructure_(termStructure) {
+      termStructure_(termStructure), settlementType_(delivery) {
         registerWith(swap_);
         registerWith(termStructure_);
     }
@@ -47,7 +52,6 @@ namespace QuantLib {
 
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
-        Date settlement = termStructure_->referenceDate();
         DayCounter counter = termStructure_->dayCounter();
 
         // volatilities are calculated for zero-spreaded swaps.
@@ -61,8 +65,19 @@ namespace QuantLib {
         arguments->fairRate = swap_->fairRate() + correction;
         // this is passed explicitly for precision
         arguments->fixedBPS = std::fabs(swap_->fixedLegBPS());
-
-        arguments->exercise = exercise_;
+        arguments->settlementType = settlementType_;
+        Date settlement = termStructure_->referenceDate();
+        // only if cash settled
+        if (arguments->settlementType==SettlementType::Cash) {
+    	    const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg =
+                swap_->fixedLeg();					
+		    DayCounter dc = (boost::dynamic_pointer_cast<FixedRateCoupon>(
+                swapFixedLeg[0]))->dayCounter();
+            arguments->fixedCashBPS = Cashflows::bps(swapFixedLeg,
+                InterestRate(arguments->fairRate, dc, Compounded),
+                settlement) ;
+        }
+		arguments->exercise = exercise_;
         arguments->stoppingTimes.clear();
         for (Size i=0; i<exercise_->dates().size(); i++) {
             Time time = counter.yearFraction(settlement,
@@ -78,13 +93,16 @@ namespace QuantLib {
         #else
         VanillaSwap::arguments::validate();
         #endif
-
         QL_REQUIRE(fixedRate != Null<Real>(),
                    "fixed swap rate null or not set");
         QL_REQUIRE(fairRate != Null<Real>(),
                    "fair swap rate null or not set");
         QL_REQUIRE(fixedBPS != Null<Real>(),
                    "fixed swap BPS null or not set");
+        if(settlementType == SettlementType::Cash) {
+		    QL_REQUIRE(fixedCashBPS != Null<Real>(),
+			       "fixed swap cash BPS null or not set for Cash Settled Swaption");
+		}			
     }
 
 }

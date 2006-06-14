@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2006 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +31,7 @@
 
 namespace QuantLib {
 
+
     //! %Swaption class
     /*! \ingroup instruments
 
@@ -46,22 +48,29 @@ namespace QuantLib {
         - the correctness of the returned value is tested by checking
           it against a known good value.
 
-        \todo add explicit exercise lag
+        \todo add greeks and explicit exercise lag
     */
+    struct SettlementType {
+        enum Type { Physical, Cash };
+    };
+
     class Swaption : public Option {
       public:
         class arguments;
         class results;
+        // constructors
         Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                  const boost::shared_ptr<Exercise>& exercise,
                  const Handle<YieldTermStructure>& termStructure,
-                 const boost::shared_ptr<PricingEngine>& engine);
+                 const boost::shared_ptr<PricingEngine>& engine,
+                 SettlementType::Type delivery = SettlementType::Physical);				
         bool isExpired() const;
         void setupArguments(Arguments*) const;
       private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
         Handle<YieldTermStructure> termStructure_;
+        SettlementType::Type settlementType_;
     };
 
     //! %Arguments for swaption calculation
@@ -70,10 +79,15 @@ namespace QuantLib {
       public:
         arguments() : fairRate(Null<Real>()),
                       fixedRate(Null<Real>()),
-                      fixedBPS(Null<Real>()) {}
+                      fixedBPS(Null<Real>()),
+                      fixedCashBPS(Null<Real>()),
+                      settlementType(SettlementType::Physical) {}
+											
         Rate fairRate;
         Rate fixedRate;
         Real fixedBPS;
+        Real fixedCashBPS;
+        SettlementType::Type settlementType;
         void validate() const;
     };
 
@@ -81,6 +95,5 @@ namespace QuantLib {
     class Swaption::results : public Value {};
 
 }
-
 
 #endif
