@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2006 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +19,7 @@
 */
 
 #include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
+#include <ql/Instruments/swaption.hpp>
 
 namespace QuantLib {
 
@@ -25,10 +27,19 @@ namespace QuantLib {
         static const Spread basisPoint = 1.0e-4;
         Time exercise = arguments_.stoppingTimes[0];
         Real w = arguments_.payFixed ? 1.0 : -1.0;
-        results_.value =  (arguments_.fixedBPS/basisPoint) *
-            BlackModel::formula(arguments_.fairRate,
-                                arguments_.fixedRate,
-                                model_->volatility()*std::sqrt(exercise), w);
+        Real annuity;
+        switch(arguments_.settlementType) {
+            case SettlementType::Physical :
+                annuity = arguments_.fixedBPS/basisPoint;
+                break;
+            case SettlementType::Cash:
+                annuity = arguments_.fixedCashBPS/basisPoint;
+                break;
+            default:
+                QL_FAIL("unknown settlement type");
+        }
+        results_.value =  annuity *
+                           BlackModel::formula(arguments_.fairRate, arguments_.fixedRate,
+                                               model_->volatility()*std::sqrt(exercise), w);
     }
-
 }
