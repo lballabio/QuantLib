@@ -19,3 +19,5 @@
 
 - Added composite instrument; example provided.
 
+- Added SABR interpolation for volatilities.
+

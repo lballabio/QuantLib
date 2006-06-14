@@ -47,7 +47,7 @@ namespace QuantLib {
                                   Real alpha,
                                   Real rho)
             : t_(t), forward_(forward), beta_(beta), nu_(nu),
-              alpha_(alpha), rho_(rho), fixed_(4) {
+              alpha_(alpha), rho_(rho), error_(Null<Real>()), fixed_(4) {
 
                 QL_REQUIRE(t>0, "negative time not allowed");
 
@@ -58,16 +58,13 @@ namespace QuantLib {
             }
             virtual ~SABRCoefficientHolder() {}
             Real t_, forward_, beta_, nu_, alpha_, rho_;
+            Real error_;
             std::vector<bool> fixed_;
         };
 
     }
 
     //! %SABR smile interpolation between discrete volatility points.
-    /*! Blah blah.
-
-        See XXX
-    */
     class SABRInterpolation : public Interpolation {
       public:
         /*! */
@@ -80,13 +77,18 @@ namespace QuantLib {
                           Real beta,
                           Real nu,
                           Real alpha,
-                          Real rho) {
+                          Real rho,
+                          const boost::shared_ptr<OptimizationMethod>& method
+                                  = boost::shared_ptr<OptimizationMethod>()) {
+
             impl_ = boost::shared_ptr<Interpolation::Impl>(
                         new detail::SABRInterpolationImpl<I1,I2>(
-                            xBegin, xEnd, yBegin,
-                            t, forward, beta, nu, alpha, rho));
+                                           xBegin, xEnd, yBegin,
+                                           t, forward, beta, nu, alpha, rho,
+                                           method));
             coeffs_ =
-                boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(impl_);
+                boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
+                                                                       impl_);
         }
         Real expiry()  const { return coeffs_->t_; }
         Real forward() const { return coeffs_->forward_; }
@@ -94,6 +96,8 @@ namespace QuantLib {
         Real nu()      const { return coeffs_->nu_; }
         Real alpha()   const { return coeffs_->alpha_; }
         Real rho()     const { return coeffs_->rho_; }
+
+        Real interpolationError() const { return coeffs_->error_; }
       private:
         boost::shared_ptr<detail::SABRCoefficientHolder> coeffs_;
     };
@@ -102,8 +106,9 @@ namespace QuantLib {
     namespace detail {
 
         template <class I1, class I2>
-        class SABRInterpolationImpl : public Interpolation::templateImpl<I1,I2>,
-                                      public SABRCoefficientHolder {
+        class SABRInterpolationImpl
+            : public Interpolation::templateImpl<I1,I2>,
+              public SABRCoefficientHolder {
           private:
             // function to minimize
             class SABRError;
@@ -118,14 +123,7 @@ namespace QuantLib {
                     if (!sabr_->fixed_[2]) sabr_->alpha_ = x[2];
                     if (!sabr_->fixed_[3]) sabr_->rho_ = x[3];
 
-                    Real error, totalError = 0.0;
-                    I1 i = sabr_->xBegin_, xEnd = sabr_->xEnd_;
-                    I2 j = sabr_->yBegin_;
-                    for (; i != xEnd; ++i, ++j) {
-                        error = sabr_->value(*i) - *j;
-                        totalError += error*error;
-                    }
-                    return totalError;
+                    return sabr_->interpolationError();
                 }
               private:
                 SABRInterpolationImpl* sabr_;
@@ -146,19 +144,18 @@ namespace QuantLib {
                 SABRConstraint()
                 : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
             };
-
+            // optimization method used for fitting
+            boost::shared_ptr<OptimizationMethod> method_;
           public:
-            SABRInterpolationImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin,
-                                  Time t,
-                                  Real forward,
-                                  Real beta,
-                                  Real nu,
-                                  Real alpha,
-                                  Real rho)
+            SABRInterpolationImpl(
+                          const I1& xBegin, const I1& xEnd,
+                          const I2& yBegin,
+                          Time t, Real forward,
+                          Real beta, Real nu, Real alpha, Real rho,
+                          const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              SABRCoefficientHolder(t, forward, beta, nu, alpha, rho) {
-
-                // fit any null parameters in the (beta_, nu_, alpha_, rho_) tuple
+              SABRCoefficientHolder(t, forward, beta, nu, alpha, rho),
+              method_(method) {
                 calculate();
             }
 
@@ -179,17 +176,23 @@ namespace QuantLib {
 
                 SABRConstraint constraint;
                 SABRError costFunction(this);
-                ConjugateGradient method;
+
                 Array guess(4);
                 guess[0] = 0.40; // beta
                 guess[1] = 0.36; // nu
                 guess[2] = 0.02; // alpha
                 guess[3] = 0.20; // rho
-                method.setInitialValue(guess);
-                method.setEndCriteria(EndCriteria(3000,1e-12));
-                method.endCriteria().setPositiveOptimization();
 
-                Problem problem(costFunction, constraint, method);
+                if (!method_) {
+                    method_ = boost::shared_ptr<OptimizationMethod>(
+                                                       new ConjugateGradient);
+                    method_->setEndCriteria(EndCriteria(3000,1e-12));
+                    method_->endCriteria().setPositiveOptimization();
+                }
+
+                method_->setInitialValue(guess);
+
+                Problem problem(costFunction, constraint, *method_);
                 problem.minimize();
 
                 Array result = problem.minimumValue();
@@ -203,6 +206,8 @@ namespace QuantLib {
                 QL_ENSURE(nu_>=0.0, "nu must be non negative");
                 QL_ENSURE(alpha_>0.0, "alpha must be positive");
                 QL_ENSURE(rho_*rho_<1,"rho square must be less than 1");
+
+                error_ = interpolationError();
             }
 
             Real value(Real x) const {
@@ -217,8 +222,10 @@ namespace QuantLib {
                 const Real tmp = (std::sqrt(B)+z-rho_)/(1.0-rho_);
                 const Real xx = std::log(tmp);
                 const Real D = sqrtA*(1.0+C/24.0+C*C/1920.0);
-                const Real d = 1.0 + t_ * (oneMinusBeta*oneMinusBeta*alpha_*alpha_/(24.0*A)
-                    + 0.25*rho_*beta_*nu_*alpha_/sqrtA +(2.0-3.0*rho_*rho_)*(nu_*nu_/24));
+                const Real d = 1.0 +
+                    t_ * (oneMinusBeta*oneMinusBeta*alpha_*alpha_/(24.0*A)
+                          + 0.25*rho_*beta_*nu_*alpha_/sqrtA
+                          +(2.0-3.0*rho_*rho_)*(nu_*nu_/24));
                 const Real multiplier = (xx!=0.0 ? z/xx : 1.0);
                 return (alpha_/D)*multiplier*d;;
             }
@@ -231,10 +238,22 @@ namespace QuantLib {
             Real secondDerivative(Real x) const {
                 QL_FAIL("not implemented");
             }
+
+            Real interpolationError() const {
+                Real error, totalError = 0.0;
+                I1 i = this->xBegin_;
+                I2 j = this->yBegin_;
+                for (; i != this->xEnd_; ++i, ++j) {
+                    error = value(*i) - *j;
+                    totalError += error*error;
+                }
+                return totalError;
+            }
         };
 
     }
 
 }
+
 
 #endif
