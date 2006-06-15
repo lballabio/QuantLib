@@ -118,9 +118,17 @@ namespace QuantLib {
                 const std::vector<Real>& values);
         //! \name Modifiers
         //@{
-        /*! update the History with the last value(s)
-            \warning the dates provided must be greater than or equal to the
-            last date for which a historical datum already exists
+        /*! update the history with the last value(s)
+
+            \warning the dates provided must be greater than or equal
+                     to the last date for which a historical datum
+                     already exists
+
+            \warning this method will likely change in name and
+                     signature; do not depend on it being available in
+                     future versions of the library. If you want to
+                     add a fixing to an index, use Index::addFixing
+                     instead.
         */
         void addLastValues(const std::vector<Date>& dates,
                            const std::vector<Real>& values);
@@ -133,6 +141,8 @@ namespace QuantLib {
         const Date& lastDate() const { return lastDate_; }
         //! returns the number of historical data including null ones
         Size size() const { return values_.size(); }
+        //! returns whether the history contains any data, null ones included
+        bool empty() const { return values_.empty(); }
         //@}
         //! \name Historical data access
         //@{

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,20 +37,24 @@ namespace QuantLib {
       public:
         virtual ~Index() {}
         //! Returns the name of the index.
-        /*! \warning This method is used for output and comparison between
-            indexes.
-            It is <b>not</b> meant to be used for writing switch-on-type code.
+        /*! \warning This method is used for output and comparison
+                     between indexes. It is <b>not</b> meant to be
+                     used for writing switch-on-type code.
 
             \todo add methods returning InterestRate
         */
         virtual std::string name() const = 0;
-        /*! \brief returns the fixing at the given date
-            \note any date passed as arguments must be a value date,
-            i.e., the real calendar date advanced by a number of
-            settlement days.
+        //! returns the fixing at the given date
+        /*! the date passed as arguments must be the actual calendar
+            date of the fixing; no settlement days must be used.
         */
         virtual Rate fixing(const Date& fixingDate,
                             bool forecastTodaysFixing = false) const = 0;
+        //! stores the historical fixing at the given date
+        /*! the date passed as arguments must be the actual calendar
+            date of the fixing; no settlement days must be used.
+        */
+        void addFixing(const Date& fixingDate, Rate fixing) const;
     };
 
 }

@@ -137,6 +137,7 @@ libQuantLib_la_SOURCES = \
 	errors.cpp \
 	exchangerate.cpp \
 	exercise.cpp \
+    index.cpp \
     interestrate.cpp \
     money.cpp \
     schedule.cpp \
