@@ -41,6 +41,7 @@ struct CalibrationData {
 
 void teardown() {
     Settings::instance().evaluationDate() = Date();
+    IndexManager::instance().clearHistories();
 }
 
 QL_END_TEST_LOCALS(ShortRateModelTest)
