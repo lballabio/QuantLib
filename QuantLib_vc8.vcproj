@@ -8072,6 +8072,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\index.cpp"
+			>
+		</File>
+		<File
 			RelativePath="ql\index.hpp"
 			>
 		</File>
