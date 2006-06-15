@@ -39,12 +39,118 @@ namespace QuantLib {
     */
     class Euribor : public Xibor {
       public:
-        Euribor(Integer n, TimeUnit units,
-                const Handle<YieldTermStructure>& h,
+        Euribor(Period p,
+                const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>(),
                 const DayCounter& dc = Actual360())
-        : Xibor("Euribor", n, units, 2, EURCurrency(),
+        : Xibor("Euribor", p, 2, EURCurrency(),
                 TARGET(),
                 ModifiedFollowing, dc, h) {}
+    };
+
+    class EuriborSW : public Euribor {
+      public:
+        EuriborSW(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(1, Weeks), h, Actual360()) {}
+    };
+
+    class Euribor2W : public Euribor {
+      public:
+        Euribor2W(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(2, Weeks), h, Actual360()) {}
+    };
+
+    class Euribor3W : public Euribor {
+      public:
+        Euribor3W(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(3, Weeks), h, Actual360()) {}
+    };
+
+    class Euribor1M : public Euribor {
+      public:
+        Euribor1M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(1, Months), h, Actual360()) {}
+    };
+
+    class Euribor2M : public Euribor {
+      public:
+        Euribor2M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(2, Months), h, Actual360()) {}
+    };
+
+    class Euribor3M : public Euribor {
+      public:
+        Euribor3M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(3, Months), h, Actual360()) {}
+    };
+
+    class Euribor4M : public Euribor {
+      public:
+        Euribor4M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(4, Months), h, Actual360()) {}
+    };
+
+    class Euribor5M : public Euribor {
+      public:
+        Euribor5M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(5, Months), h, Actual360()) {}
+    };
+
+    class Euribor6M : public Euribor {
+      public:
+        Euribor6M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(6, Months), h, Actual360()) {}
+    };
+
+    class Euribor7M : public Euribor {
+      public:
+        Euribor7M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(7, Months), h, Actual360()) {}
+    };
+
+    class Euribor8M : public Euribor {
+      public:
+        Euribor8M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(8, Months), h, Actual360()) {}
+    };
+
+    class Euribor9M : public Euribor {
+      public:
+        Euribor9M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(9, Months), h, Actual360()) {}
+    };
+
+    class Euribor10M : public Euribor {
+      public:
+        Euribor10M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(10, Months), h, Actual360()) {}
+    };
+
+    class Euribor11M : public Euribor {
+      public:
+        Euribor11M(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(11, Months), h, Actual360()) {}
+    };
+
+    class Euribor1Y : public Euribor {
+      public:
+        Euribor1Y(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(Period(1, Years), h, Actual360()) {}
     };
 
 }
