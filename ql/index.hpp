@@ -54,7 +54,7 @@ namespace QuantLib {
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
         */
-        void addFixing(const Date& fixingDate, Rate fixing) const;
+        void addFixing(const Date& fixingDate, Rate fixing);
     };
 
 }

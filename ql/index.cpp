@@ -22,7 +22,7 @@
 
 namespace QuantLib {
 
-    void Index::addFixing(const Date& fixingDate, Rate fixing) const {
+    void Index::addFixing(const Date& fixingDate, Rate fixing) {
         // likely to be changed after the TimeSeries/History makeover
         std::string tag = name();
         History h;
@@ -39,6 +39,7 @@ namespace QuantLib {
         }
 
         IndexManager::instance().setHistory(tag,h);
+        notifyObservers();
     }
 
 }
