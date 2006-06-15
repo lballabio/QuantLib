@@ -105,8 +105,9 @@ namespace QuantLib {
                           const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
-      private:
+      protected:
         void initializeDates();
+      private:
         Period p_;
         Integer settlementDays_;
         Calendar calendar_;
@@ -133,8 +134,9 @@ namespace QuantLib {
                       const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
-      private:
+      protected:
         void initializeDates();
+      private:
         Integer monthsToStart_, monthsToEnd_;
         Integer settlementDays_;
         Calendar calendar_;
@@ -186,8 +188,9 @@ namespace QuantLib {
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
         void setTermStructure(YieldTermStructure*);
-      private:
+      protected:
         void initializeDates();
+      private:
         Period p_;
         Integer settlementDays_;
         Calendar calendar_;
@@ -200,6 +203,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

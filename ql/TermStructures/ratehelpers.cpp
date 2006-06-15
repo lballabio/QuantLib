@@ -81,13 +81,17 @@ namespace QuantLib {
 
 
     RelativeDateRateHelper::RelativeDateRateHelper(const Handle<Quote>& quote)
-    : RateHelper(quote), evaluationDate_(Date()) {
+    : RateHelper(quote)
+    {
         registerWith(Settings::instance().evaluationDate());
+        evaluationDate_ = Settings::instance().evaluationDate();
     }
 
     RelativeDateRateHelper::RelativeDateRateHelper(Real quote)
-    : RateHelper(quote), evaluationDate_(Date()) {
+    : RateHelper(quote)
+    {
         registerWith(Settings::instance().evaluationDate());
+        evaluationDate_ = Settings::instance().evaluationDate();
     }
 
     void RelativeDateRateHelper::setTermStructure(YieldTermStructure* y) {
@@ -110,7 +114,10 @@ namespace QuantLib {
                        const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), p_(Period(n, units)),
       settlementDays_(settlementDays), calendar_(calendar),
-      convention_(convention), dayCounter_(dayCounter) {}
+      convention_(convention), dayCounter_(dayCounter)
+    {
+        initializeDates();
+    }
 
     DepositRateHelper::DepositRateHelper(
                        Rate rate,
@@ -121,7 +128,10 @@ namespace QuantLib {
                        const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), p_(Period(n, units)),
       settlementDays_(settlementDays), calendar_(calendar),
-      convention_(convention), dayCounter_(dayCounter) {}
+      convention_(convention), dayCounter_(dayCounter)
+    {
+        initializeDates();
+    }
     #endif
 
     DepositRateHelper::DepositRateHelper(
@@ -133,7 +143,10 @@ namespace QuantLib {
                        const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), p_(p),
       settlementDays_(settlementDays), calendar_(calendar),
-      convention_(convention), dayCounter_(dayCounter) {}
+      convention_(convention), dayCounter_(dayCounter)
+    {
+        initializeDates();
+    }
 
     DepositRateHelper::DepositRateHelper(
                        Rate rate,
@@ -144,7 +157,10 @@ namespace QuantLib {
                        const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), p_(Period(p)),
       settlementDays_(settlementDays), calendar_(calendar),
-      convention_(convention), dayCounter_(dayCounter) {}
+      convention_(convention), dayCounter_(dayCounter)
+    {
+        initializeDates();
+    }
 
     Real DepositRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
@@ -181,7 +197,10 @@ namespace QuantLib {
       monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
       settlementDays_(settlementDays),
       calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter) {}
+      dayCounter_(dayCounter)
+    {
+        initializeDates();
+    }
 
     FraRateHelper::FraRateHelper(Rate rate,
                                  Integer monthsToStart, Integer monthsToEnd,
@@ -193,7 +212,10 @@ namespace QuantLib {
       monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
       settlementDays_(settlementDays),
       calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter) {}
+      dayCounter_(dayCounter)
+    {
+        initializeDates();
+    }
 
     Real FraRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
@@ -233,8 +255,10 @@ namespace QuantLib {
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      index_(index) {
+      index_(index)
+    {
         registerWith(index_);
+        initializeDates();
     }
 
     SwapRateHelper::SwapRateHelper(
@@ -251,8 +275,10 @@ namespace QuantLib {
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      index_(index) {
+      index_(index)
+    {
         registerWith(index_);
+        initializeDates();
     }
 
     namespace {
