@@ -220,105 +220,8 @@ namespace QuantLib {
         yearFraction_ = dayCounter_.yearFraction(earliestDate_,latestDate_);
     }
 
-
-
-    #ifndef QL_DISABLE_DEPRECATED
-    SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
-                                   Integer n, TimeUnit units,
-                                   Integer settlementDays,
-                                   const Calendar& calendar,
-                                   Frequency fixedFrequency,
-                                   BusinessDayConvention fixedConvention,
-                                   const DayCounter& fixedDayCount,
-                                   Frequency floatingFrequency,
-                                   BusinessDayConvention floatingConvention,
-                                   const DayCounter& floatingDayCount)
-    : RelativeDateRateHelper(rate),
-      p_(Period(n, units)), settlementDays_(settlementDays),
-      calendar_(calendar), fixedConvention_(fixedConvention),
-      fixedFrequency_(fixedFrequency),
-      fixedDayCount_(fixedDayCount) {
-        index_ = boost::shared_ptr<Xibor>(
-                                     new Xibor("dummy",
-                                               Period(12/floatingFrequency,
-                                                      Months),
-                                               settlementDays,
-                                               Currency(),
-                                               calendar,
-                                               floatingConvention,
-                                               floatingDayCount,
-                                               Handle<YieldTermStructure>()));
-    }
-
-    SwapRateHelper::SwapRateHelper(
-                            Rate rate,
-                            Integer n, TimeUnit units,
-                            Integer settlementDays,
-                            const Calendar& calendar,
-                            Frequency fixedFrequency,
-                            BusinessDayConvention fixedConvention,
-                            const DayCounter& fixedDayCount,
-                            Frequency floatingFrequency,
-                            BusinessDayConvention floatingConvention,
-                            const DayCounter& floatingDayCount)
-    : RelativeDateRateHelper(rate),
-      p_(Period(n, units)), settlementDays_(settlementDays),
-      calendar_(calendar), fixedConvention_(fixedConvention),
-      floatingConvention_(floatingConvention),
-      fixedFrequency_(fixedFrequency),
-      floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount),
-      floatingDayCount_(floatingDayCount) {}
-    #endif
-
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    Period p,
-                                   Integer settlementDays,
-                                   const Calendar& calendar,
-                                   Frequency fixedFrequency,
-                                   BusinessDayConvention fixedConvention,
-                                   const DayCounter& fixedDayCount,
-                                   Frequency floatingFrequency,
-                                   BusinessDayConvention floatingConvention,
-                                   const DayCounter& floatingDayCount)
-    : RelativeDateRateHelper(rate),
-      p_(p), settlementDays_(settlementDays),
-      calendar_(calendar), fixedConvention_(fixedConvention),
-      floatingConvention_(floatingConvention),
-      fixedFrequency_(fixedFrequency),
-      floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount),
-      floatingDayCount_(floatingDayCount) {}
-
-    SwapRateHelper::SwapRateHelper(Rate rate,
-                                   Period p,
-                                   Integer settlementDays,
-                                   const Calendar& calendar,
-                                   Frequency fixedFrequency,
-                                   BusinessDayConvention fixedConvention,
-                                   const DayCounter& fixedDayCount,
-                                   Frequency floatingFrequency,
-                                   BusinessDayConvention floatingConvention,
-                                   const DayCounter& floatingDayCount)
-    : RelativeDateRateHelper(rate),
-      p_(p), settlementDays_(settlementDays),
-      calendar_(calendar), fixedConvention_(fixedConvention),
-      fixedFrequency_(fixedFrequency),
-      fixedDayCount_(fixedDayCount) {
-        index_ = boost::shared_ptr<Xibor>(
-                                     new Xibor("dummy",
-                                               Period(12/floatingFrequency,
-                                                      Months),
-                                               settlementDays,
-                                               Currency(),
-                                               calendar,
-                                               floatingConvention,
-                                               floatingDayCount,
-                                               Handle<YieldTermStructure>()));
-    }
-
-    SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
-                                   Integer n, TimeUnit units,
                                    Integer settlementDays,
                                    const Calendar& calendar,
                                    Frequency fixedFrequency,
@@ -326,7 +229,7 @@ namespace QuantLib {
                                    const DayCounter& fixedDayCount,
                                    const boost::shared_ptr<Xibor>& index)
     : RelativeDateRateHelper(rate),
-      n_(n), units_(units), settlementDays_(settlementDays),
+      p_(p), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
@@ -336,14 +239,15 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(
                             Rate rate,
-                            Integer n, TimeUnit units, Integer settlementDays,
+                            Period p,
+                            Integer settlementDays,
                             const Calendar& calendar,
                             Frequency fixedFrequency,
                             BusinessDayConvention fixedConvention,
                             const DayCounter& fixedDayCount,
                             const boost::shared_ptr<Xibor>& index)
     : RelativeDateRateHelper(rate),
-      n_(n), units_(units), settlementDays_(settlementDays),
+      p_(p), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),

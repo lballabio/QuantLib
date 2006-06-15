@@ -146,33 +146,6 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over swap rates
     class SwapRateHelper : public RelativeDateRateHelper {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the corresponding Period based constructor
-        SwapRateHelper(const Handle<Quote>& rate,
-                       Integer n, TimeUnit units,
-                       Integer settlementDays,
-                       const Calendar& calendar,
-                       // fixed leg
-                       Frequency fixedFrequency,
-                       BusinessDayConvention fixedConvention,
-                       const DayCounter& fixedDayCount,
-                       // floating leg
-                       Frequency floatingFrequency,
-                       BusinessDayConvention floatingConvention,
-                       const DayCounter& floatingDayCount);
-        SwapRateHelper(Rate rate,
-                       Integer n, TimeUnit units,
-                       Integer settlementDays,
-                       const Calendar& calendar,
-                       // fixed leg
-                       Frequency fixedFrequency,
-                       BusinessDayConvention fixedConvention,
-                       const DayCounter& fixedDayCount,
-                       // floating leg
-                       Frequency floatingFrequency,
-                       BusinessDayConvention floatingConvention,
-                       const DayCounter& floatingDayCount);
-        #endif
         /*! \warning When calling Index::addFixing(), the swap helper
                      will be notified only if the fixing is added by
                      means of the same instance that was passed to
@@ -190,9 +163,7 @@ namespace QuantLib {
                        BusinessDayConvention fixedConvention,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       Frequency floatingFrequency,
-                       BusinessDayConvention floatingConvention,
-                       const DayCounter& floatingDayCount);
+                       const boost::shared_ptr<Xibor>& index);
         /*! \warning When calling Index::addFixing(), the swap helper
                      will be notified only if the fixing is added by
                      means of the same instance that was passed to
@@ -210,9 +181,7 @@ namespace QuantLib {
                        BusinessDayConvention fixedConvention,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       Frequency floatingFrequency,
-                       BusinessDayConvention floatingConvention,
-                       const DayCounter& floatingDayCount);
+                       const boost::shared_ptr<Xibor>& index);
         Real impliedQuote() const;
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
