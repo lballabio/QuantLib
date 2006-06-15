@@ -32,7 +32,7 @@ namespace QuantLib {
                        const boost::shared_ptr<Exercise>& exercise,
                        const Handle<YieldTermStructure>& termStructure,
                        const boost::shared_ptr<PricingEngine>& engine,
-                       SettlementType::Type delivery)
+                       Settlement::Type delivery)
     : Option(boost::shared_ptr<Payoff>(), exercise, engine), swap_(swap),
       termStructure_(termStructure), settlementType_(delivery) {
         registerWith(swap_);
@@ -68,16 +68,16 @@ namespace QuantLib {
         arguments->settlementType = settlementType_;
         Date settlement = termStructure_->referenceDate();
         // only if cash settled
-        if (arguments->settlementType==SettlementType::Cash) {
-    	    const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg =
-                swap_->fixedLeg();					
-		    DayCounter dc = (boost::dynamic_pointer_cast<FixedRateCoupon>(
+        if (arguments->settlementType==Settlement::Cash) {
+            const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg =
+                swap_->fixedLeg();
+            DayCounter dc = (boost::dynamic_pointer_cast<FixedRateCoupon>(
                 swapFixedLeg[0]))->dayCounter();
             arguments->fixedCashBPS = Cashflows::bps(swapFixedLeg,
                 InterestRate(arguments->fairRate, dc, Compounded),
                 settlement) ;
         }
-		arguments->exercise = exercise_;
+        arguments->exercise = exercise_;
         arguments->stoppingTimes.clear();
         for (Size i=0; i<exercise_->dates().size(); i++) {
             Time time = counter.yearFraction(settlement,
@@ -99,10 +99,11 @@ namespace QuantLib {
                    "fair swap rate null or not set");
         QL_REQUIRE(fixedBPS != Null<Real>(),
                    "fixed swap BPS null or not set");
-        if(settlementType == SettlementType::Cash) {
-		    QL_REQUIRE(fixedCashBPS != Null<Real>(),
-			       "fixed swap cash BPS null or not set for Cash Settled Swaption");
-		}			
+        if(settlementType == Settlement::Cash) {
+            QL_REQUIRE(fixedCashBPS != Null<Real>(),
+                       "fixed swap cash BPS null or not set "
+                       "for cash-settled swaption");
+        }
     }
 
 }

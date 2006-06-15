@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     //! %Swaption priced by means of the Black formula
-    /*! \ingroup swaptionengines 
+    /*! \ingroup swaptionengines
 
         \warning The engine assumes that the exercise date equals the
                  start date of the passed swap.
@@ -48,13 +48,15 @@ namespace QuantLib {
         : GenericModelEngine<G2, Swaption::arguments, Swaption::results>(mod),
           range_(range), intervals_(intervals) {}
         void calculate() const {
-            QL_REQUIRE(arguments_.settlementType==SettlementType::Physical, "cash settled swaptions not priced with G2SwaptionEngine");
+            QL_REQUIRE(arguments_.settlementType==Settlement::Physical,
+                       "cash-settled swaptions not priced with G2 engine");
             results_.value =  model_->swaption(arguments_, range_, intervals_);
         }
       private:
         Real range_;
         Size intervals_;
     };
+
 }
 
 

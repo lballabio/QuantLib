@@ -31,6 +31,10 @@
 
 namespace QuantLib {
 
+    //! settlement information
+    struct Settlement {
+        enum Type { Physical, Cash };
+    };
 
     //! %Swaption class
     /*! \ingroup instruments
@@ -50,10 +54,6 @@ namespace QuantLib {
 
         \todo add greeks and explicit exercise lag
     */
-    struct SettlementType {
-        enum Type { Physical, Cash };
-    };
-
     class Swaption : public Option {
       public:
         class arguments;
@@ -63,14 +63,14 @@ namespace QuantLib {
                  const boost::shared_ptr<Exercise>& exercise,
                  const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine,
-                 SettlementType::Type delivery = SettlementType::Physical);				
+                 Settlement::Type delivery = Settlement::Physical);
         bool isExpired() const;
         void setupArguments(Arguments*) const;
       private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
         Handle<YieldTermStructure> termStructure_;
-        SettlementType::Type settlementType_;
+        Settlement::Type settlementType_;
     };
 
     //! %Arguments for swaption calculation
@@ -81,13 +81,13 @@ namespace QuantLib {
                       fixedRate(Null<Real>()),
                       fixedBPS(Null<Real>()),
                       fixedCashBPS(Null<Real>()),
-                      settlementType(SettlementType::Physical) {}
-											
+                      settlementType(Settlement::Physical) {}
+
         Rate fairRate;
         Rate fixedRate;
         Real fixedBPS;
         Real fixedCashBPS;
-        SettlementType::Type settlementType;
+        Settlement::Type settlementType;
         void validate() const;
     };
 

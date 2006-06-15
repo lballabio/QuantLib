@@ -29,17 +29,18 @@ namespace QuantLib {
         Real w = arguments_.payFixed ? 1.0 : -1.0;
         Real annuity;
         switch(arguments_.settlementType) {
-            case SettlementType::Physical :
-                annuity = arguments_.fixedBPS/basisPoint;
-                break;
-            case SettlementType::Cash:
-                annuity = arguments_.fixedCashBPS/basisPoint;
-                break;
-            default:
-                QL_FAIL("unknown settlement type");
+          case Settlement::Physical :
+            annuity = arguments_.fixedBPS/basisPoint;
+            break;
+          case Settlement::Cash:
+            annuity = arguments_.fixedCashBPS/basisPoint;
+            break;
+          default:
+            QL_FAIL("unknown settlement type");
         }
-        results_.value =  annuity *
-                           BlackModel::formula(arguments_.fairRate, arguments_.fixedRate,
-                                               model_->volatility()*std::sqrt(exercise), w);
+        results_.value = annuity * BlackModel::formula(
+                                 arguments_.fairRate, arguments_.fixedRate,
+                                 model_->volatility()*std::sqrt(exercise), w);
     }
+
 }
