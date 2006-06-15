@@ -51,6 +51,10 @@ namespace QuantLib {
           correspondingly adjusted fixed rate.
         - the correctness of the returned value is tested by checking
           it against a known good value.
+        - the correctness of the returned value of cash settled swaptions
+          is tested by checking the modified annuity against a value
+          calculated without using the Swaption class.
+
 
         \todo add greeks and explicit exercise lag
     */
