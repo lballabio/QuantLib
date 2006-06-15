@@ -209,11 +209,19 @@ namespace QuantLib {
     : RelativeDateRateHelper(rate),
       n_(n), units_(units), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
-      floatingConvention_(floatingConvention),
       fixedFrequency_(fixedFrequency),
-      floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount),
-      floatingDayCount_(floatingDayCount) {}
+      fixedDayCount_(fixedDayCount) {
+        index_ = boost::shared_ptr<Xibor>(
+                                     new Xibor("dummy",
+                                               Period(12/floatingFrequency,
+                                                      Months),
+                                               settlementDays,
+                                               Currency(),
+                                               calendar,
+                                               floatingConvention,
+                                               floatingDayCount,
+                                               Handle<YieldTermStructure>()));
+    }
 
     SwapRateHelper::SwapRateHelper(
                             Rate rate,
@@ -228,11 +236,53 @@ namespace QuantLib {
     : RelativeDateRateHelper(rate),
       n_(n), units_(units), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
-      floatingConvention_(floatingConvention),
       fixedFrequency_(fixedFrequency),
-      floatingFrequency_(floatingFrequency),
+      fixedDayCount_(fixedDayCount) {
+        index_ = boost::shared_ptr<Xibor>(
+                                     new Xibor("dummy",
+                                               Period(12/floatingFrequency,
+                                                      Months),
+                                               settlementDays,
+                                               Currency(),
+                                               calendar,
+                                               floatingConvention,
+                                               floatingDayCount,
+                                               Handle<YieldTermStructure>()));
+    }
+
+    SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
+                                   Integer n, TimeUnit units,
+                                   Integer settlementDays,
+                                   const Calendar& calendar,
+                                   Frequency fixedFrequency,
+                                   BusinessDayConvention fixedConvention,
+                                   const DayCounter& fixedDayCount,
+                                   const boost::shared_ptr<Xibor>& index)
+    : RelativeDateRateHelper(rate),
+      n_(n), units_(units), settlementDays_(settlementDays),
+      calendar_(calendar), fixedConvention_(fixedConvention),
+      fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      floatingDayCount_(floatingDayCount) {}
+      index_(index) {
+        registerWith(index_);
+    }
+
+    SwapRateHelper::SwapRateHelper(
+                            Rate rate,
+                            Integer n, TimeUnit units, Integer settlementDays,
+                            const Calendar& calendar,
+                            Frequency fixedFrequency,
+                            BusinessDayConvention fixedConvention,
+                            const DayCounter& fixedDayCount,
+                            const boost::shared_ptr<Xibor>& index)
+    : RelativeDateRateHelper(rate),
+      n_(n), units_(units), settlementDays_(settlementDays),
+      calendar_(calendar), fixedConvention_(fixedConvention),
+      fixedFrequency_(fixedFrequency),
+      fixedDayCount_(fixedDayCount),
+      index_(index) {
+        registerWith(index_);
+    }
 
     namespace {
         void no_deletion(YieldTermStructure*) {}
@@ -245,25 +295,26 @@ namespace QuantLib {
         Schedule fixedSchedule(calendar_, earliestDate_, maturity,
                                fixedFrequency_, fixedConvention_);
         Schedule floatSchedule(calendar_, earliestDate_, maturity,
-                               floatingFrequency_, floatingConvention_);
+                               index_->frequency(),
+                               index_->businessDayConvention());
         // dummy Libor index with curve/swap arguments
-        Integer fixingDays = settlementDays_;
-        // Currency and dayCounter argument have to be added to SwapHelper
-        boost::shared_ptr<Xibor> dummyIndex(
-                                     new Xibor("dummy",
-                                               12/floatingFrequency_, Months,
-                                               fixingDays,
-                                               Currency(),
-                                               calendar_,
-                                               floatingConvention_,
-                                               floatingDayCount_,
+        boost::shared_ptr<Xibor> clonedIndex(
+                                     new Xibor(index_->familyName(),
+                                               index_->tenor(),
+                                               index_->settlementDays(),
+                                               index_->currency(),
+                                               index_->calendar(),
+                                               index_->businessDayConvention(),
+                                               index_->dayCounter(),
                                                termStructureHandle_));
 
         swap_ = boost::shared_ptr<VanillaSwap>(
-                   new VanillaSwap(true, 100.0,
-                                   fixedSchedule, 0.0, fixedDayCount_,
-                                   floatSchedule, dummyIndex, fixingDays, 0.0,
-                                   floatingDayCount_, termStructureHandle_));
+                  new VanillaSwap(true, 100.0,
+                                  fixedSchedule, 0.0, fixedDayCount_,
+                                  floatSchedule, clonedIndex,
+                                  clonedIndex->settlementDays(), 0.0,
+                                  clonedIndex->dayCounter(),
+                                  termStructureHandle_));
 
         // Usually...
         latestDate_ = swap_->maturity();
@@ -276,8 +327,8 @@ namespace QuantLib {
         Date fixingValueDate = calendar_.advance(lastFloating->fixingDate(),
                                                  settlementDays_,Days);
         Date endValueDate = calendar_.advance(fixingValueDate,
-                                              12/floatingFrequency_,Months,
-                                              floatingConvention_);
+                                              index_->tenor(),
+                                              index_->businessDayConvention());
         latestDate_ = std::max(latestDate_,endValueDate);
         #endif
     }

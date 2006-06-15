@@ -27,6 +27,7 @@
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
+#include <ql/Indexes/indexmanager.hpp>
 #include <ql/Instruments/forwardrateagreement.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
@@ -219,6 +220,7 @@ void setup() {
 
 void teardown() {
     Settings::instance().evaluationDate() = Date();
+    IndexManager::instance().clearHistories();
 }
 
 #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
@@ -528,6 +530,111 @@ void PiecewiseYieldCurveTest::testObservability() {
 }
 
 
+void PiecewiseYieldCurveTest::testLiborFixing() {
+
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
+
+    BOOST_MESSAGE(
+        "Testing use of today's LIBOR fixings in swap curve...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    std::vector<boost::shared_ptr<RateHelper> > swapHelpers(swaps);
+    boost::shared_ptr<Xibor> euribor6m(
+                                  new Euribor(12/floatingLegFrequency, Months,
+                                              Handle<YieldTermStructure>()));
+    Size i;
+
+    for (i=0; i<swaps; i++) {
+        Handle<Quote> r(rates[i+deposits]);
+        swapHelpers[i] = boost::shared_ptr<RateHelper>(
+                new SwapRateHelper(r, swapData[i].n, swapData[i].units,
+                                   settlementDays, calendar,
+                                   fixedLegFrequency, fixedLegConvention,
+                                   fixedLegDayCounter, euribor6m));
+    }
+
+    termStructure = boost::shared_ptr<YieldTermStructure>(
+           new PiecewiseYieldCurve<Discount,LogLinear>(settlement,swapHelpers,
+                                                       Actual360(), 1.0e-12));
+
+    Handle<YieldTermStructure> curveHandle;
+    curveHandle.linkTo(termStructure);
+
+    boost::shared_ptr<Xibor> index(new Euribor(12/floatingLegFrequency,
+                                               Months, curveHandle));
+    for (i=0; i<swaps; i++) {
+        Date maturity = settlement + swapData[i].n*swapData[i].units;
+        Schedule fixedSchedule(calendar,settlement,maturity,
+                               fixedLegFrequency,fixedLegConvention);
+        Schedule floatSchedule(calendar,settlement,maturity,
+                               floatingLegFrequency,floatingLegConvention);
+        VanillaSwap swap(true,100.0,
+                         fixedSchedule,0.0,fixedLegDayCounter,
+                         floatSchedule,index,fixingDays,0.0,
+                         Actual360(),curveHandle);
+        Rate expectedRate = swapData[i].rate/100,
+             estimatedRate = swap.fairRate();
+        #ifdef QL_PATCH_BORLAND
+        Real tolerance = 1.0e-5;
+        #else
+        Real tolerance = 1.0e-9;
+        #endif
+        if (std::fabs(expectedRate-estimatedRate) > tolerance) {
+            BOOST_ERROR("before LIBOR fixing:\n"
+                        << swapData[i].n << " year(s) swap:\n"
+                        << std::setprecision(8)
+                        << "    estimated rate: "
+                        << io::rate(estimatedRate) << "\n"
+                        << "    expected rate:  "
+                        << io::rate(expectedRate));
+        }
+    }
+
+    Flag f;
+    f.registerWith(termStructure);
+    f.lower();
+
+    euribor6m->addFixing(today, 0.0425);
+
+    if (!f.isUp())
+        BOOST_ERROR("Observer was not notified of rate fixing");
+
+    for (i=0; i<swaps; i++) {
+        Date maturity = settlement + swapData[i].n*swapData[i].units;
+        Schedule fixedSchedule(calendar,settlement,maturity,
+                               fixedLegFrequency,fixedLegConvention);
+        Schedule floatSchedule(calendar,settlement,maturity,
+                               floatingLegFrequency,floatingLegConvention);
+        VanillaSwap swap(true,100.0,
+                         fixedSchedule,0.0,fixedLegDayCounter,
+                         floatSchedule,index,fixingDays,0.0,
+                         Actual360(),curveHandle);
+        Rate expectedRate = swapData[i].rate/100,
+             estimatedRate = swap.fairRate();
+        #ifdef QL_PATCH_BORLAND
+        Real tolerance = 1.0e-5;
+        #else
+        Real tolerance = 1.0e-9;
+        #endif
+        if (std::fabs(expectedRate-estimatedRate) > tolerance) {
+            BOOST_ERROR("after LIBOR fixing:\n"
+                        << swapData[i].n << " year(s) swap:\n"
+                        << std::setprecision(8)
+                        << "    estimated rate: "
+                        << io::rate(estimatedRate) << "\n"
+                        << "    expected rate:  "
+                        << io::rate(expectedRate));
+        }
+    }
+
+    QL_TEST_TEARDOWN
+
+    #endif
+}
+
+
 test_suite* PiecewiseYieldCurveTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
     #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
@@ -551,6 +658,7 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     // suite->add(BOOST_TEST_CASE(
     //              &PiecewiseYieldCurveTest::testSplineForwardConsistency));
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
+    suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
     #endif
     return suite;
 }
