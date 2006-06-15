@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,6 +43,15 @@ namespace QuantLib {
               const DayCounter& dayCounter,
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        Xibor(const std::string& familyName,
+              const Period& tenor,
+              Integer settlementDays,
+              const Currency& currency,
+              const Calendar& calendar,
+              BusinessDayConvention convention,
+              const DayCounter& dayCounter,
+              const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
         //! \name Index interface
         //@{
         Rate fixing(const Date& fixingDate,
@@ -54,6 +64,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         std::string name() const;
+        std::string familyName() const;
         Period tenor() const;
         Frequency frequency() const;
         Integer settlementDays() const;
@@ -76,8 +87,7 @@ namespace QuantLib {
         //@}
       protected:
         std::string familyName_;
-        Integer n_;
-        TimeUnit units_;
+        Period tenor_;
         Integer settlementDays_;
         Currency currency_;
         Calendar calendar_;
@@ -93,8 +103,12 @@ namespace QuantLib {
         notifyObservers();
     }
 
+    inline std::string Xibor::familyName() const {
+        return familyName_;
+    }
+
     inline Period Xibor::tenor() const {
-        return Period(n_,units_);
+        return tenor_;
     }
 
     inline Integer Xibor::settlementDays() const {

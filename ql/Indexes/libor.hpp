@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,7 +32,17 @@ namespace QuantLib {
     class Libor : public Xibor {
       public:
         Libor(const std::string& familyName,
-              Integer n, TimeUnit units, Integer settlementDays,
+              Integer n, TimeUnit units,
+              Integer settlementDays,
+              const Currency& currency,
+              const Calendar& localCalendar,
+              const Calendar& currencyCalendar,
+              BusinessDayConvention convention,
+              const DayCounter& dayCounter,
+              const Handle<YieldTermStructure>& h);
+        Libor(const std::string& familyName,
+              const Period& tenor,
+              Integer settlementDays,
               const Currency& currency,
               const Calendar& localCalendar,
               const Calendar& currencyCalendar,
