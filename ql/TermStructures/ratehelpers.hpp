@@ -76,6 +76,8 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over deposit rates
     class DepositRateHelper : public RelativeDateRateHelper {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use the corresponding Period based constructor
         DepositRateHelper(const Handle<Quote>& rate,
                           Integer n, TimeUnit units,
                           Integer settlementDays,
@@ -88,12 +90,24 @@ namespace QuantLib {
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter);
+        #endif
+        DepositRateHelper(const Handle<Quote>& rate,
+                          Period p,
+                          Integer settlementDays,
+                          const Calendar& calendar,
+                          BusinessDayConvention convention,
+                          const DayCounter& dayCounter);
+        DepositRateHelper(Rate rate,
+                          Period p,
+                          Integer settlementDays,
+                          const Calendar& calendar,
+                          BusinessDayConvention convention,
+                          const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
       private:
         void initializeDates();
-        Integer n_;
-        TimeUnit units_;
+        Period p_;
         Integer settlementDays_;
         Calendar calendar_;
         BusinessDayConvention convention_;
@@ -132,6 +146,8 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over swap rates
     class SwapRateHelper : public RelativeDateRateHelper {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use the corresponding Period based constructor
         SwapRateHelper(const Handle<Quote>& rate,
                        Integer n, TimeUnit units,
                        Integer settlementDays,
@@ -156,6 +172,7 @@ namespace QuantLib {
                        Frequency floatingFrequency,
                        BusinessDayConvention floatingConvention,
                        const DayCounter& floatingDayCount);
+        #endif
         /*! \warning When calling Index::addFixing(), the swap helper
                      will be notified only if the fixing is added by
                      means of the same instance that was passed to
@@ -165,7 +182,7 @@ namespace QuantLib {
                      fixing the next time it is recalculated.)
         */
         SwapRateHelper(const Handle<Quote>& rate,
-                       Integer n, TimeUnit units,
+                       Period p,
                        Integer settlementDays,
                        const Calendar& calendar,
                        // fixed leg
@@ -173,7 +190,9 @@ namespace QuantLib {
                        BusinessDayConvention fixedConvention,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       const boost::shared_ptr<Xibor>& index);
+                       Frequency floatingFrequency,
+                       BusinessDayConvention floatingConvention,
+                       const DayCounter& floatingDayCount);
         /*! \warning When calling Index::addFixing(), the swap helper
                      will be notified only if the fixing is added by
                      means of the same instance that was passed to
@@ -183,7 +202,7 @@ namespace QuantLib {
                      fixing the next time it is recalculated.)
         */
         SwapRateHelper(Rate rate,
-                       Integer n, TimeUnit units,
+                       Period p,
                        Integer settlementDays,
                        const Calendar& calendar,
                        // fixed leg
@@ -191,15 +210,16 @@ namespace QuantLib {
                        BusinessDayConvention fixedConvention,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       const boost::shared_ptr<Xibor>& index);
+                       Frequency floatingFrequency,
+                       BusinessDayConvention floatingConvention,
+                       const DayCounter& floatingDayCount);
         Real impliedQuote() const;
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
         void setTermStructure(YieldTermStructure*);
       private:
         void initializeDates();
-        Integer n_;
-        TimeUnit units_;
+        Period p_;
         Integer settlementDays_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;

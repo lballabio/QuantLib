@@ -34,6 +34,8 @@ namespace QuantLib {
     /*! \todo add methods returning InterestRate */
     class Xibor : public Index, public Observer {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use the corresponding Period based constructor
         Xibor(const std::string& familyName,
               Integer n, TimeUnit units,
               Integer settlementDays,
@@ -43,8 +45,9 @@ namespace QuantLib {
               const DayCounter& dayCounter,
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+        #endif
         Xibor(const std::string& familyName,
-              const Period& tenor,
+              Period p,
               Integer settlementDays,
               const Currency& currency,
               const Calendar& calendar,
@@ -87,7 +90,7 @@ namespace QuantLib {
         //@}
       protected:
         std::string familyName_;
-        Period tenor_;
+        Period p_;
         Integer settlementDays_;
         Currency currency_;
         Calendar calendar_;
@@ -108,7 +111,7 @@ namespace QuantLib {
     }
 
     inline Period Xibor::tenor() const {
-        return tenor_;
+        return p_;
     }
 
     inline Integer Xibor::settlementDays() const {

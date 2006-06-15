@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,14 +23,16 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     Xibor::Xibor(const std::string& familyName,
-                 Integer n, TimeUnit units, Integer settlementDays,
+                 Integer n, TimeUnit units,
+                 Integer settlementDays,
                  const Currency& currency,
                  const Calendar& calendar,
                  BusinessDayConvention convention,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
-    : familyName_(familyName), tenor_(n, units),
+    : familyName_(familyName), p_(Period(n, units)),
       settlementDays_(settlementDays),
       currency_(currency), calendar_(calendar),
       convention_(convention),
@@ -39,16 +40,16 @@ namespace QuantLib {
         registerWith(termStructure_);
         registerWith(Settings::instance().evaluationDate());
     }
-
+    #endif
     Xibor::Xibor(const std::string& familyName,
-                 const Period& tenor,
+                 Period p,
                  Integer settlementDays,
                  const Currency& currency,
                  const Calendar& calendar,
                  BusinessDayConvention convention,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
-    : familyName_(familyName), tenor_(tenor),
+    : familyName_(familyName), p_(p),
       settlementDays_(settlementDays),
       currency_(currency), calendar_(calendar),
       convention_(convention),
@@ -58,27 +59,14 @@ namespace QuantLib {
     }
 
     std::string Xibor::name() const {
-        std::ostringstream out;
-        out << familyName_ << io::short_period(tenor_)
-            << " " << dayCounter_.name();
-        return out.str();
+        std::ostringstream tenor;
+        tenor << p_;
+        return familyName_+tenor.str()+" "+dayCounter_.name();
     }
 
-    Frequency Xibor::frequency() const {
-        Integer n = tenor_.length();
-        TimeUnit units = tenor_.units();
 
-        switch (units) {
-          case Months:
-            QL_REQUIRE(12%n == 0, "undefined frequency");
-            return Frequency(12/n);
-          case Years:
-            QL_REQUIRE(n == 1, "undefined frequency");
-            return Annual;
-          default:
-            QL_FAIL("undefined frequency");
-        }
-        QL_DUMMY_RETURN(Once)
+    Frequency Xibor::frequency() const {
+        return p_.frequency();
     }
 
     Rate Xibor::fixing(const Date& fixingDate,
@@ -123,7 +111,7 @@ namespace QuantLib {
     }
 
     Date Xibor::maturityDate(const Date& valueDate) const {
-        return calendar_.advance(valueDate, tenor_, convention_);
+        return calendar_.advance(valueDate, p_, convention_);
     }
 
 }

@@ -1,9 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2004, 2005, 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
- Copyright (C) 2004, 2005 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -176,6 +177,19 @@ namespace QuantLib {
         : length_(n), units_(units) {}
         Integer length() const { return length_; }
         TimeUnit units() const { return units_; }
+        Frequency frequency() const {
+            switch (units_) {
+              case Months:
+                QL_REQUIRE(12%length_ == 0, "undefined frequency");
+                return Frequency(12/length_);
+              case Years:
+                QL_REQUIRE(length_ == 1, "undefined frequency");
+                return Annual;
+              default:
+                QL_FAIL("undefined frequency");
+            }
+            QL_DUMMY_RETURN(Once)
+        }
       private:
         Integer length_;
         TimeUnit units_;

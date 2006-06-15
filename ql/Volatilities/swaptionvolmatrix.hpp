@@ -49,6 +49,14 @@ namespace QuantLib {
                                  const std::vector<Period>& lengths,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
+        SwaptionVolatilityMatrix(const Date& referenceDate,
+                                 const Calendar& c,
+                                 Integer fixingDays,
+                                 const std::vector<Period>& expiries,
+                                 BusinessDayConvention bdc,
+                                 const std::vector<Period>& tenorss,
+                                 const Matrix& volatilities,
+                                 const DayCounter& dayCounter);
         // inspectors
         DayCounter dayCounter() const { return dayCounter_; }
         const std::vector<Date>& exerciseDates() const;

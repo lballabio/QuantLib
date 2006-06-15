@@ -58,13 +58,12 @@ namespace QuantLib {
     Date Libor::maturityDate(const Date& valueDate) const {
         Calendar jointCalendar = calendar();
         if (jointCalendar.isEndOfMonth(valueDate)) {
-            Date d = valueDate + tenor_;
+            Date d = valueDate + p_;
             Date last = Date::endOfMonth(d);
             return jointCalendar.adjust(last,Preceding);
         } else {
-            return jointCalendar.advance(valueDate, tenor_, convention_);
+            return jointCalendar.advance(valueDate, p_, convention_);
         }
     }
 
 }
-

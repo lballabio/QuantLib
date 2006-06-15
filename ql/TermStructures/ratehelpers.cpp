@@ -100,23 +100,49 @@ namespace QuantLib {
 
 
 
+    #ifndef QL_DISABLE_DEPRECATED
     DepositRateHelper::DepositRateHelper(
                        const Handle<Quote>& rate,
-                       Integer n, TimeUnit units, Integer settlementDays,
+                       Integer n, TimeUnit units,
+                       Integer settlementDays,
                        const Calendar& calendar,
                        BusinessDayConvention convention,
                        const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), n_(n), units_(units),
+    : RelativeDateRateHelper(rate), p_(Period(n, units)),
       settlementDays_(settlementDays), calendar_(calendar),
       convention_(convention), dayCounter_(dayCounter) {}
 
     DepositRateHelper::DepositRateHelper(
                        Rate rate,
-                       Integer n, TimeUnit units, Integer settlementDays,
+                       Integer n, TimeUnit units,
+                       Integer settlementDays,
                        const Calendar& calendar,
                        BusinessDayConvention convention,
                        const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), n_(n), units_(units),
+    : RelativeDateRateHelper(rate), p_(Period(n, units)),
+      settlementDays_(settlementDays), calendar_(calendar),
+      convention_(convention), dayCounter_(dayCounter) {}
+    #endif
+
+    DepositRateHelper::DepositRateHelper(
+                       const Handle<Quote>& rate,
+                       Period p,
+                       Integer settlementDays,
+                       const Calendar& calendar,
+                       BusinessDayConvention convention,
+                       const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate), p_(p),
+      settlementDays_(settlementDays), calendar_(calendar),
+      convention_(convention), dayCounter_(dayCounter) {}
+
+    DepositRateHelper::DepositRateHelper(
+                       Rate rate,
+                       Period p,
+                       Integer settlementDays,
+                       const Calendar& calendar,
+                       BusinessDayConvention convention,
+                       const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate), p_(Period(p)),
       settlementDays_(settlementDays), calendar_(calendar),
       convention_(convention), dayCounter_(dayCounter) {}
 
@@ -140,7 +166,7 @@ namespace QuantLib {
     void DepositRateHelper::initializeDates() {
         earliestDate_ =
             calendar_.advance(evaluationDate_,settlementDays_,Days);
-        latestDate_ = calendar_.advance(earliestDate_,n_,units_,convention_);
+        latestDate_ = calendar_.advance(earliestDate_,p_,convention_);
         yearFraction_ = dayCounter_.yearFraction(earliestDate_,latestDate_);
     }
 
@@ -196,6 +222,7 @@ namespace QuantLib {
 
 
 
+    #ifndef QL_DISABLE_DEPRECATED
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    Integer n, TimeUnit units,
                                    Integer settlementDays,
@@ -207,7 +234,7 @@ namespace QuantLib {
                                    BusinessDayConvention floatingConvention,
                                    const DayCounter& floatingDayCount)
     : RelativeDateRateHelper(rate),
-      n_(n), units_(units), settlementDays_(settlementDays),
+      p_(Period(n, units)), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount) {
@@ -225,7 +252,8 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(
                             Rate rate,
-                            Integer n, TimeUnit units, Integer settlementDays,
+                            Integer n, TimeUnit units,
+                            Integer settlementDays,
                             const Calendar& calendar,
                             Frequency fixedFrequency,
                             BusinessDayConvention fixedConvention,
@@ -234,7 +262,46 @@ namespace QuantLib {
                             BusinessDayConvention floatingConvention,
                             const DayCounter& floatingDayCount)
     : RelativeDateRateHelper(rate),
-      n_(n), units_(units), settlementDays_(settlementDays),
+      p_(Period(n, units)), settlementDays_(settlementDays),
+      calendar_(calendar), fixedConvention_(fixedConvention),
+      floatingConvention_(floatingConvention),
+      fixedFrequency_(fixedFrequency),
+      floatingFrequency_(floatingFrequency),
+      fixedDayCount_(fixedDayCount),
+      floatingDayCount_(floatingDayCount) {}
+    #endif
+
+    SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
+                                   Period p,
+                                   Integer settlementDays,
+                                   const Calendar& calendar,
+                                   Frequency fixedFrequency,
+                                   BusinessDayConvention fixedConvention,
+                                   const DayCounter& fixedDayCount,
+                                   Frequency floatingFrequency,
+                                   BusinessDayConvention floatingConvention,
+                                   const DayCounter& floatingDayCount)
+    : RelativeDateRateHelper(rate),
+      p_(p), settlementDays_(settlementDays),
+      calendar_(calendar), fixedConvention_(fixedConvention),
+      floatingConvention_(floatingConvention),
+      fixedFrequency_(fixedFrequency),
+      floatingFrequency_(floatingFrequency),
+      fixedDayCount_(fixedDayCount),
+      floatingDayCount_(floatingDayCount) {}
+
+    SwapRateHelper::SwapRateHelper(Rate rate,
+                                   Period p,
+                                   Integer settlementDays,
+                                   const Calendar& calendar,
+                                   Frequency fixedFrequency,
+                                   BusinessDayConvention fixedConvention,
+                                   const DayCounter& fixedDayCount,
+                                   Frequency floatingFrequency,
+                                   BusinessDayConvention floatingConvention,
+                                   const DayCounter& floatingDayCount)
+    : RelativeDateRateHelper(rate),
+      p_(p), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount) {
@@ -291,7 +358,7 @@ namespace QuantLib {
     void SwapRateHelper::initializeDates() {
         earliestDate_ =
             calendar_.advance(evaluationDate_,settlementDays_,Days);
-        Date maturity = earliestDate_ + n_*units_;
+        Date maturity = earliestDate_ + p_;
         Schedule fixedSchedule(calendar_, earliestDate_, maturity,
                                fixedFrequency_, fixedConvention_);
         Schedule floatSchedule(calendar_, earliestDate_, maturity,
