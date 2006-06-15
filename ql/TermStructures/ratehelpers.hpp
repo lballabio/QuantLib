@@ -30,12 +30,8 @@
 namespace QuantLib {
 
 
-    //! Interest-rate futures helper
-    /*! \warning This class assumes that the reference date
-                 does not change between calls of setTermStructure().
-
-        \todo convexity adjustment should be implemented.
-    */
+    //! Rate helper for bootstrapping over interest-rate futures prices
+    /*! \todo convexity adjustment should be implemented. */
     class FuturesRateHelper : public RateHelper {
       public:
         FuturesRateHelper(const Handle<Quote>& price,
@@ -44,7 +40,7 @@ namespace QuantLib {
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter);
-	    FuturesRateHelper(const Handle<Quote>& price,
+        FuturesRateHelper(const Handle<Quote>& price,
                           const Date& immDate,
                           const Date& matDate,
                           const Calendar& calendar,
@@ -70,23 +66,14 @@ namespace QuantLib {
       public:
         RelativeDateRateHelper(const Handle<Quote>& quote);
         RelativeDateRateHelper(Real quote);
-        void update() {
-            RateHelper::update();
-            if (evaluationDate_ != Settings::instance().evaluationDate()) {
-                evaluationDate_ = Settings::instance().evaluationDate();
-                initializeDates_();
-            }
-        }
+        void setTermStructure(YieldTermStructure*);
       protected:
-        virtual void initializeDates_() = 0;
+        virtual void initializeDates() = 0;
         Date evaluationDate_;
     };
 
 
-    //! Deposit rate helper
-    /*! \warning This class assumes that the reference date
-                 does not change between calls of setTermStructure().
-    */
+    //! Rate helper for bootstrapping over deposit rates
     class DepositRateHelper : public RelativeDateRateHelper {
       public:
         DepositRateHelper(const Handle<Quote>& rate,
@@ -103,9 +90,8 @@ namespace QuantLib {
                           const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
-        void setTermStructure(YieldTermStructure*);
       private:
-        void initializeDates_();
+        void initializeDates();
         Integer n_;
         TimeUnit units_;
         Integer settlementDays_;
@@ -116,10 +102,7 @@ namespace QuantLib {
     };
 
 
-    //! Forward rate agreement helper
-    /*! \warning This class assumes that the reference date
-                 does not change between calls of setTermStructure().
-    */
+    //! Rate helper for bootstrapping over %FRA rates
     class FraRateHelper : public RelativeDateRateHelper {
       public:
         FraRateHelper(const Handle<Quote>& rate,
@@ -136,9 +119,8 @@ namespace QuantLib {
                       const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
-        void setTermStructure(YieldTermStructure*);
       private:
-        void initializeDates_();
+        void initializeDates();
         Integer monthsToStart_, monthsToEnd_;
         Integer settlementDays_;
         Calendar calendar_;
@@ -147,11 +129,9 @@ namespace QuantLib {
         Time yearFraction_;
     };
 
-    //! %Swap rate helper
+    //! Rate helper for bootstrapping over swap rates
     /*! \todo currency and day counter of Xibor should be added to
               obtain well-defined SwapRateHelper
-		\warning This class assumes that the settlement date
-                 does not change between calls of setTermStructure().
     */
     class SwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -184,7 +164,7 @@ namespace QuantLib {
         // and may not avoid the root-finding process
         void setTermStructure(YieldTermStructure*);
       private:
-        void initializeDates_();
+        void initializeDates();
         Integer n_;
         TimeUnit units_;
         Integer settlementDays_;
