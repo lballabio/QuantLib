@@ -8093,6 +8093,9 @@
 			RelativePath="ql\argsandresults.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\auto_link.hpp">
+		</File>
+		<File
 			RelativePath="ql\calendar.cpp">
 			<FileConfiguration
 				Name="Debug CRTDLL|Win32">
@@ -8459,6 +8462,9 @@
 			RelativePath="ql\history.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\index.cpp">
+		</File>
+		<File
 			RelativePath="ql\index.hpp">
 		</File>
 		<File
@@ -8484,6 +8490,9 @@
 		</File>
 		<File
 			RelativePath="ql\payoff.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\position.hpp">
 		</File>
 		<File
 			RelativePath="ql\pricingengine.hpp">
