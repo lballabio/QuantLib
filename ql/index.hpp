@@ -35,6 +35,7 @@ namespace QuantLib {
     //! purely virtual base class for indexes
     class Index : public Observable {
       public:
+        Index();
         virtual ~Index() {}
         //! Returns the name of the index.
         /*! \warning This method is used for output and comparison

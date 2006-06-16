@@ -26,6 +26,7 @@
 
 #include <ql/history.hpp>
 #include <ql/Patterns/singleton.hpp>
+#include <ql/Utilities/observablevalue.hpp>
 #include <map>
 
 namespace QuantLib {
@@ -36,13 +37,20 @@ namespace QuantLib {
       private:
         IndexManager() {}
       public:
-        void setHistory(const std::string& name, const History&);
-        const History& getHistory(const std::string& name) const;
+        //! returns whether historical fixings were stored for the index
         bool hasHistory(const std::string& name) const;
+        //! returns the (possibly empty) history of the index fixings
+        const History& getHistory(const std::string& name) const;
+        //! stores the historical fixings of the index
+        void setHistory(const std::string& name, const History&);
+        //! observer notifying of changes in the index fixings
+        boost::shared_ptr<Observable> notifier(const std::string& name) const;
+        //! returns all names of the indexes for which fixings were stored
         std::vector<std::string> histories() const;
+        //! clears all stored fixings
         void clearHistories();
       private:
-        std::map<std::string,History> data_;
+        mutable std::map<std::string, ObservableValue<History> > data_;
     };
 
 }

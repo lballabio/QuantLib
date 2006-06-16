@@ -601,7 +601,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     f.registerWith(termStructure);
     f.lower();
 
-    euribor6m->addFixing(today, 0.0425);
+    index->addFixing(today, 0.0425);
 
     if (!f.isUp())
         BOOST_ERROR("Observer was not notified of rate fixing");

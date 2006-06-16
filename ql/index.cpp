@@ -22,24 +22,15 @@
 
 namespace QuantLib {
 
+    Index::Index() {}
+
     void Index::addFixing(const Date& fixingDate, Rate fixing) {
         // likely to be changed after the TimeSeries/History makeover
         std::string tag = name();
-        History h;
-
-        if (IndexManager::instance().hasHistory(tag))
-            h = IndexManager::instance().getHistory(tag);
-
-        if (h.empty()) {
-            h = History(std::vector<Date>(1,fixingDate),
+        History h = IndexManager::instance().getHistory(tag);
+        h.addLastValues(std::vector<Date>(1,fixingDate),
                         std::vector<Rate>(1,fixing));
-        } else {
-            h.addLastValues(std::vector<Date>(1,fixingDate),
-                            std::vector<Rate>(1,fixing));
-        }
-
         IndexManager::instance().setHistory(tag,h);
-        notifyObservers();
     }
 
 }

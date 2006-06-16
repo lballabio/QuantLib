@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,9 +39,11 @@ namespace QuantLib {
               code should modify the value via re-assignment instead.
     */
     template <class T>
-    class ObservableValue : public boost::shared_ptr<Observable> {
+    class ObservableValue {
       public:
+        ObservableValue();
         ObservableValue(const T&);
+        ObservableValue(const ObservableValue<T>&);
         //! \name controlled assignment
         //@{
         ObservableValue<T>& operator=(const T&);
@@ -49,43 +51,52 @@ namespace QuantLib {
         //@}
         //! implicit conversion
         operator T() const;
+        operator boost::shared_ptr<Observable>() const;
         //! explicit inspector
         const T& value() const;
       private:
         T value_;
-        // undefined
-        ObservableValue(const ObservableValue<T>&);
+        boost::shared_ptr<Observable> observable_;
     };
 
 
     // template definition
 
     template <class T>
+    ObservableValue<T>::ObservableValue()
+    : value_(), observable_(new Observable) {}
+
+    template <class T>
     ObservableValue<T>::ObservableValue(const T& t)
-    : boost::shared_ptr<Observable>(new Observable), value_(t) {}
+    : value_(t), observable_(new Observable) {}
+
+    template <class T>
+    ObservableValue<T>::ObservableValue(const ObservableValue<T>& t)
+    : value_(t.value_), observable_(new Observable) {}
 
     template <class T>
     ObservableValue<T>& ObservableValue<T>::operator=(const T& t) {
-        if (t != value_) {
-            value_ = t;
-            (*this)->notifyObservers();
-        }
+        value_ = t;
+        observable_->notifyObservers();
         return *this;
     }
 
     template <class T>
     ObservableValue<T>&
     ObservableValue<T>::operator=(const ObservableValue<T>& t) {
-        if (t.value_ != value_) {
-            value_ = t.value_;
-            (*this)->notifyObservers();
-        }
+        value_ = t.value_;
+        observable_->notifyObservers();
         return *this;
     }
 
     template <class T>
     ObservableValue<T>::operator T() const {
         return value_;
+    }
+
+    template <class T>
+    ObservableValue<T>::operator boost::shared_ptr<Observable>() const {
+        return observable_;
     }
 
     template <class T>

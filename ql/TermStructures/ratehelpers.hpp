@@ -143,14 +143,6 @@ namespace QuantLib {
     };
 
     //! Rate helper for bootstrapping over swap rates
-    /*! \warning When calling Index::addFixing(), the swap helper will
-                 be notified only if the fixing is added by means of
-                 the same instance that was passed upon construction.
-                 If the fixing is added to another instance, the curve
-                 will not be aware of the change (even though it will
-                 use the correct fixing the next time it is
-                 recalculated.)
-    */
     class SwapRateHelper : public RelativeDateRateHelper {
       public:
         #ifndef QL_DISABLE_DEPRECATED
