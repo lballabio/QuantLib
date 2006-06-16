@@ -21,3 +21,6 @@
 
 - Added SABR interpolation for volatilities.
 
+- Added cash-settled swaption pricing in Black swaption engine; test
+  provided.
+
