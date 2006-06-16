@@ -58,7 +58,7 @@ namespace QuantLib {
             }
             virtual ~SABRCoefficientHolder() {}
             Real t_, forward_, beta_, nu_, alpha_, rho_;
-            Real error_;
+            Real error_, maxError_;
             std::vector<bool> fixed_;
         };
 
@@ -98,6 +98,7 @@ namespace QuantLib {
         Real rho()     const { return coeffs_->rho_; }
 
         Real interpolationError() const { return coeffs_->error_; }
+        Real interpolationMaxError() const { return coeffs_->maxError_; }
       private:
         boost::shared_ptr<detail::SABRCoefficientHolder> coeffs_;
     };
@@ -208,6 +209,7 @@ namespace QuantLib {
                 QL_ENSURE(rho_*rho_<1,"rho square must be less than 1");
 
                 error_ = interpolationError();
+                maxError_ = interpolationMaxError(); 
             }
 
             Real value(Real x) const {
@@ -248,6 +250,17 @@ namespace QuantLib {
                     totalError += error*error;
                 }
                 return totalError;
+            }
+
+            Real interpolationMaxError() const {
+                Real error, maxError = QL_MIN_REAL;
+                I1 i = this->xBegin_;
+                I2 j = this->yBegin_;
+                for (; i != this->xEnd_; ++i, ++j) {
+                    error = std::fabs(value(*i) - *j);
+                    maxError = std::max(maxError, error);
+                }
+                return maxError;
             }
         };
 
