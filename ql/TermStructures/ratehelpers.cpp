@@ -108,7 +108,7 @@ namespace QuantLib {
                        const Calendar& calendar,
                        BusinessDayConvention convention,
                        const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), p_(Period(n, units)),
+    : RelativeDateRateHelper(rate), tenor_(n, units),
       settlementDays_(settlementDays), calendar_(calendar),
       convention_(convention), dayCounter_(dayCounter) {
         initializeDates();
@@ -121,7 +121,7 @@ namespace QuantLib {
                        const Calendar& calendar,
                        BusinessDayConvention convention,
                        const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), p_(Period(n, units)),
+    : RelativeDateRateHelper(rate), tenor_(n, units),
       settlementDays_(settlementDays), calendar_(calendar),
       convention_(convention), dayCounter_(dayCounter) {
         initializeDates();
