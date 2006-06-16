@@ -77,8 +77,9 @@ void setup() {
     fixedFrequency_ = Annual;
     floatingFrequency_ = Semiannual;
     fixedDayCount_ = Thirty360();
-    index_ = boost::shared_ptr<Xibor>(new Euribor(12/floatingFrequency_,
-                                                  Months, termStructure_));
+    index_ = boost::shared_ptr<Xibor>(new Euribor(Period(12/floatingFrequency_,
+                                                         Months),
+                                                  termStructure_));
     calendar_ = index_->calendar();
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;
@@ -251,7 +252,7 @@ void SwapTest::testInArrears() {
 
     DayCounter dayCounter = SimpleDayCounter();
     std::vector<Real> nominals(1, 100000000.0);
-    boost::shared_ptr<Xibor> index(new Xibor("dummy", 1, Years, 0,
+    boost::shared_ptr<Xibor> index(new Xibor("dummy", 1*Years, 0,
                                              EURCurrency(), calendar,
                                              Following, dayCounter,
                                              termStructure_));

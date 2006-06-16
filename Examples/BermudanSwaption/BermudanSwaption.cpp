@@ -106,8 +106,8 @@ int main(int, char* [])
         bool payFixedRate = true;
         Integer fixingDays = 2;
         Rate dummyFixedRate = 0.03;
-        boost::shared_ptr<Xibor> indexSixMonths(new
-            Euribor(6, Months, rhTermStructure));
+        boost::shared_ptr<Xibor> indexSixMonths(
+                                              new Euribor6M(rhTermStructure));
 
         Date startDate = calendar.advance(settlementDate,1,Years,
                                           floatingLegConvention);

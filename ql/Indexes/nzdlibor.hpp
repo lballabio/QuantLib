@@ -39,12 +39,21 @@ namespace QuantLib {
     */
     class NZDLibor : public Libor {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the Period-based constructor */
         NZDLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Libor("NZDLibor", n, units, 2, NZDCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange), NewZealand(),
                 ModifiedFollowing, dc, h) {}
+        #endif
+        NZDLibor(const Period& tenor,
+                 const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Libor("NZDLibor", tenor, 2, NZDCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange), NewZealand(),
+                ModifiedFollowing, Actual360(), h) {}
     };
 
 }

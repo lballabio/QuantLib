@@ -121,18 +121,25 @@ void setup() {
     for (i=0; i<deposits; i++) {
         Handle<Quote> r(rates[i]);
         instruments[i] = boost::shared_ptr<RateHelper>(
-              new DepositRateHelper(r, depositData[i].n, depositData[i].units,
+              new DepositRateHelper(r, depositData[i].n*depositData[i].units,
                                     settlementDays, calendar,
                                     depoConvention, depoDayCounter));
     }
+    boost::shared_ptr<Xibor> index(new Xibor("dummy",
+                                             Period(12/floatingLegFrequency,
+                                                    Months),
+                                             settlementDays,
+                                             Currency(),
+                                             calendar,
+                                             floatingLegConvention,
+                                             Actual360()));
     for (i=0; i<swaps; i++) {
         Handle<Quote> r(rates[i+deposits]);
         instruments[i+deposits] = boost::shared_ptr<RateHelper>(
-                new SwapRateHelper(r, swapData[i].n, swapData[i].units,
+                new SwapRateHelper(r, swapData[i].n*swapData[i].units,
                                    settlementDays, calendar,
                                    fixedLegFrequency, fixedLegConvention,
-                                   fixedLegDayCounter, floatingLegFrequency,
-                                   floatingLegConvention, Actual360()));
+                                   fixedLegDayCounter, index));
     }
 
     // instantiate curve
@@ -161,7 +168,7 @@ void PiecewiseFlatForwardTest::testConsistency() {
     Size i;
     // check deposits
     for (i=0; i<deposits; i++) {
-        Euribor index(depositData[i].n,depositData[i].units,euriborHandle);
+        Euribor index(depositData[i].n*depositData[i].units,euriborHandle);
         Rate expectedRate  = depositData[i].rate/100,
              estimatedRate = index.fixing(today);
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
@@ -176,7 +183,8 @@ void PiecewiseFlatForwardTest::testConsistency() {
     }
 
     // check swaps
-    boost::shared_ptr<Xibor> index(new Euribor(12/floatingLegFrequency,Months,
+    boost::shared_ptr<Xibor> index(new Euribor(Period(12/floatingLegFrequency,
+                                                      Months),
                                                euriborHandle));
     for (i=0; i<swaps; i++) {
         Date maturity = settlement + swapData[i].n*swapData[i].units;

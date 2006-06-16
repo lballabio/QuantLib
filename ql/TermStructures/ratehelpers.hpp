@@ -18,7 +18,7 @@
 */
 
 /*! \file ratehelpers.hpp
-    \brief deposit, FRA, Futures, and Swap rate helpers
+    \brief deposit, FRA, futures, and swap rate helpers
 */
 
 #ifndef quantlib_ratehelpers_hpp
@@ -28,7 +28,6 @@
 #include <ql/Instruments/vanillaswap.hpp>
 
 namespace QuantLib {
-
 
     //! Rate helper for bootstrapping over interest-rate futures prices
     /*! \todo convexity adjustment should be implemented. */
@@ -92,23 +91,22 @@ namespace QuantLib {
                           const DayCounter& dayCounter);
         #endif
         DepositRateHelper(const Handle<Quote>& rate,
-                          Period p,
+                          const Period& tenor,
                           Integer settlementDays,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter);
         DepositRateHelper(Rate rate,
-                          Period p,
+                          const Period& tenor,
                           Integer settlementDays,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
-      protected:
-        void initializeDates();
       private:
-        Period p_;
+        void initializeDates();
+        Period tenor_;
         Integer settlementDays_;
         Calendar calendar_;
         BusinessDayConvention convention_;
@@ -134,9 +132,8 @@ namespace QuantLib {
                       const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
-      protected:
-        void initializeDates();
       private:
+        void initializeDates();
         Integer monthsToStart_, monthsToEnd_;
         Integer settlementDays_;
         Calendar calendar_;
@@ -146,18 +143,46 @@ namespace QuantLib {
     };
 
     //! Rate helper for bootstrapping over swap rates
+    /*! \warning When calling Index::addFixing(), the swap helper will
+                 be notified only if the fixing is added by means of
+                 the same instance that was passed upon construction.
+                 If the fixing is added to another instance, the curve
+                 will not be aware of the change (even though it will
+                 use the correct fixing the next time it is
+                 recalculated.)
+    */
     class SwapRateHelper : public RelativeDateRateHelper {
       public:
-        /*! \warning When calling Index::addFixing(), the swap helper
-                     will be notified only if the fixing is added by
-                     means of the same instance that was passed to
-                     this constructor. If the fixing is added to
-                     another instance, the curve will not be aware of
-                     the change (even though it will use the correct
-                     fixing the next time it is recalculated.)
-        */
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use the corresponding Period based constructor
         SwapRateHelper(const Handle<Quote>& rate,
-                       Period p,
+                       Integer n, TimeUnit units,
+                       Integer settlementDays,
+                       const Calendar& calendar,
+                       // fixed leg
+                       Frequency fixedFrequency,
+                       BusinessDayConvention fixedConvention,
+                       const DayCounter& fixedDayCount,
+                       // floating leg
+                       Frequency floatingFrequency,
+                       BusinessDayConvention floatingConvention,
+                       const DayCounter& floatingDayCount);
+        //! \deprecated use the corresponding Period based constructor
+        SwapRateHelper(Rate rate,
+                       Integer n, TimeUnit units,
+                       Integer settlementDays,
+                       const Calendar& calendar,
+                       // fixed leg
+                       Frequency fixedFrequency,
+                       BusinessDayConvention fixedConvention,
+                       const DayCounter& fixedDayCount,
+                       // floating leg
+                       Frequency floatingFrequency,
+                       BusinessDayConvention floatingConvention,
+                       const DayCounter& floatingDayCount);
+        #endif
+        SwapRateHelper(const Handle<Quote>& rate,
+                       const Period& tenor,
                        Integer settlementDays,
                        const Calendar& calendar,
                        // fixed leg
@@ -166,16 +191,8 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        const boost::shared_ptr<Xibor>& index);
-        /*! \warning When calling Index::addFixing(), the swap helper
-                     will be notified only if the fixing is added by
-                     means of the same instance that was passed to
-                     this constructor. If the fixing is added to
-                     another instance, the curve will not be aware of
-                     the change (even though it will use the correct
-                     fixing the next time it is recalculated.)
-        */
         SwapRateHelper(Rate rate,
-                       Period p,
+                       const Period& tenor,
                        Integer settlementDays,
                        const Calendar& calendar,
                        // fixed leg
@@ -188,10 +205,9 @@ namespace QuantLib {
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
         void setTermStructure(YieldTermStructure*);
-      protected:
-        void initializeDates();
       private:
-        Period p_;
+        void initializeDates();
+        Period tenor_;
         Integer settlementDays_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;
@@ -203,5 +219,6 @@ namespace QuantLib {
     };
 
 }
+
 
 #endif

@@ -38,11 +38,19 @@ namespace QuantLib {
     */
     class TRLibor : public Xibor {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the Period-based constructor */
         TRLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Xibor("TRLibor", n, units, 0, TRYCurrency(),
                 Turkey(), ModifiedFollowing, dc, h) {}
+        #endif
+        TRLibor(const Period& tenor,
+                const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Xibor("TRLibor", tenor, 0, TRYCurrency(),
+                Turkey(), ModifiedFollowing, Actual360(), h) {}
     };
 
 }

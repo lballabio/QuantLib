@@ -598,7 +598,7 @@ void BondTest::testCachedFloating() {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
-    boost::shared_ptr<Xibor> index(new USDLibor(6, Months, riskFreeRate));
+    boost::shared_ptr<Xibor> index(new USDLibor(6*Months, riskFreeRate));
     Integer fixingDays = 1;
 
     Real tolerance = 1.0e-6;

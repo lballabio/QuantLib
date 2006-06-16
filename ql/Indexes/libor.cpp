@@ -31,7 +31,7 @@ namespace QuantLib {
                  BusinessDayConvention convention,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
-    : Xibor(familyName, n, units, settlementDays, currency,
+    : Xibor(familyName, n*units, settlementDays, currency,
             JointCalendar(localCalendar,currencyCalendar,JoinHolidays),
             convention, dayCounter, h),
       localCalendar_(localCalendar), currencyCalendar_(currencyCalendar) {}
@@ -58,11 +58,11 @@ namespace QuantLib {
     Date Libor::maturityDate(const Date& valueDate) const {
         Calendar jointCalendar = calendar();
         if (jointCalendar.isEndOfMonth(valueDate)) {
-            Date d = valueDate + p_;
+            Date d = valueDate + tenor_;
             Date last = Date::endOfMonth(d);
             return jointCalendar.adjust(last,Preceding);
         } else {
-            return jointCalendar.advance(valueDate, p_, convention_);
+            return jointCalendar.advance(valueDate, tenor_, convention_);
         }
     }
 

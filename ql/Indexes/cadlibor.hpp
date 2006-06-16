@@ -42,12 +42,21 @@ namespace QuantLib {
     */
     class CADLibor : public Libor {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the Period-based constructor */
         CADLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Libor("CADLibor", n, units, 2, CADCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange), Canada(),
                 ModifiedFollowing, dc, h) {}
+        #endif
+        CADLibor(const Period& tenor,
+                 const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Libor("CADLibor", tenor, 2, CADCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange), Canada(),
+                ModifiedFollowing, Actual360(), h) {}
     };
 
 }

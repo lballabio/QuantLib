@@ -38,6 +38,8 @@ namespace QuantLib {
     */
     class GBPLibor : public Libor {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the Period-based constructor */
         GBPLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual365Fixed())
@@ -45,6 +47,14 @@ namespace QuantLib {
                 UnitedKingdom(UnitedKingdom::Exchange),
                 UnitedKingdom(UnitedKingdom::Exchange),
                 ModifiedFollowing, dc, h) {}
+        #endif
+        GBPLibor(const Period& tenor,
+                 const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Libor("GBPLibor", tenor, 0, GBPCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange),
+                UnitedKingdom(UnitedKingdom::Exchange),
+                ModifiedFollowing, Actual365Fixed(), h) {}
     };
 
 }

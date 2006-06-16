@@ -51,7 +51,7 @@ boost::shared_ptr<Xibor> makeIndex() {
                       boost::shared_ptr<YieldTermStructure>(
                                       new ZeroCurve(dates,rates,dayCounter)));
 
-    boost::shared_ptr<Xibor> index(new Euribor(1, Years, termStructure));
+    boost::shared_ptr<Xibor> index(new Euribor1Y(termStructure));
 
     Date todaysDate = index->calendar().adjust(Date(4,September,2005));
     Settings::instance().evaluationDate() = todaysDate;
@@ -121,7 +121,7 @@ void LiborMarketModelProcessTest::testInitialisation() {
     Handle<YieldTermStructure> termStructure(
         flatRate(Date::todaysDate(), 0.04, dayCounter));
 
-    boost::shared_ptr<Xibor> index(new Euribor(6, Months, termStructure));
+    boost::shared_ptr<Xibor> index(new Euribor6M(termStructure));
     boost::shared_ptr<CapletVolatilityStructure> capletVol(
         new CapletConstantVolatility(termStructure->referenceDate(), 0.2,
                                      termStructure->dayCounter()));

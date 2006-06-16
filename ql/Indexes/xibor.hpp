@@ -35,7 +35,7 @@ namespace QuantLib {
     class Xibor : public Index, public Observer {
       public:
         #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the corresponding Period based constructor
+        //! \deprecated use the corresponding Period-based constructor
         Xibor(const std::string& familyName,
               Integer n, TimeUnit units,
               Integer settlementDays,
@@ -47,7 +47,7 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>());
         #endif
         Xibor(const std::string& familyName,
-              Period p,
+              const Period& p,
               Integer settlementDays,
               const Currency& currency,
               const Calendar& calendar,
@@ -78,7 +78,7 @@ namespace QuantLib {
         DayCounter dayCounter() const;
         boost::shared_ptr<YieldTermStructure> termStructure() const;
         //@}
-        /*| \name Date calculations
+        /*! \name Date calculations
 
             These methods can be overridden to implement particular
             conventions
@@ -87,10 +87,10 @@ namespace QuantLib {
         */
         virtual Date valueDate(const Date& fixingDate) const;
         virtual Date maturityDate(const Date& valueDate) const;
-        //@}
+        // @}
       protected:
         std::string familyName_;
-        Period p_;
+        Period tenor_;
         Integer settlementDays_;
         Currency currency_;
         Calendar calendar_;
@@ -111,7 +111,7 @@ namespace QuantLib {
     }
 
     inline Period Xibor::tenor() const {
-        return p_;
+        return tenor_;
     }
 
     inline Integer Xibor::settlementDays() const {

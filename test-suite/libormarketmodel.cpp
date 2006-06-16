@@ -54,7 +54,7 @@ boost::shared_ptr<Xibor> makeIndex(std::vector<Date> dates,
 
     Handle<YieldTermStructure> termStructure;
 
-    boost::shared_ptr<Xibor> index(new Euribor(6, Months, termStructure));
+    boost::shared_ptr<Xibor> index(new Euribor6M(termStructure));
 
     Date todaysDate = index->calendar().adjust(Date(4,September,2005));
     Settings::instance().evaluationDate() = todaysDate;

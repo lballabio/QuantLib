@@ -92,8 +92,9 @@ void setup() {
     fixedFrequency_ = Annual;
     floatingFrequency_ = Semiannual;
     fixedDayCount_ = Thirty360();
-    index_ = boost::shared_ptr<Xibor>(new Euribor(12/floatingFrequency_,
-                                                  Months, termStructure_));
+    index_ = boost::shared_ptr<Xibor>(new Euribor(Period(12/floatingFrequency_,
+                                                         Months),
+                                                  termStructure_));
     calendar_ = index_->calendar();
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;

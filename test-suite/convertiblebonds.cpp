@@ -220,7 +220,7 @@ void ConvertibleBondTest::testBond() {
 
     // floating-rate
 
-    boost::shared_ptr<Xibor> index(new Euribor(1, Years, discountCurve));
+    boost::shared_ptr<Xibor> index(new Euribor1Y(discountCurve));
     Integer fixingDays = 2;
     std::vector<Rate> spreads;
 

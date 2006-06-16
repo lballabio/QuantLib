@@ -39,12 +39,21 @@ namespace QuantLib {
     */
     class AUDLibor : public Libor {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the Period-based constructor */
         AUDLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Libor("AUDLibor", n, units, 2, AUDCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange), Australia(),
                 ModifiedFollowing, dc, h) {}
+        #endif
+        AUDLibor(const Period& tenor,
+                 const Handle<YieldTermStructure>& h =
+                                     Handle<YieldTermStructure>())
+        : Libor("AUDLibor", tenor, 2, AUDCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange), Australia(),
+                ModifiedFollowing, Actual360(), h) {}
     };
 
 }

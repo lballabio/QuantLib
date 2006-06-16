@@ -41,11 +41,19 @@ namespace QuantLib {
     */
     class Cdor : public Xibor {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the Period-based constructor */
         Cdor(Integer n, TimeUnit units,
              const Handle<YieldTermStructure>& h,
              const DayCounter& dc = Actual360())
         : Xibor("CDOR", n, units, 2, CADCurrency(),
                 Canada(), ModifiedFollowing, dc, h) {}
+        #endif
+        Cdor(const Period& tenor,
+             const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Xibor("CDOR", tenor, 2, CADCurrency(),
+                Canada(), ModifiedFollowing, Actual360(), h) {}
     };
 
 }

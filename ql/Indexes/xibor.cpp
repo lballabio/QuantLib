@@ -32,7 +32,7 @@ namespace QuantLib {
                  BusinessDayConvention convention,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
-    : familyName_(familyName), p_(Period(n, units)),
+    : familyName_(familyName), tenor_(n, units),
       settlementDays_(settlementDays),
       currency_(currency), calendar_(calendar),
       convention_(convention),
@@ -42,14 +42,14 @@ namespace QuantLib {
     }
     #endif
     Xibor::Xibor(const std::string& familyName,
-                 Period p,
+                 const Period& tenor,
                  Integer settlementDays,
                  const Currency& currency,
                  const Calendar& calendar,
                  BusinessDayConvention convention,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
-    : familyName_(familyName), p_(p),
+    : familyName_(familyName), tenor_(tenor),
       settlementDays_(settlementDays),
       currency_(currency), calendar_(calendar),
       convention_(convention),
@@ -59,14 +59,14 @@ namespace QuantLib {
     }
 
     std::string Xibor::name() const {
-        std::ostringstream tenor;
-        tenor << p_;
-        return familyName_+tenor.str()+" "+dayCounter_.name();
+        std::ostringstream out;
+        out << familyName_ << io::short_period(tenor_)
+            << " " << dayCounter_.name();
+        return out.str();
     }
 
-
     Frequency Xibor::frequency() const {
-        return p_.frequency();
+        return tenor_.frequency();
     }
 
     Rate Xibor::fixing(const Date& fixingDate,
@@ -111,7 +111,7 @@ namespace QuantLib {
     }
 
     Date Xibor::maturityDate(const Date& valueDate) const {
-        return calendar_.advance(valueDate, p_, convention_);
+        return calendar_.advance(valueDate, tenor_, convention_);
     }
 
 }

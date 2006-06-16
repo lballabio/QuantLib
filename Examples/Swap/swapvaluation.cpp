@@ -152,27 +152,27 @@ int main(int, char* [])
 
         boost::shared_ptr<RateHelper> d1w(new DepositRateHelper(
             Handle<Quote>(d1wRate),
-            1, Weeks, fixingDays,
+            1*Weeks, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d1m(new DepositRateHelper(
             Handle<Quote>(d1mRate),
-            1, Months, fixingDays,
+            1*Months, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d3m(new DepositRateHelper(
             Handle<Quote>(d3mRate),
-            3, Months, fixingDays,
+            3*Months, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d6m(new DepositRateHelper(
             Handle<Quote>(d6mRate),
-            6, Months, fixingDays,
+            6*Months, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d9m(new DepositRateHelper(
             Handle<Quote>(d9mRate),
-            9, Months, fixingDays,
+            9*Months, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d1y(new DepositRateHelper(
             Handle<Quote>(d1yRate),
-            1, Years, fixingDays,
+            1*Years, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
 
 
@@ -247,44 +247,38 @@ int main(int, char* [])
         Frequency swFixedLegFrequency = Annual;
         BusinessDayConvention swFixedLegConvention = Unadjusted;
         DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
-        Frequency swFloatingLegFrequency = Semiannual;
-        DayCounter swFloatingLegDayCounter = Actual360();
+        boost::shared_ptr<Xibor> swFloatingLegIndex(new Euribor6M);
 
         boost::shared_ptr<RateHelper> s2y(new SwapRateHelper(
             Handle<Quote>(s2yRate),
-            2, Years, fixingDays,
+            2*Years, fixingDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
-            swFloatingLegFrequency, ModifiedFollowing,
-            swFloatingLegDayCounter));
+            swFloatingLegIndex));
         boost::shared_ptr<RateHelper> s3y(new SwapRateHelper(
             Handle<Quote>(s3yRate),
-            3, Years, fixingDays,
+            3*Years, fixingDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
-            swFloatingLegFrequency, ModifiedFollowing,
-            swFloatingLegDayCounter));
+            swFloatingLegIndex));
         boost::shared_ptr<RateHelper> s5y(new SwapRateHelper(
             Handle<Quote>(s5yRate),
-            5, Years, fixingDays,
+            5*Years, fixingDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
-            swFloatingLegFrequency, ModifiedFollowing,
-            swFloatingLegDayCounter));
+            swFloatingLegIndex));
         boost::shared_ptr<RateHelper> s10y(new SwapRateHelper(
             Handle<Quote>(s10yRate),
-            10, Years, fixingDays,
+            10*Years, fixingDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
-            swFloatingLegFrequency, ModifiedFollowing,
-            swFloatingLegDayCounter));
+            swFloatingLegIndex));
         boost::shared_ptr<RateHelper> s15y(new SwapRateHelper(
             Handle<Quote>(s15yRate),
-            15, Years, fixingDays,
+            15*Years, fixingDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
-            swFloatingLegFrequency, ModifiedFollowing,
-            swFloatingLegDayCounter));
+            swFloatingLegIndex));
 
 
         /*********************
@@ -379,8 +373,8 @@ int main(int, char* [])
 
         // floating leg
         Frequency floatingLegFrequency = Semiannual;
-        boost::shared_ptr<Xibor> euriborIndex(new Euribor(6, Months,
-            forecastingTermStructure)); // using the forecasting curve
+        boost::shared_ptr<Xibor> euriborIndex(
+                                     new Euribor6M(forecastingTermStructure));
         Spread spread = 0.0;
 
         Integer lenghtInYears = 5;

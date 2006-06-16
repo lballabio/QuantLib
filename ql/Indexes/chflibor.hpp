@@ -42,12 +42,21 @@ namespace QuantLib {
     */
     class CHFLibor : public Libor {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the Period-based constructor */
         CHFLibor(Integer n, TimeUnit units,
                  const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Libor("CHFLibor", n, units, 2, CHFCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange), Switzerland(),
                 ModifiedFollowing, dc, h) {}
+        #endif
+        CHFLibor(const Period& tenor,
+                 const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Libor("CHFLibor", tenor, 2, CHFCurrency(),
+                UnitedKingdom(UnitedKingdom::Exchange), Switzerland(),
+                ModifiedFollowing, Actual360(), h) {}
     };
 
 }

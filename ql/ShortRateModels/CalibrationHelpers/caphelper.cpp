@@ -47,8 +47,8 @@ namespace QuantLib {
         }
         boost::shared_ptr<Xibor> dummyIndex(
                                      new Xibor("dummy",
-                                               indexTenor.length(),
-                                               indexTenor.units(),
+                                               Period(indexTenor.length(),
+                                                      indexTenor.units()),
                                                index->settlementDays(),
                                                index->currency(),
                                                index->calendar(),

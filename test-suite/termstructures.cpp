@@ -79,18 +79,24 @@ void setup() {
     for (i=0; i<deposits; i++) {
         instruments[i] = boost::shared_ptr<RateHelper>(
                  new DepositRateHelper(depositData[i].rate/100,
-                                       depositData[i].n, depositData[i].units,
+                                       depositData[i].n*depositData[i].units,
                                        settlementDays_, calendar_,
                                        ModifiedFollowing, Actual360()));
     }
+    boost::shared_ptr<Xibor> index(new Xibor("dummy",
+                                             6*Months,
+                                             settlementDays_,
+                                             Currency(),
+                                             calendar_,
+                                             ModifiedFollowing,
+                                             Actual360()));
     for (i=0; i<swaps; i++) {
         instruments[i+deposits] = boost::shared_ptr<RateHelper>(
                           new SwapRateHelper(swapData[i].rate/100,
-                                             swapData[i].n, swapData[i].units,
+                                             swapData[i].n*swapData[i].units,
                                              settlementDays_, calendar_,
                                              Annual, Unadjusted, Thirty360(),
-                                             Semiannual, ModifiedFollowing,
-                                             Actual360()));
+                                             index));
     }
     termStructure_ = boost::shared_ptr<YieldTermStructure>(
               new PiecewiseFlatForward(settlement, instruments, Actual360()));
