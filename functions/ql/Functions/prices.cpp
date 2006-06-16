@@ -39,5 +39,15 @@ namespace QuantLib {
             else QL_FAIL("midEquivalent: insufficient inputs");
         }
     }
+
+    Real midRobust(const Real bid,
+                   const Real ask) {
+        if (bid != Null<Real>() && bid != 0.0) {
+            if (ask != Null<Real>() && ask != 0.0) return ((bid+ask)/2.0);
+            else QL_FAIL("midRobust: insufficient inputs");
+        } else {
+            QL_FAIL("midRobust: insufficient inputs");
+        }
+    }
 }
 

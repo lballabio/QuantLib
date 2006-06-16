@@ -34,11 +34,13 @@ namespace QuantLib {
          Close,        /*!< Close price. */
          Mid,          /*!< Mid price, calculated as the arithmetic 
                             average of bid and ask prices. */
-         MidEquivalent /*!< Mid equivalent price, calculated as
+         MidEquivalent, /*!< Mid equivalent price, calculated as
                             a) the arithmetic average of bid and ask prices
                             when both available; b) either the bid or the 
                             ask price if any of them is available;
                             c) the last price; or d) tha close price. */
+         MidRobust     /*!< Robust Mid price, returns the mid price only if
+                       both bid and ask are available. */
     };
 
     /*! return the mid equivalent price, i.e. the mid if available,
@@ -48,6 +50,11 @@ namespace QuantLib {
                        const Real ask,
                        const Real last,
                        const Real close);
+
+    /*! return the mid robust price, i.e. the mid if 
+        both bid and ask prices are available
+    */    Real midRobust(const Real bid,
+                   const Real ask);
 }
 
 #endif
