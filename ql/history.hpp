@@ -336,6 +336,11 @@ namespace QuantLib {
             std::reverse_copy(vvalues.begin(), vvalues.end(), values.begin());
         }
 
+        if (empty()) {
+            *this = History(dates,values);
+            return;
+        }
+
         Real lastValue = values_[values_.size()-1];
         for (Size i=0; i<dates.size(); i++) {
             Date d = dates[i];
