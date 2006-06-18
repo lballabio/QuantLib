@@ -41,7 +41,8 @@ namespace QuantLib {
       typedef std::vector<boost::shared_ptr<CashFlow> > SwapLeg;
       public:
         #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated
+        /*! \deprecated use the constructor with the same parameters in
+                        different order */
         Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
              const std::vector<boost::shared_ptr<CashFlow> >& secondLeg,
              const Handle<YieldTermStructure>& termStructure);
