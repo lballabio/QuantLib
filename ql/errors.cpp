@@ -64,10 +64,10 @@ namespace {
                        const std::string& function,
                        const std::string& message) {
         std::ostringstream msg;
-        #if defined(QL_ERROR_LINES)
+        #ifdef QL_ERROR_LINES
         msg << "\n" << file << ":" << line << ": ";
         #endif
-        #if defined(QL_ERROR_FUNCTIONS)
+        #ifdef QL_ERROR_FUNCTIONS
         if (function != "(unknown)")
             msg << "In function `" << function << "': \n";
         #endif
