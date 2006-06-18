@@ -30,31 +30,49 @@
 namespace QuantLib {
 
     //! Rate helper for bootstrapping over interest-rate futures prices
-    /*! \todo convexity adjustment should be implemented. */
+    /*! \todo implement/refactor constructors with:
+              Index instead of (nMonths, calendar, convention, dayCounter),
+              IMM code
+    */
     class FuturesRateHelper : public RateHelper {
       public:
-        FuturesRateHelper(const Handle<Quote>& price,
-                          const Date& immDate,
-                          Integer nMonths,
-                          const Calendar& calendar,
-                          BusinessDayConvention convention,
-                          const DayCounter& dayCounter);
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use constructors without matDate instead
         FuturesRateHelper(const Handle<Quote>& price,
                           const Date& immDate,
                           const Date& matDate,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter);
+        #endif
+        FuturesRateHelper(const Handle<Quote>& price,
+                          const Date& immDate,
+                          Integer nMonths,
+                          const Calendar& calendar,
+                          BusinessDayConvention convention,
+                          const DayCounter& dayCounter,
+                          const Handle<Quote>& convexityAdjustment =
+                                                        Handle<Quote>());
+        FuturesRateHelper(const Handle<Quote>& price,
+                          const Date& immDate,
+                          Integer nMonths,
+                          const Calendar& calendar,
+                          BusinessDayConvention convention,
+                          const DayCounter& dayCounter,
+                          Rate convexityAdjustment = 0.0);
         FuturesRateHelper(Real price,
                           const Date& immDate,
                           Integer nMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
-                          const DayCounter& dayCounter);
+                          const DayCounter& dayCounter,
+                          Rate convexityAdjustment = 0.0);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
+        Real convexityAdjustment() const { return convAdj_->value(); }
       private:
         Time yearFraction_;
+        Handle<Quote> convAdj_;
     };
 
     //! Rate helper with date schedule relative to the global evaluation date

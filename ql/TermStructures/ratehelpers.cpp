@@ -23,13 +23,34 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+    FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
+                                         const Date& immDate,
+                                         const Date& matDate,
+                                         const Calendar& calendar,
+                                         BusinessDayConvention convention,
+                                         const DayCounter& dayCounter)
+    : RateHelper(price), convAdj_(Handle<Quote>(boost::shared_ptr<Quote>(
+                                       new SimpleQuote(0.0))))
+    {
+        earliestDate_ = immDate;
+        latestDate_ = matDate;
+        yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
+    }
+    #endif
+
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
                                          const Date& immDate,
                                          Integer nMonths,
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
-                                         const DayCounter& dayCounter)
-    : RateHelper(price) {
+                                         const DayCounter& dayCounter,
+                                         const Handle<Quote>& convexityAdjustment)
+    : RateHelper(price), convAdj_(convexityAdjustment)
+    {
+        QL_REQUIRE(convAdj_->value()>=0.0,
+            "Negative (" << convAdj_->value() <<
+            ") Futures convexity adjustment");
         earliestDate_ = immDate;
         latestDate_ =
             calendar.advance(earliestDate_, nMonths, Months, convention);
@@ -38,13 +59,20 @@ namespace QuantLib {
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
                                          const Date& immDate,
-                                         const Date& matDate,
+                                         Integer nMonths,
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
-                                         const DayCounter& dayCounter)
-    : RateHelper(price) {
+                                         const DayCounter& dayCounter,
+                                         Rate convexityAdjustment)
+    : RateHelper(price), convAdj_(Handle<Quote>(boost::shared_ptr<Quote>(
+                                       new SimpleQuote(convexityAdjustment))))
+    {
+        QL_REQUIRE(convAdj_->value()>=0.0,
+            "Negative (" << convAdj_->value() <<
+            ") Futures convexity adjustment");
         earliestDate_ = immDate;
-        latestDate_ = matDate;
+        latestDate_ =
+            calendar.advance(earliestDate_, nMonths, Months, convention);
         yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
     }
 
@@ -53,8 +81,14 @@ namespace QuantLib {
                                          Integer nMonths,
                                          const Calendar& calendar,
                                          BusinessDayConvention convention,
-                                         const DayCounter& dayCounter)
-    : RateHelper(price) {
+                                         const DayCounter& dayCounter,
+                                         Rate convexityAdjustment)
+    : RateHelper(price), convAdj_(Handle<Quote>(boost::shared_ptr<Quote>(
+                                       new SimpleQuote(convexityAdjustment))))
+    {
+        QL_REQUIRE(convAdj_->value()>=0.0,
+            "Negative (" << convAdj_->value() <<
+            ") Futures convexity adjustment");
         earliestDate_ = immDate;
         latestDate_ =
             calendar.advance(earliestDate_, nMonths, Months, convention);
@@ -63,17 +97,20 @@ namespace QuantLib {
 
     Real FuturesRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        return 100 * (1.0-(termStructure_->discount(earliestDate_) /
-                           termStructure_->discount(latestDate_)-1.0) /
-                      yearFraction_);
+        Rate forwardRate = (termStructure_->discount(earliestDate_) /
+            termStructure_->discount(latestDate_)-1.0)/yearFraction_;
+        Rate futureRate = forwardRate + convAdj_->value();
+        return 100 * (1.0 - futureRate);
     }
 
     DiscountFactor FuturesRateHelper::discountGuess() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        Rate futureRate = (100.0-quote_->value())/100.0;
+        Rate forwardRate = futureRate - convAdj_->value();
         // extrapolation shouldn't be needed if the input makes sense
         // but we'll play it safe
         return termStructure_->discount(earliestDate_,true) /
-            (1.0+(100.0-quote_->value())/100.0*yearFraction_);
+            (1.0+forwardRate*yearFraction_);
     }
 
 
