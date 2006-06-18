@@ -22,6 +22,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     ParCoupon::ParCoupon(Real nominal, const Date& paymentDate,
                          const boost::shared_ptr<Xibor>& index,
                          const Date& startDate, const Date& endDate,
@@ -31,6 +32,22 @@ namespace QuantLib {
                          const DayCounter& dayCounter)
     : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
                          fixingDays, spread, refPeriodStart, refPeriodEnd),
+      index_(index), dayCounter_(dayCounter) {
+        registerWith(index_);
+        registerWith(Settings::instance().evaluationDate());
+    }
+    #endif
+
+    ParCoupon::ParCoupon(const Date& paymentDate, const Real nominal,
+                         const Date& startDate, const Date& endDate,
+                         const Integer fixingDays,
+                         const boost::shared_ptr<Xibor>& index,
+                         const Real gearing, const Spread spread,
+                         const Date& refPeriodStart, const Date& refPeriodEnd,
+                         const DayCounter& dayCounter)
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+                         fixingDays, gearing, spread,
+                         refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter) {
         registerWith(index_);
         registerWith(Settings::instance().evaluationDate());

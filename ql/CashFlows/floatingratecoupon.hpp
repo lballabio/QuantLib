@@ -33,12 +33,28 @@ namespace QuantLib {
     /*! \warning This class does not perform any date adjustment,
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
+        \todo add gearing unit test
     */
     class FloatingRateCoupon : public Coupon {
       public:
-        FloatingRateCoupon(Real nominal, const Date& paymentDate,
-                           const Date& startDate, const Date& endDate,
-                           Integer fixingDays, Spread spread = 0.0,
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use the gearing-enabled constructor instead
+        FloatingRateCoupon(Real nominal,
+                           const Date& paymentDate,
+                           const Date& startDate,
+                           const Date& endDate,
+                           Integer fixingDays,
+                           Spread spread = 0.0,
+                           const Date& refPeriodStart = Date(),
+                           const Date& refPeriodEnd = Date());
+        #endif
+        FloatingRateCoupon(const Date& paymentDate,
+                           Real nominal,
+                           const Date& startDate,
+                           const Date& endDate,
+                           Integer fixingDays,
+                           const Real gearing = 1.0,
+                           Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date());
         //! \name Coupon interface
@@ -49,9 +65,11 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         //! fixing days
-        Integer fixingDays() const;
+        Integer fixingDays() const { return fixingDays_; }
+        //! index gearing, i.e. multiplicative coefficient for the index
+        virtual Real gearing() const { return gearing_; }
         //! spread paid over the fixing of the underlying index
-        virtual Spread spread() const;
+        virtual Spread spread() const { return spread_; }
         //! fixing of the underlying index
         virtual Rate indexFixing() const = 0;
         //! fixing date
@@ -65,12 +83,15 @@ namespace QuantLib {
         //! convexity adjustment for the given index fixing
         virtual Rate convexityAdjustment(Rate fixing) const { return 0.0; }
         Integer fixingDays_;
+        Real gearing_;
         Spread spread_;
     };
 
 
     // inline definitions
 
+    #ifndef QL_DISABLE_DEPRECATED
+    //! \deprecated use the gearing-enabled constructor instead
     inline FloatingRateCoupon::FloatingRateCoupon(
                          Real nominal, const Date& paymentDate,
                          const Date& startDate, const Date& endDate,
@@ -78,11 +99,21 @@ namespace QuantLib {
                          const Date& refPeriodStart, const Date& refPeriodEnd)
     : Coupon(nominal, paymentDate,
              startDate, endDate, refPeriodStart, refPeriodEnd),
-      fixingDays_(fixingDays), spread_(spread) {}
+      fixingDays_(fixingDays), gearing_(1.0), spread_(spread) {}
+    #endif
+
+    inline FloatingRateCoupon::FloatingRateCoupon(
+                         const Date& paymentDate, Real nominal,
+                         const Date& startDate, const Date& endDate,
+                         Integer fixingDays, Real gearing, Spread spread,
+                         const Date& refPeriodStart, const Date& refPeriodEnd)
+    : Coupon(nominal, paymentDate,
+             startDate, endDate, refPeriodStart, refPeriodEnd),
+      fixingDays_(fixingDays), gearing_(gearing), spread_(spread) {}
 
     inline Rate FloatingRateCoupon::rate() const {
         Rate f = indexFixing();
-        return f + convexityAdjustment(f) + spread();
+        return gearing() * (f + convexityAdjustment(f)) + spread();
     }
 
     inline Real FloatingRateCoupon::accruedAmount(const Date& d) const {
@@ -95,14 +126,6 @@ namespace QuantLib {
                                           refPeriodStart_,
                                           refPeriodEnd_);
         }
-    }
-
-    inline Integer FloatingRateCoupon::fixingDays() const {
-        return fixingDays_;
-    }
-
-    inline Spread FloatingRateCoupon::spread() const {
-        return spread_;
     }
 
     inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {

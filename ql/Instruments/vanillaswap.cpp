@@ -55,7 +55,8 @@ namespace QuantLib {
             FloatingRateCouponVector(floatSchedule,
                                      convention,
                                      std::vector<Real>(1,nominal),
-                                     index, indexFixingDays,
+                                     indexFixingDays, index, 
+                                     std::vector<Real>(1,1.0),
                                      std::vector<Spread>(1,spread),
                                      floatingDayCount);
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;

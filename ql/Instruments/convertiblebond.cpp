@@ -152,8 +152,9 @@ namespace QuantLib {
         cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
                                    schedule, schedule.businessDayConvention(),
                                    std::vector<Real>(1, 100.0),
-                                   index, fixingDays,
-                                   spreads, dayCounter
+                                   fixingDays, index, 
+                                   std::vector<Real>(1, 1.0), spreads,
+                                   dayCounter
                                    #ifdef QL_PATCH_MSVC6
                                    , (const UpFrontIndexedCoupon*) 0
                                    #endif

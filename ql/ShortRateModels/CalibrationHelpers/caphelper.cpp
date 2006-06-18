@@ -64,7 +64,7 @@ namespace QuantLib {
             FloatingRateCouponVector(floatSchedule,
                                      index->businessDayConvention(),
                                      nominals,
-                                     index, 0,
+                                     0, index, std::vector<Real>(),
                                      std::vector<Spread>());
 
         Schedule fixedSchedule(index->calendar(), startDate, maturity,

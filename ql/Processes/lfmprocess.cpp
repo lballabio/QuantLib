@@ -151,8 +151,9 @@ namespace QuantLib {
                             ),
                    index_->businessDayConvention(),
                    std::vector<Real>(1, amount),
-                   index_,
                    index_->settlementDays(),
+                   index_,
+                   std::vector<Real>(),
                    std::vector<Spread>(),
                    index_->dayCounter()
                    );

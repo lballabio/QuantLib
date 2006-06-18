@@ -49,9 +49,15 @@ namespace QuantLib {
     */
     std::vector<boost::shared_ptr<CashFlow> > FloatingRateCouponVector(
         const Schedule& schedule,
-        BusinessDayConvention paymentAdjustment,
+        const BusinessDayConvention paymentAdjustment,
         const std::vector<Real>& nominals,
-        const boost::shared_ptr<Xibor>& index, Integer fixingDays,
+        const Integer fixingDays,
+        const boost::shared_ptr<Xibor>& index,
+        const std::vector<Real>& gearings
+        #if !defined(QL_PATCH_MSVC6)
+        = std::vector<Real>()
+        #endif
+        ,
         const std::vector<Spread>& spreads
         #if !defined(QL_PATCH_MSVC6)
         = std::vector<Spread>()
@@ -59,13 +65,33 @@ namespace QuantLib {
         ,
         const DayCounter& dayCounter = DayCounter());
 
+    #ifndef QL_DISABLE_DEPRECATED
+    //! \deprecated use the gearing-enabled function instead
+    inline std::vector<boost::shared_ptr<CashFlow> > FloatingRateCouponVector(
+        const Schedule& schedule,
+        BusinessDayConvention paymentAdjustment,
+        const std::vector<Real>& nominals,
+        const boost::shared_ptr<Xibor>& index,
+        Integer fixingDays,
+        const std::vector<Spread>& spreads
+        #if !defined(QL_PATCH_MSVC6)
+        = std::vector<Spread>()
+        #endif
+        ,
+        const DayCounter& dayCounter = DayCounter())
+    {
+        return FloatingRateCouponVector(schedule, paymentAdjustment, nominals,
+                                        fixingDays, index,
+                                        std::vector<Real>(1, 1.0), spreads,
+                                        dayCounter);
+    }
+    #endif
+
     //! helper function building a sequence of dividends
     std::vector<boost::shared_ptr<CashFlow> >
-    DividendVector(
-                   const std::vector<Date>& dividendDates,
+    DividendVector(const std::vector<Date>& dividendDates,
                    const std::vector<Real>& dividends);
 
 }
-
 
 #endif

@@ -37,19 +37,34 @@ namespace QuantLib {
     class IndexedCoupon : public FloatingRateCoupon,
                           public Observer {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use the gearing-enabled constructor instead
         IndexedCoupon(Real nominal,
                       const Date& paymentDate,
                       const boost::shared_ptr<Index>& index,
-                      const Date& startDate, const Date& endDate,
+                      const Date& startDate,
+                      const Date& endDate,
                       Integer fixingDays,
                       Spread spread = 0.0,
+                      const Date& refPeriodStart = Date(),
+                      const Date& refPeriodEnd = Date(),
+                      const DayCounter& dayCounter = DayCounter());
+        #endif
+        IndexedCoupon(const Date& paymentDate,
+                      const Real nominal,
+                      const Date& startDate,
+                      const Date& endDate,
+                      const Integer fixingDays,
+                      const boost::shared_ptr<Index>& index,
+                      const Real gearing = 1.0,
+                      const Spread spread = 0.0,
                       const Date& refPeriodStart = Date(),
                       const Date& refPeriodEnd = Date(),
                       const DayCounter& dayCounter = DayCounter());
         virtual ~IndexedCoupon() {}
         //! \name CashFlow interface
         //@{
-        Real amount() const;
+        Real amount() const { return rate() * accrualPeriod() * nominal(); }
         //@}
         //! \name Coupon interface
         //@{
@@ -57,15 +72,15 @@ namespace QuantLib {
         //@}
         //! \name FloatingRateCoupon interface
         //@{
-        Rate indexFixing() const;
+        Rate indexFixing() const { return index_->fixing(fixingDate()); }
         //@}
         //! \name Inspectors
         //@{
-        const boost::shared_ptr<Index>& index() const;
+        const boost::shared_ptr<Index>& index() const { return index_; }
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() { notifyObservers(); }
         //@}
         //! \name Visitability
         //@{
@@ -76,20 +91,53 @@ namespace QuantLib {
         DayCounter dayCounter_;
     };
 
-
     // inline definitions
+
+    #ifndef QL_DISABLE_DEPRECATED
+    //! \deprecated use the gearing-enabled constructor instead
     inline IndexedCoupon::IndexedCoupon(Real nominal,
                                         const Date& paymentDate,
                                         const boost::shared_ptr<Index>& index,
                                         const Date& startDate,
                                         const Date& endDate,
-                                        Integer fixingDays, Spread spread,
+                                        const Integer fixingDays,
+                                        const Spread spread,
                                         const Date& refPeriodStart,
                                         const Date& refPeriodEnd,
                                         const DayCounter& dayCounter)
     : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
                          fixingDays, spread, refPeriodStart, refPeriodEnd),
-      index_(index), dayCounter_(dayCounter) {
+      index_(index), dayCounter_(dayCounter)
+    {
+        if (dayCounter_.empty()) {
+            boost::shared_ptr<Xibor> xibor =
+                boost::dynamic_pointer_cast<Xibor>(index);
+            if (xibor)
+                dayCounter_ = xibor->dayCounter();
+            else
+                QL_FAIL("day counter not specified and not retrievable "
+                        "from index");
+        }
+        registerWith(index_);
+    }
+    #endif
+
+    inline IndexedCoupon::IndexedCoupon(const Date& paymentDate,
+                                        Real nominal,
+                                        const Date& startDate,
+                                        const Date& endDate,
+                                        Integer fixingDays,
+                                        const boost::shared_ptr<Index>& index,
+                                        const Real gearing,
+                                        Spread spread,
+                                        const Date& refPeriodStart,
+                                        const Date& refPeriodEnd,
+                                        const DayCounter& dayCounter)
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+                         fixingDays, gearing, spread,
+                         refPeriodStart, refPeriodEnd),
+      index_(index), dayCounter_(dayCounter)
+    {
         if (dayCounter_.empty()) {
             boost::shared_ptr<Xibor> xibor =
                 boost::dynamic_pointer_cast<Xibor>(index);
@@ -102,24 +150,6 @@ namespace QuantLib {
         registerWith(index_);
     }
 
-
-    inline const boost::shared_ptr<Index>&
-    IndexedCoupon::index() const {
-        return index_;
-    }
-
-    inline Rate IndexedCoupon::indexFixing() const {
-        return index_->fixing(fixingDate());
-    }
-
-    inline Real IndexedCoupon::amount() const {
-        return rate() * accrualPeriod() * nominal();
-    }
-
-    inline void IndexedCoupon::update() {
-        notifyObservers();
-    }
-
     inline void IndexedCoupon::accept(AcyclicVisitor& v) {
         Visitor<IndexedCoupon>* v1 =
             dynamic_cast<Visitor<IndexedCoupon>*>(&v);
@@ -130,6 +160,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

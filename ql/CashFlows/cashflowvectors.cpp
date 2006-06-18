@@ -115,10 +115,11 @@ namespace QuantLib {
 
     std::vector<boost::shared_ptr<CashFlow> >
     FloatingRateCouponVector(const Schedule& schedule,
-                             BusinessDayConvention paymentAdjustment,
+                             const BusinessDayConvention paymentAdjustment,
                              const std::vector<Real>& nominals,
+                             const Integer fixingDays,
                              const boost::shared_ptr<Xibor>& index,
-                             Integer fixingDays,
+                             const std::vector<Real>& gearings,
                              const std::vector<Spread>& spreads,
                              const DayCounter& dayCounter) {
 
@@ -132,7 +133,9 @@ namespace QuantLib {
             IndexedCouponVector<coupon_type>(schedule,
                                              paymentAdjustment,
                                              nominals,
-                                             index, fixingDays,
+                                             fixingDays,
+                                             index,
+                                             gearings,
                                              spreads,
                                              dayCounter
                                              #ifdef QL_PATCH_MSVC6

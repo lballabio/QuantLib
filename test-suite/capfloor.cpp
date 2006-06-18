@@ -55,7 +55,8 @@ std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
     Schedule schedule(calendar_,startDate,endDate,frequency_,convention_);
     return FloatingRateCouponVector(schedule, convention_, nominals_,
-                                    index_, fixingDays_,
+                                    fixingDays_, index_, 
+                                    std::vector<Real>(),
                                     std::vector<Spread>(),
                                     index_->dayCounter());
 }

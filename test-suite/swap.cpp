@@ -267,12 +267,15 @@ void SwapTest::testInArrears() {
                               coupons, dayCounter);
 
 
+    std::vector<Real> gearings;
     std::vector<Rate> spreads;
     Integer fixingDays = 0;
     std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
         IndexedCouponVector<InArrearIndexedCoupon>(schedule, Following,
-                                                   nominals, index, fixingDays,
-                                                   spreads, dayCounter);
+                                                   nominals,
+                                                   fixingDays, index, 
+                                                   gearings, spreads,
+                                                   dayCounter);
 
     Swap swap(termStructure_,floatingLeg,fixedLeg);
 

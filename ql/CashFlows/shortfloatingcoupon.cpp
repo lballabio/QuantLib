@@ -21,6 +21,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     Short<ParCoupon>::Short(
         Real nominal, const Date& paymentDate,
         const boost::shared_ptr<Xibor>& index, const Date& startDate,
@@ -30,6 +31,21 @@ namespace QuantLib {
     : ParCoupon(nominal,paymentDate,index,
                 startDate,endDate,fixingDays,
                 spread,refPeriodStart,refPeriodEnd,
+                dayCounter) {}
+    #endif
+
+    Short<ParCoupon>::Short(
+        const Date& paymentDate, const Real nominal, 
+        const Date& startDate, const Date& endDate,
+        const Integer fixingDays, const boost::shared_ptr<Xibor>& index,
+        const Real gearing, const Spread spread,
+        const Date& refPeriodStart, const Date& refPeriodEnd,
+        const DayCounter& dayCounter)
+    : ParCoupon(paymentDate, nominal,
+                startDate, endDate,
+                fixingDays, index,
+                gearing, spread,
+                refPeriodStart, refPeriodEnd,
                 dayCounter) {}
 
     Real Short<ParCoupon>::amount() const {
