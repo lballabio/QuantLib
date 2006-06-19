@@ -38,25 +38,27 @@ namespace QuantLib {
             ForwardFlatInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                          const I2& yBegin)
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
-              primitive_(xEnd-xBegin) {
+              primitive_(xEnd-xBegin), n_(xEnd-xBegin) {
                 calculate();
             }
             void calculate() {
-                Size n = this->xEnd_-this->xBegin_;
                 primitive_[0] = 0.0;
-                for (Size i=1; i<n; i++) {
+                for (Size i=1; i<n_; i++) {
                     Real dx = this->xBegin_[i]-this->xBegin_[i-1];
-                    primitive_[i] = primitive_[i-1] + dx*this->yBegin_[i];
+                    primitive_[i] = primitive_[i-1] + dx*this->yBegin_[i-1];
                 }
             }
             Real value(Real x) const {
+                if (x >= this->xBegin_[n_-1])
+                    return this->yBegin_[n_-1];
+
                 Size i = this->locate(x);
                 return this->yBegin_[i];
             }
             Real primitive(Real x) const {
                 Size i = this->locate(x);
                 Real dx = x-this->xBegin_[i];
-                return primitive_[i] + dx*this->yBegin_[i+1];
+                return primitive_[i] + dx*this->yBegin_[i];
             }
             Real derivative(Real x) const {
                 return 0.0;
@@ -66,6 +68,7 @@ namespace QuantLib {
             }
           private:
             std::vector<Real> primitive_;
+            Size n_;
         };
 
     }

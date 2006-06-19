@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +22,8 @@
 #include "utilities.hpp"
 #include <ql/Utilities/null.hpp>
 #include <ql/Math/linearinterpolation.hpp>
+#include <ql/Math/backwardflatinterpolation.hpp>
+#include <ql/Math/forwardflatinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/multicubicspline.hpp>
 #include <ql/Math/simpsonintegral.hpp>
@@ -745,7 +747,7 @@ void InterpolationTest::testMultiSpline() {
          &v = args[3] = offsets[3],
          &w = args[4] = offsets[4];
 
-	Size i, j, k, l, m;
+    Size i, j, k, l, m;
 
     SplineGrid grid(5);
 
@@ -873,12 +875,246 @@ void InterpolationTest::testAsFunctor() {
         Real expected = 5.0-x2[i];
         if (std::fabs(y2[i]-expected) > tolerance)
             BOOST_ERROR(
-                "failed to reproduce " << io::ordinal(i+1) << " expected data"
+                "failed to reproduce " << io::ordinal(i+1) << " expected datum"
                 << QL_FIXED
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << y2[i]
                 << QL_SCIENTIFIC
                 << "\n    error:      " << std::fabs(y2[i]-expected));
+    }
+}
+
+
+void InterpolationTest::testBackwardFlat() {
+
+    BOOST_MESSAGE("Testing backward-flat interpolation...");
+
+    const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
+
+    Interpolation f = BackwardFlatInterpolation(BEGIN(x), END(x), BEGIN(y));
+
+    Size N = LENGTH(x);
+    Size i;
+    Real tolerance = 1.0e-12;
+
+    // at original points
+    for (i=0; i<N; i++) {
+        Real p = x[i];
+        Real calculated = f(p);
+        Real expected = y[i];
+        if (std::fabs(expected-calculated) > tolerance)
+            BOOST_ERROR(
+                "failed to reproduce " << io::ordinal(i+1) << " datum"
+                << QL_FIXED
+                << "\n    expected:   " << expected
+                << "\n    calculated: " << calculated
+                << QL_SCIENTIFIC
+                << "\n    error:      " << std::fabs(calculated-expected));
+    }
+
+    // at middle points
+    for (i=0; i<N-1; i++) {
+        Real p = (x[i]+x[i+1])/2;
+        Real calculated = f(p);
+        Real expected = y[i+1];
+        if (std::fabs(expected-calculated) > tolerance)
+            BOOST_ERROR(
+                "failed to interpolate correctly at " << p
+                << QL_FIXED
+                << "\n    expected:   " << expected
+                << "\n    calculated: " << calculated
+                << QL_SCIENTIFIC
+                << "\n    error:      " << std::fabs(calculated-expected));
+    }
+
+    // outside the original range
+    f.enableExtrapolation();
+
+    Real p = x[0] - 0.5;
+    Real calculated = f(p);
+    Real expected = y[0];
+    if (std::fabs(expected-calculated) > tolerance)
+        BOOST_ERROR(
+            "failed to extrapolate correctly at " << p
+            << QL_FIXED
+            << "\n    expected:   " << expected
+            << "\n    calculated: " << calculated
+            << QL_SCIENTIFIC
+            << "\n    error:      " << std::fabs(calculated-expected));
+
+    p = x[N-1] + 0.5;
+    calculated = f(p);
+    expected = y[N-1];
+    if (std::fabs(expected-calculated) > tolerance)
+        BOOST_ERROR(
+            "failed to extrapolate correctly at " << p
+            << QL_FIXED
+            << "\n    expected:   " << expected
+            << "\n    calculated: " << calculated
+            << QL_SCIENTIFIC
+            << "\n    error:      " << std::fabs(calculated-expected));
+
+    // primitive at original points
+    calculated = f.primitive(x[0]);
+    expected = 0.0;
+    if (std::fabs(expected-calculated) > tolerance)
+        BOOST_ERROR(
+            "failed to calculate primitive at " << x[0]
+            << QL_FIXED
+            << "\n    expected:   " << expected
+            << "\n    calculated: " << calculated
+            << QL_SCIENTIFIC
+            << "\n    error:      " << std::fabs(calculated-expected));
+
+    Real sum = 0.0;
+    for (i=1; i<N; i++) {
+        sum += (x[i]-x[i-1])*y[i];
+        Real calculated = f.primitive(x[i]);
+        Real expected = sum;
+        if (std::fabs(expected-calculated) > tolerance)
+            BOOST_ERROR(
+                "failed to calculate primitive at " << x[i]
+                << QL_FIXED
+                << "\n    expected:   " << expected
+                << "\n    calculated: " << calculated
+                << QL_SCIENTIFIC
+                << "\n    error:      " << std::fabs(calculated-expected));
+    }
+
+    // primitive at middle points
+    sum = 0.0;
+    for (i=0; i<N-1; i++) {
+        Real p = (x[i]+x[i+1])/2;
+        sum += (x[i+1]-x[i])*y[i+1]/2;
+        Real calculated = f.primitive(p);
+        Real expected = sum;
+        sum += (x[i+1]-x[i])*y[i+1]/2;
+        if (std::fabs(expected-calculated) > tolerance)
+            BOOST_ERROR(
+                "failed to calculate primitive at " << x[i]
+                << QL_FIXED
+                << "\n    expected:   " << expected
+                << "\n    calculated: " << calculated
+                << QL_SCIENTIFIC
+                << "\n    error:      " << std::fabs(calculated-expected));
+    }
+
+}
+
+void InterpolationTest::testForwardFlat() {
+
+    BOOST_MESSAGE("Testing forward-flat interpolation...");
+
+    const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
+
+    Interpolation f = ForwardFlatInterpolation(BEGIN(x), END(x), BEGIN(y));
+
+    Size N = LENGTH(x);
+    Size i;
+    Real tolerance = 1.0e-12;
+
+    // at original points
+    for (i=0; i<N; i++) {
+        Real p = x[i];
+        Real calculated = f(p);
+        Real expected = y[i];
+        if (std::fabs(expected-calculated) > tolerance)
+            BOOST_ERROR(
+                "failed to reproduce " << io::ordinal(i+1) << " datum"
+                << QL_FIXED
+                << "\n    expected:   " << expected
+                << "\n    calculated: " << calculated
+                << QL_SCIENTIFIC
+                << "\n    error:      " << std::fabs(calculated-expected));
+    }
+
+    // at middle points
+    for (i=0; i<N-1; i++) {
+        Real p = (x[i]+x[i+1])/2;
+        Real calculated = f(p);
+        Real expected = y[i];
+        if (std::fabs(expected-calculated) > tolerance)
+            BOOST_ERROR(
+                "failed to interpolate correctly at " << p
+                << QL_FIXED
+                << "\n    expected:   " << expected
+                << "\n    calculated: " << calculated
+                << QL_SCIENTIFIC
+                << "\n    error:      " << std::fabs(calculated-expected));
+    }
+
+    // outside the original range
+    f.enableExtrapolation();
+
+    Real p = x[0] - 0.5;
+    Real calculated = f(p);
+    Real expected = y[0];
+    if (std::fabs(expected-calculated) > tolerance)
+        BOOST_ERROR(
+            "failed to extrapolate correctly at " << p
+            << QL_FIXED
+            << "\n    expected:   " << expected
+            << "\n    calculated: " << calculated
+            << QL_SCIENTIFIC
+            << "\n    error:      " << std::fabs(calculated-expected));
+
+    p = x[N-1] + 0.5;
+    calculated = f(p);
+    expected = y[N-1];
+    if (std::fabs(expected-calculated) > tolerance)
+        BOOST_ERROR(
+            "failed to extrapolate correctly at " << p
+            << QL_FIXED
+            << "\n    expected:   " << expected
+            << "\n    calculated: " << calculated
+            << QL_SCIENTIFIC
+            << "\n    error:      " << std::fabs(calculated-expected));
+
+    // primitive at original points
+    calculated = f.primitive(x[0]);
+    expected = 0.0;
+    if (std::fabs(expected-calculated) > tolerance)
+        BOOST_ERROR(
+            "failed to calculate primitive at " << x[0]
+            << QL_FIXED
+            << "\n    expected:   " << expected
+            << "\n    calculated: " << calculated
+            << QL_SCIENTIFIC
+            << "\n    error:      " << std::fabs(calculated-expected));
+
+    Real sum = 0.0;
+    for (i=1; i<N; i++) {
+        sum += (x[i]-x[i-1])*y[i-1];
+        Real calculated = f.primitive(x[i]);
+        Real expected = sum;
+        if (std::fabs(expected-calculated) > tolerance)
+            BOOST_ERROR(
+                "failed to calculate primitive at " << x[i]
+                << QL_FIXED
+                << "\n    expected:   " << expected
+                << "\n    calculated: " << calculated
+                << QL_SCIENTIFIC
+                << "\n    error:      " << std::fabs(calculated-expected));
+    }
+
+    // primitive at middle points
+    sum = 0.0;
+    for (i=0; i<N-1; i++) {
+        Real p = (x[i]+x[i+1])/2;
+        sum += (x[i+1]-x[i])*y[i]/2;
+        Real calculated = f.primitive(p);
+        Real expected = sum;
+        sum += (x[i+1]-x[i])*y[i]/2;
+        if (std::fabs(expected-calculated) > tolerance)
+            BOOST_ERROR(
+                "failed to calculate primitive at " << p
+                << QL_FIXED
+                << "\n    expected:   " << expected
+                << "\n    calculated: " << calculated
+                << QL_SCIENTIFIC
+                << "\n    error:      " << std::fabs(calculated-expected));
     }
 }
 
@@ -903,6 +1139,8 @@ test_suite* InterpolationTest::suite() {
     #if !defined(QL_PATCH_MSVC6)
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testAsFunctor));
     #endif
+    suite->add(BOOST_TEST_CASE(&InterpolationTest::testBackwardFlat));
+    suite->add(BOOST_TEST_CASE(&InterpolationTest::testForwardFlat));
     return suite;
 }
 
