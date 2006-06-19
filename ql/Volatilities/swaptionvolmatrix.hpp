@@ -61,7 +61,9 @@ namespace QuantLib {
         DayCounter dayCounter() const { return dayCounter_; }
         const std::vector<Date>& exerciseDates() const;
         const std::vector<Period>& lengths() const;
-        Date maxStartDate() const;
+
+		// SwaptionVolatilityStructure interface
+		Date maxStartDate() const;
         Time maxStartTime() const;
         Period maxLength() const;
         Time maxTimeLength() const;
