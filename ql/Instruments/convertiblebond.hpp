@@ -38,6 +38,16 @@
 
 namespace QuantLib {
 
+    //! callability leaving to the holder the possibility to convert
+    class SoftCallability : public Callability {
+      public:
+        SoftCallability(const Price& price, const Date& date, Real trigger)
+        : Callability(price, Callability::Call, date), trigger_(trigger) {}
+        Real trigger() const { return trigger_; }
+      private:
+        Real trigger_;
+    };
+
     class ConvertibleBond : public Bond {
       public:
         class option;
@@ -68,9 +78,7 @@ namespace QuantLib {
 
 
     //! convertible zero-coupon bond
-    /*! \warning At this time, discrete dividends are not managed.
-
-        \warning Most methods inherited from Bond (such as yield or
+    /*! \warning Most methods inherited from Bond (such as yield or
                  the yield-based dirtyPrice and cleanPrice) refer to
                  the underlying plain-vanilla bond and do not take
                  convertibility and callability into account.
@@ -94,9 +102,7 @@ namespace QuantLib {
 
 
     //! convertible fixed-coupon bond
-    /*! \warning At this time, discrete dividends are not managed.
-
-        \warning Most methods inherited from Bond (such as yield or
+    /*! \warning Most methods inherited from Bond (such as yield or
                  the yield-based dirtyPrice and cleanPrice) refer to
                  the underlying plain-vanilla bond and do not take
                  convertibility and callability into account.
@@ -121,9 +127,7 @@ namespace QuantLib {
 
 
     //! convertible floating-rate bond
-    /*! \warning At this time, discrete dividends are not managed.
-
-        \warning Most methods inherited from Bond (such as yield or
+    /*! \warning Most methods inherited from Bond (such as yield or
                  the yield-based dirtyPrice and cleanPrice) refer to
                  the underlying plain-vanilla bond and do not take
                  convertibility and callability into account.
@@ -197,6 +201,7 @@ namespace QuantLib {
         std::vector<Time> callabilityTimes;
         std::vector<Callability::Type> callabilityTypes;
         std::vector<Real> callabilityPrices;
+        std::vector<Real> callabilityTriggers;
         std::vector<Time> couponTimes;
         std::vector<Real> couponAmounts;
         DayCounter dayCounter;

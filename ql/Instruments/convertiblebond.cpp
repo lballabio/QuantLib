@@ -152,7 +152,7 @@ namespace QuantLib {
         cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
                                    schedule, schedule.businessDayConvention(),
                                    std::vector<Real>(1, 100.0),
-                                   fixingDays, index, 
+                                   fixingDays, index,
                                    std::vector<Real>(1, 1.0), spreads,
                                    dayCounter
                                    #ifdef QL_PATCH_MSVC6
@@ -229,17 +229,26 @@ namespace QuantLib {
         moreArgs->callabilityTimes.clear();
         moreArgs->callabilityTypes.clear();
         moreArgs->callabilityPrices.clear();
+        moreArgs->callabilityTriggers.clear();
         for (i=0; i<callability_.size(); i++) {
-            if (!callability_[i].hasOccurred(settlement)) {
-                moreArgs->callabilityTypes.push_back(callability_[i].type());
+            if (!callability_[i]->hasOccurred(settlement)) {
+                moreArgs->callabilityTypes.push_back(callability_[i]->type());
                 moreArgs->callabilityTimes.push_back(
                              dayCounter.yearFraction(settlement,
-                                                     callability_[i].date()));
+                                                     callability_[i]->date()));
                 moreArgs->callabilityPrices.push_back(
-                                            callability_[i].price().amount());
-                if (callability_[i].price().type() == Price::Clean)
+                                            callability_[i]->price().amount());
+                if (callability_[i]->price().type() == Price::Clean)
                     moreArgs->callabilityPrices.back() +=
-                        bond_->accruedAmount(callability_[i].date());
+                        bond_->accruedAmount(callability_[i]->date());
+                boost::shared_ptr<SoftCallability> softCall =
+                    boost::dynamic_pointer_cast<SoftCallability>(
+                                                             callability_[i]);
+                if (softCall)
+                    moreArgs->callabilityTriggers.push_back(
+                                                         softCall->trigger());
+                else
+                    moreArgs->callabilityTriggers.push_back(Null<Real>());
             }
         }
 
@@ -305,6 +314,8 @@ namespace QuantLib {
                    "different number of callability times and types");
         QL_REQUIRE(callabilityTimes.size() == callabilityPrices.size(),
                    "different number of callability times and prices");
+        QL_REQUIRE(callabilityTimes.size() == callabilityTriggers.size(),
+                   "different number of callability times and triggers");
 
         QL_REQUIRE(couponTimes.size() == couponAmounts.size(),
                    "different number of coupon times and amounts");

@@ -94,16 +94,18 @@ int main(int argc, char* argv[])
         // Load call schedules
         for (Size i=0; i<LENGTH(callLength); i++) {
             callability.push_back(
-                   Callability(Price(callPrices[i], Price::Clean),
-                               Callability::Call,
-                               schedule.date(callLength[i])));
+                   boost::shared_ptr<Callability>(
+                       new SoftCallability(Price(callPrices[i], Price::Clean),
+                                           schedule.date(callLength[i]),
+                                           1.20)));
         }
 
         for (Size j=0; j<LENGTH(putLength); j++) {
             callability.push_back(
-                   Callability(Price(putPrices[j], Price::Clean),
-                               Callability::Put,
-                               schedule.date(putLength[j])));
+                   boost::shared_ptr<Callability>(
+                           new Callability(Price(putPrices[j], Price::Clean),
+                                           Callability::Put,
+                                           schedule.date(putLength[j]))));
         }
 
         // Assume dividends are paid every 6 months.

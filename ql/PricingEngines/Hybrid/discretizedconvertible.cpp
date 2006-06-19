@@ -87,9 +87,30 @@ namespace QuantLib {
 
         Size i;
 
+        bool convertible = false;
+        switch (arguments_.exercise->type()) {
+          case Exercise::American:
+            if (time() <= arguments_.stoppingTimes[1] &&
+                time() >= arguments_.stoppingTimes[0])
+                convertible = true;
+            break;
+          case Exercise::European:
+            if (isOnTime(arguments_.stoppingTimes[0]))
+                convertible = true;
+            break;
+          case Exercise::Bermudan:
+            for (i = 0; i<arguments_.stoppingTimes.size(); i++) {
+                if (isOnTime(arguments_.stoppingTimes[i]))
+                    convertible = true;
+            }
+            break;
+          default:
+            QL_FAIL("invalid option type");
+        }
+
         for (i=0; i<arguments_.callabilityTimes.size(); i++) {
             if (isOnTime(arguments_.callabilityTimes[i]))
-                applyCallability(i);
+                applyCallability(i,convertible);
         }
 
         for (i=0; i<arguments_.couponTimes.size(); i++) {
@@ -97,25 +118,8 @@ namespace QuantLib {
                 addCoupon(i);
         }
 
-        switch (arguments_.exercise->type()) {
-          case Exercise::American:
-            if (time() <= arguments_.stoppingTimes[1] &&
-                time() >= arguments_.stoppingTimes[0])
-                applyConvertibility();
-            break;
-          case Exercise::European:
-            if (isOnTime(arguments_.stoppingTimes[0]))
-                applyConvertibility();
-            break;
-          case Exercise::Bermudan:
-            for (i = 0; i<arguments_.stoppingTimes.size(); i++) {
-                if (isOnTime(arguments_.stoppingTimes[i]))
-                    applyConvertibility();
-            }
-            break;
-          default:
-            QL_FAIL("invalid option type");
-        }
+        if (convertible)
+            applyConvertibility();
     }
 
     void DiscretizedConvertible::applyConvertibility() {
@@ -129,17 +133,40 @@ namespace QuantLib {
         }
     }
 
-    void DiscretizedConvertible::applyCallability(Size i) {
+    void DiscretizedConvertible::applyCallability(Size i, bool convertible) {
         Size j;
         Array grid = adjustedGrid();
         switch (arguments_.callabilityTypes[i]) {
           case Callability::Call:
-            for (j=0; j<values_.size(); j++) {
-                // exercising the callability might trigger conversion
-                values_[j] =
-                    std::min(std::max(arguments_.callabilityPrices[i],
-                                      arguments_.conversionRatio*grid[j]),
-                             values_[j]);
+            if (arguments_.callabilityTriggers[i] != Null<Real>()) {
+                Real conversionValue =
+                    arguments_.redemption/arguments_.conversionRatio;
+                Real trigger =
+                    conversionValue*arguments_.callabilityTriggers[i];
+                for (j=0; j<values_.size(); j++) {
+                    // the callability is conditioned by the trigger...
+                    if (grid[j] >= trigger) {
+                        // ...and might trigger conversion
+                        values_[j] =
+                            std::min(std::max(
+                                          arguments_.callabilityPrices[i],
+                                          arguments_.conversionRatio*grid[j]),
+                                     values_[j]);
+                    }
+                }
+            } else if (convertible) {
+                for (j=0; j<values_.size(); j++) {
+                    // exercising the callability might trigger conversion
+                    values_[j] =
+                        std::min(std::max(arguments_.callabilityPrices[i],
+                                          arguments_.conversionRatio*grid[j]),
+                                 values_[j]);
+                }
+            } else {
+                for (j=0; j<values_.size(); j++) {
+                    values_[j] = std::min(arguments_.callabilityPrices[i],
+                                          values_[j]);
+                }
             }
             break;
           case Callability::Put:

@@ -27,6 +27,7 @@
 
 #include <ql/event.hpp>
 #include <ql/Utilities/null.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/optional.hpp>
 #include <vector>
 
@@ -50,7 +51,6 @@ namespace QuantLib {
     class Callability : public Event {
       public:
         enum Type { Call, Put };
-        Callability() {}
         Callability(const Price& price, Type type, const Date& date)
         : price_(price), type_(type), date_(date) {}
         const Price& price() const {
@@ -65,7 +65,7 @@ namespace QuantLib {
         Date date_;
     };
 
-    typedef std::vector<Callability> CallabilitySchedule;
+    typedef std::vector<boost::shared_ptr<Callability> > CallabilitySchedule;
 
 }
 

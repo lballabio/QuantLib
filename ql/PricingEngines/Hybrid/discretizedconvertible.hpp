@@ -57,7 +57,7 @@ namespace QuantLib {
       private:
         Disposable<Array> adjustedGrid() const;
         void applyConvertibility();
-        void applyCallability(Size);
+        void applyCallability(Size, bool convertible);
         void addCoupon(Size);
         ConvertibleBond::option::arguments arguments_;
     };
