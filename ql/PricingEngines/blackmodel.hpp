@@ -31,6 +31,7 @@
 namespace QuantLib {
 
     //! Black-model for vanilla interest-rate derivatives
+    /*! \todo remove the termstructure from this class */
     class BlackModel : public Observable, public Observer {
       public:
         BlackModel(const Handle<Quote>& volatility,
