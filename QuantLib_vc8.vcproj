@@ -801,6 +801,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\dividend.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\CashFlows\dividend.hpp"
 				>
 			</File>
