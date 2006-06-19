@@ -59,9 +59,6 @@ namespace QuantLib {
                                           this->arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        QL_REQUIRE(arguments_.dividends.empty(),
-                   "discrete dividends not yet supported");
-
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();
         DayCounter voldc = process->blackVolatility()->dayCounter();

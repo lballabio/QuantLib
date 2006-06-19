@@ -46,11 +46,14 @@ xi        Real variance = volatility_*volatility_*residualTime_;
         const DividendVanillaOption::arguments *args =
             dynamic_cast<const DividendVanillaOption::arguments *>(a);
         QL_REQUIRE(args, "incorrect argument type");
-        FDMultiPeriodEngine::setupArguments(a, args->cashFlow.getEventList());
+        std::vector<boost::shared_ptr<Event> > events(args->cashFlow.size());
+        std::copy(args->cashFlow.begin(), args->cashFlow.end(),
+                  events.begin());
+        FDMultiPeriodEngine::setupArguments(a, events);
     }
 
 
-    // The value of the x axis is the NPV of the underlying minus the 
+    // The value of the x axis is the NPV of the underlying minus the
     // value of the paid dividends.
 
     // Note that to get the PDE to work, I have to scale the values
@@ -73,7 +76,7 @@ xi        Real variance = volatility_*volatility_*residualTime_;
 
     // TODO:  Make this work for both fixed and scaled dividends
     void FDDividendEngineMerton73::executeIntermediateStep(Size step) const{
-        Real scaleFactor = getDiscountedDividend(step) / 
+        Real scaleFactor = getDiscountedDividend(step) /
             center_ + 1.0;
         sMin_ *= scaleFactor;
         sMax_ *= scaleFactor;

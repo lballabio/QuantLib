@@ -44,12 +44,12 @@ int main(int argc, char* argv[])
 {
     try {
 
-		QL_IO_INIT
+        QL_IO_INIT
 
         boost::timer timer;
         std::cout << std::endl;
 
-		Option::Type type(Option::Put);
+        Option::Type type(Option::Put);
         Real underlying = 36.0;
         Real spreadRate = 0.005;
 
@@ -60,30 +60,30 @@ int main(int argc, char* argv[])
         Integer settlementDays = 3;
         Integer length = 5;
         Real redemption = 100.0;
-		Real conversionRatio = redemption/underlying; // at the money
+        Real conversionRatio = redemption/underlying; // at the money
 
         // set up dates/schedules
         Calendar calendar = TARGET();
         Date today = calendar.adjust(Date::todaysDate());
 
-		Settings::instance().evaluationDate() = today;
+        Settings::instance().evaluationDate() = today;
         Date settlementDate = calendar.advance(today, settlementDays, Days);
         Date exerciseDate = calendar.advance(settlementDate, length, Years);
-		Date issueDate = calendar.advance(exerciseDate, -length, Years);
+        Date issueDate = calendar.advance(exerciseDate, -length, Years);
 
-		BusinessDayConvention convention = ModifiedFollowing;
+        BusinessDayConvention convention = ModifiedFollowing;
 
-		Frequency frequency = Annual;
+        Frequency frequency = Annual;
 
-		Schedule schedule(calendar,issueDate,exerciseDate,
+        Schedule schedule(calendar,issueDate,exerciseDate,
                           frequency, convention,Date(), true);
 
         DividendSchedule dividends;
         CallabilitySchedule callability;
 
-		std::vector<Real> coupons(1, 0.05);
+        std::vector<Real> coupons(1, 0.05);
 
-		DayCounter bondDayCount = Thirty360();
+        DayCounter bondDayCount = Thirty360();
 
         Integer callLength[] = { 2, 4 };  // Call dates, years 2, 4.
         Integer putLength[] = { 3 }; // Put dates year 3
@@ -99,20 +99,18 @@ int main(int argc, char* argv[])
                                schedule.date(callLength[i])));
         }
 
-		for (Size j=0; j<LENGTH(putLength); j++) {
+        for (Size j=0; j<LENGTH(putLength); j++) {
             callability.push_back(
-	               Callability(Price(putPrices[j], Price::Clean),
+                   Callability(Price(putPrices[j], Price::Clean),
                                Callability::Put,
                                schedule.date(putLength[j])));
         }
 
         // Assume dividends are paid every 6 months.
-        /* for (Date d = today + 6*Months;
-             d < exerciseDate;
-             d += 6*Months) {
+        for (Date d = today + 6*Months; d < exerciseDate; d += 6*Months) {
             dividends.push_back(
-                      boost::shared_ptr<CashFlow>(new FixedDividend(1.0, d)));
-        }*/
+                      boost::shared_ptr<Dividend>(new FixedDividend(1.0, d)));
+        }
 
         DayCounter dayCounter = Actual365Fixed();
         Time maturity = dayCounter.yearFraction(settlementDate,
@@ -157,7 +155,7 @@ int main(int argc, char* argv[])
         Handle<Quote> underlyingH(
             boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
 
-		Handle<YieldTermStructure> flatTermStructure(
+        Handle<YieldTermStructure> flatTermStructure(
             boost::shared_ptr<YieldTermStructure>(
                 new FlatForward(settlementDate, riskFreeRate, dayCounter)));
 
@@ -170,33 +168,33 @@ int main(int argc, char* argv[])
                 new BlackConstantVol(settlementDate, volatility, dayCounter)));
 
 
-		boost::shared_ptr<StochasticProcess> stochasticProcess(
+        boost::shared_ptr<StochasticProcess> stochasticProcess(
                               new BlackScholesMertonProcess(underlyingH,
                                                             flatDividendTS,
                                                             flatTermStructure,
                                                             flatVolTS));
 
-		Size timeSteps = 801;
+        Size timeSteps = 801;
 
-		Handle<Quote> creditSpread(
+        Handle<Quote> creditSpread(
                        boost::shared_ptr<Quote>(new SimpleQuote(spreadRate)));
 
-		boost::shared_ptr<Quote> rate(new SimpleQuote(riskFreeRate));
+        boost::shared_ptr<Quote> rate(new SimpleQuote(riskFreeRate));
 
-		Handle<YieldTermStructure> discountCurve(
+        Handle<YieldTermStructure> discountCurve(
                 boost::shared_ptr<YieldTermStructure>(
                     new FlatForward(today, Handle<Quote>(rate), dayCounter)));
 
-		boost::shared_ptr<PricingEngine> engine(
+        boost::shared_ptr<PricingEngine> engine(
                  new BinomialConvertibleEngine<JarrowRudd>(timeSteps));
 
-		ConvertibleFixedCouponBond europeanBond(
+        ConvertibleFixedCouponBond europeanBond(
                                 stochasticProcess, exercise, engine,
                                 conversionRatio, dividends, callability,
                                 creditSpread, issueDate, settlementDays,
                                 coupons, bondDayCount, schedule, redemption);
 
-		ConvertibleFixedCouponBond americanBond(
+        ConvertibleFixedCouponBond americanBond(
                                 stochasticProcess, amExercise, engine,
                                 conversionRatio, dividends, callability,
                                 creditSpread, issueDate, settlementDays,
@@ -207,7 +205,7 @@ int main(int argc, char* argv[])
                        new BinomialConvertibleEngine<JarrowRudd>(timeSteps)));
         americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
                        new BinomialConvertibleEngine<JarrowRudd>(timeSteps)));
-		std::cout << std::setw(widths[0]) << std::left << method
+        std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
                   << std::setw(widths[2]) << std::left << americanBond.NPV()
@@ -218,7 +216,7 @@ int main(int argc, char* argv[])
                 new BinomialConvertibleEngine<CoxRossRubinstein>(timeSteps)));
         americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
                 new BinomialConvertibleEngine<CoxRossRubinstein>(timeSteps)));
-		std::cout << std::setw(widths[0]) << std::left << method
+        std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
                   << std::setw(widths[2]) << std::left << americanBond.NPV()
@@ -229,7 +227,7 @@ int main(int argc, char* argv[])
           new BinomialConvertibleEngine<AdditiveEQPBinomialTree>(timeSteps)));
         americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
           new BinomialConvertibleEngine<AdditiveEQPBinomialTree>(timeSteps)));
-		std::cout << std::setw(widths[0]) << std::left << method
+        std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
                   << std::setw(widths[2]) << std::left << americanBond.NPV()
@@ -240,7 +238,7 @@ int main(int argc, char* argv[])
                        new BinomialConvertibleEngine<Trigeorgis>(timeSteps)));
         americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
                        new BinomialConvertibleEngine<Trigeorgis>(timeSteps)));
-		std::cout << std::setw(widths[0]) << std::left << method
+        std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
                   << std::setw(widths[2]) << std::left << americanBond.NPV()
@@ -251,7 +249,7 @@ int main(int argc, char* argv[])
                              new BinomialConvertibleEngine<Tian>(timeSteps)));
         americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
                              new BinomialConvertibleEngine<Tian>(timeSteps)));
-		std::cout << std::setw(widths[0]) << std::left << method
+        std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
                   << std::setw(widths[2]) << std::left << americanBond.NPV()
@@ -262,7 +260,7 @@ int main(int argc, char* argv[])
                      new BinomialConvertibleEngine<LeisenReimer>(timeSteps)));
         americanBond.setPricingEngine(boost::shared_ptr<PricingEngine>(
                      new BinomialConvertibleEngine<LeisenReimer>(timeSteps)));
-		std::cout << std::setw(widths[0]) << std::left << method
+        std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
                   << std::setw(widths[2]) << std::left << americanBond.NPV()

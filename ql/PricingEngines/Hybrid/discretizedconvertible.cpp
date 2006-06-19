@@ -18,13 +18,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Instruments/bond.hpp>
-#include <ql/Processes/blackscholesprocess.hpp>
-#include <ql/Instruments/dividendschedule.hpp>
-#include <ql/Instruments/callabilityschedule.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/PricingEngines/Hybrid/discretizedconvertible.hpp>
-#include <vector>
+#include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Math/comparison.hpp>
 
 namespace QuantLib {
 
@@ -34,7 +30,7 @@ namespace QuantLib {
 
         dividendValues_ = Array(arguments_.dividends.size(), 0.0);
 
-		boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
@@ -42,7 +38,7 @@ namespace QuantLib {
         Date settlementDate = process->riskFreeRate()->referenceDate();
         for (Size i=0; i<arguments_.dividends.size(); i++) {
             if (arguments_.dividends[i]->date() >= settlementDate) {
-				dividendValues_[i] =
+                dividendValues_[i] =
                     arguments_.dividends[i]->amount() *
                     process->riskFreeRate()->discount(
                                              arguments_.dividends[i]->date());
@@ -56,12 +52,12 @@ namespace QuantLib {
         values_ = Array(size, arguments_.redemption);
 
         // coupon amounts should be added when adjusting
-		// values_ = Array(size, arguments_.cashFlows.back()->amount());
+        // values_ = Array(size, arguments_.cashFlows.back()->amount());
 
-		conversionProbability_ = Array(size, 0.0);
-		spreadAdjustedRate_ = Array(size, 0.0);
+        conversionProbability_ = Array(size, 0.0);
+        spreadAdjustedRate_ = Array(size, 0.0);
 
-		boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
@@ -101,8 +97,6 @@ namespace QuantLib {
                 addCoupon(i);
         }
 
-        // add dividends somehow
-
         switch (arguments_.exercise->type()) {
           case Exercise::American:
             if (time() <= arguments_.stoppingTimes[1] &&
@@ -125,7 +119,7 @@ namespace QuantLib {
     }
 
     void DiscretizedConvertible::applyConvertibility() {
-		Array grid = method()->grid(time());
+        Array grid = adjustedGrid();
         for (Size j=0; j<values_.size(); j++) {
             Real payoff = arguments_.conversionRatio*grid[j];
             if (values_[j] <= payoff) {
@@ -137,7 +131,7 @@ namespace QuantLib {
 
     void DiscretizedConvertible::applyCallability(Size i) {
         Size j;
-        Array grid = method()->grid(time());
+        Array grid = adjustedGrid();
         switch (arguments_.callabilityTypes[i]) {
           case Callability::Call:
             for (j=0; j<values_.size(); j++) {
@@ -161,6 +155,21 @@ namespace QuantLib {
 
     void DiscretizedConvertible::addCoupon(Size i) {
         values_ += arguments_.couponAmounts[i];
+    }
+
+    Disposable<Array> DiscretizedConvertible::adjustedGrid() const {
+        Time t = time();
+        Array grid = method()->grid(t);
+        // add back all dividend amounts in the future
+        for (Size i=0; i<arguments_.dividends.size(); i++) {
+            Time dividendTime = arguments_.dividendTimes[i];
+            if (dividendTime >= t || close(dividendTime,t)) {
+                const boost::shared_ptr<Dividend>& d = arguments_.dividends[i];
+                for (Size j=0; j<grid.size(); j++)
+                    grid[j] += d->amount(grid[j]);
+            }
+        }
+        return grid;
     }
 
 }

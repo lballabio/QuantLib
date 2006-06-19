@@ -24,6 +24,7 @@ include_HEADERS = \
 libCashFlows_la_SOURCES = \
     analysis.cpp \
     cashflowvectors.cpp \
+    dividend.cpp \
     inarrearindexedcoupon.cpp \
     parcoupon.cpp \
     shortfloatingcoupon.cpp \

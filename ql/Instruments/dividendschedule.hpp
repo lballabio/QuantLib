@@ -25,23 +25,12 @@
 #ifndef quantlib_dividend_schedule_hpp
 #define quantlib_dividend_schedule_hpp
 
-#include <ql/cashflow.hpp>
+#include <ql/CashFlows/dividend.hpp>
 #include <vector>
 
 namespace QuantLib {
 
-    class DividendSchedule : public std::vector<boost::shared_ptr<CashFlow> > {
-      public:
-        DividendSchedule() {};
-        DividendSchedule(std::vector<boost::shared_ptr<CashFlow> > c) :
-            std::vector<boost::shared_ptr<CashFlow> >(c) {};
-        std::vector<boost::shared_ptr<Event > > getEventList() const {
-            std::vector<boost::shared_ptr<Event > > event_list;
-            std::copy(begin(), end(),
-                      std::back_inserter(event_list));
-            return event_list;
-        }
-    };
+    typedef std::vector<boost::shared_ptr<Dividend> > DividendSchedule;
 
 }
 

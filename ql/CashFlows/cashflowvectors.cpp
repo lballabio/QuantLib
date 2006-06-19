@@ -22,7 +22,6 @@
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
 #include <ql/CashFlows/upfrontindexedcoupon.hpp>
 #include <ql/CashFlows/indexedcashflowvectors.hpp>
-#include <ql/CashFlows/dividend.hpp>
 
 namespace QuantLib {
 
@@ -145,18 +144,5 @@ namespace QuantLib {
         return leg;
     }
 
-    std::vector<boost::shared_ptr<CashFlow> >
-    DividendVector(const std::vector<Date>& dividendDates,
-                   const std::vector<Real>& dividends) {
-        std::vector<Date>::const_iterator dd;
-        std::vector<Real>::const_iterator d;
-        std::vector<boost::shared_ptr<CashFlow> > items;
-
-        for (dd = dividendDates.begin(), d = dividends.begin();
-             dd != dividendDates.end(); dd++, d++) {
-            items.push_back(boost::shared_ptr<CashFlow>(new FixedDividend(*d,
-                                                                          *dd)));
-        }
-        return items;
-    }
 }
+

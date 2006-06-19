@@ -26,6 +26,8 @@
 #define quantlib_dividend_hpp
 
 #include <ql/cashflow.hpp>
+#include <ql/Utilities/null.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -94,16 +96,10 @@ namespace QuantLib {
     };
 
 
-    // inline definitions
-
-    inline void Dividend::accept(AcyclicVisitor& v) {
-        Visitor<Dividend>* v1 =
-            dynamic_cast<Visitor<Dividend>*>(&v);
-        if (v1 != 0)
-            v1->visit(*this);
-        else
-            CashFlow::accept(v);
-    }
+    //! helper function building a sequence of fixed dividends
+    std::vector<boost::shared_ptr<Dividend> >
+    DividendVector(const std::vector<Date>& dividendDates,
+                   const std::vector<Real>& dividends);
 
 }
 

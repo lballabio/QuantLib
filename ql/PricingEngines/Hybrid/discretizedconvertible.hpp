@@ -55,6 +55,7 @@ namespace QuantLib {
         Array conversionProbability_, spreadAdjustedRate_, dividendValues_;
 
       private:
+        Disposable<Array> adjustedGrid() const;
         void applyConvertibility();
         void applyCallability(Size);
         void addCoupon(Size);
