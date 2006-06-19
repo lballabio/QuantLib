@@ -1,13 +1,14 @@
 
 body {
-    font-family: georgia, verdana, arial, serif;
+    font-family: trebuchet ms,luxi sans,sans-serif;
+    text-align: justify;
     color: #000;
     background: #fff;
 }
 
 #container {
     width: 100%;
-    line-height: 130%;
+    line-height: 140%;
 }
 
 #menu {
@@ -145,7 +146,7 @@ span.googlestyle {
 /* Doxygen-generated CSS included below */
 
 BODY,H1,H2,H3,H4,H5,H6,P,CENTER,TD,TH,UL,DL,DIV {
-    font-family: georgia, verdana, arial, serif;
+    font-family: trebuchet ms,luxi sans,sans-serif;
 }
 TD {
        font-size: 90%;
