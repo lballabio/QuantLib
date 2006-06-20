@@ -63,7 +63,7 @@ std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
     Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-    boost::shared_ptr<BlackModel> model(new BlackModel(vol, termStructure_));
+    boost::shared_ptr<BlackModel> model(new BlackModel(vol));
     return boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(model));
 }
 

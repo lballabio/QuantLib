@@ -31,48 +31,50 @@
 namespace QuantLib {
 
     //! Black-model for vanilla interest-rate derivatives
-    /*! \todo remove the termstructure from this class */
     class BlackModel : public Observable, public Observer {
+
+      #ifndef QL_DISABLE_DEPRECATED
       public:
+
+        //! \deprecated use the termStructure-less constructor
         BlackModel(const Handle<Quote>& volatility,
-                   const Handle<YieldTermStructure>& termStructure);
+                   const Handle<YieldTermStructure>& termStructure)
+        : volatility_(volatility), termStructure_(termStructure)
+        {
+            registerWith(volatility_);
+            registerWith(termStructure_);
+        }
+
+        //! \deprecated don't ask BlackModel for the termStructure
+        const Handle<YieldTermStructure>& termStructure() const
+        {
+            return termStructure_;
+        }
+      private:
+        Handle<YieldTermStructure> termStructure_;
+      #endif
+
+      public:
+        BlackModel(const Handle<Quote>& volatility)
+        : volatility_(volatility)
+        {
+            registerWith(volatility_);
+        }
 
         void update() { notifyObservers(); }
-
         //Returns the Black volatility
-        Volatility volatility() const;
-
-        const Handle<YieldTermStructure>& termStructure() const;
-
+        Volatility volatility() const { return volatility_->value(); }
         //! General Black formula
         static Real formula(Real f, Real k, Real v, Real w);
         //! In-the-money cash probability
         static Real itmProbability(Real f, Real k, Real v, Real w);
       private:
         Handle<Quote> volatility_;
-        Handle<YieldTermStructure> termStructure_;
     };
 
     // inline definitions
 
-    inline BlackModel::BlackModel(
-                              const Handle<Quote>& volatility,
-                              const Handle<YieldTermStructure>& termStructure)
-    : volatility_(volatility), termStructure_(termStructure) {
-        registerWith(volatility_);
-        registerWith(termStructure_);
-    }
-
-    inline Volatility BlackModel::volatility() const {
-        return volatility_->value();
-    }
-
-    inline
-    const Handle<YieldTermStructure>& BlackModel::termStructure() const {
-        return termStructure_;
-    }
-
-    /*! Returns
+     /*! Returns
         \f[
             Black(f,k,v,w) = fw\Phi(wd_1(f,k,v)) - kw\Phi(wd_2(f,k,v)),
         \f]
@@ -119,6 +121,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

@@ -72,6 +72,7 @@ namespace QuantLib {
         arguments->endTimes.clear();
         arguments->accrualTimes.clear();
         arguments->forwards.clear();
+        arguments->discounts.clear();
         arguments->nominals.clear();
 
         Date today = Settings::instance().evaluationDate();
@@ -94,10 +95,14 @@ namespace QuantLib {
             // this is passed explicitly for precision
             arguments->accrualTimes.push_back(coupon->accrualPeriod());
             // this is passed explicitly for precision
-            if (arguments->endTimes.back() >= 0.0)  // but only if needed
+            if (arguments->endTimes.back() >= 0.0) { // but only if needed
                 arguments->forwards.push_back(coupon->indexFixing());
-            else
+                arguments->discounts.push_back(
+                                  termStructure_->discount(coupon->date()));
+            } else {
                 arguments->forwards.push_back(Null<Rate>());
+                arguments->discounts.push_back(Null<DiscountFactor>());
+            }
             arguments->nominals.push_back(coupon->nominal());
             Spread spread = coupon->spread();
             if (type_ == Cap || type_ == Collar)
@@ -157,9 +162,9 @@ namespace QuantLib {
 
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         Handle<Quote> h(vol_);
-        boost::shared_ptr<BlackModel> model(new BlackModel(h,termStructure_));
+        boost::shared_ptr<BlackModel> model(new BlackModel(h));
         engine_ = boost::shared_ptr<PricingEngine>(
-                                              new BlackCapFloorEngine(model));
+            new BlackCapFloorEngine(model));
         cap.setupArguments(engine_->arguments());
 
         results_ = dynamic_cast<const Value*>(engine_->results());

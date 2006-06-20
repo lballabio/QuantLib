@@ -73,7 +73,7 @@ boost::shared_ptr<Swaption> makeSwaption(const boost::shared_ptr<VanillaSwap>& s
                                          Settlement::Type type = Settlement::Physical) {
     boost::shared_ptr<Quote> vol_me(new SimpleQuote(volatility));
     Handle<Quote> vol_rh(vol_me);
-    boost::shared_ptr<BlackModel> model(new BlackModel(vol_rh,termStructure_));
+    boost::shared_ptr<BlackModel> model(new BlackModel(vol_rh));
     boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(model));
     return boost::shared_ptr<Swaption>(new Swaption(
                   swap,

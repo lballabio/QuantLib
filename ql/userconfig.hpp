@@ -33,12 +33,12 @@
 /* Define this if error messages should include current function
    information. */
 #ifndef QL_ERROR_FUNCTIONS
-//#   define QL_ERROR_FUNCTIONS
+#   define QL_ERROR_FUNCTIONS
 #endif
 
 /* Define this if error messages should include file and line information. */
 #ifndef QL_ERROR_LINES
-//#   define QL_ERROR_LINES
+#   define QL_ERROR_LINES
 #endif
 
 /* Define this if tracing messages should be allowed (whether they are

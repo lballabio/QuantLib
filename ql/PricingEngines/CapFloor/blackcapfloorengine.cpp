@@ -31,7 +31,7 @@ namespace QuantLib {
                 accrualTime = arguments_.accrualTimes[i];
             if (end > 0.0) {    // discard expired caplets
                 Real nominal = arguments_.nominals[i];
-                DiscountFactor q = model_->termStructure()->discount(end);
+                DiscountFactor q = arguments_.discounts[i];
                 Rate forward = arguments_.forwards[i];
                 // try and factorize the code below
                 if ((type == CapFloor::Cap) ||

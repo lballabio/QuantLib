@@ -83,7 +83,7 @@ namespace QuantLib {
       public:
         RelativeDateRateHelper(const Handle<Quote>& quote);
         RelativeDateRateHelper(Real quote);
-        void setTermStructure(YieldTermStructure*);
+        void update();
       protected:
         virtual void initializeDates() = 0;
         Date evaluationDate_;

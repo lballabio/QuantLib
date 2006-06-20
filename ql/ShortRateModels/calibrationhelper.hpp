@@ -40,7 +40,7 @@ namespace QuantLib {
           termStructure_      (termStructure),
           calibrateVolatility_(calibrateVolatility) {
             blackModel_ = boost::shared_ptr<BlackModel>(
-                                  new BlackModel(volatility_,termStructure_));
+                new BlackModel(volatility_));
             registerWith(volatility_);
             registerWith(termStructure_);
         }

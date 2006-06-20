@@ -159,6 +159,7 @@ namespace QuantLib {
         std::vector<Rate> capRates;
         std::vector<Rate> floorRates;
         std::vector<Rate> forwards;
+        std::vector<DiscountFactor> discounts;
         std::vector<Real> nominals;
         void validate() const;
     };

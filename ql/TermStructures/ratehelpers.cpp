@@ -55,6 +55,7 @@ namespace QuantLib {
         latestDate_ =
             calendar.advance(earliestDate_, nMonths, Months, convention);
         yearFraction_ = dayCounter.yearFraction(earliestDate_, latestDate_);
+        registerWith(convexityAdjustment);
     }
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
@@ -127,12 +128,12 @@ namespace QuantLib {
         evaluationDate_ = Settings::instance().evaluationDate();
     }
 
-    void RelativeDateRateHelper::setTermStructure(YieldTermStructure* y) {
-        RateHelper::setTermStructure(y);
+    void RelativeDateRateHelper::update() {
         if (evaluationDate_ != Settings::instance().evaluationDate()) {
             evaluationDate_ = Settings::instance().evaluationDate();
             initializeDates();
         }
+        RateHelper::update();
     }
 
 
