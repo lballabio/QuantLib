@@ -8116,6 +8116,18 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\position.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\prices.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\prices.hpp"
+			>
+		</File>
+		<File
 			RelativePath="ql\pricingengine.hpp"
 			>
 		</File>
