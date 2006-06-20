@@ -238,7 +238,8 @@ namespace QuantLib {
                                                      callability_[i]->date()));
                 moreArgs->callabilityPrices.push_back(
                                             callability_[i]->price().amount());
-                if (callability_[i]->price().type() == Price::Clean)
+                if (callability_[i]->price().type() ==
+                                                    Callability::Price::Clean)
                     moreArgs->callabilityPrices.back() +=
                         bond_->accruedAmount(callability_[i]->date());
                 boost::shared_ptr<SoftCallability> softCall =

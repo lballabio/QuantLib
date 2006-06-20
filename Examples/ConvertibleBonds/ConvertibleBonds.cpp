@@ -95,7 +95,9 @@ int main(int argc, char* argv[])
         for (Size i=0; i<LENGTH(callLength); i++) {
             callability.push_back(
                    boost::shared_ptr<Callability>(
-                       new SoftCallability(Price(callPrices[i], Price::Clean),
+                       new SoftCallability(Callability::Price(
+                                                   callPrices[i],
+                                                   Callability::Price::Clean),
                                            schedule.date(callLength[i]),
                                            1.20)));
         }
@@ -103,7 +105,9 @@ int main(int argc, char* argv[])
         for (Size j=0; j<LENGTH(putLength); j++) {
             callability.push_back(
                    boost::shared_ptr<Callability>(
-                           new Callability(Price(putPrices[j], Price::Clean),
+                           new Callability(Callability::Price(
+                                                   putPrices[j],
+                                                   Callability::Price::Clean),
                                            Callability::Put,
                                            schedule.date(putLength[j]))));
         }

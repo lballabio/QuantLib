@@ -33,24 +33,27 @@
 
 namespace QuantLib {
 
-    class Price {
-      public:
-        enum Type { Dirty, Clean };
-        Price() : amount_(Null<Real>()) {}
-        Price(Real amount, Type type) : amount_(amount), type_(type) {}
-        Real amount() const {
-            QL_REQUIRE(amount_ != Null<Real>(), "no amount given");
-            return amount_;
-        }
-        Type type() const { return type_; }
-      private:
-        Real amount_;
-        Type type_;
-    };
-
+    //! instrument callability
     class Callability : public Event {
       public:
+        //! amount to be paid upon callability
+        class Price {
+          public:
+            enum Type { Dirty, Clean };
+            Price() : amount_(Null<Real>()) {}
+            Price(Real amount, Type type) : amount_(amount), type_(type) {}
+            Real amount() const {
+                QL_REQUIRE(amount_ != Null<Real>(), "no amount given");
+                return amount_;
+            }
+            Type type() const { return type_; }
+          private:
+            Real amount_;
+            Type type_;
+        };
+        //! type of the callability
         enum Type { Call, Put };
+
         Callability(const Price& price, Type type, const Date& date)
         : price_(price), type_(type), date_(date) {}
         const Price& price() const {
@@ -64,6 +67,11 @@ namespace QuantLib {
         Type type_;
         Date date_;
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated Moved into Callability as Callability::Price  */
+    typedef Callability::Price Price;
+    #endif
 
     typedef std::vector<boost::shared_ptr<Callability> > CallabilitySchedule;
 
