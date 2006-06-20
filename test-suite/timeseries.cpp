@@ -20,6 +20,7 @@
 #include "timeseries.hpp"
 #include "utilities.hpp"
 #include <ql/timeseries.hpp>
+#include <ql/prices.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -65,7 +66,7 @@ void TimeSeriesTest::testIntervalPrice() {
     std::vector<Real> open, close, high, low;
     date.push_back(Date(25, March, 2005));
     date.push_back(Date(29, March, 2005));
-    
+
     open.push_back(1.3);
     open.push_back(2.3);
 
@@ -77,14 +78,13 @@ void TimeSeriesTest::testIntervalPrice() {
 
     low.push_back(3.4);
     low.push_back(3.2);
-    
-    TimeSeries<IntervalPrice> tsiq =
-        TimeSeriesIntervalPriceHelper::create(date,
-                                              open,
-                                              close,
-                                              high,
-                                              low);
-    
+
+    TimeSeries<IntervalPrice> tsiq = IntervalPrice::makeSeries(date,
+                                                               open,
+                                                               close,
+                                                               high,
+                                                               low);
+
     QL_TEST_END
 }
 

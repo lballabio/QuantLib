@@ -26,7 +26,6 @@
 
 #include <ql/date.hpp>
 #include <ql/Utilities/null.hpp>
-#include <boost/iterator/filter_iterator.hpp>
 #include <map>
 #include <vector>
 
@@ -192,98 +191,6 @@ namespace QuantLib {
         }
     }
 
-    //! interval price
-    class IntervalPrice {
-    public:
-        enum Type {Open, Close, High, Low};
-        IntervalPrice() :
-            open_(QL_NULL_REAL), 
-            close_(QL_NULL_REAL), 
-            high_(QL_NULL_REAL), 
-            low_(QL_NULL_REAL) {};
-
-        IntervalPrice(Real o, Real c, Real h, Real l) :
-            open_(o), close_(c), high_(h), low_(l) {};
-        void setValue(Real o, Real c, Real h, Real l) {
-            open_ = o; close_ = c;
-            high_ = h; low_ = l;
-        }
-        Real open() const {return open_;}
-        Real close() const {return close_;}
-        Real high() const {return high_;}
-        Real low() const {return low_;}
-        Real value(IntervalPrice::Type t) const {
-            switch(t) {
-            case Open:
-                return open();
-            case Close:
-                return close();
-            case High:
-                return high();
-            case Low:
-                return low();
-            default:
-                QL_FAIL("Unknown price type");
-            }
-        }
-    private:
-        Real open_, close_, high_, low_;
-    };
-
-    //! Create time series of interval prices
-    //! This should probably go somewhere other than timeseries
-    class TimeSeriesIntervalPriceHelper {  
-    public:
-        static 
-        TimeSeries<IntervalPrice> create(const std::vector<Date>& d,
-                                         const std::vector<Real>& open,
-                                         const std::vector<Real>& close,
-                                         const std::vector<Real>& high,
-                                         const std::vector<Real>& low)  {
-            Size dsize = d.size();
-            QL_REQUIRE((open.size() == dsize &&
-                        close.size() == dsize &&
-		 high.size() == dsize &&
-                        low.size() == dsize),
-                       "size mismatch (" << dsize << ", "
-                       << open.size() << ", "
-                       << close.size() << ", "
-                       << high.size() << ", "
-                       << low.size() << ")");
-            TimeSeries<IntervalPrice> retval;
-            std::vector<Date>::const_iterator i;
-            std::vector<Real>::const_iterator openi, closei, highi, lowi;
-            openi = open.begin();
-            closei = close.begin();
-            highi = high.begin();
-            lowi = low.begin();
-            for (i = d.begin(); i != d.end(); i++) {
-                retval.insert(*i,
-                              IntervalPrice(*openi,
-                                            *closei,
-                                      *highi,
-                                            *lowi));
-                openi++; closei++; highi++; lowi++;
-            }
-            return retval;
-        };
-        static std::vector<Real> extractValues(const TimeSeries<IntervalPrice> &ts,
-                       enum IntervalPrice::Type t)  {
-            std::vector<Real> returnval;
-            for (TimeSeries<IntervalPrice>::const_valid_iterator i = ts.vbegin();
-                 i != ts.vend(); i++) {
-                returnval.push_back(i->second.value(t));
-            }
-            return returnval;
-        };
-
-        static TimeSeries<Real> 
-        extractComponent(const TimeSeries<IntervalPrice> &ts,
-                       enum IntervalPrice::Type t) {
-            return TimeSeries<Real>(ts.dates(),
-                                    extractValues(ts, t));
-        }
-    };
 }
 
 

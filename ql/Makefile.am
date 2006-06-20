@@ -61,6 +61,7 @@ include_HEADERS = \
 	option.hpp \
 	payoff.hpp \
 	position.hpp \
+	prices.hpp \
 	pricingengine.hpp \
 	qldefines.hpp \
 	quantlib.hpp \
@@ -140,6 +141,7 @@ libQuantLib_la_SOURCES = \
     index.cpp \
     interestrate.cpp \
     money.cpp \
+    prices.cpp \
     schedule.cpp \
 	stochasticprocess.cpp \
 	timegrid.cpp \

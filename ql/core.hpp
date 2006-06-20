@@ -43,6 +43,7 @@
 #include <ql/option.hpp>
 #include <ql/payoff.hpp>
 #include <ql/position.hpp>
+#include <ql/prices.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/quote.hpp>
 #include <ql/schedule.hpp>

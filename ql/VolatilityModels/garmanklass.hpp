@@ -25,18 +25,18 @@
 #define quantlib_garman_klass_hpp
 
 #include <ql/volatilitymodel.hpp>
-#include <map>
+#include <ql/prices.hpp>
 
 namespace QuantLib {
 
-    /*! This class implements a concrete volatility model based on 
+    /*! This class implements a concrete volatility model based on
       high low formulas using the method of Garman and Klass in their
       paper "On the Estimation of the Security Price from Historical Data"
       at http://www.fea.com/resources/pdf/a_estimation_of_security_price.pdf
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class GarmanKlassAbstract : 
+    class GarmanKlassAbstract :
         public LocalVolatilityEstimator<IntervalPrice> {
     protected:
         Real yearFraction_;
@@ -47,13 +47,13 @@ namespace QuantLib {
         TimeSeries<Volatility>
         calculate(const TimeSeries<IntervalPrice> &quoteSeries) {
             TimeSeries<Volatility> retval;
-            TimeSeries<IntervalPrice>::const_valid_iterator 
+            TimeSeries<IntervalPrice>::const_valid_iterator
                 prev, next, cur, start;
             start = quoteSeries.vbegin();
             for (cur = start;
                  cur != quoteSeries.vend();
                  cur++) {
-                retval.insert(cur->first, 
+                retval.insert(cur->first,
                               std::sqrt(std::abs(calculatePoint(cur->second))/
                               yearFraction_));
             }
@@ -89,7 +89,7 @@ namespace QuantLib {
         TimeSeries<Volatility>
         calculate(const TimeSeries<IntervalPrice> &quoteSeries) {
             TimeSeries<Volatility> retval;
-            TimeSeries<IntervalPrice>::const_valid_iterator 
+            TimeSeries<IntervalPrice>::const_valid_iterator
                 prev, next, cur, start;
             start = quoteSeries.vbegin();
             start++;
@@ -99,12 +99,12 @@ namespace QuantLib {
                 prev = cur; prev--;
                 Real c0 = std::log(prev->second.close());
                 Real o1 = std::log(cur->second.open());
-                Real sigma2 = 
+                Real sigma2 =
                     a_ * (o1 - c0) * (o1 - c0) / f_ +
                     (1-a_) * T::calculatePoint(cur->second) /
                     (1-f_);
 
-                retval.insert(cur->first, 
+                retval.insert(cur->first,
                               std::sqrt(sigma2/T::yearFraction_));
             }
             return retval;
@@ -112,7 +112,7 @@ namespace QuantLib {
     };
 
 
-    class GarmanKlassSigma1 : 
+    class GarmanKlassSigma1 :
         public GarmanKlassOpenClose<GarmanKlassSimpleSigma> {
     public:
         GarmanKlassSigma1(Real y, Real marketOpenFraction) :
@@ -136,7 +136,7 @@ namespace QuantLib {
     };
 
 
-    class GarmanKlassSigma3 : 
+    class GarmanKlassSigma3 :
         public GarmanKlassOpenClose<ParkinsonSigma> {
     public:
         GarmanKlassSigma3(Real y, Real marketOpenFraction) :
@@ -178,7 +178,7 @@ namespace QuantLib {
         }
     };
 
-    class GarmanKlassSigma6 : 
+    class GarmanKlassSigma6 :
         public GarmanKlassOpenClose<GarmanKlassSigma4> {
     public:
         GarmanKlassSigma6(Real y, Real marketOpenFraction) :
