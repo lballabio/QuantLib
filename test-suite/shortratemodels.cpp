@@ -184,8 +184,8 @@ void ShortRateModelTest::testSwaps() {
         Date startDate = calendar.advance(settlement,start[i],Months);
         if (startDate < today) {
             Date fixingDate = calendar.advance(startDate,-2,Days);
-            History pastFixings(std::vector<Date>(1,fixingDate),
-                                std::vector<Rate>(1,0.03));
+            TimeSeries<Real> pastFixings;
+            pastFixings[fixingDate] = 0.03;
             IndexManager::instance().setHistory(euribor->name(),
                                                 pastFixings);
         }

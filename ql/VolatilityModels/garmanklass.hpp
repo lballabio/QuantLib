@@ -47,15 +47,12 @@ namespace QuantLib {
         TimeSeries<Volatility>
         calculate(const TimeSeries<IntervalPrice> &quoteSeries) {
             TimeSeries<Volatility> retval;
-            TimeSeries<IntervalPrice>::const_valid_iterator
-                prev, next, cur, start;
-            start = quoteSeries.vbegin();
-            for (cur = start;
-                 cur != quoteSeries.vend();
-                 cur++) {
-                retval.insert(cur->first,
-                              std::sqrt(std::abs(calculatePoint(cur->second))/
-                              yearFraction_));
+            TimeSeries<IntervalPrice>::const_iterator prev, next, cur, start;
+            start = quoteSeries.begin();
+            for (cur = start; cur != quoteSeries.end(); ++cur) {
+                retval[cur->first] =
+                    std::sqrt(std::abs(calculatePoint(cur->second))/
+                              yearFraction_);
             }
             return retval;
         }
@@ -89,14 +86,11 @@ namespace QuantLib {
         TimeSeries<Volatility>
         calculate(const TimeSeries<IntervalPrice> &quoteSeries) {
             TimeSeries<Volatility> retval;
-            TimeSeries<IntervalPrice>::const_valid_iterator
-                prev, next, cur, start;
-            start = quoteSeries.vbegin();
-            start++;
-            for (cur = start;
-                 cur != quoteSeries.vend();
-                 cur++) {
-                prev = cur; prev--;
+            TimeSeries<IntervalPrice>::const_iterator prev, next, cur, start;
+            start = quoteSeries.begin();
+            ++start;
+            for (cur = start; cur != quoteSeries.end(); ++cur) {
+                prev = cur; --prev;
                 Real c0 = std::log(prev->second.close());
                 Real o1 = std::log(cur->second.open());
                 Real sigma2 =
@@ -104,8 +98,7 @@ namespace QuantLib {
                     (1-a_) * T::calculatePoint(cur->second) /
                     (1-f_);
 
-                retval.insert(cur->first,
-                              std::sqrt(sigma2/T::yearFraction_));
+                retval[cur->first] = std::sqrt(sigma2/T::yearFraction_);
             }
             return retval;
         }

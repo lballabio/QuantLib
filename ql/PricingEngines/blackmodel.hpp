@@ -39,7 +39,7 @@ namespace QuantLib {
         //! \deprecated use the termStructure-less constructor
         BlackModel(const Handle<Quote>& volatility,
                    const Handle<YieldTermStructure>& termStructure)
-        : volatility_(volatility), termStructure_(termStructure)
+        : termStructure_(termStructure), volatility_(volatility)
         {
             registerWith(volatility_);
             registerWith(termStructure_);

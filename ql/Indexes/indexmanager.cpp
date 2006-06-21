@@ -25,12 +25,13 @@ namespace QuantLib {
         return data_.find(name) != data_.end();
     }
 
-    const History& IndexManager::getHistory(const std::string& name) const {
+    const TimeSeries<Real>& IndexManager::getHistory(
+                                              const std::string& name) const {
         return data_[name].value();
     }
 
     void IndexManager::setHistory(const std::string& name,
-                                  const History& history) {
+                                  const TimeSeries<Real>& history) {
         data_[name] = history;
     }
 
@@ -41,16 +42,14 @@ namespace QuantLib {
 
     std::vector<std::string> IndexManager::histories() const {
         std::vector<std::string> temp;
-        std::map<std::string, ObservableValue<History> >::const_iterator i;
-        for (i = data_.begin(); i != data_.end(); i++)
+        for (history_map::const_iterator i=data_.begin(); i!=data_.end(); i++)
             temp.push_back(i->first);
         return temp;
     }
 
     void IndexManager::clearHistories() {
-        std::map<std::string, ObservableValue<History> >::iterator i;
-        for (i = data_.begin(); i != data_.end(); i++)
-            i->second = History();
+        for (history_map::iterator i=data_.begin(); i!=data_.end(); i++)
+            i->second = TimeSeries<Real>();
     }
 
 }

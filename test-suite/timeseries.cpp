@@ -32,22 +32,22 @@ void TimeSeriesTest::testConstruction() {
     QL_TEST_BEGIN
 
     TimeSeries<Real> ts;
-    ts.insert(Date(25, March, 2005), 1.2);
-    ts.insert(Date(29, March, 2005), 2.3);
-    ts.insert(Date(15, March, 2005), 0.3);
+    ts[Date(25, March, 2005)] = 1.2;
+    ts[Date(29, March, 2005)] = 2.3;
+    ts[Date(15, March, 2005)] = 0.3;
 
-    TimeSeries<Real>::const_valid_iterator cur = ts.vbegin();
+    TimeSeries<Real>::const_iterator cur = ts.begin();
     if (cur->first != Date(15, March, 2005)) {
-        BOOST_ERROR("date not match");
+        BOOST_ERROR("date does not match");
     }
     if (cur->second != 0.3) {
-        BOOST_ERROR("value not match");
+        BOOST_ERROR("value does not match");
     }
 
-    ts[Date(15, March, 2005)] =  4.0;
-    cur = ts.vbegin();
+    ts[Date(15, March, 2005)] = 4.0;
+    cur = ts.begin();
     if (cur->second != 4.0) {
-        BOOST_ERROR("replace value not match" << cur->second << "\n");
+        BOOST_ERROR("replaced value does not match" << cur->second << "\n");
     }
 
     ts[Date(15, March, 2005)] = 3.5;
@@ -61,7 +61,9 @@ void TimeSeriesTest::testConstruction() {
 
 void TimeSeriesTest::testIntervalPrice() {
     BOOST_MESSAGE("Testing time series interval price...");
+
     QL_TEST_BEGIN
+
     std::vector<Date> date;
     std::vector<Real> open, close, high, low;
     date.push_back(Date(25, March, 2005));
@@ -91,6 +93,7 @@ void TimeSeriesTest::testIntervalPrice() {
 test_suite* TimeSeriesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("time series tests");
     suite->add(BOOST_TEST_CASE(&TimeSeriesTest::testConstruction));
+    suite->add(BOOST_TEST_CASE(&TimeSeriesTest::testIntervalPrice));
     return suite;
 }
 

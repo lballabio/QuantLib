@@ -18,16 +18,13 @@
 */
 
 #include <ql/index.hpp>
-#include <ql/Indexes/indexmanager.hpp>
 
 namespace QuantLib {
 
     void Index::addFixing(const Date& fixingDate, Rate fixing) {
-        // likely to be changed after the TimeSeries/History makeover
         std::string tag = name();
-        History h = IndexManager::instance().getHistory(tag);
-        h.addLastValues(std::vector<Date>(1,fixingDate),
-                        std::vector<Rate>(1,fixing));
+        TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
+        h[fixingDate] = fixing;
         IndexManager::instance().setHistory(tag,h);
     }
 

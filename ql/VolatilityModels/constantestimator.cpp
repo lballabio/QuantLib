@@ -24,8 +24,8 @@ namespace QuantLib {
     ConstantEstimator::calculate(const TimeSeries<Volatility>& volatilitySeries) {
         TimeSeries<Volatility> retval;
         const std::vector<Volatility> u = volatilitySeries.values();
-        TimeSeries<Volatility>::const_valid_iterator prev, next, cur, start;
-        cur = volatilitySeries.vbegin();
+        TimeSeries<Volatility>::const_iterator prev, next, cur, start;
+        cur = volatilitySeries.begin();
         std::advance(cur, size_);
         // ICK.  This could probably be made a lot more efficient
         for (Size i=size_; i < volatilitySeries.size(); i++) {
@@ -37,9 +37,8 @@ namespace QuantLib {
             }
             Real s = std::sqrt(sumu2/(Real)size_ - sumu*sumu / (Real) size_ /
                                (Real) (size_+1));
-            retval.insert(cur->first,
-                          s);
-            cur++;
+            retval[cur->first] = s;
+            ++cur;
         }
         return retval;
     }

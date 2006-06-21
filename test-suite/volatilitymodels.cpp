@@ -35,16 +35,16 @@ void VolatilityModelsTest::testConstruction() {
     QL_TEST_BEGIN
 
     TimeSeries<Real> ts;
-    ts.insert(Date(25, March, 2005), 1.2);
-    ts.insert(Date(29, March, 2005), 2.3);
-    ts.insert(Date(15, March, 2005), 0.3);
+    ts[Date(25, March, 2005)] = 1.2;
+    ts[Date(29, March, 2005)] = 2.3;
+    ts[Date(15, March, 2005)] = 0.3;
 
     SimpleLocalEstimator sle(1/360.0);
-    TimeSeries<Volatility> locale(sle.calculate(ts));
+    TimeSeries<Volatility> locale = sle.calculate(ts);
 
     ConstantEstimator ce(1);
-    TimeSeries<Volatility> sv(ce.calculate(locale));
-    TimeSeries<Volatility>::const_valid_iterator cur = sv.vbegin();
+    TimeSeries<Volatility> sv = ce.calculate(locale);
+    TimeSeries<Volatility>::const_iterator cur = sv.begin();
 
     QL_TEST_END
 }

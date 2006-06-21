@@ -20,7 +20,7 @@
 #include <ql/prices.hpp>
 
 namespace QuantLib {
-    
+
     IntervalPrice::IntervalPrice()
     : open_(Null<Real>()), close_(Null<Real>()),
       high_(Null<Real>()), low_(Null<Real>()) {}
@@ -50,7 +50,7 @@ namespace QuantLib {
             open_ = value;
           case Close:
             close_ = value;
-          case High: 
+          case High:
             high_ = value;
           case Low:
             low_ = value;
@@ -86,9 +86,8 @@ namespace QuantLib {
         highi = high.begin();
         lowi = low.begin();
         for (i = d.begin(); i != d.end(); i++) {
-            retval.insert(*i,
-                          IntervalPrice(*openi, *closei, *highi, *lowi));
-            openi++; closei++; highi++; lowi++;
+            retval[*i] = IntervalPrice(*openi, *closei, *highi, *lowi);
+            ++openi; ++closei; ++highi; ++lowi;
         }
         return retval;
     }
@@ -97,8 +96,8 @@ namespace QuantLib {
                                            const TimeSeries<IntervalPrice>& ts,
                                            IntervalPrice::Type t)  {
         std::vector<Real> returnval;
-        for (TimeSeries<IntervalPrice>::const_valid_iterator i = ts.vbegin();
-             i != ts.vend(); i++) {
+        for (TimeSeries<IntervalPrice>::const_iterator i = ts.begin();
+             i != ts.end(); i++) {
             returnval.push_back(i->second.value(t));
         }
         return returnval;
@@ -107,7 +106,9 @@ namespace QuantLib {
     TimeSeries<Real> IntervalPrice::extractComponent(
                                           const TimeSeries<IntervalPrice>& ts,
                                           IntervalPrice::Type t) {
-        return TimeSeries<Real>(ts.dates(), extractValues(ts, t));
+        std::vector<Date> dates = ts.dates();
+        std::vector<Real> values = extractValues(ts, t);
+        return TimeSeries<Real>(dates.begin(), dates.end(), values.begin());
     }
 
 }

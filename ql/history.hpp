@@ -32,6 +32,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     /*! \example history_iterators.cpp
         This code exemplifies how to use History iterators to perform
         Gaussian statistic analyses on historical data.
@@ -49,6 +51,8 @@ namespace QuantLib {
         \link history_iterators.cpp
         uses of history iterators
         \endlink
+
+        \deprecated use TimeSeries instead
     */
     class History {
       public:
@@ -367,6 +371,8 @@ namespace QuantLib {
         else
             return Null<Real>();
     }
+
+    #endif
 
 }
 

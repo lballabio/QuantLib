@@ -33,7 +33,7 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class SimpleLocalEstimator : 
+    class SimpleLocalEstimator :
         public LocalVolatilityEstimator<Real> {
     private:
         Real yearFraction_;
@@ -43,22 +43,19 @@ namespace QuantLib {
         TimeSeries<Volatility>
         calculate(const TimeSeries<Real> &quoteSeries) {
             TimeSeries<Volatility> retval;
-            TimeSeries<Real>::const_valid_iterator 
-                prev, next, cur, start;
-            start = quoteSeries.vbegin();
-            start++;
-            for (cur = start;
-                 cur != quoteSeries.vend();
-                 cur++) {
-                prev = cur; prev--;
-                retval.insert(cur->first, 
-                              std::abs(std::log(cur->second/
-                                     prev->second))/
-                              std::sqrt(yearFraction_));
+            TimeSeries<Real>::const_iterator prev, next, cur, start;
+            start = quoteSeries.begin();
+            ++start;
+            for (cur = start; cur != quoteSeries.end(); ++cur) {
+                prev = cur; --prev;
+                retval[cur->first] =
+                    std::abs(std::log(cur->second/prev->second))/
+                    std::sqrt(yearFraction_);
             }
             return retval;
         }
     };
+
 }
 
 

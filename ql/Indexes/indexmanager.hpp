@@ -24,7 +24,7 @@
 #ifndef quantlib_index_manager_hpp
 #define quantlib_index_manager_hpp
 
-#include <ql/history.hpp>
+#include <ql/timeseries.hpp>
 #include <ql/Patterns/singleton.hpp>
 #include <ql/Utilities/observablevalue.hpp>
 #include <map>
@@ -40,9 +40,9 @@ namespace QuantLib {
         //! returns whether historical fixings were stored for the index
         bool hasHistory(const std::string& name) const;
         //! returns the (possibly empty) history of the index fixings
-        const History& getHistory(const std::string& name) const;
+        const TimeSeries<Real>& getHistory(const std::string& name) const;
         //! stores the historical fixings of the index
-        void setHistory(const std::string& name, const History&);
+        void setHistory(const std::string& name, const TimeSeries<Real>&);
         //! observer notifying of changes in the index fixings
         boost::shared_ptr<Observable> notifier(const std::string& name) const;
         //! returns all names of the indexes for which fixings were stored
@@ -50,7 +50,9 @@ namespace QuantLib {
         //! clears all stored fixings
         void clearHistories();
       private:
-        mutable std::map<std::string, ObservableValue<History> > data_;
+        typedef std::map<std::string, ObservableValue<TimeSeries<Real> > >
+                                                                  history_map;
+        mutable history_map data_;
     };
 
 }

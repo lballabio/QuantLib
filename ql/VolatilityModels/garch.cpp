@@ -27,20 +27,18 @@ namespace QuantLib {
 
   TimeSeries<Volatility>
   Garch11::calculate(const TimeSeries<Volatility>& qs,
-		     Real alpha, Real beta, Real omega) {
+             Real alpha, Real beta, Real omega) {
     TimeSeries<Volatility> retval;
-    TimeSeries<Volatility>::const_valid_iterator 
-       cur;
-    cur = qs.vbegin();
-    retval.insert(cur->first, cur->second); 
+    TimeSeries<Volatility>::const_iterator cur = qs.begin();
+    retval[cur->first] = cur->second;
     Real sigma2 = cur->second * cur->second;
-    cur++;
-    while (cur != qs.vend()) {
+    ++cur;
+    while (cur != qs.end()) {
       Real u = cur->second;
       sigma2 = omega + alpha * u * u +
           beta * sigma2;
-      retval.insert(cur->first, std::sqrt(sigma2));
-      cur++;
+      retval[cur->first] = std::sqrt(sigma2);
+      ++cur;
     }
     return retval;
   }

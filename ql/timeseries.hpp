@@ -32,90 +32,56 @@
 namespace QuantLib {
 
     //! Container for historical data
-    /*! This class acts as a generic repository for a set of historical data.
-        Single data can be accessed through their date, while sets of
-        consecutive data can be accessed through iterators.
+    /*! This class acts as a generic repository for a set of
+        historical data.  Any single datum can be accessed through its
+        date, while sets of consecutive data can be accessed through
+        iterators.
+
+        \pre The <c>Container</c> type must satisfy the requirements
+             set by the C++ standard for associative containers.
     */
-    template <class T>
+    template <class T, class Container = std::map<Date, T> >
     class TimeSeries {
-      private:
-        std::map<Date, T> values_;
       public:
-        typedef typename std::vector<T>::const_iterator
-                                                   vector_const_iterator_type;
+        typedef Date key_type;
+        typedef T value_type;
+      private:
+        mutable Container values_;
+      public:
         /*! Default constructor */
         TimeSeries() {}
-        /*! This constructor initializes the history with the given set of
-            values, corresponding to the date range between
-            <b><i>firstDate</i></b> and <b><i>lastDate</i></b> included.
-
-            \pre <b><i>begin</i></b>-<b><i>end</i></b> must equal the
-            number of days from <b><i>firstDate</i></b> to
-            <b><i>lastDate</i></b> included.
+        /*! This constructor initializes the history with a set of
+            values passed as two sequences, the first containing dates
+            and the second containing corresponding values.
         */
-        template <class Iterator>
-        TimeSeries(const Date& firstDate, const Date& lastDate,
-                   Iterator begin, Iterator end) {
-            Date d = firstDate;
-            while (begin != end) {
-                values_[d] = *begin;
-                ++begin;
-                ++d;
-            }
-            QL_REQUIRE(lastDate >= firstDate,
-                       "invalid date range for history");
-            QL_ENSURE(values_.size() == Size((lastDate-firstDate)+1),
-                      "history size incompatible with date range");
+        template <class DateIterator, class ValueIterator>
+        TimeSeries(DateIterator dBegin, DateIterator dEnd,
+                   ValueIterator vBegin) {
+            while (dBegin != dEnd)
+                values_[*(dBegin++)] = *(vBegin++);
         }
-        TimeSeries(const Date& firstDate, const std::vector<T>& values) {
+        /*! This constructor initializes the history with a set of
+            values. Such values are assigned to a corresponding number
+            of consecutive dates starting from <b><i>firstDate</i></b>
+            included.
+        */
+        template <class ValueIterator>
+        TimeSeries(const Date& firstDate,
+                   ValueIterator begin, ValueIterator end) {
             Date d = firstDate;
-            vector_const_iterator_type i = values.begin();
-            while (i != values.end()) {
-                values_[d] = *i;
-                ++i;
-                ++d;
-            }
+            while (begin != end)
+                values_[d++] = *(begin++);
         }
-        /*! This constructor initializes the history with the given set of
-            values, corresponding to the date range between
-            <b><i>firstDate</i></b> and <b><i>lastDate</i></b> included.
-
-            \pre The size of <b><i>values</i></b> must equal the number of
-                 days from <b><i>firstDate</i></b> to <b><i>lastDate</i></b>
-                 included.
-        */
-        TimeSeries(const Date& firstDate, const Date& lastDate,
-                   const std::vector<T>& values);
-        /*! This constructor initializes the history with the given set of
-            values, corresponding each to the element with the same index in
-            the given set of dates. The whole date range between
-            <b><i>dates</i></b>[0] and <b><i>dates</i></b>[N-1] will be
-            automatically filled by inserting null values where a date is
-            missing from the given set.
-
-            \pre <b><i>dates</i></b> must be sorted.
-            \pre There can be no pairs
-                 (<b><i>dates</i></b>[i],<b><i>values</i></b>[i]) and
-                 (<b><i>dates</i></b>[j],<b><i>values</i></b>[j])
-                 such that <tt>dates[i] == dates[j] && values[i] !=
-                 values[j]</tt>.
-                 Pairs with <tt>dates[i] == dates[j] && values[i] ==
-                 values[j]</tt> are allowed; the duplicated entries will be
-                 discarded.
-            \pre The size of <b><i>values</i></b> must equal the number of
-                 days from <b><i>firstDate</i></b> to <b><i>lastDate</i></b>
-                 included.
-        */
-        TimeSeries(const std::vector<Date>& dates,
-                   const std::vector<T>& values);
         //! \name Inspectors
         //@{
         //! returns the first date for which a historical datum exists
-        const Date& firstDate() const { return values_.begin()->first; }
+        Date firstDate() const;
         //! returns the last date for which a historical datum exists
-        const Date& lastDate() const { return values_.rbegin()->first; }
+        Date lastDate() const;
         //! returns the number of historical data including null ones
-        Size size() const { return values_.size(); }
+        Size size() const;
+        //! returns whether the series contains any data
+        bool empty() const;
         //@}
         //! \name Historical data access
         //@{
@@ -126,69 +92,106 @@ namespace QuantLib {
             else
                 return Null<T>();
         }
-        T& operator[](const Date&d) {
+        T& operator[](const Date& d) {
+            if (values_.find(d) != values_.end())
+                values_[d] = Null<T>();
             return values_[d];
         }
+        //@}
 
-        typedef typename std::map<Date,T>::const_iterator
-        const_valid_iterator;
+        //! \name Iterators
+        //@{
+        typedef typename Container::const_iterator const_iterator;
+        typedef typename Container::const_reverse_iterator
+                                           const_reverse_iterator;
+        const_iterator begin() const;
+        const_iterator end() const;
+        const_reverse_iterator rbegin() const;
+        const_reverse_iterator rend() const;
+        //@}
 
-        // valid entry iterators
-        const_valid_iterator vbegin() const {
-            return values_.begin();
-        }
-        const_valid_iterator vend() const {
-            return values_.end();
-        }
-        const_valid_iterator valid_iterator(const Date& d) const {
-            return values_.find(d);
-        }
-        void insert(const Date &d, const T &value) {
-            values_.insert(std::pair<const Date, T>(d, value));
-        }
-        std::vector<Date> dates() const {
-            std::vector<Date> returnval;
-            for (const_valid_iterator i = vbegin();
-                 i != vend(); i++) {
-                returnval.push_back(i->first);
-            }
-            return returnval;
-        }
-        std::vector<T> values() const {
-            std::vector<T> returnval;
-            for (const_valid_iterator i = vbegin();
-                 i != vend(); i++) {
-                returnval.push_back(i->second);
-            }
-            return returnval;
-        }
-
+        //! \name Utilities
+        //@{
+        const_iterator find(const Date&);
+        std::vector<Date> dates() const;
+        std::vector<T> values() const;
+        //@}
     };
 
 
     // inline definitions
-    template <class T>
-    TimeSeries<T>::TimeSeries(const Date& firstDate,
-                              const Date& lastDate,
-                              const std::vector<T>& values) {
-        QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
-        QL_REQUIRE(values.size() == Size((lastDate-firstDate)+1),
-                   "history size incompatible with date range");
-        Size i; Date d;
-        for (d = firstDate, i = 0; d <= lastDate; d++, i++) {
-            values_[d] = values[i];
-        }
+
+    template <class T, class C>
+    inline Date TimeSeries<T,C>::firstDate() const {
+        QL_REQUIRE(!values_.empty(), "empty timeseries");
+        return values_.begin()->first;
     }
 
-    template <class T>
-    TimeSeries<T>::TimeSeries(const std::vector<Date>& dates,
-                              const std::vector<T>& values) {
-        QL_REQUIRE(dates.size() == values.size(),
-                   "different size for date and value vectors");
-        QL_REQUIRE(dates.size() >= 1,"null history given");
-        for (Size i=0; i<dates.size(); i++) {
-            values_[dates[i]] = values[i];
+    template <class T, class C>
+    inline Date TimeSeries<T,C>::lastDate() const {
+        QL_REQUIRE(!values_.empty(), "empty timeseries");
+        return values_.rbegin()->first;
+    }
+
+    template <class T, class C>
+    inline Size TimeSeries<T,C>::size() const {
+        return values_.size();
+    }
+
+    template <class T, class C>
+    inline bool TimeSeries<T,C>::empty() const {
+        return values_.empty();
+    }
+
+    template <class T, class C>
+    inline typename TimeSeries<T,C>::const_iterator
+    TimeSeries<T,C>::begin() const {
+        return values_.begin();
+    }
+
+    template <class T, class C>
+    inline typename TimeSeries<T,C>::const_iterator
+    TimeSeries<T,C>::end() const {
+        return values_.end();
+    }
+
+    template <class T, class C>
+    inline typename TimeSeries<T,C>::const_reverse_iterator
+    TimeSeries<T,C>::rbegin() const {
+        return values_.rbegin();
+    }
+
+    template <class T, class C>
+    inline typename TimeSeries<T,C>::const_reverse_iterator
+    TimeSeries<T,C>::rend() const {
+        return values_.rend();
+    }
+
+    template <class T, class C>
+    inline typename TimeSeries<T,C>::const_iterator
+    TimeSeries<T,C>::find(const Date& d) {
+        const_iterator i = values_.find(d);
+        if (i == values_.end()) {
+            values_[d] = Null<T>();
+            i = values_.find(d);
         }
+        return i;
+    }
+
+    template <class T, class C>
+    std::vector<Date> TimeSeries<T,C>::dates() const {
+        std::vector<Date> v;
+        for (const_iterator i = begin(); i != end(); i++)
+            v.push_back(i->first);
+        return v;
+    }
+
+    template <class T, class C>
+    std::vector<T> TimeSeries<T,C>::values() const {
+        std::vector<T> v;
+        for (const_iterator i = begin(); i != end(); i++)
+            v.push_back(i->second);
+        return v;
     }
 
 }
