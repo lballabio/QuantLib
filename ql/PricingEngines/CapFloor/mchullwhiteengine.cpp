@@ -76,7 +76,8 @@ namespace QuantLib {
                     std::max(currentLibor - strike, 0.0):
                     std::max(strike - currentLibor, 0.0);
 
-                npv += payoff * tau * args_.nominals[i] * accrualFactor;
+                npv += payoff * tau * args_.gearings[i] *
+                    args_.nominals[i] * accrualFactor;
             }
         }
         npv *= endDiscount_;

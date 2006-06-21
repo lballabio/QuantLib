@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -72,6 +73,7 @@ namespace QuantLib {
         arguments->endTimes.clear();
         arguments->accrualTimes.clear();
         arguments->forwards.clear();
+        arguments->gearings.clear();
         arguments->discounts.clear();
         arguments->nominals.clear();
 
@@ -105,34 +107,42 @@ namespace QuantLib {
             }
             arguments->nominals.push_back(coupon->nominal());
             Spread spread = coupon->spread();
+            Real gearing = coupon->gearing();
+            QL_REQUIRE(gearing > 0.0, "positive gearing required");
+            arguments->gearings.push_back(gearing);
             if (type_ == Cap || type_ == Collar)
-                arguments->capRates.push_back(capRates_[i]-spread);
+                arguments->capRates.push_back((capRates_[i]-spread)/gearing);
             if (type_ == Floor || type_ == Collar)
-                arguments->floorRates.push_back(floorRates_[i]-spread);
+                arguments->floorRates.push_back(
+                                             (floorRates_[i]-spread)/gearing);
         }
     }
 
     void CapFloor::arguments::validate() const {
         QL_REQUIRE(endTimes.size() == startTimes.size(),
-                   "size of startTimes (" << startTimes.size()
-                   << ") different from that of endTimes ("
+                   "number of start times (" << startTimes.size()
+                   << ") different from that of end times ("
                    << endTimes.size() << ")");
         QL_REQUIRE(accrualTimes.size() == startTimes.size(),
-                   "size of startTimes (" << startTimes.size()
-                   << ") different from that of accrualTimes ("
+                   "number of start times (" << startTimes.size()
+                   << ") different from that of accrual times ("
                    << accrualTimes.size() << ")");
         QL_REQUIRE(type == CapFloor::Floor ||
                    capRates.size() == startTimes.size(),
-                   "size of startTimes (" << startTimes.size()
-                   << ") different from that of capRates ("
+                   "number of start times (" << startTimes.size()
+                   << ") different from that of cap rates ("
                    << capRates.size() << ")");
         QL_REQUIRE(type == CapFloor::Cap ||
                    floorRates.size() == startTimes.size(),
-                   "size of startTimes (" << startTimes.size()
-                   << ") different from that of floorRates ("
+                   "number of start times (" << startTimes.size()
+                   << ") different from that of floor rates ("
+                   << floorRates.size() << ")");
+        QL_REQUIRE(gearings.size() == startTimes.size(),
+                   "number of start times (" << startTimes.size()
+                   << ") different from that of gearings ("
                    << floorRates.size() << ")");
         QL_REQUIRE(nominals.size() == startTimes.size(),
-                   "size of startTimes (" << startTimes.size()
+                   "number of start times (" << startTimes.size()
                    << ") different from that of nominals ("
                    << nominals.size() << ")");
     }

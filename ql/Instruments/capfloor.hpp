@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -159,6 +160,7 @@ namespace QuantLib {
         std::vector<Rate> capRates;
         std::vector<Rate> floorRates;
         std::vector<Rate> forwards;
+        std::vector<Real> gearings;
         std::vector<DiscountFactor> discounts;
         std::vector<Real> nominals;
         void validate() const;

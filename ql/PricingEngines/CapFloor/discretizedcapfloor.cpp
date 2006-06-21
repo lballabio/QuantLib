@@ -32,13 +32,15 @@ namespace QuantLib {
                 bond.rollback(time_);
 
                 CapFloor::Type type = arguments_.type;
+                Real gearing = arguments_.gearings[i];
+                Real nominal = arguments_.nominals[i];
 
                 if ( (type == CapFloor::Cap) ||
                      (type == CapFloor::Collar)) {
                     Real accrual = 1.0 + arguments_.capRates[i]*tenor;
                     Real strike = 1.0/accrual;
                     for (Size j=0; j<values_.size(); j++)
-                        values_[j] += arguments_.nominals[i]*accrual*
+                        values_[j] += nominal*accrual*gearing*
                             std::max<Real>(strike - bond.values()[j], 0.0);
                 }
 
@@ -48,7 +50,7 @@ namespace QuantLib {
                     Real strike = 1.0/accrual;
                     Real mult = (type == CapFloor::Floor)?1.0:-1.0;
                     for (Size j=0; j<values_.size(); j++)
-                        values_[j] += arguments_.nominals[i]*accrual*mult*
+                        values_[j] += nominal*accrual*mult*gearing*
                             std::max<Real>(bond.values()[j] - strike, 0.0);
                 }
             }
@@ -62,21 +64,22 @@ namespace QuantLib {
                     Real nominal = arguments_.nominals[i];
                     Time accrual = arguments_.accrualTimes[i];
                     Rate fixing = arguments_.forwards[i];
+                    Real gearing = arguments_.gearings[i];
                     CapFloor::Type type = arguments_.type;
 
                     if (type == CapFloor::Cap || type == CapFloor::Collar) {
                         Rate cap = arguments_.capRates[i];
                         Rate capletRate = std::max(fixing-cap, 0.0);
-                        values_ += capletRate*accrual*nominal;
+                        values_ += capletRate*accrual*nominal*gearing;
                     }
 
                     if (type == CapFloor::Floor || type == CapFloor::Collar) {
                         Rate floor = arguments_.floorRates[i];
                         Rate floorletRate = std::max(floor-fixing, 0.0);
                         if (type == CapFloor::Floor)
-                            values_ += floorletRate*accrual*nominal;
+                            values_ += floorletRate*accrual*nominal*gearing;
                         else
-                            values_ -= floorletRate*accrual*nominal;
+                            values_ -= floorletRate*accrual*nominal*gearing;
                     }
                 }
             }

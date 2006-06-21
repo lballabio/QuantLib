@@ -31,19 +31,20 @@ namespace QuantLib {
                 accrualTime = arguments_.accrualTimes[i];
             if (end > 0.0) {    // discard expired caplets
                 Real nominal = arguments_.nominals[i];
+                Real gearing = arguments_.gearings[i];
                 DiscountFactor q = arguments_.discounts[i];
                 Rate forward = arguments_.forwards[i];
                 // try and factorize the code below
                 if ((type == CapFloor::Cap) ||
                     (type == CapFloor::Collar)) {
-                    value += q * accrualTime * nominal *
+                    value += q * accrualTime * nominal * gearing *
                         capletValue(fixing,forward,
                                     arguments_.capRates[i],
                                     model_->volatility());
                 }
                 if ((type == CapFloor::Floor) ||
                     (type == CapFloor::Collar)) {
-                    Real temp = q * accrualTime * nominal *
+                    Real temp = q * accrualTime * nominal * gearing *
                         floorletValue(fixing,forward,
                                       arguments_.floorRates[i],
                                       model_->volatility());

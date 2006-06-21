@@ -45,27 +45,31 @@ namespace QuantLib {
                         DiscountFactor discount = model_->discount(bond);
                         Rate strike = arguments_.capRates[i];
                         value += discount * arguments_.nominals[i] * tenor
+                               * arguments_.gearings[i]
                                * std::max(0.0, fixing - strike);
                     }
                     if (type == CapFloor::Floor || type == CapFloor::Collar) {
                         DiscountFactor discount = model_->discount(bond);
                         Rate strike = arguments_.floorRates[i];
-                        Real mult = (type == CapFloor::Floor)?1.0:-1.0;
+                        Real mult = (type == CapFloor::Floor) ? 1.0 : -1.0;
                         value += discount * arguments_.nominals[i] * tenor
-                              * mult * std::max(0.0, strike - fixing);
+                               * mult * arguments_.gearings[i]
+                               * std::max(0.0, strike - fixing);
                     }
                 } else {
                     Time maturity = arguments_.startTimes[i];
                     if (type == CapFloor::Cap || type == CapFloor::Collar) {
                         Real temp = 1.0+arguments_.capRates[i]*tenor;
-                        value += arguments_.nominals[i]*temp*
+                        value += arguments_.nominals[i] *
+                            arguments_.gearings[i] * temp *
                             model_->discountBondOption(Option::Put, 1.0/temp,
                                                        maturity, bond);
                     }
                     if (type == CapFloor::Floor || type == CapFloor::Collar) {
                         Real temp = 1.0+arguments_.floorRates[i]*tenor;
                         Real mult = (type == CapFloor::Floor) ? 1.0 : -1.0;
-                        value += arguments_.nominals[i]*temp*mult*
+                        value += arguments_.nominals[i] *
+                            arguments_.gearings[i] * temp * mult *
                             model_->discountBondOption(Option::Call, 1.0/temp,
                                                        maturity, bond);
                     }
