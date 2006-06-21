@@ -28,7 +28,7 @@
 #include <ql/calendar.hpp>
 #include <ql/currency.hpp>
 #include <ql/daycounter.hpp>
-#include <ql/Patterns/observable.hpp>
+#include <ql/Indexes/indexmanager.hpp>
 
 namespace QuantLib {
 
@@ -55,6 +55,19 @@ namespace QuantLib {
             date of the fixing; no settlement days must be used.
         */
         void addFixing(const Date& fixingDate, Rate fixing);
+        //! stores historical fixings at the given dates
+        /*! the dates passed as arguments must be the actual calendar
+            dates of the fixings; no settlement days must be used.
+        */
+        template <class DateIterator, class ValueIterator>
+        void addFixings(DateIterator dBegin, DateIterator dEnd,
+                        ValueIterator vBegin) {
+            std::string tag = name();
+            TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
+            while (dBegin != dEnd)
+                h[*(dBegin++)] = *(vBegin++);
+            IndexManager::instance().setHistory(tag,h);
+        }
     };
 
 }
