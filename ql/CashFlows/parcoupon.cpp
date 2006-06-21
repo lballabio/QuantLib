@@ -67,7 +67,7 @@ namespace QuantLib {
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " << index_->name()
                        << " fixing for " << fixing_date);
-            return (pastFixing+spread_)*accrualPeriod()*nominal();
+            return (gearing_*pastFixing+spread_)*accrualPeriod()*nominal();
         }
         if (fixing_date == today) {
             // might have been fixed
@@ -75,7 +75,7 @@ namespace QuantLib {
                 Rate pastFixing = IndexManager::instance().getHistory(
                                                  index_->name())[fixing_date];
                 if (pastFixing != Null<Real>())
-                    return (pastFixing+spread_)*accrualPeriod()*nominal();
+                    return (gearing_*pastFixing+spread_)*accrualPeriod()*nominal();
                 else
                     ;   // fall through and forecast
             } catch (Error&) {
@@ -91,7 +91,7 @@ namespace QuantLib {
         DiscountFactor endDiscount =
             termStructure->discount(index_->calendar().advance(
                                        temp, index_->settlementDays(), Days));
-        return ((startDiscount/endDiscount-1.0) +
+        return (gearing_*(startDiscount/endDiscount-1.0) +
                 spread_*accrualPeriod()) * nominal();
     }
 
@@ -103,8 +103,12 @@ namespace QuantLib {
                                                -fixingDays_, Days);
         Date end = index_->calendar().advance(
                                         temp, index_->settlementDays(), Days);
-        return (amount()/nominal() - spread()*accrualPeriod()) /
-            dayCount.yearFraction(begin,end);
+        Rate result = (amount()/nominal() - spread()*accrualPeriod()) /
+                (dayCount.yearFraction(begin,end));
+        if (gearing_==0.0)
+            return result;
+        else
+            return result/gearing_;
     }
 
 }
