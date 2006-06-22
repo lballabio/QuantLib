@@ -38,10 +38,12 @@ namespace QuantLib {
         SwaptionConstantVolatility(const Date& referenceDate,
                                    const Handle<Quote>& volatility,
                                    const DayCounter& dayCounter);
-        SwaptionConstantVolatility(Integer settlementDays, const Calendar&,
+        SwaptionConstantVolatility(Integer settlementDays,
+                                   const Calendar&,
                                    Volatility volatility,
                                    const DayCounter& dayCounter);
-        SwaptionConstantVolatility(Integer settlementDays, const Calendar&,
+        SwaptionConstantVolatility(Integer settlementDays,
+                                   const Calendar&,
                                    const Handle<Quote>& volatility,
                                    const DayCounter& dayCounter);
         //! \name TermStructure interface
