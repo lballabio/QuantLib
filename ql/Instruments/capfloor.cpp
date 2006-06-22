@@ -172,9 +172,7 @@ namespace QuantLib {
 
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         Handle<Quote> h(vol_);
-        boost::shared_ptr<BlackModel> model(new BlackModel(h));
-        engine_ = boost::shared_ptr<PricingEngine>(
-            new BlackCapFloorEngine(model));
+        engine_ = boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(h));
         cap.setupArguments(engine_->arguments());
 
         results_ = dynamic_cast<const Value*>(engine_->results());

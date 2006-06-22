@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,12 +22,12 @@
     \brief Black-formula swaption engine
 */
 
-#ifndef quantlib_pricers_black_swaption_h
-#define quantlib_pricers_black_swaption_h
+#ifndef quantlib_pricers_black_swaption_hpp
+#define quantlib_pricers_black_swaption_hpp
 
 #include <ql/Instruments/swaption.hpp>
 #include <ql/PricingEngines/blackmodel.hpp>
-#include <ql/PricingEngines/genericmodelengine.hpp>
+#include <ql/swaptionvolstructure.hpp>
 
 namespace QuantLib {
 
@@ -36,15 +37,23 @@ namespace QuantLib {
         \warning The engine assumes that the exercise date equals the
                  start date of the passed swap.
     */
-    class BlackSwaptionEngine : public GenericModelEngine<BlackModel,
-                                                          Swaption::arguments,
-                                                          Swaption::results> {
+    class BlackSwaptionEngine : public GenericEngine<Swaption::arguments,
+                                                     Swaption::results>,
+                                public Observer {
       public:
-        BlackSwaptionEngine(const boost::shared_ptr<BlackModel>& model)
-        : GenericModelEngine<BlackModel,
-                             Swaption::arguments,
-                             Swaption::results>(model) {}
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use one of the other constructors */
+        BlackSwaptionEngine(const boost::shared_ptr<BlackModel>&);
+        #endif
+        BlackSwaptionEngine(const Handle<Quote>& volatility);
+        BlackSwaptionEngine(const Handle<SwaptionVolatilityStructure>&);
         void calculate() const;
+        void update();
+      private:
+        Handle<SwaptionVolatilityStructure> volatility_;
+        #ifndef QL_DISABLE_DEPRECATED
+        boost::shared_ptr<BlackModel> blackModel_;
+        #endif
     };
 
 }

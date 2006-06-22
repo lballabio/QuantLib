@@ -93,11 +93,8 @@ namespace QuantLib {
     }
 
     Real SwaptionHelper::blackPrice(Volatility sigma) const {
-        boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
-        boost::shared_ptr<BlackModel> blackModel(
-            new BlackModel(Handle<Quote>(vol)));
-        boost::shared_ptr<PricingEngine> black(
-            new BlackSwaptionEngine(blackModel));
+        Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(sigma)));
+        boost::shared_ptr<PricingEngine> black(new BlackSwaptionEngine(vol));
         swaption_->setPricingEngine(black);
         Real value = swaption_->NPV();
         swaption_->setPricingEngine(engine_);

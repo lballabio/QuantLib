@@ -68,13 +68,12 @@ boost::shared_ptr<VanillaSwap> makeSwap(const Date& start, Integer length,
                             index_->dayCounter(),termStructure_));
 }
 
-boost::shared_ptr<Swaption> makeSwaption(const boost::shared_ptr<VanillaSwap>& swap,
-                                         const Date& exercise, Volatility volatility,
-                                         Settlement::Type type = Settlement::Physical) {
-    boost::shared_ptr<Quote> vol_me(new SimpleQuote(volatility));
-    Handle<Quote> vol_rh(vol_me);
-    boost::shared_ptr<BlackModel> model(new BlackModel(vol_rh));
-    boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(model));
+boost::shared_ptr<Swaption> makeSwaption(
+                               const boost::shared_ptr<VanillaSwap>& swap,
+                               const Date& exercise, Volatility volatility,
+                               Settlement::Type type = Settlement::Physical) {
+    Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
+    boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(vol));
     return boost::shared_ptr<Swaption>(new Swaption(
                   swap,
                   boost::shared_ptr<Exercise>(new EuropeanExercise(exercise)),

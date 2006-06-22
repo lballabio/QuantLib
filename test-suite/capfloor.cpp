@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -55,7 +56,7 @@ std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
     Schedule schedule(calendar_,startDate,endDate,frequency_,convention_);
     return FloatingRateCouponVector(schedule, convention_, nominals_,
-                                    fixingDays_, index_, 
+                                    fixingDays_, index_,
                                     std::vector<Real>(),
                                     std::vector<Spread>(),
                                     index_->dayCounter());
@@ -63,8 +64,7 @@ std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
     Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-    boost::shared_ptr<BlackModel> model(new BlackModel(vol));
-    return boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(model));
+    return boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(vol));
 }
 
 boost::shared_ptr<CapFloor> makeCapFloor(

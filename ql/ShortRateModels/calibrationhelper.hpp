@@ -36,11 +36,8 @@ namespace QuantLib {
         CalibrationHelper(const Handle<Quote>& volatility,
                           const Handle<YieldTermStructure>& termStructure,
                           bool calibrateVolatility = false)
-        : volatility_         (volatility),
-          termStructure_      (termStructure),
+        : volatility_(volatility), termStructure_(termStructure),
           calibrateVolatility_(calibrateVolatility) {
-            blackModel_ = boost::shared_ptr<BlackModel>(
-                new BlackModel(volatility_));
             registerWith(volatility_);
             registerWith(termStructure_);
         }
@@ -78,7 +75,6 @@ namespace QuantLib {
         Real marketValue_;
         Handle<Quote> volatility_;
         Handle<YieldTermStructure> termStructure_;
-        boost::shared_ptr<BlackModel> blackModel_;
         boost::shared_ptr<PricingEngine> engine_;
 
       private:

@@ -102,10 +102,8 @@ namespace QuantLib {
 
     Real CapHelper::blackPrice(Volatility sigma) const {
         boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
-        boost::shared_ptr<BlackModel> blackModel(
-            new BlackModel(Handle<Quote>(vol)));
         boost::shared_ptr<PricingEngine> black(
-            new BlackCapFloorEngine(blackModel));
+                                 new BlackCapFloorEngine(Handle<Quote>(vol)));
         cap_->setPricingEngine(black);
         Real value = cap_->NPV();
         cap_->setPricingEngine(engine_);

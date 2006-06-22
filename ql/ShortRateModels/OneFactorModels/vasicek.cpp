@@ -64,7 +64,7 @@ namespace QuantLib {
 
         Real w = (type==Option::Call)? 1.0 : -1.0;
 
-        return BlackModel::formula(f, k, v, w);
+        return detail::blackFormula(f, k, v, w);
     }
 
 }

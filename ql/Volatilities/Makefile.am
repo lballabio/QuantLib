@@ -14,6 +14,7 @@ include_HEADERS = \
     localconstantvol.hpp \
     localvolcurve.hpp \
     localvolsurface.hpp \
+    swaptionconstantvol.hpp \
     swaptionvolmatrix.hpp
 
 libVolatilities_la_SOURCES = \
