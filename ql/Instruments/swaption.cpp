@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 Cristina Duminuco
+ Copyright (C) 2006 Marco Bianchetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,9 +23,9 @@
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/parcoupon.hpp>
 #include <ql/Solvers1D/brent.hpp>
-
 #include <ql/DayCounters/all.hpp>
 #include <ql/CashFlows/analysis.hpp>
+#include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
 
 namespace QuantLib {
 
@@ -105,5 +106,44 @@ namespace QuantLib {
                        "for cash-settled swaption");
         }
     }
+
+    Volatility Swaption::impliedVolatility(Real targetValue,
+                                           Real accuracy,
+                                           Size maxEvaluations,
+                                           Volatility minVol,
+                                           Volatility maxVol) const {
+        calculate();
+        QL_REQUIRE(!isExpired(), "instrument expired");
+
+        Volatility guess = 0.10; // improve
+
+        ImpliedVolHelper f(*this,termStructure_,targetValue);
+        Brent solver;
+        solver.setMaxEvaluations(maxEvaluations);
+        return solver.solve(f, accuracy, guess, minVol, maxVol);
+    }
+
+    Swaption::ImpliedVolHelper::ImpliedVolHelper(
+                              const Swaption& swaption,
+                              const Handle<YieldTermStructure>& termStructure,
+                              Real targetValue)
+    : termStructure_(termStructure), targetValue_(targetValue) {
+
+        vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+        Handle<Quote> h(vol_);
+        boost::shared_ptr<BlackModel> model(new BlackModel(h));
+        engine_ = boost::shared_ptr<PricingEngine>(
+            new BlackSwaptionEngine(model));
+        swaption.setupArguments(engine_->arguments());
+
+        results_ = dynamic_cast<const Value*>(engine_->results());
+    }
+
+    Real Swaption::ImpliedVolHelper::operator()(Volatility x) const {
+        vol_->setValue(x);
+        engine_->calculate();
+        return results_->value-targetValue_;
+    }
+
 
 }

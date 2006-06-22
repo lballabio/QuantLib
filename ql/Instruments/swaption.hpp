@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 Cristina Duminuco
+ Copyright (C) 2006 Marco Bianchetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,7 @@
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/Instruments/vanillaswap.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
@@ -70,11 +72,33 @@ namespace QuantLib {
                  Settlement::Type delivery = Settlement::Physical);
         bool isExpired() const;
         void setupArguments(Arguments*) const;
+        //! implied volatility
+        Volatility impliedVolatility(Real price,
+                                     Real accuracy = 1.0e-4,
+                                     Size maxEvaluations = 100,
+                                     Volatility minVol = QL_MIN_VOLATILITY,
+                                     Volatility maxVol = QL_MAX_VOLATILITY)
+                                                                        const;
       private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
         Handle<YieldTermStructure> termStructure_;
         Settlement::Type settlementType_;
+        // helper class for implied volatility calculation
+        class ImpliedVolHelper {
+          public:
+            ImpliedVolHelper(const Swaption&,
+                             const Handle<YieldTermStructure>&,
+                             Real targetValue);
+            Real operator()(Volatility x) const;
+          private:
+            boost::shared_ptr<PricingEngine> engine_;
+            Handle<YieldTermStructure> termStructure_;
+            Real targetValue_;
+            boost::shared_ptr<SimpleQuote> vol_;
+            const Value* results_;
+        };
+
     };
 
     //! %Arguments for swaption calculation
