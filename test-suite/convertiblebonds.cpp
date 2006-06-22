@@ -222,6 +222,7 @@ void ConvertibleBondTest::testBond() {
 
     boost::shared_ptr<Xibor> index(new Euribor1Y(discountCurve));
     Integer fixingDays = 2;
+    std::vector<Real> gearings(1, 1.0);
     std::vector<Rate> spreads;
 
     ConvertibleFloatingRateBond euFloating(process_, euExercise, engine,
@@ -239,9 +240,10 @@ void ConvertibleBondTest::testBond() {
                                            dayCounter_, schedule, redemption_);
 
     FloatingRateBond floating(issueDate_, issueDate_, maturityDate_,
-                              settlementDays_, index, fixingDays, spreads,
-                              frequency_, calendar_, dayCounter_, Following,
-                              Following, redemption_, discountCurve);
+                              settlementDays_, index, fixingDays, gearings,
+                              spreads, frequency_, calendar_, dayCounter_,
+                              Following, Following, redemption_,
+                              discountCurve);
 
     tolerance = 2.0e-2;
 
