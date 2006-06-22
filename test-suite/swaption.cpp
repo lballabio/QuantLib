@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 RiskMap srl
  Copyright (C) 2006 Cristina Duminuco
+ Copyright (C) 2006 Marco Bianchetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -80,6 +81,13 @@ boost::shared_ptr<Swaption> makeSwaption(
                   termStructure_,
                   engine,
                   type));
+}
+
+boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
+    boost::shared_ptr<Quote> vol_me(new SimpleQuote(volatility));
+    Handle<Quote> vol_rh(vol_me);
+    boost::shared_ptr<BlackModel> model(new BlackModel(vol_rh));
+    return boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(model));
 }
 
 void setup() {
@@ -733,6 +741,106 @@ void SwaptionTest::testCashSettledSwaptions() {
 
 }
 
+
+
+void SwaptionTest::testImpliedVolatility() {
+
+    BOOST_MESSAGE("Testing implied volatility for swaptions...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    Size maxEvaluations = 100;
+    Real tolerance = 1.0e-08;
+
+    Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
+    // test data
+    Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
+
+    for (Size i=0; i<LENGTH(exercises); i++) {
+        for (Size j=0; j<LENGTH(lengths); j++) {
+            Date exerciseDate = calendar_.advance(today_,exercises[i],Years);
+            Date startDate = calendar_.advance(exerciseDate,settlementDays_,
+                                               Days);
+            Date maturity = calendar_.advance(startDate,lengths[j],Years,
+                                              floatingConvention_);
+            for (Size t=0; t<LENGTH(strikes); t++) {
+                for (Size k=0; k<LENGTH(payFixed); k++) {
+                    boost::shared_ptr<VanillaSwap> swap =
+                      makeSwap(startDate,lengths[j],strikes[t],0.,payFixed[k]);                    
+                    for (Size h=0; h<LENGTH(types); h++) {
+                        for (Size u=0; u<LENGTH(vols); u++) {
+                            boost::shared_ptr<Swaption> swaption =
+                                makeSwaption(swap,maturity,vols[u],types[h]);
+                            // Black price
+                            Real value = swaption->NPV();
+                            Volatility implVol = 0.0;
+                            try {
+                                implVol =
+                                swaption->impliedVolatility(value,
+                                                            tolerance,
+                                                            maxEvaluations);
+                            } catch (std::exception& e) {
+                                BOOST_FAIL(
+                                "    Swaption " <<
+                                exercises[i] << "y x " << lengths[j] << "y"
+                                << "      type:           "
+                                << types[h] << ":\n"
+                                << "    strike:           "
+                                << strikes[t] << "\n"
+                                << "    volatility:       "
+                                << vols[u] << "\n\n"
+                                << e.what());
+                            }
+                            if (std::fabs(implVol-vols[u]) > tolerance) {
+                                // the difference might not matter
+                                swaption->setPricingEngine(makeEngine(implVol));
+                                Real value2 = swaption->NPV();
+                                if (std::fabs(value-value2) > tolerance) {
+                                    if (payFixed[k]) { 
+                                        BOOST_ERROR(
+                                            "    Payer swaption " <<
+                                            exercises[i] << "y x " << lengths[j] << "y" << "\n"
+                                            << "      type:           "
+                                            << types[h] << ":\n"
+                                            << "    strike:           "
+                                            << strikes[t] << "\n"
+                                            << "    original volatility: "
+                                            << io::volatility(vols[u]) << "\n"
+                                            << "    price:               "
+                                            << value << "\n"
+                                            << "    implied volatility:  "
+                                            << io::volatility(implVol) << "\n"
+                                            << "    corresponding price: " << value2);
+                                    } else {
+                                        BOOST_ERROR(
+                                            "    Receiver swaption " <<
+                                            exercises[i] << "y x " << lengths[j] << "y" << "\n"
+                                            << "      type:           "
+                                            << types[h] << ":\n"
+                                            << "    strike:           "
+                                            << strikes[t] << "\n"
+                                            << "    original volatility: "
+                                            << io::volatility(vols[u]) << "\n"
+                                            << "    price:               "
+                                            << value << "\n"
+                                            << "    implied volatility:  "
+                                            << io::volatility(implVol) << "\n"
+                                            << "    corresponding price: " << value2);                                    
+                                    }
+                                }
+                             }    
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    QL_TEST_TEARDOWN
+}
+
 test_suite* SwaptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption tests");
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testCashSettledSwaptions));
@@ -740,6 +848,7 @@ test_suite* SwaptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testSpreadDependency));
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testSpreadTreatment));
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testCachedValue));
+    suite->add(BOOST_TEST_CASE(&SwaptionTest::testImpliedVolatility));
+
     return suite;
 }
-
