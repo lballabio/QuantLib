@@ -7573,6 +7573,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Volatilities\swaptionconstantvol.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Volatilities\swaptionvolmatrix.hpp"
 				>
 			</File>
