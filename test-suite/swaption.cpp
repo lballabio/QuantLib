@@ -84,10 +84,8 @@ boost::shared_ptr<Swaption> makeSwaption(
 }
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
-    boost::shared_ptr<Quote> vol_me(new SimpleQuote(volatility));
-    Handle<Quote> vol_rh(vol_me);
-    boost::shared_ptr<BlackModel> model(new BlackModel(vol_rh));
-    return boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(model));
+    Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
+    return boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(h));
 }
 
 void setup() {
@@ -768,7 +766,7 @@ void SwaptionTest::testImpliedVolatility() {
             for (Size t=0; t<LENGTH(strikes); t++) {
                 for (Size k=0; k<LENGTH(payFixed); k++) {
                     boost::shared_ptr<VanillaSwap> swap =
-                      makeSwap(startDate,lengths[j],strikes[t],0.,payFixed[k]);                    
+                      makeSwap(startDate,lengths[j],strikes[t],0.,payFixed[k]);
                     for (Size h=0; h<LENGTH(types); h++) {
                         for (Size u=0; u<LENGTH(vols); u++) {
                             boost::shared_ptr<Swaption> swaption =
@@ -798,7 +796,7 @@ void SwaptionTest::testImpliedVolatility() {
                                 swaption->setPricingEngine(makeEngine(implVol));
                                 Real value2 = swaption->NPV();
                                 if (std::fabs(value-value2) > tolerance) {
-                                    if (payFixed[k]) { 
+                                    if (payFixed[k]) {
                                         BOOST_ERROR(
                                             "    Payer swaption " <<
                                             exercises[i] << "y x " << lengths[j] << "y" << "\n"
@@ -827,10 +825,10 @@ void SwaptionTest::testImpliedVolatility() {
                                             << value << "\n"
                                             << "    implied volatility:  "
                                             << io::volatility(implVol) << "\n"
-                                            << "    corresponding price: " << value2);                                    
+                                            << "    corresponding price: " << value2);
                                     }
                                 }
-                             }    
+                             }
                         }
                     }
                 }
