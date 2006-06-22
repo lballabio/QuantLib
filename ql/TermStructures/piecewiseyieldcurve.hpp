@@ -274,14 +274,21 @@ namespace QuantLib {
             QL_REQUIRE(m1 != m2,
                        "two instruments have the same maturity ("<< m1 <<")");
         }
+        // check that there is no instruments with invalid quote
         for (i=0; i<instruments_.size(); i++)
             registerWith(instruments_[i]);
     }
 
     template <class C, class I>
-    void PiecewiseYieldCurve<C,I>::performCalculations() const {
+    void PiecewiseYieldCurve<C,I>::performCalculations() const
+    {
+        Size i;
+        for (i=0; i<instruments_.size(); i++)
+            QL_REQUIRE(instruments_[i]->referenceQuote()!=Null<Real>(),
+                       "instrument with null price");
+
         // setup vectors
-        Size i, n = instruments_.size();
+        Size n = instruments_.size();
         for (i=0; i<n; i++) {
             // don't try this at home!
             instruments_[i]->setTermStructure(
