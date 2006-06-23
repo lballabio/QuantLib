@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2006 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -117,6 +118,35 @@ namespace QuantLib {
     template <class F, class G>
     composed_function<F,G> compose(const F& f, const G& g) {
         return composed_function<F,G>(f,g);
+    }
+
+    template <class F, class G, class H>
+    class binary_compose3_function :
+        public std::binary_function<typename G::argument_type,
+                                    typename H::argument_type,
+                                    typename F::result_type>{
+      public:
+        typedef typename G::argument_type first_argument_type;
+        typedef typename H::argument_type second_argument_type;
+        typedef typename F::result_type result_type;
+
+        binary_compose3_function(const F& f, const G& g, const H& h)
+        : f_(f), g_(g), h_(h) {}
+
+        result_type operator()(const first_argument_type& x,
+                               const second_argument_type& y) const {
+            return f_(g_(x), h_(y));
+        }
+
+      private:
+        F f_;
+        G g_;
+        H h_;
+    };
+
+    template <class F, class G, class H> binary_compose3_function<F, G, H>
+    compose3(const F& f, const G& g, const H& h) {
+        return binary_compose3_function<F, G, H>(f, g, h);
     }
 
 }

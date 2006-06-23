@@ -5,21 +5,27 @@ includedir = $(prefix)/include/ql/ShortRateModels/LiborMarketModels
 include_HEADERS = \
 	all.hpp \
 	lfmcovarproxy.hpp \
-	lmexpcorrmodel.hpp \
-	lmvolmodel.hpp \
-	liborforwardmodel.hpp  \
-	lmfixedvolmodel.hpp \
+	liborforwardmodel.hpp \
+	lmconstwrappercorrmodel.hpp \
+	lmconstwrappervolmodel.hpp \
 	lmcorrmodel.hpp \
-	lmlinexpvolmodel.hpp
+	lmexpcorrmodel.hpp \
+	lmextlinexpvolmodel.hpp \
+	lmfixedvolmodel.hpp \
+	lmlinexpcorrmodel.hpp \
+	lmlinexpvolmodel.hpp \
+	lmvolmodel.hpp
 
 libLiborMarketModels_la_SOURCES = \
 	lfmcovarproxy.cpp \
-	lmexpcorrmodel.cpp \
-	lmvolmodel.cpp \
 	liborforwardmodel.cpp \
-	lmfixedvolmodel.cpp \
 	lmcorrmodel.cpp \
-	lmlinexpvolmodel.cpp
+	lmexpcorrmodel.cpp \
+	lmextlinexpvolmodel.cpp \
+	lmfixedvolmodel.cpp \
+	lmlinexpcorrmodel.cpp \
+	lmlinexpvolmodel.cpp \
+	lmvolmodel.cpp
 
 
 noinst_LTLIBRARIES = libLiborMarketModels.la

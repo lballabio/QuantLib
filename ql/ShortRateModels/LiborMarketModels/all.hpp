@@ -22,12 +22,16 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lfmcovarproxy.hpp>
-#include <ql/ShortRateModels/LiborMarketModels/lmexpcorrmodel.hpp>
-#include <ql/ShortRateModels/LiborMarketModels/lmvolmodel.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/liborforwardmodel.hpp>
-#include <ql/ShortRateModels/LiborMarketModels/lmfixedvolmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmconstwrappercorrmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmconstwrappervolmodel.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmcorrmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmexpcorrmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmextlinexpvolmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmfixedvolmodel.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmlinexpvolmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmlinexpcorrmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmvolmodel.hpp>
 
 
 #endif

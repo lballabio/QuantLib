@@ -105,6 +105,8 @@ namespace QuantLib {
         std::vector<Time> accrualStartTimes_;
         std::vector<Time> accrualEndTimes_;
         std::vector<Time> accrualPeriod_;
+
+        mutable Array m1, m2;
     };
 
 }

@@ -23,6 +23,7 @@
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/TermStructures/zerocurve.hpp>
+#include <ql/Volatilities/capletvariancecurve.hpp>
 #include <ql/Processes/lfmhullwhiteparam.hpp>
 #include <ql/Optimization/levenbergmarquardt.hpp>
 
@@ -39,8 +40,9 @@
 
 #include <ql/ShortRateModels/LiborMarketModels/lfmcovarproxy.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmexpcorrmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmlinexpcorrmodel.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmfixedvolmodel.hpp>
-#include <ql/ShortRateModels/LiborMarketModels/lmlinexpvolmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmextlinexpvolmodel.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/liborforwardmodel.hpp>
 
 using namespace QuantLib;
@@ -245,7 +247,7 @@ void LiborMarketModelTest::testCalibration() {
 
     QL_TEST_BEGIN
 
-    const Size size = 15;
+    const Size size = 14;
     #if defined(QL_USE_INDEXED_COUPON)
     const Real tolerance = 1e-3;
     #else
@@ -277,11 +279,11 @@ void LiborMarketModelTest::testCalibration() {
 
     // set-up the model
     boost::shared_ptr<LmVolatilityModel> volaModel(
-                new LmLinearExponentialVolatilityModel(process->fixingTimes(),
+                    new LmExtLinearExponentialVolModel(process->fixingTimes(),
                                                        0.5,0.6,0.1,0.1));
 
     boost::shared_ptr<LmCorrelationModel> corrModel(
-                                new LmExponentialCorrelationModel(size, 0.8));
+                     new LmLinearExponentialCorrelationModel(size, 0.5, 0.8));
 
     boost::shared_ptr<LiborForwardModel> model(
                         new LiborForwardModel(process, volaModel, corrModel));
@@ -331,7 +333,7 @@ void LiborMarketModelTest::testCalibration() {
         }
     }
 
-    LevenbergMarquardt om;
+    LevenbergMarquardt om(1e-6, 1e-6, 1e-6, 1e-6, 2000);
     model->calibrate(calibrationHelper, om);
 
     // measure the calibration error

@@ -18,6 +18,7 @@
 */
 
 #include <ql/schedule.hpp>
+#include <ql/Math/functional.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/Processes/eulerdiscretization.hpp>
@@ -30,14 +31,15 @@ namespace QuantLib {
                                         const boost::shared_ptr<Xibor>& index)
     : StochasticProcess(boost::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
-      size_         (size),
-      index_(index),
+      size_             (size),
+      index_            (index),
       initialValues_    (size_),
       fixingTimes_      (size_),
       fixingDates_      (size_),
       accrualStartTimes_(size),
       accrualEndTimes_  (size),
-      accrualPeriod_    (size_) {
+      accrualPeriod_    (size_),
+      m1(size_), m2(size_) {
 
         const DayCounter dayCounter = index_->dayCounter();
         const std::vector<boost::shared_ptr<CashFlow> > flows = cashFlows();
@@ -72,16 +74,15 @@ namespace QuantLib {
     Disposable<Array> LiborForwardModelProcess::drift(Time t,
                                                       const Array& x) const {
         Array f(size_, 0.0);
-        Matrix covariance(this->covariance(t, x, 1.0));
+        Matrix covariance(lfmParam_->covariance(t, x));
 
         const Size m = nextIndexReset(t);
 
         for (Size k=m; k<size_; ++k) {
-            for (Size i=m; i<=k; ++i) {
-                f[k]+= accrualPeriod_[i]*x[i]*covariance[i][k]
-                    / (1+accrualPeriod_[i]*x[i]);
-            }
-            f[k]-=0.5*covariance[k][k];
+            m1[k] = accrualPeriod_[k]*x[k]/(1+accrualPeriod_[k]*x[k]);
+            f[k]  = std::inner_product(m1.begin()+m, m1.begin()+k+1,
+                                       covariance.column_begin(k)+m,0.0)
+                    - 0.5*covariance[k][k];
         }
 
         return f;
@@ -100,21 +101,57 @@ namespace QuantLib {
     Disposable<Array> LiborForwardModelProcess::apply(
         const Array& x0, const Array& dx) const {
         Array tmp(size_);
+
         for (Size k=0; k<size_; ++k) {
             tmp[k] = x0[k] * std::exp(dx[k]);
         }
+
         return tmp;
     }
 
     Disposable<Array> LiborForwardModelProcess::evolve(
                                              Time t0, const Array& x0,
                                              Time dt, const Array& dw) const {
-        // predictor-corrector step to reduce discretization errors
-        Array rnd_0     = stdDeviation(t0, x0, dt)*dw;
-        Array drift_0   = discretization_->drift(*this, t0, x0, dt);
+        /* predictor-corrector step to reduce discretization errors.
 
-        return apply(x0, ( drift_0 + discretization_
+           Short - but slow - solution would be
+
+           Array rnd_0     = stdDeviation(t0, x0, dt)*dw;
+           Array drift_0   = discretization_->drift(*this, t0, x0, dt);
+
+           return apply(x0, ( drift_0 + discretization_
                 ->drift(*this,t0,apply(x0, drift_0 + rnd_0),dt) )*0.5 + rnd_0);
+
+           The following implementation does the same but is faster.
+        */
+
+        const Size m   = nextIndexReset(t0);
+        const Real sdt = std::sqrt(dt);
+
+        Array f(x0);
+        Matrix diff       = lfmParam_->diffusion(t0, x0);
+        Matrix covariance = lfmParam_->covariance(t0, x0);
+
+        for (Size k=m; k<size_; ++k) {
+            const Real y = accrualPeriod_[k]*x0[k];
+            m1[k] = y/(1+y);
+            const Real d = (
+                std::inner_product(m1.begin()+m, m1.begin()+k+1,
+                                   covariance.column_begin(k)+m,0.0)
+                -0.5*covariance[k][k]) * dt;
+
+            const Real r = std::inner_product(
+                diff.row_begin(k), diff.row_end(k), dw.begin(), 0.0)*sdt;
+
+            const Real x = y*std::exp(d + r);
+            m2[k] = x/(1+x);
+            f[k] = x0[k] * std::exp(0.5*(d+
+                 (std::inner_product(m2.begin()+m, m2.begin()+k+1,
+                                     covariance.column_begin(k)+m,0.0)
+                  -0.5*covariance[k][k])*dt)+ r);
+        }
+
+        return f;
     }
 
     Disposable<Array> LiborForwardModelProcess::initialValues() const {
