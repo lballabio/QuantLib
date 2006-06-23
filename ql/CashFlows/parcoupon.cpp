@@ -95,9 +95,23 @@ namespace QuantLib {
                 spread_*accrualPeriod()) * nominal();
     }
 
-    Rate ParCoupon::indexFixing() const
-    {
-        return index_->fixing(fixingDate());
+    //Rate ParCoupon::indexFixing() const
+    //{
+    //    return index_->fixing(fixingDate());
+    //}
+    Rate ParCoupon::indexFixing() const {
+        DayCounter dayCount = index_->termStructure()->dayCounter();
+        Date begin = index_->calendar().advance(
+                                fixingDate(), index_->settlementDays(), Days);
+        Date temp = index_->calendar().advance(accrualEndDate_,
+                                               -fixingDays_, Days);
+        Date end = index_->calendar().advance(
+                                        temp, index_->settlementDays(), Days);
+        Rate result = (amount()/nominal() - spread()*accrualPeriod()) /
+                (dayCount.yearFraction(begin,end));
+        if (gearing_==0.0)
+            return result;
+        else
+            return result/gearing_;
     }
-
 }
