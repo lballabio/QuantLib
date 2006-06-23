@@ -1571,6 +1571,9 @@
 				RelativePath=".\libormarketmodelprocess.cpp">
 			</File>
 			<File
+				RelativePath=".\linearleastsquaresregression.cpp">
+			</File>
+			<File
 				RelativePath=".\lookbackoptions.cpp">
 			</File>
 			<File
@@ -2611,6 +2614,9 @@
 			</File>
 			<File
 				RelativePath=".\libormarketmodelprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\linearleastsquaresregression.hpp">
 			</File>
 			<File
 				RelativePath=".\lookbackoptions.hpp">

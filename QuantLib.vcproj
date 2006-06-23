@@ -3560,6 +3560,12 @@
 				RelativePath="ql\Math\linearinterpolation.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Math\linearleastsquaresregression.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\linearleastsquaresregression.hpp">
+			</File>
+			<File
 				RelativePath="ql\Math\loglinearinterpolation.hpp">
 			</File>
 			<File
@@ -7400,6 +7406,12 @@
 					RelativePath=".\ql\ShortRateModels\LiborMarketModels\liborforwardmodel.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmconstwrappercorrmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmconstwrappervolmodel.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmcorrmodel.cpp">
 				</File>
 				<File
@@ -7412,10 +7424,22 @@
 					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmextlinexpvolmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmextlinexpvolmodel.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpcorrmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpcorrmodel.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.cpp">
@@ -7970,6 +7994,9 @@
 			</File>
 			<File
 				RelativePath=".\ql\Volatilities\swaptionconstantvol.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\swaptionvolmatrix.cpp">
 			</File>
 			<File
 				RelativePath="ql\Volatilities\swaptionvolmatrix.hpp">
