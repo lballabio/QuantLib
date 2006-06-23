@@ -37,6 +37,10 @@ namespace QuantLib {
         are the market volatilities of a set of swaption with given
         exercise date and length.
 
+        \warning The volatility matrix must have increasing exercise
+                 dates or periods from top to bottom and increasing
+                 lenghts from left to right
+
         \todo either add correct copy behavior or inhibit copy. Right
               now, a copied instance would end up with its own copy of
               the exercise date and length vector but an interpolation
@@ -49,12 +53,14 @@ namespace QuantLib {
                                  const std::vector<Period>& lengths,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
-        SwaptionVolatilityMatrix(const Date& referenceDate,
-                                 const Calendar& c,
-                                 Integer fixingDays,
-                                 const std::vector<Period>& expiries,
-                                 BusinessDayConvention bdc,
-                                 const std::vector<Period>& tenorss,
+        SwaptionVolatilityMatrix(const std::vector<Date>& exerciseDates,
+                                 const std::vector<Period>& tenors,
+                                 const Matrix& volatilities,
+                                 const DayCounter& dayCounter);
+        SwaptionVolatilityMatrix(const std::vector<Period>& expiries,
+                                 const Calendar& calendar,
+                                 const BusinessDayConvention bdc,
+                                 const std::vector<Period>& tenors,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
         // inspectors
@@ -86,32 +92,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
-                       const Date& today, const std::vector<Date>& dates,
-                       const std::vector<Period>& lengths, const Matrix& vols,
-                       const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(today),
-      dayCounter_(dayCounter), exerciseDates_(dates),
-      lengths_(lengths), volatilities_(vols) {
-        exerciseTimes_.resize(exerciseDates_.size());
-        timeLengths_.resize(lengths_.size());
-        Size i;
-        for (i=0; i<exerciseDates_.size(); i++) {
-            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
-        }
-        for (i=0; i<lengths_.size(); i++) {
-            Date startDate = exerciseDates_[0]; // as good as any
-            Date endDate = startDate + lengths_[i];
-            timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
-        }
-        interpolation_ =
-            BilinearInterpolation(exerciseTimes_.begin(),
-                                  exerciseTimes_.end(),
-                                  timeLengths_.begin(),
-                                  timeLengths_.end(),
-                                  volatilities_);
-    }
 
     inline const std::vector<Date>&
     SwaptionVolatilityMatrix::exerciseDates() const {
@@ -149,20 +129,9 @@ namespace QuantLib {
 
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
                                         Time start, Time length, Rate) const {
-        return interpolation_(start,length,true);
-    }
-
-    inline std::pair<Time,Time> SwaptionVolatilityMatrix::convertDates(
-                              const Date& start, const Period& length) const {
-        Time exerciseTime = timeFromReference(start);
-        Date startDate = exerciseDates_[0]; // for consistency
-        Date endDate = startDate + length;
-        Time timeLength = dayCounter_.yearFraction(startDate,endDate);
-        return std::make_pair(exerciseTime,timeLength);
+        return interpolation_(length,start,true);
     }
 
 }
 
-
 #endif
-

@@ -187,7 +187,7 @@ namespace QuantLib {
                         sum+=w[i]*w[j]*f[i]*f[j]*var[i-alpha-1][j-alpha-1];
                     }
                 }
-                volatilities[l-1][k] =
+                volatilities[k][l-1] =
                     std::sqrt(sum/t_alpha)/S_0(alpha, beta);
             }
         }
