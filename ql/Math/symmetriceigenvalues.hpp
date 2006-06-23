@@ -28,10 +28,15 @@
 
 namespace QuantLib {
 
-    // Eigenvalues of a symmetric matrix
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! Eigenvalues of a symmetric matrix
+        \deprecated use the SymmetricSchurDecomposition class instead
+    */
     Disposable<Array> SymmetricEigenvalues(Matrix &s);
 
-    // Eigenvectors of a symmetric matrix
+    /*! Eigenvectors of a symmetric matrix
+        \deprecated use the SymmetricSchurDecomposition class instead
+    */
     Disposable<Matrix> SymmetricEigenvectors(Matrix &s);
 
 
@@ -46,6 +51,7 @@ namespace QuantLib {
         Matrix result = SymmetricSchurDecomposition(s).eigenvectors();
         return result;
     }
+    #endif
 
 }
 
