@@ -27,6 +27,7 @@
 
 #include <ql/Patterns/bridge.hpp>
 #include <ql/Math/extrapolation.hpp>
+#include <ql/Math/comparison.hpp>
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
 
@@ -39,8 +40,11 @@ namespace QuantLib {
         virtual void calculate() = 0;
         virtual Real xMin() const = 0;
         virtual Real xMax() const = 0;
+        virtual std::vector<Real> xValues() const = 0;
         virtual Real yMin() const = 0;
         virtual Real yMax() const = 0;
+        virtual std::vector<Real> yValues() const = 0;
+        virtual const Matrix& zData() const = 0;
         virtual bool isInRange(Real x, Real y) const = 0;
         virtual Real value(Real x, Real y) const = 0;
     };
@@ -83,14 +87,36 @@ namespace QuantLib {
             Real xMax() const {
                 return *(xEnd_-1);
             }
+            std::vector<Real> xValues() const {
+                std::vector<Real> result;
+                for (I1 i=xBegin_; i!=xEnd_; i++)
+                    result.push_back(*i);
+                return result;
+            }
             Real yMin() const {
                 return *yBegin_;
             }
             Real yMax() const {
                 return *(yEnd_-1);
             }
+            std::vector<Real> yValues() const {
+                std::vector<Real> result;
+                for (I2 i=yBegin_; i!=yEnd_; i++)
+                    result.push_back(*i);
+                return result;
+            }
+            const M& zData() const {
+                return zData_;
+            }
             bool isInRange(Real x, Real y) const {
-                return x>=xMin() && x<=xMax() && y>=yMin() && y<=yMax();
+                Real x1 = xMin(), x2 = xMax();
+                bool xIsInrange = (x >= x1 && x <= x2) ||
+                                  close(x,x1) ||
+                                  close(x,x2);
+                if (!xIsInrange) return false;
+
+                Real y1 = yMin(), y2 = yMax();
+                return (y >= y1 && y <= y2) || close(y,y1) || close(y,y2);
             }
           protected:
             Size locateX(Real x) const {
@@ -126,11 +152,20 @@ namespace QuantLib {
         Real xMax() const {
             return impl_->xMax();
         }
+        std::vector<Real> xValues() const {
+            return impl_->xValues();
+        }
         Real yMin() const {
             return impl_->yMin();
         }
         Real yMax() const {
             return impl_->yMax();
+        }
+        std::vector<Real> yValues() const {
+            return impl_->yValues();
+        }
+        const Matrix& zData() const {
+            return impl_->zData();
         }
         bool isInRange(Real x, Real y) const {
             return impl_->isInRange(x,y);
