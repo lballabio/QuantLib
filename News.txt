@@ -24,4 +24,7 @@
 - Added cash-settled swaption pricing in Black swaption engine; test
   provided.
 
-- Added discrete dividends and soft callability to convertible bonds
+- Added discrete dividends and soft callability to convertible bonds.
+
+- Added general linear least-squares regression (thanks to Klaus
+  Spanderen.)
