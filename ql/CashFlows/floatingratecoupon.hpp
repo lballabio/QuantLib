@@ -49,12 +49,12 @@ namespace QuantLib {
                            const Date& refPeriodEnd = Date());
         #endif
         FloatingRateCoupon(const Date& paymentDate,
-                           Real nominal,
+                           const Real nominal,
                            const Date& startDate,
                            const Date& endDate,
-                           Integer fixingDays,
+                           const Integer fixingDays,
                            const Real gearing = 1.0,
-                           Spread spread = 0.0,
+                           const Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date());
         //! \name Coupon interface
@@ -103,9 +103,10 @@ namespace QuantLib {
     #endif
 
     inline FloatingRateCoupon::FloatingRateCoupon(
-                         const Date& paymentDate, Real nominal,
+                         const Date& paymentDate, const Real nominal,
                          const Date& startDate, const Date& endDate,
-                         Integer fixingDays, Real gearing, Spread spread,
+                         const Integer fixingDays,
+                         const Real gearing, const Spread spread,
                          const Date& refPeriodStart, const Date& refPeriodEnd)
     : Coupon(nominal, paymentDate,
              startDate, endDate, refPeriodStart, refPeriodEnd),
