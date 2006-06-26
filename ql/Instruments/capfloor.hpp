@@ -77,6 +77,9 @@ namespace QuantLib {
         const std::vector<Rate>& floorRates() const {
             return floorRates_;
         }
+        const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg() const {
+            return floatingLeg_;
+        }
         //@}
         void setupArguments(Arguments*) const;
         //! implied term volatility
