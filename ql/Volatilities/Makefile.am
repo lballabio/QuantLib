@@ -20,7 +20,8 @@ include_HEADERS = \
 libVolatilities_la_SOURCES = \
     blackvariancecurve.cpp \
     blackvariancesurface.cpp \
-    localvolsurface.cpp
+    localvolsurface.cpp \
+    swaptionvolmatrix.cpp
 
 noinst_LTLIBRARIES = libVolatilities.la
 
