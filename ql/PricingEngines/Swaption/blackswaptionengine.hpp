@@ -37,8 +37,7 @@ namespace QuantLib {
         \warning The engine assumes that the exercise date equals the
                  start date of the passed swap.
     */
-    class BlackSwaptionEngine : public GenericEngine<Swaption::arguments,
-                                                     Swaption::results>,
+    class BlackSwaptionEngine : public Swaption::engine,
                                 public Observer {
       public:
         #ifndef QL_DISABLE_DEPRECATED

@@ -48,7 +48,7 @@ namespace QuantLib {
         : GenericModelEngine<G2, Swaption::arguments, Swaption::results>(mod),
           range_(range), intervals_(intervals) {}
         void calculate() const {
-            QL_REQUIRE(arguments_.settlementType==Settlement::Physical,
+            QL_REQUIRE(arguments_.settlementType==Swaption::Physical,
                        "cash-settled swaptions not priced with G2 engine");
             results_.value =  model_->swaption(arguments_, range_, intervals_);
         }

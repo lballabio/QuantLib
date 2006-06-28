@@ -68,17 +68,18 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    void BlackSwaptionEngine::calculate() const {
+    void BlackSwaptionEngine::calculate() const
+	{
         static const Spread basisPoint = 1.0e-4;
         Time exercise = arguments_.stoppingTimes[0];
         Time maturity = arguments_.floatingPayTimes.back();
         Real w = arguments_.payFixed ? 1.0 : -1.0;
         Real annuity;
         switch(arguments_.settlementType) {
-          case Settlement::Physical :
+          case Swaption::Physical :
             annuity = arguments_.fixedBPS/basisPoint;
             break;
-          case Settlement::Cash:
+          case Swaption::Cash :
             annuity = arguments_.fixedCashBPS/basisPoint;
             break;
           default:

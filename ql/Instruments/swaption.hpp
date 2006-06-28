@@ -33,11 +33,6 @@
 
 namespace QuantLib {
 
-    //! settlement information
-    struct Settlement {
-        enum Type { Physical, Cash };
-    };
-
     //! %Swaption class
     /*! \ingroup instruments
 
@@ -62,15 +57,25 @@ namespace QuantLib {
     */
     class Swaption : public Option {
       public:
+        enum SettlementType { Physical, Cash };
         class arguments;
         class results;
+        class engine;
         // constructors
         Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                  const boost::shared_ptr<Exercise>& exercise,
                  const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine,
-                 Settlement::Type delivery = Settlement::Physical);
+				 SettlementType delivery = Swaption::Physical);
+        //! \name Instrument interface
+        //@{
         bool isExpired() const;
+        //@}
+        //! \name Inspectors
+        //@{
+        SettlementType settlementType() const { return settlementType_; }
+        const boost::shared_ptr<VanillaSwap>& underlyingSwap() const {return swap_;}
+        //@}
         void setupArguments(Arguments*) const;
         //! implied volatility
         Volatility impliedVolatility(Real price,
@@ -83,7 +88,7 @@ namespace QuantLib {
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
         Handle<YieldTermStructure> termStructure_;
-        Settlement::Type settlementType_;
+        SettlementType settlementType_;
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
           public:
@@ -109,18 +114,22 @@ namespace QuantLib {
                       fixedRate(Null<Real>()),
                       fixedBPS(Null<Real>()),
                       fixedCashBPS(Null<Real>()),
-                      settlementType(Settlement::Physical) {}
+                      settlementType(Swaption::Physical) {}
 
         Rate fairRate;
         Rate fixedRate;
         Real fixedBPS;
         Real fixedCashBPS;
-        Settlement::Type settlementType;
+        SettlementType settlementType;
         void validate() const;
     };
 
     //! %Results from swaption calculation
     class Swaption::results : public Value {};
+
+    //! base class for swaption engines
+    class Swaption::engine
+        : public GenericEngine<Swaption::arguments, Swaption::results> {};
 
 }
 
