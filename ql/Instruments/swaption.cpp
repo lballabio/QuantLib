@@ -33,7 +33,7 @@ namespace QuantLib {
                        const boost::shared_ptr<Exercise>& exercise,
                        const Handle<YieldTermStructure>& termStructure,
                        const boost::shared_ptr<PricingEngine>& engine,
-                       SettlementType delivery)
+                       Settlement::Type delivery)
     : Option(boost::shared_ptr<Payoff>(), exercise, engine), swap_(swap),
       termStructure_(termStructure), settlementType_(delivery) {
         registerWith(swap_);
@@ -69,7 +69,7 @@ namespace QuantLib {
         arguments->settlementType = settlementType_;
         Date settlement = termStructure_->referenceDate();
         // only if cash settled
-        if (arguments->settlementType==Swaption::Cash) {
+        if (arguments->settlementType==Settlement::Cash) {
             const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg =
                 swap_->fixedLeg();
             DayCounter dc = (boost::dynamic_pointer_cast<FixedRateCoupon>(
@@ -100,7 +100,7 @@ namespace QuantLib {
                    "fair swap rate null or not set");
         QL_REQUIRE(fixedBPS != Null<Real>(),
                    "fixed swap BPS null or not set");
-        if(settlementType == Swaption::Cash) {
+        if(settlementType == Settlement::Cash) {
             QL_REQUIRE(fixedCashBPS != Null<Real>(),
                        "fixed swap cash BPS null or not set "
                        "for cash-settled swaption");

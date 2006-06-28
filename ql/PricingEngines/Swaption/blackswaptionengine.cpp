@@ -76,10 +76,10 @@ namespace QuantLib {
         Real w = arguments_.payFixed ? 1.0 : -1.0;
         Real annuity;
         switch(arguments_.settlementType) {
-          case Swaption::Physical :
+          case Settlement::Physical :
             annuity = arguments_.fixedBPS/basisPoint;
             break;
-          case Swaption::Cash :
+          case Settlement::Cash :
             annuity = arguments_.fixedCashBPS/basisPoint;
             break;
           default:

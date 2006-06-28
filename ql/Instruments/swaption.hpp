@@ -33,6 +33,11 @@
 
 namespace QuantLib {
 
+    //! settlement information
+    struct Settlement {
+        enum Type { Physical, Cash };
+    };
+
     //! %Swaption class
     /*! \ingroup instruments
 
@@ -57,7 +62,6 @@ namespace QuantLib {
     */
     class Swaption : public Option {
       public:
-        enum SettlementType { Physical, Cash };
         class arguments;
         class results;
         class engine;
@@ -66,15 +70,17 @@ namespace QuantLib {
                  const boost::shared_ptr<Exercise>& exercise,
                  const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine,
-				 SettlementType delivery = Swaption::Physical);
+				 Settlement::Type delivery = Settlement::Physical);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
         //@}
         //! \name Inspectors
         //@{
-        SettlementType settlementType() const { return settlementType_; }
-        const boost::shared_ptr<VanillaSwap>& underlyingSwap() const {return swap_;}
+        Settlement::Type settlementType() const { return settlementType_; }
+        const boost::shared_ptr<VanillaSwap>& underlyingSwap() const {
+            return swap_;
+        }
         //@}
         void setupArguments(Arguments*) const;
         //! implied volatility
@@ -88,7 +94,7 @@ namespace QuantLib {
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
         Handle<YieldTermStructure> termStructure_;
-        SettlementType settlementType_;
+        Settlement::Type settlementType_;
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
           public:
@@ -114,13 +120,13 @@ namespace QuantLib {
                       fixedRate(Null<Real>()),
                       fixedBPS(Null<Real>()),
                       fixedCashBPS(Null<Real>()),
-                      settlementType(Swaption::Physical) {}
+                      settlementType(Settlement::Physical) {}
 
         Rate fairRate;
         Rate fixedRate;
         Real fixedBPS;
         Real fixedCashBPS;
-        SettlementType settlementType;
+        Settlement::Type settlementType;
         void validate() const;
     };
 

@@ -72,7 +72,7 @@ boost::shared_ptr<VanillaSwap> makeSwap(const Date& start, Integer length,
 boost::shared_ptr<Swaption> makeSwaption(
                                const boost::shared_ptr<VanillaSwap>& swap,
                                const Date& exercise, Volatility volatility,
-                               Swaption::SettlementType type = Swaption::Physical) {
+                               Settlement::Type type = Settlement::Physical) {
     Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
     boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(vol));
     return boost::shared_ptr<Swaption>(new Swaption(
@@ -141,7 +141,7 @@ void SwaptionTest::testStrikeDependency() {
                         makeSwaption(swap,exerciseDate,0.20);
                     values.push_back(swaption->NPV());
                     boost::shared_ptr<Swaption> swaption_cash =
-						makeSwaption(swap,exerciseDate,0.20,Swaption::Cash);
+						makeSwaption(swap,exerciseDate,0.20,Settlement::Cash);
                     values_cash.push_back(swaption->NPV());
                 }
                 // and check that they go the right way
@@ -242,7 +242,7 @@ void SwaptionTest::testSpreadDependency() {
                         makeSwaption(swap,exerciseDate,0.20);
                     values.push_back(swaption->NPV());
                     boost::shared_ptr<Swaption> swaption_cash =
-                        makeSwaption(swap,exerciseDate,0.20,Swaption::Cash);
+                        makeSwaption(swap,exerciseDate,0.20,Settlement::Cash);
                     values_cash.push_back(swaption->NPV());
                 }
                 // and check that they go the right way
@@ -348,10 +348,10 @@ void SwaptionTest::testSpreadTreatment() {
                         makeSwaption(equivalentSwap,exerciseDate,0.20);
                     boost::shared_ptr<Swaption> swaption1_cash =
                         makeSwaption(swap,exerciseDate,0.20,
-                                     Swaption::Cash);
+                                     Settlement::Cash);
                     boost::shared_ptr<Swaption> swaption2_cash =
                         makeSwaption(equivalentSwap,exerciseDate,0.20,
-                                     Swaption::Cash);
+                                     Settlement::Cash);
                     if (std::fabs(swaption1->NPV()-swaption2->NPV()) > 1.0e-10)
                         BOOST_ERROR(
                             "wrong spread treatment: \n"
@@ -556,7 +556,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_u360 =
                                         makeSwaption(swap_u360,maturity,0.20,
-                                        Swaption::Cash);
+                                        Settlement::Cash);
             Real value_c_u360 = swaption_c_u360->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_u360 = value_c_u360 / value_p_u360;
@@ -570,7 +570,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_a365 =
                                         makeSwaption(swap_a365,maturity,0.20,
-                                        Swaption::Cash);
+                                        Settlement::Cash);
             Real value_c_a365 = swaption_c_a365->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_a365 = value_c_a365 / value_p_a365;
@@ -584,7 +584,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_a360 =
                                         makeSwaption(swap_a360,maturity,0.20,
-                                        Swaption::Cash);
+                                        Settlement::Cash);
             Real value_c_a360 = swaption_c_a360->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_a360 = value_c_a360 / value_p_a360;
@@ -598,7 +598,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Cash settled swaption
             boost::shared_ptr<Swaption> swaption_c_u365 =
                                         makeSwaption(swap_u365,maturity,0.20,
-                                        Swaption::Cash);
+                                        Settlement::Cash);
             Real value_c_u365 = swaption_c_u365->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_u365 = value_c_u365 / value_p_u365;
@@ -751,7 +751,7 @@ void SwaptionTest::testImpliedVolatility() {
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-08;
 
-    Swaption::SettlementType types[] = { Swaption::Physical, Swaption::Cash };
+    Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
     // test data
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
     Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
