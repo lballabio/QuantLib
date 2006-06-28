@@ -49,10 +49,14 @@ namespace QuantLib {
         #ifndef QL_DISABLE_DEPRECATED
         boost::shared_ptr<BlackModel> blackModel_;
         #endif
-        Real capletValue(Time start, Rate forward,
-                         Rate strike, Volatility vol) const;
-        Real floorletValue(Time start, Rate forward,
-                           Rate strike, Volatility vol) const;
+        Real capletValue(Time start,
+			             Rate forward,
+                         Rate strike,
+						 Volatility vol) const;
+        Real floorletValue(Time start,
+			               Rate forward,
+                           Rate strike,
+						   Volatility vol) const;
     };
 
 }
