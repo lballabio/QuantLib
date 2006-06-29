@@ -2513,6 +2513,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\varianceswaps.cpp">
+			</File>
+			<File
 				RelativePath=".\volatilitymodels.cpp">
 			</File>
 		</Filter>
@@ -2698,6 +2701,9 @@
 			</File>
 			<File
 				RelativePath="utilities.hpp">
+			</File>
+			<File
+				RelativePath=".\varianceswaps.hpp">
 			</File>
 			<File
 				RelativePath=".\volatilitymodels.hpp">

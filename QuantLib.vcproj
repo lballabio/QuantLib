@@ -2634,6 +2634,12 @@
 				RelativePath=".\ql\Instruments\vanillaswap.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\varianceswap.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\varianceswap.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Instruments\zerocouponbond.cpp">
 			</File>
 			<File
@@ -8121,6 +8127,38 @@
 			<File
 				RelativePath=".\ql\VolatilityModels\simplelocalestimator.hpp">
 			</File>
+		</Filter>
+		<Filter
+			Name="MarketModels"
+			Filter="">
+			<File
+				RelativePath=".\ql\MarketModels\curvestate.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\curvestate.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\evolutiondescription.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\evolutiondescription.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\pseudoroot.hpp">
+			</File>
+			<Filter
+				Name="Products"
+				Filter="">
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.hpp">
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp">
