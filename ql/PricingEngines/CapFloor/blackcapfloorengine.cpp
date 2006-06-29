@@ -42,8 +42,7 @@ namespace QuantLib {
 
     BlackCapFloorEngine::BlackCapFloorEngine(const Handle<Quote>& volatility) {
         volatility_.linkTo(boost::shared_ptr<CapletVolatilityStructure>(
-                 new CapletConstantVolatility(0, NullCalendar(),
-                                              volatility, Actual365Fixed())));
+                 new CapletConstantVolatility(volatility, Actual365Fixed())));
         registerWith(volatility_);
     }
 
