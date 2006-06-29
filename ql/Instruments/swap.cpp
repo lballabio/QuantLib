@@ -26,8 +26,8 @@ namespace QuantLib {
 
 
     #ifndef QL_DISABLE_DEPRECATED
-    Swap::Swap(const SwapLeg& firstLeg,
-               const SwapLeg& secondLeg,
+    Swap::Swap(const Swap::Leg& firstLeg,
+               const Swap::Leg& secondLeg,
                const Handle<YieldTermStructure>& termStructure)
     : termStructure_(termStructure), legs_(2), payer_(2), legBPS_(2, 0.0) {
         legs_[0] = firstLeg;
@@ -35,7 +35,7 @@ namespace QuantLib {
         payer_[0] = -1.0;
         payer_[1] =  1.0;
         registerWith(termStructure_);
-        SwapLeg::iterator i;
+        Swap::Leg::iterator i;
         for (i = legs_[0].begin(); i!= legs_[0].end(); ++i)
             registerWith(*i);
         for (i = legs_[1].begin(); i!= legs_[1].end(); ++i)
@@ -44,15 +44,15 @@ namespace QuantLib {
     #endif
 
     Swap::Swap(const Handle<YieldTermStructure>& termStructure,
-               const SwapLeg& firstLeg,
-               const SwapLeg& secondLeg)
+               const Swap::Leg& firstLeg,
+               const Swap::Leg& secondLeg)
     : termStructure_(termStructure), legs_(2), payer_(2), legBPS_(2, 0.0) {
         legs_[0] = firstLeg;
         legs_[1] = secondLeg;
         payer_[0] = -1.0;
         payer_[1] =  1.0;
         registerWith(termStructure_);
-        SwapLeg::iterator i;
+        Swap::Leg::iterator i;
         for (i = legs_[0].begin(); i!= legs_[0].end(); ++i)
             registerWith(*i);
         for (i = legs_[1].begin(); i!= legs_[1].end(); ++i)
@@ -60,14 +60,14 @@ namespace QuantLib {
     }
 
     Swap::Swap(const Handle<YieldTermStructure>& termStructure,
-               const std::vector<SwapLeg>& legs,
+               const std::vector<Swap::Leg>& legs,
                const std::vector<bool>& payer)
     : termStructure_(termStructure), legs_(legs),
       payer_(legs.size(), 1.0) , legBPS_(legs.size(), 0.0){
         QL_REQUIRE(payer.size()==legs_.size(),
             "payer/leg mismatch");
         registerWith(termStructure_);
-        SwapLeg::iterator i;
+        Swap::Leg::iterator i;
         for (Size j=0; j<legs_.size(); j++) {
             if (payer[j]) payer_[j]=-1.0;
             for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
@@ -77,7 +77,7 @@ namespace QuantLib {
 
     bool Swap::isExpired() const {
         Date settlement = termStructure_->referenceDate();
-        SwapLeg::const_iterator i;
+        Swap::Leg::const_iterator i;
         for (Size j=0; j<legs_.size(); j++) {
             for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
                 if (!(*i)->hasOccurred(settlement))

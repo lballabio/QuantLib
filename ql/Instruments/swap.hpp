@@ -38,7 +38,7 @@ namespace QuantLib {
         \ingroup instruments
     */
     class Swap : public Instrument {
-      typedef std::vector<boost::shared_ptr<CashFlow> > SwapLeg;
+        typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
       public:
         #ifndef QL_DISABLE_DEPRECATED
         /*! \deprecated use the constructor with the same parameters in
@@ -51,11 +51,11 @@ namespace QuantLib {
             the ones belonging to the second leg are received.
         */
         Swap(const Handle<YieldTermStructure>& termStructure,
-             const SwapLeg& firstLeg,
-             const SwapLeg& secondLeg);
+             const Leg& firstLeg,
+             const Leg& secondLeg);
         /*! Multi leg constructor. */
         Swap(const Handle<YieldTermStructure>& termStructure,
-             const std::vector<SwapLeg>& legs,
+             const std::vector<Leg>& legs,
              const std::vector<bool>& payer);
         //! \name Instrument interface
         //@{
@@ -77,7 +77,7 @@ namespace QuantLib {
             calculate();
             return legBPS_[j];
         }
-        const SwapLeg& leg(Size j) const {
+        const Leg& leg(Size j) const {
             QL_REQUIRE(j<legs_.size(),
                 "leg: leg# " << j << " doesn't exist!");
             return legs_[j];
@@ -89,10 +89,11 @@ namespace QuantLib {
         void performCalculations() const;
         // data members
         Handle<YieldTermStructure> termStructure_;
-        std::vector<SwapLeg> legs_;
+        std::vector<Leg> legs_;
         std::vector<Real> payer_;
         mutable std::vector<Real> legBPS_;
     };
+
 }
 
 
