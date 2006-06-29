@@ -7769,6 +7769,46 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="MarketModels"
+			>
+			<File
+				RelativePath=".\ql\MarketModels\curvestate.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\curvestate.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\evolutiondescription.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\evolutiondescription.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\pseudoroot.hpp"
+				>
+			</File>
+			<Filter
+				Name="Products"
+				>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.hpp"
+					>
+				</File>
+			</Filter>
+		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp"
 			>
