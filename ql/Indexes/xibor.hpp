@@ -69,6 +69,9 @@ namespace QuantLib {
         std::string name() const;
         std::string familyName() const;
         Period tenor() const;
+        /*! \note this method does not always apply. Use tenor() if
+                  possible.
+        */
         Frequency frequency() const;
         Integer settlementDays() const;
         const Currency& currency() const;

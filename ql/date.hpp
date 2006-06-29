@@ -177,19 +177,6 @@ namespace QuantLib {
         : length_(n), units_(units) {}
         Integer length() const { return length_; }
         TimeUnit units() const { return units_; }
-        Frequency frequency() const {
-            switch (units_) {
-              case Months:
-                QL_REQUIRE(12%length_ == 0, "undefined frequency");
-                return Frequency(12/length_);
-              case Years:
-                QL_REQUIRE(length_ == 1, "undefined frequency");
-                return Annual;
-              default:
-                QL_FAIL("undefined frequency");
-            }
-            QL_DUMMY_RETURN(Once)
-        }
       private:
         Integer length_;
         TimeUnit units_;

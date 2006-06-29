@@ -69,7 +69,18 @@ namespace QuantLib {
     }
 
     Frequency Xibor::frequency() const {
-        return tenor_.frequency();
+        Integer length = tenor_.length();
+        switch (tenor_.units()) {
+          case Months:
+            QL_REQUIRE(12%length == 0, "undefined frequency");
+            return Frequency(12/length);
+          case Years:
+            QL_REQUIRE(length == 1, "undefined frequency");
+            return Annual;
+          default:
+            QL_FAIL("undefined frequency");
+        }
+        QL_DUMMY_RETURN(Once)
     }
 
     Rate Xibor::fixing(const Date& fixingDate,
