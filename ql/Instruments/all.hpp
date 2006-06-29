@@ -49,6 +49,7 @@
 #include <ql/Instruments/swap.hpp>
 #include <ql/Instruments/swaption.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/varianceswap.hpp>
 #include <ql/Instruments/zerocouponbond.hpp>
 
 

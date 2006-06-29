@@ -28,3 +28,5 @@
 
 - Added general linear least-squares regression (thanks to Klaus
   Spanderen.)
+
+- Added variance swaps (thanks to Warren Chou.)

@@ -35,6 +35,7 @@ include_HEADERS = \
     swaption.hpp \
     vanillaoption.hpp \
     vanillaswap.hpp \
+    varianceswap.hpp \
     zerocouponbond.hpp
 
 libInstruments_la_SOURCES = \
@@ -65,6 +66,7 @@ libInstruments_la_SOURCES = \
     swaption.cpp \
     vanillaoption.cpp \
     vanillaswap.cpp \
+    varianceswap.cpp \
     zerocouponbond.cpp
 
 noinst_LTLIBRARIES = libInstruments.la

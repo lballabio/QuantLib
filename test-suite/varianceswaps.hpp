@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2006 Warren Chou
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,14 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_forward_all_hpp
-#define quantlib_pricing_engines_forward_all_hpp
+#ifndef quantlib_test_variance_swaps_hpp
+#define quantlib_test_variance_swaps_hpp
 
-#include <ql/qldefines.hpp>
-#include <ql/PricingEngines/Forward/forwardengine.hpp>
-#include <ql/PricingEngines/Forward/forwardperformanceengine.hpp>
-#include <ql/PricingEngines/Forward/mcvarianceswapengine.hpp>
-#include <ql/PricingEngines/Forward/replicatingvarianceswapengine.hpp>
+#include <boost/test/unit_test.hpp>
+
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
+
+class VarianceSwapTest {
+  public:
+    static void testReplicatingVarianceSwap();
+    static void testMCVarianceSwap();
+    static boost::unit_test_framework::test_suite* suite();
+};
 
 
 #endif

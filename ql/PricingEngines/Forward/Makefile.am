@@ -5,5 +5,7 @@ includedir = $(prefix)/include/ql/PricingEngines/Forward
 include_HEADERS = \
 	all.hpp \
     forwardengine.hpp \
-    forwardperformanceengine.hpp
+    forwardperformanceengine.hpp \
+    mcvarianceswapengine.hpp \
+    replicatingvarianceswapengine.hpp
 

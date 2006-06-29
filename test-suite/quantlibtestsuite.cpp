@@ -92,6 +92,7 @@
 #include "tqreigendecomposition.hpp"
 #include "tracing.hpp"
 #include "transformedgrid.hpp"
+#include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 // to be deprecated
 #include "old_pricers.hpp"
@@ -209,6 +210,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TqrEigenDecompositionTest::suite());
     test->add(TracingTest::suite());
     test->add(TransformedGridTest::suite());
+    test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
     // tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());

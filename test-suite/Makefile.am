@@ -61,6 +61,7 @@ QL_TESTS = \
 	tracing.hpp tracing.cpp \
 	old_pricers.hpp old_pricers.cpp \
 	utilities.hpp utilities.cpp \
+	varianceswaps.hpp varianceswaps.cpp \
 	volatilitymodels.hpp volatilitymodels.cpp
 
 dist-hook:
