@@ -24,7 +24,7 @@
 #ifndef quantlib_libor_market_const_wrapper_volatility_model_hpp
 #define quantlib_libor_market_const_wrapper_volatility_model_hpp
 
-#include <ql/ShortRateModels/LiborMarketModels/lmconstwrappervolmodel.hpp>
+#include <ql/ShortRateModels/LiborMarketModels/lmvolmodel.hpp>
 
 namespace QuantLib {
 
