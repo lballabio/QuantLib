@@ -43,14 +43,14 @@ namespace QuantLib {
     public:
         CurveState(const Array& rateTimes);
      
-        void SetOnForwardRates(const Array& rates);
-        void SetOnDiscountRatios(const Array& discountRatios);
-        void SetOnCoterminalSwaps(const Array& swapRates);
+        void setOnForwardRates(const Array& rates);
+        void setOnDiscountRatios(const Array& discountRatios);
+        void setOnCoterminalSwaps(const Array& swapRates);
 
         // You should get an error if you look outside [first, last] range.
-        void SetOnForwardRates(const Array& rates, Size first, Size last);
-        void SetOnDiscountRatios(const Array& discountRatios, Size first, Size last);
-        void SetOnCoterminalSwaps(const Array& swapRates, Size first);
+        void setOnForwardRates(const Array& rates, Size first, Size last);
+        void setOnDiscountRatios(const Array& discountRatios, Size first, Size last);
+        void setOnCoterminalSwaps(const Array& swapRates, Size first);
 
         const Array& forwardRates() const;
         const Array& discountRatios() const;

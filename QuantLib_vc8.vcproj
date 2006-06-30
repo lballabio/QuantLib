@@ -7773,6 +7773,10 @@
 			Name="MarketModels"
 			>
 			<File
+				RelativePath=".\ql\MarketModels\browniangenerator.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\curvestate.cpp"
 				>
 			</File>
@@ -7781,11 +7785,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\driftcalculator.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\evolutiondescription.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\evolutiondescription.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\forwardrateevolver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\forwardrateevolver.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\marketmodelevolver.hpp"
 				>
 			</File>
 			<File

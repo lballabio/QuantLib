@@ -63,12 +63,15 @@ namespace QuantLib {
             const std::vector<std::pair<Size,Size> >& relevanceRates =
                                     std::vector<std::pair<Size,Size> >());
         const Array& rateTimes() const;
+        const Array& taus() const;
         const Array& evolutionTimes() const;
         const std::vector<Size>& numeraires() const;
         const std::vector<std::pair<Size,Size> >& relevanceRates() const;
 
         // returns rateTimes().size() minus 1
         Size numberOfRates() const;
+        // returns evolutionTimes().size()
+        Size numberOfSteps() const;
 
     private:
         Array rateTimes_, evolutionTimes_;
