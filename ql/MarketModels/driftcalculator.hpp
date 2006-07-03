@@ -28,18 +28,23 @@ namespace QuantLib {
     /*! <insert formula here >
     */
     class DriftCalculator {
+
     public:
+
         DriftCalculator(const Matrix& pseudo,
                         const Array& displacements,
                         const Array& taus,
                         Size numeraire,
                         Size alive);
         void compute(const Array& forwards, Array& drifts) const;
+
     private:
-        Matrix pseudo_;
-        Array displacements_, taus_;
-        Size numeraire_, alive_;
-        // temporary variables
+
+        const Size size_, numeraire_, alive_;
+        const Array displacements_, taus_;
+        const Matrix pseudo_;
+
+		// temporary variables
         // to be added later
     };
 
