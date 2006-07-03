@@ -50,12 +50,13 @@ namespace QuantLib {
         boost::shared_ptr<PseudoRoot> pseudoRoot_;
         EvolutionDescription evolution_;
         boost::shared_ptr<BrownianGenerator> generator_;
-        Array initialForwards_, displacements_;
         // working variables
+        Size n_, F_;
         CurveState curveState_;
         Size currentStep_;
         Array forwards_, logForwards_, initialLogForwards_;
-        Array drifts_, initialDrifts_;
+        Array drifts1_, drifts2_, initialDrifts_;
+        Array brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
         // helper classes
         std::vector<DriftCalculator*> calculators_;

@@ -24,25 +24,28 @@ namespace QuantLib {
     ForwardRateEvolver::ForwardRateEvolver(
                            const boost::shared_ptr<PseudoRoot> pseudoRoot,
                            const EvolutionDescription& evolution,
-                           const BrownianGeneratorFactory& factory,
-                           const Array& initialForwards,
-                           const Array& displacements)
+                           const BrownianGeneratorFactory& factory)
     : pseudoRoot_(pseudoRoot), evolution_(evolution),
-      initialForwards_(initialForwards), displacements_(displacements),
+      n_(pseudoRoot->numberOfRates()), F_(pseudoRoot_->numberOfFactors()),
       curveState_(evolution.rateTimes()),
-      forwards_(initialForwards), logForwards_(initialForwards.size()),
-      initialLogForwards_(initialForwards.size()),
-      drifts_(initialForwards.size()), initialDrifts_(initialForwards.size()),
+      forwards_(pseudoRoot->initialRates()),
+      logForwards_(n_), initialLogForwards_(n_), drifts1_(n_), drifts2_(n_),
+      initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(evolution.evolutionTimes().size()) {
+
+        const Array& initialForwards = pseudoRoot_->initialRates();
+        const Array& displacements = pseudoRoot_->displacements();
         
         Size factors = pseudoRoot_->numberOfFactors();
         Size steps = evolution_.numberOfSteps();
-        Size n = initialForwards.size();
+
+        const Array& rateTimes = evolution_.rateTimes();
+        const Array& evolutionTimes = evolution_.evolutionTimes();
 
         generator_ = factory.create(factors, steps);
         currentStep_ = 0;
 
-        for (Size i=0; i<n; ++i) {
+        for (Size i=0; i<n_; ++i) {
             initialLogForwards_[i] = std::log(initialForwards[i] +
                                               displacements[i]);
         }
@@ -50,7 +53,7 @@ namespace QuantLib {
         Time lastTime = 0.0;
         for (Size j=0; j<steps; ++j) {
             Size alive = 0;
-            while (evolution_.rateTimes()[alive] <= lastTime)
+            while (rateTimes[alive] <= lastTime)
                 ++alive;
 
             calculators_.push_back(new DriftCalculator(pseudoRoot_->pseudoRoot(j),
@@ -59,11 +62,10 @@ namespace QuantLib {
                                                    evolution_.numeraires()[j],
                                                    alive));
             alive_[j] = alive;
-            lastTime = evolution_.evolutionTimes()[j];
+            lastTime = evolutionTimes[j];
         }
 
         calculators_.front()->compute(initialForwards_, initialDrifts_);
-
     }
 
 	ForwardRateEvolver::~ForwardRateEvolver() {
@@ -76,12 +78,44 @@ namespace QuantLib {
         currentStep_ = 0;
         std::copy(initialLogForwards_.begin(), initialLogForwards_.end(),
                   logForwards_.begin());
-        return 1.0;
+        return generator_->nextPath();
     }
 
     Real ForwardRateEvolver::advanceStep() {
+        const Array& displacements = pseudoRoot_->displacements();
+
+        // we're going from T1 to T2:
+        if (currentStep_ == 0) {
+            std::copy(initialDrifts_.begin(), initialDrifts_.end(),
+                      drifts1_.begin());
+        } else {
+            // a) compute drifts D1 at T1;
+            calculators_[currentStep_].compute(forwards_, drifts1_);
+        }
+
+        // b) evolve forwards up to T2 using D1;
+        logForwards_ += drifts1_;
+        Real weight = generator_->nextStep(brownians_);
+        const Matrix& A = pseudoRoot_->pseudoRoot(currentStep_);
+        // rewrite this by accessing the matrix and array elements directly
+        correlatedBrownians_ = A * brownians_;
+        logForwards_ += correlatedBrownians_;
+        for (Size i=0; i<n_; ++i)
+            forwards_[i] = std::exp(logForwards_[i]) - displacements[i];
+
+        // c) recompute drifts D2 using the predicted forwards;
+        calculators_[currentStep_].compute(forwards_, drifts2_);
         
-        return 1.0;
+        // d) correct forwards using both drifts
+        for (Size i=0; i<n_; ++i) {
+            logForwards_[i] += (drifts2_[i]-drifts1_[i])/2.0;
+            forwards_[i] = std::exp(logForwards_[i]) - displacements[i];
+        }
+
+        // e) update curve state
+        curveState_.setOnForwardRates(forwards_);
+
+        return weight;
     }
 
 

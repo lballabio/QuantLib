@@ -47,10 +47,13 @@ namespace QuantLib {
         void setOnDiscountRatios(const Array& discountRatios);
         void setOnCoterminalSwaps(const Array& swapRates);
 
-        // You should get an error if you look outside [first, last] range.
+        // You should get an error if you look outside [first, last) range.
+        /*
         void setOnForwardRates(const Array& rates, Size first, Size last);
-        void setOnDiscountRatios(const Array& discountRatios, Size first, Size last);
+        void setOnDiscountRatios(const Array& discountRatios,
+                                 Size first, Size last);
         void setOnCoterminalSwaps(const Array& swapRates, Size first);
+        */
 
         const Array& forwardRates() const;
         const Array& discountRatios() const;
@@ -64,7 +67,7 @@ namespace QuantLib {
         
         Array rateTimes_, taus_, forwardRates_, discountRatios_;
         Array coterminalSwaps_, annuities_;
-        Size first_, last_;
+        // Size first_, last_;
 
         // suggest lazy evaluation on the coterminal swaps 
         // e.g store index of how many swaps from the end have been computed
