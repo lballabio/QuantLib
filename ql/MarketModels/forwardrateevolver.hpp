@@ -39,6 +39,7 @@ namespace QuantLib {
                            const BrownianGeneratorFactory&,
                            const Array& initialForwards,
                            const Array& displacements);
+		virtual ~ForwardRateEvolver();
 
         Real startNewPath();
         Real advanceStep();
@@ -57,7 +58,7 @@ namespace QuantLib {
         Array drifts_, initialDrifts_;
         std::vector<Size> alive_;
         // helper classes
-        std::vector<DriftCalculator> calculators_;
+        std::vector<DriftCalculator*> calculators_;
     };
 
 }

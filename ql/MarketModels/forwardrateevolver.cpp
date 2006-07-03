@@ -53,7 +53,7 @@ namespace QuantLib {
             while (evolution_.rateTimes()[alive] <= lastTime)
                 ++alive;
 
-            calculators_.push_back(DriftCalculator(pseudoRoot_->pseudoRoot(j),
+            calculators_.push_back(new DriftCalculator(pseudoRoot_->pseudoRoot(j),
                                                    displacements,
                                                    evolution_.taus(),
                                                    evolution_.numeraires()[j],
@@ -62,9 +62,15 @@ namespace QuantLib {
             lastTime = evolution_.evolutionTimes()[j];
         }
 
-        calculators_.front().compute(initialForwards_, initialDrifts_);
+        calculators_.front()->compute(initialForwards_, initialDrifts_);
 
     }
+
+	ForwardRateEvolver::~ForwardRateEvolver() {
+		for (Size i=0; i<calculators_.size(); ++i) {
+			delete calculators_[i];
+		}
+	}
 
     Real ForwardRateEvolver::startNewPath() {
         currentStep_ = 0;
