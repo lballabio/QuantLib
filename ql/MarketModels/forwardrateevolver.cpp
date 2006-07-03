@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     ForwardRateEvolver::ForwardRateEvolver(
-                           const boost::shared_ptr<PseudoRoot> pseudoRoot,
+                           const boost::shared_ptr<PseudoRoot>& pseudoRoot,
                            const EvolutionDescription& evolution,
                            const BrownianGeneratorFactory& factory)
     : pseudoRoot_(pseudoRoot), evolution_(evolution),
@@ -65,7 +65,7 @@ namespace QuantLib {
             lastTime = evolutionTimes[j];
         }
 
-        calculators_.front()->compute(initialForwards_, initialDrifts_);
+        calculators_.front()->compute(initialForwards, initialDrifts_);
     }
 
 	ForwardRateEvolver::~ForwardRateEvolver() {
@@ -90,7 +90,7 @@ namespace QuantLib {
                       drifts1_.begin());
         } else {
             // a) compute drifts D1 at T1;
-            calculators_[currentStep_].compute(forwards_, drifts1_);
+            calculators_[currentStep_]->compute(forwards_, drifts1_);
         }
 
         // b) evolve forwards up to T2 using D1;
@@ -104,7 +104,7 @@ namespace QuantLib {
             forwards_[i] = std::exp(logForwards_[i]) - displacements[i];
 
         // c) recompute drifts D2 using the predicted forwards;
-        calculators_[currentStep_].compute(forwards_, drifts2_);
+        calculators_[currentStep_]->compute(forwards_, drifts2_);
         
         // d) correct forwards using both drifts
         for (Size i=0; i<n_; ++i) {

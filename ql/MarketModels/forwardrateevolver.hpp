@@ -34,11 +34,9 @@ namespace QuantLib {
     */
     class ForwardRateEvolver : public MarketModelEvolver {
     public:
-        ForwardRateEvolver(const boost::shared_ptr<PseudoRoot>,
+        ForwardRateEvolver(const boost::shared_ptr<PseudoRoot>&,
                            const EvolutionDescription&,
-                           const BrownianGeneratorFactory&,
-                           const Array& initialForwards,
-                           const Array& displacements);
+                           const BrownianGeneratorFactory&);
 		virtual ~ForwardRateEvolver();
 
         Real startNewPath();
