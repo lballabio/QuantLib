@@ -18,22 +18,22 @@
 */
 
 
-#ifndef quantlib_MarketModelForwards_hpp
-#define quantlib_MarketModelForwards_hpp
+#ifndef quantlib_MarketModelCaplets_hpp
+#define quantlib_MarketModelCaplets_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
 
 namespace QuantLib {
-    class MarketModelForwards : public MarketModelProduct
+    class MarketModelCaplets : public MarketModelProduct
     {
     public:
   
-        MarketModelForwards(const Array& rateTimes,
+        MarketModelCaplets(const Array& rateTimes,
                            const Array& accruals,
                            const Array& paymentTimes,
                            const Array& strikes);
       
-        virtual ~MarketModelForwards();
+        virtual ~MarketModelCaplets();
        
         //! for initializing other objects
         virtual EvolutionDescription suggestedEvolution() const;

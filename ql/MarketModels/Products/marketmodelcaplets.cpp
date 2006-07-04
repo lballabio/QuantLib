@@ -17,11 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/Products/marketmodelforwards.hpp>
+#include <ql/MarketModels/Products/marketmodelcaplets.hpp>
 
 namespace QuantLib {
 
-    MarketModelForwards::MarketModelForwards(const Array& rateTimes,
+    MarketModelCaplets::MarketModelCaplets(const Array& rateTimes,
                         const Array& accruals,
                         const Array& paymentTimes,
                         const Array& strikes)
@@ -30,8 +30,8 @@ namespace QuantLib {
     {
     }
 
-    MarketModelForwards::~MarketModelForwards(){};
-    EvolutionDescription MarketModelForwards::suggestedEvolution() const
+    MarketModelCaplets::~MarketModelCaplets(){};
+    EvolutionDescription MarketModelCaplets::suggestedEvolution() const
     {
          Array evolutionTimes(rateTimes_.size()-1);
         for (Size i = 0; i<evolutionTimes.size(); ++i)
@@ -51,31 +51,33 @@ namespace QuantLib {
                                      numeraires, relevanceRates);
     }    
 
-    Array MarketModelForwards::possibleCashFlowTimes() const 
+    Array MarketModelCaplets::possibleCashFlowTimes() const 
     {
       return paymentTimes_;
     }
-      Size MarketModelForwards::numberOfProducts() const
+      Size MarketModelCaplets::numberOfProducts() const
     {
         return strikes_.size();    
     }
-       Size MarketModelForwards::maxNumberOfCashFlowsPerProductPerStep() const
+       Size MarketModelCaplets::maxNumberOfCashFlowsPerProductPerStep() const
     {
         return 1;
     }
-      void MarketModelForwards::reset()
+      void MarketModelCaplets::reset()
     {
        currentIndex_=0;
     }
 
-    bool MarketModelForwards::nextTimeStep(
+    bool MarketModelCaplets::nextTimeStep(
         const CurveState& currentState, 
         std::vector<Size>& numberCashFlowsThisStep, 
         std::vector<std::vector<MarketModelProduct::CashFlow> >& genCashFlows)
     {
         double liborRate = currentState.forwardRate(currentIndex_);
         genCashFlows[currentIndex_][0].timeIndex = currentIndex_;
-        genCashFlows[currentIndex_][0].amount = (liborRate-strikes_[currentIndex_])*accruals_[currentIndex_];
+        genCashFlows[currentIndex_][0].amount =
+            std::max(liborRate-strikes_[currentIndex_], 0.0) *
+                                            accruals_[currentIndex_];
         std::fill(numberCashFlowsThisStep.begin(),numberCashFlowsThisStep.end(),0);
         numberCashFlowsThisStep[currentIndex_] = 1;
        ++currentIndex_;

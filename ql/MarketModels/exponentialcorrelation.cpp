@@ -21,7 +21,8 @@
 #include <ql/Math/pseudosqrt.hpp>
 
 
-namespace QuantLib {
+namespace QuantLib
+{
     ExponentialCorrelation::ExponentialCorrelation(
             Real asyntothicCorr,
             Real beta,
