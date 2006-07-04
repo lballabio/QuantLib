@@ -36,13 +36,16 @@ namespace QuantLib {
                         const Array& taus,
                         Size numeraire,
                         Size alive);
-        void compute(const Array& forwards, Array& drifts) const;
+        
+		void compute(const Array& forwards, Array& drifts) const;
 
     private:
 
-        Size size_, numeraire_, alive_;
-        Array displacements_, taus_;
-        Matrix pseudo_;
+	Matrix C_;
+
+    Size size_, numeraire_, alive_;
+    Array displacements_, taus_;
+	Matrix pseudo_;
 
 		// temporary variables
         // to be added later
