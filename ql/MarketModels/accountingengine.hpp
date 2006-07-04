@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_template_hpp
-#define quantlib_template_hpp
+#ifndef quantlib_accounting_engine_hpp
+#define quantlib_accounting_engine_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
 #include <ql/MarketModels/marketmodelevolver.hpp>
@@ -29,13 +29,15 @@ namespace QuantLib {
     class AccountingEngine
     {
     public:
-        AccountingEngine(MarketModelEvolver& evolver,
-                         MarketModelProduct& product,
+        class Discounter;
+
+        AccountingEngine(const boost::shared_ptr<MarketModelEvolver>& evolver,
+                         const boost::shared_ptr<MarketModelProduct>& product,
                          const EvolutionDescription& evolution,
                          double initialNumeraireValue
                 );
 
-        void SinglePathValues(Array& values);
+        void singlePathValues(Array& values);
 
     private:
         boost::shared_ptr<MarketModelEvolver> evolver_;
@@ -49,8 +51,21 @@ namespace QuantLib {
         std::vector<Real> numerairesHeld_;
         CurveState curveState_;
         std::vector<Size> numberCashFlowsThisStep_;
-        std::vector<std::vector<MarketModelProduct::CashFlow> > cashFlowsGenerated_; 
+        std::vector<std::vector<MarketModelProduct::CashFlow> >
+                                                         cashFlowsGenerated_;
+        std::vector<Discounter> discounters_;
         
+    };
+
+    class AccountingEngine::Discounter {
+    public:
+        Discounter(Time paymentTime,
+                   const Array& rateTimes);
+        Real numeraireBonds(const CurveState&,
+                            Size numeraire) const;
+    private:
+        Size before_;
+        Real beforeWeight_;
     };
 
 }

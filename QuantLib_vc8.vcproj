@@ -7773,6 +7773,14 @@
 			Name="MarketModels"
 			>
 			<File
+				RelativePath=".\ql\MarketModels\accountingengine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\accountingengine.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\browniangenerator.hpp"
 				>
 			</File>
@@ -7819,6 +7827,14 @@
 			<Filter
 				Name="Products"
 				>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelforwards.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelforwards.hpp"
+					>
+				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.cpp"
 					>

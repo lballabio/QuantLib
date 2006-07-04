@@ -41,6 +41,7 @@ namespace QuantLib {
 
         Real startNewPath();
         Real advanceStep();
+        Size currentStep() const;
         const CurveState& currentState() const;
 
     private:
@@ -57,7 +58,7 @@ namespace QuantLib {
         Array brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
         // helper classes
-        std::vector<DriftCalculator*> calculators_;
+        std::vector<DriftCalculator> calculators_;
     };
 
 }

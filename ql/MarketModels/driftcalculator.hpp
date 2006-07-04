@@ -40,9 +40,9 @@ namespace QuantLib {
 
     private:
 
-        const Size size_, numeraire_, alive_;
-        const Array displacements_, taus_;
-        const Matrix pseudo_;
+        Size size_, numeraire_, alive_;
+        Array displacements_, taus_;
+        Matrix pseudo_;
 
 		// temporary variables
         // to be added later
