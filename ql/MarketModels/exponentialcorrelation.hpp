@@ -23,38 +23,41 @@
 #define quantlib_exponential_correlation_hpp
 
 #include <ql/MarketModels/pseudoroot.hpp>
+#include <ql/types.hpp>
+#include <ql/Math/matrix.hpp>
+#include <vector>
 
-namespace QuantLib {
-
-    class ExponentialCorrelation: public PseudoRoot{
+namespace QuantLib
+{
+    class ExponentialCorrelation : public PseudoRoot {
     public:
         ExponentialCorrelation(
-            Real asyntothicCorr,
-            Real beta,
-            const std::vector<Volatility>& volatilities,
-            const std::vector<Time>& tenors,
-            const std::vector<Time>& evolutionTimes,
+            double asyntothicCorr,
+            double beta,
+            const std::vector<double>& volatilities,
+            const std::vector<double>& tenors,
+            const std::vector<double>& evolutionTimes,
             const Size numberOfFactors,
             const Array& initialRates,
-            const Array& displacements,
-            )
+            const Array& displacements);
         const Array& initialRates() const ;// passed by the calibrator
         const Array& displacements() const ;// passed by the calibrator
         Size numberOfRates() const ;// n 
         Size numberOfFactors() const ;//F, A rank 
-        const Matrix& pseudoRoot(Size i) const;
+        const Matrix& pseudoRoot(Size i) const ;
+
     private:
-      
        Real asyntothicCorr_;
        Real beta_;
        std::vector<Volatility> volatilities_;
-       std::vector<Time> tenors_;
+       std::vector<Time> resetTimes_;
        std::vector<Time> evolutionTimes_;
        Size numberOfFactors_;
        Array initialRates_;
        Array displacements_;
        Matrix covariance_;
        std::vector<Matrix> pseudoRoots_;
-    }
+    };
 }
+
 #endif
