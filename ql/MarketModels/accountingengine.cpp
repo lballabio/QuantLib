@@ -115,15 +115,28 @@ namespace QuantLib {
 
 
     AccountingEngine::Discounter::Discounter(Time paymentTime,
-                                             const Array& rateTimes) {
-        // to be implemented
+                                             const Array& rateTimes)
+	{
+		before_ = std::lower_bound(rateTimes.begin(), rateTimes.end(),paymentTime)-
+			rateTimes.begin();
+		if (before_ > rateTimes.size()-2)
+			before_ =  rateTimes.size()-2;
+
+		beforeWeight_=1.0-(paymentTime-rateTimes[before_])/(rateTimes[before_+1]-rateTimes[before_]);
     }
 
     Real AccountingEngine::Discounter::numeraireBonds(
                                           const CurveState& curveState,
                                           Size numeraire) const {
-        // to be implemented
-        return 1.0;
+        double preDF = curveState.discountRatio(numeraire,before_);
+		if (beforeWeight_==1.0)
+			return preDF;
+		
+		double postDF = curveState.discountRatio(numeraire,before_+1);
+		if (beforeWeight_==0.0)
+			return postDF;
+	
+		return std::pow(preDF,beforeWeight_)*std::pow(postDF,1.-beforeWeight_);
     }
 
 }
