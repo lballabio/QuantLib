@@ -7821,6 +7821,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\mtbrowniangenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\mtbrowniangenerator.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\pseudoroot.hpp"
 				>
 			</File>
