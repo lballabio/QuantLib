@@ -8132,10 +8132,25 @@
 			Name="MarketModels"
 			Filter="">
 			<File
+				RelativePath=".\ql\MarketModels\accountingengine.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\accountingengine.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\browniangenerator.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\curvestate.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\curvestate.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\driftcalculator.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\driftcalculator.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\evolutiondescription.cpp">
@@ -8144,7 +8159,28 @@
 				RelativePath=".\ql\MarketModels\evolutiondescription.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\exponentialcorrelation.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\exponentialcorrelation.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\forwardrateevolver.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\forwardrateevolver.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\marketmodelevolver.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\mtbrowniangenerator.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\mtbrowniangenerator.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\pseudoroot.hpp">
