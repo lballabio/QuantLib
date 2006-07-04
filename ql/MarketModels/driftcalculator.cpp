@@ -2,7 +2,8 @@
 
 /*
 
-
+ Copyright (C) 2006 mia nonna in cariola
+ 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -15,6 +16,7 @@
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
+ 
 */
 
 #include <ql/MarketModels/driftcalculator.hpp>
