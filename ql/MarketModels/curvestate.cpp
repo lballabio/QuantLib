@@ -22,11 +22,6 @@
 
 #include <ql/MarketModels/curvestate.hpp>
 
-   //     Array rateTimes_, taus_, forwardRates_, discountRatios_;
-   //     Array coterminalSwaps_, annuities_;
-   //     Size first_, last_;
-
-
 namespace QuantLib {
 
     CurveState::CurveState(const Array& rateTimes) : rateTimes_(rateTimes), 
@@ -38,24 +33,22 @@ namespace QuantLib {
                                                      taus_(rateTimes.size()-1),
                                                      firstSwapComputed_(last_) {
 
-        /*
-        There will n+1 rate times expressing payment and reset times of forward rates.
+/* There will n+1 rate times expressing payment and reset times of forward rates.
 
-                   |-----|-----|-----|-----|-----|      (size = 6)
-                   t0    t1    t2    t3    t4    t5     rateTimes
-                   f0    f1    f2    f3    f4           forwardRates
-                   d0    d1    d2    d3    d4    d5     discountBonds 
-                   d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
-                   sr0   sr1   sr2   sr3   sr4           coterminalSwaps
-
-        */
+               |-----|-----|-----|-----|-----|      (size = 6)
+               t0    t1    t2    t3    t4    t5     rateTimes
+               f0    f1    f2    f3    f4           forwardRates
+               d0    d1    d2    d3    d4    d5     discountBonds 
+               d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
+               sr0   sr1   sr2   sr3   sr4          coterminalSwaps
+*/
         for (Size i=first_; i<last_; i++) {
             taus_[i] = rateTimes_[i+1] - rateTimes_[i];
         }
     }
      
     void CurveState::setOnForwardRates(const Array& rates) {
-        // Note: already fixed forwards are  left in the vector rates
+        // Note: already fixed forwards are left in the vector rates
         QL_REQUIRE(rates.size()==last_, "too many forward rates");       
         std::copy(rates.begin(),rates.end(),forwardRates_.begin());
         // Computation of discount ratios

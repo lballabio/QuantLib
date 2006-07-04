@@ -27,27 +27,26 @@
 
 namespace QuantLib {
 
-    /*! This class stores the times defining the rates that are to be evolved,
-        the times at which the rates need to be known, and the numeraire to be
-        used for each step. Plus which rates need to be known at each time.
+    /*! This class stores:
+		1) the times defining the rates that are to be evolved,
+		2) the times at which the rates need to be known, 
+		3) the numeraire to be used for each step. 
+		4) which rates need to be known at each time.
 
         This class is really just a 3-tuple of the evolutions times, the rate
         times and the numeraires.
         
-        There will n+1 rate times expressing payment and reset times of
+        - There will be n+1 rate times expressing payment and reset times of
         forward rates.
-
-        There will be any number of evolution times.
-
-        There will be one numeraire index for each evolution time. The
+		- There will be any number of evolution times.
+		- There will be one numeraire index for each evolution time. The
         numeraire is an index amongst the rate times so it ranges from 0 to n.
         The numeraire must not have expired before the end of the step.
         Note that in the terminal measure, one would take the index of the
         last bond as numeraire. Whereas the discretely compounding money market
         account would take the index of the first unexpired bond for each step.
         Default values for numeraires will be the final bond.
-
-        We also store which part of the rates are relevant for pricing via
+		- We also store which part of the rates are relevant for pricing via
         relevance rates. The important part for the i-th step will then range
         from relevanceRates[i].first to relevanceRates[i].second
         Default values for relevance rates will be 0 and n. 
@@ -67,16 +66,14 @@ namespace QuantLib {
         const Array& evolutionTimes() const;
         const std::vector<Size>& numeraires() const;
         const std::vector<std::pair<Size,Size> >& relevanceRates() const;
-
-        // returns rateTimes().size() minus 1
-        Size numberOfRates() const;
-        // returns evolutionTimes().size()
-        Size numberOfSteps() const;
+        Size numberOfRates() const;     // returns rateTimes().size() - 1
+        Size numberOfSteps() const;     // returns evolutionTimes().size()
 
     private:
         Array rateTimes_, evolutionTimes_;
         std::vector<Size> numeraires_;
         std::vector<std::pair<Size,Size> > relevanceRates_;
+        Array taus_;
     };
 
 }

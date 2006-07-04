@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2006 Marco Bianchetti
+ Copyright (C) 2006 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +20,84 @@
 */
 
 #include <ql/MarketModels/evolutiondescription.hpp>
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 
+	EvolutionDescription::EvolutionDescription(const Array& rateTimes,
+                           const Array& evolutionTimes,
+                           const std::vector<Size>& numeraires,
+                           const std::vector<std::pair<Size,Size> >& relevanceRates)
+    : rateTimes_(rateTimes), evolutionTimes_(evolutionTimes),
+      numeraires_(numeraires), relevanceRates_(relevanceRates),
+      taus_(rateTimes.size()-1) {
+
+ /* There will n+1 rate times expressing payment and reset times of forward rates.
+
+               |-----|-----|-----|-----|-----|      (size = 6)
+               t0    t1    t2    t3    t4    t5     rateTimes
+               f0    f1    f2    f3    f4           forwardRates
+               d0    d1    d2    d3    d4    d5     discountBonds 
+               d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
+               sr0   sr1   sr2   sr3   sr4           coterminalSwaps
+*/
+          // check coherence of input data
+          QL_REQUIRE(rateTimes_.size()>1, 
+              "Array rate times must have 2 elements at least");       
+          QL_REQUIRE(evolutionTimes.size()>0, 
+              "Array evolution times must have 1 elements at least");     
+          QL_REQUIRE(evolutionTimes.size()<=rateTimes_.size(), 
+              "Array evolution times must have no more elements than array rate times");     
+          if (numeraires.size()==0) {       // to be improved. array.isempty() ?
+            for (Size i=0; i<rateTimes_.size()-1; i++) {    // to be improved
+                numeraires_.push_back(rateTimes_.size()-1);  
+            }
+          } else {
+              QL_REQUIRE(numeraires.size() == rateTimes_.size(), 
+                  "Array numeraires must have as many elements as array rate times");     
+              for (Size i=0; i<numeraires.size()-1; i++) {
+                  QL_REQUIRE(numeraires[i] >= i, 
+                  "Numeraire expired");     // maybe return which numeraire is expired?
+              }
+          }
+// numerari: vuoto (allora lo riempi con un default) oppure al max come i forward
+/* 
+        Default values for numeraires will be the final bond.
+		- We also store which part of the rates are relevant for pricing via
+        relevance rates. The important part for the i-th step will then range
+        from relevanceRates[i].first to relevanceRates[i].second
+        Default values for relevance rates will be 0 and n. 
+*/
+          for (Size i=0; i<rateTimes.size()-2; i++) {
+             taus_[i] = rateTimes_[i+1] - rateTimes_[i];
+          }
+    }
+
+    const Array& EvolutionDescription::rateTimes() const {
+        return rateTimes_;
+    }
+
+    const Array& EvolutionDescription::taus() const {
+        return taus_;
+    }
+
+    const Array& EvolutionDescription::evolutionTimes() const {
+        return evolutionTimes_;
+    }
+
+    const std::vector<Size>& EvolutionDescription::numeraires() const {
+        return numeraires_;
+    }
+
+    const std::vector<std::pair<Size,Size> >& EvolutionDescription::relevanceRates() const {
+        return relevanceRates_;
+    }
+
+    Size EvolutionDescription::numberOfRates() const {
+        return rateTimes_.size() - 1; 
+    }
+
+    Size EvolutionDescription::numberOfSteps() const {
+        return evolutionTimes_.size(); 
+    }
 }
