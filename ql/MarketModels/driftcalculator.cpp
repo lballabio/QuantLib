@@ -43,7 +43,7 @@ alive_(alive) {
 	QL_REQUIRE(pseudo.rows()==size_, "");
 	QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=size_, "");
 	QL_REQUIRE(alive>=0 && alive<size_, "");
-	QL_REQUIRE(numeraire==size_, "");
+	QL_REQUIRE(numeraire_<=size_, "");
 	const Disposable<Matrix> pT = transpose(pseudo_);
 
 	C_ = pseudo_*pT;
@@ -59,9 +59,12 @@ void DriftCalculator::compute(const Array& forwards, Array& drifts) const {
 
 	for(Size i=alive_; i<size_; ++i) {
 		drifts[i]=0.;
-		for(Size k=i+1; k<size_; ++k) {
+		Size down = std::min(i+1, numeraire_);
+		Size up = std::max(i+1, numeraire_) - 1;
+		int sign = (i+1>numeraire_ ? +1.0 : -1.0);
+		for(Size k=down; k<up; ++k) {
 			const double A = (taus_[k]*(forwards[k]+displacements_[k]) / (1.+taus_[k]*forwards[k]));
-			drifts[i] -= A*C_[k][i];
+			drifts[i] += sign * A*C_[k][i];
 		}
 	}
 }
