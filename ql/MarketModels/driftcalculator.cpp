@@ -58,7 +58,7 @@ void DriftCalculator::compute(const Array& forwards, Array& drifts) const {
 	for(Size i=alive_; i<size_; ++i) {
 		drifts[i]=0.;
 		for(Size k=i+1; k<size_; ++k) {
-			const double A = (taus_[k]*(forwards[k]+displacements_[k]) / (1.+taus_[k]*(forwards[k])));
+			const double A = (taus_[k]*(forwards[k]+displacements_[k]) / (1.+taus_[k]*forwards[k]));
 			drifts[i] -= A*C_[k][i];
 		}
 	}
