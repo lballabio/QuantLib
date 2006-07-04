@@ -93,10 +93,10 @@ namespace QuantLib {
         annuities_[last_-1] = taus_[last_-1]*discountRatios_[last_];
         coterminalSwaps_[last_-1] = forwardRates_[last_-1];
         firstSwapComputed_--;
-        for (Size i=last_-2; i>=first_; i--) {
-            annuities_[i] = annuities_[i+1] + taus_[i]*discountRatios_[i+1];
-            coterminalSwaps_[i] = (discountRatios_[i]-discountRatios_[last_])/annuities_[i];
-            firstSwapComputed_ --;
+        for (Size i=last_-1; i>first_; i--) {
+            annuities_[i-1] = annuities_[i] + taus_[i-1]*discountRatios_[i];
+            coterminalSwaps_[i-1] = (discountRatios_[i-1]-discountRatios_[last_])/annuities_[i-1];
+            firstSwapComputed_--;
         }
     }
 
@@ -120,7 +120,7 @@ namespace QuantLib {
     }
     
     Rate CurveState::coterminalSwapRate(Size i) const {
-        return coterminalSwaps_[i];
+        return coterminalSwapRates()[i];
     }
         
     Real CurveState::discountRatio(Size i, Size j) const {
