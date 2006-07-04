@@ -56,8 +56,8 @@ namespace QuantLib {
         */
 
         const Array& forwardRates() const;
-        const Array& discountRatios() const;
         const Array& coterminalSwapRates() const;
+        const Array& discountRatios() const;
 
         Rate forwardRate(Size i) const;
         Rate coterminalSwapRate(Size i) const;
@@ -66,12 +66,15 @@ namespace QuantLib {
     private:
         
         Array rateTimes_, taus_, forwardRates_, discountRatios_;
-        Array coterminalSwaps_, annuities_;
-        // Size first_, last_;
+        mutable Array coterminalSwaps_, annuities_;
+        mutable Size firstSwapComputed_;
+        Size first_, last_;
+
+        void computeSwapRate() const;
 
         // suggest lazy evaluation on the coterminal swaps 
         // e.g store index of how many swaps from the end have been computed
-        // note only make sense if last is final time 
+        // note: only makes sense if last_ is final time 
 
 
     };
