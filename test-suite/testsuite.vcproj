@@ -1637,6 +1637,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\marketmodel.cpp">
+			</File>
+			<File
 				RelativePath="matrices.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2626,6 +2629,9 @@
 			</File>
 			<File
 				RelativePath="lowdiscrepancysequences.hpp">
+			</File>
+			<File
+				RelativePath=".\marketmodel.hpp">
 			</File>
 			<File
 				RelativePath="matrices.hpp">

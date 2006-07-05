@@ -8189,6 +8189,18 @@
 				Name="Products"
 				Filter="">
 				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcaplets.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcaplets.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelforwards.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelforwards.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.cpp">
 				</File>
 				<File
