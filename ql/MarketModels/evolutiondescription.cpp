@@ -4,6 +4,7 @@
  Copyright (C) 2006 Mark Joshi
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2006 Cristina Duminuco
+ Copyright (C) 2006 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,9 +46,7 @@ namespace QuantLib {
           QL_REQUIRE(rateTimes_.size()>1, 
               "Array rate times must have 2 elements at least");       
           QL_REQUIRE(evolutionTimes.size()>0, 
-              "Array evolution times must have 1 elements at least");     
-          QL_REQUIRE(evolutionTimes.size()<=rateTimes_.size(), 
-              "Array evolution times must have no more elements than array rate times");     
+              "Array evolution times must have 1 elements at least");         
           if (numeraires.size()==0) {       // to be improved. array.isempty() ?
             for (Size i=0; i<rateTimes_.size()-1; i++) {    // to be improved
                 numeraires_.push_back(rateTimes_.size()-1);  
