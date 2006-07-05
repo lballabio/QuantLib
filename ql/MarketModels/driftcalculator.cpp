@@ -59,8 +59,7 @@ void DriftCalculator::compute(const Array& forwards, Array& drifts) const {
 
 	for(Size i=alive_; i<size_; ++i) {
 		drifts[i]=0.;
-		const Size down = std::min(i+1, numeraire_);
-		const Size up = std::max(i+1, numeraire_) - 1;
+		const Size down = std::min(i+1, numeraire_), up = std::max(i+1, numeraire_) - 1;
 		const int sign = (i+1>numeraire_ ? +1 : -1);
 		for(Size k=down; k<up; ++k) {
 			const double A = (taus_[k]*(forwards[k]+displacements_[k]) / (1.+taus_[k]*forwards[k]));
