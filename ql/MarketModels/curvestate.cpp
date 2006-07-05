@@ -72,7 +72,7 @@ namespace QuantLib {
         firstSwapComputed_ = last_;
     }
     
-    void CurveState::setOnCoterminalSwaps(const Array& swapRates) {
+    void CurveState::setOnCoterminalSwapRates(const Array& swapRates) {
         QL_FAIL("not yet implemented");
         // todo fwd and discount ratios
         //QL_REQUIRE(swapRates.size()==last_, "too many swap rates");       

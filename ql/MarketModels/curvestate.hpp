@@ -49,7 +49,7 @@ namespace QuantLib {
      
         void setOnForwardRates(const Array& rates);
         void setOnDiscountRatios(const Array& discountRatios);
-        void setOnCoterminalSwaps(const Array& swapRates);
+        void setOnCoterminalSwapRates(const Array& swapRates);
 
         // You should get an error if you look outside [first, last) range.
         /*
@@ -60,12 +60,12 @@ namespace QuantLib {
         */
 
         const Array& forwardRates() const;
-        const Array& coterminalSwapRates() const;
         const Array& discountRatios() const;
+        const Array& coterminalSwapRates() const;
 
         Rate forwardRate(Size i) const;
-        Rate coterminalSwapRate(Size i) const;
         Real discountRatio(Size i, Size j) const;
+        Rate coterminalSwapRate(Size i) const;
     
     private:
         
