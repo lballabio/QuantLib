@@ -41,7 +41,8 @@ namespace QuantLib {
                         Size numeraire,
                         Size alive);
         
-		void compute(const Array& forwards, Array& drifts) const;
+		void compute(const Array& forwards,
+                     Array& drifts) const;
 
     private:
 

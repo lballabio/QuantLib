@@ -58,7 +58,7 @@ namespace QuantLib {
     {
     public:
 
-        EvolutionDescription( 
+        EvolutionDescription(
             const Array& rateTimes,
             const Array& evolutionTimes,
             const std::vector<Size>& numeraires = std::vector<Size>(),

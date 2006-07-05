@@ -45,7 +45,8 @@ namespace QuantLib {
     */
     class MTBrownianGenerator : public BrownianGenerator {
       public:
-        MTBrownianGenerator(Size factors, Size steps,
+        MTBrownianGenerator(Size factors,
+                            Size steps,
                             unsigned long seed = 0);
 
         Real nextStep(Array&);
