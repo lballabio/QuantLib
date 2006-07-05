@@ -22,48 +22,50 @@
 #include <ql/MarketModels/driftcalculator.hpp>
 #include <vector>
 
-using namespace QuantLib;
+namespace QuantLib {
 
 
-DriftCalculator::DriftCalculator(
-								 const Matrix& pseudo,
-								 const Array& displacements,
-								 const Array& taus,
-								 Size numeraire,
-								 Size alive) : 
-size_(taus.size()),
-pseudo_(pseudo), 
-displacements_(displacements), 
-taus_(taus), 
-numeraire_(numeraire), 
-alive_(alive) {
+    DriftCalculator::DriftCalculator(
+        const Matrix& pseudo,
+        const Array& displacements,
+        const Array& taus,
+        Size numeraire,
+        Size alive) : 
+    size_(taus.size()),
+        pseudo_(pseudo), 
+        displacements_(displacements), 
+        taus_(taus), 
+        numeraire_(numeraire), 
+        alive_(alive) {
 
-	QL_REQUIRE(size_>0, "");
-	QL_REQUIRE(displacements.size() == size_, "");
-	QL_REQUIRE(pseudo.rows()==size_, "");
-	QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=size_, "");
-	QL_REQUIRE(alive>=0 && alive<size_, "");
-	QL_REQUIRE(numeraire_<=size_, "");
-	const Disposable<Matrix> pT = transpose(pseudo_);
+            QL_REQUIRE(size_>0, "");
+            QL_REQUIRE(displacements.size() == size_, "");
+            QL_REQUIRE(pseudo.rows()==size_, "");
+            QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=size_, "");
+            QL_REQUIRE(alive>=0 && alive<size_, "");
+            QL_REQUIRE(numeraire_<=size_, "");
+            const Disposable<Matrix> pT = transpose(pseudo_);
 
-	C_ = pseudo_*pT;
-}
+            C_ = pseudo_*pT;
+    }
 
 
-void DriftCalculator::compute(const Array& forwards, Array& drifts) const {
-	
+    void DriftCalculator::compute(const Array& forwards, Array& drifts) const {
+
 #if defined _DEBUG
-	QL_REQUIRE(forwards.size() == size_, "");
-	QL_REQUIRE(drifts.size() == size_, "");
+        QL_REQUIRE(forwards.size() == size_, "");
+        QL_REQUIRE(drifts.size() == size_, "");
 #endif
 
-	for(Size i=alive_; i<size_; ++i) {
-		drifts[i]=0.;
-		const Size down = std::min(i+1, numeraire_), up = std::max(i+1, numeraire_) - 1;
-		const int sign = (i+1>numeraire_ ? +1 : -1);
-		for(Size k=down; k<up; ++k) {
-			const double A = (taus_[k]*(forwards[k]+displacements_[k]) / (1.+taus_[k]*forwards[k]));
-			drifts[i] += sign * A * C_[k][i];
-		}
-	}
+        for(Size i=alive_; i<size_; ++i) {
+            drifts[i]=0.;
+            const Size down = std::min(i+1, numeraire_), up = std::max(i+1, numeraire_) - 1;
+            const int sign = i+1>numeraire_ ? +1 : -1;
+            for(Size k=down; k<up; ++k) {
+                const double A = (taus_[k]*(forwards[k]+displacements_[k]) / (1.+taus_[k]*forwards[k]));
+                drifts[i] += sign * A * C_[k][i];
+            }
+        }
+    }
+
 }

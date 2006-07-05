@@ -21,6 +21,10 @@
 #ifndef quantlib_MarketModelCaplets_hpp
 #define quantlib_MarketModelCaplets_hpp
 
+#ifndef QL_EXTRA_SAFETY_CHECKS
+#   define QL_EXTRA_SAFETY_CHECKS
+#endif
+
 #include <ql/MarketModels/marketmodelproduct.hpp>
 
 namespace QuantLib {

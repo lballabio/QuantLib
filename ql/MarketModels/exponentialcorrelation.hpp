@@ -22,6 +22,10 @@
 #ifndef quantlib_exponential_correlation_hpp
 #define quantlib_exponential_correlation_hpp
 
+#ifndef QL_EXTRA_SAFETY_CHECKS
+#   define QL_EXTRA_SAFETY_CHECKS
+#endif
+
 #include <ql/MarketModels/pseudoroot.hpp>
 #include <ql/types.hpp>
 #include <ql/Math/matrix.hpp>
@@ -32,11 +36,11 @@ namespace QuantLib
     class ExponentialCorrelation : public PseudoRoot {
     public:
         ExponentialCorrelation(
-            double asyntothicCorr,
+            double longTermCorr,
             double beta,
-            const std::vector<double>& volatilities,
-            const std::vector<double>& tenors,
-            const std::vector<double>& evolutionTimes,
+            const std::vector<Volatility>& volatilities,
+            const Array& rateTimes,
+            const Array& evolutionTimes,
             const Size numberOfFactors,
             const Array& initialRates,
             const Array& displacements);
@@ -47,11 +51,10 @@ namespace QuantLib
         const Matrix& pseudoRoot(Size i) const ;
 
     private:
-       Real asyntothicCorr_;
+       Real longTermCorr_;
        Real beta_;
        std::vector<Volatility> volatilities_;
-       std::vector<Time> resetTimes_;
-       std::vector<Time> evolutionTimes_;
+       Array rateTimes_, evolutionTimes_;
        Size numberOfFactors_;
        Array initialRates_;
        Array displacements_;

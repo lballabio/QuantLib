@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,45 +18,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#ifndef quantlib_test_market_model_hpp
+#define quantlib_test_market_model_hpp
 
-#ifndef quantlib_drift_calculator_hpp
-#define quantlib_drift_calculator_hpp
+#include <boost/test/unit_test.hpp>
 
-#ifndef QL_EXTRA_SAFETY_CHECKS
-#   define QL_EXTRA_SAFETY_CHECKS
-#endif
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
-#include <ql/Math/matrix.hpp>
-
-namespace QuantLib {
-
-    /*! <insert formula here >
-    */
-    class DriftCalculator {
-
-    public:
-
-        DriftCalculator(const Matrix& pseudo,
-                        const Array& displacements,
-                        const Array& taus,
-                        Size numeraire,
-                        Size alive);
-        
-		void compute(const Array& forwards, Array& drifts) const;
-
-    private:
-
-	Matrix C_;
-
-    Size size_, numeraire_, alive_;
-    Array displacements_, taus_;
-	Matrix pseudo_;
-
-		// temporary variables
-        // to be added later
-    };
-
-}
+class MarketModelTest {
+  public:
+    static void testForwards();
+    static void testCaplets();
+    static boost::unit_test_framework::test_suite* suite();
+};
 
 
 #endif

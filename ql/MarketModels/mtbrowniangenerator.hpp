@@ -21,6 +21,10 @@
 #ifndef quantlib_mt_brownian_generator_hpp
 #define quantlib_mt_brownian_generator_hpp
 
+#ifndef QL_EXTRA_SAFETY_CHECKS
+#   define QL_EXTRA_SAFETY_CHECKS
+#endif
+
 #include <ql/MarketModels/browniangenerator.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
@@ -56,7 +60,7 @@ namespace QuantLib {
         InverseCumulativeNormal inverseCumulative_;
     };
 
-    class MTBrownianGeneratorFactory {
+    class MTBrownianGeneratorFactory : public BrownianGeneratorFactory {
       public:
         MTBrownianGeneratorFactory(unsigned long seed = 0);
         boost::shared_ptr<BrownianGenerator> create(Size factors,

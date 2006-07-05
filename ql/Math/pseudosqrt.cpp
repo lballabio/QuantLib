@@ -152,6 +152,7 @@ namespace QuantLib {
         }
 
         switch (sa) {
+          case SalvagingAlgorithm::None:
           case SalvagingAlgorithm::Spectral:
             return result;
           case SalvagingAlgorithm::Hypersphere:

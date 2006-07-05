@@ -47,6 +47,7 @@ namespace QuantLib {
             sample_type;
 
         const sample_type& sample = generator_.nextSequence();
+        lastStep_ = 0;
         return sample.weight;
     }
 

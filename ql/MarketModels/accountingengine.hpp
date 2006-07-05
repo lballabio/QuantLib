@@ -21,8 +21,13 @@
 #ifndef quantlib_accounting_engine_hpp
 #define quantlib_accounting_engine_hpp
 
+#ifndef QL_EXTRA_SAFETY_CHECKS
+#   define QL_EXTRA_SAFETY_CHECKS
+#endif
+
 #include <ql/MarketModels/marketmodelproduct.hpp>
 #include <ql/MarketModels/marketmodelevolver.hpp>
+#include <ql/Math/sequencestatistics.hpp>
 
 namespace QuantLib {
 
@@ -37,7 +42,9 @@ namespace QuantLib {
                          double initialNumeraireValue
                 );
 
-        void singlePathValues(Array& values);
+        Real singlePathValues(Array& values);
+        void multiplePathValues(SequenceStatistics<>& stats,
+                                Size numberOfPaths);
 
     private:
         boost::shared_ptr<MarketModelEvolver> evolver_;

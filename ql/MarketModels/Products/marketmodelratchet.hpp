@@ -21,6 +21,10 @@
 #ifndef quantlib_marketmodelratchet_hpp
 #define quantlib_marketmodelratchet_hpp
 
+#ifndef QL_EXTRA_SAFETY_CHECKS
+#   define QL_EXTRA_SAFETY_CHECKS
+#endif
+
 #include <ql/MarketModels/marketmodelproduct.hpp>
 
 namespace QuantLib {

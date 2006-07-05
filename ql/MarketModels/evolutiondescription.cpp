@@ -44,32 +44,36 @@ namespace QuantLib {
 */
           // check coherence of input data
           QL_REQUIRE(rateTimes_.size()>1, 
-              "Array rate times must have 2 elements at least");       
+              "Array rate times must have 2 elements at least");
+          // todo: check increasing rateTimes
+
           QL_REQUIRE(evolutionTimes.size()>0, 
               "Array evolution times must have 1 elements at least");         
-          if (numeraires.size()==0) {       // to be improved. array.isempty() ?
-            for (Size i=0; i<rateTimes_.size()-1; i++) {    // to be improved
-                numeraires_.push_back(rateTimes_.size()-1);  
-            }
+          // todo: check increasing evolutionTimes
+
+          if (numeraires.empty()) {
+              // default numeraire is the terminal one
+              std::fill(numeraires_.begin(), numeraires_.end(),
+                        rateTimes_.size()-1);
           } else {
-              QL_REQUIRE(numeraires.size() == rateTimes_.size(), 
-                  "Array numeraires must have as many elements as array rate times");     
+              QL_REQUIRE(numeraires.size() == evolutionTimes.size(), 
+                         "Numeraires / evolutionTimes mismatch");     
               for (Size i=0; i<numeraires.size()-1; i++) {
-                  QL_REQUIRE(numeraires[i] >= i, 
-                  "Numeraire expired");     // maybe return which numeraire is expired?
+                  QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes[i], 
+                             "Numeraire " << i << " expired");
               }
           }
-// numerari: vuoto (allora lo riempi con un default) oppure al max come i forward
-/* 
+        /* 
         Default values for numeraires will be the final bond.
 		- We also store which part of the rates are relevant for pricing via
         relevance rates. The important part for the i-th step will then range
         from relevanceRates[i].first to relevanceRates[i].second
         Default values for relevance rates will be 0 and n. 
-*/
-          for (Size i=0; i<rateTimes.size()-2; i++) {
-             taus_[i] = rateTimes_[i+1] - rateTimes_[i];
-          }
+        */
+
+        for (Size i=0; i<rateTimes.size()-2; i++) {
+            taus_[i] = rateTimes_[i+1] - rateTimes_[i];
+        }
     }
 
     const Array& EvolutionDescription::rateTimes() const {

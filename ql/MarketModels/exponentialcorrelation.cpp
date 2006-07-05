@@ -24,25 +24,25 @@
 namespace QuantLib
 {
     ExponentialCorrelation::ExponentialCorrelation(
-            Real asyntothicCorr,
+            Real longTermCorr,
             Real beta,
             const std::vector<Volatility>& volatilities,
-            const std::vector<Time>& resetTimes,
-            const std::vector<Time>& evolutionTimes,
+            const Array& rateTimes,
+            const Array& evolutionTimes,
             const Size numberOfFactors,
             const Array& initialRates,
             const Array& displacements)
-     :  asyntothicCorr_(asyntothicCorr), beta_(beta), 
-        volatilities_(volatilities),resetTimes_(resetTimes),
+     :  longTermCorr_(longTermCorr), beta_(beta), 
+        volatilities_(volatilities),rateTimes_(rateTimes),
         evolutionTimes_(evolutionTimes),numberOfFactors_(numberOfFactors),
         initialRates_(initialRates),displacements_(displacements),
         covariance_(volatilities.size(),volatilities.size()),
         pseudoRoots_(evolutionTimes.size())
     {
         Size n=volatilities.size();
-        QL_REQUIRE(n==resetTimes.size(), "resetTimes/vol mismatch");
+        QL_REQUIRE(n==rateTimes.size()-1, "resetTimes/vol mismatch");
 
-        std::vector<Time> stdDev(resetTimes.size());
+        std::vector<Time> stdDev(n);
       
         Time lastEvolutionTime = 0.0;
         Time currentEvolutionTime=0.0;
@@ -52,21 +52,23 @@ namespace QuantLib
             currentEvolutionTime=evolutionTimes[k];
             for (Size i=0; i<n; ++i) 
             {
-                double effStartTime =std::min(lastEvolutionTime,resetTimes[i]);
-                double effStopTime =std::min(currentEvolutionTime,resetTimes[i]);
+                double effStartTime =std::min(lastEvolutionTime,rateTimes[i]);
+                double effStopTime =std::min(currentEvolutionTime,rateTimes[i]);
                 stdDev[i]= volatilities[i]*std::sqrt(effStopTime-effStartTime);
             }
 
             for (Size i=0; i<n; ++i) {
                 for (Size j=0; j<n; ++j) {
-                     Real correlation = asyntothicCorr + (1.0-asyntothicCorr) * 
-                         std::exp(-beta*std::abs(resetTimes[i]-resetTimes[j]));
+                     Real correlation = longTermCorr + (1.0-longTermCorr) * 
+                         std::exp(-beta*std::abs(rateTimes[i]-rateTimes[j]));
                      covariance_[i][j] =  stdDev[j] * correlation * stdDev[i];
                  }
              }
 
             pseudoRoots_[k]=
-                rankReducedSqrt(covariance_, numberOfFactors, 1.0, SalvagingAlgorithm::None);
+                pseudoSqrt(covariance_, SalvagingAlgorithm::None);
+                //rankReducedSqrt(covariance_, numberOfFactors, 1.0,
+                //                SalvagingAlgorithm::Spectral);
        
         }
        

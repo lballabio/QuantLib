@@ -49,7 +49,7 @@ namespace QuantLib {
 
     }
 
-    void AccountingEngine::singlePathValues(Array& values)
+    Real AccountingEngine::singlePathValues(Array& values)
     {
         std::fill(numerairesHeld_.begin(),numerairesHeld_.end(),0.);
         Real weight = evolver_->startNewPath();
@@ -58,12 +58,13 @@ namespace QuantLib {
     
         bool done = false;
         do {
+            Size thisStep = evolver_->currentStep();
             weight *= evolver_->advanceStep();
             done = product_->nextTimeStep(evolver_->currentState(), 
                                           numberCashFlowsThisStep_, 
                                           cashFlowsGenerated_);
             Size numeraire =
-                evolution_.numeraires()[evolver_->currentStep()];
+                evolution_.numeraires()[thisStep];
 
             // for each product...
             for (Size i=0; i<numberProducts_; ++i) {
@@ -98,7 +99,7 @@ namespace QuantLib {
                 // of bonds in the numeraire portfolio accordingly.
 
                 Size nextNumeraire =
-                    evolution_.numeraires()[evolver_->currentStep()+1];
+                    evolution_.numeraires()[thisStep+1];
 
                 principalInNumerairePortfolio *=
                     curveState_.discountRatio(nextNumeraire, numeraire);
@@ -110,7 +111,19 @@ namespace QuantLib {
         for (Size i=0; i < numerairesHeld_.size(); ++i)
             values[i] = numerairesHeld_[i] * initialNumeraireValue_;
 
+        return weight;
     }
+
+    void AccountingEngine::multiplePathValues(SequenceStatistics<>& stats,
+                                              Size numberOfPaths)
+    {
+        Array values(product_->numberOfProducts());
+        for (Size i=0; i<numberOfPaths; ++i) {
+            Real weight = singlePathValues(values);
+            stats.add(values,weight);
+        }
+    }
+
 
 
 
@@ -119,20 +132,24 @@ namespace QuantLib {
 	{
 		before_ = std::lower_bound(rateTimes.begin(), rateTimes.end(),paymentTime)-
 			rateTimes.begin();
+
+        // handle the case where the payment is in the last
+        // period or after the last period
 		if (before_ > rateTimes.size()-2)
 			before_ =  rateTimes.size()-2;
 
-		beforeWeight_=1.0-(paymentTime-rateTimes[before_])/(rateTimes[before_+1]-rateTimes[before_]);
+		beforeWeight_=1.0-(paymentTime-rateTimes[before_])/
+            (rateTimes[before_+1]-rateTimes[before_]);
     }
 
     Real AccountingEngine::Discounter::numeraireBonds(
                                           const CurveState& curveState,
                                           Size numeraire) const {
-        double preDF = curveState.discountRatio(numeraire,before_);
+        double preDF = curveState.discountRatio(before_,numeraire);
 		if (beforeWeight_==1.0)
 			return preDF;
 		
-		double postDF = curveState.discountRatio(numeraire,before_+1);
+		double postDF = curveState.discountRatio(before_+1,numeraire);
 		if (beforeWeight_==0.0)
 			return postDF;
 	

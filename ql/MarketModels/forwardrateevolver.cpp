@@ -56,13 +56,23 @@ namespace QuantLib {
             while (rateTimes[alive] <= lastTime)
                 ++alive;
 
-            calculators_.push_back(DriftCalculator(pseudoRoot_->pseudoRoot(j),
+            const Matrix& A = pseudoRoot_->pseudoRoot(j);
+            calculators_.push_back(DriftCalculator(A,
                                                    displacements,
                                                    evolution_.taus(),
                                                    evolution_.numeraires()[j],
                                                    alive));
             alive_[j] = alive;
             lastTime = evolutionTimes[j];
+
+            Array fixed(n_);
+            for (Size k=0; k < n_; ++k) {
+                Real variance =
+                    std::inner_product(A.row_begin(k), A.row_end(k),
+                                       A.row_begin(k), 0.0);
+                fixed[k] = -0.5*variance;
+            }
+            fixedDrifts_.push_back(fixed);
         }
 
         calculators_.front().compute(initialForwards, initialDrifts_);
@@ -92,10 +102,11 @@ namespace QuantLib {
         // b) evolve forwards up to T2 using D1;
         Real weight = generator_->nextStep(brownians_);
         const Matrix& A = pseudoRoot_->pseudoRoot(currentStep_);
+        const Array& fixedDrift = fixedDrifts_[currentStep_];
 
         Size alive = alive_[currentStep_];
         for (Size i=alive; i<n_; i++) {
-            logForwards_[i] += drifts1_[i];
+            logForwards_[i] += drifts1_[i] + fixedDrift[i];
             logForwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
                                    brownians_.begin(), 0.0);
@@ -113,6 +124,8 @@ namespace QuantLib {
 
         // e) update curve state
         curveState_.setOnForwardRates(forwards_);
+
+        ++currentStep_;
 
         return weight;
     }

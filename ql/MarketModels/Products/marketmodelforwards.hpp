@@ -21,6 +21,10 @@
 #ifndef quantlib_MarketModelForwards_hpp
 #define quantlib_MarketModelForwards_hpp
 
+#ifndef QL_EXTRA_SAFETY_CHECKS
+#   define QL_EXTRA_SAFETY_CHECKS
+#endif
+
 #include <ql/MarketModels/marketmodelproduct.hpp>
 
 namespace QuantLib {
@@ -29,9 +33,9 @@ namespace QuantLib {
     public:
   
         MarketModelForwards(const Array& rateTimes,
-                           const Array& accruals,
-                           const Array& paymentTimes,
-                           const Array& strikes);
+                            const Array& accruals,
+                            const Array& paymentTimes,
+                            const Array& strikes);
       
         virtual ~MarketModelForwards();
        

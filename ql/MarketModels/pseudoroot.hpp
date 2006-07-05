@@ -21,6 +21,10 @@
 #ifndef quantlib_pseudoroot_hpp
 #define quantlib_pseudoroot_hpp
 
+#ifndef QL_EXTRA_SAFETY_CHECKS
+#   define QL_EXTRA_SAFETY_CHECKS
+#endif
+
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
@@ -32,7 +36,7 @@ namespace QuantLib {
     {
     public:
 
-        virtual ~PseudoRoot();
+        virtual ~PseudoRoot() {}
 
         virtual const Array& initialRates() const = 0;// passed by the calibrator
         virtual const Array& displacements() const = 0;// passed by the calibrator

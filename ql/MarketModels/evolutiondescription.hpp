@@ -21,6 +21,9 @@
 #ifndef quantlib_evolutiondescription_hpp
 #define quantlib_evolutiondescription_hpp
 
+#ifndef QL_EXTRA_SAFETY_CHECKS
+#   define QL_EXTRA_SAFETY_CHECKS
+#endif
 
 #include <ql/Math/array.hpp>
 #include <vector>

@@ -21,6 +21,10 @@
 #ifndef quantlib_market_model_evolver_hpp
 #define quantlib_market_model_evolver_hpp
 
+#ifndef QL_EXTRA_SAFETY_CHECKS
+#   define QL_EXTRA_SAFETY_CHECKS
+#endif
+
 #include <ql/MarketModels/curvestate.hpp>
 #include <boost/shared_ptr.hpp>
 
