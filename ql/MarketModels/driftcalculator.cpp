@@ -59,12 +59,12 @@ void DriftCalculator::compute(const Array& forwards, Array& drifts) const {
 
 	for(Size i=alive_; i<size_; ++i) {
 		drifts[i]=0.;
-		Size down = std::min(i+1, numeraire_);
-		Size up = std::max(i+1, numeraire_) - 1;
-		int sign = (i+1>numeraire_ ? static_cast<int>(+1.0) : static_cast<int>(-1.0));
+		const Size down = std::min(i+1, numeraire_);
+		const Size up = std::max(i+1, numeraire_) - 1;
+		const int sign = (i+1>numeraire_ ? +1 : -1);
 		for(Size k=down; k<up; ++k) {
 			const double A = (taus_[k]*(forwards[k]+displacements_[k]) / (1.+taus_[k]*forwards[k]));
-			drifts[i] += sign * A*C_[k][i];
+			drifts[i] += sign * A * C_[k][i];
 		}
 	}
 }
