@@ -56,7 +56,6 @@ namespace QuantLib {
         
         // workspace
         std::vector<Real> numerairesHeld_;
-        CurveState curveState_;
         std::vector<Size> numberCashFlowsThisStep_;
         std::vector<std::vector<MarketModelProduct::CashFlow> >
                                                          cashFlowsGenerated_;

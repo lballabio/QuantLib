@@ -32,8 +32,8 @@
 #include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
-#include <float.h>
-namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+//#include <float.h>
+//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -57,7 +57,7 @@ void setup() {
     // times
     calendar = NullCalendar();
     todaysDate = Settings::instance().evaluationDate();
-    endDate = todaysDate + 2*Years;
+    endDate = todaysDate + 10*Years;
     Schedule dates(calendar, todaysDate, endDate,
                    Semiannual, Following);
     rateTimes = Array(dates.size()-1);
@@ -135,7 +135,7 @@ void MarketModelTest::testForwards() {
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
     SequenceStatistics<> stats(product->numberOfProducts());
-    Size paths = 2; //10000;
+    Size paths = 100000;
 
     engine.multiplePathValues(stats, paths);
 
@@ -197,7 +197,7 @@ void MarketModelTest::testCaplets() {
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
     SequenceStatistics<> stats(product->numberOfProducts());
-    Size paths = 2; //10000;
+    Size paths = 100000;
 
     engine.multiplePathValues(stats, paths);
 

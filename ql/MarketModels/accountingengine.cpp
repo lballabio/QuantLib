@@ -34,7 +34,6 @@ namespace QuantLib {
         initialNumeraireValue_(initialNumeraireValue),
         numberProducts_(product->numberOfProducts()),      
         numerairesHeld_(product->numberOfProducts()),
-        curveState_(evolution.rateTimes()),
         numberCashFlowsThisStep_(product->numberOfProducts()),
         cashFlowsGenerated_(product->numberOfProducts())
     {
@@ -102,7 +101,7 @@ namespace QuantLib {
                     evolution_.numeraires()[thisStep+1];
 
                 principalInNumerairePortfolio *=
-                    curveState_.discountRatio(nextNumeraire, numeraire);
+                    evolver_->currentState().discountRatio(nextNumeraire, numeraire);
             }
             
         }
