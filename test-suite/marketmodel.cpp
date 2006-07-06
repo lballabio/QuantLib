@@ -29,7 +29,11 @@
 #include <ql/schedule.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
+#include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+
+#include <float.h>
+namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -39,24 +43,27 @@ QL_BEGIN_TEST_LOCALS(MarketModelTest)
 #define BEGIN(x) (x+0)
 #define END(x) (x+LENGTH(x))
 
+Date todaysDate;
+Date endDate;
+Array rateTimes, paymentTimes, accruals;
+Calendar calendar;
+DayCounter dayCounter;
 
+Array todaysForwards, displacements, todaysDiscounts;
+std::vector<Volatility> volatilities;
 
-QL_END_TEST_LOCALS(MarketModelTest)
-
-
-void MarketModelTest::testForwards() {
-
-    BOOST_MESSAGE("Repricing forwards in a LIBOR market model...");
+void setup() {
 
     // times
-    Date todaysDate = Settings::instance().evaluationDate();
-    Date endDate = todaysDate + 10*Years;
-    Schedule dates(NullCalendar(), todaysDate, endDate,
+    calendar = NullCalendar();
+    todaysDate = Settings::instance().evaluationDate();
+    endDate = todaysDate + 2*Years;
+    Schedule dates(calendar, todaysDate, endDate,
                    Semiannual, Following);
-    Array rateTimes(dates.size()-1);
-    Array paymentTimes(rateTimes.size()-1);
-    Array accruals(rateTimes.size()-1);
-    Actual365Fixed dayCounter;
+    rateTimes = Array(dates.size()-1);
+    paymentTimes = Array(rateTimes.size()-1);
+    accruals = Array(rateTimes.size()-1);
+    dayCounter = Actual365Fixed();
 
     for (Size i=1; i<dates.size(); ++i)
         rateTimes[i-1] = dayCounter.yearFraction(todaysDate, dates[i]);
@@ -67,25 +74,35 @@ void MarketModelTest::testForwards() {
         accruals[i-1] = rateTimes[i] - rateTimes[i-1];
 
     // rates
-    Array todaysForwards(paymentTimes.size());
+    todaysForwards = Array(paymentTimes.size());
     for (Size i=0; i<todaysForwards.size(); ++i)
         todaysForwards[i] = 0.03 + 0.0010*i;
-    Array displacements(todaysForwards.size(), 0.0);
+    displacements = Array(todaysForwards.size(), 0.0);
 
-    Array strikes = todaysForwards + 0.01;
-
-    Array todaysDiscounts(rateTimes.size());
+    todaysDiscounts = Array(rateTimes.size());
     todaysDiscounts[0] = 0.95;
     for (Size i=1; i<rateTimes.size(); ++i)
         todaysDiscounts[i] = todaysDiscounts[i-1] / 
             (1.0+todaysForwards[i-1]*accruals[i-1]);
 
     // volatilities
-    std::vector<Volatility> volatilities(todaysForwards.size());
+    volatilities = std::vector<Volatility>(todaysForwards.size());
     for (Size i=0; i<volatilities.size(); ++i)
         volatilities[i] = 0.30 + 0.01*i;
 
+}
 
+
+QL_END_TEST_LOCALS(MarketModelTest)
+
+
+void MarketModelTest::testForwards() {
+
+    BOOST_MESSAGE("Repricing forwards in a LIBOR market model...");
+
+    QL_TEST_SETUP
+
+    Array strikes = todaysForwards + 0.01;
 
     boost::shared_ptr<MarketModelProduct> product(
          new MarketModelForwards(rateTimes, accruals, paymentTimes, strikes));
@@ -118,7 +135,7 @@ void MarketModelTest::testForwards() {
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
     SequenceStatistics<> stats(product->numberOfProducts());
-    Size paths = 10000;
+    Size paths = 2; //10000;
 
     engine.multiplePathValues(stats, paths);
 
@@ -145,6 +162,66 @@ void MarketModelTest::testCaplets() {
 
     BOOST_MESSAGE("Repricing caplets in a LIBOR market model...");
 
+    QL_TEST_SETUP
+
+    Array strikes = todaysForwards + 0.01;
+
+    boost::shared_ptr<MarketModelProduct> product(
+         new MarketModelCaplets(rateTimes, accruals, paymentTimes, strikes));
+    
+    EvolutionDescription evolution = product->suggestedEvolution();
+
+    Real longTermCorrelation = 0.75;
+    Real beta = 0.1;
+
+    Size factors = todaysForwards.size();
+
+    boost::shared_ptr<PseudoRoot> pseudoRoot(
+                       new ExponentialCorrelation(longTermCorrelation, beta,
+                                                  volatilities,
+                                                  rateTimes,
+                                                  evolution.evolutionTimes(),
+                                                  factors,
+                                                  todaysForwards,
+                                                  displacements));
+
+    unsigned long seed = 42;
+    MTBrownianGeneratorFactory generatorFactory(seed);
+
+    boost::shared_ptr<MarketModelEvolver> evolver(
+            new ForwardRateEvolver(pseudoRoot, evolution, generatorFactory));
+
+    Size initialNumeraire = evolution.numeraires().front();
+    Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
+
+    AccountingEngine engine(evolver, product, evolution,
+                            initialNumeraireValue);
+    SequenceStatistics<> stats(product->numberOfProducts());
+    Size paths = 2; //10000;
+
+    engine.multiplePathValues(stats, paths);
+
+    std::vector<Real> results = stats.mean();
+    std::vector<Real> errors = stats.errorEstimate();
+    
+    Array expected(todaysForwards.size());
+    for (Size i=0; i<expected.size(); ++i) {
+        Time expiry = rateTimes[i];
+        expected[i] =
+            detail::blackFormula(todaysForwards[i], strikes[i],
+                                 volatilities[i]*std::sqrt(expiry), 1)
+            *accruals[i]*todaysDiscounts[i+1];
+    }
+
+    for (Size i=0; i<results.size(); ++i) {
+        BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
+                      << io::rate(results[i])
+                      << " +- " << io::rate(errors[i])
+                      << "; expected: " << io::rate(expected[i])
+                      << "; discrepancy = "
+                      << (results[i]-expected[i])/(errors[i] == 0.0 ? 1.0 : errors[i])
+                      << " standard errors");
+    }
 }
 
 

@@ -71,7 +71,7 @@ namespace QuantLib {
         Default values for relevance rates will be 0 and n. 
         */
 
-        for (Size i=0; i<rateTimes.size()-2; i++) {
+        for (Size i=0; i<taus_.size(); i++) {
             taus_[i] = rateTimes_[i+1] - rateTimes_[i];
         }
     }
