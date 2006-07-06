@@ -34,13 +34,18 @@ namespace QuantLib {
     EvolutionDescription MarketModelForwards::suggestedEvolution() const
     {
          Array evolutionTimes(rateTimes_.size()-1);
-        for (Size i = 0; i<evolutionTimes.size(); ++i)
-            evolutionTimes[i]=rateTimes_[i];
+              // was terminal measure
+        std::vector<Size> numeraires(evolutionTimes.size()
+                                       // rateTimes_.size()-1
+                                     );
 
-        // terminal measure
-        std::vector<Size> numeraires(evolutionTimes.size(),
-                                     rateTimes_.size()-1);
-
+         for (Size i = 0; i<evolutionTimes.size(); ++i)
+         {
+                evolutionTimes[i]=rateTimes_[i];
+                numeraires[i]=i;
+         }
+         
+    
         std::vector<std::pair<Size,Size> > relevanceRates(
             evolutionTimes.size());
         for (Size i =0; i < evolutionTimes.size(); ++i)

@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,8 +31,8 @@
 #include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
-//#include <float.h>
-//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+#include <float.h>
+namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -57,7 +56,7 @@ void setup() {
     // times
     calendar = NullCalendar();
     todaysDate = Settings::instance().evaluationDate();
-    endDate = todaysDate + 10*Years;
+    endDate = todaysDate + 6*Years;
     Schedule dates(calendar, todaysDate, endDate,
                    Semiannual, Following);
     rateTimes = Array(dates.size()-1);
@@ -88,7 +87,7 @@ void setup() {
     // volatilities
     volatilities = std::vector<Volatility>(todaysForwards.size());
     for (Size i=0; i<volatilities.size(); ++i)
-        volatilities[i] = 0.30 + 0.01*i;
+        volatilities[i] = 0.10 + 0.005*i;
 
 }
 
@@ -109,8 +108,8 @@ void MarketModelTest::testForwards() {
     
     EvolutionDescription evolution = product->suggestedEvolution();
 
-    Real longTermCorrelation = 0.75;
-    Real beta = 0.1;
+    Real longTermCorrelation = 0.5;
+    Real beta = 0.2;
 
     Size factors = todaysForwards.size();
 
@@ -135,7 +134,7 @@ void MarketModelTest::testForwards() {
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
     SequenceStatistics<> stats(product->numberOfProducts());
-    Size paths = 100000;
+    Size paths = 5000;
 
     engine.multiplePathValues(stats, paths);
 
@@ -171,8 +170,8 @@ void MarketModelTest::testCaplets() {
     
     EvolutionDescription evolution = product->suggestedEvolution();
 
-    Real longTermCorrelation = 0.75;
-    Real beta = 0.1;
+    Real longTermCorrelation = 0.5;
+    Real beta = 0.2;
 
     Size factors = todaysForwards.size();
 
@@ -197,7 +196,7 @@ void MarketModelTest::testCaplets() {
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
     SequenceStatistics<> stats(product->numberOfProducts());
-    Size paths = 100000;
+    Size paths = 5000;
 
     engine.multiplePathValues(stats, paths);
 
