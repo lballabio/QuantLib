@@ -322,6 +322,8 @@ AC_CONFIG_FILES([
     ql/Indexes/Makefile
     ql/Instruments/Makefile
     ql/Lattices/Makefile
+    ql/MarketModels/Makefile
+    ql/MarketModels/Products/Makefile
     ql/Math/Makefile
     ql/MonteCarlo/Makefile
     ql/Optimization/Makefile

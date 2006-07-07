@@ -11,6 +11,7 @@ SUBDIRS = \
     Indexes \
     Instruments \
     Lattices \
+    MarketModels \
     Math \
     MonteCarlo \
     Optimization \
@@ -118,6 +119,7 @@ libQuantLib_la_LIBADD = \
     Instruments/libInstruments.la \
     Lattices/libLattices.la \
     Math/libMath.la \
+    MarketModels/libMarketModels.la \
     MonteCarlo/libMonteCarlo.la \
     Optimization/libOptimization.la \
     Pricers/libPricers.la \
