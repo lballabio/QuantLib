@@ -21,6 +21,8 @@
 #include "utilities.hpp"
 #include <ql/MarketModels/Products/marketmodelforwards.hpp>
 #include <ql/MarketModels/Products/marketmodelcaplets.hpp>
+#include <ql/MarketModels/Products/marketmodelforwardsonestep.hpp>
+#include <ql/MarketModels/Products/marketmodelcapletsonestep.hpp>
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/forwardrateevolver.hpp>
 #include <ql/MarketModels/exponentialcorrelation.hpp>
@@ -56,7 +58,7 @@ void setup() {
     // times
     calendar = NullCalendar();
     todaysDate = Settings::instance().evaluationDate();
-    endDate = todaysDate + 6*Years;
+    endDate = todaysDate + 10*Years;
     Schedule dates(calendar, todaysDate, endDate,
                    Semiannual, Following);
     rateTimes = Array(dates.size()-1);
@@ -134,7 +136,7 @@ void MarketModelTest::testForwards() {
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
     SequenceStatistics<> stats(product->numberOfProducts());
-    Size paths = 5000;
+    Size paths = 10000;
 
     engine.multiplePathValues(stats, paths);
 
@@ -196,7 +198,138 @@ void MarketModelTest::testCaplets() {
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
     SequenceStatistics<> stats(product->numberOfProducts());
-    Size paths = 5000;
+    Size paths = 10000;
+
+    engine.multiplePathValues(stats, paths);
+
+    std::vector<Real> results = stats.mean();
+    std::vector<Real> errors = stats.errorEstimate();
+    
+    Array expected(todaysForwards.size());
+    for (Size i=0; i<expected.size(); ++i) {
+        Time expiry = rateTimes[i];
+        expected[i] =
+            detail::blackFormula(todaysForwards[i], strikes[i],
+                                 volatilities[i]*std::sqrt(expiry), 1)
+            *accruals[i]*todaysDiscounts[i+1];
+    }
+
+    for (Size i=0; i<results.size(); ++i) {
+        BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
+                      << io::rate(results[i])
+                      << " +- " << io::rate(errors[i])
+                      << "; expected: " << io::rate(expected[i])
+                      << "; discrepancy = "
+                      << (results[i]-expected[i])/(errors[i] == 0.0 ? 1.0 : errors[i])
+                      << " standard errors");
+    }
+}
+
+
+void MarketModelTest::testOneStepForwards() {
+
+    BOOST_MESSAGE("Repricing forwards in a single-step LIBOR market model...");
+
+    QL_TEST_SETUP
+
+    Array strikes = todaysForwards + 0.01;
+
+    boost::shared_ptr<MarketModelProduct> product(
+         new MarketModelForwardsOneStep(rateTimes, accruals,
+                                        paymentTimes, strikes));
+    
+    EvolutionDescription evolution = product->suggestedEvolution();
+
+    Real longTermCorrelation = 0.5;
+    Real beta = 0.2;
+
+    Size factors = todaysForwards.size();
+
+    boost::shared_ptr<PseudoRoot> pseudoRoot(
+                       new ExponentialCorrelation(longTermCorrelation, beta,
+                                                  volatilities,
+                                                  rateTimes,
+                                                  evolution.evolutionTimes(),
+                                                  factors,
+                                                  todaysForwards,
+                                                  displacements));
+
+    unsigned long seed = 42;
+    MTBrownianGeneratorFactory generatorFactory(seed);
+
+    boost::shared_ptr<MarketModelEvolver> evolver(
+            new ForwardRateEvolver(pseudoRoot, evolution, generatorFactory));
+
+    Size initialNumeraire = evolution.numeraires().front();
+    Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
+
+    AccountingEngine engine(evolver, product, evolution,
+                            initialNumeraireValue);
+    SequenceStatistics<> stats(product->numberOfProducts());
+    Size paths = 10000;
+
+    engine.multiplePathValues(stats, paths);
+
+    std::vector<Real> results = stats.mean();
+    std::vector<Real> errors = stats.errorEstimate();
+    
+    Array expected(todaysForwards.size());
+    for (Size i=0; i<expected.size(); ++i)
+        expected[i] = (todaysForwards[i]-strikes[i])
+            *accruals[i]*todaysDiscounts[i+1];
+
+    for (Size i=0; i<results.size(); ++i) {
+        BOOST_MESSAGE(io::ordinal(i+1) << " forward: "
+                      << io::rate(results[i])
+                      << " +- " << io::rate(errors[i])
+                      << "; expected: " << io::rate(expected[i])
+                      << "; discrepancy = "
+                      << (results[i]-expected[i])/errors[i]
+                      << " standard errors");
+    }
+}
+
+void MarketModelTest::testOneStepCaplets() {
+
+    BOOST_MESSAGE("Repricing caplets in a single-step LIBOR market model...");
+
+    QL_TEST_SETUP
+
+    Array strikes = todaysForwards + 0.01;
+
+    boost::shared_ptr<MarketModelProduct> product(
+         new MarketModelCapletsOneStep(rateTimes, accruals,
+                                       paymentTimes, strikes));
+    
+    EvolutionDescription evolution = product->suggestedEvolution();
+
+    Real longTermCorrelation = 0.5;
+    Real beta = 0.2;
+
+    Size factors = todaysForwards.size();
+
+    boost::shared_ptr<PseudoRoot> pseudoRoot(
+                       new ExponentialCorrelation(longTermCorrelation, beta,
+                                                  volatilities,
+                                                  rateTimes,
+                                                  evolution.evolutionTimes(),
+                                                  factors,
+                                                  todaysForwards,
+                                                  displacements));
+
+    unsigned long seed = 42;
+    MTBrownianGeneratorFactory generatorFactory(seed);
+
+    boost::shared_ptr<MarketModelEvolver> evolver(
+            new ForwardRateEvolver(pseudoRoot, evolution, generatorFactory));
+
+    Size initialNumeraire = evolution.numeraires().front();
+    Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
+
+    AccountingEngine engine(evolver, product, evolution,
+                            initialNumeraireValue);
+    SequenceStatistics<> stats(product->numberOfProducts());
+    Size paths = 10000;
 
     engine.multiplePathValues(stats, paths);
 
@@ -227,7 +360,9 @@ void MarketModelTest::testCaplets() {
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testForwards));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwards));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCaplets));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepCaplets));
     return suite;
 }
 

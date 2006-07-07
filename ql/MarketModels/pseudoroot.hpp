@@ -21,10 +21,6 @@
 #ifndef quantlib_pseudoroot_hpp
 #define quantlib_pseudoroot_hpp
 
-#ifndef QL_EXTRA_SAFETY_CHECKS
-#   define QL_EXTRA_SAFETY_CHECKS
-#endif
-
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {

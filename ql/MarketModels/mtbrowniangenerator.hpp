@@ -21,10 +21,6 @@
 #ifndef quantlib_mt_brownian_generator_hpp
 #define quantlib_mt_brownian_generator_hpp
 
-#ifndef QL_EXTRA_SAFETY_CHECKS
-#   define QL_EXTRA_SAFETY_CHECKS
-#endif
-
 #include <ql/MarketModels/browniangenerator.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>

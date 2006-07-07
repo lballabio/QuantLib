@@ -2,7 +2,8 @@
 
 /*
 
- Copyright (C) 2006 mia nonna in cariola
+ Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2006 Silvia Frasson
  
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,28 +26,24 @@
 namespace QuantLib {
 
 
-    DriftCalculator::DriftCalculator(
-        const Matrix& pseudo,
-        const Array& displacements,
-        const Array& taus,
-        Size numeraire,
-        Size alive) : 
-    size_(taus.size()),
-        pseudo_(pseudo), 
-        displacements_(displacements), 
-        taus_(taus), 
-        numeraire_(numeraire), 
-        alive_(alive) {
+    DriftCalculator::DriftCalculator(const Matrix& pseudo,
+                                     const Array& displacements,
+                                     const Array& taus,
+                                     Size numeraire,
+                                     Size alive)
+    : size_(taus.size()), pseudo_(pseudo), displacements_(displacements),
+      taus_(taus),  numeraire_(numeraire), alive_(alive)
+    {
+        QL_REQUIRE(size_>0, "");
+        QL_REQUIRE(displacements.size() == size_, "");
+        QL_REQUIRE(pseudo.rows()==size_, "");
+        QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=size_, "");
+        QL_REQUIRE(alive>=0 && alive<size_, "");
+        QL_REQUIRE(numeraire_<=size_, "");
+        QL_REQUIRE(numeraire_>=alive, "");
+        const Disposable<Matrix> pT = transpose(pseudo_);
 
-            QL_REQUIRE(size_>0, "");
-            QL_REQUIRE(displacements.size() == size_, "");
-            QL_REQUIRE(pseudo.rows()==size_, "");
-            QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=size_, "");
-            QL_REQUIRE(alive>=0 && alive<size_, "");
-            QL_REQUIRE(numeraire_<=size_, "");
-            const Disposable<Matrix> pT = transpose(pseudo_);
-
-            C_ = pseudo_*pT;
+        C_ = pseudo_*pT;
     }
 
 

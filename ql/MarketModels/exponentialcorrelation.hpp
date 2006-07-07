@@ -22,10 +22,6 @@
 #ifndef quantlib_exponential_correlation_hpp
 #define quantlib_exponential_correlation_hpp
 
-#ifndef QL_EXTRA_SAFETY_CHECKS
-#   define QL_EXTRA_SAFETY_CHECKS
-#endif
-
 #include <ql/MarketModels/pseudoroot.hpp>
 #include <ql/types.hpp>
 #include <ql/Math/matrix.hpp>
@@ -48,6 +44,7 @@ namespace QuantLib
         const Array& displacements() const ;// passed by the calibrator
         Size numberOfRates() const ;// n 
         Size numberOfFactors() const ;//F, A rank 
+        // number of steps method?
         const Matrix& pseudoRoot(Size i) const ;
 
     private:

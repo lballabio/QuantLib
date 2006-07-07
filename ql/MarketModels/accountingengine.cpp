@@ -101,7 +101,7 @@ namespace QuantLib {
                     evolution_.numeraires()[thisStep+1];
 
                 principalInNumerairePortfolio *=
-                    evolver_->currentState().discountRatio( numeraire,nextNumeraire);
+                    evolver_->currentState().discountRatio(numeraire, nextNumeraire);
             }
             
         }

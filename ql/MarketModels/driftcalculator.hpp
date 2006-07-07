@@ -21,10 +21,6 @@
 #ifndef quantlib_drift_calculator_hpp
 #define quantlib_drift_calculator_hpp
 
-#ifndef QL_EXTRA_SAFETY_CHECKS
-#   define QL_EXTRA_SAFETY_CHECKS
-#endif
-
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {

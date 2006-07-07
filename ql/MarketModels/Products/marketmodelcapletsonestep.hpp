@@ -18,25 +18,22 @@
 */
 
 
-#ifndef quantlib_marketmodelratchet_hpp
-#define quantlib_marketmodelratchet_hpp
+#ifndef quantlib_MarketModelCaplets_one_step_hpp
+#define quantlib_MarketModelCaplets_one_step_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
 
 namespace QuantLib {
-    class MarketModelRatchet : public MarketModelProduct
+
+    class MarketModelCapletsOneStep : public MarketModelProduct
     {
     public:
   
-        MarketModelRatchet(const Array& rateTimes,
-                           const Array& fixedAccruals,
-                           const Array& floatingAccruals,
-                           const Array& floatingSpreads,
-                           const Array& paymentTimes,
-                           double initialCoupon);
-      
-        virtual ~MarketModelRatchet();
-       
+        MarketModelCapletsOneStep(const Array& rateTimes,
+                                  const Array& accruals,
+                                  const Array& paymentTimes,
+                                  const Array& strikes);
+        
         //! for initializing other objects
         virtual EvolutionDescription suggestedEvolution() const;
         virtual Array possibleCashFlowTimes() const;
@@ -53,17 +50,9 @@ namespace QuantLib {
 
     private:
             Array rateTimes_;
-            Array fixedAccruals_;
-            Array floatingAccruals_;
-            Array floatingSpreads_;
+            Array accruals_;
             Array paymentTimes_;
-            double initialCoupon_;
-
-            Size lastIndex_;
-            
-            // things that vary in a path
-            Size currentIndex_;
-            double currentCoupon_;
+            Array strikes_;
     };
 
 }

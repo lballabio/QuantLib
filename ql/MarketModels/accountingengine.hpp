@@ -21,10 +21,6 @@
 #ifndef quantlib_accounting_engine_hpp
 #define quantlib_accounting_engine_hpp
 
-#ifndef QL_EXTRA_SAFETY_CHECKS
-#   define QL_EXTRA_SAFETY_CHECKS
-#endif
-
 #include <ql/MarketModels/marketmodelproduct.hpp>
 #include <ql/MarketModels/marketmodelevolver.hpp>
 #include <ql/Math/sequencestatistics.hpp>
@@ -34,19 +30,17 @@ namespace QuantLib {
     class AccountingEngine
     {
     public:
-        class Discounter;
-
         AccountingEngine(const boost::shared_ptr<MarketModelEvolver>& evolver,
                          const boost::shared_ptr<MarketModelProduct>& product,
                          const EvolutionDescription& evolution,
-                         double initialNumeraireValue
-                );
+                         double initialNumeraireValue);
 
         Real singlePathValues(Array& values);
         void multiplePathValues(SequenceStatistics<>& stats,
                                 Size numberOfPaths);
-
     private:
+        class Discounter;
+
         boost::shared_ptr<MarketModelEvolver> evolver_;
         boost::shared_ptr<MarketModelProduct> product_;
         EvolutionDescription evolution_;
@@ -75,6 +69,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

@@ -1,0 +1,17 @@
+DESIGN
+- EvolutionDescription::setNumeraires()
+- Normal Forward-Rate Market Models
+- uBLAS, Duff's device
+- relevantRates
+
+make rankReducedMatrix work
+
+
+TEST
+* short step, terminal
+* short step, mma
+* long stepping, terminal
+- simulation with non null displacement
+- payment date different from reset dates
+- a,b, c, d parameterization
+- ipc
