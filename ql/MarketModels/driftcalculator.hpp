@@ -22,6 +22,7 @@
 #define quantlib_drift_calculator_hpp
 
 #include <ql/Math/matrix.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -42,14 +43,16 @@ namespace QuantLib {
 
     private:
 
-	Matrix C_;
+	    Matrix C_;
 
-    Size size_, numeraire_, alive_;
-    Array displacements_, taus_;
-	Matrix pseudo_;
+        Size size_, numeraire_, alive_;
+        Array displacements_, taus_;
+	    Matrix pseudo_;
 
 		// temporary variables
         // to be added later
+        mutable std::vector<Real> tmp_;
+        std::vector<Size> downs_, ups_;
     };
 
 }

@@ -68,6 +68,11 @@ namespace QuantLib {
         Size numberOfRates() const;     // returns rateTimes().size() - 1
         Size numberOfSteps() const;     // returns evolutionTimes().size()
 
+        void setNumeraires(const std::vector<Size>&);
+        void setTerminalMeasure();
+        void setMoneyMarketMeasure();
+
+        bool isInTerminalMeasure() const;
     private:
         Array rateTimes_, evolutionTimes_;
         std::vector<Size> numeraires_;

@@ -25,7 +25,9 @@
 #include <ql/MarketModels/Products/marketmodelcapletsonestep.hpp>
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/forwardrateevolver.hpp>
+#include <ql/MarketModels/forwardrateipcevolver.hpp>
 #include <ql/MarketModels/exponentialcorrelation.hpp>
+#include <ql/MarketModels/abcdvolatility.hpp>
 #include <ql/MarketModels/mtbrowniangenerator.hpp>
 #include <ql/schedule.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
@@ -76,9 +78,11 @@ void setup() {
 
     // rates
     todaysForwards = Array(paymentTimes.size());
-    for (Size i=0; i<todaysForwards.size(); ++i)
+    displacements = Array(paymentTimes.size());
+    for (Size i=0; i<todaysForwards.size(); ++i) {
         todaysForwards[i] = 0.03 + 0.0010*i;
-    displacements = Array(todaysForwards.size(), 0.0);
+        displacements[i] = 0.02 + 0.0005*i;
+    }
 
     todaysDiscounts = Array(rateTimes.size());
     todaysDiscounts[0] = 0.95;
@@ -127,8 +131,9 @@ void MarketModelTest::testForwards() {
     unsigned long seed = 42;
     MTBrownianGeneratorFactory generatorFactory(seed);
 
+    evolution.setTerminalMeasure();
     boost::shared_ptr<MarketModelEvolver> evolver(
-            new ForwardRateEvolver(pseudoRoot, evolution, generatorFactory));
+            new ForwardRateIpcEvolver(pseudoRoot, evolution, generatorFactory));
 
     Size initialNumeraire = evolution.numeraires().front();
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
@@ -186,11 +191,22 @@ void MarketModelTest::testCaplets() {
                                                   todaysForwards,
                                                   displacements));
 
+    /*boost::shared_ptr<PseudoRoot> pseudoRoot(
+                       new AbcdVolatility(0.0, 0.0, 1.0, 1.0,
+                                          volatilities,
+                                          longTermCorrelation, beta,
+                                          rateTimes,
+                                          evolution.evolutionTimes(),
+                                          factors,
+                                          todaysForwards,
+                                          displacements));*/
+
     unsigned long seed = 42;
     MTBrownianGeneratorFactory generatorFactory(seed);
 
+    evolution.setTerminalMeasure();
     boost::shared_ptr<MarketModelEvolver> evolver(
-            new ForwardRateEvolver(pseudoRoot, evolution, generatorFactory));
+            new ForwardRateIpcEvolver(pseudoRoot, evolution, generatorFactory));
 
     Size initialNumeraire = evolution.numeraires().front();
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
@@ -209,7 +225,8 @@ void MarketModelTest::testCaplets() {
     for (Size i=0; i<expected.size(); ++i) {
         Time expiry = rateTimes[i];
         expected[i] =
-            detail::blackFormula(todaysForwards[i], strikes[i],
+            detail::blackFormula(todaysForwards[i]+displacements[i],
+                                 strikes[i]+displacements[i],
                                  volatilities[i]*std::sqrt(expiry), 1)
             *accruals[i]*todaysDiscounts[i+1];
     }
@@ -258,7 +275,7 @@ void MarketModelTest::testOneStepForwards() {
     MTBrownianGeneratorFactory generatorFactory(seed);
 
     boost::shared_ptr<MarketModelEvolver> evolver(
-            new ForwardRateEvolver(pseudoRoot, evolution, generatorFactory));
+            new ForwardRateIpcEvolver(pseudoRoot, evolution, generatorFactory));
 
     Size initialNumeraire = evolution.numeraires().front();
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
@@ -317,11 +334,21 @@ void MarketModelTest::testOneStepCaplets() {
                                                   todaysForwards,
                                                   displacements));
 
+    /*boost::shared_ptr<PseudoRoot> pseudoRoot(
+                       new AbcdVolatility(0.0, 0.0, 1.0, 1.0,
+                                          volatilities,
+                                          longTermCorrelation, beta,
+                                          rateTimes,
+                                          evolution.evolutionTimes(),
+                                          factors,
+                                          todaysForwards,
+                                          displacements));*/
+
     unsigned long seed = 42;
     MTBrownianGeneratorFactory generatorFactory(seed);
 
     boost::shared_ptr<MarketModelEvolver> evolver(
-            new ForwardRateEvolver(pseudoRoot, evolution, generatorFactory));
+            new ForwardRateIpcEvolver(pseudoRoot, evolution, generatorFactory));
 
     Size initialNumeraire = evolution.numeraires().front();
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
@@ -340,7 +367,8 @@ void MarketModelTest::testOneStepCaplets() {
     for (Size i=0; i<expected.size(); ++i) {
         Time expiry = rateTimes[i];
         expected[i] =
-            detail::blackFormula(todaysForwards[i], strikes[i],
+            detail::blackFormula(todaysForwards[i]+displacements[i],
+                                 strikes[i]+displacements[i],
                                  volatilities[i]*std::sqrt(expiry), 1)
             *accruals[i]*todaysDiscounts[i+1];
     }

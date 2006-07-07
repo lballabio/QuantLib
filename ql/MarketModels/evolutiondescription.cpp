@@ -51,6 +51,9 @@ namespace QuantLib {
               "Array evolution times must have 1 elements at least");         
           // todo: check increasing evolutionTimes
 
+          QL_REQUIRE(rateTimes.back() >= evolutionTimes.back(),
+                     "last evolution time is past last rate time");
+
           if (numeraires.empty()) {
               // default numeraire is the terminal one
               std::fill(numeraires_.begin(), numeraires_.end(),
@@ -103,4 +106,33 @@ namespace QuantLib {
     Size EvolutionDescription::numberOfSteps() const {
         return evolutionTimes_.size(); 
     }
+
+    void EvolutionDescription::setNumeraires(const std::vector<Size>& numeraires) {
+        QL_REQUIRE(numeraires.size() == evolutionTimes_.size(), 
+                   "Numeraires / evolutionTimes mismatch");     
+        for (Size i=0; i<numeraires.size()-1; i++) {
+            QL_REQUIRE(rateTimes_[numeraires[i]] >= evolutionTimes_[i], 
+                       "Numeraire " << i << " expired");
+        }
+        std::copy(numeraires.begin(), numeraires.end(), numeraires_.begin());
+    }
+
+    void EvolutionDescription::setTerminalMeasure() {
+        std::fill(numeraires_.begin(), numeraires_.end(), rateTimes_.size()-1);
+    }
+
+    void EvolutionDescription::setMoneyMarketMeasure() {
+        Size j = 0;
+        for (Size i=0; i<evolutionTimes_.size(); ++i) {
+            while (rateTimes_[j] < evolutionTimes_[i])
+                j++;
+            numeraires_[i] = j;
+        }
+    }
+
+    bool EvolutionDescription::isInTerminalMeasure() const {
+        return *std::min_element(numeraires_.begin(), numeraires_.end()) ==
+            rateTimes_.size()-1;
+    }
+
 }

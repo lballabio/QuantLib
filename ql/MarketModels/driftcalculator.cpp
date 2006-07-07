@@ -32,7 +32,8 @@ namespace QuantLib {
                                      Size numeraire,
                                      Size alive)
     : size_(taus.size()), pseudo_(pseudo), displacements_(displacements),
-      taus_(taus),  numeraire_(numeraire), alive_(alive)
+      taus_(taus),  numeraire_(numeraire), alive_(alive),
+      tmp_(taus.size()), downs_(taus.size()), ups_(taus.size())
     {
         QL_REQUIRE(size_>0, "");
         QL_REQUIRE(displacements.size() == size_, "");
@@ -44,6 +45,11 @@ namespace QuantLib {
         const Disposable<Matrix> pT = transpose(pseudo_);
 
         C_ = pseudo_*pT;
+
+        for (Size i=alive_; i<size_; ++i) {
+            downs_[i] = std::min(i+1, numeraire_);
+            ups_[i] = std::max(i+1, numeraire_);
+        }
     }
 
 
@@ -54,14 +60,20 @@ namespace QuantLib {
         QL_REQUIRE(drifts.size() == size_, "");
 #endif
 
-        for(Size i=alive_; i<size_; ++i) {
-            drifts[i] = 0.0;
-            const Size down = std::min(i+1, numeraire_), up = std::max(i+1, numeraire_) - 1;
-            const int sign = i+1>numeraire_ ? +1 : -1;
-            for(Size k=down; k<=up; ++k) {
-                const double A = (taus_[k]*(forwards[k]+displacements_[k]) / (1.+taus_[k]*forwards[k]));
-                drifts[i] += sign * A * C_[k][i];
-            }
+        for(Size k=alive_; k<size_; ++k)
+            tmp_[k] = (forwards[k]+displacements_[k]) /
+                (1.0/taus_[k]+forwards[k]);
+
+        for (Size i=alive_; i<size_; ++i) {
+            drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
+                                           tmp_.begin()+ups_[i],
+                                           C_.row_begin(i)+downs_[i], 0.0);
+
+            //for (Size k=down; k<=up; ++k) {
+            //    drifts[i] += tmp_[k] * C_[i][k];
+            //}
+            if (i+1<numeraire_)
+                drifts[i] = -drifts[i];
         }
     }
 

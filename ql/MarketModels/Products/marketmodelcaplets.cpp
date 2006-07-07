@@ -35,23 +35,16 @@ namespace QuantLib {
     {
 
          Array evolutionTimes(rateTimes_.size()-1);
-            // was terminal measure
-        std::vector<Size> numeraires(evolutionTimes.size()
-                                       // rateTimes_.size()-1
-                                     );
-
-         for (Size i = 0; i<evolutionTimes.size(); ++i)
-         {
-                evolutionTimes[i]=rateTimes_[i];
-                numeraires[i]=i;
+         std::vector<Size> numeraires(evolutionTimes.size());
+         for (Size i = 0; i<evolutionTimes.size(); ++i) {
+            evolutionTimes[i]=rateTimes_[i];
+            numeraires[i]=i+1;
          }
-         
     
         std::vector<std::pair<Size,Size> > relevanceRates(
             evolutionTimes.size());
         for (Size i =0; i < evolutionTimes.size(); ++i)
             relevanceRates[i] = std::make_pair(i,i+1);
-
 
          return EvolutionDescription(rateTimes_, evolutionTimes,
                                      numeraires, relevanceRates);
