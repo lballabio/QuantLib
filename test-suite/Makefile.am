@@ -36,6 +36,7 @@ QL_TESTS = \
 	linearleastsquaresregression.hpp linearleastsquaresregression.cpp \
 	lookbackoptions.hpp lookbackoptions.cpp \
 	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
+	marketmodel.hpp marketmodel.cpp \
 	matrices.hpp matrices.cpp \
 	mersennetwister.hpp mersennetwister.cpp \
 	money.hpp money.cpp \

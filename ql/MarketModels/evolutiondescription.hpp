@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_evolutiondescription_hpp
-#define quantlib_evolutiondescription_hpp
+#ifndef quantlib_evolution_description_hpp
+#define quantlib_evolution_description_hpp
 
 #include <ql/Math/array.hpp>
 #include <vector>
@@ -50,20 +50,18 @@ namespace QuantLib {
         from relevanceRates[i].first to relevanceRates[i].second
         Default values for relevance rates will be 0 and n. 
     */
-    class EvolutionDescription
-    {
-    public:
-        // Note: The last default argument must be parenthesized for 
-        // g++ to parse.  g++ has not been modified to parse this 
-        // because it is unclear what the correct C++ standard is.
-        // See  http://gcc.gnu.org/bugzilla/show_bug.cgi?id=57
-
+    class EvolutionDescription {
+        // This typedef is used so that gcc 3.3 can parse the
+        // constructor declaration (not even parenthesizing the
+        // default argument worked)
+        typedef std::pair<Size,Size> range;
+      public:
         EvolutionDescription(
             const Array& rateTimes,
             const Array& evolutionTimes,
             const std::vector<Size>& numeraires = std::vector<Size>(),
             const std::vector<std::pair<Size,Size> >& relevanceRates =
-                                    (std::vector<std::pair<Size,Size> >()));
+                                                        std::vector<range>());
         const Array& rateTimes() const;
         const Array& taus() const;
         const Array& evolutionTimes() const;
@@ -77,7 +75,7 @@ namespace QuantLib {
         void setMoneyMarketMeasure();
 
         bool isInTerminalMeasure() const;
-    private:
+      private:
         Array rateTimes_, evolutionTimes_;
         std::vector<Size> numeraires_;
         std::vector<std::pair<Size,Size> > relevanceRates_;
@@ -85,5 +83,6 @@ namespace QuantLib {
     };
 
 }
+
 
 #endif

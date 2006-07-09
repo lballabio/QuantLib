@@ -35,8 +35,10 @@
 #include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
+#if defined(BOOST_MSVC)
 #include <float.h>
 namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
