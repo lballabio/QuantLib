@@ -53,13 +53,17 @@ namespace QuantLib {
     class EvolutionDescription
     {
     public:
+        // Note: The last default argument must be parenthesized for 
+        // g++ to parse.  g++ has not been modified to parse this 
+        // because it is unclear what the correct C++ standard is.
+        // See  http://gcc.gnu.org/bugzilla/show_bug.cgi?id=57
 
         EvolutionDescription(
             const Array& rateTimes,
             const Array& evolutionTimes,
             const std::vector<Size>& numeraires = std::vector<Size>(),
             const std::vector<std::pair<Size,Size> >& relevanceRates =
-                                    std::vector<std::pair<Size,Size> >());
+                                    (std::vector<std::pair<Size,Size> >()));
         const Array& rateTimes() const;
         const Array& taus() const;
         const Array& evolutionTimes() const;
