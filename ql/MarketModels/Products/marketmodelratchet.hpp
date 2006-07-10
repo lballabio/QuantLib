@@ -35,7 +35,7 @@ namespace QuantLib {
                            const Array& paymentTimes,
                            double initialCoupon);
       
-        virtual ~MarketModelRatchet();
+        virtual ~MarketModelRatchet() {};
        
         //! for initializing other objects
         virtual EvolutionDescription suggestedEvolution() const;
