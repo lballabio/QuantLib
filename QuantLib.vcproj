@@ -8132,13 +8132,25 @@
 			Name="MarketModels"
 			Filter="">
 			<File
+				RelativePath=".\ql\MarketModels\abcdvolatility.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\abcdvolatility.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\accountingengine.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\accountingengine.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\all.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\browniangenerator.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\core.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\curvestate.cpp">
@@ -8171,6 +8183,12 @@
 				RelativePath=".\ql\MarketModels\forwardrateevolver.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\forwardrateipcevolver.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\forwardrateipcevolver.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\marketmodelevolver.hpp">
 			</File>
 			<File
@@ -8189,16 +8207,31 @@
 				Name="Products"
 				Filter="">
 				<File
+					RelativePath=".\ql\MarketModels\Products\all.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelcaplets.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelcaplets.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcapletsonestep.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcapletsonestep.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelforwards.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelforwards.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelforwardsonestep.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelforwardsonestep.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.cpp">

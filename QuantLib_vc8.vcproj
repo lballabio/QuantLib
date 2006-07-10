@@ -2601,6 +2601,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\varianceswap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\varianceswap.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Instruments\zerocouponbond.cpp"
 				>
 			</File>
@@ -7773,6 +7781,14 @@
 			Name="MarketModels"
 			>
 			<File
+				RelativePath=".\ql\MarketModels\abcdvolatility.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\abcdvolatility.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\accountingengine.cpp"
 				>
 			</File>
@@ -7781,7 +7797,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\all.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\browniangenerator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\core.hpp"
 				>
 			</File>
 			<File
@@ -7855,6 +7879,10 @@
 			<Filter
 				Name="Products"
 				>
+				<File
+					RelativePath=".\ql\MarketModels\Products\all.hpp"
+					>
+				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelcaplets.cpp"
 					>
