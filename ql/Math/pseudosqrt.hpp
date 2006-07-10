@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! algorithm used for matricial pseudo square root
     struct SalvagingAlgorithm {
-        enum Type {None, Spectral, Hypersphere};
+        enum Type {None, Spectral};
     };
 
     //! Returns the pseudo square root of a real symmetric matrix
@@ -68,18 +68,27 @@ namespace QuantLib {
         - the correctness of the results is tested by checking
           returned values against numerical calculations.
     */
-    const Disposable<Matrix> pseudoSqrt(const Matrix&,
-                                        SalvagingAlgorithm::Type);
+    const Disposable<Matrix> pseudoSqrt(
+                        const Matrix&,
+                        SalvagingAlgorithm::Type = SalvagingAlgorithm::None);
 
-    /*! \pre the given matrix must be symmetric.
+    //! Returns the rank-reduced pseudo square root of a real symmetric matrix
+    /*! The result matrix has rank<=maxRank. If maxRank>=size, then the
+        specified percentage of eigenvalues out of the eigenvalues' sum is
+        retained.
+
+        If the input matrix is not positive semi definite, it can return an
+        approximation of the pseudo square root using a (user selected) 
+        salvaging algorithm.
+    
+        \pre the given matrix must be symmetric.
 
         \relates Matrix
     */
     const Disposable<Matrix> rankReducedSqrt(const Matrix&,
-                                             Size maxRank,
-                                             Real componentRetainedPercentage,
-                                             SalvagingAlgorithm::Type);
-
+                                            Size maxRank,
+                                            Real componentRetainedPercentage,
+                                            SalvagingAlgorithm::Type);
 
 }
 

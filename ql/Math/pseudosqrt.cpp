@@ -53,8 +53,7 @@ namespace QuantLib {
                        << ")");
             result = CholeskyDecomposition(matrix, true);
             break;
-          default:
-            // salvaging algorithm:
+          case SalvagingAlgorithm::Spectral:
             // negative eigenvalues set to zero
             for (i=0; i<size; i++)
                 diagonal[i][i] =
@@ -71,37 +70,25 @@ namespace QuantLib {
                     result[i][j] *= norm;
             }
             break;
-        }
-
-        switch (sa) {
-          case SalvagingAlgorithm::None:
-          case SalvagingAlgorithm::Spectral:
-            return result;
-            // optimization step
-          case SalvagingAlgorithm::Hypersphere:
-            result = result * transpose(result);
-            result = CholeskyDecomposition(result, true);
-            // will use spectral result as starting guess
-
-            // optimization (general or LMM specific)
-            QL_FAIL("not implemented yet");
           default:
             QL_FAIL("unknown salvaging algorithm");
         }
+
+        return result;
     }
 
 
-    const Disposable<Matrix> rankReducedSqrt(
-                                         const Matrix& matrix,
-                                         Size maxRank,
-                                         Real componentRetainedPercentage,
-                                         SalvagingAlgorithm::Type sa) {
-
-        QL_REQUIRE(matrix.rows() == matrix.columns(),
+    const Disposable<Matrix> rankReducedSqrt(const Matrix& matrix,
+                                             Size maxRank,
+                                             Real componentRetainedPercentage,
+                                             SalvagingAlgorithm::Type sa)
+    {
+        Size size = matrix.rows();
+        QL_REQUIRE(size == matrix.columns(),
                    "matrix not square");
         Size i, j;
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        for (i=0; i<matrix.rows(); i++)
+        for (i=0; i<size; i++)
             for (j=0; j<i; j++)
                 QL_REQUIRE(matrix[i][j] == matrix[j][i],
                            "matrix not symmetric");
@@ -118,28 +105,41 @@ namespace QuantLib {
 
         // spectral (a.k.a Principal Component) analysis
         SymmetricSchurDecomposition jd(matrix);
-        Size size = matrix.rows();
-        Matrix diagonal(size, size, 0.0);
-        Matrix result(size, size);
+        Array eigenValues = jd.eigenvalues();
 
-        // require a positive semi-definite matrix
-        // (eigenvalues are sorted in decreasing order)
-        QL_REQUIRE(jd.eigenvalues()[size-1]>=0.0,
-                   "negative eigenvalue(s)");
+        // salvaging algorithm
+        switch (sa) {
+          case SalvagingAlgorithm::None:
+            // eigenvalues are sorted in decreasing order
+            QL_REQUIRE(eigenValues[size-1]>=-1e-16,
+                       "negative eigenvalue(s) ("
+                       << std::scientific << eigenValues[size-1]
+                       << ")");
+            break;
+          case SalvagingAlgorithm::Spectral:
+            // negative eigenvalues set to zero
+            for (i=0; i<size; i++)
+                eigenValues[i] =
+                    std::sqrt(std::max<Real>(eigenValues[i], 0.0));
+            break;
+          default:
+            QL_FAIL("unknown salvaging algorithm");
+        }
 
         // rank reduction:
         // output is granted to have a rank<=maxRank
         // if maxRank>=size, then the required percentage of eigenvalues
         // is retained
-        Real enough = componentRetainedPercentage * size;
+        Real enough = componentRetainedPercentage *
+                      std::accumulate(eigenValues.begin(),
+                                      eigenValues.end(), 0.0);
         Real components = 0.0;
-        for (i=0; i<std::min(size, maxRank); i++) {
-            diagonal[i][i] =
-                (components<enough ? std::sqrt(jd.eigenvalues()[i]) : 0.0);
-            components += jd.eigenvalues()[i];
+        Matrix diagonal(size, size, 0.0);
+        for (i=0; i<std::min(size, maxRank) && components<enough; i++) {
+            diagonal[i][i] = std::sqrt(eigenValues[i]);
+            components += eigenValues[i];
         }
-
-        result = jd.eigenvectors() * diagonal;
+        Matrix result = jd.eigenvectors() * diagonal;
 
         // row normalization
         for (i = 0; i < size;i++) {
@@ -151,25 +151,7 @@ namespace QuantLib {
                 result[i][j] /= norm;
         }
 
-        switch (sa) {
-          case SalvagingAlgorithm::None:
-          case SalvagingAlgorithm::Spectral:
-            return result;
-          case SalvagingAlgorithm::Hypersphere:
-            result = result * transpose(result);
-            result = CholeskyDecomposition(result, true);
-            // will use spectral result as starting guess
-
-            // optimization (general or LMM specific)
-            QL_FAIL("not implemented yet");
-          default:
-            QL_FAIL("unknown salvaging algorithm");
-        }
-    }
-
-
-    const Disposable<Matrix> matrixSqrt(const Matrix& m) {
-        return pseudoSqrt(m, SalvagingAlgorithm::None);
+        return result;
     }
 
 }
