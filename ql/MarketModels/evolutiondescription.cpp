@@ -45,6 +45,12 @@ namespace QuantLib {
           // check coherence of input data
           QL_REQUIRE(rateTimes_.size()>1, 
               "Array rate times must have 2 elements at least");
+          QL_REQUIRE(rateTimes_[0]>=0.0, 
+                    "first rate time must be non negative");
+          for (Size i = 1; i<rateTimes.size(); ++i) {
+            QL_REQUIRE(rateTimes[i]>rateTimes[i-1], 
+                "rate times must be strictly increasing");
+          }
           // todo: check increasing rateTimes
 
           QL_REQUIRE(evolutionTimes.size()>0, 

@@ -43,6 +43,8 @@ namespace QuantLib {
     public:
         CurveState(const Array& rateTimes);
      
+        const Array& CurveState::rateTimes() const;
+
         void setOnForwardRates(const Array& rates);
         void setOnDiscountRatios(const Array& discountRatios);
         void setOnCoterminalSwapRates(const Array& swapRates);
@@ -70,12 +72,10 @@ namespace QuantLib {
         mutable Size firstSwapComputed_;
         Size first_, last_;
 
-        void computeSwapRate() const;
-
         // suggest lazy evaluation on the coterminal swaps 
         // e.g store index of how many swaps from the end have been computed
         // note: only makes sense if last_ is final time 
-
+        void computeSwapRate() const;
 
     };
 
