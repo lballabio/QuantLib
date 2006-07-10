@@ -37,7 +37,7 @@
 
 #if defined(BOOST_MSVC)
 #include <float.h>
-namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
 #endif
 
 using namespace QuantLib;
