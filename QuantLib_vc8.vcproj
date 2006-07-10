@@ -7825,6 +7825,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\forwardrateipcevolver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\forwardrateipcevolver.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\marketmodelevolver.hpp"
 				>
 			</File>
@@ -7856,11 +7864,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcapletsonestep.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcapletsonestep.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelforwards.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelforwards.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelforwardsonestep.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelforwardsonestep.hpp"
 					>
 				</File>
 				<File
