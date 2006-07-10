@@ -2190,6 +2190,14 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\varianceswaps.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\volatilitymodels.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
