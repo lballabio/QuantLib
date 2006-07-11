@@ -43,7 +43,7 @@ namespace QuantLib {
     public:
         CurveState(const Array& rateTimes);
      
-        const Array& CurveState::rateTimes() const;
+        const Array& rateTimes() const;
 
         void setOnForwardRates(const Array& rates);
         void setOnDiscountRatios(const Array& discountRatios);
