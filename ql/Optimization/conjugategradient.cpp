@@ -68,10 +68,12 @@ namespace QuantLib {
             end = endCriteria()(iterationNumber_,
                                 fold, std::sqrt(gold2), functionValue(),
                                 std::sqrt(gradientNormValue()), normdiff);
-
-            // Increase interation number
+			// Increase interation number
             iterationNumber()++;
         } while (end == false);
+
+		QL_REQUIRE(endCriteria().criteria()!=endCriteria().maxIter, "maximum number of iterations reached" );
+
 
     }
 
