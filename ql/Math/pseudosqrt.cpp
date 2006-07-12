@@ -24,13 +24,14 @@
 namespace QuantLib {
 
     const Disposable<Matrix> pseudoSqrt(const Matrix& matrix,
-                                        SalvagingAlgorithm::Type sa) {
-
-        QL_REQUIRE(matrix.rows() == matrix.columns(),
+                                        SalvagingAlgorithm::Type sa)
+    {
+        Size size = matrix.rows();
+        QL_REQUIRE(size == matrix.columns(),
                    "matrix not square");
         Size i, j;
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        for (i=0; i<matrix.rows(); i++)
+        for (i=0; i<size; i++)
             for (j=0; j<i; j++)
                 QL_REQUIRE(matrix[i][j] == matrix[j][i],
                            "matrix not symmetric");
@@ -38,9 +39,7 @@ namespace QuantLib {
 
         // spectral (a.k.a Principal Component) analysis
         SymmetricSchurDecomposition jd(matrix);
-        Size size = matrix.rows();
         Matrix diagonal(size, size, 0.0);
-
 
         // salvaging algorithm
         Matrix result(size, size);
@@ -119,8 +118,7 @@ namespace QuantLib {
           case SalvagingAlgorithm::Spectral:
             // negative eigenvalues set to zero
             for (i=0; i<size; i++)
-                eigenValues[i] =
-                    std::sqrt(std::max<Real>(eigenValues[i], 0.0));
+                eigenValues[i] = std::max<Real>(eigenValues[i], 0.0);
             break;
           default:
             QL_FAIL("unknown salvaging algorithm");

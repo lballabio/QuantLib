@@ -67,7 +67,7 @@ void CovarianceTest::testRankReduction() {
             expected   = goodCorr[i][j];
             calculated = calcCorr[i][j];
             if (std::fabs(calculated-expected) > 1.0e-10)
-                BOOST_ERROR("SalvagingCorrelation with spectral alg "
+                BOOST_ERROR("Salvaging correlation with spectral alg "
                             "through rankReducedSqrt "
                             << "cor[" << i << "][" << j << "]:\n"
                             << std::setprecision(10)
