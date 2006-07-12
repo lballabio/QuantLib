@@ -40,9 +40,66 @@ Real norm(const Matrix& m) {
 QL_END_TEST_LOCALS(CovarianceTest)
 
 
-void CovarianceTest::testSalvagingCorrelation() {
+void CovarianceTest::testRankReduction() {
 
-    BOOST_MESSAGE("Testing correlation-salvaging algorithms...");
+    BOOST_MESSAGE("Testing matrix rank reduction salvaging algorithms...");
+
+    Real expected, calculated;
+
+    Size n = 3;
+
+    Matrix badCorr(n, n);
+    badCorr[0][0] = 1.0; badCorr[0][1] = 0.9; badCorr[0][2] = 0.7;
+    badCorr[1][0] = 0.9; badCorr[1][1] = 1.0; badCorr[1][2] = 0.3;
+    badCorr[2][0] = 0.7; badCorr[2][1] = 0.3; badCorr[2][2] = 1.0;
+
+    Matrix goodCorr(n, n);
+    goodCorr[0][0] = goodCorr[1][1] = goodCorr[2][2] = 1.00000000000;
+    goodCorr[0][1] = goodCorr[1][0] = 0.894024408508599;
+    goodCorr[0][2] = goodCorr[2][0] = 0.696319066114392;
+    goodCorr[1][2] = goodCorr[2][1] = 0.300969036104592;
+
+    Matrix b = rankReducedSqrt(badCorr, 3, 1.0, SalvagingAlgorithm::Spectral);
+    Matrix calcCorr = b * transpose(b);
+
+    for (Size i=0; i<n; i++) {
+        for (Size j=0; j<n; j++) {
+            expected   = goodCorr[i][j];
+            calculated = calcCorr[i][j];
+            if (std::fabs(calculated-expected) > 1.0e-10)
+                BOOST_ERROR("SalvagingCorrelation with spectral alg "
+                            "through rankReducedSqrt "
+                            << "cor[" << i << "][" << j << "]:\n"
+                            << std::setprecision(10)
+                            << "    calculated: " << calculated << "\n"
+                            << "    expected:   " << expected);
+        }
+    }
+
+    Matrix badCov(n, n);
+    badCov[0][0] = 0.04000; badCov[0][1] = 0.03240; badCov[0][2] = 0.02240;
+    badCov[1][0] = 0.03240; badCov[1][1] = 0.03240; badCov[1][2] = 0.00864;
+    badCov[2][0] = 0.02240; badCov[2][1] = 0.00864; badCov[2][2] = 0.02560;
+
+    b = pseudoSqrt(badCov, SalvagingAlgorithm::Spectral);
+    b = rankReducedSqrt(badCov, 3, 1.0, SalvagingAlgorithm::Spectral);
+    Matrix goodCov = b * transpose(b);
+
+    Real error = norm(goodCov-badCov);
+    if (error > 4.0e-4)
+        BOOST_ERROR(
+            QL_SCIENTIFIC << error
+            << " error while salvaging covariance matrix with spectral alg "
+            "through rankReducedSqrt\n"
+            << QL_FIXED
+            << "input matrix:\n" << badCov
+            << "salvaged matrix:\n" << goodCov);
+}
+
+void CovarianceTest::testSalvagingMatrix() {
+
+    BOOST_MESSAGE("Testing positive semi-definiteness salvaging "
+        "algorithms...");
 
     Real expected, calculated;
 
@@ -211,8 +268,9 @@ void CovarianceTest::testCovariance() {
 
 test_suite* CovarianceTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Covariance/correlation tests");
-    suite->add(BOOST_TEST_CASE(&CovarianceTest::testSalvagingCorrelation));
     suite->add(BOOST_TEST_CASE(&CovarianceTest::testCovariance));
+    suite->add(BOOST_TEST_CASE(&CovarianceTest::testSalvagingMatrix));
+    suite->add(BOOST_TEST_CASE(&CovarianceTest::testRankReduction));
     return suite;
 }
 

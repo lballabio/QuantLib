@@ -29,7 +29,8 @@
 class CovarianceTest {
   public:
     static void testCovariance();
-    static void testSalvagingCorrelation();
+    static void testSalvagingMatrix();
+    static void testRankReduction();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -86,9 +86,9 @@ namespace QuantLib {
         \relates Matrix
     */
     const Disposable<Matrix> rankReducedSqrt(const Matrix&,
-                                            Size maxRank,
-                                            Real componentRetainedPercentage,
-                                            SalvagingAlgorithm::Type);
+                                             Size maxRank,
+                                             Real componentRetainedPercentage,
+                                             SalvagingAlgorithm::Type);
 
 }
 
