@@ -72,9 +72,6 @@ namespace QuantLib {
             iterationNumber()++;
         } while (end == false);
 
-		QL_REQUIRE(endCriteria().criteria()!=endCriteria().maxIter, "maximum number of iterations reached" );
-
-
-    }
+	}
 
 }
