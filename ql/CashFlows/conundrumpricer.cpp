@@ -25,7 +25,7 @@
 namespace QuantLib {
 
 	ConundrumPricer::ConundrumPricer(const boost::shared_ptr<CMSCoupon> coupon) : 
-	mCoupon(coupon)  {
+	mCoupon(coupon), mCutoffForCaplet(2), mCutoffForFloorlet(0)  {
 
 		const boost::shared_ptr<SwapRate>& index = mCoupon->index();
 
@@ -50,6 +50,7 @@ namespace QuantLib {
 		mMax = coupon->cap();
 		mGearing = coupon->multiplier();
 		mSpread = coupon->spread();
+
 	}
 
 	double ConundrumPricer::price() const {
@@ -60,7 +61,7 @@ namespace QuantLib {
 		const double effectiveStrikeForMax = (mMax-mSpread)/mGearing;
 		double capLetPrice = 0;
 
-		if(mMax < 2) {
+		if(mMax < mCutoffForCaplet) {
 			if(effectiveStrikeForMax<=mSwapRateValue) {
 				capLetPrice = optionLetPrice(false, effectiveStrikeForMax) + (swapLetPrice_ - effectiveStrikeForMax*mCoupon->accrualPeriod()*mDiscount);
 			}
@@ -72,7 +73,7 @@ namespace QuantLib {
 		const double effectiveStrikeForMin = (mMin-mSpread)/mGearing;
 		double floorLetPrice = 0;
 
-		if(mMin > 0) { 
+		if(mMin > mCutoffForFloorlet) { 
 			if(effectiveStrikeForMin<=mSwapRateValue) {
 				floorLetPrice = optionLetPrice(false, effectiveStrikeForMin);
 			}

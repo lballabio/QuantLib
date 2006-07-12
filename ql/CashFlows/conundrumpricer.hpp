@@ -35,6 +35,7 @@ namespace QuantLib {
 
 		double mSwapRateValue, mExpiry;
 		double mDiscount, mAnnuity, mMin, mMax, mGearing, mSpread;
+		const double mCutoffForCaplet, mCutoffForFloorlet;
 
 		virtual double optionLetPrice(bool isCall, double strike) const = 0;
 		virtual double swapLetPrice() const = 0;
