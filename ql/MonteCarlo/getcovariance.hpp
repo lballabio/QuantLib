@@ -50,10 +50,11 @@ namespace QuantLib {
                                      Real tolerance = 1.0e-12){
         Size size = std::distance(volBegin, volEnd);
         QL_REQUIRE(corr.rows() == size,
-                   "volatilities and correlations "
-                   "have different size");
+                   "dimension mismatch between volatilities (" << size <<
+                   ") and correlation rows (" << corr.rows() << ")");
         QL_REQUIRE(corr.columns() == size,
-                   "correlation matrix is not square");
+                   "correlation matrix is not square: " << size <<
+                   " rows and " << corr.columns() << " columns");
 
         Matrix covariance(size,size);
         Size i, j;
@@ -61,7 +62,7 @@ namespace QuantLib {
         for (i=0, iIt=volBegin; i<size; i++, iIt++){
             for (j=0, jIt=volBegin; j<i; j++, jIt++){
                 QL_REQUIRE(std::fabs(corr[i][j]-corr[j][i]) <= tolerance,
-                           "invalid correlation matrix:"
+                           "correlation matrix not symmetric:"
                            << "\nc[" << i << "," << j << "] = " << corr[i][j]
                            << "\nc[" << j << "," << i << "] = " << corr[j][i]);
                 covariance[i][i] = (*iIt) * (*iIt);
