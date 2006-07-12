@@ -146,9 +146,9 @@ namespace QuantLib {
             Real norm = 0.0;
             for (j = 0; j < size; j++)
                 norm += result[i][j]*result[i][j];
-            norm = std::sqrt(norm);
-            for(j = 0; j < size; j++)
-                result[i][j] /= norm;
+                norm = std::sqrt(matrix[i][i]/norm);
+                for(j = 0; j < size; j++)
+                    result[i][j] *= norm;
         }
 
         return result;
