@@ -43,7 +43,10 @@ namespace QuantLib {
 		boost::shared_ptr<VanillaSwap> swap(index->underlyingSwap(fixingDate));
 		mSwapRateValue = swap->fairRate();
 		mAnnuity = swap->floatingLegBPS()/basisPoint;
-
+		mMin = coupon->floor();
+		mMax = coupon->cap();
+		mGearing = coupon->multiplier();
+		mSpread = coupon->spread();
 	}
 
 }
