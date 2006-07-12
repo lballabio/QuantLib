@@ -17,7 +17,7 @@
 
 #include <ql/Indexes/swaprate.hpp>
 #include <ql/Instruments/all.hpp>
-#include <ql/Instruments/vanillaswap.hpp>
+
 #include <sstream>
 
 
@@ -54,19 +54,25 @@ namespace QuantLib {
                 ;       // fall through and forecast
             }
         }
-        Date start = calendar_.advance(fixingDate, settlementDays_,Days);
+		boost::shared_ptr<VanillaSwap> swap(underlyingSwap(fixingDate));
+        return swap->fairRate();
+    }
+
+	boost::shared_ptr<VanillaSwap> SwapRate::underlyingSwap(const Date& fixingDate) const {
+
+		Date start = calendar_.advance(fixingDate, settlementDays_,Days);
         Date end = calendar_.advance(start,years_,Years);
         Schedule fixedLegSchedule(calendar_, start, end,
                                   fixedLegFrequency_, fixedLegConvention_);
         Schedule floatingLegSchedule(calendar_, start, end,
                                      floatingLegFrequency_,
                                      floatingLegConvention_);
-        VanillaSwap swap(true, 100.0,
+
+		return boost::shared_ptr<VanillaSwap>(new VanillaSwap (true, 100.0,
                         fixedLegSchedule, 0.0, fixedLegDayCounter_,
                         floatingLegSchedule, index_, indexFixingDays_, 0.0,
 						fixedLegDayCounter_,
-                        Handle<YieldTermStructure>(index_->termStructure()));
-        return swap.fairRate();
-    }
+                        Handle<YieldTermStructure>(index_->termStructure())));
+	}
 
 }

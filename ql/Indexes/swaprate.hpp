@@ -23,6 +23,7 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/Indexes/core.hpp>
+#include <ql/Instruments/vanillaswap.hpp>
 
 namespace QuantLib {
 
@@ -82,6 +83,7 @@ namespace QuantLib {
         boost::shared_ptr<YieldTermStructure> termStructure() const {
             return index_->termStructure();
         }
+		boost::shared_ptr<VanillaSwap> underlyingSwap(const Date& fixingDate) const;
         //@}
         //! \name Observer interface
         //@{
