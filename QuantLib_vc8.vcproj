@@ -793,6 +793,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\cmscoupon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\cmscoupon.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\CashFlows\core.hpp"
 				>
 			</File>
@@ -1520,6 +1528,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\Indexes\nzdlibor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\swaprate.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\swaprate.hpp"
 				>
 			</File>
 			<File
