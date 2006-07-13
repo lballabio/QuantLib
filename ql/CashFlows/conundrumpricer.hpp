@@ -38,7 +38,7 @@ namespace QuantLib {
 
 	//! ConundrumPricer
     /*! 
-		Prices a CMS coupon via static replication as in HAGAN's "Conundrums..." article
+		Base class for the pricing of a CMS coupon via static replication as in Hagan's "Conundrums..." article
 	*/
 	class ConundrumPricer {
 
@@ -69,7 +69,7 @@ namespace QuantLib {
 
 	//! ConundrumPricerByNumericalIntegration
     /*! 
-		Prices a CMS coupon via static replication as in HAGAN's "Conundrums..." article 
+		Prices a CMS coupon via static replication as in Hagan's "Conundrums..." article 
 		via numerical integration based on prices of vanilla swaptions
 	*/
 	class ConundrumPricerByNumericalIntegration : public ConundrumPricer {
@@ -82,6 +82,7 @@ namespace QuantLib {
 
 		//! ConundrumIntegrand
 	    /*! 
+			Base class for the definition of the integrand for Hagan's integral
 		*/
 		class ConundrumIntegrand : public Function {
 
@@ -159,13 +160,10 @@ namespace QuantLib {
 		virtual double swapLetPrice() const;
 
 	public:
-		///
-		///Prices a CMS coupon via static replication as in HAGAN's "Conundrums..." article
-		///
+
 		ConundrumPricerByNumericalIntegration(const boost::shared_ptr<VanillaOptionPricer> o, 
 			const boost::shared_ptr<CMSCoupon> coupon);
-		virtual ~ConundrumPricerByNumericalIntegration();
-		
+		virtual ~ConundrumPricerByNumericalIntegration() {}
 	};
 
 }

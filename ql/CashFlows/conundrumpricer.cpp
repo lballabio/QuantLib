@@ -139,7 +139,8 @@ namespace QuantLib {
 
 	}
 
-	ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(const boost::shared_ptr<VanillaOptionPricer> o, 
+	ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
+		const boost::shared_ptr<VanillaOptionPricer> o, 
 		const boost::shared_ptr<CMSCoupon> coupon) : 
 	ConundrumPricer(coupon), 
 	mVanillaOptionPricer(o) {
@@ -153,10 +154,6 @@ namespace QuantLib {
 		mIntegrandForFloor =  boost::shared_ptr<ConundrumIntegrandStandard>(new ConundrumIntegrandStandard(
 			mVanillaOptionPricer, swapRate, mRateCurve, mExpiryTime, mPaymentTime, mAnnuity, mSwapRateValue, mSwapRateValue, false));
 	}
-
-	ConundrumPricerByNumericalIntegration::~ConundrumPricerByNumericalIntegration() {
-	}
-
 
 	double ConundrumPricerByNumericalIntegration::integrate(double a, double b, const ConundrumIntegrand& integrand) const {
 
@@ -287,15 +284,14 @@ namespace QuantLib {
 		boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(rateCurve->referenceDate()));
 		DayCounter dc = rateCurve->dayCounter();
 		const Time startTime = dc.yearFraction(rateCurve->referenceDate(), schedule->startDate() );
-		const Time firstSwapPaymentTime = dc.yearFraction(rateCurve->referenceDate(), schedule->date(1) );
+		const Time swapFirstPaymentTime = dc.yearFraction(rateCurve->referenceDate(), schedule->date(1) );
 
-		mDelta = (paymentTime-startTime) / (firstSwapPaymentTime-startTime);
+		mDelta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
 		mQ = schedule->frequency();
 	}
 
 	double ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::functionG (const double x) const {
-		const double g = ConundrumPricer::functionG_Standard(x, mQ, mDelta, mSwapLength);
-		return  g;
+		return ConundrumPricer::functionG_Standard(x, mQ, mDelta, mSwapLength);
 	}
 
 	double ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::firstDerivativeOfG (const double x) const {
@@ -303,8 +299,7 @@ namespace QuantLib {
 	}
 
 	double ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::secondDerivativeOfG (const double x) const {
-		const double g2 = ConundrumPricer::secondDerivativeOfG_Standard(x, mQ, mDelta, mSwapLength);
-		return  g2;
+		return ConundrumPricer::secondDerivativeOfG_Standard(x, mQ, mDelta, mSwapLength);
 	}
 
 
