@@ -26,14 +26,20 @@
 
 namespace QuantLib {
 
+	 //! VanillaOptionPricer
+    /*! 
+		Interface 
+    */
 	class VanillaOptionPricer {
-
 	public:
 		
 		virtual double operator()(double expiry, double strike, bool isCall, double deflator) const = 0;
-	
 	};
 
+	//! ConundrumPricer
+    /*! 
+		Prices a CMS coupon via static replication as in HAGAN's "Conundrums..." article
+	*/
 	class ConundrumPricer {
 
 	protected:
@@ -48,9 +54,9 @@ namespace QuantLib {
 		virtual double optionLetPrice(bool isCall, double strike) const = 0;
 		virtual double swapLetPrice() const = 0;
 
-		static double functionG(double x, int q, double delta, int swapLength);
-		static double firstDerivativeOfG(double x, int q, double delta, int swapLength);
-		static double secondDerivativeOfG(double x, int q, double delta, int swapLength);
+		static double functionG_Standard(double x, int q, double delta, int swapLength);
+		static double firstDerivativeOfG_Standard(double x, int q, double delta, int swapLength);
+		static double secondDerivativeOfG_Standard(double x, int q, double delta, int swapLength);
 
 	public:
 
@@ -58,39 +64,25 @@ namespace QuantLib {
 		virtual ~ConundrumPricer() {
 		}
 		double price() const;
-
 	};
 
-	/*
-	class ConundrumPricerByBlack : public ConundrumPricer {
 
-		const double mSigma;
-		double mDelta;
-		int mSwapLength;
-		int mQ;
-		models::Black *mBlack;
-		double mFirstDerivativeOfGAtForwardValue;
-
-	protected:
-
-		virtual double optionLetPrice(bool isCall, double strike) const;
-		virtual double swapLetPrice() const;
-
-	public:
-
-		ConundrumPricerByBlack(const instruments::CmsCoupon& coupon, const market::RateCurve& rateCurve, double sigma);
-		virtual ~ConundrumPricerByBlack();
-	};
-
+	//! ConundrumPricerByNumericalIntegration
+    /*! 
+		Prices a CMS coupon via static replication as in HAGAN's "Conundrums..." article 
+		via numerical integration based on prices of vanilla swaptions
 	*/
+	class ConundrumPricerByNumericalIntegration : public ConundrumPricer {
 
-	class Function : public std::unary_function<Real, Real> {
-	public:
-		virtual Real operator()(const Real& x) const = 0;
-	};
-	
-	class ConundrumPricerByNumericalIntegration : public  ConundrumPricer {
+		
+		class Function : public std::unary_function<double, double> {
+		public:
+			virtual double operator()(const double& x) const = 0;
+		};
 
+		//! ConundrumIntegrand
+	    /*! 
+		*/
 		class ConundrumIntegrand : public Function {
 
 			friend class ConundrumPricerByNumericalIntegration;
@@ -129,6 +121,10 @@ namespace QuantLib {
 			virtual double operator()(const double& x) const;
 		};
 
+		//! ConundrumIntegrandStandard
+	    /*! 
+			Corresponds to Standard Model in Hagan's paper
+		*/
 		class ConundrumIntegrandStandard : public ConundrumIntegrand {
 
 			double mDelta;
@@ -151,7 +147,6 @@ namespace QuantLib {
 				double strike,
 				bool isCaplet);
 		};
-				
 
 		const boost::shared_ptr<VanillaOptionPricer> mVanillaOptionPricer;
 		
@@ -167,11 +162,11 @@ namespace QuantLib {
 		///
 		///Prices a CMS coupon via static replication as in HAGAN's "Conundrums..." article
 		///
-		ConundrumPricerByNumericalIntegration(const boost::shared_ptr<VanillaOptionPricer> o, const boost::shared_ptr<CMSCoupon> coupon);
+		ConundrumPricerByNumericalIntegration(const boost::shared_ptr<VanillaOptionPricer> o, 
+			const boost::shared_ptr<CMSCoupon> coupon);
 		virtual ~ConundrumPricerByNumericalIntegration();
 		
 	};
-
 
 }
 

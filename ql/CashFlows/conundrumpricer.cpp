@@ -92,7 +92,7 @@ namespace QuantLib {
 		return price;
 	}
 
-	double ConundrumPricer::functionG(double x, int q, double delta, int swapLength) {
+	double ConundrumPricer::functionG_Standard(double x, int q, double delta, int swapLength) {
 
 
 		const double n = swapLength *  q; 
@@ -100,7 +100,7 @@ namespace QuantLib {
 		return  g;
 	}
 
-	double ConundrumPricer::firstDerivativeOfG(double x, int q, double delta, int swapLength) {
+	double ConundrumPricer::firstDerivativeOfG_Standard(double x, int q, double delta, int swapLength) {
 
 		const double n = swapLength * q; 
 		const double a = 1.0 + x / q;
@@ -115,7 +115,7 @@ namespace QuantLib {
 		return  g1;
 	}
 
-	double ConundrumPricer::secondDerivativeOfG(double x, int q, double delta, int swapLength) {
+	double ConundrumPricer::secondDerivativeOfG_Standard(double x, int q, double delta, int swapLength) {
 		
 		const double n = swapLength * q; 
 		const double a = 1.0 + x / q;
@@ -294,16 +294,16 @@ namespace QuantLib {
 	}
 
 	double ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::functionG (const double x) const {
-		const double g = ConundrumPricer::functionG(x, mQ, mDelta, mSwapLength);
+		const double g = ConundrumPricer::functionG_Standard(x, mQ, mDelta, mSwapLength);
 		return  g;
 	}
 
 	double ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::firstDerivativeOfG (const double x) const {
-		return ConundrumPricer::firstDerivativeOfG(x, mQ, mDelta, mSwapLength);
+		return ConundrumPricer::firstDerivativeOfG_Standard(x, mQ, mDelta, mSwapLength);
 	}
 
 	double ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::secondDerivativeOfG (const double x) const {
-		const double g2 = ConundrumPricer::secondDerivativeOfG(x, mQ, mDelta, mSwapLength);
+		const double g2 = ConundrumPricer::secondDerivativeOfG_Standard(x, mQ, mDelta, mSwapLength);
 		return  g2;
 	}
 
