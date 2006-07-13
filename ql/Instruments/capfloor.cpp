@@ -184,4 +184,17 @@ namespace QuantLib {
         return results_->value-targetValue_;
     }
 
+    std::ostream& operator<<(std::ostream& out, CapFloor::Type t) {
+        switch (t) {
+          case CapFloor::Cap:
+            return out << "Cap";
+          case CapFloor::Floor:
+            return out << "Floor";
+          case CapFloor::Collar:
+            return out << "Collar";
+          default:
+            QL_FAIL("unknown CapFloor::Type (" << Integer(t) << ")");
+        }
+    }
+
 }

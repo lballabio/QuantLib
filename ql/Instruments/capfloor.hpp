@@ -176,6 +176,8 @@ namespace QuantLib {
     class CapFloor::engine
         : public GenericEngine<CapFloor::arguments, CapFloor::results> {};
 
+    std::ostream& operator<<(std::ostream&, CapFloor::Type);
+
 }
 
 
