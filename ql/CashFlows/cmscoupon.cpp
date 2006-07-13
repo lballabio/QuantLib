@@ -31,8 +31,8 @@ namespace QuantLib {
                          Rate cap, Rate floor,
                          const Date& refPeriodStart,
                          const Date& refPeriodEnd)
-    : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
-                         fixingDays, 0.0, refPeriodStart, refPeriodEnd),
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+                         fixingDays, 1.0, 0.0, refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter), baseRate_(baseRate),
       cap_(cap), floor_(floor), multiplier_(multiplier) {
         registerWith(index_);
@@ -138,8 +138,8 @@ namespace QuantLib {
             }
 
             if (capStrike != Null<Rate>()) {
-                Rate caplet = BlackModel::formula(Rs, capStrike,
-                                                  sigma*std::sqrt(tau), 1.0);
+                Rate caplet = detail::blackFormula(Rs, capStrike,
+                                                   sigma*std::sqrt(tau), 1.0);
                 CumulativeNormalDistribution N;
                 Real N32 = N(d_lambda(1.5,Rs,capStrike,sigma,tau));
                 Real N12 = N(d_lambda(0.5,Rs,capStrike,sigma,tau));
@@ -155,9 +155,9 @@ namespace QuantLib {
             }
 
             if (floorStrike != Null<Rate>()) {
-                Rate floorlet = BlackModel::formula(Rs, floorStrike,
-                                                    sigma*std::sqrt(tau),
-                                                    -1.0);
+                Rate floorlet = detail::blackFormula(Rs, floorStrike,
+                                                     sigma*std::sqrt(tau),
+                                                     -1.0);
                 CumulativeNormalDistribution N;
                 Real N32 = N(-d_lambda(1.5,Rs,floorStrike,sigma,tau));
                 Real N12 = N(-d_lambda(0.5,Rs,floorStrike,sigma,tau));
