@@ -20,17 +20,6 @@
 
 namespace QuantLib {
 
-    class CheckedCumulativeNormalDistribution
-        : public CumulativeNormalDistribution {
-      public:
-        Real operator()(Real z) const {
-            #if defined(QL_PATCH_MSVC)
-            QL_REQUIRE(!_isnan(z), "Math error - not a number");
-            #endif
-            return CumulativeNormalDistribution::operator()(z);
-        }
-    };
-
     CMSCoupon::CMSCoupon(Real nominal,
                          const Date& paymentDate,
                          const boost::shared_ptr<SwapRate>& index,
@@ -151,7 +140,7 @@ namespace QuantLib {
             if (capStrike != Null<Rate>()) {
                 Rate caplet = BlackModel::formula(Rs, capStrike,
                                                   sigma*std::sqrt(tau), 1.0);
-                CheckedCumulativeNormalDistribution N;
+                CumulativeNormalDistribution N;
                 Real N32 = N(d_lambda(1.5,Rs,capStrike,sigma,tau));
                 Real N12 = N(d_lambda(0.5,Rs,capStrike,sigma,tau));
                 Real Nm12 = N(d_lambda(-0.5,Rs,capStrike,sigma,tau));
@@ -169,7 +158,7 @@ namespace QuantLib {
                 Rate floorlet = BlackModel::formula(Rs, floorStrike,
                                                     sigma*std::sqrt(tau),
                                                     -1.0);
-                CheckedCumulativeNormalDistribution N;
+                CumulativeNormalDistribution N;
                 Real N32 = N(-d_lambda(1.5,Rs,floorStrike,sigma,tau));
                 Real N12 = N(-d_lambda(0.5,Rs,floorStrike,sigma,tau));
                 Real Nm12 = N(-d_lambda(-0.5,Rs,floorStrike,sigma,tau));
