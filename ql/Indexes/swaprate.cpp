@@ -75,4 +75,11 @@ namespace QuantLib {
                         Handle<YieldTermStructure>(index_->termStructure())));
 	}
 
+	boost::shared_ptr<Schedule> SwapRate::fixedRateSchedule(const Date& fixingDate) const {
+	
+		Date start = calendar_.advance(fixingDate, settlementDays_,Days);
+        Date end = calendar_.advance(start,years_,Years);
+        return boost::shared_ptr<Schedule>(new Schedule(calendar_, start, end,
+                                  fixedLegFrequency_, fixedLegConvention_));
+	}
 }

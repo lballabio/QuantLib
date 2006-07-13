@@ -83,6 +83,7 @@ namespace QuantLib {
         boost::shared_ptr<YieldTermStructure> termStructure() const {
             return index_->termStructure();
         }
+		boost::shared_ptr<Schedule> fixedRateSchedule(const Date& fixingDate) const;
 		boost::shared_ptr<VanillaSwap> underlyingSwap(const Date& fixingDate) const;
         //@}
         //! \name Observer interface
