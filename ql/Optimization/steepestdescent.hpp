@@ -42,11 +42,8 @@ namespace QuantLib {
         //! default constructor
         SteepestDescent(const boost::shared_ptr<LineSearch>& lineSearch)
         : lineSearch_(lineSearch) {}
-        //! destructor
-        virtual ~SteepestDescent() {}
-
         //! minimize the optimization problem P
-        virtual void minimize(const Problem& P) const;
+        void minimize(const Problem& P) const;
       private:
         //! line search
         boost::shared_ptr<LineSearch> lineSearch_;

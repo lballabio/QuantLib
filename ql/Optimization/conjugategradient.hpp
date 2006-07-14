@@ -45,11 +45,8 @@ namespace QuantLib {
         ConjugateGradient(const boost::shared_ptr<LineSearch>& lineSearch)
         : lineSearch_ (lineSearch) {}
 
-        //! destructor
-        virtual ~ConjugateGradient() {}
-
         //! minimize the optimization problem P
-        virtual void minimize(const Problem& P) const;
+        void minimize(const Problem& P) const;
       private:
         //! line search
         boost::shared_ptr<LineSearch> lineSearch_;

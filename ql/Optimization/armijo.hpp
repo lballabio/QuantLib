@@ -50,12 +50,10 @@ namespace QuantLib {
                          Real alpha = 0.05,
                          Real beta = 0.65)
         : LineSearch(eps), alpha_(alpha), beta_(beta) {}
-        virtual ~ArmijoLineSearch () {}
 
         //! Perform line search
-        virtual Real operator() (
-                       const Problem& P,  // Optimization problem
-                       Real t_ini);       // initial value of line-search step
+        Real operator()(const Problem& P, // Optimization problem
+                        Real t_ini);      // initial value of line-search step
       private:
         Real alpha_, beta_;
     };

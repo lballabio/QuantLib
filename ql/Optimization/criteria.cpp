@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,18 @@
 #include <ql/errors.hpp>
 
 namespace QuantLib {
+
+    EndCriteria::EndCriteria()
+    : maxIteration_(100), functionEpsilon_(1e-8),
+      gradientEpsilon_(1e-8), maxIterStatPt_(10),
+      statState_(0), endCriteria_(none),
+      positiveOptimization_(false) {}
+
+    EndCriteria::EndCriteria(Size maxIteration, Real epsilon)
+    : maxIteration_(maxIteration), functionEpsilon_(epsilon),
+      gradientEpsilon_(epsilon), maxIterStatPt_(maxIteration/10),
+      statState_(0), endCriteria_(none),
+      positiveOptimization_(false) {}
 
 	std::ostream& operator<<(std::ostream& out,  EndCriteria::Type ec) {
 		switch (ec) {

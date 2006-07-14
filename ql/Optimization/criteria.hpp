@@ -39,87 +39,28 @@ namespace QuantLib {
         enum Type { none, maxIter, statPt, statGd };
 
 		//! default constructor
-        EndCriteria()
-        : maxIteration_(100), functionEpsilon_(1e-8),
-          gradientEpsilon_(1e-8), maxIterStatPt_(10),
-          statState_(0), endCriteria_(none),
-          positiveOptimization_(false) {}
-
+        EndCriteria();
         //! initialization constructor
-        EndCriteria(Size maxIteration, Real epsilon)
-        : maxIteration_(maxIteration), functionEpsilon_(epsilon),
-          gradientEpsilon_(epsilon), maxIterStatPt_(maxIteration/10),
-          statState_(0), endCriteria_(none),
-          positiveOptimization_(false) {}
-
-        void setPositiveOptimization() {
-            positiveOptimization_ = true;
-        }
-
-        bool checkIterationNumber (Size iteration) {
-            bool test = (iteration >= maxIteration_);
-            if (test)
-                endCriteria_ = maxIter;
-            return test;
-        }
-
-        bool checkStationaryValue(Real fold, Real fnew) {
-            bool test = (std::fabs(fold - fnew) < functionEpsilon_);
-            if (test) {
-                statState_++;
-                if (statState_ > maxIterStatPt_) {
-                    endCriteria_ = statPt;
-                }
-            } else {
-                if (statState_ != 0)
-                    statState_ = 0;
-            }
-            return (test && (statState_ > maxIterStatPt_));
-        }
-
-        bool checkAccuracyValue(Real f) {
-            bool test = (f < functionEpsilon_ && positiveOptimization_);
-            if (test) {
-                endCriteria_ = statPt;
-            }
-            return test;
-        }
-
-        bool checkStationaryGradientNorm (Real normDiff) {
-            bool test = (normDiff < gradientEpsilon_);
-            if (test)
-                endCriteria_ = statGd;
-            return test;
-        }
-
-        bool checkAccuracyGradientNorm (Real norm) {
-            bool test = (norm < gradientEpsilon_);
-            if (test)
-                endCriteria_ = statGd;
-            return test;
-        }
-
-        //! test if the number of iteration is not too big and if we don't
-        //  raise a stationary point
+        EndCriteria(Size maxIteration,
+                    Real epsilon);
+        void setPositiveOptimization();
+        /*! test if the number of iteration is not too big and if we don't
+            raise a stationary point */
         bool operator()(Size iteration,
                         Real fold,
                         Real normgold,
                         Real fnew,
                         Real normgnew,
-                        Real) {
-            return
-                checkIterationNumber(iteration) ||
-                checkStationaryValue(fold, fnew) ||
-                checkAccuracyValue(fnew) ||
-                checkAccuracyValue(fold) ||
-                checkAccuracyGradientNorm(normgnew) ||
-                checkAccuracyGradientNorm(normgold);
-        }
-
+                        Real);
         //! return the end criteria type
-        Type criteria() const {
-            return endCriteria_;
-        }
+        Type criteria() const;
+
+        bool checkIterationNumber(Size iteration);
+        bool checkStationaryValue(Real fold,
+                                  Real fnew);
+        bool checkAccuracyValue(Real f);
+        bool checkStationaryGradientNorm(Real normDiff);
+        bool checkAccuracyGradientNorm(Real norm);
 
       protected:
         //! Maximum number of iterations
@@ -132,11 +73,78 @@ namespace QuantLib {
         bool positiveOptimization_;
     };
 
+	std::ostream& operator<<(std::ostream& out,
+                             EndCriteria::Type ec);
 
+    // inline 
+    inline void EndCriteria::setPositiveOptimization() {
+        positiveOptimization_ = true;
+    }
 
-	std::ostream& operator<<(std::ostream& out, EndCriteria::Type ec);
+    inline bool EndCriteria::checkIterationNumber(Size iteration) {
+        bool test = (iteration >= maxIteration_);
+        if (test)
+            endCriteria_ = maxIter;
+        return test;
+    }
+
+    inline bool EndCriteria::checkStationaryValue(Real fold,
+                                                  Real fnew) {
+        bool test = (std::fabs(fold - fnew) < functionEpsilon_);
+        if (test) {
+            statState_++;
+            if (statState_ > maxIterStatPt_) {
+                endCriteria_ = statPt;
+            }
+        } else {
+            if (statState_ != 0)
+                statState_ = 0;
+        }
+        return (test && (statState_ > maxIterStatPt_));
+    }
+
+    inline bool EndCriteria::checkAccuracyValue(Real f) {
+        bool test = (f < functionEpsilon_ && positiveOptimization_);
+        if (test) {
+            endCriteria_ = statPt;
+        }
+        return test;
+    }
+
+    inline bool EndCriteria::checkStationaryGradientNorm(Real normDiff) {
+        bool test = (normDiff < gradientEpsilon_);
+        if (test)
+            endCriteria_ = statGd;
+        return test;
+    }
+
+    inline bool EndCriteria::checkAccuracyGradientNorm(Real norm) {
+        bool test = (norm < gradientEpsilon_);
+        if (test)
+            endCriteria_ = statGd;
+        return test;
+    }
+
+    inline bool EndCriteria::operator()(Size iteration,
+                                        Real fold,
+                                        Real normgold,
+                                        Real fnew,
+                                        Real normgnew,
+                                        Real)
+    {
+        return
+            checkIterationNumber(iteration) ||
+            checkStationaryValue(fold, fnew) ||
+            checkAccuracyValue(fnew) ||
+            checkAccuracyValue(fold) ||
+            checkAccuracyGradientNorm(normgnew) ||
+            checkAccuracyGradientNorm(normgold);
+    }
+
+    inline EndCriteria::Type EndCriteria::criteria() const {
+        return endCriteria_;
+    }
 
 }
-
 
 #endif

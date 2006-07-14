@@ -37,7 +37,8 @@ namespace QuantLib {
         //! size of the problem ie size of target vector
         virtual Size size() = 0;
         //! compute the target vector and the values of the function to fit
-        virtual void targetAndValue(const Array& x, Array& target,
+        virtual void targetAndValue(const Array& x,
+                                    Array& target,
                                     Array& fct2fit) = 0;
         /*! compute the target vector, the values of the function to fit
             and the matrix of derivatives
