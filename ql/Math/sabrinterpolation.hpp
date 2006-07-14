@@ -202,8 +202,6 @@ namespace QuantLib {
                 problem.minimize();
 
 				SABREndCriteria_ = endCriteria();
-				QL_REQUIRE(SABREndCriteria_ != EndCriteria::Type::maxIter,
-						   "maximum number of iterations reached" );
                 
 				Array result = problem.minimumValue();
                 if (!fixed_[0]) beta_ = result[0];
