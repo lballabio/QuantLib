@@ -52,8 +52,10 @@ namespace QuantLib
             currentEvolutionTime=evolutionTimes[k];
             for (Size i=0; i<n; ++i) 
             {
-                double effStartTime =std::min(lastEvolutionTime,rateTimes[i]);
-                double effStopTime =std::min(currentEvolutionTime,rateTimes[i]);
+                double effStartTime =
+                    std::min(lastEvolutionTime,    rateTimes[i]);
+                double effStopTime =
+                    std::min(currentEvolutionTime, rateTimes[i]);
                 stdDev[i]= volatilities[i]*std::sqrt(effStopTime-effStartTime);
             }
 
@@ -66,9 +68,9 @@ namespace QuantLib
              }
 
             pseudoRoots_[k]=
-                rankReducedSqrt(covariance_, numberOfFactors, 1.0,
-                                            SalvagingAlgorithm::None);
-                //pseudoSqrt(covariance_, SalvagingAlgorithm::None);
+                //rankReducedSqrt(covariance_, numberOfFactors, 1.0,
+                //                SalvagingAlgorithm::None);
+                pseudoSqrt(covariance_, SalvagingAlgorithm::None);
         }
        
     }
