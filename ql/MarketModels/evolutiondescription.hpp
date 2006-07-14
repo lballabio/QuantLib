@@ -75,6 +75,8 @@ namespace QuantLib {
         void setMoneyMarketMeasure();
 
         bool isInTerminalMeasure() const;
+        bool isInMoneyMarketMeasure() const;
+
       private:
         Array rateTimes_, evolutionTimes_;
         std::vector<Size> numeraires_;

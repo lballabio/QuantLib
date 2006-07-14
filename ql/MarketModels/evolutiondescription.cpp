@@ -127,6 +127,11 @@ namespace QuantLib {
         std::fill(numeraires_.begin(), numeraires_.end(), rateTimes_.size()-1);
     }
 
+    bool EvolutionDescription::isInTerminalMeasure() const {
+        return *std::min_element(numeraires_.begin(), numeraires_.end()) ==
+            rateTimes_.size()-1;
+    }
+
     void EvolutionDescription::setMoneyMarketMeasure() {
         Size j = 0;
         for (Size i=0; i<evolutionTimes_.size(); ++i) {
@@ -136,9 +141,15 @@ namespace QuantLib {
         }
     }
 
-    bool EvolutionDescription::isInTerminalMeasure() const {
-        return *std::min_element(numeraires_.begin(), numeraires_.end()) ==
-            rateTimes_.size()-1;
+    bool EvolutionDescription::isInMoneyMarketMeasure() const {
+        bool result = true;
+        Size j = 0;
+        for (Size i=0; i<evolutionTimes_.size(); ++i) {
+            while (rateTimes_[j] < evolutionTimes_[i])
+                j++;
+            result = result && (numeraires_[i] == j);
+        }
+        return result;
     }
 
 }
