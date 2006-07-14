@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2005, 2006 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -69,6 +70,10 @@ namespace QuantLib {
         Size n=ks.size();
         QL_REQUIRE(n==rateTimes.size()-1, "rateTimes/ks mismatch");
 
+        QL_REQUIRE(a+d>0, "a+d must be non negative");
+        QL_REQUIRE(d>0, "d must be non negative");
+        QL_REQUIRE(c>0, "c must be non negative");
+
         std::vector<Time> stdDev(n);
       
         Time lastEvolutionTime = 0.0;
@@ -95,9 +100,9 @@ namespace QuantLib {
              }
 
             pseudoRoots_[k]=
-                pseudoSqrt(covariance_, SalvagingAlgorithm::None);
-                //rankReducedSqrt(covariance_, numberOfFactors, 1.0,
-                //                SalvagingAlgorithm::Spectral);
+                rankReducedSqrt(covariance_, numberOfFactors, 1.0,
+                                            SalvagingAlgorithm::None);
+                //pseudoSqrt(covariance_, SalvagingAlgorithm::None);
        
         }
        

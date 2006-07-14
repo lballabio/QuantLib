@@ -66,10 +66,9 @@ namespace QuantLib
              }
 
             pseudoRoots_[k]=
-                pseudoSqrt(covariance_, SalvagingAlgorithm::None);
-                //rankReducedSqrt(covariance_, numberOfFactors, 1.0,
-                //                SalvagingAlgorithm::Spectral);
-       
+                rankReducedSqrt(covariance_, numberOfFactors, 1.0,
+                                            SalvagingAlgorithm::None);
+                //pseudoSqrt(covariance_, SalvagingAlgorithm::None);
         }
        
     }
