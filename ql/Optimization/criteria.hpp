@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         enum Type { none, maxIter, statPt, statGd };
 
-        //! default constructor
+		//! default constructor
         EndCriteria()
         : maxIteration_(100), functionEpsilon_(1e-8),
           gradientEpsilon_(1e-8), maxIterStatPt_(10),
@@ -131,6 +131,10 @@ namespace QuantLib {
         Type endCriteria_;
         bool positiveOptimization_;
     };
+
+
+
+	std::ostream& operator<<(std::ostream& out, EndCriteria::Type ec);
 
 }
 

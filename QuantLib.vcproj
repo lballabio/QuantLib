@@ -4144,6 +4144,9 @@
 				RelativePath="ql\Optimization\costfunction.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Optimization\criteria.cpp">
+			</File>
+			<File
 				RelativePath="ql\Optimization\criteria.hpp">
 			</File>
 			<File

@@ -60,6 +60,7 @@ namespace QuantLib {
             Real t_, forward_, beta_, nu_, alpha_, rho_;
             Real error_, maxError_;
             std::vector<bool> fixed_;
+			EndCriteria::Type SABREndCriteria_;
         };
 
     }
@@ -90,6 +91,7 @@ namespace QuantLib {
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
                                                                        impl_);
         }
+
         Real expiry()  const { return coeffs_->t_; }
         Real forward() const { return coeffs_->forward_; }
         Real beta()    const { return coeffs_->beta_; }
@@ -99,9 +101,11 @@ namespace QuantLib {
 
         Real interpolationError() const { return coeffs_->error_; }
         Real interpolationMaxError() const { return coeffs_->maxError_; }
-      private:
+		EndCriteria::Type endCriteria(){ return coeffs_->SABREndCriteria_; }
+
+	private:
         boost::shared_ptr<detail::SABRCoefficientHolder> coeffs_;
-    };
+	};
 
 
     namespace detail {
@@ -147,7 +151,8 @@ namespace QuantLib {
             };
             // optimization method used for fitting
             boost::shared_ptr<OptimizationMethod> method_;
-          public:
+
+          public:  
             SABRInterpolationImpl(
                           const I1& xBegin, const I1& xEnd,
                           const I2& yBegin,
@@ -156,7 +161,7 @@ namespace QuantLib {
                           const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               SABRCoefficientHolder(t, forward, beta, nu, alpha, rho),
-              method_(method) {
+				method_(method) {
                 calculate();
             }
 
@@ -187,16 +192,20 @@ namespace QuantLib {
                 if (!method_) {
                     method_ = boost::shared_ptr<OptimizationMethod>(
                                                        new ConjugateGradient);
-                    method_->setEndCriteria(EndCriteria(3000,1e-12));
+                    method_->setEndCriteria(EndCriteria(9000, 1e-10));
                     method_->endCriteria().setPositiveOptimization();
                 }
 
                 method_->setInitialValue(guess);
-
+				
                 Problem problem(costFunction, constraint, *method_);
                 problem.minimize();
 
-                Array result = problem.minimumValue();
+				SABREndCriteria_ = endCriteria();
+				QL_REQUIRE(SABREndCriteria_ != EndCriteria::Type::maxIter,
+						   "maximum number of iterations reached" );
+                
+				Array result = problem.minimumValue();
                 if (!fixed_[0]) beta_ = result[0];
                 if (!fixed_[1]) nu_ = result[1];
                 if (!fixed_[2]) alpha_ = result[2];
@@ -262,6 +271,10 @@ namespace QuantLib {
                 }
                 return maxError;
             }
+
+			EndCriteria::Type endCriteria() {
+				return method_->endCriteria().criteria(); 
+			}
         };
 
     }
