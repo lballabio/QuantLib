@@ -26,6 +26,8 @@
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/functional.hpp>
 
+#include <ql/MarketModels/abcdvolatility.hpp>
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
@@ -33,15 +35,20 @@ QL_BEGIN_TEST_LOCALS(IntegralTest)
 
 Real tolerance = 1.0e-4;
 
+
 template <class T, class F>
 void testSingle(const T& I, const std::string& tag,
                 const F& f, Real xMin, Real xMax, Real expected) {
     Real calculated = I(f,xMin,xMax);
     if (std::fabs(calculated-expected) > tolerance) {
-        BOOST_FAIL("integrating " << tag
+
+        BOOST_FAIL(std::setprecision(10)
+                   << "integrating " << tag 
                    << "    calculated: " << calculated
                    << "    expected:   " << expected);
+
     }
+
 }
 
 template <class T>
@@ -58,6 +65,8 @@ void testSeveral(const T& I) {
                std::ptr_fun<Real,Real>(std::cos), 0.0, M_PI, 0.0);
     testSingle(I, "f(x) = Gaussian(x)",
                NormalDistribution(), -10.0, 10.0, 1.0);
+    testSingle(I, "f(x) = Abcd(x)",
+               Abcd(0.07, 0.07, 0.5, 0.1, 0.0, 10.0), 0.0, 10.0, -25.354908490953111);
 }
 
 QL_END_TEST_LOCALS(IntegralTest)
