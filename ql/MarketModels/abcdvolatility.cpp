@@ -22,30 +22,7 @@
 #include <ql/Math/pseudosqrt.hpp>
 
 namespace QuantLib {
-
-    namespace {
-
-        Real primitive(Time T, Time S, Time u,
-                       Real a, Real b, Real c, Real d) {
-
-            const Real k1=std::exp(b*u);
-            const Real k2=std::exp(b*S);
-            const Real k3=std::exp(b*T);
-
-            return (a*a*(-1 - 2*b*b*S*T - b*(S + T)
-                         + k1*k1*(1 + b*(S + T - 2*u) + 2*b*b*(S - u)*(T - u)))
-                    + 2*b*b*(2*c*d*(k2 + k3)*(k1 - 1)
-                             +d*d*(k1*k1 - 1)+2*b*c*c*k2*k3*u)
-                    + 2*a*b*(d*(-1 - b*(S + T) + k1*k1*(1 + b*(S + T - 2*u)))
-                             -2*c*(k3*(1 + b*S) + k2*(1 + b*T)
-                                   - k1*k3*(1 + b*(S - u))
-                                   - k1*k2*(1 + b*(T - u)))
-                             )
-                    ) / (4*b*b*b*k2*k3);
-        }
-
-    }
-
+    
     AbcdVolatility::AbcdVolatility(
             Real a,
             Real b,
@@ -67,6 +44,7 @@ namespace QuantLib {
         covariance_(ks.size(),ks.size()),
         pseudoRoots_(evolutionTimes.size())
     {
+
         Size n=ks.size();
         QL_REQUIRE(n==rateTimes.size()-1, "rateTimes/ks mismatch");
 
@@ -89,13 +67,9 @@ namespace QuantLib {
                     double effStopTime = std::min(rateTimes[i],currentEvolutionTime);
                     Real correlation = longTermCorr + (1.0-longTermCorr) * 
                          std::exp(-beta*std::abs(rateTimes[i]-rateTimes[j]));
-                     
-                    double covar = primitive(rateTimes[i], rateTimes[j], effStopTime,
-                                             b, c, d, a) 
-                                 - primitive(rateTimes[i], rateTimes[j], effStartTime,
-                                             b, c, d, a);
-
-                     covariance_[j][i] = covariance_[i][j] = ks_[i] * ks_[j] * covar * correlation ;
+                    boost::shared_ptr<Abcd> abcd(new Abcd(b, c, d, a, rateTimes[i], rateTimes[j]));
+                    double covar = abcd->primitive(effStopTime) - abcd->primitive(effStartTime);
+                    covariance_[j][i] = covariance_[i][j] = ks_[i] * ks_[j] * covar * correlation ;
                  }
              }
 
