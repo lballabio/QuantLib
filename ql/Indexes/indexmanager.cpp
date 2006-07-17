@@ -18,26 +18,27 @@
 */
 
 #include <ql/Indexes/indexmanager.hpp>
+#include <ql/Utilities/strings.hpp>
 
 namespace QuantLib {
 
     bool IndexManager::hasHistory(const std::string& name) const {
-        return data_.find(name) != data_.end();
+        return data_.find(uppercase(name)) != data_.end();
     }
 
     const TimeSeries<Real>& IndexManager::getHistory(
                                               const std::string& name) const {
-        return data_[name].value();
+        return data_[uppercase(name)].value();
     }
 
     void IndexManager::setHistory(const std::string& name,
                                   const TimeSeries<Real>& history) {
-        data_[name] = history;
+        data_[uppercase(name)] = history;
     }
 
     boost::shared_ptr<Observable> IndexManager::notifier(
                                               const std::string& name) const {
-        return data_[name];
+        return data_[uppercase(name)];
     }
 
     std::vector<std::string> IndexManager::histories() const {
@@ -53,4 +54,3 @@ namespace QuantLib {
     }
 
 }
-

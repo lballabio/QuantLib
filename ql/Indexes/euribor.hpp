@@ -46,14 +46,14 @@ namespace QuantLib {
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
                 const DayCounter& dc = Actual360())
-        : Xibor("Euribor", n, units, 2, EURCurrency(),
+        : Xibor("EURIBOR", n, units, 2, EURCurrency(),
                 TARGET(),
                 ModifiedFollowing, dc, h) {}
         #endif
         Euribor(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Xibor("Euribor", tenor, 2, EURCurrency(),
+        : Xibor("EURIBOR", tenor, 2, EURCurrency(),
                 TARGET(),
                 ModifiedFollowing, Actual360(), h) {}
     };
@@ -68,7 +68,7 @@ namespace QuantLib {
         Euribor365(const Period& tenor,
                    const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Xibor("Euribor", tenor, 2, EURCurrency(),
+        : Xibor("EURIBOR", tenor, 2, EURCurrency(),
                 TARGET(),
                 ModifiedFollowing, Actual365Fixed(), h) {}
     };
