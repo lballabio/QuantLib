@@ -247,7 +247,7 @@ void MarketModelTest::testCaplets() {
 
 void MarketModelTest::testOneStepForwards() {
 
-    BOOST_MESSAGE("Repricing forwards in a single-step LIBOR market model...");
+    BOOST_MESSAGE("Repricing forwards in a single-step full-factor LIBOR market model...");
 
     QL_TEST_SETUP
 
@@ -262,14 +262,12 @@ void MarketModelTest::testOneStepForwards() {
     Real longTermCorrelation = 0.5;
     Real beta = 0.2;
 
-    Size factors = todaysForwards.size();
-
     boost::shared_ptr<PseudoRoot> pseudoRoot(
                        new ExponentialCorrelation(longTermCorrelation, beta,
                                                   volatilities,
                                                   rateTimes,
                                                   evolution.evolutionTimes(),
-                                                  factors,
+                                                  todaysForwards.size(),
                                                   todaysForwards,
                                                   displacements));
 
@@ -310,7 +308,7 @@ void MarketModelTest::testOneStepForwards() {
 
 void MarketModelTest::testOneStepCaplets() {
 
-    BOOST_MESSAGE("Repricing caplets in a single-step LIBOR market model...");
+    BOOST_MESSAGE("Repricing caplets in a single-step full-factor LIBOR market model...");
 
     QL_TEST_SETUP
 
@@ -325,14 +323,12 @@ void MarketModelTest::testOneStepCaplets() {
     Real longTermCorrelation = 0.5;
     Real beta = 0.2;
 
-    Size factors = todaysForwards.size();
-
     boost::shared_ptr<PseudoRoot> pseudoRoot(
                        new ExponentialCorrelation(longTermCorrelation, beta,
                                                   volatilities,
                                                   rateTimes,
                                                   evolution.evolutionTimes(),
-                                                  factors,
+                                                  todaysForwards.size(),
                                                   todaysForwards,
                                                   displacements));
 
