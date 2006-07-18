@@ -24,6 +24,7 @@
 #ifndef quantlib_optimization_method_h
 #define quantlib_optimization_method_h
 
+#include <ql/Utilities/null.hpp>
 #include <ql/Optimization/constraint.hpp>
 #include <ql/Optimization/costfunction.hpp>
 #include <ql/Optimization/criteria.hpp>
@@ -36,8 +37,17 @@ namespace QuantLib {
     class OptimizationMethod {
       public:
         OptimizationMethod()
-        : iterationNumber_(0), functionEvaluation_(0),
-          gradientEvaluation_(0), functionValue_(1), squaredNorm_(1) {}
+        : iterationNumber_(0), functionEvaluation_(0), gradientEvaluation_(0),
+          functionValue_(Null<Real>()), squaredNorm_(Null<Real>()),
+          //endCriteria_(none),
+          initialValue_(Array()) {}
+        OptimizationMethod(const EndCriteria& endCriteria,
+                           const Array& initialValue)
+        : iterationNumber_(0), functionEvaluation_(0), gradientEvaluation_(0),
+          functionValue_(Null<Real>()), squaredNorm_(Null<Real>()) {
+              setEndCriteria(endCriteria);
+              setInitialValue(initialValue);
+          }
         virtual ~OptimizationMethod() {}
 
         //! Set initial value
@@ -73,16 +83,16 @@ namespace QuantLib {
         //! minimize the optimization problem P
         virtual void minimize(const Problem& P) const = 0;
       protected:
-        //! initial value of unknowns
-        Array initialValue_;
         //! current iteration step in the Optimization process
         mutable Integer iterationNumber_;
-        //! optimization end criteria
-        mutable EndCriteria endCriteria_;
         //! number of evaluation of cost function and its gradient
         mutable Integer functionEvaluation_, gradientEvaluation_;
         //! function and gradient norm values of the last step
         mutable Real functionValue_, squaredNorm_;
+        //! optimization end criteria
+        mutable EndCriteria endCriteria_;
+        //! initial value of unknowns
+        Array initialValue_;
         //! current values of the local minimum and the search direction
         mutable Array x_, searchDirection_;
     };
