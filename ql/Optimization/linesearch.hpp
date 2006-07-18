@@ -67,7 +67,8 @@ namespace QuantLib {
     };
 
 
-    inline Real LineSearch::update(Array& params, const Array& direction,
+    inline Real LineSearch::update(Array& params,
+                                   const Array& direction,
                                    Real beta,
                                    const Constraint& constraint) {
 

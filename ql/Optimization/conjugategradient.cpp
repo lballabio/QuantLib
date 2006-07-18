@@ -1,6 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
-/*
+ /*
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     void ConjugateGradient::minimize(const Problem &P) const {
-        bool end;
+        bool done = false;
 
         // function and squared norm of gradient values;
         Real fold, gold2;
@@ -45,32 +45,38 @@ namespace QuantLib {
         do {
             // Linesearch
             t = (*lineSearch_)(P, t);
-            QL_REQUIRE(lineSearch_->succeed(), "line-search failed!");
-
-            // Updates
-            d = SearchDirection;
-            // New point
-            X = lineSearch_->lastX();
-            // New function value
-            fold = functionValue();
-            functionValue() = lineSearch_->lastFunctionValue();
-            // New gradient and search direction vectors
-            g = lineSearch_->lastGradient();
-            // orthogonalization coef
-            gold2 = gradientNormValue();
-            gradientNormValue() = lineSearch_->lastGradientNorm2();
-            c = gradientNormValue() / gold2;
-            // conjugate gradient search direction
-            sddiff = (-g + c * d) - SearchDirection;
-            normdiff = std::sqrt(DotProduct(sddiff, sddiff));
-            SearchDirection = -g + c * d;
-            // End criteria
-            end = endCriteria()(iterationNumber_,
-                                fold, std::sqrt(gold2), functionValue(),
-                                std::sqrt(gradientNormValue()), normdiff);
-			// Increase interation number
-            iterationNumber()++;
-        } while (end == false);
+            // don't throw: it can fail just because maxIterations exceeded
+            //QL_REQUIRE(lineSearch_->succeed(), "line-search failed!");
+            if (lineSearch_->succeed())
+            {
+                // Updates
+                d = SearchDirection;
+                // New point
+                X = lineSearch_->lastX();
+                // New function value
+                fold = functionValue();
+                functionValue() = lineSearch_->lastFunctionValue();
+                // New gradient and search direction vectors
+                g = lineSearch_->lastGradient();
+                // orthogonalization coef
+                gold2 = gradientNormValue();
+                gradientNormValue() = lineSearch_->lastGradientNorm2();
+                c = gradientNormValue() / gold2;
+                // conjugate gradient search direction
+                sddiff = (-g + c * d) - SearchDirection;
+                normdiff = std::sqrt(DotProduct(sddiff, sddiff));
+                SearchDirection = -g + c * d;
+                
+                // End criteria
+                done = endCriteria()(iterationNumber_,
+                                    fold, std::sqrt(gold2), functionValue(),
+                                    std::sqrt(gradientNormValue()), normdiff);
+			    // Increase interation number
+                iterationNumber()++;
+            } else {
+                done=true;
+            }
+        } while (!done);
 
 	}
 
