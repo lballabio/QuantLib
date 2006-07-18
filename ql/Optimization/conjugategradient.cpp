@@ -69,8 +69,8 @@ namespace QuantLib {
                 
                 // End criteria
                 done = endCriteria()(iterationNumber_,
-                                    fold, std::sqrt(gold2), functionValue(),
-                                    std::sqrt(gradientNormValue()), normdiff);
+                                     fold, std::sqrt(gold2), functionValue(),
+                                     std::sqrt(gradientNormValue()), normdiff);
 			    // Increase interation number
                 iterationNumber()++;
             } else {
