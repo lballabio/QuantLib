@@ -204,12 +204,11 @@ namespace QuantLib {
                         method_ = boost::shared_ptr<OptimizationMethod>(
                             new ConjugateGradient(lineSearch));
                         method_->setEndCriteria(EndCriteria(100000, 1e-12));
-                        method_->endCriteria().setPositiveOptimization();
                         Array guess(4);
-                        guess[0] = 0.40;
-                        guess[1] = 0.36;
-                        guess[2] = 0.02;
-                        guess[3] = 0.20;
+                        guess[0] = 0.69; // beta
+                        guess[1] = 0.30; // nu
+                        guess[2] = 0.05; // alpha
+                        guess[3] = -0.17; // rho
                         method_->setInitialValue(guess);
                     }
 
