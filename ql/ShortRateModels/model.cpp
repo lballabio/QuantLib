@@ -93,7 +93,6 @@ namespace QuantLib {
         CalibrationFunction f(this, instruments, w);
 
         method.setInitialValue(params());
-        method.endCriteria().setPositiveOptimization();
         Problem prob(f, c, method);
         prob.minimize();
 

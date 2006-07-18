@@ -27,13 +27,13 @@ namespace QuantLib {
     : maxIteration_(100), functionEpsilon_(1e-8),
       gradientEpsilon_(1e-8), maxIterStatPt_(10),
       statState_(0), endCriteria_(none),
-      positiveOptimization_(false) {}
+      positiveOptimization_(true) {}
 
     EndCriteria::EndCriteria(Size maxIteration, Real epsilon)
     : maxIteration_(maxIteration), functionEpsilon_(epsilon),
       gradientEpsilon_(epsilon), maxIterStatPt_(maxIteration/10),
       statState_(0), endCriteria_(none),
-      positiveOptimization_(false) {}
+      positiveOptimization_(true) {}
 
 	std::ostream& operator<<(std::ostream& out,  EndCriteria::Type ec) {
 		switch (ec) {

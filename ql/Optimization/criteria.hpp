@@ -43,7 +43,7 @@ namespace QuantLib {
         //! initialization constructor
         EndCriteria(Size maxIteration,
                     Real epsilon);
-        void setPositiveOptimization();
+        void setPositiveOptimization(bool);
         /*! test if the number of iteration is not too big and if we don't
             raise a stationary point */
         bool operator()(Size iteration,
@@ -77,8 +77,8 @@ namespace QuantLib {
                              EndCriteria::Type ec);
 
     // inline 
-    inline void EndCriteria::setPositiveOptimization() {
-        positiveOptimization_ = true;
+    inline void EndCriteria::setPositiveOptimization(bool positiveOptimization) {
+        positiveOptimization_ = positiveOptimization;
     }
 
     inline bool EndCriteria::checkIterationNumber(Size iteration) {
