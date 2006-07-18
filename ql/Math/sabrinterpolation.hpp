@@ -27,6 +27,7 @@
 #define quantlib_sabr_interpolation_hpp
 
 #include <ql/Math/interpolation.hpp>
+#include <ql/Optimization/method.hpp>
 #include <ql/Optimization/problem.hpp>
 #include <ql/Optimization/conjugategradient.hpp>
 #include <ql/Utilities/null.hpp>
@@ -46,20 +47,37 @@ namespace QuantLib {
                                   Real nu,
                                   Real alpha,
                                   Real rho)
-            : t_(t), forward_(forward), beta_(beta), nu_(nu),
-              alpha_(alpha), rho_(rho), error_(Null<Real>()), fixed_(4) {
-
-                QL_REQUIRE(t>0, "negative time not allowed");
-
-                fixed_[0] = (beta_ != Null<Real>());
-                fixed_[1] = (nu_ != Null<Real>());
-                fixed_[2] = (alpha_ != Null<Real>());
-                fixed_[3] = (rho_ != Null<Real>());
+            : t_(t), forward_(forward),
+              beta_(beta), nu_(nu), alpha_(alpha), rho_(rho),
+              betaIsFixed_(false), nuIsFixed_(false),
+              alphaIsFixed_(false), rhoIsFixed_(false),
+              error_(Null<Real>()), maxError_(Null<Real>()),
+              SABREndCriteria_(EndCriteria::Type::none)
+            {
+                QL_REQUIRE(t>0, "time must be non-negative");
+                QL_REQUIRE(forward>0, "forward must be non-negative");
+                if (beta  != Null<Real>()) {
+                    betaIsFixed_  = true;
+                    QL_REQUIRE(beta_>=0.0 && beta_<=1.0,
+                               "beta must be in [0.0, 1.0]");
+                }
+                if (nu    != Null<Real>()) {
+                    nuIsFixed_    = true;
+                    QL_REQUIRE(nu_>=0.0, "nu must be non negative");
+                }
+                if (alpha != Null<Real>()) {
+                    alphaIsFixed_ = true;
+                    QL_REQUIRE(alpha_>0.0, "alpha must be positive");
+                }
+                if (rho   != Null<Real>()) {
+                    rhoIsFixed_   = true;
+                    QL_REQUIRE(rho_*rho_<1, "rho square must be less than 1");
+                }
             }
             virtual ~SABRCoefficientHolder() {}
             Real t_, forward_, beta_, nu_, alpha_, rho_;
+            bool betaIsFixed_, nuIsFixed_, alphaIsFixed_, rhoIsFixed_;
             Real error_, maxError_;
-            std::vector<bool> fixed_;
 			EndCriteria::Type SABREndCriteria_;
         };
 
@@ -84,9 +102,10 @@ namespace QuantLib {
 
             impl_ = boost::shared_ptr<Interpolation::Impl>(
                         new detail::SABRInterpolationImpl<I1,I2>(
-                                           xBegin, xEnd, yBegin,
-                                           t, forward, beta, nu, alpha, rho,
-                                           method));
+                            xBegin, xEnd, yBegin,
+                            t, forward,
+                            beta, nu, alpha, rho,
+                            method));
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
                                                                        impl_);
@@ -123,10 +142,10 @@ namespace QuantLib {
                 SABRError(SABRInterpolationImpl* sabr)
                 : sabr_(sabr) {}
                 Real value(const Array& x) const {
-                    if (!sabr_->fixed_[0]) sabr_->beta_ = x[0];
-                    if (!sabr_->fixed_[1]) sabr_->nu_ = x[1];
-                    if (!sabr_->fixed_[2]) sabr_->alpha_ = x[2];
-                    if (!sabr_->fixed_[3]) sabr_->rho_ = x[3];
+                    if (!sabr_->betaIsFixed_)  sabr_->beta_  = x[0];
+                    if (!sabr_->nuIsFixed_)    sabr_->nu_    = x[1];
+                    if (!sabr_->alphaIsFixed_) sabr_->alpha_ = x[2];
+                    if (!sabr_->rhoIsFixed_)   sabr_->rho_   = x[3];
 
                     return sabr_->interpolationError();
                 }
@@ -154,69 +173,64 @@ namespace QuantLib {
 
           public:  
             SABRInterpolationImpl(
-                          const I1& xBegin, const I1& xEnd,
-                          const I2& yBegin,
-                          Time t, Real forward,
-                          Real beta, Real nu, Real alpha, Real rho,
-                          const boost::shared_ptr<OptimizationMethod>& method)
+                const I1& xBegin, const I1& xEnd,
+                const I2& yBegin,
+                Time t, Real forward,
+                Real beta, Real nu, Real alpha, Real rho,
+                const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               SABRCoefficientHolder(t, forward, beta, nu, alpha, rho),
-				method_(method) {
+			  method_(method)
+            {
                 calculate();
             }
 
-            void calculate() {
-                if (beta_ != Null<Real>())
-                    QL_REQUIRE(beta_>=0.0 && beta_<=1.0,
-                               "beta must be in [0.0,1.0]");
-                if (nu_ != Null<Real>())
-                    QL_REQUIRE(nu_>=0.0, "nu must be non negative");
-                if (alpha_ != Null<Real>())
-                    QL_REQUIRE(alpha_>0.0, "alpha must be positive");
-                if (rho_ != Null<Real>())
-                    QL_REQUIRE(rho_*rho_<1,"rho square must be less than 1");
-
-                if (beta_ != Null<Real>() && nu_ != Null<Real>()
-                    && alpha_ != Null<Real>() && rho_ != Null<Real>())
+            void calculate()
+            {
+                // there is nothing to optimize
+                if (betaIsFixed_ && nuIsFixed_ && alphaIsFixed_ && rhoIsFixed_)
+                {
+                    error_ = interpolationError();
+                    maxError_ = interpolationMaxError(); 
+				    SABREndCriteria_ = EndCriteria::Type::none;
                     return;
+                } else {
+                    SABRConstraint constraint;
+                    SABRError costFunction(this);
 
-                SABRConstraint constraint;
-                SABRError costFunction(this);
+                    if (!method_) {
+                        boost::shared_ptr<LineSearch> lineSearch(
+                            new ArmijoLineSearch(1e-12, 0.15, 0.55));
+                        method_ = boost::shared_ptr<OptimizationMethod>(
+                            new ConjugateGradient(lineSearch));
+                        method_->setEndCriteria(EndCriteria(100000, 1e-12));
+                        method_->endCriteria().setPositiveOptimization();
+                        Array guess(4);
+                        guess[0] = 0.40;
+                        guess[1] = 0.36;
+                        guess[2] = 0.02;
+                        guess[3] = 0.20;
+                        method_->setInitialValue(guess);
+                    }
 
-                Array guess(4);
-                guess[0] = 0.40; // beta
-                guess[1] = 0.36; // nu
-                guess[2] = 0.02; // alpha
-                guess[3] = 0.20; // rho
+                    Problem problem(costFunction, constraint, *method_);
+                    problem.minimize();
+				    Array result = problem.minimumValue();
+                    if (!betaIsFixed_)  beta_  = result[0];
+                    if (!nuIsFixed_)    nu_    = result[1];
+                    if (!alphaIsFixed_) alpha_ = result[2];
+                    if (!rhoIsFixed_)   rho_   = result[3];
 
-                if (!method_) {
-                    method_ = boost::shared_ptr<OptimizationMethod>(
-                                                       new ConjugateGradient);
-                    method_->setEndCriteria(EndCriteria(9000, 1e-10));
-                    method_->endCriteria().setPositiveOptimization();
+                    QL_ENSURE(beta_>=0.0 && beta_<=1.0,
+                            "beta must be in [0.0, 1.0]");
+                    QL_ENSURE(nu_>=0.0, "nu must be non negative");
+                    QL_ENSURE(alpha_>0.0, "alpha must be positive");
+                    QL_ENSURE(rho_*rho_<1, "rho square must be less than 1");
+
+				    SABREndCriteria_ = endCriteria();
+                    error_ = interpolationError();
+                    maxError_ = interpolationMaxError(); 
                 }
-
-                method_->setInitialValue(guess);
-				
-                Problem problem(costFunction, constraint, *method_);
-                problem.minimize();
-
-				SABREndCriteria_ = endCriteria();
-                
-				Array result = problem.minimumValue();
-                if (!fixed_[0]) beta_ = result[0];
-                if (!fixed_[1]) nu_ = result[1];
-                if (!fixed_[2]) alpha_ = result[2];
-                if (!fixed_[3]) rho_ = result[3];
-
-                QL_ENSURE(beta_>=0.0 && beta_<=1.0,
-                          "beta must be in [0.0,1.0]");
-                QL_ENSURE(nu_>=0.0, "nu must be non negative");
-                QL_ENSURE(alpha_>0.0, "alpha must be positive");
-                QL_ENSURE(rho_*rho_<1,"rho square must be less than 1");
-
-                error_ = interpolationError();
-                maxError_ = interpolationMaxError(); 
             }
 
             Real value(Real x) const {
@@ -256,14 +270,14 @@ namespace QuantLib {
                     error = value(*i) - *j;
                     totalError += error*error;
                 }
-                return totalError;
+                return totalError/(this->xEnd_-this->xBegin_);
             }
 
             Real interpolationMaxError() const {
                 Real error, maxError = QL_MIN_REAL;
                 I1 i = this->xBegin_;
                 I2 j = this->yBegin_;
-                for (; i != this->xEnd_; ++i, ++j) {
+                for (; i != this->xEnd_; ++i, ++j) {                    
                     error = std::fabs(value(*i) - *j);
                     maxError = std::max(maxError, error);
                 }
