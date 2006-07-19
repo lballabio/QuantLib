@@ -210,7 +210,6 @@ namespace QuantLib {
         // set end criteria with a given maximum number of iteration
         // and a given error eps
         om_->setEndCriteria(EndCriteria(maxIterations_, eps));
-        om_->endCriteria().setPositiveOptimization();
 
         // wrap the least square problem in an optimization function
         LeastSquareFunction lsf(lsProblem);
