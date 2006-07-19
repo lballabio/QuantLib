@@ -49,7 +49,8 @@ namespace QuantLib {
         bool succeed() { return succeed_; }
 
         //! Perform line search
-        virtual Real operator()(const Problem& P, Real t_ini) = 0;
+        virtual Real operator()(const Problem& P,
+                                Real t_ini) = 0;
 
         Real update(Array& params,
                     const Array& direction,
