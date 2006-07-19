@@ -198,4 +198,25 @@ namespace QuantLib {
        return result;
     }
 
+    std::ostream& operator<<(std::ostream& out, const BusinessDayConvention &b) {
+        switch (b) {
+          case Following:
+            return out << "Following";
+          case ModifiedFollowing:
+            return out << "ModifiedFollowing";
+          case Preceding:
+            return out << "Preceding";
+          case ModifiedPreceding:
+            return out << "ModifiedPreceding";
+          case MonthEndReference:
+            return out << "MonthEndReference";
+          case UnadjustedMonthEnd:
+            return out << "UnadjustedMonthEnd";
+          case Unadjusted:
+            return out << "Unadjusted";
+          default:
+            QL_FAIL("unknown BusinessDayConvention (" << Integer(b) << ")");
+        }
+    }
+
 }

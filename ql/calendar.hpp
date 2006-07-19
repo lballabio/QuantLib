@@ -202,6 +202,7 @@ namespace QuantLib {
     /*! \relates Calendar */
     bool operator!=(const Calendar&, const Calendar&);
     std::ostream& operator<<(std::ostream&, const Calendar&);
+    std::ostream& operator<<(std::ostream&, const BusinessDayConvention&);
 
     // inline definitions
 
