@@ -124,8 +124,7 @@ void MarketModelTest::testForwards() {
     boost::shared_ptr<PseudoRoot> pseudoRoot(
                        new ExponentialCorrelation(longTermCorrelation, beta,
                                                   volatilities,
-                                                  rateTimes,
-                                                  evolution.evolutionTimes(),
+                                                  evolution,
                                                   factors,
                                                   todaysForwards,
                                                   displacements));
@@ -187,21 +186,19 @@ void MarketModelTest::testCaplets() {
     boost::shared_ptr<PseudoRoot> pseudoRoot(
                        new ExponentialCorrelation(longTermCorrelation, beta,
                                                   volatilities,
-                                                  rateTimes,
-                                                  evolution.evolutionTimes(),
+                                                  evolution,
                                                   factors,
                                                   todaysForwards,
                                                   displacements));
 
-    /*boost::shared_ptr<PseudoRoot> pseudoRoot(
-                       new AbcdVolatility(0.0, 0.0, 1.0, 1.0,
-                                          volatilities,
-                                          longTermCorrelation, beta,
-                                          rateTimes,
-                                          evolution.evolutionTimes(),
-                                          factors,
-                                          todaysForwards,
-                                          displacements));*/
+    //boost::shared_ptr<PseudoRoot> pseudoRoot(
+    //                   new AbcdVolatility(1.0, 0.0, 0.0, 1.0,
+    //                                      volatilities,
+    //                                      longTermCorrelation, beta,
+    //                                      evolution,
+    //                                      factors,
+    //                                      todaysForwards,
+    //                                      displacements));
 
     unsigned long seed = 42;
     MTBrownianGeneratorFactory generatorFactory(seed);
@@ -263,19 +260,28 @@ void MarketModelTest::testOneStepForwards() {
     Real beta = 0.2;
 
     boost::shared_ptr<PseudoRoot> pseudoRoot(
-                       new ExponentialCorrelation(longTermCorrelation, beta,
-                                                  volatilities,
-                                                  rateTimes,
-                                                  evolution.evolutionTimes(),
-                                                  todaysForwards.size(),
-                                                  todaysForwards,
-                                                  displacements));
+        new ExponentialCorrelation(longTermCorrelation, beta,
+                                   volatilities,
+                                   evolution,
+                                   todaysForwards.size(),
+                                   todaysForwards,
+                                   displacements));
+
+    //boost::shared_ptr<PseudoRoot> pseudoRoot(
+    //                   new AbcdVolatility(1.0, 0.0, 0.0, 1.0,
+    //                                      volatilities,
+    //                                      longTermCorrelation, beta,
+    //                                      evolution,
+    //                                      todaysForwards.size(),
+    //                                      todaysForwards,
+    //                                      displacements));
 
     unsigned long seed = 42;
     MTBrownianGeneratorFactory generatorFactory(seed);
 
     boost::shared_ptr<MarketModelEvolver> evolver(
-            new ForwardRateIpcEvolver(pseudoRoot, evolution, generatorFactory));
+            new ForwardRateIpcEvolver(pseudoRoot, evolution,
+                                                  generatorFactory));
 
     Size initialNumeraire = evolution.numeraires().front();
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
@@ -326,21 +332,19 @@ void MarketModelTest::testOneStepCaplets() {
     boost::shared_ptr<PseudoRoot> pseudoRoot(
                        new ExponentialCorrelation(longTermCorrelation, beta,
                                                   volatilities,
-                                                  rateTimes,
-                                                  evolution.evolutionTimes(),
+                                                  evolution,
                                                   todaysForwards.size(),
                                                   todaysForwards,
                                                   displacements));
 
-    /*boost::shared_ptr<PseudoRoot> pseudoRoot(
-                       new AbcdVolatility(0.0, 0.0, 1.0, 1.0,
-                                          volatilities,
-                                          longTermCorrelation, beta,
-                                          rateTimes,
-                                          evolution.evolutionTimes(),
-                                          factors,
-                                          todaysForwards,
-                                          displacements));*/
+    //boost::shared_ptr<PseudoRoot> pseudoRoot(
+    //                   new AbcdVolatility(1.0, 0.0, 0.0, 1.0,
+    //                                      volatilities,
+    //                                      longTermCorrelation, beta,
+    //                                      evolution,
+    //                                      todaysForwards.size(),
+    //                                      todaysForwards,
+    //                                      displacements));
 
     unsigned long seed = 42;
     MTBrownianGeneratorFactory generatorFactory(seed);
