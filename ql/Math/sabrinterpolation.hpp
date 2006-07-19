@@ -52,7 +52,7 @@ namespace QuantLib {
               alphaIsFixed_(false), betaIsFixed_(false),
               nuIsFixed_(false), rhoIsFixed_(false),
               error_(Null<Real>()), maxError_(Null<Real>()),
-              SABREndCriteria_(EndCriteria::Type::none)
+              SABREndCriteria_(EndCriteria::none)
             {
                 QL_REQUIRE(t>0, "time must be non-negative");
                 QL_REQUIRE(forward>0, "forward must be non-negative");
