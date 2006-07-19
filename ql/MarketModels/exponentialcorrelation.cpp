@@ -27,50 +27,53 @@ namespace QuantLib
             Real longTermCorr,
             Real beta,
             const std::vector<Volatility>& volatilities,
-            const Array& rateTimes,
-            const Array& evolutionTimes,
+            const EvolutionDescription& evolution,
             const Size numberOfFactors,
             const Array& initialRates,
             const Array& displacements)
      :  longTermCorr_(longTermCorr), beta_(beta), 
-        volatilities_(volatilities),rateTimes_(rateTimes),
-        evolutionTimes_(evolutionTimes),numberOfFactors_(numberOfFactors),
-        initialRates_(initialRates),displacements_(displacements),
-        covariance_(volatilities.size(),volatilities.size()),
-        pseudoRoots_(evolutionTimes.size())
+        volatilities_(volatilities),
+        rateTimes_(evolution.rateTimes()),
+        evolutionTimes_(evolution.evolutionTimes()),
+        numberOfFactors_(numberOfFactors),
+        initialRates_(initialRates),
+        displacements_(displacements),
+        pseudoRoots_(evolution.evolutionTimes().size())
     {
         Size n=volatilities.size();
-        QL_REQUIRE(n==rateTimes.size()-1, "resetTimes/vol mismatch");
+        QL_REQUIRE(n==rateTimes_.size()-1, "resetTimes/vol mismatch");
 
+        Matrix covariance(n, n);
         std::vector<Time> stdDev(n);
       
         Time lastEvolutionTime = 0.0;
         Time currentEvolutionTime=0.0;
-        for (Size k=0; k<evolutionTimes.size(); ++k) 
+        for (Size k=0; k<evolutionTimes_.size(); ++k) 
         {
             lastEvolutionTime=currentEvolutionTime;
-            currentEvolutionTime=evolutionTimes[k];
+            currentEvolutionTime=evolutionTimes_[k];
             for (Size i=0; i<n; ++i) 
             {
                 double effStartTime =
-                    std::min(lastEvolutionTime,    rateTimes[i]);
+                    std::min(lastEvolutionTime,    rateTimes_[i]);
                 double effStopTime =
-                    std::min(currentEvolutionTime, rateTimes[i]);
+                    std::min(currentEvolutionTime, rateTimes_[i]);
                 stdDev[i]= volatilities[i]*std::sqrt(effStopTime-effStartTime);
             }
 
             for (Size i=0; i<n; ++i) {
-                for (Size j=0; j<n; ++j) {
+                for (Size j=i; j<n; ++j) {
                      Real correlation = longTermCorr + (1.0-longTermCorr) * 
-                         std::exp(-beta*std::abs(rateTimes[i]-rateTimes[j]));
-                     covariance_[i][j] =  stdDev[j] * correlation * stdDev[i];
+                         std::exp(-beta*std::abs(rateTimes_[i]-rateTimes_[j]));
+                     covariance[i][j] =  covariance[j][i] = 
+                         stdDev[j] * correlation * stdDev[i];
                  }
-             }
+            }
 
             pseudoRoots_[k]=
-                //rankReducedSqrt(covariance_, numberOfFactors, 1.0,
+                //rankReducedSqrt(covariance, numberOfFactors, 1.0,
                 //                SalvagingAlgorithm::None);
-                pseudoSqrt(covariance_, SalvagingAlgorithm::None);
+                pseudoSqrt(covariance, SalvagingAlgorithm::None);
         }
        
     }

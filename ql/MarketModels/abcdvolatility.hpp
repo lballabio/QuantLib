@@ -23,6 +23,7 @@
 #define quantlib_abcd_volatility_hpp
 
 #include <ql/MarketModels/pseudoroot.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/types.hpp>
 #include <ql/Math/matrix.hpp>
 #include <vector>
@@ -84,8 +85,7 @@ namespace QuantLib
             const std::vector<Real>& ks,
             Real longTermCorr,
             Real beta,
-            const Array& rateTimes,
-            const Array& evolutionTimes,
+            const EvolutionDescription& evolution,
             const Size numberOfFactors,
             const Array& initialRates,
             const Array& displacements);
@@ -105,7 +105,6 @@ namespace QuantLib
         Size numberOfFactors_;
         Array initialRates_;
         Array displacements_;
-        Matrix covariance_;
         std::vector<Matrix> pseudoRoots_;
 
     };
