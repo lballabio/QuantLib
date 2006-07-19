@@ -29,7 +29,8 @@ namespace QuantLib {
         return familyName_+" "+tenor.str()+"-swap rate";
     }
 
-    Rate SwapRate::fixing(const Date& fixingDate) const {
+    Rate SwapRate::fixing(const Date& fixingDate,
+                          bool forecastTodaysFixing) const {
         QL_REQUIRE(index_, "no index set");
         QL_REQUIRE(index_->termStructure(), "no term structure set");
         Date today = Settings::instance().evaluationDate();

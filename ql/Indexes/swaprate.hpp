@@ -56,10 +56,15 @@ namespace QuantLib {
         //! \name Index interface
         //@{
         std::string name() const;
-        Rate fixing(const Date& fixingDate) const;
+        Rate fixing(const Date& fixingDate,
+                    bool forecastTodaysFixing = false) const;
+        //Rate fixing(const Date& fixingDate) const;
         //@}
         //! \name Inspectors
         //@{
+        std::string familyName() const {
+            return familyName_;
+        }
         const Calendar& calendar() const { return calendar_; }
         const Currency& currency() const { return currency_; }
         Period tenor() const { return Period(years_, Years); }
