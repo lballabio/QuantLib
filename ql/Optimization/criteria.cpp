@@ -31,7 +31,8 @@ namespace QuantLib {
 
     EndCriteria::EndCriteria(Size maxIteration, Real epsilon)
     : maxIteration_(maxIteration), functionEpsilon_(epsilon),
-      gradientEpsilon_(epsilon), maxIterStatPt_(maxIteration/10),
+      gradientEpsilon_(epsilon),
+      maxIterStatPt_(std::min(maxIteration/10, 1000)),
       statState_(0), endCriteria_(none),
       positiveOptimization_(true) {}
 
