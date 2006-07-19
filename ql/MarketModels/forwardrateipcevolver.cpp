@@ -62,7 +62,7 @@ namespace QuantLib {
             const Matrix& A = pseudoRoot_->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A, 
                                                    displacements,
-                                                   evolution_.taus(),
+                                                   evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
                                                    alive));
             C_.push_back(A*transpose(A));
@@ -90,7 +90,7 @@ namespace QuantLib {
 
     Real ForwardRateIpcEvolver::advanceStep() {
         const Array& displacements = pseudoRoot_->displacements();
-        const Array& taus = evolution_.taus();
+        const Array& rateTaus = evolution_.rateTaus();
 
         // we're going from T1 to T2:
         if (currentStep_ == 0) {
@@ -115,8 +115,8 @@ namespace QuantLib {
                 std::inner_product(A.row_begin(i), A.row_end(i),
                                    brownians_.begin(), 0.0);
             forwards_[i] = std::exp(logForwards_[i]) - displacements[i];
-            g_[i] = taus[i]*(forwards_[i]+displacements[i])/
-                (1.0+taus[i]*forwards_[i]);
+            g_[i] = rateTaus[i]*(forwards_[i]+displacements[i])/
+                (1.0+rateTaus[i]*forwards_[i]);
         }
 
         // update curve state

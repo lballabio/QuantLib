@@ -22,6 +22,7 @@
 #define quantlib_evolution_description_hpp
 
 #include <ql/Math/array.hpp>
+#include <ql/Math/matrix.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -63,8 +64,10 @@ namespace QuantLib {
             const std::vector<std::pair<Size,Size> >& relevanceRates =
                                                         std::vector<range>());
         const Array& rateTimes() const;
-        const Array& taus() const;
+        const Array& rateTaus() const;
         const Array& evolutionTimes() const;
+        const Matrix& evolutionTaus() const;
+        const std::vector<Size>& firstAliveRate() const;
         const std::vector<Size>& numeraires() const;
         const std::vector<std::pair<Size,Size> >& relevanceRates() const;
         Size numberOfRates() const;     // returns rateTimes().size() - 1
@@ -79,9 +82,12 @@ namespace QuantLib {
 
       private:
         Array rateTimes_, evolutionTimes_;
+        Size steps_;
         std::vector<Size> numeraires_;
         std::vector<std::pair<Size,Size> > relevanceRates_;
-        Array taus_;
+        Array rateTaus_;
+        Matrix evolutionTaus_;
+        std::vector<Size> firstAliveRate_;
     };
 
 }

@@ -30,58 +30,85 @@ namespace QuantLib {
                            const std::vector<Size>& numeraires,
                            const std::vector<std::pair<Size,Size> >& relevanceRates)
     : rateTimes_(rateTimes), evolutionTimes_(evolutionTimes),
+      steps_(evolutionTimes.size()),
       numeraires_(numeraires), relevanceRates_(relevanceRates),
-      taus_(rateTimes.size()-1) {
+      rateTaus_(rateTimes.size()-1),
+      evolutionTaus_(evolutionTimes.size(), rateTimes.size()-1),
+      firstAliveRate_(evolutionTimes.size())
+    {
 
- /* There will n+1 rate times expressing payment and reset times of forward rates.
+        /* There will n+1 rate times expressing payment and reset times of forward rates.
 
-               |-----|-----|-----|-----|-----|      (size = 6)
-               t0    t1    t2    t3    t4    t5     rateTimes
-               f0    f1    f2    f3    f4           forwardRates
-               d0    d1    d2    d3    d4    d5     discountBonds 
-               d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
-               sr0   sr1   sr2   sr3   sr4           coterminalSwaps
-*/
-          // check coherence of input data
-          QL_REQUIRE(rateTimes_.size()>1, 
-              "Array rate times must have 2 elements at least");
-          QL_REQUIRE(rateTimes_[0]>=0.0, 
-                    "first rate time must be non negative");
-          for (Size i = 1; i<rateTimes.size(); ++i) {
+           |-----|-----|-----|-----|-----|      (size = 6)
+           t0    t1    t2    t3    t4    t5     rateTimes
+           f0    f1    f2    f3    f4           forwardRates
+           d0    d1    d2    d3    d4    d5     discountBonds 
+           d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
+           sr0   sr1   sr2   sr3   sr4          coterminalSwaps
+        */
+
+        // check coherence of input data
+        QL_REQUIRE(rateTimes_.size()>1, 
+          "Array rate times must have 2 elements at least");
+        QL_REQUIRE(rateTimes_[0]>=0.0, 
+                "first rate time must be non negative");
+        for (Size i = 1; i<rateTimes.size(); ++i) {
             QL_REQUIRE(rateTimes[i]>rateTimes[i-1], 
                 "rate times must be strictly increasing");
+        }
+
+        QL_REQUIRE(steps_>0, 
+          "Array evolution times must have 1 elements at least");         
+        for (Size i = 1; i<steps_; ++i) {
+            QL_REQUIRE(evolutionTimes[i]>evolutionTimes[i-1], 
+                "evolution times must be strictly increasing");
+        }
+
+        QL_REQUIRE(rateTimes.back() >= evolutionTimes.back(),
+                 "last evolution time is past last rate time");
+
+        if (numeraires.empty()) {
+          // default numeraire is the terminal one
+          std::fill(numeraires_.begin(), numeraires_.end(),
+                    rateTimes_.size()-1);
+        } else {
+          QL_REQUIRE(numeraires.size() == steps_, 
+                     "Numeraires / evolutionTimes mismatch");     
+          for (Size i=0; i<numeraires.size()-1; i++) {
+              QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes[i], 
+                         "Numeraire " << i << " expired");
           }
-          // todo: check increasing rateTimes
-
-          QL_REQUIRE(evolutionTimes.size()>0, 
-              "Array evolution times must have 1 elements at least");         
-          // todo: check increasing evolutionTimes
-
-          QL_REQUIRE(rateTimes.back() >= evolutionTimes.back(),
-                     "last evolution time is past last rate time");
-
-          if (numeraires.empty()) {
-              // default numeraire is the terminal one
-              std::fill(numeraires_.begin(), numeraires_.end(),
-                        rateTimes_.size()-1);
-          } else {
-              QL_REQUIRE(numeraires.size() == evolutionTimes.size(), 
-                         "Numeraires / evolutionTimes mismatch");     
-              for (Size i=0; i<numeraires.size()-1; i++) {
-                  QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes[i], 
-                             "Numeraire " << i << " expired");
-              }
-          }
+        }
         /* 
         Default values for numeraires will be the final bond.
-		- We also store which part of the rates are relevant for pricing via
+        - We also store which part of the rates are relevant for pricing via
         relevance rates. The important part for the i-th step will then range
         from relevanceRates[i].first to relevanceRates[i].second
         Default values for relevance rates will be 0 and n. 
         */
 
-        for (Size i=0; i<taus_.size(); i++) {
-            taus_[i] = rateTimes_[i+1] - rateTimes_[i];
+        for (Size i=0; i<rateTaus_.size(); i++) {
+            rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];
+        }
+
+        Time effStopTime, lastEvolutionTime, currentEvolutionTime = 0.0;
+        for (Size j=0; j<steps_; ++j) {
+            lastEvolutionTime=currentEvolutionTime;
+            currentEvolutionTime=evolutionTimes_[j];
+            for (Size i=0; i<rateTimes_.size()-1; ++i) {
+                effStopTime = std::min(currentEvolutionTime, rateTimes_[i]);
+                evolutionTaus_[j][i] = 
+                    std::min(effStopTime-lastEvolutionTime, 0.0);
+            }
+        }
+       
+        lastEvolutionTime = 0.0;
+        Size firstAliveRate = 0;
+        for (Size j=0; j<steps_; ++j) {
+            while (rateTimes_[firstAliveRate] <= lastEvolutionTime)
+                ++firstAliveRate;
+            firstAliveRate_[j] = firstAliveRate;
+            lastEvolutionTime = evolutionTimes_[j];
         }
     }
 
@@ -89,12 +116,20 @@ namespace QuantLib {
         return rateTimes_;
     }
 
-    const Array& EvolutionDescription::taus() const {
-        return taus_;
+    const Array& EvolutionDescription::rateTaus() const {
+        return rateTaus_;
     }
 
     const Array& EvolutionDescription::evolutionTimes() const {
         return evolutionTimes_;
+    }
+
+    const Matrix& EvolutionDescription::evolutionTaus() const {
+        return evolutionTaus_;
+    }
+
+    const std::vector<Size>& EvolutionDescription::firstAliveRate() const {
+        return firstAliveRate_;
     }
 
     const std::vector<Size>& EvolutionDescription::numeraires() const {

@@ -59,7 +59,7 @@ namespace QuantLib {
             const Matrix& A = pseudoRoot_->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A, 
                                                    displacements,
-                                                   evolution_.taus(),
+                                                   evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
                                                    alive));
             alive_[j] = alive;
