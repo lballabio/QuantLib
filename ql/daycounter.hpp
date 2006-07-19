@@ -93,6 +93,7 @@ namespace QuantLib {
 
     /*! \relates DayCounter */
     bool operator!=(const DayCounter&, const DayCounter&);
+    std::ostream& operator<<(std::ostream&, const DayCounter&);
 
 
     // inline definitions
@@ -123,6 +124,10 @@ namespace QuantLib {
 
     inline bool operator!=(const DayCounter& d1, const DayCounter& d2) {
         return !(d1 == d2);
+    }
+
+    inline std::ostream& operator<<(std::ostream& out, const DayCounter &d) {
+        return out << d.name();
     }
 
 }

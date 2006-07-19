@@ -201,7 +201,7 @@ namespace QuantLib {
 
     /*! \relates Calendar */
     bool operator!=(const Calendar&, const Calendar&);
-
+    std::ostream& operator<<(std::ostream&, const Calendar&);
 
     // inline definitions
 
@@ -240,6 +240,10 @@ namespace QuantLib {
 
     inline bool operator!=(const Calendar& c1, const Calendar& c2) {
         return !(c1 == c2);
+    }
+
+    inline std::ostream& operator<<(std::ostream& out, const Calendar &c) {
+        return out << c.name();
     }
 
 }
