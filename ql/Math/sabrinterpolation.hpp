@@ -43,19 +43,23 @@ namespace QuantLib {
           public:
             SABRCoefficientHolder(Time t,
                                   Real forward,
+                                  Real alpha,
                                   Real beta,
                                   Real nu,
-                                  Real alpha,
                                   Real rho)
             : t_(t), forward_(forward),
-              beta_(beta), nu_(nu), alpha_(alpha), rho_(rho),
-              betaIsFixed_(false), nuIsFixed_(false),
-              alphaIsFixed_(false), rhoIsFixed_(false),
+              alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
+              alphaIsFixed_(false), betaIsFixed_(false),
+              nuIsFixed_(false), rhoIsFixed_(false),
               error_(Null<Real>()), maxError_(Null<Real>()),
               SABREndCriteria_(EndCriteria::Type::none)
             {
                 QL_REQUIRE(t>0, "time must be non-negative");
                 QL_REQUIRE(forward>0, "forward must be non-negative");
+                if (alpha != Null<Real>()) {
+                    alphaIsFixed_ = true;
+                    QL_REQUIRE(alpha_>0.0, "alpha must be positive");
+                }
                 if (beta  != Null<Real>()) {
                     betaIsFixed_  = true;
                     QL_REQUIRE(beta_>=0.0 && beta_<=1.0,
@@ -65,18 +69,14 @@ namespace QuantLib {
                     nuIsFixed_    = true;
                     QL_REQUIRE(nu_>=0.0, "nu must be non negative");
                 }
-                if (alpha != Null<Real>()) {
-                    alphaIsFixed_ = true;
-                    QL_REQUIRE(alpha_>0.0, "alpha must be positive");
-                }
                 if (rho   != Null<Real>()) {
                     rhoIsFixed_   = true;
                     QL_REQUIRE(rho_*rho_<1, "rho square must be less than 1");
                 }
             }
             virtual ~SABRCoefficientHolder() {}
-            Real t_, forward_, beta_, nu_, alpha_, rho_;
-            bool betaIsFixed_, nuIsFixed_, alphaIsFixed_, rhoIsFixed_;
+            Real t_, forward_, alpha_, beta_, nu_, rho_;
+            bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
             Real error_, maxError_;
 			EndCriteria::Type SABREndCriteria_;
         };
@@ -93,9 +93,9 @@ namespace QuantLib {
                           const I2& yBegin,
                           Time t,
                           Real forward,
+                          Real alpha,
                           Real beta,
                           Real nu,
-                          Real alpha,
                           Real rho,
                           const boost::shared_ptr<OptimizationMethod>& method
                                   = boost::shared_ptr<OptimizationMethod>()) {
@@ -104,7 +104,7 @@ namespace QuantLib {
                         new detail::SABRInterpolationImpl<I1,I2>(
                             xBegin, xEnd, yBegin,
                             t, forward,
-                            beta, nu, alpha, rho,
+                            alpha, beta, nu, rho,
                             method));
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
@@ -113,9 +113,9 @@ namespace QuantLib {
 
         Real expiry()  const { return coeffs_->t_; }
         Real forward() const { return coeffs_->forward_; }
+        Real alpha()   const { return coeffs_->alpha_; }
         Real beta()    const { return coeffs_->beta_; }
         Real nu()      const { return coeffs_->nu_; }
-        Real alpha()   const { return coeffs_->alpha_; }
         Real rho()     const { return coeffs_->rho_; }
 
         Real interpolationError() const { return coeffs_->error_; }
@@ -142,12 +142,12 @@ namespace QuantLib {
                 SABRError(SABRInterpolationImpl* sabr)
                 : sabr_(sabr) {}
                 Real value(const Array& x) const {
-                    if (!sabr_->betaIsFixed_)  sabr_->beta_  = x[0];
-                    if (!sabr_->nuIsFixed_)    sabr_->nu_    = x[1];
-                    if (!sabr_->alphaIsFixed_) sabr_->alpha_ = x[2];
+                    if (!sabr_->alphaIsFixed_) sabr_->alpha_ = x[0];
+                    if (!sabr_->betaIsFixed_)  sabr_->beta_  = x[1];
+                    if (!sabr_->nuIsFixed_)    sabr_->nu_    = x[2];
                     if (!sabr_->rhoIsFixed_)   sabr_->rho_   = x[3];
 
-                    return sabr_->interpolationError();
+                    return sabr_->interpolationSquaredNonNormalizedError();
                 }
               private:
                 SABRInterpolationImpl* sabr_;
@@ -158,9 +158,9 @@ namespace QuantLib {
                 class Impl : public Constraint::Impl {
                   public:
                     bool test(const Array& params) const {
-                        return params[0]>=0.0 && params[0]<=1.0 // beta
-                            && params[1]>=0.0                   // nu
-                            && params[2]>0.0                    // alpha
+                        return params[0]>0.0                    // alpha
+                            && params[1]>=0.0 && params[0]<=1.0 // beta
+                            && params[2]>=0.0                   // nu
                             && params[3]*params[3] < 1.0;       // rho
                     }
                 };
@@ -176,10 +176,10 @@ namespace QuantLib {
                 const I1& xBegin, const I1& xEnd,
                 const I2& yBegin,
                 Time t, Real forward,
-                Real beta, Real nu, Real alpha, Real rho,
+                Real alpha, Real beta, Real nu, Real rho,
                 const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              SABRCoefficientHolder(t, forward, beta, nu, alpha, rho),
+              SABRCoefficientHolder(t, forward, alpha, beta, nu, rho),
 			  method_(method)
             {
                 calculate();
@@ -188,7 +188,7 @@ namespace QuantLib {
             void calculate()
             {
                 // there is nothing to optimize
-                if (betaIsFixed_ && nuIsFixed_ && alphaIsFixed_ && rhoIsFixed_)
+                if (alphaIsFixed_ && betaIsFixed_ && nuIsFixed_ && rhoIsFixed_)
                 {
                     error_ = interpolationError();
                     maxError_ = interpolationMaxError(); 
@@ -205,9 +205,9 @@ namespace QuantLib {
                             new ConjugateGradient(lineSearch));
                         method_->setEndCriteria(EndCriteria(100000, 1e-12));
                         Array guess(4);
-                        guess[0] = 0.69; // beta
-                        guess[1] = 0.30; // nu
-                        guess[2] = 0.05; // alpha
+                        guess[0] = 0.05;  // alpha
+                        guess[1] = 0.69;  // beta
+                        guess[2] = 0.30;  // nu
                         guess[3] = -0.17; // rho
                         method_->setInitialValue(guess);
                     }
@@ -215,15 +215,15 @@ namespace QuantLib {
                     Problem problem(costFunction, constraint, *method_);
                     problem.minimize();
 				    Array result = problem.minimumValue();
-                    if (!betaIsFixed_)  beta_  = result[0];
-                    if (!nuIsFixed_)    nu_    = result[1];
-                    if (!alphaIsFixed_) alpha_ = result[2];
+                    if (!alphaIsFixed_) alpha_ = result[0];
+                    if (!betaIsFixed_)  beta_  = result[1];
+                    if (!nuIsFixed_)    nu_    = result[2];
                     if (!rhoIsFixed_)   rho_   = result[3];
 
+                    QL_ENSURE(alpha_>0.0, "alpha must be positive");
                     QL_ENSURE(beta_>=0.0 && beta_<=1.0,
                             "beta must be in [0.0, 1.0]");
                     QL_ENSURE(nu_>=0.0, "nu must be non negative");
-                    QL_ENSURE(alpha_>0.0, "alpha must be positive");
                     QL_ENSURE(rho_*rho_<1, "rho square must be less than 1");
 
 				    SABREndCriteria_ = endCriteria();
@@ -261,7 +261,7 @@ namespace QuantLib {
                 QL_FAIL("not implemented");
             }
 
-            Real interpolationError() const {
+            Real interpolationSquaredNonNormalizedError() const {
                 Real error, totalError = 0.0;
                 I1 i = this->xBegin_;
                 I2 j = this->yBegin_;
@@ -269,7 +269,13 @@ namespace QuantLib {
                     error = value(*i) - *j;
                     totalError += error*error;
                 }
-                return totalError/(this->xEnd_-this->xBegin_);
+                return totalError;
+            }
+
+            Real interpolationError() const {
+                Real normalizedError = interpolationSquaredNonNormalizedError()
+                    /(this->xEnd_-this->xBegin_);
+                return std::sqrt(normalizedError);
             }
 
             Real interpolationMaxError() const {
@@ -291,6 +297,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif
