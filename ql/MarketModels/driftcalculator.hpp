@@ -17,6 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+/*! \file driftcalculator.hpp
+    \brief Drift computation for Market Model
+*/
 
 #ifndef quantlib_drift_calculator_hpp
 #define quantlib_drift_calculator_hpp
@@ -26,32 +29,46 @@
 
 namespace QuantLib {
 
-    /*! <insert formula here >
-    */
+	//! Drift computation for Market Models
+    /*! \ingroup Market Models */
+
     class DriftCalculator {
 
     public:
 
+	    /*! Returns an approximation of the integrated drift 
+			\f$ \mu \Delta t \f$.
+			See [1] "Rapid Computation of Drifts in a Reduced Factor Libor Market Model"
+			Mark Joshi, Wilmott Magazine, May 2003.
+		*/
         DriftCalculator(const Matrix& pseudo,
                         const Array& displacements,
                         const Array& taus,
                         Size numeraire,
-                        Size alive);
-        
+                        Size alive,
+						Size factors);
+	    /*! Returns an approximation of the integrated drift 
+			without factor reduction as in eqs. 2, 4 of ref. [1] 
+			(uses the covariance matrix directly).
+		*/
 		void compute(const Array& forwards,
                      Array& drifts) const;
+	    /*! Returns an approximation of the integrated drift 
+			with factor reduction as in eq. 7 of ref. [1] 
+			(uses pseudo square root of the covariance matrix).
+		*/
+		void computeReduced(const Array& forwards, 
+							Array& drifts) const;
 
     private:
 
-	    Matrix C_;
+        Size dim_, numeraire_, alive_, factors_;
+        Array displacements_, taus_; 
+		Matrix C_, pseudo_;
 
-        Size size_, numeraire_, alive_;
-        Array displacements_, taus_;
-	    Matrix pseudo_;
-
-		// temporary variables
-        // to be added later
+		// temporary variables to be added later
         mutable std::vector<Real> tmp_;
+		mutable Matrix e_;
         std::vector<Size> downs_, ups_;
     };
 

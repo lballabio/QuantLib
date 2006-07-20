@@ -61,7 +61,8 @@ namespace QuantLib {
                                                    displacements,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
-                                                   alive));
+                                                   alive,
+												   factors));
             alive_[j] = alive;
             lastTime = evolutionTimes[j];
 

@@ -64,7 +64,8 @@ namespace QuantLib {
                                                    displacements,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
-                                                   alive));
+                                                   alive,
+												   factors));
             C_.push_back(A*transpose(A));
 
             alive_[j] = alive;
