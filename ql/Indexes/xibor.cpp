@@ -86,6 +86,9 @@ namespace QuantLib {
     Rate Xibor::fixing(const Date& fixingDate,
                        bool forecastTodaysFixing) const {
         Date today = Settings::instance().evaluationDate();
+        // check fixing date is not a holiday
+        QL_REQUIRE(calendar_.isBusinessDay(fixingDate),
+                       "Fixing date " << fixingDate << " is not a business day");        
         if (fixingDate < today) {
             // must have been fixed
             Rate pastFixing =
