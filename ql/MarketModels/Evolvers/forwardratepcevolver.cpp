@@ -17,11 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/forwardrateevolver.hpp>
+#include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 
 namespace QuantLib {
 
-    ForwardRateEvolver::ForwardRateEvolver(
+    ForwardRatePcEvolver::ForwardRatePcEvolver(
                            const boost::shared_ptr<PseudoRoot>& pseudoRoot,
                            const EvolutionDescription& evolution,
                            const BrownianGeneratorFactory& factory)
@@ -79,16 +79,16 @@ namespace QuantLib {
         //                                    initialDrifts_);
     }
 
-	ForwardRateEvolver::~ForwardRateEvolver() {}
+	ForwardRatePcEvolver::~ForwardRatePcEvolver() {}
 
-    Real ForwardRateEvolver::startNewPath() {
+    Real ForwardRatePcEvolver::startNewPath() {
         currentStep_ = 0;
         std::copy(initialLogForwards_.begin(), initialLogForwards_.end(),
                   logForwards_.begin());
         return generator_->nextPath();
     }
 
-    Real ForwardRateEvolver::advanceStep() {
+    Real ForwardRatePcEvolver::advanceStep() {
         const Array& displacements = pseudoRoot_->displacements();
 
         // we're going from T1 to T2:
@@ -133,11 +133,11 @@ namespace QuantLib {
         return weight;
     }
 
-    Size ForwardRateEvolver::currentStep() const {
+    Size ForwardRatePcEvolver::currentStep() const {
         return currentStep_;
     }
 
-    const CurveState& ForwardRateEvolver::currentState() const {
+    const CurveState& ForwardRatePcEvolver::currentState() const {
         return curveState_;
     }
 

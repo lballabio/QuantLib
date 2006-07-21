@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_forward_rate_evolver_hpp
-#define quantlib_forward_rate_evolver_hpp
+#ifndef quantlib_forward_rate_pc_evolver_hpp
+#define quantlib_forward_rate_pc_evolver_hpp
 
 #include <ql/MarketModels/marketmodelevolver.hpp>
 #include <ql/MarketModels/pseudoroot.hpp>
@@ -32,12 +32,12 @@ namespace QuantLib {
     /*! This class does the actual gritty work of evolving the forward
         rates from one time to the next.
     */
-    class ForwardRateEvolver : public MarketModelEvolver {
+    class ForwardRatePcEvolver : public MarketModelEvolver {
     public:
-        ForwardRateEvolver(const boost::shared_ptr<PseudoRoot>&,
+        ForwardRatePcEvolver(const boost::shared_ptr<PseudoRoot>&,
                            const EvolutionDescription&,
                            const BrownianGeneratorFactory&);
-		virtual ~ForwardRateEvolver();
+		virtual ~ForwardRatePcEvolver();
 
         Real startNewPath();
         Real advanceStep();

@@ -2,7 +2,6 @@
 
 /*
  Copyright (C) 2006 Mark Joshi
- Copyright (C) 2005, 2006 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,25 +17,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/abcdvolatility.hpp>
+#include <ql/MarketModels/PseudoRoots/exponentialcorrelation.hpp>
 #include <ql/Math/pseudosqrt.hpp>
 
-namespace QuantLib {
-    
-    AbcdVolatility::AbcdVolatility(
-            Real a,
-            Real b,
-            Real c,
-            Real d,
-            const std::vector<Real>& ks,
+
+namespace QuantLib
+{
+    ExponentialCorrelation::ExponentialCorrelation(
             Real longTermCorr,
             Real beta,
+            const std::vector<Volatility>& volatilities,
             const EvolutionDescription& evolution,
             const Size numberOfFactors,
             const Array& initialRates,
             const Array& displacements)
-     :  a_(a), b_(b), c_(c), d_(d), ks_(ks),
-        longTermCorr_(longTermCorr), beta_(beta), 
+     :  longTermCorr_(longTermCorr), beta_(beta), 
+        volatilities_(volatilities),
         rateTimes_(evolution.rateTimes()),
         evolutionTimes_(evolution.evolutionTimes()),
         numberOfFactors_(numberOfFactors),
@@ -44,13 +40,8 @@ namespace QuantLib {
         displacements_(displacements),
         pseudoRoots_(evolution.evolutionTimes().size())
     {
-
-        Size n=ks.size();
-        QL_REQUIRE(n==rateTimes_.size()-1, "rateTimes/ks mismatch");
-
-        QL_REQUIRE(a+d>=0, "a+d must be non negative");
-        QL_REQUIRE(d>=0, "d must be non negative");
-        QL_REQUIRE(c>=0, "c must be non negative");
+        Size n=volatilities.size();
+        QL_REQUIRE(n==rateTimes_.size()-1, "resetTimes/vol mismatch");
 
         Matrix covariance(n, n);
         std::vector<Time> stdDev(n);
@@ -61,54 +52,65 @@ namespace QuantLib {
         {
             lastEvolutionTime=currentEvolutionTime;
             currentEvolutionTime=evolutionTimes_[k];
+            for (Size i=0; i<n; ++i) 
+            {
+                double effStartTime =
+                    std::min(lastEvolutionTime,    rateTimes_[i]);
+                double effStopTime =
+                    std::min(currentEvolutionTime, rateTimes_[i]);
+                stdDev[i]= volatilities[i]*std::sqrt(effStopTime-effStartTime);
+            }
 
             for (Size i=0; i<n; ++i) {
                 for (Size j=i; j<n; ++j) {
-                    double effStartTime = std::min(rateTimes_[i],lastEvolutionTime); 
-                    double effStopTime = std::min(rateTimes_[i],currentEvolutionTime);
-                    Real correlation = longTermCorr + (1.0-longTermCorr) * 
+                     Real correlation = longTermCorr + (1.0-longTermCorr) * 
                          std::exp(-beta*std::abs(rateTimes_[i]-rateTimes_[j]));
-                    boost::shared_ptr<Abcd> abcd(new Abcd(b, c, d, a, rateTimes_[i], rateTimes_[j]));
-                    double covar = abcd->primitive(effStopTime) - abcd->primitive(effStartTime);
-                    covariance[j][i] = covariance[i][j] = ks_[i] * ks_[j] * covar * correlation ;
+                     covariance[i][j] =  covariance[j][i] = 
+                         stdDev[j] * correlation * stdDev[i];
                  }
-             }
+            }
 
             pseudoRoots_[k]=
                 //rankReducedSqrt(covariance, numberOfFactors, 1.0,
                 //                SalvagingAlgorithm::None);
                 pseudoSqrt(covariance, SalvagingAlgorithm::None);
-       
         }
        
     }
 
 
 
-    const Array& AbcdVolatility::initialRates() const
+    const Array& ExponentialCorrelation::initialRates() const
     {
         return initialRates_;
     }
 
-    const Array& AbcdVolatility::displacements() const
+    const Array& ExponentialCorrelation::displacements() const
     {
         return displacements_;
     }
 
-    Size AbcdVolatility::numberOfRates() const 
+    Size ExponentialCorrelation::numberOfRates() const 
     {
         return initialRates_.size();
     }
 
-    Size AbcdVolatility::numberOfFactors() const
+    Size ExponentialCorrelation::numberOfFactors() const
     {
         return numberOfFactors_;
     }
 
-    const Matrix& AbcdVolatility::pseudoRoot(Size i) const 
+    const Matrix& ExponentialCorrelation::pseudoRoot(Size i) const 
     {
         return pseudoRoots_[i];
     }
 
+
+
+
+
 }
+
+
+
 

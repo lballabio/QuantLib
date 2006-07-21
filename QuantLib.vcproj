@@ -8147,12 +8147,6 @@
 			Name="MarketModels"
 			Filter="">
 			<File
-				RelativePath=".\ql\MarketModels\abcdvolatility.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\abcdvolatility.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\MarketModels\accountingengine.cpp">
 			</File>
 			<File
@@ -8186,34 +8180,10 @@
 				RelativePath=".\ql\MarketModels\evolutiondescription.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\exponentialcorrelation.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\exponentialcorrelation.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\forwardrateevolver.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\forwardrateevolver.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\forwardrateipcevolver.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\forwardrateipcevolver.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\MarketModels\marketmodelevolver.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\mtbrowniangenerator.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\mtbrowniangenerator.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\pseudoroot.hpp">
@@ -8253,6 +8223,48 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="Evolvers"
+				Filter="">
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="PseudoRoots"
+				Filter="">
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\abcdvolatility.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\abcdvolatility.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\exponentialcorrelation.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\exponentialcorrelation.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="BrownianGenerators"
+				Filter="">
+				<File
+					RelativePath=".\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.hpp">
 				</File>
 			</Filter>
 		</Filter>

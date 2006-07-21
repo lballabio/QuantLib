@@ -22,13 +22,12 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/MarketModels/core.hpp>
-#include <ql/MarketModels/abcdvolatility.hpp>
 #include <ql/MarketModels/driftcalculator.hpp>
-#include <ql/MarketModels/exponentialcorrelation.hpp>
-#include <ql/MarketModels/forwardrateevolver.hpp>
-#include <ql/MarketModels/forwardrateipcevolver.hpp>
-#include <ql/MarketModels/mtbrowniangenerator.hpp>
-
+#include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
+#include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
+#include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
+#include <ql/MarketModels/PseudoRoots/abcdvolatility.hpp>
+#include <ql/MarketModels/PseudoRoots/exponentialcorrelation.hpp>
 #include <ql/MarketModels/Products/all.hpp>
 
 
