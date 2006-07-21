@@ -38,18 +38,16 @@ namespace QuantLib {
                  Frequency fixedLegFrequency,
                  BusinessDayConvention fixedLegConvention,
                  const DayCounter& fixedLegDayCounter,
-                 const boost::shared_ptr<Xibor>& index,
-                 Integer indexFixingDays,
-                 Frequency floatingLegFrequency,
-                 BusinessDayConvention floatingLegConvention)
+                 const boost::shared_ptr<Xibor>& index)
         : familyName_(familyName), years_(years),
           settlementDays_(settlementDays),
           currency_(currency), calendar_(calendar),
-          index_(index), indexFixingDays_(indexFixingDays),
+          index_(index),
+          indexFixingDays_(index_->settlementDays()),
           fixedLegFrequency_(fixedLegFrequency),
-          floatingLegFrequency_(floatingLegFrequency),
+          floatingLegFrequency_(index_->frequency()),
           fixedLegConvention_(fixedLegConvention),
-          floatingLegConvention_(floatingLegConvention),
+          floatingLegConvention_(index_->businessDayConvention()),
           fixedLegDayCounter_(fixedLegDayCounter) {
             registerWith(index_);
         }
