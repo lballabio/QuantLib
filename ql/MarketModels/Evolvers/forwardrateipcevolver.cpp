@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/forwardrateipcevolver.hpp>
+#include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
 
 namespace QuantLib {
 

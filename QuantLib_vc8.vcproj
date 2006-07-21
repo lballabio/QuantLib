@@ -7809,14 +7809,6 @@
 			Name="MarketModels"
 			>
 			<File
-				RelativePath=".\ql\MarketModels\abcdvolatility.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\abcdvolatility.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\MarketModels\accountingengine.cpp"
 				>
 			</File>
@@ -7861,43 +7853,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\exponentialcorrelation.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\exponentialcorrelation.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\forwardrateevolver.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\forwardrateevolver.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\forwardrateipcevolver.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\forwardrateipcevolver.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\MarketModels\marketmodelevolver.hpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\mtbrowniangenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\mtbrowniangenerator.hpp"
 				>
 			</File>
 			<File
@@ -7949,6 +7909,202 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Evolvers"
+				>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="BrownianGenerators"
+				>
+				<File
+					RelativePath=".\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="PseudoRoots"
+				>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\abcdvolatility.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\abcdvolatility.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\exponentialcorrelation.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\exponentialcorrelation.hpp"
 					>
 				</File>
 			</Filter>
