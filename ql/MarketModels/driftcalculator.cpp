@@ -24,20 +24,15 @@
 
 namespace QuantLib {
 
-    DriftCalculator::DriftCalculator(
-		const Matrix& pseudo,
-        const Array& displacements,
-        const Array& taus,
-        Size numeraire,
-        Size alive,
-		Size factors
-	):	pseudo_(pseudo), 
-		displacements_(displacements),
-		taus_(taus),  
+    DriftCalculator::DriftCalculator(const Matrix& pseudo,
+                                     const Array& displacements,
+                                     const Array& taus,
+                                     Size numeraire,
+                                     Size alive)
+	: pseudo_(pseudo), displacements_(displacements), taus_(taus),  
 		dim_(taus.size()), 
 		numeraire_(numeraire), 
 		alive_(alive), 
-		factors_(factors),	
 		tmp_(taus.size()), 
 		downs_(taus.size()), 
 		ups_(taus.size()), 
@@ -50,7 +45,6 @@ namespace QuantLib {
         QL_REQUIRE(alive>=0 && alive<dim_, "");
         QL_REQUIRE(numeraire_<=dim_, "");
         QL_REQUIRE(numeraire_>=alive, "");
-        QL_REQUIRE(factors_<=pseudo.columns(), "");
 
 		const Disposable<Matrix> pT = transpose(pseudo_);
         C_ = pseudo_*pT;
@@ -84,12 +78,14 @@ namespace QuantLib {
         }
     }
 
-	  void DriftCalculator::computeReduced(const Array& forwards, 
-										   Array& drifts) const {
+	  void DriftCalculator::computeReduced(const Array& forwards,
+                                           Size factors, 
+                                           Array& drifts) const {
 
 		#if defined _DEBUG
 			QL_REQUIRE(forwards.size() == dim_, "");
 			QL_REQUIRE(drifts.size() == dim_, "");
+            QL_REQUIRE(factors<=pseudo_.columns(), "");
 		#endif
 
 		// Precompute forwards factor
@@ -100,12 +96,12 @@ namespace QuantLib {
 		// Compute drifts with factor reduction,
 		// using pseudo square root of the covariance matrix.
 		// Divide the summation into 3 terms:
-		// 1st: the drift corresponding to the numeraire (i = N) is zero:
-		drifts[numeraire_] = 0.0;
+		// 1st: the drift corresponding to the numeraire P_N is zero:
+		drifts[numeraire_] = 0.0;	// per caso e' gia' nullo ?
 		// 2nd: then, move backward from N-2 (included) back to alive (included):
         for (i=numeraire_-2; i>=alive_; --i) {
 		//  for (Size r=0; r<pseudo_.columns(); ++r) { 
-			for (Size r=0; r<factors_; ++r) { 
+			for (Size r=0; r<factors; ++r) { 
 				e_[r][i] = e_[r][i+1] + tmp_[i+1] * pseudo_[i+1][r];
 			}
 			drifts[i] = - std::inner_product(e_.column_begin(i)+downs_[i],
@@ -115,7 +111,7 @@ namespace QuantLib {
 		// 3rd: now, move forward from N (included) up to to n (excluded):
 		for (i=numeraire_; i<dim_; ++i) {
 		//  for (r=0; r<pseudo_.columns(); ++r) {
-			for (r=0; r<factors_; ++r) {
+			for (r=0; r<factors; ++r) {
 				e_[r][i] = e_[r][i-1]+tmp_[i]*pseudo_[i][r];
 			}
 			drifts[i] = std::inner_product(e_.column_begin(i)+downs_[i],

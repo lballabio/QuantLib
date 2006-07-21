@@ -36,8 +36,7 @@ namespace QuantLib {
 
     public:
 
-	    /*! Returns an approximation of the integrated drift 
-			\f$ \mu \Delta t \f$.
+	    /*! Returns the drift \f$ \mu \Delta t \f$.
 			See [1] "Rapid Computation of Drifts in a Reduced Factor Libor Market Model"
 			Mark Joshi, Wilmott Magazine, May 2003.
 		*/
@@ -45,24 +44,24 @@ namespace QuantLib {
                         const Array& displacements,
                         const Array& taus,
                         Size numeraire,
-                        Size alive,
-						Size factors);
-	    /*! Returns an approximation of the integrated drift 
+                        Size alive);
+	    /*! Returns the drift 
 			without factor reduction as in eqs. 2, 4 of ref. [1] 
 			(uses the covariance matrix directly).
 		*/
 		void compute(const Array& forwards,
                      Array& drifts) const;
-	    /*! Returns an approximation of the integrated drift 
+	    /*! Returns the drift 
 			with factor reduction as in eq. 7 of ref. [1] 
 			(uses pseudo square root of the covariance matrix).
 		*/
-		void computeReduced(const Array& forwards, 
-							Array& drifts) const;
+		void computeReduced(const Array& forwards,
+                            Size factors, 
+                            Array& drifts) const;
 
     private:
 
-        Size dim_, numeraire_, alive_, factors_;
+        Size dim_, numeraire_, alive_;
         Array displacements_, taus_; 
 		Matrix C_, pseudo_;
 

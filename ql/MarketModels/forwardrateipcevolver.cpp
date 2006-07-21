@@ -31,21 +31,20 @@ namespace QuantLib {
       forwards_(pseudoRoot->initialRates()),
       logForwards_(n_), initialLogForwards_(n_), drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), g_(n_), brownians_(F_), correlatedBrownians_(n_),
-      alive_(evolution.evolutionTimes().size()) {
-
+      alive_(evolution.evolutionTimes().size())
+    {
         QL_REQUIRE(evolution.isInTerminalMeasure(),
                    "terminal measure required");
 
         const Array& initialForwards = pseudoRoot_->initialRates();
         const Array& displacements = pseudoRoot_->displacements();
         
-        Size factors = pseudoRoot_->numberOfFactors();
         Size steps = evolution_.numberOfSteps();
 
         const Array& rateTimes = evolution_.rateTimes();
         const Array& evolutionTimes = evolution_.evolutionTimes();
 
-        generator_ = factory.create(factors, steps);
+        generator_ = factory.create(F_, steps);
         currentStep_ = 0;
 
         for (Size i=0; i<n_; ++i) {
@@ -64,8 +63,7 @@ namespace QuantLib {
                                                    displacements,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
-                                                   alive,
-												   factors));
+                                                   alive));
             C_.push_back(A*transpose(A));
 
             alive_[j] = alive;
@@ -80,6 +78,8 @@ namespace QuantLib {
         }
 
         calculators_.front().compute(initialForwards, initialDrifts_);
+        //calculators_.front().computeReduced(initialForwards, F_,
+        //                                    initialDrifts_);
     }
 
     Real ForwardRateIpcEvolver::startNewPath() {
@@ -89,7 +89,8 @@ namespace QuantLib {
         return generator_->nextPath();
     }
 
-    Real ForwardRateIpcEvolver::advanceStep() {
+    Real ForwardRateIpcEvolver::advanceStep()
+    {
         const Array& displacements = pseudoRoot_->displacements();
         const Array& rateTaus = evolution_.rateTaus();
 
@@ -99,6 +100,7 @@ namespace QuantLib {
                       drifts1_.begin());
         } else {
             calculators_[currentStep_].compute(forwards_, drifts1_);
+            //calculators_[currentStep_].computeReduced(forwards_, F_, drifts1_);
         }
 
         Real weight = generator_->nextStep(brownians_);

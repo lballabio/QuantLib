@@ -31,18 +31,17 @@ namespace QuantLib {
       forwards_(pseudoRoot->initialRates()),
       logForwards_(n_), initialLogForwards_(n_), drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
-      alive_(evolution.evolutionTimes().size()) {
-
+      alive_(evolution.evolutionTimes().size())
+    {
         const Array& initialForwards = pseudoRoot_->initialRates();
         const Array& displacements = pseudoRoot_->displacements();
         
-        Size factors = pseudoRoot_->numberOfFactors();
         Size steps = evolution_.numberOfSteps();
 
         const Array& rateTimes = evolution_.rateTimes();
         const Array& evolutionTimes = evolution_.evolutionTimes();
 
-        generator_ = factory.create(factors, steps);
+        generator_ = factory.create(F_, steps);
         currentStep_ = 0;
 
         for (Size i=0; i<n_; ++i) {
@@ -61,8 +60,7 @@ namespace QuantLib {
                                                    displacements,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
-                                                   alive,
-												   factors));
+                                                   alive));
             alive_[j] = alive;
             lastTime = evolutionTimes[j];
 
@@ -77,6 +75,8 @@ namespace QuantLib {
         }
 
         calculators_.front().compute(initialForwards, initialDrifts_);
+        //calculators_.front().computeReduced(initialForwards, F_,
+        //                                    initialDrifts_);
     }
 
 	ForwardRateEvolver::~ForwardRateEvolver() {}
@@ -98,6 +98,7 @@ namespace QuantLib {
         } else {
             // a) compute drifts D1 at T1;
             calculators_[currentStep_].compute(forwards_, drifts1_);
+            //calculators_[currentStep_].computeReduced(forwards_, F_, drifts1_);
         }
 
         // b) evolve forwards up to T2 using D1;
@@ -116,6 +117,7 @@ namespace QuantLib {
 
         // c) recompute drifts D2 using the predicted forwards;
         calculators_[currentStep_].compute(forwards_, drifts2_);
+        //calculators_[currentStep_].computeReduced(forwards_, F_, drifts2_);
         
         // d) correct forwards using both drifts
         for (Size i=alive; i<n_; ++i) {
