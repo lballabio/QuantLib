@@ -202,15 +202,15 @@ namespace QuantLib {
           case Following:
             return out << "Following";
           case ModifiedFollowing:
-            return out << "ModifiedFollowing";
+            return out << "Modified Following";
           case Preceding:
             return out << "Preceding";
           case ModifiedPreceding:
-            return out << "ModifiedPreceding";
+            return out << "Modified Preceding";
           case MonthEndReference:
-            return out << "MonthEndReference";
+            return out << "Month End Reference";
           case UnadjustedMonthEnd:
-            return out << "UnadjustedMonthEnd";
+            return out << "Unadjusted Month End";
           case Unadjusted:
             return out << "Unadjusted";
           default:
