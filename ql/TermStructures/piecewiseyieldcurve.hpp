@@ -343,9 +343,15 @@ namespace QuantLib {
                 Real max = C::maxValueAfter(i, this->data_);
                 if (guess <= min || guess >= max)
                     guess = (min+max)/2.0;
-                this->data_[i] =
-                    solver.solve(ObjectiveFunction(this,instrument,i),
-                                                   accuracy_,guess,min,max);
+                try {
+                    this->data_[i] =
+                        solver.solve(ObjectiveFunction(this, instrument, i),
+                                     accuracy_, guess, min, max);
+                } catch (std::exception& e) {
+                    QL_FAIL("could not bootstrap the " << io::ordinal(i) <<
+                            "instrument, maturity " << dates_[i] <<
+                            "\n error message: " << e.what());
+                }
             }
             // check exit conditions
             if (!I::global)
