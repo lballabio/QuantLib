@@ -157,6 +157,7 @@ namespace QuantLib {
         arguments() : type(CapFloor::Type(-1)) {}
         CapFloor::Type type;
         std::vector<Time> startTimes;
+        std::vector<Date> fixingDates;
         std::vector<Time> fixingTimes;
         std::vector<Time> endTimes;
         std::vector<Time> accrualTimes;

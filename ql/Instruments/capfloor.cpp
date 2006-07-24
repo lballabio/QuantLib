@@ -69,7 +69,7 @@ namespace QuantLib {
         arguments->capRates.clear();
         arguments->floorRates.clear();
         arguments->startTimes.clear();
-        arguments->fixingTimes.clear();
+        arguments->fixingDates.clear();
         arguments->endTimes.clear();
         arguments->accrualTimes.clear();
         arguments->forwards.clear();
@@ -90,6 +90,7 @@ namespace QuantLib {
             Time time = counter.yearFraction(settlement, beginDate);
             arguments->startTimes.push_back(time);
             Date fixingDate = coupon->fixingDate();
+            arguments->fixingDates.push_back(fixingDate);
             time = counter.yearFraction(today, fixingDate);
             arguments->fixingTimes.push_back(time);
             time = counter.yearFraction(settlement, coupon->date());
