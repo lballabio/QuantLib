@@ -192,7 +192,7 @@ namespace QuantLib {
                 {
                     error_ = interpolationError();
                     maxError_ = interpolationMaxError(); 
-				    SABREndCriteria_ = EndCriteria::Type::none;
+				    SABREndCriteria_ = EndCriteria::none;
                     return;
                 } else {
                     SABRConstraint constraint;
