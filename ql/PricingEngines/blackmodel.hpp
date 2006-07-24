@@ -85,6 +85,8 @@ namespace QuantLib {
         inline Real blackFormula(Real f, Real k, Real v, Real w) {
             if (std::fabs(v) < QL_EPSILON)
                 return std::max(f*w - k*w, Real(0.0));
+            if (k==0.0)
+                return (w==1.0 ? f : 0.0);
             Real d1 = std::log(f/k)/v + 0.5*v;
             Real d2 = d1 - v;
             CumulativeNormalDistribution phi;

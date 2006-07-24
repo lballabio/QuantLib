@@ -64,8 +64,8 @@ namespace QuantLib {
         Real d1 = (std::log(forwardSi/payoff->strike()) + 0.5*variance) /
             std::sqrt(variance);
         CumulativeNormalDistribution cumNormalDist;
-        Real K = -2.0*std::log(riskFreeDiscount)/
-            (variance*(1.0-riskFreeDiscount));
+        Real K = (riskFreeDiscount!=1.0 ? -2.0*std::log(riskFreeDiscount)/
+            (variance*(1.0-riskFreeDiscount)) : 0.0);
         switch (payoff->optionType()) {
           case Option::Call:
             Q = (-(n-1.0) + std::sqrt(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
