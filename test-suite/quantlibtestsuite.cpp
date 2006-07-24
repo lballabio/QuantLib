@@ -32,6 +32,10 @@
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
 #  undef BOOST_LIB_DIAGNOSTIC
+
+//#  include <float.h>
+//   namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+
 #endif
 
 #include "americanoption.hpp"
@@ -100,9 +104,6 @@
 
 #include <iostream>
 #include <iomanip>
-
-//#include <float.h>
-//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
 
 using namespace boost::unit_test_framework;
 
