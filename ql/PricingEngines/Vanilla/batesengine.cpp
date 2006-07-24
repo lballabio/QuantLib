@@ -39,6 +39,7 @@ namespace QuantLib {
         const Real i       = (j == 1)? 1.0 : 0.0;
         const std::complex<Real> g(i, phi);
 
+        //it can throw: to be fixed
         return t*lambda_*(std::exp(nu_*g + delta2_*g*g) - 1.0
                           -g*(std::exp(nu_+delta2_) - 1.0));
     }

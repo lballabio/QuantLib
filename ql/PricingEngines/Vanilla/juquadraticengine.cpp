@@ -99,16 +99,6 @@ namespace QuantLib {
                 tolerance);
 
             Real forwardSk = Sk * dividendDiscount / riskFreeDiscount;
-            // the following 3 assignements are not used - Nando
-            // ???????????????????????????
-            /*
-            Real d1 = (std::log(forwardSk/payoff->strike()) + 0.5*variance)
-                /std::sqrt(variance);
-            Real n = 2.0*std::log(dividendDiscount/riskFreeDiscount)/variance;
-            Real K = -2.0*std::log(riskFreeDiscount)/
-                (variance*(1.0-riskFreeDiscount));
-
-            */
 
             Real alpha = -2.0*std::log(riskFreeDiscount)/(variance);
             Real beta = 2.0*std::log(dividendDiscount/riskFreeDiscount)/
@@ -125,6 +115,7 @@ namespace QuantLib {
                 default:
                   QL_FAIL("unknown option type");
             }
+            //it can throw: to be fixed
             Real temp_root = std::sqrt ((beta-1)*(beta-1) + (4*alpha)/h);
             Real lambda = (-(beta-1) + phi * temp_root) / 2;
             Real lambda_prime = - phi * alpha / (h*h * temp_root);
